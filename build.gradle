@@ -55,7 +55,7 @@ allprojects {
         google()
         jcenter()
         maven {
-            url "http://192.168.9.39:8081/repository/maven-public"
+            url "https://sdk.platon.network/nexus/content/groups/public/"
         }
     }
 }

@@ -138,7 +138,6 @@ public class SharedWalletTransactionManager {
                 .requiredSignNumber(requiredSignNumber)
                 .owner(members)
                 .avatar(SharedWalletManager.getInstance().getWalletAvatar())
-                .linkWalletAddress(individualWalletAddress)
                 .build();
 
         SharedWalletManager.getInstance().addWallet(sharedWalletEntity);
@@ -238,7 +237,7 @@ public class SharedWalletTransactionManager {
         try {
             long time = System.currentTimeMillis();
             String data = org.spongycastle.util.encoders.Hex.toHexString(memo.getBytes(Charset.forName("UTF-8")));
-            String value = Convert.toWei(amount, Convert.Unit.ETHER).toPlainString();
+            String value = NumberParserUtils.getPrettyNumber(Convert.toWei(amount, Convert.Unit.ETHER).doubleValue(), 0);
             Multisig multisig = Multisig.load(FileUtil.getStringFromAssets(App.getContext(), BIN_NAME), sharedWalletEntity.getPrefixContractAddress(), Web3jManager.getInstance().getWeb3j(), credentials, new StaticGasProvider(gasPrice, INVOKE_GAS_LIMIT));
             receipt = multisig.submitTransaction(to, sharedWalletEntity.getPrefixContractAddress(), value, data, BigInteger.valueOf(data.length()), BigInteger.valueOf(time), "").send();
 

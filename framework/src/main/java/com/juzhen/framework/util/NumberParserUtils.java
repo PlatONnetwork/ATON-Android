@@ -255,7 +255,7 @@ public class NumberParserUtils {
             return "0.00";
         }
 
-        if (!bigDecimalStr.contains(".")) {
+        if (maxDigit > 0 && !bigDecimalStr.contains(".")) {
             return bigDecimalStr.concat(".00");
         }
 

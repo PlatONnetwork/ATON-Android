@@ -266,7 +266,6 @@ public class SharedWalletEntity extends WalletEntity implements Cloneable {
         private int unread;
         private int progress;
         private boolean finished;
-        private String linkWalletAddress;
 
         public Builder() {
         }
@@ -333,11 +332,6 @@ public class SharedWalletEntity extends WalletEntity implements Cloneable {
 
         public Builder finished(boolean val) {
             finished = val;
-            return this;
-        }
-
-        public Builder linkWalletAddress(String val) {
-            linkWalletAddress = val;
             return this;
         }
 
