@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:background="@color/color_ffffff"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="21dp"
+        android:paddingRight="21dp">
+
+        <TextView
+            android:id="@+id/tv_execute_contract"
+            style="@style/Text.292929.15"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical|left"
+            android:text="@string/execute_contract_confirm" />
+
+        <ImageView
+            android:id="@+id/iv_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_close" />
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_f8f8f8"
+        android:paddingBottom="14dp"
+        android:paddingTop="30dp">
+
+        <TextView
+            android:id="@+id/tv_contract_fee"
+            style="@style/Text.292929.18"
+            android:layout_centerHorizontal="true"
+            tools:text="0.000035 Energon" />
+
+        <TextView
+            android:id="@+id/tv_payment_info_title"
+            style="@style/Text.666666.14"
+            android:layout_below="@id/tv_contract_fee"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="27dp"
+            android:text="@string/type" />
+
+        <TextView
+            android:id="@+id/tv_payment_info"
+            style="@style/Text.666666.12"
+            android:layout_alignTop="@id/tv_payment_info_title"
+            android:layout_marginLeft="70dp"
+            android:layout_toRightOf="@id/tv_payment_info_title"
+            tools:text="@string/executeContractFee" />
+
+        <com.juzix.wallet.component.widget.RoundedTextView
+            android:id="@+id/rtv_submit_contract"
+            style="@style/Text.fff.14"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_payment_info_title"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="51dp"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:text="@string/submit"
+            app:rtv_background_color="@color/color_373E51"
+            app:rtv_corner_radius="1dp" />
+
+    </RelativeLayout>
+
+</LinearLayout>

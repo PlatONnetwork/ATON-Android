@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="true"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <com.juzix.wallet.component.widget.CommonTitleBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:ctb_left_drawable="@drawable/icon_back_black"
+        app:ctb_middle_text="@string/about" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_1b2137"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:paddingTop="60dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/icon_logo_splash" />
+
+        <TextView
+            android:id="@+id/tv_app_version"
+            style="@style/Text.c5cdbc.12"
+            android:layout_marginTop="13dp"
+            android:layout_gravity="center_horizontal"
+            tools:text="v1.0.0" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:divider="@drawable/bg_transation_list_divider"
+            android:orientation="vertical"
+            android:showDividers="middle">
+
+            <TextView
+                android:id="@+id/tv_about_us"
+                style="@style/Text.fff.14"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:drawableRight="@drawable/icon_right_arrow"
+                android:gravity="center_vertical|left"
+                android:paddingLeft="18dp"
+                android:paddingRight="18dp"
+                android:text="@string/aboutUs" />
+
+            <TextView
+                android:id="@+id/tv_update"
+                style="@style/Text.fff.14"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:drawableRight="@drawable/icon_right_arrow"
+                android:gravity="center_vertical|left"
+                android:paddingLeft="18dp"
+                android:paddingRight="18dp"
+                android:text="@string/versionUpdate" />
+
+            <TextView
+                android:visibility="gone"
+                style="@style/Text.fff.14"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:drawableRight="@drawable/icon_right_arrow"
+                android:gravity="center_vertical|left"
+                android:paddingLeft="18dp"
+                android:paddingRight="18dp"
+                android:text="隐私政策" />
+
+            <!--为了兼容5.0-->
+            <android.support.v4.widget.Space
+                android:layout_width="match_parent"
+                android:layout_height="0dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

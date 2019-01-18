@@ -1,0 +1,307 @@
+<resources>
+    <string name="app_name">ATON</string>
+    <string name="inputDigits">.@~-,:*?!#/\\=+?^;%$()[]{}|`&lt;&gt;&amp;&quot;&apos;_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLIMNOPQRSTUVWXYZ</string>
+    <!--权限申请-->
+    <string name="permissionFailureTitleText">权限申请失败</string>
+    <string name="permissionFailureMessageText">我们需要的一些权限申请失败，请您到设置页面手动授权，否则功能无法正常使用！</string>
+    <string name="permissionFailureButtonText">设置</string>
+    <string name="permissionRationaleTitleText">授权已被拒绝</string>
+    <string name="permissionRationaleMessageText">您已经拒绝过授权此权限，没有此权限功能无法正常使用，赶快授权此权限给我们！</string>
+    <string name="permissionRationalePositiveButtonText">授权</string>
+    <string name="permissionRationaleNegativeButtonText">拒绝</string>
+
+    <string name="serviceLicenseAgreement">服务及隐私条款</string>
+    <string name="serviceProtocol">《PlatON钱包客户端服务协议》</string>
+    <string name="serviceProtocolUpdateTime">最近更新于：2018年2月3日</string>
+    <string name="serviceProtocolContent">Copyright (C) 2007 Free Software Foundation, Inc. \n%1$s
+     \nEveryone is permitted toAddress copy and distribute verbatim copies
+     of this license document, but changing it is not allowed.
+
+      \nThe GNU General Public License is a free, copyleft license for
+    software and other kinds of works.
+
+      \nThe licenses for most software and other practical works are designed
+    toAddress take away your freedom toAddress share and change the works.  By contrast,
+    the GNU General Public License is intended toAddress guarantee your freedom toAddress
+    share and change all versions of a program--toAddress make sure it remains free
+    software for all its users.  We, the Free Software Foundation, use the
+    GNU General Public License for most of our software; it applies also toAddress
+    any other work released this way by its authors.  You can apply it toAddress
+    your programs, too.
+
+      \nWhen we speak of free software, we are referring toAddress freedom, not
+    price.  Our General Public Licenses are designed toAddress make sure that you
+    have the freedom toAddress distribute copies of free software (and charge for
+    them if you wish), that you receive source code or can get it if you
+    want it, that you can change the software or use pieces of it in new
+    free programs, and that you know you can do these things.
+
+      \nTo protect your rights, we need toAddress prevent others fromAddress denying you
+    these rights or asking you toAddress surrender the rights.  Therefore, you have
+    certain responsibilities if you distribute copies of the software, or if</string>
+    <string name="serviceProtocolAgree">我已经仔细阅读并同意以上条款</string>
+    <string name="btnContinue">继续</string>
+    <string name="platONSlogan">一切皆可计算</string>
+    <string name="btnCreatewallet">创建钱包</string>
+    <string name="btnImportwallet">恢复钱包</string>
+    <string name="createIndividualWallet">创建普通钱包</string>
+    <string name="importIndividualWallet">导入普通钱包</string>
+    <string name="name">钱包名称</string>
+    <string name="password">设置密码</string>
+    <string name="passwordLimit">*不少于6位字符，建议混合大小写、数字、特殊字符</string>
+    <string name="createIndividualWalletTips">注意：请务必牢记钱包密码，服务器不会存储您的密码，遗忘丢失将无法找回！</string>
+    <string name="passwordTips">两次密码不一致</string>
+    <string name="validPasswordEmptyTips">密码不能为空</string>
+    <string name="validPasswordTips">密码至少6个字符</string>
+    <string name="validRepeatPasswordEmptyTips">重复密码不能为空</string>
+    <string name="create">创建钱包</string>
+    <string name="setPassword">设置钱包密码（不少于6位）</string>
+    <string name="repeatPassword">重复钱包密码</string>
+    <string name="strength">强度</string>
+    <string name="weak">弱</string>
+    <string name="so_so">一般</string>
+    <string name="good">强</string>
+    <string name="strong">很好</string>
+    <string name="keystore">Keystore</string>
+    <string name="keystoreContent">请输入Keystore</string>
+    <string name="mnemonicPhrase">助记词</string>
+    <string name="privateKey">私钥</string>
+    <string name="importIndividualWalletResume">使用Keystore导入的同时需要输入钱包密码进行解密，同时未来需要通过密码验证才能进行能量发送、备份等操作。</string>
+    <string name="startImporting">开始导入</string>
+    <string name="walletPassword">钱包密码</string>
+    <string name="nameOfWallet">设置钱包名称</string>
+    <string name="importMnemonicPhraseResume">请将记下的助记词按顺序填入以下的表格中，用空格分割；使用助记词导入的同时需要设定钱包密码，未来需要通过密码验证才能够进行能量发送、备份等操作。</string>
+    <string name="inputMnemonicPhraseTips">请输入助记词，用空格分割</string>
+    <string name="importPrivateKeyResume">使用私钥导入的同时需要设置钱包密码，未来需要通过密码验证才能够进行能量发送、备份等操作。</string>
+    <string name="inputPrivateKeyTips">请输入私钥</string>
+    <string name="backupWallet">备份钱包</string>
+    <string name="create_success">创建成功</string>
+    <string name="backupWalletDescription">最后一步，备份钱包</string>
+    <string name="backupWalletResume">请将助记词写在纸上并保存在安全的地方，避免保存在网上，以免被不法分子盗取</string>
+    <string name="startBackup">开始备份</string>
+    <string name="InputWalletPassword">请输入密码进行确认</string>
+    <string name="cancel">取消</string>
+    <string name="confirm">确认</string>
+    <string name="donotScreenshot">请勿截图</string>
+    <string name="backupMnemonicResume">如果有人获取了你的助记词，将可以直接获取你的资产！请抄写下助记词并存放在安全的地方。</string>
+    <string name="backupPrivateKey">如果有人获取了你的私钥，将可以直接获取你的资产！请确保私钥存放在安全的地方。</string>
+    <string name="backupKeystore">如果有人获取了你的Keystore，将可以直接获取你的资产！请确保Keystore存放在安全的地方。</string>
+    <string name="understood">我知道了</string>
+    <string name="understood1">我知道了</string>
+    <string name="backupMnemonicTitle">请记住下方助记词，我们将在下一步进行验证</string>
+    <string name="backupMnemonicDescrition">助记词用于恢复钱包或重置钱包密码，请将它准确抄写在纸上并存放在只有你知道的安全地点。</string>
+    <string name="next">下一步</string>
+    <string name="individual_wallet">普通钱包</string>
+    <string name="shared_wallet">联名钱包</string>
+    <string name="verificationOfMnemonic">验证助记词</string>
+    <string name="verificationOfMnemonicTitle">请按顺序点击助记词，以确认您已经正确备份。</string>
+    <string name="completeBackup">完成备份</string>
+    <string name="submit">确认</string>
+    <string name="empty">清空</string>
+    <string name="msg_no_shared_wallet">还没有联名钱包</string>
+    <string name="msg_no_individual_wallet">还没有普通钱包</string>
+    <string name="action_create_wallet">创建钱包</string>
+    <string name="action_import_wallet">导入钱包</string>
+    <!--<string name="createIndividualWallet">创建普通钱包</string>-->
+    <!--<string name="importIndividualWallet">导入普通钱包</string>-->
+    <!--<string name="createSharedWallet">创建联名钱包</string>-->
+    <!--<string name="importSharedWallet">添加联名钱包</string>-->
+    <string name="nav_property">资产</string>
+    <string name="nav_me">我的</string>
+    <string name="disclaimer">免责声明</string>
+    <string name="disclaimerResume">请确保已备份的钱包保存在安全地方，ATON不承担任何钱包丢失、被盗、忘记密码等原因产生的资产损失！</string>
+    <string name="backupFailed">验证失败</string>
+    <string name="backupMnemonicFailedResume">请检查助记词顺序！</string>
+    <string name="manage">钱包管理</string>
+    <string name="exportPrivateKey">导出私钥</string>
+    <string name="exportKeystore">导出Keystore</string>
+    <string name="backup">备份钱包</string>
+    <string name="changeWalletName">修改钱包名称</string>
+    <string name="formatError">钱包名称格式错误</string>
+    <string name="validWalletNameTips">请输入1-12位字符</string>
+    <string name="validKeystoreEmptyTips">Keystore不能为空</string>
+    <string name="validPrivateKeyEmptyTips">私钥不能为空</string>
+    <string name="validMnenonicEmptyTips">助记词不能为空</string>
+    <string name="validWalletNameEmptyTips">钱包名称不能为空</string>
+    <string name="validWalletAddressEmptyTips">钱包地址不能为空</string>
+    <string name="validSharedWalletNameEmptyTips">联名钱包名称不能为空</string>
+    <string name="back">返回</string>
+    <string name="qrCode">二维码</string>
+    <string name="exportPrivateKeyTips">注意：不要截图，请检查周围，以防他人偷看或拍摄，请妥善保管私钥，切勿存储在网盘中</string>
+    <string name="copy">复制</string>
+    <string name="msg_balance">余额</string>
+    <string name="transactions">交易记录</string>
+    <string name="sendATP">发送&#160;Energon</string>
+    <string name="actionSendATP">确认</string>
+    <string name="action_send_transation">发送</string>
+    <string name="action_receive_transation">接收</string>
+    <string name="action_call_vote">投票</string>
+    <string name="wallet_address">钱包地址</string>
+    <string name="amount">数量</string>
+    <string name="pay_wallet">支付钱包</string>
+    <string name="change">切换钱包</string>
+    <string name="select_fee">交易费用</string>
+    <string name="cheaper">更便宜</string>
+    <string name="faster">更快速</string>
+    <string name="send_transation">发送确认</string>
+    <string name="wallet_name">钱包名称</string>
+    <string name="public_key">公钥</string>
+    <string name="sharing">分享给朋友</string>
+    <string name="fromAddress">From</string>
+    <string name="toAddress">接收地址</string>
+    <string name="wallet_balance">%1$s&#160;Energon</string>
+    <string name="transaction_detail">交易详情</string>
+    <string name="select_wallet">选择钱包</string>
+    <string name="select_address">选择地址</string>
+    <string name="create_shared_wallet">创建联名钱包</string>
+    <string name="select_owner">选择关联钱包</string>
+    <string name="shared_owners">联名用户数量</string>
+    <string name="required_signatures">所需签名数</string>
+    <string name="wallet_manage">钱包管理</string>
+    <string name="address_book">地址薄</string>
+    <string name="settings">设置</string>
+    <string name="help">帮助</string>
+    <string name="about">关于</string>
+    <string name="aboutUs">关于我们</string>
+    <string name="community">社区</string>
+    <string name="add_shared_wallet">添加联名钱包</string>
+    <string name="add">添加</string>
+    <string name="delete_wallet">删除钱包</string>
+    <string name="scan_qr_code">扫描</string>
+    <string name="scan_qr_code_tips">放入框内 自动扫描</string>
+    <string name="scan_qr_code_open_lights_failed">暂时无法开启闪光灯</string>
+    <string name="scan_qr_code_failed_tips">识别失败</string>
+    <string name="scan_qr_code_failed_tips1">无法识别二维码</string>
+    <string name="photograph">拍照</string>
+    <string name="photo_album">相册</string>
+    <string name="select_from_albums">从相册选择</string>
+    <string name="save_to_albums">保存到相册</string>
+    <string name="save_image_tips">图片已保存至系统相册</string>
+    <string name="save_image_failed_tips">保存失败</string>
+    <string name="gauge_scanning_qr_code">正在扫描...</string>
+    <string name="createWalletFailed">创建钱包失败</string>
+    <string name="addWalletFailed">添加钱包失败</string>
+    <string name="validPasswordError">密码错误</string>
+    <string name="parsedError">%1$s无法解析</string>
+    <string name="enterAgainTips">请重新输入</string>
+    <string name="textCopiedTips">已复制到粘贴板</string>
+    <string name="members">联名用户</string>
+    <string name="owner">关联普通钱包</string>
+    <string name="change_member_name">修改备注</string>
+    <string name="sign_confirming">签名确认</string>
+    <string name="refuse">拒绝</string>
+    <string name="agree">确认</string>
+    <string name="value">数量</string>
+    <string name="energonPrice">手续费</string>
+    <string name="execute_contract_confirm">执行合约</string>
+    <string name="execute_contract_refuse">执行合约</string>
+    <string name="edit">编辑</string>
+    <string name="address">地址</string>
+    <string name="msg_marked_words">地址存在本地，删除app前请先备份</string>
+    <string name="add_new_address">添加新地址</string>
+    <string name="edit_address">编辑地址</string>
+    <string name="delete">删除</string>
+    <string name="address_name_cannot_be_empty">地址名称不能为空</string>
+    <string name="address_cannot_be_empty">地址不能为空</string>
+    <string name="address_format_error">地址格式不正确</string>
+    <string name="address_name_length_error">请输入1-12位地址名称</string>
+    <string name="wallet_name_length_error">请输入1-12位钱包名称</string>
+    <string name="estimated_transaction_confirmation_time">预计交易确认时间:</string>
+    <string name="fastest_transfer_time">30秒</string>
+    <string name="slowest_transfer_time">15分钟</string>
+    <string name="moderate_transfer_time">5分钟</string>
+    <string name="save">保存</string>
+    <string name="amount_with_unit">%1$s&#160;Energon</string>
+    <string name="transfer_amount_cannot_be_empty">转账金额不能为空</string>
+    <string name="transfer_amount_exceed_balance">转账金额已超过余额</string>
+    <string name="insufficient_balance">余额不足</string>
+    <string name="send">发送</string>
+    <string name="receive">接收</string>
+    <string name="receive_atp">接收&#160;Energon</string>
+    <string name="editNode">编辑节点</string>
+    <string name="node_settings">节点设置</string>
+    <string name="face_touch_id">指纹/面纹解锁</string>
+    <string name="chinese">简体中文</string>
+    <string name="english">English</string>
+    <string name="node_format_error">节点格式错误</string>
+    <string name="save_node_succeed">保存节点成功</string>
+    <string name="fingerprintTouch">请验证指纹</string>
+    <string name="evokeFingerprintVerification">点击唤起指纹验证</string>
+    <string name="fingerprintRecognitionFailed">指纹识别失败，请再试一次！</string>
+    <string name="fingerprintMatchFailed">指纹不匹配，请使用开通验证的手指！</string>
+    <string name="multipleVerificationsFailed">多次验证不通过，请使用钱包密码登录解锁</string>
+    <string name="unlockWithWalletPassword">使用钱包密码登录解锁</string>
+    <string name="purse">钱包</string>
+    <string name="unlock">解锁</string>
+    <string name="unlockWithWalletPasswordTitle">钱包密码解锁</string>
+    <string name="unlockWithWalletPasswordDesc">请使用选定的钱包密码验证解锁</string>
+    <string name="company_name">矩阵元技术（深圳）有限公司</string>
+    <string name="copyright_resume">Powered by PlatON Blockchain</string>
+    <string name="language">语言</string>
+    <string name="warning">警告</string>
+    <string name="test_node_warn">你正处于PlatON测试网络，切勿将真实的资产转账到当前测试网络钱包地址</string>
+    <string name="copy_succeed">复制成功</string>
+    <string name="unrecognized">无法识别</string>
+    <string name="password_cannot_be_empty">密码不能为空</string>
+    <string name="no_address">暂无地址</string>
+    <string name="no_transaction_record">暂无交易记录</string>
+    <string name="figerprintUnlockTips">Touch ID无法启动，请使用钱包密码登录解锁</string>
+    <string name="openFigerprintError">Touch ID已锁定，请到系统设置中解锁后重试</string>
+    <string name="total_assets">总资产</string>
+    <string name="transfer_succeed">转账成功</string>
+    <string name="transfer_failed">转账失败</string>
+    <string name="input_again">请重新输入</string>
+    <string name="network_error">网络异常，请稍候重试</string>
+    <string name="walletExists">钱包已存在</string>
+    <string name="create_contract">创建合约</string>
+    <string name="payment_info">支付信息</string>
+    <string name="action_submit">创建</string>
+    <string name="createSharedWalletTips1">所需签名数不得超过已选择的联名用户数</string>
+    <string name="member">用户%1$s</string>
+    <string name="remarkNonCompulsory">备注名称（选填）</string>
+    <string name="inputSharedWalletAddress">输入联名钱包地址</string>
+    <string name="changeMemberName">修改备注</string>
+    <string name="transactionConfirmation">联名钱包转账确认</string>
+    <string name="totalValue">总数量</string>
+    <string name="type">类型</string>
+    <string name="executeContractFee">执行合约手续费</string>
+    <string name="addSharedWalletSuccess">联名钱包添加成功</string>
+    <string name="signingConfirmationFailed">签名确认失败</string>
+    <string name="signingRefuseFailed">签名拒绝失败</string>
+    <string name="time">时间</string>
+    <string name="memo">备注</string>
+    <string name="hash">交易Hash</string>
+    <string name="executeContractConfirm">交易确认</string>
+    <string name="pending">待确认</string>
+    <string name="signing">签名中</string>
+    <string name="success">已完成</string>
+    <string name="failed">交易失败</string>
+    <string name="energon_price">手续费</string>
+    <string name="wallet">钱包</string>
+    <string name="transaction_hash">交易hash:</string>
+    <string name="none">无</string>
+    <string name="noWalletTips">请先创建普通钱包</string>
+    <string name="insufficientBalanceTips">钱包余额不足，无法创建</string>
+    <string name="inputWalletAddress">输入钱包地址</string>
+    <string name="inputSendAmount">输入发送数量</string>
+    <string name="inputMome">备注（选填）</string>
+    <string name="duplicateAddress">存在重复地址</string>
+    <string name="saveAndShareImage">保存图片并分享</string>
+    <string name="versionUpdate">版本更新</string>
+    <string name="illegalWalletAddress">非法钱包地址</string>
+    <string name="joint_wallet_can_not_added">联名用户钱包，无法添加</string>
+    <string name="wechat">微信好友</string>
+    <string name="more">更多</string>
+    <string name="twitter">Twitter</string>
+    <string name="facebook">Facebook</string>
+    <string name="weibo">微博</string>
+    <string name="qq">QQ</string>
+    <string name="all">全部</string>
+    <string name="balance_text">当前余额:&#160;%1$s&#160;Energon</string>
+    <string name="fee">交易费用</string>
+    <string name="joint_wallet_execution">执行联名钱包</string>
+    <string name="create_joint_wallet">创建联名钱包</string>
+    <string name="fee_of_contract_creation">创建合约手续费</string>
+    <string name="send_energon">Energon&#160;发送</string>
+    <string name="can_not_send_to_itself">无法发送给自己</string>
+</resources>

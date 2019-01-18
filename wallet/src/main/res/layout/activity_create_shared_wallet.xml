@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="true"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <com.juzix.wallet.component.widget.CommonTitleBar
+        android:id="@+id/commonTitleBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:ctb_left_drawable="@drawable/icon_back_black"
+        app:ctb_middle_text="@string/create_shared_wallet" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_1b2137"
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:paddingTop="17dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="14dp">
+
+        <TextView
+            style="@style/Text.c5cdbc.14"
+            android:layout_marginLeft="7dp"
+            android:text="@string/name" />
+
+        <EditText
+            android:id="@+id/et_wallet_name"
+            style="@style/Text.fff.12"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_create_share_wallet"
+            android:gravity="center_vertical|left"
+            android:hint="@string/nameOfWallet"
+            android:paddingLeft="10dp"
+            android:textColorHint="@color/color_7a8092" />
+
+        <TextView
+            android:id="@+id/tv_wallet_name_error"
+            style="@style/Text.ff4747.12"
+            android:layout_marginTop="5dp"
+            android:visibility="gone"
+            tools:text="钱包名称不能为空" />
+
+        <TextView
+            style="@style/Text.c5cdbc.14"
+            android:layout_marginLeft="7dp"
+            android:layout_marginTop="17dp"
+            android:text="@string/select_owner" />
+
+        <include layout="@layout/include_change_wallet" />
+
+        <RelativeLayout
+            android:id="@+id/layout_shared_owners"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/bg_create_share_wallet"
+            android:paddingLeft="7dp"
+            android:paddingRight="12dp">
+
+            <TextView
+                style="@style/Text.c5cdbc.14"
+                android:layout_centerVertical="true"
+                android:text="@string/shared_owners" />
+
+            <TextView
+                android:id="@+id/tv_shared_owners"
+                style="@style/Text.fff.12"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:drawableRight="@drawable/icon_right_arrow"
+                android:text="2" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_required_signatures"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/bg_create_share_wallet"
+            android:paddingLeft="7dp"
+            android:paddingRight="12dp">
+
+            <TextView
+                style="@style/Text.c5cdbc.14"
+                android:layout_centerVertical="true"
+                android:text="@string/required_signatures" />
+
+            <TextView
+                android:id="@+id/tv_required_signatures"
+                style="@style/Text.fff.12"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:drawableRight="@drawable/icon_right_arrow"
+                android:text="2" />
+        </RelativeLayout>
+
+        <android.support.v4.widget.Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <com.juzix.wallet.component.widget.RoundedTextView
+            android:id="@+id/rtv_next"
+            style="@style/Text.1b2137.14"
+            android:layout_width="match_parent"
+            android:enabled="false"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:text="@string/next"
+            android:textColor="@color/color_heavy_button_text"
+            app:rtv_background_color="@color/bg_heavy_button"
+            app:rtv_corner_radius="1dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

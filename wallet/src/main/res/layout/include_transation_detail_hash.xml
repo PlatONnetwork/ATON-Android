@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="12dp">
+
+    <TextView
+        android:id="@+id/tv_memo_title"
+        style="@style/Text.c5cdbc.12"
+        android:text="@string/memo" />
+
+    <TextView
+        android:id="@+id/tv_memo"
+        style="@style/Text.fff.13"
+        android:layout_marginTop="4dp"
+        android:text="@string/none" />
+
+    <TextView
+        android:id="@+id/tv_transation_hash_title"
+        style="@style/Text.c5cdbc.12"
+        android:layout_marginTop="13dp"
+        android:text="@string/transaction_hash" />
+
+    <RelativeLayout
+        android:id="@+id/layout_transation_hash"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/bg_wallet_address"
+        android:paddingBottom="6dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="6dp"
+        android:paddingTop="6dp">
+
+        <ImageView
+            android:id="@+id/iv_copy_transation_hash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/icon_copy" />
+
+        <TextView
+            android:id="@+id/tv_transation_hash"
+            style="@style/Text.fff.12"
+            android:layout_width="match_parent"
+            android:layout_marginRight="7dp"
+            android:layout_toLeftOf="@id/iv_copy_transation_hash"
+            android:ellipsize="end"
+            android:gravity="center_vertical|left"
+            android:lines="2"
+            tools:text="ox2ce481566f3a19c04A206A72fF49B2b3d3976ox2ce481566f3a19c04A206A72fF49B2b3d3976" />
+
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="shared_owners">
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+    </string-array>
+
+    <string-array name="required_signatures">
+        <!--<item>1</item>-->
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+    </string-array>
+
+    <string-array name="wallet_avatar">
+        <item>avatar_1</item>
+        <item>avatar_2</item>
+        <item>avatar_3</item>
+        <item>avatar_4</item>
+        <item>avatar_5</item>
+        <item>avatar_6</item>
+        <item>avatar_7</item>
+        <item>avatar_8</item>
+        <item>avatar_9</item>
+        <item>avatar_10</item>
+        <item>avatar_11</item>
+        <item>avatar_12</item>
+        <item>avatar_13</item>
+        <item>avatar_14</item>
+        <item>avatar_15</item>
+    </string-array>
+
+</resources>

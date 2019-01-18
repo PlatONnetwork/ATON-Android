@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="11dp"
+    android:paddingLeft="12dp"
+    android:paddingRight="12dp"
+    android:paddingTop="11dp">
+
+    <com.juzix.wallet.component.widget.CircleImageView
+        android:id="@+id/iv_wallet_avatar"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/icon_default_coin" />
+
+    <TextView
+        android:id="@+id/tv_wallet_name"
+        style="@style/Text.fff.14"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@id/iv_wallet_avatar"
+        android:ellipsize="end"
+        android:lines="1"
+        tools:text="Name" />
+
+    <TextView
+        android:id="@+id/tv_wallet_address"
+        style="@style/Text.c5cdbc.12"
+        android:layout_width="wrap_content"
+        android:layout_alignLeft="@id/tv_wallet_name"
+        android:layout_below="@id/tv_wallet_name"
+        android:layout_marginTop="7dp"
+        android:ellipsize="middle"
+        android:singleLine="true"
+        android:gravity="center_vertical|left"
+        tools:text="ox2ce48152fF49B2b3d3fF49B2b3d3fF49B2b3d3" />
+
+</RelativeLayout>

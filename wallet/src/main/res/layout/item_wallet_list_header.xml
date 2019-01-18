@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_total_assets"
+    android:clipToPadding="true"
+    android:fitsSystemWindows="true"
+    android:paddingBottom="20dp"
+    android:paddingTop="10dp">
+
+    <TextView
+        android:id="@+id/tv_balance"
+        style="@style/Text.fff.11"
+        android:text="@string/total_assets"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+
+    <com.juzix.wallet.component.widget.AutofitTextView
+        android:id="@+id/tv_total_balance"
+        style="@style/Text.feed54.21"
+        android:layout_width="match_parent"
+        android:layout_marginTop="8dp"
+        android:maxLines="1"
+        android:singleLine="true"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_balance"
+        app:minTextSize="2sp" />
+
+
+</android.support.constraint.ConstraintLayout>

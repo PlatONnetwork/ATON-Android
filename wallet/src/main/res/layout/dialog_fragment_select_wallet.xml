@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.juzix.wallet.component.widget.CommonTitleBar
+        android:id="@+id/commonTitleBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:ctb_background="@color/color_ffffff"
+        app:ctb_left_drawable="@drawable/icon_back_white"
+        app:ctb_middle_text="@string/select_wallet"
+        app:ctb_title_color="@color/color_292929"
+        app:ctb_title_size="15sp" />
+
+    <ListView
+        android:id="@+id/list_wallet"
+        style="@style/List_common_style"
+        android:layout_height="245dp"
+        android:background="@color/color_f8f8f8"
+        android:divider="@drawable/bg_select_wallet_list_divider"
+        android:dividerHeight="1dp"
+        android:choiceMode="singleChoice"
+        tools:listitem="@layout/item_select_wallet_list" />
+
+</LinearLayout>

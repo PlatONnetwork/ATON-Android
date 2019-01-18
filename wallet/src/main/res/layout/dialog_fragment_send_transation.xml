@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_ffffff"
+        android:orientation="horizontal"
+        android:paddingBottom="12dp"
+        android:paddingLeft="21dp"
+        android:paddingRight="21dp"
+        android:paddingTop="12dp">
+
+        <TextView
+            style="@style/Text.292929.15"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="left|center_vertical"
+            android:text="@string/send_transation" />
+
+        <ImageView
+            android:id="@+id/iv_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_close" />
+    </LinearLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_f8f8f8"
+        android:paddingBottom="14dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="30dp">
+
+        <TextView
+            android:id="@+id/tv_transaction_amount"
+            style="@style/Text.292929.18"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            tools:layout_editor_absoluteY="30dp"
+            tools:text="10.00Energon" />
+
+        <TextView
+            android:id="@+id/tv_payment_info_title"
+            style="@style/Text.666666.14"
+            android:layout_marginTop="25dp"
+            app:layout_constraintTop_toBottomOf="@id/tv_transaction_amount"
+            android:text="@string/payment_info" />
+
+        <TextView
+            android:id="@+id/tv_to_wallet_title"
+            style="@style/Text.666666.14"
+            android:layout_marginTop="14dp"
+            app:layout_constraintTop_toBottomOf="@id/tv_payment_info_title"
+            android:text="@string/toAddress" />
+
+        <android.support.constraint.Barrier
+            android:id="@+id/barrier2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="tv_to_wallet_title,tv_to_wallet_address" />
+
+        <TextView
+            android:id="@+id/tv_fee_amount_title"
+            style="@style/Text.666666.14"
+            android:layout_marginTop="16dp"
+            android:text="@string/fee"
+            app:layout_constraintTop_toBottomOf="@id/barrier2" />
+
+        <android.support.constraint.Barrier
+            android:id="@+id/barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:barrierDirection="right"
+            app:constraint_referenced_ids="tv_payment_info_title,tv_to_wallet_title,tv_fee_amount_title" />
+
+        <TextView
+            android:id="@+id/tv_payment_info"
+            style="@style/Text.666666.12"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="27dp"
+            android:text="@string/send_energon"
+            app:layout_constraintLeft_toRightOf="@id/barrier"
+            app:layout_constraintTop_toBottomOf="@id/tv_transaction_amount" />
+
+        <TextView
+            android:id="@+id/tv_to_wallet_address"
+            style="@style/Text.666666.12"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="17dp"
+            android:gravity="center_vertical|left"
+            app:layout_constraintLeft_toRightOf="@id/barrier"
+            app:layout_constraintTop_toBottomOf="@id/tv_payment_info"
+            tools:text="ox2ce481566f3a19c04A206A72fF49B2b3d397ox2ce481566f3a19c04A206A72fF49B2b3d397ox2ce481566f3a19c04A206A72fF49B2b3d397" />
+
+        <TextView
+            android:id="@+id/tv_fee_amount"
+            style="@style/Text.666666.12"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintLeft_toRightOf="@id/barrier"
+            app:layout_constraintTop_toBottomOf="@id/barrier2"
+            tools:text="0.00035 Energon" />
+
+        <com.juzix.wallet.component.widget.RoundedTextView
+            android:id="@+id/rtv_submit"
+            style="@style/Text.fff.14"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="34dp"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:text="@string/submit"
+            android:textColor="@color/color_secondary_button_text"
+            app:layout_constraintTop_toBottomOf="@id/tv_fee_amount_title"
+            app:rtv_background_color="@color/bg_secondary_button"
+            app:rtv_corner_radius="1dp" />
+
+    </android.support.constraint.ConstraintLayout>
+
+
+</LinearLayout>

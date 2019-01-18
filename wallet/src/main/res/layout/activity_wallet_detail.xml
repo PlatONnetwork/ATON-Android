@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="true"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_1b2137"
+        android:overScrollMode="never"
+        android:fillViewport="true">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingBottom="12dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="12dp">
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/layout_wallet_detail"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="@drawable/bg_wallet_detail_card"
+                android:paddingTop="14dp"
+                app:layout_constraintDimensionRatio="H,43:20"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent">
+
+                <TextView
+                    android:id="@+id/tv_balance"
+                    style="@style/Text.c5cdbc.12"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:text="@string/msg_balance"
+                    app:layout_constraintLeft_toLeftOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_total_balance"
+                    style="@style/Text.ffed54.20"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginTop="8dp"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_balance"
+                    tools:text="400.00 Energon" />
+
+                <RelativeLayout
+                    android:id="@+id/layout_wallet_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="27dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginTop="13dp"
+                    android:background="@drawable/bg_wallet_address"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    app:layout_constraintTop_toBottomOf="@id/tv_total_balance">
+
+                    <ImageView
+                        android:id="@+id/iv_copy_wallet_address"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:src="@drawable/icon_copy" />
+
+                    <TextView
+                        android:id="@+id/tv_wallet_address"
+                        style="@style/Text.fff.12"
+                        android:layout_width="match_parent"
+                        android:layout_toLeftOf="@id/iv_copy_wallet_address"
+                        android:ellipsize="middle"
+                        android:gravity="center_vertical|left"
+                        android:singleLine="true"
+                        tools:text="ox2ce481566f3a19c04A206A72fF49B2b3d3976" />
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/color_661d2741"
+                    android:divider="@drawable/bg_wallet_detail_card_divider"
+                    android:orientation="horizontal"
+                    android:showDividers="middle"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="10dp"
+                    app:layout_constraintBottom_toBottomOf="parent">
+
+                    <TextView
+                        android:id="@+id/tv_send_transation"
+                        style="@style/Text.fff.14"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="@string/action_send_transation" />
+
+                    <TextView
+                        android:id="@+id/tv_receive_transation"
+                        style="@style/Text.fff.14"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="@string/action_receive_transation" />
+
+                    <TextView
+                        android:id="@+id/tv_call_vote"
+                        style="@style/Text.fff.14"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:visibility="gone"
+                        android:text="@string/action_call_vote" />
+
+                </LinearLayout>
+
+
+            </android.support.constraint.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/tv_deal_list_title"
+                style="@style/Text.cdcdcd.12"
+                android:layout_marginTop="23dp"
+                android:text="@string/transactions"
+                app:layout_constraintTop_toBottomOf="@id/layout_wallet_detail" />
+
+            <com.juzix.wallet.component.widget.ListViewForScrollView
+                android:id="@+id/list_transaction"
+                style="@style/List_common_style"
+                android:layout_marginTop="11dp"
+                android:background="@drawable/bg_transation_list"
+                android:divider="@drawable/bg_transation_list_divider"
+                android:dividerHeight="1dp"
+                android:paddingLeft="14dp"
+                android:paddingRight="14dp"
+                app:layout_constraintTop_toBottomOf="@id/tv_deal_list_title"
+                tools:listitem="@layout/item_transaction_list" />
+
+            <include
+                layout="@layout/include_no_transaction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="11dp"
+                app:layout_constraintTop_toBottomOf="@id/tv_deal_list_title" />
+
+        </android.support.constraint.ConstraintLayout>
+
+
+    </android.support.v4.widget.NestedScrollView>
+
+</LinearLayout>

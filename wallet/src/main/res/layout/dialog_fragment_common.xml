@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@drawable/bg_dialog_fragment"
+    android:divider="@drawable/bg_dialog_fragment_vertical_divider"
+    android:orientation="vertical"
+    android:showDividers="middle">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@drawable/bg_wallet_list_divider"
+        android:orientation="vertical"
+        android:paddingBottom="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="16dp"
+        android:showDividers="middle">
+
+        <TextView
+            android:id="@+id/tv_title"
+            style="@style/Text.24272b.16"
+            android:layout_width="match_parent"
+            tools:text="普通弹窗" />
+
+        <TextView
+            android:id="@+id/tv_warn_title"
+            style="@style/Text.ff3030.16"
+            android:layout_width="match_parent"
+            tools:text="警告弹窗" />
+
+        <TextView
+            android:id="@+id/tv_content"
+            style="@style/Text.24272b.14"
+            android:layout_width="match_parent"
+            tools:text="告知当前状态、信息和解决方法" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@drawable/bg_dialog_fragment_horizontal_divider"
+        android:orientation="horizontal"
+        android:showDividers="middle">
+
+        <TextView
+            android:id="@+id/tv_cancel"
+            style="@style/Text.0077ff.16"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingBottom="9dp"
+            android:paddingTop="9dp"
+            tools:text="辅助操作" />
+
+        <TextView
+            android:id="@+id/tv_confirm"
+            style="@style/Text.0077ff.16"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingBottom="9dp"
+            android:paddingTop="9dp"
+            android:text="主操作" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_232e48"
+    android:clipToPadding="true"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <include layout="@layout/layout_title_bar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_1b2137"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginRight="20dp"
+            android:text="@string/verificationOfMnemonicTitle"
+            android:textColor="@color/color_ffffff"
+            android:textSize="15sp" />
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/fl_checked"
+            android:layout_width="match_parent"
+            android:layout_height="120dip"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="22dp"
+            android:layout_marginRight="20dp"
+            android:background="@color/color_1f2841"
+            android:orientation="vertical"
+            android:paddingBottom="10dip"
+            app:alignContent="flex_start"
+            app:alignItems="flex_start"
+            app:flexWrap="wrap"
+            app:justifyContent="flex_start" />
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/fl_all"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="20dp"
+            android:orientation="vertical"
+            app:flexWrap="wrap" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="14dp"
+            android:gravity="bottom"
+            android:orientation="vertical">
+
+            <com.juzix.wallet.component.widget.RoundedTextView
+                android:id="@+id/rtv_submit"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:enabled="false"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:gravity="center"
+                android:text="@string/completeBackup"
+                android:textColor="@color/color_heavy_button_text"
+                app:rtv_background_color="@color/bg_heavy_button"
+                app:rtv_corner_radius="1dp"
+                android:textSize="14sp" />
+
+            <com.juzix.wallet.component.widget.RoundedTextView
+                android:id="@+id/rtv_empty"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginRight="16dp"
+                android:enabled="false"
+                android:gravity="center"
+                android:textColor="@color/color_secondary_button_text"
+                android:text="@string/empty"
+                android:textSize="14sp"
+                app:rtv_background_color="@color/bg_secondary_button"
+                app:rtv_corner_radius="1dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

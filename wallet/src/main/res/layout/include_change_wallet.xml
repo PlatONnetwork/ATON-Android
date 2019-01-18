@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="55dp"
+    android:layout_below="@id/tv_select_wallet"
+    android:layout_marginTop="10dp"
+    android:background="@drawable/bg_select_wallet"
+    android:paddingLeft="12dp">
+
+    <RelativeLayout
+        android:id="@+id/layout_change_wallet"
+        android:layout_width="80dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/bg_change_wallet">
+
+        <TextView
+            style="@style/Text.1b2137.10"
+            android:layout_centerInParent="true"
+            android:drawableLeft="@drawable/icon_changge"
+            android:drawablePadding="8.5dp"
+            android:text="@string/change" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_wallet_name"
+        style="@style/Text.fff.14"
+        android:layout_width="match_parent"
+        android:layout_marginTop="7dp"
+        android:layout_toLeftOf="@id/layout_change_wallet"
+        android:ellipsize="end"
+        android:gravity="center_vertical|left"
+        android:lines="1"
+        tools:text="Wallet name_wallet" />
+
+    <TextView
+        android:id="@+id/tv_wallet_address"
+        style="@style/Text.c5cdbc.12"
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="7dp"
+        android:layout_toLeftOf="@id/layout_change_wallet"
+        android:ellipsize="middle"
+        android:gravity="center_vertical|left"
+        android:singleLine="true"
+        tools:text="ox2ce48152fF49B2b3d3" />
+
+</RelativeLayout>
+

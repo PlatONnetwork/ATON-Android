@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="true"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <com.juzix.wallet.component.widget.CommonTitleBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:ctb_left_drawable="@drawable/icon_back_black"
+        app:ctb_middle_text="@string/sign_confirming" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_1b2137"
+        android:fillViewport="true"
+        android:overScrollMode="never">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingLeft="15dp"
+            android:paddingBottom="20dp"
+            android:paddingTop="8dp"
+            android:paddingRight="15dp">
+
+            <include layout="@layout/include_signing_confirm_info" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/bg_wallet_address_qr_code"
+                android:divider="@drawable/bg_transation_list_divider"
+                android:orientation="vertical"
+                android:paddingRight="12dp"
+                android:paddingLeft="12dp"
+                android:paddingBottom="17dp"
+                android:showDividers="middle">
+
+                <include layout="@layout/include_transationer_info" />
+
+                <include layout="@layout/include_transation_detail_info" />
+
+                <include layout="@layout/include_transation_detail_hash" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+
+</LinearLayout>

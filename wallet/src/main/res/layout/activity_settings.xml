@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="true"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <com.juzix.wallet.component.widget.CommonTitleBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:ctb_left_drawable="@drawable/icon_back_black"
+        app:ctb_middle_text="@string/settings" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_1b2137"
+        android:divider="@drawable/bg_transation_list_divider"
+        android:orientation="vertical"
+        android:showDividers="middle">
+
+        <TextView
+            android:id="@+id/tv_node_setting"
+            style="@style/Text.fff.14"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:drawableRight="@drawable/icon_right_arrow"
+            android:gravity="center_vertical|left"
+            android:paddingLeft="18dp"
+            android:paddingRight="18dp"
+            android:text="@string/node_settings" />
+
+        <LinearLayout
+            android:id="@+id/layout_face_touch_id"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="18dp"
+            android:paddingRight="18dp">
+
+            <TextView
+                style="@style/Text.fff.14"
+                android:text="@string/face_touch_id" />
+
+            <android.support.v4.widget.Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <com.juzix.wallet.component.widget.togglebutton.ToggleButton
+                android:id="@+id/tgb_switch"
+                android:layout_width="51dp"
+                android:layout_height="31dp"
+                app:tbAsDefaultOn="false"
+                app:tbOffColor="@color/color_ffffff"
+                app:tbOnColor="@color/color_4cd964" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_switch_language"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="18dp"
+            android:paddingRight="18dp">
+
+            <TextView
+                style="@style/Text.fff.14"
+                android:text="@string/language" />
+
+            <android.support.v4.widget.Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tv_language"
+                style="@style/Text.c5cdbc.12"
+                android:drawablePadding="4dp"
+                android:drawableRight="@drawable/icon_right_arrow"
+                tools:text="中文" />
+        </LinearLayout>
+
+        <android.support.v4.widget.Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</LinearLayout>

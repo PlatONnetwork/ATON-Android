@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="15dp"
+    android:paddingTop="10dp">
+
+    <TextView
+        style="@style/Text.c5cdbc.12"
+        android:text="@string/fromAddress" />
+
+    <RelativeLayout
+        android:id="@+id/layout_from_address"
+        android:layout_width="match_parent"
+        android:layout_height="27dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/bg_wallet_address"
+        android:gravity="center_vertical"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp">
+
+        <ImageView
+            android:id="@+id/iv_copy_from_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/icon_copy" />
+
+        <TextView
+            android:id="@+id/tv_from_address"
+            style="@style/Text.fff.12"
+            android:layout_width="match_parent"
+            android:layout_toLeftOf="@id/iv_copy_from_address"
+            android:ellipsize="middle"
+            android:gravity="center_vertical|left"
+            android:singleLine="true"
+            tools:text="ox2ce481566f3a19c04A206A72fF49B2b3d3976" />
+
+    </RelativeLayout>
+
+    <TextView
+        style="@style/Text.c5cdbc.12"
+        android:layout_marginTop="15dp"
+        android:text="@string/toAddress" />
+
+    <RelativeLayout
+        android:id="@+id/layout_to_address"
+        android:layout_width="match_parent"
+        android:layout_height="27dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/bg_wallet_address"
+        android:gravity="center_vertical"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp">
+
+        <ImageView
+            android:id="@+id/iv_copy_to_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/icon_copy" />
+
+        <TextView
+            android:id="@+id/tv_to_address"
+            style="@style/Text.fff.12"
+            android:layout_width="match_parent"
+            android:layout_toLeftOf="@id/iv_copy_to_address"
+            android:ellipsize="middle"
+            android:gravity="center_vertical|left"
+            android:singleLine="true"
+            tools:text="ox2ce481566f3a19c04A206A72fF49B2b3d3976" />
+
+    </RelativeLayout>
+
+</LinearLayout>
