@@ -276,7 +276,7 @@ public class SendIndividualTransationActivity extends MVPBaseActivity<SendIndivi
 
     @Override
     public void setTransferAmountTextColor(boolean isBiggerThanBalance) {
-        etWalletAmount.setTextColor(isBiggerThanBalance ? ContextCompat.getColor(this, R.color.color_ff4747) : ContextCompat.getColor(this, R.color.color_7a8092));
+        etWalletAmount.setTextColor(isBiggerThanBalance ? ContextCompat.getColor(this, R.color.color_ff4747) : ContextCompat.getColor(this, R.color.color_ffffff));
     }
 
     @Override
