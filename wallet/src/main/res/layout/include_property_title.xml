@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:background="@color/color_232e48"
+                android:paddingLeft="14dp"
+                android:paddingRight="14dp">
+
+    <ImageView
+        android:id="@+id/iv_scan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/icon_scan"/>
+
+    <RadioGroup
+        android:id="@+id/rg_select_wallet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:divider="@drawable/bg_property_title_transparent_line"
+        android:orientation="horizontal"
+        android:showDividers="middle">
+
+        <RadioButton
+            android:id="@+id/rb_individual_wallet"
+            style="@style/Text.fff.16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@null"
+            android:text="@string/individual_wallet"/>
+
+        <RadioButton
+            android:id="@+id/rb_shared_wallet"
+            style="@style/Text.cdcdcd.12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@null"
+            android:text="@string/shared_wallet"/>
+    </RadioGroup>
+
+    <View
+        android:visibility="gone"
+        android:id="@+id/v_new_msg"
+        android:layout_toRightOf="@id/rg_select_wallet"
+        android:layout_alignTop="@id/rg_select_wallet"
+        android:layout_width="6dp"
+        android:layout_height="6dp"
+        android:background="@drawable/bg_red_point"/>
+
+    <ImageView
+        android:id="@+id/iv_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/icon_add"/>
+
+</RelativeLayout>

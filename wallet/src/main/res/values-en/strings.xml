@@ -1,0 +1,304 @@
+<resources>
+    <string name="app_name">ATON</string>
+    <string name="inputDigits">.@~-,:*?!#/\\=+?^;%$()[]{}|`&lt;&gt;&amp;&quot;&apos;_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLIMNOPQRSTUVWXYZ</string>
+    <!--权限申请-->
+    <string name="permissionFailureTitleText">权限申请失败</string>
+    <string name="permissionFailureMessageText">我们需要的一些权限申请失败，请您到设置页面手动授权，否则功能无法正常使用！</string>
+    <string name="permissionFailureButtonText">设置</string>
+    <string name="permissionRationaleTitleText">授权已被拒绝</string>
+    <string name="permissionRationaleMessageText">您已经拒绝过授权此权限，没有此权限功能无法正常使用，赶快授权此权限给我们！</string>
+    <string name="permissionRationalePositiveButtonText">授权</string>
+    <string name="permissionRationaleNegativeButtonText">拒绝</string>
+
+    <string name="serviceLicenseAgreement">License Agreement</string>
+    <string name="serviceProtocol">GNU GENERAL PUBLIC LICENSE</string>
+    <string name="serviceProtocolUpdateTime">Version 3,29 June 2007</string>
+    <string name="serviceProtocolContent">Copyright (C) 2007 Free Software Foundation, Inc. \n%1$s
+     \nEveryone is permitted toAddress copy and distribute verbatim copies
+     of this license document, but changing it is not allowed.
+
+      \nThe GNU General Public License is a free, copyleft license for
+    software and other kinds of works.
+
+      \nThe licenses for most software and other practical works are designed
+    toAddress take away your freedom toAddress share and change the works.  By contrast,
+    the GNU General Public License is intended toAddress guarantee your freedom toAddress
+    share and change all versions of a program--toAddress make sure it remains free
+    software for all its users.  We, the Free Software Foundation, use the
+    GNU General Public License for most of our software; it applies also toAddress
+    any other work released this way by its authors.  You can apply it toAddress
+    your programs, too.
+
+      \nWhen we speak of free software, we are referring toAddress freedom, not
+    price.  Our General Public Licenses are designed toAddress make sure that you
+    have the freedom toAddress distribute copies of free software (and charge for
+    them if you wish), that you receive source code or can get it if you
+    want it, that you can change the software or use pieces of it in new
+    free programs, and that you know you can do these things.
+
+      \nTo protect your rights, we need toAddress prevent others fromAddress denying you
+    these rights or asking you toAddress surrender the rights.  Therefore, you have
+    certain responsibilities if you distribute copies of the software, or if</string>
+    <string name="serviceProtocolAgree">I Agree</string>
+    <string name="btnContinue">Continue</string>
+    <string name="platONSlogan">Let Us Compute</string>
+    <string name="btnCreatewallet">Create Wallet</string>
+    <string name="btnImportwallet">Import Wallet</string>
+    <string name="createIndividualWallet">Create Classic Wallet</string>
+    <string name="importIndividualWallet">Import Classic Wallet</string>
+    <string name="name">Name</string>
+    <string name="password">Password</string>
+    <string name="passwordLimit">*At least 6 characters,&#160;recommended to mix uppercase and lowercase alphabets,&#160;numbers and symbols</string>
+    <string name="createIndividualWalletTips">Note: Be sure to keep your wallet password in mind, the server will not store your password, you will not be able to retrieve the password if forgetting or losing!</string>
+    <string name="passwordTips">Password don\'t match</string>
+    <string name="validPasswordEmptyTips">Password can\'t be empty</string>
+    <string name="validPasswordTips">Password at least 6 characters</string>
+    <string name="validRepeatPasswordEmptyTips">Repeat password can\'t be empty</string>
+    <string name="create">Create</string>
+    <string name="setPassword">Set password</string>
+    <string name="repeatPassword">Repeat password</string>
+    <string name="strength">Strength</string>
+    <string name="weak">Weak</string>
+    <string name="so_so">So-so</string>
+    <string name="good">Good</string>
+    <string name="strong">Strong</string>
+    <string name="keystore">Keystore</string>
+    <string name="keystoreContent">Keystore content</string>
+    <string name="mnemonicPhrase">Mnemonic phrase</string>
+    <string name="privateKey">Private Key</string>
+    <string name="importIndividualWalletResume">Copy and paste ATON official wallet\'s Keystore to the input field, or scan the QR Code generated with Keystore\'s information to import.</string>
+    <string name="startImporting">Start Importing</string>
+    <string name="walletPassword">Wallet password</string>
+    <string name="nameOfWallet">Name of wallet</string>
+    <string name="importMnemonicPhraseResume">Input the Mnemonic Phrase. Please pay attention to case sensitivity and sequence.</string>
+    <string name="inputMnemonicPhraseTips">Please separate each Mnemonic Phrase with a space</string>
+    <string name="importPrivateKeyResume">Input the Private Key, or scan the Qr Code generated with Private Key to import. Please pay attention to case sensitivity.</string>
+    <string name="inputPrivateKeyTips">Enter Private Key</string>
+    <string name="backupWallet">Backup Wallet</string>
+    <string name="create_success">Success</string>
+    <string name="backupWalletDescription">One last step，Back it up</string>
+    <string name="backupWalletResume">Please write down the mnemonics on paper and keep them in a safe place. </string>
+    <string name="startBackup">Start</string>
+    <string name="InputWalletPassword">Input wallet password</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
+    <string name="donotScreenshot">Do not screenshot</string>
+    <string name="backupMnemonicResume">Please keep the mnemonics to prevent theft of your assets.</string>
+    <string name="backupPrivateKey">Please keep the Private Key to prevent theft of assets.</string>
+    <string name="backupKeystore">Please keep the Keystore to prevent theft of assets.</string>
+    <string name="understood">Understood</string>
+    <string name="understood1">OK</string>
+    <string name="backupMnemonicTitle">Please write down the Mnemonic in the paper</string>
+    <string name="backupMnemonicDescrition">Those 12 mnemonic words are for recovering your wallet, write down correctly on paper and keep in a safe place</string>
+    <string name="next">Next</string>
+    <string name="individual_wallet">Classic Wallet</string>
+    <string name="shared_wallet">Joint Wallet</string>
+    <string name="verificationOfMnemonic">Verification of Mnemonic</string>
+    <string name="verificationOfMnemonicTitle">Please choose mnemonic words in order and make sure your mnemonic was correct written</string>
+    <string name="completeBackup">Submit</string>
+    <string name="submit">Submit</string>
+    <string name="empty">Empty</string>
+    <string name="msg_no_shared_wallet">There is no any Joint Wallet yet</string>
+    <string name="msg_no_individual_wallet">There is no any Classic Wallet yet</string>
+    <string name="transactions">Transactions</string>
+    <string name="sendATP">Send</string>
+    <string name="actionSendATP">Send</string>
+    <string name="action_send_transation">Send</string>
+    <string name="action_receive_transation">Receive</string>
+    <string name="action_call_vote">Vote</string>
+    <string name="wallet_address">Wallet Address</string>
+    <string name="amount">Amount</string>
+    <string name="pay_wallet">Wallet</string>
+    <string name="change">Change</string>
+    <string name="select_fee">Select Fee</string>
+    <string name="cheaper">Cheaper</string>
+    <string name="faster">Faster</string>
+    <string name="send_transation">Send Transation</string>
+    <string name="wallet_name">Wallet name</string>
+    <string name="public_key">Public Key</string>
+    <string name="sharing">Sharing</string>
+    <string name="fromAddress">From</string>
+    <string name="toAddress">To</string>
+    <string name="wallet_balance">%1$s&#160;Energon</string>
+    <string name="select_wallet">Select Wallet</string>
+    <string name="select_address">Select Address</string>
+    <string name="create_shared_wallet">Create Joint Wallet</string>
+    <string name="select_owner">Select Owner</string>
+    <string name="shared_owners">Joint Owners</string>
+    <string name="required_signatures">Required Signatures</string>
+    <string name="wallet_manage">Wallet Manage</string>
+    <string name="address_book">Address Book</string>
+    <string name="settings">Settings</string>
+    <string name="help">Help</string>
+    <string name="about">About</string>
+    <string name="aboutUs">About Us</string>
+    <string name="community">Community</string>
+    <string name="add_shared_wallet">Add Joint Wallet</string>
+    <string name="add">Add</string>
+    <string name="action_create_wallet">Create</string>
+    <string name="action_import_wallet">Import</string>
+    <string name="nav_property">Property</string>
+    <string name="nav_me">Me</string>
+    <string name="disclaimer">Disclaimer</string>
+    <string name="disclaimerResume">Please be sure to keep your mnemonics in a safe place. ATON is not responsible for any loss of assets caused by forgetting,&#160;losing or stolen.</string>
+    <string name="backupFailed">Backup Failed</string>
+    <string name="backupMnemonicFailedResume">Confirm failed,please examine your mnemonic words.</string>
+    <string name="manage">Manage</string>
+    <string name="exportPrivateKey">Export Private Key</string>
+    <string name="exportKeystore">Export Keystore</string>
+    <string name="backup">Backup</string>
+    <string name="changeWalletName">Change Wallet Name</string>
+    <string name="formatError">Format Error</string>
+    <string name="validWalletNameTips">Please enter 1-12 characters</string>
+    <string name="validKeystoreEmptyTips">Keystore can\'t be empty</string>
+    <string name="validPrivateKeyEmptyTips">Private Key can\'t be empty</string>
+    <string name="validMnenonicEmptyTips">Mnemonic phrase can\'t be empty</string>
+    <string name="validWalletNameEmptyTips">Name can\'t be empty</string>
+    <string name="validWalletAddressEmptyTips">Address can\'t be empty</string>
+    <string name="validSharedWalletNameEmptyTips">Joint Wallet Name can\'t be empty</string>
+    <string name="back">Back</string>
+    <string name="qrCode">QR Code</string>
+    <string name="exportPrivateKeyTips">Note: Do not screen shots, please check around to prevent others from peeping or videotaping, please keep the Private Key properly.</string>
+    <string name="copy">Copy</string>
+    <string name="msg_balance">Balance</string>
+    <string name="delete_wallet">Delete</string>
+    <string name="scan_qr_code">Scan</string>
+    <string name="scan_qr_code_tips">Auto-scan in the frame</string>
+    <string name="scan_qr_code_open_lights_failed">No flash for the time being</string>
+    <string name="scan_qr_code_failed_tips">Failed toAddress scan</string>
+    <string name="scan_qr_code_failed_tips1">Unable to identify qr code</string>
+    <string name="photograph">Photograph</string>
+    <string name="photo_album">Album</string>
+    <string name="select_from_albums">Select fromAddress album</string>
+    <string name="save_to_albums">Save toAddress album</string>
+    <string name="save_image_tips">The image has been saved to system photo album</string>
+    <string name="save_image_failed_tips">Failed toAddress save image</string>
+    <string name="gauge_scanning_qr_code">Scanning ...</string>
+    <string name="createWalletFailed">Create Wallet failed</string>
+    <string name="addWalletFailed">Add Wallet failed</string>
+    <string name="validPasswordError">Incorrect password</string>
+    <string name="parsedError">%1$s cannot be parsed</string>
+    <string name="enterAgainTips">Re-enter Password</string>
+    <string name="textCopiedTips">Copy success</string>
+    <string name="members">Members</string>
+    <string name="owner">Owner</string>
+    <string name="change_member_name">Change Member Name</string>
+    <string name="sign_confirming">Signing</string>
+    <string name="refuse">Refuse</string>
+    <string name="agree">Agree</string>
+    <string name="value">Value</string>
+    <string name="energonPrice">Energon Price</string>
+    <string name="execute_contract_confirm">Execute Contract-Confirm</string>
+    <string name="execute_contract_refuse">Execute Contract-Refuse</string>
+    <string name="transaction_detail">Transaction Detail</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="address">Address</string>
+    <string name="msg_marked_words">Please backup your address before deleting this App</string>
+    <string name="add_new_address">Add New Address</string>
+    <string name="edit_address">Edit Address</string>
+    <string name="address_name_cannot_be_empty">Address name cannot be empty</string>
+    <string name="address_cannot_be_empty">Address cannot be empty</string>
+    <string name="address_format_error">Address format is not correct</string>
+    <string name="address_name_length_error">Please input 1-12 digits address name</string>
+    <string name="wallet_name_length_error">Please input 1-12 digits wallet name</string>
+    <string name="estimated_transaction_confirmation_time">Estimated transaction confirmation time:</string>
+    <string name="fastest_transfer_time">30s</string>
+    <string name="slowest_transfer_time">15mins</string>
+    <string name="moderate_transfer_time">5mins</string>
+    <string name="save">Save</string>
+    <string name="amount_with_unit">%1$s&#160;Energon</string>
+    <string name="transfer_amount_cannot_be_empty">Amount cannot be empty</string>
+    <string name="transfer_amount_exceed_balance">Amount exceed balance</string>
+    <string name="insufficient_balance">Insufficient balance</string>
+    <string name="send">Send</string>
+    <string name="receive">Receive</string>
+    <string name="receive_atp">Receive&#160;Energon</string>
+    <string name="editNode">Edit Node</string>
+    <string name="node_settings">Node Settings</string>
+    <string name="face_touch_id">Face/Touch ID</string>
+    <string name="chinese">简体中文</string>
+    <string name="english">English</string>
+    <string name="node_format_error">Node format error</string>
+    <string name="save_node_succeed">Node save succeed</string>
+    <string name="fingerprintTouch">Fingerprint Touch</string>
+    <string name="evokeFingerprintVerification">click to evoke Fingerprint Verification</string>
+    <string name="fingerprintRecognitionFailed">Fingerprint Recognition failed, please try again!</string>
+    <string name="fingerprintMatchFailed">The Fingerprint does not match, please try again!</string>
+    <string name="multipleVerificationsFailed">Multiple verifications failed，Please Unlock with Wallet Password</string>
+    <string name="unlockWithWalletPassword">Unlock with Wallet Password</string>
+    <string name="purse">Wallet</string>
+    <string name="unlock">Unlock</string>
+    <string name="unlockWithWalletPasswordTitle">Unlock with Wallet Password</string>
+    <string name="unlockWithWalletPasswordDesc">Use the selected wallet password to verify unlock</string>
+    <string name="company_name">juzix（shenzhen)</string>
+    <string name="copyright_resume">Powered by PlatON Blockchain</string>
+    <string name="language">Languages</string>
+    <string name="warning">Warning</string>
+    <string name="test_node_warn">You are on the PlatON Test NetWork.&#160;Be careful not to transfer real funds to this address</string>
+    <string name="copy_succeed">Copy succeed</string>
+    <string name="unrecognized">Unrecognized</string>
+    <string name="password_cannot_be_empty">Password cannot be empty</string>
+    <string name="no_address">No address yet</string>
+    <string name="no_transaction_record">No transaction yet</string>
+    <string name="figerprintUnlockTips">Touch ID won\'t start, please Unlock with Wallet Password</string>
+    <string name="openFigerprintError">Touch ID was disallowed,please check system settings and try again</string>
+    <string name="total_assets">Balance</string>
+    <string name="transfer_succeed">Transfer succeed</string>
+    <string name="transfer_failed">Transfer failed</string>
+    <string name="input_again">Input again</string>
+    <string name="network_error">Network anomalies, please retry later</string>
+    <string name="walletExists">Wallet already exists</string>
+    <string name="create_contract">Create Contract</string>
+    <string name="payment_info">Payment Info</string>
+    <string name="action_submit">Submit</string>
+    <string name="createSharedWalletTips1">required signatures number can\'t exceed joint owners number</string>
+    <string name="member">Member%1$s</string>
+    <string name="remarkNonCompulsory">Name（Non - compulsory）</string>
+    <string name="inputSharedWalletAddress">Set wallet address</string>
+    <string name="changeMemberName">Change Member Name</string>
+    <string name="transactionConfirmation">Transaction Confirmation</string>
+    <string name="totalValue">Value</string>
+    <string name="type">Type</string>
+    <string name="executeContractFee">Execute Contract-Confirm Fee</string>
+    <string name="addSharedWalletSuccess">Joint wallet added successfully</string>Refuse
+    <string name="signingConfirmationFailed">Signing confirmation failed</string>
+    <string name="signingRefuseFailed">Signing refuse failed</string>
+    <string name="time">Time</string>
+    <string name="memo">Memo</string>
+    <string name="hash">Hash</string>
+    <string name="executeContractConfirm">Execute Contract-Confirm</string>
+    <string name="pending">Pending</string>
+    <string name="signing">Signing</string>
+    <string name="success">Success</string>
+    <string name="failed">Failed</string>
+    <string name="energon_price">Energon Price</string>
+    <string name="wallet">Wallet</string>
+    <string name="transaction_hash">Hash:</string>
+    <string name="none">None</string>
+    <string name="noWalletTips">Create Classic Wallet first</string>
+    <string name="insufficientBalanceTips">Insufficient wallet balance, can\'t create</string>
+    <string name="inputWalletAddress">Input wallet address</string>
+    <string name="inputSendAmount">Input Amount</string>
+    <string name="inputMome">Memo(Non - compulsory)</string>
+    <string name="duplicateAddress">Duplicate address exists</string>
+    <string name="saveAndShareImage">Save image and Share</string>
+    <string name="versionUpdate">Version Update</string>
+    <string name="illegalWalletAddress">Illegal Wallet address</string>
+    <string name="joint_wallet_can_not_added">Non-joint user wallet, unable to add</string>
+    <string name="wechat">WeChat</string>
+    <string name="more">More</string>
+    <string name="twitter">Twitter</string>
+    <string name="facebook">Facebook</string>
+    <string name="weibo">Weibo</string>
+    <string name="qq">QQ</string>
+    <string name="all">ALL</string>
+    <string name="balance_text">Balance:&#160;%1$s&#160;Energon</string>
+    <string name="fee">Fee</string>
+    <string name="joint_wallet_execution">Joint Wallet Execution</string>
+    <string name="create_joint_wallet">Create Joint Wallet</string>
+    <string name="fee_of_contract_creation">Fee of Contract Creation</string>
+    <string name="send_energon">Send&#160;Energon</string>
+    <string name="can_not_send_to_itself">Can\'t send to itself</string>
+</resources>
+

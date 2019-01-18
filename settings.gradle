@@ -1,0 +1,4 @@
+include ':wallet'
+include ':zxing'
+include ':framework'
+include ':biometric'

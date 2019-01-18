@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="true"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <com.juzix.wallet.component.widget.swipeenulistview.SwipeMenuListView
+        android:id="@+id/swipeMenuListView"
+        style="@style/List_common_style"
+        android:layout_height="match_parent"
+        android:background="@color/color_1b2137"
+        android:divider="@drawable/bg_address_book_list_divider"
+        android:dividerHeight="1dp"
+        tools:listitem="@layout/item_wallet_address_list" />
+
+    <include layout="@layout/include_no_address" />
+</LinearLayout>

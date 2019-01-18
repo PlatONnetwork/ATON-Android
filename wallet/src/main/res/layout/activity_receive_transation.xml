@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="true"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <include
+                layout="@layout/include_share_content"
+                app:layout_constraintTop_toBottomOf="@id/rtv_save" />
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/color_1b2137"
+                android:paddingLeft="12dp"
+                android:paddingTop="12dp"
+                android:paddingRight="12dp">
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/layout_transation_detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="165dp"
+                    android:background="@drawable/bg_wallet_detail_card"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent">
+
+                    <TextView
+                        android:id="@+id/tv_wallet_name_title"
+                        style="@style/Text.fff.12"
+                        android:paddingLeft="12dp"
+                        android:paddingTop="14dp"
+                        android:paddingBottom="12dp"
+                        android:text="@string/wallet_name" />
+
+                    <android.support.constraint.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:background="@color/color_cc21283E"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="15dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_wallet_name_title">
+
+                        <TextView
+                            android:id="@+id/tv_public_key_title"
+                            style="@style/Text.c5cdbc.12"
+                            android:layout_marginTop="9dp"
+                            android:text="@string/public_key"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <RelativeLayout
+                            android:id="@+id/layout_public_key"
+                            android:layout_width="match_parent"
+                            android:layout_height="27dp"
+                            android:layout_marginTop="4dp"
+                            android:background="@drawable/bg_wallet_address"
+                            android:gravity="center_vertical"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            app:layout_constraintTop_toBottomOf="@id/tv_public_key_title">
+
+                            <ImageView
+                                android:id="@+id/iv_copy_public_key"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:src="@drawable/icon_copy" />
+
+                            <TextView
+                                android:id="@+id/tv_public_key"
+                                style="@style/Text.fff.12"
+                                android:layout_width="match_parent"
+                                android:layout_toLeftOf="@id/iv_copy_public_key"
+                                android:ellipsize="middle"
+                                android:gravity="center_vertical|left"
+                                android:singleLine="true"
+                                tools:text="ox2ce481566f3a19c04A206A72fF49B2b3d3976" />
+
+                        </RelativeLayout>
+
+                        <TextView
+                            android:id="@+id/tv_wallet_address_title"
+                            style="@style/Text.c5cdbc.12"
+                            android:layout_marginTop="9dp"
+                            android:text="@string/wallet_address"
+                            app:layout_constraintTop_toBottomOf="@id/layout_public_key" />
+
+                        <RelativeLayout
+                            android:id="@+id/layout_wallet_address"
+                            android:layout_width="match_parent"
+                            android:layout_height="27dp"
+                            android:layout_marginTop="4dp"
+                            android:background="@drawable/bg_wallet_address"
+                            android:gravity="center_vertical"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            app:layout_constraintTop_toBottomOf="@id/tv_wallet_address_title">
+
+                            <ImageView
+                                android:id="@+id/iv_copy_wallet_address"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:src="@drawable/icon_copy" />
+
+                            <TextView
+                                android:id="@+id/tv_wallet_address"
+                                style="@style/Text.fff.12"
+                                android:layout_width="match_parent"
+                                android:layout_toLeftOf="@id/iv_copy_wallet_address"
+                                android:ellipsize="middle"
+                                android:gravity="center_vertical|left"
+                                android:singleLine="true"
+                                tools:text="ox2ce481566f3a19c04A206A72fF49B2b3d3976" />
+
+                        </RelativeLayout>
+
+                    </android.support.constraint.ConstraintLayout>
+
+
+                </android.support.constraint.ConstraintLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="4dp"
+                    android:background="@drawable/bg_wallet_address_qr_code"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:paddingTop="21dp"
+                    android:paddingBottom="33dp"
+                    app:layout_constraintTop_toBottomOf="@id/layout_transation_detail">
+
+                    <TextView
+                        android:id="@+id/tv_transation_type"
+                        style="@style/Text.fff.14"
+                        android:text="@string/receive_atp" />
+
+                    <ImageView
+                        android:id="@+id/iv_wallet_address_qr_code"
+                        android:layout_width="250dp"
+                        android:layout_height="250dp"
+                        android:layout_marginTop="22dp"
+                        android:scaleType="fitXY" />
+
+                </LinearLayout>
+
+                <com.juzix.wallet.component.widget.RoundedTextView
+                    android:id="@+id/rtv_save"
+                    style="@style/Text.1b2137.14"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="18dp"
+                    android:layout_marginBottom="14dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:text="@string/saveAndShareImage"
+                    android:textColor="@color/color_heavy_button_text"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:rtv_background_color="@color/bg_heavy_button"
+                    app:rtv_corner_radius="1dp" />
+            </android.support.constraint.ConstraintLayout>
+        </FrameLayout>
+    </android.support.v4.widget.NestedScrollView>
+</LinearLayout>

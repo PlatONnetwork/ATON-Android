@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CircleImageView">
+        <attr name="civ_border_width" format="dimension" />
+        <attr name="civ_border_color" format="color" />
+        <attr name="civ_border_overlay" format="boolean" />
+        <attr name="civ_fill_color" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="RoundedTextView">
+        <attr name="rtv_corner_radius" format="dimension" />
+        <attr name="rtv_border_width" format="dimension" />
+        <attr name="rtv_border_color" format="color" />
+        <attr name="rtv_background_color" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="CommonTitleBar">
+        <attr name="ctb_left_drawable" format="reference" />
+        <attr name="ctb_right_drawable" format="reference" />
+        <attr name="ctb_middle_text" format="reference" />
+        <attr name="ctb_background" format="reference" />
+        <attr name="ctb_title_color" format="reference" />
+        <attr name="ctb_title_size" format="dimension" />
+        <attr name="ctb_right_text" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="ToggleButton">
+        <attr name="tbBorderWidth" format="dimension" />
+        <attr name="tbOffBorderColor" format="reference|color" />
+        <attr name="tbOffColor" format="reference|color" />
+        <attr name="tbOnColor" format="reference|color" />
+        <attr name="tbSpotColor" format="reference|color" />
+        <attr name="tbAnimate" format="reference|boolean" />
+        <attr name="tbAsDefaultOn" format="reference|boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="AutofitTextView">
+        <!-- Minimum size of the text. -->
+        <attr name="minTextSize" format="dimension" />
+        <!-- Amount of precision used toAddress calculate the correct text size toAddress fit within its
+        bounds. Lower precision is more precise and takes more time. -->
+        <attr name="precision" format="float" />
+        <!-- Defines whether toAddress automatically resize text toAddress fit toAddress the view's bounds. -->
+        <attr name="sizeToFit" format="boolean" />
+    </declare-styleable>
+
+</resources>

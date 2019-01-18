@@ -1,0 +1,65 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+
+    repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'io.realm:realm-gradle-plugin:5.8.0'
+    }
+}
+
+ext {
+
+    android = [
+            compileSdkVersion: 27,
+            buildToolsVersion: "27.0.3",
+            minSdkVersion    : 15,
+            targetSdkVersion : 26,
+    ]
+
+    dependencies = [
+            support_vector_drawable         : 'com.android.support:support-vector-drawable:26.0.1',
+            support_animated_vector_drawable: 'com.android.support:animated-vector-drawable:26.0.1',
+            support_v4                      : 'com.android.support:support-v4:26.0.1',
+            gridlayout                      : 'com.android.support:gridlayout-v7:26.0.1',
+            appcompat_v7                    : 'com.android.support:appcompat-v7:26.0.1',
+            support_design                  : 'com.android.support:design:26.0.1',
+            support_annotations             : 'com.android.support:support-annotations:26.0.1',
+            support_recyclerview            : 'com.android.support:recyclerview-v7:26.0.1',
+            support_zxing                   : 'com.google.zxing:core:3.3.3',
+            support_constraintLayout        : 'com.android.support.constraint:constraint-layout:1.1.2',
+            support_multidex                : 'com.android.support:multidex:1.0.2',
+            rxjava2_rxjava                  : 'io.reactivex.rxjava2:rxjava:2.1.6',
+            rxjava2_rxandroid               : 'io.reactivex.rxjava2:rxandroid:2.0.1',
+            rxbinding3                      : 'com.jakewharton.rxbinding3:rxbinding:3.0.0-alpha1',
+            web3j_core                      : "com.platon.client:core:0.3.0-android",
+            web3j_crypto                    : "com.platon.client:crypto:0.3.0-android",
+            bitcoinj_core                   : "org.bitcoinj:bitcoinj-core:0.14.7",
+            eventbus                        : 'org.greenrobot:eventbus:3.1.1',
+            rxlifecycle                     : 'com.trello.rxlifecycle2:rxlifecycle:2.2.2',
+            rxlifecycle_android             : 'com.trello.rxlifecycle2:rxlifecycle-android:2.2.2',
+            butterknife                     : 'com.jakewharton:butterknife:8.4.0',
+            butterknife_compiler            : 'com.jakewharton:butterknife-compiler:8.4.0',
+            picker                          : 'com.contrarywind:Android-PickerView:3.2.4',
+            flexbox                         : 'com.google.android:flexbox:1.0.0'
+    ]
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        maven {
+            url "http://192.168.9.39:8081/repository/maven-public"
+        }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

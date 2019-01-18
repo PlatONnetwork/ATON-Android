@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="true"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <com.juzix.wallet.component.widget.CommonTitleBar
+        android:id="@+id/commonTitleBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:ctb_left_drawable="@drawable/icon_back_black"
+        app:ctb_middle_text="@string/create_shared_wallet" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_1b2137"
+        android:orientation="vertical">
+
+        <ListView
+            android:id="@+id/list_shared_owner"
+            style="@style/List_common_style"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:overScrollMode="never"
+            android:paddingTop="17dp"
+            android:paddingBottom="71dp"
+            tools:listitem="@layout/item_create_shared_owner_list" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@color/color_1b2137"
+            android:orientation="vertical"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="14dp">
+
+            <com.juzix.wallet.component.widget.RoundedTextView
+                android:id="@+id/rtv_create_shared_wallet"
+                style="@style/Text.1b2137.14"
+                android:layout_width="match_parent"
+                android:enabled="false"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:text="@string/create"
+                android:textColor="@color/color_heavy_button_text"
+                app:rtv_background_color="@color/bg_heavy_button"
+                app:rtv_corner_radius="1dp" />
+        </LinearLayout>
+
+    </FrameLayout>
+
+
+</LinearLayout>

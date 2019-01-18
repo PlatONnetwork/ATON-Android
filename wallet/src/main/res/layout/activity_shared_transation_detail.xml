@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:clipToPadding="true"
+              android:fitsSystemWindows="true"
+              android:orientation="vertical">
+
+    <com.juzix.wallet.component.widget.CommonTitleBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:ctb_left_drawable="@drawable/icon_back_black"
+        app:ctb_middle_text="@string/transaction_detail"/>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/color_1b2137"
+            android:orientation="vertical"
+            android:paddingLeft="15dp"
+            android:paddingTop="20dp"
+            android:paddingRight="15dp"
+            android:paddingBottom="19dp">
+
+            <TextView
+                android:id="@+id/tv_transaction_status"
+                style="@style/Text.fff.14"
+                android:layout_gravity="center_horizontal"
+                android:drawableTop="@drawable/icon_successed"
+                android:drawablePadding="10dp"
+                tools:text="@string/success" />
+            <LinearLayout
+                android:id="@+id/layout_transaction_result"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/bg_wallet_address_qr_code"
+                android:orientation="vertical"
+                android:padding="12dp" >
+
+                <TextView
+                    android:id="@+id/tv_member_title"
+                    style="@style/Text.c5cdbc.12"
+                    android:layout_marginBottom="8dp"
+                    tools:text="@string/execute_contract_confirm" />
+
+                <com.juzix.wallet.component.widget.ListViewForScrollView
+                    android:id="@+id/list_transaction_result"
+                    style="@style/List_common_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_wallet_address_qr_code"
+                    android:dividerHeight="8dp"
+                    tools:listitem="@layout/item_shared_transaction_detail_member"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/bg_wallet_address_qr_code"
+                android:divider="@drawable/bg_transation_list_divider"
+                android:orientation="vertical"
+                android:paddingRight="12dp"
+                android:paddingLeft="12dp"
+                android:showDividers="middle">
+
+                <include layout="@layout/include_transationer_info"/>
+
+                <include layout="@layout/include_transation_detail_info"/>
+
+                <include layout="@layout/include_transation_detail_hash"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+
+</LinearLayout>

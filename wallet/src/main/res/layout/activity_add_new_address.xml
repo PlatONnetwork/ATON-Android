@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_1b2137"
+    android:clipToPadding="true"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="@drawable/bg_wallet_list_divider"
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="16dp"
+        android:showDividers="middle">
+
+        <EditText
+            android:id="@+id/et_address_name"
+            style="@style/Text.fff.12"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_create_share_wallet"
+            android:gravity="center_vertical|left"
+            android:hint="@string/name"
+            android:paddingLeft="10dp"
+            android:textColorHint="@color/color_7a8092" />
+
+        <TextView
+            android:id="@+id/tv_name_error"
+            style="@style/Text.ff4747.12"
+            android:visibility="gone"
+            tools:text="@string/address_name_cannot_be_empty" />
+
+        <EditText
+            android:id="@+id/et_address"
+            style="@style/Text.fff.12"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_create_share_wallet"
+            android:gravity="center_vertical|left"
+            android:hint="@string/address"
+            android:paddingLeft="10dp"
+            android:textColorHint="@color/color_7a8092" />
+
+        <TextView
+            android:id="@+id/tv_address_error"
+            style="@style/Text.ff4747.12"
+            android:visibility="gone"
+            tools:text="@string/address_cannot_be_empty"  />
+
+        <TextView
+            style="@style/Text.ffed1a.11"
+            android:text="@string/msg_marked_words" />
+
+    </LinearLayout>
+
+
+    <com.juzix.wallet.component.widget.RoundedTextView
+        android:id="@+id/rtv_add_address"
+        style="@style/Text.1b2137.14"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginBottom="14dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:textColor="@color/color_heavy_button_text"
+        android:text="@string/add"
+        android:enabled="false"
+        app:rtv_background_color="@color/bg_heavy_button"
+        app:rtv_corner_radius="1dp" />
+
+
+</LinearLayout>

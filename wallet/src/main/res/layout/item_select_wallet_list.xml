@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:paddingBottom="11dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="18dp"
+    android:background="@drawable/bg_select_individual_wallet"
+    android:paddingTop="11dp">
+
+    <com.juzix.wallet.component.widget.CircleImageView
+        android:id="@+id/iv_wallet_pic"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_centerVertical="true"
+        tools:src="@drawable/icon_default_coin" />
+
+    <ImageView
+        android:id="@+id/iv_selected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/icon_hook_white_bg" />
+
+    <TextView
+        android:id="@+id/tv_wallet_name"
+        style="@style/Text.292929.14"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@id/iv_wallet_pic"
+        tools:text="Wallet name" />
+
+    <TextView
+        android:id="@+id/tv_wallet_balance"
+        style="@style/Text.999999.12"
+        android:layout_width="match_parent"
+        android:layout_toLeftOf="@id/iv_selected"
+        android:ellipsize="end"
+        android:gravity="left"
+        android:layout_alignLeft="@id/tv_wallet_name"
+        android:lines="1"
+        android:layout_alignParentBottom="true"
+        tools:text="Balance 100.00 Energon" />
+
+</RelativeLayout>

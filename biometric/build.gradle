@@ -1,0 +1,36 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        versionCode 1
+        versionName '1.0.2'
+        vectorDrawables.useSupportLibrary = true
+    }
+
+    buildTypes{
+        debug {
+
+        }
+        releaseC {
+
+        }
+        releaseX {
+
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation rootProject.ext.dependencies.support_annotations
+    implementation rootProject.ext.dependencies.support_vector_drawable
+    implementation rootProject.ext.dependencies.support_animated_vector_drawable
+}

@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="true"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_1b2137"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingLeft="16dp"
+            android:paddingTop="16dp"
+            android:paddingRight="16dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_wallet_address_info"
+                    style="@style/Text.c5cdbc.14"
+                    android:layout_marginLeft="7dp"
+                    android:text="@string/wallet_address" />
+
+                <ImageView
+                    android:id="@+id/iv_address_book"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_below="@id/tv_wallet_address_info"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/bg_address_book" />
+
+                <EditText
+                    android:id="@+id/et_wallet_address"
+                    style="@style/Text.fff.12"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignTop="@id/iv_address_book"
+                    android:layout_alignBottom="@id/iv_address_book"
+                    android:layout_toLeftOf="@id/iv_address_book"
+                    android:background="@drawable/bg_input_wallet_info"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical|left"
+                    android:hint="@string/inputWalletAddress"
+                    android:lines="1"
+                    android:paddingLeft="10dp"
+                    android:textColorHint="@color/color_7a8092" />
+
+                <TextView
+                    android:id="@+id/tv_to_address_error"
+                    style="@style/Text.ff4747.12"
+                    android:layout_below="@id/et_wallet_address"
+                    android:layout_marginTop="5dp"
+                    android:visibility="gone"
+                    tools:text="地址不能为空"
+                    tools:visibility="visible" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="17dp">
+
+                <TextView
+                    android:id="@+id/tv_transation_amount"
+                    style="@style/Text.c5cdbc.14"
+                    android:layout_marginLeft="7dp"
+                    android:text="@string/amount" />
+
+                <LinearLayout
+                    android:id="@+id/layout_transation_amount"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_below="@id/tv_transation_amount"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/bg_input_wallet_info"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp">
+
+                    <EditText
+                        android:id="@+id/et_wallet_amount"
+                        style="@style/Text.fff.12"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical|left"
+                        android:hint="@string/inputSendAmount"
+                        android:inputType="numberDecimal"
+                        android:lines="1"
+                        android:textColorHint="@color/color_7a8092" />
+
+                    <TextView
+                        android:id="@+id/tv_transaction_type"
+                        style="@style/Text.fff.12"
+                        tools:text="Energon" />
+                </LinearLayout>
+
+
+                <TextView
+                    android:id="@+id/tv_all_amount"
+                    style="@style/Text.ffed54.11"
+                    android:layout_below="@id/layout_transation_amount"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="6dp"
+                    android:text="@string/all" />
+
+                <TextView
+                    android:id="@+id/tv_wallet_balance"
+                    style="@style/Text.c5cdbc.11"
+                    android:layout_below="@id/layout_transation_amount"
+                    android:layout_alignTop="@id/tv_all_amount"
+                    android:layout_marginRight="10dp"
+                    android:layout_toLeftOf="@id/tv_all_amount"
+                    tools:text="Balance:0.00Energon" />
+
+                <TextView
+                    android:id="@+id/tv_amount_error"
+                    style="@style/Text.ff4747.12"
+                    android:layout_below="@id/layout_transation_amount"
+                    android:layout_marginTop="5dp"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:id="@+id/tv_select_wallet"
+                    style="@style/Text.c5cdbc.14"
+                    android:layout_marginLeft="7dp"
+                    android:text="@string/pay_wallet" />
+
+                <include layout="@layout/include_change_wallet" />
+
+            </RelativeLayout>
+
+            <EditText
+                android:id="@+id/et_memo"
+                style="@style/Text.fff.12"
+                android:layout_width="match_parent"
+                android:layout_height="71dp"
+                android:layout_marginTop="18dp"
+                android:background="@drawable/bg_input_wallet_info"
+                android:gravity="left"
+                android:hint="@string/inputMome"
+                android:paddingLeft="10dp"
+                android:paddingTop="12dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="12dp"
+                android:textColorHint="@color/color_7a8092" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="17dp">
+
+                <TextView
+                    style="@style/Text.c5cdbc.14"
+                    android:text="@string/select_fee" />
+
+                <TextView
+                    android:id="@+id/tv_fee_amount"
+                    style="@style/Text.ffed1a.11"
+                    android:layout_alignParentRight="true"
+                    tools:text="0.0000000228 Energon" />
+
+                <android.support.v7.widget.AppCompatSeekBar
+                    android:id="@+id/seekbar"
+                    style="@style/SeekBarStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_fee_amount"
+                    android:layout_marginTop="14dp"
+                    android:paddingStart="7dp"
+                    android:paddingEnd="7dp" />
+
+                <TextView
+                    style="@style/Text.7a8092.11"
+                    android:layout_below="@id/seekbar"
+                    android:layout_marginTop="14dp"
+                    android:text="@string/cheaper" />
+
+                <TextView
+                    style="@style/Text.7a8092.11"
+                    android:layout_below="@id/seekbar"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="14dp"
+                    android:text="@string/faster" />
+
+            </RelativeLayout>
+
+            <TextView
+                style="@style/Text.c5cdbc.12"
+                android:layout_marginTop="13dp"
+                android:text="@string/estimated_transaction_confirmation_time"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tv_transfer_time"
+                style="@style/Text.c5cdbc.12"
+                android:layout_marginTop="4dp"
+                android:text="probably within 30s/5mins/15mins"
+                android:visibility="gone" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="bottom|center_horizontal"
+                android:paddingBottom="14dp">
+
+                <com.juzix.wallet.component.widget.RoundedTextView
+                    android:id="@+id/rtv_send_transation"
+                    style="@style/Text.1b2137.14"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:enabled="false"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:text="@string/actionSendATP"
+                    android:textColor="@color/color_heavy_button_text"
+                    app:rtv_background_color="@color/bg_heavy_button"
+                    app:rtv_corner_radius="1dp" />
+
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+
+</LinearLayout>

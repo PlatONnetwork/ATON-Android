@@ -1,0 +1,33 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+    }
+
+    buildTypes{
+        debug {
+
+        }
+        releaseC {
+
+        }
+        releaseX {
+
+        }
+    }
+
+}
+
+dependencies {
+    implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.8.1'
+    api files('libs/bcprov-jdk16-146.jar')
+    api rootProject.ext.dependencies.support_v4
+    api rootProject.ext.dependencies.appcompat_v7
+    api 'com.squareup.picasso:picasso:2.5.2'
+    api 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0'
+    api 'com.alibaba:fastjson:1.2.35'
+}

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="12dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginRight="12dp"
+    android:background="@drawable/bg_shape_edittext5"
+    android:paddingLeft="12dp"
+    android:paddingTop="11dp"
+    android:paddingRight="12dp"
+    android:paddingBottom="11dp">
+
+    <com.juzix.wallet.component.widget.CircleImageView
+        android:id="@+id/iv_wallet_avatar"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/icon_default_coin" />
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@id/iv_wallet_avatar"
+        android:text="Energon"
+        android:textColor="@color/color_ffffff"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/tv_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_name"
+        android:layout_alignLeft="@id/tv_name"
+        android:layout_marginTop="7dp"
+        android:ellipsize="middle"
+        android:text="ox2ce48152…fF49B2b3d3"
+        android:textColor="@color/color_c5cbdc"
+        android:textSize="12sp" />
+
+</RelativeLayout>
