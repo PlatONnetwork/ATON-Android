@@ -483,11 +483,13 @@ public class SharedWalletTransactionManager {
 
     private TransactionReceipt submitTransaction(Multisig multisig, String destination, String from, String memo, String transferAmount) {
         long time = System.currentTimeMillis();
-        String data = org.spongycastle.util.encoders.Hex.toHexString(memo.getBytes(Charset.forName("UTF-8")));
+        byte[] memos = memo.getBytes(Charset.forName("UTF-8"));
+        String data = new String(memos);
+        BigInteger length = BigInteger.valueOf(memos.length);
         String value = NumberParserUtils.getPrettyNumber(Convert.toWei(transferAmount, Convert.Unit.ETHER).doubleValue(), 0);
         TransactionReceipt receipt = null;
         try {
-            receipt = multisig.submitTransaction(destination, from, value, data, BigInteger.valueOf(data.length()), BigInteger.valueOf(time), "").send();
+            receipt = multisig.submitTransaction(destination, from, value, data, length, BigInteger.valueOf(time), "").send();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -903,7 +905,7 @@ public class SharedWalletTransactionManager {
                     long createTime = Long.parseLong(contents[3]);
                     String fromAddress = contents[0];
                     String toAddress = contents[1];
-                    String memo = new String(org.spongycastle.util.encoders.Hex.decode(contents[4]), Charset.forName("UTF-8"));
+                    String memo = new String(contents[4].getBytes(), Charset.forName("UTF-8"));
                     String transactionId = contents[8];
                     String uuid = contractAddress + transactionId;
                     String hash = "";
