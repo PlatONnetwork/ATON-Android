@@ -35,11 +35,17 @@ public class NodeInfoEntity extends RealmObject {
                 .nodeAddress(nodeAddress)
                 .isDefaultNode(isDefaultNode)
                 .isChecked(isChecked)
-                .isMainNetworkNode(isMainNetworkNode)
                 .build();
     }
 
     public NodeInfoEntity() {
+    }
+
+    public NodeInfoEntity(String nodeAddress, boolean isDefaultNode, boolean isChecked) {
+        this.id = System.currentTimeMillis();
+        this.nodeAddress = nodeAddress;
+        this.isDefaultNode = isDefaultNode;
+        this.isChecked = isChecked;
     }
 
     public NodeInfoEntity(long id, String nodeAddress, boolean isDefaultNode, boolean isChecked, boolean isMainNetworkNode) {

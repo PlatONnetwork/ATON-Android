@@ -35,8 +35,7 @@
                     android:layout_height="165dp"
                     android:background="@drawable/bg_wallet_detail_card"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintRight_toRightOf="parent">
 
                     <TextView
                         android:id="@+id/tv_wallet_name_title"
@@ -44,9 +43,7 @@
                         android:paddingLeft="12dp"
                         android:paddingTop="14dp"
                         android:paddingBottom="12dp"
-                        android:text="@string/wallet_name"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        android:text="@string/wallet_name" />
 
                     <android.support.constraint.ConstraintLayout
                         android:layout_width="match_parent"
@@ -62,7 +59,6 @@
                             style="@style/Text.c5cdbc.12"
                             android:layout_marginTop="9dp"
                             android:text="@string/public_key"
-                            app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <RelativeLayout
@@ -100,7 +96,6 @@
                             style="@style/Text.c5cdbc.12"
                             android:layout_marginTop="9dp"
                             android:text="@string/wallet_address"
-                            app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/layout_public_key" />
 
                         <RelativeLayout

@@ -15,6 +15,7 @@ import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.SharedWalletManager;
 import com.juzix.wallet.engine.SystemManager;
 import com.juzix.wallet.event.EventPublisher;
+import com.juzix.wallet.protocol.HttpConfigure;
 
 import io.realm.DynamicRealm;
 import io.realm.Realm;
@@ -58,6 +59,8 @@ public class AppFramework {
         RUtils.init(context);
         //初始化偏好设置
         AppSettings.getInstance().init(context);
+        //初始化网络模块
+        HttpConfigure.init(context);
         //初始化节点配置
         NodeManager.getInstance().init();
         //初始化普通钱包

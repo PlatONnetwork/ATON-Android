@@ -117,8 +117,7 @@
                         style="@style/Text.fff.14"
                         android:layout_width="0dp"
                         android:layout_weight="1"
-                        android:text="@string/action_call_vote"
-                        android:visibility="gone" />
+                        android:text="@string/vote"  />
 
                 </LinearLayout>
 

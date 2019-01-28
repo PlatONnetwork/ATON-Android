@@ -22,6 +22,8 @@ import com.juzix.wallet.entity.IndividualTransactionEntity;
 import com.juzix.wallet.entity.SharedTransactionEntity;
 import com.juzix.wallet.entity.SharedWalletEntity;
 import com.juzix.wallet.entity.TransactionEntity;
+import com.juzix.wallet.entity.VoteTransactionEntity;
+import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.DateUtil;
 
@@ -60,7 +62,10 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
                     viewHolder.setText(R.id.tv_amount, String.format("%s%s", "-", NumberParserUtils.getPrettyBalance(item.getValue())));
                     viewHolder.setText(R.id.tv_name, context.getString(transactionType.getTransactionTypeDesc()));
                     viewHolder.setText(R.id.tv_desc, transactionStatus.getStatusDesc(context, entity.getConfirms(), entity.getRequiredSignNumber()));
-                } else {
+                } else if (item instanceof VoteTransactionEntity){
+                    viewHolder.setText(R.id.tv_name, string(R.string.vote));
+                    viewHolder.setText(R.id.tv_desc, status.getStatusDesc(context, item.getSignedBlockNumber(), 12));
+                }else {
                     IndividualTransactionEntity entity = (IndividualTransactionEntity) item;
                     viewHolder.setText(R.id.tv_name, string(R.string.action_send_transation));
                     viewHolder.setText(R.id.tv_desc, status.getStatusDesc(context, item.getSignedBlockNumber(), 12));
@@ -78,15 +83,17 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
                 TransactionEntity item = (TransactionEntity) parent.getAdapter().getItem(position);
                 if (item instanceof IndividualTransactionEntity) {
                     IndividualTransactionDetailActivity.actionStart(currentActivity(), (IndividualTransactionEntity) item, null);
+                } else if (item instanceof VoteTransactionEntity) {
+                    IndividualVoteDetailActivity.actionStart(currentActivity(), item.getUuid());
                 } else if (item instanceof SharedTransactionEntity) {
                     SharedTransactionEntity sharedTransactionEntity = (SharedTransactionEntity) item;
-                    SharedWalletEntity mSharedWalletEntity = SharedWalletManager.getInstance().getWalletByContractAddress(sharedTransactionEntity.getContractAddress());
+                    SharedWalletEntity      mSharedWalletEntity     = SharedWalletManager.getInstance().getWalletByContractAddress(sharedTransactionEntity.getContractAddress());
                     if (!sharedTransactionEntity.isRead()) {
                         sharedTransactionEntity.setRead(true);
                         SharedWalletTransactionManager.getInstance().updateTransactionForRead(mSharedWalletEntity, sharedTransactionEntity);
                     }
                     BaseActivity activity = currentActivity();
-                    if (sharedTransactionEntity.isTransactionFinished()) {
+                    if (sharedTransactionEntity.transfered()) {
                         SharedTransactionDetailActivity.actionStart(activity, sharedTransactionEntity);
                     } else {
                         SigningActivity.actionStart(activity, sharedTransactionEntity);

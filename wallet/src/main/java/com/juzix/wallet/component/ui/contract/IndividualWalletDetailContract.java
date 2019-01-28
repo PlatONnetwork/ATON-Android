@@ -32,5 +32,7 @@ public class IndividualWalletDetailContract {
         void enterTransactionDetailActivity(TransactionEntity transactionEntity);
 
         void enterReceiveTransactionActivity();
+
+        void enterVoteActivity();
     }
 }

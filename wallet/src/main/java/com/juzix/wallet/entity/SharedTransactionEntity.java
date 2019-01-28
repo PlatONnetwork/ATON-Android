@@ -254,24 +254,18 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
         this.transactionType = transactionType;
     }
 
-    public boolean isTransactionFinished() {
-        if (getConfirms() >= requiredSignNumber) {
+    public boolean transfered() {
+        if (getConfirms() >= requiredSignNumber || getRevokes() > 0) {
             return true;
-        } else {
-            int resultSize = transactionResult == null ? 0 : transactionResult.size();
-            if (resultSize - getRevokes() < requiredSignNumber) {
-                return true;
-            } else {
-                return false;
-            }
         }
+        return false;
     }
 
     public int getConfirms() {
         int counter = 0;
         for (TransactionResult result : transactionResult) {
             int operation = result.getOperation();
-            if (operation == TransactionResult.OPERATION_APPROVAL) {
+            if (operation == TransactionResult.OPERATION_APPROVAL || operation == TransactionResult.OPERATION_REVOKE) {
                 counter++;
             }
         }
@@ -434,19 +428,17 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
     public TransactionStatus getTransactionStatus() {
         int confirms = 0;
         int undetermineds = 0;
-        int revokes = 0;
         if (TextUtils.isEmpty(hash)) {
             //别人发起的交易
             if (executed) {
                 return TransactionStatus.SUCCEED;
             }
+
         } else {
             if (transactionResult == null || transactionResult.isEmpty()) {
                 return TransactionStatus.CREATE_JOINT_WALLET;
             }
         }
-
-        int resultSize = transactionResult.size();
 
         for (TransactionResult result : transactionResult) {
             switch (result.getOperation()) {
@@ -456,20 +448,15 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
                 case TransactionResult.OPERATION_UNDETERMINED:
                     undetermineds++;
                     break;
-                case TransactionResult.OPERATION_REVOKE:
-                    revokes++;
-                    break;
-                default:
-                    break;
             }
         }
         if (confirms >= requiredSignNumber) {
             return TransactionStatus.SUCCEED;
         } else {
-            if (resultSize - revokes < requiredSignNumber) {
-                return TransactionStatus.FAILED;
-            } else {
+            if (confirms + undetermineds == requiredSignNumber) {
                 return TransactionStatus.SIGNING;
+            } else {
+                return TransactionStatus.FAILED;
             }
         }
     }

@@ -7,6 +7,7 @@ import io.reactivex.Single;
 import io.reactivex.SingleSource;
 import io.reactivex.SingleTransformer;
 import io.reactivex.functions.Action;
+import io.reactivex.functions.BiConsumer;
 
 
 public final class LoadingTransformer {
@@ -50,9 +51,9 @@ public final class LoadingTransformer {
             public SingleSource<U> apply(Single<U> upstream) {
                 return upstream
                         .doOnSubscribe(disposable -> activity.showLoadingDialog(message))
-                        .doAfterTerminate(new Action() {
+                        .doOnEvent(new BiConsumer<U, Throwable>() {
                             @Override
-                            public void run() throws Exception {
+                            public void accept(U u, Throwable throwable) throws Exception {
                                 activity.dismissLoadingDialogImmediately();
                             }
                         });

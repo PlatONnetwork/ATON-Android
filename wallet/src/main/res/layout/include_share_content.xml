@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/color_1b2137"
     android:paddingTop="24dp"
-    android:paddingBottom="20dp">
+    android:paddingBottom="15dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -65,8 +65,8 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="40dp"
             android:background="@drawable/bg_qrcode2"
             android:gravity="center_horizontal"
             android:orientation="vertical"
@@ -87,24 +87,30 @@
                 android:textSize="12sp" />
         </LinearLayout>
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp"
-            android:src="@drawable/icon_logo_horizontal" />
-
     </LinearLayout>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <com.juzix.wallet.component.widget.CircleImageView
-        android:id="@+id/iv_avatar"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_gravity="center_horizontal"
-        android:src="@drawable/icon_default_coin"
-        app:civ_border_color="@color/color_373E51"
-        app:civ_border_width="0dp"
-        app:civ_fill_color="@color/color_373E51" />
+        <com.juzix.wallet.component.widget.CircleImageView
+            android:id="@+id/iv_avatar"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/icon_default_coin"
+            app:civ_border_color="@color/color_373E51"
+            app:civ_border_width="0dp"
+            app:civ_fill_color="@color/color_373E51" />
 
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:text="ATON"
+            android:textColor="@color/color_c5cbdc"
+            android:textSize="12sp" />
+    </RelativeLayout>
 </FrameLayout>

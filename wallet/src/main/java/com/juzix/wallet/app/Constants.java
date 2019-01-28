@@ -23,6 +23,10 @@ public class Constants {
         String EXTRA_WALLET_NAME = "extra_wallet_name";
         String EXTRA_WALLET_INDEX = "extra_index";
         String EXTRA_WALLET_SUB_INDEX = "extra_sub_index";
+        String EXTRA_CANDIDATE           = "extra_candidate_entity";
+        String EXTRA_VOTE                = "extra_vote_entity";
+        String EXTRA_ID                  = "extra_id";
+        String EXTRA_NAME                = "extra_name";
     }
 
     public interface Bundle {
@@ -35,6 +39,7 @@ public class Constants {
         String BUDLE_PASSWORD = "bundle_password";
         String BUNDLE_SHARE_APPINFO_LIST = "bundle_share_appinfo_list";
         String BUNDLE_TYPE = "bundle_type";
+        String BUNDLE_FEE = "bundle_fee";
     }
 
     public interface Action {
@@ -69,11 +74,12 @@ public class Constants {
 
     public interface URL {
         String WEB3J_URL = "https://syde.platon.network/test";
+        String IP_URL    = "http://ip-api.com/batch/";
     }
 
     public interface DBName {
         //数据库名称
         String PORTAL = "portal";
-        int VERSION = 103;
+        int VERSION = 104;
     }
 }

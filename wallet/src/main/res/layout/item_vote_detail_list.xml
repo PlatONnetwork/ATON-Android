@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@drawable/bg_transation_list"
+              android:dividerPadding="25dp"
+              android:orientation="vertical"
+              android:paddingLeft="10dp"
+              android:paddingTop="7dp"
+              android:paddingRight="10dp"
+              android:paddingBottom="14dp" >
+
+    <TextView
+        android:id="@+id/tv_name"
+        style="@style/Text.fff.14"
+        tools:text="2018-09-27 20:53:45"/>
+
+    <LinearLayout
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_item1_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="@string/validInvalidTicket"
+            android:textColor="@color/color_c5cbdc"
+            android:textSize="12sp"/>
+
+        <TextView
+            android:id="@+id/tv_item1_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="23/125"
+            android:textColor="@color/color_ffffff"
+            android:textSize="13sp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_marginTop="9dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_item2_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="@string/ticketPrice"
+            android:textColor="@color/color_c5cbdc"
+            android:textSize="12sp"/>
+
+        <TextView
+            android:id="@+id/tv_item2_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:layout_weight="1"
+            android:text="1.23 ATP"
+            android:textColor="@color/color_ffffff"
+            android:textSize="13sp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_marginTop="9dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_item3_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="@string/voteStakedUnstaked"
+            android:textColor="@color/color_c5cbdc"
+            android:textSize="12sp"/>
+
+        <TextView
+            android:id="@+id/tv_item3_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="1,332.1/15,315.2 ATP"
+            android:textColor="@color/color_ffffff"
+            android:textSize="13sp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_marginTop="9dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_item4_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="@string/votingIncome"
+            android:textColor="@color/color_c5cbdc"
+            android:textSize="12sp"/>
+
+        <TextView
+            android:id="@+id/tv_item4_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="1.23 ATP"
+            android:textColor="@color/color_ffffff"
+            android:textSize="13sp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_marginTop="9dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_item5_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="@string/votingWallet"
+            android:textColor="@color/color_c5cbdc"
+            android:textSize="12sp"/>
+
+        <TextView
+            android:id="@+id/tv_item5_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="0xA7a7899d944fE658c4B0a1803BAB2F490bd3849e(钱包名称)"
+            android:textColor="@color/color_ffffff"
+            android:textSize="13sp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_marginTop="9dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_item6_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="@string/estimatedActualExpirationTime"
+            android:textColor="@color/color_c5cbdc"
+            android:textSize="12sp"/>
+
+        <TextView
+            android:id="@+id/tv_item6_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="2018-09-27 20:53:45"
+            android:textColor="@color/color_ffffff"
+            android:textSize="13sp"/>
+    </LinearLayout>
+</LinearLayout>

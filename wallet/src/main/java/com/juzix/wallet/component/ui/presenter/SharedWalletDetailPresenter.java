@@ -121,12 +121,6 @@ public class SharedWalletDetailPresenter extends BasePresenter<SharedWalletDetai
         mDisposable = getTransactionEntityList(contractAddress)
                 .compose(bindToLifecycle())
                 .compose(new SchedulersTransformer())
-                .repeatWhen(new Function<Flowable<Object>, Publisher<?>>() {
-                    @Override
-                    public Publisher<?> apply(Flowable<Object> objectFlowable) throws Exception {
-                        return objectFlowable.delay(5, TimeUnit.SECONDS);
-                    }
-                })
                 .subscribe(new Consumer<List<TransactionEntity>>() {
                     @Override
                     public void accept(List<TransactionEntity> transactionEntityList) throws Exception {
@@ -154,7 +148,7 @@ public class SharedWalletDetailPresenter extends BasePresenter<SharedWalletDetai
                     getView().notifyTransactionChanged(sharedTransactionEntity, walletEntity.getPrefixContractAddress());
                     SharedWalletTransactionManager.getInstance().updateTransactionForRead(walletEntity, sharedTransactionEntity);
                 }
-                if (sharedTransactionEntity.isTransactionFinished()) {
+                if (sharedTransactionEntity.transfered()) {
                     SharedTransactionDetailActivity.actionStart(currentActivity(), sharedTransactionEntity);
                 } else {
                     SigningActivity.actionStart(currentActivity(), sharedTransactionEntity);
