@@ -5,13 +5,16 @@ import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.TransactionRecordsContract;
 import com.juzix.wallet.db.entity.IndividualTransactionInfoEntity;
+import com.juzix.wallet.db.entity.SingleVoteInfoEntity;
 import com.juzix.wallet.db.sqlite.IndividualTransactionInfoDao;
+import com.juzix.wallet.db.sqlite.SingleVoteInfoDao;
 import com.juzix.wallet.engine.IndividualWalletTransactionManager;
 import com.juzix.wallet.engine.SharedWalletTransactionManager;
 import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.IndividualTransactionEntity;
 import com.juzix.wallet.entity.SharedTransactionEntity;
 import com.juzix.wallet.entity.TransactionEntity;
+import com.juzix.wallet.entity.VoteTransactionEntity;
 
 import org.reactivestreams.Publisher;
 
@@ -40,8 +43,15 @@ public class TransactionRecordsPresenter extends BasePresenter<TransactionRecord
 
     @Override
     public void fetchTransactions() {
+
         getTransactionEntityList()
                 .zipWith(getSharedTransactionEntityList(), new BiFunction<List<TransactionEntity>, List<? extends TransactionEntity>, List<TransactionEntity>>() {
+                    @Override
+                    public List<TransactionEntity> apply(List<TransactionEntity> transactionEntities, List<? extends TransactionEntity> transactionEntities2) throws Exception {
+                        transactionEntities.addAll(transactionEntities2);
+                        return transactionEntities;
+                    }
+                }).zipWith(getVoteTransactionEntityList(), new BiFunction<List<TransactionEntity>, List<? extends TransactionEntity>, List<TransactionEntity>>() {
                     @Override
                     public List<TransactionEntity> apply(List<TransactionEntity> transactionEntities, List<? extends TransactionEntity> transactionEntities2) throws Exception {
                         transactionEntities.addAll(transactionEntities2);
@@ -121,6 +131,41 @@ public class TransactionRecordsPresenter extends BasePresenter<TransactionRecord
                     @Override
                     public Publisher<SharedTransactionEntity> apply(List<SharedTransactionEntity> transactionEntities) throws Exception {
                         return Flowable.fromIterable(transactionEntities);
+                    }
+                })
+                .toList();
+
+    }
+
+    private Single<List<VoteTransactionEntity>> getVoteTransactionEntityList() {
+
+        return Single.fromCallable(new Callable<List<VoteTransactionEntity>>() {
+            @Override
+            public List<VoteTransactionEntity> call() throws Exception {
+                List<SingleVoteInfoEntity> singleVoteInfoEntities = SingleVoteInfoDao.getInstance().getTransactionList();
+                List<VoteTransactionEntity> transactionEntityList = new ArrayList<>();
+                for (SingleVoteInfoEntity voteInfoEntity : singleVoteInfoEntities){
+                    VoteTransactionEntity entity = new VoteTransactionEntity.Builder(voteInfoEntity.getUuid(), voteInfoEntity.getCreateTime(), voteInfoEntity.getWalletName())
+                            .hash(voteInfoEntity.getHash())
+                            .fromAddress(voteInfoEntity.getWalletAddress())
+                            .toAddress(voteInfoEntity.getContractAddress())
+                            .value(voteInfoEntity.getValue())
+                            .blockNumber(voteInfoEntity.getBlockNumber())
+                            .latestBlockNumber(voteInfoEntity.getLatestBlockNumber())
+                            .energonPrice(voteInfoEntity.getEnergonPrice())
+                            .memo("")
+                            .status(voteInfoEntity.getStatus())
+                            .build();
+                    transactionEntityList.add(entity);
+                }
+                return transactionEntityList;
+            }
+        })
+                .toFlowable()
+                .flatMap(new Function<List<VoteTransactionEntity>, Publisher<VoteTransactionEntity>>() {
+                    @Override
+                    public Publisher<VoteTransactionEntity> apply(List<VoteTransactionEntity> singleVoteInfoEntities) throws Exception {
+                        return Flowable.fromIterable(singleVoteInfoEntities);
                     }
                 })
                 .toList();

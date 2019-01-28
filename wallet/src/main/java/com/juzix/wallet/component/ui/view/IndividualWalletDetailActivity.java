@@ -104,6 +104,9 @@ public class IndividualWalletDetailActivity extends MVPBaseActivity<IndividualWa
             case R.id.tv_receive_transation:
                 mPresenter.enterReceiveTransactionActivity();
                 break;
+            case R.id.tv_call_vote:
+                mPresenter.enterVoteActivity();
+                break;
             default:
                 break;
         }

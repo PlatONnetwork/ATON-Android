@@ -44,4 +44,49 @@
         <item>avatar_15</item>
     </string-array>
 
+    <string-array name="node_avatar">
+        <item>ic_node_1</item>
+        <item>ic_node_2</item>
+        <item>ic_node_3</item>
+        <item>ic_node_4</item>
+        <item>ic_node_5</item>
+        <item>ic_node_6</item>
+        <item>ic_node_7</item>
+        <item>ic_node_8</item>
+        <item>ic_node_9</item>
+        <item>ic_node_10</item>
+        <item>ic_node_11</item>
+        <item>ic_node_12</item>
+        <item>ic_node_13</item>
+        <item>ic_node_14</item>
+        <item>ic_node_15</item>
+        <item>ic_node_16</item>
+        <item>ic_node_17</item>
+        <item>ic_node_18</item>
+        <item>ic_node_19</item>
+        <item>ic_node_20</item>
+        <item>ic_node_21</item>
+        <item>ic_node_22</item>
+        <item>ic_node_23</item>
+        <item>ic_node_24</item>
+        <item>ic_node_25</item>
+        <item>ic_node_26</item>
+        <item>ic_node_27</item>
+        <item>ic_node_28</item>
+        <item>ic_node_29</item>
+        <item>ic_node_30</item>
+        <item>ic_node_31</item>
+        <item>ic_node_32</item>
+        <item>ic_node_33</item>
+        <item>ic_node_34</item>
+        <item>ic_node_35</item>
+        <item>ic_node_36</item>
+        <item>ic_node_37</item>
+        <item>ic_node_38</item>
+        <item>ic_node_39</item>
+        <item>ic_node_40</item>
+        <item>ic_node_41</item>
+        <item>ic_node_42</item>
+    </string-array>
+
 </resources>

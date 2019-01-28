@@ -117,11 +117,6 @@ public class SharedWalletDetailActivity extends MVPBaseActivity<SharedWalletDeta
         mPresenter.fetchWalletTransactionList();
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onSharedTransactionSucceedEvent(Event.SharedTransactionSucceedEvent event) {
-        mPresenter.fetchWalletTransactionList();
-    }
-
     @Override
     public SharedWalletEntity getSharedWalletFromIntent() {
         return getIntent().getParcelableExtra(Constants.Extra.EXTRA_WALLET);

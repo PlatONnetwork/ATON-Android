@@ -276,7 +276,7 @@ public class SendSharedTransationPresenter extends BasePresenter<SendSharedTrans
                     }
                 })
                 .compose(new SchedulersTransformer())
-                .compose(LoadingTransformer.bindToLifecycle(currentActivity()))
+                .compose(LoadingTransformer.bindToLifecycle(getView().currentActivity()))
                 .compose(bindToLifecycle())
                 .subscribe(new Consumer<SharedTransactionInfoEntity>() {
                     @Override

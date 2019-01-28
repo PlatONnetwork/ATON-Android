@@ -8,12 +8,16 @@ import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.IndividualWalletDetailContract;
 import com.juzix.wallet.component.ui.view.IndividualReceiveTransationActivity;
 import com.juzix.wallet.component.ui.view.IndividualTransactionDetailActivity;
+import com.juzix.wallet.component.ui.view.IndividualVoteDetailActivity;
 import com.juzix.wallet.component.ui.view.SharedTransactionDetailActivity;
 import com.juzix.wallet.component.ui.view.SigningActivity;
+import com.juzix.wallet.component.ui.view.VoteMainActivity;
 import com.juzix.wallet.db.entity.IndividualTransactionInfoEntity;
 import com.juzix.wallet.db.entity.SharedTransactionInfoEntity;
+import com.juzix.wallet.db.entity.SingleVoteInfoEntity;
 import com.juzix.wallet.db.sqlite.IndividualTransactionInfoDao;
 import com.juzix.wallet.db.sqlite.SharedTransactionInfoDao;
+import com.juzix.wallet.db.sqlite.SingleVoteInfoDao;
 import com.juzix.wallet.engine.IndividualWalletTransactionManager;
 import com.juzix.wallet.engine.SharedWalletManager;
 import com.juzix.wallet.engine.SharedWalletTransactionManager;
@@ -23,6 +27,7 @@ import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.SharedTransactionEntity;
 import com.juzix.wallet.entity.SharedWalletEntity;
 import com.juzix.wallet.entity.TransactionEntity;
+import com.juzix.wallet.entity.VoteTransactionEntity;
 
 import org.reactivestreams.Publisher;
 
@@ -134,14 +139,16 @@ public class IndividualWalletDetailPresenter extends BasePresenter<IndividualWal
         }
         if (transactionEntity instanceof IndividualTransactionEntity) {
             IndividualTransactionDetailActivity.actionStart(currentActivity(), (IndividualTransactionEntity) transactionEntity, mWalletEntity.getPrefixAddress());
-        } else if (transactionEntity instanceof SharedTransactionEntity) {
+        } else if (transactionEntity instanceof VoteTransactionEntity){
+            IndividualVoteDetailActivity.actionStart(currentActivity(), transactionEntity.getUuid());
+        }else if (transactionEntity instanceof SharedTransactionEntity) {
             SharedTransactionEntity sharedTransactionEntity = (SharedTransactionEntity) transactionEntity;
             if (!sharedTransactionEntity.isRead()) {
                 sharedTransactionEntity.setRead(true);
                 SharedWalletTransactionManager.getInstance().updateTransactionForRead(mSharedWalletEntity, sharedTransactionEntity);
             }
             BaseActivity activity = currentActivity();
-            if (sharedTransactionEntity.isTransactionFinished()) {
+            if (sharedTransactionEntity.transfered()) {
                 SharedTransactionDetailActivity.actionStart(activity, sharedTransactionEntity);
             } else {
                 SigningActivity.actionStart(activity, sharedTransactionEntity);
@@ -157,6 +164,13 @@ public class IndividualWalletDetailPresenter extends BasePresenter<IndividualWal
         }
     }
 
+    @Override
+    public void enterVoteActivity() {
+        if (isViewAttached()) {
+            VoteMainActivity.actionStart(currentActivity(), mWalletEntity);
+        }
+    }
+
     private Single<List<TransactionEntity>> getTransactionEntityList() {
         return getSharedTransactionEntityList(mWalletEntity.getPrefixAddress())
                 .zipWith(getIndividualTransactionEntityList(mWalletEntity.getPrefixAddress()), new BiFunction<List<SharedTransactionEntity>, List<IndividualTransactionEntity>, List<TransactionEntity>>() {
@@ -167,6 +181,14 @@ public class IndividualWalletDetailPresenter extends BasePresenter<IndividualWal
                         transactionEntityList.addAll(individualTransactionEntities);
                         Collections.sort(transactionEntityList);
                         return transactionEntityList;
+                    }
+                })
+                .zipWith(getVoteTransactionEntityList(mWalletEntity.getPrefixAddress()), new BiFunction<List<TransactionEntity>, List<? extends TransactionEntity>, List<TransactionEntity>>() {
+                    @Override
+                    public List<TransactionEntity> apply(List<TransactionEntity> transactionEntities, List<? extends TransactionEntity> transactionEntities2) throws Exception {
+                        transactionEntities.addAll(transactionEntities2);
+                        Collections.sort(transactionEntities);
+                        return transactionEntities;
                     }
                 });
     }
@@ -218,6 +240,41 @@ public class IndividualWalletDetailPresenter extends BasePresenter<IndividualWal
                     }
                 })
                 .onErrorReturnItem(new ArrayList<SharedTransactionEntity>());
+    }
+
+    private Single<List<VoteTransactionEntity>> getVoteTransactionEntityList(String address) {
+
+        return Single.fromCallable(new Callable<List<VoteTransactionEntity>>() {
+            @Override
+            public List<VoteTransactionEntity> call() throws Exception {
+                List<SingleVoteInfoEntity> singleVoteInfoEntities = SingleVoteInfoDao.getInstance().getTransactionList();
+                List<VoteTransactionEntity> transactionEntityList = new ArrayList<>();
+                for (SingleVoteInfoEntity voteInfoEntity : singleVoteInfoEntities){
+                    VoteTransactionEntity entity = new VoteTransactionEntity.Builder(voteInfoEntity.getUuid(), voteInfoEntity.getCreateTime(), voteInfoEntity.getWalletName())
+                            .hash(voteInfoEntity.getHash())
+                            .fromAddress(voteInfoEntity.getWalletAddress())
+                            .toAddress(voteInfoEntity.getContractAddress())
+                            .value(voteInfoEntity.getValue())
+                            .blockNumber(voteInfoEntity.getBlockNumber())
+                            .latestBlockNumber(voteInfoEntity.getLatestBlockNumber())
+                            .energonPrice(voteInfoEntity.getEnergonPrice())
+                            .memo("")
+                            .status(voteInfoEntity.getStatus())
+                            .build();
+                    transactionEntityList.add(entity);
+                }
+                return transactionEntityList;
+            }
+        })
+                .toFlowable()
+                .flatMap(new Function<List<VoteTransactionEntity>, Publisher<VoteTransactionEntity>>() {
+                    @Override
+                    public Publisher<VoteTransactionEntity> apply(List<VoteTransactionEntity> singleVoteInfoEntities) throws Exception {
+                        return Flowable.fromIterable(singleVoteInfoEntities);
+                    }
+                })
+                .toList();
+
     }
 
     private Single<List<IndividualTransactionEntity>> getIndividualTransactionEntityList(String contractAddress) {

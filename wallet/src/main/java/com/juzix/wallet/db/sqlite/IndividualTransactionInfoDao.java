@@ -129,9 +129,7 @@ public class IndividualTransactionInfoDao {
                     IndividualTransactionInfoEntity individualTransactionInfoEntity = realm.where(IndividualTransactionInfoEntity.class)
                             .equalTo("uuid", uuid)
                             .findFirst();
-                    if (individualTransactionInfoEntity != null) {
-                        individualTransactionInfoEntity.setBlockNumber(blockNumber);
-                    }
+                    individualTransactionInfoEntity.setBlockNumber(blockNumber);
                 }
             });
         } catch (Exception e) {

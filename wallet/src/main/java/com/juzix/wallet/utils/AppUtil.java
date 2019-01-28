@@ -7,6 +7,9 @@ import android.content.pm.PackageManager;
 
 import com.juzix.wallet.entity.ShareAppInfo;
 
+import org.spongycastle.crypto.Digest;
+import org.spongycastle.crypto.digests.SHA3Digest;
+import org.spongycastle.util.encoders.Hex;
 import org.web3j.crypto.Hash;
 import org.web3j.utils.Numeric;
 
@@ -61,6 +64,15 @@ public class AppUtil {
      */
     public static String getSha3Pwd(String pwd){
         return Numeric.toHexStringNoPrefix(Hash.sha3(Numeric.hexStringToByteArray(AppUtil.toHexString(pwd.trim())))).toUpperCase();
+    }
+
+    // SHA3-256 算法
+    public static String sha3256(byte[] bytes) {
+        Digest digest = new SHA3Digest(256);
+        digest.update(bytes, 0, bytes.length);
+        byte[] rsData = new byte[digest.getDigestSize()];
+        digest.doFinal(rsData, 0);
+        return Hex.toHexString(rsData);
     }
 
     /**
