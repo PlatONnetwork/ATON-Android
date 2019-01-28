@@ -151,16 +151,6 @@ public class IndividualWalletFragment extends MVPBaseFragment<IndividualWalletPr
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUpdateIndividualWalletTransactionEvent(Event.UpdateIndividualWalletTransactionEvent event) {
-        mPresenter.fetchIndividualWalletList();
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUpdateIndividualWalletBalanceEvent(Event.UpdateIndividualWalletBalanceEvent event) {
-        mPresenter.fetchIndividualWalletList();
-    }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();

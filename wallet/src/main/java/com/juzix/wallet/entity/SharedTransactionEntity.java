@@ -254,11 +254,17 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
         this.transactionType = transactionType;
     }
 
-    public boolean transfered() {
+    public boolean isTransactionFinished() {
         if (getConfirms() >= requiredSignNumber) {
             return true;
+        } else {
+            int resultSize = transactionResult == null ? 0 : transactionResult.size();
+            if (resultSize - getRevokes() < requiredSignNumber) {
+                return true;
+            } else {
+                return false;
+            }
         }
-        return false;
     }
 
     public int getConfirms() {
@@ -266,6 +272,17 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
         for (TransactionResult result : transactionResult) {
             int operation = result.getOperation();
             if (operation == TransactionResult.OPERATION_APPROVAL) {
+                counter++;
+            }
+        }
+        return counter;
+    }
+
+    public int getRevokes() {
+        int counter = 0;
+        for (TransactionResult result : transactionResult) {
+            int operation = result.getOperation();
+            if (operation == TransactionResult.OPERATION_REVOKE) {
                 counter++;
             }
         }
@@ -417,60 +434,43 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
     public TransactionStatus getTransactionStatus() {
         int confirms = 0;
         int undetermineds = 0;
+        int revokes = 0;
         if (TextUtils.isEmpty(hash)) {
             //别人发起的交易
             if (executed) {
                 return TransactionStatus.SUCCEED;
             }
-            for (TransactionResult result : transactionResult) {
-                switch (result.getOperation()) {
-                    case TransactionResult.OPERATION_APPROVAL:
-                        confirms++;
-                        break;
-                    case TransactionResult.OPERATION_UNDETERMINED:
-                        undetermineds++;
-                        break;
-                }
-            }
-            if (confirms >= requiredSignNumber) {
-                return TransactionStatus.SUCCEED;
-            }
-            if (confirms + undetermineds < requiredSignNumber) {
-                return TransactionStatus.FAILED;
-            }
-            return TransactionStatus.SIGNING;
         } else {
-
             if (transactionResult == null || transactionResult.isEmpty()) {
                 return TransactionStatus.CREATE_JOINT_WALLET;
             }
+        }
 
-            for (TransactionResult result : transactionResult) {
-                switch (result.getOperation()) {
-                    case TransactionResult.OPERATION_APPROVAL:
-                        confirms++;
-                        break;
-                    case TransactionResult.OPERATION_UNDETERMINED:
-                        undetermineds++;
-                        break;
-                }
+        int resultSize = transactionResult.size();
+
+        for (TransactionResult result : transactionResult) {
+            switch (result.getOperation()) {
+                case TransactionResult.OPERATION_APPROVAL:
+                    confirms++;
+                    break;
+                case TransactionResult.OPERATION_UNDETERMINED:
+                    undetermineds++;
+                    break;
+                case TransactionResult.OPERATION_REVOKE:
+                    revokes++;
+                    break;
+                default:
+                    break;
             }
-            if (confirms >= requiredSignNumber) {
-                if (blockNumber == 0) {
-                    return TransactionStatus.PENDING;
-                } else {
-                    long signedBlockNumber = latestBlockNumber - blockNumber;
-                    if (signedBlockNumber >= 1) {
-                        return TransactionStatus.SUCCEED;
-                    } else {
-                        return TransactionStatus.SIGNING;
-                    }
-                }
-            }
-            if (confirms + undetermineds < requiredSignNumber) {
+        }
+        if (confirms >= requiredSignNumber) {
+            return TransactionStatus.SUCCEED;
+        } else {
+            if (resultSize - revokes < requiredSignNumber) {
                 return TransactionStatus.FAILED;
+            } else {
+                return TransactionStatus.SIGNING;
             }
-            return TransactionStatus.SIGNING;
         }
     }
 

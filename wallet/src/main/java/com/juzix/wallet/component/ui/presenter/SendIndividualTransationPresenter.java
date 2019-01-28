@@ -10,6 +10,9 @@ import android.view.View;
 import com.juzhen.framework.network.NetConnectivity;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.CustomThrowable;
+import com.juzix.wallet.app.LoadingTransformer;
+import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.SendIndividualTransationContract;
 import com.juzix.wallet.component.ui.dialog.CommonDialogFragment;
@@ -31,6 +34,15 @@ import org.web3j.crypto.WalletUtils;
 
 import java.math.RoundingMode;
 import java.util.UUID;
+import java.util.concurrent.Callable;
+
+import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
+import io.reactivex.SingleSource;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+
 
 /**
  * @author matrixelement
@@ -46,6 +58,7 @@ public class SendIndividualTransationPresenter extends BasePresenter<SendIndivid
     private final static double D_GAS_PRICE_WEI = MAX_GAS_PRICE_WEI - MIN_GAS_PRICE_WEI;
 
     private IndividualWalletEntity walletEntity;
+    private String toAddress;
 
     private double gasPrice = MIN_GAS_PRICE_WEI;
     private long gasLimit = DEAULT_GAS_LIMIT;
@@ -55,12 +68,12 @@ public class SendIndividualTransationPresenter extends BasePresenter<SendIndivid
     public SendIndividualTransationPresenter(SendIndividualTransationContract.View view) {
         super(view);
         walletEntity = view.getWalletEntityFromIntent();
+        toAddress = getView().getToAddressFromIntent();
     }
 
     @Override
     public void init() {
         if (isViewAttached()) {
-            String toAddress = getView().getToAddressFromIntent();
             if (!TextUtils.isEmpty(toAddress)) {
                 getView().setToAddress(toAddress);
             }
@@ -82,16 +95,29 @@ public class SendIndividualTransationPresenter extends BasePresenter<SendIndivid
 
     @Override
     public void fetchDefaultWalletInfo() {
+
         if (walletEntity == null) {
             return;
         }
-        new Thread() {
+
+        Single.fromCallable(new Callable<Double>() {
             @Override
-            public void run() {
-                walletEntity.setBalance(Web3jManager.getInstance().getBalance(walletEntity.getPrefixAddress()));
-                mHandler.sendEmptyMessage(MSG_UPDATEWALLETINFO);
+            public Double call() throws Exception {
+                return Web3jManager.getInstance().getBalance(walletEntity.getPrefixAddress());
             }
-        }.start();
+        })
+                .compose(new SchedulersTransformer())
+                .compose(bindToLifecycle())
+                .subscribe(new Consumer<Double>() {
+                    @Override
+                    public void accept(Double balance) throws Exception {
+                        if (isViewAttached()) {
+                            walletEntity.setBalance(balance);
+                            getView().updateWalletInfo(walletEntity);
+                            calculateFeeAndTime(percent);
+                        }
+                    }
+                });
     }
 
 
@@ -234,106 +260,96 @@ public class SendIndividualTransationPresenter extends BasePresenter<SendIndivid
 
     }
 
-    private void sendTransaction(String password, String transferAmount, String toAddress) {
-        String to = toAddress;
-        String from = walletEntity.getPrefixAddress();
-        String amount = transferAmount;
-        long time = System.currentTimeMillis();
-        showLoadingDialog();
-        new Thread() {
+    private Single<String> getPrivateKey(IndividualWalletEntity walletEntity, String password) {
+        return Single.create(new SingleOnSubscribe<String>() {
             @Override
-            public void run() {
+            public void subscribe(SingleEmitter<String> emitter) throws Exception {
                 String privateKey = IndividualWalletManager.getInstance().exportPrivateKey(walletEntity, password);
                 if (TextUtils.isEmpty(privateKey)) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("password", password);
-                    bundle.putString("transferAmount", transferAmount);
-                    bundle.putString("toAddress", toAddress);
-                    Message msg = mHandler.obtainMessage();
-                    msg.what = MSG_PASSWORD_FAILED;
-                    msg.setData(bundle);
-                    mHandler.sendMessage(msg);
-                    return;
-                }
-                String hash = IndividualWalletTransactionManager.getInstance().sendTransaction(privateKey, from, to, amount, NumberParserUtils.parseLong(BigDecimalUtil.parseString(gasPrice)), gasLimit);
-                if (TextUtils.isEmpty(hash)) {
-                    mHandler.sendEmptyMessage(MSG_TRANSFER_FAILED);
+                    emitter.onError(new CustomThrowable(CustomThrowable.CODE_ERROR_PASSWORD));
                 } else {
-                    IndividualTransactionInfoDao.getInstance().insertTransaction(new IndividualTransactionInfoEntity.Builder()
-                            .uuid(UUID.randomUUID().toString())
-                            .hash(hash)
-                            .createTime(System.currentTimeMillis())
-                            .from(walletEntity.getPrefixAddress())
-                            .to(toAddress)
-                            .walletName(walletEntity.getName())
-                            .build());
-                    mHandler.sendEmptyMessage(MSG_OK);
-                    EventPublisher.getInstance().sendIndividualTransactionSucceedEvent();
+                    emitter.onSuccess(privateKey);
                 }
             }
-        }.start();
+        });
     }
 
-//    private void sendTransaction(String password, String transferAmount, String toAddress) {
-//
-//        String memo = getView().getTransactionMemo();
-//
-//        Flowable.fromCallable(() -> IndividualWalletManager.getInstance().exportPrivateKey(walletEntity, password)).onErrorReturn(throwable -> "").flatMap((Function<String, Publisher<String>>) privateKey -> {
-//            if (TextUtils.isEmpty(privateKey)) {
-//                return Flowable.just(string(R.string.validPasswordError));
-//            } else {
-////                long gasLimit = this.gasLimit;
-////                long gasLimit = 10 * DEAULT_GAS_LIMIT;
-////                double gasPrice = NewSharedWalletTransactionManager.GAS_PRICE.doubleValue();
-////                long gasLimit = NewSharedWalletTransactionManager.GAS_LIMIT.longValue();
-//                return walletTransactionService.sendTransaction(privateKey, walletEntity.getPrefixAddress(), toAddress, transferAmount, memo, NumberParserUtils.parseLong(BigDecimalUtil.parseString(gasPrice)), gasLimit);
-//            }
-//        }).compose(((BaseActivity) getView()).bindToLifecycle()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).doOnSubscribe(new Consumer<Subscription>() {
-//            @Override
-//            public void accept(Subscription subscription) throws Exception {
-//                if (isViewAttached()) {
-//                    showLoadingDialog();
-//                }
-//            }
-//        }).doOnTerminate(() -> {
-//            if (isViewAttached()) {
-//                dismissLoadingDialogImmediately();
-//            }
-//        }).subscribe(hash -> {
-//
-//            if (string(R.string.validPasswordError).equals(hash)) {
-//                if (isViewAttached()) {
-//                    CommonDialogFragment.createCommonTitleWithOneButton(string(R.string.validPasswordError), string(R.string.enterAgainTips), string(R.string.back), new OnDialogViewClickListener() {
-//                        @Override
-//                        public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
-//                            showInputWalletPasswordDialogFragment(password, transferAmount, toAddress);
-//                        }
-//                    }).show(currentActivity().getSupportFragmentManager(), "showPasswordError");
-//                }
-//            } else {
-//                IndividualTransactionInfoDao.getInstance().insertTransaction(new IndividualTransactionInfoEntity.Builder()
-//                        .uuid(UUID.randomUUID().toString())
-//                        .hash(hash)
-//                        .createTime(System.currentTimeMillis())
-//                        .from(walletEntity.getPrefixAddress())
-//                        .to(toAddress)
-//                        .walletName(walletEntity.getName())
-//                        .memo(memo)
-//                        .build());
-//
-//                EventPublisher.getInstance().sendIndividualTransactionSucceedEvent();
-//
-//                if (isViewAttached()) {
-//                    ToastUtil.showLongToast(currentActivity(), string(R.string.transfer_succeed));
-//                    ((BaseActivity) getView()).finish();
-//                }
-//            }
-//        }, throwable -> {
-//            if (isViewAttached()) {
-//                ToastUtil.showLongToast(currentActivity(), string(R.string.transfer_failed));
-//            }
-//        });
-//    }
+    private Single<String> sendTransaction(String privateKey, String fromAddress, String toAddress, String transferAmount, long gasPrice, long gasLimit) {
+
+        return Single.create(new SingleOnSubscribe<String>() {
+            @Override
+            public void subscribe(SingleEmitter<String> emitter) throws Exception {
+                String transactionHash = IndividualWalletTransactionManager.getInstance().sendTransaction(privateKey, fromAddress, toAddress, transferAmount, NumberParserUtils.parseLong(BigDecimalUtil.parseString(gasPrice)), gasLimit);
+                if (TextUtils.isEmpty(transactionHash)) {
+                    emitter.onError(new CustomThrowable(CustomThrowable.CODE_ERROR_TRANSFER_FAILED));
+                } else {
+                    emitter.onSuccess(transactionHash);
+                }
+            }
+        });
+    }
+
+    private void sendTransaction(String password, String transferAmount, String toAddress) {
+
+        getPrivateKey(walletEntity, password)
+                .flatMap(new Function<String, SingleSource<String>>() {
+                    @Override
+                    public SingleSource<String> apply(String privateKey) throws Exception {
+                        return sendTransaction(privateKey, walletEntity.getPrefixAddress(), toAddress, transferAmount, NumberParserUtils.parseLong(BigDecimalUtil.parseString(gasPrice)), gasLimit);
+                    }
+                })
+                .map(new Function<String, IndividualTransactionInfoEntity>() {
+                    @Override
+                    public IndividualTransactionInfoEntity apply(String hash) throws Exception {
+                        return new IndividualTransactionInfoEntity.Builder()
+                                .uuid(UUID.randomUUID().toString())
+                                .hash(hash)
+                                .createTime(System.currentTimeMillis())
+                                .from(walletEntity.getPrefixAddress())
+                                .to(toAddress)
+                                .walletName(walletEntity.getName())
+                                .build();
+                    }
+                })
+                .doOnSuccess(new Consumer<IndividualTransactionInfoEntity>() {
+                    @Override
+                    public void accept(IndividualTransactionInfoEntity individualTransactionInfoEntity) throws Exception {
+                        IndividualTransactionInfoDao.getInstance().insertTransaction(individualTransactionInfoEntity);
+                        EventPublisher.getInstance().sendIndividualTransactionSucceedEvent();
+                    }
+                })
+                .compose(new SchedulersTransformer())
+                .compose(LoadingTransformer.bindToLifecycle(currentActivity()))
+                .compose(bindToLifecycle())
+                .subscribe(new Consumer<IndividualTransactionInfoEntity>() {
+                    @Override
+                    public void accept(IndividualTransactionInfoEntity transactionInfoEntity) throws Exception {
+                        if (isViewAttached()) {
+                            showLongToast(string(R.string.transfer_succeed));
+                            currentActivity().finish();
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        if (isViewAttached()) {
+                            if (throwable instanceof CustomThrowable) {
+                                CustomThrowable exception = (CustomThrowable) throwable;
+                                if (exception.getErrCode() == CustomThrowable.CODE_ERROR_PASSWORD) {
+                                    CommonDialogFragment.createCommonTitleWithOneButton(string(R.string.validPasswordError), string(R.string.enterAgainTips), string(R.string.back), new OnDialogViewClickListener() {
+                                        @Override
+                                        public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
+                                            showInputWalletPasswordDialogFragment(password, transferAmount, toAddress);
+                                        }
+                                    }).show(currentActivity().getSupportFragmentManager(), "showPasswordError");
+                                } else if (exception.getErrCode() == CustomThrowable.CODE_ERROR_TRANSFER_FAILED) {
+                                    showLongToast(string(R.string.transfer_failed));
+                                }
+                            }
+                        }
+                    }
+                });
+    }
 
     private void showInputWalletPasswordDialogFragment(String password, String transferAmount, String toAddress) {
         InputWalletPasswordDialogFragment.newInstance(password).setOnConfirmClickListener(new InputWalletPasswordDialogFragment.OnConfirmClickListener() {

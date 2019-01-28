@@ -27,6 +27,8 @@ public class IndividualWalletDetailContract {
 
         void fetchWalletDetail();
 
+        void fetchWalletTransactionList();
+
         void enterTransactionDetailActivity(TransactionEntity transactionEntity);
 
         void enterReceiveTransactionActivity();

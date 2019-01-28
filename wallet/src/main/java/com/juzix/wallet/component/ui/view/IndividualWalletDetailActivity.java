@@ -111,12 +111,7 @@ public class IndividualWalletDetailActivity extends MVPBaseActivity<IndividualWa
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTransactionSucceedEvent(Event.IndividualTransactionSucceedEvent event) {
-        mPresenter.fetchWalletDetail();
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUpdateIndividualWalletTransactionEvent(Event.UpdateIndividualWalletTransactionEvent event) {
-        mPresenter.fetchWalletDetail();
+        mPresenter.fetchWalletTransactionList();
     }
 
     @Override

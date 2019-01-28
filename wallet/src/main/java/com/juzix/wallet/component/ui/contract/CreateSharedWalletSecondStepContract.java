@@ -4,19 +4,20 @@ import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 
+import java.math.BigInteger;
 import java.util.List;
 
 public class CreateSharedWalletSecondStepContract {
 
     public static class ContractEntity {
-        public static final int     FOCUS_NONE    = 0;
-        public static final int     FOCUS_NAME    = 1;
-        public static final int     FOCUS_ADDRESS = 2;
-        public              String  name;
-        public              String  address;
-        public              String  errorMsg;
-        public              boolean enabled;
-        public              int     focus;
+        public static final int FOCUS_NONE = 0;
+        public static final int FOCUS_NAME = 1;
+        public static final int FOCUS_ADDRESS = 2;
+        public String name;
+        public String address;
+        public String errorMsg;
+        public boolean enabled;
+        public int focus;
 
         private ContractEntity(Builder builder) {
             setName(builder.name);
@@ -67,11 +68,11 @@ public class CreateSharedWalletSecondStepContract {
         }
 
         public static final class Builder {
-            private String  name;
-            private String  address;
-            private String  errorMsg;
+            private String name;
+            private String address;
+            private String errorMsg;
             private boolean enabled;
-            public  int     focus;
+            public int focus;
 
             public Builder() {
             }
@@ -122,14 +123,6 @@ public class CreateSharedWalletSecondStepContract {
         void updateOwner(int position);
 
         void setCreateSharedWalletBtnEnable(boolean enable);
-
-        void showPasswordDialog(String gasPrice, String gasLimit);
-
-        void dimissPasswordDialog();
-
-        void showErrorDialog(String title, String content);
-
-        void dimissErrorDialog();
     }
 
     public interface Presenter extends IPresenter<View> {
@@ -150,7 +143,7 @@ public class CreateSharedWalletSecondStepContract {
 
         void createContract();
 
-        void validPassword(String password, String gasPrice, String gasLimit);
+        void validPassword(String password, BigInteger gasPrice);
 
         void focusName(int position);
 

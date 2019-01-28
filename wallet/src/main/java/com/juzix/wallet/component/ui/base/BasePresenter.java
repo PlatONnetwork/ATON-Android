@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.juzix.wallet.component.ui.IContext;
 import com.juzix.wallet.config.PermissionConfigure;
+import com.trello.rxlifecycle2.LifecycleProvider;
 import com.trello.rxlifecycle2.LifecycleTransformer;
 
 import java.lang.ref.Reference;
@@ -35,6 +36,22 @@ public class BasePresenter<T extends IView> implements IPresenter<T>, IContext {
     @Override
     public T getView() {
         return mViewReference.get();
+    }
+
+    public LifecycleProvider<?> getLifecycleProvider() {
+        if (getView() instanceof BaseActivity) {
+            return (BaseActivity) getView();
+        } else {
+            return (BaseFragment) getView();
+        }
+    }
+
+    public final <T> LifecycleTransformer<T> bindToLifecycle() {
+        if (getView() instanceof BaseActivity) {
+            return ((BaseActivity) getView()).bindToLifecycle();
+        } else {
+            return ((BaseFragment) getView()).bindToLifecycle();
+        }
     }
 
     @Override

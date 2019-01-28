@@ -40,7 +40,7 @@ public class IndividualTransactionInfoDao {
     }
 
     public IndividualTransactionInfoEntity getTransactionByHash(String hash) {
-        Realm                           realm             = null;
+        Realm realm = null;
         IndividualTransactionInfoEntity transactionEntity = null;
         try {
             realm = Realm.getDefaultInstance();
@@ -63,8 +63,8 @@ public class IndividualTransactionInfoDao {
 
     public List<IndividualTransactionInfoEntity> getTransactionList() {
 
-        List<IndividualTransactionInfoEntity> list  = new ArrayList<>();
-        Realm                                 realm = null;
+        List<IndividualTransactionInfoEntity> list = new ArrayList<>();
+        Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
             RealmResults<IndividualTransactionInfoEntity> results = realm.where(IndividualTransactionInfoEntity.class).findAll();
@@ -81,8 +81,8 @@ public class IndividualTransactionInfoDao {
 
     public List<IndividualTransactionInfoEntity> getTransactionListByWalletAddress(String walletAddress) {
 
-        List<IndividualTransactionInfoEntity> list  = new ArrayList<>();
-        Realm                                 realm = null;
+        List<IndividualTransactionInfoEntity> list = new ArrayList<>();
+        Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
             RealmResults<IndividualTransactionInfoEntity> results = realm.where(IndividualTransactionInfoEntity.class).equalTo("walletAddress", walletAddress).findAll();
@@ -99,8 +99,8 @@ public class IndividualTransactionInfoDao {
 
     public List<IndividualTransactionInfoEntity> getTransactionList(String address) {
 
-        List<IndividualTransactionInfoEntity> list  = new ArrayList<>();
-        Realm                                 realm = null;
+        List<IndividualTransactionInfoEntity> list = new ArrayList<>();
+        Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
             RealmResults<IndividualTransactionInfoEntity> results = realm.where(IndividualTransactionInfoEntity.class)
@@ -117,6 +117,30 @@ public class IndividualTransactionInfoDao {
             }
         }
         return list;
+    }
+
+    public void updateTransactionBlockNumber(String uuid, long blockNumber) {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    IndividualTransactionInfoEntity individualTransactionInfoEntity = realm.where(IndividualTransactionInfoEntity.class)
+                            .equalTo("uuid", uuid)
+                            .findFirst();
+                    individualTransactionInfoEntity.setBlockNumber(blockNumber);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+
+
     }
 
     private final static class InstanceHolder {

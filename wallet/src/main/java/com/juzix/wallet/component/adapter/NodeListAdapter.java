@@ -191,7 +191,16 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
 
         holder.etNode.addTextChangedListener(textChangedListener);
         holder.etNode.setTag(textChangedListener);
-        holder.etNode.setText(TextUtils.isEmpty(nodeEntity.getNodeAddress()) ? map.get(nodeEntity.getId()) : nodeEntity.getNodeAddress());
+        String nodeAddress = TextUtils.isEmpty(nodeEntity.getNodeAddress()) ? map.get(nodeEntity.getId()) : nodeEntity.getNodeAddress();
+        boolean isDefaultMainNetwork = nodeEntity.isDefaultNode() && nodeEntity.isMainNetworkNode();
+        boolean isDefaultTestNetwork = nodeEntity.isDefaultNode() && !nodeEntity.isMainNetworkNode();
+        if (isDefaultMainNetwork) {
+            holder.etNode.setText(String.format("%s(%s)", nodeAddress, context.getString(R.string.default_main_network)));
+        } else if (isDefaultTestNetwork) {
+            holder.etNode.setText(String.format("%s(%s)", nodeAddress, context.getString(R.string.default_test_network)));
+        } else {
+            holder.etNode.setText(nodeAddress);
+        }
 
         holder.ivDel.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -1,5 +1,7 @@
 package com.juzix.wallet.db.entity;
 
+import com.juzix.wallet.entity.IndividualTransactionEntity;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -33,6 +35,10 @@ public class IndividualTransactionInfoEntity extends RealmObject implements Clon
      * 转账备注
      */
     private String memo;
+    /**
+     * 当前交易区块
+     */
+    private long blockNumber;
 
     public IndividualTransactionInfoEntity(){
 
@@ -104,6 +110,14 @@ public class IndividualTransactionInfoEntity extends RealmObject implements Clon
         this.memo = memo;
     }
 
+    public long getBlockNumber() {
+        return blockNumber;
+    }
+
+    public void setBlockNumber(long blockNumber) {
+        this.blockNumber = blockNumber;
+    }
+
     public static final class Builder {
         private String uuid;
         private String hash;
@@ -112,6 +126,7 @@ public class IndividualTransactionInfoEntity extends RealmObject implements Clon
         private String from;
         private String to;
         private String memo;
+        private long blockNumber;
 
         public Builder() {
         }
@@ -151,8 +166,23 @@ public class IndividualTransactionInfoEntity extends RealmObject implements Clon
             return this;
         }
 
+        public Builder blockNumber(long val) {
+            blockNumber = val;
+            return this;
+        }
+
         public IndividualTransactionInfoEntity build() {
             return new IndividualTransactionInfoEntity(this);
         }
+    }
+
+    public IndividualTransactionEntity buildIndividualTransactionEntity() {
+        return new IndividualTransactionEntity.Builder(uuid, createTime, walletName)
+                .blockNumber(blockNumber)
+                .fromAddress(from)
+                .toAddress(to)
+                .hash(hash)
+                .memo(memo)
+                .build();
     }
 }

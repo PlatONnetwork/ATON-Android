@@ -28,8 +28,9 @@
             android:layout_marginRight="16dp"
             android:clipChildren="false"
             android:clipToPadding="false"
-            android:overScrollMode="never"
             android:paddingTop="17dp"
+            android:divider="@drawable/bg_transparent_list_divider"
+            android:dividerHeight="16dp"
             android:paddingBottom="71dp"
             tools:listitem="@layout/item_create_shared_owner_list" />
 

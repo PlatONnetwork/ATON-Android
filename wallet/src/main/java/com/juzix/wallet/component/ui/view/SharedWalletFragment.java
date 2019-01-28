@@ -3,7 +3,6 @@ package com.juzix.wallet.component.ui.view;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +19,7 @@ import com.juzix.wallet.component.ui.contract.SharedWalletContract;
 import com.juzix.wallet.component.ui.presenter.SharedWalletPresenter;
 import com.juzix.wallet.component.widget.AutofitTextView;
 import com.juzix.wallet.component.widget.RoundedTextView;
+import com.juzix.wallet.engine.SharedWalletManager;
 import com.juzix.wallet.entity.SharedWalletEntity;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
@@ -151,23 +151,20 @@ public class SharedWalletFragment extends MVPBaseFragment<SharedWalletPresenter>
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUpdateSharedWalletBalanceEvent(Event.UpdateSharedWalletBalanceEvent event) {
-        mPresenter.fetchSharedWalletList();
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateCreateJointWalletProgressEvent(Event.UpdateCreateJointWalletProgressEvent event) {
         SharedWalletEntity sharedWalletEntity = event.sharedWalletEntity;
-        Log.e(TAG, sharedWalletEntity.toString());
-        walletListAdapter.updateItem(getActivity(), listSharedWallet, sharedWalletEntity);
-        if (sharedWalletEntity.getProgress() == 100) {
-            listSharedWallet.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    sharedWalletEntity.updateFinished(true);
-                    walletListAdapter.updateItem(getActivity(), listSharedWallet, sharedWalletEntity);
-                }
-            }, 500);
+        if (sharedWalletEntity != null) {
+            walletListAdapter.updateItem(getActivity(), listSharedWallet, sharedWalletEntity);
+            if (sharedWalletEntity.getProgress() == 100) {
+                listSharedWallet.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        SharedWalletManager.getInstance().updateWalletFinished(sharedWalletEntity.getUuid(), true);
+                        sharedWalletEntity.updateFinished(true);
+                        walletListAdapter.updateItem(getActivity(), listSharedWallet, sharedWalletEntity);
+                    }
+                }, 500);
+            }
         }
     }
 

@@ -1,8 +1,6 @@
 package com.juzix.wallet.component.ui.presenter;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.DialogFragment;
 import android.text.TextUtils;
 import android.view.View;
@@ -10,7 +8,9 @@ import android.view.View;
 import com.juzhen.framework.network.NetConnectivity;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.CustomThrowable;
 import com.juzix.wallet.app.LoadingTransformer;
+import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.SendSharedTransationContract;
 import com.juzix.wallet.component.ui.dialog.CommonDialogFragment;
@@ -18,6 +18,7 @@ import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
 import com.juzix.wallet.component.ui.dialog.SelectSharedWalletDialogFragment;
 import com.juzix.wallet.component.ui.dialog.SendTransationDialogFragment;
+import com.juzix.wallet.db.entity.SharedTransactionInfoEntity;
 import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.engine.SharedWalletTransactionManager;
 import com.juzix.wallet.engine.Web3jManager;
@@ -31,8 +32,14 @@ import org.web3j.crypto.WalletUtils;
 
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.util.concurrent.Callable;
 
+import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
+import io.reactivex.SingleSource;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 
 /**
  * @author matrixelement
@@ -55,11 +62,6 @@ public class SendSharedTransationPresenter extends BasePresenter<SendSharedTrans
     public SendSharedTransationPresenter(SendSharedTransationContract.View view) {
         super(view);
         walletEntity = view.getSharedWalletFromIntent();
-    }
-
-    @Override
-    public void init() {
-
     }
 
     @Override
@@ -87,13 +89,25 @@ public class SendSharedTransationPresenter extends BasePresenter<SendSharedTrans
             getView().setSendTransactionButtonVisible(false);
         }
 
-        new Thread() {
+        Single.fromCallable(new Callable<Double>() {
             @Override
-            public void run() {
-                walletEntity.setBalance(Web3jManager.getInstance().getBalance(walletEntity.getPrefixContractAddress()));
-                mHandler.sendEmptyMessage(MSG_UPDATEWALLETINFO);
+            public Double call() throws Exception {
+                return Web3jManager.getInstance().getBalance(walletEntity.getPrefixContractAddress());
             }
-        }.start();
+        })
+                .compose(new SchedulersTransformer())
+                .compose(bindToLifecycle())
+                .subscribe(new Consumer<Double>() {
+                    @Override
+                    public void accept(Double balance) throws Exception {
+                        walletEntity.setBalance(balance);
+                        if (isViewAttached()) {
+                            getView().updateWalletInfo(walletEntity);
+                            calculateFeeAndTime(percent);
+
+                        }
+                    }
+                });
     }
 
 
@@ -232,39 +246,18 @@ public class SendSharedTransationPresenter extends BasePresenter<SendSharedTrans
 
     }
 
-    private void sendTransaction(Credentials credentials, SharedWalletEntity sharedWalletEntity, String password, String toAddress, String memo, String transferAmount) {
-
-        showLoadingDialog();
-
-        new Thread() {
+    private Single<Credentials> validPassword(String password, String keyJson) {
+        return Single.create(new SingleOnSubscribe<Credentials>() {
             @Override
-            public void run() {
-                BigInteger submitGasPrice = BigInteger.valueOf(NumberParserUtils.parseLong(BigDecimalUtil.parseString(gasPrice)));
-                int code = SharedWalletTransactionManager.getInstance().submitTransaction(credentials, sharedWalletEntity, toAddress, transferAmount, memo,
-                        submitGasPrice);
-                switch (code) {
-                    case SharedWalletTransactionManager.CODE_OK:
-                        mHandler.sendEmptyMessage(MSG_OK);
-                        break;
-                    case SharedWalletTransactionManager.CODE_ERROR_CONFIRM_TRANSACTION:
-                        mHandler.sendEmptyMessage(MSG_OK);
-                        break;
-                    case SharedWalletTransactionManager.CODE_ERROR_PASSWORD:
-                        Bundle bundle = new Bundle();
-                        bundle.putString("password", password);
-                        bundle.putString("transferAmount", transferAmount);
-                        bundle.putString("toAddress", toAddress);
-                        Message msg = mHandler.obtainMessage();
-                        msg.what = MSG_PASSWORD_FAILED;
-                        msg.setData(bundle);
-                        mHandler.sendMessage(msg);
-                        break;
-                    case SharedWalletTransactionManager.CODE_ERROR_SUBMIT_TRANSACTION:
-                        mHandler.sendEmptyMessage(MSG_TRANSFER_FAILED);
-                        break;
+            public void subscribe(SingleEmitter<Credentials> emitter) throws Exception {
+                Credentials credentials = SharedWalletTransactionManager.getInstance().credentials(password, keyJson);
+                if (credentials == null) {
+                    emitter.onError(new CustomThrowable(CustomThrowable.CODE_ERROR_PASSWORD));
+                } else {
+                    emitter.onSuccess(credentials);
                 }
             }
-        }.start();
+        });
     }
 
 
@@ -272,27 +265,44 @@ public class SendSharedTransationPresenter extends BasePresenter<SendSharedTrans
 
         String memo = getView().getTransactionMemo();
         String keyJson = individualWalletEntity.getKey();
-        String to = toAddress;
-        String amount = transferAmount;
+        BigInteger submitGasPrice = BigInteger.valueOf(NumberParserUtils.parseLong(BigDecimalUtil.parseString(gasPrice)));
 
-        SharedWalletTransactionManager.getInstance()
-                .validPassword(password, keyJson)
-                .compose(LoadingTransformer.bindToLifecycle(getView().currentActivity()))
-                .subscribe(new Consumer<Credentials>() {
+        validPassword(password, keyJson)
+                .flatMap(new Function<Credentials, SingleSource<SharedTransactionInfoEntity>>() {
                     @Override
-                    public void accept(Credentials credentials) throws Exception {
-                        sendTransaction(credentials, walletEntity, password, to, memo, amount);
+                    public SingleSource<SharedTransactionInfoEntity> apply(Credentials credentials) throws Exception {
+                        return SharedWalletTransactionManager.getInstance()
+                                .submitTransaction(credentials, walletEntity, toAddress, transferAmount, memo, submitGasPrice);
+                    }
+                })
+                .compose(new SchedulersTransformer())
+                .compose(LoadingTransformer.bindToLifecycle(getView().currentActivity()))
+                .compose(bindToLifecycle())
+                .subscribe(new Consumer<SharedTransactionInfoEntity>() {
+                    @Override
+                    public void accept(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
+                        if (isViewAttached()) {
+                            showLongToast(R.string.transfer_succeed);
+                            currentActivity().finish();
+                        }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         if (isViewAttached()) {
-                            CommonDialogFragment.createCommonTitleWithOneButton(string(R.string.validPasswordError), string(R.string.enterAgainTips), string(R.string.back), new OnDialogViewClickListener() {
-                                @Override
-                                public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
-                                    showInputWalletPasswordDialogFragment(password, transferAmount, toAddress);
+                            if (throwable instanceof CustomThrowable) {
+                                CustomThrowable customThrowable = (CustomThrowable) throwable;
+                                if (customThrowable.getErrCode() == CustomThrowable.CODE_ERROR_PASSWORD) {
+                                    CommonDialogFragment.createCommonTitleWithOneButton(string(R.string.validPasswordError), string(R.string.enterAgainTips), string(R.string.back), new OnDialogViewClickListener() {
+                                        @Override
+                                        public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
+                                            showInputWalletPasswordDialogFragment(password, transferAmount, toAddress);
+                                        }
+                                    }).show(currentActivity().getSupportFragmentManager(), "showPasswordError");
                                 }
-                            }).show(currentActivity().getSupportFragmentManager(), "showPasswordError");
+                            } else {
+                                showLongToast(R.string.transfer_failed);
+                            }
                         }
                     }
                 });
@@ -341,55 +351,4 @@ public class SendSharedTransationPresenter extends BasePresenter<SendSharedTrans
     private double getMaxFee() {
         return BigDecimalUtil.div(BigDecimalUtil.mul(gasLimit, MAX_GAS_PRICE_WEI), 1E18);
     }
-
-
-    private static final int MSG_OK = 1;
-    private static final int MSG_UPDATEWALLETINFO = 2;
-    private static final int MSG_PASSWORD_FAILED = -1;
-    private static final int MSG_TRANSFER_FAILED = -3;
-
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case MSG_OK:
-                    if (isViewAttached()) {
-                        showLongToast(string(R.string.transfer_succeed));
-                        dismissLoadingDialogImmediately();
-                        currentActivity().finish();
-                    }
-                    break;
-                case MSG_PASSWORD_FAILED:
-                    dismissLoadingDialogImmediately();
-                    if (isViewAttached()) {
-                        CommonDialogFragment.createCommonTitleWithOneButton(string(R.string.validPasswordError), string(R.string.enterAgainTips), string(R.string.back), new OnDialogViewClickListener() {
-                            @Override
-                            public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
-                                Bundle bundle = msg.getData();
-                                String password = bundle.getString("password");
-                                String transferAmount = bundle.getString("transferAmount");
-                                String toAddress = bundle.getString("toAddress");
-                                showInputWalletPasswordDialogFragment(password, transferAmount, toAddress);
-                            }
-                        }).show(currentActivity().getSupportFragmentManager(), "showPasswordError");
-                    }
-                    break;
-                case MSG_TRANSFER_FAILED:
-                    dismissLoadingDialogImmediately();
-                    if (isViewAttached()) {
-                        ToastUtil.showLongToast(currentActivity(), string(R.string.transfer_failed));
-                    }
-                    break;
-
-                case MSG_UPDATEWALLETINFO:
-                    if (isViewAttached()) {
-                        getView().updateWalletInfo(walletEntity);
-                        calculateFeeAndTime(percent);
-                    }
-                    break;
-            }
-        }
-    };
-
 }

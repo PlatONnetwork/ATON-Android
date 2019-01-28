@@ -25,7 +25,7 @@ public class SharedWalletListAdapter extends CommonAdapter<SharedWalletEntity> {
     protected void convert(Context context, ViewHolder viewHolder, SharedWalletEntity item, int position) {
         if (item != null) {
             viewHolder.getView(R.id.v_new_msg).setVisibility(item.getUnread() > 0 ? View.VISIBLE : View.GONE);
-            viewHolder.setText(R.id.tv_total_balance, NumberParserUtils.getPrettyBalance(item.getBalance()));
+            viewHolder.setText(R.id.tv_total_balance, context.getString(R.string.amount_with_unit, NumberParserUtils.getPrettyBalance(item.getBalance())));
             viewHolder.setText(R.id.tv_wallet_name, item.getName());
             viewHolder.setImageResource(R.id.iv_wallet_avatar, RUtils.drawable(item.getAvatar()));
             ProgressBar progressBar = viewHolder.getView(R.id.progress_bar);

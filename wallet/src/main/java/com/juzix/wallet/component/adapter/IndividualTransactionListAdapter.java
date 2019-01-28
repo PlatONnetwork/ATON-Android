@@ -36,20 +36,20 @@ public class IndividualTransactionListAdapter extends CommonAdapter<TransactionE
                 viewHolder.setText(R.id.tv_transaction_status, entity.isReceiver(walletAddress) ? context.getString(R.string.receive) : context.getString(R.string.send));
                 viewHolder.setText(R.id.tv_transaction_time, DateUtil.format(entity.getCreateTime(), DateUtil.DATETIME_FORMAT_PATTERN));
                 viewHolder.setText(R.id.tv_transaction_amount, context.getString(R.string.amount_with_unit, String.format("%s%s", isReceiver ? "+" : "-", NumberParserUtils.getPrettyBalance(entity.getValue()))));
-                viewHolder.setText(R.id.tv_transaction_status_desc, transactionStatus.getStatusDesc(context, entity.getSignedBlockNumber(), 12));
+                viewHolder.setText(R.id.tv_transaction_status_desc, transactionStatus.getStatusDesc(context, entity.getSignedBlockNumber(), 1));
                 viewHolder.setTextColor(R.id.tv_transaction_status_desc, ContextCompat.getColor(context, transactionStatus.getStatusDescTextColor()));
                 viewHolder.setImageResource(R.id.iv_transaction_status, entity.isReceiver(walletAddress) ? R.drawable.icon_receive_transaction : R.drawable.icon_send_transation);
             }else if (item instanceof  SharedTransactionEntity){
-                SharedTransactionEntity entity = (SharedTransactionEntity) item;
-                SharedTransactionEntity.TransactionStatus transactionStatus = entity.getTransactionStatus();
-                boolean                                   isReceiver        = entity.isReceiver(walletAddress);
-                boolean isCreateJointWallet = transactionStatus == TransactionEntity.TransactionStatus.CREATE_JOINT_WALLET;
-                viewHolder.setText(R.id.tv_transaction_status, isCreateJointWallet ? context.getString(R.string.create_joint_wallet) : context.getString(R.string.joint_wallet_execution));
-                viewHolder.setText(R.id.tv_transaction_time, DateUtil.format(entity.getCreateTime(), DateUtil.DATETIME_FORMAT_PATTERN));
-                viewHolder.setText(R.id.tv_transaction_amount, context.getString(R.string.amount_with_unit, String.format("%s%s", isReceiver ? "+" : "-", NumberParserUtils.getPrettyBalance(entity.getValue()))));
-                viewHolder.setText(R.id.tv_transaction_status_desc, transactionStatus.getStatusDesc(context, entity.getConfirms(), entity.getRequiredSignNumber()));
+                SharedTransactionEntity sharedTransactionEntity = (SharedTransactionEntity) item;
+                SharedTransactionEntity.TransactionType transactionType = SharedTransactionEntity.TransactionType.getTransactionType(sharedTransactionEntity.getTransactionType());
+                SharedTransactionEntity.TransactionStatus transactionStatus = item.getTransactionStatus();
+                viewHolder.setVisible(R.id.v_new_msg, !sharedTransactionEntity.isRead());
+                viewHolder.setText(R.id.tv_transaction_status, context.getString(transactionType.getTransactionTypeDesc()));
+                viewHolder.setText(R.id.tv_transaction_time, DateUtil.format(item.getCreateTime(), DateUtil.DATETIME_FORMAT_PATTERN));
+                viewHolder.setText(R.id.tv_transaction_amount, context.getString(R.string.amount_with_unit, String.format("-%s", NumberParserUtils.getPrettyBalance(sharedTransactionEntity.getValue()))));
+                viewHolder.setText(R.id.tv_transaction_status_desc, transactionStatus.getStatusDesc(context, sharedTransactionEntity.getConfirms(), sharedTransactionEntity.getRequiredSignNumber()));
                 viewHolder.setTextColor(R.id.tv_transaction_status_desc, ContextCompat.getColor(context, transactionStatus.getStatusDescTextColor()));
-                viewHolder.setImageResource(R.id.iv_transaction_status, isCreateJointWallet ? R.drawable.icon_create_shared_wallet_transaction : R.drawable.icon_execute_shared_wallet_transaction);
+                viewHolder.setImageResource(R.id.iv_transaction_status, transactionType == SharedTransactionEntity.TransactionType.CREATE_JOINT_WALLET ? R.drawable.icon_create_shared_wallet_transaction : transactionType == SharedTransactionEntity.TransactionType.SEND_TRANSACTION ? R.drawable.icon_send_transation : R.drawable.icon_execute_shared_wallet_transaction);
             }
         }
 

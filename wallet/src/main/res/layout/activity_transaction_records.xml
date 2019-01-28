@@ -22,7 +22,6 @@
         android:clipToPadding="false"
         android:divider="@drawable/bg_address_book_list_divider"
         android:dividerHeight="1dp"
-        android:paddingBottom="10dp"
         android:paddingTop="10dp"
         android:layout_height="match_parent"
         tools:listitem="@layout/item_transaction_record" />

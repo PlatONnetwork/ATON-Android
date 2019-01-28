@@ -41,7 +41,13 @@ public class Event {
     }
 
     public static class UpdateSharedWalletBalanceEvent {
-        public UpdateSharedWalletBalanceEvent() {
+
+        private String prefixContractAddress;
+        private double balance;
+
+        public UpdateSharedWalletBalanceEvent(String prefixContractAddress, double balance) {
+            this.prefixContractAddress = prefixContractAddress;
+            this.balance = balance;
         }
     }
 

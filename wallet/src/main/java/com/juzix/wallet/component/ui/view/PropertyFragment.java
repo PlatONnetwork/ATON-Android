@@ -118,10 +118,18 @@ public class PropertyFragment extends BaseFragment {
 
         switch (buttonView.getId()) {
             case R.id.rb_individual_wallet:
-                showPageWithUnActive(Page.INDIVIDUAL_WALLET);
+                rbIndividualWallet.setTextColor(ContextCompat.getColor(getActivity(), R.color.color_ffffff));
+                rbIndividualWallet.setTextSize(16);
+                rbSharedWallet.setTextColor(ContextCompat.getColor(getActivity(), R.color.color_cdcdcd));
+                rbSharedWallet.setTextSize(12);
+                showPage(Page.INDIVIDUAL_WALLET);
                 break;
             case R.id.rb_shared_wallet:
-                showPageWithUnActive(Page.SHARED_WALLET);
+                rbIndividualWallet.setTextColor(ContextCompat.getColor(getActivity(), R.color.color_cdcdcd));
+                rbIndividualWallet.setTextSize(12);
+                rbSharedWallet.setTextColor(ContextCompat.getColor(getActivity(), R.color.color_ffffff));
+                rbSharedWallet.setTextSize(16);
+                showPage(Page.SHARED_WALLET);
                 break;
             default:
                 break;
@@ -131,20 +139,13 @@ public class PropertyFragment extends BaseFragment {
     public void showPageWithUnActive(Page page) {
 
         if (page == Page.SHARED_WALLET) {
-            rbIndividualWallet.setTextColor(ContextCompat.getColor(getActivity(), R.color.color_cdcdcd));
-            rbIndividualWallet.setTextSize(12);
-            rbSharedWallet.setTextColor(ContextCompat.getColor(getActivity(), R.color.color_ffffff));
-            rbSharedWallet.setTextSize(16);
+            rbSharedWallet.setChecked(true);
         } else {
-            rbIndividualWallet.setTextColor(ContextCompat.getColor(getActivity(), R.color.color_ffffff));
-            rbIndividualWallet.setTextSize(16);
-            rbSharedWallet.setTextColor(ContextCompat.getColor(getActivity(), R.color.color_cdcdcd));
-            rbSharedWallet.setTextSize(12);
+            rbIndividualWallet.setChecked(true);
         }
-        showPage(page);
     }
 
-    public void showPage(Page page) {
+    private void showPage(Page page) {
 
         FragmentManager fragmentManager = getChildFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

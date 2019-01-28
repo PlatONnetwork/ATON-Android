@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding3.view.RxView;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
@@ -28,11 +29,14 @@ import com.juzix.wallet.utils.DateUtil;
 import com.juzix.wallet.utils.DensityUtil;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.reactivex.functions.Consumer;
+import kotlin.Unit;
 
 /**
  * @author matrixelement
@@ -113,8 +117,27 @@ public class SigningActivity extends MVPBaseActivity<SigningPresenter> implement
     }
 
     public void initViews() {
+
         tvTransationHashTitle.setVisibility(View.GONE);
         layoutTransationHash.setVisibility(View.GONE);
+
+        RxView.clicks(rtvRefuse)
+                .throttleFirst(500, TimeUnit.MILLISECONDS)
+                .subscribe(new Consumer<Unit>() {
+                    @Override
+                    public void accept(Unit unit) throws Exception {
+                        mPresenter.revoke();
+                    }
+                });
+
+        RxView.clicks(rtvAgree)
+                .throttleFirst(500, TimeUnit.MILLISECONDS)
+                .subscribe(new Consumer<Unit>() {
+                    @Override
+                    public void accept(Unit unit) throws Exception {
+                        mPresenter.confirm();
+                    }
+                });
 
         gridLayoutManager = new GridLayoutManager(this, 1);
         gvMembers.setLayoutManager(gridLayoutManager);
@@ -123,7 +146,7 @@ public class SigningActivity extends MVPBaseActivity<SigningPresenter> implement
         gvMembers.setAdapter(signingMemberAdapter);
     }
 
-    @OnClick({R.id.iv_copy_from_address, R.id.iv_copy_to_address, R.id.rtv_refuse, R.id.rtv_agree})
+    @OnClick({R.id.iv_copy_from_address, R.id.iv_copy_to_address})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_copy_from_address:
@@ -131,12 +154,6 @@ public class SigningActivity extends MVPBaseActivity<SigningPresenter> implement
                 break;
             case R.id.iv_copy_to_address:
                 CommonUtil.copyTextToClipboard(this, tvToAddress.getText().toString());
-                break;
-            case R.id.rtv_refuse:
-                mPresenter.revoke();
-                break;
-            case R.id.rtv_agree:
-                mPresenter.confirm();
                 break;
             default:
                 break;
@@ -181,11 +198,7 @@ public class SigningActivity extends MVPBaseActivity<SigningPresenter> implement
     @Override
     public void updateSigningStatus(String address, int operation) {
         signingMemberAdapter.notifyItemChanged(address, operation);
-    }
-
-    @Override
-    public void signFinished() {
-        enableButtons(false);
+        enableButtons(operation == TransactionResult.OPERATION_UNDETERMINED);
     }
 
     @Override

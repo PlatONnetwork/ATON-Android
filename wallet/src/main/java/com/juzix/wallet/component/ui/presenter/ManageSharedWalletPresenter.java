@@ -2,19 +2,19 @@ package com.juzix.wallet.component.ui.presenter;
 
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.ManageSharedWalletContract;
 import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.engine.SharedWalletManager;
-import com.juzix.wallet.engine.SharedWalletTransactionManager;
-import com.juzix.wallet.entity.AddressEntity;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.OwnerEntity;
 import com.juzix.wallet.entity.SharedWalletEntity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author matrixelement
@@ -26,34 +26,55 @@ public class ManageSharedWalletPresenter extends BasePresenter<ManageSharedWalle
 
     public ManageSharedWalletPresenter(ManageSharedWalletContract.View view) {
         super(view);
+        mWalletEntity = view.getWalletEntityFromIntent();
+        mIndividualWalletEntity = IndividualWalletManager.getInstance().getWalletByAddress(mWalletEntity.getAddress());
     }
 
     @Override
     public void start() {
-        ManageSharedWalletContract.View view = getView();
-        if (view != null){
-            mWalletEntity = view.getWalletEntityFromIntent();
-            mIndividualWalletEntity = IndividualWalletManager.getInstance().getWalletByAddress(mWalletEntity.getAddress());
-            view.showWallet(mWalletEntity);
-            view.showMember(mWalletEntity.getOwner());
-            if (checkIndividualWallet()){
-                view.showOwner(mIndividualWalletEntity.getName(), mIndividualWalletEntity.getPrefixAddress());
+        if (isViewAttached()) {
+
+            String ownerName = null;
+            String ownerAddress = null;
+
+            if (mIndividualWalletEntity != null) {
+                ownerName = mIndividualWalletEntity.getName();
+                ownerAddress = mIndividualWalletEntity.getPrefixAddress();
+            } else {
+                OwnerEntity ownerEntity = getSharedWalletOwner(mWalletEntity);
+                ownerName = ownerEntity.getName();
+                ownerAddress = ownerEntity.getPrefixAddress();
             }
+
+            getView().showWallet(mWalletEntity);
+            getView().showMember(mWalletEntity.getOwner());
+            getView().showOwner(TextUtils.isEmpty(ownerName) ? "" : ownerName, TextUtils.isEmpty(ownerAddress) ? "" : ownerAddress);
         }
     }
+
+    private OwnerEntity getSharedWalletOwner(SharedWalletEntity walletEntity) {
+
+        if (walletEntity == null || walletEntity.getOwner() == null || walletEntity.getOwner().isEmpty()) {
+            return null;
+        }
+        List<OwnerEntity> ownerEntityList = walletEntity.getOwner();
+        for (OwnerEntity ownerEntity : ownerEntityList) {
+            if (!TextUtils.isEmpty(ownerEntity.getAddress()) && ownerEntity.getAddress().equals(walletEntity.getAddress())) {
+                return ownerEntity;
+            }
+        }
+
+        return null;
+    }
+
 
     @Override
     public void deleteAction(int type) {
-        if (checkIndividualWallet()){
+        if (mIndividualWalletEntity != null) {
             getView().showPasswordDialog(type, -1);
-        }else {
+        } else {
             deleteWallet();
         }
-    }
-
-    @Override
-    public boolean checkIndividualWallet() {
-        return mIndividualWalletEntity != null;
     }
 
     @Override
@@ -61,7 +82,7 @@ public class ManageSharedWalletPresenter extends BasePresenter<ManageSharedWalle
         showLoadingDialog();
         ManageSharedWalletContract.View view = getView();
         if (view != null) {
-            new Thread(){
+            new Thread() {
                 @Override
                 public void run() {
                     mHandler.sendEmptyMessage(SharedWalletManager.getInstance().updateWalletName(mWalletEntity.getUuid(), name) ? MSG_MODIFY_WALLET_NAME_OK : MSG_MODIFY_WALLET_NAME_FAILED);
@@ -75,11 +96,11 @@ public class ManageSharedWalletPresenter extends BasePresenter<ManageSharedWalle
         showLoadingDialog();
         ManageSharedWalletContract.View view = getView();
         if (view != null) {
-            new Thread(){
+            new Thread() {
                 @Override
                 public void run() {
-                    ArrayList<OwnerEntity> owner         = mWalletEntity.getOwner();
-                    OwnerEntity            addressEntity = owner.get(memberIndex);
+                    ArrayList<OwnerEntity> owner = mWalletEntity.getOwner();
+                    OwnerEntity addressEntity = owner.get(memberIndex);
                     addressEntity.setName(name);
                     mHandler.sendEmptyMessage(SharedWalletManager.getInstance().updateOwner(mWalletEntity.getUuid(), owner) ? MSG_MODIFY_MEMBER_NAME_OK : MSG_MODIFY_MEMBER_NAME_FAILED);
                 }
@@ -109,7 +130,7 @@ public class ManageSharedWalletPresenter extends BasePresenter<ManageSharedWalle
     public void deleteWallet() {
         ManageSharedWalletContract.View view = getView();
         if (view != null) {
-            new Thread(){
+            new Thread() {
                 @Override
                 public void run() {
                     mHandler.sendEmptyMessage(SharedWalletManager.getInstance().deleteWallet(mWalletEntity.getUuid()) ? MSG_DELETE_WALLET_OK : MSG_DELETE_WALLET_FAILED);
@@ -132,7 +153,7 @@ public class ManageSharedWalletPresenter extends BasePresenter<ManageSharedWalle
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             ManageSharedWalletContract.View view = getView();
-            switch (msg.what){
+            switch (msg.what) {
                 case MSG_VALID_PWD_OK:
                     int viewType = msg.arg1;
                     switch (viewType) {
@@ -159,7 +180,7 @@ public class ManageSharedWalletPresenter extends BasePresenter<ManageSharedWalle
                     }
                     break;
                 case MSG_VALID_PWD_FAILED:
-                    if (view != null){
+                    if (view != null) {
                         view.showErrorDialog(string(R.string.validPasswordError), string(R.string.enterAgainTips));
                     }
                     dismissLoadingDialogImmediately();

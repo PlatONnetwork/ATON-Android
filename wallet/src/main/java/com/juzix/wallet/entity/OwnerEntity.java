@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-public class OwnerEntity implements Parcelable {
+public class OwnerEntity implements Parcelable, Cloneable {
 
     private String uuid;
     /**
@@ -127,5 +127,17 @@ public class OwnerEntity implements Parcelable {
 
     public void setDesc(String desc) {
         this.desc = desc;
+    }
+
+    @Override
+    protected OwnerEntity clone() {
+        OwnerEntity ownerEntity = null;
+        try {
+            ownerEntity = (OwnerEntity) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+
+        return ownerEntity;
     }
 }

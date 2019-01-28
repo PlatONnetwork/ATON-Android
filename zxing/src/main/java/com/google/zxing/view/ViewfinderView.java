@@ -36,8 +36,7 @@ import com.google.zxing.R;
 import com.google.zxing.ResultPoint;
 import com.google.zxing.camera.CameraManager;
 
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 
 /**
@@ -79,8 +78,8 @@ public final class ViewfinderView extends View {
     public static int scannerStart = 0;
     public static int scannerEnd   = 0;
 
-    private Collection<ResultPoint> possibleResultPoints;
-    private Collection<ResultPoint> lastPossibleResultPoints;
+    private CopyOnWriteArraySet<ResultPoint> possibleResultPoints;
+    private CopyOnWriteArraySet<ResultPoint> lastPossibleResultPoints;
 
     // This constructor is used when the class is built from an XML resource.
     public ViewfinderView(Context context, AttributeSet attrs) {
@@ -102,7 +101,7 @@ public final class ViewfinderView extends View {
         paint = new Paint();
         paint.setAntiAlias(true);
         scannerAlpha = 0;
-        possibleResultPoints = new HashSet<ResultPoint>(5);
+        possibleResultPoints = new CopyOnWriteArraySet<ResultPoint>();
 
 
     }
@@ -138,12 +137,13 @@ public final class ViewfinderView extends View {
             // Draw a red "laser scanner" line through the middle to show decoding is active
             drawLaserScanner(canvas, frame);
 
-            Collection<ResultPoint> currentPossible = possibleResultPoints;
-            Collection<ResultPoint> currentLast     = lastPossibleResultPoints;
+
+            CopyOnWriteArraySet<ResultPoint> currentPossible = possibleResultPoints;
+            CopyOnWriteArraySet<ResultPoint> currentLast = lastPossibleResultPoints;
             if (currentPossible.isEmpty()) {
                 lastPossibleResultPoints = null;
             } else {
-                possibleResultPoints = new HashSet<ResultPoint>(5);
+                possibleResultPoints = new CopyOnWriteArraySet<ResultPoint>();
                 lastPossibleResultPoints = currentPossible;
                 paint.setAlpha(OPAQUE);
                 paint.setColor(resultPointColor);

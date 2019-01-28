@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-              android:descendantFocusability="beforeDescendants"
+    android:descendantFocusability="beforeDescendants"
     android:orientation="vertical">
 
     <TextView
@@ -17,7 +17,7 @@
         style="@style/Text.fff.12"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/bg_create_share_wallet"
         android:gravity="center_vertical|left"
         android:hint="@string/remarkNonCompulsory"
@@ -60,14 +60,14 @@
             android:layout_marginLeft="12dp"
             android:background="@drawable/bg_address_book" />
 
-
     </LinearLayout>
 
     <TextView
         android:id="@+id/tv_address_error"
         style="@style/Text.ff4747.12"
+        android:layout_marginTop="6dp"
         android:visibility="gone"
-        tools:text="@string/address_cannot_be_empty"  />
+        tools:text="@string/address_cannot_be_empty" />
 
 
 </LinearLayout>

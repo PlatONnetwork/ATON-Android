@@ -334,10 +334,10 @@ public class SendIndividualTransationActivity extends MVPBaseActivity<SendIndivi
         }
     }
 
-    public static void actionStart(Context context, String toAddress, String address) {
+    public static void actionStart(Context context, String toAddress, IndividualWalletEntity individualWalletEntity) {
         Intent intent = new Intent(context, SendIndividualTransationActivity.class);
-        intent.putExtra(Constants.Extra.EXTRA_ADDRESS, address);
         intent.putExtra(Constants.Extra.EXTRA_TO_ADDRESS, toAddress);
+        intent.putExtra(Constants.Extra.EXTRA_WALLET, individualWalletEntity);
         context.startActivity(intent);
     }
 

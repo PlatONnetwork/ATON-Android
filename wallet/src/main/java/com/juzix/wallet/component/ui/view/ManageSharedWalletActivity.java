@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
@@ -36,17 +37,10 @@ import java.util.ArrayList;
 public class ManageSharedWalletActivity extends MVPBaseActivity<ManageSharedWalletPresenter> implements ManageSharedWalletContract.View, View.OnClickListener {
 
     private CommonAdapter<OwnerEntity> mAdapter;
-    private CustomDialog                          mErrorDialog;
-    private BaseDialog                            mModifyWalletNameDialog;
-    private BaseDialog                            mModifyMemberNameDialog;
-    private BaseDialog                            mPasswordDialog;
-
-
-    public static void actionStart(Context context, SharedWalletEntity walletEntity) {
-        Intent intent = new Intent(context, ManageSharedWalletActivity.class);
-        intent.putExtra(Constants.Extra.EXTRA_WALLET, walletEntity);
-        context.startActivity(intent);
-    }
+    private CustomDialog mErrorDialog;
+    private BaseDialog mModifyWalletNameDialog;
+    private BaseDialog mModifyMemberNameDialog;
+    private BaseDialog mPasswordDialog;
 
     @Override
     protected ManageSharedWalletPresenter createPresenter() {
@@ -66,6 +60,7 @@ public class ManageSharedWalletActivity extends MVPBaseActivity<ManageSharedWall
         return getIntent().getParcelableExtra(Constants.Extra.EXTRA_WALLET);
     }
 
+    @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.layout_modify_member_name:
@@ -85,7 +80,7 @@ public class ManageSharedWalletActivity extends MVPBaseActivity<ManageSharedWall
     }
 
     private void initView() {
-        ((CommonTitleBar)findViewById(R.id.commonTitleBar)).setLeftImageOnClickListener(new View.OnClickListener() {
+        ((CommonTitleBar) findViewById(R.id.commonTitleBar)).setLeftImageOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 hideSoftInput();
@@ -159,8 +154,9 @@ public class ManageSharedWalletActivity extends MVPBaseActivity<ManageSharedWall
         mModifyWalletNameDialog = new BaseDialog(this, R.style.Dialog_FullScreen);
         mModifyWalletNameDialog.setContentView(R.layout.dialog_change_wallet_name);
         mModifyWalletNameDialog.show();
-        EditText etName     = mModifyWalletNameDialog.findViewById(R.id.et_name);
-        Button   btnConfirm = mModifyWalletNameDialog.findViewById(R.id.btn_confirm);
+        EditText etName = mModifyWalletNameDialog.findViewById(R.id.et_name);
+        Button btnConfirm = mModifyWalletNameDialog.findViewById(R.id.btn_confirm);
+        etName.setFilters(new InputFilter.LengthFilter[]{new InputFilter.LengthFilter(12)});
         etName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -169,7 +165,7 @@ public class ManageSharedWalletActivity extends MVPBaseActivity<ManageSharedWall
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                btnConfirm.setEnabled(!TextUtils.isEmpty(etName.getText().toString()));
+                btnConfirm.setEnabled(!TextUtils.isEmpty(etName.getText().toString().trim()));
             }
 
             @Override
@@ -214,8 +210,9 @@ public class ManageSharedWalletActivity extends MVPBaseActivity<ManageSharedWall
         mModifyMemberNameDialog.setContentView(R.layout.dialog_change_wallet_name);
         mModifyMemberNameDialog.show();
         ((TextView) mModifyMemberNameDialog.findViewById(R.id.tv_title)).setText(R.string.changeMemberName);
-        EditText etName     = mModifyMemberNameDialog.findViewById(R.id.et_name);
-        Button   btnConfirm = mModifyMemberNameDialog.findViewById(R.id.btn_confirm);
+        EditText etName = mModifyMemberNameDialog.findViewById(R.id.et_name);
+        Button btnConfirm = mModifyMemberNameDialog.findViewById(R.id.btn_confirm);
+        etName.setFilters(new InputFilter.LengthFilter[]{new InputFilter.LengthFilter(12)});
         etName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -224,7 +221,7 @@ public class ManageSharedWalletActivity extends MVPBaseActivity<ManageSharedWall
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                btnConfirm.setEnabled(!TextUtils.isEmpty(etName.getText().toString()));
+                btnConfirm.setEnabled(!TextUtils.isEmpty(etName.getText().toString().trim()));
             }
 
             @Override
@@ -253,7 +250,7 @@ public class ManageSharedWalletActivity extends MVPBaseActivity<ManageSharedWall
         mPasswordDialog.setContentView(R.layout.dialog_verify_wallet_password);
         mPasswordDialog.show();
         final EditText etPassword = mPasswordDialog.findViewById(R.id.et_password);
-        Button         btnConfirm = mPasswordDialog.findViewById(R.id.btn_confirm);
+        Button btnConfirm = mPasswordDialog.findViewById(R.id.btn_confirm);
         etPassword.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -290,5 +287,11 @@ public class ManageSharedWalletActivity extends MVPBaseActivity<ManageSharedWall
             mPasswordDialog.dismiss();
             mPasswordDialog = null;
         }
+    }
+
+    public static void actionStart(Context context, SharedWalletEntity walletEntity) {
+        Intent intent = new Intent(context, ManageSharedWalletActivity.class);
+        intent.putExtra(Constants.Extra.EXTRA_WALLET, walletEntity);
+        context.startActivity(intent);
     }
 }
