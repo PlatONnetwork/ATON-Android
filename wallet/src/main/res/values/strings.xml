@@ -214,7 +214,7 @@
     <string name="amount_with_unit">%1$s&#160;Energon</string>
     <string name="transfer_amount_cannot_be_empty">转账金额不能为空</string>
     <string name="transfer_amount_exceed_balance">转账金额已超过余额</string>
-    <string name="insufficient_balance">余额不足</string>
+    <string name="insufficient_balance">钱包余额不足</string>
     <string name="send">发送</string>
     <string name="receive">接收</string>
     <string name="receive_atp">接收&#160;Energon</string>
@@ -304,4 +304,6 @@
     <string name="fee_of_contract_creation">创建合约手续费</string>
     <string name="send_energon">Energon&#160;发送</string>
     <string name="can_not_send_to_itself">无法发送给自己</string>
+    <string name="default_main_network">默认主网络</string>
+    <string name="default_test_network">默认测试网络</string>
 </resources>

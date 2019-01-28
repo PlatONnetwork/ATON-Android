@@ -25,7 +25,6 @@ public class SharedTransactionDetailPresenter extends BasePresenter<SharedTransa
             ArrayList<TransactionResult> resultList = transactionEntity.getTransactionResult();
             ArrayList<TransactionResult> confirmList = new ArrayList<>();
             ArrayList<TransactionResult> revokeList = new ArrayList<>();
-            ArrayList<TransactionResult> undeterminedList = new ArrayList<>();
             for (TransactionResult transactionResult : resultList){
                 switch(transactionResult.getOperation()){
                     case TransactionResult.OPERATION_APPROVAL:
@@ -34,8 +33,7 @@ public class SharedTransactionDetailPresenter extends BasePresenter<SharedTransa
                     case TransactionResult.OPERATION_REVOKE:
                         revokeList.add(transactionResult);
                         break;
-                    case TransactionResult.OPERATION_UNDETERMINED:
-                        undeterminedList.add(transactionResult);
+                    default:
                         break;
                 }
             }
@@ -47,9 +45,6 @@ public class SharedTransactionDetailPresenter extends BasePresenter<SharedTransa
             }
             if (!revokeList.isEmpty()){
                 resultList.addAll(revokeList);
-            }
-            if (!undeterminedList.isEmpty()){
-                resultList.addAll(undeterminedList);
             }
 
             getView().showTransactionResult(resultList);

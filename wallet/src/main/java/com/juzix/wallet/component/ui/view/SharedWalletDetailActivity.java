@@ -58,9 +58,9 @@ public class SharedWalletDetailActivity extends MVPBaseActivity<SharedWalletDeta
     @BindView(R.id.layout_no_data)
     View emptyView;
 
-    private Unbinder                         unbinder;
+    private Unbinder unbinder;
     private SharedTransactionListAdapter transactionListAdapter;
-    private CommonTitleBar                   commonTitleBar;
+    private CommonTitleBar commonTitleBar;
 
     @Override
     protected SharedWalletDetailPresenter createPresenter() {
@@ -73,13 +73,8 @@ public class SharedWalletDetailActivity extends MVPBaseActivity<SharedWalletDeta
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         setContentView(R.layout.activity_wallet_detail);
         unbinder = ButterKnife.bind(this);
-        initViews();
         EventPublisher.getInstance().register(this);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
+        initViews();
         mPresenter.fetchWalletDetail();
     }
 
@@ -112,9 +107,6 @@ public class SharedWalletDetailActivity extends MVPBaseActivity<SharedWalletDeta
             case R.id.tv_receive_transation:
                 mPresenter.enterReceiveTransactionActivity();
                 break;
-            case R.id.tv_call_vote:
-                //CommonUtil.copyTextToClipboard(this, tvWalletAddress.getText().toString());
-                break;
             default:
                 break;
         }
@@ -122,12 +114,12 @@ public class SharedWalletDetailActivity extends MVPBaseActivity<SharedWalletDeta
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateSharedWalletTransactionEvent(Event.UpdateSharedWalletTransactionEvent event) {
-        mPresenter.fetchWalletDetail();
+        mPresenter.fetchWalletTransactionList();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSharedTransactionSucceedEvent(Event.SharedTransactionSucceedEvent event) {
-        mPresenter.fetchWalletDetail();
+        mPresenter.fetchWalletTransactionList();
     }
 
     @Override
@@ -144,7 +136,7 @@ public class SharedWalletDetailActivity extends MVPBaseActivity<SharedWalletDeta
 
     @Override
     public void notifyTransactionListChanged(List<TransactionEntity> transactionEntityList, String walletAddress) {
-        transactionListAdapter.notifyDataChanged(transactionEntityList,walletAddress);
+        transactionListAdapter.notifyDataChanged(transactionEntityList, walletAddress);
     }
 
     @Override

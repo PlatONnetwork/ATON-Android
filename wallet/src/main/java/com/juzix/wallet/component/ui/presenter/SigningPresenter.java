@@ -1,13 +1,12 @@
 package com.juzix.wallet.component.ui.presenter;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.DialogFragment;
 import android.view.View;
 
 import com.juzhen.framework.network.NetConnectivity;
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.CustomThrowable;
 import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
@@ -33,7 +32,12 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
+import io.reactivex.SingleSource;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 
 /**
  * @author matrixelement
@@ -147,11 +151,11 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
         getGase(type);
     }
 
-    private void showInputWalletPasswordDialogFragment(SharedTransactionEntity sharedTransactionEntity,int type, String password, BigInteger gasPrice, BigInteger gasLimit) {
+    private void showInputWalletPasswordDialogFragment(SharedTransactionEntity sharedTransactionEntity, int type, String password, BigInteger gasPrice, double feeAmount) {
         InputWalletPasswordDialogFragment.newInstance(password).setOnConfirmClickListener(new InputWalletPasswordDialogFragment.OnConfirmClickListener() {
             @Override
             public void onConfirmClick(String password) {
-                validPassword(sharedTransactionEntity,type, password, gasPrice, gasLimit);
+                validPassword(sharedTransactionEntity, type, password, gasPrice, feeAmount);
             }
         }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
     }
@@ -168,15 +172,15 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
                 })
                 .compose(new SchedulersTransformer())
                 .compose(LoadingTransformer.bindToLifecycle(getView().currentActivity()))
+                .compose(bindToLifecycle())
                 .subscribe(new Consumer<BigInteger>() {
                     @Override
                     public void accept(BigInteger gasPrice) throws Exception {
-                        double feeAmount = BigDecimalUtil.mul(gasPrice.doubleValue(), SharedWalletTransactionManager.INVOKE_GAS_LIMIT.doubleValue());
-                        feeAmount = BigDecimalUtil.div(feeAmount, DEFAULT_WEI);
+                        final double feeAmount = BigDecimalUtil.div(BigDecimalUtil.mul(gasPrice.doubleValue(), SharedWalletTransactionManager.INVOKE_GAS_LIMIT.doubleValue()), DEFAULT_WEI);
                         ExecuteContractDialogFragment.newInstance(feeAmount, type).setOnSubmitClickListener(new ExecuteContractDialogFragment.OnSubmitClickListener() {
                             @Override
                             public void onSubmitClick() {
-                                showInputWalletPasswordDialogFragment(transactionEntity,type, "", gasPrice, SharedWalletTransactionManager.INVOKE_GAS_LIMIT);
+                                showInputWalletPasswordDialogFragment(transactionEntity, type, "", gasPrice, feeAmount);
                             }
                         }).show(currentActivity().getSupportFragmentManager(), "sendTransation");
                     }
@@ -188,113 +192,104 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
                 });
     }
 
-    private void validPassword(SharedTransactionEntity sharedTransactionEntity,int type, String password, BigInteger gasPrice, BigInteger gasLimit) {
+    private Single<Credentials> validPassword(String password, String keyJson) {
+        return Single.create(new SingleOnSubscribe<Credentials>() {
+            @Override
+            public void subscribe(SingleEmitter<Credentials> emitter) throws Exception {
+                Credentials credentials = SharedWalletTransactionManager.getInstance().credentials(password, keyJson);
+                if (credentials == null) {
+                    emitter.onError(new CustomThrowable(CustomThrowable.CODE_ERROR_PASSWORD));
+                } else {
+                    emitter.onSuccess(credentials);
+                }
+            }
+        });
+    }
 
-        SharedWalletTransactionManager.getInstance()
-                .validPassword(password, individualWalletEntity.getKey())
+    private Single<Credentials> checkBalance(IndividualWalletEntity walletEntity, Credentials credentials, double feeAmount) {
+        return Single.create(new SingleOnSubscribe<Credentials>() {
+            @Override
+            public void subscribe(SingleEmitter<Credentials> emitter) throws Exception {
+                if (walletEntity.getBalance() < feeAmount) {
+                    emitter.onError(new CustomThrowable(CustomThrowable.CODE_ERROR_NOT_SUFFICIENT_BALANCE));
+                } else {
+                    emitter.onSuccess(credentials);
+                }
+            }
+        });
+    }
+
+    private void validPassword(SharedTransactionEntity sharedTransactionEntity, int type, String password, BigInteger gasPrice, double feeAmount) {
+
+        validPassword(password, individualWalletEntity.getKey())
+                .flatMap(new Function<Credentials, SingleSource<Credentials>>() {
+                    @Override
+                    public SingleSource<Credentials> apply(Credentials credentials) throws Exception {
+                        return checkBalance(individualWalletEntity, credentials, feeAmount);
+                    }
+                })
+                .compose(new SchedulersTransformer())
                 .compose(LoadingTransformer.bindToLifecycle(getView().currentActivity()))
+                .compose(bindToLifecycle())
                 .subscribe(new Consumer<Credentials>() {
                     @Override
                     public void accept(Credentials credentials) throws Exception {
-                        getView().updateSigningStatus(transactionEntity.getOwnerWalletAddress(), TransactionResult.OPERATION_SIGNING);
-                        sendTransaction(sharedTransactionEntity,type, password, gasPrice, gasLimit);
+                        sendTransaction(sharedTransactionEntity, credentials, type, gasPrice);
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        CommonDialogFragment.createCommonTitleWithOneButton(string(R.string.validPasswordError), string(R.string.enterAgainTips), string(R.string.back), new OnDialogViewClickListener() {
-                            @Override
-                            public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
-                                showInputWalletPasswordDialogFragment(sharedTransactionEntity,type, password, gasPrice, gasLimit);
+                        if (throwable instanceof CustomThrowable) {
+                            CustomThrowable execption = (CustomThrowable) throwable;
+                            if (execption.getErrCode() == CustomThrowable.CODE_ERROR_PASSWORD) {
+                                if (isViewAttached()) {
+                                    CommonDialogFragment.createCommonTitleWithOneButton(string(R.string.validPasswordError), string(R.string.enterAgainTips), string(R.string.back), new OnDialogViewClickListener() {
+                                        @Override
+                                        public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
+                                            showInputWalletPasswordDialogFragment(sharedTransactionEntity, type, password, gasPrice, feeAmount);
+                                        }
+                                    }).show(currentActivity().getSupportFragmentManager(), "showPasswordError");
+                                }
+                            } else if (execption.getErrCode() == CustomThrowable.CODE_ERROR_NOT_SUFFICIENT_BALANCE) {
+                                if (isViewAttached()) {
+                                    showLongToast(execption.getDetailMsgRes());
+                                }
                             }
-                        }).show(currentActivity().getSupportFragmentManager(), "showPasswordError");
+                        }
                     }
                 });
 
 
     }
 
-    private void sendTransaction(SharedTransactionEntity sharedTransactionEntity,int type, String password, BigInteger gasPrice, BigInteger gasLimit) {
+    private void sendTransaction(SharedTransactionEntity sharedTransactionEntity, Credentials credentials, int type, BigInteger gasPrice) {
 
-        new Thread() {
-            @Override
-            public void run() {
-                int code = -1;
-                if (type == CONFIRM) {
-                    code = SharedWalletTransactionManager.getInstance().confirmTransaction(sharedTransactionEntity,password,
-                            individualWalletEntity.getKey(),
-                            transactionEntity.getContractAddress(),
-                            transactionEntity.getTransactionId(),
-                            gasPrice);
-                } else if (type == REFUSE) {
-                    code = SharedWalletTransactionManager.getInstance().revokeTransaction(sharedTransactionEntity,password,
-                            individualWalletEntity.getKey(),
-                            transactionEntity.getContractAddress(),
-                            transactionEntity.getTransactionId(),
-                            gasPrice);
-                }
-                Message msg = null;
-                switch (code) {
-                    case SharedWalletTransactionManager.CODE_ERROR_PASSWORD:
-                        msg = mHandler.obtainMessage();
-                        msg.what = MSG_PASSWORD_ERROR;
-                        Bundle bundle = new Bundle();
-                        bundle.putString("type", String.valueOf(type));
-                        bundle.putString("gasPrice", gasPrice.toString());
-                        bundle.putString("gasLimit", gasLimit.toString());
-                        bundle.putString("password", password);
-                        msg.setData(bundle);
-                        mHandler.sendMessage(msg);
-                        break;
-                    case SharedWalletTransactionManager.CODE_ERROR_CONFIRM_TRANSACTION:
-                        mHandler.sendEmptyMessage(MSG_CONFIRM_TRANSACTION_FAILED);
-                        break;
-                    case SharedWalletTransactionManager.CODE_ERROR_REVOKE_TRANSACTION:
-                        mHandler.sendEmptyMessage(MSG_REOKE_TRANSACTION_FAILED);
-                        break;
-                    case SharedWalletTransactionManager.CODE_OK:
-                        msg = mHandler.obtainMessage();
-                        msg.what = MSG_SUCCESS;
-                        msg.arg1 = type;
-                        mHandler.sendMessage(msg);
-                        break;
-                }
-            }
-        }.start();
+        SharedWalletTransactionManager.getInstance()
+                .sendTransaction(sharedTransactionEntity, credentials, transactionEntity.getContractAddress(), transactionEntity.getTransactionId(), gasPrice, type)
+                .compose(new SchedulersTransformer())
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                        if (isViewAttached()) {
+                            getView().updateSigningStatus(transactionEntity.getOwnerWalletAddress(), TransactionResult.OPERATION_SIGNING);
+                        }
+                    }
+                })
+                .subscribe(new Consumer() {
+                    @Override
+                    public void accept(Object o) throws Exception {
+                        if (isViewAttached()) {
+                            getView().updateSigningStatus(transactionEntity.getOwnerWalletAddress(), type == CONFIRM ? TransactionResult.OPERATION_APPROVAL : TransactionResult.OPERATION_REVOKE);
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        if (isViewAttached()) {
+                            getView().updateSigningStatus(transactionEntity.getOwnerWalletAddress(), TransactionResult.OPERATION_UNDETERMINED);
+                            showLongToast(string(R.string.transfer_failed));
+                        }
+                    }
+                });
     }
-
-    private static final int MSG_GET_GAS_OK = 1;
-    private static final int MSG_SUCCESS = 0;
-    private static final int MSG_SHOW_BALANCE = 1;
-    private static final int MSG_PASSWORD_ERROR = 2;
-    private static final int MSG_CONFIRM_TRANSACTION_FAILED = 3;
-    private static final int MSG_REOKE_TRANSACTION_FAILED = 4;
-    private static final int MSG_GET_GAS_FAILED = -4;
-
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case MSG_SUCCESS:
-                    if (isViewAttached()) {
-                        getView().updateSigningStatus(transactionEntity.getOwnerWalletAddress(), msg.arg1 == CONFIRM ? TransactionResult.OPERATION_APPROVAL : TransactionResult.OPERATION_REVOKE);
-                        getView().signFinished();
-                    }
-                    break;
-                case MSG_CONFIRM_TRANSACTION_FAILED:
-                    if (isViewAttached()) {
-                        dismissLoadingDialogImmediately();
-                        showLongToast(string(R.string.transfer_failed));
-                    }
-                    break;
-                case MSG_REOKE_TRANSACTION_FAILED:
-                    if (isViewAttached()) {
-                        dismissLoadingDialogImmediately();
-                        showLongToast(string(R.string.transfer_failed));
-                    }
-                    break;
-            }
-        }
-    };
 }

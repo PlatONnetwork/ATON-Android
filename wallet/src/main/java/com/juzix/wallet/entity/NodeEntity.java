@@ -16,6 +16,10 @@ public class NodeEntity implements Cloneable, Nullable {
      * 是否是默认的节点
      */
     private boolean isDefaultNode;
+    /**
+     * 主网络
+     */
+    private boolean isMainNetworkNode;
 
     private boolean isFormatCorrect = false;
 
@@ -31,6 +35,7 @@ public class NodeEntity implements Cloneable, Nullable {
         setDefaultNode(builder.isDefaultNode);
         setFormatCorrect(builder.isFormatCorrect);
         setChecked(builder.isChecked);
+        setMainNetworkNode(builder.isMainNetworkNode);
     }
 
     public static NodeEntity createNullNode() {
@@ -38,7 +43,7 @@ public class NodeEntity implements Cloneable, Nullable {
     }
 
     public NodeInfoEntity createNodeInfo() {
-        return new NodeInfoEntity(id, nodeAddress, isDefaultNode, isChecked);
+        return new NodeInfoEntity(id, nodeAddress, isDefaultNode, isChecked,isMainNetworkNode);
     }
 
     public String getNodeAddress() {
@@ -79,6 +84,14 @@ public class NodeEntity implements Cloneable, Nullable {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public boolean isMainNetworkNode() {
+        return isMainNetworkNode;
+    }
+
+    public void setMainNetworkNode(boolean mainNetworkNode) {
+        isMainNetworkNode = mainNetworkNode;
     }
 
     @Override
@@ -122,6 +135,7 @@ public class NodeEntity implements Cloneable, Nullable {
         private boolean isDefaultNode;
         private boolean isFormatCorrect;
         private boolean isChecked;
+        private boolean isMainNetworkNode;
 
         public Builder() {
             id = System.currentTimeMillis();
@@ -149,6 +163,11 @@ public class NodeEntity implements Cloneable, Nullable {
 
         public Builder isChecked(boolean val) {
             isChecked = val;
+            return this;
+        }
+
+        public Builder isMainNetworkNode(boolean val) {
+            isMainNetworkNode = val;
             return this;
         }
 

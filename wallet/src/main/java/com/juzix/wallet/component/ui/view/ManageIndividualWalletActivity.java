@@ -113,7 +113,7 @@ public class ManageIndividualWalletActivity extends MVPBaseActivity<ManageIndivi
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                btnConfirm.setEnabled(!TextUtils.isEmpty(etName.getText().toString()));
+                btnConfirm.setEnabled(!TextUtils.isEmpty(etName.getText().toString().trim()));
             }
 
             @Override

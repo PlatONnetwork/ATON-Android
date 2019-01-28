@@ -24,8 +24,6 @@ public class SigningContract {
         void enableButtons(boolean enabaled);
 
         void updateSigningStatus(String address,int operation);
-
-        void signFinished();
     }
 
     public interface Presenter extends IPresenter<View> {

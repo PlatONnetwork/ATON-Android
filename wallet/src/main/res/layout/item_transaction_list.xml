@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_marginTop="6dp"
+        android:layout_centerVertical="true"
         tools:src="@drawable/icon_send_transation" />
 
     <TextView

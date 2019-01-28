@@ -74,6 +74,6 @@ public class Constants {
     public interface DBName {
         //数据库名称
         String PORTAL = "portal";
-        int VERSION = 101;
+        int VERSION = 103;
     }
 }

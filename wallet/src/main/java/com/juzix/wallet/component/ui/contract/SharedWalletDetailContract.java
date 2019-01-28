@@ -31,6 +31,8 @@ public class SharedWalletDetailContract {
 
         void fetchWalletDetail();
 
+        void fetchWalletTransactionList();
+
         void enterTransactionDetailActivity(TransactionEntity transactionEntity);
 
         void enterReceiveTransactionActivity();

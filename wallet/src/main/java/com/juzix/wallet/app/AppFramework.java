@@ -80,7 +80,14 @@ public class AppFramework {
                             // Create a WalletEntity class
                             RealmSchema schema = realm.getSchema();
                             schema.get("AddressInfoEntity").addField("avatar", String.class);
-
+                            oldVersion++;
+                        } else if (oldVersion == 101) {
+                            RealmSchema schema = realm.getSchema();
+                            schema.get("NodeInfoEntity").addField("isMainNetworkNode", boolean.class);
+                            oldVersion++;
+                        } else if (oldVersion == 102) {
+                            RealmSchema schema = realm.getSchema();
+                            schema.get("IndividualTransactionInfoEntity").addField("blockNumber", long.class);
                             oldVersion++;
                         }
                     }

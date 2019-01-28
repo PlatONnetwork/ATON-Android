@@ -103,7 +103,6 @@ public class SendSharedTransationActivity extends MVPBaseActivity<SendSharedTran
         setContentView(R.layout.activity_send_transation);
         unbinder = ButterKnife.bind(this);
         initViews();
-        mPresenter.init();
         mPresenter.fetchDefaultWalletInfo();
     }
 

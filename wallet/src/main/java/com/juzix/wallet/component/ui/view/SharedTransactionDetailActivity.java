@@ -189,8 +189,7 @@ public class SharedTransactionDetailActivity extends MVPBaseActivity<SharedTrans
                     case TransactionResult.OPERATION_REVOKE:
                         viewHolder.setImageResource(R.id.iv_hook, R.drawable.icon_fork_s);
                         break;
-                    case TransactionResult.OPERATION_UNDETERMINED:
-                        viewHolder.setImageResource(R.id.iv_hook, R.drawable.icon_fork_s);
+                    default:
                         break;
                 }
                 viewHolder.setOnClickListener(R.id.iv_copy, new View.OnClickListener() {

@@ -88,7 +88,7 @@ public class NodeSettingsActivity extends MVPBaseActivity<NodeSettingsPresenter>
             tvRight.setText(R.string.edit);
             tvAddNode.setVisibility(View.GONE);
         }
-
+        hideSoftInput();
         nodeListAdapter.setEditable(isEdit);
     }
 

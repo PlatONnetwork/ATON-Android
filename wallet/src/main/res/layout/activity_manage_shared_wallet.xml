@@ -103,20 +103,21 @@
         android:background="@color/color_1b2137"
         android:orientation="vertical"
         android:paddingTop="15dp">
-            <com.juzix.wallet.component.widget.RoundedTextView
-                android:id="@+id/rtv_delete_wallet"
-                style="@style/Text.fff.14"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_marginBottom="14dp"
-                android:layout_marginLeft="18dp"
-                android:layout_marginRight="18dp"
-                android:paddingBottom="10dp"
-                android:paddingTop="10dp"
-                android:text="@string/delete_wallet"
-                app:rtv_background_color="@color/color_dc5151"
-                app:rtv_corner_radius="1dp" />
+
+        <com.juzix.wallet.component.widget.RoundedTextView
+            android:id="@+id/rtv_delete_wallet"
+            style="@style/Text.fff.14"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="18dp"
+            android:layout_marginRight="18dp"
+            android:layout_marginBottom="14dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:text="@string/delete_wallet"
+            app:rtv_background_color="@color/color_dc5151"
+            app:rtv_corner_radius="1dp" />
     </LinearLayout>
 
 

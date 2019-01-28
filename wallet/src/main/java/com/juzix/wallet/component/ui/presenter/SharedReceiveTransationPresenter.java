@@ -11,6 +11,8 @@ import com.juzix.wallet.component.ui.contract.SharedReceiveTransationContract;
 import com.juzix.wallet.component.ui.dialog.ShareDialogFragment;
 import com.juzix.wallet.config.JZAppConfigure;
 import com.juzix.wallet.config.JZDirType;
+import com.juzix.wallet.engine.NodeManager;
+import com.juzix.wallet.entity.NodeEntity;
 import com.juzix.wallet.entity.ShareAppInfo;
 import com.juzix.wallet.entity.SharedWalletEntity;
 import com.juzix.wallet.utils.AppUtil;
@@ -29,6 +31,7 @@ import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -72,10 +75,27 @@ public class SharedReceiveTransationPresenter extends BasePresenter<SharedReceiv
                     mQRCodeBitmap = bitmap;
                     if (isViewAttached() && bitmap != null) {
                         getView().setWalletAddressQrCode(bitmap);
-                        getView().showWarnDialogFragment();
                     }
                 }
             });
+
+            NodeManager.getInstance()
+                    .getCheckedNode()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .filter(new Predicate<NodeEntity>() {
+                        @Override
+                        public boolean test(NodeEntity nodeEntity) throws Exception {
+                            return !(nodeEntity.isDefaultNode() && nodeEntity.isMainNetworkNode());
+                        }
+                    })
+                    .subscribe(new Consumer<NodeEntity>() {
+                        @Override
+                        public void accept(NodeEntity nodeEntity) throws Exception {
+                            if (isViewAttached()) {
+                                getView().showWarnDialogFragment();
+                            }
+                        }
+                    });
         }
     }
 

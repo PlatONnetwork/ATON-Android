@@ -191,7 +191,7 @@ public abstract class TransactionEntity implements Comparable<TransactionEntity>
         }, SIGNING {
             @Override
             public String getStatusDesc(Context context, long signedBlockNumber, long requiredSignNumber) {
-                return String.format("%s", context.getString(R.string.signing), signedBlockNumber, requiredSignNumber);
+                return String.format("%s(%d/%d)", context.getString(R.string.signing), signedBlockNumber, requiredSignNumber);
             }
 
             @Override

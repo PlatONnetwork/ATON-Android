@@ -42,8 +42,6 @@ public class SendSharedTransationContract {
 
     public interface Presenter extends IPresenter<View> {
 
-        void init();
-
         void updateSendWalletInfoAndFee(SharedWalletEntity walletEntity);
 
         void fetchDefaultWalletInfo();

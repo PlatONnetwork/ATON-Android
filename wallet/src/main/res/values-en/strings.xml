@@ -188,7 +188,7 @@
     <string name="agree">Agree</string>
     <string name="value">Value</string>
     <string name="energonPrice">Energon Price</string>
-    <string name="execute_contract_confirm">Execute Contract-Confirm</string>
+    <string name="execute_contract_confirm">Execute Contract-Agree</string>
     <string name="execute_contract_refuse">Execute Contract-Refuse</string>
     <string name="transaction_detail">Transaction Detail</string>
     <string name="edit">Edit</string>
@@ -260,7 +260,7 @@
     <string name="transactionConfirmation">Transaction Confirmation</string>
     <string name="totalValue">Value</string>
     <string name="type">Type</string>
-    <string name="executeContractFee">Execute Contract-Confirm Fee</string>
+    <string name="executeContractFee">Execute Contract Fee</string>
     <string name="addSharedWalletSuccess">Joint wallet added successfully</string>Refuse
     <string name="signingConfirmationFailed">Signing confirmation failed</string>
     <string name="signingRefuseFailed">Signing refuse failed</string>
@@ -300,5 +300,7 @@
     <string name="fee_of_contract_creation">Fee of Contract Creation</string>
     <string name="send_energon">Send&#160;Energon</string>
     <string name="can_not_send_to_itself">Can\'t send to itself</string>
+    <string name="default_main_network">Default main network</string>
+    <string name="default_test_network">Default test network</string>
 </resources>
 

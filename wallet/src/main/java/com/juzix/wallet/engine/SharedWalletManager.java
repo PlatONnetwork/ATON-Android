@@ -44,6 +44,54 @@ public class SharedWalletManager {
         mWalletList.add(sharedWalletEntity);
     }
 
+    public void addOrUpdateWallet(SharedWalletEntity sharedWalletEntity) {
+        if (mWalletList.contains(sharedWalletEntity)) {
+            int index = mWalletList.indexOf(sharedWalletEntity);
+            mWalletList.set(index, sharedWalletEntity);
+        } else {
+            mWalletList.add(sharedWalletEntity);
+        }
+    }
+
+    public int getProgressByUUID(String uuid) {
+
+        SharedWalletEntity walletEntity = new SharedWalletEntity.Builder().uuid(uuid).build();
+
+        int index = mWalletList.indexOf(walletEntity);
+        if (index != -1) {
+            SharedWalletEntity sharedWalletEntity = mWalletList.get(index);
+            return sharedWalletEntity.getProgress();
+        }
+
+        return 0;
+    }
+
+    public SharedWalletEntity updateWalletProgress(String uuid, int progress) {
+        SharedWalletEntity walletEntity = new SharedWalletEntity.Builder().uuid(uuid).build();
+        int index = mWalletList.indexOf(walletEntity);
+        if (index != -1) {
+            SharedWalletEntity sharedWalletEntity = mWalletList.get(index);
+            sharedWalletEntity.setProgress(progress);
+            mWalletList.set(index, sharedWalletEntity);
+            return sharedWalletEntity;
+        }
+        return null;
+    }
+
+    public void updateWalletFinished(String uuid, boolean finished) {
+        SharedWalletEntity walletEntity = new SharedWalletEntity.Builder().uuid(uuid).build();
+        int index = mWalletList.indexOf(walletEntity);
+        if (index != -1) {
+            SharedWalletEntity sharedWalletEntity = mWalletList.get(index);
+            sharedWalletEntity.setFinished(finished);
+            mWalletList.set(index, sharedWalletEntity);
+        }
+    }
+
+    public void removeWallet(SharedWalletEntity sharedWalletEntity) {
+        mWalletList.remove(sharedWalletEntity);
+    }
+
     public ArrayList<SharedWalletEntity> getWalletList() {
         return mWalletList;
     }
@@ -61,7 +109,7 @@ public class SharedWalletManager {
                     .avatar(getWalletAvatar())
                     .finished(true)
                     .build();
-            if (SharedWalletInfoDao.getInstance().insertWalletInfo(sharedWalletEntity.buildWalletInfoEntity())){
+            if (SharedWalletInfoDao.getInstance().insertWalletInfo(sharedWalletEntity.buildWalletInfoEntity())) {
                 mWalletList.add(sharedWalletEntity);
                 return true;
             }
@@ -95,7 +143,7 @@ public class SharedWalletManager {
 
     public boolean updateOwner(String walletUuid, ArrayList<OwnerEntity> newAddressEntityList) {
         ArrayList<OwnerInfoEntity> addressInfoEntityArrayList = new ArrayList<>();
-        for (OwnerEntity entity : newAddressEntityList){
+        for (OwnerEntity entity : newAddressEntityList) {
             OwnerInfoEntity addressInfoEntity = new OwnerInfoEntity.Builder()
 //                    .uuid(entity.getUuid())
                     .uuid(UUID.randomUUID().toString())
@@ -104,7 +152,7 @@ public class SharedWalletManager {
                     .build();
             addressInfoEntityArrayList.add(addressInfoEntity);
         }
-        if (!SharedWalletInfoDao.getInstance().updateOwnerNameWithUuid(walletUuid, addressInfoEntityArrayList)){
+        if (!SharedWalletInfoDao.getInstance().updateOwnerNameWithUuid(walletUuid, addressInfoEntityArrayList)) {
             return false;
         }
         for (SharedWalletEntity walletEntity : mWalletList) {
@@ -117,7 +165,7 @@ public class SharedWalletManager {
     }
 
     public boolean deleteWallet(String walletUuid) {
-        if (!SharedWalletInfoDao.getInstance().deleteWalletInfo(walletUuid)){
+        if (!SharedWalletInfoDao.getInstance().deleteWalletInfo(walletUuid)) {
             return false;
         }
         for (SharedWalletEntity walletEntity : mWalletList) {
@@ -127,14 +175,14 @@ public class SharedWalletManager {
                     mWalletList.remove(walletEntity);
                     break;
                 }
-            }catch (Exception exp){
+            } catch (Exception exp) {
 
             }
         }
         return true;
     }
 
-    public SharedWalletEntity getWalletByUuid(String uuid){
+    public SharedWalletEntity getWalletByUuid(String uuid) {
         for (SharedWalletEntity walletEntity : mWalletList) {
             if (uuid.equals(walletEntity.getUuid())) {
                 return walletEntity;
@@ -143,7 +191,7 @@ public class SharedWalletManager {
         return null;
     }
 
-    public SharedWalletEntity getWalletByWalletAddress(String walletAddress){
+    public SharedWalletEntity getWalletByWalletAddress(String walletAddress) {
         for (SharedWalletEntity walletEntity : mWalletList) {
             if (walletEntity.getPrefixAddress().contains(walletAddress)) {
                 return walletEntity;
@@ -152,7 +200,7 @@ public class SharedWalletManager {
         return null;
     }
 
-    public SharedWalletEntity getWalletByContractAddress(String contractAddress){
+    public SharedWalletEntity getWalletByContractAddress(String contractAddress) {
         for (SharedWalletEntity walletEntity : mWalletList) {
             if (!TextUtils.isEmpty(walletEntity.getPrefixContractAddress()) && walletEntity.getPrefixContractAddress().contains(contractAddress)) {
                 return walletEntity;

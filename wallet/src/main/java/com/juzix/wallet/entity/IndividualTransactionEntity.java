@@ -3,6 +3,8 @@ package com.juzix.wallet.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.juzix.wallet.db.entity.IndividualTransactionInfoEntity;
+
 /**
  * @author matrixelement
  */
@@ -156,8 +158,23 @@ public class IndividualTransactionEntity extends TransactionEntity implements Cl
             if (signedBlockNumber >= 1) {
                 return TransactionStatus.SUCCEED;
             } else {
-                return TransactionStatus.SIGNING;
+                return TransactionStatus.PENDING;
             }
         }
+    }
+
+    public IndividualTransactionInfoEntity buildIndividualTransactionInfoEntity() {
+
+        IndividualTransactionInfoEntity individualTransactionInfoEntity = new IndividualTransactionInfoEntity();
+        individualTransactionInfoEntity.setUuid(uuid);
+        individualTransactionInfoEntity.setBlockNumber(blockNumber);
+        individualTransactionInfoEntity.setCreateTime(createTime);
+        individualTransactionInfoEntity.setFrom(fromAddress);
+        individualTransactionInfoEntity.setTo(toAddress);
+        individualTransactionInfoEntity.setHash(hash);
+        individualTransactionInfoEntity.setMemo(memo);
+        individualTransactionInfoEntity.setWalletName(walletName);
+
+        return individualTransactionInfoEntity;
     }
 }

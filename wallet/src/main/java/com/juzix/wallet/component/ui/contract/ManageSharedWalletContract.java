@@ -44,8 +44,6 @@ public class ManageSharedWalletContract {
 
     public interface Presenter extends IPresenter<View> {
 
-        boolean checkIndividualWallet();
-
         void start();
 
         void modifyWalletName(String name);
@@ -57,5 +55,7 @@ public class ManageSharedWalletContract {
         void deleteAction(int type);
 
         void deleteWallet();
+
+
     }
 }

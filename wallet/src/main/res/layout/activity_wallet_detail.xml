@@ -12,17 +12,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/color_1b2137"
-        android:overScrollMode="never"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        android:overScrollMode="never">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:paddingBottom="12dp"
             android:paddingLeft="15dp"
+            android:paddingTop="12dp"
             android:paddingRight="15dp"
-            android:paddingTop="12dp">
+            android:paddingBottom="12dp">
 
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/layout_wallet_detail"
@@ -32,7 +32,8 @@
                 android:paddingTop="14dp"
                 app:layout_constraintDimensionRatio="H,43:20"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent">
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
                     android:id="@+id/tv_balance"
@@ -40,7 +41,8 @@
                     android:layout_marginLeft="12dp"
                     android:layout_marginRight="12dp"
                     android:text="@string/msg_balance"
-                    app:layout_constraintLeft_toLeftOf="parent" />
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/tv_total_balance"
@@ -58,8 +60,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="27dp"
                     android:layout_marginLeft="12dp"
-                    android:layout_marginRight="12dp"
                     android:layout_marginTop="13dp"
+                    android:layout_marginRight="12dp"
                     android:background="@drawable/bg_wallet_address"
                     android:gravity="center_vertical"
                     android:paddingLeft="5dp"
@@ -91,9 +93,9 @@
                     android:background="@color/color_661d2741"
                     android:divider="@drawable/bg_wallet_detail_card_divider"
                     android:orientation="horizontal"
-                    android:showDividers="middle"
                     android:paddingTop="12dp"
                     android:paddingBottom="10dp"
+                    android:showDividers="middle"
                     app:layout_constraintBottom_toBottomOf="parent">
 
                     <TextView
@@ -115,8 +117,8 @@
                         style="@style/Text.fff.14"
                         android:layout_width="0dp"
                         android:layout_weight="1"
-                        android:visibility="gone"
-                        android:text="@string/action_call_vote" />
+                        android:text="@string/action_call_vote"
+                        android:visibility="gone" />
 
                 </LinearLayout>
 
@@ -128,6 +130,7 @@
                 style="@style/Text.cdcdcd.12"
                 android:layout_marginTop="23dp"
                 android:text="@string/transactions"
+                app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/layout_wallet_detail" />
 
             <com.juzix.wallet.component.widget.ListViewForScrollView
@@ -139,6 +142,8 @@
                 android:dividerHeight="1dp"
                 android:paddingLeft="14dp"
                 android:paddingRight="14dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_deal_list_title"
                 tools:listitem="@layout/item_transaction_list" />
 

@@ -22,6 +22,10 @@ public class NodeInfoEntity extends RealmObject {
      * 是否是默认的节点
      */
     private boolean isDefaultNode;
+    /**
+     * 主网络
+     */
+    private boolean isMainNetworkNode;
 
     private boolean isChecked;
 
@@ -31,24 +35,19 @@ public class NodeInfoEntity extends RealmObject {
                 .nodeAddress(nodeAddress)
                 .isDefaultNode(isDefaultNode)
                 .isChecked(isChecked)
+                .isMainNetworkNode(isMainNetworkNode)
                 .build();
     }
 
     public NodeInfoEntity() {
     }
 
-    public NodeInfoEntity(String nodeAddress, boolean isDefaultNode, boolean isChecked) {
-        this.id = System.currentTimeMillis();
-        this.nodeAddress = nodeAddress;
-        this.isDefaultNode = isDefaultNode;
-        this.isChecked = isChecked;
-    }
-
-    public NodeInfoEntity(long id, String nodeAddress, boolean isDefaultNode, boolean isChecked) {
+    public NodeInfoEntity(long id, String nodeAddress, boolean isDefaultNode, boolean isChecked, boolean isMainNetworkNode) {
         this.id = id;
         this.nodeAddress = nodeAddress;
         this.isDefaultNode = isDefaultNode;
         this.isChecked = isChecked;
+        this.isMainNetworkNode = isMainNetworkNode;
     }
 
     public NodeEntity buildNodeEntity() {
@@ -57,6 +56,7 @@ public class NodeInfoEntity extends RealmObject {
                 .nodeAddress(nodeAddress)
                 .isDefaultNode(isDefaultNode)
                 .isChecked(isChecked)
+                .isMainNetworkNode(isMainNetworkNode)
                 .build();
     }
 
@@ -90,5 +90,13 @@ public class NodeInfoEntity extends RealmObject {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public boolean isMainNetworkNode() {
+        return isMainNetworkNode;
+    }
+
+    public void setMainNetworkNode(boolean mainNetworkNode) {
+        isMainNetworkNode = mainNetworkNode;
     }
 }
