@@ -15,7 +15,7 @@ public class WalletEntity implements Parcelable {
      */
     protected String name;
     /**
-     * 钱包地址
+     * 普通钱包即钱包地址，共享钱包即是创建共享钱包的钱包地址
      */
     protected String address;
     /**
@@ -94,7 +94,7 @@ public class WalletEntity implements Parcelable {
         this.name = name;
     }
 
-    public String getAddress(){
+    public String getAddress() {
         return address;
     }
 
@@ -145,10 +145,10 @@ public class WalletEntity implements Parcelable {
      */
     public String getPrefixAddress() {
         try {
-            if(TextUtils.isEmpty(address)){
+            if (TextUtils.isEmpty(address)) {
                 return "";
             }
-            if (address.toLowerCase().startsWith("0x")){
+            if (address.toLowerCase().startsWith("0x")) {
                 return address;
             }
             return "0x" + address;

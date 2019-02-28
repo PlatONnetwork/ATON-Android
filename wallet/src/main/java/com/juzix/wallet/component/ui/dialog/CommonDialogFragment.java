@@ -69,6 +69,7 @@ public class CommonDialogFragment extends DialogFragment {
             DisplayMetrics dm = new DisplayMetrics();
             getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
             dialog.getWindow().setLayout((int) (dm.widthPixels * 0.72), ViewGroup.LayoutParams.WRAP_CONTENT);
+            dialog.getWindow().setWindowAnimations(R.style.Animation_CommonDialog);
         }
     }
 

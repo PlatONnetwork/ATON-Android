@@ -49,13 +49,13 @@ public class IndividualTransactionListAdapter extends CommonAdapter<TransactionE
                 viewHolder.setText(R.id.tv_transaction_amount, context.getString(R.string.amount_with_unit, String.format("%s%s", isReceiver ? "+" : "-", NumberParserUtils.getPrettyBalance(entity.getValue()))));
                 viewHolder.setText(R.id.tv_transaction_status_desc, transactionStatus.getStatusDesc(context,12, 12));
                 viewHolder.setTextColor(R.id.tv_transaction_status_desc, ContextCompat.getColor(context, transactionStatus.getStatusDescTextColor()));
-                viewHolder.setImageResource(R.id.iv_transaction_status, entity.isReceiver(walletAddress) ? R.drawable.icon_receive_transaction : R.drawable.icon_send_transation);
+                viewHolder.setImageResource(R.id.iv_transaction_status, R.drawable.icon_valid_ticket);
             }else if (item instanceof  SharedTransactionEntity){
                 SharedTransactionEntity sharedTransactionEntity = (SharedTransactionEntity) item;
                 SharedTransactionEntity.TransactionType transactionType = SharedTransactionEntity.TransactionType.getTransactionType(sharedTransactionEntity.getTransactionType());
                 SharedTransactionEntity.TransactionStatus transactionStatus = item.getTransactionStatus();
                 viewHolder.setVisible(R.id.v_new_msg, !sharedTransactionEntity.isRead());
-                viewHolder.setText(R.id.tv_transaction_status, context.getString(transactionType.getTransactionTypeDesc()));
+                viewHolder.setText(R.id.tv_transaction_status, context.getString(transactionType.getTransactionTypeDesc(sharedTransactionEntity.getToAddress(),walletAddress)));
                 viewHolder.setText(R.id.tv_transaction_time, DateUtil.format(item.getCreateTime(), DateUtil.DATETIME_FORMAT_PATTERN));
                 viewHolder.setText(R.id.tv_transaction_amount, context.getString(R.string.amount_with_unit, String.format("-%s", NumberParserUtils.getPrettyBalance(sharedTransactionEntity.getValue()))));
                 viewHolder.setText(R.id.tv_transaction_status_desc, transactionStatus.getStatusDesc(context, sharedTransactionEntity.getConfirms(), sharedTransactionEntity.getRequiredSignNumber()));

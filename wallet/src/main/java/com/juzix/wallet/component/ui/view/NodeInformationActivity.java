@@ -94,7 +94,8 @@ public class NodeInformationActivity extends MVPBaseActivity<NodeInformationPres
         }
         tvLocation.setText("(" + candidateEntity.getRegion() + ")");
         tvCandidate.setText(candidateEntity.getStatus() == CandidateEntity.STATUS_CANDIDATE ? R.string.candidate : R.string.alternative);
-        tvStakedRanking.setText(String.valueOf(candidateEntity.getStakedRanking()));
+        int stakedRanking = candidateEntity.getStakedRanking();
+        tvStakedRanking.setText(String.valueOf(stakedRanking == 0 ? 1 : stakedRanking));
         tvStaked.setText(string(R.string.amount_with_unit, NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(candidateEntity.getDeposit(), "1E18"), 3)));
         tvTickets.setText(String.valueOf(candidateEntity.getVotedNum()));
         tvNodeUrl.setText(candidateEntity.getHost() + ":" + candidateEntity.getPort());

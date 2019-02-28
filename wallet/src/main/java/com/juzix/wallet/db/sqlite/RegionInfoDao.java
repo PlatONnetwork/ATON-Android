@@ -28,9 +28,6 @@ public class RegionInfoDao extends BaseDao {
             list.addAll(realm.copyFromRealm(results));
         } catch (Exception exp) {
             exp.printStackTrace();
-            if (realm != null) {
-                realm.cancelTransaction();
-            }
         } finally {
             if (realm != null) {
                 realm.close();
@@ -43,8 +40,10 @@ public class RegionInfoDao extends BaseDao {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
-            return realm.where(RegionInfoEntity.class)
-                    .equalTo("ip", ip).findFirst();
+            RegionInfoEntity entity = realm.where(RegionInfoEntity.class)
+                    .equalTo("ip", ip)
+                    .findFirst();
+           return realm.copyFromRealm(entity);
         } catch (Exception exp) {
             return null;
         } finally {

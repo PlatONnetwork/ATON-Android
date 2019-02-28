@@ -20,11 +20,11 @@ import io.reactivex.plugins.RxJavaPlugins;
  */
 public class App extends CoreApp {
 
-    private final static String  TAG             = App.class.getSimpleName();
-    private final static long    MAX_TIMEINMILLS = 2 * 60 * 1000;
-    private static       Context context;
-    private              int     mActivityAmount = 0;
-    private              long    mBackgroundTimeInMills;
+    private final static String TAG = App.class.getSimpleName();
+    private final static long MAX_TIMEINMILLS = 2 * 60 * 1000;
+    private static Context context;
+    private int mActivityAmount = 0;
+    private long mBackgroundTimeInMills;
 
     @Override
     public void onCreate() {

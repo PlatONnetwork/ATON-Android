@@ -79,14 +79,6 @@ public class CreateSharedWalletSecondStepPresenter extends BasePresenter<CreateS
                 .focus(CreateSharedWalletSecondStepContract.ContractEntity.FOCUS_NONE)
                 .build());
         for (int i = 0; i < mSharedOwners - 1; i++) {
-            CreateSharedWalletSecondStepContract.ContractEntity contractEntity = new CreateSharedWalletSecondStepContract.ContractEntity.Builder()
-                    .name("")
-                    .address("")
-                    .errorMsg("")
-                    .enabled(true)
-                    .focus(CreateSharedWalletSecondStepContract.ContractEntity.FOCUS_NONE)
-                    .build();
-
             mEntityList.add(new CreateSharedWalletSecondStepContract.ContractEntity.Builder()
                     .name("")
                     .address("")
@@ -236,7 +228,7 @@ public class CreateSharedWalletSecondStepPresenter extends BasePresenter<CreateS
     }
 
     @Override
-    public void validPassword(String password, BigInteger gasPrice) {
+    public void validPassword(String password, BigInteger gasPrice, double feeAmount) {
 
         SharedWalletTransactionManager.getInstance()
                 .validPassword(password, mWalletEntity.getKey())
@@ -248,7 +240,7 @@ public class CreateSharedWalletSecondStepPresenter extends BasePresenter<CreateS
                     public void accept(Credentials credentials) throws Exception {
 
                         SharedWalletTransactionManager.getInstance()
-                                .createSharedWallet(credentials, mWalletName, mWalletEntity.getPrefixAddress(), mRequiredSignatures, getAddressEntityList(), gasPrice);
+                                .createSharedWallet(credentials, mWalletName, mWalletEntity.getPrefixAddress(), mRequiredSignatures, getAddressEntityList(), gasPrice, feeAmount);
 
                         MainActivity.actionStart(getContext(), MainActivity.TAB_PROPERTY, PropertyFragment.TAB_SHARED);
                     }
@@ -258,18 +250,18 @@ public class CreateSharedWalletSecondStepPresenter extends BasePresenter<CreateS
                         CommonDialogFragment.createCommonTitleWithOneButton(string(R.string.validPasswordError), string(R.string.enterAgainTips), string(R.string.back), new OnDialogViewClickListener() {
                             @Override
                             public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
-                                showInputWalletPasswordDialogFragment(password, gasPrice);
+                                showInputWalletPasswordDialogFragment(password, gasPrice, feeAmount);
                             }
                         }).show(currentActivity().getSupportFragmentManager(), "showPasswordError");
                     }
                 });
     }
 
-    private void showInputWalletPasswordDialogFragment(String password, BigInteger price) {
+    private void showInputWalletPasswordDialogFragment(String password, BigInteger price, double feeAmount) {
         InputWalletPasswordDialogFragment.newInstance(password).setOnConfirmClickListener(new InputWalletPasswordDialogFragment.OnConfirmClickListener() {
             @Override
             public void onConfirmClick(String password) {
-                validPassword(password, price);
+                validPassword(password, price, feeAmount);
             }
         }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
     }
@@ -316,7 +308,7 @@ public class CreateSharedWalletSecondStepPresenter extends BasePresenter<CreateS
                                     InputWalletPasswordDialogFragment.newInstance("").setOnConfirmClickListener(new InputWalletPasswordDialogFragment.OnConfirmClickListener() {
                                         @Override
                                         public void onConfirmClick(String password) {
-                                            validPassword(password, gasPrice);
+                                            validPassword(password, gasPrice, feeAmount);
                                         }
                                     }).show(currentActivity().getSupportFragmentManager(), "inputWalletPassword");
                                 }
@@ -336,7 +328,7 @@ public class CreateSharedWalletSecondStepPresenter extends BasePresenter<CreateS
     }
 
     private double getFeeAmount(BigInteger price) {
-        double gasLimit = SharedWalletTransactionManager.INVOKE_GAS_LIMIT.doubleValue();
+        double gasLimit = SharedWalletTransactionManager.DEPLOY_GAS_LIMIT.doubleValue();
         double gasPrice = price.doubleValue();
         return BigDecimalUtil.div(String.valueOf(BigDecimalUtil.mul(gasPrice, gasLimit)), "1E18");
     }

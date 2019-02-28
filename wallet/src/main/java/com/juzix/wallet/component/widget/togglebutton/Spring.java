@@ -104,8 +104,8 @@ public class Spring {
   /**
    * Set the displaced value to determine the displacement for the spring from the rest value.
    * This value is retained and used to calculate the displacement ratio.
-   * This also updates the start value of the Spring.
-   * @param currentValue the new start and current value for the spring
+   * This also updates the showWalletInfo value of the Spring.
+   * @param currentValue the new showWalletInfo and current value for the spring
    * @return the spring for chaining
    */
   public Spring setCurrentValue(double currentValue) {

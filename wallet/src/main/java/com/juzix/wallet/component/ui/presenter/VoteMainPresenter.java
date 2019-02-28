@@ -31,7 +31,7 @@ public class VoteMainPresenter extends BasePresenter<VoteMainContract.View> impl
     private final static int                        DEFAULT_MAX_TICKET_POOL_SIZE = 51200;
     private final static int                        DEFAULT_VOTE_NUM             = 100;
     private final static int                        DEFAULT_DEPOSIT_RANKING      = 100;
-    private static final int                        REFRESH_TIME                 = 2000;
+    private static final int                        REFRESH_TIME                 = 5000;
     private              int                        mSortType;
     private              String                     mKeword;
     private              boolean                    mFinished;
@@ -63,13 +63,13 @@ public class VoteMainPresenter extends BasePresenter<VoteMainContract.View> impl
     @Override
     public void sort(int type) {
         mSortType = type;
-        showCandiateList();
+        showCandidateList();
     }
 
     @Override
     public void search(String keyword) {
         mKeword = keyword;
-        showCandiateList();
+        showCandidateList();
     }
 
     @Override
@@ -90,7 +90,7 @@ public class VoteMainPresenter extends BasePresenter<VoteMainContract.View> impl
         VoteActivity.actionStart(currentActivity(), candidateEntity);
     }
 
-    private void showCandiateList() {
+    private void showCandidateList() {
         if (mCandidateEntiyList.isEmpty()) {
             return;
         }
@@ -227,8 +227,7 @@ public class VoteMainPresenter extends BasePresenter<VoteMainContract.View> impl
         Collections.sort(entityList, new Comparator<CandidateEntity>() {
             @Override
             public int compare(CandidateEntity o1, CandidateEntity o2) {
-                return o2.getRegion().compareToIgnoreCase(o1.getRegion());
-//                return o1.getRegion().compareToIgnoreCase(o2.getRegion()) > 0 ? -1 : 1;
+                return o1.getRegionPinyin().compareToIgnoreCase(o2.getRegionPinyin());
             }
         });
     }
@@ -264,7 +263,7 @@ public class VoteMainPresenter extends BasePresenter<VoteMainContract.View> impl
 
                 case MSG_UPDATE_LIST:
                     if (isViewAttached() && !mFinished) {
-                        showCandiateList();
+                        showCandidateList();
                     }
                     break;
             }

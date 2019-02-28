@@ -57,7 +57,7 @@
             android:layout_alignTop="@id/tv_information_title"
             android:layout_marginLeft="70dp"
             android:layout_toRightOf="@id/tv_information_title"
-            tools:text="@string/vote" />
+            android:text="@string/vote" />
 
         <TextView
             android:id="@+id/tv_fee_title"

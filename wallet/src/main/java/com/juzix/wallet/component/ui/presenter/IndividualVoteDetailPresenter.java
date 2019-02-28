@@ -40,7 +40,7 @@ public class IndividualVoteDetailPresenter extends BasePresenter<IndividualVoteD
                                 .candidateId(candidateId)
                                 .candidateName(voteInfoEntity.getCandidateName())
                                 .avatar(voteInfoEntity.getAvatar())
-                                .region(voteInfoEntity.getRegion())
+                                .host(voteInfoEntity.getHost())
                                 .contractAddress(voteInfoEntity.getContractAddress())
                                 .walletName(voteInfoEntity.getWalletName())
                                 .walletAddress(voteInfoEntity.getWalletAddress())

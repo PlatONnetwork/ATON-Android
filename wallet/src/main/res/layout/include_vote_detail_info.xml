@@ -1,190 +1,235 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingBottom="12dp"
-    android:paddingTop="15dp">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/color_1f2841"
+              android:orientation="vertical"
+              android:paddingTop="15dp"
+              android:paddingBottom="12dp">
 
-    <TextView
-        android:id="@+id/tv_transaction_type_title"
-        style="@style/Text.c5cdbc.12"
-        android:layout_height="18dp"
-        android:text="@string/type" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/tv_transaction_time_title"
-        style="@style/Text.c5cdbc.12"
-        android:layout_height="18dp"
+        <TextView
+            android:id="@+id/tv_transaction_type_title"
+            style="@style/Text.c5cdbc.12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/type"/>
+
+        <TextView
+            android:id="@+id/tv_transaction_type"
+            style="@style/Text.fff.13"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="35dp"
+            android:gravity="right"
+            android:text="@string/vote"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="@string/time"
-        app:layout_constraintTop_toBottomOf="@id/tv_transaction_type_title" />
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/tv_transaction_node_name_title"
-        style="@style/Text.c5cdbc.12"
-        android:layout_height="18dp"
+        <TextView
+            android:id="@+id/tv_transaction_time_title"
+            style="@style/Text.c5cdbc.12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/time"/>
+
+        <TextView
+            android:id="@+id/tv_transaction_time"
+            style="@style/Text.fff.13"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="35dp"
+            android:gravity="right"
+            tools:text="2018-02-22 12：21"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="@string/voteFor"
-        app:layout_constraintTop_toBottomOf="@id/tv_transaction_time_title" />
-    <TextView
-        android:id="@+id/tv_transaction_node_id_title"
-        style="@style/Text.c5cdbc.12"
-        android:layout_height="18dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_transaction_node_name_title"
+            style="@style/Text.c5cdbc.12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/voteFor"/>
+
+        <TextView
+            android:id="@+id/tv_transaction_node_name"
+            style="@style/Text.fff.13"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="35dp"
+            android:gravity="right"
+            tools:text="@string/nodeInfo"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="@string/nodeId"
-        app:layout_constraintTop_toBottomOf="@id/tv_transaction_node_name_title" />
-    <TextView
-        android:id="@+id/tv_transaction_votes_title"
-        style="@style/Text.c5cdbc.12"
-        android:layout_height="18dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_transaction_node_id_title"
+            style="@style/Text.c5cdbc.12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/nodeId"/>
+
+        <TextView
+            android:id="@+id/tv_transaction_node_id"
+            style="@style/Text.fff.13"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="35dp"
+            android:gravity="right"
+            tools:text="*****************************************************************"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="@string/voteNum"
-        app:layout_constraintTop_toBottomOf="@id/tv_transaction_node_id_title" />
-    <TextView
-        android:id="@+id/tv_transaction_ticket_price_title"
-        style="@style/Text.c5cdbc.12"
-        android:layout_height="18dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_transaction_votes_title"
+            style="@style/Text.c5cdbc.12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/voteNum"/>
+
+        <TextView
+            android:id="@+id/tv_transaction_votes"
+            style="@style/Text.fff.13"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="35dp"
+            android:gravity="right"
+            tools:text="1225 ATP"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="@string/ticketPrice"
-        app:layout_constraintTop_toBottomOf="@id/tv_transaction_votes_title" />
-    <TextView
-        android:id="@+id/tv_transaction_staked_title"
-        style="@style/Text.c5cdbc.12"
-        android:layout_height="18dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_transaction_ticket_price_title"
+            style="@style/Text.c5cdbc.12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ticketPrice"/>
+
+        <TextView
+            android:id="@+id/tv_transaction_ticket_price"
+            style="@style/Text.fff.13"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="35dp"
+            android:gravity="right"
+            tools:text="1.134 ATP"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="@string/staked"
-        app:layout_constraintTop_toBottomOf="@id/tv_transaction_ticket_price_title" />
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/tv_transaction_energon_title"
-        style="@style/Text.c5cdbc.12"
-        android:layout_height="18dp"
+        <TextView
+            android:id="@+id/tv_transaction_staked_title"
+            style="@style/Text.c5cdbc.12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/staked"/>
+
+        <TextView
+            android:id="@+id/tv_transaction_staked"
+            style="@style/Text.fff.13"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="35dp"
+            android:gravity="right"
+            tools:text="121.651ATP"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="@string/energon_price"
-        app:layout_constraintTop_toBottomOf="@id/tv_transaction_staked_title" />
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/tv_transaction_wallet_name_title"
-        style="@style/Text.c5cdbc.12"
-        android:layout_height="18dp"
-        android:layout_marginTop="6dp"
-        android:text="@string/wallet"
-        app:layout_constraintTop_toBottomOf="@id/tv_transaction_energon_title" />
+        <TextView
+            android:id="@+id/tv_transaction_energon_title"
+            style="@style/Text.c5cdbc.12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/energon_price"/>
 
-    <android.support.constraint.Barrier
-        android:id="@+id/barrier"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        app:barrierDirection="right"
-        app:constraint_referenced_ids="tv_transaction_type_title,tv_transaction_time_title,tv_transaction_node_name_title,tv_transaction_node_id_title,tv_transaction_votes_title,tv_transaction_ticket_price_title,tv_transaction_staked_title,tv_transaction_energon_title,tv_transaction_wallet_name_title"/>
+        <TextView
+            android:id="@+id/tv_transaction_energon"
+            style="@style/Text.fff.13"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="35dp"
+            android:gravity="right"
+            tools:text="0.00035 ATP"/>
 
-    <TextView
-        android:id="@+id/tv_transaction_type"
-        style="@style/Text.fff.13"
-        android:layout_width="0dp"
-        android:layout_height="18dp"
-        android:gravity="center_vertical|right"
-        app:layout_constraintLeft_toRightOf="@id/barrier"
-        app:layout_constraintRight_toRightOf="parent"
-        android:text="@string/vote" />
+    </LinearLayout>
 
-    <TextView
-        android:id="@+id/tv_transaction_time"
-        style="@style/Text.fff.13"
-        android:layout_width="0dp"
-        android:layout_height="18dp"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:gravity="center_vertical|right"
-        app:layout_constraintLeft_toRightOf="@id/barrier"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_transaction_type"
-        tools:text="2018-02-22 12：21" />
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/tv_transaction_node_name"
-        style="@style/Text.fff.13"
-        android:layout_width="0dp"
-        android:layout_height="18dp"
-        android:layout_marginTop="8dp"
-        android:gravity="center_vertical|right"
-        app:layout_constraintLeft_toRightOf="@id/barrier"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_transaction_time"
-        tools:text="@string/nodeInfo" />
+        <TextView
+            android:id="@+id/tv_transaction_wallet_name_title"
+            style="@style/Text.c5cdbc.12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/wallet"/>
 
-    <TextView
-        android:id="@+id/tv_transaction_node_id"
-        style="@style/Text.fff.13"
-        android:layout_width="0dp"
-        android:layout_height="18dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="35dp"
-        android:gravity="center_vertical|right"
-        app:layout_constraintLeft_toRightOf="@id/barrier"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_transaction_node_name"
-        tools:text="*****************************************************************" />
+        <TextView
+            android:id="@+id/tv_transaction_wallet_name"
+            style="@style/Text.fff.13"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="35dp"
+            android:gravity="right"
+            tools:text="@string/wallet_name"/>
 
-    <TextView
-        android:id="@+id/tv_transaction_votes"
-        style="@style/Text.fff.13"
-        android:layout_width="0dp"
-        android:layout_height="18dp"
-        android:layout_marginTop="8dp"
-        android:gravity="center_vertical|right"
-        app:layout_constraintLeft_toRightOf="@id/barrier"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_transaction_node_id"
-        tools:text="1225 ATP" />
+    </LinearLayout>
 
-    <TextView
-        android:id="@+id/tv_transaction_ticked_price"
-        style="@style/Text.fff.13"
-        android:layout_width="0dp"
-        android:layout_height="18dp"
-        android:layout_marginTop="8dp"
-        android:gravity="center_vertical|right"
-        app:layout_constraintLeft_toRightOf="@id/barrier"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_transaction_votes"
-        tools:text="1.134 ATP" />
-
-    <TextView
-        android:id="@+id/tv_transaction_staked"
-        style="@style/Text.fff.13"
-        android:layout_width="0dp"
-        android:layout_height="18dp"
-        android:layout_marginTop="8dp"
-        android:gravity="center_vertical|right"
-        app:layout_constraintLeft_toRightOf="@id/barrier"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_transaction_ticked_price"
-        tools:text="121.651ATP" />
-
-    <TextView
-        android:id="@+id/tv_transaction_energon"
-        style="@style/Text.fff.13"
-        android:layout_width="0dp"
-        android:layout_height="18dp"
-        android:layout_marginTop="8dp"
-        android:gravity="center_vertical|right"
-        app:layout_constraintLeft_toRightOf="@id/barrier"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_transaction_staked"
-        tools:text="0.00035 ATP" />
-
-    <TextView
-        android:id="@+id/tv_transaction_wallet_name"
-        style="@style/Text.fff.13"
-        android:layout_width="0dp"
-        android:layout_height="18dp"
-        android:layout_marginTop="6dp"
-        android:gravity="center_vertical|right"
-        app:layout_constraintLeft_toRightOf="@id/barrier"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_transaction_energon"
-        tools:text="@string/wallet_name" />
-
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

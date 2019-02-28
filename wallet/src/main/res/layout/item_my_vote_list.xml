@@ -24,11 +24,15 @@
         <TextView
             android:id="@+id/tv_name"
             style="@style/Text.fff.13"
+            android:ellipsize="end"
+            android:singleLine="true"
             tools:text="节点名称"/>
 
         <TextView
             android:id="@+id/tv_location"
             style="@style/Text.c5cbdc.12"
+            android:ellipsize="end"
+            android:singleLine="true"
             android:layout_toRightOf="@id/tv_name"
             tools:text="(区域)"/>
 

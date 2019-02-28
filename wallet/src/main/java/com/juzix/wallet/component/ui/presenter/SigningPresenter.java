@@ -15,7 +15,6 @@ import com.juzix.wallet.component.ui.dialog.CommonDialogFragment;
 import com.juzix.wallet.component.ui.dialog.ExecuteContractDialogFragment;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
-import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.engine.SharedWalletTransactionManager;
 import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
@@ -57,7 +56,7 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
     @Override
     public void init() {
         transactionEntity = getView().getTransactionFromIntent();
-        individualWalletEntity = IndividualWalletManager.getInstance().getWalletByAddress(transactionEntity.getOwnerWalletAddress());
+        individualWalletEntity = getView().getIndividualWalletFromIntent();
     }
 
     @Override
@@ -148,7 +147,7 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
             return;
         }
 
-        getGase(type);
+        getGas(type);
     }
 
     private void showInputWalletPasswordDialogFragment(SharedTransactionEntity sharedTransactionEntity, int type, String password, BigInteger gasPrice, double feeAmount) {
@@ -160,7 +159,7 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
         }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
     }
 
-    private void getGase(int type) {
+    private void getGas(int type) {
 
         Single
                 .fromCallable(new Callable<BigInteger>() {
@@ -176,13 +175,14 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
                 .subscribe(new Consumer<BigInteger>() {
                     @Override
                     public void accept(BigInteger gasPrice) throws Exception {
-                        final double feeAmount = BigDecimalUtil.div(BigDecimalUtil.mul(gasPrice.doubleValue(), SharedWalletTransactionManager.INVOKE_GAS_LIMIT.doubleValue()), DEFAULT_WEI);
+                        double gasLimit = type == 1 ? SharedWalletTransactionManager.APPROVE_GAS_LIMIT.doubleValue() : SharedWalletTransactionManager.REVOKE_GAS_LIMIT.doubleValue();
+                        final double feeAmount = BigDecimalUtil.div(BigDecimalUtil.mul(gasPrice.doubleValue(), gasLimit), DEFAULT_WEI);
                         ExecuteContractDialogFragment.newInstance(feeAmount, type).setOnSubmitClickListener(new ExecuteContractDialogFragment.OnSubmitClickListener() {
                             @Override
                             public void onSubmitClick() {
                                 showInputWalletPasswordDialogFragment(transactionEntity, type, "", gasPrice, feeAmount);
                             }
-                        }).show(currentActivity().getSupportFragmentManager(), "sendTransation");
+                        }).show(currentActivity().getSupportFragmentManager(), "sendTransaction");
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -206,11 +206,12 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
         });
     }
 
-    private Single<Credentials> checkBalance(IndividualWalletEntity walletEntity, Credentials credentials, double feeAmount) {
+    private Single<Credentials> checkBalance(IndividualWalletEntity individualWalletEntity, Credentials credentials, double feeAmount) {
         return Single.create(new SingleOnSubscribe<Credentials>() {
             @Override
             public void subscribe(SingleEmitter<Credentials> emitter) throws Exception {
-                if (walletEntity.getBalance() < feeAmount) {
+                double balance = Web3jManager.getInstance().getBalance(individualWalletEntity.getPrefixAddress());
+                if (balance < feeAmount) {
                     emitter.onError(new CustomThrowable(CustomThrowable.CODE_ERROR_NOT_SUFFICIENT_BALANCE));
                 } else {
                     emitter.onSuccess(credentials);
@@ -271,7 +272,7 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
                     @Override
                     public void accept(Disposable disposable) throws Exception {
                         if (isViewAttached()) {
-                            getView().updateSigningStatus(transactionEntity.getOwnerWalletAddress(), TransactionResult.OPERATION_SIGNING);
+                            getView().updateSigningStatus(individualWalletEntity.getPrefixAddress(), TransactionResult.OPERATION_SIGNING);
                         }
                     }
                 })
@@ -279,14 +280,14 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
                     @Override
                     public void accept(Object o) throws Exception {
                         if (isViewAttached()) {
-                            getView().updateSigningStatus(transactionEntity.getOwnerWalletAddress(), type == CONFIRM ? TransactionResult.OPERATION_APPROVAL : TransactionResult.OPERATION_REVOKE);
+                            getView().updateSigningStatus(individualWalletEntity.getPrefixAddress(), type == CONFIRM ? TransactionResult.OPERATION_APPROVAL : TransactionResult.OPERATION_REVOKE);
                         }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         if (isViewAttached()) {
-                            getView().updateSigningStatus(transactionEntity.getOwnerWalletAddress(), TransactionResult.OPERATION_UNDETERMINED);
+                            getView().updateSigningStatus(individualWalletEntity.getPrefixAddress(), TransactionResult.OPERATION_UNDETERMINED);
                             showLongToast(string(R.string.transfer_failed));
                         }
                     }

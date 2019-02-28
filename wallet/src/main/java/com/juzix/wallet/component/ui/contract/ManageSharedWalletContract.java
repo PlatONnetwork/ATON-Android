@@ -25,26 +25,22 @@ public class ManageSharedWalletContract {
 
         void showOwner(String individualWalletName, String individualWalletAddress);
 
-        void showErrorDialog(String title, String content);
-
-        void dimissErrorDialog();
+        void showErrorDialog(String title, String content, String preInputInfo);
 
         void showModifyWalletNameDialog();
 
-        void dimissModifyWalletNameDialog();
-
         void showModifyMemberNameDialog(int memberIndex);
 
-        void dimissModifyMemberNameDialog();
+        void showPasswordDialog(int type, int index, String preInputInfo);
 
-        void showPasswordDialog(int type, int index);
+        void updateWalletName(String walletName);
 
-        void dimissPasswordDialog();
+        void updateWalletMemberName(String newMemberName, int position);
     }
 
     public interface Presenter extends IPresenter<View> {
 
-        void start();
+        void showWalletInfo();
 
         void modifyWalletName(String name);
 

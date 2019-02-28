@@ -16,6 +16,7 @@ import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.TransactionRecordsContract;
 import com.juzix.wallet.component.ui.presenter.TransactionRecordsPresenter;
+import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.engine.SharedWalletManager;
 import com.juzix.wallet.engine.SharedWalletTransactionManager;
 import com.juzix.wallet.entity.IndividualTransactionEntity;
@@ -23,7 +24,6 @@ import com.juzix.wallet.entity.SharedTransactionEntity;
 import com.juzix.wallet.entity.SharedWalletEntity;
 import com.juzix.wallet.entity.TransactionEntity;
 import com.juzix.wallet.entity.VoteTransactionEntity;
-import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.DateUtil;
 
@@ -60,12 +60,12 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
                     SharedTransactionEntity.TransactionStatus transactionStatus = item.getTransactionStatus();
                     SharedTransactionEntity.TransactionType transactionType = SharedTransactionEntity.TransactionType.getTransactionType(entity.getTransactionType());
                     viewHolder.setText(R.id.tv_amount, String.format("%s%s", "-", NumberParserUtils.getPrettyBalance(item.getValue())));
-                    viewHolder.setText(R.id.tv_name, context.getString(transactionType.getTransactionTypeDesc()));
+                    viewHolder.setText(R.id.tv_name, context.getString(transactionType.getTransactionTypeDesc(entity.getToAddress(), null)));
                     viewHolder.setText(R.id.tv_desc, transactionStatus.getStatusDesc(context, entity.getConfirms(), entity.getRequiredSignNumber()));
-                } else if (item instanceof VoteTransactionEntity){
+                } else if (item instanceof VoteTransactionEntity) {
                     viewHolder.setText(R.id.tv_name, string(R.string.vote));
                     viewHolder.setText(R.id.tv_desc, status.getStatusDesc(context, item.getSignedBlockNumber(), 12));
-                }else {
+                } else {
                     IndividualTransactionEntity entity = (IndividualTransactionEntity) item;
                     viewHolder.setText(R.id.tv_name, string(R.string.action_send_transation));
                     viewHolder.setText(R.id.tv_desc, status.getStatusDesc(context, item.getSignedBlockNumber(), 12));
@@ -87,16 +87,16 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
                     IndividualVoteDetailActivity.actionStart(currentActivity(), item.getUuid());
                 } else if (item instanceof SharedTransactionEntity) {
                     SharedTransactionEntity sharedTransactionEntity = (SharedTransactionEntity) item;
-                    SharedWalletEntity      mSharedWalletEntity     = SharedWalletManager.getInstance().getWalletByContractAddress(sharedTransactionEntity.getContractAddress());
+                    SharedWalletEntity mSharedWalletEntity = SharedWalletManager.getInstance().getWalletByContractAddress(sharedTransactionEntity.getContractAddress());
                     if (!sharedTransactionEntity.isRead()) {
                         sharedTransactionEntity.setRead(true);
                         SharedWalletTransactionManager.getInstance().updateTransactionForRead(mSharedWalletEntity, sharedTransactionEntity);
                     }
                     BaseActivity activity = currentActivity();
                     if (sharedTransactionEntity.transfered()) {
-                        SharedTransactionDetailActivity.actionStart(activity, sharedTransactionEntity);
+                        SharedTransactionDetailActivity.actionStart(activity, sharedTransactionEntity, null);
                     } else {
-                        SigningActivity.actionStart(activity, sharedTransactionEntity);
+                        SigningActivity.actionStart(activity, sharedTransactionEntity, IndividualWalletManager.getInstance().getWalletByAddress(sharedTransactionEntity.getOwnerWalletAddress()));
                     }
                 }
             }

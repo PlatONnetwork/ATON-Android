@@ -3,7 +3,6 @@ package com.juzix.wallet.component.ui.contract;
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
 import com.juzix.wallet.entity.SharedTransactionEntity;
-import com.juzix.wallet.entity.SharedWalletEntity;
 import com.juzix.wallet.entity.TransactionResult;
 
 import java.util.ArrayList;
@@ -17,7 +16,9 @@ public class SharedTransactionDetailContract {
 
         SharedTransactionEntity getTransactionFromIntent();
 
-        void setTransactionDetailInfo(SharedTransactionEntity transactionEntity);
+        String getAddressFromIntent();
+
+        void setTransactionDetailInfo(SharedTransactionEntity transactionEntity, String queryAddress);
 
         void showTransactionResult(ArrayList<TransactionResult> transactionResultList);
 

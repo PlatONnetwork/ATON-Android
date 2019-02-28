@@ -506,4 +506,31 @@ public class SharedTransactionInfoEntity extends RealmObject {
                 .transactionType(transactionType)
                 .build();
     }
+
+    @Override
+    public String toString() {
+        return "SharedTransactionInfoEntity{" +
+                "uuid='" + uuid + '\'' +
+                ", hash='" + hash + '\'' +
+                ", fromAddress='" + fromAddress + '\'' +
+                ", toAddress='" + toAddress + '\'' +
+                ", createTime=" + createTime +
+                ", value=" + value +
+                ", blockNumber=" + blockNumber +
+                ", latestBlockNumber=" + latestBlockNumber +
+                ", walletName='" + walletName + '\'' +
+                ", energonPrice=" + energonPrice +
+                ", memo='" + memo + '\'' +
+                ", transactionId='" + transactionId + '\'' +
+                ", contractAddress='" + contractAddress + '\'' +
+                ", pending=" + pending +
+                ", executed=" + executed +
+                ", transactionResult=" + transactionResult +
+                ", requiredSignNumber=" + requiredSignNumber +
+                ", read=" + read +
+                ", sharedWalletOwnerInfoEntityRealmList=" + sharedWalletOwnerInfoEntityRealmList +
+                ", ownerWalletAddress='" + ownerWalletAddress + '\'' +
+                ", transactionType=" + transactionType +
+                '}';
+    }
 }

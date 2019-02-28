@@ -87,12 +87,35 @@ public class SharedTransactionInfoDao {
         return list;
     }
 
+
+    public List<SharedTransactionInfoEntity> getTransactionListByContractAddress(String[] contractAddressArray) {
+        ArrayList<SharedTransactionInfoEntity> list = new ArrayList<>();
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            RealmResults<SharedTransactionInfoEntity> results = realm.where(SharedTransactionInfoEntity.class).in("contractAddress", contractAddressArray).findAll();
+            list.addAll(realm.copyFromRealm(results));
+        } catch (Exception exp) {
+            exp.printStackTrace();
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+
+        return list;
+    }
+
     public List<SharedTransactionInfoEntity> getTransactionListByContractAddress(String contractAddress) {
         ArrayList<SharedTransactionInfoEntity> list = new ArrayList<>();
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
-            RealmResults<SharedTransactionInfoEntity> results = realm.where(SharedTransactionInfoEntity.class).equalTo("contractAddress", contractAddress).findAll();
+            RealmResults<SharedTransactionInfoEntity> results = realm.where(SharedTransactionInfoEntity.class)
+                    .equalTo("contractAddress", contractAddress)
+                    .or()
+                    .equalTo("toAddress", contractAddress)
+                    .findAll();
             list.addAll(realm.copyFromRealm(results));
         } catch (Exception exp) {
             exp.printStackTrace();

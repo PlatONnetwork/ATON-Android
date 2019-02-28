@@ -18,32 +18,22 @@ public class ManageIndividualWalletContract {
 
         void showWalletAddress(String address);
 
-        void showErrorDialog(String title, String content);
+        void showErrorDialog(String title, String content, String preInputInfo,int type);
 
         void showWalletAvatar(String avatar);
 
-        void dimissErrorDialog();
-
         void showModifyNameDialog();
 
-        void dimissModifyNameDialog();
-
-        void showPasswordDialog(int type);
-
-        void dimissPasswordDialog();
+        void showPasswordDialog(int type, String preInputInfo);
     }
 
     public interface Presenter extends IPresenter<View> {
-        void start();
+        void showIndividualWalletInfo();
 
         void validPassword(int type, String password);
 
         void deleteWallet();
 
         void modifyName(String name);
-
-        void exportPrivateKey();
-
-        void exportKeystore();
     }
 }

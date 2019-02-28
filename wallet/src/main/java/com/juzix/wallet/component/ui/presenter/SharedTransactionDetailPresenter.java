@@ -12,11 +12,13 @@ import java.util.ArrayList;
  */
 public class SharedTransactionDetailPresenter extends BasePresenter<SharedTransactionDetailContract.View> implements SharedTransactionDetailContract.Presenter {
 
-    private SharedTransactionEntity        transactionEntity;
+    private SharedTransactionEntity transactionEntity;
+    private String queryAddress;
 
     public SharedTransactionDetailPresenter(SharedTransactionDetailContract.View view) {
         super(view);
         transactionEntity = view.getTransactionFromIntent();
+        queryAddress = view.getAddressFromIntent();
     }
 
     @Override
@@ -26,8 +28,8 @@ public class SharedTransactionDetailPresenter extends BasePresenter<SharedTransa
             ArrayList<TransactionResult> confirmList = new ArrayList<>();
             ArrayList<TransactionResult> revokeList = new ArrayList<>();
             ArrayList<TransactionResult> undeterminedList = new ArrayList<>();
-            for (TransactionResult transactionResult : resultList){
-                switch(transactionResult.getOperation()){
+            for (TransactionResult transactionResult : resultList) {
+                switch (transactionResult.getOperation()) {
                     case TransactionResult.OPERATION_APPROVAL:
                         confirmList.add(transactionResult);
                         break;
@@ -39,22 +41,22 @@ public class SharedTransactionDetailPresenter extends BasePresenter<SharedTransa
                         break;
                 }
             }
-            if (!resultList.isEmpty()){
+            if (!resultList.isEmpty()) {
                 resultList.clear();
             }
-            if (!confirmList.isEmpty()){
+            if (!confirmList.isEmpty()) {
                 resultList.addAll(confirmList);
             }
-            if (!revokeList.isEmpty()){
+            if (!revokeList.isEmpty()) {
                 resultList.addAll(revokeList);
             }
-            if (!undeterminedList.isEmpty()){
+            if (!undeterminedList.isEmpty()) {
                 resultList.addAll(undeterminedList);
             }
 
             getView().showTransactionResult(resultList);
 
-            getView().setTransactionDetailInfo(transactionEntity);
+            getView().setTransactionDetailInfo(transactionEntity, queryAddress);
         }
     }
 

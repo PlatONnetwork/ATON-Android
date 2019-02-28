@@ -12,15 +12,15 @@ import java.util.ArrayList;
 
 public class IndividualWalletManager {
 
-    public static final int                   CODE_OK                  = 0;
-    public static final int                   CODE_ERROR_NAME          = -1;
-    public static final int                   CODE_ERROR_PASSWORD      = -2;
-    public static final int                   CODE_ERROR_KEYSTORE      = -3;
-    public static final int                   CODE_ERROR_PRIVATEKEY    = -4;
-    public static final int                   CODE_ERROR_MNEMONIC      = -5;
-    public static final int                   CODE_ERROR_WALLET_EXISTS = -200;
-    public static final int                   CODE_ERROR_UNKNOW        = -999;
-    private ArrayList<IndividualWalletEntity> mWalletList              = new ArrayList<>();
+    public static final int CODE_OK = 0;
+    public static final int CODE_ERROR_NAME = -1;
+    public static final int CODE_ERROR_PASSWORD = -2;
+    public static final int CODE_ERROR_KEYSTORE = -3;
+    public static final int CODE_ERROR_PRIVATEKEY = -4;
+    public static final int CODE_ERROR_MNEMONIC = -5;
+    public static final int CODE_ERROR_WALLET_EXISTS = -200;
+    public static final int CODE_ERROR_UNKNOW = -999;
+    private ArrayList<IndividualWalletEntity> mWalletList = new ArrayList<>();
 
 
     private IndividualWalletManager() {
@@ -45,6 +45,18 @@ public class IndividualWalletManager {
         }
     }
 
+    public String getWalletNameByWalletAddress(String walletAddress) {
+        if (!mWalletList.isEmpty()) {
+            for (IndividualWalletEntity walletEntity : mWalletList) {
+                if (!TextUtils.isEmpty(walletAddress) && walletAddress.equals(walletEntity.getPrefixAddress())) {
+                    return walletEntity.getName();
+                }
+            }
+        }
+
+        return null;
+    }
+
     public ArrayList<IndividualWalletEntity> getWalletList() {
         return mWalletList;
     }
@@ -54,22 +66,22 @@ public class IndividualWalletManager {
     }
 
     public int importKeystore(IndividualWalletEntity walletEntity, String store, String name, String password) {
-        if (!JZWalletUtil.isValidKeystore(store)){
+        if (!JZWalletUtil.isValidKeystore(store)) {
             return CODE_ERROR_KEYSTORE;
         }
-        if (TextUtils.isEmpty(name)){
+        if (TextUtils.isEmpty(name)) {
             return CODE_ERROR_NAME;
         }
-        if (TextUtils.isEmpty(password)){
+        if (TextUtils.isEmpty(password)) {
             return CODE_ERROR_PASSWORD;
         }
         try {
             IndividualWalletEntity entity = IndividualWalletService.getInstance().importKeystore(store, name, password);
-            if (entity == null){
+            if (entity == null) {
                 return CODE_ERROR_PASSWORD;
             }
-            for (IndividualWalletEntity param : mWalletList){
-                if (param.getPrefixAddress().toLowerCase().equals(entity.getPrefixAddress().toLowerCase())){
+            for (IndividualWalletEntity param : mWalletList) {
+                if (param.getPrefixAddress().toLowerCase().equals(entity.getPrefixAddress().toLowerCase())) {
                     return CODE_ERROR_WALLET_EXISTS;
                 }
             }
@@ -87,19 +99,19 @@ public class IndividualWalletManager {
         if (!JZWalletUtil.isValidPrivateKey(privateKey)) {
             return CODE_ERROR_PRIVATEKEY;
         }
-        if (TextUtils.isEmpty(name)){
+        if (TextUtils.isEmpty(name)) {
             return CODE_ERROR_NAME;
         }
-        if (TextUtils.isEmpty(password)){
+        if (TextUtils.isEmpty(password)) {
             return CODE_ERROR_PASSWORD;
         }
         try {
             IndividualWalletEntity entity = IndividualWalletService.getInstance().importPrivateKey(privateKey, name, password);
-            if (entity == null){
+            if (entity == null) {
                 return CODE_ERROR_PASSWORD;
             }
-            for (IndividualWalletEntity param : mWalletList){
-                if (param.getPrefixAddress().toLowerCase().equals(entity.getPrefixAddress().toLowerCase())){
+            for (IndividualWalletEntity param : mWalletList) {
+                if (param.getPrefixAddress().toLowerCase().equals(entity.getPrefixAddress().toLowerCase())) {
                     return CODE_ERROR_WALLET_EXISTS;
                 }
             }
@@ -114,22 +126,22 @@ public class IndividualWalletManager {
     }
 
     public int importMnemonic(IndividualWalletEntity walletEntity, String mnemonic, String name, String password) {
-        if (!JZWalletUtil.isValidMnemonic(mnemonic)){
+        if (!JZWalletUtil.isValidMnemonic(mnemonic)) {
             return CODE_ERROR_MNEMONIC;
         }
-        if (TextUtils.isEmpty(name)){
+        if (TextUtils.isEmpty(name)) {
             return CODE_ERROR_NAME;
         }
-        if (TextUtils.isEmpty(password)){
+        if (TextUtils.isEmpty(password)) {
             return CODE_ERROR_PASSWORD;
         }
         try {
             IndividualWalletEntity entity = IndividualWalletService.getInstance().importMnemonic(mnemonic, name, password);
-            if (entity == null){
+            if (entity == null) {
                 return CODE_ERROR_PASSWORD;
             }
-            for (IndividualWalletEntity param : mWalletList){
-                if (param.getPrefixAddress().toLowerCase().equals(entity.getPrefixAddress().toLowerCase())){
+            for (IndividualWalletEntity param : mWalletList) {
+                if (param.getPrefixAddress().toLowerCase().equals(entity.getPrefixAddress().toLowerCase())) {
                     return CODE_ERROR_WALLET_EXISTS;
                 }
             }
@@ -161,12 +173,12 @@ public class IndividualWalletManager {
         return IndividualWalletInfoDao.getInstance().updateNameWithUuid(wallet.getUuid(), newName);
     }
 
-    public IndividualWalletEntity getWalletByAddress(String address){
-        if (TextUtils.isEmpty(address)){
+    public IndividualWalletEntity getWalletByAddress(String address) {
+        if (TextUtils.isEmpty(address)) {
             return null;
         }
-        for (IndividualWalletEntity walletEntity : mWalletList){
-            if (walletEntity.getPrefixAddress().contains(address)){
+        for (IndividualWalletEntity walletEntity : mWalletList) {
+            if (walletEntity.getPrefixAddress().contains(address)) {
                 return walletEntity;
             }
         }

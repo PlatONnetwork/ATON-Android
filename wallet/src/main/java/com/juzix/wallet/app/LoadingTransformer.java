@@ -6,8 +6,9 @@ import com.juzix.wallet.component.ui.base.BaseFragment;
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
 import io.reactivex.SingleTransformer;
-import io.reactivex.functions.Action;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.BiConsumer;
+import io.reactivex.functions.Consumer;
 
 
 public final class LoadingTransformer {
@@ -33,10 +34,15 @@ public final class LoadingTransformer {
             @Override
             public SingleSource<U> apply(Single<U> upstream) {
                 return upstream
-                        .doOnSubscribe(disposable -> activity.showLoadingDialog(message))
-                        .doAfterTerminate(new Action() {
+                        .doOnSubscribe(new Consumer<Disposable>() {
                             @Override
-                            public void run() throws Exception {
+                            public void accept(Disposable disposable) throws Exception {
+                                activity.showLoadingDialog(message);
+                            }
+                        })
+                        .doOnEvent(new BiConsumer<U, Throwable>() {
+                            @Override
+                            public void accept(U u, Throwable throwable) throws Exception {
                                 activity.dismissLoadingDialogImmediately();
                             }
                         });
@@ -50,7 +56,12 @@ public final class LoadingTransformer {
             @Override
             public SingleSource<U> apply(Single<U> upstream) {
                 return upstream
-                        .doOnSubscribe(disposable -> activity.showLoadingDialog(message))
+                        .doOnSubscribe(new Consumer<Disposable>() {
+                            @Override
+                            public void accept(Disposable disposable) throws Exception {
+                                activity.showLoadingDialog(message);
+                            }
+                        })
                         .doOnEvent(new BiConsumer<U, Throwable>() {
                             @Override
                             public void accept(U u, Throwable throwable) throws Exception {

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.juzhen.framework.util.AndroidUtil;
@@ -17,16 +18,18 @@ import com.juzix.wallet.component.widget.ShadowDrawable;
 public class BackupMnemonicPhraseActivity extends BaseActivity implements View.OnClickListener {
 
     private final static String TAG = BackupMnemonicPhraseActivity.class.getSimpleName();
-    private BaseDialog          mMnemonicDialog;
-    private TextView            mTvMnemonic;
+    private BaseDialog mMnemonicDialog;
+    private TextView mTvMnemonic;
 
-    public static void actionStart(Context context, String mnemonic){
+    public static void actionStart(Context context, String mnemonic) {
         Intent intent = new Intent(context, BackupMnemonicPhraseActivity.class);
         intent.putExtra(Constants.Extra.EXTRA_MNEMONIC, mnemonic);
         context.startActivity(intent);
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_backup_mnemonic_phrase);
         showPasswordDialog();
@@ -34,7 +37,7 @@ public class BackupMnemonicPhraseActivity extends BaseActivity implements View.O
         mTvMnemonic.setText(getIntent().getStringExtra(Constants.Extra.EXTRA_MNEMONIC));
     }
 
-    private void initView(){
+    private void initView() {
         findViewById(R.id.ll_left).setOnClickListener(this);
         ((TextView) findViewById(R.id.tv_middle)).setText(R.string.backupWallet);
         findViewById(R.id.btn_next).setOnClickListener(this);
@@ -50,7 +53,7 @@ public class BackupMnemonicPhraseActivity extends BaseActivity implements View.O
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.ll_left:
                 BackupMnemonicPhraseActivity.this.finish();
                 MainActivity.actionStart(this);
@@ -65,7 +68,7 @@ public class BackupMnemonicPhraseActivity extends BaseActivity implements View.O
         }
     }
 
-    private void showPasswordDialog(){
+    private void showPasswordDialog() {
         dimissPasswordDialog();
         mMnemonicDialog = new BaseDialog(this, R.style.Dialog_FullScreen);
         mMnemonicDialog.setContentView(R.layout.dialog_backup_mnemonic_phrase);
@@ -73,8 +76,8 @@ public class BackupMnemonicPhraseActivity extends BaseActivity implements View.O
         mMnemonicDialog.findViewById(R.id.btn_understood).setOnClickListener(this);
     }
 
-    private void dimissPasswordDialog(){
-        if (mMnemonicDialog != null && mMnemonicDialog.isShowing()){
+    private void dimissPasswordDialog() {
+        if (mMnemonicDialog != null && mMnemonicDialog.isShowing()) {
             mMnemonicDialog.dismiss();
             mMnemonicDialog = null;
         }

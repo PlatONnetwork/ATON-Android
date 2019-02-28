@@ -26,6 +26,7 @@ import java.util.Map;
 public class VoteDetailPresenter extends BasePresenter<VoteDetailContract.View> implements VoteDetailContract.Presenter {
     private List<VoteDetailContract.Entity> mEntities = new ArrayList<>();
     private static final String             SPERATOR  = ":";
+    private static final long EXPIRE_BLOCKNUMBER = 1536000;
 
     public VoteDetailPresenter(VoteDetailContract.View view) {
         super(view);
@@ -77,7 +78,7 @@ public class VoteDetailPresenter extends BasePresenter<VoteDetailContract.View> 
                     entity.voteStaked += validVotes * ticketPrice;
                     entity.voteUnstaked += invalidVotes * ticketPrice;
                     entity.profit = 0;
-                    entity.expirTime = entity.createTime + 1536000;
+                    entity.expirTime = entity.createTime + EXPIRE_BLOCKNUMBER;
                 }
                 for (String transactionId : entityMap.keySet()){
                     mEntities.add(entityMap.get(transactionId));

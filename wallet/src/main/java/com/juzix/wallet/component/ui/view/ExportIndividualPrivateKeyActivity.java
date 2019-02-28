@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.juzix.wallet.R;
@@ -37,6 +38,7 @@ public class ExportIndividualPrivateKeyActivity extends BaseActivity implements 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_export_individual_private_key);
         showPasswordDialog();

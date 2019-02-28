@@ -3,7 +3,6 @@ package com.juzix.wallet.component.ui.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.constraint.Barrier;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
@@ -55,8 +54,6 @@ public class IndividualVoteDetailActivity extends MVPBaseActivity<IndividualVote
     TextView       tvTransactionEnergonTitle;
     @BindView(R.id.tv_transaction_wallet_name_title)
     TextView       tvTransactionWalletNameTitle;
-    @BindView(R.id.barrier)
-    Barrier        barrier;
     @BindView(R.id.tv_transaction_type)
     TextView       tvTransactionType;
     @BindView(R.id.tv_transaction_time)
@@ -67,7 +64,7 @@ public class IndividualVoteDetailActivity extends MVPBaseActivity<IndividualVote
     TextView       tvTransactionNodeId;
     @BindView(R.id.tv_transaction_votes)
     TextView       tvTransactionVotes;
-    @BindView(R.id.tv_transaction_ticked_price)
+    @BindView(R.id.tv_transaction_ticket_price)
     TextView       tvTransactionTicketPrice;
     @BindView(R.id.tv_transaction_staked)
     TextView       tvTransactionStaked;

@@ -43,58 +43,58 @@ public class SharedTransactionDetailActivity extends MVPBaseActivity<SharedTrans
     @BindView(R.id.list_transaction_result)
     ListViewForScrollView listView;
     @BindView(R.id.iv_copy_from_address)
-    ImageView             ivCopyFromAddress;
+    ImageView ivCopyFromAddress;
     @BindView(R.id.tv_from_address)
-    TextView              tvFromAddress;
+    TextView tvFromAddress;
     @BindView(R.id.layout_from_address)
-    RelativeLayout        layoutFromAddress;
+    RelativeLayout layoutFromAddress;
     @BindView(R.id.iv_copy_to_address)
-    ImageView             ivCopyToAddress;
+    ImageView ivCopyToAddress;
     @BindView(R.id.tv_to_address)
-    TextView              tvToAddress;
+    TextView tvToAddress;
     @BindView(R.id.layout_to_address)
-    RelativeLayout        layoutToAddress;
+    RelativeLayout layoutToAddress;
     @BindView(R.id.tv_transaction_type_title)
-    TextView              tvTransactionTypeTitle;
+    TextView tvTransactionTypeTitle;
     @BindView(R.id.tv_transaction_time_title)
-    TextView              tvTransactionTimeTitle;
+    TextView tvTransactionTimeTitle;
     @BindView(R.id.tv_transaction_amount_title)
-    TextView              tvTransactionAmountTitle;
+    TextView tvTransactionAmountTitle;
     @BindView(R.id.tv_transaction_energon_title)
-    TextView              tvTransactionEnergonTitle;
+    TextView tvTransactionEnergonTitle;
     @BindView(R.id.tv_transaction_wallet_name_title)
-    TextView              tvTransactionWalletNameTitle;
+    TextView tvTransactionWalletNameTitle;
     @BindView(R.id.barrier)
-    Barrier               barrier;
+    Barrier barrier;
     @BindView(R.id.tv_transaction_type)
-    TextView              tvTransactionType;
+    TextView tvTransactionType;
     @BindView(R.id.tv_transaction_time)
-    TextView              tvTransactionTime;
+    TextView tvTransactionTime;
     @BindView(R.id.tv_transaction_amount)
-    TextView              tvTransactionAmount;
+    TextView tvTransactionAmount;
     @BindView(R.id.tv_transaction_energon)
-    TextView              tvTransactionEnergon;
+    TextView tvTransactionEnergon;
     @BindView(R.id.tv_transaction_wallet_name)
-    TextView              tvTransactionWalletName;
+    TextView tvTransactionWalletName;
     @BindView(R.id.tv_memo)
-    TextView              tvMemo;
+    TextView tvMemo;
     @BindView(R.id.iv_copy_transation_hash)
-    ImageView             ivCopyTransationHash;
+    ImageView ivCopyTransationHash;
     @BindView(R.id.tv_transation_hash)
-    TextView              tvTransationHash;
+    TextView tvTransationHash;
     @BindView(R.id.layout_transation_hash)
-    RelativeLayout        layoutTransationHash;
+    RelativeLayout layoutTransationHash;
     @BindView(R.id.layout_transaction_result)
     LinearLayout layoutTransactionResult;
     @BindView(R.id.tv_transation_hash_title)
     TextView tvTransationHashTitle;
     @BindView(R.id.tv_transaction_status)
-    TextView              tvTransactionStatus;
+    TextView tvTransactionStatus;
     @BindView(R.id.tv_member_title)
-    TextView              tvMemberTitle;
+    TextView tvMemberTitle;
 
     private CommonAdapter<TransactionResult> mAdapter;
-    private Unbinder                         unbinder;
+    private Unbinder unbinder;
 
     @Override
     protected SharedTransactionDetailPresenter createPresenter() {
@@ -133,7 +133,12 @@ public class SharedTransactionDetailActivity extends MVPBaseActivity<SharedTrans
     }
 
     @Override
-    public void setTransactionDetailInfo(SharedTransactionEntity transactionEntity) {
+    public String getAddressFromIntent() {
+        return getIntent().getStringExtra(Constants.Extra.EXTRA_ADDRESS);
+    }
+
+    @Override
+    public void setTransactionDetailInfo(SharedTransactionEntity transactionEntity, String queryAddress) {
 
         SharedTransactionEntity.TransactionStatus status = transactionEntity.getTransactionStatus();
 
@@ -147,13 +152,21 @@ public class SharedTransactionDetailActivity extends MVPBaseActivity<SharedTrans
         tvFromAddress.setText(transactionEntity.getFromAddress());
         tvToAddress.setText(transactionEntity.getToAddress());
 
-        tvTransactionType.setText(transactionEntity.isReceiver(transactionEntity.getContractAddress()) ? R.string.receive : R.string.send);
+        SharedTransactionEntity.TransactionType transactionType = SharedTransactionEntity.TransactionType.getTransactionType(transactionEntity.getTransactionType());
+        tvTransactionType.setText(transactionType.getTransactionTypeDesc(transactionEntity.getToAddress(), queryAddress));
         tvTransactionTime.setText(DateUtil.format(transactionEntity.getCreateTime(), DateUtil.DATETIME_FORMAT_PATTERN));
-        tvTransactionAmount.setText(string(R.string.amount_with_unit, NumberParserUtils.getPrettyBalance(transactionEntity.getValue())));
-        tvTransactionEnergon.setText("-");
+
+        boolean isSendTransaction = transactionType == SharedTransactionEntity.TransactionType.SEND_TRANSACTION;
+
+        String transactionAmount = isSendTransaction ? string(R.string.amount_with_unit, NumberParserUtils.getPrettyBalance(transactionEntity.getValue())) : "-";
+        tvTransactionAmount.setText(transactionAmount);
+
+        String energonPrice = isSendTransaction ? "-" : string(R.string.amount_with_unit, NumberParserUtils.getPrettyBalance(transactionEntity.getEnergonPrice()));
+        tvTransactionEnergon.setText(energonPrice);
+
         tvTransactionWalletName.setText(transactionEntity.getWalletName());
         tvMemo.setText(transactionEntity.getMemo());
-        tvMemberTitle.setText(string(R.string.executeContractConfirm) + "(" + transactionEntity.getConfirms() + "/" + transactionEntity.getRequiredSignNumber() +")");
+        tvMemberTitle.setText(string(R.string.executeContractConfirm) + "(" + transactionEntity.getConfirms() + "/" + transactionEntity.getRequiredSignNumber() + ")");
     }
 
     @Override
@@ -212,9 +225,10 @@ public class SharedTransactionDetailActivity extends MVPBaseActivity<SharedTrans
         }
     }
 
-    public static void actionStart(Context context, SharedTransactionEntity transactionEntity) {
+    public static void actionStart(Context context, SharedTransactionEntity transactionEntity, String queryAddress) {
         Intent intent = new Intent(context, SharedTransactionDetailActivity.class);
         intent.putExtra(Constants.Extra.EXTRA_TRANSACTION, transactionEntity);
+        intent.putExtra(Constants.Extra.EXTRA_ADDRESS, queryAddress);
         context.startActivity(intent);
     }
 }

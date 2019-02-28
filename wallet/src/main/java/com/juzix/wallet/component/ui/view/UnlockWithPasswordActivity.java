@@ -39,7 +39,6 @@ public class UnlockWithPasswordActivity extends MVPBaseActivity<UnlockWithPasswo
     @BindView(R.id.btn_unlock)
     Button   btnUnlock;
 
-
     private Unbinder unbinder;
 
     @Override

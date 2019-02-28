@@ -3,14 +3,13 @@ package com.juzix.wallet.component.ui.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.InputFilter;
-import android.text.TextUtils;
-import android.text.TextWatcher;
+import android.support.v4.app.DialogFragment;
+import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.juzhen.framework.util.RUtils;
@@ -19,24 +18,63 @@ import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.ManageIndividualWalletContract;
 import com.juzix.wallet.component.ui.dialog.BaseDialog;
+import com.juzix.wallet.component.ui.dialog.CommonDialogFragment;
+import com.juzix.wallet.component.ui.dialog.CommonEditDialogFragment;
 import com.juzix.wallet.component.ui.dialog.CustomDialog;
+import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
 import com.juzix.wallet.component.ui.presenter.ManageIndividualWalletPresenter;
+import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.utils.AddressFormatUtil;
 
-public class ManageIndividualWalletActivity extends MVPBaseActivity<ManageIndividualWalletPresenter> implements ManageIndividualWalletContract.View, View.OnClickListener {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
+
+public class ManageIndividualWalletActivity extends MVPBaseActivity<ManageIndividualWalletPresenter> implements ManageIndividualWalletContract.View {
 
     private final static String TAG = ManageIndividualWalletActivity.class.getSimpleName();
 
-    private BaseDialog   mNameDialog;
-    private CustomDialog mFailedDialog;
-    private BaseDialog   mPasswordDialog;
+    @BindView(R.id.iv_left)
+    ImageView ivLeft;
+    @BindView(R.id.tv_left)
+    TextView tvLeft;
+    @BindView(R.id.ll_left)
+    LinearLayout llLeft;
+    @BindView(R.id.tv_middle)
+    TextView tvMiddle;
+    @BindView(R.id.tv_right)
+    TextView tvRight;
+    @BindView(R.id.iv_right)
+    ImageView ivRight;
+    @BindView(R.id.ll_right)
+    LinearLayout llRight;
+    @BindView(R.id.rl_title_bar)
+    RelativeLayout rlTitleBar;
+    @BindView(R.id.iv_icon)
+    CircleImageView ivIcon;
+    @BindView(R.id.tv_name)
+    TextView tvName;
+    @BindView(R.id.tv_address)
+    TextView tvAddress;
+    @BindView(R.id.rl_description)
+    RelativeLayout rlDescription;
+    @BindView(R.id.ll_private_key)
+    LinearLayout llPrivateKey;
+    @BindView(R.id.v_line1)
+    View vLine1;
+    @BindView(R.id.ll_keystore)
+    LinearLayout llKeystore;
+    @BindView(R.id.ll_backup)
+    LinearLayout llBackup;
+    @BindView(R.id.btn_delete)
+    Button btnDelete;
 
-    public static void actionStart(Context context, IndividualWalletEntity walletEntity){
-        Intent intent = new Intent(context, ManageIndividualWalletActivity.class);
-        intent.putExtra(Constants.Extra.EXTRA_WALLET, walletEntity);
-        context.startActivity(intent);
-    }
+    private BaseDialog mNameDialog;
+    private CustomDialog mFailedDialog;
+    private BaseDialog mPasswordDialog;
+    private Unbinder unbinder;
 
     @Override
     protected ManageIndividualWalletPresenter createPresenter() {
@@ -47,17 +85,82 @@ public class ManageIndividualWalletActivity extends MVPBaseActivity<ManageIndivi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manager_individual_wallet);
+        unbinder = ButterKnife.bind(this);
         initView();
-        mPresenter.start();
+        mPresenter.showIndividualWalletInfo();
     }
 
-    private void initView(){
-        findViewById(R.id.ll_left).setOnClickListener(this);
-        ((TextView) findViewById(R.id.tv_middle)).setText(R.string.manage);
-        findViewById(R.id.rl_description).setOnClickListener(this);
-        findViewById(R.id.ll_private_key).setOnClickListener(this);
-        findViewById(R.id.ll_keystore).setOnClickListener(this);
-        findViewById(R.id.btn_delete).setOnClickListener(this);
+    private void initView() {
+        tvMiddle.setText(R.string.manage);
+    }
+
+    @OnClick({R.id.ll_left, R.id.rl_description, R.id.ll_private_key, R.id.ll_keystore, R.id.btn_delete})
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.ll_left:
+                finish();
+                break;
+            case R.id.rl_description:
+                showModifyNameDialog();
+                break;
+            case R.id.ll_private_key:
+                showPasswordDialog(TYPE_EXPORT_PRIVATE_KEY, "");
+                break;
+            case R.id.ll_keystore:
+                showPasswordDialog(TYPE_EXPORT_KEYSTORE, "");
+                break;
+            case R.id.btn_delete:
+                showPasswordDialog(TYPE_DELETE_WALLET, "");
+                break;
+        }
+    }
+
+    @Override
+    public void showWalletName(String name) {
+        tvName.setText(name);
+    }
+
+    @Override
+    public void showWalletAddress(String address) {
+        tvAddress.setText(AddressFormatUtil.formatAddress(address));
+    }
+
+    @Override
+    public void showModifyNameDialog() {
+        CommonEditDialogFragment.createCommonEditDialogFragment(string(R.string.changeWalletName), InputType.TYPE_CLASS_TEXT, string(R.string.cancel), string(R.string.confirm), new OnDialogViewClickListener() {
+            @Override
+            public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
+                String text = extra.getString(Constants.Bundle.BUNDLE_TEXT);
+                mPresenter.modifyName(text);
+            }
+        }).show(getSupportFragmentManager(), "showModifyName");
+    }
+
+
+    @Override
+    public void showErrorDialog(String title, String content, String preInputInfo,int type) {
+        CommonDialogFragment.createCommonTitleWithOneButton(title, content, string(R.string.back), new OnDialogViewClickListener() {
+            @Override
+            public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
+                showPasswordDialog(type, preInputInfo);
+            }
+        }).show(getSupportFragmentManager(), "showPasswordError");
+    }
+
+    @Override
+    public void showWalletAvatar(String avatar) {
+        ivIcon.setImageResource(RUtils.drawable(avatar));
+    }
+
+    @Override
+    public void showPasswordDialog(int type, String preInputInfo) {
+        CommonEditDialogFragment.createCommonEditDialogFragment(string(R.string.InputWalletPassword), preInputInfo, InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD, string(R.string.cancel), string(R.string.confirm), new OnDialogViewClickListener() {
+            @Override
+            public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
+                String text = extra.getString(Constants.Bundle.BUNDLE_TEXT);
+                mPresenter.validPassword(type, text);
+            }
+        }).show(getSupportFragmentManager(), "vertifyPassword");
     }
 
     @Override
@@ -66,151 +169,16 @@ public class ManageIndividualWalletActivity extends MVPBaseActivity<ManageIndivi
     }
 
     @Override
-    public void showWalletName(String name) {
-        ((TextView)findViewById(R.id.tv_name)).setText(name);
-    }
-
-    @Override
-    public void showWalletAddress(String address) {
-        ((TextView) findViewById(R.id.tv_address)).setText(AddressFormatUtil.formatAddress(address));
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.ll_left:
-                finish();
-                break;
-            case R.id.rl_description:
-                showModifyNameDialog();
-                break;
-            case R.id.ll_private_key:
-                showPasswordDialog(TYPE_EXPORT_PRIVATE_KEY);
-                break;
-            case R.id.ll_keystore:
-                showPasswordDialog(TYPE_EXPORT_KEYSTORE);
-                break;
-            case R.id.btn_delete:
-                showPasswordDialog(TYPE_DELETE_WALLET);
-                break;
+    protected void onDestroy() {
+        super.onDestroy();
+        if (unbinder != null) {
+            unbinder.unbind();
         }
     }
 
-    @Override
-    public void showModifyNameDialog(){
-        dimissModifyNameDialog();
-        mNameDialog = new BaseDialog(this, R.style.Dialog_FullScreen);
-        mNameDialog.setContentView(R.layout.dialog_change_wallet_name);
-        mNameDialog.show();
-        EditText etName = mNameDialog.findViewById(R.id.et_name);
-        etName.setFilters(new InputFilter.LengthFilter[]{new InputFilter.LengthFilter(12)});
-        Button btnConfirm = mNameDialog.findViewById(R.id.btn_confirm);
-        etName.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                btnConfirm.setEnabled(!TextUtils.isEmpty(etName.getText().toString().trim()));
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-        mNameDialog.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dimissModifyNameDialog();
-            }
-        });
-        btnConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPresenter.modifyName(etName.getText().toString());
-            }
-        });
-    }
-
-    @Override
-    public void dimissModifyNameDialog(){
-        if (mNameDialog != null && mNameDialog.isShowing()){
-            mNameDialog.dismiss();
-            mNameDialog = null;
-        }
-    }
-
-    @Override
-    public void showErrorDialog(String title, String content){
-        dimissErrorDialog();
-        mFailedDialog = new CustomDialog(getContext());
-        mFailedDialog.show(title, content, string(R.string.back), new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dimissErrorDialog();
-            }
-        });
-    }
-
-    @Override
-    public void showWalletAvatar(String avatar) {
-        ((ImageView) findViewById(R.id.iv_icon)).setImageResource(RUtils.drawable(avatar));
-    }
-
-    @Override
-    public void dimissErrorDialog(){
-        if (mFailedDialog != null && mFailedDialog.isShowing()){
-            mFailedDialog.dismiss();
-            mFailedDialog = null;
-        }
-    }
-
-    @Override
-    public void showPasswordDialog(int type){
-        dimissPasswordDialog();
-        mPasswordDialog = new BaseDialog(this, R.style.Dialog_FullScreen);
-        mPasswordDialog.setContentView(R.layout.dialog_verify_wallet_password);
-        mPasswordDialog.show();
-        final EditText etPassword = mPasswordDialog.findViewById(R.id.et_password);
-        Button btnConfirm = mPasswordDialog.findViewById(R.id.btn_confirm);
-        etPassword.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                btnConfirm.setEnabled(etPassword.getText().toString().trim().length() >= 6);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-        mPasswordDialog.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dimissPasswordDialog();
-            }
-        });
-        btnConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPresenter.validPassword(type, etPassword.getText().toString());
-            }
-        });
-    }
-
-    @Override
-    public void dimissPasswordDialog(){
-        if (mPasswordDialog != null && mPasswordDialog.isShowing()){
-            mPasswordDialog.dismiss();
-            mPasswordDialog = null;
-        }
+    public static void actionStart(Context context, IndividualWalletEntity walletEntity) {
+        Intent intent = new Intent(context, ManageIndividualWalletActivity.class);
+        intent.putExtra(Constants.Extra.EXTRA_WALLET, walletEntity);
+        context.startActivity(intent);
     }
 }

@@ -53,8 +53,6 @@
 
                 <include layout="@layout/include_transation_detail_info" />
 
-                <include layout="@layout/include_transation_detail_hash" />
-
             </LinearLayout>
 
         </LinearLayout>

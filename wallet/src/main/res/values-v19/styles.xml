@@ -13,6 +13,7 @@
         <item name="windowNoTitle">true</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:textAllCaps">false</item>
+        <item name="android:textCursorDrawable">@drawable/bg_edittext_cursor</item>
     </style>
 
 </resources>

@@ -85,17 +85,17 @@ public class SelectIndividualWalletBalanceDialogFragment extends BaseDialogFragm
         });
 
         List<IndividualWalletEntity> walletEntityList    = IndividualWalletManager.getInstance().getWalletList();
-        List<IndividualWalletEntity> newWalletEntityList = new ArrayList<>();
-        for (IndividualWalletEntity walletEntity : walletEntityList){
-            if (walletEntity.getBalance() > 0){
-                newWalletEntityList.add(walletEntity);
-            }
-        }
-        selectWalletListAdapter = new SelectIndividualWalletListAdapter(R.layout.item_select_wallet_list, newWalletEntityList, listWallet, SelectIndividualWalletDialogFragment.SELECT_TRANSACTION_WALLET);
+//        List<IndividualWalletEntity> newWalletEntityList = new ArrayList<>();
+//        for (IndividualWalletEntity walletEntity : walletEntityList){
+//            if (walletEntity.getBalance() > 0){
+//                newWalletEntityList.add(walletEntity);
+//            }
+//        }
+        selectWalletListAdapter = new SelectIndividualWalletListAdapter(R.layout.item_select_wallet_list, walletEntityList, listWallet, SelectIndividualWalletDialogFragment.SELECT_TRANSACTION_WALLET);
         listWallet.setAdapter(selectWalletListAdapter);
-        if (newWalletEntityList != null && !newWalletEntityList.isEmpty()){
+        if (walletEntityList != null && !walletEntityList.isEmpty()){
             String uuid = getArguments().getString(Constants.Bundle.BUNDLE_UUID);
-            listWallet.setItemChecked(newWalletEntityList.indexOf(new SharedWalletEntity.Builder().uuid(uuid).build()), true);
+            listWallet.setItemChecked(walletEntityList.indexOf(new IndividualWalletEntity.Builder().uuid(uuid).build()), true);
         }
 
     }

@@ -3,16 +3,19 @@ package com.juzix.wallet.component.ui.presenter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 
+import com.juzix.wallet.App;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.MyVoteContract;
-import com.juzix.wallet.component.ui.view.CreateSharedWalletActivity;
 import com.juzix.wallet.component.ui.view.VoteActivity;
 import com.juzix.wallet.component.ui.view.VoteDetailActivity;
+import com.juzix.wallet.db.entity.RegionInfoEntity;
 import com.juzix.wallet.db.entity.SingleVoteInfoEntity;
 import com.juzix.wallet.db.entity.TicketInfoEntity;
+import com.juzix.wallet.db.sqlite.RegionInfoDao;
 import com.juzix.wallet.db.sqlite.SingleVoteInfoDao;
 import com.juzix.wallet.engine.CandidateManager;
 import com.juzix.wallet.engine.IndividualWalletManager;
@@ -21,10 +24,12 @@ import com.juzix.wallet.entity.CandidateEntity;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.TicketEntity;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.LanguageUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -37,6 +42,7 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
     private long                        mInvalidVotes;
     private double                      mProfit;
     private List<MyVoteContract.Entity> mEntities;
+    private boolean                     mIsEnglish;
     private static final String         SPERATOR = ":";
 
     public MyVotePresenter(MyVoteContract.View view) {
@@ -55,6 +61,12 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
         mInvalidVotes = 0;
         mProfit = 0;
         mEntities = new ArrayList<>();
+        Locale  locale    = LanguageUtil.getLocale(App.getContext());
+        if (Locale.CHINESE.getLanguage().equals(locale.getLanguage())) {
+            mIsEnglish = false;
+        }else {
+            mIsEnglish = true;
+        }
         new Thread() {
             @Override
             public void run() {
@@ -70,7 +82,12 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
                         entity.avatar = voteInfoEntity.getAvatar();
                         entity.candidateName = voteInfoEntity.getCandidateName();
                         entity.candidateId = candidateId;
-                        entity.region = voteInfoEntity.getRegion();
+                        RegionInfoEntity regionInfoEntity = RegionInfoDao.getInstance().getRegionInfoWithIp(voteInfoEntity.getHost());
+                        if (regionInfoEntity != null && !TextUtils.isEmpty(regionInfoEntity.getCountryEn())){
+                            entity.region = mIsEnglish ? regionInfoEntity.getCountryEn() : regionInfoEntity.getCountryZh();
+                        }else {
+                            entity.region = App.getContext().getString(mIsEnglish ? R.string.unknownRegionEn : R.string.unknownRegion);
+                        }
                         entityMap.put(candidateId, entity);
                     }
                     ticketInfoEntityAllList.addAll(voteInfoEntity.getTicketInfoEntityArrayList());

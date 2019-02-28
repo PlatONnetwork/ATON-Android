@@ -16,7 +16,7 @@ import com.juzix.wallet.entity.IndividualTransactionEntity;
 public class IndividualTransactionDetailPresenter extends BasePresenter<IndividualTransactionDetailContract.View> implements IndividualTransactionDetailContract.Presenter {
 
     private IndividualTransactionEntity mTransactionEntity;
-    private String                      mQueryAddress;
+    private String mQueryAddress;
 
     public IndividualTransactionDetailPresenter(IndividualTransactionDetailContract.View view) {
         super(view);
@@ -27,7 +27,7 @@ public class IndividualTransactionDetailPresenter extends BasePresenter<Individu
     @Override
     public void fetchTransactionDetail() {
         if (isViewAttached() && mTransactionEntity != null) {
-            new Thread(){
+            new Thread() {
                 @Override
                 public void run() {
                     IndividualTransactionEntity transactionEntity = IndividualWalletTransactionManager.getInstance().getTransactionByHash(mTransactionEntity.getHash(), mTransactionEntity.getCreateTime(), mTransactionEntity.getWalletName(), mTransactionEntity.getMemo());
@@ -41,12 +41,12 @@ public class IndividualTransactionDetailPresenter extends BasePresenter<Individu
         }
     }
 
-    private static final int     MSG_UPDATE_TRANSACTIONS = 100;
-    private              Handler mHandler                = new Handler(){
+    private static final int MSG_UPDATE_TRANSACTIONS = 100;
+    private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case MSG_UPDATE_TRANSACTIONS:
                     if (isViewAttached() && msg.obj != null) {
                         getView().setTransactionDetailInfo((IndividualTransactionEntity) msg.obj, mQueryAddress);

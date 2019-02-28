@@ -32,24 +32,24 @@ import kotlin.Unit;
 
 public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportIndividualPrivateKeyPresenter> implements ImportIndividualPrivateKeyContract.View {
 
-    private EditText  mEtPrivateKey;
-    private EditText  mEtWalletName;
+    private EditText mEtPrivateKey;
+    private EditText mEtWalletName;
     private ImageView mIvEyes;
     private ImageView mIvRepeatEyes;
-    private EditText  mEtPassword;
-    private EditText  mEtRepeatPassword;
-    private TextView  mTvPasswordDesc;
-    private Button    mBtnImport;
-    private boolean   mShowPassword;
-    private boolean   mShowRepeatPassword;
-    private TextView  mTvStrength;
-    private View      mVLine1;
-    private View      mVLine2;
-    private View      mVLine3;
-    private View      mVLine4;
-    private TextView  mTvPrivateKeyError;
-    private TextView  mTvNameError;
-    private TextView  mTvPasswordError;
+    private EditText mEtPassword;
+    private EditText mEtRepeatPassword;
+    private TextView mTvPasswordDesc;
+    private Button mBtnImport;
+    private boolean mShowPassword;
+    private boolean mShowRepeatPassword;
+    private TextView mTvStrength;
+    private View mVLine1;
+    private View mVLine2;
+    private View mVLine3;
+    private View mVLine4;
+    private TextView mTvPrivateKeyError;
+    private TextView mTvNameError;
+    private TextView mTvPasswordError;
 
     @Override
     protected ImportIndividualPrivateKeyPresenter createPresenter() {
@@ -117,7 +117,9 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportIn
                 .combineLatest(RxTextView.textChanges(mEtPrivateKey).skipInitialValue(), RxTextView.textChanges(mEtWalletName).skipInitialValue(), new BiFunction<CharSequence, CharSequence, Boolean>() {
                     @Override
                     public Boolean apply(CharSequence charSequence, CharSequence charSequence2) throws Exception {
-                        return !TextUtils.isEmpty(charSequence) && !TextUtils.isEmpty(charSequence2) && charSequence2.length() <= 12;
+                        String privateKey = charSequence.toString().trim();
+                        String walletName = charSequence2.toString().trim();
+                        return !TextUtils.isEmpty(privateKey) && !TextUtils.isEmpty(walletName) && walletName.length() <= 12;
                     }
                 });
 
@@ -227,7 +229,7 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportIn
             return;
         }
         if (requestCode == ImportIndividualWalletActivity.REQ_QR_CODE) {
-            Bundle bundle     = data.getExtras();
+            Bundle bundle = data.getExtras();
             String scanResult = bundle.getString(ScanQRCodeActivity.EXTRA_SCAN_QRCODE_DATA);
             mPresenter.parseQRCode(scanResult);
         }
@@ -236,7 +238,7 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportIn
     @Override
     public String getKeystoreFromIntent() {
         Bundle bundle = getArguments();
-        if (bundle != null && !bundle.isEmpty()){
+        if (bundle != null && !bundle.isEmpty()) {
             return bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
         }
         return "";
@@ -329,19 +331,19 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportIn
     }
 
     @Override
-    public void showPrivateKeyError(String text, boolean isVisible){
+    public void showPrivateKeyError(String text, boolean isVisible) {
         mTvPrivateKeyError.setVisibility(isVisible ? View.VISIBLE : View.GONE);
         mTvPrivateKeyError.setText(text);
     }
 
     @Override
-    public void showNameError(String text, boolean isVisible){
+    public void showNameError(String text, boolean isVisible) {
         mTvNameError.setVisibility(isVisible ? View.VISIBLE : View.GONE);
         mTvNameError.setText(text);
     }
 
     @Override
-    public void showPasswordError(String text, boolean isVisible){
+    public void showPasswordError(String text, boolean isVisible) {
         mTvPasswordError.setVisibility(isVisible ? View.VISIBLE : View.GONE);
         mTvPasswordError.setText(text);
         mTvPasswordDesc.setVisibility(isVisible ? View.GONE : View.VISIBLE);

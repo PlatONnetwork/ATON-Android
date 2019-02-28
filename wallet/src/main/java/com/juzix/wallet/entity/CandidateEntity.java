@@ -69,6 +69,10 @@ public class CandidateEntity implements Cloneable, Parcelable {
      */
     private String region;
     /**
+     * 区域拼音
+     */
+    private String regionPinyin;
+    /**
      * 投票数
      */
     private long votedNum;
@@ -96,6 +100,7 @@ public class CandidateEntity implements Cloneable, Parcelable {
         setExtra(builder.extra);
         setAvatar(builder.avatar);
         setRegion(builder.region);
+        setRegionPinyin(builder.regionPinyin);
         setVotedNum(builder.votedNum);
         setStatus(builder.status);
         setStakedRanking(builder.stakedRanking);
@@ -115,6 +120,7 @@ public class CandidateEntity implements Cloneable, Parcelable {
         setExtra(in.readString());
         setAvatar(in.readString());
         setRegion(in.readString());
+        setRegionPinyin(in.readString());
         setVotedNum(in.readLong());
         setStatus(in.readInt());
         setStakedRanking(in.readInt());
@@ -135,6 +141,7 @@ public class CandidateEntity implements Cloneable, Parcelable {
         dest.writeString(getExtra());
         dest.writeString(getAvatar());
         dest.writeString(getRegion());
+        dest.writeString(getRegionPinyin());
         dest.writeLong(getVotedNum());
         dest.writeInt(getStatus());
         dest.writeInt(getStakedRanking());
@@ -254,6 +261,14 @@ public class CandidateEntity implements Cloneable, Parcelable {
         this.region = region;
     }
 
+    public String getRegionPinyin() {
+        return regionPinyin;
+    }
+
+    public void setRegionPinyin(String regionPinyin) {
+        this.regionPinyin = regionPinyin;
+    }
+
     public long getVotedNum() {
         return votedNum;
     }
@@ -311,6 +326,7 @@ public class CandidateEntity implements Cloneable, Parcelable {
         private String extra;
         private String avatar;
         private String region;
+        private String regionPinyin;
         private long votedNum;
         private int status;
         private int stakedRanking;
@@ -376,6 +392,11 @@ public class CandidateEntity implements Cloneable, Parcelable {
 
         public Builder region(String region) {
             this.region = region;
+            return this;
+        }
+
+        public Builder regionPinyin(String regionPinyin) {
+            this.regionPinyin = regionPinyin;
             return this;
         }
 

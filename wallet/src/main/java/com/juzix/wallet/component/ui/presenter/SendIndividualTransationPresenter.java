@@ -251,11 +251,12 @@ public class SendIndividualTransationPresenter extends BasePresenter<SendIndivid
         if (isViewAttached()) {
 
             String transferAmount = getView().getTransferAmount();
+            String toAddress = getView().getToAddress();
 
-            boolean isToAddressNotEmpty = !TextUtils.isEmpty(getView().getToAddress());
+            boolean isToAddressFormatCorrect = !TextUtils.isEmpty(toAddress) && WalletUtils.isValidAddress(toAddress);
             boolean isTransferAmountValid = !TextUtils.isEmpty(transferAmount) && NumberParserUtils.parseDouble(transferAmount) > 0 && isBalanceEnough(transferAmount);
 
-            getView().setSendTransactionButtonEnable(isToAddressNotEmpty && isTransferAmountValid);
+            getView().setSendTransactionButtonEnable(isToAddressFormatCorrect && isTransferAmountValid);
         }
 
     }

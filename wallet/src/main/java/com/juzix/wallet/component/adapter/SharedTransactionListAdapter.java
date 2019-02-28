@@ -34,7 +34,7 @@ public class SharedTransactionListAdapter extends CommonAdapter<TransactionEntit
                 SharedTransactionEntity.TransactionType transactionType = SharedTransactionEntity.TransactionType.getTransactionType(sharedTransactionEntity.getTransactionType());
                 SharedTransactionEntity.TransactionStatus transactionStatus = item.getTransactionStatus();
                 viewHolder.setVisible(R.id.v_new_msg, !sharedTransactionEntity.isRead());
-                viewHolder.setText(R.id.tv_transaction_status, context.getString(transactionType.getTransactionTypeDesc()));
+                viewHolder.setText(R.id.tv_transaction_status, context.getString(transactionType.getTransactionTypeDesc(sharedTransactionEntity.getToAddress(),walletAddress)));
                 viewHolder.setText(R.id.tv_transaction_time, DateUtil.format(item.getCreateTime(), DateUtil.DATETIME_FORMAT_PATTERN));
                 viewHolder.setText(R.id.tv_transaction_amount, context.getString(R.string.amount_with_unit, String.format("-%s", NumberParserUtils.getPrettyBalance(sharedTransactionEntity.getValue()))));
                 viewHolder.setText(R.id.tv_transaction_status_desc, transactionStatus.getStatusDesc(context, sharedTransactionEntity.getConfirms(), sharedTransactionEntity.getRequiredSignNumber()));

@@ -11,6 +11,7 @@ import com.juzix.wallet.entity.OwnerEntity;
 import com.juzix.wallet.entity.SharedWalletEntity;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -191,13 +192,17 @@ public class SharedWalletManager {
         return null;
     }
 
-    public SharedWalletEntity getWalletByWalletAddress(String walletAddress) {
+    public List<SharedWalletEntity> getWalletListByWalletAddress(String walletAddress) {
+        List<SharedWalletEntity> sharedWalletEntityList = new ArrayList<>();
         for (SharedWalletEntity walletEntity : mWalletList) {
-            if (walletEntity.getPrefixAddress().contains(walletAddress)) {
-                return walletEntity;
+            List<OwnerEntity> ownerEntityList = walletEntity.getOwner();
+            for (OwnerEntity ownerEntity : ownerEntityList) {
+                if (ownerEntity.getPrefixAddress().contains(walletAddress)) {
+                    sharedWalletEntityList.add(walletEntity);
+                }
             }
         }
-        return null;
+        return sharedWalletEntityList;
     }
 
     public SharedWalletEntity getWalletByContractAddress(String contractAddress) {

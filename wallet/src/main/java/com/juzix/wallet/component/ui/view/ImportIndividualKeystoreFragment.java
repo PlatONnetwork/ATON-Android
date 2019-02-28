@@ -84,13 +84,16 @@ public class ImportIndividualKeystoreFragment extends MVPBaseFragment<ImportIndi
         });
 
         Observable<CharSequence> keystoreObservable = RxTextView.textChanges(mEtKeystore).skipInitialValue();
-        Observable<CharSequence> passwordbservable = RxTextView.textChanges(mEtPassword).skipInitialValue();
+        Observable<CharSequence> passwordObservable = RxTextView.textChanges(mEtPassword).skipInitialValue();
         Observable<CharSequence> walletNameObservable = RxTextView.textChanges(mEtWalletName).skipInitialValue();
 
-        Observable.combineLatest(keystoreObservable, passwordbservable, walletNameObservable, new Function3<CharSequence, CharSequence, CharSequence, Boolean>() {
+        Observable.combineLatest(keystoreObservable, passwordObservable, walletNameObservable, new Function3<CharSequence, CharSequence, CharSequence, Boolean>() {
             @Override
             public Boolean apply(CharSequence charSequence, CharSequence charSequence2, CharSequence charSequence3) throws Exception {
-                return !TextUtils.isEmpty(charSequence) && !TextUtils.isEmpty(charSequence2) && charSequence2.length() >= 6 && !TextUtils.isEmpty(charSequence3) && charSequence3.length() <= 12;
+                String keystore = charSequence.toString().trim();
+                String passsword = charSequence2.toString().trim();
+                String walletName = charSequence3.toString().trim();
+                return !TextUtils.isEmpty(keystore) && !TextUtils.isEmpty(passsword) && passsword.length() >= 6 && !TextUtils.isEmpty(walletName) && walletName.length() <= 12;
             }
         }).subscribe(new Consumer<Boolean>() {
             @Override
@@ -104,9 +107,9 @@ public class ImportIndividualKeystoreFragment extends MVPBaseFragment<ImportIndi
             public void accept(Boolean hasFocus) throws Exception {
                 String keystore = mEtKeystore.getText().toString().trim();
                 if (!hasFocus) {
-                    if (TextUtils.isEmpty(keystore)){
+                    if (TextUtils.isEmpty(keystore)) {
                         showKeystoreError(string(R.string.validKeystoreEmptyTips), true);
-                    }else {
+                    } else {
                         showKeystoreError("", false);
                     }
                 }

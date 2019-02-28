@@ -28,24 +28,24 @@ public class SingleVoteEntity implements Cloneable, Parcelable {
     public static final int STATUS_SUCCESS = 1;
     public static final int STATUS_FAILED = 2;
 
-    private String                                uuid;
-    private String                                hash;
-    private String                                candidateId;
-    private String                                candidateName;
-    private String                                avatar;
-    private String                                region;
-    private String                                contractAddress;
-    private String                                walletName;
-    private String                                walletAddress;
-    private long                                  createTime;
-    private double                                value;
-    private long                                  ticketNumber;
-    private String                                  ticketPrice;
-    private long                                  blockNumber;
-    private long                                  latestBlockNumber;
-    private double                                energonPrice;
-    private int                                   status;
-    private ArrayList<TicketEntity>               tickets;
+    private String                  uuid;
+    private String                  hash;
+    private String                  candidateId;
+    private String                  candidateName;
+    private String                  avatar;
+    private String                  host;
+    private String                  contractAddress;
+    private String                  walletName;
+    private String                  walletAddress;
+    private long                    createTime;
+    private double                  value;
+    private long                    ticketNumber;
+    private String                  ticketPrice;
+    private long                    blockNumber;
+    private long                    latestBlockNumber;
+    private double                  energonPrice;
+    private int                     status;
+    private ArrayList<TicketEntity> tickets;
 
     protected SingleVoteEntity(Parcel in) {
         uuid = in.readString();
@@ -53,7 +53,7 @@ public class SingleVoteEntity implements Cloneable, Parcelable {
         candidateId = in.readString();
         candidateName = in.readString();
         avatar = in.readString();
-        region = in.readString();
+        host = in.readString();
         contractAddress = in.readString();
         walletName = in.readString();
         walletAddress = in.readString();
@@ -74,7 +74,7 @@ public class SingleVoteEntity implements Cloneable, Parcelable {
         setCandidateId(builder.candidateId);
         setCandidateName(builder.candidateName);
         setAvatar(builder.avatar);
-        setRegion(builder.region);
+        setHost(builder.host);
         setContractAddress(builder.contractAddress);
         setWalletName(builder.walletName);
         setWalletAddress(builder.walletAddress);
@@ -112,7 +112,7 @@ public class SingleVoteEntity implements Cloneable, Parcelable {
         dest.writeString(candidateId);
         dest.writeString(candidateName);
         dest.writeString(avatar);
-        dest.writeString(region);
+        dest.writeString(host);
         dest.writeString(contractAddress);
         dest.writeString(walletName);
         dest.writeString(walletAddress);
@@ -167,12 +167,12 @@ public class SingleVoteEntity implements Cloneable, Parcelable {
         this.avatar = avatar;
     }
 
-    public String getRegion() {
-        return region;
+    public String getHost() {
+        return host;
     }
 
-    public void setRegion(String region) {
-        this.region = region;
+    public void setHost(String host) {
+        this.host = host;
     }
 
     public String getPrefixContractAddress() {
@@ -280,22 +280,22 @@ public class SingleVoteEntity implements Cloneable, Parcelable {
     }
 
     public static final class Builder {
-        private String                  uuid;
-        private String                  hash;
-        private String                  candidateId;
-        private String                  candidateName;
-        private String                  avatar;
-        private String                  region;
-        private String                  contractAddress;
-        private String                  walletName;
-        private String                  walletAddress;
-        private long                    createTime;
-        private double                  value;
-        private long                    ticketNumber;
-        private String                  ticketPrice;
-        private long                    blockNumber;
-        private long                    latestBlockNumber;
-        private double                  energonPrice;
+        private String uuid;
+        private String hash;
+        private String candidateId;
+        private String candidateName;
+        private String avatar;
+        private String host;
+        private String contractAddress;
+        private String walletName;
+        private String walletAddress;
+        private long   createTime;
+        private double value;
+        private long   ticketNumber;
+        private String ticketPrice;
+        private long   blockNumber;
+        private long   latestBlockNumber;
+        private double energonPrice;
         private int                     status;
         private ArrayList<TicketEntity> tickets;
 
@@ -327,8 +327,8 @@ public class SingleVoteEntity implements Cloneable, Parcelable {
             return this;
         }
 
-        public Builder region(String region) {
-            this.region = region;
+        public Builder host(String host) {
+            this.host = host;
             return this;
         }
 

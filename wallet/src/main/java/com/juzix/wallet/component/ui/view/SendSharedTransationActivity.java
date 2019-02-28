@@ -285,11 +285,14 @@ public class SendSharedTransationActivity extends MVPBaseActivity<SendSharedTran
     @Override
     public void setToAddress(String address) {
         etWalletAddress.setText(address);
+        etWalletAddress.setSelection(address.length());
     }
 
     @Override
     public void setTransferAmount(double amount) {
-        etWalletAmount.setText(NumberParserUtils.getPrettyBalance(amount));
+        String amountText = NumberParserUtils.getPrettyBalance(amount);
+        etWalletAmount.setText(amountText);
+        etWalletAmount.setSelection(amountText.length());
     }
 
     @Override
@@ -299,7 +302,7 @@ public class SendSharedTransationActivity extends MVPBaseActivity<SendSharedTran
 
     @Override
     public void setTransferFeeAmount(String feeAmount) {
-        tvFeeAmount.setText(string(R.string.amount_with_unit,feeAmount));
+        tvFeeAmount.setText(string(R.string.amount_with_unit, feeAmount));
     }
 
     @Override
@@ -309,12 +312,12 @@ public class SendSharedTransationActivity extends MVPBaseActivity<SendSharedTran
 
     @Override
     public String getTransferAmount() {
-        return etWalletAmount.getText().toString();
+        return etWalletAmount.getText().toString().trim();
     }
 
     @Override
     public String getToAddress() {
-        return etWalletAddress.getText().toString();
+        return etWalletAddress.getText().toString().trim();
     }
 
     @Override

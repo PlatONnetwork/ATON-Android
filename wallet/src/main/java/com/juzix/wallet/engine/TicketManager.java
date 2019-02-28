@@ -4,8 +4,12 @@ import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.juzhen.framework.util.NumberParserUtils;
+import com.juzix.wallet.App;
+import com.juzix.wallet.R;
+import com.juzix.wallet.db.entity.RegionInfoEntity;
 import com.juzix.wallet.db.entity.SingleVoteInfoEntity;
 import com.juzix.wallet.db.entity.TicketInfoEntity;
+import com.juzix.wallet.db.sqlite.RegionInfoDao;
 import com.juzix.wallet.db.sqlite.SingleVoteInfoDao;
 import com.juzix.wallet.entity.CandidateEntity;
 import com.juzix.wallet.entity.CandidateExtraEntity;
@@ -16,6 +20,7 @@ import com.juzix.wallet.utils.AppUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.JSONUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
+import com.juzix.wallet.utils.LanguageUtil;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.platon.contracts.TicketContract;
@@ -35,6 +40,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -219,7 +225,7 @@ public class TicketManager {
 //                    .transactionId(sb.toString())
 //                    .candidateId(candidateId)
 //                    .candidateName(candidateName)
-//                    .region(candidateEntity.getRegion())
+//                    .host(candidateEntity.getHost())
 //                    .contractAddress(TicketContract.CONTRACT_ADDRESS)
 //                    .walletName(walletEntity.getName())
 //                    .walletAddress(walletEntity.getAddress())
@@ -287,7 +293,7 @@ public class TicketManager {
                     .candidateId(candidateId)
                     .candidateName(candidateName)
                     .avatar(candidateEntity.getAvatar())
-                    .region(candidateEntity.getRegion())
+                    .host(candidateEntity.getHost())
                     .contractAddress(TicketContract.CONTRACT_ADDRESS)
                     .walletName(walletEntity.getName())
                     .walletAddress(walletEntity.getAddress())
@@ -299,6 +305,7 @@ public class TicketManager {
                     .status(SingleVoteEntity.STATUS_PENDING)
                     .tickets(tickets)
                     .build();
+
             SingleVoteInfoDao.getInstance().insertTransaction(voteInfoEntity);
 
             updateVoteTicket(voteInfoEntity);
@@ -387,7 +394,7 @@ public class TicketManager {
                                 .candidateId(singleVoteInfoEntity.getCandidateId())
                                 .candidateName(singleVoteInfoEntity.getCandidateName())
                                 .avatar(singleVoteInfoEntity.getAvatar())
-                                .region(singleVoteInfoEntity.getRegion())
+                                .host(singleVoteInfoEntity.getHost())
                                 .contractAddress(singleVoteInfoEntity.getContractAddress())
                                 .walletName(singleVoteInfoEntity.getWalletName())
                                 .walletAddress(singleVoteInfoEntity.getWalletAddress())
@@ -440,7 +447,7 @@ public class TicketManager {
                             .candidateId(singleVoteInfoEntity.getCandidateId())
                             .candidateName(singleVoteInfoEntity.getCandidateName())
                             .avatar(singleVoteInfoEntity.getAvatar())
-                            .region(singleVoteInfoEntity.getRegion())
+                            .host(singleVoteInfoEntity.getHost())
                             .contractAddress(singleVoteInfoEntity.getContractAddress())
                             .walletName(singleVoteInfoEntity.getWalletName())
                             .walletAddress(singleVoteInfoEntity.getWalletAddress())

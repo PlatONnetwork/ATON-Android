@@ -12,6 +12,7 @@ public class RegionInfoEntity extends RealmObject {
     private long   updateTime;
     private String countryEn;
     private String countryZh;
+    private String countryPinyin;
 
     public RegionInfoEntity() {
 
@@ -24,6 +25,7 @@ public class RegionInfoEntity extends RealmObject {
         setUpdateTime(builder.updateTime);
         setCountryEn(builder.countryEn);
         setCountryZh(builder.countryZh);
+        setCountryPinyin(builder.countryPinyin);
     }
 
     public String getUuid() {
@@ -74,6 +76,14 @@ public class RegionInfoEntity extends RealmObject {
         this.countryZh = countryZh;
     }
 
+    public String getCountryPinyin() {
+        return countryPinyin;
+    }
+
+    public void setCountryPinyin(String countryPinyin) {
+        this.countryPinyin = countryPinyin;
+    }
+
     public static final class Builder {
         private String uuid;
         private String ip;
@@ -81,6 +91,7 @@ public class RegionInfoEntity extends RealmObject {
         private long   updateTime;
         private String countryEn;
         private String countryZh;
+        private String countryPinyin;
 
         public Builder() {
         }
@@ -112,6 +123,11 @@ public class RegionInfoEntity extends RealmObject {
 
         public Builder countryZh(String countryZh) {
             this.countryZh = countryZh;
+            return this;
+        }
+
+        public Builder countryPinyin(String countryPinyin) {
+            this.countryPinyin = countryPinyin;
             return this;
         }
 
