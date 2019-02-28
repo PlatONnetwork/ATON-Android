@@ -49,6 +49,7 @@ public class SendSharedTransationPresenter extends BasePresenter<SendSharedTrans
     private final static String TAG = SendSharedTransationPresenter.class.getSimpleName();
     private final static double DEFAULT_PERCENT = 0;
     private final static long DEAULT_GAS_LIMIT = SharedWalletTransactionManager.INVOKE_GAS_LIMIT.longValue();
+    private static final double DEFAULT_WEI = 1E18;
     private final static double MIN_GAS_PRICE_WEI = 1E9;
     private final static double MAX_GAS_PRICE_WEI = 1E10;
     private final static double D_GAS_PRICE_WEI = MAX_GAS_PRICE_WEI - MIN_GAS_PRICE_WEI;
@@ -116,7 +117,7 @@ public class SendSharedTransationPresenter extends BasePresenter<SendSharedTrans
 
         if (isViewAttached() && walletEntity != null) {
 
-            getView().setTransferAmount(BigDecimalUtil.sub(walletEntity.getBalance(), feeAmount));
+            getView().setTransferAmount(walletEntity.getBalance());
         }
     }
 
@@ -237,11 +238,12 @@ public class SendSharedTransationPresenter extends BasePresenter<SendSharedTrans
         if (isViewAttached()) {
 
             String transferAmount = getView().getTransferAmount();
+            String toAddress = getView().getToAddress();
 
-            boolean isToAddressNotEmpty = !TextUtils.isEmpty(getView().getToAddress());
+            boolean isToAddressFormatCorrect = !TextUtils.isEmpty(toAddress) && WalletUtils.isValidAddress(toAddress);
             boolean isTransferAmountValid = !TextUtils.isEmpty(transferAmount) && NumberParserUtils.parseDouble(transferAmount) > 0 && isBalanceEnough(transferAmount);
 
-            getView().setSendTransactionButtonEnable(isToAddressNotEmpty && isTransferAmountValid);
+            getView().setSendTransactionButtonEnable(isToAddressFormatCorrect && isTransferAmountValid);
         }
 
     }
@@ -260,6 +262,21 @@ public class SendSharedTransationPresenter extends BasePresenter<SendSharedTrans
         });
     }
 
+    private Single<Credentials> checkBalance(IndividualWalletEntity walletEntity, Credentials credentials, BigInteger gasPrice) {
+
+        return Single.create(new SingleOnSubscribe<Credentials>() {
+            @Override
+            public void subscribe(SingleEmitter<Credentials> emitter) throws Exception {
+                double balance = Web3jManager.getInstance().getBalance(walletEntity.getPrefixAddress());
+                if (balance < feeAmount) {
+                    emitter.onError(new CustomThrowable(CustomThrowable.CODE_ERROR_NOT_SUFFICIENT_BALANCE));
+                } else {
+                    emitter.onSuccess(credentials);
+                }
+            }
+        });
+    }
+
 
     private void validPassword(String password, String transferAmount, String toAddress) {
 
@@ -268,11 +285,23 @@ public class SendSharedTransationPresenter extends BasePresenter<SendSharedTrans
         BigInteger submitGasPrice = BigInteger.valueOf(NumberParserUtils.parseLong(BigDecimalUtil.parseString(gasPrice)));
 
         validPassword(password, keyJson)
+                .flatMap(new Function<Credentials, SingleSource<Credentials>>() {
+                    @Override
+                    public SingleSource<Credentials> apply(Credentials credentials) throws Exception {
+                        return checkBalance(individualWalletEntity, credentials, submitGasPrice);
+                    }
+                })
                 .flatMap(new Function<Credentials, SingleSource<SharedTransactionInfoEntity>>() {
                     @Override
                     public SingleSource<SharedTransactionInfoEntity> apply(Credentials credentials) throws Exception {
                         return SharedWalletTransactionManager.getInstance()
-                                .submitTransaction(credentials, walletEntity, toAddress, transferAmount, memo, submitGasPrice);
+                                .submitTransaction(credentials, walletEntity, toAddress, transferAmount, memo, submitGasPrice, feeAmount);
+                    }
+                })
+                .map(new Function<SharedTransactionInfoEntity, SharedTransactionInfoEntity>() {
+                    @Override
+                    public SharedTransactionInfoEntity apply(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
+                        return sharedTransactionInfoEntity;
                     }
                 })
                 .compose(new SchedulersTransformer())
@@ -280,7 +309,7 @@ public class SendSharedTransationPresenter extends BasePresenter<SendSharedTrans
                 .compose(bindToLifecycle())
                 .subscribe(new Consumer<SharedTransactionInfoEntity>() {
                     @Override
-                    public void accept(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
+                    public void accept(SharedTransactionInfoEntity sharedTransactionInfoEntity) {
                         if (isViewAttached()) {
                             showLongToast(R.string.transfer_succeed);
                             currentActivity().finish();
@@ -299,6 +328,8 @@ public class SendSharedTransationPresenter extends BasePresenter<SendSharedTrans
                                             showInputWalletPasswordDialogFragment(password, transferAmount, toAddress);
                                         }
                                     }).show(currentActivity().getSupportFragmentManager(), "showPasswordError");
+                                } else if (customThrowable.getErrCode() == CustomThrowable.CODE_ERROR_NOT_SUFFICIENT_BALANCE) {
+                                    showLongToast(R.string.insufficient_balance);
                                 }
                             } else {
                                 showLongToast(R.string.transfer_failed);
@@ -337,9 +368,8 @@ public class SendSharedTransationPresenter extends BasePresenter<SendSharedTrans
     }
 
     private boolean isBalanceEnough(String transferAmount) {
-        double usedAmount = BigDecimalUtil.add(NumberParserUtils.parseDouble(transferAmount), feeAmount);
         if (walletEntity != null) {
-            return walletEntity.getBalance() >= usedAmount;
+            return walletEntity.getBalance() >= NumberParserUtils.parseDouble(transferAmount);
         }
         return false;
     }

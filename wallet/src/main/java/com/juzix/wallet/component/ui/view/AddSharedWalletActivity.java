@@ -112,7 +112,6 @@ public class AddSharedWalletActivity extends MVPBaseActivity<AddSharedWalletPres
         etWalletAddress.addTextChangedListener(new TextChangedListener() {
             @Override
             protected void onTextChanged(CharSequence s) {
-////                mPresenter.checkWalletAddress(s.toString());
                 mPresenter.checkAddSharedWalletBtnEnable();
             }
         });
@@ -128,7 +127,6 @@ public class AddSharedWalletActivity extends MVPBaseActivity<AddSharedWalletPres
         etWalletName.addTextChangedListener(new TextChangedListener() {
             @Override
             protected void onTextChanged(CharSequence s) {
-////                mPresenter.checkWalletName(s.toString());
                 mPresenter.checkAddSharedWalletBtnEnable();
             }
         });
@@ -136,7 +134,7 @@ public class AddSharedWalletActivity extends MVPBaseActivity<AddSharedWalletPres
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    mPresenter.checkWalletName(etWalletName.getText().toString());
+                    mPresenter.checkWalletName(getWalletName());
                 }
             }
         });
@@ -152,7 +150,7 @@ public class AddSharedWalletActivity extends MVPBaseActivity<AddSharedWalletPres
                 AddressBookActivity.actionStartForResult(this, Constants.Action.ACTION_GET_ADDRESS, Constants.RequestCode.REQUEST_CODE_GET_ADDRESS);
                 break;
             case R.id.rtv_add_shared_wallet:
-                mPresenter.addWallet(etWalletName.getText().toString(), etWalletAddress.getText().toString());
+                mPresenter.addWallet(getWalletName(), getWalletAddress());
                 break;
             default:
                 break;
@@ -228,11 +226,11 @@ public class AddSharedWalletActivity extends MVPBaseActivity<AddSharedWalletPres
 
     @Override
     public String getWalletName() {
-        return etWalletName.getText().toString();
+        return etWalletName.getText().toString().trim();
     }
 
     @Override
     public String getWalletAddress() {
-        return etWalletAddress.getText().toString();
+        return etWalletAddress.getText().toString().trim();
     }
 }

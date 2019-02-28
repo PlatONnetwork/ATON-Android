@@ -41,7 +41,8 @@ public class SingleVoteInfoEntity extends RealmObject implements Cloneable {
     /**
      * 区域
      */
-    private String region;
+    private String host;
+
     /**
      * 合约地址
      */
@@ -110,7 +111,7 @@ public class SingleVoteInfoEntity extends RealmObject implements Cloneable {
         setCandidateId(builder.candidateId);
         setCandidateName(builder.candidateName);
         setAvatar(builder.avatar);
-        setRegion(builder.region);
+        setHost(builder.host);
         setContractAddress(builder.contractAddress);
         setWalletName(builder.walletName);
         setWalletAddress(builder.walletAddress);
@@ -173,12 +174,12 @@ public class SingleVoteInfoEntity extends RealmObject implements Cloneable {
         this.avatar = avatar;
     }
 
-    public String getRegion() {
-        return region;
+    public String getHost() {
+        return host;
     }
 
-    public void setRegion(String region) {
-        this.region = region;
+    public void setHost(String host) {
+        this.host = host;
     }
 
     public String getContractAddress() {
@@ -299,22 +300,22 @@ public class SingleVoteInfoEntity extends RealmObject implements Cloneable {
     }
 
     public static final class Builder {
-        private String                      uuid;
-        private String                      hash;
-        private String                      transactionId;
-        private String                      candidateId;
-        private String                      candidateName;
-        private String                      avatar;
-        private String                      region;
-        private String                      contractAddress;
-        private String                      walletName;
-        private String                      walletAddress;
-        private long                        createTime;
-        private double                      value;
-        private long                        ticketNumber;
-        private String                        ticketPrice;
-        private long                        blockNumber;
-        private long                        latestBlockNumber;
+        private String uuid;
+        private String hash;
+        private String transactionId;
+        private String candidateId;
+        private String candidateName;
+        private String avatar;
+        private String host;
+        private String contractAddress;
+        private String walletName;
+        private String walletAddress;
+        private long   createTime;
+        private double value;
+        private long   ticketNumber;
+        private String ticketPrice;
+        private long   blockNumber;
+        private long   latestBlockNumber;
         private double                      energonPrice;
         private int                         status;
         private ArrayList<TicketInfoEntity> tickets;
@@ -352,8 +353,8 @@ public class SingleVoteInfoEntity extends RealmObject implements Cloneable {
             return this;
         }
 
-        public Builder region(String region) {
-            this.region = region;
+        public Builder host(String host) {
+            this.host = host;
             return this;
         }
 

@@ -118,7 +118,7 @@ public class NodeManager {
         List<NodeEntity> nodeInfoEntityList = new ArrayList<>();
 
         for (int i = 0; i < DEFAULT_NODE_URL_LIST.length; i++) {
-            nodeInfoEntityList.add(new NodeEntity.Builder().nodeAddress(DEFAULT_NODE_URL_LIST[i]).isDefaultNode(true).isChecked(i == 0).isMainNetworkNode(true).build());
+            nodeInfoEntityList.add(new NodeEntity.Builder().nodeAddress(DEFAULT_NODE_URL_LIST[i]).isDefaultNode(true).isChecked(i == 0).isMainNetworkNode(false).build());
         }
         return nodeInfoEntityList;
     }

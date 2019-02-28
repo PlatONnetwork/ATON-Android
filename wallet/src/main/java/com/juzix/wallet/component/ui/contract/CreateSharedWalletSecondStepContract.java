@@ -143,7 +143,7 @@ public class CreateSharedWalletSecondStepContract {
 
         void createContract();
 
-        void validPassword(String password, BigInteger gasPrice);
+        void validPassword(String password, BigInteger gasPrice,double feeAmount);
 
         void focusName(int position);
 

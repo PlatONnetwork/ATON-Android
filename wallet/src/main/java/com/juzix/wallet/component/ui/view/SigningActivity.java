@@ -21,6 +21,7 @@ import com.juzix.wallet.component.ui.contract.SigningContract;
 import com.juzix.wallet.component.ui.presenter.SigningPresenter;
 import com.juzix.wallet.component.widget.RoundedTextView;
 import com.juzix.wallet.component.widget.SpacesItemDecoration;
+import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.SharedTransactionEntity;
 import com.juzix.wallet.entity.TransactionResult;
 import com.juzix.wallet.event.EventPublisher;
@@ -166,6 +167,11 @@ public class SigningActivity extends MVPBaseActivity<SigningPresenter> implement
     }
 
     @Override
+    public IndividualWalletEntity getIndividualWalletFromIntent() {
+        return getIntent().getParcelableExtra(Constants.Extra.EXTRA_WALLET);
+    }
+
+    @Override
     public void setTransactionDetailInfo(SharedTransactionEntity transactionEntity, String statusDesc) {
 
         tvTransactionValue.setText(string(R.string.amount_with_unit, String.format("%s%s", transactionEntity.isReceiver(transactionEntity.getContractAddress()) ? "+" : "-", NumberParserUtils.getPrettyBalance(transactionEntity.getValue()))));
@@ -175,7 +181,7 @@ public class SigningActivity extends MVPBaseActivity<SigningPresenter> implement
 
         tvTransactionType.setText(transactionEntity.isReceiver(transactionEntity.getContractAddress()) ? R.string.receive : R.string.send);
         tvTransactionTime.setText(DateUtil.format(transactionEntity.getCreateTime(), DateUtil.DATETIME_FORMAT_PATTERN));
-        tvTransactionAmount.setText(string(R.string.amount_with_unit, String.format("%s%s", transactionEntity.isReceiver(transactionEntity.getContractAddress()) ? "+" : "-", NumberParserUtils.getPrettyBalance(transactionEntity.getValue()))));
+        tvTransactionAmount.setText(string(R.string.amount_with_unit, NumberParserUtils.getPrettyBalance(transactionEntity.getValue())));
         tvTransactionEnergon.setText("-");
         tvTransactionWalletName.setText(transactionEntity.getWalletName());
         tvMemo.setText(transactionEntity.getMemo());
@@ -210,9 +216,10 @@ public class SigningActivity extends MVPBaseActivity<SigningPresenter> implement
         }
     }
 
-    public static void actionStart(Activity activity, SharedTransactionEntity transactionEntity) {
+    public static void actionStart(Activity activity, SharedTransactionEntity transactionEntity, IndividualWalletEntity individualWalletEntity) {
         Intent intent = new Intent(activity, SigningActivity.class);
         intent.putExtra(Constants.Extra.EXTRA_TRANSACTION, transactionEntity);
+        intent.putExtra(Constants.Extra.EXTRA_WALLET, individualWalletEntity);
         activity.startActivity(intent);
     }
 }

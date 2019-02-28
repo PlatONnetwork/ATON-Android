@@ -3,6 +3,7 @@ package com.juzix.wallet.engine;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
+import com.github.promeg.pinyinhelper.Pinyin;
 import com.juzhen.framework.network.Headers;
 import com.juzhen.framework.network.NoHttp;
 import com.juzhen.framework.network.RequestMethod;
@@ -76,6 +77,7 @@ public class CandidateManager {
                     entity.setCandidateExtraEntity(extraEntity);
                 }
                 entity.setRegion(App.getContext().getString(isEnglish ? R.string.unknownRegionEn : R.string.unknownRegion));
+                entity.setRegionPinyin("*");
                 candidateEntities.add(entity);
                 ipSet.add(entity.getHost());
                 candidateIdList.add(entity.getCandidateId());
@@ -88,28 +90,31 @@ public class CandidateManager {
                     candidateEntity.setVotedNum(ticketIds.get(candidateId).size());
                 }
                 String host = candidateEntity.getHost();
-                if (!TextUtils.isEmpty(host) && !regionInfoEntityList.isEmpty()){
-                    for (RegionInfoEntity entity : regionInfoEntityList ){
-                        if (host.equals(entity.getIp())){
-                            String region = isEnglish ? entity.getCountryEn() : entity.getCountryZh();
-                            try {
-                                if (!TextUtils.isEmpty(region)){
-                                    candidateEntity.setRegion(region);
+                if (TextUtils.isEmpty(host) || regionInfoEntityList.isEmpty()){
+                    continue;
+                }
+                for (RegionInfoEntity entity : regionInfoEntityList ){
+                    if (host.equals(entity.getIp())){
+                        String region = isEnglish ? entity.getCountryEn() : entity.getCountryZh();
+                        String regionPinyin = isEnglish ? entity.getCountryEn() : entity.getCountryPinyin();
+                        try {
+                            if (!TextUtils.isEmpty(region)){
+                                candidateEntity.setRegion(region);
+                                candidateEntity.setRegionPinyin(regionPinyin);
+                                if (ipSet.contains(host)) {
+                                    ipSet.remove(host);
+                                }
+                            }else {
+                                if (System.currentTimeMillis() - entity.getUpdateTime() < UPDATE_REGION_TIME_MILLS){
                                     if (ipSet.contains(host)) {
                                         ipSet.remove(host);
                                     }
-                                }else {
-                                    if (System.currentTimeMillis() - entity.getUpdateTime() > UPDATE_REGION_TIME_MILLS){
-                                        if (ipSet.contains(host)) {
-                                            ipSet.remove(host);
-                                        }
-                                    }
                                 }
-                            }catch (Exception exp){
-                                exp.printStackTrace();
                             }
-                            break;
+                        }catch (Exception exp){
+                            exp.printStackTrace();
                         }
+                        break;
                     }
                 }
             }
@@ -135,7 +140,7 @@ public class CandidateManager {
                 .txIndex(dto.getTxIndex().intValue())
                 .candidateId(dto.getCandidateId())
                 .from(dto.getFrom())
-                .fee(dto.getFee().intValue())
+                .fee(10000 - dto.getFee().intValue())
                 .host(dto.getHost())
                 .port(dto.getPort())
                 .extra(dto.getExtra())
@@ -161,10 +166,12 @@ public class CandidateManager {
             }
             entity.setVotedNum(TicketManager.getInstance().getCandidateTicketIdsCounter(entity.getCandidateId()));
             RegionInfoEntity regionInfoEntity = RegionInfoDao.getInstance().getRegionInfoWithIp(entity.getHost());
-            if (regionInfoEntity != null){
+            if (regionInfoEntity != null && !TextUtils.isEmpty(regionInfoEntity.getCountryEn())){
                 entity.setRegion(isEnglish ? regionInfoEntity.getCountryEn() : regionInfoEntity.getCountryZh());
+                entity.setRegionPinyin(isEnglish ? regionInfoEntity.getCountryEn() : regionInfoEntity.getCountryPinyin());
             }else {
                 entity.setRegion(App.getContext().getString(isEnglish ? R.string.unknownRegionEn : R.string.unknownRegion));
+                entity.setRegionPinyin("*");
             }
             return entity;
         }catch (Exception exp){
@@ -227,7 +234,7 @@ public class CandidateManager {
         if (arrayList.isEmpty()){
             return;
         }
-        String regionJson = FileUtil.getStringFromAssets(App.getContext(), REGION_NAME);
+        String regionJson = FileUtil.getAssets(App.getContext(), REGION_NAME);
         if (TextUtils.isEmpty(regionJson)){
             return;
         }
@@ -241,8 +248,10 @@ public class CandidateManager {
                     }
                     JSONObject obj = jsonObject.getJSONObject(countryCode);
                     if (obj != null){
-                        regionInfoEntity.setCountryZh(obj.getString("CN"));
                         regionInfoEntity.setCountryEn(obj.getString("EN"));
+                        String countryZh = obj.getString("CN");
+                        regionInfoEntity.setCountryZh(countryZh);
+                        regionInfoEntity.setCountryPinyin(Pinyin.toPinyin(countryZh, ""));
                     }
                 }catch (Exception e){
                     e.printStackTrace();

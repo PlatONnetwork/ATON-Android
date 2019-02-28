@@ -13,7 +13,7 @@ import java.util.List;
 public class SharedWalletEntity extends WalletEntity implements Cloneable {
 
     /**
-     * 合约地址
+     * 合约地址,也即钱包地址
      */
     private String contractAddress;
     /**

@@ -286,7 +286,7 @@ public class SntpClient {
     }
 
     /**
-     * @param offset offset index in buffer to start reading from
+     * @param offset offset index in buffer to showWalletInfo reading from
      * @return NTP timestamp in Java epoch
      */
     private long readTimeStamp(byte[] buffer, int offset) {

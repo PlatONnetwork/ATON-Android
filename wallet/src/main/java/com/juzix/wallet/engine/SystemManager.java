@@ -45,12 +45,22 @@ public class SystemManager {
         }.start();
     }
 
+    void refreshVoteTransactionList(){
+        new Thread(){
+            @Override
+            public void run() {
+                TicketManager.getInstance().updateVoteTickets();
+            }
+        }.start();
+    }
+
     private class Monitor extends Thread {
         @Override
         public void run() {
             while (!mIsFinished) {
                 try {
                     refreshSharedTransactionList();
+                    refreshVoteTransactionList();
                 } catch (Exception exp) {
                     exp.printStackTrace();
                 }

@@ -40,6 +40,7 @@ public class Constants {
         String BUNDLE_SHARE_APPINFO_LIST = "bundle_share_appinfo_list";
         String BUNDLE_TYPE = "bundle_type";
         String BUNDLE_FEE = "bundle_fee";
+        String BUNDLE_TEXT = "bundle_text";
     }
 
     public interface Action {
@@ -73,6 +74,8 @@ public class Constants {
     }
 
     public interface URL {
+//        String WEB3J_URL = "http://192.168.9.76:8792";
+//                String WEB3J_URL = "http://10.10.8.209:6789";
         String WEB3J_URL = "https://syde.platon.network/test";
         String IP_URL    = "http://ip-api.com/batch/";
     }

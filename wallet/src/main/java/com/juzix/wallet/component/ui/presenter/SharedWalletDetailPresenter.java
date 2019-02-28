@@ -149,12 +149,12 @@ public class SharedWalletDetailPresenter extends BasePresenter<SharedWalletDetai
                     SharedWalletTransactionManager.getInstance().updateTransactionForRead(walletEntity, sharedTransactionEntity);
                 }
                 if (sharedTransactionEntity.transfered()) {
-                    SharedTransactionDetailActivity.actionStart(currentActivity(), sharedTransactionEntity);
+                    SharedTransactionDetailActivity.actionStart(currentActivity(), sharedTransactionEntity,walletEntity.getPrefixContractAddress());
                 } else {
-                    SigningActivity.actionStart(currentActivity(), sharedTransactionEntity);
+                    SigningActivity.actionStart(currentActivity(), sharedTransactionEntity,IndividualWalletManager.getInstance().getWalletByAddress(sharedTransactionEntity.getOwnerWalletAddress()));
                 }
             } else {
-                IndividualTransactionDetailActivity.actionStart(currentActivity(), (IndividualTransactionEntity) transactionEntity, walletEntity.getPrefixAddress());
+                IndividualTransactionDetailActivity.actionStart(currentActivity(), (IndividualTransactionEntity) transactionEntity, walletEntity.getPrefixContractAddress());
             }
         }
 
@@ -168,7 +168,6 @@ public class SharedWalletDetailPresenter extends BasePresenter<SharedWalletDetai
     }
 
     private Single<List<TransactionEntity>> getTransactionEntityList(String contractAddress) {
-        Log.e(TAG, "getTransactionEntityList");
         return getSharedTransactionEntityList(contractAddress)
                 .zipWith(getIndividualTransactionEntityList(contractAddress), new BiFunction<List<SharedTransactionEntity>, List<IndividualTransactionEntity>, List<TransactionEntity>>() {
                     @Override

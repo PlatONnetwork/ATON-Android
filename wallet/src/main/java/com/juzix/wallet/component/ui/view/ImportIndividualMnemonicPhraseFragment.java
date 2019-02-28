@@ -123,7 +123,9 @@ public class ImportIndividualMnemonicPhraseFragment extends MVPBaseFragment<Impo
         Observable<Boolean> observable1 = Observable.combineLatest(mnemonicPhraseObservable, walletNamePhraseObservable, new BiFunction<CharSequence, CharSequence, Boolean>() {
             @Override
             public Boolean apply(CharSequence charSequence, CharSequence charSequence2) throws Exception {
-                return !TextUtils.isEmpty(charSequence) && !TextUtils.isEmpty(charSequence2) && charSequence2.length() <= 12;
+                String mnemonicPhrase = charSequence.toString().trim();
+                String walletName = charSequence2.toString().trim();
+                return !TextUtils.isEmpty(mnemonicPhrase) && !TextUtils.isEmpty(walletName) && walletName.length() <= 12;
             }
         });
 

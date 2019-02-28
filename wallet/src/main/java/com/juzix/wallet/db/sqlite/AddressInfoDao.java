@@ -109,8 +109,9 @@ public class AddressInfoDao extends BaseDao {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
-            return realm.where(AddressInfoEntity.class)
+            AddressInfoEntity entity = realm.where(AddressInfoEntity.class)
                     .equalTo("address", address).findFirst();
+            return  realm.copyFromRealm(entity);
         } catch (Exception e) {
             return null;
         }finally {

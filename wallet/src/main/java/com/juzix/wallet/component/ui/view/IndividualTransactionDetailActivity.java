@@ -7,6 +7,7 @@ import android.support.constraint.Barrier;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -65,18 +66,8 @@ public class IndividualTransactionDetailActivity extends MVPBaseActivity<Individ
     TextView tvTransactionEnergon;
     @BindView(R.id.tv_transaction_wallet_name)
     TextView tvTransactionWalletName;
-    @BindView(R.id.tv_memo)
-    TextView tvMemo;
-    @BindView(R.id.iv_copy_transation_hash)
-    ImageView ivCopyTransationHash;
-    @BindView(R.id.tv_transation_hash)
-    TextView tvTransationHash;
-    @BindView(R.id.layout_transation_hash)
-    RelativeLayout layoutTransationHash;
     @BindView(R.id.tv_transaction_status)
     TextView tvTransactionStatus;
-    @BindView(R.id.tv_memo_title)
-    TextView tvMemoTitle;
 
     private Unbinder unbinder;
 
@@ -90,16 +81,10 @@ public class IndividualTransactionDetailActivity extends MVPBaseActivity<Individ
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_individual_transation_detail);
         unbinder = ButterKnife.bind(this);
-        initViews();
         mPresenter.fetchTransactionDetail();
     }
 
-    private void initViews() {
-        tvMemo.setVisibility(View.GONE);
-        tvMemoTitle.setVisibility(View.GONE);
-    }
-
-    @OnClick({R.id.iv_copy_from_address, R.id.iv_copy_to_address, R.id.iv_copy_transation_hash})
+    @OnClick({R.id.iv_copy_from_address, R.id.iv_copy_to_address})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_copy_from_address:
@@ -107,9 +92,6 @@ public class IndividualTransactionDetailActivity extends MVPBaseActivity<Individ
                 break;
             case R.id.iv_copy_to_address:
                 CommonUtil.copyTextToClipboard(this, tvToAddress.getText().toString());
-                break;
-            case R.id.iv_copy_transation_hash:
-                CommonUtil.copyTextToClipboard(this, tvTransationHash.getText().toString());
                 break;
             default:
                 break;
@@ -156,7 +138,5 @@ public class IndividualTransactionDetailActivity extends MVPBaseActivity<Individ
         tvTransactionAmount.setText(string(R.string.amount_with_unit, NumberParserUtils.getPrettyBalance(transactionEntity.getValue())));
         tvTransactionEnergon.setText(string(R.string.amount_with_unit, NumberParserUtils.getPrettyBalance(transactionEntity.getEnergonPrice())));
         tvTransactionWalletName.setText(transactionEntity.getWalletName());
-        tvMemo.setText(transactionEntity.getMemo());
-        tvTransationHash.setText(transactionEntity.getHash());
     }
 }

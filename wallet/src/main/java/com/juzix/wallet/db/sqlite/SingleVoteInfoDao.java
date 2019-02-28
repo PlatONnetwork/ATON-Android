@@ -50,9 +50,6 @@ public class SingleVoteInfoDao {
                     .equalTo("uuid", uuid)
                     .findFirst();
         } catch (Exception e) {
-            if (realm != null) {
-                realm.cancelTransaction();
-            }
             return null;
         }
     }

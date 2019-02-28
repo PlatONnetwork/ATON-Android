@@ -2,6 +2,7 @@ package com.juzix.wallet.component.ui.contract;
 
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
+import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.SharedTransactionEntity;
 import com.juzix.wallet.entity.SharedWalletEntity;
 import com.juzix.wallet.entity.TransactionResult;
@@ -16,6 +17,8 @@ public class SigningContract {
     public interface View extends IView {
 
         SharedTransactionEntity getTransactionFromIntent();
+
+        IndividualWalletEntity getIndividualWalletFromIntent();
 
         void setTransactionDetailInfo(SharedTransactionEntity transactionEntity, String statusDesc);
 

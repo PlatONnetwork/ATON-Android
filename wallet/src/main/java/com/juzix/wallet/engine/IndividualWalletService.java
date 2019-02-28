@@ -119,12 +119,12 @@ class IndividualWalletService implements IIndividualWalletService {
         try {
             ECKeyPair ecKeyPair = JZWalletUtil.decrypt(wallet.getKey(), password);
             if (ecKeyPair == null) {
-                return null;
+                return "";
             }
             return wallet.getKey();
         } catch (Exception exp) {
             exp.printStackTrace();
-            return null;
+            return "";
         }
     }
 
@@ -133,13 +133,13 @@ class IndividualWalletService implements IIndividualWalletService {
         try {
             ECKeyPair ecKeyPair = JZWalletUtil.decrypt(wallet.getKey(), password);
             if (ecKeyPair == null) {
-                return null;
+                return "";
             }
             return Numeric.toHexStringNoPrefix(ecKeyPair.getPrivateKey());
         } catch (Exception exp) {
             exp.printStackTrace();
         }
-        return null;
+        return "";
     }
 
     @Override

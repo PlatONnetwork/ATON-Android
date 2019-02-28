@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_memo"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -21,7 +22,8 @@
         android:id="@+id/tv_transation_hash_title"
         style="@style/Text.c5cdbc.12"
         android:layout_marginTop="13dp"
-        android:text="@string/transaction_hash" />
+        android:text="@string/transaction_hash"
+        android:visibility="gone" />
 
     <RelativeLayout
         android:id="@+id/layout_transation_hash"
@@ -32,7 +34,8 @@
         android:paddingBottom="6dp"
         android:paddingLeft="5dp"
         android:paddingRight="6dp"
-        android:paddingTop="6dp">
+        android:paddingTop="6dp"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/iv_copy_transation_hash"

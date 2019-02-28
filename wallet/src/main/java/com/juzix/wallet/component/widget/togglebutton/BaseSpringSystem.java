@@ -156,7 +156,7 @@ public class BaseSpringSystem {
   /**
    * This is used internally by the {@link Spring}s created by this {@link BaseSpringSystem} to notify
    * it has reached a state where it needs to be iterated. This will add the spring to the list of
-   * active springs on this system and start the iteration if the system was idle before this call.
+   * active springs on this system and showWalletInfo the iteration if the system was idle before this call.
    * @param springId the id of the Spring to be activated
    */
   void activateSpring(String springId) {

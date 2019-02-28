@@ -197,7 +197,7 @@
     <string name="execute_contract_refuse">执行合约</string>
     <string name="edit">编辑</string>
     <string name="address">地址</string>
-    <string name="msg_marked_words">地址存在本地，删除app前请先备份</string>
+    <string name="msg_marked_words">地址存在本地，删除APP前请先备份</string>
     <string name="add_new_address">添加新地址</string>
     <string name="edit_address">编辑地址</string>
     <string name="delete">删除</string>

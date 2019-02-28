@@ -144,6 +144,7 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
                 String    ticketPrice = TicketManager.getInstance().getTicketPrice();
                 Bundle bundle = new Bundle();
                 bundle.putInt("type", type);
+                bundle.putLong("poolRemainder", TicketManager.getInstance().getPoolRemainder());
                 bundle.putString("ticketPrice", ticketPrice);
                 bundle.putDouble("amount", BigDecimalUtil.div(BigDecimalUtil.mul(Double.parseDouble(ticketPrice), mVotes), 1E18));
                 Message msg = mHandler.obtainMessage();
@@ -218,6 +219,7 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
                     int type = data.getInt("type");
                     String ticketPrice = data.getString("ticketPrice");
                     double amount = data.getDouble("amount");
+                    long poolRemainder = data.getLong("poolRemainder");
                     if (type == TYPE_UPDATE){
                         if (isViewAttached()) {
 //                            getView().showPayInfo(ticketPrice, amount);
@@ -228,7 +230,7 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
                             showLongToast(R.string.voteTicketInsufficientBalanceTips);
                             return;
                         }
-                        if (mVotes > 51200){
+                        if (mVotes > poolRemainder){
                             showLongToast(R.string.voteLimitFailed);
                             return;
                         }

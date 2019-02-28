@@ -40,7 +40,7 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
 
     private List<OwnerEntity> ownerEntityList;
     /**
-     * 雨挡钱共享钱包关联的钱包地址
+     * 与共享钱包关联的钱包地址
      */
     private String ownerWalletAddress;
     /**
@@ -406,7 +406,6 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
             return this;
         }
 
-
         public SharedTransactionEntity build() {
             return new SharedTransactionEntity(this);
         }
@@ -450,8 +449,10 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
                     break;
             }
         }
+        //先判断是否达到签名数，未达到那就是“签名中”，达到签名数，但是executed是0，那就“交易失败”
+        //confirm是已经确认签名数
         if (confirms >= requiredSignNumber) {
-            return TransactionStatus.SUCCEED;
+            return executed ? TransactionStatus.SUCCEED : TransactionStatus.FAILED;
         } else {
             if (confirms + undetermineds == requiredSignNumber) {
                 return TransactionStatus.SIGNING;
@@ -480,22 +481,22 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
 
         CREATE_JOINT_WALLET(0) {
             @Override
-            public int getTransactionTypeDesc() {
+            public int getTransactionTypeDesc(String transactionToAddress, String queryAddress) {
                 return R.string.create_joint_wallet;
             }
         },
 
         EXECUTED_CONTRACT(1) {
             @Override
-            public int getTransactionTypeDesc() {
+            public int getTransactionTypeDesc(String transactionToAddress, String queryAddress) {
                 return R.string.joint_wallet_execution;
             }
         },
 
         SEND_TRANSACTION(2) {
             @Override
-            public int getTransactionTypeDesc() {
-                return R.string.send;
+            public int getTransactionTypeDesc(String transactionToAddress, String queryAddress) {
+                return !TextUtils.isEmpty(transactionToAddress) && transactionToAddress.equals(queryAddress) ? R.string.receive : R.string.send;
             }
         };
 
@@ -521,6 +522,6 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
             return map.get(typeValue);
         }
 
-        public abstract int getTransactionTypeDesc();
+        public abstract int getTransactionTypeDesc(String transactionToAddress, String queryAddress);
     }
 }

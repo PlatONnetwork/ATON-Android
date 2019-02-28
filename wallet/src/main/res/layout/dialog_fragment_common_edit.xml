@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_dialog_fragment"
     android:gravity="center_horizontal"
@@ -8,11 +9,12 @@
     android:paddingTop="15dp">
 
     <TextView
+        android:id="@+id/tv_title"
         style="@style/Text.24272b.16"
-        android:text="@string/InputWalletPassword" />
+        tools:text="@string/InputWalletPassword" />
 
     <EditText
-        android:id="@+id/et_wallet_password"
+        android:id="@+id/et_input_info"
         style="@style/Text.24272b.16"
         android:layout_width="match_parent"
         android:layout_height="40dp"
@@ -21,7 +23,6 @@
         android:layout_marginRight="11dp"
         android:background="@drawable/bg_edittext"
         android:gravity="left|center_vertical"
-        android:inputType="textPassword"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:textCursorDrawable="@drawable/bg_dialog_edittext_cursor" />

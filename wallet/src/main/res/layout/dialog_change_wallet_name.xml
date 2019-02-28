@@ -50,6 +50,7 @@
                 android:background="@drawable/bg_shape_edittext2"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
+                android:inputType="text"
                 android:textColor="@color/color_24272b"
                 android:textSize="12sp" />
         </LinearLayout>

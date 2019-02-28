@@ -3,44 +3,63 @@ package com.juzix.wallet.component.ui.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.InputFilter;
-import android.text.TextUtils;
-import android.text.TextWatcher;
+import android.support.v4.app.DialogFragment;
+import android.text.InputType;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding3.widget.RxAdapterView;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
+import com.juzix.wallet.component.SharedWalletMemberAdapter;
 import com.juzix.wallet.component.adapter.CommonAdapter;
-import com.juzix.wallet.component.adapter.base.ViewHolder;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.ManageSharedWalletContract;
-import com.juzix.wallet.component.ui.dialog.BaseDialog;
-import com.juzix.wallet.component.ui.dialog.CustomDialog;
+import com.juzix.wallet.component.ui.dialog.CommonDialogFragment;
+import com.juzix.wallet.component.ui.dialog.CommonEditDialogFragment;
+import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
 import com.juzix.wallet.component.ui.presenter.ManageSharedWalletPresenter;
+import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.component.widget.CommonTitleBar;
 import com.juzix.wallet.component.widget.ListViewForScrollView;
+import com.juzix.wallet.component.widget.RoundedTextView;
 import com.juzix.wallet.entity.OwnerEntity;
 import com.juzix.wallet.entity.SharedWalletEntity;
 import com.juzix.wallet.utils.AddressFormatUtil;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
+import io.reactivex.functions.Consumer;
+
 /**
  * @author matrixelement
  */
-public class ManageSharedWalletActivity extends MVPBaseActivity<ManageSharedWalletPresenter> implements ManageSharedWalletContract.View, View.OnClickListener {
+public class ManageSharedWalletActivity extends MVPBaseActivity<ManageSharedWalletPresenter> implements ManageSharedWalletContract.View {
+
+    @BindView(R.id.commonTitleBar)
+    CommonTitleBar commonTitleBar;
+    @BindView(R.id.iv_wallet_pic)
+    CircleImageView ivWalletPic;
+    @BindView(R.id.tv_wallet_name)
+    TextView tvWalletName;
+    @BindView(R.id.tv_wallet_address)
+    TextView tvWalletAddress;
+    @BindView(R.id.list_member)
+    ListViewForScrollView listMember;
+    @BindView(R.id.tv_member_name)
+    TextView tvMemberName;
+    @BindView(R.id.tv_member_address)
+    TextView tvMemberAddress;
+    @BindView(R.id.rtv_delete_wallet)
+    RoundedTextView rtvDeleteWallet;
 
     private CommonAdapter<OwnerEntity> mAdapter;
-    private CustomDialog mErrorDialog;
-    private BaseDialog mModifyWalletNameDialog;
-    private BaseDialog mModifyMemberNameDialog;
-    private BaseDialog mPasswordDialog;
+    private Unbinder unbinder;
 
     @Override
     protected ManageSharedWalletPresenter createPresenter() {
@@ -51,16 +70,34 @@ public class ManageSharedWalletActivity extends MVPBaseActivity<ManageSharedWall
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_shared_wallet);
+        unbinder = ButterKnife.bind(this);
         initView();
-        mPresenter.start();
+        mPresenter.showWalletInfo();
     }
 
-    @Override
-    public SharedWalletEntity getWalletEntityFromIntent() {
-        return getIntent().getParcelableExtra(Constants.Extra.EXTRA_WALLET);
+    private void initView() {
+
+        commonTitleBar.setLeftImageOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideSoftInput();
+                finish();
+            }
+        });
+
+        mAdapter = new SharedWalletMemberAdapter(R.layout.item_manage_shared_wallet_members, null);
+
+        listMember.setAdapter(mAdapter);
+
+        RxAdapterView.itemClicks(listMember).subscribe(new Consumer<Integer>() {
+            @Override
+            public void accept(Integer position) throws Exception {
+                showModifyMemberNameDialog(position);
+            }
+        });
     }
 
-    @Override
+    @OnClick({R.id.layout_modify_member_name, R.id.rtv_delete_wallet})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.layout_modify_member_name:
@@ -75,45 +112,10 @@ public class ManageSharedWalletActivity extends MVPBaseActivity<ManageSharedWall
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    private void initView() {
-        ((CommonTitleBar) findViewById(R.id.commonTitleBar)).setLeftImageOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideSoftInput();
-                finish();
-            }
-        });
-        ListViewForScrollView lvMember = findViewById(R.id.list_member);
-        mAdapter = new CommonAdapter<OwnerEntity>(R.layout.item_manage_shared_wallet_members, null) {
-            @Override
-            protected void convert(Context context, ViewHolder viewHolder, OwnerEntity item, int position) {
-                viewHolder.setText(R.id.tv_member_name, item.getName());
-                viewHolder.setText(R.id.tv_member_address, AddressFormatUtil.formatAddress(item.getPrefixAddress()));
-                viewHolder.getConvertView().setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        SharedWalletEntity walletEntity = getWalletEntityFromIntent();
-                        if (!item.getPrefixAddress().equals(walletEntity.getPrefixAddress())) {
-                            showModifyMemberNameDialog(position);
-                        }
-                    }
-                });
-            }
-        };
-        lvMember.setAdapter(mAdapter);
-        findViewById(R.id.layout_modify_member_name).setOnClickListener(this);
-        findViewById(R.id.rtv_delete_wallet).setOnClickListener(this);
-    }
-
-    @Override
     public void showWallet(SharedWalletEntity walletEntity) {
-        ((ImageView) findViewById(R.id.iv_wallet_pic)).setImageResource(RUtils.drawable(walletEntity.getAvatar()));
-        ((TextView) findViewById(R.id.tv_wallet_name)).setText(walletEntity.getName());
-        ((TextView) findViewById(R.id.tv_wallet_address)).setText(AddressFormatUtil.formatAddress(walletEntity.getPrefixContractAddress()));
+        ivWalletPic.setImageResource(RUtils.drawable(walletEntity.getAvatar()));
+        tvWalletName.setText(walletEntity.getName());
+        tvWalletAddress.setText(AddressFormatUtil.formatAddress(walletEntity.getPrefixContractAddress()));
     }
 
     @Override
@@ -123,169 +125,77 @@ public class ManageSharedWalletActivity extends MVPBaseActivity<ManageSharedWall
 
     @Override
     public void showOwner(String individualWalletName, String individualWalletAddress) {
-        View llOwner = findViewById(R.id.ll_owner);
-        ((TextView) llOwner.findViewById(R.id.tv_member_name)).setText(individualWalletName);
-        ((TextView) llOwner.findViewById(R.id.tv_member_address)).setText(AddressFormatUtil.formatAddress(individualWalletAddress));
+        tvMemberName.setText(individualWalletName);
+        tvMemberAddress.setText(AddressFormatUtil.formatAddress(individualWalletAddress));
     }
 
     @Override
-    public void showErrorDialog(String title, String content) {
-        dimissErrorDialog();
-        mErrorDialog = new CustomDialog(getContext());
-        mErrorDialog.show(title, content, string(R.string.back), new View.OnClickListener() {
+    public void showErrorDialog(String title, String content, String preInputInfo) {
+
+        CommonDialogFragment.createCommonTitleWithOneButton(title, content, string(R.string.back), new OnDialogViewClickListener() {
             @Override
-            public void onClick(View v) {
-                dimissErrorDialog();
+            public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
+                showPasswordDialog(TYPE_DELETE_WALLET, -1, preInputInfo);
             }
-        });
-    }
-
-    @Override
-    public void dimissErrorDialog() {
-        if (mErrorDialog != null && mErrorDialog.isShowing()) {
-            mErrorDialog.dismiss();
-            mErrorDialog = null;
-        }
+        }).show(getSupportFragmentManager(), "showPasswordError");
     }
 
     @Override
     public void showModifyWalletNameDialog() {
-        dimissModifyWalletNameDialog();
-        mModifyWalletNameDialog = new BaseDialog(this, R.style.Dialog_FullScreen);
-        mModifyWalletNameDialog.setContentView(R.layout.dialog_change_wallet_name);
-        mModifyWalletNameDialog.show();
-        EditText etName = mModifyWalletNameDialog.findViewById(R.id.et_name);
-        Button btnConfirm = mModifyWalletNameDialog.findViewById(R.id.btn_confirm);
-        etName.setFilters(new InputFilter.LengthFilter[]{new InputFilter.LengthFilter(12)});
-        etName.addTextChangedListener(new TextWatcher() {
+        CommonEditDialogFragment.createCommonEditDialogFragment(string(R.string.changeWalletName), InputType.TYPE_CLASS_TEXT, string(R.string.cancel), string(R.string.confirm), new OnDialogViewClickListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+            public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
+                String text = extra.getString(Constants.Bundle.BUNDLE_TEXT);
+                mPresenter.modifyWalletName(text);
             }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                btnConfirm.setEnabled(!TextUtils.isEmpty(etName.getText().toString().trim()));
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-        mModifyWalletNameDialog.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dimissModifyWalletNameDialog();
-            }
-        });
-        btnConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPresenter.modifyWalletName(etName.getText().toString());
-            }
-        });
-    }
-
-    @Override
-    public void dimissModifyWalletNameDialog() {
-        if (mModifyWalletNameDialog != null && mModifyWalletNameDialog.isShowing()) {
-            mModifyWalletNameDialog.dismiss();
-            mModifyWalletNameDialog = null;
-        }
-    }
-
-    @Override
-    public void dimissModifyMemberNameDialog() {
-        if (mModifyMemberNameDialog != null && mModifyMemberNameDialog.isShowing()) {
-            mModifyMemberNameDialog.dismiss();
-            mModifyMemberNameDialog = null;
-        }
+        }).show(getSupportFragmentManager(), "modifyMemberName");
     }
 
     @Override
     public void showModifyMemberNameDialog(int memberIndex) {
-        dimissModifyMemberNameDialog();
-        mModifyMemberNameDialog = new BaseDialog(this, R.style.Dialog_FullScreen);
-        mModifyMemberNameDialog.setContentView(R.layout.dialog_change_wallet_name);
-        mModifyMemberNameDialog.show();
-        ((TextView) mModifyMemberNameDialog.findViewById(R.id.tv_title)).setText(R.string.changeMemberName);
-        EditText etName = mModifyMemberNameDialog.findViewById(R.id.et_name);
-        Button btnConfirm = mModifyMemberNameDialog.findViewById(R.id.btn_confirm);
-        etName.setFilters(new InputFilter.LengthFilter[]{new InputFilter.LengthFilter(12)});
-        etName.addTextChangedListener(new TextWatcher() {
+        CommonEditDialogFragment.createCommonEditDialogFragment(string(R.string.changeWalletName), InputType.TYPE_CLASS_TEXT, string(R.string.cancel), string(R.string.confirm), new OnDialogViewClickListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+            public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
+                String text = extra.getString(Constants.Bundle.BUNDLE_TEXT);
+                mPresenter.modifyMemberName(memberIndex, text);
             }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                btnConfirm.setEnabled(!TextUtils.isEmpty(etName.getText().toString().trim()));
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-        mModifyMemberNameDialog.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dimissModifyMemberNameDialog();
-            }
-        });
-        btnConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPresenter.modifyMemberName(memberIndex, etName.getText().toString());
-            }
-        });
+        }).show(getSupportFragmentManager(), "modifyMemberName");
     }
 
     @Override
-    public void showPasswordDialog(int type, int index) {
-        dimissPasswordDialog();
-        mPasswordDialog = new BaseDialog(this, R.style.Dialog_FullScreen);
-        mPasswordDialog.setContentView(R.layout.dialog_verify_wallet_password);
-        mPasswordDialog.show();
-        final EditText etPassword = mPasswordDialog.findViewById(R.id.et_password);
-        Button btnConfirm = mPasswordDialog.findViewById(R.id.btn_confirm);
-        etPassword.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+    public void showPasswordDialog(int type, int index, String preInputInfo) {
 
-            }
-
+        CommonEditDialogFragment.createCommonEditDialogFragment(string(R.string.InputWalletPassword), preInputInfo, InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD, string(R.string.cancel), string(R.string.confirm), new OnDialogViewClickListener() {
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                btnConfirm.setEnabled(etPassword.getText().toString().trim().length() >= 6);
+            public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
+                String text = extra.getString(Constants.Bundle.BUNDLE_TEXT);
+                mPresenter.validPassword(type, text, index);
             }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-        mPasswordDialog.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dimissPasswordDialog();
-            }
-        });
-        btnConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPresenter.validPassword(type, etPassword.getText().toString(), index);
-            }
-        });
+        }).show(getSupportFragmentManager(), "vertifyPassword");
     }
 
     @Override
-    public void dimissPasswordDialog() {
-        if (mPasswordDialog != null && mPasswordDialog.isShowing()) {
-            mPasswordDialog.dismiss();
-            mPasswordDialog = null;
+    public void updateWalletName(String walletName) {
+        tvWalletName.setText(walletName);
+    }
+
+    @Override
+    public void updateWalletMemberName(String newMemberName, int position) {
+        OwnerEntity ownerEntity = mAdapter.getList().get(position);
+        ownerEntity.setName(newMemberName);
+        mAdapter.updateItem(this, listMember, ownerEntity);
+    }
+
+    @Override
+    public SharedWalletEntity getWalletEntityFromIntent() {
+        return getIntent().getParcelableExtra(Constants.Extra.EXTRA_WALLET);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (unbinder != null) {
+            unbinder.unbind();
         }
     }
 

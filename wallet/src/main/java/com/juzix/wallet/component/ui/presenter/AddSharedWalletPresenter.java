@@ -21,7 +21,6 @@ import java.util.ArrayList;
  */
 public class AddSharedWalletPresenter extends BasePresenter<AddSharedWalletContract.View> implements AddSharedWalletContract.Presenter {
 
-
     private IndividualWalletEntity walletEntity;
 
     public AddSharedWalletPresenter(AddSharedWalletContract.View view) {
@@ -121,8 +120,8 @@ public class AddSharedWalletPresenter extends BasePresenter<AddSharedWalletContr
     public void checkAddSharedWalletBtnEnable() {
         if (isViewAttached()) {
 
-            String walletAddress = getView().getWalletAddress();
-            String walletName = getView().getWalletName();
+            String walletAddress = getView().getWalletAddress().trim();
+            String walletName = getView().getWalletName().trim();
 
             getView().setAddSharedWalletBtnEnable(!TextUtils.isEmpty(walletAddress) && !TextUtils.isEmpty(walletName) && walletEntity != null);
         }
