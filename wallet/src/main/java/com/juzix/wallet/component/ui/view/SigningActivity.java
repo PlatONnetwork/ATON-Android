@@ -7,7 +7,9 @@ import android.support.constraint.Barrier;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -30,6 +32,7 @@ import com.juzix.wallet.utils.DateUtil;
 import com.juzix.wallet.utils.DensityUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -45,60 +48,64 @@ import kotlin.Unit;
 public class SigningActivity extends MVPBaseActivity<SigningPresenter> implements SigningContract.View {
 
     @BindView(R.id.tv_transaction_status_desc)
-    TextView tvTransactionStatusDesc;
+    TextView       tvTransactionStatusDesc;
     @BindView(R.id.gv_members)
-    RecyclerView gvMembers;
+    RecyclerView   gvMembers;
     @BindView(R.id.tv_transaction_value_title)
-    TextView tvTransactionValueTitle;
+    TextView       tvTransactionValueTitle;
     @BindView(R.id.tv_transaction_value)
-    TextView tvTransactionValue;
-    @BindView(R.id.rtv_refuse)
-    RoundedTextView rtvRefuse;
-    @BindView(R.id.rtv_agree)
-    RoundedTextView rtvAgree;
+    TextView       tvTransactionValue;
+    @BindView(R.id.ll_button)
+    LinearLayout   llButton;
+    @BindView(R.id.btn_refuse)
+    Button         btnRefuse;
+    @BindView(R.id.btn_agree)
+    Button         btnAgree;
+    @BindView(R.id.tv_copy_from_name)
+    TextView       tvCopyFromName;
     @BindView(R.id.iv_copy_from_address)
-    ImageView ivCopyFromAddress;
+    ImageView      ivCopyFromAddress;
     @BindView(R.id.tv_from_address)
-    TextView tvFromAddress;
+    TextView       tvFromAddress;
     @BindView(R.id.layout_from_address)
     RelativeLayout layoutFromAddress;
     @BindView(R.id.iv_copy_to_address)
-    ImageView ivCopyToAddress;
+    ImageView      ivCopyToAddress;
     @BindView(R.id.tv_to_address)
-    TextView tvToAddress;
+    TextView       tvToAddress;
     @BindView(R.id.layout_to_address)
     RelativeLayout layoutToAddress;
     @BindView(R.id.tv_transaction_type_title)
-    TextView tvTransactionTypeTitle;
+    TextView       tvTransactionTypeTitle;
     @BindView(R.id.tv_transaction_time_title)
-    TextView tvTransactionTimeTitle;
+    TextView       tvTransactionTimeTitle;
     @BindView(R.id.tv_transaction_amount_title)
-    TextView tvTransactionAmountTitle;
+    TextView       tvTransactionAmountTitle;
     @BindView(R.id.tv_transaction_energon_title)
-    TextView tvTransactionEnergonTitle;
+    TextView       tvTransactionEnergonTitle;
     @BindView(R.id.tv_transaction_wallet_name_title)
-    TextView tvTransactionWalletNameTitle;
+    TextView       tvTransactionWalletNameTitle;
     @BindView(R.id.barrier)
-    Barrier barrier;
+    Barrier        barrier;
     @BindView(R.id.tv_transaction_type)
-    TextView tvTransactionType;
+    TextView       tvTransactionType;
     @BindView(R.id.tv_transaction_time)
-    TextView tvTransactionTime;
+    TextView       tvTransactionTime;
     @BindView(R.id.tv_transaction_amount)
-    TextView tvTransactionAmount;
+    TextView       tvTransactionAmount;
     @BindView(R.id.tv_transaction_energon)
-    TextView tvTransactionEnergon;
+    TextView       tvTransactionEnergon;
     @BindView(R.id.tv_transaction_wallet_name)
-    TextView tvTransactionWalletName;
+    TextView       tvTransactionWalletName;
     @BindView(R.id.tv_memo)
-    TextView tvMemo;
+    TextView       tvMemo;
     @BindView(R.id.layout_transation_hash)
     RelativeLayout layoutTransationHash;
     @BindView(R.id.tv_transation_hash_title)
-    TextView tvTransationHashTitle;
+    TextView       tvTransationHashTitle;
 
-    private Unbinder unbinder;
-    private GridLayoutManager gridLayoutManager;
+    private Unbinder             unbinder;
+    private GridLayoutManager    gridLayoutManager;
     private SigningMemberAdapter signingMemberAdapter;
 
     @Override
@@ -122,7 +129,7 @@ public class SigningActivity extends MVPBaseActivity<SigningPresenter> implement
         tvTransationHashTitle.setVisibility(View.GONE);
         layoutTransationHash.setVisibility(View.GONE);
 
-        RxView.clicks(rtvRefuse)
+        RxView.clicks(btnRefuse)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
                 .subscribe(new Consumer<Unit>() {
                     @Override
@@ -131,7 +138,7 @@ public class SigningActivity extends MVPBaseActivity<SigningPresenter> implement
                     }
                 });
 
-        RxView.clicks(rtvAgree)
+        RxView.clicks(btnAgree)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
                 .subscribe(new Consumer<Unit>() {
                     @Override
@@ -173,9 +180,9 @@ public class SigningActivity extends MVPBaseActivity<SigningPresenter> implement
 
     @Override
     public void setTransactionDetailInfo(SharedTransactionEntity transactionEntity, String statusDesc) {
-
         tvTransactionValue.setText(string(R.string.amount_with_unit, String.format("%s%s", transactionEntity.isReceiver(transactionEntity.getContractAddress()) ? "+" : "-", NumberParserUtils.getPrettyBalance(transactionEntity.getValue()))));
         tvTransactionStatusDesc.setText(statusDesc);
+        tvCopyFromName.setText(transactionEntity.getWalletName());
         tvFromAddress.setText(transactionEntity.getFromAddress());
         tvToAddress.setText(transactionEntity.getToAddress());
 
@@ -188,7 +195,7 @@ public class SigningActivity extends MVPBaseActivity<SigningPresenter> implement
     }
 
     @Override
-    public void showTransactionResult(ArrayList<TransactionResult> transactionResultList) {
+    public void showTransactionResult(List<TransactionResult> transactionResultList) {
         int len = transactionResultList.size();
         gridLayoutManager.setSpanCount(Math.min(len, 5));
         signingMemberAdapter.notifyDataSetChanged(transactionResultList);
@@ -197,14 +204,13 @@ public class SigningActivity extends MVPBaseActivity<SigningPresenter> implement
 
     @Override
     public void enableButtons(boolean enabaled) {
-        rtvRefuse.setVisibility(enabaled ? View.VISIBLE : View.GONE);
-        rtvAgree.setVisibility(enabaled ? View.VISIBLE : View.GONE);
+        llButton.setVisibility(enabaled ? View.VISIBLE : View.GONE);
     }
 
     @Override
-    public void updateSigningStatus(String address, int operation) {
-        signingMemberAdapter.notifyItemChanged(address, operation);
-        enableButtons(operation == TransactionResult.OPERATION_UNDETERMINED);
+    public void updateSigningStatus(String address, TransactionResult.Status status) {
+        signingMemberAdapter.notifyItemChanged(address, status);
+        enableButtons(status == TransactionResult.Status.OPERATION_UNDETERMINED);
     }
 
     @Override

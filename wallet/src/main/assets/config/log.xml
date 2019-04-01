@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<log>
+	<threshold>DEBUG</threshold>
+	<logtype>none</logtype>   <!-- console or file or all or none-->
+	<logger>
+		<name>dklog</name>
+		<type>file</type>
+		<level>DEBUG</level>
+		<logspace>external</logspace>   <!-- inner or external -->
+		<path>log</path>
+		<file>buyLog</file>
+		<encode>utf-8</encode>
+		<count>5</count>
+		<size>1048576</size>
+		<writetag>
+			<tag>ATON</tag>  <!-- Do NOT Modify this TAG !!!!!! -->
+			<tag>tag2</tag>
+		</writetag>
+	</logger>
+	<buglyEnable>true</buglyEnable>   <!--  true or false, true as default  -->
+</log>

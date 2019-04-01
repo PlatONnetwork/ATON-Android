@@ -322,11 +322,7 @@ public class SharedTransactionInfoEntity extends RealmObject {
     public ArrayList<TransactionResult> buildTransactionResult() {
         ArrayList<TransactionResult> transactionResults = new ArrayList<>();
         for (TransactionInfoResult result : transactionResult) {
-            transactionResults.add(new TransactionResult.Builder()
-                    .name(result.getName())
-                    .address(result.getAddress())
-                    .operation(result.getOperation())
-                    .build());
+            transactionResults.add(new TransactionResult(result.getUuid(), result.getName(), result.getAddress(), TransactionResult.Status.values()[result.getOperation()]));
         }
         return transactionResults;
     }

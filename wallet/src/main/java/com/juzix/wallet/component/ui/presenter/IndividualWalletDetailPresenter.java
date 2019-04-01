@@ -11,7 +11,6 @@ import com.juzix.wallet.component.ui.view.IndividualTransactionDetailActivity;
 import com.juzix.wallet.component.ui.view.IndividualVoteDetailActivity;
 import com.juzix.wallet.component.ui.view.SharedTransactionDetailActivity;
 import com.juzix.wallet.component.ui.view.SigningActivity;
-import com.juzix.wallet.component.ui.view.VoteMainActivity;
 import com.juzix.wallet.db.entity.IndividualTransactionInfoEntity;
 import com.juzix.wallet.db.entity.SharedTransactionInfoEntity;
 import com.juzix.wallet.db.entity.SingleVoteInfoEntity;
@@ -166,9 +165,9 @@ public class IndividualWalletDetailPresenter extends BasePresenter<IndividualWal
 
     @Override
     public void enterVoteActivity() {
-        if (isViewAttached()) {
-            VoteMainActivity.actionStart(currentActivity(), mWalletEntity);
-        }
+//        if (isViewAttached()) {
+//            VoteMainActivity.actionStart(currentActivity(), mWalletEntity);
+//        }
     }
 
     private Single<List<TransactionEntity>> getTransactionEntityList() {
@@ -362,7 +361,7 @@ public class IndividualWalletDetailPresenter extends BasePresenter<IndividualWal
 
         List<String> contractaddressList = new ArrayList<>();
         for (SharedWalletEntity sharedWalletEntity : sharedWalletEntityList) {
-            contractaddressList.add(sharedWalletEntity.getPrefixContractAddress());
+            contractaddressList.add(sharedWalletEntity.getPrefixAddress());
         }
 
         return contractaddressList.toArray(new String[contractaddressList.size()]);

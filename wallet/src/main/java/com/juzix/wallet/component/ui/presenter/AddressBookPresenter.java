@@ -5,6 +5,7 @@ import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.AddressBookContract;
 import com.juzix.wallet.component.ui.view.AddNewAddressActivity;
+import com.juzix.wallet.component.ui.view.SharedTransactionDetailActivity;
 import com.juzix.wallet.db.entity.AddressInfoEntity;
 import com.juzix.wallet.db.sqlite.AddressInfoDao;
 import com.juzix.wallet.entity.AddressEntity;
@@ -88,15 +89,7 @@ public class AddressBookPresenter extends BasePresenter<AddressBookContract.View
     @Override
     public void selectAddress(int position) {
         if (addressEntityList != null && addressEntityList.size() > position) {
-            if (isViewAttached()) {
-                String action = getView().getAction();
-                AddressEntity addressEntity = addressEntityList.get(position);
-                if (Constants.Action.ACTION_GET_ADDRESS.equals(action)) {
-                    getView().setResult(addressEntity);
-                } else {
-                    CommonUtil.copyTextToClipboard(currentActivity(), addressEntity.getAddress());
-                }
-            }
+            CommonUtil.copyTextToClipboard(currentActivity(), addressEntityList.get(position).getAddress());
         }
     }
 }

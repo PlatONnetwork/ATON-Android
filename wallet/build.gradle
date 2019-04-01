@@ -14,6 +14,7 @@ android {
         versionCode Integer.parseInt(version_code)
         buildConfigField("String", "BETA_COUNT", "\"${beta_count}\"")
         buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
+        buildConfigField("String", "UM_APPKEY", "${UM_APPKEY}")
         renderscriptTargetApi 19
         renderscriptSupportModeEnabled  true
 
@@ -75,6 +76,7 @@ android {
             def verCode = android.defaultConfig.versionCode
             def innerVer = beta_count
             def releaseTime = new Date().format("yyyyMMddHHmm")
+            def gitVersion = getGitVersion();
 
             def type = ""
             if (variant.buildType.name == "releaseC") {
@@ -85,12 +87,13 @@ android {
                 type = "debug"
                 // 调试若使用实时时间戳会导致apk无法找到，因此，这里固定为0
                 releaseTime = "0"
+                gitVersion = "";
             }
             if (variant.flavorName != "wallet") {
                 type = (type + "_" + variant.flavorName)
             }
 
-            outputFileName = "wallet_android_v${verName}_${innerVer}_${releaseTime}_${verCode}_${type}.apk";
+            outputFileName = "wallet_android_v${verName}_${innerVer}_${releaseTime}_${verCode}_${type}_${gitVersion}.apk";
         }
     }
 
@@ -100,6 +103,10 @@ android {
     }
 }
 
+def getGitVersion() {
+    return 'git rev-parse --short HEAD'.execute().text.trim()
+}
+
 repositories {
     maven {
         url "https://jitpack.io"
@@ -107,7 +114,7 @@ repositories {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':zxing')
     implementation project(':framework')
     implementation project(':biometric')
@@ -120,8 +127,6 @@ dependencies {
     implementation rootProject.ext.dependencies.support_zxing
     implementation rootProject.ext.dependencies.support_constraintLayout
     implementation rootProject.ext.dependencies.support_multidex
-    implementation rootProject.ext.dependencies.rxjava2_rxjava
-    implementation rootProject.ext.dependencies.rxjava2_rxandroid
     implementation rootProject.ext.dependencies.web3j_core
     implementation rootProject.ext.dependencies.web3j_crypto
     implementation rootProject.ext.dependencies.bitcoinj_core
@@ -136,4 +141,8 @@ dependencies {
     implementation rootProject.ext.dependencies.flexbox
     implementation rootProject.ext.dependencies.tinypinyin
     implementation 'com.yanzhenjie:permission:1.1.2'
+    implementation rootProject.ext.dependencies.immersionbar
+    implementation rootProject.ext.dependencies.smarttablayout
+    implementation rootProject.ext.dependencies.umeng_common
+    implementation rootProject.ext.dependencies.umeng_analytics
 }

@@ -1,9 +1,12 @@
 package com.juzix.wallet.component.ui.contract;
 
+import com.juzix.wallet.component.ui.SortType;
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
 import com.juzix.wallet.entity.CandidateEntity;
 import com.juzix.wallet.entity.IndividualWalletEntity;
+
+import java.util.List;
 
 /**
  * @author matrixelement
@@ -11,22 +14,20 @@ import com.juzix.wallet.entity.IndividualWalletEntity;
 public class VoteContract {
 
     public interface View extends IView {
-        CandidateEntity getCandidateFromIntent();
-        String getVotes();
-        void showVoteInfo(int iconRes, String name, String publicKey);
-        void showPayInfo(double price, double expectedPay);
-        void updateSelectOwner(IndividualWalletEntity walletEntity);
-        void setNextButtonEnable(boolean enabled);
-        void showVotes(long votes);
+
+        void setVotedInfo(long sumVoteNum, long votedNum, String ticketPrice);
+
+        void notifyDataSetChanged(List<CandidateEntity> candidateList);
     }
 
     public interface Presenter extends IPresenter<View> {
-        void init();
-        void showSelectWalletDialogFragment();
-        void updateSelectOwner(IndividualWalletEntity walletEntity);
-        void setVotes(String text);
-        void addVotes();
-        void subVotes();
-        void submit();
+
+        void start();
+
+        void sort(SortType sortType);
+
+        void search(String keyword);
+
+        void voteTicket(CandidateEntity candidateEntity);
     }
 }

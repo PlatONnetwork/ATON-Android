@@ -21,27 +21,27 @@ import java.util.ArrayList;
 public class UnlockWithPasswordPresenter extends BasePresenter<UnlockWithPasswordContract.View> implements UnlockWithPasswordContract.Presenter{
 
     private final static String TAG = UnlockWithPasswordPresenter.class.getSimpleName();
-    private int mSelectedPostion;
+    private IndividualWalletEntity mWallet;
 
     public UnlockWithPasswordPresenter(UnlockWithPasswordContract.View view) {
         super(view);
     }
 
     @Override
-    public int getSelectedPostion() {
-        return mSelectedPostion;
+    public void setSelectWallet(IndividualWalletEntity wallet) {
+        mWallet = wallet;
+        getView().updateWalletInfo(wallet);
     }
 
     @Override
-    public void setSelectedPostion(int selectedPostion) {
-        mSelectedPostion = selectedPostion;
-        ArrayList<IndividualWalletEntity> walletEntityList = IndividualWalletManager.getInstance().getWalletList();
-        getView().updateWalletInfo(walletEntityList.get(mSelectedPostion));
+    public IndividualWalletEntity getSelectedWallet() {
+        return mWallet;
     }
 
     @Override
     public void init() {
-        setSelectedPostion(0);
+        mWallet = IndividualWalletManager.getInstance().getWalletList().get(0);
+        setSelectWallet(mWallet);
     }
 
 
@@ -51,8 +51,7 @@ public class UnlockWithPasswordPresenter extends BasePresenter<UnlockWithPasswor
         new Thread(){
             @Override
             public void run() {
-                ArrayList<IndividualWalletEntity> walletEntityList = IndividualWalletManager.getInstance().getWalletList();
-                if (!IndividualWalletManager.getInstance().isValidWallet(walletEntityList.get(mSelectedPostion), password)){
+                if (!IndividualWalletManager.getInstance().isValidWallet(mWallet, password)){
                     mHandler.sendEmptyMessage(MSG_PASSWORD_FAILED);
                     return;
                 } else {

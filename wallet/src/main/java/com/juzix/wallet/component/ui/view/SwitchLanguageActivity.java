@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.juzhen.framework.util.AndroidUtil;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.widget.CommonTitleBar;
@@ -24,6 +25,8 @@ import butterknife.Unbinder;
  */
 public class SwitchLanguageActivity extends BaseActivity {
 
+    @BindView(R.id.commonTitleBar)
+    CommonTitleBar commonTitleBar;
     @BindView(R.id.tv_switch_chinese)
     TextView tvSwitchChinese;
     @BindView(R.id.tv_switch_english)
@@ -45,12 +48,14 @@ public class SwitchLanguageActivity extends BaseActivity {
     }
 
     private void initViews() {
-        new CommonTitleBar(this).setLeftDrawable(R.drawable.icon_back_black).setMiddleTitle(language).setRightText(save, new View.OnClickListener() {
+        TextView tvRignt = commonTitleBar.findViewById(R.id.tv_right);
+        tvRignt.setTextSize(13);
+        tvRignt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 switchLanguage(locale);
             }
-        }).build();
+        });
 
         locale = LanguageUtil.getLocale(this);
 
@@ -64,11 +69,11 @@ public class SwitchLanguageActivity extends BaseActivity {
     private void updateSelectedLanguageStatus(Locale locale) {
 
         if (Locale.CHINESE.getLanguage().equals(locale.getLanguage())) {
-            tvSwitchChinese.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_hook_white_bg, 0);
+            tvSwitchChinese.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_hook_s, 0);
             tvSwitchEnglish.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         } else {
             tvSwitchChinese.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-            tvSwitchEnglish.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_hook_white_bg, 0);
+            tvSwitchEnglish.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_hook_s, 0);
         }
     }
 

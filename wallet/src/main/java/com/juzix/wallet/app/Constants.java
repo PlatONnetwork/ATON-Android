@@ -23,10 +23,12 @@ public class Constants {
         String EXTRA_WALLET_NAME = "extra_wallet_name";
         String EXTRA_WALLET_INDEX = "extra_index";
         String EXTRA_WALLET_SUB_INDEX = "extra_sub_index";
-        String EXTRA_CANDIDATE           = "extra_candidate_entity";
-        String EXTRA_VOTE                = "extra_vote_entity";
-        String EXTRA_ID                  = "extra_id";
-        String EXTRA_NAME                = "extra_name";
+        String EXTRA_CANDIDATE = "extra_candidate_entity";
+        String EXTRA_VOTE = "extra_vote_entity";
+        String EXTRA_ID = "extra_id";
+        String EXTRA_CANDIDATE_ID = "extra_candidate_id";
+        String EXTRA_CANDIDATE_NAME = "extra_candidate_name";
+        String EXTRA_NAME = "extra_name";
     }
 
     public interface Bundle {
@@ -41,6 +43,7 @@ public class Constants {
         String BUNDLE_TYPE = "bundle_type";
         String BUNDLE_FEE = "bundle_fee";
         String BUNDLE_TEXT = "bundle_text";
+        String BUNDLE_MAP = "bundle_map";
     }
 
     public interface Action {
@@ -48,6 +51,8 @@ public class Constants {
         String ACTION_NONE = "action_done";
         String ACTION_GET_ADDRESS = "action_get_address";
         String ACTION_SWITCH_LANGUAGE = "action_switch_language";
+        String ACTION_CREATE_WALLET = "action_create_wallet";
+        String ACTION_IMPORT_WALLET = "action_import_wallet";
     }
 
     public interface Preference {
@@ -56,6 +61,8 @@ public class Constants {
         String KEY_LANGUAGE = "language";
         String KEY_FACE_TOUCH_ID_FLAG = "faceTouchIdFlag";
         String KEY_FIRST_ENTER = "firstEnter";
+        String KEY_SHOW_ASSETS_FLAG = "showAssetsFlag";
+        String KEY_UPDATE_VERSION_TIME = "updateVersionTime";
     }
 
     public interface Permission {
@@ -74,15 +81,17 @@ public class Constants {
     }
 
     public interface URL {
-//        String WEB3J_URL = "http://192.168.9.76:8792";
+                String WEB3J_URL = "http://192.168.120.81:6789";
+//                String WEB3J_URL = "http://192.168.9.76:8792";
 //                String WEB3J_URL = "http://10.10.8.209:6789";
-        String WEB3J_URL = "https://syde.platon.network/test";
-        String IP_URL    = "http://ip-api.com/batch/";
+//        String WEB3J_URL = "https://syde.platon.network/test";
+        String IP_URL = "http://ip-api.com/batch/";
+        String UPDATE_URL = "https://api.github.com/repos/PlatONnetwork/ATON-Android/releases/latest";
     }
 
     public interface DBName {
         //数据库名称
         String PORTAL = "portal";
-        int VERSION = 104;
+        int VERSION = 105;
     }
 }

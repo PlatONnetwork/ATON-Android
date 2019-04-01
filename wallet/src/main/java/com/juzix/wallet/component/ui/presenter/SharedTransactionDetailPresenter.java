@@ -6,6 +6,7 @@ import com.juzix.wallet.entity.SharedTransactionEntity;
 import com.juzix.wallet.entity.TransactionResult;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author matrixelement
@@ -24,19 +25,19 @@ public class SharedTransactionDetailPresenter extends BasePresenter<SharedTransa
     @Override
     public void fetchTransactionDetail() {
         if (isViewAttached() && transactionEntity != null) {
-            ArrayList<TransactionResult> resultList = transactionEntity.getTransactionResult();
-            ArrayList<TransactionResult> confirmList = new ArrayList<>();
-            ArrayList<TransactionResult> revokeList = new ArrayList<>();
-            ArrayList<TransactionResult> undeterminedList = new ArrayList<>();
+            List<TransactionResult> resultList = transactionEntity.getTransactionResult();
+            List<TransactionResult> confirmList = new ArrayList<>();
+            List<TransactionResult> revokeList = new ArrayList<>();
+            List<TransactionResult> undeterminedList = new ArrayList<>();
             for (TransactionResult transactionResult : resultList) {
-                switch (transactionResult.getOperation()) {
-                    case TransactionResult.OPERATION_APPROVAL:
+                switch (transactionResult.getStatus()) {
+                    case OPERATION_APPROVAL:
                         confirmList.add(transactionResult);
                         break;
-                    case TransactionResult.OPERATION_REVOKE:
+                    case OPERATION_REVOKE:
                         revokeList.add(transactionResult);
                         break;
-                    case TransactionResult.OPERATION_UNDETERMINED:
+                    case OPERATION_UNDETERMINED:
                         undeterminedList.add(transactionResult);
                         break;
                 }

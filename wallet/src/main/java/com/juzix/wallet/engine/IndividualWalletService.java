@@ -42,13 +42,15 @@ class IndividualWalletService implements IIndividualWalletService {
             if (walletFile == null) {
                 return null;
             }
+            long time = System.currentTimeMillis();
             IndividualWalletEntity.Builder builder = new IndividualWalletEntity.Builder()
                     .uuid(walletFile.getId())
                     .key(JZWalletUtil.writeWalletFileAsString(walletFile))
                     .name(name)
                     .address(walletFile.getAddress())
                     .keystorePath(filename)
-                    .createTime(System.currentTimeMillis())
+                    .createTime(time)
+                    .updateTime(time)
                     .avatar(getWalletAvatar());
             return builder.build();
         }catch (Exception exp){

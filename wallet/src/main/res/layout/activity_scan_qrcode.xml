@@ -3,20 +3,14 @@
               xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="@color/color_232e48"
+              android:background="@color/color_10111a"
               android:clipToPadding="true"
               android:fitsSystemWindows="true"
               android:orientation="vertical">
 
-    <include
-        layout="@layout/layout_title_bar"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/titleBarHight"/>
-
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/color_000000">
+        android:layout_height="match_parent" >
 
         <SurfaceView
             android:id="@+id/scanner_view"
@@ -49,5 +43,11 @@
             android:background="?attr/selectableItemBackground"
             android:scaleType="centerInside"
             android:src="@drawable/flash_off" />
+
+        <include
+            layout="@layout/layout_title_bar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/titleBarHight"
+            android:layout_gravity="top"/>
     </FrameLayout>
 </LinearLayout>

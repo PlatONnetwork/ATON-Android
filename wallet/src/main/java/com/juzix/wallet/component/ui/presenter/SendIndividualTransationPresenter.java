@@ -16,10 +16,8 @@ import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.SendIndividualTransationContract;
 import com.juzix.wallet.component.ui.dialog.CommonDialogFragment;
-import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
 import com.juzix.wallet.component.ui.dialog.SelectIndividualWalletDialogFragment;
-import com.juzix.wallet.component.ui.dialog.SendTransationDialogFragment;
 import com.juzix.wallet.db.entity.IndividualTransactionInfoEntity;
 import com.juzix.wallet.db.sqlite.IndividualTransactionInfoDao;
 import com.juzix.wallet.engine.IndividualWalletManager;
@@ -228,12 +226,12 @@ public class SendIndividualTransationPresenter extends BasePresenter<SendIndivid
                 return;
             }
 
-            SendTransationDialogFragment.newInstance(transferAmount, toAddress, feeAmount).setOnSubmitClickListener(new SendTransationDialogFragment.OnSubmitClickListener() {
-                @Override
-                public void onSubmitClick() {
-                    showInputWalletPasswordDialogFragment("", transferAmount, toAddress);
-                }
-            }).show(currentActivity().getSupportFragmentManager(), "sendTransation");
+//            SendTransactionDialogFragment.newInstance(transferAmount, toAddress, feeAmount).setOnSubmitClickListener(new SendTransactionDialogFragment.OnSubmitClickListener() {
+//                @Override
+//                public void onSubmitClick() {
+//                    showInputWalletPasswordDialogFragment("", transferAmount, toAddress);
+//                }
+//            }).show(currentActivity().getSupportFragmentManager(), "sendTransation");
 
         }
     }
@@ -320,7 +318,7 @@ public class SendIndividualTransationPresenter extends BasePresenter<SendIndivid
                     }
                 })
                 .compose(new SchedulersTransformer())
-                .compose(LoadingTransformer.bindToLifecycle(currentActivity()))
+                .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
                 .compose(bindToLifecycle())
                 .subscribe(new Consumer<IndividualTransactionInfoEntity>() {
                     @Override
@@ -353,12 +351,12 @@ public class SendIndividualTransationPresenter extends BasePresenter<SendIndivid
     }
 
     private void showInputWalletPasswordDialogFragment(String password, String transferAmount, String toAddress) {
-        InputWalletPasswordDialogFragment.newInstance(password).setOnConfirmClickListener(new InputWalletPasswordDialogFragment.OnConfirmClickListener() {
-            @Override
-            public void onConfirmClick(String password) {
-                sendTransaction(password, transferAmount, toAddress);
-            }
-        }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
+//        InputWalletPasswordDialogFragment.newInstance().setOnConfirmClickListener(new InputWalletPasswordDialogFragment.OnConfirmClickListener() {
+//            @Override
+//            public void onConfirmClick(String password) {
+//                sendTransaction(password, transferAmount, toAddress);
+//            }
+//        }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
     }
 
     private void updateFeeAmount(double percent) {

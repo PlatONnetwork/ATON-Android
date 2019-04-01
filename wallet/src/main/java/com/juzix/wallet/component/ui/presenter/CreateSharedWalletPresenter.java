@@ -8,6 +8,7 @@ import com.juzix.wallet.component.ui.contract.CreateSharedWalletContract;
 import com.juzix.wallet.component.ui.dialog.SelectIndividualWalletDialogFragment;
 import com.juzix.wallet.component.ui.view.CreateSharedWalletSecondStepActivity;
 import com.juzix.wallet.engine.IndividualWalletManager;
+import com.juzix.wallet.engine.SharedWalletManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 
 import java.util.ArrayList;
@@ -71,6 +72,9 @@ public class CreateSharedWalletPresenter extends BasePresenter<CreateSharedWalle
             if (!checkWalletName(walletName)) {
                 return;
             }
+            if (isExists(walletName)){
+                return;
+            }
 
             if (walletEntity == null) {
                 return;
@@ -88,14 +92,19 @@ public class CreateSharedWalletPresenter extends BasePresenter<CreateSharedWalle
 
         if (TextUtils.isEmpty(walletName)) {
             errMsg = string(R.string.validWalletNameEmptyTips);
-        } else {
-            if (walletName.length() > 12) {
-                errMsg = string(R.string.wallet_name_length_error);
-            }
+        }else if (walletName.length() > 12) {
+            errMsg = string(R.string.wallet_name_length_error);
+        }else if (isExists(walletName)){
+            errMsg = string(R.string.wallet_name_exists);
         }
 
         getView().showWalletNameError(errMsg);
 
         return TextUtils.isEmpty(errMsg);
+    }
+
+    @Override
+    public boolean isExists(String walletName) {
+        return IndividualWalletManager.getInstance().walletNameExists(walletName) ? true : SharedWalletManager.getInstance().walletNameExists(walletName);
     }
 }

@@ -3,9 +3,13 @@ package com.juzix.wallet.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.juzhen.framework.util.NumberParserUtils;
+import com.juzix.wallet.utils.BigDecimalUtil;
+
 import org.web3j.utils.Numeric;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author matrixelement
@@ -28,31 +32,34 @@ public class SingleVoteEntity implements Cloneable, Parcelable {
     public static final int STATUS_SUCCESS = 1;
     public static final int STATUS_FAILED = 2;
 
-    private String                  uuid;
-    private String                  hash;
-    private String                  candidateId;
-    private String                  candidateName;
-    private String                  avatar;
-    private String                  host;
-    private String                  contractAddress;
-    private String                  walletName;
-    private String                  walletAddress;
-    private long                    createTime;
-    private double                  value;
-    private long                    ticketNumber;
-    private String                  ticketPrice;
-    private long                    blockNumber;
-    private long                    latestBlockNumber;
-    private double                  energonPrice;
-    private int                     status;
-    private ArrayList<TicketEntity> tickets;
+    private String uuid;
+    private String transactionId;
+    private String hash;
+    private String candidateId;
+    private String candidateName;
+    private String host;
+    private String contractAddress;
+    private String walletName;
+    private String walletAddress;
+    private long createTime;
+    private double value;
+    private long ticketNumber;
+    private String ticketPrice;
+    private long blockNumber;
+    private long latestBlockNumber;
+    private double energonPrice;
+    private int status;
+    private List<TicketEntity> tickets;
+
+    public SingleVoteEntity() {
+    }
 
     protected SingleVoteEntity(Parcel in) {
         uuid = in.readString();
+        transactionId = in.readString();
         hash = in.readString();
         candidateId = in.readString();
         candidateName = in.readString();
-        avatar = in.readString();
         host = in.readString();
         contractAddress = in.readString();
         walletName = in.readString();
@@ -70,10 +77,10 @@ public class SingleVoteEntity implements Cloneable, Parcelable {
 
     private SingleVoteEntity(Builder builder) {
         setUuid(builder.uuid);
+        setTransactionId(builder.transactionId);
         setHash(builder.hash);
         setCandidateId(builder.candidateId);
         setCandidateName(builder.candidateName);
-        setAvatar(builder.avatar);
         setHost(builder.host);
         setContractAddress(builder.contractAddress);
         setWalletName(builder.walletName);
@@ -108,10 +115,10 @@ public class SingleVoteEntity implements Cloneable, Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(uuid);
+        dest.writeString(transactionId);
         dest.writeString(hash);
         dest.writeString(candidateId);
         dest.writeString(candidateName);
-        dest.writeString(avatar);
         dest.writeString(host);
         dest.writeString(contractAddress);
         dest.writeString(walletName);
@@ -157,14 +164,6 @@ public class SingleVoteEntity implements Cloneable, Parcelable {
 
     public void setCandidateName(String candidateName) {
         this.candidateName = candidateName;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
     }
 
     public String getHost() {
@@ -271,32 +270,40 @@ public class SingleVoteEntity implements Cloneable, Parcelable {
         this.status = status;
     }
 
-    public ArrayList<TicketEntity> getTickets() {
+    public List<TicketEntity> getTickets() {
         return tickets;
     }
 
-    public void setTickets(ArrayList<TicketEntity> tickets) {
+    public void setTickets(List<TicketEntity> tickets) {
         this.tickets = tickets;
+    }
+
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
     }
 
     public static final class Builder {
         private String uuid;
+        private String transactionId;
         private String hash;
         private String candidateId;
         private String candidateName;
-        private String avatar;
         private String host;
         private String contractAddress;
         private String walletName;
         private String walletAddress;
-        private long   createTime;
+        private long createTime;
         private double value;
-        private long   ticketNumber;
+        private long ticketNumber;
         private String ticketPrice;
-        private long   blockNumber;
-        private long   latestBlockNumber;
+        private long blockNumber;
+        private long latestBlockNumber;
         private double energonPrice;
-        private int                     status;
+        private int status;
         private ArrayList<TicketEntity> tickets;
 
         public Builder() {
@@ -319,11 +326,6 @@ public class SingleVoteEntity implements Cloneable, Parcelable {
 
         public Builder candidateName(String candidateName) {
             this.candidateName = candidateName;
-            return this;
-        }
-
-        public Builder avatar(String avatar) {
-            this.avatar = avatar;
             return this;
         }
 
@@ -392,8 +394,49 @@ public class SingleVoteEntity implements Cloneable, Parcelable {
             return this;
         }
 
+        public Builder transactionId(String val) {
+            this.transactionId = val;
+            return this;
+        }
+
         public SingleVoteEntity build() {
             return new SingleVoteEntity(this);
         }
     }
+
+    public int getValidVoteNum() {
+        int validVoteNum = 0;
+        if (tickets != null && !tickets.isEmpty()) {
+            for (int i = 0; i < tickets.size(); i++) {
+                TicketEntity ticketEntity = tickets.get(i);
+                if (ticketEntity.getState() == 1) {
+                    validVoteNum++;
+                }
+            }
+        }
+        return validVoteNum;
+    }
+
+    public int getInvalidVoteNum() {
+        int inValidVoteNum = 0;
+        if (tickets != null && !tickets.isEmpty()) {
+            for (int i = 0; i < tickets.size(); i++) {
+                TicketEntity ticketEntity = tickets.get(i);
+                if (ticketEntity.getState() != 1) {
+                    inValidVoteNum++;
+                }
+            }
+
+        }
+        return inValidVoteNum;
+    }
+
+    public double getVoteStaked() {
+        return BigDecimalUtil.mul(NumberParserUtils.parseDouble(ticketPrice), NumberParserUtils.parseDouble(getValidVoteNum()));
+    }
+
+    public double getVoteUnStaked() {
+        return BigDecimalUtil.mul(NumberParserUtils.parseDouble(ticketPrice), NumberParserUtils.parseDouble(getInvalidVoteNum()));
+    }
+
 }

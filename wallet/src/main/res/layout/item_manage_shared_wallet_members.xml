@@ -3,27 +3,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_item_manage_shared_wallet_members"
     android:orientation="vertical"
-    android:paddingBottom="5dp"
-    android:paddingLeft="8dp"
-    android:paddingRight="8dp"
-    android:paddingTop="5dp">
+    android:paddingBottom="8dp"
+    android:paddingTop="8dp">
 
     <TextView
         android:id="@+id/tv_member_name"
-        style="@style/Text.c5cdbc.11"
+        style="@style/Text.000000.14"
         android:layout_width="match_parent"
-        android:drawableRight="@drawable/icon_right_arrow"
         android:gravity="center_vertical|left"
         tools:text="@string/member" />
 
-    <TextView
-        android:id="@+id/tv_member_address"
-        style="@style/Text.fff.12"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="11dp"
-        android:ellipsize="end"
-        android:lines="1"
-        tools:text="ox2ce481566f3a19c04A206A72fF49B2b3d3976F1F" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        <TextView
+            android:id="@+id/tv_member_address"
+            style="@style/Text.61646e.14"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical|left"
+            android:ellipsize="end"
+            android:lines="1"
+            tools:text="ox2ce481566f3a19c04A206A72fF49B2b3d3976F1F" />
 
+        <ImageView
+            android:id="@+id/iv_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_edit"/>
+    </LinearLayout>
 </LinearLayout>

@@ -4,6 +4,8 @@ import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 
+import org.web3j.crypto.Credentials;
+
 public class ManageIndividualWalletContract {
 
     public interface View extends IView {
@@ -18,22 +20,30 @@ public class ManageIndividualWalletContract {
 
         void showWalletAddress(String address);
 
-        void showErrorDialog(String title, String content, String preInputInfo,int type);
+        void showErrorDialog(String title, String content, int type, IndividualWalletEntity walletEntity);
 
         void showWalletAvatar(String avatar);
 
-        void showModifyNameDialog();
+        void showModifyNameDialog(String name);
 
-        void showPasswordDialog(int type, String preInputInfo);
+        void showPasswordDialog(int type, IndividualWalletEntity mWalletEntity);
+
+        void enableBackup(boolean enabled);
+
+        void enableDelete(boolean enabled);
     }
 
     public interface Presenter extends IPresenter<View> {
         void showIndividualWalletInfo();
 
-        void validPassword(int type, String password);
+        void validPassword(int type, Credentials credentials);
 
         void deleteWallet();
 
         void modifyName(String name);
+
+        void backup();
+
+        boolean isExists(String walletName);
     }
 }

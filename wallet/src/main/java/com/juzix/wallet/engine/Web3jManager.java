@@ -122,6 +122,10 @@ public class Web3jManager {
         }
     }
 
+    public boolean isValidSharedWallet(String contractAddress) {
+        return !"0x".equals(getCode(contractAddress));
+    }
+
     public TransactionReceipt getTransactionReceipt(String transactionHash) {
         TransactionReceipt transactionReceipt = null;
         try {

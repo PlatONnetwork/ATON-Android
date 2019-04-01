@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.juzhen.framework.util.AndroidUtil;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.adapter.NodeListAdapter;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
@@ -75,17 +76,22 @@ public class NodeSettingsActivity extends MVPBaseActivity<NodeSettingsPresenter>
         if (isEdit) {
             ivLeft.setVisibility(View.GONE);
             tvLeft.setText(R.string.cancel);
+            tvLeft.setTextColor(ContextCompat.getColor(this, R.color.color_000000));
             tvLeft.setVisibility(View.VISIBLE);
             tvMiddle.setText(R.string.editNode);
+            tvMiddle.setTextColor(ContextCompat.getColor(this, R.color.color_000000));
             tvRight.setVisibility(View.VISIBLE);
             tvRight.setText(R.string.save);
+            tvRight.setTextColor(ContextCompat.getColor(this, R.color.color_105cfe));
             tvAddNode.setVisibility(View.VISIBLE);
         } else {
             ivLeft.setVisibility(View.VISIBLE);
             tvLeft.setVisibility(View.GONE);
             tvMiddle.setText(R.string.node_settings);
+            tvMiddle.setTextColor(ContextCompat.getColor(this, R.color.color_000000));
             tvRight.setVisibility(View.VISIBLE);
             tvRight.setText(R.string.edit);
+            tvRight.setTextColor(ContextCompat.getColor(this, R.color.color_105cfe));
             tvAddNode.setVisibility(View.GONE);
         }
         hideSoftInput();
@@ -124,17 +130,16 @@ public class NodeSettingsActivity extends MVPBaseActivity<NodeSettingsPresenter>
 
     private void initView() {
 
-        rlTitleBar.setBackgroundColor(ContextCompat.getColor(this, R.color.color_232e48));
-        tvRight.setTextColor(ContextCompat.getColor(this, R.color.color_cdcdcd));
+        rlTitleBar.setBackgroundColor(ContextCompat.getColor(this, R.color.color_ffffff));
         tvRight.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        tvLeft.setTextColor(ContextCompat.getColor(this, R.color.color_cdcdcd));
         tvLeft.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
 
+        int padding = AndroidUtil.dip2px(this, 16);
         nodeListAdapter = new NodeListAdapter(this,null);
         WrapContentLinearLayoutManager layoutManager = new WrapContentLinearLayoutManager(this);
         layoutManager.setOrientation(OrientationHelper.VERTICAL);
         listNodes.setLayoutManager(layoutManager);
-        listNodes.addItemDecoration(new NodeListDecoration(this));
+        listNodes.addItemDecoration(new NodeListDecoration(this, padding, 0, padding, 0));
         listNodes.setAdapter(nodeListAdapter);
 
         nodeListAdapter.setOnItemRemovedListener(nodeEntity -> mPresenter.delete(nodeEntity));

@@ -14,10 +14,8 @@ import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.SendSharedTransationContract;
 import com.juzix.wallet.component.ui.dialog.CommonDialogFragment;
-import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
 import com.juzix.wallet.component.ui.dialog.SelectSharedWalletDialogFragment;
-import com.juzix.wallet.component.ui.dialog.SendTransationDialogFragment;
 import com.juzix.wallet.db.entity.SharedTransactionInfoEntity;
 import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.engine.SharedWalletTransactionManager;
@@ -25,6 +23,7 @@ import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.SharedWalletEntity;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.JZWalletUtil;
 import com.juzix.wallet.utils.ToastUtil;
 
 import org.web3j.crypto.Credentials;
@@ -93,7 +92,7 @@ public class SendSharedTransationPresenter extends BasePresenter<SendSharedTrans
         Single.fromCallable(new Callable<Double>() {
             @Override
             public Double call() throws Exception {
-                return Web3jManager.getInstance().getBalance(walletEntity.getPrefixContractAddress());
+                return Web3jManager.getInstance().getBalance(walletEntity.getPrefixAddress());
             }
         })
                 .compose(new SchedulersTransformer())
@@ -131,7 +130,7 @@ public class SendSharedTransationPresenter extends BasePresenter<SendSharedTrans
     @Override
     public void calculateFee() {
         String toAddress = getView().getToAddress();
-        if (TextUtils.isEmpty(toAddress) || walletEntity == null || TextUtils.isEmpty(walletEntity.getContractAddress())) {
+        if (TextUtils.isEmpty(toAddress) || walletEntity == null || TextUtils.isEmpty(walletEntity.getPrefixAddress())) {
             return;
         }
         updateFeeAmount(percent);
@@ -210,17 +209,17 @@ public class SendSharedTransationPresenter extends BasePresenter<SendSharedTrans
                 return;
             }
 
-            if (toAddress.equals(walletEntity.getPrefixContractAddress())) {
+            if (toAddress.equals(walletEntity.getPrefixAddress())) {
                 showLongToast(R.string.can_not_send_to_itself);
                 return;
             }
 
-            SendTransationDialogFragment.newInstance(transferAmount, toAddress, feeAmount).setOnSubmitClickListener(new SendTransationDialogFragment.OnSubmitClickListener() {
-                @Override
-                public void onSubmitClick() {
+//            SendTransactionDialogFragment.newInstance(transferAmount, toAddress, feeAmount).setOnSubmitClickListener(new SendTransactionDialogFragment.OnSubmitClickListener() {
+//                @Override
+//                public void onSubmitClick() {
                     showInputWalletPasswordDialogFragment("", transferAmount, toAddress);
-                }
-            }).show(currentActivity().getSupportFragmentManager(), "sendTransation");
+//                }
+//            }).show(currentActivity().getSupportFragmentManager(), "sendTransation");
 
         }
     }
@@ -252,7 +251,7 @@ public class SendSharedTransationPresenter extends BasePresenter<SendSharedTrans
         return Single.create(new SingleOnSubscribe<Credentials>() {
             @Override
             public void subscribe(SingleEmitter<Credentials> emitter) throws Exception {
-                Credentials credentials = SharedWalletTransactionManager.getInstance().credentials(password, keyJson);
+                Credentials credentials = JZWalletUtil.getCredentials(password, keyJson);
                 if (credentials == null) {
                     emitter.onError(new CustomThrowable(CustomThrowable.CODE_ERROR_PASSWORD));
                 } else {
@@ -305,7 +304,7 @@ public class SendSharedTransationPresenter extends BasePresenter<SendSharedTrans
                     }
                 })
                 .compose(new SchedulersTransformer())
-                .compose(LoadingTransformer.bindToLifecycle(getView().currentActivity()))
+                .compose(LoadingTransformer.bindToSingleLifecycle(getView().currentActivity()))
                 .compose(bindToLifecycle())
                 .subscribe(new Consumer<SharedTransactionInfoEntity>() {
                     @Override
@@ -340,12 +339,12 @@ public class SendSharedTransationPresenter extends BasePresenter<SendSharedTrans
     }
 
     private void showInputWalletPasswordDialogFragment(String password, String transferAmount, String toAddress) {
-        InputWalletPasswordDialogFragment.newInstance(password).setOnConfirmClickListener(new InputWalletPasswordDialogFragment.OnConfirmClickListener() {
-            @Override
-            public void onConfirmClick(String password) {
-                validPassword(password, transferAmount, toAddress);
-            }
-        }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
+//        InputWalletPasswordDialogFragment.newInstance(password).setOnConfirmClickListener(new InputWalletPasswordDialogFragment.OnConfirmClickListener() {
+//            @Override
+//            public void onConfirmClick(String password) {
+//                validPassword(password, transferAmount, toAddress);
+//            }
+//        }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
     }
 
     private void updateFeeAmount(double percent) {

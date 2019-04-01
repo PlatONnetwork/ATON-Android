@@ -1,6 +1,7 @@
 package com.juzix.wallet.event;
 
 import com.juzhen.framework.network.NetState;
+import com.juzix.wallet.entity.RegionEntity;
 import com.juzix.wallet.entity.SharedWalletEntity;
 
 public class Event {
@@ -71,11 +72,19 @@ public class Event {
 
     public static class UpdateCreateJointWalletProgressEvent {
 
-
         public SharedWalletEntity sharedWalletEntity;
 
         public UpdateCreateJointWalletProgressEvent(SharedWalletEntity sharedWalletEntity) {
             this.sharedWalletEntity = sharedWalletEntity;
+        }
+    }
+
+    public static class UpdateCandidateRegionInfoEvent {
+
+        public RegionEntity regionEntity;
+
+        public UpdateCandidateRegionInfoEvent(RegionEntity regionEntity) {
+            this.regionEntity = regionEntity;
         }
     }
 }

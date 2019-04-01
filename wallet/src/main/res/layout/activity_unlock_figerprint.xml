@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_232e48"
+    android:background="@color/color_ffffff"
     android:clipToPadding="true"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
@@ -30,7 +30,7 @@
         android:layout_marginTop="18.4dp"
         android:gravity="center"
         android:text="@string/evokeFingerprintVerification"
-        android:textColor="@color/color_ffed54"
+        android:textColor="@color/color_898c9e"
         android:textSize="14sp" />
 
     <TextView
@@ -40,7 +40,7 @@
         android:layout_marginTop="18.4dp"
         android:gravity="center"
         android:text="@string/figerprintUnlockTips"
-        android:textColor="@color/color_ff4747"
+        android:textColor="@color/color_f5302c"
         android:textSize="14sp"
         android:visibility="gone" />
 
@@ -60,7 +60,7 @@
             android:layout_marginTop="4dp"
             android:gravity="center"
             android:text="@string/unlockWithWalletPassword"
-            android:textColor="@color/color_ffed54"
+            android:textColor="@color/color_105cfe"
             android:textSize="12sp" />
     </LinearLayout>
 </LinearLayout>

@@ -1,56 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/color_1b2137"
-                android:clipToPadding="true"
-                android:fitsSystemWindows="true" >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
     <ImageView
-        android:id="@+id/iv_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="104dp"
+        android:layout_marginTop="126dp"
         android:src="@drawable/icon_logo_splash" />
 
-    <Button
-        android:layout_below="@id/iv_logo"
-        android:id="@+id/btn_create_wallet"
-        android:layout_width="200dp"
-        android:layout_height="40dp"
-        android:gravity="center"
-        android:layout_centerHorizontal="true"
-        android:background="@color/color_eff0f5"
-        android:layout_marginTop="100dp"
-        android:text="@string/btnCreatewallet"
-        android:textAllCaps="false"
-        android:fontFamily="normal"
-        android:textColor="@color/color_1b2137"
-        android:textSize="14sp"/>
-
-    <Button
-        android:layout_below="@id/btn_create_wallet"
-        android:id="@+id/btn_import_wallet"
-        android:layout_width="200dp"
-        android:layout_height="40dp"
-        android:gravity="center"
-        android:layout_centerHorizontal="true"
-        android:background="@color/color_eff0f5"
-        android:layout_marginTop="29dp"
-        android:text="@string/btnImportwallet"
-        android:textAllCaps="false"
-        android:fontFamily="normal"
-        android:textColor="@color/color_1b2137"
-        android:textSize="14sp"/>
-
-    <TextView
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="24dp"
+    <com.juzix.wallet.component.widget.ShadowContainer
+        android:id="@+id/sc_import_wallet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="12sp"
-        android:textColor="@color/color_ffffff"
-        android:text="@string/platONSlogan" />
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginBottom="57dp"
+        android:orientation="horizontal"
+        app:enableShadowColor="@color/color_66969696"
+        app:yOffset="1dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_secondary_button"
+            android:gravity="center">
+
+            <TextView
+                style="@style/Text.f6f6f6.16"
+                android:drawableRight="@drawable/icon_import1"
+                android:drawablePadding="8dp"
+                android:text="@string/btnImportwallet"
+                android:textColor="@color/color_secondary_button_text" />
+        </LinearLayout>
+
+    </com.juzix.wallet.component.widget.ShadowContainer>
+
+    <com.juzix.wallet.component.widget.ShadowContainer
+        android:id="@+id/sc_create_wallet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/sc_import_wallet"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:orientation="horizontal"
+        android:duplicateParentState="true"
+        app:yOffset="1dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_main_button"
+            android:gravity="center">
+
+            <TextView
+                style="@style/Text.f6f6f6.16"
+                android:drawableRight="@drawable/icon_create1"
+                android:drawablePadding="8dp"
+                android:text="@string/btnCreatewallet"
+                android:textColor="@color/color_main_button_text" />
+        </LinearLayout>
+
+    </com.juzix.wallet.component.widget.ShadowContainer>
+
+
 </RelativeLayout>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:divider="@drawable/divider_transaction_status"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:showDividers="middle">
+
+    <ImageView
+        android:id="@+id/iv_failed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_failed"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/iv_succeed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_successed"
+        android:visibility="gone" />
+
+    <RelativeLayout
+        android:id="@+id/layout_pending"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_pending"
+        android:paddingLeft="50dp"
+        android:paddingTop="34dp"
+        android:paddingRight="62dp"
+        android:paddingBottom="28dp">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateDrawable="@drawable/pb_pending" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_transaction_status_desc"
+        style="@style/Text.000.20"
+        tools:text="@string/pending" />
+
+
+</LinearLayout>

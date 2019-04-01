@@ -1,28 +1,57 @@
 package com.juzix.wallet.component.ui.view;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.juzix.wallet.BuildConfig;
+import com.juzhen.framework.util.AndroidUtil;
+import com.juzhen.framework.util.crypt.Base64Utils;
+import com.juzhen.framework.util.crypt.MD5Utils;
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BaseActivity;
+import com.juzix.wallet.component.ui.dialog.CommonTipsDialogFragment;
+import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
+import com.juzix.wallet.config.JZAppConfigure;
+import com.juzix.wallet.config.JZDirType;
+import com.juzix.wallet.config.PermissionConfigure;
+import com.juzix.wallet.engine.VersionManager;
+import com.juzix.wallet.entity.DownloadEntity;
+import com.juzix.wallet.entity.VersionEntity;
+import com.juzix.wallet.utils.FileUtil;
 import com.juzix.wallet.utils.ShareUtil;
+
+import java.io.File;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * @author matrixelement
  */
-public class AboutActivity extends BaseActivity implements View.OnClickListener {
+public class AboutActivity extends BaseActivity{
 
-    @BindView(R.id.tv_app_version)
-    TextView tvAppVersion;
+//    @BindView(R.id.tv_app_version)
+//    TextView tvAppVersion;
+    @BindView(R.id.tv_update)
+    TextView tvUpdate;
+    @BindView(R.id.v_new_msg)
+    View vNewMsg;
 
     private Unbinder unbinder;
 
@@ -32,10 +61,14 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
         setContentView(R.layout.activity_about);
         unbinder = ButterKnife.bind(this);
         initViews();
+        checkVersion();
     }
 
     private void initViews() {
-        tvAppVersion.setText(BuildConfig.VERSION_NAME);
+        String versionName = AndroidUtil.getVersionName(this);
+        if (!versionName.toLowerCase().startsWith("v"))
+            versionName = "v" + versionName;
+        tvUpdate.setText(string(R.string.current_version,  versionName));
     }
 
     @Override
@@ -51,16 +84,131 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
         context.startActivity(intent);
     }
 
-    @OnClick({R.id.tv_about_us, R.id.tv_update})
-    @Override
+    @OnClick({R.id.tv_about_us, R.id.ll_update})
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.tv_about_us:
                 ShareUtil.shareUrl(getContext(), "https://www.platon.network");
                 break;
-            case R.id.tv_update:
-                ShareUtil.shareUrl(getContext(), "https://github.com/PlatONnetwork");
+            case R.id.ll_update:
+                update();
+//                ShareUtil.shareUrl(getContext(), "https://developer.platon.network/mobile/index.html");
                 break;
         }
+    }
+
+    private void checkVersion(){
+        VersionManager.getInstance().getVersion()
+                .compose(new SchedulersTransformer())
+                .compose(bindToLifecycle())
+                .subscribe(new Consumer<VersionEntity>() {
+                    @Override
+                    public void accept(VersionEntity versionEntity) {
+                        String newVersion = versionEntity.getVersion().toLowerCase();
+                        String oldVersion = AndroidUtil.getVersionName(getContext()).toLowerCase();
+                        if (newVersion.startsWith("v") && !oldVersion.startsWith("v")){
+                            oldVersion = "v" + oldVersion;
+                        }else if (!newVersion.startsWith("v") && oldVersion.startsWith("v")){
+                            newVersion = "v" + newVersion;
+                        }
+                        if (oldVersion.compareTo(newVersion) < 0){
+                            tvUpdate.setText(string(R.string.latest_version,  newVersion));
+                            vNewMsg.setVisibility(View.VISIBLE);
+                        }else {
+                            tvUpdate.setText(string(R.string.current_version,  newVersion));
+                            vNewMsg.setVisibility(View.GONE);
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                    }
+                });
+    }
+
+    private void update(){
+        showLoadingDialog();
+        VersionManager.getInstance().getVersion()
+                .subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<VersionEntity>() {
+                    @Override
+                    public void accept(VersionEntity versionEntity) {
+                        dismissLoadingDialogImmediately();
+                        String newVersion = versionEntity.getVersion().toLowerCase();
+                        String oldVersion = AndroidUtil.getVersionName(getContext()).toLowerCase();
+                        if (newVersion.startsWith("v") && !oldVersion.startsWith("v")){
+                            oldVersion = "v" + oldVersion;
+                        }else if (!newVersion.startsWith("v") && oldVersion.startsWith("v")){
+                            newVersion = "v" + newVersion;
+                        }
+                        if (oldVersion.compareTo(newVersion) >= 0) {
+                            tvUpdate.setText(string(R.string.current_version,  oldVersion));
+                            vNewMsg.setVisibility(View.GONE);
+                            showLongToast(string(R.string.latest_version_tips));
+                            return;
+                        }
+                        tvUpdate.setText(string(R.string.latest_version,  newVersion));
+                        vNewMsg.setVisibility(View.VISIBLE);
+                        if (VersionManager.getInstance().isDownloading(versionEntity.getDownloadUrl())){
+                            showLongToast(string(R.string.download_tips));
+                            return;
+                        }
+                        CommonTipsDialogFragment.createDialogWithTitleAndTwoButton(ContextCompat.getDrawable(getContext(), R.drawable.icon_dialog_tips),
+                                string(R.string.version_update),
+                                string(R.string.version_update_tips, newVersion),
+                                string(R.string.update_now), new OnDialogViewClickListener() {
+                                    @Override
+                                    public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
+                                        if (fragment != null) {
+                                            fragment.dismiss();
+                                        }
+                                        requestPermission(currentActivity(), 100, new PermissionConfigure.PermissionCallback() {
+                                            @Override
+                                            public void onSuccess(int what, @NonNull List<String> grantPermissions) {
+                                                download(versionEntity.getDownloadUrl());
+                                            }
+
+                                            @Override
+                                            public void onHasPermission(int what) {
+                                                download(versionEntity.getDownloadUrl());
+                                            }
+
+                                            @Override
+                                            public void onFail(int what, @NonNull List<String> deniedPermissions) {
+
+                                            }
+                                        }, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE);
+
+                                    }
+                                },
+                                string(R.string.not_now), new OnDialogViewClickListener() {
+                                    @Override
+                                    public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
+                                        if (fragment != null) {
+                                            fragment.dismiss();
+                                        }
+                                    }
+                                }).show(getSupportFragmentManager(), "showTips");
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        dismissLoadingDialogImmediately();
+                    }
+                });
+    }
+
+    private void download(String url){
+        JZAppConfigure.getInstance().getDir(currentActivity(), JZDirType.raw, new JZAppConfigure.DirCallback() {
+            @Override
+            public void callback(File dir) {
+                if (dir == null) {
+                    return;
+                }
+                VersionManager.getInstance().download(url, dir, new String(Base64Utils.encodeToString(MD5Utils.encode(url))) + ".apk");
+            }
+        });
+
     }
 }

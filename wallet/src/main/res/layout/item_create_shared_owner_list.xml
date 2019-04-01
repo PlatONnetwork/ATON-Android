@@ -6,65 +6,111 @@
     android:descendantFocusability="beforeDescendants"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tv_wallet_address_info"
-        style="@style/Text.c5cdbc.14"
-        android:layout_marginLeft="7dp"
-        android:text="Member1" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/tv_wallet_address_info"
+            style="@style/Text.61646e.16"
+            android:text="Member1" />
+
+        <TextView
+            android:id="@+id/tv_save_address"
+            style="@style/Text.b6bbd0.12"
+            android:text="@string/save_to_address_book"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
 
     <com.juzix.wallet.component.widget.CustomEditText
         android:id="@+id/et_wallet_name"
-        style="@style/Text.fff.12"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/bg_create_share_wallet"
+        android:background="@drawable/bg_edittext_underline"
         android:gravity="center_vertical|left"
         android:hint="@string/remarkNonCompulsory"
         android:lines="1"
         android:maxLength="12"
-        android:paddingLeft="10dp"
-        android:textColorHint="@color/color_7a8092" />
+        android:textColor="@color/color_000000"
+        android:textColorHint="@color/color_b6bbd0"
+        android:textSize="13sp" />
 
-    <LinearLayout
+    <FrameLayout
+        android:id="@+id/fl_address"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_marginTop="1dp"
-        android:background="@drawable/bg_create_share_wallet"
-        android:orientation="horizontal">
+        android:layout_marginTop="12dp">
 
         <com.juzix.wallet.component.widget.CustomEditText
             android:id="@+id/et_wallet_address"
-            style="@style/Text.fff.12"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@null"
+            android:paddingRight="48dp"
+            android:background="@drawable/bg_edittext_underline"
             android:gravity="center_vertical|left"
             android:hint="@string/wallet_address"
-            android:paddingLeft="10dp"
             android:singleLine="true"
-            android:textColorHint="@color/color_7a8092" />
+            android:textColor="@color/color_000000"
+            android:textColorHint="@color/color_b6bbd0"
+            android:textSize="13sp" />
 
         <ImageView
             android:id="@+id/iv_scan"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/icon_scan" />
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginRight="28dp"
+            android:src="@drawable/icon_scan_s"/>
 
         <ImageView
             android:id="@+id/iv_address_book"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="12dp"
-            android:background="@drawable/bg_address_book" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:src="@drawable/icon_address_book_s"/>
 
-    </LinearLayout>
+    </FrameLayout>
+
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="40dp"-->
+        <!--android:layout_marginTop="1dp"-->
+        <!--android:orientation="horizontal">-->
+
+        <!--<com.juzix.wallet.component.widget.CustomEditText-->
+            <!--android:id="@+id/et_wallet_address"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="1"-->
+            <!--android:background="@drawable/bg_edittext_underline"-->
+            <!--android:gravity="center_vertical|left"-->
+            <!--android:hint="@string/wallet_address"-->
+            <!--android:singleLine="true"-->
+            <!--android:textColor="@color/color_000000"-->
+            <!--android:textColorHint="@color/color_b6bbd0"-->
+            <!--android:textSize="13sp" />-->
+
+        <!--<ImageView-->
+            <!--android:id="@+id/iv_scan"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--android:src="@drawable/icon_scan" />-->
+
+        <!--<ImageView-->
+            <!--android:id="@+id/iv_address_book"-->
+            <!--android:layout_width="40dp"-->
+            <!--android:layout_height="40dp"-->
+            <!--android:layout_marginLeft="12dp"-->
+            <!--android:background="@drawable/bg_address_book" />-->
+
+    <!--</LinearLayout>-->
 
     <TextView
         android:id="@+id/tv_address_error"
-        style="@style/Text.ff4747.12"
+        style="@style/Text.f5302c.12"
         android:layout_marginTop="6dp"
         android:visibility="gone"
         tools:text="@string/address_cannot_be_empty" />

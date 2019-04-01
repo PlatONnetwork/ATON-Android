@@ -1,26 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.juzix.wallet.component.widget.CommonTitleBar
-        android:id="@+id/commonTitleBar"
+    <TextView
+        android:id="@+id/tv_title"
+        style="@style/Text.000000.18"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:ctb_middle_text="@string/nav_me" />
+        android:layout_marginLeft="18dp"
+        android:layout_marginTop="35dp"
+        android:gravity="left"
+        android:text="@string/nav_me" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:overScrollMode="never"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        android:overScrollMode="never">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/color_1b2137"
             android:divider="@drawable/bg_transation_list_divider"
             android:orientation="vertical"
             android:showDividers="middle">
@@ -34,7 +36,7 @@
                 android:paddingRight="18dp">
 
                 <TextView
-                    style="@style/Text.fff.14"
+                    style="@style/Text.000.14"
                     android:drawableLeft="@drawable/icon_me_wallet_manage"
                     android:drawablePadding="10dp"
                     android:text="@string/wallet_manage" />
@@ -59,7 +61,7 @@
                 android:paddingRight="18dp">
 
                 <TextView
-                    style="@style/Text.fff.14"
+                    style="@style/Text.000.14"
                     android:drawableLeft="@drawable/icon_me_transations"
                     android:drawablePadding="10dp"
                     android:text="@string/transactions" />
@@ -84,7 +86,7 @@
                 android:paddingRight="18dp">
 
                 <TextView
-                    style="@style/Text.fff.14"
+                    style="@style/Text.000.14"
                     android:drawableLeft="@drawable/icon_me_address_book"
                     android:drawablePadding="10dp"
                     android:text="@string/address_book" />
@@ -109,7 +111,7 @@
                 android:paddingRight="18dp">
 
                 <TextView
-                    style="@style/Text.fff.14"
+                    style="@style/Text.000.14"
                     android:drawableLeft="@drawable/icon_me_settings"
                     android:drawablePadding="10dp"
                     android:text="@string/settings" />
@@ -127,15 +129,15 @@
 
             <LinearLayout
                 android:id="@+id/layout_help"
-                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:gravity="center_vertical"
                 android:paddingLeft="18dp"
-                android:paddingRight="18dp">
+                android:paddingRight="18dp"
+                android:visibility="gone">
 
                 <TextView
-                    style="@style/Text.fff.14"
+                    style="@style/Text.000.14"
                     android:drawableLeft="@drawable/icon_me_help"
                     android:drawablePadding="10dp"
                     android:text="@string/help" />
@@ -160,7 +162,7 @@
                 android:paddingRight="18dp">
 
                 <TextView
-                    style="@style/Text.fff.14"
+                    style="@style/Text.000.14"
                     android:drawableLeft="@drawable/icon_me_about"
                     android:drawablePadding="10dp"
                     android:text="@string/about" />
@@ -184,7 +186,7 @@
                 android:paddingTop="20dp">
 
                 <TextView
-                    style="@style/Text.fff.14"
+                    style="@style/Text.000.14"
                     android:drawableLeft="@drawable/icon_me_community"
                     android:drawablePadding="10dp"
                     android:text="@string/community" />
@@ -202,50 +204,50 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:src="@drawable/icon_me_telegram" />
+                        android:src="@drawable/sel_me_telegram" />
 
                     <ImageView
-                        android:visibility="gone"
                         android:id="@+id/iv_wechat"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:src="@drawable/icon_me_wechat" />
+                        android:src="@drawable/icon_me_wechat"
+                        android:visibility="gone" />
 
                     <ImageView
                         android:id="@+id/iv_github"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:src="@drawable/icon_me_github" />
+                        android:src="@drawable/sel_me_github" />
 
                     <ImageView
                         android:id="@+id/iv_twitter"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:src="@drawable/icon_me_twitter" />
+                        android:src="@drawable/sel_me_twitter" />
 
                     <ImageView
                         android:id="@+id/iv_facebook"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:src="@drawable/icon_me_facebook" />
+                        android:src="@drawable/sel_me_facebook" />
 
                     <ImageView
                         android:id="@+id/iv_rabbit"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:src="@drawable/icon_me_rabbit" />
+                        android:src="@drawable/sel_me_rabbit" />
 
                     <ImageView
                         android:id="@+id/iv_medium"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:src="@drawable/icon_me_medium" />
+                        android:src="@drawable/sel_me_medium" />
 
                 </LinearLayout>
 

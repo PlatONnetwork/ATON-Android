@@ -24,6 +24,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.zxing.BarcodeFormat;
@@ -121,7 +122,8 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
 
     private void initView() {
         findViewById(R.id.ll_left).setOnClickListener(this);
-        ((TextView) findViewById(R.id.tv_middle)).setText(R.string.scan_qr_code);
+//        ((TextView) findViewById(R.id.tv_middle)).setText(R.string.scan_qr_code);
+        ((ImageView)findViewById(R.id.iv_left)).setImageResource(R.drawable.icon_back_white);
         TextView tvRight =  findViewById(R.id.tv_right);
         tvRight.setVisibility(View.VISIBLE);
         tvRight.setText(R.string.photo_album);

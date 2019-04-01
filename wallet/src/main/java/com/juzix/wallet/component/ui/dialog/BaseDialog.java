@@ -3,8 +3,12 @@ package com.juzix.wallet.component.ui.dialog;
 import android.content.Context;
 import android.support.v7.app.AppCompatDialog;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
+
+import com.juzix.wallet.utils.DensityUtil;
 
 public class BaseDialog extends AppCompatDialog {
     public BaseDialog(Context context) {
@@ -29,5 +33,15 @@ public class BaseDialog extends AppCompatDialog {
         super.dismiss();
     }
 
-
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Window window = getWindow();
+        if (window != null) {
+            WindowManager.LayoutParams layoutParams = window.getAttributes();
+            layoutParams.width = DensityUtil.dp2px(getContext(), 88f);
+            layoutParams.height = DensityUtil.dp2px(getContext(), 88f);
+            window.setAttributes(layoutParams);
+        }
+    }
 }

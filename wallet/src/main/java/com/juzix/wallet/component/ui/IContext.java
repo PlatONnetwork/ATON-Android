@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.config.PermissionConfigure;
-import com.trello.rxlifecycle2.LifecycleTransformer;
 
 
 public interface IContext {
@@ -28,6 +27,8 @@ public interface IContext {
     void showLoadingDialog();
 
     void showLoadingDialog(int resId);
+
+    void showLoadingDialog(String text, boolean cancelable);
 
     void showLoadingDialog(String text);
 

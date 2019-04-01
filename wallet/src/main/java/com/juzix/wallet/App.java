@@ -3,6 +3,7 @@ package com.juzix.wallet;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.multidex.MultiDex;
 
@@ -11,6 +12,8 @@ import com.juzix.wallet.app.AppFramework;
 import com.juzix.wallet.component.ui.view.UnlockFigerprintActivity;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.engine.IndividualWalletManager;
+import com.umeng.analytics.MobclickAgent;
+import com.umeng.commonsdk.UMConfigure;
 
 import io.reactivex.functions.Consumer;
 import io.reactivex.plugins.RxJavaPlugins;
@@ -18,7 +21,7 @@ import io.reactivex.plugins.RxJavaPlugins;
 /**
  * @author matrixelement
  */
-public class App extends CoreApp {
+public class  App extends CoreApp {
 
     private final static String TAG = App.class.getSimpleName();
     private final static long MAX_TIMEINMILLS = 2 * 60 * 1000;
@@ -36,6 +39,8 @@ public class App extends CoreApp {
             }
         });
         context = this;
+        //初始化友盟
+        initUMConfigure();
         AppFramework.getAppFramework().initAppFramework(this);
         registerActivityLifecycleCallbacks(mActivityLifecycleCallbacks);
     }
@@ -54,18 +59,41 @@ public class App extends CoreApp {
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
+        //非默认值
+        if (newConfig.fontScale != 1)
+            getResources();
         super.onConfigurationChanged(newConfig);
     }
 
     @Override
+    public Resources getResources() {
+        Resources res = super.getResources();
+        //非默认值
+        if (res.getConfiguration().fontScale != 1) {
+            Configuration newConfig = new Configuration();
+            //设置默认
+            newConfig.setToDefaults();
+            res.updateConfiguration(newConfig, res.getDisplayMetrics());
+        }
+        return res;
+    }
+
+    @Override
     protected String getConfiguredReleaseType() {
-        return null;
+        return BuildConfig.RELEASE_TYPE;
     }
 
     public static Context getContext() {
         return context;
     }
 
+    private void initUMConfigure() {
+        UMConfigure.init(this, BuildConfig.UM_APPKEY, "Umeng", UMConfigure.DEVICE_TYPE_PHONE, null);
+        MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.MANUAL);
+        if (BuildConfig.DEBUG) {
+            UMConfigure.setLogEnabled(true);
+        }
+    }
 
     private ActivityLifecycleCallbacks mActivityLifecycleCallbacks = new ActivityLifecycleCallbacks() {
         @Override

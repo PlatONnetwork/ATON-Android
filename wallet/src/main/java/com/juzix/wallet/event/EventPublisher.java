@@ -3,6 +3,7 @@ package com.juzix.wallet.event;
 import android.content.Context;
 
 import com.juzhen.framework.network.NetState;
+import com.juzix.wallet.entity.RegionEntity;
 import com.juzix.wallet.entity.SharedWalletEntity;
 
 public class EventPublisher {
@@ -76,5 +77,9 @@ public class EventPublisher {
 
     public void sendUpdateCreateJointWalletProgressEvent(SharedWalletEntity sharedWalletEntity) {
         BusProvider.post(new Event.UpdateCreateJointWalletProgressEvent(sharedWalletEntity));
+    }
+
+    public void sendUpdateCandidateRegionInfoEvent(RegionEntity regionEntity) {
+        BusProvider.post(new Event.UpdateCandidateRegionInfoEvent(regionEntity));
     }
 }

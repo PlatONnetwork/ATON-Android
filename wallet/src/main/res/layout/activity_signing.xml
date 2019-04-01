@@ -1,57 +1,168 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:clipToPadding="true"
-    android:fitsSystemWindows="true"
-    android:orientation="vertical">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:clipToPadding="true"
+              android:fitsSystemWindows="true"
+              android:orientation="vertical">
 
     <com.juzix.wallet.component.widget.CommonTitleBar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:ctb_left_drawable="@drawable/icon_back_black"
-        app:ctb_middle_text="@string/sign_confirming" />
+        app:ctb_title="@string/sign_confirming"/>
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/color_1b2137"
-        android:fillViewport="true"
-        android:overScrollMode="never">
+        android:orientation="vertical">
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:paddingLeft="15dp"
-            android:paddingBottom="20dp"
-            android:paddingTop="8dp"
-            android:paddingRight="15dp">
-
-            <include layout="@layout/include_signing_confirm_info" />
+            android:layout_weight="1"
+            android:fillViewport="true"
+            android:overScrollMode="never">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/bg_wallet_address_qr_code"
-                android:divider="@drawable/bg_transation_list_divider"
+                android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:paddingRight="12dp"
-                android:paddingLeft="12dp"
-                android:paddingBottom="17dp"
-                android:showDividers="middle">
+                android:paddingLeft="15dp"
+                android:paddingTop="8dp"
+                android:paddingRight="15dp"
+                android:paddingBottom="20dp">
 
-                <include layout="@layout/include_transationer_info" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp">
 
-                <include layout="@layout/include_transation_detail_info" />
+                    <TextView
+                        android:id="@+id/tv_transaction_status_desc"
+                        style="@style/Text.61646e.16"
+                        android:layout_centerHorizontal="true"
+                        tools:text="@string/transactionConfirmation"/>
 
-                <include layout="@layout/include_transation_detail_hash" />
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/gv_members"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_transaction_status_desc"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:scrollbars="none"
+                        tools:listitem="@layout/item_sign_member"/>
+
+                    <TextView
+                        android:id="@+id/tv_transaction_value_title"
+                        style="@style/Text.61646e.16"
+                        android:layout_below="@id/gv_members"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="15dp"
+                        android:text="@string/totalValue"/>
+
+                    <TextView
+                        android:id="@+id/tv_transaction_value"
+                        style="@style/Text.105cfe.24"
+                        android:layout_below="@id/tv_transaction_value_title"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="8dp"
+                        tools:text="5.00035Energon"/>
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:divider="@drawable/bg_transation_list_divider"
+                    android:orientation="vertical"
+                    android:paddingBottom="17dp"
+                    android:showDividers="middle">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"/>
+
+                    <include layout="@layout/include_transationer_info"/>
+
+                    <include layout="@layout/include_transation_detail_info"/>
+
+                    <include
+                        android:visibility="gone"
+                        layout="@layout/include_transation_detail_hash"/>
+                </LinearLayout>
+
             </LinearLayout>
+        </ScrollView>
 
+        <LinearLayout
+            android:id="@+id/ll_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp" >
+
+            <Button
+                android:id="@+id/btn_refuse"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bg_shape_button1"
+                android:fontFamily="normal"
+                android:gravity="center"
+                android:paddingTop="13dp"
+                android:paddingBottom="13dp"
+                android:text="@string/refuse"
+                android:textAllCaps="false"
+                android:textColor="@color/color_000000"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/btn_agree"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginLeft="16dp"
+                android:background="@drawable/bg_shape_button2"
+                android:fontFamily="normal"
+                android:gravity="center"
+                android:paddingTop="13dp"
+                android:paddingBottom="13dp"
+                android:text="@string/agree"
+                android:textAllCaps="false"
+                android:textColor="@color/color_ffffff"
+                android:textSize="16sp" />
+
+            <!--<com.juzix.wallet.component.widget.RoundedTextView-->
+                <!--android:id="@+id/rtv_refuse"-->
+                <!--style="@style/Text.fff.14"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:paddingTop="10dp"-->
+                <!--android:paddingBottom="10dp"-->
+                <!--android:text="@string/refuse"-->
+                <!--app:rtv_background_color="@color/color_373E51"-->
+                <!--app:rtv_corner_radius="1dp"/>-->
+
+            <!--<com.juzix.wallet.component.widget.RoundedTextView-->
+                <!--android:id="@+id/rtv_agree"-->
+                <!--style="@style/Text.1b2137.14"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_marginLeft="16dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:paddingTop="10dp"-->
+                <!--android:paddingBottom="10dp"-->
+                <!--android:text="@string/agree"-->
+                <!--app:rtv_background_color="@color/color_eff0f5"-->
+                <!--app:rtv_corner_radius="1dp"/>-->
         </LinearLayout>
-    </ScrollView>
+    </LinearLayout>
 
 
 </LinearLayout>

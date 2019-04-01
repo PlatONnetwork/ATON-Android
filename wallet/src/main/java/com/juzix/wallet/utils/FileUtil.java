@@ -1,9 +1,14 @@
 package com.juzix.wallet.utils;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
+import android.support.v4.content.FileProvider;
 
 import org.spongycastle.util.encoders.Hex;
 
+import java.io.File;
 import java.io.InputStream;
 
 public class FileUtil {
@@ -34,5 +39,22 @@ public class FileUtil {
             e.printStackTrace();
         }
         return "";
+    }
+
+    public static void install(Context context, File apkFile) {
+        Intent intent  = new Intent(Intent.ACTION_VIEW);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            Uri contentUri = FileProvider.getUriForFile(
+                    context
+                    , context.getPackageName() + ".fileprovider"
+                    , apkFile);
+
+            intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
+        } else {
+            intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
+        }
+        context.startActivity(intent);
     }
 }

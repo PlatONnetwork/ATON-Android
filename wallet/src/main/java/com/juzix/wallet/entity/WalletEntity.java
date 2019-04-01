@@ -15,7 +15,7 @@ public class WalletEntity implements Parcelable {
      */
     protected String name;
     /**
-     * 普通钱包即钱包地址，共享钱包即是创建共享钱包的钱包地址
+     * 普通钱包即钱包地址，共享钱包即合约地址
      */
     protected String address;
     /**

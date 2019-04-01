@@ -1,20 +1,15 @@
 package com.juzix.wallet.component.ui.presenter;
 
-import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.view.View;
-
 import com.juzhen.framework.network.NetConnectivity;
+import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomThrowable;
 import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.SigningContract;
-import com.juzix.wallet.component.ui.dialog.CommonDialogFragment;
-import com.juzix.wallet.component.ui.dialog.ExecuteContractDialogFragment;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
-import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
+import com.juzix.wallet.component.ui.dialog.SendTransactionDialogFragment;
 import com.juzix.wallet.engine.SharedWalletTransactionManager;
 import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
@@ -27,16 +22,16 @@ import org.web3j.crypto.Credentials;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
-import io.reactivex.SingleSource;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
 
 /**
  * @author matrixelement
@@ -62,27 +57,27 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
     @Override
     public void fetchTransactionDetail() {
         if (isViewAttached() && transactionEntity != null) {
-            ArrayList<TransactionResult> resultList = transactionEntity.getTransactionResult();
-            ArrayList<TransactionResult> confirmList = new ArrayList<>();
-            ArrayList<TransactionResult> revokeList = new ArrayList<>();
-            ArrayList<TransactionResult> undeterminedList = new ArrayList<>();
+            List<TransactionResult> resultList = transactionEntity.getTransactionResult();
+            List<TransactionResult> confirmList = new ArrayList<>();
+            List<TransactionResult> revokeList = new ArrayList<>();
+            List<TransactionResult> undeterminedList = new ArrayList<>();
             String walletAddress = transactionEntity.getContractAddress();
             boolean subTransactoined = true;
             int len = resultList.size();
             for (int i = 0; i < len; i++) {
                 TransactionResult result = resultList.get(i);
-                int operation = result.getOperation();
-                if (walletAddress.contains(result.getAddress()) && operation != TransactionResult.OPERATION_UNDETERMINED) {
+                TransactionResult.Status status = result.getStatus();
+                if (walletAddress.contains(result.getAddress()) && status != TransactionResult.Status.OPERATION_UNDETERMINED) {
                     subTransactoined = false;
                 }
-                switch (operation) {
-                    case TransactionResult.OPERATION_APPROVAL:
+                switch (status) {
+                    case OPERATION_APPROVAL:
                         confirmList.add(result);
                         break;
-                    case TransactionResult.OPERATION_REVOKE:
+                    case OPERATION_REVOKE:
                         revokeList.add(result);
                         break;
-                    case TransactionResult.OPERATION_UNDETERMINED:
+                    case OPERATION_UNDETERMINED:
                         undeterminedList.add(result);
                         break;
                 }
@@ -119,7 +114,7 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
         }
 
         for (TransactionResult result : transactionResultList) {
-            if (individualWalletEntity.getPrefixAddress().equals(result.getPrefixAddress()) && result.getOperation() == TransactionResult.OPERATION_UNDETERMINED) {
+            if (individualWalletEntity.getPrefixAddress().equals(result.getPrefixAddress()) && result.getStatus() == TransactionResult.Status.OPERATION_UNDETERMINED) {
                 return true;
             }
         }
@@ -150,11 +145,12 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
         getGas(type);
     }
 
-    private void showInputWalletPasswordDialogFragment(SharedTransactionEntity sharedTransactionEntity, int type, String password, BigInteger gasPrice, double feeAmount) {
-        InputWalletPasswordDialogFragment.newInstance(password).setOnConfirmClickListener(new InputWalletPasswordDialogFragment.OnConfirmClickListener() {
+    private void showInputWalletPasswordDialogFragment(SharedTransactionEntity sharedTransactionEntity, int type, BigInteger gasPrice, double feeAmount) {
+        InputWalletPasswordDialogFragment.newInstance(individualWalletEntity).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
             @Override
-            public void onConfirmClick(String password) {
-                validPassword(sharedTransactionEntity, type, password, gasPrice, feeAmount);
+            public void onWalletPasswordCorrect(Credentials credentials) {
+                validPassword(credentials, sharedTransactionEntity, type, gasPrice, feeAmount);
+
             }
         }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
     }
@@ -170,19 +166,22 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
                     }
                 })
                 .compose(new SchedulersTransformer())
-                .compose(LoadingTransformer.bindToLifecycle(getView().currentActivity()))
+                .compose(LoadingTransformer.bindToSingleLifecycle(getView().currentActivity()))
                 .compose(bindToLifecycle())
                 .subscribe(new Consumer<BigInteger>() {
                     @Override
                     public void accept(BigInteger gasPrice) throws Exception {
                         double gasLimit = type == 1 ? SharedWalletTransactionManager.APPROVE_GAS_LIMIT.doubleValue() : SharedWalletTransactionManager.REVOKE_GAS_LIMIT.doubleValue();
                         final double feeAmount = BigDecimalUtil.div(BigDecimalUtil.mul(gasPrice.doubleValue(), gasLimit), DEFAULT_WEI);
-                        ExecuteContractDialogFragment.newInstance(feeAmount, type).setOnSubmitClickListener(new ExecuteContractDialogFragment.OnSubmitClickListener() {
-                            @Override
-                            public void onSubmitClick() {
-                                showInputWalletPasswordDialogFragment(transactionEntity, type, "", gasPrice, feeAmount);
-                            }
-                        }).show(currentActivity().getSupportFragmentManager(), "sendTransaction");
+                        SendTransactionDialogFragment
+                                .newInstance(string(R.string.execute_contract_confirm), NumberParserUtils.getPrettyBalance(feeAmount), buildTransactionInfo(individualWalletEntity.getName()))
+                                .setOnConfirmBtnClickListener(new SendTransactionDialogFragment.OnConfirmBtnClickListener() {
+                                    @Override
+                                    public void onConfirmBtnClick() {
+                                        showInputWalletPasswordDialogFragment(transactionEntity, type, gasPrice, feeAmount);
+                                    }
+                                })
+                                .show(currentActivity().getSupportFragmentManager(), "sendTransaction");
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -190,20 +189,6 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
 
                     }
                 });
-    }
-
-    private Single<Credentials> validPassword(String password, String keyJson) {
-        return Single.create(new SingleOnSubscribe<Credentials>() {
-            @Override
-            public void subscribe(SingleEmitter<Credentials> emitter) throws Exception {
-                Credentials credentials = SharedWalletTransactionManager.getInstance().credentials(password, keyJson);
-                if (credentials == null) {
-                    emitter.onError(new CustomThrowable(CustomThrowable.CODE_ERROR_PASSWORD));
-                } else {
-                    emitter.onSuccess(credentials);
-                }
-            }
-        });
     }
 
     private Single<Credentials> checkBalance(IndividualWalletEntity individualWalletEntity, Credentials credentials, double feeAmount) {
@@ -220,17 +205,10 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
         });
     }
 
-    private void validPassword(SharedTransactionEntity sharedTransactionEntity, int type, String password, BigInteger gasPrice, double feeAmount) {
-
-        validPassword(password, individualWalletEntity.getKey())
-                .flatMap(new Function<Credentials, SingleSource<Credentials>>() {
-                    @Override
-                    public SingleSource<Credentials> apply(Credentials credentials) throws Exception {
-                        return checkBalance(individualWalletEntity, credentials, feeAmount);
-                    }
-                })
+    private void validPassword(Credentials credentials, SharedTransactionEntity sharedTransactionEntity, int type, BigInteger gasPrice, double feeAmount) {
+                checkBalance(individualWalletEntity, credentials, feeAmount)
                 .compose(new SchedulersTransformer())
-                .compose(LoadingTransformer.bindToLifecycle(getView().currentActivity()))
+                        .compose(LoadingTransformer.bindToSingleLifecycle(getView().currentActivity()))
                 .compose(bindToLifecycle())
                 .subscribe(new Consumer<Credentials>() {
                     @Override
@@ -242,16 +220,7 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
                     public void accept(Throwable throwable) throws Exception {
                         if (throwable instanceof CustomThrowable) {
                             CustomThrowable execption = (CustomThrowable) throwable;
-                            if (execption.getErrCode() == CustomThrowable.CODE_ERROR_PASSWORD) {
-                                if (isViewAttached()) {
-                                    CommonDialogFragment.createCommonTitleWithOneButton(string(R.string.validPasswordError), string(R.string.enterAgainTips), string(R.string.back), new OnDialogViewClickListener() {
-                                        @Override
-                                        public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
-                                            showInputWalletPasswordDialogFragment(sharedTransactionEntity, type, password, gasPrice, feeAmount);
-                                        }
-                                    }).show(currentActivity().getSupportFragmentManager(), "showPasswordError");
-                                }
-                            } else if (execption.getErrCode() == CustomThrowable.CODE_ERROR_NOT_SUFFICIENT_BALANCE) {
+                            if (execption.getErrCode() == CustomThrowable.CODE_ERROR_NOT_SUFFICIENT_BALANCE) {
                                 if (isViewAttached()) {
                                     showLongToast(execption.getDetailMsgRes());
                                 }
@@ -272,7 +241,7 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
                     @Override
                     public void accept(Disposable disposable) throws Exception {
                         if (isViewAttached()) {
-                            getView().updateSigningStatus(individualWalletEntity.getPrefixAddress(), TransactionResult.OPERATION_SIGNING);
+                            getView().updateSigningStatus(individualWalletEntity.getPrefixAddress(), TransactionResult.Status.OPERATION_SIGNING);
                         }
                     }
                 })
@@ -280,17 +249,24 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
                     @Override
                     public void accept(Object o) throws Exception {
                         if (isViewAttached()) {
-                            getView().updateSigningStatus(individualWalletEntity.getPrefixAddress(), type == CONFIRM ? TransactionResult.OPERATION_APPROVAL : TransactionResult.OPERATION_REVOKE);
+                            getView().updateSigningStatus(individualWalletEntity.getPrefixAddress(), type == CONFIRM ? TransactionResult.Status.OPERATION_APPROVAL : TransactionResult.Status.OPERATION_REVOKE);
                         }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         if (isViewAttached()) {
-                            getView().updateSigningStatus(individualWalletEntity.getPrefixAddress(), TransactionResult.OPERATION_UNDETERMINED);
+                            getView().updateSigningStatus(individualWalletEntity.getPrefixAddress(), TransactionResult.Status.OPERATION_UNDETERMINED);
                             showLongToast(string(R.string.transfer_failed));
                         }
                     }
                 });
+    }
+
+    private Map<String, String> buildTransactionInfo(String walletName) {
+        Map<String, String> map = new LinkedHashMap<>();
+        map.put(string(R.string.execute_wallet), walletName);
+        map.put(string(R.string.type), string(R.string.executeContractFee));
+        return map;
     }
 }

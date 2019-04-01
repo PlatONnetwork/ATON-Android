@@ -180,22 +180,6 @@ public class SharedOwnerListAdapter extends RecyclerView.Adapter<SharedOwnerList
             }
         };
 
-//        View.OnFocusChangeListener onWalletNameFocusChangeListener = new View.OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View v, boolean hasFocus) {
-//                if (!hasFocus){
-//                    String text = ((EditText) v).getText().toString();
-//                    String errorMsg = "";
-//                    if (TextUtils.isEmpty(text)) {
-//                        errorMsg = context.getString(R.string.address_cannot_be_empty);
-//                    } else if (!JZWalletUtil.isValidAddress(text)) {
-//                        errorMsg = context.getString(R.string.address_format_error);
-//                    }
-//                    notifyWalletAddressError(holder, errorMsg);
-//                }
-//            }
-//        };
-
         if (position == 0){
             holder.etWalletName.setEnabled(false);
             holder.etWalletAddress.setEnabled(false);

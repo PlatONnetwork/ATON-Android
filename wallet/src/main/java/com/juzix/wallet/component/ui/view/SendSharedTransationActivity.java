@@ -107,10 +107,14 @@ public class SendSharedTransationActivity extends MVPBaseActivity<SendSharedTran
     }
 
     private void initViews() {
-        new CommonTitleBar(this).setLeftDrawable(R.drawable.icon_back_black).setMiddleTitle(string(R.string.sendATP)).setRightDrawable(R.drawable.icon_scan, new View.OnClickListener() {
+
+        CommonTitleBar commonTitleBar = new CommonTitleBar(this).leftDrawable(ContextCompat.getDrawable(this, R.drawable.icon_back_black)).title(string(R.string.sendATP)).rightDrawable(ContextCompat.getDrawable(this, R.drawable.icon_scan));
+
+        commonTitleBar.build();
+
+        commonTitleBar.setRightDrawableClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 requestPermission(SendSharedTransationActivity.this, 100, new PermissionConfigure.PermissionCallback() {
                     @Override
                     public void onSuccess(int what, @NonNull List<String> grantPermissions) {
@@ -128,7 +132,7 @@ public class SendSharedTransationActivity extends MVPBaseActivity<SendSharedTran
                     }
                 }, Manifest.permission.CAMERA);
             }
-        }).build();
+        });
 
         etWalletAmount.setFilters(new InputFilter[]{new PointLengthFilter()});
 
@@ -219,7 +223,7 @@ public class SendSharedTransationActivity extends MVPBaseActivity<SendSharedTran
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_address_book:
-                AddressBookActivity.actionStartForResult(this, Constants.Action.ACTION_GET_ADDRESS, Constants.RequestCode.REQUEST_CODE_GET_ADDRESS);
+                SelectAddressActivity.actionStartForResult(this, Constants.Action.ACTION_GET_ADDRESS, Constants.RequestCode.REQUEST_CODE_GET_ADDRESS);
                 break;
             case R.id.tv_all_amount:
                 mPresenter.transferAllBalance();
@@ -278,7 +282,7 @@ public class SendSharedTransationActivity extends MVPBaseActivity<SendSharedTran
     @Override
     public void updateWalletInfo(SharedWalletEntity walletEntity) {
         tvWalletName.setText(walletEntity.getName());
-        tvWalletAddress.setText(AddressFormatUtil.formatAddress(walletEntity.getPrefixContractAddress()));
+        tvWalletAddress.setText(AddressFormatUtil.formatAddress(walletEntity.getPrefixAddress()));
         tvWalletBalance.setText(string(R.string.balance_text, NumberParserUtils.getPrettyBalance(walletEntity.getBalance())));
     }
 

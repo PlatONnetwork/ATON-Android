@@ -21,11 +21,25 @@ public class NodeListDecoration extends RecyclerView.ItemDecoration {
     private Drawable mDivider;
     private Context mContext;
     private int mSize;
+    private int mPaddingLeft;
+    private int mPaddingTop;
+    private int mPaddingRight;
+    private int mPaddingBottom;
 
     public NodeListDecoration(Context context) {
         this.mContext = context;
         this.mSize = DensityUtil.dp2px(mContext, 1f);
-        this.mDivider = new ColorDrawable(ContextCompat.getColor(context, R.color.color_32394e));
+        this.mDivider = new ColorDrawable(ContextCompat.getColor(context, R.color.color_e4e7f3));
+    }
+
+    public NodeListDecoration(Context context, int paddingLeft, int paddingTop, int paddingRignt, int paddingBottom) {
+        this.mContext = context;
+        this.mSize = DensityUtil.dp2px(mContext, 1f);
+        this.mDivider = new ColorDrawable(ContextCompat.getColor(context, R.color.color_e4e7f3));
+        this.mPaddingLeft = paddingLeft;
+        this.mPaddingTop = paddingTop;
+        this.mPaddingRight = paddingRignt;
+        this.mPaddingBottom = paddingBottom;
     }
 
     @Override
@@ -39,15 +53,15 @@ public class NodeListDecoration extends RecyclerView.ItemDecoration {
         super.onDraw(c, parent, state);
         int top;
         int bottom;
-        int left = parent.getPaddingLeft();
-        int right = parent.getWidth() - parent.getPaddingRight();
+        int left = parent.getPaddingLeft() + mPaddingLeft;
+        int right = parent.getWidth() - parent.getPaddingRight() - mPaddingRight;
         final int childCount = parent.getChildCount();
         for (int i = 0; i < childCount; i++) {
             final View child = parent.getChildAt(i);
             //获得child的布局信息
             final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
-            top = child.getBottom() + params.bottomMargin;
-            bottom = top + mSize;
+            top = child.getBottom() + params.bottomMargin + mPaddingTop;
+            bottom = top + mSize + mPaddingBottom;
             mDivider.setBounds(left, top, right, bottom);
             mDivider.draw(c);
         }

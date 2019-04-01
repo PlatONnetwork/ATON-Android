@@ -1,8 +1,14 @@
 package com.juzix.wallet.db.entity;
 
+import com.juzix.wallet.entity.SingleVoteEntity;
+import com.juzix.wallet.entity.TicketEntity;
+import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.JSONUtil;
+
 import org.web3j.utils.Numeric;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
@@ -32,12 +38,6 @@ public class SingleVoteInfoEntity extends RealmObject implements Cloneable {
      * 节点名称
      */
     private String candidateName;
-
-    /**
-     * 节点ICON
-     */
-    private String avatar;
-
     /**
      * 区域
      */
@@ -110,7 +110,6 @@ public class SingleVoteInfoEntity extends RealmObject implements Cloneable {
         setTransactionId(builder.transactionId);
         setCandidateId(builder.candidateId);
         setCandidateName(builder.candidateName);
-        setAvatar(builder.avatar);
         setHost(builder.host);
         setContractAddress(builder.contractAddress);
         setWalletName(builder.walletName);
@@ -123,7 +122,7 @@ public class SingleVoteInfoEntity extends RealmObject implements Cloneable {
         setLatestBlockNumber(builder.latestBlockNumber);
         setEnergonPrice(builder.energonPrice);
         setStatus(builder.status);
-        setTicketInfoEntityArrayList(builder.tickets);
+        setTicketInfoEntityArrayList((ArrayList<TicketInfoEntity>) builder.tickets);
     }
 
     public String getUuid() {
@@ -164,14 +163,6 @@ public class SingleVoteInfoEntity extends RealmObject implements Cloneable {
 
     public void setCandidateName(String candidateName) {
         this.candidateName = candidateName;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
     }
 
     public String getHost() {
@@ -278,7 +269,7 @@ public class SingleVoteInfoEntity extends RealmObject implements Cloneable {
         this.tickets = tickets;
     }
 
-    public void setTicketInfoEntityArrayList(ArrayList<TicketInfoEntity> ticketInfoEntityList) {
+    public void setTicketInfoEntityArrayList(List<TicketInfoEntity> ticketInfoEntityList) {
         if (ticketInfoEntityList == null) {
             return;
         }
@@ -299,13 +290,39 @@ public class SingleVoteInfoEntity extends RealmObject implements Cloneable {
         return ticketInfoEntities;
     }
 
+    public double getVoteStaked() {
+
+        double voteStaked = 0D;
+
+        if (tickets != null && !tickets.isEmpty()) {
+
+            for (TicketInfoEntity ticketEntity : tickets) {
+                if (ticketEntity.getState() == TicketEntity.NORMAL) {
+                    voteStaked += BigDecimalUtil.div(ticketEntity.getDeposit(), "1E18");
+                }
+            }
+        }
+
+        return voteStaked;
+    }
+
+    @Override
+    public SingleVoteInfoEntity clone() {
+        SingleVoteInfoEntity singleVoteInfoEntity = null;
+        try {
+            singleVoteInfoEntity = (SingleVoteInfoEntity) super.clone();
+        } catch (CloneNotSupportedException ex) {
+            ex.printStackTrace();
+        }
+        return singleVoteInfoEntity;
+    }
+
     public static final class Builder {
         private String uuid;
         private String hash;
         private String transactionId;
         private String candidateId;
         private String candidateName;
-        private String avatar;
         private String host;
         private String contractAddress;
         private String walletName;
@@ -318,7 +335,7 @@ public class SingleVoteInfoEntity extends RealmObject implements Cloneable {
         private long   latestBlockNumber;
         private double                      energonPrice;
         private int                         status;
-        private ArrayList<TicketInfoEntity> tickets;
+        private List<TicketInfoEntity> tickets;
 
         public Builder() {
         }
@@ -345,11 +362,6 @@ public class SingleVoteInfoEntity extends RealmObject implements Cloneable {
 
         public Builder candidateName(String candidateName) {
             this.candidateName = candidateName;
-            return this;
-        }
-
-        public Builder avatar(String avatar) {
-            this.avatar = avatar;
             return this;
         }
 
@@ -413,7 +425,7 @@ public class SingleVoteInfoEntity extends RealmObject implements Cloneable {
             return this;
         }
 
-        public Builder tickets(ArrayList<TicketInfoEntity> tickets) {
+        public Builder tickets(List<TicketInfoEntity> tickets) {
             this.tickets = tickets;
             return this;
         }
@@ -421,5 +433,9 @@ public class SingleVoteInfoEntity extends RealmObject implements Cloneable {
         public SingleVoteInfoEntity build() {
             return new SingleVoteInfoEntity(this);
         }
+    }
+
+    public SingleVoteEntity buildSingleVoteEntity(){
+        return JSONUtil.parseObject(JSONUtil.toJSONString(this),SingleVoteEntity.class);
     }
 }

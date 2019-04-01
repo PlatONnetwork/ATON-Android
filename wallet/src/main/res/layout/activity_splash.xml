@@ -2,12 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipToPadding="true"
-    android:fitsSystemWindows="true"
     android:gravity="center_horizontal"
-    android:background="@color/color_1b2137"
+    android:fitsSystemWindows="true"
     android:orientation="vertical">
-
 
     <LinearLayout
         android:id="@+id/layout_logo"
@@ -19,16 +16,15 @@
 
         <ImageView
             android:id="@+id/iv_icon"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:src="@drawable/icon_logo_splash" />
     </LinearLayout>
 
-
     <TextView
         android:id="@+id/tv_company_name"
-        style="@style/Text.fff.12"
+        style="@style/Text.000.12"
         android:layout_marginBottom="23dp"
         android:text="@string/copyright_resume" />
 

@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingTop="16dp" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp">
+
+            <TextView
+                android:id="@+id/tv_wallet_address_info"
+                style="@style/Text.61646e.16"
+                android:text="@string/wallet_address" />
+
+            <TextView
+                android:id="@+id/tv_save_address"
+                style="@style/Text.105cfe.12"
+                android:text="@string/save_to_address_book"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp">
+
+            <FrameLayout
+                android:id="@+id/fl_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/et_wallet_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_edittext_underline"
+                    android:hint="@string/inputWalletAddress"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:paddingRight="48dp"
+                    android:textColor="@color/color_000000"
+                    android:textColorHint="@color/color_b6bbd0"
+                    android:textSize="12sp"/>
+
+                <ImageView
+                    android:id="@+id/iv_address_scan"
+                    android:layout_gravity="right|center_vertical"
+                    android:layout_marginRight="28dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/icon_scan_s"/>
+
+                <ImageView
+                    android:id="@+id/iv_address_book"
+                    android:layout_gravity="right|center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/icon_address_book_s"/>
+
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/tv_to_address_error"
+                style="@style/Text.f5302c.12"
+                android:layout_below="@id/fl_address"
+                android:layout_marginTop="5dp"
+                android:visibility="gone"
+                tools:text="地址不能为空"
+                tools:visibility="visible" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:id="@+id/tv_transation_amount"
+                style="@style/Text.61646e.16"
+                android:text="@string/amount" />
+
+            <FrameLayout
+                android:id="@+id/layout_transation_amount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_transation_amount"
+                android:gravity="center_vertical"  >
+
+                <EditText
+                    android:id="@+id/et_wallet_amount"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_edittext_underline"
+                    android:ellipsize="end"
+                    android:hint="@string/inputSendAmount"
+                    android:inputType="numberDecimal"
+                    android:lines="1"
+                    android:paddingRight="40dp"
+                    android:textColor="@color/color_000000"
+                    android:textColorHint="@color/color_b6bbd0"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:id="@+id/tv_all_amount"
+                    style="@style/Text.105cfe.12"
+                    android:layout_gravity="right|center_vertical"
+                    android:text="@string/all" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/tv_amount_error"
+                style="@style/Text.ff4747.12"
+                android:layout_below="@id/layout_transation_amount"
+                android:layout_marginTop="5dp"
+                tools:text="金额不能为空"/>
+
+            <TextView
+                android:id="@+id/tv_wallet_balance"
+                style="@style/Text.b6bbd0.11"
+                android:layout_below="@id/layout_transation_amount"
+                android:layout_marginTop="5dp"
+                android:layout_alignParentRight="true"
+                android:gravity="right"
+                tools:text="Balance:0.00Energon" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="17dp">
+
+            <TextView
+                android:id="@+id/tv_fee_amount_title"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                style="@style/Text.61646e.16"
+                android:text="@string/select_fee" />
+
+            <TextView
+                android:id="@+id/tv_fee_amount"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                style="@style/Text.61646e.12"
+                android:layout_toRightOf="@id/tv_fee_amount_title"
+                android:layout_alignParentRight="true"
+                android:gravity="right"
+                tools:text="0.0000000228 Energon" />
+
+
+            <com.juzix.wallet.component.widget.bubbleSeekBar.BubbleSeekBar
+                android:id="@+id/bubbleSeekBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:layout_below="@id/tv_fee_amount"
+                android:layout_marginTop="14dp"
+                app:bsb_auto_adjust_section_mark="true"
+                app:bsb_hide_bubble="true"
+                app:bsb_second_track_color="@color/color_105cfe"
+                app:bsb_second_track_size="2dp"
+                app:bsb_section_count="3"
+                app:bsb_section_text_color="@color/color_b6bbd0"
+                app:bsb_section_text_position="below_section_mark"
+                app:bsb_section_text_size="10sp"
+                app:bsb_selection_text_margin="7dp"
+                app:bsb_show_section_mark="true"
+                app:bsb_show_section_text="false"
+                app:bsb_show_thumb_text="false"
+                app:bsb_thumb_radius_on_dragging="7dp"
+                app:bsb_thumb_text_size="11sp"
+                app:bsb_touch_to_seek="true"
+                app:bsb_track_color="@color/color_d5d8df"
+                app:bsb_track_size="2dp" />
+
+
+        </RelativeLayout>
+
+        <com.juzix.wallet.component.widget.ShadowButton
+            android:id="@+id/sbtn_send_transation"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:text="@string/actionSendATP"
+            app:enabled="false"
+            app:textAppearance="@style/MainButtonStyle"
+            app:textBackground="@drawable/bg_main_button" />
+
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>

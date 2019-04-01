@@ -7,6 +7,8 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -14,6 +16,7 @@ import com.bigkoo.pickerview.OptionsPickerView;
 import com.bigkoo.pickerview.lib.WheelView;
 import com.jakewharton.rxbinding3.view.RxView;
 import com.juzhen.framework.util.NumberParserUtils;
+import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.CreateSharedWalletContract;
@@ -43,31 +46,35 @@ public class CreateSharedWalletActivity extends MVPBaseActivity<CreateSharedWall
 
 
     @BindView(R.id.commonTitleBar)
-    CommonTitleBar  commonTitleBar;
+    CommonTitleBar commonTitleBar;
+    @BindView(R.id.iv_wallet_avatar)
+    ImageView      ivWalletAvatar;
     @BindView(R.id.et_wallet_name)
-    EditText        etWalletName;
+    EditText       etWalletName;
     @BindView(R.id.tv_wallet_name)
-    TextView        tvWalletName;
+    TextView       tvWalletName;
     @BindView(R.id.tv_wallet_address)
-    TextView        tvWalletAddress;
+    TextView       tvWalletAddress;
     @BindView(R.id.layout_shared_owners)
-    RelativeLayout  layoutSharedOwners;
+    RelativeLayout layoutSharedOwners;
     @BindView(R.id.layout_required_signatures)
-    RelativeLayout  layoutRequiredSignatures;
-    @BindView(R.id.rtv_next)
-    RoundedTextView rtvNext;
+    RelativeLayout layoutRequiredSignatures;
+    @BindView(R.id.ll_next)
+    LinearLayout   llNext;
+    @BindView(R.id.tv_next)
+    TextView       tvNext;
     @BindView(R.id.layout_change_wallet)
-    RelativeLayout  layoutChangeWallet;
+    RelativeLayout layoutChangeWallet;
     @BindArray(R.array.shared_owners)
-    String[] sharedOwners;
+    String[]       sharedOwners;
     @BindArray(R.array.required_signatures)
-    String[] requiredSignatures;
+    String[]       requiredSignatures;
     @BindView(R.id.tv_shared_owners)
-    TextView tvSharedOwners;
+    TextView       tvSharedOwners;
     @BindView(R.id.tv_required_signatures)
-    TextView tvRequiredSignatures;
+    TextView       tvRequiredSignatures;
     @BindView(R.id.tv_wallet_name_error)
-    TextView tvWalletNameError;
+    TextView       tvWalletNameError;
 
     private Unbinder unbinder;
     private OptionsPickerView optionsPickerView;
@@ -89,13 +96,6 @@ public class CreateSharedWalletActivity extends MVPBaseActivity<CreateSharedWall
     }
 
     private void initData() {
-        commonTitleBar.setLeftImageOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideSoftInput();
-                finish();
-            }
-        });
         mCurSharedOwnerSelectedNum = tvSharedOwners.getText().toString();
         mCurRequirderSignaturesSelectedNum = tvRequiredSignatures.getText().toString();
 
@@ -114,6 +114,8 @@ public class CreateSharedWalletActivity extends MVPBaseActivity<CreateSharedWall
                 }
             }
         });
+
+        setNextButtonEnable(false);
     }
 
 
@@ -135,7 +137,7 @@ public class CreateSharedWalletActivity extends MVPBaseActivity<CreateSharedWall
     }
 
 
-    @OnClick({R.id.layout_change_wallet, R.id.layout_shared_owners, R.id.layout_required_signatures, R.id.rtv_next})
+    @OnClick({R.id.layout_change_wallet, R.id.layout_shared_owners, R.id.layout_required_signatures, R.id.ll_next})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.layout_change_wallet:
@@ -152,7 +154,7 @@ public class CreateSharedWalletActivity extends MVPBaseActivity<CreateSharedWall
                 getOptionsPickerView().setPicker(getCurRequiredSignaturesNumList());
                 getOptionsPickerView().show(layoutRequiredSignatures);
                 break;
-            case R.id.rtv_next:
+            case R.id.ll_next:
                 if (NumberParserUtils.parseInt(mCurRequirderSignaturesSelectedNum) > NumberParserUtils.parseInt(mCurSharedOwnerSelectedNum)) {
                     showLongToast(string(R.string.createSharedWalletTips1));
                     getOptionsPickerView().setPicker(getCurRequiredSignaturesNumList());
@@ -229,13 +231,17 @@ public class CreateSharedWalletActivity extends MVPBaseActivity<CreateSharedWall
 
     @Override
     public void updateSelectOwner(IndividualWalletEntity walletEntity) {
+        ivWalletAvatar.setImageResource(RUtils.drawable(walletEntity.getAvatar()));
         tvWalletName.setText(walletEntity.getName());
         tvWalletAddress.setText(AddressFormatUtil.formatAddress(walletEntity.getPrefixAddress()));
     }
 
     @Override
     public void setNextButtonEnable(boolean enable) {
-        rtvNext.setEnabled(enable);
+        llNext.setEnabled(enable);
+        llNext.setBackgroundResource(enable ? R.drawable.bg_shape_button2 : R.drawable.bg_shape_button1);
+        tvNext.setTextColor(ContextCompat.getColor(getContext(), enable ? R.color.color_f6f6f6 : R.color.color_d8d8d8));
+        tvNext.setCompoundDrawablesWithIntrinsicBounds(0, 0, enable ? R.drawable.icon_next : R.drawable.icon_next_u, 0);
     }
 
     @Override

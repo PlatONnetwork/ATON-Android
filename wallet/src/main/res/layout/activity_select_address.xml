@@ -1,33 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:clipToPadding="true"
-    android:fitsSystemWindows="true"
-    android:orientation="vertical">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/color_ffffff"
+              android:clipToPadding="true"
+              android:fitsSystemWindows="true"
+              android:orientation="vertical">
 
     <com.juzix.wallet.component.widget.CommonTitleBar
+        android:id="@+id/commonTitleBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:ctb_left_drawable="@drawable/icon_back_black"
-        app:ctb_middle_text="@string/select_address" />
+        app:ctb_title="@string/select_address"/>
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/color_1b2137"
-        android:orientation="vertical">
+    <ListView
+        android:id="@+id/list_wallet_address"
+        style="@style/List_common_style"
+        android:divider="@drawable/bg_address_list_divider"
+        android:dividerHeight="1dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        tools:listitem="@layout/item_wallet_address_list"/>
 
-        <ListView
-            android:id="@+id/list_wallet_address"
-            style="@style/List_common_style"
-            android:divider="@drawable/bg_address_list_divider"
-            android:dividerHeight="8dp"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"
-            tools:listitem="@layout/item_wallet_address_list" />
-    </FrameLayout>
+
+    <include layout="@layout/include_no_address"/>
 
 </LinearLayout>

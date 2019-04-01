@@ -13,13 +13,13 @@ import java.util.List;
 public class SharedWalletEntity extends WalletEntity implements Cloneable {
 
     /**
-     * 合约地址,也即钱包地址
+     * 创建者地址y
      */
-    private String contractAddress;
+    private String creatorAddress;
     /**
      * 共享钱包成员
      */
-    private ArrayList<OwnerEntity> owner;
+    private List<OwnerEntity> owner;
     /**
      * 所需签名数
      */
@@ -42,7 +42,7 @@ public class SharedWalletEntity extends WalletEntity implements Cloneable {
         createTime = in.readLong();
         updateTime = in.readLong();
         owner = in.readArrayList(OwnerEntity.class.getClassLoader());
-        contractAddress = in.readString();
+        creatorAddress = in.readString();
         requiredSignNumber = in.readInt();
         balance = in.readDouble();
         avatar = in.readString();
@@ -55,7 +55,7 @@ public class SharedWalletEntity extends WalletEntity implements Cloneable {
         setUuid(builder.uuid);
         setName(builder.name);
         setAddress(builder.walletAddress);
-        setContractAddress(builder.contractAddress);
+        setCreatorAddress(builder.creatorAddress);
         setCreateTime(builder.createTime);
         setUpdateTime(builder.updateTime);
         setOwner(builder.owner);
@@ -80,7 +80,7 @@ public class SharedWalletEntity extends WalletEntity implements Cloneable {
         dest.writeLong(createTime);
         dest.writeLong(updateTime);
         dest.writeList(owner);
-        dest.writeString(contractAddress);
+        dest.writeString(creatorAddress);
         dest.writeInt(requiredSignNumber);
         dest.writeDouble(balance);
         dest.writeString(avatar);
@@ -148,34 +148,34 @@ public class SharedWalletEntity extends WalletEntity implements Cloneable {
         this.requiredSignNumber = requiredSignNumber;
     }
 
-    public void setContractAddress(String contractAddress) {
-        this.contractAddress = contractAddress;
+    public String getCreatorAddress() {
+        return creatorAddress;
     }
 
-    public String getContractAddress() {
-        return contractAddress;
+    public void setCreatorAddress(String creatorAddress) {
+        this.creatorAddress = creatorAddress;
     }
 
-    public String getPrefixContractAddress() {
+    public String getPrefixCreatorAddress() {
         try {
-            if (TextUtils.isEmpty(contractAddress)) {
+            if (TextUtils.isEmpty(creatorAddress)) {
                 return null;
             }
-            if (contractAddress.toLowerCase().startsWith("0x")) {
-                return contractAddress;
+            if (creatorAddress.toLowerCase().startsWith("0x")) {
+                return creatorAddress;
             }
-            return "0x" + contractAddress;
+            return "0x" + creatorAddress;
         } catch (Exception exp) {
             exp.printStackTrace();
             return null;
         }
     }
 
-    public ArrayList<OwnerEntity> getOwner() {
+    public List<OwnerEntity> getOwner() {
         return owner;
     }
 
-    public void setOwner(ArrayList<OwnerEntity> owner) {
+    public void setOwner(List<OwnerEntity> owner) {
         this.owner = owner;
     }
 
@@ -230,7 +230,7 @@ public class SharedWalletEntity extends WalletEntity implements Cloneable {
                 .uuid(uuid)
                 .name(name)
                 .walletAddress(address)
-                .contractAddress(contractAddress)
+                .contractAddress(creatorAddress)
                 .createTime(createTime)
                 .updateTime(updateTime)
                 .owner(buildAddressInfoEntityArrayList())
@@ -256,10 +256,10 @@ public class SharedWalletEntity extends WalletEntity implements Cloneable {
         private String uuid;
         private String name;
         private String walletAddress;
-        private String contractAddress;
+        private String creatorAddress;
         private long createTime;
         private long updateTime;
-        private ArrayList<OwnerEntity> owner;
+        private List<OwnerEntity> owner;
         private int requiredSignNumber;
         private double balance;
         private String avatar;
@@ -285,8 +285,8 @@ public class SharedWalletEntity extends WalletEntity implements Cloneable {
             return this;
         }
 
-        public Builder contractAddress(String val) {
-            contractAddress = val;
+        public Builder creatorAddress(String val) {
+            creatorAddress = val;
             return this;
         }
 
@@ -300,7 +300,7 @@ public class SharedWalletEntity extends WalletEntity implements Cloneable {
             return this;
         }
 
-        public Builder owner(ArrayList<OwnerEntity> val) {
+        public Builder owner(List<OwnerEntity> val) {
             owner = val;
             return this;
         }
@@ -358,7 +358,7 @@ public class SharedWalletEntity extends WalletEntity implements Cloneable {
     @Override
     public String toString() {
         return "SharedWalletEntity{" +
-                "contractAddress='" + contractAddress + '\'' +
+                "creatorAddress='" + creatorAddress + '\'' +
                 ", owner=" + owner +
                 ", requiredSignNumber=" + requiredSignNumber +
                 ", progress=" + progress +

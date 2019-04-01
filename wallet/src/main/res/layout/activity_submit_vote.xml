@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
+    android:layout_height="match_parent">
+
+    <com.juzix.wallet.component.widget.CommonTitleBar
+        android:id="@+id/commonTitleBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:ctb_left_drawable="@drawable/icon_back_black"
+        app:ctb_title="@string/vote" />
+
+    <com.juzix.wallet.component.widget.ShadowButton
+        android:id="@+id/sbtn_vote"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="16dp"
+        app:enabled="false"
+        app:text="@string/vote"
+        app:textAppearance="@style/MainButtonStyle"
+        app:textBackground="@drawable/bg_main_button" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/sbtn_vote"
+        android:layout_below="@id/commonTitleBar"
+        android:fillViewport="true">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/layout_node_name"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp"
+                android:background="@drawable/bg_submit_vote"
+                android:paddingLeft="26dp"
+                android:paddingRight="26dp"
+                app:layout_constraintDimensionRatio="3:1"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/tv_node_name"
+                    style="@style/Text.000000.18"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/node_name"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_node_id"
+                    style="@style/Text.898c9e.12"
+                    android:layout_marginTop="8dp"
+                    android:gravity="left"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_node_name"
+                    tools:text="0xdE41ad9010ED7ae4a7bBc42b55665151dcc8DEf4dE41ad9010ED7ae4a7bBc42b55665151dcc8DEf4dE41ad9010ED7ae4a7bBc42b55665151dcc8DEf4dcc8DEf4" />
+
+            </android.support.constraint.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/tv_voting_wallet_desc"
+                style="@style/Text.61646e.16"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="1dp"
+                android:text="@string/votingWallet"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_node_name" />
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/layout_voting_wallet"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/bg_wallet"
+                android:paddingLeft="3dp"
+                android:paddingRight="16dp"
+                app:layout_constraintTop_toBottomOf="@id/tv_voting_wallet_desc">
+
+                <ImageView
+                    android:id="@+id/iv_wallet_image"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:gravity="center"
+                    android:src="@drawable/icon_export_avatar_1"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_wallet_name"
+                    style="@style/Text.000000.14"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginTop="2dp"
+                    app:layout_constraintLeft_toRightOf="@id/iv_wallet_image"
+                    app:layout_constraintTop_toTopOf="@id/iv_wallet_image"
+                    tools:text="Jiang" />
+
+                <TextView
+                    android:id="@+id/tv_wallet_address"
+                    style="@style/Text.61646e.12"
+                    android:layout_marginTop="5dp"
+                    app:layout_constraintLeft_toLeftOf="@id/tv_wallet_name"
+                    app:layout_constraintTop_toBottomOf="@id/tv_wallet_name"
+                    tools:text="3ofg449Gf3…f8mdf3slKF" />
+
+                <TextView
+                    android:id="@+id/tv_change_wallet"
+                    style="@style/Text.105cfe.12"
+                    android:drawableLeft="@drawable/icon_change_wallet"
+                    android:drawablePadding="7dp"
+                    android:text="@string/change"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </android.support.constraint.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/tv_tickets_desc"
+                style="@style/Text.61646e.16"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/tickets"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_voting_wallet" />
+
+            <ImageView
+                android:id="@+id/iv_add_ticket"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/bg_add_ticket"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_tickets_desc" />
+
+            <ImageView
+                android:id="@+id/iv_sub_ticket"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:background="@drawable/bg_sub_ticket"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/iv_add_ticket"
+                app:layout_constraintTop_toTopOf="@id/iv_add_ticket" />
+
+
+            <EditText
+                android:id="@+id/et_ticket_num"
+                style="@style/Text.b6bbd0.13"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@null"
+                android:digits="0123456789"
+                android:inputType="number"
+                app:layout_constraintLeft_toRightOf="@id/iv_sub_ticket"
+                app:layout_constraintRight_toLeftOf="@id/iv_add_ticket"
+                app:layout_constraintTop_toBottomOf="@id/tv_tickets_desc"
+                tools:text="1" />
+
+            <View
+                android:id="@+id/view_input_ticket_num"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/bg_input_ticket_num"
+                app:layout_constraintTop_toBottomOf="@id/iv_add_ticket" />
+
+            <TextView
+                android:id="@+id/tv_ticket_price_desc"
+                style="@style/Text.61646e.16"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/ticketPrice"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view_input_ticket_num" />
+
+            <TextView
+                android:id="@+id/tv_ticket_price"
+                style="@style/Text.000000.14"
+                android:layout_marginTop="18dp"
+                android:layout_marginRight="16dp"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/view_input_ticket_num"
+                tools:text="1.02136 Energon" />
+
+            <TextView
+                android:id="@+id/tv_estimated_payment_desc"
+                style="@style/Text.61646e.16"
+                android:layout_marginTop="16dp"
+                android:text="@string/estimated_payment"
+                app:layout_constraintLeft_toLeftOf="@id/tv_ticket_price_desc"
+                app:layout_constraintTop_toBottomOf="@id/tv_ticket_price_desc" />
+
+            <TextView
+                android:id="@+id/tv_estimated_payment"
+                style="@style/Text.000000.14"
+                android:layout_marginTop="19dp"
+                app:layout_constraintRight_toRightOf="@id/tv_ticket_price"
+                app:layout_constraintTop_toBottomOf="@id/tv_ticket_price"
+                tools:text="0.000378018 Energon" />
+
+        </android.support.constraint.ConstraintLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

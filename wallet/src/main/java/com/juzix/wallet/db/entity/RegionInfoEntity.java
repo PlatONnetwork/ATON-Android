@@ -1,12 +1,16 @@
 package com.juzix.wallet.db.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.juzix.wallet.entity.RegionEntity;
+import com.juzix.wallet.utils.JSONUtil;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 public class RegionInfoEntity extends RealmObject {
 
     @PrimaryKey
-    private String uuid;
+    @JSONField(name = "query")
     private String ip;
     private String countryCode;
     private long   updateTime;
@@ -19,21 +23,12 @@ public class RegionInfoEntity extends RealmObject {
     }
 
     private RegionInfoEntity(Builder builder) {
-        setUuid(builder.uuid);
         setIp(builder.ip);
         setCountryCode(builder.countryCode);
         setUpdateTime(builder.updateTime);
         setCountryEn(builder.countryEn);
         setCountryZh(builder.countryZh);
         setCountryPinyin(builder.countryPinyin);
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
     }
 
     public String getIp() {
@@ -134,5 +129,9 @@ public class RegionInfoEntity extends RealmObject {
         public RegionInfoEntity build() {
             return new RegionInfoEntity(this);
         }
+    }
+
+    public RegionEntity toRegionEntity() {
+        return JSONUtil.parseObject(JSONUtil.toJSONString(this), RegionEntity.class);
     }
 }

@@ -3,13 +3,19 @@ package com.juzix.wallet.component.ui.presenter;
 
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.ImportIndividualMnemonicPhraseContract;
 import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.engine.IndividualWalletManager;
+import com.juzix.wallet.engine.SharedWalletManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ImportIndividualMnemonicPhrasePresenter extends BasePresenter<ImportIndividualMnemonicPhraseContract.View> implements ImportIndividualMnemonicPhraseContract.Presenter {
 
@@ -19,15 +25,29 @@ public class ImportIndividualMnemonicPhrasePresenter extends BasePresenter<Impor
 
     @Override
     public void init() {
-        ImportIndividualMnemonicPhraseContract.View view = getView();
-        if (view != null){
-            view.showQRCode(view.getKeystoreFromIntent());
+        if (isViewAttached()) {
+            String       mnemonic = getView().getKeystoreFromIntent();
+            if (TextUtils.isEmpty(mnemonic)){
+                return;
+            }
+            List<String> words    = Arrays.asList(mnemonic.split(" "));
+            if (words != null && words.size() == 12){
+                getView().showMnemonicWords(words);
+            }
         }
     }
 
     @Override
     public void parseQRCode(String QRCode) {
-        getView().showQRCode(QRCode);
+        if (isViewAttached()) {
+            if (TextUtils.isEmpty(QRCode)){
+                return;
+            }
+            List<String> words    = Arrays.asList(QRCode.split(" "));
+            if (words != null && words.size() == 12){
+                getView().showMnemonicWords(words);
+            }
+        }
     }
 
     @Override
@@ -36,6 +56,9 @@ public class ImportIndividualMnemonicPhrasePresenter extends BasePresenter<Impor
 //            showShortToast(string(R.string.validTips, "6", "32"));
 //            return;
 //        }
+        if (isExists(name)){
+            return;
+        }
         if (!password.equals(repeatPassword)) {
             showShortToast(string(R.string.passwordTips));
             return;
@@ -68,6 +91,11 @@ public class ImportIndividualMnemonicPhrasePresenter extends BasePresenter<Impor
                 }
             }
         }.start();
+    }
+
+    @Override
+    public boolean isExists(String walletName) {
+        return IndividualWalletManager.getInstance().walletNameExists(walletName) ? true : SharedWalletManager.getInstance().walletNameExists(walletName);
     }
 
     private static final int MSG_OK = 1;

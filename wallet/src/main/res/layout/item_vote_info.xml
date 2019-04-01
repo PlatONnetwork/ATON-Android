@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:divider="@drawable/divider_vote_info_item"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp"
+    android:showDividers="middle">
+
+    <TextView
+        android:id="@+id/tv_value"
+        style="@style/Text.000000.13"
+        android:autoSizeMaxTextSize="13dp"
+        android:autoSizeMinTextSize="12dp"
+        android:lines="1"
+        tools:text="5455" />
+
+    <TextView
+        android:id="@+id/tv_key"
+        style="@style/Text.61646e.10"
+        tools:text="Vote Staked(Energon)" />
+
+</LinearLayout>

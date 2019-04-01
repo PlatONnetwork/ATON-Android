@@ -12,14 +12,14 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.AddSharedWalletContract;
 import com.juzix.wallet.component.ui.dialog.SelectIndividualWalletDialogFragment;
 import com.juzix.wallet.component.ui.presenter.AddSharedWalletPresenter;
-import com.juzix.wallet.component.widget.CommonTitleBar;
-import com.juzix.wallet.component.widget.RoundedTextView;
+import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.component.widget.TextChangedListener;
 import com.juzix.wallet.config.PermissionConfigure;
 import com.juzix.wallet.entity.AddressEntity;
@@ -44,24 +44,26 @@ public class AddSharedWalletActivity extends MVPBaseActivity<AddSharedWalletPres
     EditText etWalletName;
     @BindView(R.id.layout_change_wallet)
     RelativeLayout layoutChangeWallet;
+    @BindView(R.id.iv_wallet_avatar)
+    ImageView    ivWalletAvatar;
     @BindView(R.id.tv_wallet_name)
-    TextView tvWalletName;
+    TextView     tvWalletName;
     @BindView(R.id.tv_wallet_address)
-    TextView tvWalletAddress;
+    TextView     tvWalletAddress;
     @BindView(R.id.tv_wallet_address_info)
-    TextView tvWalletAddressInfo;
+    TextView     tvWalletAddressInfo;
     @BindView(R.id.et_wallet_address)
-    EditText etWalletAddress;
+    EditText     etWalletAddress;
     @BindView(R.id.iv_address_book)
-    ImageView ivAddressBook;
-    @BindView(R.id.rtv_add_shared_wallet)
-    RoundedTextView rtvAddSharedWallet;
-    @BindView(R.id.commonTitleBar)
-    CommonTitleBar commonTitleBar;
+    ImageView    ivAddressBook;
+    @BindView(R.id.iv_address_scan)
+    ImageView    ivAddressScan;
+    @BindView(R.id.sbtn_add_shared_wallet)
+    ShadowButton btnAddSharedWallet;
     @BindView(R.id.tv_wallet_name_error)
-    TextView tvWalletNameError;
+    TextView     tvWalletNameError;
     @BindView(R.id.tv_wallet_address_error)
-    TextView tvWalletAddressError;
+    TextView     tvWalletAddressError;
 
     private Unbinder unbinder;
 
@@ -80,34 +82,8 @@ public class AddSharedWalletActivity extends MVPBaseActivity<AddSharedWalletPres
     }
 
     private void initViews() {
-        commonTitleBar.setLeftImageOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideSoftInput();
-                finish();
-            }
-        });
-        commonTitleBar.setRightImageOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                requestPermission(AddSharedWalletActivity.this, 100, new PermissionConfigure.PermissionCallback() {
-                    @Override
-                    public void onSuccess(int what, @NonNull List<String> grantPermissions) {
-                        ScanQRCodeActivity.startActivityForResult(AddSharedWalletActivity.this, Constants.RequestCode.REQUEST_CODE_SCAN_QRCODE);
-                    }
 
-                    @Override
-                    public void onHasPermission(int what) {
-                        ScanQRCodeActivity.startActivityForResult(AddSharedWalletActivity.this, Constants.RequestCode.REQUEST_CODE_SCAN_QRCODE);
-                    }
-
-                    @Override
-                    public void onFail(int what, @NonNull List<String> deniedPermissions) {
-
-                    }
-                }, Manifest.permission.CAMERA);
-            }
-        });
+        setAddSharedWalletBtnEnable(false);
 
         etWalletAddress.addTextChangedListener(new TextChangedListener() {
             @Override
@@ -140,16 +116,34 @@ public class AddSharedWalletActivity extends MVPBaseActivity<AddSharedWalletPres
         });
     }
 
-    @OnClick({R.id.layout_change_wallet, R.id.iv_address_book, R.id.rtv_add_shared_wallet})
+    @OnClick({R.id.layout_change_wallet, R.id.iv_address_book, R.id.sbtn_add_shared_wallet, R.id.iv_address_scan})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.layout_change_wallet:
                 mPresenter.showSelectOwnerDialogFragment();
                 break;
             case R.id.iv_address_book:
-                AddressBookActivity.actionStartForResult(this, Constants.Action.ACTION_GET_ADDRESS, Constants.RequestCode.REQUEST_CODE_GET_ADDRESS);
+                SelectAddressActivity.actionStartForResult(this, Constants.Action.ACTION_GET_ADDRESS, Constants.RequestCode.REQUEST_CODE_GET_ADDRESS);
                 break;
-            case R.id.rtv_add_shared_wallet:
+            case R.id.iv_address_scan:
+                requestPermission(AddSharedWalletActivity.this, 100, new PermissionConfigure.PermissionCallback() {
+                    @Override
+                    public void onSuccess(int what, @NonNull List<String> grantPermissions) {
+                        ScanQRCodeActivity.startActivityForResult(AddSharedWalletActivity.this, Constants.RequestCode.REQUEST_CODE_SCAN_QRCODE);
+                    }
+
+                    @Override
+                    public void onHasPermission(int what) {
+                        ScanQRCodeActivity.startActivityForResult(AddSharedWalletActivity.this, Constants.RequestCode.REQUEST_CODE_SCAN_QRCODE);
+                    }
+
+                    @Override
+                    public void onFail(int what, @NonNull List<String> deniedPermissions) {
+
+                    }
+                }, Manifest.permission.CAMERA);
+                break;
+            case R.id.sbtn_add_shared_wallet:
                 mPresenter.addWallet(getWalletName(), getWalletAddress());
                 break;
             default:
@@ -203,6 +197,7 @@ public class AddSharedWalletActivity extends MVPBaseActivity<AddSharedWalletPres
 
     @Override
     public void setSelectOwner(IndividualWalletEntity walletEntity) {
+        ivWalletAvatar.setImageResource(RUtils.drawable(walletEntity.getAvatar()));
         tvWalletName.setText(walletEntity.getName());
         tvWalletAddress.setText(AddressFormatUtil.formatAddress(walletEntity.getPrefixAddress()));
     }
@@ -221,7 +216,7 @@ public class AddSharedWalletActivity extends MVPBaseActivity<AddSharedWalletPres
 
     @Override
     public void setAddSharedWalletBtnEnable(boolean enable) {
-        rtvAddSharedWallet.setEnabled(enable);
+        btnAddSharedWallet.setEnabled(enable);
     }
 
     @Override

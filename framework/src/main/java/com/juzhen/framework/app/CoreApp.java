@@ -53,10 +53,10 @@ public abstract class CoreApp extends Application {
                 android.util.Log.w("CoreApp", "config/engine.xml文件缺少相关字段!");
             }
         }
-        // 使用adb shell getprop debug.pagoda.log.enable 来查看该系统属性，如果为1，则强制开启log
-        // 若需要在app运行时，强制开启log，只需要设置debug.pagoda.log.enable为1,然后重启app即可
-        // (执行 adb shell setprop debug.pagoda.log.enable 1)
-        if ("1".equals(AndroidUtil.getProperties("debug.pagoda.log.enable"))) {
+        // 使用adb shell getprop debug.aton.log.enable 来查看该系统属性，如果为1，则强制开启log
+        // 若需要在app运行时，强制开启log，只需要设置debug.aton.log.enable为1,然后重启app即可
+        // (执行 adb shell setprop debug.aton.log.enable 1)
+        if ("1".equals(AndroidUtil.getProperties("debug.aton.log.enable"))) {
             logPath = "config/log_debug.xml";
         }
 

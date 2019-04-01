@@ -40,5 +40,6 @@ public class AddSharedWalletContract {
 
         void addWallet(String name, String address);
 
+        boolean isExists(String walletName);
     }
 }

@@ -1,6 +1,7 @@
 package com.juzix.wallet.utils;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
@@ -71,6 +72,28 @@ public class JSONUtil {
         List<T> list = new ArrayList<>();
         try {
             list = JSON.parseArray(text, clazz);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    /**
+     * 解析二维数组
+     * 把JSON文本parse成JavaBean集合
+     *
+     * @param text
+     * @param clazz
+     * @param <T>
+     * @return
+     */
+    public static <T> List<T> parseTwoDimensionArray(String text, Class<T> clazz) {
+        List<T> list = new ArrayList<>();
+        try {
+            JSONArray array = JSONArray.parseArray(text);
+            for (int i = 0; i < array.size(); i++) {
+                list.addAll(parseArray(array.getJSONArray(i).toJSONString(), clazz));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

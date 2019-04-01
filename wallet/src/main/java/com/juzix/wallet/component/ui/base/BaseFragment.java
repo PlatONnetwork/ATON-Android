@@ -128,10 +128,17 @@ public class BaseFragment extends CoreFragment implements IContext, LifecyclePro
         super.onHiddenChanged(hidden);
         Log.debug(TAG, "[" + getClass().getSimpleName() + "]: onHiddenChanged " + hidden);
         if (hidden) {
+            lifecycleSubject.onNext(FragmentEvent.STOP);
             onTabHidden();
         } else {
+            lifecycleSubject.onNext(FragmentEvent.RESUME);
             onTabShown();
         }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
     }
 
     /**
@@ -210,8 +217,13 @@ public class BaseFragment extends CoreFragment implements IContext, LifecyclePro
     }
 
     @Override
+    public void showLoadingDialog(String text, boolean cancelable) {
+        mContextImpl.showLoadingDialog(text, cancelable);
+    }
+
+    @Override
     public void showLoadingDialog(String text) {
-        mContextImpl.showLoadingDialog(text);
+        mContextImpl.showLoadingDialog(text, false);
     }
 
     @Override

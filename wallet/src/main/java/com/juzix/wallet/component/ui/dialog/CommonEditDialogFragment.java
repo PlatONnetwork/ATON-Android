@@ -7,21 +7,27 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatDialog;
-import android.text.InputFilter;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding3.view.RxView;
 import com.jakewharton.rxbinding3.widget.RxTextView;
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.ClickTransformer;
 import com.juzix.wallet.app.Constants;
+import com.juzix.wallet.component.widget.CustomUnderlineEditText;
+import com.juzix.wallet.component.widget.ShadowButton;
+import com.juzix.wallet.component.widget.ShadowDrawable;
+import com.juzix.wallet.utils.DensityUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,8 +46,8 @@ public class CommonEditDialogFragment extends DialogFragment {
     private String mTitle;
     private String mPreInputInfo;
     private int inputType;
-    private ButtonConfig mLeftButtonConfig;
-    private ButtonConfig mRightButtonConfig;
+    private ButtonConfig mTopButtonConfig;
+    private ButtonConfig mBottomButtonConfig;
 
     @Override
     public void onAttach(Context context) {
@@ -51,7 +57,7 @@ public class CommonEditDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        FixedDialog fixedDialog = createDialog(mContext, mTitle, mPreInputInfo, inputType, mLeftButtonConfig, mRightButtonConfig);
+        FixedDialog fixedDialog = createDialog(mContext, mTitle, mPreInputInfo, inputType, mTopButtonConfig, mBottomButtonConfig);
         fixedDialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
@@ -59,7 +65,6 @@ public class CommonEditDialogFragment extends DialogFragment {
                     FixedDialog d = (FixedDialog) dialog;
                     showSoftInput(d.etInputInfo);
                 }
-
             }
         });
         return fixedDialog;
@@ -70,8 +75,8 @@ public class CommonEditDialogFragment extends DialogFragment {
         dialogFragment.mTitle = title;
         dialogFragment.mPreInputInfo = preInputInfo;
         dialogFragment.inputType = inputType;
-        dialogFragment.mLeftButtonConfig = leftButtonConfig;
-        dialogFragment.mRightButtonConfig = rightButtonConfig;
+        dialogFragment.mTopButtonConfig = leftButtonConfig;
+        dialogFragment.mBottomButtonConfig = rightButtonConfig;
         return dialogFragment;
     }
 
@@ -106,8 +111,13 @@ public class CommonEditDialogFragment extends DialogFragment {
         super.dismissAllowingStateLoss();
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
     public static CommonEditDialogFragment createCommonEditDialogFragment(String title, int inputType, String leftText, OnDialogViewClickListener leftDialogViewClickListener, String rightText, OnDialogViewClickListener rightOnDialogViewClickListener) {
-        return create(title, "", inputType, new ButtonConfig(leftText, DEFAULT_LEFT_BUTTON_COLOR, leftDialogViewClickListener), new ButtonConfig(rightText, DEFAULT_RIGHT_BUTTON_COLOR, rightOnDialogViewClickListener));
+        return create(title, "", inputType, new ButtonConfig(leftText, DEFAULT_LEFT_BUTTON_COLOR, leftDialogViewClickListener, false), new ButtonConfig(rightText, DEFAULT_RIGHT_BUTTON_COLOR, rightOnDialogViewClickListener, true));
     }
 
     public static CommonEditDialogFragment createCommonEditDialogFragment(String title, int inputType, String leftText, String rightText, OnDialogViewClickListener rightOnDialogViewClickListener) {
@@ -115,7 +125,7 @@ public class CommonEditDialogFragment extends DialogFragment {
     }
 
     public static CommonEditDialogFragment createCommonEditDialogFragment(String title, String preInputInfo, int inputType, String leftText, String rightText, OnDialogViewClickListener rightOnDialogViewClickListener) {
-        return create(title, preInputInfo, inputType, new ButtonConfig(leftText, DEFAULT_LEFT_BUTTON_COLOR, null), new ButtonConfig(rightText, DEFAULT_RIGHT_BUTTON_COLOR, rightOnDialogViewClickListener));
+        return create(title, preInputInfo, inputType, new ButtonConfig(leftText, DEFAULT_LEFT_BUTTON_COLOR, rightOnDialogViewClickListener), new ButtonConfig(rightText, DEFAULT_RIGHT_BUTTON_COLOR, null));
     }
 
     @Override
@@ -125,10 +135,8 @@ public class CommonEditDialogFragment extends DialogFragment {
         if (dialog != null) {
             DisplayMetrics dm = new DisplayMetrics();
             getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
-            dialog.getWindow().setLayout((int) (dm.widthPixels * 0.72), ViewGroup.LayoutParams.WRAP_CONTENT);
+            dialog.getWindow().setLayout((int) (dm.widthPixels * 0.75), ViewGroup.LayoutParams.WRAP_CONTENT);
             dialog.getWindow().setWindowAnimations(R.style.Animation_CommonDialog);
-            dialog.setCanceledOnTouchOutside(false);
-            dialog.setCancelable(true);
         }
     }
 
@@ -140,62 +148,69 @@ public class CommonEditDialogFragment extends DialogFragment {
      * @return
      */
     private FixedDialog createDialog(Context context, String title, String preInputInfo, int inputType,
-                                     final ButtonConfig leftButton,
-                                     final ButtonConfig rightButton) {
+                                     final ButtonConfig topButton,
+                                     final ButtonConfig bottomButton) {
 
         final FixedDialog dialog = new FixedDialog(context);
 
-        dialog.etInputInfo.setInputType(inputType);
+        ShadowDrawable.setShadowDrawable(dialog.layoutContent,
+                ContextCompat.getColor(context, R.color.color_ffffff),
+                DensityUtil.dp2px(context, 6f),
+                ContextCompat.getColor(context, R.color.color_33616161)
+                , DensityUtil.dp2px(context, 10f),
+                0,
+                DensityUtil.dp2px(context, 2f));
 
-        if (inputType == EditorInfo.TYPE_CLASS_TEXT) {
-            dialog.etInputInfo.setFilters(new InputFilter.LengthFilter[]{new InputFilter.LengthFilter(12)});
-        }
+        dialog.etInputInfo.setInputType(inputType);
 
         dialog.etInputInfo.setText(preInputInfo);
         dialog.etInputInfo.setSelection(preInputInfo.length());
 
         dialog.tvTitle.setVisibility(TextUtils.isEmpty(title) ? View.GONE : View.VISIBLE);
 
-        if (leftButton == null || TextUtils.isEmpty(leftButton.label)) {
+        if (bottomButton == null || TextUtils.isEmpty(bottomButton.label)) {
             dialog.tvCancel.setVisibility(View.GONE);
         } else {
             dialog.tvCancel.setVisibility(View.VISIBLE);
-            dialog.tvCancel.setText(leftButton.label);
+            dialog.tvCancel.setText(bottomButton.label);
             RxView.clicks(dialog.tvCancel).subscribe(new Consumer<Unit>() {
                 @Override
                 public void accept(Unit unit) throws Exception {
                     dismiss();
-                    if (leftButton.listener != null) {
-                        leftButton.listener.onDialogViewClick(CommonEditDialogFragment.this, dialog.tvCancel, null);
+                    if (bottomButton.listener != null) {
+                        bottomButton.listener.onDialogViewClick(CommonEditDialogFragment.this, dialog.tvCancel, null);
                     }
                 }
             });
         }
 
-        if (rightButton == null || TextUtils.isEmpty(rightButton.label)) {
-            dialog.tvConfirm.setVisibility(View.GONE);
+        if (topButton == null || TextUtils.isEmpty(topButton.label)) {
+            dialog.buttonConfirm.setVisibility(View.GONE);
         } else {
-            dialog.tvConfirm.setVisibility(View.VISIBLE);
-            dialog.tvConfirm.setText(rightButton.label);
-            RxView.clicks(dialog.tvConfirm).subscribe(new Consumer<Unit>() {
-                @Override
-                public void accept(Unit unit) throws Exception {
-                    dismiss();
-                    if (rightButton.listener != null) {
-                        String inputInfo = dialog.etInputInfo.getText().toString().trim();
-                        Bundle bundle = new Bundle();
-                        bundle.putString(Constants.Bundle.BUNDLE_TEXT, inputInfo);
-                        rightButton.listener.onDialogViewClick(CommonEditDialogFragment.this, dialog.tvConfirm, bundle);
-                    }
-                }
-            });
-            RxTextView.textChanges(dialog.etInputInfo).skipInitialValue().subscribe(new Consumer<CharSequence>() {
-                @Override
-                public void accept(CharSequence charSequence) throws Exception {
-                    String inputInfo = dialog.etInputInfo.getText().toString().trim();
-                    dialog.tvConfirm.setEnabled(inputInfo.length() >= (inputType == EditorInfo.TYPE_TEXT_VARIATION_PASSWORD ? 6 : 1));
-                }
-            });
+            dialog.buttonConfirm.setVisibility(View.VISIBLE);
+            dialog.buttonConfirm.setText(topButton.label);
+            RxView.clicks(dialog.buttonConfirm)
+                    .compose(new ClickTransformer())
+                    .subscribe(new Consumer<Unit>() {
+                        @Override
+                        public void accept(Unit unit) throws Exception {
+                            dismiss();
+                            if (topButton.listener != null) {
+                                String inputInfo = dialog.etInputInfo.getText().toString().trim();
+                                Bundle bundle = new Bundle();
+                                bundle.putString(Constants.Bundle.BUNDLE_TEXT, inputInfo);
+                                topButton.listener.onDialogViewClick(CommonEditDialogFragment.this, dialog.buttonConfirm, bundle);
+                            }
+                        }
+                    });
+            RxTextView.textChanges(dialog.etInputInfo)
+                    .subscribe(new Consumer<CharSequence>() {
+                        @Override
+                        public void accept(CharSequence charSequence) throws Exception {
+                            String inputInfo = dialog.etInputInfo.getText().toString().trim();
+                            dialog.buttonConfirm.setEnabled(inputInfo.length() >= (inputType == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD ? 6 : 1));
+                        }
+                    });
         }
 
         if (!TextUtils.isEmpty(title)) {
@@ -206,34 +221,35 @@ public class CommonEditDialogFragment extends DialogFragment {
     }
 
     private void showSoftInput(final EditText editText) {
-        editText.requestFocus();
-        editText.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.showSoftInput(editText, 0);
-            }
-        }, 100);
+        if (mContext != null) {
+            editText.requestFocus();
+            InputMethodManager inputMethodManager = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.showSoftInput(editText, 0);
+        }
     }
 
     private void hideSoftInput(EditText editText) {
-        InputMethodManager mInputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        mInputMethodManager.hideSoftInputFromWindow(editText.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
+        if (mContext != null) {
+            InputMethodManager mInputMethodManager = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+            mInputMethodManager.hideSoftInputFromWindow(editText.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
+        }
     }
 
     static class ButtonConfig {
         public CharSequence label;
         public int color;
         public OnDialogViewClickListener listener;
+        public boolean enable;
 
         public ButtonConfig(CharSequence label, int color, OnDialogViewClickListener listener, boolean enable) {
             this.listener = listener;
             this.label = label;
             this.color = color;
+            this.enable = enable;
         }
 
         public ButtonConfig(CharSequence label, int color, OnDialogViewClickListener listener) {
-            this(label, color, listener, true);
+            this(label, color, listener, false);
         }
     }
 
@@ -242,11 +258,13 @@ public class CommonEditDialogFragment extends DialogFragment {
         @BindView(R.id.tv_title)
         TextView tvTitle;
         @BindView(R.id.et_input_info)
-        EditText etInputInfo;
+        CustomUnderlineEditText etInputInfo;
+        @BindView(R.id.button_confirm)
+        ShadowButton buttonConfirm;
         @BindView(R.id.tv_cancel)
         TextView tvCancel;
-        @BindView(R.id.tv_confirm)
-        TextView tvConfirm;
+        @BindView(R.id.layout_content)
+        LinearLayout layoutContent;
 
         public FixedDialog(Context context) {
             this(context, R.style.CommonDialogStyle);

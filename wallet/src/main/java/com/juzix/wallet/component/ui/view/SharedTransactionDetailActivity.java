@@ -28,7 +28,7 @@ import com.juzix.wallet.utils.CommonUtil;
 import com.juzix.wallet.utils.DateUtil;
 import com.juzix.wallet.utils.DensityUtil;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,6 +44,8 @@ public class SharedTransactionDetailActivity extends MVPBaseActivity<SharedTrans
     ListViewForScrollView listView;
     @BindView(R.id.iv_copy_from_address)
     ImageView ivCopyFromAddress;
+    @BindView(R.id.tv_copy_from_name)
+    TextView tvCopyFromName;
     @BindView(R.id.tv_from_address)
     TextView tvFromAddress;
     @BindView(R.id.layout_from_address)
@@ -149,6 +151,7 @@ public class SharedTransactionDetailActivity extends MVPBaseActivity<SharedTrans
         tvTransactionStatus.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(this, status.getStatusDrawable()), null, null);
         tvTransactionStatus.setCompoundDrawablePadding(DensityUtil.dp2px(this, 10));
 
+        tvCopyFromName.setText(transactionEntity.getWalletName());
         tvFromAddress.setText(transactionEntity.getFromAddress());
         tvToAddress.setText(transactionEntity.getToAddress());
 
@@ -181,7 +184,7 @@ public class SharedTransactionDetailActivity extends MVPBaseActivity<SharedTrans
     }
 
     @Override
-    public void showTransactionResult(ArrayList<TransactionResult> transactionResultList) {
+    public void showTransactionResult(List<TransactionResult> transactionResultList) {
         layoutTransactionResult.setVisibility(transactionResultList.isEmpty() ? View.GONE : View.VISIBLE);
         mAdapter.notifyDataChanged(transactionResultList);
 
@@ -195,14 +198,14 @@ public class SharedTransactionDetailActivity extends MVPBaseActivity<SharedTrans
             protected void convert(Context context, ViewHolder viewHolder, TransactionResult item, int position) {
                 viewHolder.setText(R.id.tv_name, item.getName());
                 viewHolder.setText(R.id.tv_address, AddressFormatUtil.formatAddress(item.getPrefixAddress()));
-                switch (item.getOperation()) {
-                    case TransactionResult.OPERATION_APPROVAL:
+                switch (item.getStatus()) {
+                    case OPERATION_APPROVAL:
                         viewHolder.setImageResource(R.id.iv_hook, R.drawable.icon_hook_s);
                         break;
-                    case TransactionResult.OPERATION_REVOKE:
+                    case OPERATION_REVOKE:
                         viewHolder.setImageResource(R.id.iv_hook, R.drawable.icon_fork_s);
                         break;
-                    case TransactionResult.OPERATION_UNDETERMINED:
+                    case OPERATION_UNDETERMINED:
                         viewHolder.setImageResource(R.id.iv_hook, R.drawable.icon_fork_s);
                         break;
                 }

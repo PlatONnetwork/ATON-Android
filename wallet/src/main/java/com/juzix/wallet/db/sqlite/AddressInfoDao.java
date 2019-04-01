@@ -1,6 +1,9 @@
 package com.juzix.wallet.db.sqlite;
 
+import android.text.TextUtils;
+
 import com.juzix.wallet.db.entity.AddressInfoEntity;
+import com.juzix.wallet.utils.JZWalletUtil;
 
 import java.util.ArrayList;
 
@@ -103,6 +106,10 @@ public class AddressInfoDao extends BaseDao {
             }
             return false;
         }
+    }
+
+    public boolean isExist(String address){ 
+        return getEntityWithAddress(address) != null;
     }
 
     public AddressInfoEntity getEntityWithAddress(String address) {

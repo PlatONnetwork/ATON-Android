@@ -2,10 +2,14 @@ package com.juzix.wallet.component.ui.contract;
 
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
+import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.OwnerEntity;
 import com.juzix.wallet.entity.SharedWalletEntity;
 
+import org.web3j.crypto.Credentials;
+
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author matrixelement
@@ -21,17 +25,15 @@ public class ManageSharedWalletContract {
 
         void showWallet(SharedWalletEntity walletEntity);
 
-        void showMember(ArrayList<OwnerEntity> addressEntityList);
+        void showMember(List<OwnerEntity> addressEntityList);
 
-        void showOwner(String individualWalletName, String individualWalletAddress);
-
-        void showErrorDialog(String title, String content, String preInputInfo);
+        void showErrorDialog(String title, String content, int type, IndividualWalletEntity walletEntity);
 
         void showModifyWalletNameDialog();
 
         void showModifyMemberNameDialog(int memberIndex);
 
-        void showPasswordDialog(int type, int index, String preInputInfo);
+        void showPasswordDialog(int type, int index, IndividualWalletEntity walletEntity);
 
         void updateWalletName(String walletName);
 
@@ -46,12 +48,12 @@ public class ManageSharedWalletContract {
 
         void modifyMemberName(int memberIndex, String name);
 
-        void validPassword(int type, String password, int index);
+        void validPassword(int type, Credentials credentials, int index);
 
         void deleteAction(int type);
 
         void deleteWallet();
 
-
+        boolean isExists(String walletName);
     }
 }

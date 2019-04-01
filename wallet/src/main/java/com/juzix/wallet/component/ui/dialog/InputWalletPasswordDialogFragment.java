@@ -1,51 +1,79 @@
 package com.juzix.wallet.component.ui.dialog;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
+import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.jakewharton.rxbinding3.view.RxView;
+import com.jakewharton.rxbinding3.widget.RxTextView;
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.ClickTransformer;
 import com.juzix.wallet.app.Constants;
+import com.juzix.wallet.app.LoadingTransformer;
+import com.juzix.wallet.app.SchedulersTransformer;
+import com.juzix.wallet.component.ui.base.BaseActivity;
+import com.juzix.wallet.component.widget.CustomUnderlineEditText;
+import com.juzix.wallet.component.widget.ShadowButton;
+import com.juzix.wallet.component.widget.ShadowDrawable;
+import com.juzix.wallet.entity.IndividualWalletEntity;
+import com.juzix.wallet.utils.DensityUtil;
+import com.juzix.wallet.utils.JZWalletUtil;
+
+import org.web3j.crypto.Credentials;
+
+import java.util.concurrent.Callable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.reactivex.Single;
+import io.reactivex.functions.Consumer;
+import kotlin.Unit;
 
 /**
  * @author matrixelement
  */
 public class InputWalletPasswordDialogFragment extends BaseDialogFragment {
 
-    @BindView(R.id.et_wallet_password)
-    EditText etWalletPassword;
-    @BindView(R.id.tv_cancel)
-    TextView tvCancel;
-    @BindView(R.id.tv_confirm)
-    TextView tvConfirm;
-    Unbinder unbinder;
+    @BindView(R.id.text_wallet_name)
+    TextView textWalletName;
+    @BindView(R.id.et_password)
+    CustomUnderlineEditText etPassword;
+    @BindView(R.id.tv_password_error)
+    TextView tvPasswordError;
+    @BindView(R.id.button_confirm)
+    ShadowButton buttonConfirm;
+    @BindView(R.id.text_cancel)
+    TextView textCancel;
+    @BindView(R.id.layout_content)
+    LinearLayout layoutContent;
 
-    private OnConfirmClickListener onConfirmClickListener;
+    private Unbinder unbinder;
+    private OnWalletCorrectListener mCorrectListener;
+    private OnWalletPasswordCorrectListener mListener;
 
-    public InputWalletPasswordDialogFragment setOnConfirmClickListener(OnConfirmClickListener onConfirmClickListener) {
-        this.onConfirmClickListener = onConfirmClickListener;
+    public static InputWalletPasswordDialogFragment newInstance(IndividualWalletEntity individualWalletEntity) {
+        InputWalletPasswordDialogFragment dialogFragment = new InputWalletPasswordDialogFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(Constants.Bundle.BUNDLE_WALLET, individualWalletEntity);
+        dialogFragment.setArguments(bundle);
+        return dialogFragment;
+    }
+
+    public InputWalletPasswordDialogFragment setOnWalletPasswordCorrectListener(OnWalletPasswordCorrectListener mListener) {
+        this.mListener = mListener;
         return this;
     }
 
-    public static InputWalletPasswordDialogFragment newInstance(String password) {
-        InputWalletPasswordDialogFragment dialogFragment = new InputWalletPasswordDialogFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(Constants.Bundle.BUDLE_PASSWORD, password);
-        dialogFragment.setArguments(bundle);
-        return dialogFragment;
+    public InputWalletPasswordDialogFragment setOnWalletCorrectListener(OnWalletCorrectListener mListener) {
+        this.mCorrectListener = mListener;
+        return this;
     }
 
     @Override
@@ -61,52 +89,94 @@ public class InputWalletPasswordDialogFragment extends BaseDialogFragment {
 
     private void initViews() {
 
-        showSoftInput(etWalletPassword);
-        String password = getArguments().getString(Constants.Bundle.BUDLE_PASSWORD);
-        etWalletPassword.setText(password);
-        if (!TextUtils.isEmpty(password)) {
-            etWalletPassword.setSelection(password.length());
-        }
+        IndividualWalletEntity walletEntity = getArguments().getParcelable(Constants.Bundle.BUNDLE_WALLET);
 
-        etWalletPassword.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        ShadowDrawable.setShadowDrawable(layoutContent,
+                ContextCompat.getColor(context, R.color.color_ffffff),
+                DensityUtil.dp2px(context, 6f),
+                ContextCompat.getColor(context, R.color.color_33616161)
+                , DensityUtil.dp2px(context, 10f),
+                0,
+                DensityUtil.dp2px(context, 2f));
 
-            }
+        textWalletName.setText(walletEntity.getName());
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+        RxTextView.textChanges(etPassword)
+                .compose(bindToLifecycle())
+                .subscribe(new Consumer<CharSequence>() {
+                    @Override
+                    public void accept(CharSequence charSequence) throws Exception {
+                        buttonConfirm.setEnabled(charSequence.toString().trim().length() >= 6);
+                    }
+                });
 
-                tvConfirm.setEnabled(s.toString().trim().length() >= 6);
-            }
+        RxView.clicks(textCancel)
+                .compose(bindToLifecycle())
+                .compose(new ClickTransformer())
+                .subscribe(new Consumer<Unit>() {
+                    @Override
+                    public void accept(Unit unit) throws Exception {
+                        dismiss();
+                    }
+                });
 
-            @Override
-            public void afterTextChanged(Editable s) {
+        RxView.clicks(buttonConfirm)
+                .compose(bindToLifecycle())
+                .compose(new ClickTransformer())
+                .subscribe(new Consumer<Unit>() {
+                    @Override
+                    public void accept(Unit unit) throws Exception {
+                        Single.fromCallable(new Callable<Credentials>() {
+                            @Override
+                            public Credentials call() throws Exception {
+                                return JZWalletUtil.getCredentials(getPassword(), walletEntity.getKey());
+                            }
+                        })
+                                .compose(bindToLifecycle())
+                                .compose(new SchedulersTransformer())
+                                .compose(LoadingTransformer.bindToSingleLifecycle((BaseActivity) getActivity()))
+                                .subscribe(new Consumer<Credentials>() {
+                                    @Override
+                                    public void accept(Credentials credentials) throws Exception {
+                                        if (credentials != null) {
+                                            if (mListener != null) {
+                                                dismiss();
+                                                mListener.onWalletPasswordCorrect(credentials);
+                                            }
+                                            if (mCorrectListener != null) {
+                                                dismiss();
+                                                mCorrectListener.onCorrect(credentials, getPassword());
+                                            }
+                                        } else {
+                                            tvPasswordError.setVisibility(View.VISIBLE);
+                                            etPassword.setStatus(CustomUnderlineEditText.Status.ERROR);
+                                        }
+                                    }
+                                }, new Consumer<Throwable>() {
+                                    @Override
+                                    public void accept(Throwable throwable) throws Exception {
+                                        tvPasswordError.setVisibility(View.VISIBLE);
+                                        etPassword.setStatus(CustomUnderlineEditText.Status.ERROR);
+                                    }
+                                });
+                    }
+                });
 
-            }
-        });
+        showSoftInput(etPassword);
     }
 
-    @OnClick({R.id.tv_cancel, R.id.tv_confirm})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.tv_cancel:
-                dismiss();
-                break;
-            case R.id.tv_confirm:
-                String password = etWalletPassword.getText().toString();
-                if (TextUtils.isEmpty(password)) {
-                    Toast.makeText(getContext(), getString(R.string.password_cannot_be_empty), Toast.LENGTH_LONG);
-                    return;
-                }
+    private String getPassword() {
+        return etPassword.getText().toString().trim();
+    }
 
-                if (onConfirmClickListener != null) {
-                    dismiss();
-                    onConfirmClickListener.onConfirmClick(password);
-                }
-                break;
-            default:
-                break;
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnWalletPasswordCorrectListener) {
+            mListener = (OnWalletPasswordCorrectListener) context;
+        }
+        if (context instanceof OnWalletCorrectListener) {
+            mCorrectListener = (OnWalletCorrectListener) context;
         }
     }
 
@@ -118,9 +188,13 @@ public class InputWalletPasswordDialogFragment extends BaseDialogFragment {
         }
     }
 
-    public interface OnConfirmClickListener {
+    public interface OnWalletCorrectListener {
 
-        void onConfirmClick(String password);
+        void onCorrect(Credentials credentials, String password);
+    }
 
+    public interface OnWalletPasswordCorrectListener {
+
+        void onWalletPasswordCorrect(Credentials credentials);
     }
 }

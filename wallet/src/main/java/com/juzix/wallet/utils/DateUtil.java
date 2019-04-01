@@ -9,6 +9,7 @@ public class DateUtil {
     private static final String TAG = DateUtil.class.getSimpleName();
 
     public static final String DATETIME_FORMAT_PATTERN = "yyyy-MM-dd HH:mm";
+    public static final String DATETIME_FORMAT_PATTERN_WITH_SECOND = "yyyy-MM-dd HH:mm:ss";
 
     private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
 
@@ -28,4 +29,11 @@ public class DateUtil {
     }
 
 
+    public static boolean isToday(long time){
+        SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
+        String nowDay = sf.format(new Date());
+        //对比的时间
+        String day = sf.format(new Date(time));
+        return day.equals(nowDay);
+    }
 }

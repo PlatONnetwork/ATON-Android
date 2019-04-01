@@ -12,5 +12,6 @@ public class CreateIndividualWalletContract {
 
     public interface Presenter extends IPresenter<View> {
         void createWallet(String name, String password, String repeatePassword);
+        boolean isExists(String walletName);
     }
 }

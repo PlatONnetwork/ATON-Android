@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="network_error">Network error,please check the phone network connection status!</string>
+    <string name="success">成功</string>
+    <string name="system_error">System Error</string>
+    <string name="request_params_error">请求参数错误</string>
+    <string name="system_config_error">系统配置错误</string>
+    <string name="verification_code_sent">Verification Code has been Sent</string>
+    <string name="verification_code_error">Incorrect phone number or SMS code</string>
+    <string name="private_key_not_found">私钥分量未找到</string>
+    <string name="repeat_submit">重复提交</string>
+    <string name="record_not_exists">记录不存在</string>
+    <string name="record_deleted">该id记录已删除</string>
+</resources>

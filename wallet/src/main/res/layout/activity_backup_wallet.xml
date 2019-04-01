@@ -1,76 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/color_232e48"
-              android:clipToPadding="true"
-              android:fitsSystemWindows="true"
-              android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_ffffff"
+    android:clipToPadding="true"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
 
-    <include layout="@layout/layout_title_bar"/>
+    <TextView
+        android:id="@+id/tv_title"
+        style="@style/Text.000000.16"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_marginLeft="16dp"
+        android:gravity="center_vertical"
+        android:text="@string/backupWallet"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@color/color_1b2137">
+        android:orientation="vertical">
+
         <ImageView
-            android:layout_marginTop="54dp"
             android:layout_width="88dp"
             android:layout_height="88dp"
-            android:src="@drawable/icon_hook_l"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="54dp"
+            android:src="@drawable/icon_hook_l" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
             android:gravity="center_horizontal"
-            android:layout_marginTop="11dp"
             android:text="@string/create_success"
-            android:textColor="@color/color_ffffff"
-            android:textSize="14sp"/>
+            android:textColor="@color/color_000000"
+            android:textSize="20sp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
             android:layout_marginTop="46dp"
+            android:gravity="center_horizontal"
             android:text="@string/backupWalletDescription"
-            android:textColor="@color/color_ffffff"
-            android:textSize="18sp"/>
+            android:textColor="@color/color_000000"
+            android:textSize="16sp" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:layout_marginTop="12dp"
             android:layout_marginLeft="21dp"
+            android:layout_marginTop="16dp"
             android:layout_marginRight="21dp"
             android:text="@string/backupWalletResume"
-            android:textColor="@color/color_ffffff"
-            android:textSize="13sp"/>
+            android:textColor="@color/color_61646e"
+            android:textSize="13sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
+            android:layout_marginBottom="34dp"
             android:gravity="bottom"
-            android:layout_marginBottom="14dp">
+            android:orientation="vertical"
+            android:paddingLeft="21dp"
+            android:paddingRight="21dp">
 
-            <Button
-                android:id="@+id/btn_start"
+            <com.juzix.wallet.component.widget.ShadowContainer
+                android:id="@+id/sc_start_backup"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_gravity="bottom"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:background="@color/color_eff0f5"
-                android:fontFamily="normal"
-                android:text="@string/startBackup"
-                android:textAllCaps="false"
-                android:textColor="@color/color_1b2137"
-                android:textSize="14sp" />
+                android:layout_height="wrap_content"
+                android:duplicateParentState="true"
+                android:orientation="horizontal"
+                app:enableShadowColor="@color/color_66969696"
+                app:yOffset="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:background="@drawable/bg_main_button"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/Text.f6f6f6.16"
+                        android:drawableRight="@drawable/icon_next"
+                        android:drawablePadding="8dp"
+                        android:text="@string/startBackup"
+                        android:textColor="@color/color_main_button_text" />
+                </LinearLayout>
+            </com.juzix.wallet.component.widget.ShadowContainer>
+
+
+            <LinearLayout
+                android:id="@+id/ll_skip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="8dp"
+                    android:fontFamily="normal"
+                    android:text="@string/skip"
+                    android:textAllCaps="false"
+                    android:textColor="@color/color_105cfe"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
         </LinearLayout>
+
     </LinearLayout>
 
 </LinearLayout>

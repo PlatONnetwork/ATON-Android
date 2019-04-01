@@ -22,13 +22,6 @@ public class ExportIndividualKeystoreFragment extends BaseFragment implements Vi
         View view = inflater.inflate(R.layout.fragment_export_individual_keystore, container, false);
         ((TextView)view.findViewById(R.id.tv_keystore)).setText(getActivity().getIntent().getStringExtra(Constants.Extra.EXTRA_PASSWORD));
         view.findViewById(R.id.btn_copy).setOnClickListener(this);
-//        int          shapeRadius  = AndroidUtil.dip2px(getContext(), 1);
-//        int          shadowRadius = AndroidUtil.dip2px(getContext(), 4);
-//        ShadowDrawable.setShadowDrawable(mTvPrivateKey,
-//                ContextCompat.getColor(getContext(), R.color.color_1f2841),
-//                shapeRadius,
-//                ContextCompat.getColor(getContext(), R.color.color_020527),
-//                shadowRadius, 0, 0);
         return view;
     }
 

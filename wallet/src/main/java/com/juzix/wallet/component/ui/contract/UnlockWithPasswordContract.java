@@ -16,9 +16,9 @@ public class UnlockWithPasswordContract {
 
     public interface Presenter extends IPresenter<View> {
 
-        int getSelectedPostion();
+        IndividualWalletEntity getSelectedWallet();
 
-        void setSelectedPostion(int selectedPostion);
+        void setSelectWallet(IndividualWalletEntity wallet);
 
         void init();
 

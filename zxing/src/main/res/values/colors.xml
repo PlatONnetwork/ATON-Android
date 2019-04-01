@@ -7,9 +7,9 @@
     <!-- QRCode scanner color begin -->
     <color name="viewfinder_mask">#60000000</color>
     <color name="result_view">#B0000000</color>
-    <color name="viewfinder_frame">#d2c199</color>
-    <color name="result_point_color">#e6d415</color>
-    <color name="laser_color">#e6d415</color>
-    <color name="corner_color">#e6d415</color>
+    <color name="viewfinder_frame">#2695fd</color>
+    <color name="result_point_color">#105cfe</color>
+    <color name="laser_color">#105cfe</color>
+    <color name="corner_color">#105cfe</color>
     <!-- QRCode scanner color end -->
 </resources>

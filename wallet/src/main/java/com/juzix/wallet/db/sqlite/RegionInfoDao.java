@@ -36,6 +36,24 @@ public class RegionInfoDao extends BaseDao {
         return list;
     }
 
+    public RegionInfoEntity getRegionInfoEntityWithIp(String ip) {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            RegionInfoEntity regionInfoEntity = realm.where(RegionInfoEntity.class).equalTo("ip", ip).findFirst();
+            if (regionInfoEntity != null) {
+                return realm.copyFromRealm(regionInfoEntity);
+            }
+        } catch (Exception exp) {
+            exp.printStackTrace();
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return null;
+    }
+
     public RegionInfoEntity getRegionInfoWithIp(String ip) {
         Realm realm = null;
         try {
@@ -73,7 +91,7 @@ public class RegionInfoDao extends BaseDao {
         }
     }
 
-    public boolean insertBatchRegionInfo(ArrayList<RegionInfoEntity> entities) {
+    public boolean insertBatchRegionInfo(List<RegionInfoEntity> entities) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();

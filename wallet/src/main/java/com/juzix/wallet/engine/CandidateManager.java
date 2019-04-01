@@ -1,40 +1,45 @@
 package com.juzix.wallet.engine;
 
 import android.text.TextUtils;
+import android.util.Log;
 
-import com.alibaba.fastjson.JSON;
 import com.github.promeg.pinyinhelper.Pinyin;
-import com.juzhen.framework.network.Headers;
-import com.juzhen.framework.network.NoHttp;
-import com.juzhen.framework.network.RequestMethod;
-import com.juzhen.framework.network.rest.Request;
-import com.juzhen.framework.network.rest.Response;
-import com.juzhen.framework.util.RUtils;
+import com.juzhen.framework.network.HttpClient;
 import com.juzix.wallet.App;
-import com.juzix.wallet.R;
-import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.db.entity.RegionInfoEntity;
 import com.juzix.wallet.db.sqlite.RegionInfoDao;
+import com.juzix.wallet.engine.service.RegionService;
 import com.juzix.wallet.entity.CandidateEntity;
-import com.juzix.wallet.entity.CandidateExtraEntity;
+import com.juzix.wallet.entity.RegionEntity;
+import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.protocol.entity.GetRegionInfoRequestEntity;
 import com.juzix.wallet.utils.FileUtil;
 import com.juzix.wallet.utils.JSONUtil;
 import com.juzix.wallet.utils.LanguageUtil;
 
-import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
+import org.reactivestreams.Publisher;
 import org.web3j.platon.contracts.CandidateContract;
 import org.web3j.protocol.Web3j;
 import org.web3j.tx.ReadonlyTransactionManager;
 import org.web3j.tx.gas.DefaultWasmGasProvider;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.Callable;
+
+import io.reactivex.Flowable;
+import io.reactivex.Single;
+import io.reactivex.functions.BiConsumer;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import retrofit2.Response;
 
 
 /**
@@ -42,8 +47,7 @@ import java.util.Set;
  */
 public class CandidateManager {
 
-    private static final String REGION_NAME              = "region.json";
-    private static final long   UPDATE_REGION_TIME_MILLS = 60 * 1000;
+    private final static String TAG = CandidateManager.class.getSimpleName();
 
     private CandidateManager() {
 
@@ -53,215 +57,236 @@ public class CandidateManager {
         return InstanceHolder.INSTANCE;
     }
 
-    public ArrayList<CandidateEntity> getCandidateList(){
-        Web3j                      web3j             = Web3jManager.getInstance().getWeb3j();
-        CandidateContract candidateContract = CandidateContract.load( web3j,
+    public Single<List<CandidateEntity>> getCandidateList() {
+
+        return Flowable
+                .fromCallable(new Callable<List<CandidateEntity>>() {
+                    @Override
+                    public List<CandidateEntity> call() throws Exception {
+                        return getCandidateListFromNet();
+                    }
+                })
+                .flatMap(new Function<List<CandidateEntity>, Publisher<CandidateEntity>>() {
+                    @Override
+                    public Publisher<CandidateEntity> apply(List<CandidateEntity> candidateDtoList) throws Exception {
+                        return Flowable.fromIterable(candidateDtoList);
+                    }
+                })
+                .map(new Function<CandidateEntity, CandidateEntity>() {
+                    @Override
+                    public CandidateEntity apply(CandidateEntity candidateEntity) throws Exception {
+                        candidateEntity.setVotedNum(VoteManager.getInstance().getCandidateTicketIdsCounter(candidateEntity.getCandidateId()).blockingGet());
+                        return candidateEntity;
+                    }
+                })
+                .map(new Function<CandidateEntity, CandidateEntity>() {
+                    @Override
+                    public CandidateEntity apply(CandidateEntity candidateEntity) throws Exception {
+                        RegionInfoEntity regionInfoEntity = RegionInfoDao.getInstance().getRegionInfoEntityWithIp(candidateEntity.getHost());
+                        if (regionInfoEntity != null) {
+                            candidateEntity.setRegionEntity(regionInfoEntity.toRegionEntity());
+                        }
+                        return candidateEntity;
+                    }
+                })
+                .collect(new Callable<List<CandidateEntity>>() {
+                    @Override
+                    public List<CandidateEntity> call() throws Exception {
+                        return new ArrayList<>();
+                    }
+                }, new BiConsumer<List<CandidateEntity>, CandidateEntity>() {
+                    @Override
+                    public void accept(List<CandidateEntity> candidateEntities, CandidateEntity candidateEntity) throws Exception {
+                        candidateEntities.add(candidateEntity);
+                    }
+                })
+                .doOnSuccess(new Consumer<List<CandidateEntity>>() {
+                    @Override
+                    public void accept(List<CandidateEntity> candidateEntityList) throws Exception {
+                        updateBatchRegionInfoWithIpList(getIpList(candidateEntityList));
+                    }
+                });
+    }
+
+    public void updateBatchRegionInfoWithIpList(List<String> ipList) {
+
+        getRegionList(buildRegionRequestParams(ipList).blockingGet())
+                .toFlowable()
+                .flatMap(new Function<Response<List<RegionEntity>>, Publisher<RegionEntity>>() {
+                    @Override
+                    public Publisher<RegionEntity> apply(Response<List<RegionEntity>> listResponse) throws Exception {
+                        return Flowable.fromIterable(listResponse.body());
+                    }
+                })
+                .map(new Function<RegionEntity, RegionEntity>() {
+                    @Override
+                    public RegionEntity apply(RegionEntity regionEntity) throws Exception {
+                        String countryZh = getCountryByName("CN", regionEntity.getCountryCode());
+                        String countryEn = getCountryByName("EN", regionEntity.getCountryCode());
+                        regionEntity.setCountryEn(countryEn);
+                        regionEntity.setCountryZh(countryZh);
+                        regionEntity.setCountryPinyin(Pinyin.toPinyin(countryZh, ""));
+                        regionEntity.setUpdateTime(System.currentTimeMillis());
+                        return regionEntity;
+                    }
+                })
+                .doOnNext(new Consumer<RegionEntity>() {
+                    @Override
+                    public void accept(RegionEntity regionEntity) throws Exception {
+                        EventPublisher.getInstance().sendUpdateCandidateRegionInfoEvent(regionEntity);
+                    }
+                })
+                .toList()
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Consumer<List<RegionEntity>>() {
+                    @Override
+                    public void accept(List<RegionEntity> regionEntities) throws Exception {
+                        RegionInfoDao.getInstance().insertBatchRegionInfo(buildRegionInfoEntityList(regionEntities));
+                    }
+                });
+    }
+
+    public Single<CandidateEntity> getCandidateDetail(String nodeId) {
+
+        return Single
+                .fromCallable(new Callable<CandidateEntity>() {
+                    @Override
+                    public CandidateEntity call() throws Exception {
+                        return getCandidateEntity(nodeId);
+                    }
+                })
+                .map(new Function<CandidateEntity, CandidateEntity>() {
+                    @Override
+                    public CandidateEntity apply(CandidateEntity candidateEntity) throws Exception {
+                        candidateEntity.setVotedNum(VoteManager.getInstance().getCandidateTicketIdsCounter(candidateEntity.getCandidateId()).blockingGet());
+                        return candidateEntity;
+                    }
+                })
+                .map(new Function<CandidateEntity, CandidateEntity>() {
+                    @Override
+                    public CandidateEntity apply(CandidateEntity candidateEntity) throws Exception {
+                        RegionInfoEntity regionInfo = RegionInfoDao.getInstance().getRegionInfoWithIp(candidateEntity.getHost());
+                        if (regionInfo != null) {
+                            candidateEntity.setRegionEntity(regionInfo.toRegionEntity());
+                        }
+                        return candidateEntity;
+                    }
+                });
+    }
+
+    private List<String> getIpList(List<CandidateEntity> candidateEntityList) {
+        return Flowable.fromIterable(candidateEntityList)
+                .filter(new Predicate<CandidateEntity>() {
+                    @Override
+                    public boolean test(CandidateEntity candidateEntity) throws Exception {
+                        return candidateEntity.isInvalidHost();
+                    }
+                })
+                .map(new Function<CandidateEntity, String>() {
+                    @Override
+                    public String apply(CandidateEntity candidateEntity) throws Exception {
+                        return candidateEntity.getHost();
+                    }
+                })
+                .toList()
+                .blockingGet();
+    }
+
+    private List<CandidateEntity> getCandidateListFromNet() {
+        Web3j web3j = Web3jManager.getInstance().getWeb3j();
+        CandidateContract candidateContract = CandidateContract.load(web3j,
                 new ReadonlyTransactionManager(web3j, CandidateContract.CONTRACT_ADDRESS),
                 new DefaultWasmGasProvider());
-        ArrayList<CandidateEntity> candidateEntities = new ArrayList<>();
+        String candidateListResp = null;
         try {
-            boolean isEnglish = true;
-            Locale locale = LanguageUtil.getLocale(App.getContext());
-            if (Locale.CHINESE.getLanguage().equals(locale.getLanguage())) {
-                isEnglish = false;
-            }
-            String             candidateListResp = candidateContract.CandidateList().send();
-            Set<String>        ipSet            = new HashSet<>();
-            List<String>       candidateIdList   = new ArrayList<>();
-            List<CandidateDto> candidateDtoList  = JSONUtil.parseArray(candidateListResp, CandidateDto.class);
-            for (CandidateDto candidateDto : candidateDtoList){
-                CandidateEntity entity = toCandidateEntity(candidateDto);
-                CandidateExtraEntity extraEntity = JSONUtil.parseObject(entity.getExtra(), CandidateExtraEntity.class);
-                if (extraEntity != null){
-                    entity.setAvatar(extraEntity.getNodePortrait());
-                    entity.setCandidateExtraEntity(extraEntity);
-                }
-                entity.setRegion(App.getContext().getString(isEnglish ? R.string.unknownRegionEn : R.string.unknownRegion));
-                entity.setRegionPinyin("*");
-                candidateEntities.add(entity);
-                ipSet.add(entity.getHost());
-                candidateIdList.add(entity.getCandidateId());
-            }
-            Map<String, List<String>> ticketIds = TicketManager.getInstance().getBatchCandidateTicketIds(TextUtils.join(":", candidateIdList));
-            List<RegionInfoEntity> regionInfoEntityList = RegionInfoDao.getInstance().getRegionInfoListWithIpList(new ArrayList<>(ipSet));
-            for (CandidateEntity candidateEntity : candidateEntities){
-                String candidateId = candidateEntity.getCandidateId();
-                if (ticketIds.containsKey(candidateId) && ticketIds.get(candidateId) != null){
-                    candidateEntity.setVotedNum(ticketIds.get(candidateId).size());
-                }
-                String host = candidateEntity.getHost();
-                if (TextUtils.isEmpty(host) || regionInfoEntityList.isEmpty()){
-                    continue;
-                }
-                for (RegionInfoEntity entity : regionInfoEntityList ){
-                    if (host.equals(entity.getIp())){
-                        String region = isEnglish ? entity.getCountryEn() : entity.getCountryZh();
-                        String regionPinyin = isEnglish ? entity.getCountryEn() : entity.getCountryPinyin();
-                        try {
-                            if (!TextUtils.isEmpty(region)){
-                                candidateEntity.setRegion(region);
-                                candidateEntity.setRegionPinyin(regionPinyin);
-                                if (ipSet.contains(host)) {
-                                    ipSet.remove(host);
-                                }
-                            }else {
-                                if (System.currentTimeMillis() - entity.getUpdateTime() < UPDATE_REGION_TIME_MILLS){
-                                    if (ipSet.contains(host)) {
-                                        ipSet.remove(host);
-                                    }
-                                }
-                            }
-                        }catch (Exception exp){
-                            exp.printStackTrace();
-                        }
-                        break;
-                    }
-                }
-            }
-            if (!ipSet.isEmpty()){
-                new Thread(){
-                    @Override
-                    public void run() {
-                        updateBatchRegionInfoWithIpList(ipSet);
-                    }
-                }.start();
-            }
-        }catch (Exception exp){
-            exp.printStackTrace();
+            candidateListResp = candidateContract.CandidateList().send();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return candidateEntities;
+        return JSONUtil.parseTwoDimensionArray(candidateListResp, CandidateEntity.class);
     }
 
-    private CandidateEntity toCandidateEntity(CandidateDto dto) {
-        return new CandidateEntity.Builder()
-                .deposit(dto.getDeposit().toString())
-                .blockNumber(dto.getBlockNumber().longValue())
-                .owner(dto.getOwner())
-                .txIndex(dto.getTxIndex().intValue())
-                .candidateId(dto.getCandidateId())
-                .from(dto.getFrom())
-                .fee(10000 - dto.getFee().intValue())
-                .host(dto.getHost())
-                .port(dto.getPort())
-                .extra(dto.getExtra())
-                .build();
-    }
-
-    public CandidateEntity getCandidateDetail(String nodeId){
+    private CandidateEntity getCandidateEntity(String nodeId) {
         Web3j web3j = Web3jManager.getInstance().getWeb3j();
         CandidateContract candidateContract = CandidateContract.load(
                 web3j, new ReadonlyTransactionManager(web3j, CandidateContract.CONTRACT_ADDRESS), new DefaultWasmGasProvider());
+
+        String candidateDetailsResp = null;
         try {
-            boolean isEnglish = true;
-            Locale locale = LanguageUtil.getLocale(App.getContext());
-            if (Locale.CHINESE.getLanguage().equals(locale.getLanguage())) {
-                isEnglish = false;
-            }
-            String                  candidateDetailsResp    = candidateContract.CandidateDetails(nodeId).send();
-            CandidateEntity entity = toCandidateEntity(JSONUtil.parseObject(candidateDetailsResp, CandidateDto.class));
-            CandidateExtraEntity extraEntity = JSONUtil.parseObject(entity.getExtra(), CandidateExtraEntity.class);
-            if (extraEntity != null){
-                entity.setAvatar(extraEntity.getNodePortrait());
-                entity.setCandidateExtraEntity(extraEntity);
-            }
-            entity.setVotedNum(TicketManager.getInstance().getCandidateTicketIdsCounter(entity.getCandidateId()));
-            RegionInfoEntity regionInfoEntity = RegionInfoDao.getInstance().getRegionInfoWithIp(entity.getHost());
-            if (regionInfoEntity != null && !TextUtils.isEmpty(regionInfoEntity.getCountryEn())){
-                entity.setRegion(isEnglish ? regionInfoEntity.getCountryEn() : regionInfoEntity.getCountryZh());
-                entity.setRegionPinyin(isEnglish ? regionInfoEntity.getCountryEn() : regionInfoEntity.getCountryPinyin());
-            }else {
-                entity.setRegion(App.getContext().getString(isEnglish ? R.string.unknownRegionEn : R.string.unknownRegion));
-                entity.setRegionPinyin("*");
-            }
-            return entity;
-        }catch (Exception exp){
-            exp.printStackTrace();
-            return null;
+            candidateDetailsResp = candidateContract.CandidateDetails(nodeId).send();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return JSONUtil.parseObject(candidateDetailsResp, CandidateEntity.class);
     }
 
-    public int getNodeIcon(String nodePortrait) {
-        int resId = -1;
-        try {
-            resId = RUtils.drawable(App.getContext().getResources().getStringArray(R.array.node_avatar)[Integer.parseInt(nodePortrait) - 1]);
-        }catch (Exception exp){
-        }
-        return resId < 0 ? R.drawable.icon_default_coin : resId;
+    private List<RegionInfoEntity> buildRegionInfoEntityList(List<RegionEntity> regionEntities) {
+        return Flowable.fromIterable(regionEntities)
+                .map(new Function<RegionEntity, RegionInfoEntity>() {
+                    @Override
+                    public RegionInfoEntity apply(RegionEntity regionEntity) throws Exception {
+                        return regionEntity.buildRegionInfoEntity();
+                    }
+                }).toList().blockingGet();
     }
 
-    private void updateBatchRegionInfoWithIpList(Set<String> ips) {
-        final String query = "query";
-        final String field = "countryCode";
-        ArrayList<GetRegionInfoRequestEntity> entityArrayList = new ArrayList<>();
-        for (String ip : ips){
-            entityArrayList.add(new GetRegionInfoRequestEntity(ip, field + "," + query, ""));
-        }
-        Request<JSONArray>  request = NoHttp.createJsonArrayRequest(Constants.URL.IP_URL, RequestMethod.POST);
-        request.setConnectTimeout(10 * 1000);
-        request.setReadTimeout(10 * 1000);
-        request.setDefineRequestBody(JSON.toJSONString(entityArrayList), Headers.HEAD_VALUE_CONTENT_TYPE_JSON);
-        Response<JSONArray> response = NoHttp.startRequestSync(request);
-        if (!response.isSucceed()){
-            return ;
-        }
-        JSONArray jsonArray = response.get();
-        if (jsonArray == null){
-            return ;
-        }
-        long updateTime = System.currentTimeMillis();
-        ArrayList<RegionInfoEntity> arrayList = new ArrayList<>();
-        for (int i = 0; i < jsonArray.length(); i++) {
+    private Single<Response<List<RegionEntity>>> getRegionList(String json) {
+        return HttpClient.getInstance()
+                .createService(RegionService.class)
+                .getRegionInfoList(RequestBody.create(MediaType.parse("application/json:charset=utf-8"), json));
+    }
+
+    private Single<String> buildRegionRequestParams(List<String> ipList) {
+        return Flowable.fromIterable(ipList)
+                .map(new Function<String, GetRegionInfoRequestEntity>() {
+                    @Override
+                    public GetRegionInfoRequestEntity apply(String ip) throws Exception {
+                        return new GetRegionInfoRequestEntity(ip, TextUtils.join(",", new String[]{"query", "countryCode"}), "");
+                    }
+                })
+                .toList()
+                .map(new Function<List<GetRegionInfoRequestEntity>, String>() {
+                    @Override
+                    public String apply(List<GetRegionInfoRequestEntity> getRegionInfoRequestEntities) throws Exception {
+                        return JSONUtil.toJSONString(getRegionInfoRequestEntities);
+                    }
+                });
+    }
+
+    /**
+     * 获取国家名称
+     *
+     * @return
+     */
+    public String getCountry(String countryCode) {
+
+        Locale locale = LanguageUtil.getLocale(App.getContext());
+
+        return getCountryByName(Locale.CHINESE.getLanguage().equals(locale.getLanguage()) ? "CN" : "EN", countryCode);
+    }
+
+    private String getCountryByName(String name, String countryCode) {
+        JSONObject object = getRegionObject(countryCode);
+        if (object != null) {
             try {
-                JSONObject jsonObject  = jsonArray.getJSONObject(i);
-                if (!jsonObject.has(query)){
-                    continue;
-                }
-                String countryCode = "";
-                if (jsonObject.has(field)){
-                    countryCode = jsonObject.getString(field);
-                }
-                String queryValue = jsonObject.getString(query);
-                arrayList.add(new RegionInfoEntity.Builder()
-                        .uuid(queryValue)
-                        .ip(queryValue)
-                        .countryCode(countryCode)
-                        .updateTime(updateTime)
-                        .build());
-            } catch (Exception e) {
+                return object.getString(name);
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        if (arrayList.isEmpty()){
-            return;
-        }
-        String regionJson = FileUtil.getAssets(App.getContext(), REGION_NAME);
-        if (TextUtils.isEmpty(regionJson)){
-            return;
-        }
+        return null;
+    }
+
+    private JSONObject getRegionObject(String countryCode) {
+        String regionJson = FileUtil.getAssets(App.getContext(), "region.json");
+        JSONObject object = null;
         try {
-            JSONObject jsonObject  = new JSONObject(regionJson);
-            for (RegionInfoEntity regionInfoEntity : arrayList){
-                try {
-                    String countryCode = regionInfoEntity.getCountryCode();
-                    if (TextUtils.isEmpty(countryCode) || !jsonObject.has(countryCode)){
-                        continue;
-                    }
-                    JSONObject obj = jsonObject.getJSONObject(countryCode);
-                    if (obj != null){
-                        regionInfoEntity.setCountryEn(obj.getString("EN"));
-                        String countryZh = obj.getString("CN");
-                        regionInfoEntity.setCountryZh(countryZh);
-                        regionInfoEntity.setCountryPinyin(Pinyin.toPinyin(countryZh, ""));
-                    }
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-        }catch (Exception e){
+            JSONObject jsonObject = new JSONObject(regionJson);
+            object = jsonObject.getJSONObject(countryCode);
+        } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        RegionInfoDao.getInstance().insertBatchRegionInfo(arrayList);
+        return object;
     }
 
     private static class InstanceHolder {

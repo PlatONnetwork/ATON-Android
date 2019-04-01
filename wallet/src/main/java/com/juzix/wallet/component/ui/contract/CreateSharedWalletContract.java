@@ -39,5 +39,7 @@ public class CreateSharedWalletContract {
         void next();
 
         boolean checkWalletName(String walletName);
+
+        boolean isExists(String walletName);
     }
 }

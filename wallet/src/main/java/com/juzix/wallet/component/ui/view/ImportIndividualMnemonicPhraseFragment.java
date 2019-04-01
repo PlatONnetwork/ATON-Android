@@ -2,13 +2,17 @@ package com.juzix.wallet.component.ui.view;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -23,33 +27,47 @@ import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.MVPBaseFragment;
 import com.juzix.wallet.component.ui.contract.ImportIndividualMnemonicPhraseContract;
 import com.juzix.wallet.component.ui.presenter.ImportIndividualMnemonicPhrasePresenter;
+import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.utils.CheckStrength;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import kotlin.Unit;
 
-public class ImportIndividualMnemonicPhraseFragment extends MVPBaseFragment<ImportIndividualMnemonicPhrasePresenter> implements ImportIndividualMnemonicPhraseContract.View {
+public class ImportIndividualMnemonicPhraseFragment extends MVPBaseFragment<ImportIndividualMnemonicPhrasePresenter> implements View.OnTouchListener, ImportIndividualMnemonicPhraseContract.View {
 
-    private EditText mEtMnemonicPhrase;
-    private EditText mEtWalletName;
-    private ImageView mIvEyes;
-    private ImageView mIvRepeatEyes;
-    private EditText mEtPassword;
-    private EditText mEtRepeatPassword;
-    private TextView mTvPasswordDesc;
-    private Button mBtnImport;
-    private boolean mShowPassword;
-    private boolean mShowRepeatPassword;
-    private TextView mTvStrength;
-    private View mVLine1;
-    private View mVLine2;
-    private View mVLine3;
-    private View mVLine4;
-    private TextView mTvNameError;
-    private TextView mTvMnemonicError;
-    private TextView mTvPasswordError;
+    private EditText     mEtMnemonicPhrase1;
+    private EditText mEtMnemonicPhrase2;
+    private EditText mEtMnemonicPhrase3;
+    private EditText     mEtMnemonicPhrase4;
+    private EditText     mEtMnemonicPhrase5;
+    private EditText     mEtMnemonicPhrase6;
+    private EditText     mEtMnemonicPhrase7;
+    private EditText     mEtMnemonicPhrase8;
+    private EditText     mEtMnemonicPhrase9;
+    private EditText     mEtMnemonicPhrase10;
+    private EditText     mEtMnemonicPhrase11;
+    private EditText     mEtMnemonicPhrase12;
+    private EditText     mEtWalletName;
+    private EditText     mEtPassword;
+    private EditText     mEtRepeatPassword;
+    private TextView     mTvPasswordDesc;
+    private ShadowButton mBtnImport;
+    private boolean      mShowPassword;
+    private boolean      mShowRepeatPassword;
+    private TextView     mTvStrength;
+    private View         mVLine1;
+    private View         mVLine2;
+    private View         mVLine3;
+    private View         mVLine4;
+    private TextView     mTvNameError;
+    private TextView     mTvMnemonicError;
+    private TextView     mTvPasswordError;
 
     @Override
     protected ImportIndividualMnemonicPhrasePresenter createPresenter() {
@@ -65,67 +83,98 @@ public class ImportIndividualMnemonicPhraseFragment extends MVPBaseFragment<Impo
         View view = inflater.inflate(R.layout.fragment_import_individual_mnemonic_phrase, container, false);
         initViews(view);
         addListeners();
+        addTextWatcher();
         initDatas();
         return view;
     }
 
     private void initViews(View rootView) {
-
-        mEtMnemonicPhrase = rootView.findViewById(R.id.et_mnemonic_phrase);
+        mEtMnemonicPhrase1 = rootView.findViewById(R.id.et_mnemonic1);
+        mEtMnemonicPhrase2 = rootView.findViewById(R.id.et_mnemonic2);
+        mEtMnemonicPhrase3 = rootView.findViewById(R.id.et_mnemonic3);
+        mEtMnemonicPhrase4 = rootView.findViewById(R.id.et_mnemonic4);
+        mEtMnemonicPhrase5 = rootView.findViewById(R.id.et_mnemonic5);
+        mEtMnemonicPhrase6 = rootView.findViewById(R.id.et_mnemonic6);
+        mEtMnemonicPhrase7 = rootView.findViewById(R.id.et_mnemonic7);
+        mEtMnemonicPhrase8 = rootView.findViewById(R.id.et_mnemonic8);
+        mEtMnemonicPhrase9 = rootView.findViewById(R.id.et_mnemonic9);
+        mEtMnemonicPhrase10 = rootView.findViewById(R.id.et_mnemonic10);
+        mEtMnemonicPhrase11 = rootView.findViewById(R.id.et_mnemonic11);
+        mEtMnemonicPhrase12 = rootView.findViewById(R.id.et_mnemonic12);
         mTvMnemonicError = rootView.findViewById(R.id.tv_mnemonic_phrase_error);
         mEtWalletName = rootView.findViewById(R.id.et_name);
         mTvNameError = rootView.findViewById(R.id.tv_name_error);
-        mIvEyes = rootView.findViewById(R.id.iv_eyes);
-        mIvRepeatEyes = rootView.findViewById(R.id.iv_repeat_eyes);
         mEtPassword = rootView.findViewById(R.id.et_password);
         mEtRepeatPassword = rootView.findViewById(R.id.et_repeat_password);
         mTvPasswordError = rootView.findViewById(R.id.tv_password_error);
         mTvPasswordDesc = rootView.findViewById(R.id.tv_password_desc);
-        mBtnImport = rootView.findViewById(R.id.btn_import);
+        mBtnImport = rootView.findViewById(R.id.sbtn_import);
         mTvStrength = rootView.findViewById(R.id.tv_strength);
         mVLine1 = rootView.findViewById(R.id.v_line1);
         mVLine2 = rootView.findViewById(R.id.v_line2);
         mVLine3 = rootView.findViewById(R.id.v_line3);
         mVLine4 = rootView.findViewById(R.id.v_line4);
+        mEtPassword.setOnTouchListener(this);
+        mEtRepeatPassword.setOnTouchListener(this);
     }
 
     private void addListeners() {
-
-        RxView.clicks(mIvEyes).subscribe(new Consumer<Unit>() {
-            @Override
-            public void accept(Unit unit) throws Exception {
-                showPassword();
-            }
-        });
-
-        RxView.clicks(mIvRepeatEyes).subscribe(new Consumer<Unit>() {
-            @Override
-            public void accept(Unit unit) throws Exception {
-                showRepeatPassword();
-            }
-        });
-
         RxView.clicks(mBtnImport).subscribe(new Consumer<Unit>() {
             @Override
             public void accept(Unit unit) throws Exception {
-                mPresenter.importMnemonic(mEtMnemonicPhrase.getText().toString(),
+                String mnemonic1 = mEtMnemonicPhrase1.getText().toString().trim();
+                String mnemonic2 = mEtMnemonicPhrase2.getText().toString().trim();
+                String mnemonic3 = mEtMnemonicPhrase3.getText().toString().trim();
+                String mnemonic4 = mEtMnemonicPhrase4.getText().toString().trim();
+                String mnemonic5 = mEtMnemonicPhrase5.getText().toString().trim();
+                String mnemonic6 = mEtMnemonicPhrase6.getText().toString().trim();
+                String mnemonic7 = mEtMnemonicPhrase7.getText().toString().trim();
+                String mnemonic8 = mEtMnemonicPhrase8.getText().toString().trim();
+                String mnemonic9 = mEtMnemonicPhrase9.getText().toString().trim();
+                String mnemonic10 = mEtMnemonicPhrase10.getText().toString().trim();
+                String mnemonic11 = mEtMnemonicPhrase11.getText().toString().trim();
+                String mnemonic12 = mEtMnemonicPhrase12.getText().toString().trim();
+                if (TextUtils.isEmpty(mnemonic1) || TextUtils.isEmpty(mnemonic2) || TextUtils.isEmpty(mnemonic3) || TextUtils.isEmpty(mnemonic4)
+                        || TextUtils.isEmpty(mnemonic5) || TextUtils.isEmpty(mnemonic6) || TextUtils.isEmpty(mnemonic7) || TextUtils.isEmpty(mnemonic8)
+                        || TextUtils.isEmpty(mnemonic9) || TextUtils.isEmpty(mnemonic10) || TextUtils.isEmpty(mnemonic11) || TextUtils.isEmpty(mnemonic12)){
+                    showLongToast(string(R.string.validMnenonicEmptyTips));
+                    return;
+                }
+                if (TextUtils.isEmpty(mnemonic1) && TextUtils.isEmpty(mnemonic2) && TextUtils.isEmpty(mnemonic3) && TextUtils.isEmpty(mnemonic4)
+                        && TextUtils.isEmpty(mnemonic5) && TextUtils.isEmpty(mnemonic6) && TextUtils.isEmpty(mnemonic7) && TextUtils.isEmpty(mnemonic8)
+                        && TextUtils.isEmpty(mnemonic9) && TextUtils.isEmpty(mnemonic10) && TextUtils.isEmpty(mnemonic11) && TextUtils.isEmpty(mnemonic12)){
+                    showLongToast(string(R.string.validMnenonicEmptyTips));
+                    return;
+                }
+                StringBuilder builder = new StringBuilder();
+                builder.append(mnemonic1).append(" ");
+                builder.append(mnemonic2).append(" ");
+                builder.append(mnemonic3).append(" ");
+                builder.append(mnemonic4).append(" ");
+                builder.append(mnemonic5).append(" ");
+                builder.append(mnemonic6).append(" ");
+                builder.append(mnemonic7).append(" ");
+                builder.append(mnemonic8).append(" ");
+                builder.append(mnemonic9).append(" ");
+                builder.append(mnemonic10).append(" ");
+                builder.append(mnemonic11).append(" ");
+                builder.append(mnemonic12);
+                mPresenter.importMnemonic(builder.toString(),
                         mEtWalletName.getText().toString(),
                         mEtPassword.getText().toString(),
                         mEtRepeatPassword.getText().toString());
             }
         });
 
-        Observable<CharSequence> mnemonicPhraseObservable = RxTextView.textChanges(mEtMnemonicPhrase).skipInitialValue();
         Observable<CharSequence> walletNamePhraseObservable = RxTextView.textChanges(mEtWalletName).skipInitialValue();
         Observable<CharSequence> passwordPhraseObservable = RxTextView.textChanges(mEtPassword).skipInitialValue();
         Observable<CharSequence> repeatPasswordPhraseObservable = RxTextView.textChanges(mEtRepeatPassword).skipInitialValue();
 
-        Observable<Boolean> observable1 = Observable.combineLatest(mnemonicPhraseObservable, walletNamePhraseObservable, new BiFunction<CharSequence, CharSequence, Boolean>() {
+        Observable<Boolean> observable1 = walletNamePhraseObservable.map(new Function<CharSequence, Boolean>() {
             @Override
-            public Boolean apply(CharSequence charSequence, CharSequence charSequence2) throws Exception {
-                String mnemonicPhrase = charSequence.toString().trim();
-                String walletName = charSequence2.toString().trim();
-                return !TextUtils.isEmpty(mnemonicPhrase) && !TextUtils.isEmpty(walletName) && walletName.length() <= 12;
+            public Boolean apply(CharSequence charSequence) throws Exception {
+                String walletName = charSequence.toString().trim();
+                return !TextUtils.isEmpty(walletName) && walletName.length() <= 12;
             }
         });
 
@@ -150,20 +199,6 @@ public class ImportIndividualMnemonicPhraseFragment extends MVPBaseFragment<Impo
             }
         });
 
-        RxView.focusChanges(mEtMnemonicPhrase).skipInitialValue().subscribe(new Consumer<Boolean>() {
-            @Override
-            public void accept(Boolean hasFocus) throws Exception {
-                String mnemonicPhrase = mEtMnemonicPhrase.getText().toString().trim();
-                if (!hasFocus) {
-                    if (TextUtils.isEmpty(mnemonicPhrase)) {
-                        showMnemonicPhraseError(string(R.string.validMnenonicEmptyTips), true);
-                    } else {
-                        showMnemonicPhraseError("", false);
-                    }
-                }
-            }
-        });
-
         RxView.focusChanges(mEtWalletName).skipInitialValue().subscribe(new Consumer<Boolean>() {
             @Override
             public void accept(Boolean hasFocus) throws Exception {
@@ -173,7 +208,9 @@ public class ImportIndividualMnemonicPhraseFragment extends MVPBaseFragment<Impo
                         showNameError(string(R.string.validWalletNameEmptyTips), true);
                     } else if (name.length() > 12) {
                         showNameError(string(R.string.validWalletNameTips), true);
-                    } else {
+                    } else if (mPresenter.isExists(name)){
+                        showNameError(string(R.string.wallet_name_exists), true);
+                    }else {
                         showNameError("", false);
                     }
                 }
@@ -219,6 +256,47 @@ public class ImportIndividualMnemonicPhraseFragment extends MVPBaseFragment<Impo
         });
     }
 
+    private void addTextWatcher(){
+        setTextWatcher(mEtMnemonicPhrase1, mEtMnemonicPhrase2);
+        setTextWatcher(mEtMnemonicPhrase2, mEtMnemonicPhrase3);
+        setTextWatcher(mEtMnemonicPhrase3, mEtMnemonicPhrase4);
+        setTextWatcher(mEtMnemonicPhrase4, mEtMnemonicPhrase5);
+        setTextWatcher(mEtMnemonicPhrase5, mEtMnemonicPhrase6);
+        setTextWatcher(mEtMnemonicPhrase6, mEtMnemonicPhrase7);
+        setTextWatcher(mEtMnemonicPhrase7, mEtMnemonicPhrase8);
+        setTextWatcher(mEtMnemonicPhrase8, mEtMnemonicPhrase9);
+        setTextWatcher(mEtMnemonicPhrase9, mEtMnemonicPhrase10);
+        setTextWatcher(mEtMnemonicPhrase10, mEtMnemonicPhrase11);
+        setTextWatcher(mEtMnemonicPhrase11, mEtMnemonicPhrase12);
+        setTextWatcher(mEtMnemonicPhrase12, null);
+    }
+
+    private void setTextWatcher(EditText src, EditText dst){
+        src.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String text = s.toString();
+                if (text.contains(" ")){
+                    src.setText(text.replace(" ",""));
+                    if (dst != null) {
+                        dst.requestFocus();
+                        dst.setSelection(dst.getText().length());
+                    }
+                }
+            }
+        });
+    }
+
     private void initDatas() {
         enableImport(false);
         showPassword();
@@ -227,6 +305,33 @@ public class ImportIndividualMnemonicPhraseFragment extends MVPBaseFragment<Impo
         showNameError("", false);
         showPasswordError("", false);
         mPresenter.init();
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        if (v == mEtPassword){
+            Drawable drawable = mEtPassword.getCompoundDrawables()[2];
+            if (drawable == null)
+                return false;
+            if (event.getAction() != MotionEvent.ACTION_UP)
+                return false;
+            if (event.getX() > mEtPassword.getWidth() - mEtPassword.getPaddingRight() - drawable.getIntrinsicWidth()){
+                showPassword();
+            }
+            return false;
+        }else if (v == mEtRepeatPassword){
+            Drawable drawable = mEtRepeatPassword.getCompoundDrawables()[2];
+            if (drawable == null)
+                return false;
+            if (event.getAction() != MotionEvent.ACTION_UP)
+                return false;
+            if (event.getX() > mEtRepeatPassword.getWidth() - mEtRepeatPassword.getPaddingRight() - drawable.getIntrinsicWidth()){
+                showRepeatPassword();
+            }
+            return false;
+        }
+
+        return false;
     }
 
     @Override
@@ -252,25 +357,35 @@ public class ImportIndividualMnemonicPhraseFragment extends MVPBaseFragment<Impo
     }
 
     @Override
-    public void showQRCode(String QRCode) {
-        mEtMnemonicPhrase.setText(QRCode);
+    public void showMnemonicWords(List<String> words) {
+        mEtMnemonicPhrase1.setText(words.get(0));
+        mEtMnemonicPhrase2.setText(words.get(1));
+        mEtMnemonicPhrase3.setText(words.get(2));
+        mEtMnemonicPhrase4.setText(words.get(3));
+        mEtMnemonicPhrase5.setText(words.get(4));
+        mEtMnemonicPhrase6.setText(words.get(5));
+        mEtMnemonicPhrase7.setText(words.get(6));
+        mEtMnemonicPhrase8.setText(words.get(7));
+        mEtMnemonicPhrase9.setText(words.get(8));
+        mEtMnemonicPhrase10.setText(words.get(9));
+        mEtMnemonicPhrase11.setText(words.get(10));
+        mEtMnemonicPhrase12.setText(words.get(11));
     }
 
     private void enableImport(boolean enabled) {
         mBtnImport.setEnabled(enabled);
-        mBtnImport.setBackgroundColor(ContextCompat.getColor(getContext(), enabled ? R.color.color_eff0f5 : R.color.color_373e51));
     }
 
     private void showPassword() {
         if (mShowPassword) {
             // 显示密码
-            mIvEyes.setImageDrawable(getResources().getDrawable(R.drawable.icon_open_eyes));
+            mEtPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_open_eyes, 0);
             mEtPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
             mEtPassword.setSelection(mEtPassword.getText().toString().length());
             mShowPassword = !mShowPassword;
         } else {
             // 隐藏密码
-            mIvEyes.setImageDrawable(getResources().getDrawable(R.drawable.icon_close_eyes));
+            mEtPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_close_eyes, 0);
             mEtPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
             mEtPassword.setSelection(mEtPassword.getText().toString().length());
             mShowPassword = !mShowPassword;
@@ -280,13 +395,13 @@ public class ImportIndividualMnemonicPhraseFragment extends MVPBaseFragment<Impo
     private void showRepeatPassword() {
         if (mShowRepeatPassword) {
             // 显示密码
-            mIvRepeatEyes.setImageDrawable(getResources().getDrawable(R.drawable.icon_open_eyes));
+            mEtRepeatPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_open_eyes, 0);
             mEtRepeatPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
             mEtRepeatPassword.setSelection(mEtRepeatPassword.getText().toString().length());
             mShowRepeatPassword = !mShowRepeatPassword;
         } else {
             // 隐藏密码
-            mIvRepeatEyes.setImageDrawable(getResources().getDrawable(R.drawable.icon_close_eyes));
+            mEtRepeatPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_close_eyes, 0);
             mEtRepeatPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
             mEtRepeatPassword.setSelection(mEtRepeatPassword.getText().toString().length());
             mShowRepeatPassword = !mShowRepeatPassword;
@@ -305,32 +420,32 @@ public class ImportIndividualMnemonicPhraseFragment extends MVPBaseFragment<Impo
         switch (CheckStrength.getPasswordLevelNew(password)) {
             case EASY:
                 mTvStrength.setText(R.string.weak);
-                mVLine1.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_ff4747));
+                mVLine1.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_ff9000));
                 mVLine2.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_00000000));
                 mVLine3.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_00000000));
                 mVLine4.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_00000000));
                 break;
             case MIDIUM:
                 mTvStrength.setText(R.string.so_so);
-                mVLine1.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_ff9947));
-                mVLine2.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_ff9947));
+                mVLine1.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_ff9000));
+                mVLine2.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_ff9000));
                 mVLine3.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_00000000));
                 mVLine4.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_00000000));
                 break;
             case STRONG:
                 mTvStrength.setText(R.string.good);
-                mVLine1.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_ffed54));
-                mVLine2.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_ffed54));
-                mVLine3.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_ffed54));
+                mVLine1.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_ff9000));
+                mVLine2.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_ff9000));
+                mVLine3.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_ff9000));
                 mVLine4.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_00000000));
                 break;
             case VERY_STRONG:
             case EXTREMELY_STRONG:
                 mTvStrength.setText(R.string.strong);
-                mVLine1.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_41d325));
-                mVLine2.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_41d325));
-                mVLine3.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_41d325));
-                mVLine4.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_41d325));
+                mVLine1.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_ff9000));
+                mVLine2.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_ff9000));
+                mVLine3.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_ff9000));
+                mVLine4.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_ff9000));
                 break;
             default:
                 break;

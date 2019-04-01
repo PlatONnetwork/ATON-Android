@@ -1,5 +1,6 @@
 package com.juzix.wallet.component.widget;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -13,28 +14,47 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding3.view.RxView;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.utils.DensityUtil;
+
+import java.util.concurrent.TimeUnit;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+import io.reactivex.functions.Consumer;
+import kotlin.Unit;
 
 /**
  * @author matrixelement
  */
 public class CommonTitleBar extends LinearLayout {
 
-    private final static int DEFAULT_TITLE_SIZE = 16;
-    private TextView tvMiddleTitle;
-    private ImageView ivLeft;
-    private ImageView ivRight;
-    private TextView tvRight;
-    private Context context;
-    private CharSequence middleText;
-    private Drawable leftDrawable;
-    private Drawable rightDrawable;
-    private int background;
-    private int titleColor;
-    private float titleSize;
-    private CharSequence rightText;
+    @BindView(R.id.iv_left)
+    ImageView ivLeft;
+    @BindView(R.id.tv_title)
+    TextView tvTitle;
+    @BindView(R.id.iv_right)
+    ImageView ivRight;
+    @BindView(R.id.tv_right)
+    TextView tvRight;
+
+    private CharSequence mTitle;
+    private int mTitleColor;
+    private float mTitleSize;
+
+    private CharSequence mRightText;
+    private int mRightTextColor;
+    private float mRightTextSize;
+
+    private Drawable mLeftDrawable;
+    private Drawable mRightDrawable;
+    private Drawable mBackground;
+
+    private Context mContext;
+    private Unbinder unbinder;
 
     public CommonTitleBar(Context context) {
         this(context, null, 0);
@@ -46,18 +66,23 @@ public class CommonTitleBar extends LinearLayout {
         init(context);
     }
 
+    @SuppressLint("ResourceType")
     public CommonTitleBar(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.CommonTitleBar, defStyleAttr, 0);
 
-        middleText = ta.getText(R.styleable.CommonTitleBar_ctb_middle_text);
-        leftDrawable = ta.getDrawable(R.styleable.CommonTitleBar_ctb_left_drawable);
-        rightDrawable = ta.getDrawable(R.styleable.CommonTitleBar_ctb_right_drawable);
-        background = ta.getColor(R.styleable.CommonTitleBar_ctb_background, ContextCompat.getColor(context, R.color.color_232e48));
-        titleColor = ta.getColor(R.styleable.CommonTitleBar_ctb_title_color, ContextCompat.getColor(context, R.color.color_ffffff));
-        titleSize = ta.getDimensionPixelSize(R.styleable.CommonTitleBar_ctb_title_size, DensityUtil.sp2px(context, DEFAULT_TITLE_SIZE));
-        rightText = ta.getText(R.styleable.CommonTitleBar_ctb_right_text);
+        mTitle = ta.getText(R.styleable.CommonTitleBar_ctb_title);
+        mTitleColor = ta.getColor(R.styleable.CommonTitleBar_ctb_title_color, ContextCompat.getColor(context, R.color.color_000000));
+        mTitleSize = ta.getDimensionPixelSize(R.styleable.CommonTitleBar_ctb_title_size, DensityUtil.sp2px(context, 16f));
+
+        mRightText = ta.getText(R.styleable.CommonTitleBar_ctb_right_text);
+        mRightTextColor = ta.getColor(R.styleable.CommonTitleBar_ctb_right_text_color, ContextCompat.getColor(context, R.color.color_000000));
+        mRightTextSize = ta.getDimensionPixelSize(R.styleable.CommonTitleBar_ctb_right_text_size, DensityUtil.sp2px(context, 16f));
+
+        mLeftDrawable = ta.getDrawable(R.styleable.CommonTitleBar_ctb_left_drawable);
+        mRightDrawable = ta.getDrawable(R.styleable.CommonTitleBar_ctb_right_drawable);
+        mBackground = ta.getDrawable(5);
 
         ta.recycle();
 
@@ -65,91 +90,157 @@ public class CommonTitleBar extends LinearLayout {
     }
 
     private void init(Context context) {
-        this.context = context;
-        LayoutInflater.from(context).inflate(R.layout.layout_common_title_bar, this);
-        tvMiddleTitle = findViewById(R.id.tv_title);
-        ivLeft = findViewById(R.id.iv_left);
-        ivRight = findViewById(R.id.iv_right);
-        tvRight = findViewById(R.id.tv_right);
 
-        setMiddleTitle(middleText);
-        setMiddleTitleColor(titleColor);
-        setMiddleTitleSize(titleSize);
-        setLeftDrawable(leftDrawable);
-        setRightDrawable(rightDrawable);
-        setBackgroundColor(background);
-        setRightText(rightText);
+        this.mContext = context;
+
+        unbinder = ButterKnife.bind(this, LayoutInflater.from(context).inflate(R.layout.layout_common_title_bar, this));
+
+        setTitle(mTitle);
+        setTitleColor(mTitleColor);
+        setTitleSize(mTitleSize);
+        setRightText(mRightText);
+        setRightTextColor(mRightTextColor);
+        setRightTextSize(mRightTextSize);
+        setLeftDrawable(mLeftDrawable);
+        setRightDrawable(mRightDrawable);
+        setBackgroundDrawable(mBackground);
     }
 
-    public CommonTitleBar setMiddleTitle(String middleTitle) {
-        if (TextUtils.isEmpty(middleTitle)) {
-            tvMiddleTitle.setVisibility(GONE);
-        } else {
-            tvMiddleTitle.setText(middleTitle);
-            tvMiddleTitle.setVisibility(VISIBLE);
-        }
 
+    public CommonTitleBar title(CharSequence val) {
+        setTitle(val);
         return this;
     }
 
-    public CommonTitleBar setMiddleTitle(CharSequence middleTitle) {
-        if (TextUtils.isEmpty(middleTitle)) {
-            tvMiddleTitle.setVisibility(GONE);
-        } else {
-            tvMiddleTitle.setText(middleTitle);
-            tvMiddleTitle.setVisibility(VISIBLE);
-        }
-
+    public CommonTitleBar titleColor(int val) {
+        setTitleColor(val);
         return this;
     }
 
-    public CommonTitleBar setRightText(CharSequence rightText) {
+    public CommonTitleBar titleSize(float val) {
+        setTitleSize(val);
+        return this;
+    }
 
+    public CommonTitleBar rightText(CharSequence val) {
+        setRightText(val);
+        return this;
+    }
+
+    public CommonTitleBar rightTextColor(int val) {
+        setRightTextColor(val);
+        return this;
+    }
+
+    public CommonTitleBar rightTextSize(float val) {
+        setRightTextSize(val);
+        return this;
+    }
+
+    public CommonTitleBar leftDrawable(Drawable val) {
+        setLeftDrawable(val);
+        return this;
+    }
+
+    public CommonTitleBar rightDrawable(Drawable val) {
+        setRightDrawable(val);
+        return this;
+    }
+
+    public CommonTitleBar leftDrawableClickListener(OnClickListener clickListener) {
+        setLeftDrawableClickListener(clickListener);
+        return this;
+    }
+
+    public CommonTitleBar rightDrawableClickListener(OnClickListener clickListener) {
+        setRightDrawableClickListener(clickListener);
+        return this;
+    }
+
+    public CommonTitleBar background(Drawable val) {
+        setBackgroundDrawable(val);
+        return this;
+    }
+
+    public void setTitle(String title) {
+        if (TextUtils.isEmpty(title)) {
+            tvTitle.setVisibility(GONE);
+        } else {
+            tvTitle.setText(title);
+            tvTitle.setVisibility(VISIBLE);
+        }
+    }
+
+    public void setTitle(CharSequence title) {
+
+        RxView.clicks(tvTitle)
+                .throttleFirst(500, TimeUnit.MILLISECONDS)
+                .subscribe(new Consumer<Unit>() {
+                    @Override
+                    public void accept(Unit unit) throws Exception {
+                        if (mContext instanceof Activity) {
+                            BaseActivity baseActivity = (BaseActivity) mContext;
+                            baseActivity.hideSoftInput();
+                            baseActivity.finish();
+                        }
+                    }
+                });
+
+        if (TextUtils.isEmpty(title)) {
+            tvTitle.setVisibility(GONE);
+        } else {
+            tvTitle.setText(title);
+            tvTitle.setVisibility(VISIBLE);
+        }
+    }
+
+    public void setTitleColor(int color) {
+        if (tvTitle.getVisibility() == VISIBLE) {
+            tvTitle.setTextColor(color);
+        }
+    }
+
+    public void setTitleSize(float size) {
+        if (tvTitle.getVisibility() == VISIBLE) {
+            tvTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        }
+    }
+
+    public void setRightText(CharSequence rightText) {
         if (TextUtils.isEmpty(rightText)) {
             tvRight.setVisibility(GONE);
         } else {
             tvRight.setText(rightText);
             tvRight.setVisibility(VISIBLE);
         }
-
-        return this;
     }
 
-    public CommonTitleBar setRightText(CharSequence rightText, OnClickListener listener) {
-
-        tvRight.setOnClickListener(listener);
-
-        if (TextUtils.isEmpty(rightText)) {
-            tvRight.setVisibility(GONE);
-        } else {
-            tvRight.setText(rightText);
-            tvRight.setVisibility(VISIBLE);
+    public void setRightTextColor(int color) {
+        if (tvRight.getVisibility() == VISIBLE) {
+            tvRight.setTextColor(color);
         }
-
-        return this;
     }
 
-    public CommonTitleBar setMiddleTitleColor(int color) {
-        if (tvMiddleTitle.getVisibility() == VISIBLE) {
-            tvMiddleTitle.setTextColor(color);
+    public void setRightTextSize(float size) {
+        if (tvRight.getVisibility() == VISIBLE) {
+            tvRight.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
         }
-        return this;
     }
 
-    public CommonTitleBar setMiddleTitleSize(float size) {
-        if (tvMiddleTitle.getVisibility() == VISIBLE) {
-            tvMiddleTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-        }
-        return this;
-    }
+    public void setLeftDrawable(int leftImage) {
 
-    public CommonTitleBar setLeftDrawable(int leftImage) {
-
-        ivLeft.setOnClickListener(v -> {
-            if (context instanceof Activity) {
-                ((Activity) context).finish();
-            }
-        });
+        RxView.clicks(ivLeft)
+                .throttleFirst(500, TimeUnit.MILLISECONDS)
+                .subscribe(new Consumer<Unit>() {
+                    @Override
+                    public void accept(Unit unit) throws Exception {
+                        if (mContext instanceof Activity) {
+                            BaseActivity baseActivity = (BaseActivity) mContext;
+                            baseActivity.hideSoftInput();
+                            baseActivity.finish();
+                        }
+                    }
+                });
 
         if (leftImage == -1) {
             ivLeft.setVisibility(GONE);
@@ -157,18 +248,23 @@ public class CommonTitleBar extends LinearLayout {
             ivLeft.setImageResource(leftImage);
             ivLeft.setVisibility(VISIBLE);
         }
-
-        return this;
     }
 
     public void setLeftDrawable(Drawable leftDrawable) {
 
-        ivLeft.setOnClickListener(v -> {
-            if (context instanceof Activity) {
-                ((Activity) context).finish();
-            }
-        });
-        
+        RxView.clicks(ivLeft)
+                .throttleFirst(500, TimeUnit.MILLISECONDS)
+                .subscribe(new Consumer<Unit>() {
+                    @Override
+                    public void accept(Unit unit) throws Exception {
+                        if (mContext instanceof Activity) {
+                            BaseActivity baseActivity = (BaseActivity) mContext;
+                            baseActivity.hideSoftInput();
+                            baseActivity.finish();
+                        }
+                    }
+                });
+
         if (leftDrawable == null) {
             ivLeft.setVisibility(GONE);
         } else {
@@ -177,19 +273,17 @@ public class CommonTitleBar extends LinearLayout {
         }
     }
 
-    public CommonTitleBar setRightDrawable(Drawable rightDrawable) {
+    public void setRightDrawable(Drawable rightDrawable) {
+
         if (rightDrawable == null) {
             ivRight.setVisibility(GONE);
         } else {
             ivRight.setBackgroundDrawable(rightDrawable);
             ivRight.setVisibility(VISIBLE);
         }
-        return this;
     }
 
-    public CommonTitleBar setRightDrawable(int rightImage, OnClickListener listener) {
-
-        ivRight.setOnClickListener(listener);
+    public void setRightDrawable(int rightImage) {
 
         if (rightImage == -1) {
             ivRight.setVisibility(GONE);
@@ -197,25 +291,49 @@ public class CommonTitleBar extends LinearLayout {
             ivRight.setImageResource(rightImage);
             ivRight.setVisibility(VISIBLE);
         }
-
-        return this;
     }
 
-    public void setLeftImageOnClickListener(OnClickListener listener) {
+    public void setLeftDrawableClickListener(OnClickListener listener) {
         if (ivLeft.getVisibility() == VISIBLE) {
-            ivLeft.setOnClickListener(listener);
+            RxView.clicks(ivLeft)
+                    .throttleFirst(500, TimeUnit.MILLISECONDS)
+                    .subscribe(new Consumer<Unit>() {
+                        @Override
+                        public void accept(Unit unit) throws Exception {
+                            if (listener != null) {
+                                listener.onClick(ivLeft);
+                            }
+                        }
+                    });
         }
     }
 
-    public void setRightImageOnClickListener(OnClickListener listener) {
+    public void setRightDrawableClickListener(OnClickListener listener) {
         if (ivRight.getVisibility() == VISIBLE) {
-            ivRight.setOnClickListener(listener);
+            RxView.clicks(ivRight)
+                    .throttleFirst(500, TimeUnit.MILLISECONDS)
+                    .subscribe(new Consumer<Unit>() {
+                        @Override
+                        public void accept(Unit unit) throws Exception {
+                            if (listener != null) {
+                                listener.onClick(ivRight);
+                            }
+                        }
+                    });
         }
     }
 
     public void build() {
-        if (context instanceof BaseActivity) {
-            ((BaseActivity) context).getContentView().addView(this, 0);
+        if (mContext instanceof BaseActivity) {
+            ((BaseActivity) mContext).getContentView().addView(this, 0);
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (unbinder != null) {
+            unbinder.unbind();
         }
     }
 

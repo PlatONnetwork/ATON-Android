@@ -5,12 +5,12 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.juzix.wallet.BuildConfig;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.BaseFragment;
-import com.juzix.wallet.component.widget.CommonTitleBar;
 import com.juzix.wallet.utils.ShareUtil;
 import com.juzix.wallet.utils.ToastUtil;
 
@@ -24,9 +24,8 @@ import butterknife.Unbinder;
  */
 public class MeFragment extends BaseFragment {
 
-    @BindView(R.id.commonTitleBar)
-    CommonTitleBar commonTitleBar;
-
+    @BindView(R.id.tv_title)
+    TextView tvTitle;
     Unbinder unbinder;
 
     @Nullable
@@ -34,7 +33,7 @@ public class MeFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_me, container, false);
         unbinder = ButterKnife.bind(this, rootView);
-        commonTitleBar.setOnLongClickListener(new View.OnLongClickListener() {
+        tvTitle.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 ToastUtil.showLongToast(getContext(), BuildConfig.VERSION_NAME);

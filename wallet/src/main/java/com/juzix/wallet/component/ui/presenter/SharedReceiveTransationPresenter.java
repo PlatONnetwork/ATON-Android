@@ -57,7 +57,7 @@ public class SharedReceiveTransationPresenter extends BasePresenter<SharedReceiv
 
                 @Override
                 public Bitmap call() throws Exception {
-                    return QRCodeEncoder.syncEncodeQRCode(walletEntity.getPrefixContractAddress(), DensityUtil.dp2px(getContext(), 250f));
+                    return QRCodeEncoder.syncEncodeQRCode(walletEntity.getPrefixAddress(), DensityUtil.dp2px(getContext(), 250f));
                 }
             }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).doOnSubscribe(new Consumer<Subscription>() {
                 @Override
@@ -92,7 +92,7 @@ public class SharedReceiveTransationPresenter extends BasePresenter<SharedReceiv
                         @Override
                         public void accept(NodeEntity nodeEntity) throws Exception {
                             if (isViewAttached()) {
-                                getView().showWarnDialogFragment();
+//                                getView().showWarnDialogFragment();
                             }
                         }
                     });
@@ -113,7 +113,7 @@ public class SharedReceiveTransationPresenter extends BasePresenter<SharedReceiv
         if (mQRCodeBitmap == null){
             return;
         }
-        View  shareView = getView().shareView(walletEntity.getName(), walletEntity.getPrefixContractAddress(), mQRCodeBitmap);
+        View  shareView = getView().shareView(walletEntity.getName(), walletEntity.getPrefixAddress(), mQRCodeBitmap);
         final BaseActivity activity  = currentActivity();
         JZAppConfigure.getInstance().getDir(activity, JZDirType.plat, new JZAppConfigure.DirCallback() {
             @Override
@@ -135,6 +135,6 @@ public class SharedReceiveTransationPresenter extends BasePresenter<SharedReceiv
     }
 
     private String getImageName(){
-        return walletEntity.getPrefixContractAddress() + ".jpg";
+        return walletEntity.getPrefixAddress() + ".jpg";
     }
 }

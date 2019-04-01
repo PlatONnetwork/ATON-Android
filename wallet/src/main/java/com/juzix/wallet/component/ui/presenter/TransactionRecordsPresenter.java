@@ -60,7 +60,7 @@ public class TransactionRecordsPresenter extends BasePresenter<TransactionRecord
                 })
                 .compose(new SchedulersTransformer())
                 .compose(bindToLifecycle())
-                .compose(LoadingTransformer.bindToLifecycle(currentActivity()))
+                .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
                 .subscribe(new Consumer<List<TransactionEntity>>() {
                     @Override
                     public void accept(List<TransactionEntity> transactionEntityList) throws Exception {

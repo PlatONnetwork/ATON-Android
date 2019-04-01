@@ -11,7 +11,6 @@ import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.adapter.CommonAdapter;
 import com.juzix.wallet.component.adapter.base.ViewHolder;
-import com.juzix.wallet.component.widget.CommonTitleBar;
 import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 
@@ -25,8 +24,6 @@ import butterknife.Unbinder;
  */
 public class SelectWalletInfoDialogFragment extends BaseDialogFragment {
 
-    @BindView(R.id.commonTitleBar)
-    CommonTitleBar commonTitleBar;
     @BindView(R.id.list_wallet)
     ListView       listWallet;
 
@@ -70,13 +67,6 @@ public class SelectWalletInfoDialogFragment extends BaseDialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-
-        commonTitleBar.setLeftImageOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
 
         listWallet.setAdapter(new CommonAdapter<IndividualWalletEntity>(R.layout.item_select_wallet_list, IndividualWalletManager.getInstance().getWalletList()) {
             @Override

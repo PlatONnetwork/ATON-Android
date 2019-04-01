@@ -3,6 +3,8 @@ package com.juzix.wallet.utils;
 import android.content.Context;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.WindowManager;
 
 /**
@@ -80,6 +82,26 @@ public class DensityUtil {
         DisplayMetrics dm = new DisplayMetrics();
         wm.getDefaultDisplay().getMetrics(dm);
         return dm.heightPixels;
+    }
+
+    public static boolean isTouchInView(View view, MotionEvent event) {
+        if (view == null || event == null) {
+            return false;
+        }
+
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        int left   = location[0];
+        int top    = location[1];
+        int right  = left + view.getMeasuredWidth();
+        int bottom = top + view.getMeasuredHeight();
+        int x      = (int) event.getX();
+        int y      = (int) event.getY();
+        if (x >= left && x <= right && y >= top && y <= bottom) {
+            return true;
+        }
+
+        return false;
     }
 
 }

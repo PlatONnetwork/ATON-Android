@@ -3,7 +3,6 @@
     android:id="@+id/layout_no_data"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/color_1b2137"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:paddingTop="66dp">
@@ -16,7 +15,7 @@
 
     <TextView
         android:id="@+id/tv_warning"
-        style="@style/Text.fff.16"
+        style="@style/Text.898c9e.14"
         android:layout_marginTop="26dp"
         android:text="@string/no_transaction_record" />
 

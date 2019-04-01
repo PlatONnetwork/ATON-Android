@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_1b2137"
+    android:background="@color/color_ffffff"
     android:clipToPadding="true"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
@@ -14,7 +15,7 @@
         android:layout_marginTop="22dp"
         android:layout_marginRight="20dp"
         android:text="@string/exportPrivateKeyTips"
-        android:textColor="@color/color_ffed54"
+        android:textColor="@color/color_ff6b00"
         android:textSize="12sp" />
 
     <TextView
@@ -24,11 +25,11 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="16dp"
         android:layout_marginRight="20dp"
-        android:background="@color/color_232e48"
         android:lineSpacingExtra="8dp"
         android:padding="15dp"
-        android:textColor="@color/color_ffffff"
-        android:textSize="12sp" />
+        android:background="@color/color_f0f1f5"
+        android:textColor="@color/color_000000"
+        android:textSize="13sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -37,19 +38,17 @@
         android:gravity="bottom"
         android:orientation="vertical">
 
-        <Button
+        <com.juzix.wallet.component.widget.ShadowButton
             android:id="@+id/btn_copy"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:background="@color/color_eff0f5"
-            android:fontFamily="normal"
-            android:text="@string/copy"
-            android:textAllCaps="false"
-            android:textColor="@color/color_1b2137"
-            android:textSize="14sp" />
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            app:text="@string/copy"
+            app:enabled="true"
+            app:textAppearance="@style/MainButtonStyle"
+            app:textBackground="@drawable/bg_main_button" />
     </LinearLayout>
 
 </LinearLayout>
