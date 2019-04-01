@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,25 +16,219 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="23dp"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
             android:text="@string/importMnemonicPhraseResume"
-            android:textColor="@color/color_ffffff"
-            android:textSize="12sp" />
+            android:textColor="@color/color_61646e"
+            android:textSize="12sp"/>
 
-        <EditText
-            android:id="@+id/et_mnemonic_phrase"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/bg_shape_edittext1"
-            android:gravity="left|top"
-            android:hint="@string/inputMnemonicPhraseTips"
-            android:minHeight="130dp"
-            android:padding="10dp"
-            android:textColor="@color/color_ffffff"
-            android:textColorHint="@color/color_7a8092"
-            android:textSize="12sp" />
+            android:layout_marginTop="8dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/et_mnemonic1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_edittext_mnemonic"
+                    android:gravity="center"
+                    android:hint="1"
+                    android:digits="@string/inputDigitsMnemonic"
+                    android:maxLength="12"
+                    android:textColor="@color/color_000000"
+                    android:textColorHint="@color/color_b6bbd0"
+                    android:textSize="12sp"/>
+
+                <EditText
+                    android:id="@+id/et_mnemonic2"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_edittext_mnemonic"
+                    android:gravity="center"
+                    android:hint="2"
+                    android:digits="@string/inputDigitsMnemonic"
+                    android:maxLength="12"
+                    android:textColor="@color/color_000000"
+                    android:textColorHint="@color/color_b6bbd0"
+                    android:textSize="12sp"/>
+
+                <EditText
+                    android:id="@+id/et_mnemonic3"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_edittext_mnemonic"
+                    android:gravity="center"
+                    android:hint="3"
+                    android:digits="@string/inputDigitsMnemonic"
+                    android:maxLength="12"
+                    android:textColor="@color/color_000000"
+                    android:textColorHint="@color/color_b6bbd0"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="6dp"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/et_mnemonic4"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_edittext_mnemonic"
+                    android:gravity="center"
+                    android:hint="4"
+                    android:digits="@string/inputDigitsMnemonic"
+                    android:maxLength="12"
+                    android:textColor="@color/color_000000"
+                    android:textColorHint="@color/color_b6bbd0"
+                    android:textSize="12sp"/>
+
+                <EditText
+                    android:id="@+id/et_mnemonic5"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_edittext_mnemonic"
+                    android:gravity="center"
+                    android:hint="5"
+                    android:digits="@string/inputDigitsMnemonic"
+                    android:maxLength="12"
+                    android:textColor="@color/color_000000"
+                    android:textColorHint="@color/color_b6bbd0"
+                    android:textSize="12sp"/>
+
+                <EditText
+                    android:id="@+id/et_mnemonic6"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_edittext_mnemonic"
+                    android:gravity="center"
+                    android:hint="6"
+                    android:digits="@string/inputDigitsMnemonic"
+                    android:maxLength="12"
+                    android:textColor="@color/color_000000"
+                    android:textColorHint="@color/color_b6bbd0"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="6dp"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/et_mnemonic7"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_edittext_mnemonic"
+                    android:gravity="center"
+                    android:hint="7"
+                    android:digits="@string/inputDigitsMnemonic"
+                    android:maxLength="12"
+                    android:textColor="@color/color_000000"
+                    android:textColorHint="@color/color_b6bbd0"
+                    android:textSize="12sp"/>
+
+                <EditText
+                    android:id="@+id/et_mnemonic8"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_edittext_mnemonic"
+                    android:gravity="center"
+                    android:hint="8"
+                    android:digits="@string/inputDigitsMnemonic"
+                    android:maxLength="12"
+                    android:textColor="@color/color_000000"
+                    android:textColorHint="@color/color_b6bbd0"
+                    android:textSize="12sp"/>
+
+                <EditText
+                    android:id="@+id/et_mnemonic9"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_edittext_mnemonic"
+                    android:gravity="center"
+                    android:hint="9"
+                    android:digits="@string/inputDigitsMnemonic"
+                    android:maxLength="12"
+                    android:textColor="@color/color_000000"
+                    android:textColorHint="@color/color_b6bbd0"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="6dp"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/et_mnemonic10"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_edittext_mnemonic"
+                    android:gravity="center"
+                    android:hint="10"
+                    android:digits="@string/inputDigitsMnemonic"
+                    android:maxLength="12"
+                    android:textColor="@color/color_000000"
+                    android:textColorHint="@color/color_b6bbd0"
+                    android:textSize="12sp"/>
+
+                <EditText
+                    android:id="@+id/et_mnemonic11"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_edittext_mnemonic"
+                    android:gravity="center"
+                    android:hint="11"
+                    android:digits="@string/inputDigitsMnemonic"
+                    android:maxLength="12"
+                    android:textColor="@color/color_000000"
+                    android:textColorHint="@color/color_b6bbd0"
+                    android:textSize="12sp"/>
+
+                <EditText
+                    android:id="@+id/et_mnemonic12"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_edittext_mnemonic"
+                    android:gravity="center"
+                    android:hint="12"
+                    android:digits="@string/inputDigitsMnemonic"
+                    android:maxLength="12"
+                    android:textColor="@color/color_000000"
+                    android:textColorHint="@color/color_b6bbd0"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tv_mnemonic_phrase_error"
@@ -43,20 +238,25 @@
             android:text="Name can't be empty !"
             android:textColor="@color/color_ff4747"
             android:textSize="12sp"
-            android:visibility="gone" />
+            android:visibility="gone"/>
+
+        <TextView
+            style="@style/Text.61646e.16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/name"/>
 
         <EditText
             android:id="@+id/et_name"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginTop="8dp"
-            android:background="@drawable/bg_shape_edittext1"
+            android:background="@drawable/bg_edittext_underline"
             android:hint="@string/nameOfWallet"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:textColor="@color/color_ffffff"
-            android:textColorHint="@color/color_7a8092"
-            android:textSize="12sp" />
+            android:textColor="@color/color_000000"
+            android:textColorHint="@color/color_b6bbd0"
+            android:textSize="13sp"/>
 
         <TextView
             android:id="@+id/tv_name_error"
@@ -66,96 +266,53 @@
             android:text="Name can't be empty !"
             android:textColor="@color/color_ff4747"
             android:textSize="12sp"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
-        <LinearLayout
+        <TextView
+            style="@style/Text.61646e.16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/password"/>
+
+        <EditText
+            android:id="@+id/et_password"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_gravity="center_vertical"
             android:layout_marginTop="12dp"
-            android:background="@color/color_262d42"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp">
+            android:background="@drawable/bg_edittext_underline"
+            android:digits="@string/inputDigits"
+            android:drawableRight="@drawable/icon_close_eyes"
+            android:hint="@string/setPassword"
+            android:textColor="@color/color_000000"
+            android:textColorHint="@color/color_b6bbd0"
+            android:textSize="13sp"/>
 
-            <EditText
-                android:id="@+id/et_password"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@null"
-                android:digits="@string/inputDigits"
-                android:hint="@string/setPassword"
-                android:maxLength="32"
-                android:textColor="@color/color_ffffff"
-                android:textColorHint="@color/color_7a8092"
-                android:textSize="12sp" />
-
-            <ImageView
-                android:id="@+id/iv_eyes"
-                android:layout_width="25dp"
-                android:layout_height="27dp"
-                android:src="@drawable/icon_close_eyes" />
-
-        </LinearLayout>
-
-        <LinearLayout
+        <EditText
+            android:id="@+id/et_repeat_password"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginTop="1dp"
-            android:background="@color/color_262d42"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp">
-
-            <EditText
-                android:id="@+id/et_repeat_password"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@null"
-                android:digits="@string/inputDigits"
-                android:hint="@string/repeatPassword"
-                android:maxLength="32"
-                android:textColor="@color/color_ffffff"
-                android:textColorHint="@color/color_7a8092"
-                android:textSize="12sp" />
-
-            <ImageView
-                android:id="@+id/iv_repeat_eyes"
-                android:layout_width="25dp"
-                android:layout_height="27dp"
-                android:src="@drawable/icon_close_eyes" />
-
-        </LinearLayout>
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_edittext_underline"
+            android:digits="@string/inputDigits"
+            android:drawableRight="@drawable/icon_close_eyes"
+            android:hint="@string/repeatPassword"
+            android:textColor="@color/color_000000"
+            android:textColorHint="@color/color_b6bbd0"
+            android:textSize="13sp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_marginTop="1dp"
-            android:background="@color/color_343a4d"
             android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp">
-
-            <TextView
-                android:id="@+id/tv_strength"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="10dp"
-                android:text="@string/strength"
-                android:textColor="@color/color_ffffff"
-                android:textSize="12sp" />
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="2dp"
-                android:background="@color/color_1f2841"
+                android:layout_marginRight="10dp"
+                android:background="@color/color_d5d8df"
                 android:orientation="horizontal">
 
                 <View
@@ -164,7 +321,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="2dp"
-                    android:background="@color/color_00000000" />
+                    android:background="@color/color_00000000"/>
 
                 <View
                     android:id="@+id/v_line2"
@@ -172,7 +329,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="2dp"
-                    android:background="@color/color_00000000" />
+                    android:background="@color/color_00000000"/>
 
                 <View
                     android:id="@+id/v_line3"
@@ -180,16 +337,25 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="2dp"
-                    android:background="@color/color_00000000" />
+                    android:background="@color/color_00000000"/>
 
                 <View
                     android:id="@+id/v_line4"
                     android:layout_width="23dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:background="@color/color_00000000" />
+                    android:background="@color/color_00000000"/>
 
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_strength"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/strength"
+                android:textColor="@color/color_ff9000"
+                android:textSize="12sp"/>
         </LinearLayout>
 
         <TextView
@@ -198,9 +364,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Name can't be empty !"
-            android:textColor="@color/color_ff4747"
+            android:textColor="@color/color_f5302c"
             android:textSize="12sp"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/tv_password_desc"
@@ -208,21 +374,19 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/passwordLimit"
-            android:textColor="@color/color_ffffff"
-            android:textSize="12sp" />
+            android:textColor="@color/color_b6bbd0"
+            android:textSize="11sp"/>
 
-        <Button
-            android:id="@+id/btn_import"
+        <com.juzix.wallet.component.widget.ShadowButton
+            android:id="@+id/sbtn_import"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginTop="20dp"
-            android:background="@color/color_eff0f5"
-            android:fontFamily="normal"
-            android:gravity="center"
-            android:text="@string/startImporting"
-            android:textAllCaps="false"
-            android:textColor="@color/color_1b2137"
-            android:textSize="14sp" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            app:enabled="false"
+            app:text="@string/startImporting"
+            app:textAppearance="@style/MainButtonStyle"
+            app:textBackground="@drawable/bg_main_button" />
     </LinearLayout>
 
 </ScrollView>

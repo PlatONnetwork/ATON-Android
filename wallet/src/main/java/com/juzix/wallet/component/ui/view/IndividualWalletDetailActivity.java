@@ -56,10 +56,11 @@ public class IndividualWalletDetailActivity extends MVPBaseActivity<IndividualWa
     ListView listTransaction;
     @BindView(R.id.layout_no_data)
     View emptyView;
+    @BindView(R.id.commonTitleBar)
+    CommonTitleBar commonTitleBar;
 
     private Unbinder                         unbinder;
     private IndividualTransactionListAdapter transactionListAdapter;
-    private CommonTitleBar                   commonTitleBar;
 
     @Override
     protected IndividualWalletDetailPresenter createPresenter() {
@@ -79,12 +80,10 @@ public class IndividualWalletDetailActivity extends MVPBaseActivity<IndividualWa
 
     private void initViews() {
 
-        commonTitleBar = new CommonTitleBar(this).setLeftDrawable(R.drawable.icon_back_black);
-        commonTitleBar.build();
-
         transactionListAdapter = new IndividualTransactionListAdapter(R.layout.item_transaction_list, null);
         listTransaction.setAdapter(transactionListAdapter);
         listTransaction.setEmptyView(emptyView);
+        listTransaction.setFocusable(false);
     }
 
     @OnItemClick({R.id.list_transaction})
@@ -136,7 +135,7 @@ public class IndividualWalletDetailActivity extends MVPBaseActivity<IndividualWa
     public void updateWalletInfo(IndividualWalletEntity walletEntity) {
         tvWalletAddress.setText(walletEntity.getPrefixAddress());
         tvTotalBalance.setText(string(R.string.wallet_balance, NumberParserUtils.getPrettyDetailBalance(walletEntity.getBalance())));
-        commonTitleBar.setMiddleTitle(walletEntity.getName());
+        commonTitleBar.setTitle(walletEntity.getName());
     }
 
     @Override

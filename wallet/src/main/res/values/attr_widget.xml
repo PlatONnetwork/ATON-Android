@@ -17,11 +17,13 @@
     <declare-styleable name="CommonTitleBar">
         <attr name="ctb_left_drawable" format="reference" />
         <attr name="ctb_right_drawable" format="reference" />
-        <attr name="ctb_middle_text" format="reference" />
-        <attr name="ctb_background" format="reference" />
-        <attr name="ctb_title_color" format="reference" />
+        <attr name="ctb_title" format="reference" />
         <attr name="ctb_title_size" format="dimension" />
+        <attr name="ctb_title_color" format="reference" />
+        <attr name="ctb_background" format="reference" />
         <attr name="ctb_right_text" format="reference" />
+        <attr name="ctb_right_text_size" format="dimension" />
+        <attr name="ctb_right_text_color" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="ToggleButton">
@@ -44,4 +46,143 @@
         <attr name="sizeToFit" format="boolean" />
     </declare-styleable>
 
+    <declare-styleable name="ShadowButton">
+        <attr name="xOffset" format="dimension" />
+        <attr name="yOffset" format="dimension" />
+        <attr name="blurRadius" format="dimension" />
+        <attr name="enableShadowColor" format="color" />
+        <attr name="disableShadowColor" format="color" />
+        <attr name="textAppearance" format="reference" />
+        <attr name="text" format="reference|string" />
+        <attr name="enabled" format="boolean" />
+        <attr name="textBackground" format="reference" />
+        <attr name="textDrawableLeft" format="reference" />
+        <attr name="textDrawableTop" format="reference" />
+        <attr name="textDrawableRight" format="reference" />
+        <attr name="textDrawableBottom" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="SimpleViewBehavior">
+        <attr name="svb_dependOn" format="reference" />
+        <attr name="svb_dependType">
+            <enum name="height" value="0" />
+            <enum name="width" value="1" />
+            <enum name="x" value="2" />
+            <enum name="y" value="3" />
+        </attr>
+        <attr name="svb_dependTargetX" format="reference|dimension" />
+        <attr name="svb_dependTargetY" format="reference|dimension" />
+        <attr name="svb_dependTargetWidth" format="reference|dimension" />
+        <attr name="svb_dependTargetHeight" format="reference|dimension" />
+        <attr name="svb_targetX" format="reference|dimension" />
+        <attr name="svb_targetY" format="reference|dimension" />
+        <attr name="svb_targetWidth" format="reference|dimension" />
+        <attr name="svb_targetHeight" format="reference|dimension" />
+        <attr name="svb_targetBackgroundColor" format="reference|color" />
+        <attr name="svb_targetAlpha" format="float" />
+        <attr name="svb_targetRotateX" format="float" />
+        <attr name="svb_targetRotateY" format="float" />
+        <attr name="svb_animation" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="LineGridView">
+        <attr name="line_padding_horizontal" format="reference|dimension" />
+        <attr name="line_padding_vertical" format="reference|dimension" />
+        <attr name="line_size" format="reference|dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="BubbleSeekBar">
+        <attr name="bsb_min" format="float|reference" /> <!--min < max, default: 0.0f-->
+        <attr name="bsb_max" format="float|reference" /> <!--min < max, default: 100.0f-->
+        <attr name="bsb_progress" format="float|reference" /> <!--real time progress sendAmount, default: min-->
+        <attr name="bsb_is_float_type" format="boolean" /> <!--support for float type-->
+        <attr name="bsb_track_size" format="dimension|reference" /> <!--height of right-track(on the right of thumb), default: 2dp-->
+        <!--height of left-track(on the left of thumb), default: 2dp higher than right-track's height-->
+        <attr name="bsb_second_track_size" format="dimension|reference" />
+        <attr name="bsb_thumb_radius" format="dimension|reference" /> <!--radius of thumb, default: 2dp higher than left-track's height-->
+        <!--radius of thumb when be dragging, default: 2 times of left-track's height-->
+        <attr name="bsb_thumb_radius_on_dragging" format="dimension|reference" />
+        <attr name="bsb_track_color" format="color|reference" /> <!--color of right-track, default: R.color.colorPrimary-->
+        <attr name="bsb_second_track_color" format="color|reference" /> <!--color of left-track, default: R.color.colorAccent-->
+        <attr name="bsb_thumb_color" format="color|reference" /> <!--color of thumb, default: same as left-track's color-->
+        <attr name="bsb_section_count" format="integer|reference" /> <!--shares of whole progress(max - min), default: 10-->
+        <attr name="bsb_show_section_mark" format="boolean" /> <!--show demarcation points or not, default: false-->
+        <attr name="bsb_auto_adjust_section_mark" format="boolean" /> <!--auto scroll to the nearest section_mark or not, default: false-->
+        <attr name="bsb_show_section_text" format="boolean" /> <!--show section-text or not, default: false-->
+        <attr name="bsb_section_text_size" format="dimension|reference" /> <!--text size of section-text, default: 14sp-->
+        <attr name="bsb_section_text_color" format="color|reference" /> <!--text color of section-text, default: same as right-track's color-->
+        <!--text position of section-text relative to track, sides, bottom_sides, below_section_mark, default: sides-->
+        <attr name="bsb_selection_text_margin" format="dimension|reference" />
+        <attr name="bsb_section_text_position">
+            <enum name="sides" value="0" />
+            <enum name="bottom_sides" value="1" />
+            <enum name="below_section_mark" value="2" />
+        </attr>
+        <attr name="bsb_section_text_interval" format="integer" /> <!--the interval of two section-text, default: 1-->
+        <attr name="bsb_show_thumb_text" format="boolean" /> <!--show real time progress-text under thumb or not, default: false-->
+        <attr name="bsb_thumb_text_size" format="dimension|reference" /> <!--text size of progress-text, default: 14sp-->
+        <attr name="bsb_thumb_text_color" format="color|reference" /> <!--text color of progress-text, default: same as left-track's color-->
+        <attr name="bsb_show_progress_in_float" format="boolean" /> <!--show bubble-progress in float or not, default: false-->
+        <attr name="bsb_touch_to_seek" format="boolean" /> <!--touch anywhere on track to quickly seek, default: false-->
+        <attr name="bsb_seek_step_section" format="boolean" /> <!--seek one step by one section, the progress is discrete, default: false-->
+        <attr name="bsb_seek_by_section" format="boolean" /> <!--seek by section, the progress may not be linear, default: false-->
+        <attr name="bsb_bubble_color" format="color|reference" /> <!--color of bubble, default: same as left-track's color-->
+        <attr name="bsb_bubble_text_size" format="dimension|reference" /> <!--text size of bubble-progress, default: 14sp-->
+        <attr name="bsb_bubble_text_color" format="color|reference" /> <!--text color of bubble-progress, default: #ffffffff-->
+        <attr name="bsb_anim_duration" format="integer" /> <!--duration of animation, default: 200ms-->
+        <attr name="bsb_always_show_bubble" format="boolean" /> <!--bubble shows all time, default: false-->
+        <attr name="bsb_always_show_bubble_delay" format="integer" /> <!--the delay duration before bubble shows all the time, default: 200ms-->
+        <attr name="bsb_hide_bubble" format="boolean" /> <!--hide bubble, default: false-->
+        <attr name="bsb_rtl" format="boolean" /> <!--right to left, default: false-->
+        <attr name="android:enabled" />
+
+    </declare-styleable>
+
+    <declare-styleable name="stl_SmartTabLayout">
+        <attr name="stl_indicatorAlwaysInCenter" format="boolean"/>
+        <attr name="stl_indicatorWithoutPadding" format="boolean"/>
+        <attr name="stl_indicatorInFront" format="boolean"/>
+        <attr name="stl_indicatorInterpolation" format="enum">
+            <enum name="smart" value="0"/>
+            <enum name="linear" value="1"/>
+        </attr>
+        <attr name="stl_indicatorGravity" format="enum">
+            <enum name="bottom" value="0"/>
+            <enum name="top" value="1"/>
+            <enum name="center" value="2"/>
+        </attr>
+        <attr name="stl_indicatorColor" format="color"/>
+        <attr name="stl_indicatorColors" format="reference"/>
+        <attr name="stl_indicatorThickness" format="dimension"/>
+        <attr name="stl_indicatorWidth" format="dimension">
+            <enum name="auto" value="-1"/>
+        </attr>
+        <attr name="stl_indicatorCornerRadius" format="dimension"/>
+        <attr name="stl_overlineColor" format="color"/>
+        <attr name="stl_overlineThickness" format="dimension"/>
+        <attr name="stl_underlineColor" format="color"/>
+        <attr name="stl_underlineThickness" format="dimension"/>
+        <attr name="stl_dividerColor" format="color"/>
+        <attr name="stl_dividerColors" format="reference"/>
+        <attr name="stl_dividerThickness" format="dimension"/>
+        <attr name="stl_defaultTabBackground" format="reference"/>
+        <attr name="stl_defaultTabTextAllCaps" format="boolean"/>
+        <attr name="stl_defaultTabTextColor" format="color|reference"/>
+        <attr name="stl_defaultTabTextSize" format="dimension"/>
+        <attr name="stl_defaultTabTextHorizontalPadding" format="dimension"/>
+        <attr name="stl_defaultTabTextMinWidth" format="dimension"/>
+        <attr name="stl_customTabTextLayoutId" format="reference"/>
+        <attr name="stl_customTabTextViewId" format="reference"/>
+        <attr name="stl_distributeEvenly" format="boolean"/>
+        <attr name="stl_clickable" format="boolean"/>
+        <attr name="stl_titleOffset" format="dimension">
+            <enum name="auto_center" value="-1"/>
+        </attr>
+        <attr name="stl_drawDecorationAfterTab" format="boolean"/>
+    </declare-styleable>
+
+    <declare-styleable name="ClearEditText">
+        <!--清空按钮是否总是显示的-->
+        <attr name="cet_clear_button_always_show" format="boolean" />
+    </declare-styleable>
 </resources>

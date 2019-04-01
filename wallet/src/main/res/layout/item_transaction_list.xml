@@ -16,7 +16,7 @@
 
     <TextView
         android:id="@+id/tv_transaction_amount"
-        style="@style/Text.fff.13"
+        style="@style/Text.000.13"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         tools:text="-10.00" />
@@ -26,7 +26,7 @@
         style="@style/Text.ffed54.10"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:textColor="@color/color_41d325"
+        android:textColor="@color/color_105cfe"
         tools:text="Failed" />
 
     <LinearLayout
@@ -41,7 +41,7 @@
 
         <TextView
             android:id="@+id/tv_transaction_status"
-            style="@style/Text.fff.13"
+            style="@style/Text.000.13"
             android:layout_width="wrap_content"
             android:ellipsize="middle"
             android:maxLength="23"
@@ -61,7 +61,7 @@
 
     <TextView
         android:id="@+id/tv_transaction_time"
-        style="@style/Text.7a8092.10"
+        style="@style/Text.61646e.10"
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="14dp"
         android:layout_marginRight="95dp"

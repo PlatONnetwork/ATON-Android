@@ -1,6 +1,5 @@
 package com.juzix.wallet.component.ui.view;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -45,6 +44,8 @@ public class AddressBookActivity extends MVPBaseActivity<AddressBookPresenter> i
     String deleteAddress;
     @BindView(R.id.layout_no_data)
     View emptyView;
+    @BindView(R.id.commonTitleBar)
+    CommonTitleBar commonTitleBar;
 
     private Unbinder unbinder;
     private AddressBookListAdapter addressBookListAdapter;
@@ -66,12 +67,12 @@ public class AddressBookActivity extends MVPBaseActivity<AddressBookPresenter> i
 
     private void initViews() {
 
-        new CommonTitleBar(this).setLeftDrawable(R.drawable.icon_back_black).setMiddleTitle(addressBookTitle).setRightDrawable(R.drawable.icon_add, new View.OnClickListener() {
+        commonTitleBar.setRightDrawableClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AddNewAddressActivity.actionStartWithExtraForResult(AddressBookActivity.this, null);
             }
-        }).build();
+        });
 
         addressBookListAdapter = new AddressBookListAdapter(R.layout.item_wallet_address_list, null);
 
@@ -112,15 +113,15 @@ public class AddressBookActivity extends MVPBaseActivity<AddressBookPresenter> i
     private void createMenu(SwipeMenu menu) {
 
         SwipeMenuItem editAddressItem = new SwipeMenuItem(getContext());
-        editAddressItem.setBackground(R.color.color_eff0f5);
+        editAddressItem.setBackground(R.color.color_f9fbff);
         editAddressItem.setWidth(DensityUtil.dp2px(getContext(), 60));
         editAddressItem.setTitleSize(13);
-        editAddressItem.setTitleColor(ContextCompat.getColor(getContext(), R.color.color_1b2137));
+        editAddressItem.setTitleColor(ContextCompat.getColor(getContext(), R.color.color_000000));
         editAddressItem.setTitle(editAddress);
         menu.addMenuItem(editAddressItem);
 
         SwipeMenuItem deleteAddressItem = new SwipeMenuItem(getContext());
-        deleteAddressItem.setBackground(R.color.color_dc5151);
+        deleteAddressItem.setBackground(R.color.color_ff2222);
         deleteAddressItem.setWidth(DensityUtil.dp2px(getContext(), 60));
         deleteAddressItem.setTitleSize(13);
         deleteAddressItem.setTitleColor(ContextCompat.getColor(getContext(), R.color.color_ffffff));
@@ -167,12 +168,6 @@ public class AddressBookActivity extends MVPBaseActivity<AddressBookPresenter> i
     @Override
     public String getAction() {
         return getIntent().getAction();
-    }
-
-    public static void actionStartForResult(Context context, String action, int requestCode) {
-        Intent intent = new Intent(context, AddressBookActivity.class);
-        intent.setAction(action);
-        ((Activity) context).startActivityForResult(intent, requestCode);
     }
 
     public static void actionStart(Context context, String action) {

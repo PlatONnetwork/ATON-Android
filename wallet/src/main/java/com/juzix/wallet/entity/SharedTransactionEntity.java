@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.juzix.wallet.R;
+import com.juzix.wallet.db.entity.SharedTransactionInfoEntity;
 import com.juzix.wallet.db.entity.SharedWalletOwnerInfoEntity;
 import com.juzix.wallet.db.entity.TransactionInfoResult;
 
@@ -28,7 +29,7 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
     private String contractAddress;
     private boolean pending;
     private boolean executed;
-    private ArrayList<TransactionResult> transactionResult;
+    private List<TransactionResult> transactionResult;
     /**
      * 所需签名数
      */
@@ -184,17 +185,17 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
                     .uuid(result.getUuid())
                     .name(result.getName())
                     .address(result.getAddress())
-                    .operation(result.getOperation())
+                    .operation(result.getStatus().ordinal())
                     .build());
         }
         return transactionInfoResults;
     }
 
-    public ArrayList<TransactionResult> getTransactionResult() {
+    public List<TransactionResult> getTransactionResult() {
         return transactionResult;
     }
 
-    public void setTransactionResult(ArrayList<TransactionResult> transactionResult) {
+    public void setTransactionResult(List<TransactionResult> transactionResult) {
         this.transactionResult = transactionResult;
     }
 
@@ -264,8 +265,8 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
     public int getConfirms() {
         int counter = 0;
         for (TransactionResult result : transactionResult) {
-            int operation = result.getOperation();
-            if (operation == TransactionResult.OPERATION_APPROVAL || operation == TransactionResult.OPERATION_REVOKE) {
+            TransactionResult.Status status = result.getStatus();
+            if (status == TransactionResult.Status.OPERATION_APPROVAL || status == TransactionResult.Status.OPERATION_REVOKE) {
                 counter++;
             }
         }
@@ -275,8 +276,8 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
     public int getRevokes() {
         int counter = 0;
         for (TransactionResult result : transactionResult) {
-            int operation = result.getOperation();
-            if (operation == TransactionResult.OPERATION_REVOKE) {
+            TransactionResult.Status status = result.getStatus();
+            if (status == TransactionResult.Status.OPERATION_REVOKE) {
                 counter++;
             }
         }
@@ -301,7 +302,7 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
         private String memo;
         private String transactionId;
         private String contractAddress;
-        private ArrayList<TransactionResult> transactionResult;
+        private List<TransactionResult> transactionResult;
         private boolean pending;
         private boolean executed;
         private int requiredSignNumber;
@@ -366,7 +367,7 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
             return this;
         }
 
-        public Builder transactionResult(ArrayList<TransactionResult> va1) {
+        public Builder transactionResult(List<TransactionResult> va1) {
             transactionResult = va1;
             return this;
         }
@@ -440,11 +441,11 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
         }
 
         for (TransactionResult result : transactionResult) {
-            switch (result.getOperation()) {
-                case TransactionResult.OPERATION_APPROVAL:
+            switch (result.getStatus()) {
+                case OPERATION_APPROVAL:
                     confirms++;
                     break;
-                case TransactionResult.OPERATION_UNDETERMINED:
+                case OPERATION_UNDETERMINED:
                     undetermineds++;
                     break;
             }
@@ -475,6 +476,32 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
         }
 
         return sharedWalletOwnerInfoEntityList;
+    }
+
+    public SharedTransactionInfoEntity buildSharedTransactionInfoEntity() {
+        return new SharedTransactionInfoEntity.Builder()
+                .uuid(getUuid())
+                .createTime(getCreateTime())
+                .hash(getHash())
+                .contractAddress(getContractAddress())
+                .fromAddress(getFromAddress())
+                .toAddress(getToAddress())
+                .value(getValue())
+                .memo(getMemo())
+                .energonPrice(getEnergonPrice())
+                .pending(isPending())
+                .executed(isExecuted())
+                .transactionId(getTransactionId())
+                .transactionResult(buildTransactionInfoResult())
+                .requiredSignNumber(getRequiredSignNumber())
+                .blockNumber(getBlockNumber())
+                .latestBlockNumber(getLatestBlockNumber())
+                .read(isRead())
+                .ownerWalletAddress(getOwnerWalletAddress())
+                .transactionType(getTransactionType())
+                .sharedWalletOwnerInfoEntityList(buildSharedWalletOwnerInfoEntityList())
+                .walletName(getWalletName())
+                .build();
     }
 
     public enum TransactionType {

@@ -16,12 +16,8 @@ public class OwnerEntity implements Parcelable, Cloneable {
      */
     private String address;
 
-    /**
-     * 描述信息
-     */
-    private String desc;
-
     public OwnerEntity() {
+
     }
 
     public OwnerEntity(String uuid, String name, String address) {
@@ -34,7 +30,6 @@ public class OwnerEntity implements Parcelable, Cloneable {
         uuid = in.readString();
         name = in.readString();
         address = in.readString();
-        desc = in.readString();
     }
 
     @Override
@@ -47,7 +42,6 @@ public class OwnerEntity implements Parcelable, Cloneable {
         dest.writeString(uuid);
         dest.writeString(name);
         dest.writeString(address);
-        dest.writeString(desc);
     }
 
     public static final Creator<OwnerEntity> CREATOR = new Creator<OwnerEntity>() {
@@ -106,12 +100,12 @@ public class OwnerEntity implements Parcelable, Cloneable {
         this.address = address;
     }
 
-    public String getPrefixAddress(){
+    public String getPrefixAddress() {
         try {
-            if(TextUtils.isEmpty(address)){
+            if (TextUtils.isEmpty(address)) {
                 return null;
             }
-            if (address.toLowerCase().startsWith("0x")){
+            if (address.toLowerCase().startsWith("0x")) {
                 return address;
             }
             return "0x" + address;
@@ -119,14 +113,6 @@ public class OwnerEntity implements Parcelable, Cloneable {
             exp.printStackTrace();
             return null;
         }
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
     }
 
     @Override

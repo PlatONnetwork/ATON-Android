@@ -9,6 +9,12 @@ import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.utils.JZWalletUtil;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
+
+import io.reactivex.Flowable;
+import io.reactivex.functions.BiConsumer;
+import io.reactivex.functions.Function;
 
 public class IndividualWalletManager {
 
@@ -45,6 +51,26 @@ public class IndividualWalletManager {
         }
     }
 
+    public List<String> getAddressList() {
+        return Flowable.fromIterable(mWalletList)
+                .map(new Function<IndividualWalletEntity, String>() {
+                    @Override
+                    public String apply(IndividualWalletEntity individualWalletEntity) throws Exception {
+                        return individualWalletEntity.getPrefixAddress();
+                    }
+                }).collect(new Callable<List<String>>() {
+                    @Override
+                    public List<String> call() throws Exception {
+                        return new ArrayList<>();
+                    }
+                }, new BiConsumer<List<String>, String>() {
+                    @Override
+                    public void accept(List<String> strings, String s) throws Exception {
+                        strings.add(s);
+                    }
+                }).blockingGet();
+    }
+
     public String getWalletNameByWalletAddress(String walletAddress) {
         if (!mWalletList.isEmpty()) {
             for (IndividualWalletEntity walletEntity : mWalletList) {
@@ -57,12 +83,63 @@ public class IndividualWalletManager {
         return null;
     }
 
+    /**
+     * 获取第一个有效的(余额大于0)个人钱包，
+     *
+     * @return
+     */
+    public IndividualWalletEntity getFirstValidIndividualWalletBalance() {
+
+        if (!mWalletList.isEmpty()) {
+            for (int i = 0; i < mWalletList.size(); i++) {
+                IndividualWalletEntity walletEntity = mWalletList.get(i);
+                if (walletEntity.getBalance() > 0) {
+                    return walletEntity;
+                }
+            }
+        }
+
+        return null;
+
+    }
+
     public ArrayList<IndividualWalletEntity> getWalletList() {
         return mWalletList;
     }
 
     public String generateMnemonic() {
         return IndividualWalletService.getInstance().generateMnemonic();
+    }
+
+    public int createWalletWithMnemonic(IndividualWalletEntity walletEntity, String mnemonic, String name, String password) {
+        if (!JZWalletUtil.isValidMnemonic(mnemonic)) {
+            return CODE_ERROR_MNEMONIC;
+        }
+        if (TextUtils.isEmpty(name)) {
+            return CODE_ERROR_NAME;
+        }
+        if (TextUtils.isEmpty(password)) {
+            return CODE_ERROR_PASSWORD;
+        }
+        try {
+            IndividualWalletEntity entity = IndividualWalletService.getInstance().importMnemonic(mnemonic, name, password);
+            if (entity == null) {
+                return CODE_ERROR_PASSWORD;
+            }
+            for (IndividualWalletEntity param : mWalletList) {
+                if (param.getPrefixAddress().toLowerCase().equals(entity.getPrefixAddress().toLowerCase())) {
+                    return CODE_ERROR_WALLET_EXISTS;
+                }
+            }
+            entity.setMnemonic(JZWalletUtil.encryptMnemonic(entity.getKey(), mnemonic, password));
+            walletEntity.setWalletEntity(entity);
+            mWalletList.add(walletEntity);
+            IndividualWalletInfoDao.getInstance().insertWalletInfo(walletEntity.buildWalletInfoEntity());
+            AppSettings.getInstance().setOperateMenuFlag(false);
+            return CODE_OK;
+        } catch (Exception exp) {
+            return CODE_ERROR_UNKNOW;
+        }
     }
 
     public int importKeystore(IndividualWalletEntity walletEntity, String store, String name, String password) {
@@ -85,6 +162,7 @@ public class IndividualWalletManager {
                     return CODE_ERROR_WALLET_EXISTS;
                 }
             }
+            entity.setMnemonic("");
             walletEntity.setWalletEntity(entity);
             mWalletList.add(walletEntity);
             IndividualWalletInfoDao.getInstance().insertWalletInfo(walletEntity.buildWalletInfoEntity());
@@ -115,6 +193,7 @@ public class IndividualWalletManager {
                     return CODE_ERROR_WALLET_EXISTS;
                 }
             }
+            entity.setMnemonic("");
             walletEntity.setWalletEntity(entity);
             mWalletList.add(walletEntity);
             IndividualWalletInfoDao.getInstance().insertWalletInfo(walletEntity.buildWalletInfoEntity());
@@ -145,6 +224,7 @@ public class IndividualWalletManager {
                     return CODE_ERROR_WALLET_EXISTS;
                 }
             }
+            entity.setMnemonic("");
             walletEntity.setWalletEntity(entity);
             mWalletList.add(walletEntity);
             IndividualWalletInfoDao.getInstance().insertWalletInfo(walletEntity.buildWalletInfoEntity());
@@ -161,6 +241,21 @@ public class IndividualWalletManager {
 
     public String exportPrivateKey(IndividualWalletEntity wallet, String password) {
         return IndividualWalletService.getInstance().exportPrivateKey(wallet, password);
+    }
+
+    public boolean emptyMnemonic(String mnenonic) {
+        String uuid = "";
+        for (IndividualWalletEntity walletEntity : mWalletList) {
+            if (mnenonic.equals(walletEntity.getMnemonic())) {
+                walletEntity.setMnemonic("");
+                uuid = walletEntity.getUuid();
+                break;
+            }
+        }
+        if (TextUtils.isEmpty(uuid)){
+            return false;
+        }
+        return IndividualWalletInfoDao.getInstance().updateMnemonicWithUuid(uuid, "");
     }
 
     public boolean updateWalletName(IndividualWalletEntity wallet, String newName) {
@@ -198,6 +293,20 @@ public class IndividualWalletManager {
     public boolean isValidWallet(IndividualWalletEntity walletEntity, String password) {
         try {
             return JZWalletUtil.decrypt(walletEntity.getKey(), password) != null;
+        } catch (Exception exp) {
+            exp.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean walletNameExists(String walletName) {
+        try {
+            for (IndividualWalletEntity walletEntity : mWalletList) {
+                if (walletName.equals(walletEntity.getName())) {
+                    return true;
+                }
+            }
+            return false;
         } catch (Exception exp) {
             exp.printStackTrace();
             return false;

@@ -1,6 +1,9 @@
 package com.juzix.wallet.component;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
+import android.view.View;
+import android.widget.TextView;
 
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.adapter.CommonAdapter;
@@ -21,8 +24,18 @@ public class SharedWalletMemberAdapter extends CommonAdapter<OwnerEntity> {
 
     @Override
     protected void convert(Context context, ViewHolder viewHolder, OwnerEntity item, int position) {
+        TextView tvAddress = viewHolder.getView(R.id.tv_member_address);
+        if (position == 0){
+            viewHolder.setTextColor(R.id.tv_member_name, ContextCompat.getColor(context, R.color.color_b6bbd0));
+            tvAddress.setTextColor(ContextCompat.getColor(context, R.color.color_b6bbd0));
+            viewHolder.getView(R.id.iv_edit).setVisibility(View.GONE);
+        }else {
+            viewHolder.setTextColor(R.id.tv_member_name, ContextCompat.getColor(context, R.color.color_000000));
+            tvAddress.setTextColor(ContextCompat.getColor(context, R.color.color_61646e));
+            viewHolder.getView(R.id.iv_edit).setVisibility(View.VISIBLE);
+        }
         viewHolder.setText(R.id.tv_member_name, item.getName());
-        viewHolder.setText(R.id.tv_member_address, AddressFormatUtil.formatAddress(item.getPrefixAddress()));
+        tvAddress.setText(AddressFormatUtil.formatAddress(item.getPrefixAddress()));
     }
 
     @Override

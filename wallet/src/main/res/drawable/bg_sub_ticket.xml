@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/icon_input_sub"
+    android:insetLeft="0dp"
+    android:insetTop="10dp"
+    android:insetRight="12dp"
+    android:insetBottom="10dp">
+
+</inset>

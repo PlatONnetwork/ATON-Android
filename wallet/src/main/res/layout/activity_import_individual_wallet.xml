@@ -3,40 +3,30 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_232e48"
+    android:background="@color/color_ffffff"
     android:clipToPadding="true"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <include layout="@layout/layout_title_bar" />
+    <com.juzix.wallet.component.widget.CommonTitleBar
+        android:id="@+id/commonTitleBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:ctb_left_drawable="@drawable/icon_back_black"
+        app:ctb_right_drawable="@drawable/icon_scan"
+        app:ctb_title="@string/importIndividualWallet" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/color_1b2137"
         android:orientation="vertical">
 
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tl_indicator"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/color_00000000"
-            android:fontFamily="normal"
-            app:tabBackground="@color/color_00000000"
-            app:tabIndicatorColor="@color/color_ffed54"
-            app:tabMaxWidth="0dp"
-            app:tabMinWidth="0dp"
-            app:tabMode="fixed"
-            app:tabPaddingBottom="8dp"
-            app:tabPaddingTop="8dp"
-            app:tabSelectedTextColor="@color/color_ffed54"
-            app:tabTextAppearance="@style/TabLayoutTextStyle"
-            app:tabTextColor="@color/color_ffffff" />
+        <include layout="@layout/layout_app_tab1" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/color_32394e" />
+            android:background="@color/color_ebeef4" />
 
         <com.juzix.wallet.component.widget.ViewPagerSlide
             android:id="@+id/vp_content"

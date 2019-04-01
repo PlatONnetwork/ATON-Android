@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="true"
+    android:clipToPadding="true">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/cl_vote_info"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_vote_appbar"
+        android:paddingLeft="16dp"
+        android:paddingTop="40dp"
+        android:paddingRight="16dp"
+        app:layout_constraintDimensionRatio="5:2"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tv_vote_rate"
+            style="@style/Text.000000.18"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:text="Vote Rate 21.21%" />
+
+        <TextView
+            style="@style/Text.105cfe.11"
+            android:layout_width="62dp"
+            android:layout_height="16.2dp"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/icon_my_vote_bg"
+            android:text="@string/myVote"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!--加阴影-->
+        <ProgressBar
+            android:id="@+id/pb_vote_rate"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_marginTop="24dp"
+            android:max="100"
+            android:progressDrawable="@drawable/bg_progressbar_vote_rate"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_vote_rate"
+            android:progress="80" />
+
+        <TextView
+            style="@style/Text.898c9e.14"
+            android:layout_marginTop="24dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/pb_vote_rate"
+            android:text="Vote：5455" />
+
+        <TextView
+            style="@style/Text.898c9e.14"
+            android:layout_marginTop="24dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/pb_vote_rate"
+            android:text="Ticket Price: 15.261Energon" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cl_vote_info">
+
+        <RadioGroup
+            android:id="@+id/rg_select_condition"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginTop="6dp"
+            android:divider="@drawable/divider_vote_ticket_radio_group"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:showDividers="middle"
+            app:layout_constraintLeft_toLeftOf="parent">
+
+            <RadioButton
+                android:id="@+id/rb_default"
+                style="@style/Text.105cfe.16"
+                android:button="@null"
+                android:text="@string/action_default" />
+
+            <RadioButton
+                android:id="@+id/rb_reward"
+                style="@style/Text.000000.13"
+                android:button="@null"
+                android:text="@string/reward" />
+
+            <RadioButton
+                android:id="@+id/rb_location"
+                style="@style/Text.000000.13"
+                android:button="@null"
+                android:text="@string/location" />
+        </RadioGroup>
+
+        <ImageView
+            android:id="@+id/iv_search_vote"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginTop="6dp"
+            android:contentDescription="searchVote"
+            android:foregroundGravity="center"
+            android:src="@drawable/icon_search_vote_big" />
+
+        <com.juzix.wallet.component.widget.ClearEditText
+            android:id="@+id/et_search_vote"
+            style="@style/Text.000000.13"
+            android:layout_width="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/bg_search_vote"
+            android:gravity="center_vertical|left"
+            android:hint="@string/hint_search_vote"
+            android:lines="1"
+            android:textColorHint="@color/color_b6bbd0"
+            android:textCursorDrawable="@drawable/bg_edittext_cursor"
+            android:visibility="gone" />
+
+    </FrameLayout>
+
+
+</android.support.constraint.ConstraintLayout>

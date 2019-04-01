@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:ctb_left_drawable="@drawable/icon_back_black"
-        app:ctb_middle_text="@string/nodeInformation" />
+        app:ctb_title="@string/nodeInformation" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -104,7 +104,7 @@
                         android:layout_weight="1"
                         android:layout_marginTop="2dp"
                         android:gravity="center_vertical|left"
-                        android:text="@string/staked"/>
+                        android:text="@string/staked_with_colon"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_marginTop="3dp"
@@ -202,7 +202,7 @@
                 android:layout_marginTop="12dp"
                 style="@style/Text.c5cbdc.12"
                 android:gravity="center_vertical|left"
-                android:text="@string/rewardRadio"/>
+                android:text="@string/reward_radio_with_colon_and_value"/>
             <TextView
                 android:id="@+id/tv_reward_radio"
                 android:layout_marginTop="6dp"

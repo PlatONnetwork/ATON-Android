@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.base.BaseActivity;
-import com.juzix.wallet.config.ImmersiveBarConfigure;
 import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.utils.BigDecimalUtil;
@@ -55,7 +54,6 @@ public class AddWalletAcitivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ImmersiveBarConfigure.statusBarView(this,  statusBarView());
         setContentView(R.layout.activity_add_wallet);
         unbinder = ButterKnife.bind(this);
         initView();
@@ -153,7 +151,6 @@ public class AddWalletAcitivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ImmersiveBarConfigure.destroy(this);
         if (unbinder != null) {
             unbinder.unbind();
         }

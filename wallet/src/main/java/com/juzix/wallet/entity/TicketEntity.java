@@ -60,6 +60,9 @@ public class TicketEntity implements Cloneable, Parcelable {
      */
     private long rBlockNumber;
 
+    public TicketEntity() {
+    }
+
     protected TicketEntity(Parcel in) {
         setUuid(in.readString());
         setTicketId(in.readString());

@@ -1,8 +1,12 @@
 package com.juzix.wallet.component.ui;
 
-import android.text.TextUtils;
+import android.graphics.drawable.AnimationDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.juzix.wallet.R;
@@ -17,7 +21,13 @@ import com.juzix.wallet.utils.ToastUtil;
  */
 public abstract class BaseContextImpl implements IContext {
 
+    private final static int FRAME_ANIMATION_DURATION = 640;
+
     private BaseDialog mProgressDialog;
+    private ImageView mLoadingImage;
+    private AnimationDrawable mAnimationDrawable;
+    private RotateAnimation mRotateAnimation;
+    private Runnable mRunnable;
 
     @Override
     public void showShortToast(String text) {
@@ -42,49 +52,65 @@ public abstract class BaseContextImpl implements IContext {
     @Override
     public void dismissLoadingDialogImmediately() {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
+
+            if (mAnimationDrawable != null && mAnimationDrawable.isRunning()) {
+                mAnimationDrawable.stop();
+            }
+
+            if (mLoadingImage != null && mRunnable != null) {
+                mLoadingImage.removeCallbacks(mRunnable);
+                //已经启动，并且还没结束
+                if (mRotateAnimation != null && mRotateAnimation.hasStarted() && !mRotateAnimation.hasEnded()) {
+                    mRotateAnimation.cancel();
+                }
+            }
+
             mProgressDialog.dismiss();
         }
     }
 
     @Override
     public void showLoadingDialog() {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.dismiss();
-        }
-
-        mProgressDialog = createProgressDialog("");
-        mProgressDialog.show();
+        showLoadingDialog(string(R.string.loading), false);
     }
 
     @Override
     public void showLoadingDialog(int resId) {
+        showLoadingDialog(string(resId), false);
+    }
+
+    @Override
+    public void showLoadingDialog(String text, boolean cancelable) {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
         }
 
-        mProgressDialog = createProgressDialog(string(resId));
+        mProgressDialog = createProgressDialog(text);
+        mProgressDialog.setCancelable(cancelable);
+
+        mLoadingImage = mProgressDialog.findViewById(R.id.iv_loading);
+        mAnimationDrawable = (AnimationDrawable) mLoadingImage.getBackground();
+        mAnimationDrawable.start();
+        mRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mRotateAnimation = getRotateAnimation();
+                mLoadingImage.startAnimation(mRotateAnimation);
+            }
+        };
+        mLoadingImage.postDelayed(mRunnable, FRAME_ANIMATION_DURATION);
+
         mProgressDialog.show();
     }
 
     @Override
     public void showLoadingDialog(String text) {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.dismiss();
-        }
-
-        mProgressDialog = createProgressDialog(text);
-        mProgressDialog.show();
+        showLoadingDialog(text, false);
     }
 
     @Override
     public void showLoadingDialogWithCancelable(String text) {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.dismiss();
-        }
-
-        mProgressDialog = createProgressDialog(text);
-        mProgressDialog.setCancelable(true);
-        mProgressDialog.show();
+        showLoadingDialog(text, true);
     }
 
     @Override
@@ -96,19 +122,23 @@ public abstract class BaseContextImpl implements IContext {
     public void requestPermission(BaseActivity activity, int what, PermissionConfigure.PermissionCallback callback, String... permissions) {
         PermissionConfigure.request(activity, what, callback, permissions);
     }
-
     private BaseDialog createProgressDialog(String msg) {
-        BaseDialog dialog = new BaseDialog(getContext(), R.style.Dialog_FullScreen);
+        BaseDialog dialog = new BaseDialog(getContext(), R.style.LoadingDialogStyle);
         View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_progress_dialog, null);
-        TextView messageView = (TextView) view.findViewById(R.id.tv_content);
-        if (!TextUtils.isEmpty(msg)) {
-            messageView.setVisibility(View.VISIBLE);
-            messageView.setText(msg);
-        }else {
-            messageView.setVisibility(View.GONE);
-        }
+        TextView tvLoading = view.findViewById(R.id.tv_loading);
+        tvLoading.setText(msg);
         dialog.setCancelable(false);
         dialog.setContentView(view);
         return dialog;
+    }
+
+    private RotateAnimation getRotateAnimation() {
+        RotateAnimation rotateAnimation = new RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotateAnimation.setDuration(1200);
+        LinearInterpolator lin = new LinearInterpolator();
+        rotateAnimation.setInterpolator(lin);
+        rotateAnimation.setRepeatCount(Animation.INFINITE);
+        rotateAnimation.cancel();
+        return rotateAnimation;
     }
 }

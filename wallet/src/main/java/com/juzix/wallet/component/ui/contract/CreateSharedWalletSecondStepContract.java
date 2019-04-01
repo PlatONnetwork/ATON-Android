@@ -4,6 +4,8 @@ import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 
+import org.web3j.crypto.Credentials;
+
 import java.math.BigInteger;
 import java.util.List;
 
@@ -118,6 +120,8 @@ public class CreateSharedWalletSecondStepContract {
 
         IndividualWalletEntity getWalletEntityFromIntent();
 
+        void showWalletInfo(IndividualWalletEntity walletEntity);
+
         void showOwnerList(List<ContractEntity> ownerEntityList);
 
         void updateOwner(int position);
@@ -143,10 +147,14 @@ public class CreateSharedWalletSecondStepContract {
 
         void createContract();
 
-        void validPassword(String password, BigInteger gasPrice,double feeAmount);
+        void validPassword(Credentials credentials, BigInteger gasPrice, double feeAmount);
 
         void focusName(int position);
 
         void focusAddress(int position);
+
+        boolean needSaveAddressBook(String address);
+
+        boolean saveWallet(String name, String address);
     }
 }

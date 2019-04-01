@@ -3,27 +3,35 @@ package com.juzix.wallet.component.ui.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.juzhen.framework.util.AndroidUtil;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.BaseActivity;
-import com.juzix.wallet.component.ui.dialog.BaseDialog;
-import com.juzix.wallet.component.widget.ShadowDrawable;
+import com.juzix.wallet.component.ui.dialog.CommonTipsDialogFragment;
+import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
+import com.juzix.wallet.component.widget.CommonTitleBar;
+import com.juzix.wallet.entity.IndividualWalletEntity;
+import com.juzix.wallet.utils.JZWalletUtil;
 
 public class BackupMnemonicPhraseActivity extends BaseActivity implements View.OnClickListener {
 
     private final static String TAG = BackupMnemonicPhraseActivity.class.getSimpleName();
-    private BaseDialog mMnemonicDialog;
-    private TextView mTvMnemonic;
 
-    public static void actionStart(Context context, String mnemonic) {
+    public static void actionStart(Context context, String password, IndividualWalletEntity walletEntity) {
+        actionStart(context, password, walletEntity, 0);
+    }
+
+    public static void actionStart(Context context, String password, IndividualWalletEntity walletEntity, int type) {
         Intent intent = new Intent(context, BackupMnemonicPhraseActivity.class);
-        intent.putExtra(Constants.Extra.EXTRA_MNEMONIC, mnemonic);
+        intent.putExtra(Constants.Extra.EXTRA_PASSWORD, password);
+        intent.putExtra(Constants.Extra.EXTRA_WALLET, walletEntity);
+        intent.putExtra(Constants.Extra.EXTRA_TYPE, type);
         context.startActivity(intent);
     }
 
@@ -32,54 +40,97 @@ public class BackupMnemonicPhraseActivity extends BaseActivity implements View.O
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_backup_mnemonic_phrase);
-        showPasswordDialog();
+        showTipsDialog();
         initView();
-        mTvMnemonic.setText(getIntent().getStringExtra(Constants.Extra.EXTRA_MNEMONIC));
+        IndividualWalletEntity walletEntity = getIntent().getParcelableExtra(Constants.Extra.EXTRA_WALLET);
+        setMnemonic(JZWalletUtil.decryptMnenonic(walletEntity.getKey(), walletEntity.getMnemonic(), getIntent().getStringExtra(Constants.Extra.EXTRA_PASSWORD)));
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            exit();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     private void initView() {
-        findViewById(R.id.ll_left).setOnClickListener(this);
-        ((TextView) findViewById(R.id.tv_middle)).setText(R.string.backupWallet);
-        findViewById(R.id.btn_next).setOnClickListener(this);
-        mTvMnemonic = findViewById(R.id.tv_mnemonic);
-        int shapeRadius = AndroidUtil.dip2px(getContext(), 4);
-        int shadowRadius = AndroidUtil.dip2px(getContext(), 4);
-        ShadowDrawable.setShadowDrawable(mTvMnemonic,
-                ContextCompat.getColor(this, R.color.color_1f2841),
-                shapeRadius,
-                ContextCompat.getColor(this, R.color.color_020527),
-                shadowRadius, 0, 0);
+        ((CommonTitleBar)findViewById(R.id.commonTitleBar)).setLeftDrawableClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                exit();
+            }
+        });
+        findViewById(R.id.ll_next).setOnClickListener(this);
+    }
+
+    private void exit(){
+        CommonTipsDialogFragment.createDialogWithTwoButton(ContextCompat.getDrawable(getContext(), R.drawable.icon_dialog_tips),
+                string(R.string.backup_exit_tips),
+                string(R.string.confirm),
+                new OnDialogViewClickListener() {
+                    @Override
+                    public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
+                        if (fragment != null){
+                            fragment.dismiss();
+                        }
+                        if (getIntent().getIntExtra(Constants.Extra.EXTRA_TYPE, 0) == 0){
+                            MainActivity.actionStart(BackupMnemonicPhraseActivity.this);
+                        }
+                        BackupMnemonicPhraseActivity.this.finish();
+                    }
+                },string(R.string.cancel),
+                new OnDialogViewClickListener() {
+                    @Override
+                    public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
+                        if (fragment != null) {
+                            fragment.dismiss();
+                        }
+                    }
+                }).show(getSupportFragmentManager(), "showTips");
+    }
+
+    private void setMnemonic(String text){
+        String[] words = text.split(" ");
+        if (words != null && words.length == 12){
+            findViewById(R.id.ll_next).setEnabled(true);
+            ((TextView) findViewById(R.id.tv_mnemonic1)).setText(words[0]);
+            ((TextView) findViewById(R.id.tv_mnemonic2)).setText(words[1]);
+            ((TextView) findViewById(R.id.tv_mnemonic3)).setText(words[2]);
+            ((TextView) findViewById(R.id.tv_mnemonic4)).setText(words[3]);
+            ((TextView) findViewById(R.id.tv_mnemonic5)).setText(words[4]);
+            ((TextView) findViewById(R.id.tv_mnemonic6)).setText(words[5]);
+            ((TextView) findViewById(R.id.tv_mnemonic7)).setText(words[6]);
+            ((TextView) findViewById(R.id.tv_mnemonic8)).setText(words[7]);
+            ((TextView) findViewById(R.id.tv_mnemonic9)).setText(words[8]);
+            ((TextView) findViewById(R.id.tv_mnemonic10)).setText(words[9]);
+            ((TextView) findViewById(R.id.tv_mnemonic11)).setText(words[10]);
+            ((TextView) findViewById(R.id.tv_mnemonic12)).setText(words[11]);
+        }else {
+            findViewById(R.id.ll_next).setEnabled(false);
+        }
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.ll_left:
+            case R.id.ll_next:
+                VerificationMnemonicActivity.actionStart(getContext(), getIntent().getStringExtra(Constants.Extra.EXTRA_PASSWORD),
+                        getIntent().getParcelableExtra(Constants.Extra.EXTRA_WALLET), getIntent().getIntExtra(Constants.Extra.EXTRA_TYPE, 0));
                 BackupMnemonicPhraseActivity.this.finish();
-                MainActivity.actionStart(this);
-                break;
-            case R.id.btn_next:
-                VerificationMnemonicActivity.actionStart(getContext(), getIntent().getStringExtra(Constants.Extra.EXTRA_MNEMONIC));
-                BackupMnemonicPhraseActivity.this.finish();
-                break;
-            case R.id.btn_understood:
-                dimissPasswordDialog();
                 break;
         }
     }
 
-    private void showPasswordDialog() {
-        dimissPasswordDialog();
-        mMnemonicDialog = new BaseDialog(this, R.style.Dialog_FullScreen);
-        mMnemonicDialog.setContentView(R.layout.dialog_backup_mnemonic_phrase);
-        mMnemonicDialog.show();
-        mMnemonicDialog.findViewById(R.id.btn_understood).setOnClickListener(this);
-    }
-
-    private void dimissPasswordDialog() {
-        if (mMnemonicDialog != null && mMnemonicDialog.isShowing()) {
-            mMnemonicDialog.dismiss();
-            mMnemonicDialog = null;
-        }
+    private void showTipsDialog() {
+        CommonTipsDialogFragment.createDialogWithTitleAndOneButton(ContextCompat.getDrawable(this, R.drawable.icon_dialog_tips), string(R.string.donotScreenshot), string(R.string.backupMnemonicResume), string(R.string.understood), new OnDialogViewClickListener() {
+            @Override
+            public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
+                if (fragment != null){
+                    fragment.dismiss();
+                }
+            }
+        }).show(getSupportFragmentManager(), "showTips");
     }
 }

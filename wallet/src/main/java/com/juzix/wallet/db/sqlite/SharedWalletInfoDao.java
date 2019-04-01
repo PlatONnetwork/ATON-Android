@@ -115,6 +115,25 @@ public class SharedWalletInfoDao extends BaseDao {
         }
     }
 
+    public boolean updateUpdateTimeWithUuid(String uuid, long updateTime) {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            realm.where(SharedWalletInfoEntity.class)
+                    .equalTo("uuid", uuid)
+                    .findFirst()
+                    .setUpdateTime(updateTime);
+            realm.commitTransaction();
+            return true;
+        } catch (Exception e) {
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
+            return false;
+        }
+    }
+
     public boolean deleteWalletInfo(String uuid) {
         Realm realm = null;
         try {

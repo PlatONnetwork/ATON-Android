@@ -1,26 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipToPadding="true"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
-
+    <com.juzix.wallet.component.widget.CommonTitleBar
+        android:id="@+id/commonTitleBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:ctb_left_drawable="@drawable/icon_back_black"
+        app:ctb_title="@string/language"
+        app:ctb_right_text_color="@color/color_105cfe"
+        app:ctb_right_text="@string/save"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/color_1b2137"
-        android:divider="@drawable/bg_address_book_list_divider"
+        android:divider="@drawable/bg_transation_list_divider"
         android:orientation="vertical"
         android:showDividers="middle">
 
 
         <TextView
             android:id="@+id/tv_switch_chinese"
-            style="@style/Text.fff.13"
+            style="@style/Text.000.14"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:drawableRight="@drawable/icon_hook_white_bg"
+            android:drawableRight="@drawable/icon_hook_s"
             android:gravity="center_vertical|left"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
@@ -29,10 +37,10 @@
 
         <TextView
             android:id="@+id/tv_switch_english"
-            style="@style/Text.fff.13"
+            style="@style/Text.000.14"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:drawableRight="@drawable/icon_hook_white_bg"
+            android:drawableRight="@drawable/icon_hook_s"
             android:gravity="center_vertical|left"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"

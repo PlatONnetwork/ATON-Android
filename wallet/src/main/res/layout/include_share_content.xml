@@ -4,7 +4,7 @@
     android:id="@+id/fl_share"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_1b2137"
+    android:background="@color/color_f0f1f5"
     android:paddingTop="24dp"
     android:paddingBottom="15dp">
 
@@ -41,7 +41,7 @@
                     android:ellipsize="end"
                     android:gravity="center_horizontal"
                     android:lines="1"
-                    android:textColor="@color/color_ffffff"
+                    android:textColor="@color/color_000000"
                     android:textSize="16sp" />
 
                 <TextView
@@ -52,7 +52,7 @@
                     android:ellipsize="end"
                     android:gravity="center_horizontal"
                     android:lines="1"
-                    android:textColor="@color/color_c5cbdc"
+                    android:textColor="@color/color_000000"
                     android:textSize="12sp" />
             </LinearLayout>
         </LinearLayout>
@@ -61,6 +61,8 @@
             android:id="@+id/iv_divide"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="-0.5dp"
+            android:layout_marginBottom="-0.5dp"
             android:src="@drawable/bg_qrcode_seg" />
 
         <LinearLayout
@@ -83,8 +85,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
                 android:text="@string/receive_atp"
-                android:textColor="@color/color_a9b0ca"
-                android:textSize="12sp" />
+                android:textColor="@color/color_61646e"
+                android:textSize="14sp" />
         </LinearLayout>
 
     </LinearLayout>
@@ -93,15 +95,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.juzix.wallet.component.widget.CircleImageView
+        <ImageView
             android:id="@+id/iv_avatar"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/icon_default_coin"
-            app:civ_border_color="@color/color_373E51"
-            app:civ_border_width="0dp"
-            app:civ_fill_color="@color/color_373E51" />
+            android:src="@drawable/icon_default_coin"  />
 
         <TextView
             android:id="@+id/tv_name"

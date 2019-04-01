@@ -8,6 +8,14 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
+    <com.juzix.wallet.component.widget.CommonTitleBar
+        android:id="@+id/commonTitleBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:ctb_left_drawable="@drawable/icon_back_black"
+        app:ctb_right_drawable="@drawable/icon_share"
+        app:ctb_title="@string/action_receive_transation" />
+
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

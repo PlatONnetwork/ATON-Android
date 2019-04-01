@@ -1,7 +1,5 @@
 package com.juzix.wallet.component.ui.presenter;
 
-import android.util.Log;
-
 import com.juzix.wallet.app.FlowableSchedulersTransformer;
 import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
@@ -83,7 +81,7 @@ public class SharedWalletDetailPresenter extends BasePresenter<SharedWalletDetai
                 .fromCallable(new Callable<Double>() {
                     @Override
                     public Double call() throws Exception {
-                        return Web3jManager.getInstance().getBalance(walletEntity.getPrefixContractAddress());
+                        return Web3jManager.getInstance().getBalance(walletEntity.getPrefixAddress());
                     }
                 })
                 .compose(bindToLifecycle())
@@ -112,7 +110,7 @@ public class SharedWalletDetailPresenter extends BasePresenter<SharedWalletDetai
             return;
         }
 
-        String contractAddress = walletEntity.getPrefixContractAddress();
+        String contractAddress = walletEntity.getPrefixAddress();
 
         if (mDisposable != null && !mDisposable.isDisposed()) {
             mDisposable.dispose();
@@ -140,21 +138,20 @@ public class SharedWalletDetailPresenter extends BasePresenter<SharedWalletDetai
     public void enterTransactionDetailActivity(TransactionEntity transactionEntity) {
 
         if (isViewAttached() && walletEntity != null) {
-
             if (transactionEntity instanceof SharedTransactionEntity) {
                 SharedTransactionEntity sharedTransactionEntity = (SharedTransactionEntity) transactionEntity;
                 if (!sharedTransactionEntity.isRead()) {
                     sharedTransactionEntity.setRead(true);
-                    getView().notifyTransactionChanged(sharedTransactionEntity, walletEntity.getPrefixContractAddress());
+                    getView().notifyTransactionChanged(sharedTransactionEntity, walletEntity.getPrefixAddress());
                     SharedWalletTransactionManager.getInstance().updateTransactionForRead(walletEntity, sharedTransactionEntity);
                 }
                 if (sharedTransactionEntity.transfered()) {
-                    SharedTransactionDetailActivity.actionStart(currentActivity(), sharedTransactionEntity,walletEntity.getPrefixContractAddress());
+                    SharedTransactionDetailActivity.actionStart(currentActivity(), sharedTransactionEntity,walletEntity.getPrefixAddress());
                 } else {
                     SigningActivity.actionStart(currentActivity(), sharedTransactionEntity,IndividualWalletManager.getInstance().getWalletByAddress(sharedTransactionEntity.getOwnerWalletAddress()));
                 }
             } else {
-                IndividualTransactionDetailActivity.actionStart(currentActivity(), (IndividualTransactionEntity) transactionEntity, walletEntity.getPrefixContractAddress());
+                IndividualTransactionDetailActivity.actionStart(currentActivity(), (IndividualTransactionEntity) transactionEntity, walletEntity.getPrefixAddress());
             }
         }
 

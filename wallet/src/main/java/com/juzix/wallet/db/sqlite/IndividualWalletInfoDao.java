@@ -3,6 +3,7 @@ package com.juzix.wallet.db.sqlite;
 import com.juzix.wallet.db.entity.IndividualWalletInfoEntity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -80,6 +81,44 @@ public class IndividualWalletInfoDao extends BaseDao {
                     .equalTo("uuid", uuid)
                     .findFirst()
                     .setName(name);
+            realm.commitTransaction();
+            return true;
+        } catch (Exception e) {
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
+            return false;
+        }
+    }
+
+    public boolean updateMnemonicWithUuid(String uuid, String mnemonic) {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            realm.where(IndividualWalletInfoEntity.class)
+                    .equalTo("uuid", uuid)
+                    .findFirst()
+                    .setMnemonic(mnemonic);
+            realm.commitTransaction();
+            return true;
+        } catch (Exception e) {
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
+            return false;
+        }
+    }
+
+    public boolean updateUpdateTimeWithUuid(String uuid, long updateTime) {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            realm.where(IndividualWalletInfoEntity.class)
+                    .equalTo("uuid", uuid)
+                    .findFirst()
+                    .setUpdateTime(updateTime);
             realm.commitTransaction();
             return true;
         } catch (Exception e) {

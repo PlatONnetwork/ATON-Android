@@ -3,13 +3,11 @@ package com.juzix.wallet.component.ui.dialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.CheckResult;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatDialog;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
@@ -34,6 +32,7 @@ import io.reactivex.subjects.BehaviorSubject;
  */
 public abstract class BaseDialogFragment extends DialogFragment implements LifecycleProvider<FragmentEvent> {
 
+    private final static String TAG = BaseDialogFragment.class.getSimpleName();
     /**
      * 设置x轴上的偏移量
      */
@@ -42,6 +41,10 @@ public abstract class BaseDialogFragment extends DialogFragment implements Lifec
      * 设置y轴上的偏移量
      */
     private int yOffset;
+    /**
+     * 当fullWithEnable = true设置水平方向偏移量
+     */
+    private int horizontalMargin;
     /**
      * 对话框阴影
      */
@@ -99,6 +102,14 @@ public abstract class BaseDialogFragment extends DialogFragment implements Lifec
         this.fullHeightEnable = fullHeightEnable;
     }
 
+    public int getHorizontalMargin() {
+        return horizontalMargin;
+    }
+
+    public void setHorizontalMargin(int horizontalMargin) {
+        this.horizontalMargin = horizontalMargin;
+    }
+
     public BaseDialogFragment setOnDissmissListener(OnDissmissListener dissmissListener) {
         this.dissmissListener = dissmissListener;
         return this;
@@ -107,22 +118,20 @@ public abstract class BaseDialogFragment extends DialogFragment implements Lifec
     private final BehaviorSubject<FragmentEvent> lifecycleSubject = BehaviorSubject.create();
 
     @Override
-    @NonNull
-    @CheckResult
+    @androidx.annotation.NonNull
+    @androidx.annotation.CheckResult
     public final Observable<FragmentEvent> lifecycle() {
         return lifecycleSubject.hide();
     }
 
     @Override
-    @NonNull
-    @CheckResult
-    public final <T> LifecycleTransformer<T> bindUntilEvent(@NonNull FragmentEvent event) {
+    @androidx.annotation.NonNull
+    @androidx.annotation.CheckResult
+    public final <T> LifecycleTransformer<T> bindUntilEvent(@androidx.annotation.NonNull FragmentEvent event) {
         return RxLifecycle.bindUntilEvent(lifecycleSubject, event);
     }
 
     @Override
-    @NonNull
-    @CheckResult
     public final <T> LifecycleTransformer<T> bindToLifecycle() {
         return RxLifecycleAndroid.bindFragment(lifecycleSubject);
     }
@@ -146,6 +155,22 @@ public abstract class BaseDialogFragment extends DialogFragment implements Lifec
                     }
                 }
             }, getShowDuration());
+        }
+    }
+
+    /**
+     * 显示软键盘
+     */
+    public void showSoftInput(final View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (inputMethodManager != null && view != null) {
+            view.requestFocus();
+            view.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    inputMethodManager.showSoftInput(view, 0);
+                }
+            }, 100);
         }
     }
 
@@ -192,55 +217,33 @@ public abstract class BaseDialogFragment extends DialogFragment implements Lifec
         super.dismissAllowingStateLoss();
     }
 
-    /**
-     * 隐藏软键盘
-     */
-    public void hideSoftInput(View view) {
-        InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (inputMethodManager != null && view != null) {
-            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
-    }
-
-    /**
-     * 显示软键盘
-     */
-    public void showSoftInput(final View view) {
-        InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (inputMethodManager != null && view != null) {
-            view.requestFocus();
-            view.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    inputMethodManager.showSoftInput(view, 0);
-                }
-            },100);
-        }
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        Log.e(TAG, "onAttach");
         lifecycleSubject.onNext(FragmentEvent.ATTACH);
         this.context = context;
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(@androidx.annotation.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e(TAG, "onCreate");
         lifecycleSubject.onNext(FragmentEvent.CREATE);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.e(TAG, "onViewCreated");
         lifecycleSubject.onNext(FragmentEvent.CREATE_VIEW);
     }
 
-    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AppCompatDialog dialog = new AppCompatDialog(context, getThemeResId());
+        Log.e(TAG, "onCreateDialog");
+
         return onCreateDialog(dialog);
     }
 
@@ -259,10 +262,16 @@ public abstract class BaseDialogFragment extends DialogFragment implements Lifec
     @Override
     public void onStart() {
         super.onStart();
+        Log.e(TAG, "onStart");
         lifecycleSubject.onNext(FragmentEvent.START);
         Dialog dialog = getDialog();
         if (dialog != null) {
-            dialog.getWindow().setLayout(fullWidthEnable ? WindowManager.LayoutParams.MATCH_PARENT : WindowManager.LayoutParams.WRAP_CONTENT, fullHeightEnable ? WindowManager.LayoutParams.MATCH_PARENT : WindowManager.LayoutParams.WRAP_CONTENT);
+
+            WindowManager.LayoutParams layoutParams = getDialog().getWindow().getAttributes();
+
+            layoutParams.width = fullWidthEnable ? WindowManager.LayoutParams.MATCH_PARENT : WindowManager.LayoutParams.WRAP_CONTENT;
+            layoutParams.height = fullHeightEnable ? WindowManager.LayoutParams.MATCH_PARENT : WindowManager.LayoutParams.WRAP_CONTENT;
+
             dialog.setCanceledOnTouchOutside(true);
             dialog.setCancelable(true);
             dialog.getWindow().setGravity(gravity);
@@ -273,15 +282,17 @@ public abstract class BaseDialogFragment extends DialogFragment implements Lifec
                 dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
             }
 
-            WindowManager.LayoutParams layoutParams = getDialog().getWindow().getAttributes();
-
-            if (gravity == Gravity.CENTER && fullWidthEnable) {
-                layoutParams.width = (int) (CommonUtil.getScreenWidth(getContext()) * 0.72);
+            if (fullWidthEnable) {
+                layoutParams.width = gravity == Gravity.CENTER ? (int) (CommonUtil.getScreenWidth(getContext()) * 0.72) : CommonUtil.getScreenWidth(getContext()) - horizontalMargin * 2;
             }
 
-            if (xOffset > 0 || yOffset > 0) {
+            if (!fullWidthEnable && xOffset > 0) {
                 //设置偏移量
                 layoutParams.x = xOffset;
+            }
+
+            if (!fullHeightEnable && yOffset > 0) {
+                //设置偏移量
                 layoutParams.y = yOffset;
             }
 
@@ -292,29 +303,34 @@ public abstract class BaseDialogFragment extends DialogFragment implements Lifec
     @Override
     public void onResume() {
         super.onResume();
+        Log.e(TAG, "onResume");
         lifecycleSubject.onNext(FragmentEvent.RESUME);
     }
 
     @Override
     public void onPause() {
+        Log.e(TAG, "onPause");
         lifecycleSubject.onNext(FragmentEvent.PAUSE);
         super.onPause();
     }
 
     @Override
     public void onStop() {
+        Log.e(TAG, "onStop");
         lifecycleSubject.onNext(FragmentEvent.STOP);
         super.onStop();
     }
 
     @Override
     public void onDestroyView() {
+        Log.e(TAG, "onDestroyView");
         lifecycleSubject.onNext(FragmentEvent.DESTROY_VIEW);
         super.onDestroyView();
     }
 
     @Override
     public void onDestroy() {
+        Log.e(TAG, "onDestroy");
         lifecycleSubject.onNext(FragmentEvent.DESTROY);
         super.onDestroy();
     }

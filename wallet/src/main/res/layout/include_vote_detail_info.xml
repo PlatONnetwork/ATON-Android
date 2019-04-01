@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@color/color_1f2841"
-              android:orientation="vertical"
-              android:paddingTop="15dp"
-              android:paddingBottom="12dp">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:divider="@drawable/divider_vote_detail"
+    android:orientation="vertical"
+    android:paddingTop="15dp"
+    android:paddingBottom="12dp"
+    android:showDividers="middle">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,219 +16,187 @@
 
         <TextView
             android:id="@+id/tv_transaction_type_title"
-            style="@style/Text.c5cdbc.12"
+            style="@style/Text.61646e.14"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/type"/>
+            android:text="@string/type" />
 
         <TextView
             android:id="@+id/tv_transaction_type"
-            style="@style/Text.fff.13"
+            style="@style/Text.000.14"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginLeft="35dp"
+            android:layout_weight="1"
             android:gravity="right"
-            android:text="@string/vote"/>
+            android:text="@string/vote" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/tv_transaction_time_title"
-            style="@style/Text.c5cdbc.12"
+            style="@style/Text.61646e.14"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/time"/>
+            android:text="@string/time" />
 
         <TextView
             android:id="@+id/tv_transaction_time"
-            style="@style/Text.fff.13"
+            style="@style/Text.000.14"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginLeft="35dp"
+            android:layout_weight="1"
             android:gravity="right"
-            tools:text="2018-02-22 12：21"/>
+            tools:text="2018-02-22 12：21" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/tv_transaction_node_name_title"
-            style="@style/Text.c5cdbc.12"
+            style="@style/Text.61646e.14"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/voteFor"/>
+            android:text="@string/voteFor" />
 
         <TextView
             android:id="@+id/tv_transaction_node_name"
-            style="@style/Text.fff.13"
+            style="@style/Text.000.14"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginLeft="35dp"
+            android:layout_weight="1"
             android:gravity="right"
-            tools:text="@string/nodeInfo"/>
+            tools:text="@string/nodeInfo" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/tv_transaction_node_id_title"
-            style="@style/Text.c5cdbc.12"
+            style="@style/Text.61646e.14"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/nodeId"/>
+            android:text="@string/nodeId" />
 
         <TextView
             android:id="@+id/tv_transaction_node_id"
-            style="@style/Text.fff.13"
+            style="@style/Text.000.14"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginLeft="35dp"
+            android:layout_weight="1"
             android:gravity="right"
-            tools:text="*****************************************************************"/>
+            tools:text="*****************************************************************" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/tv_transaction_votes_title"
-            style="@style/Text.c5cdbc.12"
+            style="@style/Text.61646e.14"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/voteNum"/>
+            android:text="@string/voteNum" />
 
         <TextView
             android:id="@+id/tv_transaction_votes"
-            style="@style/Text.fff.13"
+            style="@style/Text.000.14"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginLeft="35dp"
+            android:layout_weight="1"
             android:gravity="right"
-            tools:text="1225 ATP"/>
+            tools:text="1225 ATP" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/tv_transaction_ticket_price_title"
-            style="@style/Text.c5cdbc.12"
+            style="@style/Text.61646e.14"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/ticketPrice"/>
+            android:text="@string/ticketPrice" />
 
         <TextView
             android:id="@+id/tv_transaction_ticket_price"
-            style="@style/Text.fff.13"
+            style="@style/Text.000.14"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginLeft="35dp"
+            android:layout_weight="1"
             android:gravity="right"
-            tools:text="1.134 ATP"/>
+            tools:text="1.134 ATP" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/tv_transaction_staked_title"
-            style="@style/Text.c5cdbc.12"
+            style="@style/Text.61646e.14"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/staked"/>
+            android:text="@string/staked" />
 
         <TextView
             android:id="@+id/tv_transaction_staked"
-            style="@style/Text.fff.13"
+            style="@style/Text.000.14"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginLeft="35dp"
+            android:layout_weight="1"
             android:gravity="right"
-            tools:text="121.651ATP"/>
+            tools:text="121.651ATP" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/tv_transaction_energon_title"
-            style="@style/Text.c5cdbc.12"
+            style="@style/Text.61646e.14"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/energon_price"/>
+            android:text="@string/energon_price" />
 
         <TextView
             android:id="@+id/tv_transaction_energon"
-            style="@style/Text.fff.13"
+            style="@style/Text.000.14"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginLeft="35dp"
-            android:gravity="right"
-            tools:text="0.00035 ATP"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/tv_transaction_wallet_name_title"
-            style="@style/Text.c5cdbc.12"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/wallet"/>
-
-        <TextView
-            android:id="@+id/tv_transaction_wallet_name"
-            style="@style/Text.fff.13"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginLeft="35dp"
             android:gravity="right"
-            tools:text="@string/wallet_name"/>
+            tools:text="0.00035 ATP" />
 
     </LinearLayout>
 

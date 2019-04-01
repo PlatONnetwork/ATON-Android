@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:id="@+id/fl_item"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_gravity="center"
+             android:orientation="vertical"
+             android:paddingLeft="4dp"
+             android:paddingRight="4dp">
+
+    <!--联名钱包和普通钱包布局-->
+    <RelativeLayout
+        android:id="@+id/rl_item2"
+        android:layout_marginLeft="@dimen/assetsWalletSelectedShadowRadius"
+        android:layout_marginTop="@dimen/assetsWalletSelectedShadowRadius"
+        android:layout_width="@dimen/assetsWalletNormalItemWidth"
+        android:layout_height="@dimen/assetsWalletNormalItemHeight"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/iv_item2_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:src="@drawable/icon_assets_classic_n"/>
+
+        <TextView
+            android:id="@+id/tv_item2_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_toRightOf="@id/iv_item2_icon"
+            android:lines="1"
+            tools:text="kajfklasjfkslajfklsajfskdjf"
+            android:textColor="@color/color_b6bbd0"
+            android:textSize="12sp"/>
+
+        <View
+            android:id="@+id/v_new_msg"
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/bg_red_point"/>
+    </RelativeLayout>
+    <!--正在创建共享钱包进度条布局-->
+    <com.juzix.wallet.component.widget.CustomProgressBar
+        android:id="@+id/pb_create"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="@dimen/assetsWalletNormalItemWidth"
+        android:layout_height="@dimen/assetsWalletNormalItemHeight"
+        android:visibility="gone"/>
+
+    <View
+        android:id="@+id/v_shadow"
+        android:layout_width="@dimen/assetsWalletSelectedItemWidth"
+        android:layout_height="@dimen/assetsWalletSelectedItemHeight">
+    </View>
+</FrameLayout>

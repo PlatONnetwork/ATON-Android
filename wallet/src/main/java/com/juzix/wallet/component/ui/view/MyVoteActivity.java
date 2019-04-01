@@ -3,34 +3,48 @@ package com.juzix.wallet.component.ui.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.juzhen.framework.util.NumberParserUtils;
+import com.jakewharton.rxbinding3.widget.RxAdapterView;
 import com.juzix.wallet.R;
-import com.juzix.wallet.component.adapter.CommonAdapter;
-import com.juzix.wallet.component.adapter.base.ViewHolder;
+import com.juzix.wallet.app.ClickTransformer;
+import com.juzix.wallet.component.adapter.BatchVoteSummaryAdapter;
+import com.juzix.wallet.component.adapter.BatchVoteTransactionAdapter;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.MyVoteContract;
 import com.juzix.wallet.component.ui.presenter.MyVotePresenter;
-import com.juzix.wallet.component.widget.CommonTitleBar;
-import com.juzix.wallet.engine.CandidateManager;
+import com.juzix.wallet.component.widget.LineGridView;
+import com.juzix.wallet.entity.BatchVoteTransactionEntity;
+import com.juzix.wallet.entity.VoteSummaryEntity;
+import com.juzix.wallet.utils.CommonUtil;
 
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+import io.reactivex.functions.Consumer;
 
 /**
  * @author matrixelement
  */
-public class MyVoteActivity extends MVPBaseActivity<MyVotePresenter> implements MyVoteContract.View, View.OnClickListener {
+public class MyVoteActivity extends MVPBaseActivity<MyVotePresenter> implements MyVoteContract.View {
 
-    private CommonAdapter<MyVoteContract.Entity> mAdapter;
+    @BindView(R.id.grid_vote_info)
+    LineGridView gridVoteInfo;
+    @BindView(R.id.list_vote_info)
+    ListView listVoteInfo;
+    @BindView(R.id.layout_no_voted)
+    LinearLayout layoutNoVoted;
 
-    public static void actionStart(Context context) {
-        Intent intent = new Intent(context, MyVoteActivity.class);
-        context.startActivity(intent);
-    }
+    private Unbinder unbinder;
+    private BatchVoteSummaryAdapter mBatchVoteSummaryAdapter;
+    private BatchVoteTransactionAdapter mBatchVoteTransactionAdapter;
+    private int mScreenWidth;
 
     @Override
     protected MyVotePresenter createPresenter() {
@@ -41,79 +55,91 @@ public class MyVoteActivity extends MVPBaseActivity<MyVotePresenter> implements 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_vote);
-        initView();
-        mPresenter.start();
+        unbinder = ButterKnife.bind(this);
+        initViews();
+        mPresenter.loadData();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mPresenter.refresh();
-    }
+    private void initViews() {
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            default:
-                break;
-        }
+        mScreenWidth = CommonUtil.getScreenWidth(this);
+
+        mBatchVoteSummaryAdapter = new BatchVoteSummaryAdapter(R.layout.item_vote_info, null);
+        mBatchVoteTransactionAdapter = new BatchVoteTransactionAdapter(R.layout.item_my_vote_list, null);
+
+        gridVoteInfo.setAdapter(mBatchVoteSummaryAdapter);
+        listVoteInfo.setAdapter(mBatchVoteTransactionAdapter);
+        listVoteInfo.setEmptyView(layoutNoVoted);
+
+        RxAdapterView.itemClicks(listVoteInfo)
+                .compose(bindToLifecycle())
+                .compose(new ClickTransformer())
+                .subscribe(new Consumer<Integer>() {
+                    @Override
+                    public void accept(Integer position) throws Exception {
+                        BatchVoteTransactionEntity batchVoteTransactionEntity = mBatchVoteTransactionAdapter.getItem(position);
+                        VoteDetailActivity.actionStart(MyVoteActivity.this, batchVoteTransactionEntity.getCandidateId(), batchVoteTransactionEntity.getNodeName());
+                    }
+                });
+
+        mBatchVoteTransactionAdapter.setOnItemVoteClickListener(new BatchVoteTransactionAdapter.OnItemVoteClickListener() {
+            @Override
+            public void onItemVoteClick(String candidateId) {
+                mPresenter.voteTicket(candidateId);
+            }
+        });
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-    }
-
-    private void initView() {
-        CommonTitleBar titleBar = findViewById(R.id.commonTitleBar);
-        titleBar.setLeftImageOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-        ListView lvVote = findViewById(R.id.lv_vote);
-        mAdapter = new CommonAdapter<MyVoteContract.Entity>(R.layout.item_my_vote_list, null) {
-            @Override
-            protected void convert(Context context, ViewHolder viewHolder, MyVoteContract.Entity item, int position) {
-                viewHolder.setImageResource(R.id.iv_icon, CandidateManager.getInstance().getNodeIcon(item.avatar));
-                viewHolder.setText(R.id.tv_name, item.candidateName);
-                viewHolder.setText(R.id.tv_location, "(" + item.region + ")");
-                //有效/失效
-                viewHolder.setText(R.id.tv_item1_desc, item.validVotes + "/" + item.invalidVotes);
-                //投票锁定
-                viewHolder.setText(R.id.tv_item2_desc, getString(R.string.amount_with_unit, NumberParserUtils.parseDoubleToPrettyNumber(item.voteStaked)));
-                //投票收益
-                viewHolder.setText(R.id.tv_item3_desc, getString(R.string.amount_with_unit, "-"));
-                //投票
-                viewHolder.setOnClickListener(R.id.tv_vote, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mPresenter.enterVoteActivity(item);
-                    }
-                });
-            }
-        };
-        View emptyView = findViewById(R.id.layout_no_data);
-        lvVote.setAdapter(mAdapter);
-        lvVote.setEmptyView(emptyView);
-        lvVote.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mPresenter.enterVoteDetailActivity(mAdapter.getItem(position));
-            }
-        });
+        if (unbinder != null) {
+            unbinder.unbind();
+        }
     }
 
     @Override
-    public void showTicketInfo(double voteStaked, long validVotes, long invalidVotes, double profit) {
-        ((TextView) findViewById(R.id.tv_item1_desc)).setText(getString(R.string.amount_with_unit, NumberParserUtils.parseDoubleToPrettyNumber(voteStaked)));
-        ((TextView) findViewById(R.id.tv_item2_desc)).setText(validVotes + "/" + invalidVotes);
-        ((TextView) findViewById(R.id.tv_item3_desc)).setText(getString(R.string.amount_with_unit, "-"));
+    public void showBatchVoteSummary(List<VoteSummaryEntity> voteSummaryEntityList) {
+        gridVoteInfo.setVisibility(voteSummaryEntityList.isEmpty() ? View.GONE : View.VISIBLE);
+        gridVoteInfo.setNumColumns(isContainValueLengthExceedSpecificallyLength(voteSummaryEntityList) ? 2 : 3);
+        mBatchVoteSummaryAdapter.notifyDataChanged(voteSummaryEntityList);
     }
 
     @Override
-    public void updateTickets(List<MyVoteContract.Entity> entityList) {
-        mAdapter.notifyDataChanged(entityList);
+    public void showBatchVoteTransactionList(List<BatchVoteTransactionEntity> batchVoteTransactionEntityList) {
+        mBatchVoteTransactionAdapter.notifyDataChanged(batchVoteTransactionEntityList);
+    }
+
+    /**
+     * 是否包含子view value字段的长度超过屏幕的三分之一
+     * 如果超过三分之一，则显示两列
+     * 如果未超过三分之一，则显示两列
+     * 暂不考虑，超过二分之一的情况
+     *
+     * @param voteSummaryEntityList
+     * @return
+     */
+    private boolean isContainValueLengthExceedSpecificallyLength(List<VoteSummaryEntity> voteSummaryEntityList) {
+        if (voteSummaryEntityList == null || voteSummaryEntityList.isEmpty()) {
+            return false;
+        }
+        TextView tvValue = findTextView();
+        for (VoteSummaryEntity voteSummaryEntity : voteSummaryEntityList) {
+            float textWidth = tvValue.getPaint().measureText(voteSummaryEntity.getVoteSummaryValue());
+            if (textWidth >= mScreenWidth / 3) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private TextView findTextView() {
+
+        return LayoutInflater.from(this).inflate(R.layout.item_vote_info, null).findViewById(R.id.tv_value);
+    }
+
+    public static void actionStart(Context context) {
+        Intent intent = new Intent(context, MyVoteActivity.class);
+        context.startActivity(intent);
     }
 }

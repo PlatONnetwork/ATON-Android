@@ -1,13 +1,11 @@
 package com.juzix.wallet.component.ui.presenter;
 
 import android.Manifest;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
 import android.text.TextUtils;
-import android.view.View;
 
 import com.juzhen.framework.network.NetConnectivity;
+import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.LoadingTransformer;
@@ -15,15 +13,15 @@ import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.CreateSharedWalletSecondStepContract;
-import com.juzix.wallet.component.ui.dialog.CommonDialogFragment;
-import com.juzix.wallet.component.ui.dialog.CreateContractDialogFragment;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
-import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
-import com.juzix.wallet.component.ui.view.AddressBookActivity;
+import com.juzix.wallet.component.ui.dialog.SendTransactionDialogFragment;
+import com.juzix.wallet.component.ui.view.AddNewAddressActivity;
 import com.juzix.wallet.component.ui.view.MainActivity;
-import com.juzix.wallet.component.ui.view.PropertyFragment;
 import com.juzix.wallet.component.ui.view.ScanQRCodeActivity;
+import com.juzix.wallet.component.ui.view.SelectAddressActivity;
 import com.juzix.wallet.config.PermissionConfigure;
+import com.juzix.wallet.db.entity.AddressInfoEntity;
+import com.juzix.wallet.db.sqlite.AddressInfoDao;
 import com.juzix.wallet.engine.SharedWalletTransactionManager;
 import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
@@ -36,7 +34,10 @@ import org.web3j.crypto.Credentials;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
 import io.reactivex.Flowable;
@@ -71,13 +72,6 @@ public class CreateSharedWalletSecondStepPresenter extends BasePresenter<CreateS
     public void init() {
         mPosition = -1;
         mEntityList = new ArrayList<>();
-        mEntityList.add(new CreateSharedWalletSecondStepContract.ContractEntity.Builder()
-                .name(mWalletEntity.getName())
-                .address(mWalletEntity.getPrefixAddress())
-                .errorMsg("")
-                .enabled(false)
-                .focus(CreateSharedWalletSecondStepContract.ContractEntity.FOCUS_NONE)
-                .build());
         for (int i = 0; i < mSharedOwners - 1; i++) {
             mEntityList.add(new CreateSharedWalletSecondStepContract.ContractEntity.Builder()
                     .name("")
@@ -87,6 +81,7 @@ public class CreateSharedWalletSecondStepPresenter extends BasePresenter<CreateS
                     .focus(CreateSharedWalletSecondStepContract.ContractEntity.FOCUS_NONE)
                     .build());
         }
+        getView().showWalletInfo(mWalletEntity);
         getView().showOwnerList(mEntityList);
     }
 
@@ -113,12 +108,12 @@ public class CreateSharedWalletSecondStepPresenter extends BasePresenter<CreateS
 
     @Override
     public void selectAddress() {
-        AddressBookActivity.actionStartForResult(currentActivity(), Constants.Action.ACTION_GET_ADDRESS, Constants.RequestCode.REQUEST_CODE_GET_ADDRESS);
+        SelectAddressActivity.actionStartForResult(currentActivity(), Constants.Action.ACTION_GET_ADDRESS, Constants.RequestCode.REQUEST_CODE_GET_ADDRESS);
     }
 
     @Override
     public void updateAddress(String address) {
-        if (isViewAttached() && mPosition > 0) {
+        if (isViewAttached() && mPosition > -1) {
             inputAddress(mPosition, address);
             getView().updateOwner(mPosition);
         }
@@ -190,6 +185,25 @@ public class CreateSharedWalletSecondStepPresenter extends BasePresenter<CreateS
     }
 
     @Override
+    public boolean needSaveAddressBook(String address){
+        if (TextUtils.isEmpty(address)){
+            return false;
+        }
+        if (!JZWalletUtil.isValidAddress(address)) {
+            return false;
+        }
+
+        return !AddressInfoDao.getInstance().isExist(address);
+    }
+
+    @Override
+    public boolean saveWallet(String name, String address) {
+        String[] avatarArray = getContext().getResources().getStringArray(R.array.wallet_avatar);
+        String avatar = avatarArray[new Random().nextInt(avatarArray.length)];
+        return AddressInfoDao.getInstance().insertAddressInfo(new AddressInfoEntity(UUID.randomUUID().toString(), address, name, avatar));
+    }
+
+    @Override
     public void createContract() {
         boolean enabled = true;
         HashSet<String> addressSet = new HashSet<String>();
@@ -223,45 +237,31 @@ public class CreateSharedWalletSecondStepPresenter extends BasePresenter<CreateS
             return;
         }
 
-        validAddress(mEntityList);
+        List<CreateSharedWalletSecondStepContract.ContractEntity> list  = new ArrayList<>();
+        list.add(new CreateSharedWalletSecondStepContract.ContractEntity.Builder()
+                .name(mWalletEntity.getName())
+                .address(mWalletEntity.getPrefixAddress())
+                .errorMsg("")
+                .enabled(false)
+                .focus(CreateSharedWalletSecondStepContract.ContractEntity.FOCUS_NONE)
+                .build());
+        list.addAll(mEntityList);
+        validAddress(list);
 
     }
 
     @Override
-    public void validPassword(String password, BigInteger gasPrice, double feeAmount) {
-
-        SharedWalletTransactionManager.getInstance()
-                .validPassword(password, mWalletEntity.getKey())
-                .compose(new SchedulersTransformer())
-                .compose(LoadingTransformer.bindToLifecycle(getView().currentActivity()))
-                .compose(bindToLifecycle())
-                .subscribe(new Consumer<Credentials>() {
-                    @Override
-                    public void accept(Credentials credentials) throws Exception {
-
-                        SharedWalletTransactionManager.getInstance()
-                                .createSharedWallet(credentials, mWalletName, mWalletEntity.getPrefixAddress(), mRequiredSignatures, getAddressEntityList(), gasPrice, feeAmount);
-
-                        MainActivity.actionStart(getContext(), MainActivity.TAB_PROPERTY, PropertyFragment.TAB_SHARED);
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        CommonDialogFragment.createCommonTitleWithOneButton(string(R.string.validPasswordError), string(R.string.enterAgainTips), string(R.string.back), new OnDialogViewClickListener() {
-                            @Override
-                            public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
-                                showInputWalletPasswordDialogFragment(password, gasPrice, feeAmount);
-                            }
-                        }).show(currentActivity().getSupportFragmentManager(), "showPasswordError");
-                    }
-                });
+    public void validPassword(Credentials credentials, BigInteger gasPrice, double feeAmount) {
+        SharedWalletTransactionManager.getInstance().createSharedWallet(credentials, mWalletName, mWalletEntity.getPrefixAddress(), mRequiredSignatures, getAddressEntityList(), gasPrice, feeAmount);
+        MainActivity.actionStart(getContext());
     }
 
-    private void showInputWalletPasswordDialogFragment(String password, BigInteger price, double feeAmount) {
-        InputWalletPasswordDialogFragment.newInstance(password).setOnConfirmClickListener(new InputWalletPasswordDialogFragment.OnConfirmClickListener() {
+    private void showInputWalletPasswordDialogFragment(BigInteger price, double feeAmount) {
+        InputWalletPasswordDialogFragment.newInstance(mWalletEntity).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
             @Override
-            public void onConfirmClick(String password) {
-                validPassword(password, price, feeAmount);
+            public void onWalletPasswordCorrect(Credentials credentials) {
+                validPassword(credentials, price, feeAmount);
+
             }
         }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
     }
@@ -295,24 +295,22 @@ public class CreateSharedWalletSecondStepPresenter extends BasePresenter<CreateS
                 })
                 .compose(new SchedulersTransformer())
                 .compose(bindToLifecycle())
-                .compose(LoadingTransformer.bindToLifecycle(currentActivity()))
+                .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
                 .subscribe(new Consumer<BigInteger>() {
                     @Override
                     public void accept(BigInteger gasPrice) throws Exception {
                         double feeAmount = getFeeAmount(gasPrice);
                         boolean isBalanceSufficient = mWalletEntity != null && mWalletEntity.getBalance() >= feeAmount;
                         if (isBalanceSufficient) {
-                            CreateContractDialogFragment.newInstance(feeAmount).setOnSubmitClickListener(new CreateContractDialogFragment.OnSubmitClickListener() {
-                                @Override
-                                public void onSubmitClick() {
-                                    InputWalletPasswordDialogFragment.newInstance("").setOnConfirmClickListener(new InputWalletPasswordDialogFragment.OnConfirmClickListener() {
+                            SendTransactionDialogFragment
+                                    .newInstance(string(R.string.create_contract), NumberParserUtils.getPrettyBalance(feeAmount), buildTransactionInfo(mWalletEntity.getName()))
+                                    .setOnConfirmBtnClickListener(new SendTransactionDialogFragment.OnConfirmBtnClickListener() {
                                         @Override
-                                        public void onConfirmClick(String password) {
-                                            validPassword(password, gasPrice, feeAmount);
+                                        public void onConfirmBtnClick() {
+                                            showInputWalletPasswordDialogFragment(gasPrice, feeAmount);
                                         }
-                                    }).show(currentActivity().getSupportFragmentManager(), "inputWalletPassword");
-                                }
-                            }).show(currentActivity().getSupportFragmentManager(), "createContract");
+                                    })
+                                    .show(currentActivity().getSupportFragmentManager(), "sendTransaction");
                         } else {
                             showLongToast(R.string.insufficientBalanceTips);
                         }
@@ -333,8 +331,16 @@ public class CreateSharedWalletSecondStepPresenter extends BasePresenter<CreateS
         return BigDecimalUtil.div(String.valueOf(BigDecimalUtil.mul(gasPrice, gasLimit)), "1E18");
     }
 
+    private Map<String, String> buildTransactionInfo(String walletName) {
+        Map<String, String> map = new LinkedHashMap<>();
+        map.put(string(R.string.execute_wallet), walletName);
+        map.put(string(R.string.payment_info), string(R.string.fee_of_contract_creation));
+        return map;
+    }
+
     private ArrayList<OwnerEntity> getAddressEntityList() {
         ArrayList<OwnerEntity> addressEntityList = new ArrayList<>();
+        addressEntityList.add(new OwnerEntity(UUID.randomUUID().toString(), mWalletEntity.getName(), mWalletEntity.getPrefixAddress()));
         for (CreateSharedWalletSecondStepContract.ContractEntity contractEntity : mEntityList) {
             addressEntityList.add(new OwnerEntity(UUID.randomUUID().toString(), contractEntity.getName(), contractEntity.getAddress()));
         }

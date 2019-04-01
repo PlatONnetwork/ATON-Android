@@ -92,7 +92,7 @@ public class IndividualReceiveTransationPresenter extends BasePresenter<Individu
                         @Override
                         public void accept(NodeEntity nodeEntity) throws Exception {
                             if (isViewAttached()) {
-                                getView().showWarnDialogFragment();
+//                                getView().showWarnDialogFragment();
                             }
                         }
                     });

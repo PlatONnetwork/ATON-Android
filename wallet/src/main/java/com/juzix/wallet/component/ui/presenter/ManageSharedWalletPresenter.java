@@ -1,8 +1,5 @@
 package com.juzix.wallet.component.ui.presenter;
 
-import android.text.TextUtils;
-
-import com.juzix.wallet.R;
 import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
@@ -12,6 +9,8 @@ import com.juzix.wallet.engine.SharedWalletManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.OwnerEntity;
 import com.juzix.wallet.entity.SharedWalletEntity;
+
+import org.web3j.crypto.Credentials;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,47 +36,33 @@ public class ManageSharedWalletPresenter extends BasePresenter<ManageSharedWalle
     @Override
     public void showWalletInfo() {
         if (isViewAttached()) {
-
-            String ownerName = null;
-            String ownerAddress = null;
-
-            if (mIndividualWalletEntity != null) {
-                ownerName = mIndividualWalletEntity.getName();
-                ownerAddress = mIndividualWalletEntity.getPrefixAddress();
-            } else {
-                OwnerEntity ownerEntity = getSharedWalletOwner(mWalletEntity);
-                if (ownerEntity != null){
-                    ownerName = ownerEntity.getName();
-                    ownerAddress = ownerEntity.getPrefixAddress();
+            OwnerEntity firstOwner = null;
+            List<OwnerEntity> owner = mWalletEntity.getOwner();
+            for (OwnerEntity entity : owner){
+                if (mWalletEntity.getPrefixAddress().contains(entity.getAddress())){
+                    if (owner.remove(entity)){
+                        firstOwner = entity;
+                    }
+                    break;
                 }
+            }
+            if (firstOwner != null){
+                if (mIndividualWalletEntity != null){
+                    firstOwner.setName(mIndividualWalletEntity.getName());
+                }
+                owner.add(0, firstOwner);
             }
 
             getView().showWallet(mWalletEntity);
-            getView().showMember(mWalletEntity.getOwner());
-            getView().showOwner(TextUtils.isEmpty(ownerName) ? "" : ownerName, TextUtils.isEmpty(ownerAddress) ? "" : ownerAddress);
+            getView().showMember(owner);
         }
-    }
-
-    private OwnerEntity getSharedWalletOwner(SharedWalletEntity walletEntity) {
-
-        if (walletEntity == null || walletEntity.getOwner() == null || walletEntity.getOwner().isEmpty()) {
-            return null;
-        }
-        List<OwnerEntity> ownerEntityList = walletEntity.getOwner();
-        for (OwnerEntity ownerEntity : ownerEntityList) {
-            if (!TextUtils.isEmpty(ownerEntity.getAddress()) && ownerEntity.getAddress().equals(walletEntity.getAddress())) {
-                return ownerEntity;
-            }
-        }
-
-        return null;
     }
 
 
     @Override
     public void deleteAction(int type) {
         if (mIndividualWalletEntity != null) {
-            getView().showPasswordDialog(type, -1, "");
+            getView().showPasswordDialog(type, -1, mIndividualWalletEntity);
         } else {
             deleteWallet();
         }
@@ -94,7 +79,7 @@ public class ManageSharedWalletPresenter extends BasePresenter<ManageSharedWalle
                     }
                 })
                 .compose(new SchedulersTransformer())
-                .compose(LoadingTransformer.bindToLifecycle(currentActivity()))
+                .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
                 .compose(bindToLifecycle())
                 .subscribe(new Consumer<Boolean>() {
                     @Override
@@ -112,14 +97,14 @@ public class ManageSharedWalletPresenter extends BasePresenter<ManageSharedWalle
                 .fromCallable(new Callable<Boolean>() {
                     @Override
                     public Boolean call() throws Exception {
-                        ArrayList<OwnerEntity> owner = mWalletEntity.getOwner();
+                        List<OwnerEntity> owner = mWalletEntity.getOwner();
                         OwnerEntity addressEntity = owner.get(memberIndex);
                         addressEntity.setName(name);
                         return SharedWalletManager.getInstance().updateOwner(mWalletEntity.getUuid(), owner);
                     }
                 })
                 .compose(new SchedulersTransformer())
-                .compose(LoadingTransformer.bindToLifecycle(currentActivity()))
+                .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
                 .compose(bindToLifecycle())
                 .subscribe(new Consumer<Boolean>() {
                     @Override
@@ -133,55 +118,7 @@ public class ManageSharedWalletPresenter extends BasePresenter<ManageSharedWalle
     }
 
     @Override
-    public void validPassword(int viewType, String password, int index) {
-
-        Single
-                .fromCallable(new Callable<Boolean>() {
-                    @Override
-                    public Boolean call() throws Exception {
-                        return IndividualWalletManager.getInstance().isValidWallet(mIndividualWalletEntity, password);
-                    }
-                })
-                .compose(new SchedulersTransformer())
-                .compose(LoadingTransformer.bindToLifecycle(currentActivity()))
-                .compose(bindToLifecycle())
-                .subscribe(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(Boolean isSuccess) throws Exception {
-                        if (isViewAttached()) {
-                            if (isSuccess) {
-                                onValidPasswordSuccess(viewType, index);
-                            } else {
-                                getView().showErrorDialog(string(R.string.validPasswordError), string(R.string.enterAgainTips), password);
-                            }
-                        }
-                    }
-                });
-    }
-
-    @Override
-    public void deleteWallet() {
-        Single
-                .fromCallable(new Callable<Boolean>() {
-                    @Override
-                    public Boolean call() throws Exception {
-                        return SharedWalletManager.getInstance().deleteWallet(mWalletEntity.getUuid());
-                    }
-                })
-                .compose(new SchedulersTransformer())
-                .compose(LoadingTransformer.bindToLifecycle(currentActivity()))
-                .compose(bindToLifecycle())
-                .subscribe(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(Boolean isSuccess) throws Exception {
-                        if (isSuccess && isViewAttached()) {
-                            currentActivity().finish();
-                        }
-                    }
-                });
-    }
-
-    private void onValidPasswordSuccess(int viewType, int index) {
+    public void validPassword(int viewType, Credentials credentials, int index) {
         switch (viewType) {
             case ManageSharedWalletContract.View.TYPE_MODIFY_WALLET_NAME:
                 if (isViewAttached()) {
@@ -199,5 +136,32 @@ public class ManageSharedWalletPresenter extends BasePresenter<ManageSharedWalle
             default:
                 break;
         }
+    }
+
+    @Override
+    public void deleteWallet() {
+        Single
+                .fromCallable(new Callable<Boolean>() {
+                    @Override
+                    public Boolean call() throws Exception {
+                        return SharedWalletManager.getInstance().deleteWallet(mWalletEntity.getUuid());
+                    }
+                })
+                .compose(new SchedulersTransformer())
+                .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
+                .compose(bindToLifecycle())
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean isSuccess) throws Exception {
+                        if (isSuccess && isViewAttached()) {
+                            currentActivity().finish();
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public boolean isExists(String walletName) {
+        return IndividualWalletManager.getInstance().walletNameExists(walletName) ? true : SharedWalletManager.getInstance().walletNameExists(walletName);
     }
 }

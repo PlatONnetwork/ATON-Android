@@ -20,6 +20,7 @@ import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.SharedWalletEntity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -78,7 +79,7 @@ public class SelectSharedWalletDialogFragment extends BaseDialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-        commonTitleBar.setLeftImageOnClickListener(new View.OnClickListener() {
+        commonTitleBar.setLeftDrawableClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dismiss();
@@ -89,7 +90,7 @@ public class SelectSharedWalletDialogFragment extends BaseDialogFragment {
         listWallet.setAdapter(selectWalletListAdapter);
 
 //        Flowable.fromIterable(SharedWalletInfoDao.getInstance().getWalletInfoList())
-//                .compose(bindToLifecycle())
+//                .compose(bindToSingleLifecycle())
 //                .subscribeOn(Schedulers.io())
 //                .map(new Function<SharedWalletInfoEntity, SharedWalletEntity>() {
 //                    @Override
@@ -112,12 +113,12 @@ public class SelectSharedWalletDialogFragment extends BaseDialogFragment {
 //            }
 //        });
 
-        ArrayList<SharedWalletEntity> walletEntityList = SharedWalletManager.getInstance().getWalletList();
+        List<SharedWalletEntity> walletEntityList = SharedWalletManager.getInstance().getWalletList();
         new Thread(){
             @Override
             public void run() {
                 for (SharedWalletEntity walletEntity : walletEntityList) {
-                    double balance = Web3jManager.getInstance().getBalance(walletEntity.getPrefixContractAddress());
+                    double balance = Web3jManager.getInstance().getBalance(walletEntity.getPrefixAddress());
                     walletEntity.setBalance(balance);
                 }
                 Message msg = mHandler.obtainMessage();

@@ -6,10 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.juzix.wallet.R;
@@ -18,7 +21,6 @@ import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.AddNewAddressContract;
 import com.juzix.wallet.component.ui.presenter.AddNewAddressPresenter;
 import com.juzix.wallet.component.widget.CommonTitleBar;
-import com.juzix.wallet.component.widget.RoundedTextView;
 import com.juzix.wallet.config.PermissionConfigure;
 import com.juzix.wallet.entity.AddressEntity;
 
@@ -41,16 +43,19 @@ public class AddNewAddressActivity extends MVPBaseActivity<AddNewAddressPresente
     TextView tvNameError;
     @BindView(R.id.et_address)
     EditText etAddress;
+    @BindView(R.id.iv_address_scan)
+    ImageView ivAddressScan;
     @BindView(R.id.tv_address_error)
     TextView tvAddressError;
     @BindString(R.string.add_new_address)
-    String addNewAddressTitle;
+    String   addNewAddressTitle;
     @BindString(R.string.edit_address)
-    String editAddress;
-    @BindView(R.id.rtv_add_address)
-    RoundedTextView rtvAddAddress;
+    String   editAddress;
+    @BindView(R.id.btn_add_address)
+    Button   btnAddAddress;
+    @BindView(R.id.commonTitleBar)
+    CommonTitleBar commonTitleBar;
 
-    private CommonTitleBar commonTitleBar;
     private Unbinder unbinder;
 
     @Override
@@ -67,39 +72,36 @@ public class AddNewAddressActivity extends MVPBaseActivity<AddNewAddressPresente
         mPresenter.loadAddressInfo();
     }
 
-    @OnClick({R.id.rtv_add_address})
+    @OnClick({R.id.btn_add_address, R.id.iv_address_scan})
     public void onClick(View view) {
-        mPresenter.addAddress();
+        switch (view.getId()){
+            case R.id.btn_add_address:
+                hideSoftInput();
+                mPresenter.addAddress();
+                break;
+            case R.id.iv_address_scan:
+                hideSoftInput();
+                requestPermission(AddNewAddressActivity.this, 100, new PermissionConfigure.PermissionCallback() {
+                    @Override
+                    public void onSuccess(int what, @NonNull List<String> grantPermissions) {
+                        ScanQRCodeActivity.startActivityForResult(AddNewAddressActivity.this, Constants.RequestCode.REQUEST_CODE_SCAN_QRCODE);
+                    }
+
+                    @Override
+                    public void onHasPermission(int what) {
+                        ScanQRCodeActivity.startActivityForResult(AddNewAddressActivity.this, Constants.RequestCode.REQUEST_CODE_SCAN_QRCODE);
+                    }
+
+                    @Override
+                    public void onFail(int what, @NonNull List<String> deniedPermissions) {
+
+                    }
+                }, Manifest.permission.CAMERA);
+                break;
+        }
     }
 
     private void initViews() {
-
-        commonTitleBar = new CommonTitleBar(this)
-                .setLeftDrawable(R.drawable.icon_back_black)
-                .setMiddleTitle(addNewAddressTitle)
-                .setRightDrawable(R.drawable.icon_scan, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        requestPermission(AddNewAddressActivity.this, 100, new PermissionConfigure.PermissionCallback() {
-                            @Override
-                            public void onSuccess(int what, @NonNull List<String> grantPermissions) {
-                                ScanQRCodeActivity.startActivityForResult(AddNewAddressActivity.this, Constants.RequestCode.REQUEST_CODE_SCAN_QRCODE);
-                            }
-
-                            @Override
-                            public void onHasPermission(int what) {
-                                ScanQRCodeActivity.startActivityForResult(AddNewAddressActivity.this, Constants.RequestCode.REQUEST_CODE_SCAN_QRCODE);
-                            }
-
-                            @Override
-                            public void onFail(int what, @NonNull List<String> deniedPermissions) {
-
-                            }
-                        }, Manifest.permission.CAMERA);
-                    }
-                });
-
-        commonTitleBar.build();
 
         etAddress.addTextChangedListener(new TextWatcher() {
             @Override
@@ -200,19 +202,21 @@ public class AddNewAddressActivity extends MVPBaseActivity<AddNewAddressPresente
 
     @Override
     public void setAddressInfo(AddressEntity addressInfo) {
-        commonTitleBar.setMiddleTitle(editAddress);
+        commonTitleBar.setTitle(editAddress);
         etAddressName.setText(addressInfo.getName());
         etAddress.setText(addressInfo.getAddress());
     }
 
     @Override
     public void setBottonBtnText(String text) {
-        rtvAddAddress.setText(text);
+        btnAddAddress.setText(text);
     }
 
     @Override
     public void setAddNewAddressButtonEnable(boolean enable) {
-        rtvAddAddress.setEnabled(enable);
+        btnAddAddress.setEnabled(enable);
+        btnAddAddress.setBackgroundResource(enable ? R.drawable.bg_shape_button2 : R.drawable.bg_shape_button1);
+        btnAddAddress.setTextColor(ContextCompat.getColor(getContext(), enable ? R.color.color_f6f6f6 : R.color.color_d8d8d8));
     }
 
     public static void actionStartWithExtraForResult(Context context, AddressEntity addressEntity) {

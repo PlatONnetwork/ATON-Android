@@ -2,15 +2,21 @@ package com.juzix.wallet.component.ui.presenter;
 
 import android.text.TextUtils;
 
-import com.juzix.wallet.R;
 import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.ManageIndividualWalletContract;
+import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
+import com.juzix.wallet.component.ui.view.BackupMnemonicPhraseActivity;
+import com.juzix.wallet.component.ui.view.BackupWalletActivity;
 import com.juzix.wallet.component.ui.view.ExportIndividualKeystoreActivity;
 import com.juzix.wallet.component.ui.view.ExportIndividualPrivateKeyActivity;
 import com.juzix.wallet.engine.IndividualWalletManager;
+import com.juzix.wallet.engine.SharedWalletManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
+
+import org.web3j.crypto.Credentials;
+import org.web3j.utils.Numeric;
 
 import java.util.concurrent.Callable;
 
@@ -33,18 +39,21 @@ public class ManageIndividualWalletPresenter extends BasePresenter<ManageIndivid
             getView().showWalletName(mWalletEntity.getName());
             getView().showWalletAddress(mWalletEntity.getPrefixAddress());
             getView().showWalletAvatar(mWalletEntity.getAvatar());
+            boolean hasBackup = TextUtils.isEmpty(mWalletEntity.getMnemonic());
+            getView().enableBackup(!hasBackup);
+            getView().enableDelete(hasBackup);
         }
     }
 
     @Override
-    public void validPassword(int viewType, String password) {
+    public void validPassword(int viewType, Credentials credentials) {
         if (viewType == ManageIndividualWalletContract.View.TYPE_MODIFY_NAME
                 || viewType == ManageIndividualWalletContract.View.TYPE_DELETE_WALLET) {
-            checkValidWallet(mWalletEntity, password);
+            deleteWallet();
         } else if (viewType == ManageIndividualWalletContract.View.TYPE_EXPORT_PRIVATE_KEY) {
-            exportPrivateKey(mWalletEntity, password);
+            ExportIndividualPrivateKeyActivity.actionStart(getContext(), Numeric.toHexStringNoPrefix(credentials.getEcKeyPair().getPrivateKey()));
         } else if (viewType == ManageIndividualWalletContract.View.TYPE_EXPORT_KEYSTORE) {
-            exportKeystore(mWalletEntity, password);
+            ExportIndividualKeystoreActivity.actionStart(getContext(), mWalletEntity.getKey());
         }
     }
 
@@ -58,7 +67,7 @@ public class ManageIndividualWalletPresenter extends BasePresenter<ManageIndivid
                     }
                 })
                 .compose(new SchedulersTransformer())
-                .compose(LoadingTransformer.bindToLifecycle(currentActivity()))
+                .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
                 .compose(bindToLifecycle())
                 .subscribe(new Consumer<Boolean>() {
                     @Override
@@ -80,7 +89,7 @@ public class ManageIndividualWalletPresenter extends BasePresenter<ManageIndivid
                     }
                 })
                 .compose(new SchedulersTransformer())
-                .compose(LoadingTransformer.bindToLifecycle(currentActivity()))
+                .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
                 .compose(bindToLifecycle())
                 .subscribe(new Consumer<Boolean>() {
                     @Override
@@ -92,78 +101,19 @@ public class ManageIndividualWalletPresenter extends BasePresenter<ManageIndivid
                 });
     }
 
-    private void checkValidWallet(IndividualWalletEntity walletEntity, String password) {
-        Single
-                .fromCallable(new Callable<Boolean>() {
-                    @Override
-                    public Boolean call() throws Exception {
-                        return IndividualWalletManager.getInstance().isValidWallet(walletEntity, password);
-                    }
-                })
-                .compose(new SchedulersTransformer())
-                .compose(LoadingTransformer.bindToLifecycle(currentActivity()))
-                .compose(bindToLifecycle())
-                .subscribe(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(Boolean isSuccess) throws Exception {
-                        if (isViewAttached()) {
-                            if (isSuccess) {
-                                deleteWallet();
-                            } else {
-                                getView().showErrorDialog(string(R.string.validPasswordError), string(R.string.enterAgainTips), password, ManageIndividualWalletContract.View.TYPE_EXPORT_PRIVATE_KEY);
-                            }
-                        }
-                    }
-                });
+    @Override
+    public void backup() { 
+        InputWalletPasswordDialogFragment.newInstance((IndividualWalletEntity) mWalletEntity).setOnWalletCorrectListener(new InputWalletPasswordDialogFragment.OnWalletCorrectListener() {
+            @Override
+            public void onCorrect(Credentials credentials, String password) {
+                BackupMnemonicPhraseActivity.actionStart(getContext(), password, mWalletEntity, 1);
+            }
+        }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
     }
 
-    private void exportPrivateKey(IndividualWalletEntity walletEntity, String password) {
-        Single
-                .fromCallable(new Callable<String>() {
-                    @Override
-                    public String call() throws Exception {
-                        return IndividualWalletManager.getInstance().exportPrivateKey(walletEntity, password);
-                    }
-                })
-                .compose(new SchedulersTransformer())
-                .compose(LoadingTransformer.bindToLifecycle(currentActivity()))
-                .compose(bindToLifecycle())
-                .subscribe(new Consumer<String>() {
-                    @Override
-                    public void accept(String privateKey) throws Exception {
-                        if (isViewAttached()) {
-                            if (TextUtils.isEmpty(privateKey)) {
-                                getView().showErrorDialog(string(R.string.validPasswordError), string(R.string.enterAgainTips), password, ManageIndividualWalletContract.View.TYPE_EXPORT_PRIVATE_KEY);
-                            } else {
-                                ExportIndividualPrivateKeyActivity.actionStart(getContext(), privateKey);
-                            }
-                        }
-                    }
-                });
+    @Override
+    public boolean isExists(String walletName) {
+        return IndividualWalletManager.getInstance().walletNameExists(walletName) ? true : SharedWalletManager.getInstance().walletNameExists(walletName);
     }
 
-    private void exportKeystore(IndividualWalletEntity walletEntity, String password) {
-        Single
-                .fromCallable(new Callable<String>() {
-                    @Override
-                    public String call() throws Exception {
-                        return IndividualWalletManager.getInstance().exportKeystore(walletEntity, password);
-                    }
-                })
-                .compose(new SchedulersTransformer())
-                .compose(LoadingTransformer.bindToLifecycle(currentActivity()))
-                .compose(bindToLifecycle())
-                .subscribe(new Consumer<String>() {
-                    @Override
-                    public void accept(String keyStore) throws Exception {
-                        if (isViewAttached()) {
-                            if (TextUtils.isEmpty(keyStore)) {
-                                getView().showErrorDialog(string(R.string.validPasswordError), string(R.string.enterAgainTips), password, ManageIndividualWalletContract.View.TYPE_EXPORT_PRIVATE_KEY);
-                            } else {
-                                ExportIndividualKeystoreActivity.actionStart(getContext(), keyStore);
-                            }
-                        }
-                    }
-                });
-    }
 }

@@ -5,17 +5,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
+import com.juzhen.framework.network.HttpClient;
 import com.juzhen.framework.network.NetConnectivity;
 import com.juzhen.framework.network.NetState;
+import com.juzhen.framework.network.RequestInfo;
 import com.juzhen.framework.util.RUtils;
+import com.juzix.wallet.component.service.LoopService;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.config.JZAppConfigure;
 import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.SharedWalletManager;
-import com.juzix.wallet.engine.SystemManager;
 import com.juzix.wallet.event.EventPublisher;
-import com.juzix.wallet.protocol.HttpConfigure;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import io.realm.DynamicRealm;
 import io.realm.Realm;
@@ -60,15 +64,20 @@ public class AppFramework {
         //初始化偏好设置
         AppSettings.getInstance().init(context);
         //初始化网络模块
-        HttpConfigure.init(context);
+        HttpClient.getInstance().init(context, "http://192.168.9.190:18060/", buildMultipleUrlMap());
         //初始化节点配置
         NodeManager.getInstance().init();
         //初始化普通钱包
         IndividualWalletManager.getInstance().init();
         //初始化共享钱包
         SharedWalletManager.getInstance().init();
-        //启动计时器
-        SystemManager.getInstance().start();
+    }
+
+    private Map<String, Object> buildMultipleUrlMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put(RequestInfo.URL_IP, "http://ip-api.com/");
+        map.put(RequestInfo.URL_VOTE, "http://10.10.8.8:8060/browser-server/");
+        return map;
     }
 
     private void initRealm(Context context) {
@@ -92,6 +101,9 @@ public class AppFramework {
                             RealmSchema schema = realm.getSchema();
                             schema.get("IndividualTransactionInfoEntity").addField("blockNumber", long.class);
                             oldVersion++;
+                        } else if (oldVersion == 103 || oldVersion == 104) {
+                            RealmSchema schema = realm.getSchema();
+                            schema.remove("RegionInfoEntity");
                         }
                     }
                 })

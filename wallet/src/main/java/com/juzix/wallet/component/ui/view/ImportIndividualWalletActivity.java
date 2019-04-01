@@ -9,17 +9,26 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.PagerAdapter;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.juzhen.framework.util.AndroidUtil;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.base.BaseFragment;
 import com.juzix.wallet.component.ui.base.MVPBaseFragment;
+import com.juzix.wallet.component.widget.CommonTitleBar;
 import com.juzix.wallet.component.widget.ViewPagerSlide;
+import com.juzix.wallet.component.widget.table.PagerItem;
+import com.juzix.wallet.component.widget.table.PagerItemAdapter;
+import com.juzix.wallet.component.widget.table.PagerItems;
+import com.juzix.wallet.component.widget.table.SmartTabLayout;
 import com.juzix.wallet.config.PermissionConfigure;
 import com.juzix.wallet.engine.QRCodeParser;
 import com.juzix.wallet.utils.JZWalletUtil;
@@ -27,13 +36,12 @@ import com.juzix.wallet.utils.JZWalletUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ImportIndividualWalletActivity extends BaseActivity implements View.OnClickListener{
+public class ImportIndividualWalletActivity extends BaseActivity{
     public static final int            TAB1                  = 0;
     public static final int            TAB2                  = 1;
     public static final int            TAB3                  = 2;
-    private              ViewPagerSlide mViewPager;
-    private              TabAdapter     mTabAdapter;
     public static final int REQ_QR_CODE = 101;
+    private ViewPagerSlide mVpContent;
 
     private final static String    TAG = ImportIndividualWalletActivity.class.getSimpleName();
 
@@ -56,49 +64,53 @@ public class ImportIndividualWalletActivity extends BaseActivity implements View
     }
 
     private void initView() {
-        findViewById(R.id.ll_left).setOnClickListener(this);
-        ((TextView) findViewById(R.id.tv_middle)).setText(R.string.importIndividualWallet);
-        findViewById(R.id.ll_right).setOnClickListener(this);
-        ImageView ivRight = findViewById(R.id.iv_right);
-        ivRight.setVisibility(View.VISIBLE);
-        ivRight.setImageResource(R.drawable.icon_scan);
-
-        ArrayList<String>          titles    = getTitles();
-        ArrayList<MVPBaseFragment> fragments ;
-        Intent intent = getIntent();
-        int index;
-        if (intent.hasExtra(Constants.Extra.EXTRA_TYPE)){
-            index = intent.getIntExtra(Constants.Extra.EXTRA_TYPE, TAB1);
-            fragments = getFragments(index, intent.getExtras());
-        }else {
-            index = TAB1;
-            fragments = getFragments(-1, null);
-        }
-        mTabAdapter = new TabAdapter(getSupportFragmentManager(), titles, fragments);
-        mViewPager = mRootView.findViewById(R.id.vp_content);
-        mViewPager.setOffscreenPageLimit(fragments.size());
-        mViewPager.setAdapter(mTabAdapter);
-        mViewPager.setSlide(true);
-
-        TabLayout tablayout = mRootView.findViewById(R.id.tl_indicator);
-        for (String title : titles) {
-            tablayout.addTab(tablayout.newTab().setText(title));
-        }
-        tablayout.setupWithViewPager(mViewPager);
-        mViewPager.setCurrentItem(index);
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.ll_left:
+        CommonTitleBar commonTitleBar = findViewById(R.id.commonTitleBar);
+        commonTitleBar.setLeftDrawableClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 hideSoftInput();
                 finish();
-                break;
-            case R.id.ll_right:
+            }
+        });
+        commonTitleBar.setRightDrawableClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 scanQRCode();
-                break;
+            }
+        });
+        int            indicatorThickness = AndroidUtil.dip2px(getContext(), 2.0f);
+        SmartTabLayout stbBar             = mRootView.findViewById(R.id.stb_bar);
+        stbBar.setIndicatorThickness(indicatorThickness);
+        stbBar.setIndicatorCornerRadius(indicatorThickness / 2);
+        ArrayList<Class<? extends BaseFragment>> fragments = getFragments();
+        Intent intent = getIntent();
+        int index = -1;
+        if (intent.hasExtra(Constants.Extra.EXTRA_TYPE)){
+            index = intent.getIntExtra(Constants.Extra.EXTRA_TYPE, TAB1);
         }
+        stbBar.setCustomTabView(new SmartTabLayout.TabProvider() {
+            @Override
+            public View createTabView(ViewGroup container, int position, PagerAdapter adapter) {
+                return getTableView(position, container);
+            }
+        });
+        PagerItems pages  = new PagerItems(getContext());
+        int        tabNum = fragments.size();
+        for (int i = 0; i < tabNum; i++) {
+            if (i == index){
+                pages.add(PagerItem.of(getTitles().get(i), fragments.get(i), intent.getExtras()));
+            }else {
+                pages.add(PagerItem.of(getTitles().get(i), fragments.get(i), new Bundle()));
+            }
+        }
+        mVpContent = mRootView.findViewById(R.id.vp_content);
+        mVpContent.setSlide(true);
+        mVpContent.setOffscreenPageLimit(fragments.size());
+        mVpContent.setAdapter(new PagerItemAdapter(getSupportFragmentManager(), pages));
+        stbBar.setViewPager(mVpContent);
+        index = index == -1 ? TAB1 : index;
+        setTableView(stbBar.getTabAt(index), index);
+        mVpContent.setCurrentItem(index);
     }
 
     private ArrayList<String> getTitles() {
@@ -109,54 +121,12 @@ public class ImportIndividualWalletActivity extends BaseActivity implements View
         return titleList;
     }
 
-    private ArrayList<MVPBaseFragment> getFragments(int type, Bundle bundle) {
-        ArrayList<MVPBaseFragment> fragments = new ArrayList<>();
-        if (type < 0){
-            fragments.add(getFragment(TAB1, null));
-            fragments.add(getFragment(TAB2, null));
-            fragments.add(getFragment(TAB3, null));
-            return fragments;
-        }
-        switch (type){
-            case TAB1:
-                fragments.add(getFragment(TAB1, bundle));
-                fragments.add(getFragment(TAB2, null));
-                fragments.add(getFragment(TAB3, null));
-                break;
-            case TAB2:
-                fragments.add(getFragment(TAB1, null));
-                fragments.add(getFragment(TAB2, bundle));
-                fragments.add(getFragment(TAB3, null));
-                break;
-            case TAB3:
-                fragments.add(getFragment(TAB1, null));
-                fragments.add(getFragment(TAB2, null));
-                fragments.add(getFragment(TAB3, bundle));
-                break;
-        }
-        return fragments;
-    }
-
-    public MVPBaseFragment getFragment(int tab, Bundle bundle) {
-        MVPBaseFragment fragment = null;
-        switch (tab) {
-            case TAB1:
-                fragment = new ImportIndividualKeystoreFragment();
-                break;
-            case TAB2:
-                fragment = new ImportIndividualMnemonicPhraseFragment();
-                break;
-            case TAB3:
-                fragment = new ImportIndividualPrivateKeyFragment();
-                break;
-        }
-        if (bundle != null && !bundle.isEmpty()){
-            fragment.setArguments(bundle);
-        }
-//        Bundle bundle = new Bundle();
-//        fragment.setArguments(bundle);
-
-        return fragment;
+    private ArrayList<Class<? extends BaseFragment>> getFragments() {
+        ArrayList<Class<? extends BaseFragment>> list = new ArrayList<>();
+        list.add(ImportIndividualKeystoreFragment.class);
+        list.add(ImportIndividualMnemonicPhraseFragment.class);
+        list.add(ImportIndividualPrivateKeyFragment.class);
+        return list;
     }
 
     @Override
@@ -169,18 +139,18 @@ public class ImportIndividualWalletActivity extends BaseActivity implements View
             Bundle bundle = data.getExtras();
             String scanResult = bundle.getString(ScanQRCodeActivity.EXTRA_SCAN_QRCODE_DATA);
             if (JZWalletUtil.isValidKeystore(scanResult)){
-                mViewPager.setCurrentItem(0);
-                mTabAdapter.getItem(0).onActivityResult(requestCode, resultCode, data);
+                mVpContent.setCurrentItem(0);
+                ((PagerItemAdapter)mVpContent.getAdapter()).getPage(0).onActivityResult(requestCode, resultCode, data);
                 return;
             }
             if (JZWalletUtil.isValidPrivateKey(scanResult)){
-                mViewPager.setCurrentItem(2);
-                mTabAdapter.getItem(2).onActivityResult(requestCode, resultCode, data);
+                mVpContent.setCurrentItem(2);
+                ((PagerItemAdapter)mVpContent.getAdapter()).getPage(2).onActivityResult(requestCode, resultCode, data);
                 return;
             }
             if (JZWalletUtil.isValidMnemonic(scanResult)){
-                mViewPager.setCurrentItem(1);
-                mTabAdapter.getItem(1).onActivityResult(requestCode, resultCode, data);
+                mVpContent.setCurrentItem(1);
+                ((PagerItemAdapter)mVpContent.getAdapter()).getPage(1).onActivityResult(requestCode, resultCode, data);
                 return;
             }
             showLongToast(string(R.string.unrecognized));
@@ -207,59 +177,16 @@ public class ImportIndividualWalletActivity extends BaseActivity implements View
         }, Manifest.permission.CAMERA);
     }
 
-    private class TabAdapter extends FragmentStatePagerAdapter {
+    private View getTableView(int position, ViewGroup container) {
+        View contentView = LayoutInflater.from(getContext()).inflate(R.layout.layout_app_tab_item1, container, false);
+        setTableView(contentView, position);
+        return contentView;
+    }
 
-        private ArrayList<MVPBaseFragment> mFragments;
-        private ArrayList<String>       mTitles;
-
-        TabAdapter(FragmentManager fm, ArrayList<String> mTitles, ArrayList<MVPBaseFragment> fragments) {
-            super(fm);
-            this.mFragments = fragments;
-            this.mTitles = mTitles;
-        }
-
-        public void destroyAll() {
-            for (int i = 0; i < mFragments.size(); i++) {
-                try {
-                    BaseFragment baseFragment = mFragments.get(i);
-                    baseFragment.onDestroyView();
-                    destroyItem(null, i, mFragments.get(i));
-                } catch (Exception exp) {
-                    exp.printStackTrace();
-                }
-            }
-        }
-
-        public ArrayList<MVPBaseFragment> getFragments() {
-            return mFragments;
-        }
-
-        public ArrayList<String> getTitles() {
-            return mTitles;
-        }
-
-        @Override
-        public MVPBaseFragment getItem(int position) {
-            if (mFragments == null || mFragments.isEmpty() || position >= getCount()){
-                return null;
-            }
-            return mFragments.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragments.size();
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-
-            return mTitles.get(position % mTitles.size());
-        }
-
-        @Override
-        public void setPrimaryItem(ViewGroup container, int position, Object object) {
-            super.setPrimaryItem(container, position, object);
-        }
+    private void setTableView(View contentView, int position) {
+        contentView.findViewById(R.id.iv_icon).setVisibility(View.GONE);
+        TextView tvTitle = contentView.findViewById(R.id.tv_title);
+        tvTitle.setText(getTitles().get(position));
+        tvTitle.setTextColor(ContextCompat.getColorStateList(getContext(), R.color.color_app_tab_text2));
     }
 }

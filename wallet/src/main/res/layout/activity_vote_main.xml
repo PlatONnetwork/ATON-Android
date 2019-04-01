@@ -13,8 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:ctb_left_drawable="@drawable/icon_back_black"
-        app:ctb_middle_text="@string/vote"
-        app:ctb_right_text="@string/myVote" />
+        app:ctb_title="@string/vote" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -78,7 +77,7 @@
                     style="@style/Text.fff.16"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/defaul" />
+                    android:text="@string/action_default" />
 
                 <TextView
                     android:id="@+id/tv_sort_reward"

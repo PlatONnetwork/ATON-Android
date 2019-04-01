@@ -4,29 +4,34 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.juzhen.framework.util.AndroidUtil;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.base.BaseFragment;
 import com.juzix.wallet.component.ui.dialog.BaseDialog;
+import com.juzix.wallet.component.ui.dialog.CommonTipsDialogFragment;
+import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
 import com.juzix.wallet.component.widget.ViewPagerSlide;
+import com.juzix.wallet.component.widget.table.PagerItem;
+import com.juzix.wallet.component.widget.table.PagerItemAdapter;
+import com.juzix.wallet.component.widget.table.PagerItems;
+import com.juzix.wallet.component.widget.table.SmartTabLayout;
 
 import java.util.ArrayList;
 
-public class ExportIndividualKeystoreActivity extends BaseActivity implements View.OnClickListener{
-    private static final int            TAB1                  = 1;
-    private static final int            TAB2                  = 2;
-    private              ViewPagerSlide mViewPager;
-    private              TabAdapter     mTabAdapter;
-    private BaseDialog mMnemonicDialog;
+public class ExportIndividualKeystoreActivity extends BaseActivity{
 
     private final static String    TAG = ExportIndividualKeystoreActivity.class.getSimpleName();
 
@@ -41,37 +46,34 @@ public class ExportIndividualKeystoreActivity extends BaseActivity implements Vi
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_export_individual_keystore);
-        showPasswordDialog();
+        showTipsDialog();
         initView();
     }
 
     private void initView() {
-        findViewById(R.id.ll_left).setOnClickListener(this);
-        ((TextView) findViewById(R.id.tv_middle)).setText(R.string.exportKeystore);
-
-        ArrayList<BaseFragment> fragments = getFragments();
-        ArrayList<String>       titles    = getTitles();
-        mTabAdapter = new TabAdapter(getSupportFragmentManager(), titles, fragments);
-        mViewPager = mRootView.findViewById(R.id.vp_content);
-        mViewPager.setOffscreenPageLimit(fragments.size());
-        mViewPager.setAdapter(mTabAdapter);
-        mViewPager.setSlide(true);
-        TabLayout tablayout = mRootView.findViewById(R.id.tl_indicator);
-        for (String title : titles) {
-            tablayout.addTab(tablayout.newTab().setText(title));
+        int            indicatorThickness = AndroidUtil.dip2px(getContext(), 2.0f);
+        SmartTabLayout stbBar             = mRootView.findViewById(R.id.stb_bar);
+        stbBar.setIndicatorThickness(indicatorThickness);
+        stbBar.setIndicatorCornerRadius(indicatorThickness / 2);
+        ArrayList<Class<? extends BaseFragment>> fragments = getFragments();
+        stbBar.setCustomTabView(new SmartTabLayout.TabProvider() {
+            @Override
+            public View createTabView(ViewGroup container, int position, PagerAdapter adapter) {
+                return getTableView(position, container);
+            }
+        });
+        PagerItems pages  = new PagerItems(getContext());
+        int        tabNum = fragments.size();
+        for (int i = 0; i < tabNum; i++) {
+            pages.add(PagerItem.of(getTitles().get(i), fragments.get(i)));
         }
-        tablayout.setupWithViewPager(mViewPager);
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.ll_left:
-                finish();
-                break;
-            case R.id.btn_understood:
-                dimissPasswordDialog();
-        }
+        ViewPagerSlide vpContent = mRootView.findViewById(R.id.vp_content);
+        vpContent.setSlide(true);
+        vpContent.setOffscreenPageLimit(fragments.size());
+        vpContent.setAdapter(new PagerItemAdapter(getSupportFragmentManager(), pages));
+        stbBar.setViewPager(vpContent);
+        setTableView(stbBar.getTabAt(0), 0);
+        vpContent.setCurrentItem(0);
     }
 
     private ArrayList<String> getTitles() {
@@ -81,99 +83,34 @@ public class ExportIndividualKeystoreActivity extends BaseActivity implements Vi
         return titleList;
     }
 
-    private ArrayList<BaseFragment> getFragments() {
-        ArrayList<BaseFragment> list = new ArrayList<>();
-        list.add(getFragment(TAB1));
-        list.add(getFragment(TAB2));
+    private ArrayList<Class<? extends BaseFragment>> getFragments() {
+        ArrayList<Class<? extends BaseFragment>> list = new ArrayList<>();
+        list.add(ExportIndividualKeystoreFragment.class);
+        list.add(ExportIndividualKeystoreQRCodeFragment.class);
         return list;
     }
 
-    public BaseFragment getFragment(int tab) {
-        BaseFragment fragment = null;
-        switch (tab) {
-            case TAB1:
-                fragment = new ExportIndividualKeystoreFragment();
-                break;
-            case TAB2:
-                fragment = new ExportIndividualKeystoreQRCodeFragment();
-                break;
-        }
-        Bundle bundle = new Bundle();
-        fragment.setArguments(bundle);
-
-        return fragment;
-    }
-
-    private void showPasswordDialog(){
-        dimissPasswordDialog();
-        View view = LayoutInflater.from(this).inflate(R.layout.dialog_backup_mnemonic_phrase, null);
-        ((TextView) view.findViewById(R.id.tv_content)).setText(R.string.backupKeystore);
-        mMnemonicDialog = new BaseDialog(this, R.style.Dialog_FullScreen);
-        mMnemonicDialog.setContentView(view);
-        mMnemonicDialog.show();
-        mMnemonicDialog.findViewById(R.id.btn_understood).setOnClickListener(this);
-    }
-
-    private void dimissPasswordDialog(){
-        if (mMnemonicDialog != null && mMnemonicDialog.isShowing()){
-            mMnemonicDialog.dismiss();
-            mMnemonicDialog = null;
-        }
-    }
-
-    private class TabAdapter extends FragmentStatePagerAdapter {
-
-        private ArrayList<BaseFragment> mFragments;
-        private ArrayList<String>       mTitles;
-
-        TabAdapter(FragmentManager fm, ArrayList<String> mTitles, ArrayList<BaseFragment> fragments) {
-            super(fm);
-            this.mFragments = fragments;
-            this.mTitles = mTitles;
-        }
-
-        public void destroyAll() {
-            for (int i = 0; i < mFragments.size(); i++) {
-                try {
-                    BaseFragment baseFragment = mFragments.get(i);
-                    baseFragment.onDestroyView();
-                    destroyItem(null, i, mFragments.get(i));
-                } catch (Exception exp) {
-                    exp.printStackTrace();
+    private void showTipsDialog() {
+        CommonTipsDialogFragment.createDialogWithTitleAndOneButton(ContextCompat.getDrawable(this, R.drawable.icon_dialog_tips), string(R.string.donotScreenshot), string(R.string.backupKeystore), string(R.string.understood), new OnDialogViewClickListener() {
+            @Override
+            public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
+                if (fragment != null){
+                    fragment.dismiss();
                 }
             }
-        }
+        }).show(getSupportFragmentManager(), "showTips");
+    }
 
-        public ArrayList<BaseFragment> getFragments() {
-            return mFragments;
-        }
+    private View getTableView(int position, ViewGroup container) {
+        View contentView = LayoutInflater.from(getContext()).inflate(R.layout.layout_app_tab_item1, container, false);
+        setTableView(contentView, position);
+        return contentView;
+    }
 
-        public ArrayList<String> getTitles() {
-            return mTitles;
-        }
-
-        @Override
-        public BaseFragment getItem(int position) {
-            if (mFragments == null || mFragments.isEmpty() || position >= getCount()){
-                return null;
-            }
-            return mFragments.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragments.size();
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-
-            return mTitles.get(position % mTitles.size());
-        }
-
-        @Override
-        public void setPrimaryItem(ViewGroup container, int position, Object object) {
-            super.setPrimaryItem(container, position, object);
-        }
+    private void setTableView(View contentView, int position) {
+        contentView.findViewById(R.id.iv_icon).setVisibility(View.GONE);
+        TextView tvTitle = contentView.findViewById(R.id.tv_title);
+        tvTitle.setText(getTitles().get(position));
+        tvTitle.setTextColor(ContextCompat.getColorStateList(getContext(), R.color.color_app_tab_text2));
     }
 }

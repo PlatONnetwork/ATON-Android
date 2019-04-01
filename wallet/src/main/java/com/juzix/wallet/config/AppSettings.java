@@ -60,6 +60,22 @@ public class AppSettings {
         setBooleanItem(Constants.Preference.KEY_FACE_TOUCH_ID_FLAG, supportFaceTouchId);
     }
 
+    public boolean getShowAssetsFlag() {
+        return getBooleanItem(Constants.Preference.KEY_SHOW_ASSETS_FLAG, true);
+    }
+
+    public void setShowAssetsFlag(boolean showAssetsFlag) {
+        setBooleanItem(Constants.Preference.KEY_SHOW_ASSETS_FLAG, showAssetsFlag);
+    }
+
+    public long getUpdateVersionTime(){
+        return getLongItem(Constants.Preference.KEY_UPDATE_VERSION_TIME, 0);
+    }
+
+    public void setUpdateVersionTime(long updateVersionTime){
+        setLongItem(Constants.Preference.KEY_UPDATE_VERSION_TIME, updateVersionTime);
+    }
+
     private String getStringItem(String key, String defaultvalue) {
         return preferences.getString(key, defaultvalue);
     }

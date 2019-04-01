@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.juzix.wallet.R;
@@ -14,9 +15,7 @@ import com.juzix.wallet.component.adapter.SelectIndividualWalletListAdapter;
 import com.juzix.wallet.component.widget.CommonTitleBar;
 import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
-import com.juzix.wallet.entity.SharedWalletEntity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -77,7 +76,7 @@ public class SelectIndividualWalletBalanceDialogFragment extends BaseDialogFragm
     public void onStart() {
         super.onStart();
 
-        commonTitleBar.setLeftImageOnClickListener(new View.OnClickListener() {
+        commonTitleBar.setLeftDrawableClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dismiss();

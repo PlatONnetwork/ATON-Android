@@ -34,6 +34,8 @@ public class IndividualTransactionDetailActivity extends MVPBaseActivity<Individ
 
     @BindView(R.id.iv_copy_from_address)
     ImageView ivCopyFromAddress;
+    @BindView(R.id.tv_copy_from_name)
+    TextView tvCopyFromName;
     @BindView(R.id.tv_from_address)
     TextView tvFromAddress;
     @BindView(R.id.layout_from_address)
@@ -130,6 +132,7 @@ public class IndividualTransactionDetailActivity extends MVPBaseActivity<Individ
         tvTransactionStatus.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(this, status.getStatusDrawable()), null, null);
         tvTransactionStatus.setCompoundDrawablePadding(DensityUtil.dp2px(this, 10));
 
+        tvCopyFromName.setText(transactionEntity.getWalletName());
         tvFromAddress.setText(transactionEntity.getFromAddress());
         tvToAddress.setText(transactionEntity.getToAddress());
 

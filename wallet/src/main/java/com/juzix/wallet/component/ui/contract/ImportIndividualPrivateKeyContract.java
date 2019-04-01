@@ -11,11 +11,14 @@ public class ImportIndividualPrivateKeyContract {
         void showPrivateKeyError(String text, boolean isVisible);
         void showNameError(String text, boolean isVisible);
         void showPasswordError(String text, boolean isVisible);
+        void enablePaste(boolean enabled);
     }
 
     public interface Presenter extends IPresenter<View> {
         void init();
         void parseQRCode(String QRCode);
         void importPrivateKey(String privateKey, String name, String password, String repeatPassword);
+        void checkPaste();
+        boolean isExists(String walletName);
     }
 }

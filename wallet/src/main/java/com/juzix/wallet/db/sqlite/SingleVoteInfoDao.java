@@ -2,6 +2,7 @@ package com.juzix.wallet.db.sqlite;
 
 import com.juzix.wallet.db.entity.SingleVoteInfoEntity;
 import com.juzix.wallet.db.entity.TicketInfoEntity;
+import com.juzix.wallet.entity.SingleVoteEntity;
 
 import org.web3j.utils.Numeric;
 
@@ -55,8 +56,8 @@ public class SingleVoteInfoDao {
     }
 
     public List<SingleVoteInfoEntity> getTransactionListByWalletAddress(String walletAddress) {
-        List<SingleVoteInfoEntity> list  = new ArrayList<>();
-        Realm                      realm = null;
+        List<SingleVoteInfoEntity> list = new ArrayList<>();
+        Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
             RealmResults<SingleVoteInfoEntity> results = realm.where(SingleVoteInfoEntity.class)
@@ -74,8 +75,8 @@ public class SingleVoteInfoDao {
     }
 
     public List<TicketInfoEntity> getTicketListByCandidateId(String candidateId) {
-        List<TicketInfoEntity> list  = new ArrayList<>();
-        Realm                  realm = null;
+        List<TicketInfoEntity> list = new ArrayList<>();
+        Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
             RealmResults<TicketInfoEntity> results = realm.where(TicketInfoEntity.class)
@@ -93,8 +94,8 @@ public class SingleVoteInfoDao {
     }
 
     public List<SingleVoteInfoEntity> getTransactionListByStatus(int status) {
-        List<SingleVoteInfoEntity> list  = new ArrayList<>();
-        Realm                      realm = null;
+        List<SingleVoteInfoEntity> list = new ArrayList<>();
+        Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
             RealmResults<SingleVoteInfoEntity> results = realm.where(SingleVoteInfoEntity.class)
@@ -112,8 +113,8 @@ public class SingleVoteInfoDao {
     }
 
     public List<SingleVoteInfoEntity> getTransactionListByCandidateId(String candidateId) {
-        List<SingleVoteInfoEntity> list  = new ArrayList<>();
-        Realm                      realm = null;
+        List<SingleVoteInfoEntity> list = new ArrayList<>();
+        Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
             RealmResults<SingleVoteInfoEntity> results = realm.where(SingleVoteInfoEntity.class)
@@ -130,9 +131,29 @@ public class SingleVoteInfoDao {
         return list;
     }
 
+    public SingleVoteInfoEntity getTransactionByHash(String transactionHash) {
+        Realm realm = null;
+        SingleVoteInfoEntity entity = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            SingleVoteInfoEntity singleVoteInfoEntity = realm.where(SingleVoteInfoEntity.class)
+                    .equalTo("hash", transactionHash)
+                    .findFirst();
+            entity = realm.copyFromRealm(singleVoteInfoEntity);
+        } catch (Exception exp) {
+            exp.printStackTrace();
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return entity;
+    }
+
+
     public List<SingleVoteInfoEntity> getTransactionList() {
-        List<SingleVoteInfoEntity> list  = new ArrayList<>();
-        Realm                      realm = null;
+        List<SingleVoteInfoEntity> list = new ArrayList<>();
+        Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
             RealmResults<SingleVoteInfoEntity> results = realm.where(SingleVoteInfoEntity.class).findAll();

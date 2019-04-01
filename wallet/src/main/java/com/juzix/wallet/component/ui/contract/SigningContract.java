@@ -4,10 +4,9 @@ import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.SharedTransactionEntity;
-import com.juzix.wallet.entity.SharedWalletEntity;
 import com.juzix.wallet.entity.TransactionResult;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author matrixelement
@@ -22,11 +21,11 @@ public class SigningContract {
 
         void setTransactionDetailInfo(SharedTransactionEntity transactionEntity, String statusDesc);
 
-        void showTransactionResult(ArrayList<TransactionResult> transactionResultList);
+        void showTransactionResult(List<TransactionResult> transactionResultList);
 
         void enableButtons(boolean enabaled);
 
-        void updateSigningStatus(String address,int operation);
+        void updateSigningStatus(String address, TransactionResult.Status status);
     }
 
     public interface Presenter extends IPresenter<View> {

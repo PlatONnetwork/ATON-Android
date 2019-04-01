@@ -32,12 +32,12 @@ public class SigningMemberAdapter extends RecyclerView.Adapter<SigningMemberAdap
     public void onBindViewHolder(ViewHolder holder, int position) {
 
         TransactionResult result = transactionResultList.get(position);
-        int operation = result.getOperation();
+        TransactionResult.Status status = result.getStatus();
 
         holder.tvName.setText(result.getName());
-        holder.progressBar.setVisibility(operation == TransactionResult.OPERATION_SIGNING ? View.VISIBLE : View.GONE);
-        holder.ivHook.setVisibility(operation == TransactionResult.OPERATION_APPROVAL || operation == TransactionResult.OPERATION_REVOKE ? View.VISIBLE : View.GONE);
-        holder.ivHook.setImageResource(operation == TransactionResult.OPERATION_APPROVAL ? R.drawable.icon_hook_m : R.drawable.icon_fork_m);
+        holder.progressBar.setVisibility(status == TransactionResult.Status.OPERATION_SIGNING ? View.VISIBLE : View.GONE);
+        holder.ivHook.setVisibility(status == TransactionResult.Status.OPERATION_APPROVAL || status == TransactionResult.Status.OPERATION_REVOKE ? View.VISIBLE : View.GONE);
+        holder.ivHook.setImageResource(status == TransactionResult.Status.OPERATION_APPROVAL ? R.drawable.icon_hook_m : R.drawable.icon_fork_m);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class SigningMemberAdapter extends RecyclerView.Adapter<SigningMemberAdap
         return 0;
     }
 
-    public void notifyItemChanged(String address, int operation) {
+    public void notifyItemChanged(String address, TransactionResult.Status status) {
 
         if (transactionResultList != null && !transactionResultList.isEmpty()) {
             TransactionResult tempResult = null;
@@ -64,7 +64,7 @@ public class SigningMemberAdapter extends RecyclerView.Adapter<SigningMemberAdap
 
             int index = transactionResultList.indexOf(tempResult);
             TransactionResult result = transactionResultList.get(index);
-            result.setOperation(operation);
+            result.setStatus(status);
             transactionResultList.set(index, result);
 
             notifyItemChanged(index);

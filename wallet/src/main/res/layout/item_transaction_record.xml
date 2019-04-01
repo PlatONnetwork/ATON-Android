@@ -12,8 +12,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:textColor="@color/color_ffffff"
-        android:textSize="13sp"
+        android:textColor="@color/color_000000"
+        android:textSize="14sp"
         android:text="接收"/>
 
     <TextView
@@ -21,8 +21,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:textColor="@color/color_ffffff"
-        android:textSize="13sp"
+        android:textColor="@color/color_000000"
+        android:textSize="14sp"
         android:text="+0.00035 Energon"/>
 
     <TextView
@@ -32,8 +32,8 @@
         android:layout_below="@id/tv_name"
         android:layout_marginTop="5dp"
         android:layout_alignParentLeft="true"
-        android:textColor="@color/color_7a8092"
-        android:textSize="10sp"
+        android:textColor="@color/color_61646e"
+        android:textSize="11sp"
         android:text="2018-03-21  13:23"/>
     <TextView
         android:id="@+id/tv_desc"
@@ -42,8 +42,8 @@
         android:layout_below="@id/tv_amount"
         android:layout_alignParentRight="true"
         android:layout_marginTop="5dp"
-        android:textColor="@color/color_7a8092"
-        android:textSize="10sp"
+        android:textColor="@color/color_61646e"
+        android:textSize="11sp"
         android:text="已完成"/>
 
 </RelativeLayout>

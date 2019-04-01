@@ -87,8 +87,8 @@ public class IndividualReceiveTransationActivity extends MVPBaseActivity<Individ
     private void initViews() {
 
         CommonTitleBar commonTitleBar = new CommonTitleBar(this)
-                .setLeftDrawable(R.drawable.icon_back_black).setMiddleTitle(string(R.string.action_receive_transation))
-                .setRightDrawable(ContextCompat.getDrawable(this, R.drawable.icon_share));
+                .leftDrawable(ContextCompat.getDrawable(this, R.drawable.icon_back_black)).title(string(R.string.action_receive_transation))
+                .rightDrawable(ContextCompat.getDrawable(this, R.drawable.icon_share));
 
         commonTitleBar.build();
 

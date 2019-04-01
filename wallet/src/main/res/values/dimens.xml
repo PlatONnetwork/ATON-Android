@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="titleBarHight">44dp</dimen>
+    <dimen name="assetsTabLayoutHeight">42dp</dimen>
+    <dimen name="assetsMarginsTop">12.0dp</dimen>
+    <dimen name="assetsCollapsIndicatorThickness">2.0dp</dimen>
+    <dimen name="assetsWalletSelectedItemHeight">64dip</dimen>
+    <dimen name="assetsWalletSelectedItemWidth">120dip</dimen>
+    <dimen name="assetsWalletSelectedShadowRadius">6dip</dimen>
+    <dimen name="assetsWalletSelectedShapeRadius">2dip</dimen>
+    <dimen name="assetsWalletNormalItemHeight">52dip</dimen>
+    <dimen name="assetsWalletNormalItemWidth">108dip</dimen>
 </resources>

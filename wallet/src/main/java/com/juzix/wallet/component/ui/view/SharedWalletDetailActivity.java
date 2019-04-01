@@ -57,10 +57,11 @@ public class SharedWalletDetailActivity extends MVPBaseActivity<SharedWalletDeta
     ListView listTransaction;
     @BindView(R.id.layout_no_data)
     View emptyView;
+    @BindView(R.id.commonTitleBar)
+    CommonTitleBar commonTitleBar;
 
     private Unbinder unbinder;
     private SharedTransactionListAdapter transactionListAdapter;
-    private CommonTitleBar commonTitleBar;
 
     @Override
     protected SharedWalletDetailPresenter createPresenter() {
@@ -80,13 +81,12 @@ public class SharedWalletDetailActivity extends MVPBaseActivity<SharedWalletDeta
 
     private void initViews() {
 
-        commonTitleBar = new CommonTitleBar(this).setLeftDrawable(R.drawable.icon_back_black);
-        commonTitleBar.build();
         tvCallVote.setVisibility(View.GONE);
 
         transactionListAdapter = new SharedTransactionListAdapter(R.layout.item_transaction_list, null);
         listTransaction.setAdapter(transactionListAdapter);
         listTransaction.setEmptyView(emptyView);
+        listTransaction.setFocusable(false);
     }
 
     @OnItemClick({R.id.list_transaction})
@@ -124,9 +124,9 @@ public class SharedWalletDetailActivity extends MVPBaseActivity<SharedWalletDeta
 
     @Override
     public void updateWalletInfo(SharedWalletEntity walletEntity) {
-        tvWalletAddress.setText(walletEntity.getPrefixContractAddress());
+        tvWalletAddress.setText(walletEntity.getPrefixAddress());
         tvTotalBalance.setText(string(R.string.wallet_balance, NumberParserUtils.getPrettyDetailBalance(walletEntity.getBalance())));
-        commonTitleBar.setMiddleTitle(walletEntity.getName());
+        commonTitleBar.setTitle(walletEntity.getName());
     }
 
     @Override

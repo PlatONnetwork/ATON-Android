@@ -105,7 +105,7 @@ public class SharedWalletPresenter extends BasePresenter<SharedWalletContract.Vi
                 .map(new Function<SharedWalletEntity, SharedWalletEntity>() {
                     @Override
                     public SharedWalletEntity apply(SharedWalletEntity walletEntity) throws Exception {
-                        double balance = Web3jManager.getInstance().getBalance(walletEntity.getPrefixContractAddress());
+                        double balance = Web3jManager.getInstance().getBalance(walletEntity.getPrefixAddress());
                         walletEntity.setBalance(balance);
                         return walletEntity;
                     }

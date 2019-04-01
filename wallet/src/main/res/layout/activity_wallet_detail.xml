@@ -8,11 +8,19 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
+    <com.juzix.wallet.component.widget.CommonTitleBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:ctb_left_drawable="@drawable/icon_back_black" />
+
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/color_1b2137"
         android:fillViewport="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:overScrollMode="never">
 
         <android.support.constraint.ConstraintLayout

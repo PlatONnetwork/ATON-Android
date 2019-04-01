@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/tv_node_name"
+        style="@style/Text.000000.14"
+        android:text="Node name 1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_location"
+        style="@style/Text.898c9e.12"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_node_name"
+        app:layout_constraintLeft_toRightOf="@id/tv_node_name"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:divider="@drawable/bg_item_vote_divider"
+        android:dividerPadding="3dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:showDividers="middle"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_node_name">
+
+        <TextView
+            android:id="@+id/tv_reward_ratio"
+            style="@style/Text.61646e.12"
+            tools:text="Reward Ratio:100%" />
+
+        <TextView
+            android:id="@+id/tv_staked"
+            style="@style/Text.61646e.12"
+            tools:text="Staked:1,516 Energon" />
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/tv_vote"
+        style="@style/Text.105cfe.11"
+        android:layout_width="49dp"
+        android:layout_height="24dp"
+        android:text="@string/vote"
+        android:textColor="@color/color_secondary_rtv_text"
+        android:background="@drawable/bg_vote_item"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

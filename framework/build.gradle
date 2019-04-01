@@ -8,7 +8,7 @@ android {
         targetSdkVersion rootProject.ext.android.targetSdkVersion
     }
 
-    buildTypes{
+    buildTypes {
         debug {
 
         }
@@ -29,5 +29,14 @@ dependencies {
     api rootProject.ext.dependencies.appcompat_v7
     api 'com.squareup.picasso:picasso:2.5.2'
     api 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0'
-    api 'com.alibaba:fastjson:1.2.35'
+    api 'com.alibaba:fastjson:1.2.36'
+    api 'com.squareup.retrofit2:converter-gson:2.3.0'
+    api 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+    api 'com.squareup.okhttp3:okhttp:3.8.1'
+    api 'com.squareup.retrofit2:retrofit:2.3.0'
+    api 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+    implementation rootProject.ext.dependencies.rxjava2_rxjava
+    implementation rootProject.ext.dependencies.rxjava2_rxandroid
+    api 'com.facebook.stetho:stetho:1.5.0'
+    api 'com.facebook.stetho:stetho-okhttp3:1.5.0'
 }

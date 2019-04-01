@@ -2,6 +2,8 @@ package com.juzix.wallet.component.ui.contract;
 
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
+import com.juzix.wallet.entity.BatchVoteTransactionEntity;
+import com.juzix.wallet.entity.VoteSummaryEntity;
 
 import java.util.List;
 
@@ -10,31 +12,18 @@ import java.util.List;
  */
 public class MyVoteContract {
 
-    public static class Entity {
-        public String avatar;
-        public String candidateName;
-        public String candidateId;
-        public String region;
-        public double voteStaked;
-        public long   validVotes;
-        public long   invalidVotes;
-        public double profit;
-    }
-
     public interface View extends IView {
-        void showTicketInfo(double voteStaked, long validVotes, long invalidVotes, double profit);
 
-        void updateTickets(List<Entity> entityList);
+        void showBatchVoteSummary(List<VoteSummaryEntity> voteSummaryEntityList);
+
+        void showBatchVoteTransactionList(List<BatchVoteTransactionEntity> batchVoteTransactionEntityList);
+
     }
 
     public interface Presenter extends IPresenter<View> {
 
-        void start();
+        void loadData();
 
-        void refresh();
-
-        void enterVoteDetailActivity(MyVoteContract.Entity entity);
-
-        void enterVoteActivity(MyVoteContract.Entity entity);
+        void voteTicket(String candidateId);
     }
 }

@@ -3,6 +3,9 @@ package com.juzix.wallet.component.ui.presenter;
 
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.VerificationMnemonicContract;
+import com.juzix.wallet.engine.IndividualWalletManager;
+import com.juzix.wallet.entity.IndividualWalletEntity;
+import com.juzix.wallet.utils.JZWalletUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,6 +14,9 @@ public class VerificationMnemonicPresenter extends BasePresenter<VerificationMne
 
     private ArrayList<VerificationMnemonicContract.DataEntity> mAllList     = new ArrayList<>();
     private ArrayList<VerificationMnemonicContract.DataEntity> mCheckedList = new ArrayList<>();
+    private String mPassword;
+    private IndividualWalletEntity mWalletEntity;
+    private String mMnemonic;
 
     public VerificationMnemonicPresenter(VerificationMnemonicContract.View view) {
         super(view);
@@ -19,8 +25,10 @@ public class VerificationMnemonicPresenter extends BasePresenter<VerificationMne
     public void init() {
         mAllList.clear();
         mCheckedList.clear();
-        String   mnemonic = getView().getMnemonicFromIntent();
-        String[] worlds   = mnemonic.split(" ");
+        mPassword = getView().getPasswordFromIntent();
+        mWalletEntity = getView().getWalletFromIntent();
+        mMnemonic = JZWalletUtil.decryptMnenonic(mWalletEntity.getKey(), mWalletEntity.getMnemonic(), mPassword);
+        String[] worlds   = mMnemonic.split(" ");
         for (String world : worlds) {
             mAllList.add(generateDataEntity(world));
         }
@@ -33,15 +41,31 @@ public class VerificationMnemonicPresenter extends BasePresenter<VerificationMne
     public void checkAllListItem(int index) {
         VerificationMnemonicContract.DataEntity dataEntity = mAllList.get(index);
         if (dataEntity.isChecked()) {
-            return;
+            dataEntity.setChecked(false);
+            mCheckedList.remove(dataEntity);
+        }else {
+            dataEntity.setChecked(true);
+            mCheckedList.add(dataEntity);
         }
-        dataEntity.setChecked(true);
-        mCheckedList.add(dataEntity);
         getView().showAllList(mAllList);
         getView().showCheckedList(mCheckedList);
         getView().setCompletedBtnEnable(mCheckedList.size() == mAllList.size());
         getView().setClearBtnEnable(!mCheckedList.isEmpty());
     }
+
+//    @Override
+//    public void checkAllListItem(int index) {
+//        VerificationMnemonicContract.DataEntity dataEntity = mAllList.get(index);
+//        if (dataEntity.isChecked()) {
+//            return;
+//        }
+//        dataEntity.setChecked(true);
+//        mCheckedList.add(dataEntity);
+//        getView().showAllList(mAllList);
+//        getView().showCheckedList(mCheckedList);
+//        getView().setCompletedBtnEnable(mCheckedList.size() == mAllList.size());
+//        getView().setClearBtnEnable(!mCheckedList.isEmpty());
+//    }
 
     @Override
     public void uncheckItem(int index) {
@@ -78,10 +102,12 @@ public class VerificationMnemonicPresenter extends BasePresenter<VerificationMne
         }
         VerificationMnemonicContract.View view = getView();
         if (view != null){
-            String mnemonic = view.getMnemonicFromIntent();
-            if (mnemonic.equals(builder.toString())) {
+            if (mMnemonic.equals(builder.toString())) {
+                //备份成功
                 view.showDisclaimerDialog();
+                IndividualWalletManager.getInstance().emptyMnemonic(mWalletEntity.getMnemonic());
             } else {
+                //备份失败
                 view.showBackupFailedDialog();
             }
         }

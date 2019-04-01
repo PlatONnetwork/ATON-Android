@@ -159,8 +159,8 @@ public class SharedWalletInfoEntity extends RealmObject {
         SharedWalletEntity.Builder builder = new SharedWalletEntity.Builder();
         builder.uuid(uuid);
         builder.name(name);
-        builder.walletAddress(walletAddress);
-        builder.contractAddress(contractAddress);
+        builder.walletAddress(contractAddress);
+        builder.creatorAddress(walletAddress);
         builder.createTime(createTime);
         builder.updateTime(updateTime);
         builder.owner(buildAddressEntityList());

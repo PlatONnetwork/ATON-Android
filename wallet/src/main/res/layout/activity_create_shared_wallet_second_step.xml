@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+              android:background="@color/color_ffffff"
     android:clipToPadding="true"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
@@ -13,12 +14,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:ctb_left_drawable="@drawable/icon_back_black"
-        app:ctb_middle_text="@string/create_shared_wallet" />
+        app:ctb_title="@string/create_shared_wallet" />
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/color_1b2137"
         android:orientation="vertical">
 
         <ListView
@@ -32,29 +32,26 @@
             android:divider="@drawable/bg_transparent_list_divider"
             android:dividerHeight="16dp"
             android:paddingBottom="71dp"
-            tools:listitem="@layout/item_create_shared_owner_list" />
+            tools:listitem="@layout/item_create_shared_owner_list"
+            tools:listheader="@layout/layout_create_shared_owner_list_header"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/color_ffffff"
             android:layout_gravity="bottom"
-            android:background="@color/color_1b2137"
             android:orientation="vertical"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:paddingBottom="14dp">
-
-            <com.juzix.wallet.component.widget.RoundedTextView
-                android:id="@+id/rtv_create_shared_wallet"
-                style="@style/Text.1b2137.14"
+            <com.juzix.wallet.component.widget.ShadowButton
+                android:id="@+id/sbtn_create_shared_wallet"
                 android:layout_width="match_parent"
-                android:enabled="false"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:text="@string/create"
-                android:textColor="@color/color_heavy_button_text"
-                app:rtv_background_color="@color/bg_heavy_button"
-                app:rtv_corner_radius="1dp" />
+                android:layout_height="wrap_content"
+                app:text="@string/create"
+                app:enabled="false"
+                app:textAppearance="@style/MainButtonStyle"
+                app:textBackground="@drawable/bg_main_button" />
         </LinearLayout>
 
     </FrameLayout>

@@ -2,6 +2,7 @@ package com.juzix.wallet.component.ui.view;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -9,6 +10,7 @@ import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -23,33 +25,34 @@ import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.MVPBaseFragment;
 import com.juzix.wallet.component.ui.contract.ImportIndividualPrivateKeyContract;
 import com.juzix.wallet.component.ui.presenter.ImportIndividualPrivateKeyPresenter;
+import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.utils.CheckStrength;
+import com.juzix.wallet.utils.CommonUtil;
 
 import io.reactivex.Observable;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import kotlin.Unit;
 
-public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportIndividualPrivateKeyPresenter> implements ImportIndividualPrivateKeyContract.View {
+public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportIndividualPrivateKeyPresenter> implements View.OnTouchListener, ImportIndividualPrivateKeyContract.View {
 
-    private EditText mEtPrivateKey;
-    private EditText mEtWalletName;
-    private ImageView mIvEyes;
-    private ImageView mIvRepeatEyes;
-    private EditText mEtPassword;
-    private EditText mEtRepeatPassword;
-    private TextView mTvPasswordDesc;
-    private Button mBtnImport;
-    private boolean mShowPassword;
-    private boolean mShowRepeatPassword;
-    private TextView mTvStrength;
-    private View mVLine1;
-    private View mVLine2;
-    private View mVLine3;
-    private View mVLine4;
-    private TextView mTvPrivateKeyError;
-    private TextView mTvNameError;
-    private TextView mTvPasswordError;
+    private EditText     mEtPrivateKey;
+    private EditText     mEtWalletName;
+    private EditText     mEtPassword;
+    private EditText     mEtRepeatPassword;
+    private TextView     mTvPasswordDesc;
+    private ShadowButton mBtnImport;
+    private boolean      mShowPassword;
+    private boolean      mShowRepeatPassword;
+    private TextView     mTvStrength;
+    private View         mVLine1;
+    private View         mVLine2;
+    private View         mVLine3;
+    private View         mVLine4;
+    private TextView     mTvPrivateKeyError;
+    private TextView     mTvNameError;
+    private TextView     mTvPasswordError;
+    private Button       mBtnPaste;
 
     @Override
     protected ImportIndividualPrivateKeyPresenter createPresenter() {
@@ -58,6 +61,7 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportIn
 
     @Override
     protected void onFragmentPageStart() {
+        mPresenter.checkPaste();
     }
 
     @Override
@@ -74,13 +78,12 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportIn
         mTvPrivateKeyError = rootView.findViewById(R.id.tv_private_key_error);
         mEtWalletName = rootView.findViewById(R.id.et_name);
         mTvNameError = rootView.findViewById(R.id.tv_name_error);
-        mIvEyes = rootView.findViewById(R.id.iv_eyes);
-        mIvRepeatEyes = rootView.findViewById(R.id.iv_repeat_eyes);
         mEtPassword = rootView.findViewById(R.id.et_password);
         mEtRepeatPassword = rootView.findViewById(R.id.et_repeat_password);
         mTvPasswordDesc = rootView.findViewById(R.id.tv_password_desc);
         mTvPasswordError = rootView.findViewById(R.id.tv_password_error);
-        mBtnImport = rootView.findViewById(R.id.btn_import);
+        mBtnPaste = rootView.findViewById(R.id.btn_paste);
+        mBtnImport = rootView.findViewById(R.id.sbtn_import);
         mTvStrength = rootView.findViewById(R.id.tv_strength);
         mVLine1 = rootView.findViewById(R.id.v_line1);
         mVLine2 = rootView.findViewById(R.id.v_line2);
@@ -90,18 +93,8 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportIn
 
     private void addListeners() {
 
-        RxView.clicks(mIvEyes).subscribe(new Consumer<Unit>() {
-            @Override
-            public void accept(Unit unit) throws Exception {
-                showPassword();
-            }
-        });
-        RxView.clicks(mIvRepeatEyes).subscribe(new Consumer<Unit>() {
-            @Override
-            public void accept(Unit unit) throws Exception {
-                showRepeatPassword();
-            }
-        });
+        mEtPassword.setOnTouchListener(this);
+        mEtRepeatPassword.setOnTouchListener(this);
         RxView.clicks(mBtnImport).subscribe(new Consumer<Unit>() {
             @Override
             public void accept(Unit unit) throws Exception {
@@ -111,8 +104,13 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportIn
                         mEtRepeatPassword.getText().toString());
             }
         });
-
-
+        RxView.clicks(mBtnPaste).subscribe(new Consumer<Unit>() {
+            @Override
+            public void accept(Unit unit) throws Exception {
+                mEtPrivateKey.setText(CommonUtil.getTextFromClipboard(getContext()));
+                mEtPrivateKey.setSelection(mEtPrivateKey.getText().toString().length());
+            }
+        });
         Observable<Boolean> privateKeyAndWalletNameObservable = Observable
                 .combineLatest(RxTextView.textChanges(mEtPrivateKey).skipInitialValue(), RxTextView.textChanges(mEtWalletName).skipInitialValue(), new BiFunction<CharSequence, CharSequence, Boolean>() {
                     @Override
@@ -166,7 +164,9 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportIn
                         showNameError(string(R.string.validWalletNameEmptyTips), true);
                     } else if (name.length() > 12) {
                         showNameError(string(R.string.validWalletNameTips), true);
-                    } else {
+                    } else if (mPresenter.isExists(name)){
+                        showNameError(string(R.string.wallet_name_exists), true);
+                    }else {
                         showNameError("", false);
                     }
                 }
@@ -212,7 +212,6 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportIn
     }
 
     private void initDatas() {
-
         enableImport(false);
         showPassword();
         showRepeatPassword();
@@ -220,6 +219,32 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportIn
         showNameError("", false);
         showPasswordError("", false);
         mPresenter.init();
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        if (v == mEtPassword){
+            Drawable drawable = mEtPassword.getCompoundDrawables()[2];
+            if (drawable == null)
+                return false;
+            if (event.getAction() != MotionEvent.ACTION_UP)
+                return false;
+            if (event.getX() > mEtPassword.getWidth() - mEtPassword.getPaddingRight() - drawable.getIntrinsicWidth()){
+                showPassword();
+            }
+            return false;
+        }else if (v == mEtRepeatPassword){
+            Drawable drawable = mEtRepeatPassword.getCompoundDrawables()[2];
+            if (drawable == null)
+                return false;
+            if (event.getAction() != MotionEvent.ACTION_UP)
+                return false;
+            if (event.getX() > mEtRepeatPassword.getWidth() - mEtRepeatPassword.getPaddingRight() - drawable.getIntrinsicWidth()){
+                showRepeatPassword();
+            }
+            return false;
+        }
+        return false;
     }
 
     @Override
@@ -251,35 +276,34 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportIn
 
     private void enableImport(boolean enabled) {
         mBtnImport.setEnabled(enabled);
-        mBtnImport.setBackgroundColor(ContextCompat.getColor(getContext(), enabled ? R.color.color_eff0f5 : R.color.color_373e51));
     }
 
-    private void showPassword() {
+    private void showPassword(){
         if (mShowPassword) {
             // 显示密码
-            mIvEyes.setImageDrawable(getResources().getDrawable(R.drawable.icon_open_eyes));
+            mEtPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_open_eyes, 0);
             mEtPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
             mEtPassword.setSelection(mEtPassword.getText().toString().length());
             mShowPassword = !mShowPassword;
         } else {
             // 隐藏密码
-            mIvEyes.setImageDrawable(getResources().getDrawable(R.drawable.icon_close_eyes));
+            mEtPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_close_eyes, 0);
             mEtPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
             mEtPassword.setSelection(mEtPassword.getText().toString().length());
             mShowPassword = !mShowPassword;
         }
     }
 
-    private void showRepeatPassword() {
+    private void showRepeatPassword(){
         if (mShowRepeatPassword) {
             // 显示密码
-            mIvRepeatEyes.setImageDrawable(getResources().getDrawable(R.drawable.icon_open_eyes));
+            mEtRepeatPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_open_eyes, 0);
             mEtRepeatPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
             mEtRepeatPassword.setSelection(mEtRepeatPassword.getText().toString().length());
             mShowRepeatPassword = !mShowRepeatPassword;
         } else {
             // 隐藏密码
-            mIvRepeatEyes.setImageDrawable(getResources().getDrawable(R.drawable.icon_close_eyes));
+            mEtRepeatPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_close_eyes, 0);
             mEtRepeatPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
             mEtRepeatPassword.setSelection(mEtRepeatPassword.getText().toString().length());
             mShowRepeatPassword = !mShowRepeatPassword;
@@ -347,5 +371,11 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportIn
         mTvPasswordError.setVisibility(isVisible ? View.VISIBLE : View.GONE);
         mTvPasswordError.setText(text);
         mTvPasswordDesc.setVisibility(isVisible ? View.GONE : View.VISIBLE);
+    }
+
+    @Override
+    public void enablePaste(boolean enabled) {
+        mBtnPaste.setEnabled(enabled);
+        mBtnPaste.setTextColor(ContextCompat.getColor(getContext(), enabled ? R.color.color_105cfe : R.color.color_d8d8d8));
     }
 }

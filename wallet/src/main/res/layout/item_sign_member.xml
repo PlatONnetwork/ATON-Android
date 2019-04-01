@@ -25,7 +25,7 @@
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_centerInParent="true"
-            android:src="@drawable/icon_hook_l" />
+            android:src="@drawable/icon_hook_m" />
 
     </RelativeLayout>
 
@@ -38,7 +38,7 @@
         android:ellipsize="end"
         android:lines="1"
         android:text="Hello World!"
-        android:textColor="@color/color_c5cbdc"
+        android:textColor="@color/color_61646e"
         android:textSize="10sp"/>
 
 </LinearLayout>

@@ -53,8 +53,9 @@
                     android:ellipsize="end"
                     android:gravity="center_vertical|left"
                     android:hint="@string/inputWalletAddress"
-                    android:lines="1"
+                    android:singleLine="true"
                     android:paddingLeft="10dp"
+                    tools:text="282882818shsjak8318829292929383883838282882818shsjak8318829292929383883838282882818shsjak8318829292929383883838"
                     android:textColorHint="@color/color_7a8092" />
 
                 <TextView
@@ -241,7 +242,6 @@
                     app:rtv_corner_radius="1dp" />
 
             </RelativeLayout>
-
 
         </LinearLayout>
 

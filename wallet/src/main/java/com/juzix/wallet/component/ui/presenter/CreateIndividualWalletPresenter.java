@@ -11,6 +11,7 @@ import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.CreateIndividualWalletContract;
 import com.juzix.wallet.component.ui.view.BackupWalletActivity;
 import com.juzix.wallet.engine.IndividualWalletManager;
+import com.juzix.wallet.engine.SharedWalletManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 
 public class CreateIndividualWalletPresenter extends BasePresenter<CreateIndividualWalletContract.View> implements CreateIndividualWalletContract.Presenter {
@@ -29,6 +30,9 @@ public class CreateIndividualWalletPresenter extends BasePresenter<CreateIndivid
             getView().showPasswordError(string(R.string.passwordTips), true);
             return;
         }
+        if (isExists(name)){
+            return;
+        }
 
         showLoadingDialog();
         new Thread(){
@@ -36,7 +40,7 @@ public class CreateIndividualWalletPresenter extends BasePresenter<CreateIndivid
             public void run() {
                 String                 mnemonic     = IndividualWalletManager.getInstance().generateMnemonic();
                 IndividualWalletEntity walletEntity = new IndividualWalletEntity.Builder().build();
-                int                    code         = IndividualWalletManager.getInstance().importMnemonic(walletEntity, mnemonic, name, password);
+                int                    code         = IndividualWalletManager.getInstance().createWalletWithMnemonic(walletEntity, mnemonic, name, password);
                 switch (code) {
                     case IndividualWalletManager.CODE_OK:
                         Bundle bundle = new Bundle();
@@ -66,6 +70,11 @@ public class CreateIndividualWalletPresenter extends BasePresenter<CreateIndivid
         }.start();
     }
 
+    @Override
+    public boolean isExists(String walletName) {
+        return IndividualWalletManager.getInstance().walletNameExists(walletName) ? true : SharedWalletManager.getInstance().walletNameExists(walletName);
+    }
+
     private static final int MSG_OK = 1;
     private static final int MSG_PASSWORD_FAILED = -1;
     private static final int MSG_MNEMONIC_ERROR = -2;
@@ -80,7 +89,7 @@ public class CreateIndividualWalletPresenter extends BasePresenter<CreateIndivid
                     dismissLoadingDialogImmediately();
                     BaseActivity activity = currentActivity();
                     Bundle bundle = msg.getData();
-                    BackupWalletActivity.actionStart(activity, bundle.getString(Constants.Extra.EXTRA_MNEMONIC), bundle.getParcelable(Constants.Extra.EXTRA_WALLET));
+                    BackupWalletActivity.actionStart(activity, bundle.getParcelable(Constants.Extra.EXTRA_WALLET));
                     activity.finish();
                     break;
                 case MSG_PASSWORD_FAILED:

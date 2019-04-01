@@ -15,9 +15,13 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
+import io.reactivex.Flowable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Predicate;
+
 public class SharedWalletManager {
 
-    private ArrayList<SharedWalletEntity> mWalletList = new ArrayList<>();
+    private List<SharedWalletEntity> mWalletList = new ArrayList<>();
 
 
     private SharedWalletManager() {
@@ -41,9 +45,6 @@ public class SharedWalletManager {
         }
     }
 
-    public void addWallet(SharedWalletEntity sharedWalletEntity) {
-        mWalletList.add(sharedWalletEntity);
-    }
 
     public void addOrUpdateWallet(SharedWalletEntity sharedWalletEntity) {
         if (mWalletList.contains(sharedWalletEntity)) {
@@ -89,26 +90,57 @@ public class SharedWalletManager {
         }
     }
 
+    public void updateWalletUnreadCount(String walletAddress, int unreadCount) {
+        Flowable.fromIterable(mWalletList)
+                .filter(new Predicate<SharedWalletEntity>() {
+                    @Override
+                    public boolean test(SharedWalletEntity sharedWalletEntity) throws Exception {
+                        return !TextUtils.isEmpty(walletAddress) && walletAddress.equals(sharedWalletEntity.getAddress());
+                    }
+                })
+                .firstElement()
+                .subscribe(new Consumer<SharedWalletEntity>() {
+                    @Override
+                    public void accept(SharedWalletEntity sharedWalletEntity) throws Exception {
+                        sharedWalletEntity.setUnread(unreadCount);
+                    }
+                });
+    }
+
     public void removeWallet(SharedWalletEntity sharedWalletEntity) {
         mWalletList.remove(sharedWalletEntity);
     }
 
-    public ArrayList<SharedWalletEntity> getWalletList() {
+    public List<SharedWalletEntity> getWalletList() {
         return mWalletList;
     }
 
+    public boolean isWalletExist(String contractAddress) {
+        if (!mWalletList.isEmpty()) {
+            for (SharedWalletEntity walletEntity : mWalletList) {
+                if (walletEntity.getPrefixAddress().equals(contractAddress)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public boolean createWallet(String walletName, String contractAddress, String individualWalletAddress, int requiredSignNumber,
-                                ArrayList<OwnerEntity> members) {
+                                List<OwnerEntity> members) {
         try {
+            long time = System.currentTimeMillis();
             SharedWalletEntity sharedWalletEntity = new SharedWalletEntity.Builder()
                     .uuid(UUID.randomUUID().toString())
                     .name(walletName)
-                    .contractAddress(contractAddress)
-                    .walletAddress(individualWalletAddress)
+                    .creatorAddress(individualWalletAddress)
+                    .walletAddress(contractAddress)
                     .requiredSignNumber(requiredSignNumber)
                     .owner(members)
                     .avatar(getWalletAvatar())
                     .finished(true)
+                    .createTime(time)
+                    .updateTime(time)
                     .build();
             if (SharedWalletInfoDao.getInstance().insertWalletInfo(sharedWalletEntity.buildWalletInfoEntity())) {
                 mWalletList.add(sharedWalletEntity);
@@ -142,7 +174,7 @@ public class SharedWalletManager {
         return SharedWalletInfoDao.getInstance().updateNameWithUuid(walletUuid, newName);
     }
 
-    public boolean updateOwner(String walletUuid, ArrayList<OwnerEntity> newAddressEntityList) {
+    public boolean updateOwner(String walletUuid, List<OwnerEntity> newAddressEntityList) {
         ArrayList<OwnerInfoEntity> addressInfoEntityArrayList = new ArrayList<>();
         for (OwnerEntity entity : newAddressEntityList) {
             OwnerInfoEntity addressInfoEntity = new OwnerInfoEntity.Builder()
@@ -207,7 +239,7 @@ public class SharedWalletManager {
 
     public SharedWalletEntity getWalletByContractAddress(String contractAddress) {
         for (SharedWalletEntity walletEntity : mWalletList) {
-            if (!TextUtils.isEmpty(walletEntity.getPrefixContractAddress()) && walletEntity.getPrefixContractAddress().contains(contractAddress)) {
+            if (!TextUtils.isEmpty(walletEntity.getPrefixAddress()) && walletEntity.getPrefixAddress().contains(contractAddress)) {
                 return walletEntity;
             }
         }
@@ -217,6 +249,20 @@ public class SharedWalletManager {
     public String getWalletAvatar() {
         String[] avatarArray = App.getContext().getResources().getStringArray(R.array.wallet_avatar);
         return avatarArray[new Random().nextInt(avatarArray.length)];
+    }
+
+    public boolean walletNameExists(String walletName) {
+        try {
+            for (SharedWalletEntity walletEntity : mWalletList) {
+                if (walletName.equals(walletEntity.getName())) {
+                    return true;
+                }
+            }
+            return false;
+        } catch (Exception exp) {
+            exp.printStackTrace();
+            return false;
+        }
     }
 
     private static class InstanceHolder {

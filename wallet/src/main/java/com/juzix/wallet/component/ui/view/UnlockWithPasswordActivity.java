@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.UnlockWithPasswordContract;
+import com.juzix.wallet.component.ui.dialog.SelectIndividualWalletDialogFragment;
 import com.juzix.wallet.component.ui.dialog.SelectWalletInfoDialogFragment;
 import com.juzix.wallet.component.ui.presenter.UnlockWithPasswordPresenter;
 import com.juzix.wallet.component.widget.CommonTitleBar;
@@ -28,8 +29,10 @@ import butterknife.Unbinder;
 /**
  * @author matrixelement
  */
-public class UnlockWithPasswordActivity extends MVPBaseActivity<UnlockWithPasswordPresenter> implements UnlockWithPasswordContract.View, SelectWalletInfoDialogFragment.OnItemClickListener {
+public class UnlockWithPasswordActivity extends MVPBaseActivity<UnlockWithPasswordPresenter> implements UnlockWithPasswordContract.View {
 
+    @BindView(R.id.commonTitleBar)
+    CommonTitleBar commonTitleBar;
     @BindView(R.id.et_password)
     EditText etWalletPassword;
     @BindView(R.id.tv_wallet_name)
@@ -57,20 +60,14 @@ public class UnlockWithPasswordActivity extends MVPBaseActivity<UnlockWithPasswo
     }
 
     private void initViews() {
-        CommonTitleBar commonTitleBar = new CommonTitleBar(this);
-        commonTitleBar.setLeftDrawable(R.drawable.icon_back_black);
-        commonTitleBar.setMiddleTitle(string(R.string.unlockWithWalletPasswordTitle));
-        commonTitleBar.setLeftImageOnClickListener(new View.OnClickListener() {
+        commonTitleBar.setLeftDrawableClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 hideSoftInput();
                 UnlockWithPasswordActivity.this.finish();
             }
         });
-        commonTitleBar.build();
-//        new CommonTitleBar(this).setLeftDrawable(R.drawable.icon_back_black).setMiddleTitle(string(R.string.unlockWithWalletPasswordTitle)).build();
-//
-//
+
         etWalletPassword.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -92,14 +89,21 @@ public class UnlockWithPasswordActivity extends MVPBaseActivity<UnlockWithPasswo
 
     private void enableUnlock(boolean enabled) {
         btnUnlock.setEnabled(enabled);
-        btnUnlock.setBackgroundColor(ContextCompat.getColor(getContext(), enabled ? R.color.color_eff0f5 : R.color.color_373e51));
+        btnUnlock.setBackgroundResource(enabled ? R.drawable.bg_shape_button2 : R.drawable.bg_shape_button1);
+        btnUnlock.setTextColor(ContextCompat.getColor(getContext(), enabled ? R.color.color_f6f6f6 : R.color.color_d8d8d8));
     }
 
     @OnClick({R.id.layout_change_wallet, R.id.btn_unlock})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.layout_change_wallet:
-                SelectWalletInfoDialogFragment.newInstance(mPresenter.getSelectedPostion()).show(getSupportFragmentManager(), "selectWallet");
+                SelectIndividualWalletDialogFragment.newInstance(mPresenter.getSelectedWallet().getUuid()).setOnItemClickListener(new SelectIndividualWalletDialogFragment.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(IndividualWalletEntity walletEntity) {
+                        mPresenter.setSelectWallet(walletEntity);
+                    }
+                }).show(currentActivity().getSupportFragmentManager(), SelectIndividualWalletDialogFragment.SELECT_UNLOCK_WALLET);
+//                SelectIndividualWalletDialogFragment.newInstance(mPresenter.getSelectedPostion()).show(getSupportFragmentManager(), "selectWallet");
                 break;
             case R.id.btn_unlock:
                 mPresenter.unlock(etWalletPassword.getText().toString());
@@ -108,11 +112,6 @@ public class UnlockWithPasswordActivity extends MVPBaseActivity<UnlockWithPasswo
                 break;
         }
 
-    }
-
-    @Override
-    public void onItemClick(int selectedPosition) {
-        mPresenter.setSelectedPostion(selectedPosition);
     }
 
     @Override

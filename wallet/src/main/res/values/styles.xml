@@ -10,6 +10,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@color/color_ffffff</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:textCursorDrawable">@drawable/bg_edittext_cursor</item>
     </style>
@@ -86,6 +87,21 @@
         <item name="android:backgroundDimEnabled">true</item>
     </style>
 
+    <style name="LoadingDialogStyle" parent="@android:style/Theme.Dialog">
+        <!-- 边框 -->
+        <item name="android:windowFrame">@null</item>
+        <!-- 是否浮现在activity之上 -->
+        <item name="android:windowIsFloating">true</item>
+        <!-- 半透明 -->
+        <item name="android:windowIsTranslucent">false</item>
+        <!-- 无标题 -->
+        <item name="android:windowNoTitle">true</item>
+        <!-- 背景透明 -->
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <!-- 背景变暗 默认是根据windowIsFloating来决定的-->
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
     <style name="Animation.CommonDialog" parent="@android:style/Animation.Dialog">
         <item name="android:windowEnterAnimation">@anim/dialog_common_enter</item>
         <item name="android:windowExitAnimation">@anim/dialog_common_exit</item>
@@ -133,7 +149,7 @@
     </style>
 
     <style name="TabLayoutTextStyle">
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="List_common_style">
@@ -149,10 +165,41 @@
         <item name="android:progressDrawable">@drawable/bg_seekbar</item>
         <item name="android:thumb">@drawable/icon_seekbar_thumb</item>
     </style>
+
     <style name="Activity_Translucent">
         <item name="android:windowBackground">@color/color_00000000</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowAnimationStyle">@style/AnimationNone</item>
     </style>
+
+    <style name="MainButtonStyle">
+        <item name="android:layout_height">44dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/color_main_button_text</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/bg_main_button</item>
+    </style>
+
+    <style name="EditTextWithUnderlineStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/color_000000</item>
+        <item name="android:background">@drawable/bg_account_activation_et</item>
+        <item name="android:textColorHint">@color/color_b6bbd0</item>
+        <item name="android:paddingBottom">9dp</item>
+        <item name="android:textCursorDrawable">@drawable/bg_edittext_cursor</item>
+        <item name="android:gravity">left</item>
+    </style>
+
+    <style name="MainButtonTextStyle">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textColor">@color/color_main_button_text</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
 
 </resources>

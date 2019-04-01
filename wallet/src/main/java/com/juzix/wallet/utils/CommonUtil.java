@@ -315,4 +315,13 @@ public class CommonUtil {
         cm.setPrimaryClip(ClipData.newPlainText("plain text", text));
         ToastUtil.showLongToast(context, context.getResources().getString(R.string.copy_succeed));
     }
+
+    public static String getTextFromClipboard(Context context){
+        ClipboardManager cm = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        if (!cm.hasPrimaryClip()) {
+            return "";
+        } else {
+            return cm.getPrimaryClip().getItemAt(0).coerceToText(context).toString();
+        }
+    }
 }

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="20dp">
+
+    <TextView
+        android:id="@+id/tv_vote"
+        style="@style/Text.000000.18"
+        android:text="@string/vote"
+        android:layout_alignParentLeft="true"
+        android:visibility="gone" />
+
+
+    <TextView
+        android:id="@+id/tv_my_vote_close"
+        style="@style/Text.105cfe.11"
+        android:layout_marginRight="16dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/icon_my_vote_bg"
+        android:text="@string/myVote" />
+
+    <View
+        android:id="@+id/bg_toolbar_close"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</RelativeLayout>

@@ -5,7 +5,7 @@ import android.os.Message;
 
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.NodeInformationContract;
-import com.juzix.wallet.engine.TicketManager;
+import com.juzix.wallet.engine.VoteManager;
 import com.juzix.wallet.entity.CandidateEntity;
 
 /**
@@ -27,7 +27,7 @@ public class NodeInformationPresenter extends BasePresenter<NodeInformationContr
                 public void run() {
                     Message msg = mHandler.obtainMessage();
                     msg.what = MSG_UPDATE_EP;
-                    msg.obj = TicketManager.getInstance().getCandidateEpoch(candidateEntity.getCandidateId());
+                    msg.obj = VoteManager.getInstance().getCandidateEpoch(candidateEntity.getCandidateId());
                     mHandler.sendMessage(msg);
                 }
             }.start();

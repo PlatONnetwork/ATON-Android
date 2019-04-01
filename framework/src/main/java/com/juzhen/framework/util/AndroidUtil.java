@@ -160,7 +160,7 @@ public class AndroidUtil {
 	 * @return
 	 */
 	public static String getVersionName(Context context) {
-		String verCode = "1.0";
+		String verCode = "0.0.0.0";
 		try {
 			verCode = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
 		} catch (NameNotFoundException e) {

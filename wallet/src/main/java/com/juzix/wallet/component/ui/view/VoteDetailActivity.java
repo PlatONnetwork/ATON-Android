@@ -3,38 +3,40 @@ package com.juzix.wallet.component.ui.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageView;
+import android.support.constraint.ConstraintLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
-import com.juzix.wallet.component.adapter.CommonAdapter;
-import com.juzix.wallet.component.adapter.base.ViewHolder;
+import com.juzix.wallet.component.adapter.VoteDetailListAdapter;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.VoteDetailContract;
 import com.juzix.wallet.component.ui.presenter.VoteDetailPresenter;
-import com.juzix.wallet.component.widget.CommonTitleBar;
-import com.juzix.wallet.utils.DateUtil;
+import com.juzix.wallet.entity.VoteDetailItemEntity;
 
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * @author matrixelement
  */
-public class VoteDetailActivity extends MVPBaseActivity<VoteDetailPresenter> implements VoteDetailContract.View, View.OnClickListener {
+public class VoteDetailActivity extends MVPBaseActivity<VoteDetailPresenter> implements VoteDetailContract.View {
 
-    private CommonAdapter<VoteDetailContract.Entity> mAdapter;
+    @BindView(R.id.tv_node_name)
+    TextView tvNodeName;
+    @BindView(R.id.tv_node_id)
+    TextView tvNodeId;
+    @BindView(R.id.layout_node_name)
+    ConstraintLayout layoutNodeName;
+    @BindView(R.id.list_vote_detail)
+    ListView listVoteDetail;
 
-    public static void actionStart(Context context, String candidateId, String candidateName, String resIcon) {
-        Intent intent = new Intent(context, VoteDetailActivity.class);
-        intent.putExtra(Constants.Extra.EXTRA_ID, candidateId);
-        intent.putExtra(Constants.Extra.EXTRA_NAME, candidateName);
-        intent.putExtra(Constants.Extra.EXTRA_PIC, resIcon);
-        context.startActivity(intent);
-    }
+    private Unbinder unbinder;
+    private VoteDetailListAdapter mVoteDetailListAdapter;
 
     @Override
     protected VoteDetailPresenter createPresenter() {
@@ -45,72 +47,49 @@ public class VoteDetailActivity extends MVPBaseActivity<VoteDetailPresenter> imp
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vote_detail);
-        initView();
-        mPresenter.start();
+        unbinder = ButterKnife.bind(this);
+        initViews();
+        mPresenter.loadData();
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            default:
-                break;
-        }
+    private void initViews() {
+        mVoteDetailListAdapter = new VoteDetailListAdapter(R.layout.item_vote_detail_list, null);
+        listVoteDetail.setAdapter(mVoteDetailListAdapter);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-    }
-
-    private void initView() {
-        CommonTitleBar titleBar = findViewById(R.id.commonTitleBar);
-        titleBar.setLeftImageOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideSoftInput();
-                finish();
-            }
-        });
-
-        ListView lvVote = findViewById(R.id.lv_vote);
-        mAdapter = new CommonAdapter<VoteDetailContract.Entity>(R.layout.item_vote_detail_list, null) {
-            @Override
-            protected void convert(Context context, ViewHolder viewHolder, VoteDetailContract.Entity item, int position) {
-                viewHolder.setText(R.id.tv_name, DateUtil.format(item.createTime, DateUtil.DATETIME_FORMAT_PATTERN));
-                viewHolder.setText(R.id.tv_item1_desc, item.validVotes + "/" + item.invalidVotes);
-                viewHolder.setText(R.id.tv_item2_desc, getString(R.string.amount_with_unit, item.ticketPrice));
-                viewHolder.setText(R.id.tv_item3_desc, getString(R.string.amount_with_unit, NumberParserUtils.parseDoubleToPrettyNumber(item.voteStaked) + "/" + NumberParserUtils.parseDoubleToPrettyNumber(item.voteUnstaked)));
-                viewHolder.setText(R.id.tv_item4_desc, getString(R.string.amount_with_unit, "-"));
-                viewHolder.setText(R.id.tv_item5_desc, item.walletAddress + "(" + item.walletName + ")");
-                viewHolder.setText(R.id.tv_item6_desc, DateUtil.format(item.expirTime, DateUtil.DATETIME_FORMAT_PATTERN));
-            }
-        };
-        lvVote.setAdapter(mAdapter);
+        if (unbinder != null) {
+            unbinder.unbind();
+        }
     }
 
     @Override
     public String getCandidateIdFromIntent() {
-        return getIntent().getStringExtra(Constants.Extra.EXTRA_ID);
+        return getIntent().getStringExtra(Constants.Extra.EXTRA_CANDIDATE_ID);
     }
 
     @Override
     public String getCandidateNameFromIntent() {
-        return getIntent().getStringExtra(Constants.Extra.EXTRA_NAME);
+        return getIntent().getStringExtra(Constants.Extra.EXTRA_CANDIDATE_NAME);
     }
 
     @Override
-    public String getCandidateIconFromIntent() {
-        return getIntent().getStringExtra(Constants.Extra.EXTRA_PIC);
+    public void showNodeDetailInfo(String candidateId, String nodeName) {
+        tvNodeName.setText(nodeName);
+        tvNodeId.setText(candidateId);
     }
 
     @Override
-    public void showCandidateInfo(int resIcon, String name, String candidateId) {
-        ((ImageView) findViewById(R.id.iv_icon)).setImageResource(resIcon);
-        ((TextView) findViewById(R.id.tv_name)).setText(name);
-        ((TextView) findViewById(R.id.tv_address)).setText(candidateId);
+    public void notifyDataSetChanged(List<VoteDetailItemEntity> voteDetailItemEntityList) {
+        mVoteDetailListAdapter.notifyDataChanged(voteDetailItemEntityList);
     }
 
-    public void updateTickets(List<VoteDetailContract.Entity> entityList){
-        mAdapter.notifyDataChanged(entityList);
+    public static void actionStart(Context context, String candidateId, String candidateName) {
+        Intent intent = new Intent(context, VoteDetailActivity.class);
+        intent.putExtra(Constants.Extra.EXTRA_CANDIDATE_ID, candidateId);
+        intent.putExtra(Constants.Extra.EXTRA_CANDIDATE_NAME, candidateName);
+        context.startActivity(intent);
     }
 }

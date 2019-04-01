@@ -2,11 +2,15 @@ package com.juzix.wallet.component.ui.view;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -20,21 +24,25 @@ import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.MVPBaseFragment;
 import com.juzix.wallet.component.ui.contract.ImportIndividualKeystoreContract;
 import com.juzix.wallet.component.ui.presenter.ImportIndividualKeystorePresenter;
+import com.juzix.wallet.component.widget.ShadowButton;
+import com.juzix.wallet.utils.CommonUtil;
 
 import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function3;
 import kotlin.Unit;
 
-public class ImportIndividualKeystoreFragment extends MVPBaseFragment<ImportIndividualKeystorePresenter> implements ImportIndividualKeystoreContract.View {
+public class ImportIndividualKeystoreFragment extends MVPBaseFragment<ImportIndividualKeystorePresenter> implements View.OnTouchListener, ImportIndividualKeystoreContract.View {
 
     private EditText mEtKeystore;
     private EditText mEtPassword;
     private EditText mEtWalletName;
-    private Button mBtnImport;
+    private ShadowButton mBtnImport;
     private TextView mTvNameError;
     private TextView mTvKeystoreError;
     private TextView mTvPasswordError;
+    private Button mBtnPaste;
+    private boolean      mShowPassword;
 
     @Override
     protected ImportIndividualKeystorePresenter createPresenter() {
@@ -43,6 +51,7 @@ public class ImportIndividualKeystoreFragment extends MVPBaseFragment<ImportIndi
 
     @Override
     protected void onFragmentPageStart() {
+        mPresenter.checkPaste();
     }
 
     @Override
@@ -61,11 +70,13 @@ public class ImportIndividualKeystoreFragment extends MVPBaseFragment<ImportIndi
         mTvPasswordError = rootView.findViewById(R.id.tv_password_error);
         mEtWalletName = rootView.findViewById(R.id.et_name);
         mTvNameError = rootView.findViewById(R.id.tv_name_error);
-        mBtnImport = rootView.findViewById(R.id.btn_import);
+        mBtnImport = rootView.findViewById(R.id.sbtn_import);
+        mBtnPaste = rootView.findViewById(R.id.btn_paste);
     }
 
     private void initDatas() {
         enableImport(false);
+        showPassword();
         showKeystoreError("", false);
         showNameError("", false);
         showPasswordError("", false);
@@ -74,12 +85,22 @@ public class ImportIndividualKeystoreFragment extends MVPBaseFragment<ImportIndi
 
     private void addListeners() {
 
+        mEtPassword.setOnTouchListener(this);
+
         RxView.clicks(mBtnImport).subscribe(new Consumer<Unit>() {
             @Override
             public void accept(Unit unit) throws Exception {
                 mPresenter.importKeystore(mEtKeystore.getText().toString(),
                         mEtWalletName.getText().toString(),
                         mEtPassword.getText().toString());
+            }
+        });
+
+        RxView.clicks(mBtnPaste).subscribe(new Consumer<Unit>() {
+            @Override
+            public void accept(Unit unit) throws Exception {
+                mEtKeystore.setText(CommonUtil.getTextFromClipboard(getContext()));
+                mEtKeystore.setSelection(mEtKeystore.getText().toString().length());
             }
         });
 
@@ -124,7 +145,9 @@ public class ImportIndividualKeystoreFragment extends MVPBaseFragment<ImportIndi
                         showNameError(string(R.string.validWalletNameEmptyTips), true);
                     } else if (walletName.length() > 12) {
                         showNameError(string(R.string.validWalletNameTips), true);
-                    } else {
+                    } else if (mPresenter.isExists(walletName)){
+                        showNameError(string(R.string.wallet_name_exists), true);
+                    }else {
                         showNameError("", false);
                     }
                 }
@@ -145,6 +168,35 @@ public class ImportIndividualKeystoreFragment extends MVPBaseFragment<ImportIndi
                 }
             }
         });
+    }
+
+    private void showPassword(){
+        if (mShowPassword) {
+            // 显示密码
+            mEtPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_open_eyes, 0);
+            mEtPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            mEtPassword.setSelection(mEtPassword.getText().toString().length());
+            mShowPassword = !mShowPassword;
+        } else {
+            // 隐藏密码
+            mEtPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_close_eyes, 0);
+            mEtPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            mEtPassword.setSelection(mEtPassword.getText().toString().length());
+            mShowPassword = !mShowPassword;
+        }
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        Drawable drawable = mEtPassword.getCompoundDrawables()[2];
+        if (drawable == null)
+            return false;
+        if (event.getAction() != MotionEvent.ACTION_UP)
+            return false;
+        if (event.getX() > mEtPassword.getWidth() - mEtPassword.getPaddingRight() - drawable.getIntrinsicWidth()){
+            showPassword();
+        }
+        return false;
     }
 
     @Override
@@ -176,7 +228,6 @@ public class ImportIndividualKeystoreFragment extends MVPBaseFragment<ImportIndi
 
     private void enableImport(boolean enabled) {
         mBtnImport.setEnabled(enabled);
-        mBtnImport.setBackgroundColor(ContextCompat.getColor(getContext(), enabled ? R.color.color_eff0f5 : R.color.color_373e51));
     }
 
     @Override
@@ -195,6 +246,12 @@ public class ImportIndividualKeystoreFragment extends MVPBaseFragment<ImportIndi
     public void showPasswordError(String text, boolean isVisible) {
         mTvPasswordError.setVisibility(isVisible ? View.VISIBLE : View.GONE);
         mTvPasswordError.setText(text);
+    }
+
+    @Override
+    public void enablePaste(boolean enabled) {
+        mBtnPaste.setEnabled(enabled);
+        mBtnPaste.setTextColor(ContextCompat.getColor(getContext(), enabled ? R.color.color_105cfe : R.color.color_d8d8d8));
     }
 
 }

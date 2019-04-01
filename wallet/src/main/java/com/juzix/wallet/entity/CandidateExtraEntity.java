@@ -4,31 +4,33 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class CandidateExtraEntity implements Parcelable {
-    public static final Creator<CandidateExtraEntity> CREATOR = new Creator<CandidateExtraEntity>() {
-        @Override
-        public CandidateExtraEntity createFromParcel(Parcel in) {
-            return new CandidateExtraEntity(in);
-        }
 
-        @Override
-        public CandidateExtraEntity[] newArray(int size) {
-            return new CandidateExtraEntity[size];
-        }
-    };
-    //节点名称
-    private String                                    nodeName;
-    //节点logo
-    private String                                    nodePortrait;
-    //机构简介
-    private String                                    nodeDiscription;
-    //机构名称
-    private String                                    nodeDepartment;
-    //官网
-    private String                                    officialWebsite;
-    //申请时间
-    private long                                      time;
+    /**
+     * 节点名称
+     */
+    private String nodeName;
+    /**
+     * 节点logo
+     */
+    private String nodePortrait;
+    /**
+     * 机构简介
+     */
+    private String nodeDiscription;
+    /**
+     * 机构名称
+     */
+    private String nodeDepartment;
+    /**
+     * 官网
+     */
+    private String officialWebsite;
+    /**
+     * 申请时间
+     */
+    private long time;
 
-    public CandidateExtraEntity(){
+    public CandidateExtraEntity() {
 
     }
 
@@ -55,6 +57,18 @@ public class CandidateExtraEntity implements Parcelable {
         dest.writeString(officialWebsite);
         dest.writeLong(time);
     }
+
+    public static final Creator<CandidateExtraEntity> CREATOR = new Creator<CandidateExtraEntity>() {
+        @Override
+        public CandidateExtraEntity createFromParcel(Parcel in) {
+            return new CandidateExtraEntity(in);
+        }
+
+        @Override
+        public CandidateExtraEntity[] newArray(int size) {
+            return new CandidateExtraEntity[size];
+        }
+    };
 
     public String getNodeName() {
         return nodeName;

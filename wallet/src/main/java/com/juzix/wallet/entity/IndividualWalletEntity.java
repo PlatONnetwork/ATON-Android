@@ -17,6 +17,11 @@ public class IndividualWalletEntity extends WalletEntity implements Parcelable, 
      */
     private String keystorePath;
 
+    /**
+     * 助记词
+     */
+    private String mnemonic;
+
     private IndividualWalletEntity(Builder builder) {
         setUuid(builder.uuid);
         setKey(builder.key);
@@ -27,6 +32,7 @@ public class IndividualWalletEntity extends WalletEntity implements Parcelable, 
         setUpdateTime(builder.updateTime);
         setBalance(builder.balance);
         setAvatar(builder.avatar);
+        setMnemonic(builder.mnemonic);
     }
 
     protected IndividualWalletEntity(Parcel in) {
@@ -39,6 +45,7 @@ public class IndividualWalletEntity extends WalletEntity implements Parcelable, 
         updateTime = in.readLong();
         balance = in.readDouble();
         avatar = in.readString();
+        mnemonic = in.readString();
     }
 
     @Override
@@ -57,6 +64,7 @@ public class IndividualWalletEntity extends WalletEntity implements Parcelable, 
         dest.writeLong(updateTime);
         dest.writeDouble(balance);
         dest.writeString(avatar);
+        dest.writeString(mnemonic);
     }
 
     public static final Creator<IndividualWalletEntity> CREATOR = new Creator<IndividualWalletEntity>() {
@@ -136,6 +144,14 @@ public class IndividualWalletEntity extends WalletEntity implements Parcelable, 
         this.keystorePath = keystorePath;
     }
 
+    public String getMnemonic() {
+        return mnemonic;
+    }
+
+    public void setMnemonic(String mnemonic) {
+        this.mnemonic = mnemonic;
+    }
+
     public void setWalletEntity(IndividualWalletEntity walletEntity){
         setUuid(walletEntity.uuid);
         setKey(walletEntity.key);
@@ -146,6 +162,7 @@ public class IndividualWalletEntity extends WalletEntity implements Parcelable, 
         setUpdateTime(walletEntity.updateTime);
         setBalance(walletEntity.balance);
         setAvatar(walletEntity.avatar);
+        setMnemonic(walletEntity.mnemonic);
     }
 
     public IndividualWalletInfoEntity buildWalletInfoEntity() {
@@ -158,6 +175,7 @@ public class IndividualWalletEntity extends WalletEntity implements Parcelable, 
         builder.createTime(getCreateTime());
         builder.updateTime(getUpdateTime());
         builder.avatar(avatar);
+        builder.mnemonic(mnemonic);
         return builder.build();
     }
 
@@ -171,6 +189,7 @@ public class IndividualWalletEntity extends WalletEntity implements Parcelable, 
         private long updateTime;
         private double balance;
         private String avatar;
+        private String mnemonic;
 
         public Builder() {
         }
@@ -229,6 +248,11 @@ public class IndividualWalletEntity extends WalletEntity implements Parcelable, 
 
         public Builder avatar(String val) {
             avatar = val;
+            return this;
+        }
+
+        public Builder mnemonic(String val) {
+            mnemonic = val;
             return this;
         }
 

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/color_ffffff"
     android:clipToPadding="true"
-    xmlns:tools="http://schemas.android.com/tools"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
@@ -13,48 +14,43 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:ctb_left_drawable="@drawable/icon_back_black"
-        app:ctb_middle_text="@string/add_shared_wallet"
-        app:ctb_right_drawable="@drawable/icon_scan" />
+        app:ctb_title="@string/add_shared_wallet" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/color_1b2137"
         android:orientation="vertical"
-        android:paddingBottom="14dp"
         android:paddingLeft="16dp"
+        android:paddingTop="17dp"
         android:paddingRight="16dp"
-        android:paddingTop="17dp">
+        android:paddingBottom="14dp">
 
         <TextView
-            style="@style/Text.c5cdbc.14"
-            android:layout_marginLeft="7dp"
+            style="@style/Text.61646e.16"
             android:text="@string/name" />
 
         <EditText
             android:id="@+id/et_wallet_name"
-            style="@style/Text.fff.12"
+            style="@style/Text.000.12"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginTop="10dp"
-            android:background="@drawable/bg_create_share_wallet"
+            android:background="@drawable/bg_edittext_underline"
             android:gravity="center_vertical|left"
-            android:maxLength="12"
             android:hint="@string/nameOfWallet"
-            android:paddingLeft="10dp"
-            android:textColorHint="@color/color_7a8092" />
+            android:maxLength="12"
+            android:textColorHint="@color/color_b6bbd0" />
 
         <TextView
             android:id="@+id/tv_wallet_name_error"
-            style="@style/Text.ff4747.12"
+            style="@style/Text.f5302c.12"
             android:layout_marginTop="5dp"
             android:visibility="gone"
             tools:text="钱包名称不能为空"
             tools:visibility="visible" />
 
         <TextView
-            style="@style/Text.c5cdbc.14"
-            android:layout_marginLeft="7dp"
+            style="@style/Text.61646e.16"
             android:layout_marginTop="17dp"
             android:text="@string/select_owner" />
 
@@ -62,61 +58,77 @@
 
         <TextView
             android:id="@+id/tv_wallet_address_info"
-            style="@style/Text.c5cdbc.14"
-            android:layout_marginLeft="7dp"
+            style="@style/Text.61646e.16"
             android:layout_marginTop="17dp"
             android:text="@string/wallet_address" />
 
         <LinearLayout
+            android:id="@+id/fl_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:background="@drawable/bg_edittext_underline"
             android:orientation="horizontal">
 
             <EditText
                 android:id="@+id/et_wallet_address"
-                style="@style/Text.fff.12"
+                style="@style/Text.000.12"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_weight="1"
-                android:background="@drawable/bg_input_wallet_info"
+                android:background="@null"
                 android:ellipsize="end"
                 android:gravity="center_vertical|left"
                 android:hint="@string/inputSharedWalletAddress"
-                android:lines="1"
-                android:paddingLeft="10dp"
-                android:textColorHint="@color/color_7a8092" />
+                android:paddingRight="48dp"
+                android:singleLine="true"
+                android:textColorHint="@color/color_b6bbd0" />
+
+            <ImageView
+                android:id="@+id/iv_address_scan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center_vertical"
+                android:src="@drawable/icon_scan_s" />
+
+            <View
+                android:layout_width="15dp"
+                android:layout_height="0dp" />
 
             <ImageView
                 android:id="@+id/iv_address_book"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="right"
-                android:background="@drawable/bg_address_book" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center_vertical"
+                android:src="@drawable/icon_address_book_s" />
 
         </LinearLayout>
 
         <TextView
             android:id="@+id/tv_wallet_address_error"
-            style="@style/Text.ff4747.12"
+            style="@style/Text.f5302c.12"
             android:layout_marginTop="5dp"
             android:visibility="gone"
             tools:text="钱包名称不能为空"
             tools:visibility="visible" />
 
-        <com.juzix.wallet.component.widget.RoundedTextView
-            android:id="@+id/rtv_add_shared_wallet"
-            style="@style/Text.1b2137.14"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="27dp"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp"
-            android:enabled="false"
-            android:text="@string/add_shared_wallet"
-            android:textColor="@color/color_heavy_button_text"
-            app:rtv_background_color="@color/bg_heavy_button"
-            app:rtv_corner_radius="1dp" />
+            android:layout_height="match_parent"
+            android:gravity="bottom"
+            android:orientation="vertical">
+
+            <com.juzix.wallet.component.widget.ShadowButton
+                android:id="@+id/sbtn_add_shared_wallet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"
+                app:enabled="false"
+                app:text="@string/add_shared_wallet"
+                app:textAppearance="@style/MainButtonStyle"
+                app:textBackground="@drawable/bg_main_button" />
+        </LinearLayout>
 
 
     </LinearLayout>

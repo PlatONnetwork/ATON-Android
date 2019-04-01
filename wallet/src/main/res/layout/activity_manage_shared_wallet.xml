@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/color_ffffff"
     android:clipToPadding="true"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
@@ -13,60 +14,69 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:ctb_left_drawable="@drawable/icon_back_black"
-        app:ctb_middle_text="@string/manage" />
+        app:ctb_title="@string/manage" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:overScrollMode="never"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        android:overScrollMode="never">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/color_1b2137"
             android:orientation="vertical"
-            android:paddingLeft="18dp"
-            android:paddingRight="18dp"
-            android:paddingTop="10dp">
+            android:paddingLeft="16dp"
+            android:paddingTop="10dp"
+            android:paddingRight="16dp">
+
 
             <RelativeLayout
-                android:id="@+id/layout_modify_member_name"
+                android:id="@+id/rl_rename"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:background="@drawable/bg_select_wallet"
-                android:paddingLeft="12dp"
-                android:paddingRight="12dp">
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
 
-                <com.juzix.wallet.component.widget.CircleImageView
-                    android:id="@+id/iv_wallet_pic"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                <TextView
+                    android:id="@+id/tv_rename_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/ic_launcher_background" />
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:text="@string/changeWalletName"
+                    android:textColor="@color/color_000000"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:id="@+id/iv_arrow1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/icon_right_arrow" />
 
                 <TextView
-                    android:id="@+id/tv_wallet_name"
-                    style="@style/Text.fff.14"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="6dp"
-                    android:layout_toRightOf="@id/iv_wallet_pic"
-                    android:ellipsize="end"
-                    android:lines="1"
-                    tools:text="Energon钱包1" />
+                    android:id="@+id/tv_rename"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@id/iv_arrow1"
+                    android:textColor="@color/color_b6bbd0"
+                    android:textSize="14sp"
+                    tools:text="@string/wallet_name" />
 
-                <TextView
-                    android:id="@+id/tv_wallet_address"
-                    style="@style/Text.c5cdbc.12"
-                    android:layout_alignLeft="@id/tv_wallet_name"
-                    android:layout_below="@id/tv_wallet_name"
-                    android:layout_marginTop="8dp"
-                    tools:text="ox2ce48152…fF49B2b3d3" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/tv_rename_title"
+                    android:layout_marginTop="12dp"
+                    android:background="@color/color_e4e7f3" />
             </RelativeLayout>
 
             <TextView
-                style="@style/Text.fff.14"
+                style="@style/Text.000000.16"
                 android:layout_marginTop="21dp"
                 android:text="@string/members" />
 
@@ -76,21 +86,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:divider="@drawable/bg_transparent_list_divider"
-                android:dividerHeight="8dp"
-                tools:listitem="@layout/item_manage_shared_wallet_members"/>
+                android:divider="@color/color_e4e7f3"
+                android:dividerHeight="1dp"
+                tools:listitem="@layout/item_manage_shared_wallet_members" />
 
-            <TextView
-                style="@style/Text.fff.14"
-                android:layout_marginTop="21dp"
-                android:text="@string/owner" />
-
-            <include
-                android:id="@+id/ll_owner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                layout="@layout/item_manage_shared_wallet_members"/>
         </LinearLayout>
 
 
@@ -100,24 +99,21 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/color_1b2137"
         android:orientation="vertical"
         android:paddingTop="15dp">
 
-        <com.juzix.wallet.component.widget.RoundedTextView
-            android:id="@+id/rtv_delete_wallet"
-            style="@style/Text.fff.14"
+        <TextView
+            android:id="@+id/tv_delete"
+            style="@style/Text.f5302c.16"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginLeft="18dp"
-            android:layout_marginRight="18dp"
-            android:layout_marginBottom="14dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
+            android:layout_height="44dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/bg_delete_wallet"
             android:text="@string/delete_wallet"
-            app:rtv_background_color="@color/color_dc5151"
-            app:rtv_corner_radius="1dp" />
+            android:textColor="@color/color_delete_wallet_text" />
+
     </LinearLayout>
 
 

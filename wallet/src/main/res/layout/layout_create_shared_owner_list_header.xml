@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:descendantFocusability="beforeDescendants"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_wallet_address_info"
+        style="@style/Text.61646e.16"
+        android:text="Member1"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_below="@id/tv_select_wallet"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_select_wallet"
+        android:paddingLeft="12dp">
+
+        <ImageView
+            android:id="@+id/iv_wallet_avatar"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="12dp"
+            android:src="@drawable/icon_default_coin"/>
+
+        <TextView
+            android:id="@+id/tv_wallet_name"
+            style="@style/Text.000000.14"
+            android:layout_width="match_parent"
+            android:layout_marginTop="7dp"
+            android:layout_toRightOf="@id/iv_wallet_avatar"
+            android:ellipsize="end"
+            android:gravity="center_vertical|left"
+            android:lines="1"
+            tools:text="Wallet name_wallet"/>
+
+        <TextView
+            android:id="@+id/tv_wallet_address"
+            style="@style/Text.61646e.12"
+            android:layout_width="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="7dp"
+            android:layout_toRightOf="@id/iv_wallet_avatar"
+            android:ellipsize="middle"
+            android:gravity="center_vertical|left"
+            android:singleLine="true"
+            tools:text="ox2ce48152fF49B2b3d3"/>
+
+    </RelativeLayout>
+
+
+</LinearLayout>

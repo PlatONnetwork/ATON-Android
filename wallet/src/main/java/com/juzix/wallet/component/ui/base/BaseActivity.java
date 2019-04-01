@@ -1,6 +1,7 @@
 package com.juzix.wallet.component.ui.base;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
@@ -10,12 +11,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import com.gyf.barlibrary.ImmersionBar;
 import com.juzhen.framework.app.activity.CoreFragmentActivity;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.BaseContextImpl;
 import com.juzix.wallet.component.ui.CustomContextWrapper;
 import com.juzix.wallet.component.ui.IContext;
-import com.juzix.wallet.config.ImmersiveBarConfigure;
 import com.juzix.wallet.config.PermissionConfigure;
 import com.juzix.wallet.utils.LanguageUtil;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -23,6 +24,7 @@ import com.trello.rxlifecycle2.LifecycleTransformer;
 import com.trello.rxlifecycle2.RxLifecycle;
 import com.trello.rxlifecycle2.android.ActivityEvent;
 import com.trello.rxlifecycle2.android.RxLifecycleAndroid;
+import com.umeng.analytics.MobclickAgent;
 
 import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
@@ -37,7 +39,7 @@ public abstract class BaseActivity extends CoreFragmentActivity implements ICont
     private InputMethodManager mInputMethodManager;
     protected View mDecorView;
     protected ViewGroup mRootView;
-    protected int mDefaultStatusBarColor = R.color.color_232e48;
+    private int mDefaultStatusBarColor = R.color.color_ffffff;
 
     @Override
     @NonNull
@@ -90,11 +92,14 @@ public abstract class BaseActivity extends CoreFragmentActivity implements ICont
     }
 
     protected void setStatusBarView() {
-        ImmersiveBarConfigure.statusBarView(this, getStatusBarView());
+        ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarView(getStatusBarView()).init();
     }
 
     protected void setStatusBarColor(int colorRes) {
-        ImmersiveBarConfigure.statusBarColor(this, colorRes);
+        ImmersionBar.with(this)
+                .statusBarColor(colorRes)
+                .statusBarDarkFont(true, 0.2f)
+                .init();
     }
 
     protected int getStatusBarColor() {
@@ -112,15 +117,29 @@ public abstract class BaseActivity extends CoreFragmentActivity implements ICont
     }
 
     @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (immersiveBarInitEnabled()) {
+            if (immersiveBarViewEnabled()) {
+                setStatusBarView();
+            } else {
+                setStatusBarColor(getStatusBarColor());
+            }
+        }
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         lifecycleSubject.onNext(ActivityEvent.RESUME);
+        MobclickAgent.onResume(this);
     }
 
     @Override
     protected void onPause() {
         lifecycleSubject.onNext(ActivityEvent.PAUSE);
         super.onPause();
+        MobclickAgent.onPause(this);
     }
 
     @Override
@@ -134,16 +153,8 @@ public abstract class BaseActivity extends CoreFragmentActivity implements ICont
         lifecycleSubject.onNext(ActivityEvent.DESTROY);
         super.onDestroy();
         if (immersiveBarInitEnabled()) {
-            ImmersiveBarConfigure.destroy(this);
+            ImmersionBar.with(this).destroy();
         }
-    }
-
-    protected void onShowKeyboard() {
-
-    }
-
-    protected void onHideKeyboard() {
-
     }
 
     protected boolean immersiveBarInitEnabled() {
@@ -197,22 +208,27 @@ public abstract class BaseActivity extends CoreFragmentActivity implements ICont
 
     @Override
     public void showLoadingDialog() {
-        mContextImpl.showLoadingDialog();
+        showLoadingDialog(string(R.string.loading));
     }
 
     @Override
     public void showLoadingDialog(int resId) {
-        mContextImpl.showLoadingDialog(resId);
+        showLoadingDialog(string(resId));
     }
 
     @Override
     public void showLoadingDialog(String text) {
-        mContextImpl.showLoadingDialog(text);
+        showLoadingDialog(text, false);
     }
 
     @Override
     public void showLoadingDialogWithCancelable(String text) {
-        mContextImpl.showLoadingDialogWithCancelable(text);
+        showLoadingDialog(text, true);
+    }
+
+    @Override
+    public void showLoadingDialog(String text, boolean cancelable) {
+        mContextImpl.showLoadingDialog(text, cancelable);
     }
 
     @Override
@@ -241,6 +257,18 @@ public abstract class BaseActivity extends CoreFragmentActivity implements ICont
         }
     }
 
+
+    /**
+     * 隐藏输入软键盘
+     * @param context
+     * @param view
+     */
+    public void hideSoftInput(Context context, View view){
+        if (mInputMethodManager != null && view != null) {
+            mInputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
     /**
      * 显示软键盘
      */
@@ -252,7 +280,7 @@ public abstract class BaseActivity extends CoreFragmentActivity implements ICont
                 public void run() {
                     mInputMethodManager.showSoftInput(editText, 0);
                 }
-            },100);
+            }, 100);
         }
     }
 

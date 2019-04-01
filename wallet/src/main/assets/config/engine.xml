@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ConfigModule name="Engine">
+    <deviceType>phone</deviceType>
+    <version>1.0</version>
+
+    <!--
+         测试环境:server.type1
+         现网环境:server.type2
+    -->
+    <betaCount>B3</betaCount>
+    <releaseType>server.type1</releaseType>
+    <server>
+        <!-- 测试环境 -->
+        <type1>
+            <batchServer>http://ip-api.com/batch/</batchServer>
+            <web3jServer>https://syde.platon.network/test</web3jServer>
+            <logConfig>config/log_debug.xml</logConfig>
+        </type1>
+
+        <!-- 现网环境 -->
+        <type2>
+            <batchServer>http://ip-api.com/batch/</batchServer>
+            <web3jServer>https://syde.platon.network/test</web3jServer>
+            <logConfig>config/log.xml</logConfig>
+        </type2>
+
+    </server>
+</ConfigModule>

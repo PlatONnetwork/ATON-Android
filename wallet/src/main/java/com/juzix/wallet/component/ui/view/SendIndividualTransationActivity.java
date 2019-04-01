@@ -111,28 +111,28 @@ public class SendIndividualTransationActivity extends MVPBaseActivity<SendIndivi
 
         etMemo.setVisibility(View.GONE);
 
-        new CommonTitleBar(this).setLeftDrawable(R.drawable.icon_back_black).setMiddleTitle(string(R.string.sendATP)).setRightDrawable(R.drawable.icon_scan, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                requestPermission(SendIndividualTransationActivity.this, 100, new PermissionConfigure.PermissionCallback() {
-                    @Override
-                    public void onSuccess(int what, @NonNull List<String> grantPermissions) {
-                        ScanQRCodeActivity.startActivityForResult(SendIndividualTransationActivity.this, Constants.RequestCode.REQUEST_CODE_SCAN_QRCODE);
-                    }
-
-                    @Override
-                    public void onHasPermission(int what) {
-                        ScanQRCodeActivity.startActivityForResult(SendIndividualTransationActivity.this, Constants.RequestCode.REQUEST_CODE_SCAN_QRCODE);
-                    }
-
-                    @Override
-                    public void onFail(int what, @NonNull List<String> deniedPermissions) {
-
-                    }
-                }, Manifest.permission.CAMERA);
-            }
-        }).build();
+//        new CommonTitleBar(this).setLeftDrawable(R.drawable.icon_back_black).setTitle(string(R.string.sendATP)).setRightDrawable(R.drawable.icon_scan, new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                requestPermission(SendIndividualTransationActivity.this, 100, new PermissionConfigure.PermissionCallback() {
+//                    @Override
+//                    public void onSuccess(int what, @NonNull List<String> grantPermissions) {
+//                        ScanQRCodeActivity.startActivityForResult(SendIndividualTransationActivity.this, Constants.RequestCode.REQUEST_CODE_SCAN_QRCODE);
+//                    }
+//
+//                    @Override
+//                    public void onHasPermission(int what) {
+//                        ScanQRCodeActivity.startActivityForResult(SendIndividualTransationActivity.this, Constants.RequestCode.REQUEST_CODE_SCAN_QRCODE);
+//                    }
+//
+//                    @Override
+//                    public void onFail(int what, @NonNull List<String> deniedPermissions) {
+//
+//                    }
+//                }, Manifest.permission.CAMERA);
+//            }
+//        }).build();
 
         etWalletAmount.setFilters(new InputFilter[]{new PointLengthFilter()});
 
@@ -206,7 +206,7 @@ public class SendIndividualTransationActivity extends MVPBaseActivity<SendIndivi
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_address_book:
-                AddressBookActivity.actionStartForResult(this, Constants.Action.ACTION_GET_ADDRESS, Constants.RequestCode.REQUEST_CODE_GET_ADDRESS);
+                SelectAddressActivity.actionStartForResult(this, Constants.Action.ACTION_GET_ADDRESS, Constants.RequestCode.REQUEST_CODE_GET_ADDRESS);
                 break;
             case R.id.tv_all_amount:
                 mPresenter.transferAllBalance();

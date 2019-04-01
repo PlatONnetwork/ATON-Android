@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">ATON</string>
     <string name="inputDigits">.@~-,:*?!#/\\=+?^;%$()[]{}|`&lt;&gt;&amp;&quot;&apos;_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLIMNOPQRSTUVWXYZ</string>
+    <string name="inputDigitsMnemonic">abcdefghijklmnopqrstuvwxyz</string>
     <!--权限申请-->
     <string name="permissionFailureTitleText">权限申请失败</string>
     <string name="permissionFailureMessageText">我们需要的一些权限申请失败，请您到设置页面手动授权，否则功能无法正常使用！</string>
@@ -48,6 +49,7 @@
     <string name="importIndividualWallet">Import Classic Wallet</string>
     <string name="name">Name</string>
     <string name="password">Password</string>
+    <string name="password_with_colon">Password：</string>
     <string name="passwordLimit">*At least 6 characters,&#160;recommended to mix uppercase and lowercase alphabets,&#160;numbers and symbols</string>
     <string name="createIndividualWalletTips">Note: Be sure to keep your wallet password in mind, the server will not store your password, you will not be able to retrieve the password if forgetting or losing!</string>
     <string name="passwordTips">Password don\'t match</string>
@@ -59,7 +61,7 @@
     <string name="repeatPassword">Repeat password</string>
     <string name="strength">Strength</string>
     <string name="weak">Weak</string>
-    <string name="so_so">So-so</string>
+    <string name="so_so">Ordinary</string>
     <string name="good">Good</string>
     <string name="strong">Strong</string>
     <string name="keystore">Keystore</string>
@@ -67,18 +69,20 @@
     <string name="mnemonicPhrase">Mnemonic phrase</string>
     <string name="privateKey">Private Key</string>
     <string name="importIndividualWalletResume">Copy and paste ATON official wallet\'s Keystore to the input field, or scan the QR Code generated with Keystore\'s information to import.</string>
-    <string name="startImporting">Start Importing</string>
+    <string name="startImporting">Start to import</string>
     <string name="walletPassword">Wallet password</string>
     <string name="nameOfWallet">Name of wallet</string>
-    <string name="importMnemonicPhraseResume">Input the Mnemonic Phrase. Please pay attention to case sensitivity and sequence.</string>
+    <string name="nameOfAddress">Address of wallet</string>
+    <string name="importMnemonicPhraseResume">Input the Mnemonic phrase. Please pay attention to case sensitivity and sequence.</string>
     <string name="inputMnemonicPhraseTips">Please separate each Mnemonic Phrase with a space</string>
     <string name="importPrivateKeyResume">Input the Private Key, or scan the Qr Code generated with Private Key to import. Please pay attention to case sensitivity.</string>
     <string name="inputPrivateKeyTips">Enter Private Key</string>
     <string name="backupWallet">Backup Wallet</string>
+    <string name="backupMnemonic">Backup Mnemonic</string>
     <string name="create_success">Success</string>
     <string name="backupWalletDescription">One last step，Back it up</string>
-    <string name="backupWalletResume">Please write down the mnemonics on paper and keep them in a safe place. </string>
-    <string name="startBackup">Start</string>
+    <string name="backupWalletResume">Mnemonic phrase consist of 12 common English words converted from 64-bit private keys by algorithm. Please write down the words on paper and keep them in a safe place. </string>
+    <string name="startBackup">Start to backup</string>
     <string name="InputWalletPassword">Input wallet password</string>
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
@@ -98,6 +102,7 @@
     <string name="completeBackup">Submit</string>
     <string name="submit">Submit</string>
     <string name="empty">Empty</string>
+    <string name="msg_no_wallet">No Wallet yet.</string>
     <string name="msg_no_shared_wallet">There is no any Joint Wallet yet</string>
     <string name="msg_no_individual_wallet">There is no any Classic Wallet yet</string>
     <string name="transactions">Transactions</string>
@@ -108,13 +113,14 @@
     <string name="vote">Vote</string>
     <string name="wallet_address">Wallet Address</string>
     <string name="amount">Amount</string>
-    <string name="pay_wallet">Wallet</string>
+    <string name="pay_wallet">Type</string>
     <string name="change">Change</string>
     <string name="select_fee">Select Fee</string>
     <string name="cheaper">Cheaper</string>
     <string name="faster">Faster</string>
     <string name="send_transation">Send Transation</string>
     <string name="wallet_name">Wallet name</string>
+    <string name="wallet_name_with_colon">Wallet Name：</string>
     <string name="public_key">Public Key</string>
     <string name="sharing">Sharing</string>
     <string name="fromAddress">From</string>
@@ -138,6 +144,7 @@
     <string name="action_create_wallet">Create</string>
     <string name="action_import_wallet">Import</string>
     <string name="nav_property">Property</string>
+    <string name="nav_vote">Vote</string>
     <string name="nav_me">Me</string>
     <string name="disclaimer">Disclaimer</string>
     <string name="disclaimerResume">Please be sure to keep your mnemonics in a safe place. ATON is not responsible for any loss of assets caused by forgetting,&#160;losing or stolen.</string>
@@ -146,8 +153,9 @@
     <string name="manage">Manage</string>
     <string name="exportPrivateKey">Export Private Key</string>
     <string name="exportKeystore">Export Keystore</string>
+    <string name="backupMnemonics">Mnemonics backup</string>
     <string name="backup">Backup</string>
-    <string name="changeWalletName">Change Wallet Name</string>
+    <string name="changeWalletName">Rename</string>
     <string name="formatError">Format Error</string>
     <string name="validWalletNameTips">Please enter 1-12 characters</string>
     <string name="validKeystoreEmptyTips">Keystore can\'t be empty</string>
@@ -232,7 +240,7 @@
     <string name="unlockWithWalletPasswordTitle">Unlock with Wallet Password</string>
     <string name="unlockWithWalletPasswordDesc">Use the selected wallet password to verify unlock</string>
     <string name="company_name">juzix（shenzhen)</string>
-    <string name="copyright_resume">Powered by PlatON Blockchain</string>
+    <string name="copyright_resume">Powered by PlatON</string>
     <string name="language">Languages</string>
     <string name="warning">Warning</string>
     <string name="test_node_warn">You are on the PlatON Test NetWork.&#160;Be careful not to transfer real funds to this address</string>
@@ -302,17 +310,20 @@
     <string name="can_not_send_to_itself">Can\'t send to itself</string>
     <string name="default_main_network">Default main network</string>
     <string name="default_test_network">Default test network</string>
-<string name="myVote">My Vote</string>
+    <string name="myVote">My Vote</string>
     <string name="voteRate">Vote Rate</string>
     <string name="votes">Votes</string>
     <string name="ticketPrice">Ticket Price</string>
     <string name="ticketPriceTag">Ticket Price：</string>
     <string name="expectedPayTag">Expected Pay：</string>
-    <string name="defaul">Defualt</string>
+    <string name="action_default">Default</string>
     <string name="reward">Reward</string>
     <string name="location">Location</string>
-    <string name="rewardRadio">Reward Ratio</string>
+    <string name="reward_radio_with_colon_and_value">Reward Ratio:%1$s</string>
+    <string name="reward_radio_with_colon">Reward Ratio:</string>
+    <string name="staked_with_colon">Staked:%1$sEnergon</string>
     <string name="staked">Staked</string>
+    <string name="staked_with_unit">Staked(Energon)</string>
     <string name="validNodeName">Validator Node Name</string>
     <string name="lockVote">Vote Staked</string>
     <string name="validTicket">Valid Ticket</string>
@@ -320,7 +331,8 @@
     <string name="validInvalidTicket">Valid/Invalid Ticket</string>
     <string name="votingIncome">Profit</string>
     <string name="noVoteRecord">No voting record</string>
-    <string name="votingDetail">Voting detail</string>
+    <string name="votingDetail">Voting details</string>
+    <string name="nodeDetail">Node details</string>
     <string name="voteStakedUnstaked">Vote Staked/Unstaked</string>
     <string name="votingWallet">Voting wallet</string>
     <string name="estimatedActualExpirationTime">Estimated/Actual expiration time</string>
@@ -334,10 +346,15 @@
     <string name="ticketAge">Ticket Age</string>
     <string name="nodeInfo">Node Info</string>
     <string name="nodeUrl">Node URL</string>
+    <string name="nodeUrl_with_colon">Node URL:</string>
     <string name="nodeId">Node ID</string>
+    <string name="nodeId_with_colon">Node ID:</string>
     <string name="institutionalName">Institutional Name</string>
+    <string name="institutionalName_with_colon">Institutional Name:</string>
     <string name="institutionalWebsite">Institutional Website</string>
+    <string name="institutionalWebsite_with_colon">Institutional Website:</string>
     <string name="nodeIntroduction">Node Introduction</string>
+    <string name="nodeIntroduction_with_colon">Node Introduction:</string>
     <string name="votingConfirmation">Voting Confirmation</string>
     <string name="information">Information</string>
     <string name="no_data">No Data</string>
@@ -347,5 +364,35 @@
     <string name="unknownRegionEn">*Unknown</string>
     <string name="voteTicketInsufficientBalanceTips">Insufficient balance to vote</string>
     <string name="voteTicketCreateWalletTips">Please create a wallet first</string>
+    <string name="paste">Paste</string>
+    <string name="skip">Skip</string>
+    <string name="save_to_address_book">Save to Address Book</string>
+    <string name="hint_search_vote">输入节点账户查询</string>
+    <string name="vote_rate_with_colon_and_value">Vote Rate：%1$s</string>
+    <string name="vote_rate_with_colon">Vote Rate：</string>
+    <string name="voted_num_with_colon">Voted：%1$d</string>
+    <string name="vote_price_with_colon">Ticket Price：%1$sEnergon</string>
+    <string name="node_name">Node name</string>
+    <string name="estimated_payment">Estimated payment</string>
+    <string name="execute_wallet">Executor</string>
+    <string name="from_wallet">From</string>
+    <string name="wallet_name_exists">The name already exists on this APP, and can not be repeated.</string>
+    <string name="rename_wallet">Rename Wallet</string>
+    <string name="version_update">Update Available</string>
+    <string name="version_update_tips">New Version is available.Version %1$s，Update now?</string>
+    <string name="not_now">Not Now</string>
+    <string name="update_now">Update</string>
+    <string name="download_tips">New version download...</string>
+    <string name="get_version_tips">Getting the latest version...</string>
+    <string name="latest_version_tips">This is the latest version!</string>
+    <string name="current_version">Version %1$s</string>
+    <string name="latest_version">Latest version%1$s</string>
+    <string name="backup_exit_tips">Backup has not been completed, sure to quit the operation?</string>
+    <string name="voted_list_empty_tips">You haven\'t voted yet</string>
+    <string name="pay_info">Type</string>
+    <string name="loading">Loading...</string>
+    <string name="hint_wallet_password">Input the wallet\'s password</string>
+    <string name="vote_success">Vote Success!</string>
+    <string name="vote_failed">Vote Failed!</string>
 </resources>
 

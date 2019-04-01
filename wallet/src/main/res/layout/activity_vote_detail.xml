@@ -1,76 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:clipToPadding="true"
-              android:fitsSystemWindows="true"
-              android:orientation="vertical">
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
     <com.juzix.wallet.component.widget.CommonTitleBar
         android:id="@+id/commonTitleBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:ctb_left_drawable="@drawable/icon_back_black"
-        app:ctb_middle_text="@string/votingDetail" />
+        app:ctb_title="@string/votingDetail"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/layout_node_name"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/color_1b2137"
-        android:orientation="vertical">
+        android:layout_height="0dp"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="6dp"
+        android:background="@drawable/bg_submit_vote"
+        android:paddingLeft="26dp"
+        android:paddingRight="26dp"
+        app:layout_constraintDimensionRatio="3:1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/commonTitleBar">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/bg_transation_list"
-            android:paddingTop="13dp"
-            android:paddingBottom="13dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginTop="10dp">
+        <TextView
+            android:id="@+id/tv_node_name"
+            style="@style/Text.000000.18"
+            android:layout_marginTop="8dp"
+            android:text="@string/node_name"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/iv_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="12dp"
-                android:src="@drawable/icon_default_coin"/>
+        <TextView
+            android:id="@+id/tv_node_id"
+            style="@style/Text.898c9e.12"
+            android:layout_marginTop="8dp"
+            android:gravity="left"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_node_name"
+            tools:text="0xdE41ad9010ED7ae4a7bBc42b55665151dcc8DEf4dE41ad9010ED7ae4a7bBc42b55665151dcc8DEf4dE41ad9010ED7ae4a7bBc42b55665151dcc8DEf4dcc8DEf4" />
 
-            <TextView
-                android:id="@+id/tv_name"
-                style="@style/Text.fff.13"
-                android:layout_toRightOf="@id/iv_icon"
-                tools:text="节点名称"/>
+    </android.support.constraint.ConstraintLayout>
 
-            <TextView
-                android:id="@+id/tv_address"
-                style="@style/Text.7a8092.10"
-                android:layout_below="@id/tv_name"
-                android:layout_alignLeft="@id/tv_name"
-                android:lineSpacingExtra="2dp"
-                android:layout_marginTop="2dp"
-                android:gravity="center_vertical|left"
-                tools:text="0xdE41ad9010ED7ae4a7bBc42b55665151dcc8DEf4dE41ad9010ED7ae4a7bBc42b55665151dcc8DEf4dE41ad9010ED7ae4a7bBc42b55665151dcc8DEf4dcc8DEf4"/>
-        </RelativeLayout>
-
-        <ListView
-            android:id="@+id/lv_vote"
-            style="@style/List_common_style"
-            android:layout_marginLeft="12dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="12dp"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:dividerHeight="10dp"
-            android:overScrollMode="never"
-            tools:listitem="@layout/item_vote_detail_list"/>
-
-    </LinearLayout>
+    <ListView
+        android:id="@+id/list_vote_detail"
+        style="@style/List_common_style"
+        android:divider="@drawable/divider_vote_list"
+        android:dividerHeight="1dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_node_name"
+        tools:listitem="@layout/item_vote_detail_list" />
 
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>
+
+
+

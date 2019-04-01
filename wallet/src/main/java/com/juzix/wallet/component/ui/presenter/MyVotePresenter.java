@@ -1,199 +1,251 @@
 package com.juzix.wallet.component.ui.presenter;
 
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.text.TextUtils;
+import android.util.Log;
 
-import com.juzix.wallet.App;
+import com.juzhen.framework.network.ApiErrorCode;
+import com.juzhen.framework.network.ApiResponse;
+import com.juzhen.framework.util.MapUtils;
+import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
-import com.juzix.wallet.app.Constants;
+import com.juzix.wallet.app.CustomThrowable;
+import com.juzix.wallet.app.FlowableSchedulersTransformer;
+import com.juzix.wallet.app.LoadingTransformer;
+import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.MyVoteContract;
-import com.juzix.wallet.component.ui.view.VoteActivity;
-import com.juzix.wallet.component.ui.view.VoteDetailActivity;
-import com.juzix.wallet.db.entity.RegionInfoEntity;
-import com.juzix.wallet.db.entity.SingleVoteInfoEntity;
-import com.juzix.wallet.db.entity.TicketInfoEntity;
-import com.juzix.wallet.db.sqlite.RegionInfoDao;
-import com.juzix.wallet.db.sqlite.SingleVoteInfoDao;
+import com.juzix.wallet.component.ui.view.SubmitVoteActivity;
 import com.juzix.wallet.engine.CandidateManager;
 import com.juzix.wallet.engine.IndividualWalletManager;
-import com.juzix.wallet.engine.TicketManager;
+import com.juzix.wallet.engine.VoteManager;
+import com.juzix.wallet.entity.BatchVoteSummaryEntity;
+import com.juzix.wallet.entity.BatchVoteTransactionEntity;
 import com.juzix.wallet.entity.CandidateEntity;
 import com.juzix.wallet.entity.IndividualWalletEntity;
-import com.juzix.wallet.entity.TicketEntity;
+import com.juzix.wallet.entity.VoteSummaryEntity;
 import com.juzix.wallet.utils.BigDecimalUtil;
-import com.juzix.wallet.utils.LanguageUtil;
+
+import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscriber;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.Callable;
+
+import io.reactivex.Flowable;
+import io.reactivex.Single;
+import io.reactivex.SingleObserver;
+import io.reactivex.SingleSource;
+import io.reactivex.functions.BiConsumer;
+import io.reactivex.functions.BiFunction;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
+import retrofit2.Response;
 
 /**
  * @author matrixelement
  */
 public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implements MyVoteContract.Presenter {
 
-    private double                      mVoteStaked;
-    private long                        mValidVotes;
-    private long                        mInvalidVotes;
-    private double                      mProfit;
-    private List<MyVoteContract.Entity> mEntities;
-    private boolean                     mIsEnglish;
-    private static final String         SPERATOR = ":";
+    private final static String TAG = MyVotePresenter.class.getSimpleName();
+    private final static String TAG_LOCKED = "tag_locked";
+    private final static String TAG_EARNINGS = "tag_earnings";
+    private final static String TAG_INVALIDNUM = "tag_inValidNum";
+    private final static String TAG_VALIDNUM = "tag_validNum";
 
     public MyVotePresenter(MyVoteContract.View view) {
         super(view);
     }
 
     @Override
-    public void start() {
-        showLoadingDialog();
+    public void loadData() {
+
+        List<String> walletAddressList = IndividualWalletManager.getInstance().getAddressList();
+
+        getBatchVoteSummary(walletAddressList.toArray(new String[walletAddressList.size()]));
+
+        getBatchVoteTransaction(walletAddressList.toArray(new String[walletAddressList.size()]));
+
     }
 
     @Override
-    public void refresh() {
-        mVoteStaked = 0;
-        mValidVotes = 0;
-        mInvalidVotes = 0;
-        mProfit = 0;
-        mEntities = new ArrayList<>();
-        Locale  locale    = LanguageUtil.getLocale(App.getContext());
-        if (Locale.CHINESE.getLanguage().equals(locale.getLanguage())) {
-            mIsEnglish = false;
-        }else {
-            mIsEnglish = true;
-        }
-        new Thread() {
-            @Override
-            public void run() {
-                Map<String, MyVoteContract.Entity> entityMap                        = new HashMap<>();
-                List<TicketInfoEntity>             ticketInfoEntityAllList          = new ArrayList<>();
-                StringBuilder                      builder                          = new StringBuilder();
-                List<SingleVoteInfoEntity>         singleVoteInfoEntityAllList = SingleVoteInfoDao.getInstance().getTransactionList();
-                for (SingleVoteInfoEntity voteInfoEntity : singleVoteInfoEntityAllList) {
-                    String transactionId = voteInfoEntity.getTransactionId();
-                    String  candidateId = voteInfoEntity.getCandidateId();
-                    if (!entityMap.containsKey(candidateId)) {
-                        MyVoteContract.Entity entity = new MyVoteContract.Entity();
-                        entity.avatar = voteInfoEntity.getAvatar();
-                        entity.candidateName = voteInfoEntity.getCandidateName();
-                        entity.candidateId = candidateId;
-                        RegionInfoEntity regionInfoEntity = RegionInfoDao.getInstance().getRegionInfoWithIp(voteInfoEntity.getHost());
-                        if (regionInfoEntity != null && !TextUtils.isEmpty(regionInfoEntity.getCountryEn())){
-                            entity.region = mIsEnglish ? regionInfoEntity.getCountryEn() : regionInfoEntity.getCountryZh();
-                        }else {
-                            entity.region = App.getContext().getString(mIsEnglish ? R.string.unknownRegionEn : R.string.unknownRegion);
+    public void voteTicket(String candidateId) {
+
+        if (isViewAttached()) {
+
+            Flowable.just(IndividualWalletManager.getInstance().getWalletList())
+                    .filter(new Predicate<ArrayList<IndividualWalletEntity>>() {
+                        @Override
+                        public boolean test(ArrayList<IndividualWalletEntity> individualWalletEntities) throws Exception {
+                            return !individualWalletEntities.isEmpty();
                         }
-                        entityMap.put(candidateId, entity);
-                    }
-                    ticketInfoEntityAllList.addAll(voteInfoEntity.getTicketInfoEntityArrayList());
-                    builder.append(transactionId).append(SPERATOR);
-                }
-                Map<String, TicketEntity> ticketEntityMap = TicketManager.getInstance().getTicketBatchDetail(builder.toString());
-                for (TicketInfoEntity ticketInfoEntity : ticketInfoEntityAllList){
-                    TicketEntity          ticketEntity = ticketEntityMap.get(ticketInfoEntity.getTicketId());
-                    MyVoteContract.Entity entity       = entityMap.get(ticketInfoEntity.getCandidateId());
-                    if (ticketEntity == null || entity == null){
-                        continue;
-                    }
-                    long validVotes = 0;
-                    long invalidVotes = 0;
-                    switch (ticketEntity.getState()) {
-                        case TicketEntity.NORMAL:
-                            validVotes ++;
-                            break;
-                        default:
-                            invalidVotes ++;
-                    }
+                    })
+                    .switchIfEmpty(new Flowable<ArrayList<IndividualWalletEntity>>() {
+                        @Override
+                        protected void subscribeActual(Subscriber<? super ArrayList<IndividualWalletEntity>> s) {
+                            s.onError(new CustomThrowable(CustomThrowable.CODE_ERROR_NOT_EXIST_VALID_WALLET));
+                        }
+                    })
+                    .flatMap(new Function<ArrayList<IndividualWalletEntity>, Publisher<IndividualWalletEntity>>() {
+                        @Override
+                        public Publisher<IndividualWalletEntity> apply(ArrayList<IndividualWalletEntity> individualWalletEntities) throws Exception {
+                            return Flowable.fromIterable(individualWalletEntities);
+                        }
+                    })
+                    .map(new Function<IndividualWalletEntity, Double>() {
+                        @Override
+                        public Double apply(IndividualWalletEntity individualWalletEntity) throws Exception {
+                            return individualWalletEntity.getBalance();
+                        }
+                    })
+                    .reduce(new BiFunction<Double, Double, Double>() {
+                        @Override
+                        public Double apply(Double aDouble, Double aDouble2) throws Exception {
+                            return BigDecimalUtil.add(aDouble, aDouble2);
+                        }
+                    })
+                    .filter(new Predicate<Double>() {
+                        @Override
+                        public boolean test(Double totalBalance) throws Exception {
+                            return totalBalance > 0;
+                        }
+                    })
+                    .switchIfEmpty(new Single<Double>() {
+                        @Override
+                        protected void subscribeActual(SingleObserver<? super Double> observer) {
+                            observer.onError(new CustomThrowable(CustomThrowable.CODE_ERROR_VOTE_TICKET_INSUFFICIENT_BALANCE));
+                        }
+                    })
+                    .flatMap(new Function<Double, SingleSource<CandidateEntity>>() {
+                        @Override
+                        public SingleSource<CandidateEntity> apply(Double aDouble) throws Exception {
+                            return CandidateManager
+                                    .getInstance()
+                                    .getCandidateDetail(candidateId);
+                        }
+                    })
+                    .compose(new SchedulersTransformer())
+                    .compose(bindToLifecycle())
+                    .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
+                    .subscribe(new Consumer<CandidateEntity>() {
+                        @Override
+                        public void accept(CandidateEntity candidateEntity) throws Exception {
+                            if (isViewAttached()) {
+                                SubmitVoteActivity.actionStart(currentActivity(), candidateEntity);
+                            }
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) throws Exception {
+                            if (throwable instanceof CustomThrowable) {
+                                showLongToast(((CustomThrowable) throwable).getDetailMsgRes());
+                            }
+                        }
+                    });
 
-//                    long ticketPrice = Long.parseLong(ticketEntity.getDeposit());
-                    double ticketPrice = BigDecimalUtil.div(ticketEntity.getDeposit(), "1E18");
-                    entity.validVotes += validVotes;
-                    entity.invalidVotes += invalidVotes;
-                    entity.voteStaked += validVotes * ticketPrice;
-                    entity.profit = 0;
-
-                    mValidVotes += validVotes;
-                    mInvalidVotes += invalidVotes;
-                    mVoteStaked += validVotes * ticketPrice;
-                    mProfit += entity.profit;
-                }
-                for (String candidateId : entityMap.keySet()){
-                    mEntities.add(entityMap.get(candidateId));
-                }
-                mHandler.sendEmptyMessage(MSG_SUCCESS);
-            }
-        }.start();
-    }
-
-
-    @Override
-    public void enterVoteDetailActivity(MyVoteContract.Entity entity) {
-        VoteDetailActivity.actionStart(currentActivity(), entity.candidateId, entity.candidateName, entity.avatar);
-    }
-
-    @Override
-    public void enterVoteActivity(MyVoteContract.Entity entity) {
-        showLoadingDialog();
-        new Thread(){
-            @Override
-            public void run() {
-                Bundle data = new Bundle();
-                data.putParcelable(Constants.Extra.EXTRA_CANDIDATE, CandidateManager.getInstance().getCandidateDetail(entity.candidateId));
-                Message msg = mHandler.obtainMessage();
-                msg.what = MSG_VOTE;
-                msg.setData(data);
-                mHandler.sendMessage(msg);
-            }
-        }.start();
-    }
-
-    private void voteTicket(CandidateEntity candidateEntity){
-        ArrayList<IndividualWalletEntity> walletEntityList = IndividualWalletManager.getInstance().getWalletList();
-        if (walletEntityList.isEmpty()){
-            showLongToast(R.string.voteTicketCreateWalletTips);
-            return;
         }
-        double totalBalance = 0.0D;
-        for (IndividualWalletEntity walletEntity : walletEntityList) {
-            totalBalance = BigDecimalUtil.add(totalBalance, walletEntity.getBalance());
-        }
-        if (totalBalance <= 0){
-            showLongToast(R.string.voteTicketInsufficientBalanceTips);
-            return;
-        }
-        VoteActivity.actionStart(currentActivity(), candidateEntity);
+
+
     }
 
-    private static final int MSG_SUCCESS = 0;
-    private static final int MSG_VOTE = 1;
+    private void getBatchVoteSummary(String[] addressList) {
 
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case MSG_SUCCESS:
-                    if (isViewAttached()){
-                        dismissLoadingDialogImmediately();
-                        getView().showTicketInfo(mVoteStaked, mValidVotes, mInvalidVotes, mProfit);
-                        getView().updateTickets(mEntities);
-                    }
-                    break;
-                case MSG_VOTE:
-                    if (isViewAttached()){
-                        dismissLoadingDialogImmediately();
-                        CandidateEntity candidateEntity = msg.getData().getParcelable(Constants.Extra.EXTRA_CANDIDATE);
-                        if (candidateEntity != null) {
-                            voteTicket(candidateEntity);
+        VoteManager.getInstance()
+                .getBatchVoteSummary(addressList)
+                .map(new Function<Response<ApiResponse<List<BatchVoteSummaryEntity>>>, List<BatchVoteSummaryEntity>>() {
+                    @Override
+                    public List<BatchVoteSummaryEntity> apply(Response<ApiResponse<List<BatchVoteSummaryEntity>>> apiResponseResponse) throws Exception {
+                        if (apiResponseResponse.isSuccessful() && apiResponseResponse.body().getResult() == ApiErrorCode.SUCCESS) {
+                            return apiResponseResponse.body().getData();
+                        } else {
+                            return new ArrayList<>();
                         }
                     }
-                    break;
-            }
+                })
+                .filter(new Predicate<List<BatchVoteSummaryEntity>>() {
+                    @Override
+                    public boolean test(List<BatchVoteSummaryEntity> batchVoteSummaryEntities) throws Exception {
+                        return !batchVoteSummaryEntities.isEmpty();
+                    }
+                })
+                .toFlowable()
+                .flatMap(new Function<List<BatchVoteSummaryEntity>, Publisher<BatchVoteSummaryEntity>>() {
+                    @Override
+                    public Publisher<BatchVoteSummaryEntity> apply(List<BatchVoteSummaryEntity> batchVoteSummaryEntities) throws Exception {
+                        return Flowable.fromIterable(batchVoteSummaryEntities);
+                    }
+                })
+                .collect(new Callable<Map<String, Object>>() {
+                    @Override
+                    public Map<String, Object> call() throws Exception {
+                        return new HashMap<>();
+                    }
+                }, new BiConsumer<Map<String, Object>, BatchVoteSummaryEntity>() {
+                    @Override
+                    public void accept(Map<String, Object> stringLongMap, BatchVoteSummaryEntity batchVoteSummaryEntity) throws Exception {
+                        long invalidNum = NumberParserUtils.parseLong(batchVoteSummaryEntity.getTotalTicketNum()) - NumberParserUtils.parseLong(batchVoteSummaryEntity.getValidNum());
+                        stringLongMap.put(TAG_LOCKED, NumberParserUtils.parseLong(batchVoteSummaryEntity.getLocked(), MapUtils.getLong(stringLongMap, TAG_LOCKED)));
+                        stringLongMap.put(TAG_EARNINGS, NumberParserUtils.parseLong(batchVoteSummaryEntity.getEarnings()) + MapUtils.getLong(stringLongMap, TAG_EARNINGS));
+                        stringLongMap.put(TAG_INVALIDNUM, invalidNum + MapUtils.getLong(stringLongMap, TAG_INVALIDNUM));
+                        stringLongMap.put(TAG_VALIDNUM, NumberParserUtils.parseLong(batchVoteSummaryEntity.getValidNum()) + MapUtils.getLong(stringLongMap, TAG_VALIDNUM));
+                    }
+                })
+                .map(new Function<Map<String, Object>, List<VoteSummaryEntity>>() {
+                    @Override
+                    public List<VoteSummaryEntity> apply(Map<String, Object> map) throws Exception {
+                        return buildVoteSummaryList(map);
+                    }
+                })
+                .compose(new SchedulersTransformer())
+                .compose(bindToLifecycle())
+                .subscribe(new Consumer<List<VoteSummaryEntity>>() {
+                    @Override
+                    public void accept(List<VoteSummaryEntity> voteSummaryEntityList) throws Exception {
+                        if (isViewAttached()) {
+                            getView().showBatchVoteSummary(voteSummaryEntityList);
+                        }
+                    }
+                });
+
+    }
+
+    private void getBatchVoteTransaction(String[] addressList) {
+        VoteManager.getInstance()
+                .getBatchVoteTransaction(addressList)
+                .toFlowable()
+                .compose(new FlowableSchedulersTransformer())
+                .compose(bindToLifecycle())
+                .compose(LoadingTransformer.bindToFlowableLifecycle(currentActivity()))
+                .subscribe(new Consumer<List<BatchVoteTransactionEntity>>() {
+                    @Override
+                    public void accept(List<BatchVoteTransactionEntity> batchVoteTransactionEntityList) throws Exception {
+                        if (isViewAttached()) {
+                            getView().showBatchVoteTransactionList(batchVoteTransactionEntityList);
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Log.e(TAG, throwable.getMessage());
+                    }
+                });
+    }
+
+    private List<VoteSummaryEntity> buildVoteSummaryList(Map<String, Object> map) {
+        List<VoteSummaryEntity> voteSummaryEntityList = new ArrayList<>();
+        if (map != null && !map.isEmpty()) {
+            long locked = MapUtils.getLong(map, TAG_LOCKED);
+            long earnings = MapUtils.getLong(map, TAG_EARNINGS);
+            long invalidNum = MapUtils.getLong(map, TAG_INVALIDNUM);
+            long validNum = MapUtils.getLong(map, TAG_VALIDNUM);
+
+            voteSummaryEntityList.add(new VoteSummaryEntity(String.format("%s%s", string(R.string.lockVote), "(Energon)"), String.valueOf(locked)));
+            voteSummaryEntityList.add(new VoteSummaryEntity(String.format("%s%s", string(R.string.votingIncome), "(Energon)"), String.valueOf(earnings)));
+            voteSummaryEntityList.add(new VoteSummaryEntity(String.format("%s", string(R.string.validInvalidTicket)), String.format("%d/%d", validNum, invalidNum)));
         }
-    };
+
+        return voteSummaryEntityList;
+    }
 }

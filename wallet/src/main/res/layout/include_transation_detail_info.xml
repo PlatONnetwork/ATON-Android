@@ -9,13 +9,13 @@
 
     <TextView
         android:id="@+id/tv_transaction_type_title"
-        style="@style/Text.c5cdbc.12"
+        style="@style/Text.61646e.14"
         android:layout_height="18dp"
         android:text="@string/type" />
 
     <TextView
         android:id="@+id/tv_transaction_time_title"
-        style="@style/Text.c5cdbc.12"
+        style="@style/Text.61646e.14"
         android:layout_height="18dp"
         android:layout_marginTop="8dp"
         android:text="@string/time"
@@ -23,7 +23,7 @@
 
     <TextView
         android:id="@+id/tv_transaction_amount_title"
-        style="@style/Text.c5cdbc.12"
+        style="@style/Text.61646e.14"
         android:layout_height="18dp"
         android:layout_marginTop="8dp"
         android:text="@string/value"
@@ -31,7 +31,7 @@
 
     <TextView
         android:id="@+id/tv_transaction_energon_title"
-        style="@style/Text.c5cdbc.12"
+        style="@style/Text.61646e.14"
         android:layout_height="18dp"
         android:layout_marginTop="8dp"
         android:text="@string/energon_price"
@@ -39,7 +39,8 @@
 
     <TextView
         android:id="@+id/tv_transaction_wallet_name_title"
-        style="@style/Text.c5cdbc.12"
+        android:visibility="gone"
+        style="@style/Text.61646e.14"
         android:layout_height="18dp"
         android:layout_marginTop="6dp"
         android:text="@string/wallet"
@@ -54,7 +55,7 @@
 
     <TextView
         android:id="@+id/tv_transaction_type"
-        style="@style/Text.fff.13"
+        style="@style/Text.000.14"
         android:layout_width="0dp"
         android:layout_height="18dp"
         android:gravity="center_vertical|right"
@@ -64,7 +65,7 @@
 
     <TextView
         android:id="@+id/tv_transaction_time"
-        style="@style/Text.fff.13"
+        style="@style/Text.000.14"
         android:layout_width="0dp"
         android:layout_height="18dp"
         android:layout_marginTop="8dp"
@@ -76,7 +77,7 @@
 
     <TextView
         android:id="@+id/tv_transaction_amount"
-        style="@style/Text.fff.13"
+        style="@style/Text.000.14"
         android:layout_width="0dp"
         android:layout_height="18dp"
         android:layout_marginTop="8dp"
@@ -88,7 +89,7 @@
 
     <TextView
         android:id="@+id/tv_transaction_energon"
-        style="@style/Text.fff.13"
+        style="@style/Text.000.14"
         android:layout_width="0dp"
         android:layout_height="18dp"
         android:layout_marginTop="8dp"
@@ -100,7 +101,8 @@
 
     <TextView
         android:id="@+id/tv_transaction_wallet_name"
-        style="@style/Text.fff.13"
+        android:visibility="gone"
+        style="@style/Text.000.14"
         android:layout_width="0dp"
         android:layout_height="18dp"
         android:layout_marginTop="6dp"

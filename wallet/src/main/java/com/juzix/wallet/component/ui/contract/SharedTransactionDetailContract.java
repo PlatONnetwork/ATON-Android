@@ -5,7 +5,7 @@ import com.juzix.wallet.component.ui.base.IView;
 import com.juzix.wallet.entity.SharedTransactionEntity;
 import com.juzix.wallet.entity.TransactionResult;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author matrixelement
@@ -20,7 +20,7 @@ public class SharedTransactionDetailContract {
 
         void setTransactionDetailInfo(SharedTransactionEntity transactionEntity, String queryAddress);
 
-        void showTransactionResult(ArrayList<TransactionResult> transactionResultList);
+        void showTransactionResult(List<TransactionResult> transactionResultList);
 
         void showHash(String hash);
 

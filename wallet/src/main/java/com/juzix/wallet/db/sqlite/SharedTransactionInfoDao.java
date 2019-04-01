@@ -128,6 +128,22 @@ public class SharedTransactionInfoDao {
         return list;
     }
 
+    public SharedTransactionInfoEntity getTransactionByTransactionId(String transactionId) {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            SharedTransactionInfoEntity sharedTransactionInfoEntity = realm.where(SharedTransactionInfoEntity.class).equalTo("transactionId", transactionId).findFirst();
+            return realm.copyFromRealm(sharedTransactionInfoEntity);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return null;
+    }
+
     public boolean updateReadWithContractAddress(String contractAddress, boolean read) {
         Realm realm = null;
         try {

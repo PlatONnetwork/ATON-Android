@@ -3,26 +3,22 @@ package com.juzix.wallet.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-
 public class TransactionResult extends AddressEntity implements Parcelable {
-    public static final int OPERATION_UNDETERMINED = 0;
-    public static final int OPERATION_APPROVAL     = 1;
-    public static final int OPERATION_REVOKE       = 2;
-    public static final int OPERATION_SIGNING      = 3;
-    private             int operation;
 
-    private TransactionResult(Builder builder) {
-        setUuid(builder.uuid);
-        setAddress(builder.address);
-        setName(builder.name);
-        setOperation(builder.operation);
+    private Status status = Status.OPERATION_UNDETERMINED;
+
+    public TransactionResult(String uuid, String name, String address, Status status) {
+        setUuid(uuid);
+        setName(name);
+        setAddress(address);
+        setStatus(status);
     }
 
     protected TransactionResult(Parcel in) {
         setUuid(in.readString());
         setAddress(in.readString());
         setName(in.readString());
-        setOperation(in.readInt());
+        setStatus(in.readParcelable(Status.class.getClassLoader()));
     }
 
     @Override
@@ -30,7 +26,7 @@ public class TransactionResult extends AddressEntity implements Parcelable {
         dest.writeString(getUuid());
         dest.writeString(getAddress());
         dest.writeString(getName());
-        dest.writeInt(getOperation());
+        dest.writeParcelable(getStatus(), flags);
     }
 
     @Override
@@ -50,46 +46,39 @@ public class TransactionResult extends AddressEntity implements Parcelable {
         }
     };
 
-    public int getOperation() {
-        return operation;
+    public Status getStatus() {
+        return status;
     }
 
-    public void setOperation(int operation) {
-        this.operation = operation;
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
+    public enum Status implements Parcelable {
 
-    public static final class Builder {
-        private String uuid;
-        private String address;
-        private String name;
-        private int    operation;
+        OPERATION_UNDETERMINED, OPERATION_APPROVAL, OPERATION_REVOKE, OPERATION_SIGNING;
 
-        public Builder() {
+        public static final Creator<Status> CREATOR = new Creator<Status>() {
+            @Override
+            public Status createFromParcel(Parcel in) {
+                return Status.values()[in.readInt()];
+            }
+
+            @Override
+            public Status[] newArray(int size) {
+                return new Status[size];
+            }
+        };
+
+        @Override
+        public int describeContents() {
+            return 0;
         }
 
-        public Builder uuid(String val) {
-            uuid = val;
-            return this;
-        }
-
-        public Builder address(String val) {
-            address = val;
-            return this;
-        }
-
-        public Builder name(String val) {
-            name = val;
-            return this;
-        }
-
-        public Builder operation(int val) {
-            operation = val;
-            return this;
-        }
-
-        public TransactionResult build() {
-            return new TransactionResult(this);
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(ordinal());
         }
     }
+
 }

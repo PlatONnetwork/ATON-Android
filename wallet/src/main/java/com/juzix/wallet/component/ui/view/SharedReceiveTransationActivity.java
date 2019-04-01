@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -48,6 +47,8 @@ import kotlin.Unit;
  */
 public class SharedReceiveTransationActivity extends MVPBaseActivity<SharedReceiveTransationPresenter> implements SharedReceiveTransationContract.View {
 
+    @BindView(R.id.commonTitleBar)
+    CommonTitleBar commonTitleBar;
     @BindView(R.id.tv_wallet_name_title)
     TextView tvWalletNameTitle;
     @BindView(R.id.iv_wallet_address_qr_code)
@@ -94,10 +95,6 @@ public class SharedReceiveTransationActivity extends MVPBaseActivity<SharedRecei
     }
 
     private void initView() {
-
-        CommonTitleBar commonTitleBar = new CommonTitleBar(this).setLeftDrawable(R.drawable.icon_back_black).setMiddleTitle(string(R.string.action_receive_transation)).setRightDrawable(ContextCompat.getDrawable(this, R.drawable.icon_share));
-
-        commonTitleBar.build();
 
         ImageView ivRight = commonTitleBar.findViewById(R.id.iv_right);
 
@@ -166,7 +163,7 @@ public class SharedReceiveTransationActivity extends MVPBaseActivity<SharedRecei
 //        tvPublicKey.setText(walletInfo.getPrefixAddress());
 //        tvWalletAddress.setText(walletInfo.getPrefixAddress());
         tvWalletNameTitle.setText(walletInfo.getName());
-        tvWalletAddress.setText(walletInfo.getPrefixContractAddress());
+        tvWalletAddress.setText(walletInfo.getPrefixAddress());
         shareWalletAvatar.setImageResource(RUtils.drawable(walletInfo.getAvatar()));
     }
 

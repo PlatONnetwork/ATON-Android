@@ -1,11 +1,12 @@
 package com.juzix.wallet.component.ui.base;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
-import com.juzix.wallet.component.ui.IContext;
 import com.juzix.wallet.config.PermissionConfigure;
 import com.trello.rxlifecycle2.LifecycleProvider;
 import com.trello.rxlifecycle2.LifecycleTransformer;
+import com.trello.rxlifecycle2.android.FragmentEvent;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -15,7 +16,7 @@ import java.lang.ref.WeakReference;
  * @date 2017/12/25
  */
 
-public class BasePresenter<T extends IView> implements IPresenter<T>, IContext {
+public class BasePresenter<T extends IView> implements IPresenter<T> {
 
     private Reference<T> mViewReference;
 
@@ -54,6 +55,14 @@ public class BasePresenter<T extends IView> implements IPresenter<T>, IContext {
         }
     }
 
+    public final <T> LifecycleTransformer<T> bindUntilEvent(@NonNull FragmentEvent event) {
+        if (getView() instanceof BaseFragment) {
+            return ((BaseFragment) getView()).bindUntilEvent(FragmentEvent.STOP);
+        } else {
+            return bindToLifecycle();
+        }
+    }
+
     @Override
     public Boolean isViewAttached() {
         return mViewReference != null && mViewReference.get() != null;
@@ -67,68 +76,55 @@ public class BasePresenter<T extends IView> implements IPresenter<T>, IContext {
         }
     }
 
-    @Override
-    public Context getContext() {
+    protected Context getContext() {
         return getView().getContext();
     }
 
-    @Override
-    public BaseActivity currentActivity() {
+    protected BaseActivity currentActivity() {
         return getView().currentActivity();
     }
 
-    @Override
-    public String string(int resId, Object... formatArgs) {
+    protected String string(int resId, Object... formatArgs) {
         return getView().string(resId, formatArgs);
     }
 
-    @Override
-    public void showShortToast(String text) {
+    protected void showShortToast(String text) {
         getView().showShortToast(text);
     }
 
-    @Override
-    public void showLongToast(String text) {
+    protected void showLongToast(String text) {
         getView().showLongToast(text);
     }
 
-    @Override
-    public void showShortToast(int resId) {
+    protected void showShortToast(int resId) {
         getView().showShortToast(resId);
     }
 
-    @Override
-    public void showLongToast(int resId) {
+    protected void showLongToast(int resId) {
         getView().showLongToast(resId);
     }
 
-    @Override
-    public void dismissLoadingDialogImmediately() {
+    protected void dismissLoadingDialogImmediately() {
         getView().dismissLoadingDialogImmediately();
     }
 
-    @Override
-    public void showLoadingDialog() {
+    protected void showLoadingDialog() {
         getView().showLoadingDialog();
     }
 
-    @Override
-    public void showLoadingDialog(int resId) {
+    protected void showLoadingDialog(int resId) {
         getView().showLoadingDialog(resId);
     }
 
-    @Override
-    public void showLoadingDialog(String text) {
-        getView().showLoadingDialog(text);
+    protected void showLoadingDialog(String text) {
+        getView().showLoadingDialog(text, false);
     }
 
-    @Override
-    public void showLoadingDialogWithCancelable(String text) {
+    protected void showLoadingDialogWithCancelable(String text) {
         getView().showLoadingDialogWithCancelable(text);
     }
 
-    @Override
-    public void requestPermission(BaseActivity activity, int what, PermissionConfigure.PermissionCallback callback, String... permissions) {
+    protected void requestPermission(BaseActivity activity, int what, PermissionConfigure.PermissionCallback callback, String... permissions) {
         getView().requestPermission(activity, what, callback, permissions);
     }
 }

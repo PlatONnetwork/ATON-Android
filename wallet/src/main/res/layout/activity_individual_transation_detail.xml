@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:ctb_left_drawable="@drawable/icon_back_black"
-        app:ctb_middle_text="@string/transaction_detail" />
+        app:ctb_title="@string/transaction_detail" />
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -22,7 +22,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/color_1b2137"
             android:orientation="vertical"
             android:paddingBottom="19dp"
             android:paddingLeft="15dp"
@@ -31,7 +30,7 @@
 
             <TextView
                 android:id="@+id/tv_transaction_status"
-                style="@style/Text.fff.14"
+                style="@style/Text.000000.18"
                 android:layout_gravity="center_horizontal"
                 android:drawablePadding="10dp"
                 android:drawableTop="@drawable/icon_successed"
@@ -41,20 +40,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:background="@drawable/bg_wallet_address_qr_code"
                 android:divider="@drawable/bg_transation_detail_divider"
                 android:orientation="vertical"
                 android:paddingRight="12dp"
                 android:paddingLeft="12dp"
                 android:paddingBottom="17dp"
-                android:showDividers="middle">
+                android:showDividers="beginning|middle">
 
                 <include layout="@layout/include_transationer_info" />
 
                 <include layout="@layout/include_transation_detail_info" />
 
             </LinearLayout>
-
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
