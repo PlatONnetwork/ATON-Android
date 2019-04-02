@@ -30,7 +30,7 @@ public class ManageSharedWalletPresenter extends BasePresenter<ManageSharedWalle
     public ManageSharedWalletPresenter(ManageSharedWalletContract.View view) {
         super(view);
         mWalletEntity = view.getWalletEntityFromIntent();
-        mIndividualWalletEntity = IndividualWalletManager.getInstance().getWalletByAddress(mWalletEntity.getAddress());
+        mIndividualWalletEntity = IndividualWalletManager.getInstance().getWalletByAddress(mWalletEntity.getCreatorAddress());
     }
 
     @Override
@@ -39,7 +39,7 @@ public class ManageSharedWalletPresenter extends BasePresenter<ManageSharedWalle
             OwnerEntity firstOwner = null;
             List<OwnerEntity> owner = mWalletEntity.getOwner();
             for (OwnerEntity entity : owner){
-                if (mWalletEntity.getPrefixAddress().contains(entity.getAddress())){
+                if (mWalletEntity.getPrefixCreatorAddress().contains(entity.getAddress())){
                     if (owner.remove(entity)){
                         firstOwner = entity;
                     }

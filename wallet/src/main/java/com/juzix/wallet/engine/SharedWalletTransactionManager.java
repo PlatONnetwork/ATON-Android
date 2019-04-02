@@ -635,7 +635,7 @@ public class SharedWalletTransactionManager {
                                 .transactionId(transactionId)
                                 .walletName(sharedWalletEntity.getName())
                                 .read(true)
-                                .ownerWalletAddress(sharedWalletEntity.getAddress())
+                                .ownerWalletAddress(sharedWalletEntity.getCreatorAddress())
                                 .contractAddress(sharedWalletEntity.getPrefixAddress())
                                 .energonPrice(getGasUsed(gasUsed))
                                 .build();
@@ -998,7 +998,7 @@ public class SharedWalletTransactionManager {
         return Flowable.fromCallable(new Callable<String>() {
             @Override
             public String call() throws Exception {
-                return getTransactionList(sharedWalletEntity.getPrefixAddress(), sharedWalletEntity.getPrefixAddress());
+                return getTransactionList(sharedWalletEntity.getPrefixAddress(), sharedWalletEntity.getPrefixCreatorAddress());
             }
         }).filter(new Predicate<String>() {
             @Override
@@ -1033,12 +1033,12 @@ public class SharedWalletTransactionManager {
         }).map(new Function<String[], SharedTransactionEntity>() {
             @Override
             public SharedTransactionEntity apply(String[] contents) throws Exception {
-                return parseSharedTransaction(contents, sharedWalletEntity.getPrefixAddress(), sharedWalletEntity.getPrefixAddress());
+                return parseSharedTransaction(contents, sharedWalletEntity.getPrefixAddress(), sharedWalletEntity.getPrefixCreatorAddress());
             }
         }).map(new Function<SharedTransactionEntity, SharedTransactionEntity>() {
             @Override
             public SharedTransactionEntity apply(SharedTransactionEntity transactionEntity) throws Exception {
-                String multiSigList = getMultiSigList(sharedWalletEntity.getPrefixAddress(), sharedWalletEntity.getPrefixAddress(), transactionEntity.getTransactionId());
+                String multiSigList = getMultiSigList(sharedWalletEntity.getPrefixAddress(), sharedWalletEntity.getPrefixCreatorAddress(), transactionEntity.getTransactionId());
                 transactionEntity.setLatestBlockNumber(Web3jManager.getInstance().getLatestBlockNumber());
                 transactionEntity.setOwnerEntityList(sharedWalletEntity.getOwner());
                 transactionEntity.setRequiredSignNumber(sharedWalletEntity.getRequiredSignNumber());
