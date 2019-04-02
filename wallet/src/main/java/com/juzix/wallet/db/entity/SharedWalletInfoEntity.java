@@ -12,23 +12,23 @@ import io.realm.annotations.PrimaryKey;
 public class SharedWalletInfoEntity extends RealmObject {
     //唯一识别码
     @PrimaryKey
-    private String uuid;
+    private String                     uuid;
     /**
      * 钱包名称
      */
-    private String name;
+    private String                     name;
     /**
-     * 关联的普通钱地址
+     * 创建者地址
      */
-    private String walletAddress;
+    private String                     creatorAddress;
     /**
      * 合约地址
      */
-    private String contractAddress;
+    private String                     address;
     /**
      * 创建时间
      */
-    private long createTime;
+    private long                       createTime;
     /**
      * 共享钱包所有人
      */
@@ -36,15 +36,15 @@ public class SharedWalletInfoEntity extends RealmObject {
     /**
      * 更新时间
      */
-    private long updateTime;
+    private long                       updateTime;
     /**
      * 所需签名数
      */
-    private int requiredSignNumber;
+    private int                        requiredSignNumber;
     /**
      * 钱包头图
      */
-    private String avatar;
+    private String                     avatar;
 
     public SharedWalletInfoEntity() {
     }
@@ -52,8 +52,8 @@ public class SharedWalletInfoEntity extends RealmObject {
     private SharedWalletInfoEntity(Builder builder) {
         setUuid(builder.uuid);
         setName(builder.name);
-        setWalletAddress(builder.walletAddress);
-        setContractAddress(builder.contractAddress);
+        setCreatorAddress(builder.creatorAddress);
+        setAddress(builder.address);
         setCreateTime(builder.createTime);
         setUpdateTime(builder.updateTime);
         setOwnerArrayList(builder.owner);
@@ -78,20 +78,20 @@ public class SharedWalletInfoEntity extends RealmObject {
         this.name = name;
     }
 
-    public String getWalletAddress() {
-        return walletAddress;
+    public String getCreatorAddress() {
+        return creatorAddress;
     }
 
-    public void setWalletAddress(String walletAddress) {
-        this.walletAddress = walletAddress;
+    public void setCreatorAddress(String creatorAddress) {
+        this.creatorAddress = creatorAddress;
     }
 
-    public String getContractAddress() {
-        return contractAddress;
+    public String getAddress() {
+        return address;
     }
 
-    public void setContractAddress(String contractAddress) {
-        this.contractAddress = contractAddress;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public long getCreateTime() {
@@ -159,8 +159,8 @@ public class SharedWalletInfoEntity extends RealmObject {
         SharedWalletEntity.Builder builder = new SharedWalletEntity.Builder();
         builder.uuid(uuid);
         builder.name(name);
-        builder.walletAddress(contractAddress);
-        builder.creatorAddress(walletAddress);
+        builder.walletAddress(address);
+        builder.creatorAddress(creatorAddress);
         builder.createTime(createTime);
         builder.updateTime(updateTime);
         builder.owner(buildAddressEntityList());
@@ -183,8 +183,8 @@ public class SharedWalletInfoEntity extends RealmObject {
         return "SharedWalletInfoEntity{" +
                 "uuid='" + uuid + '\'' +
                 ", name='" + name + '\'' +
-                ", walletAddress='" + walletAddress + '\'' +
-                ", contractAddress='" + contractAddress + '\'' +
+                ", creatorAddress='" + creatorAddress + '\'' +
+                ", address='" + address + '\'' +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 ", owner=" + owner +
@@ -194,16 +194,16 @@ public class SharedWalletInfoEntity extends RealmObject {
     }
 
     public static final class Builder {
-        private String uuid;
-        private String name;
-        private String walletAddress;
-        private String contractAddress;
-        private long createTime;
-        private long updateTime;
+        private String                     uuid;
+        private String                     name;
+        private String                     creatorAddress;
+        private String                     address;
+        private long                       createTime;
+        private long                       updateTime;
         private ArrayList<OwnerInfoEntity> owner;
-        private int requiredSignNumber;
-        private String avatar;
-        private String linkWalletAddress;
+        private int                        requiredSignNumber;
+        private String                     avatar;
+        private String                     linkWalletAddress;
 
         public Builder() {
         }
@@ -218,13 +218,13 @@ public class SharedWalletInfoEntity extends RealmObject {
             return this;
         }
 
-        public Builder walletAddress(String val) {
-            walletAddress = val;
+        public Builder creatorAddress(String val) {
+            creatorAddress = val;
             return this;
         }
 
-        public Builder contractAddress(String val) {
-            contractAddress = val;
+        public Builder address(String val) {
+            address = val;
             return this;
         }
 

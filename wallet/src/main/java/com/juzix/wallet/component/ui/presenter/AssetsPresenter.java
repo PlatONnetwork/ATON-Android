@@ -301,6 +301,9 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
                     public void accept(Double balance) throws Exception {
                         if (isViewAttached()){
                             getView().showTotalBalance(mBalance);
+                            if (mSelectedWallet != null) {
+                                getView().showBalance(mSelectedWallet.getBalance());
+                            }
                         }
                     }
                 });

@@ -85,7 +85,7 @@ public class IndividualTransactionInfoDao {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
-            RealmResults<IndividualTransactionInfoEntity> results = realm.where(IndividualTransactionInfoEntity.class).equalTo("walletAddress", walletAddress).findAll();
+            RealmResults<IndividualTransactionInfoEntity> results = realm.where(IndividualTransactionInfoEntity.class).equalTo("creatorAddress", walletAddress).findAll();
             list.addAll(realm.copyFromRealm(results));
         } catch (Exception exp) {
             exp.printStackTrace();

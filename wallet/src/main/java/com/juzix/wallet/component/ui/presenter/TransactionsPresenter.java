@@ -359,7 +359,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
         }
 
         String contractAddress = ((SharedWalletEntity) mWalletEntity).getPrefixAddress();
-//        mDisposable = getTransactionEntityList2(contractAddress)
+//        mDisposable = getTransactionEntityList2(address)
         mDisposable = Single.fromCallable(new Callable<List<TransactionEntity>>() {
             @Override
             public List<TransactionEntity> call() {
