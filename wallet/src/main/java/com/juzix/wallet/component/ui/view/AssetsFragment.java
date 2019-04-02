@@ -23,7 +23,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.juzhen.framework.network.NetState;
 import com.juzhen.framework.util.NumberParserUtils;
@@ -70,9 +69,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
     Unbinder unbinder;
     @BindView(R.id.app_bar_layout)
-    AppBarLayout     appBarLayout;
-    @BindView(R.id.v_tab_line)
-    View   vTabLine;
+    AppBarLayout appBarLayout;
     //    @BindView(R.id.ctl_bar)
 //    CollapsingToolbarLayout ctlBar;
     @BindView(R.id.ll_assets_title)
@@ -228,10 +225,10 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUpdateSharedWalletTransactionEvent(Event.UpdateSharedWalletTransactionEvent event) {
-        mPresenter.fetchWalletList();
-    }
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void onUpdateSharedWalletTransactionEvent(Event.UpdateSharedWalletTransactionEvent event) {
+//        mPresenter.fetchWalletList();
+//    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateCreateJointWalletProgressEvent(Event.UpdateCreateJointWalletProgressEvent event) {
@@ -441,7 +438,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
             }
         });
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener(){
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
                 if (i == 0) {

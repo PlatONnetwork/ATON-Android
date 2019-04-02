@@ -10,12 +10,12 @@ import com.juzhen.framework.network.NetConnectivity;
 import com.juzhen.framework.network.NetState;
 import com.juzhen.framework.network.RequestInfo;
 import com.juzhen.framework.util.RUtils;
-import com.juzix.wallet.component.service.LoopService;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.config.JZAppConfigure;
 import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.SharedWalletManager;
+import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.event.EventPublisher;
 
 import java.util.HashMap;
@@ -66,13 +66,13 @@ public class AppFramework {
         //初始化网络模块
         HttpClient.getInstance().init(context, "http://192.168.9.190:18060/", buildMultipleUrlMap());
         //初始化节点配置
+        //todo,测试
+        Web3jManager.getInstance().init("http://192.168.120.82:6789");
         NodeManager.getInstance().init();
         //初始化普通钱包
         IndividualWalletManager.getInstance().init();
         //初始化共享钱包
         SharedWalletManager.getInstance().init();
-        //启动轮询服务
-        LoopService.startLoopService(context);
     }
 
     private Map<String, Object> buildMultipleUrlMap() {
