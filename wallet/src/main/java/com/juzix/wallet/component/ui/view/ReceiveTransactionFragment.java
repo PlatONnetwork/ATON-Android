@@ -91,10 +91,10 @@ public class ReceiveTransactionFragment extends MVPBaseFragment<ReceiveTransatio
                 });
     }
 
-    @OnClick({R.id.iv_copy})
+    @OnClick({R.id.tv_address})
     public void onClick(View view) {
         switch (view.getId()){
-            case R.id.iv_copy:
+            case R.id.tv_address:
                 mPresenter.copy();
                 break;
         }

@@ -224,7 +224,7 @@ public class SharedWalletTransactionManager {
                                 .hash(receipt.getTransactionHash())
                                 .toAddress(receipt.getContractAddress())
                                 .createTime(System.currentTimeMillis())
-                                .fromAddress(sharedWalletEntity.getAddress())
+                                .fromAddress(sharedWalletEntity.getCreatorAddress())
                                 .contractAddress(receipt.getContractAddress())
                                 .walletName(walletName)
                                 .read(true)
@@ -256,7 +256,7 @@ public class SharedWalletTransactionManager {
                                 .hash(receipt.getTransactionHash())
                                 .toAddress(receipt.getContractAddress())
                                 .createTime(System.currentTimeMillis())
-                                .fromAddress(sharedWalletEntity.getAddress())
+                                .fromAddress(sharedWalletEntity.getCreatorAddress())
                                 .contractAddress(receipt.getContractAddress())
                                 .walletName(walletName)
                                 .read(true)
@@ -645,7 +645,7 @@ public class SharedWalletTransactionManager {
                     @Override
                     public SharedTransactionInfoEntity apply(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
                         sharedTransactionInfoEntity.setUuid(UUID.randomUUID().toString());
-                        sharedTransactionInfoEntity.setFromAddress(sharedWalletEntity.getAddress());
+                        sharedTransactionInfoEntity.setFromAddress(sharedWalletEntity.getCreatorAddress());
                         sharedTransactionInfoEntity.setToAddress(sharedTransactionInfoEntity.getContractAddress());
                         sharedTransactionInfoEntity.setTransactionType(SharedTransactionEntity.TransactionType.EXECUTED_CONTRACT.getValue());
                         sharedTransactionInfoEntity.setCreateTime(time);
@@ -673,7 +673,7 @@ public class SharedWalletTransactionManager {
                     @Override
                     public SharedTransactionInfoEntity apply(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
                         sharedTransactionInfoEntity.setUuid(UUID.randomUUID().toString());
-                        sharedTransactionInfoEntity.setFromAddress(sharedWalletEntity.getAddress());
+                        sharedTransactionInfoEntity.setFromAddress(sharedWalletEntity.getCreatorAddress());
                         sharedTransactionInfoEntity.setToAddress(sharedTransactionInfoEntity.getContractAddress());
                         sharedTransactionInfoEntity.setCreateTime(System.currentTimeMillis());
                         sharedTransactionInfoEntity.setTransactionType(SharedTransactionEntity.TransactionType.EXECUTED_CONTRACT.getValue());
@@ -855,7 +855,6 @@ public class SharedWalletTransactionManager {
      * 更新所有钱包的所有交易列表
      */
     public void updateTransactionList() {
-
         Flowable.fromCallable(new Callable<List<SharedWalletEntity>>() {
             @Override
             public List<SharedWalletEntity> call() throws Exception {
@@ -1136,12 +1135,12 @@ public class SharedWalletTransactionManager {
         //备注
         String memo = new String(contents[4].getBytes(), Charset.forName("UTF-8"));
         //手续费
-        double energonPrice = BigDecimalUtil.div(contents[5], DEFAULT_WEI);
-        boolean isPending = "1".equals(contents[6]);
-        boolean isExecuted = "1".equals(contents[7]);
-        String transactionId = contents[8];
-        String uuid = contractAddress + transactionId;
-        String walletName = IndividualWalletManager.getInstance().getWalletNameByWalletAddress(walletAddress);
+        double  energonPrice  = BigDecimalUtil.div(contents[5], DEFAULT_WEI);
+        boolean isPending     = "1".equals(contents[6]);
+        boolean isExecuted    = "1".equals(contents[7]);
+        String  transactionId = contents[8];
+        String  uuid          = contractAddress + transactionId;
+        String  walletName    = IndividualWalletManager.getInstance().getWalletNameByWalletAddress(walletAddress);
 
         return new SharedTransactionEntity.Builder(uuid, createTime, walletName)
                 .fromAddress(fromAddress)

@@ -72,7 +72,7 @@ public class TransactionRecordsPresenter extends BasePresenter<TransactionRecord
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-
+                        System.out.println("******" + throwable.getMessage());
                     }
                 });
     }
