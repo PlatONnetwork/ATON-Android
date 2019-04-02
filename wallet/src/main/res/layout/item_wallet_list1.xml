@@ -53,6 +53,8 @@
     <com.juzix.wallet.component.widget.CustomProgressBar
         android:id="@+id/pb_create"
         style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_marginLeft="@dimen/assetsWalletSelectedShadowRadius"
+        android:layout_marginTop="@dimen/assetsWalletSelectedShadowRadius"
         android:layout_width="@dimen/assetsWalletNormalItemWidth"
         android:layout_height="@dimen/assetsWalletNormalItemHeight"
         android:visibility="gone"/>

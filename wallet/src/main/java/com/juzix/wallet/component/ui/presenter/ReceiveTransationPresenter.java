@@ -12,11 +12,10 @@ import com.juzix.wallet.component.ui.contract.ReceiveTransationContract;
 import com.juzix.wallet.component.ui.dialog.ShareDialogFragment;
 import com.juzix.wallet.config.JZAppConfigure;
 import com.juzix.wallet.config.JZDirType;
-import com.juzix.wallet.engine.NodeManager;
-import com.juzix.wallet.entity.NodeEntity;
 import com.juzix.wallet.entity.ShareAppInfo;
 import com.juzix.wallet.entity.WalletEntity;
 import com.juzix.wallet.utils.AppUtil;
+import com.juzix.wallet.utils.CommonUtil;
 import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.PhotoUtil;
 import com.juzix.wallet.utils.QRCodeEncoder;
@@ -27,9 +26,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Flowable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Predicate;
 
 /**
  * @author matrixelement
@@ -63,24 +60,6 @@ public class ReceiveTransationPresenter extends BasePresenter<ReceiveTransationC
                             mQRCodeBitmap = bitmap;
                             if (isViewAttached() && bitmap != null) {
                                 getView().setWalletAddressQrCode(bitmap);
-                            }
-                        }
-                    });
-
-            NodeManager.getInstance()
-                    .getCheckedNode()
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .filter(new Predicate<NodeEntity>() {
-                        @Override
-                        public boolean test(NodeEntity nodeEntity) throws Exception {
-                            return !(nodeEntity.isDefaultNode() && nodeEntity.isMainNetworkNode());
-                        }
-                    })
-                    .subscribe(new Consumer<NodeEntity>() {
-                        @Override
-                        public void accept(NodeEntity nodeEntity) throws Exception {
-                            if (isViewAttached()) {
-//                                getView().showWarnDialogFragment();
                             }
                         }
                     });
@@ -120,6 +99,12 @@ public class ReceiveTransationPresenter extends BasePresenter<ReceiveTransationC
                 }
             }
         });
+    }
+
+    @Override
+    public void copy() {
+
+        CommonUtil.copyTextToClipboard(getContext(), walletEntity.getAddress());
     }
 
     private String getImageName() {

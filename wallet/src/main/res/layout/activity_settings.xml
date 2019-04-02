@@ -20,7 +20,9 @@
         android:layout_height="match_parent"
         android:divider="@drawable/bg_transation_list_divider"
         android:orientation="vertical"
-        android:showDividers="middle">
+        android:showDividers="middle"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp">
 
         <TextView
             android:id="@+id/tv_node_setting"
@@ -29,8 +31,8 @@
             android:layout_height="60dp"
             android:drawableRight="@drawable/icon_right_arrow"
             android:gravity="center_vertical|left"
-            android:paddingLeft="18dp"
-            android:paddingRight="18dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:text="@string/node_settings"/>
 
         <LinearLayout
@@ -39,8 +41,8 @@
             android:layout_height="60dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingLeft="18dp"
-            android:paddingRight="18dp">
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
 
             <TextView
                 style="@style/Text.000.14"
@@ -67,8 +69,8 @@
             android:layout_height="60dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingLeft="18dp"
-            android:paddingRight="18dp">
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
 
             <TextView
                 style="@style/Text.000.14"

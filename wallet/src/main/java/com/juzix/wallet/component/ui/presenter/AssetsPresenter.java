@@ -235,7 +235,7 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
         if (!isViewAttached()){
             return;
         } 
-        getView().showTotalBalance(mBalance);
+//        getView().showTotalBalance(mBalance);
         if (mWalletList.isEmpty()){
             getView().showEmptyView(true);
             return;
@@ -256,7 +256,6 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
     private void refreshWalletList(){
         List<IndividualWalletEntity> walletList1 = IndividualWalletManager.getInstance().getWalletList();
         List<SharedWalletEntity>     walletList2 = SharedWalletManager.getInstance().getWalletList();
-        mBalance = 0;
         if (!mWalletList.isEmpty()){
             mWalletList.clear();
         }
@@ -283,8 +282,9 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
             @Override
             public Double call() {
                 try {
+                    mBalance = 0d;
                     for (WalletEntity walletEntity : mWalletList) {
-                        String address = walletEntity instanceof IndividualWalletEntity ? walletEntity.getPrefixAddress() : ((SharedWalletEntity) walletEntity).getPrefixAddress();
+                        String address = walletEntity.getPrefixAddress();
                         double balance = Web3jManager.getInstance().getBalance(address);
                         walletEntity.setBalance(balance);
                         mBalance += balance;
@@ -300,7 +300,10 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
                     @Override
                     public void accept(Double balance) throws Exception {
                         if (isViewAttached()){
-                            getView().showTotalBalance(mBalance);
+                            getView().showTotalBalance(balance);
+                            if (mSelectedWallet != null){
+                                getView().showBalance(mSelectedWallet.getBalance());
+                            }
                         }
                     }
                 });

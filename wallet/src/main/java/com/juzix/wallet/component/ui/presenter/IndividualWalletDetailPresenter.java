@@ -148,7 +148,7 @@ public class IndividualWalletDetailPresenter extends BasePresenter<IndividualWal
             }
             BaseActivity activity = currentActivity();
             if (sharedTransactionEntity.transfered()) {
-                SharedTransactionDetailActivity.actionStart(activity, sharedTransactionEntity,mWalletEntity.getPrefixAddress());
+                SharedTransactionDetailActivity.actionStart(activity, sharedTransactionEntity, mWalletEntity.getPrefixAddress());
             } else {
                 SigningActivity.actionStart(activity, sharedTransactionEntity,mWalletEntity);
             }

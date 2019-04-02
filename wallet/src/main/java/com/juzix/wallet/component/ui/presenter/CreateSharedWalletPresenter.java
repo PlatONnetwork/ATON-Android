@@ -40,7 +40,13 @@ public class CreateSharedWalletPresenter extends BasePresenter<CreateSharedWalle
     @Override
     public void showSelectWalletDialogFragment() {
         if (isViewAttached()) {
-            SelectIndividualWalletDialogFragment.newInstance(walletEntity == null ? "" : walletEntity.getUuid()).show(currentActivity().getSupportFragmentManager(), SelectIndividualWalletDialogFragment.CREATE_SHARED_WALLET);
+            SelectIndividualWalletDialogFragment.newInstance(walletEntity == null ? "" : walletEntity.getUuid(), true)
+                    .setOnItemClickListener(new SelectIndividualWalletDialogFragment.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(IndividualWalletEntity walletEntity) {
+                            updateSelectOwner(walletEntity);
+                        }
+                    }).show(currentActivity().getSupportFragmentManager(), SelectIndividualWalletDialogFragment.CREATE_SHARED_WALLET);
         }
     }
 

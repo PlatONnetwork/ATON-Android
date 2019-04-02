@@ -42,7 +42,7 @@ import io.reactivex.functions.Consumer;
 /**
  * @author matrixelement
  */
-public class CreateSharedWalletActivity extends MVPBaseActivity<CreateSharedWalletPresenter> implements CreateSharedWalletContract.View, SelectIndividualWalletDialogFragment.OnItemClickListener {
+public class CreateSharedWalletActivity extends MVPBaseActivity<CreateSharedWalletPresenter> implements CreateSharedWalletContract.View {
 
 
     @BindView(R.id.commonTitleBar)
@@ -263,10 +263,5 @@ public class CreateSharedWalletActivity extends MVPBaseActivity<CreateSharedWall
     @Override
     public int getRequiredSignatures() {
         return NumberParserUtils.parseInt(mCurRequirderSignaturesSelectedNum);
-    }
-
-    @Override
-    public void onItemClick(IndividualWalletEntity walletEntity) {
-        mPresenter.updateSelectOwner(walletEntity);
     }
 }

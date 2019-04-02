@@ -63,7 +63,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@id/iv_arrow1"
-                    android:textColor="@color/color_b6bbd0"
+                    android:textColor="@color/color_61646e"
                     android:textSize="14sp"
                     tools:text="@string/wallet_name" />
 

@@ -18,11 +18,14 @@ import com.juzix.wallet.db.entity.IndividualWalletInfoEntity;
 import com.juzix.wallet.db.sqlite.IndividualWalletInfoDao;
 import com.juzix.wallet.engine.IndividualWalletTransactionManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
+import com.juzix.wallet.entity.WalletEntity;
 import com.juzix.wallet.utils.DensityUtil;
 
 import org.reactivestreams.Publisher;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -60,6 +63,17 @@ public class SelectIndividualWalletDialogFragment extends BaseDialogFragment {
         SelectIndividualWalletDialogFragment dialogFragment = new SelectIndividualWalletDialogFragment();
         Bundle bundle = new Bundle();
         bundle.putString(Constants.Bundle.BUNDLE_UUID, uuid);
+        bundle.putBoolean(Constants.Bundle.BUNDLE_FEE_AMOUNT, false);
+        dialogFragment.setArguments(bundle);
+        return dialogFragment;
+    }
+
+
+    public static SelectIndividualWalletDialogFragment newInstance(String uuid, boolean needAmount) {
+        SelectIndividualWalletDialogFragment dialogFragment = new SelectIndividualWalletDialogFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.Bundle.BUNDLE_UUID, uuid);
+        bundle.putBoolean(Constants.Bundle.BUNDLE_FEE_AMOUNT, true);
         dialogFragment.setArguments(bundle);
         return dialogFragment;
     }
@@ -152,7 +166,24 @@ public class SelectIndividualWalletDialogFragment extends BaseDialogFragment {
                     public void accept(List<IndividualWalletEntity> objects, Throwable throwable) throws Exception {
                         if (objects != null && !objects.isEmpty()) {
                             String uuid = getArguments().getString(Constants.Bundle.BUNDLE_UUID);
-                            selectWalletListAdapter.notifyDataChanged(objects);
+                            boolean needAmount = getArguments().getBoolean(Constants.Bundle.BUNDLE_FEE_AMOUNT);
+                            List<IndividualWalletEntity> newWalletEntityList = new ArrayList<>();
+                            if (needAmount){
+                                for (IndividualWalletEntity walletEntity : objects){
+                                    if (walletEntity.getBalance() > 0){
+                                        newWalletEntityList.add(walletEntity);
+                                    }
+                                }
+                            }else {
+                                newWalletEntityList.addAll(objects);
+                            }
+                            Collections.sort(objects, new Comparator<WalletEntity>() {
+                                @Override
+                                public int compare(WalletEntity o1, WalletEntity o2) {
+                                    return Long.compare(o1.getUpdateTime(),  o2.getUpdateTime());
+                                }
+                            });
+                            selectWalletListAdapter.notifyDataChanged(newWalletEntityList);
                             listWallet.setItemChecked(objects.indexOf(new IndividualWalletEntity.Builder().uuid(uuid).build()), true);
                         }
                     }

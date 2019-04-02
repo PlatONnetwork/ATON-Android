@@ -60,7 +60,7 @@ public class SharedWalletDetailPresenter extends BasePresenter<SharedWalletDetai
             return;
         }
 
-        IndividualWalletEntity individualWalletEntity = IndividualWalletManager.getInstance().getWalletByAddress(walletEntity.getAddress());
+        IndividualWalletEntity individualWalletEntity = IndividualWalletManager.getInstance().getWalletByAddress(walletEntity.getCreatorAddress());
         if (individualWalletEntity == null || !walletEntity.isOwner()) {
             getView().hideSendButton();
         }
