@@ -53,7 +53,7 @@ public class WalletManagerAdapter extends RecyclerView.Adapter<WalletManagerAdap
         final WalletEntity item = mWalletList.get(position);
         viewHolder.ivWalletAvatar.setImageResource(RUtils.drawable(item.getAvatar()));
         viewHolder.tvwalletName.setText(item.getName());
-        viewHolder.tvWalletAddress.setText(item instanceof  IndividualWalletEntity ? AddressFormatUtil.formatAddress(item.getPrefixAddress()) : AddressFormatUtil.formatAddress(((SharedWalletEntity) item).getPrefixAddress()));
+        viewHolder.tvWalletAddress.setText(AddressFormatUtil.formatAddress(item.getPrefixAddress()));
         viewHolder.ivWalletShared.setVisibility(item instanceof IndividualWalletEntity ? View.GONE : View.VISIBLE);
         viewHolder.tvWalletBackup.setVisibility(backup(item) ? View.VISIBLE : View.GONE);
         viewHolder.tvWalletBackup.setOnClickListener(new View.OnClickListener() {

@@ -284,7 +284,7 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
                 try {
                     mBalance = 0d;
                     for (WalletEntity walletEntity : mWalletList) {
-                        String address = walletEntity instanceof IndividualWalletEntity ? walletEntity.getPrefixAddress() : ((SharedWalletEntity) walletEntity).getPrefixAddress();
+                        String address = walletEntity.getPrefixAddress();
                         double balance = Web3jManager.getInstance().getBalance(address);
                         walletEntity.setBalance(balance);
                         mBalance += balance;

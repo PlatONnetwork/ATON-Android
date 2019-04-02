@@ -124,22 +124,16 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
         if (walletEntity == null) {
             return;
         }
-        String address;
+        String address = walletEntity.getPrefixAddress();
         if (walletEntity instanceof SharedWalletEntity){
             SharedWalletEntity sharedWalletEntity = (SharedWalletEntity) walletEntity;
-            address = ((SharedWalletEntity) walletEntity).getPrefixAddress();
-            System.out.println("****** address" + walletEntity.getPrefixAddress());
-            System.out.println("****** creator" + ((SharedWalletEntity) walletEntity).getCreatorAddress());
             individualWalletEntity = IndividualWalletManager.getInstance().getWalletByAddress(sharedWalletEntity.getCreatorAddress());
             if (individualWalletEntity != null && sharedWalletEntity.isOwner()) {
-                System.out.println("****** ind1" + individualWalletEntity.getPrefixAddress());
                 getView().setSendTransactionButtonVisible(true);
             } else {
-                System.out.println("****** ind2" + sharedWalletEntity.isOwner());
                 getView().setSendTransactionButtonVisible(false);
             }
         }else {
-            address = walletEntity.getPrefixAddress();
             getView().setSendTransactionButtonVisible(true);
         }
         if (mDisposable != null && !mDisposable.isDisposed()) {
@@ -191,7 +185,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
     @Override
     public void calculateFee() {
         String toAddress = getView().getToAddress();
-        String address = walletEntity instanceof IndividualWalletEntity ? walletEntity.getPrefixAddress() : ((SharedWalletEntity) walletEntity).getPrefixAddress();
+        String address = walletEntity.getPrefixAddress();
         if (TextUtils.isEmpty(toAddress) || walletEntity == null || TextUtils.isEmpty(address)) {
             return;
         }
@@ -275,7 +269,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
                 return;
             }
 
-            String address = walletEntity instanceof IndividualWalletEntity ? walletEntity.getPrefixAddress() : ((SharedWalletEntity) walletEntity).getPrefixAddress();
+            String address = walletEntity.getPrefixAddress();
 
             if (toAddress.equals(address)) {
                 showLongToast(R.string.can_not_send_to_itself);
@@ -317,7 +311,6 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
 
     @Override
     public void saveWallet(String name, String address) {
-//        AddNewAddressActivity.actionStartWithAddress(currentActivity(), getView().getToAddress());
         String[] avatarArray = getContext().getResources().getStringArray(R.array.wallet_avatar);
         String avatar = avatarArray[new Random().nextInt(avatarArray.length)];
         getView().setSaveAddressButtonEnable(!AddressInfoDao.getInstance().insertAddressInfo(new AddressInfoEntity(UUID.randomUUID().toString(), address, name, avatar)));
@@ -531,22 +524,6 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
     }
 
     private void reset() {
-        Single.fromCallable(new Callable<Double>() {
-            @Override
-            public Double call() throws Exception {
-                return Web3jManager.getInstance().getBalance(walletEntity.getPrefixAddress());
-            }
-        })
-                .compose(new SchedulersTransformer())
-                .subscribe(new Consumer<Double>() {
-                    @Override
-                    public void accept(Double balance) throws Exception {
-                        if (isViewAttached()) {
-                            walletEntity.setBalance(balance);
-                            getView().updateWalletInfo(walletEntity);
-                        }
-                    }
-                });
         Single.create(new SingleOnSubscribe<String>() {
             @Override
             public void subscribe(SingleEmitter<String> emitter) throws Exception {
