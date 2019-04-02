@@ -18,8 +18,6 @@ public class ReceiveTransationContract {
 
         void setWalletInfo(WalletEntity walletEntity);
 
-        void showWarnDialogFragment();
-
         void setWalletAddressQrCode(Bitmap bitmap);
 
         android.view.View shareView(String name, String address, Bitmap bitmap);
@@ -30,5 +28,7 @@ public class ReceiveTransationContract {
         void loadData();
 
         void shareView();
+
+        void copy();
     }
 }

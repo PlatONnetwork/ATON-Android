@@ -105,7 +105,7 @@
     <string name="msg_no_wallet">No Wallet yet.</string>
     <string name="msg_no_shared_wallet">There is no any Joint Wallet yet</string>
     <string name="msg_no_individual_wallet">There is no any Classic Wallet yet</string>
-    <string name="transactions">Transactions</string>
+    <string name="transactions">Txn</string>
     <string name="sendATP">Send</string>
     <string name="actionSendATP">Send</string>
     <string name="action_send_transation">Send</string>

@@ -243,13 +243,15 @@ public class CreateIndividualWalletActivity extends MVPBaseActivity<CreateIndivi
         }
         switch (CheckStrength.getPasswordLevelNew(password)) {
             case EASY:
+                mTvStrength.setTextColor(ContextCompat.getColor(getContext(), R.color.color_f5302c));
                 mTvStrength.setText(R.string.weak);
-                mVLine1.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_ff9000));
+                mVLine1.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_f5302c));
                 mVLine2.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_00000000));
                 mVLine3.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_00000000));
                 mVLine4.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_00000000));
                 break;
             case MIDIUM:
+                mTvStrength.setTextColor(ContextCompat.getColor(getContext(), R.color.color_ff9000));
                 mTvStrength.setText(R.string.so_so);
                 mVLine1.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_ff9000));
                 mVLine2.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_ff9000));
@@ -257,19 +259,21 @@ public class CreateIndividualWalletActivity extends MVPBaseActivity<CreateIndivi
                 mVLine4.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_00000000));
                 break;
             case STRONG:
+                mTvStrength.setTextColor(ContextCompat.getColor(getContext(), R.color.color_58b8ff));
                 mTvStrength.setText(R.string.good);
-                mVLine1.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_ff9000));
-                mVLine2.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_ff9000));
-                mVLine3.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_ff9000));
+                mVLine1.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_58b8ff));
+                mVLine2.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_58b8ff));
+                mVLine3.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_58b8ff));
                 mVLine4.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_00000000));
                 break;
             case VERY_STRONG:
             case EXTREMELY_STRONG:
+                mTvStrength.setTextColor(ContextCompat.getColor(getContext(), R.color.color_19a20e));
                 mTvStrength.setText(R.string.strong);
-                mVLine1.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_ff9000));
-                mVLine2.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_ff9000));
-                mVLine3.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_ff9000));
-                mVLine4.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_ff9000));
+                mVLine1.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_19a20e));
+                mVLine2.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_19a20e));
+                mVLine3.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_19a20e));
+                mVLine4.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_19a20e));
                 break;
             default:
                 break;

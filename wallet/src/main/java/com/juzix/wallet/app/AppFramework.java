@@ -71,6 +71,8 @@ public class AppFramework {
         IndividualWalletManager.getInstance().init();
         //初始化共享钱包
         SharedWalletManager.getInstance().init();
+        //启动轮询服务
+        LoopService.startLoopService(context);
     }
 
     private Map<String, Object> buildMultipleUrlMap() {

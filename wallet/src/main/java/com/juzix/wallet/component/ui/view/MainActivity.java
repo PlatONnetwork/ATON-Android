@@ -112,8 +112,6 @@ public class MainActivity extends BaseActivity {
         unbinder = ButterKnife.bind(this);
         initViews();
         EventPublisher.getInstance().register(this);
-        //启动轮询服务
-        LoopService.startLoopService(this);
 //        updateMsgTips(SharedWalletTransactionManager.getInstance().unRead());
     }
 

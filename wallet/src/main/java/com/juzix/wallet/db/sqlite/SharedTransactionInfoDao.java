@@ -93,7 +93,7 @@ public class SharedTransactionInfoDao {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
-            RealmResults<SharedTransactionInfoEntity> results = realm.where(SharedTransactionInfoEntity.class).in("address", contractAddressArray).findAll();
+            RealmResults<SharedTransactionInfoEntity> results = realm.where(SharedTransactionInfoEntity.class).in("contractAddress", contractAddressArray).findAll();
             list.addAll(realm.copyFromRealm(results));
         } catch (Exception exp) {
             exp.printStackTrace();
@@ -112,7 +112,7 @@ public class SharedTransactionInfoDao {
         try {
             realm = Realm.getDefaultInstance();
             RealmResults<SharedTransactionInfoEntity> results = realm.where(SharedTransactionInfoEntity.class)
-                    .equalTo("address", contractAddress)
+                    .equalTo("contractAddress", contractAddress)
                     .or()
                     .equalTo("toAddress", contractAddress)
                     .findAll();
@@ -150,7 +150,7 @@ public class SharedTransactionInfoDao {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
             RealmResults<SharedTransactionInfoEntity> realmResults = realm.where(SharedTransactionInfoEntity.class)
-                    .equalTo("address", contractAddress)
+                    .equalTo("contractAddress", contractAddress)
                     .findAll();
             for (int i = 0; i < realmResults.size(); i++) {
                 realmResults.get(i).setRead(read);

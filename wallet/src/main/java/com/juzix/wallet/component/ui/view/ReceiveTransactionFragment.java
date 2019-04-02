@@ -26,11 +26,14 @@ import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.WalletEntity;
+import com.juzix.wallet.utils.CommonUtil;
+
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.reactivex.functions.Consumer;
 import kotlin.Unit;
@@ -44,6 +47,10 @@ public class ReceiveTransactionFragment extends MVPBaseFragment<ReceiveTransatio
     ImageView       ivWalletAddressQrCode;
     @BindView(R.id.iv_avatar)
     ImageView shareWalletAvatar;
+    @BindView(R.id.tv_address)
+    TextView tvAddress;
+    @BindView(R.id.iv_copy)
+    ImageView ivCopy;
     @BindView(R.id.sbtn_save)
     ShadowButton    btnSave;
     @BindString(R.string.warning)
@@ -84,26 +91,24 @@ public class ReceiveTransactionFragment extends MVPBaseFragment<ReceiveTransatio
                 });
     }
 
+    @OnClick({R.id.iv_copy})
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.iv_copy:
+                mPresenter.copy();
+                break;
+        }
+    }
+
     @Override
     public WalletEntity getWalletFromIntent() {
         return getArguments().getParcelable(Constants.Extra.EXTRA_WALLET);
     }
 
     @Override
-    public void setWalletInfo(WalletEntity walletInfo) {
-        shareWalletAvatar.setImageResource(RUtils.drawable(walletInfo.getAvatar()));
-    }
-
-    @Override
-    public void showWarnDialogFragment() {
-        CommonTipsDialogFragment.createDialogWithTitleAndOneButton(ContextCompat.getDrawable(getContext(), R.drawable.icon_dialog_tips), warning, testNodeWarn, understood, new OnDialogViewClickListener() {
-            @Override
-            public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
-                if (fragment != null) {
-                    fragment.dismiss();
-                }
-            }
-        }).show(getFragmentManager(), "showError");
+    public void setWalletInfo(WalletEntity entity) {
+        shareWalletAvatar.setImageResource(RUtils.drawable("icon_export_" + entity.getAvatar()));
+        tvAddress.setText(entity.getAddress());
     }
 
     @Override

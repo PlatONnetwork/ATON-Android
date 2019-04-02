@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.juzhen.framework.network.NetState;
 import com.juzhen.framework.util.NumberParserUtils;
@@ -69,7 +70,9 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
     Unbinder unbinder;
     @BindView(R.id.app_bar_layout)
-    AppBarLayout appBarLayout;
+    AppBarLayout     appBarLayout;
+    @BindView(R.id.v_tab_line)
+    View   vTabLine;
     //    @BindView(R.id.ctl_bar)
 //    CollapsingToolbarLayout ctlBar;
     @BindView(R.id.ll_assets_title)
@@ -438,6 +441,17 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
             }
         });
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener(){
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
+                if (i == 0) {
+                    //EXPANDED
+                } else if (Math.abs(i) >= appBarLayout.getTotalScrollRange()) {
+                    //COLLAPSED
+                } else {
+                }
+            }
+        });
         vpContent.setOffscreenPageLimit(fragments.size());
         vpContent.setAdapter(new TabAdapter(getChildFragmentManager(), getTitles(), fragments));
         vpContent.setSlide(true);
@@ -450,7 +464,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     @Override
     public void showWalletInfo(WalletEntity walletEntity) {
         tvBackup.setVisibility(mPresenter.needBackup(walletEntity) ? View.VISIBLE : View.GONE);
-        ivWalletAvatar.setImageResource(RUtils.drawable(walletEntity.getAvatar()));
+        ivWalletAvatar.setImageResource(RUtils.drawable("icon_export_" + walletEntity.getAvatar()));
         tvWalletName.setText(walletEntity.getName());
         showBalance(walletEntity.getBalance());
     }

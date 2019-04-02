@@ -128,10 +128,14 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
         if (walletEntity instanceof SharedWalletEntity){
             SharedWalletEntity sharedWalletEntity = (SharedWalletEntity) walletEntity;
             address = ((SharedWalletEntity) walletEntity).getPrefixAddress();
-            individualWalletEntity = IndividualWalletManager.getInstance().getWalletByAddress(walletEntity.getAddress());
+            System.out.println("****** address" + walletEntity.getPrefixAddress());
+            System.out.println("****** creator" + ((SharedWalletEntity) walletEntity).getCreatorAddress());
+            individualWalletEntity = IndividualWalletManager.getInstance().getWalletByAddress(sharedWalletEntity.getCreatorAddress());
             if (individualWalletEntity != null && sharedWalletEntity.isOwner()) {
+                System.out.println("****** ind1" + individualWalletEntity.getPrefixAddress());
                 getView().setSendTransactionButtonVisible(true);
             } else {
+                System.out.println("****** ind2" + sharedWalletEntity.isOwner());
                 getView().setSendTransactionButtonVisible(false);
             }
         }else {
@@ -527,6 +531,22 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
     }
 
     private void reset() {
+        Single.fromCallable(new Callable<Double>() {
+            @Override
+            public Double call() throws Exception {
+                return Web3jManager.getInstance().getBalance(walletEntity.getPrefixAddress());
+            }
+        })
+                .compose(new SchedulersTransformer())
+                .subscribe(new Consumer<Double>() {
+                    @Override
+                    public void accept(Double balance) throws Exception {
+                        if (isViewAttached()) {
+                            walletEntity.setBalance(balance);
+                            getView().updateWalletInfo(walletEntity);
+                        }
+                    }
+                });
         Single.create(new SingleOnSubscribe<String>() {
             @Override
             public void subscribe(SingleEmitter<String> emitter) throws Exception {
