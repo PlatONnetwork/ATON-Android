@@ -186,7 +186,7 @@ public abstract class TransactionEntity implements Comparable<TransactionEntity>
 
             @Override
             public int getStatusDrawable() {
-                return R.drawable.bg_pending;
+                return R.drawable.icon_pending;
             }
         }, SIGNING {
             @Override
@@ -201,7 +201,7 @@ public abstract class TransactionEntity implements Comparable<TransactionEntity>
 
             @Override
             public int getStatusDrawable() {
-                return R.drawable.bg_pending;
+                return R.drawable.icon_pending;
             }
         }, SUCCEED {
             @Override

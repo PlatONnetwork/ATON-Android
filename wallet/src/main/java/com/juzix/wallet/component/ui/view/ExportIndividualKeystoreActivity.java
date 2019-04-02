@@ -102,13 +102,13 @@ public class ExportIndividualKeystoreActivity extends BaseActivity{
     }
 
     private View getTableView(int position, ViewGroup container) {
-        View contentView = LayoutInflater.from(getContext()).inflate(R.layout.layout_app_tab_item1, container, false);
+        View contentView = LayoutInflater.from(getContext()).inflate(R.layout.layout_app_tab_item2, container, false);
         setTableView(contentView, position);
         return contentView;
     }
 
     private void setTableView(View contentView, int position) {
-        contentView.findViewById(R.id.iv_icon).setVisibility(View.GONE);
+//        contentView.findViewById(R.id.iv_icon).setVisibility(View.i);
         TextView tvTitle = contentView.findViewById(R.id.tv_title);
         tvTitle.setText(getTitles().get(position));
         tvTitle.setTextColor(ContextCompat.getColorStateList(getContext(), R.color.color_app_tab_text2));

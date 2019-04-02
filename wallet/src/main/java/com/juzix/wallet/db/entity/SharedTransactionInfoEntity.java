@@ -518,7 +518,7 @@ public class SharedTransactionInfoEntity extends RealmObject {
                 ", energonPrice=" + energonPrice +
                 ", memo='" + memo + '\'' +
                 ", transactionId='" + transactionId + '\'' +
-                ", address='" + contractAddress + '\'' +
+                ", contractAddress='" + contractAddress + '\'' +
                 ", pending=" + pending +
                 ", executed=" + executed +
                 ", transactionResult=" + transactionResult +

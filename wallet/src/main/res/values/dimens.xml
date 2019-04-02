@@ -7,7 +7,7 @@
     <dimen name="assetsWalletSelectedItemHeight">64dip</dimen>
     <dimen name="assetsWalletSelectedItemWidth">120dip</dimen>
     <dimen name="assetsWalletSelectedShadowRadius">6dip</dimen>
-    <dimen name="assetsWalletSelectedShapeRadius">2dip</dimen>
+    <dimen name="assetsWalletSelectedShapeRadius">3dip</dimen>
     <dimen name="assetsWalletNormalItemHeight">52dip</dimen>
     <dimen name="assetsWalletNormalItemWidth">108dip</dimen>
 </resources>

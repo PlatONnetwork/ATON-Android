@@ -169,6 +169,7 @@ public class ManageSharedWalletActivity extends MVPBaseActivity<ManageSharedWall
     @Override
     public void updateWalletName(String walletName) {
         tvWalletName.setText(walletName);
+        commonTitleBar.setTitle(walletName);
     }
 
     @Override

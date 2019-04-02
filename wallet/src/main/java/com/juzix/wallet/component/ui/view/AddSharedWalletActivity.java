@@ -38,7 +38,7 @@ import butterknife.Unbinder;
 /**
  * @author matrixelement
  */
-public class AddSharedWalletActivity extends MVPBaseActivity<AddSharedWalletPresenter> implements AddSharedWalletContract.View, SelectIndividualWalletDialogFragment.OnItemClickListener {
+public class AddSharedWalletActivity extends MVPBaseActivity<AddSharedWalletPresenter> implements AddSharedWalletContract.View {
 
     @BindView(R.id.et_wallet_name)
     EditText etWalletName;
@@ -190,10 +190,10 @@ public class AddSharedWalletActivity extends MVPBaseActivity<AddSharedWalletPres
         context.startActivity(intent);
     }
 
-    @Override
-    public void onItemClick(IndividualWalletEntity walletEntity) {
-        mPresenter.updateSelectOwner(walletEntity);
-    }
+//    @Override
+//    public void onItemClick(IndividualWalletEntity walletEntity) {
+//        mPresenter.updateSelectOwner(walletEntity);
+//    }
 
     @Override
     public void setSelectOwner(IndividualWalletEntity walletEntity) {

@@ -63,8 +63,8 @@
 //    }
 //
 //    @Override
-//    public Flowable<IndividualTransactionInfoEntity> getTransactionListByWalletAddress(String creatorAddress) {
-//        return Flowable.fromIterable(IndividualTransactionInfoDao.getInstance().getTransactionListByWalletAddress(creatorAddress)).subscribeOn(Schedulers.io());
+//    public Flowable<IndividualTransactionInfoEntity> getTransactionListByWalletAddress(String walletAddress) {
+//        return Flowable.fromIterable(IndividualTransactionInfoDao.getInstance().getTransactionListByWalletAddress(walletAddress)).subscribeOn(Schedulers.io());
 //    }
 //
 //    @Override

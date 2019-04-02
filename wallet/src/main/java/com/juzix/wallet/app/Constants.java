@@ -81,7 +81,7 @@ public class Constants {
     }
 
     public interface URL {
-                String WEB3J_URL = "http://192.168.120.81:6789";
+                String WEB3J_URL = "http://192.168.120.82:6789";
 //                String WEB3J_URL = "http://192.168.9.76:8792";
 //                String WEB3J_URL = "http://10.10.8.209:6789";
 //        String WEB3J_URL = "https://syde.platon.network/test";

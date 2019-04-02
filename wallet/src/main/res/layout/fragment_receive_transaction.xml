@@ -34,11 +34,31 @@
                 android:paddingBottom="24dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="22dp"
+                    android:orientation="horizontal">
 
+                    <TextView
+                        android:id="@+id/tv_address"
+                        style="@style/Text.898c9e.12"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:layout_weight="1"
+                        android:gravity="left"  />
+
+                    <ImageView
+                        android:id="@+id/iv_copy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/icon_copy"/>
+                </LinearLayout>
                 <TextView
-                    android:id="@+id/tv_transation_type"
-                    style="@style/Text.000.14"
                     android:visibility="gone"
+                    android:id="@+id/tv_transation_type"
+                    style="@style/Text.61646e.12"
                     android:layout_marginBottom="22dp"
                     android:text="@string/receive_atp"/>
 

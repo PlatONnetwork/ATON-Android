@@ -184,7 +184,7 @@ public class SharedWalletEntity extends WalletEntity implements Cloneable {
             return false;
         }
         for (OwnerEntity ownerEntity : owner) {
-            if (getPrefixAddress().contains(ownerEntity.getAddress())) {
+            if (getPrefixCreatorAddress().contains(ownerEntity.getAddress())) {
                 return true;
             }
         }
@@ -229,8 +229,8 @@ public class SharedWalletEntity extends WalletEntity implements Cloneable {
         SharedWalletInfoEntity entity = new SharedWalletInfoEntity.Builder()
                 .uuid(uuid)
                 .name(name)
-                .creatorAddress(creatorAddress)
                 .address(address)
+                .creatorAddress(creatorAddress)
                 .createTime(createTime)
                 .updateTime(updateTime)
                 .owner(buildAddressInfoEntityArrayList())

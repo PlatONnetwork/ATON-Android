@@ -27,7 +27,7 @@
             android:layout_height="88dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="54dp"
-            android:src="@drawable/icon_hook_l" />
+            android:src="@drawable/icon_successed" />
 
         <TextView
             android:layout_width="match_parent"

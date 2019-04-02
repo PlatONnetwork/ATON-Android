@@ -61,7 +61,7 @@ public class SingleVoteInfoDao {
         try {
             realm = Realm.getDefaultInstance();
             RealmResults<SingleVoteInfoEntity> results = realm.where(SingleVoteInfoEntity.class)
-                    .contains("creatorAddress", Numeric.cleanHexPrefix(walletAddress))
+                    .contains("walletAddress", Numeric.cleanHexPrefix(walletAddress))
                     .findAll();
             list.addAll(realm.copyFromRealm(results));
         } catch (Exception exp) {

@@ -24,7 +24,7 @@
 //
 //    Flowable<IndividualTransactionInfoEntity> getTransactionList(String address);
 //
-//    Flowable<IndividualTransactionInfoEntity> getTransactionListByWalletAddress(String creatorAddress);
+//    Flowable<IndividualTransactionInfoEntity> getTransactionListByWalletAddress(String walletAddress);
 //
 //    Flowable<IndividualTransactionEntity> getLatestBlockNumber(IndividualTransactionEntity transactionEntity);
 //
