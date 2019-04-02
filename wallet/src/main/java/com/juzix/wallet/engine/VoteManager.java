@@ -1,6 +1,7 @@
 package com.juzix.wallet.engine;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
 import com.juzhen.framework.network.ApiRequestBody;
@@ -67,6 +68,7 @@ import retrofit2.Response;
  */
 public class VoteManager {
 
+    private static final String TAG = VoteManager.class.getSimpleName();
     public static final BigInteger GAS_PRICE = DefaultGasProvider.GAS_PRICE;
     public static final BigInteger GAS_LIMIT = DefaultGasProvider.GAS_LIMIT;
 
@@ -304,6 +306,11 @@ public class VoteManager {
                     @Override
                     public void accept(SingleVoteInfoEntity voteInfoEntity) throws Exception {
                         updateVoteTicket(voteInfoEntity);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Log.e(TAG,"updateVoteTickets "+throwable.getMessage());
                     }
                 });
     }
@@ -660,10 +667,15 @@ public class VoteManager {
                     }
                 })
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new BiConsumer<SingleVoteInfoEntity, Throwable>() {
+                .subscribe(new Consumer<SingleVoteInfoEntity>() {
                     @Override
-                    public void accept(SingleVoteInfoEntity voteInfoEntity, Throwable throwable) throws Exception {
+                    public void accept(SingleVoteInfoEntity singleVoteInfoEntity) throws Exception {
 
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Log.e(TAG,"updateVoteTicket "+throwable.getMessage());
                     }
                 });
     }
