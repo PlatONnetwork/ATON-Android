@@ -1,4 +1,4 @@
-include ':wallet'
+include ':wallet', ':app'
 include ':zxing'
 include ':framework'
 include ':biometric'

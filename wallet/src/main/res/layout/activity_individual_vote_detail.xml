@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:clipToPadding="true"
-    android:fitsSystemWindows="true"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipToPadding="true"
+    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
     <com.juzix.wallet.component.widget.CommonTitleBar
@@ -23,18 +23,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:paddingBottom="19dp"
             android:paddingLeft="15dp"
+            android:paddingTop="20dp"
             android:paddingRight="15dp"
-            android:paddingTop="20dp">
+            android:paddingBottom="19dp">
 
-            <TextView
-                android:id="@+id/tv_transaction_status"
-                style="@style/Text.000000.18"
-                android:layout_gravity="center_horizontal"
-                android:drawablePadding="10dp"
-                android:drawableTop="@drawable/icon_successed"
-                tools:text="@string/create_success" />
+            <include
+                layout="@layout/layout_transalation_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -42,8 +40,8 @@
                 android:layout_marginTop="20dp"
                 android:divider="@drawable/bg_transation_detail_divider"
                 android:orientation="vertical"
-                android:paddingRight="12dp"
                 android:paddingLeft="12dp"
+                android:paddingRight="12dp"
                 android:showDividers="beginning|middle">
 
                 <include layout="@layout/include_vote_info" />
