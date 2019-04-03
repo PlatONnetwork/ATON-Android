@@ -42,10 +42,10 @@
 
                     <TextView
                         android:id="@+id/tv_address"
-                        style="@style/Text.898c9e.14"
+                        style="@style/Text.898c9e.12"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="left" />
+                        android:gravity="center_horizontal" />
                 </LinearLayout>
                 <TextView
                     android:visibility="gone"
