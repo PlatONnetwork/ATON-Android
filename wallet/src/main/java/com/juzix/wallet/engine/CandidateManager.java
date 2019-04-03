@@ -1,7 +1,6 @@
 package com.juzix.wallet.engine;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.github.promeg.pinyinhelper.Pinyin;
 import com.juzhen.framework.network.HttpClient;
@@ -149,12 +148,21 @@ public class CandidateManager {
     public Single<CandidateEntity> getCandidateDetail(String nodeId) {
 
         return Single
-                .fromCallable(new Callable<CandidateEntity>() {
+                .fromCallable(new Callable<List<CandidateEntity>>() {
                     @Override
-                    public CandidateEntity call() throws Exception {
+                    public List<CandidateEntity> call() throws Exception {
                         return getCandidateEntity(nodeId);
                     }
                 })
+                .toFlowable()
+                .flatMap(new Function<List<CandidateEntity>, Publisher<CandidateEntity>>() {
+                    @Override
+                    public Publisher<CandidateEntity> apply(List<CandidateEntity> candidateEntities) throws Exception {
+                        return Flowable.fromIterable(candidateEntities);
+                    }
+                })
+                .firstElement()
+                .toSingle()
                 .map(new Function<CandidateEntity, CandidateEntity>() {
                     @Override
                     public CandidateEntity apply(CandidateEntity candidateEntity) throws Exception {
@@ -206,7 +214,7 @@ public class CandidateManager {
         return JSONUtil.parseTwoDimensionArray(candidateListResp, CandidateEntity.class);
     }
 
-    private CandidateEntity getCandidateEntity(String nodeId) {
+    private List<CandidateEntity> getCandidateEntity(String nodeId) {
         Web3j web3j = Web3jManager.getInstance().getWeb3j();
         CandidateContract candidateContract = CandidateContract.load(
                 web3j, new ReadonlyTransactionManager(web3j, CandidateContract.CONTRACT_ADDRESS), new DefaultWasmGasProvider());
@@ -217,7 +225,7 @@ public class CandidateManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return JSONUtil.parseObject(candidateDetailsResp, CandidateEntity.class);
+        return JSONUtil.parseArray(candidateDetailsResp, CandidateEntity.class);
     }
 
     private List<RegionInfoEntity> buildRegionInfoEntityList(List<RegionEntity> regionEntities) {
