@@ -58,7 +58,8 @@ public class TransactionsFragment extends MVPBaseFragment<TransactionsPresenter>
         View rootView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_transactions, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         EventPublisher.getInstance().register(this);
-        initViews();
+        mPresenter.updateWalletEntity();
+        setAdapter();
         mPresenter.fetchWalletDetail();
         return rootView;
     }
@@ -73,7 +74,7 @@ public class TransactionsFragment extends MVPBaseFragment<TransactionsPresenter>
     }
 
 
-    private void initViews() {
+    private void setAdapter() {
         transactionListAdapter = new TransactionListsAdapter(R.layout.item_transaction_list, null, mPresenter.getWalletType());
         listTransaction.setAdapter(transactionListAdapter);
         listTransaction.setEmptyView(emptyView);
@@ -89,6 +90,13 @@ public class TransactionsFragment extends MVPBaseFragment<TransactionsPresenter>
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateSharedWalletTransactionEvent(Event.UpdateSharedWalletTransactionEvent event) {
         mPresenter.fetchWalletTransactionList();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdateSelectedWalletEvent(Event.UpdateSelectedWalletEvent event) {
+        mPresenter.updateWalletEntity();
+        setAdapter();
+        mPresenter.fetchWalletDetail();
     }
 
     @Override

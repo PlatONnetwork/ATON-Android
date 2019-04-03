@@ -13,6 +13,7 @@ import android.text.method.PasswordTransformationMethod;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.juzix.wallet.R;
@@ -22,13 +23,15 @@ import com.juzix.wallet.component.ui.presenter.CreateIndividualWalletPresenter;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.utils.CheckStrength;
 
-public class CreateIndividualWalletActivity extends MVPBaseActivity<CreateIndividualWalletPresenter> implements CreateIndividualWalletContract.View, View.OnClickListener, View.OnTouchListener, TextWatcher, View.OnFocusChangeListener {
+public class CreateIndividualWalletActivity extends MVPBaseActivity<CreateIndividualWalletPresenter> implements CreateIndividualWalletContract.View, View.OnClickListener, TextWatcher, View.OnFocusChangeListener {
 
     private final static String       TAG = CreateIndividualWalletActivity.class.getSimpleName();
     private              EditText     mEtName;
     private              TextView     mTvNameError;
     private              EditText     mEtPassword;
     private              EditText     mEtRepeatPassword;
+    private ImageView mIvPasswordEyes;
+    private ImageView mIvRepeatPasswordEyes;
     private              TextView     mTvPasswordDesc;
     private              TextView     mTvPasswordError;
     private              ShadowButton mSbtnCreate;
@@ -63,8 +66,8 @@ public class CreateIndividualWalletActivity extends MVPBaseActivity<CreateIndivi
         mTvNameError = findViewById(R.id.tv_name_error);
         mEtPassword = findViewById(R.id.et_password);
         mEtRepeatPassword = findViewById(R.id.et_repeat_password);
-        mEtPassword.setOnTouchListener(this);
-        mEtRepeatPassword.setOnTouchListener(this);
+        mIvPasswordEyes = findViewById(R.id.iv_password_eyes);
+        mIvRepeatPasswordEyes = findViewById(R.id.iv_repeat_password_eyes);
         mTvPasswordError = findViewById(R.id.tv_password_error);
         mTvPasswordDesc = findViewById(R.id.tv_password_desc);
         mSbtnCreate = findViewById(R.id.sbtn_create);
@@ -77,6 +80,8 @@ public class CreateIndividualWalletActivity extends MVPBaseActivity<CreateIndivi
         mEtName.addTextChangedListener(this);
         mEtPassword.addTextChangedListener(this);
         mEtRepeatPassword.addTextChangedListener(this);
+        mIvPasswordEyes.setOnClickListener(this);
+        mIvRepeatPasswordEyes.setOnClickListener(this);
         mEtName.setOnFocusChangeListener(this);
         mEtPassword.setOnFocusChangeListener(this);
         mEtRepeatPassword.setOnFocusChangeListener(this);
@@ -91,15 +96,15 @@ public class CreateIndividualWalletActivity extends MVPBaseActivity<CreateIndivi
     private void showPassword() {
         if (mShowPassword) {
             // 显示密码
-            mEtPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_open_eyes, 0);
             mEtPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
             mEtPassword.setSelection(mEtPassword.getText().toString().length());
+            mIvPasswordEyes.setImageResource(R.drawable.icon_open_eyes);
             mShowPassword = !mShowPassword;
         } else {
             // 隐藏密码
-            mEtPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_close_eyes, 0);
             mEtPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
             mEtPassword.setSelection(mEtPassword.getText().toString().length());
+            mIvPasswordEyes.setImageResource(R.drawable.icon_close_eyes);
             mShowPassword = !mShowPassword;
         }
     }
@@ -107,15 +112,15 @@ public class CreateIndividualWalletActivity extends MVPBaseActivity<CreateIndivi
     private void showRepeatPassword() {
         if (mShowRepeatPassword) {
             // 显示密码
-            mEtRepeatPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_open_eyes, 0);
             mEtRepeatPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
             mEtRepeatPassword.setSelection(mEtRepeatPassword.getText().toString().length());
+            mIvRepeatPasswordEyes.setImageResource(R.drawable.icon_open_eyes);
             mShowRepeatPassword = !mShowRepeatPassword;
         } else {
             // 隐藏密码
-            mEtRepeatPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_close_eyes, 0);
             mEtRepeatPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
             mEtRepeatPassword.setSelection(mEtRepeatPassword.getText().toString().length());
+            mIvRepeatPasswordEyes.setImageResource(R.drawable.icon_close_eyes);
             mShowRepeatPassword = !mShowRepeatPassword;
         }
     }
@@ -133,33 +138,6 @@ public class CreateIndividualWalletActivity extends MVPBaseActivity<CreateIndivi
         mTvPasswordDesc.setVisibility(isVisible ? View.GONE : View.VISIBLE);
     }
 
-
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        if (v == mEtPassword) {
-            Drawable drawable = mEtPassword.getCompoundDrawables()[2];
-            if (drawable == null)
-                return false;
-            if (event.getAction() != MotionEvent.ACTION_UP)
-                return false;
-            if (event.getX() > mEtPassword.getWidth() - mEtPassword.getPaddingRight() - drawable.getIntrinsicWidth()) {
-                showPassword();
-            }
-            return false;
-        } else if (v == mEtRepeatPassword) {
-            Drawable drawable = mEtRepeatPassword.getCompoundDrawables()[2];
-            if (drawable == null)
-                return false;
-            if (event.getAction() != MotionEvent.ACTION_UP)
-                return false;
-            if (event.getX() > mEtRepeatPassword.getWidth() - mEtRepeatPassword.getPaddingRight() - drawable.getIntrinsicWidth()) {
-                showRepeatPassword();
-            }
-            return false;
-        }
-        return false;
-    }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -167,6 +145,12 @@ public class CreateIndividualWalletActivity extends MVPBaseActivity<CreateIndivi
                 mPresenter.createWallet(mEtName.getText().toString().trim(),
                         mEtPassword.getText().toString().trim(),
                         mEtRepeatPassword.getText().toString().trim());
+                break;
+            case R.id.iv_password_eyes:
+                showPassword();
+                break;
+            case R.id.iv_repeat_password_eyes:
+                showRepeatPassword();
                 break;
             default:
                 break;

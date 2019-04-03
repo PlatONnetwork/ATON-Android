@@ -47,13 +47,16 @@ import io.reactivex.functions.Function;
 public class AssetsPresenter extends BasePresenter<AssetsContract.View> implements AssetsContract.Presenter{
 
     private ArrayList<WalletEntity> mWalletList = new ArrayList<>();
-    private WalletEntity            mSelectedWallet;
     private Disposable              mDisposable;
     private static final int        REFRESH_TIME = 5000;
-    private double mBalance;
 
     public AssetsPresenter(AssetsContract.View view) {
         super(view);
+    }
+
+    @Override
+    public void init() {
+        getView().showCurrentItem(0);
     }
 
     @Override
@@ -65,7 +68,7 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
             @Override
             public Double call() {
                 refreshWalletList();
-                return mBalance;
+                return 0D;
             }
         })
                 .compose(bindUntilEvent(FragmentEvent.STOP))
@@ -93,7 +96,7 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
             @Override
             public Double call() {
                 refreshWalletList();
-                return mBalance;
+                return 0D;
             }
         })
                 .compose(new SchedulersTransformer())
@@ -112,10 +115,11 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
 
     @Override
     public void clickRecycleViewItem(WalletEntity walletEntity) {
-        mSelectedWallet = walletEntity;
-        getView().showWalletList(mSelectedWallet);
-        getView().showWalletInfo(mSelectedWallet);
-        getView().showWalletTab(mSelectedWallet, 0);
+        MainActivity.sInstance.setSelectedWallet(walletEntity);
+        getView().showWalletList(walletEntity);
+        getView().showWalletInfo(walletEntity);
+        getView().showWalletTab(walletEntity, 0);
+        getView().setArgument(walletEntity);
     }
 
     @Override
@@ -181,25 +185,27 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
 
     @Override
     public void backupWallet() {
-        InputWalletPasswordDialogFragment.newInstance((IndividualWalletEntity) mSelectedWallet).setOnWalletCorrectListener(new InputWalletPasswordDialogFragment.OnWalletCorrectListener() {
+        IndividualWalletEntity walletEntity = (IndividualWalletEntity) MainActivity.sInstance.getSelectedWallet();
+        InputWalletPasswordDialogFragment.newInstance(walletEntity).setOnWalletCorrectListener(new InputWalletPasswordDialogFragment.OnWalletCorrectListener() {
             @Override
             public void onCorrect(Credentials credentials, String password) {
-                BackupMnemonicPhraseActivity.actionStart(getContext(), password, (IndividualWalletEntity) mSelectedWallet, 1);
+                BackupMnemonicPhraseActivity.actionStart(getContext(), password, walletEntity, 1);
             }
         }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
     }
 
     @Override
     public boolean needBackup(WalletEntity walletEntity) {
+        if (walletEntity == null){
+            return false;
+        }
         if (walletEntity instanceof SharedWalletEntity){
             return false;
         }
-
-        IndividualWalletEntity entity = (IndividualWalletEntity) mSelectedWallet;
+        IndividualWalletEntity entity = (IndividualWalletEntity) walletEntity;
         if (!TextUtils.isEmpty(entity.getMnemonic())){
            return true;
         }
-
         return false;
     }
 
@@ -234,22 +240,24 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
     private void show(){
         if (!isViewAttached()){
             return;
-        } 
-//        getView().showTotalBalance(mBalance);
+        }
         if (mWalletList.isEmpty()){
             getView().showEmptyView(true);
             return;
         }
         getView().showEmptyView(false);
-        if (isSelected(mSelectedWallet)){
-            getView().showWalletList(mSelectedWallet);
-            getView().showWalletInfo(mSelectedWallet);
+        WalletEntity walletEntity = MainActivity.sInstance.getSelectedWallet();
+        if (isSelected(walletEntity)){
+            getView().showWalletList(walletEntity);
+            getView().showWalletInfo(walletEntity);
         }else {
             //挑选一个当前选中的钱包
-            mSelectedWallet = getSelectedWallet();
-            getView().showWalletList(mSelectedWallet);
-            getView().showWalletInfo(mSelectedWallet);
-            getView().showWalletTab(mSelectedWallet, 0);
+            MainActivity.sInstance.setSelectedWallet(getSelectedWallet());
+            walletEntity = MainActivity.sInstance.getSelectedWallet();
+            getView().showWalletList(walletEntity);
+            getView().showWalletInfo(walletEntity);
+            getView().showWalletTab(walletEntity, 0);
+            getView().setArgument(walletEntity);
         }
     }
 
@@ -281,18 +289,18 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
         Single.fromCallable(new Callable<Double>() {
             @Override
             public Double call() {
+                double totalBalance = 0d;
                 try {
-                    mBalance = 0d;
                     for (WalletEntity walletEntity : mWalletList) {
                         String address = walletEntity.getPrefixAddress();
                         double balance = Web3jManager.getInstance().getBalance(address);
                         walletEntity.setBalance(balance);
-                        mBalance += balance;
+                        totalBalance += balance;
                     }
                 }catch (Exception exp){
                     exp.printStackTrace();
                 }
-                return mBalance;
+                return totalBalance;
             }
         })
                 .compose(new SchedulersTransformer())
@@ -301,8 +309,9 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
                     public void accept(Double balance) throws Exception {
                         if (isViewAttached()){
                             getView().showTotalBalance(balance);
-                            if (mSelectedWallet != null){
-                                getView().showBalance(mSelectedWallet.getBalance());
+                            WalletEntity walletEntity = MainActivity.sInstance.getSelectedWallet();
+                            if (walletEntity != null){
+                                getView().showBalance(walletEntity.getBalance());
                             }
                         }
                     }

@@ -1,5 +1,8 @@
 package com.juzix.wallet.component.ui.presenter;
-
+ 
+import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.content.ContextCompat; 
 import android.text.TextUtils;
 
 import com.juzhen.framework.network.NetConnectivity;
@@ -9,7 +12,8 @@ import com.juzix.wallet.app.CustomThrowable;
 import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
-import com.juzix.wallet.component.ui.contract.SendTransationContract;
+import com.juzix.wallet.component.ui.contract.SendTransationContract; 
+import com.juzix.wallet.component.ui.dialog.CommonTipsDialogFragment; 
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.dialog.SendTransactionDialogFragment;
 import com.juzix.wallet.component.ui.view.AssetsFragment;
@@ -82,7 +86,6 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
 
     public SendTransationPresenter(SendTransationContract.View view) {
         super(view);
-        walletEntity = view.getWalletEntityFromIntent();
     }
 
     @Override
@@ -95,21 +98,8 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
     }
 
     @Override
-    public void updateSendWalletInfoAndFee(WalletEntity walletEntity) {
-
-        this.walletEntity = walletEntity;
-
-        if (isViewAttached() && walletEntity != null) {
-
-            getView().updateWalletInfo(walletEntity);
-
-            calculateFee();
-        }
-    }
-
-    @Override
     public void fetchDefaultWalletInfo() {
-
+        walletEntity = MainActivity.sInstance.getSelectedWallet();
         if (walletEntity == null) {
             return;
         }
@@ -117,14 +107,19 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
         if (walletEntity instanceof SharedWalletEntity){
             SharedWalletEntity sharedWalletEntity = (SharedWalletEntity) walletEntity;
             individualWalletEntity = IndividualWalletManager.getInstance().getWalletByAddress(sharedWalletEntity.getCreatorAddress());
-            if (individualWalletEntity != null && sharedWalletEntity.isOwner()) {
-                getView().setSendTransactionButtonVisible(true);
-            } else {
-                getView().setSendTransactionButtonVisible(false);
-            }
-        }else {
-            getView().setSendTransactionButtonVisible(true);
         }
+//        if (walletEntity instanceof SharedWalletEntity){
+//            SharedWalletEntity sharedWalletEntity = (SharedWalletEntity) walletEntity;
+//            individualWalletEntity = IndividualWalletManager.getInstance().getWalletByAddress(sharedWalletEntity.getCreatorAddress());
+//            if (individualWalletEntity != null && sharedWalletEntity.isOwner()) {
+//                getView().setSendTransactionButtonVisible(true);
+//            } else {
+//                getView().setSendTransactionButtonVisible(false);
+//            }
+//            getView().setSendTransactionButtonVisible(true);
+//        }else {
+//            getView().setSendTransactionButtonVisible(true);
+//        }
         if (mDisposable != null && !mDisposable.isDisposed()) {
             mDisposable.dispose();
         }
@@ -157,17 +152,8 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
 
     @Override
     public void transferAllBalance() {
-
         if (isViewAttached() && walletEntity != null) {
-
             getView().setTransferAmount(BigDecimalUtil.sub(walletEntity.getBalance(), feeAmount));
-        }
-    }
-
-    @Override
-    public void inputTransferAmount(String transferAmount) {
-        if (isViewAttached() && walletEntity != null) {
-            getView().setTransferAmountTextColor(NumberParserUtils.parseDouble(transferAmount) > walletEntity.getBalance());
         }
     }
 
@@ -178,45 +164,28 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
         if (TextUtils.isEmpty(toAddress) || walletEntity == null || TextUtils.isEmpty(address)) {
             return;
         }
-
         updateFeeAmount(percent);
-
     }
 
     @Override
     public void calculateFeeAndTime(double percent) {
-
         this.percent = percent;
-
         updateFeeAmount(percent);
-
-        updateTransferTime(percent);
-
+        updateGasPrice(percent);
     }
 
     @Override
     public boolean checkToAddress(String toAddress) {
-
         String errMsg = null;
-
         if (TextUtils.isEmpty(toAddress)) {
             errMsg = string(R.string.address_cannot_be_empty);
         } else {
             if (!WalletUtils.isValidAddress(toAddress)) {
-                errMsg = string(R.string.address_format_error);
+                errMsg = string(R.string.receive_address_error);
             }
         }
-
         getView().showToAddressError(errMsg);
-
         return TextUtils.isEmpty(errMsg);
-    }
-
-    @Override
-    public void checkToAddressAndUpdateFee(String toAddress) {
-        if (checkToAddress(toAddress)) {
-            calculateFee();
-        }
     }
 
     @Override
@@ -239,32 +208,35 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
 
     @Override
     public void submit() {
-
         if (isViewAttached()) {
-
             if (!NetConnectivity.getConnectivityManager().isConnected()) {
                 showLongToast(R.string.network_error);
                 return;
             }
-
             String transferAmount = getView().getTransferAmount();
             String toAddress = getView().getToAddress();
-
             if (!checkToAddress(toAddress)) {
                 return;
             }
-
             if (!checkTransferAmount(transferAmount)) {
                 return;
             }
-
             String address = walletEntity.getPrefixAddress();
-
             if (toAddress.equals(address)) {
                 showLongToast(R.string.can_not_send_to_itself);
                 return;
             }
-
+            if (walletEntity instanceof SharedWalletEntity){
+                if (individualWalletEntity == null || !((SharedWalletEntity) walletEntity).isOwner()){
+                    CommonTipsDialogFragment.createDialogWithTitleAndOneButton(ContextCompat.getDrawable(getContext(), R.drawable.icon_dialog_tips), string(R.string.txn_init_failed_title),string(R.string.txn_init_failed_content), string(R.string.understood), new OnDialogViewClickListener() {
+                        @Override
+                        public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
+//                            showPasswordDialog(type, walletEntity);
+                        }
+                    }).show(currentActivity().getSupportFragmentManager(), "showError");
+                    return;
+                }
+            }
             String fromWallet = walletEntity.getName();
             String fromAddress = address;
             String fee = NumberParserUtils.getPrettyBalance(feeAmount);
@@ -284,12 +256,9 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
 
     @Override
     public void updateSendTransactionButtonStatus() {
-
         if (isViewAttached()) {
-
             String transferAmount = getView().getTransferAmount();
             String toAddress = getView().getToAddress();
-
             boolean isToAddressFormatCorrect = !TextUtils.isEmpty(toAddress) && WalletUtils.isValidAddress(toAddress);
             boolean isTransferAmountValid = !TextUtils.isEmpty(transferAmount) && NumberParserUtils.parseDouble(transferAmount) > 0 && isBalanceEnough(transferAmount);
 
@@ -454,32 +423,24 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
     }
 
     private void updateFeeAmount(double percent) {
-
         double minFee = getMinFee();
         double maxFee = getMaxFee();
         double dValue = maxFee - minFee;
-
         feeAmount = BigDecimalUtil.add(minFee, BigDecimalUtil.mul(percent, dValue), 8, RoundingMode.CEILING);
-
         if (isViewAttached()) {
             getView().setTransferFeeAmount(BigDecimalUtil.parseString(feeAmount));
         }
     }
 
-    private void updateTransferTime(double percent) {
-
+    private void updateGasPrice(double percent) {
         gasPrice = BigDecimalUtil.add(MIN_GAS_PRICE_WEI, BigDecimalUtil.mul(percent, D_GAS_PRICE_WEI));
-
     }
 
     private boolean isBalanceEnough(String transferAmount) {
-
         double usedAmount = BigDecimalUtil.add(NumberParserUtils.parseDouble(transferAmount), feeAmount);
-
         if (walletEntity != null) {
             return walletEntity.getBalance() >= usedAmount;
         }
-
         return false;
     }
 

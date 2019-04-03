@@ -34,12 +34,14 @@ import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import kotlin.Unit;
 
-public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportIndividualPrivateKeyPresenter> implements View.OnTouchListener, ImportIndividualPrivateKeyContract.View {
+public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportIndividualPrivateKeyPresenter> implements ImportIndividualPrivateKeyContract.View {
 
     private EditText     mEtPrivateKey;
     private EditText     mEtWalletName;
     private EditText     mEtPassword;
     private EditText     mEtRepeatPassword;
+    private ImageView mIvPasswordEyes;
+    private ImageView mIvRepeatPasswordEyes;
     private TextView     mTvPasswordDesc;
     private ShadowButton mBtnImport;
     private boolean      mShowPassword;
@@ -80,6 +82,8 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportIn
         mTvNameError = rootView.findViewById(R.id.tv_name_error);
         mEtPassword = rootView.findViewById(R.id.et_password);
         mEtRepeatPassword = rootView.findViewById(R.id.et_repeat_password);
+        mIvPasswordEyes = rootView.findViewById(R.id.iv_password_eyes);
+        mIvRepeatPasswordEyes = rootView.findViewById(R.id.iv_repeat_password_eyes);
         mTvPasswordDesc = rootView.findViewById(R.id.tv_password_desc);
         mTvPasswordError = rootView.findViewById(R.id.tv_password_error);
         mBtnPaste = rootView.findViewById(R.id.btn_paste);
@@ -93,8 +97,18 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportIn
 
     private void addListeners() {
 
-        mEtPassword.setOnTouchListener(this);
-        mEtRepeatPassword.setOnTouchListener(this);
+        RxView.clicks(mIvPasswordEyes).subscribe(new Consumer<Unit>() {
+            @Override
+            public void accept(Unit unit) throws Exception {
+                showPassword();
+            }
+        });
+        RxView.clicks(mIvRepeatPasswordEyes).subscribe(new Consumer<Unit>() {
+            @Override
+            public void accept(Unit unit) throws Exception {
+                showRepeatPassword();
+            }
+        });
         RxView.clicks(mBtnImport).subscribe(new Consumer<Unit>() {
             @Override
             public void accept(Unit unit) throws Exception {
@@ -222,32 +236,6 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportIn
     }
 
     @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        if (v == mEtPassword){
-            Drawable drawable = mEtPassword.getCompoundDrawables()[2];
-            if (drawable == null)
-                return false;
-            if (event.getAction() != MotionEvent.ACTION_UP)
-                return false;
-            if (event.getX() > mEtPassword.getWidth() - mEtPassword.getPaddingRight() - drawable.getIntrinsicWidth()){
-                showPassword();
-            }
-            return false;
-        }else if (v == mEtRepeatPassword){
-            Drawable drawable = mEtRepeatPassword.getCompoundDrawables()[2];
-            if (drawable == null)
-                return false;
-            if (event.getAction() != MotionEvent.ACTION_UP)
-                return false;
-            if (event.getX() > mEtRepeatPassword.getWidth() - mEtRepeatPassword.getPaddingRight() - drawable.getIntrinsicWidth()){
-                showRepeatPassword();
-            }
-            return false;
-        }
-        return false;
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != Activity.RESULT_OK) {
@@ -281,15 +269,15 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportIn
     private void showPassword(){
         if (mShowPassword) {
             // 显示密码
-            mEtPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_open_eyes, 0);
             mEtPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
             mEtPassword.setSelection(mEtPassword.getText().toString().length());
+            mIvPasswordEyes.setImageResource(R.drawable.icon_open_eyes);
             mShowPassword = !mShowPassword;
         } else {
             // 隐藏密码
-            mEtPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_close_eyes, 0);
             mEtPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
             mEtPassword.setSelection(mEtPassword.getText().toString().length());
+            mIvPasswordEyes.setImageResource(R.drawable.icon_close_eyes);
             mShowPassword = !mShowPassword;
         }
     }
@@ -297,15 +285,15 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportIn
     private void showRepeatPassword(){
         if (mShowRepeatPassword) {
             // 显示密码
-            mEtRepeatPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_open_eyes, 0);
             mEtRepeatPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
             mEtRepeatPassword.setSelection(mEtRepeatPassword.getText().toString().length());
+            mIvRepeatPasswordEyes.setImageResource(R.drawable.icon_open_eyes);
             mShowRepeatPassword = !mShowRepeatPassword;
         } else {
             // 隐藏密码
-            mEtRepeatPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_close_eyes, 0);
             mEtRepeatPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
             mEtRepeatPassword.setSelection(mEtRepeatPassword.getText().toString().length());
+            mIvRepeatPasswordEyes.setImageResource(R.drawable.icon_close_eyes);
             mShowRepeatPassword = !mShowRepeatPassword;
         }
     }

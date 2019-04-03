@@ -3,15 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="55dp"
-    android:layout_marginTop="10dp"
     android:background="@drawable/bg_select_wallet"
-    android:paddingLeft="12dp">
+    android:paddingLeft="5dp">
 
     <ImageView
         android:id="@+id/iv_wallet_avatar"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginRight="12dp"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_marginRight="5dp"
+        android:scaleType="fitXY"
         android:layout_centerVertical="true"
         android:src="@drawable/icon_default_coin"/>
 
@@ -20,8 +20,7 @@
         android:layout_width="80dp"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="5dp"
-        android:background="@drawable/bg_change_wallet">
+        android:layout_marginRight="5dp" >
 
         <TextView
             style="@style/Text.105cfe.12"

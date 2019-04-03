@@ -2,6 +2,7 @@ package com.juzix.wallet.component.ui.presenter;
 
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.juzix.wallet.R;
@@ -10,6 +11,7 @@ import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.ReceiveTransationContract;
 import com.juzix.wallet.component.ui.dialog.ShareDialogFragment;
+import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.config.JZAppConfigure;
 import com.juzix.wallet.config.JZDirType;
 import com.juzix.wallet.entity.ShareAppInfo;
@@ -38,11 +40,11 @@ public class ReceiveTransationPresenter extends BasePresenter<ReceiveTransationC
 
     public ReceiveTransationPresenter(ReceiveTransationContract.View view) {
         super(view);
-        walletEntity = view.getWalletFromIntent();
     }
 
     @Override
     public void loadData() {
+        walletEntity = MainActivity.sInstance.getSelectedWallet();
         if (isViewAttached() && walletEntity != null) {
 
             getView().setWalletInfo(walletEntity);
@@ -51,7 +53,11 @@ public class ReceiveTransationPresenter extends BasePresenter<ReceiveTransationC
 
                 @Override
                 public Bitmap call() throws Exception {
-                    return QRCodeEncoder.syncEncodeQRCode(walletEntity.getPrefixAddress(), DensityUtil.dp2px(getContext(), 250f));
+                    String text = walletEntity.getPrefixAddress();
+                    if (!TextUtils.isEmpty(text) && !text.toLowerCase().startsWith("0x")){
+                        text = "0x" + text;
+                    }
+                    return QRCodeEncoder.syncEncodeQRCode(text, DensityUtil.dp2px(getContext(), 250f));
                 }
             }).compose(new FlowableSchedulersTransformer())
                     .subscribe(new Consumer<Bitmap>() {
@@ -77,10 +83,14 @@ public class ReceiveTransationPresenter extends BasePresenter<ReceiveTransationC
 
     @Override
     public void shareView() {
-        if (mQRCodeBitmap == null) {
+        if (mQRCodeBitmap == null || walletEntity == null) {
             return;
         }
-        View shareView = getView().shareView(walletEntity.getName(), walletEntity.getPrefixAddress(), mQRCodeBitmap);
+        String text = walletEntity.getPrefixAddress();
+        if (!TextUtils.isEmpty(text) && !text.toLowerCase().startsWith("0x")){
+            text = "0x" + text;
+        }
+        View shareView = getView().shareView(walletEntity.getName(), text, mQRCodeBitmap);
         final BaseActivity activity = currentActivity();
         JZAppConfigure.getInstance().getDir(activity, JZDirType.plat, new JZAppConfigure.DirCallback() {
             @Override
@@ -103,8 +113,14 @@ public class ReceiveTransationPresenter extends BasePresenter<ReceiveTransationC
 
     @Override
     public void copy() {
-
-        CommonUtil.copyTextToClipboard(getContext(), walletEntity.getPrefixAddress());
+        if (walletEntity == null){
+            return;
+        }
+        String text = walletEntity.getPrefixAddress();
+        if (!TextUtils.isEmpty(text) && !text.toLowerCase().startsWith("0x")){
+            text = "0x" + text;
+        }
+        CommonUtil.copyTextToClipboard(getContext(), text);
     }
 
     private String getImageName() {

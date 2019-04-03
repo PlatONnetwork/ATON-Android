@@ -24,6 +24,8 @@ public class TransactionsContract {
 
     public interface Presenter extends IPresenter<View> {
 
+        void updateWalletEntity();
+
         int getWalletType();
 
         void fetchWalletDetail();

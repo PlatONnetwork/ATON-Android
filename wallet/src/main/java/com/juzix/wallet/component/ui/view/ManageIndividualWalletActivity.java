@@ -63,6 +63,11 @@ public class ManageIndividualWalletActivity extends MVPBaseActivity<ManageIndivi
         setContentView(R.layout.activity_manager_individual_wallet);
         unbinder = ButterKnife.bind(this);
         initView();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         mPresenter.showIndividualWalletInfo();
     }
 
