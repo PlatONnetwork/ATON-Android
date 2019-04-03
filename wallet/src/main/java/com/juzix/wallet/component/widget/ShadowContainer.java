@@ -4,10 +4,15 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.juzix.wallet.R;
 import com.juzix.wallet.utils.DensityUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author matrixelement
@@ -52,23 +57,40 @@ public class ShadowContainer extends LinearLayout {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        for (int i = 0; i < getChildCount(); i++) {
-            getChildAt(i).setEnabled(mEnabled);
-        }
+        setAllViewEnabled(mEnabled);
     }
 
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
         this.mEnabled = enabled;
-        for (int i = 0; i < getChildCount(); i++) {
-            getChildAt(i).setEnabled(enabled);
-        }
+        setAllViewEnabled(enabled);
         ShadowDrawable.setShadowDrawable(this,
                 mShapeRadius,
                 enabled ? mEnableShadowColor : mDisableShadowColor
                 , mBlurRadius,
                 mXOffSet,
                 mYOffSet);
+    }
+
+    private void setAllViewEnabled(boolean enabled) {
+        List<View> allchildren = getAllChildViews(this);
+        for (int i = 0; i < allchildren.size(); i++) {
+            allchildren.get(i).setEnabled(enabled);
+        }
+    }
+
+    private List<View> getAllChildViews(View view) {
+        List<View> allchildren = new ArrayList<View>();
+        if (view instanceof ViewGroup) {
+            ViewGroup vp = (ViewGroup) view;
+            for (int i = 0; i < vp.getChildCount(); i++) {
+                View viewchild = vp.getChildAt(i);
+                allchildren.add(viewchild);
+                //再次 调用本身（递归）
+                allchildren.addAll(getAllChildViews(viewchild));
+            }
+        }
+        return allchildren;
     }
 }

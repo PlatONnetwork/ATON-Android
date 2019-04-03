@@ -133,7 +133,7 @@ public class CreateSharedWalletActivity extends MVPBaseActivity<CreateSharedWall
     }
 
 
-    @OnClick({R.id.layout_change_wallet, R.id.layout_shared_owners, R.id.layout_required_signatures, R.id.ll_next})
+    @OnClick({R.id.layout_change_wallet, R.id.layout_shared_owners, R.id.layout_required_signatures, R.id.sc_next})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.layout_change_wallet:
@@ -150,7 +150,7 @@ public class CreateSharedWalletActivity extends MVPBaseActivity<CreateSharedWall
                 getOptionsPickerView().setPicker(getCurRequiredSignaturesNumList());
                 getOptionsPickerView().show(layoutRequiredSignatures);
                 break;
-            case R.id.ll_next:
+            case R.id.sc_next:
                 if (NumberParserUtils.parseInt(mCurRequirderSignaturesSelectedNum) > NumberParserUtils.parseInt(mCurSharedOwnerSelectedNum)) {
                     showLongToast(string(R.string.createSharedWalletTips1));
                     getOptionsPickerView().setPicker(getCurRequiredSignaturesNumList());

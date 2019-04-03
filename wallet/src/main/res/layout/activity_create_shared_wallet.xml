@@ -162,9 +162,9 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:duplicateParentState="true"
             android:orientation="horizontal"
-            app:enableShadowColor="@color/color_66969696"
+            app:disableShadowColor="@color/color_66969696"
+            app:enableShadowColor="@color/color_660051ff"
             app:enabled="false"
             app:yOffset="1dp">
 
@@ -172,15 +172,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
                 android:background="@drawable/bg_main_button"
+                android:divider="@drawable/divider_next"
                 android:gravity="center"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:showDividers="middle">
 
                 <TextView
                     style="@style/Text.f6f6f6.16"
-                    android:drawableRight="@drawable/icon_next"
                     android:drawablePadding="8dp"
                     android:text="@string/next"
                     android:textColor="@color/color_main_button_text" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_next" />
             </LinearLayout>
         </com.juzix.wallet.component.widget.ShadowContainer>
 
