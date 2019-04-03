@@ -87,22 +87,22 @@ public class AppFramework {
                 .migration(new RealmMigration() {
                     @Override
                     public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
+                        RealmSchema schema = realm.getSchema();
                         if (oldVersion == 100) {
-                            // Create a WalletEntity class
-                            RealmSchema schema = realm.getSchema();
                             schema.get("AddressInfoEntity").addField("avatar", String.class);
                             oldVersion++;
                         } else if (oldVersion == 101) {
-                            RealmSchema schema = realm.getSchema();
                             schema.get("NodeInfoEntity").addField("isMainNetworkNode", boolean.class);
                             oldVersion++;
                         } else if (oldVersion == 102) {
-                            RealmSchema schema = realm.getSchema();
                             schema.get("IndividualTransactionInfoEntity").addField("blockNumber", long.class);
                             oldVersion++;
-                        } else if (oldVersion == 103 || oldVersion == 104) {
-                            RealmSchema schema = realm.getSchema();
+                        } else if (oldVersion == 104) {
+                            schema.get("IndividualWalletInfoEntity").addField("mnemonic", String.class);
+                            schema.get("SharedWalletInfoEntity").addField("creatorAddress", String.class);
+                            schema.get("SingleVoteInfoEntity").removeField("avatar");
                             schema.remove("RegionInfoEntity");
+                            oldVersion++;
                         }
                     }
                 })

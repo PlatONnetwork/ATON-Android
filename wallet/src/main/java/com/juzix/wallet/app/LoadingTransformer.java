@@ -15,7 +15,6 @@ import io.reactivex.SingleSource;
 import io.reactivex.SingleTransformer;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
-import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.Consumer;
 
 
@@ -47,9 +46,9 @@ public final class LoadingTransformer {
                                 activity.showLoadingDialog(message);
                             }
                         })
-                        .doOnEvent(new BiConsumer<U, Throwable>() {
+                        .doFinally(new Action() {
                             @Override
-                            public void accept(U u, Throwable throwable) throws Exception {
+                            public void run() throws Exception {
                                 activity.dismissLoadingDialogImmediately();
                             }
                         });
@@ -73,9 +72,9 @@ public final class LoadingTransformer {
                                 }
                             }
                         })
-                        .doOnEvent(new BiConsumer<U, Throwable>() {
+                        .doFinally(new Action() {
                             @Override
-                            public void accept(U u, Throwable throwable) throws Exception {
+                            public void run() throws Exception {
                                 activity.dismissLoadingDialogImmediately();
                             }
                         });
@@ -107,7 +106,7 @@ public final class LoadingTransformer {
                             activity.showLoadingDialog(message);
                         }
                     }
-                }).doOnTerminate(new Action() {
+                }).doFinally(new Action() {
                     @Override
                     public void run() throws Exception {
                         activity.dismissLoadingDialogImmediately();
@@ -131,7 +130,7 @@ public final class LoadingTransformer {
                             activity.showLoadingDialog(message);
                         }
                     }
-                }).doOnTerminate(new Action() {
+                }).doFinally(new Action() {
                     @Override
                     public void run() throws Exception {
                         activity.dismissLoadingDialogImmediately();
