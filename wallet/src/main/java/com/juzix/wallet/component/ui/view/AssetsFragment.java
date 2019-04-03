@@ -69,15 +69,9 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
     Unbinder unbinder;
     @BindView(R.id.app_bar_layout)
-<<<<<<< HEAD
     AppBarLayout     appBarLayout;
     @BindView(R.id.v_tab_line)
     View   vTabLine;
-=======
-    AppBarLayout appBarLayout;
-    //    @BindView(R.id.ctl_bar)
-//    CollapsingToolbarLayout ctlBar;
->>>>>>> a093e5238116e2080ccbdf5260d510075ad7ff36
     @BindView(R.id.ll_assets_title)
     LinearLayout llAssetsTitle;
     @BindView(R.id.tv_total_assets_title)
@@ -456,56 +450,9 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
     @Override
     public void showWalletTab(WalletEntity walletEntity, int tabIndex) {
-<<<<<<< HEAD
 //        if (vpContent.getVisibility() == View.VISIBLE) {
 //            vpContent.setCurrentItem(1);
 //        }
-=======
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(Constants.Extra.EXTRA_WALLET, walletEntity);
-        ArrayList<BaseFragment> fragments = getFragments(walletEntity);
-        stbBar.setCustomTabView(new SmartTabLayout.TabProvider() {
-            @Override
-            public View createTabView(ViewGroup container, int position, PagerAdapter adapter) {
-                return getTableView(position, container);
-            }
-        });
-        stbBar.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                currentActivity().hideSoftInput();
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
-                vTabLine.setVisibility(Math.abs(i) >= appBarLayout.getTotalScrollRange() ? View.GONE : View.VISIBLE);
-                if (i == 0) {
-                    //EXPANDED
-                } else if (Math.abs(i) >= appBarLayout.getTotalScrollRange()) {
-                    //COLLAPSED
-                } else {
-                }
-            }
-        });
-        vpContent.setOffscreenPageLimit(fragments.size());
-        vpContent.setAdapter(new TabAdapter(getChildFragmentManager(), getTitles(), fragments));
-        vpContent.setSlide(true);
-        stbBar.setViewPager(vpContent);
-        setCollapsTableView(stbBar.getTabAt(tabIndex), tabIndex);
-        setCollapsIndicator();
-        vpContent.setCurrentItem(tabIndex, true);
->>>>>>> a093e5238116e2080ccbdf5260d510075ad7ff36
     }
 
     @Override

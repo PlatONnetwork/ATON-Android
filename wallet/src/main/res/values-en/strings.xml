@@ -394,12 +394,9 @@
     <string name="hint_wallet_password">Input the wallet\'s password</string>
     <string name="vote_success">Vote Success!</string>
     <string name="vote_failed">Vote Failed!</string>
-<<<<<<< HEAD
     <string name="receive_address_error">Address format is incorrect</string>
     <string name="txn_init_failed_title">Transaction initiation failed</string>
     <string name="txn_init_failed_content">The associated Classic Wallet has been removed.</string>
-=======
     <string name="query_no_result">Query no result！</string>
->>>>>>> a093e5238116e2080ccbdf5260d510075ad7ff36
 </resources>
 
