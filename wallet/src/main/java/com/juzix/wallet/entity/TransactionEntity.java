@@ -211,7 +211,7 @@ public abstract class TransactionEntity implements Comparable<TransactionEntity>
 
             @Override
             public int getStatusDescTextColor() {
-                return R.color.color_ff6b00;
+                return R.color.color_19a20e;
             }
 
             @Override
@@ -226,7 +226,7 @@ public abstract class TransactionEntity implements Comparable<TransactionEntity>
 
             @Override
             public int getStatusDescTextColor() {
-                return R.color.color_ff2020;
+                return R.color.color_f5302c;
             }
 
             @Override
@@ -241,7 +241,7 @@ public abstract class TransactionEntity implements Comparable<TransactionEntity>
 
             @Override
             public int getStatusDescTextColor() {
-                return R.color.color_ff6b00;
+                return R.color.color_19a20e;
             }
 
             @Override

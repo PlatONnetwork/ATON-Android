@@ -18,6 +18,7 @@ import com.juzix.wallet.entity.IndividualWalletEntity;
 import org.web3j.crypto.Credentials;
 import org.web3j.utils.Numeric;
 
+import java.util.ArrayList;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Single;
@@ -30,12 +31,18 @@ public class ManageIndividualWalletPresenter extends BasePresenter<ManageIndivid
 
     public ManageIndividualWalletPresenter(ManageIndividualWalletContract.View view) {
         super(view);
-        mWalletEntity = view.getWalletEntityFromIntent();
+        mWalletEntity = getView().getWalletEntityFromIntent();
     }
 
     @Override
     public void showIndividualWalletInfo() {
         if (mWalletEntity != null && isViewAttached()) {
+            ArrayList<IndividualWalletEntity> walletList = IndividualWalletManager.getInstance().getWalletList();
+            for (IndividualWalletEntity walletEntity : walletList){
+                if (mWalletEntity.getUuid().equals(walletEntity.getUuid())) {
+                    mWalletEntity = walletEntity;
+                }
+            }
             getView().showWalletName(mWalletEntity.getName());
             getView().showWalletAddress(mWalletEntity.getPrefixAddress());
             getView().showWalletAvatar(mWalletEntity.getAvatar());

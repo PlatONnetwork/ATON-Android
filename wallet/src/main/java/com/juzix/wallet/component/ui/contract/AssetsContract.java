@@ -20,9 +20,11 @@ public class AssetsContract {
         void showCurrentItem(int index);
         void showBalance(double balance);
         int getTabIndex();
+        void setArgument(WalletEntity entity);
     }
 
     public interface Presenter extends IPresenter<View> {
+        void init();
         void start();
         void scanQRCode();
         ArrayList<WalletEntity> getRecycleViewDataSource();

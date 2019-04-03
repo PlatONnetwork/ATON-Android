@@ -1,14 +1,10 @@
 package com.juzix.wallet.component.ui.view;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -19,52 +15,32 @@ import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
 
-import com.juzhen.framework.util.AndroidUtil;
-import com.juzhen.framework.util.crypt.Base64Utils;
-import com.juzhen.framework.util.crypt.MD5Utils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.service.LoopService;
-import com.juzix.wallet.component.ui.base.BaseActivity;
-import com.juzix.wallet.component.ui.dialog.CommonTipsDialogFragment;
-import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
+import com.juzix.wallet.component.ui.base.MVPBaseActivity;
+import com.juzix.wallet.component.ui.contract.MainContract;
+import com.juzix.wallet.component.ui.presenter.MainPresenter;
 import com.juzix.wallet.component.widget.FragmentTabHost;
-import com.juzix.wallet.component.widget.ShadowDrawable;
-import com.juzix.wallet.config.AppSettings;
-import com.juzix.wallet.config.JZAppConfigure;
-import com.juzix.wallet.config.JZDirType;
-import com.juzix.wallet.config.PermissionConfigure;
-import com.juzix.wallet.engine.VersionManager;
-import com.juzix.wallet.entity.VersionEntity;
+import com.juzix.wallet.entity.WalletEntity;
 import com.juzix.wallet.event.EventPublisher;
-import com.juzix.wallet.utils.DateUtil;
-import com.juzix.wallet.utils.DensityUtil;
-
-import java.io.File;
-import java.util.List;
-
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * @author matrixelement
  */
-public class MainActivity extends BaseActivity {
+public class MainActivity extends MVPBaseActivity<MainPresenter> implements MainContract.View {
 
     private final static String TAG = MainActivity.class.getSimpleName();
     private final static String TAG_PROPERTY = "property";
     private final static String TAG_VOTE = "vote";
     private final static String TAG_ME = "me";
-    //    private final static String TAG_ASSETS = "assets";
     public final static int TAB_PROPERTY = 0;
     public final static int TAB_VOTE = 1;
     public final static int TAB_ME = 2;
-    //    public final static int TAB_ASSETS = 3;
     public static final int REQ_ASSETS_TAB_QR_CODE = 0x101;
     public static final int REQ_ASSETS_ADDRESS_QR_CODE = 0x102;
     public static final int REQ_ASSETS_SELECT_ADDRESS_BOOK = 0x103;
@@ -83,12 +59,12 @@ public class MainActivity extends BaseActivity {
     View indicatorView1;
     View indicatorView2;
     View indicatorView3;
-//    View indicatorView4;
 
-    private Unbinder unbinder;
-    private int mCurIndex = TAB_PROPERTY;
-    public static MainActivity sInstance;
-    public FragmentManager fragmentManager;
+    private       Unbinder        unbinder;
+    private       int             mCurIndex = TAB_PROPERTY;
+    public static MainActivity    sInstance;
+    public        FragmentManager fragmentManager;
+    private       WalletEntity    mSelectedWallet;
 
     public static void actionStart(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -103,16 +79,29 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
+    protected MainPresenter createPresenter() {
+        return new MainPresenter(this);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         sInstance = this;
-        checkVersion();
+        mPresenter.init();
         setContentView(R.layout.activity_main);
         unbinder = ButterKnife.bind(this);
         initViews();
         EventPublisher.getInstance().register(this);
-//        updateMsgTips(SharedWalletTransactionManager.getInstance().unRead());
+    }
+
+    public void setSelectedWallet(WalletEntity wallet){
+        mSelectedWallet = wallet;
+        EventPublisher.getInstance().sendUpdateSelectedWalletEvent(mSelectedWallet);
+    }
+
+    public WalletEntity getSelectedWallet() {
+        return mSelectedWallet;
     }
 
     @Override
@@ -137,12 +126,10 @@ public class MainActivity extends BaseActivity {
         indicatorView1 = getIndicatorView(TAG_PROPERTY, R.drawable.bg_nav_property, property);
         indicatorView2 = getIndicatorView(TAG_VOTE, R.drawable.bg_nav_vote, vote);
         indicatorView3 = getIndicatorView(TAG_ME, R.drawable.bg_nav_me, me);
-//        indicatorView4 = getIndicatorView(TAG_ASSETS, R.drawable.bg_nav_property, property);
 
         tabhost.addTab(tabhost.newTabSpec(TAG_PROPERTY).setIndicator(indicatorView1), AssetsFragment.class, null);
         tabhost.addTab(tabhost.newTabSpec(TAG_VOTE).setIndicator(indicatorView2), VoteFragment.class, null);
         tabhost.addTab(tabhost.newTabSpec(TAG_ME).setIndicator(indicatorView3), MeFragment.class, null);
-//        tabhost.addTab(tabhost.newTabSpec(TAG_ASSETS).setIndicator(indicatorView4), AssetsFragment.class, null);
         tabhost.setCurrentTab(mCurIndex);
         tabhost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
@@ -165,9 +152,6 @@ public class MainActivity extends BaseActivity {
         } else if (TAG_VOTE.equals(tabId)) {
             return TAB_VOTE;
         }
-//        else if (TAG_ASSETS.equals(tabId)){
-//            return TAB_ASSETS;
-//        }
         return TAB_ME;
     }
 
@@ -188,28 +172,7 @@ public class MainActivity extends BaseActivity {
             fragment.showCurrentItem(subIndex);
         }
 
-//        int subIndex = intent.getIntExtra(Constants.Extra.EXTRA_WALLET_SUB_INDEX, AssetsFragment.TAB1);
-//        mCurIndex = intent.getIntExtra(Constants.Extra.EXTRA_WALLET_INDEX, TAB_PROPERTY);
-//        tabhost.setCurrentTab(mCurIndex);
-//        if (mCurIndex == TAB_PROPERTY && subIndex == AssetsFragment.TAB1) {
-//            AssetsFragment fragment = (AssetsFragment) fragmentManager.findFragmentByTag(TAG_PROPERTY);
-//            fragment.showCurrentItem(subIndex);
-//
-////            PropertyFragment.Page page = PropertyFragment.Page.values()[subIndex];
-////            PropertyFragment fragment = (PropertyFragment) fragmentManager.findFragmentByTag(TAG_PROPERTY);
-////            fragment.showPageWithUnActive(page);
-//        }
-
     }
-
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void onMessageTipsEvent(Event.UpdateMessageTipsEvent event) {
-//        updateMsgTips(event.unRead);
-//    }
-//
-//    private void updateMsgTips(boolean unRead){
-//        indicatorView1.findViewById(R.id.v_new_msg).setVisibility(unRead ? View.VISIBLE : View.GONE);
-//    }
 
     private View getIndicatorView(String tag, int drawableResId, String labelResId) {
 
@@ -220,8 +183,6 @@ public class MainActivity extends BaseActivity {
         textView.setText(labelResId);
         ImageView imageView = rootView.findViewById(R.id.iv_navigation);
         imageView.setImageResource(drawableResId);
-//        textView.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(this, drawableResId), null, null);
-//        textView.setCompoundDrawablePadding(DensityUtil.dp2px(this, 4));
 
         return rootView;
     }
@@ -254,83 +215,5 @@ public class MainActivity extends BaseActivity {
         Intent intent = new Intent(context, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);
-    }
-
-    private void checkVersion() {
-        long lastUpdateTime = AppSettings.getInstance().getUpdateVersionTime();
-        if (lastUpdateTime != 0 && DateUtil.isToday(lastUpdateTime)) {
-            return;
-        }
-        VersionManager.getInstance().getVersion()
-                .subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<VersionEntity>() {
-                    @Override
-                    public void accept(VersionEntity versionEntity) {
-                        String newVersion = versionEntity.getVersion().toLowerCase();
-                        String oldVersion = AndroidUtil.getVersionName(getContext()).toLowerCase();
-                        if (newVersion.startsWith("v") && !oldVersion.startsWith("v")) {
-                            oldVersion = "v" + oldVersion;
-                        } else if (!newVersion.startsWith("v") && oldVersion.startsWith("v")) {
-                            newVersion = "v" + newVersion;
-                        }
-                        if (oldVersion.compareTo(newVersion) < 0) {
-                            AppSettings.getInstance().setUpdateVersionTime(System.currentTimeMillis());
-                            CommonTipsDialogFragment.createDialogWithTitleAndTwoButton(ContextCompat.getDrawable(getContext(), R.drawable.icon_dialog_tips),
-                                    string(R.string.version_update),
-                                    string(R.string.version_update_tips, newVersion),
-                                    string(R.string.update_now), new OnDialogViewClickListener() {
-                                        @Override
-                                        public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
-                                            if (fragment != null) {
-                                                fragment.dismiss();
-                                            }
-                                            requestPermission(currentActivity(), 100, new PermissionConfigure.PermissionCallback() {
-                                                @Override
-                                                public void onSuccess(int what, @NonNull List<String> grantPermissions) {
-                                                    download(versionEntity.getDownloadUrl());
-                                                }
-
-                                                @Override
-                                                public void onHasPermission(int what) {
-                                                    download(versionEntity.getDownloadUrl());
-                                                }
-
-                                                @Override
-                                                public void onFail(int what, @NonNull List<String> deniedPermissions) {
-
-                                                }
-                                            }, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE);
-
-                                        }
-                                    },
-                                    string(R.string.not_now), new OnDialogViewClickListener() {
-                                        @Override
-                                        public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
-                                            if (fragment != null) {
-                                                fragment.dismiss();
-                                            }
-                                        }
-                                    }).show(getSupportFragmentManager(), "showTips");
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                    }
-                });
-    }
-
-    private void download(String url) {
-        JZAppConfigure.getInstance().getDir(currentActivity(), JZDirType.raw, new JZAppConfigure.DirCallback() {
-            @Override
-            public void callback(File dir) {
-                if (dir == null) {
-                    return;
-                }
-                VersionManager.getInstance().download(url, dir, new String(Base64Utils.encodeToString(MD5Utils.encode(url))) + ".apk");
-            }
-        });
-
     }
 }

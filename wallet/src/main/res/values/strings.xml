@@ -251,7 +251,7 @@
     <string name="no_transaction_record">暂无交易记录</string>
     <string name="figerprintUnlockTips">Touch ID无法启动，请使用钱包密码登录解锁</string>
     <string name="openFigerprintError">Touch ID已锁定，请到系统设置中解锁后重试</string>
-    <string name="total_assets">总资产</string>
+    <string name="total_assets">总计Energon</string>
     <string name="transfer_succeed">转账成功</string>
     <string name="transfer_failed">转账失败</string>
     <string name="input_again">请重新输入</string>
@@ -394,5 +394,8 @@
     <string name="hint_wallet_password">请输入钱包密码</string>
     <string name="vote_success">投票成功!</string>
     <string name="vote_failed">投票失败!</string>
+    <string name="receive_address_error">接收地址不正确</string>
+    <string name="txn_init_failed_title">提示</string>
+    <string name="txn_init_failed_content">关联的经典钱包已被删除，改钱包无法发起交易</string>
 
 </resources>

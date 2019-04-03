@@ -8,6 +8,7 @@ import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.TransactionsContract;
 import com.juzix.wallet.component.ui.view.IndividualTransactionDetailActivity;
 import com.juzix.wallet.component.ui.view.IndividualVoteDetailActivity;
+import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.component.ui.view.SharedTransactionDetailActivity;
 import com.juzix.wallet.component.ui.view.SigningActivity;
 import com.juzix.wallet.db.entity.IndividualTransactionInfoEntity;
@@ -59,7 +60,11 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
 
     public TransactionsPresenter(TransactionsContract.View view) {
         super(view);
-        mWalletEntity = view.getWalletFromIntent();
+    }
+
+    @Override
+    public void updateWalletEntity() {
+        mWalletEntity = MainActivity.sInstance.getSelectedWallet();
     }
 
     @Override
@@ -69,11 +74,9 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
 
     @Override
     public void fetchWalletDetail() {
-
         if (!isViewAttached() || mWalletEntity == null) {
             return;
         }
-
         fetchWalletTransactionList();
     }
 
@@ -105,11 +108,13 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
             mDisposable.dispose();
         }
 
-        String address = mWalletEntity.getPrefixAddress();
         mDisposable = Single.fromCallable(new Callable<List<TransactionEntity>>() {
             @Override
             public List<TransactionEntity> call() {
-               return getTransactionEntityList1(address).blockingGet();
+                if (mWalletEntity == null){
+                    return null;
+                }
+               return getTransactionEntityList1(mWalletEntity.getPrefixAddress()).blockingGet();
             }
         })
                 .compose(bindUntilEvent(FragmentEvent.STOP))
@@ -123,8 +128,8 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                 .subscribe(new Consumer<List<TransactionEntity>>() {
                     @Override
                     public void accept(List<TransactionEntity> transactionEntityList) throws Exception {
-                        if (isViewAttached()) {
-                            getView().notifyTransactionListChanged(transactionEntityList, address);
+                        if (isViewAttached() && mWalletEntity != null) {
+                            getView().notifyTransactionListChanged(transactionEntityList, mWalletEntity.getPrefixAddress());
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -332,21 +337,23 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
     }
 
     public void enterTransactionDetailActivity1(TransactionEntity transactionEntity) {
-        if (transactionEntity instanceof IndividualTransactionEntity) {
-            IndividualTransactionDetailActivity.actionStart(currentActivity(), (IndividualTransactionEntity) transactionEntity, mWalletEntity.getPrefixAddress());
-        } else if (transactionEntity instanceof VoteTransactionEntity) {
-            IndividualVoteDetailActivity.actionStart(currentActivity(), transactionEntity.getUuid());
-        } else if (transactionEntity instanceof SharedTransactionEntity) {
-            SharedTransactionEntity sharedTransactionEntity = (SharedTransactionEntity) transactionEntity;
-            if (!sharedTransactionEntity.isRead()) {
-                sharedTransactionEntity.setRead(true);
-                SharedWalletTransactionManager.getInstance().updateTransactionForRead(SharedWalletManager.getInstance().getWalletByContractAddress(sharedTransactionEntity.getContractAddress()), sharedTransactionEntity);
-            }
-            BaseActivity activity = currentActivity();
-            if (sharedTransactionEntity.transfered()) {
-                SharedTransactionDetailActivity.actionStart(activity, sharedTransactionEntity,mWalletEntity.getPrefixAddress());
-            } else {
-                SigningActivity.actionStart(activity, sharedTransactionEntity, (IndividualWalletEntity) mWalletEntity);
+        if (isViewAttached() && mWalletEntity != null) {
+            if (transactionEntity instanceof IndividualTransactionEntity) {
+                IndividualTransactionDetailActivity.actionStart(currentActivity(), (IndividualTransactionEntity) transactionEntity, mWalletEntity.getPrefixAddress());
+            } else if (transactionEntity instanceof VoteTransactionEntity) {
+                IndividualVoteDetailActivity.actionStart(currentActivity(), transactionEntity.getUuid());
+            } else if (transactionEntity instanceof SharedTransactionEntity) {
+                SharedTransactionEntity sharedTransactionEntity = (SharedTransactionEntity) transactionEntity;
+                if (!sharedTransactionEntity.isRead()) {
+                    sharedTransactionEntity.setRead(true);
+                    SharedWalletTransactionManager.getInstance().updateTransactionForRead(SharedWalletManager.getInstance().getWalletByContractAddress(sharedTransactionEntity.getContractAddress()), sharedTransactionEntity);
+                }
+                BaseActivity activity = currentActivity();
+                if (sharedTransactionEntity.transfered()) {
+                    SharedTransactionDetailActivity.actionStart(activity, sharedTransactionEntity, mWalletEntity.getPrefixAddress());
+                } else {
+                    SigningActivity.actionStart(activity, sharedTransactionEntity, (IndividualWalletEntity) mWalletEntity);
+                }
             }
         }
 
@@ -357,13 +364,13 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
         if (mDisposable != null && !mDisposable.isDisposed()) {
             mDisposable.dispose();
         }
-
-        String contractAddress = ((SharedWalletEntity) mWalletEntity).getPrefixAddress();
-//        mDisposable = getTransactionEntityList2(contractAddress)
         mDisposable = Single.fromCallable(new Callable<List<TransactionEntity>>() {
             @Override
             public List<TransactionEntity> call() {
-                return getTransactionEntityList2(contractAddress).blockingGet();
+                if (mWalletEntity == null){
+                    return null;
+                }
+                return getTransactionEntityList2(mWalletEntity.getPrefixAddress()).blockingGet();
             }
         })
                 .compose(bindUntilEvent(FragmentEvent.STOP))
@@ -377,8 +384,8 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                 .subscribe(new Consumer<List<TransactionEntity>>() {
                     @Override
                     public void accept(List<TransactionEntity> transactionEntityList) throws Exception {
-                        if (isViewAttached()) {
-                            getView().notifyTransactionListChanged(transactionEntityList, contractAddress);
+                        if (isViewAttached() && mWalletEntity != null) {
+                            getView().notifyTransactionListChanged(transactionEntityList, mWalletEntity.getPrefixAddress());
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -487,9 +494,8 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
     }
 
     public void enterTransactionDetailActivity2(TransactionEntity transactionEntity) {
-        SharedWalletEntity walletEntity = (SharedWalletEntity) mWalletEntity;
-        if (isViewAttached() && walletEntity != null) {
-
+        if (isViewAttached() && mWalletEntity != null) {
+            SharedWalletEntity walletEntity = (SharedWalletEntity) mWalletEntity;
             if (transactionEntity instanceof SharedTransactionEntity) {
                 SharedTransactionEntity sharedTransactionEntity = (SharedTransactionEntity) transactionEntity;
                 if (!sharedTransactionEntity.isRead()) {

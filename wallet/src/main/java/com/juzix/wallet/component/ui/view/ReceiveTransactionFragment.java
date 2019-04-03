@@ -26,7 +26,12 @@ import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.WalletEntity;
+import com.juzix.wallet.event.Event;
+import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.CommonUtil;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.concurrent.TimeUnit;
 
@@ -74,6 +79,7 @@ public class ReceiveTransactionFragment extends MVPBaseFragment<ReceiveTransatio
     protected View onCreateFragmentPage(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_receive_transaction, container, false);
         unbinder = ButterKnife.bind(this, rootView);
+        EventPublisher.getInstance().register(this);
         initViews();
         return rootView;
     }
@@ -123,9 +129,15 @@ public class ReceiveTransactionFragment extends MVPBaseFragment<ReceiveTransatio
         return view;
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdateSelectedWalletEvent(Event.UpdateSelectedWalletEvent event) {
+        mPresenter.loadData();
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        EventPublisher.getInstance().unRegister(this);
         if (unbinder != null) {
             unbinder.unbind();
         }

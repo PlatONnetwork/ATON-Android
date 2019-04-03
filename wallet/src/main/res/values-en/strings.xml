@@ -251,7 +251,7 @@
     <string name="no_transaction_record">No transaction yet</string>
     <string name="figerprintUnlockTips">Touch ID won\'t start, please Unlock with Wallet Password</string>
     <string name="openFigerprintError">Touch ID was disallowed,please check system settings and try again</string>
-    <string name="total_assets">Balance</string>
+    <string name="total_assets">Total Energon</string>
     <string name="transfer_succeed">Transfer succeed</string>
     <string name="transfer_failed">Transfer failed</string>
     <string name="input_again">Input again</string>
@@ -394,5 +394,8 @@
     <string name="hint_wallet_password">Input the wallet\'s password</string>
     <string name="vote_success">Vote Success!</string>
     <string name="vote_failed">Vote Failed!</string>
+    <string name="receive_address_error">Address format is incorrect</string>
+    <string name="txn_init_failed_title">Transaction initiation failed</string>
+    <string name="txn_init_failed_content">The associated Classic Wallet has been removed.</string>
 </resources>
 

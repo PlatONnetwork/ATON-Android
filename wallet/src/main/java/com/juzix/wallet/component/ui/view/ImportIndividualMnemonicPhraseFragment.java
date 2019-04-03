@@ -39,7 +39,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import kotlin.Unit;
 
-public class ImportIndividualMnemonicPhraseFragment extends MVPBaseFragment<ImportIndividualMnemonicPhrasePresenter> implements View.OnTouchListener, ImportIndividualMnemonicPhraseContract.View {
+public class ImportIndividualMnemonicPhraseFragment extends MVPBaseFragment<ImportIndividualMnemonicPhrasePresenter> implements ImportIndividualMnemonicPhraseContract.View {
 
     private EditText     mEtMnemonicPhrase1;
     private EditText mEtMnemonicPhrase2;
@@ -56,6 +56,8 @@ public class ImportIndividualMnemonicPhraseFragment extends MVPBaseFragment<Impo
     private EditText     mEtWalletName;
     private EditText     mEtPassword;
     private EditText     mEtRepeatPassword;
+    private ImageView mIvPasswordEyes;
+    private ImageView mIvRepeatPasswordEyes;
     private TextView     mTvPasswordDesc;
     private ShadowButton mBtnImport;
     private boolean      mShowPassword;
@@ -106,6 +108,8 @@ public class ImportIndividualMnemonicPhraseFragment extends MVPBaseFragment<Impo
         mTvNameError = rootView.findViewById(R.id.tv_name_error);
         mEtPassword = rootView.findViewById(R.id.et_password);
         mEtRepeatPassword = rootView.findViewById(R.id.et_repeat_password);
+        mIvPasswordEyes = rootView.findViewById(R.id.iv_password_eyes);
+        mIvRepeatPasswordEyes = rootView.findViewById(R.id.iv_repeat_password_eyes);
         mTvPasswordError = rootView.findViewById(R.id.tv_password_error);
         mTvPasswordDesc = rootView.findViewById(R.id.tv_password_desc);
         mBtnImport = rootView.findViewById(R.id.sbtn_import);
@@ -114,11 +118,21 @@ public class ImportIndividualMnemonicPhraseFragment extends MVPBaseFragment<Impo
         mVLine2 = rootView.findViewById(R.id.v_line2);
         mVLine3 = rootView.findViewById(R.id.v_line3);
         mVLine4 = rootView.findViewById(R.id.v_line4);
-        mEtPassword.setOnTouchListener(this);
-        mEtRepeatPassword.setOnTouchListener(this);
     }
 
     private void addListeners() {
+        RxView.clicks(mIvPasswordEyes).subscribe(new Consumer<Unit>() {
+            @Override
+            public void accept(Unit unit) throws Exception {
+                showPassword();
+            }
+        });
+        RxView.clicks(mIvRepeatPasswordEyes).subscribe(new Consumer<Unit>() {
+            @Override
+            public void accept(Unit unit) throws Exception {
+                showRepeatPassword();
+            }
+        });
         RxView.clicks(mBtnImport).subscribe(new Consumer<Unit>() {
             @Override
             public void accept(Unit unit) throws Exception {
@@ -308,33 +322,6 @@ public class ImportIndividualMnemonicPhraseFragment extends MVPBaseFragment<Impo
     }
 
     @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        if (v == mEtPassword){
-            Drawable drawable = mEtPassword.getCompoundDrawables()[2];
-            if (drawable == null)
-                return false;
-            if (event.getAction() != MotionEvent.ACTION_UP)
-                return false;
-            if (event.getX() > mEtPassword.getWidth() - mEtPassword.getPaddingRight() - drawable.getIntrinsicWidth()){
-                showPassword();
-            }
-            return false;
-        }else if (v == mEtRepeatPassword){
-            Drawable drawable = mEtRepeatPassword.getCompoundDrawables()[2];
-            if (drawable == null)
-                return false;
-            if (event.getAction() != MotionEvent.ACTION_UP)
-                return false;
-            if (event.getX() > mEtRepeatPassword.getWidth() - mEtRepeatPassword.getPaddingRight() - drawable.getIntrinsicWidth()){
-                showRepeatPassword();
-            }
-            return false;
-        }
-
-        return false;
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != Activity.RESULT_OK) {
@@ -379,15 +366,15 @@ public class ImportIndividualMnemonicPhraseFragment extends MVPBaseFragment<Impo
     private void showPassword() {
         if (mShowPassword) {
             // 显示密码
-            mEtPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_open_eyes, 0);
             mEtPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
             mEtPassword.setSelection(mEtPassword.getText().toString().length());
+            mIvPasswordEyes.setImageResource(R.drawable.icon_open_eyes);
             mShowPassword = !mShowPassword;
         } else {
             // 隐藏密码
-            mEtPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_close_eyes, 0);
             mEtPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
             mEtPassword.setSelection(mEtPassword.getText().toString().length());
+            mIvPasswordEyes.setImageResource(R.drawable.icon_close_eyes);
             mShowPassword = !mShowPassword;
         }
     }
@@ -395,15 +382,15 @@ public class ImportIndividualMnemonicPhraseFragment extends MVPBaseFragment<Impo
     private void showRepeatPassword() {
         if (mShowRepeatPassword) {
             // 显示密码
-            mEtRepeatPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_open_eyes, 0);
             mEtRepeatPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
             mEtRepeatPassword.setSelection(mEtRepeatPassword.getText().toString().length());
+            mIvRepeatPasswordEyes.setImageResource(R.drawable.icon_open_eyes);
             mShowRepeatPassword = !mShowRepeatPassword;
         } else {
             // 隐藏密码
-            mEtRepeatPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_close_eyes, 0);
             mEtRepeatPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
             mEtRepeatPassword.setSelection(mEtRepeatPassword.getText().toString().length());
+            mIvRepeatPasswordEyes.setImageResource(R.drawable.icon_close_eyes);
             mShowRepeatPassword = !mShowRepeatPassword;
         }
     }

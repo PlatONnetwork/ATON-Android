@@ -17,8 +17,6 @@ public class SendTransationContract {
 
         void setTransferAmount(double amount);
 
-        void setTransferAmountTextColor(boolean isBiggerThanBalance);
-
         void setTransferFeeAmount(String feeAmount);
 
         String getTransferAmount();
@@ -46,21 +44,15 @@ public class SendTransationContract {
 
         void init();
 
-        void updateSendWalletInfoAndFee(WalletEntity walletEntity);
-
         void fetchDefaultWalletInfo();
 
         void transferAllBalance();
-
-        void inputTransferAmount(String transferAmount);
 
         void calculateFee();
 
         void calculateFeeAndTime(double percent);
 
         boolean checkToAddress(String toAddress);
-
-        void checkToAddressAndUpdateFee(String toAddress);
 
         boolean checkTransferAmount(String transferAmount);
 

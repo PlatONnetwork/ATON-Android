@@ -3,6 +3,7 @@ package com.juzix.wallet.event;
 import com.juzhen.framework.network.NetState;
 import com.juzix.wallet.entity.RegionEntity;
 import com.juzix.wallet.entity.SharedWalletEntity;
+import com.juzix.wallet.entity.WalletEntity;
 
 public class Event {
 
@@ -85,6 +86,15 @@ public class Event {
 
         public UpdateCandidateRegionInfoEvent(RegionEntity regionEntity) {
             this.regionEntity = regionEntity;
+        }
+    }
+
+    public static class UpdateSelectedWalletEvent {
+
+        public WalletEntity walletEntity;
+
+        public UpdateSelectedWalletEvent(WalletEntity walletEntity) {
+            this.walletEntity = walletEntity;
         }
     }
 }

@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding3.view.RxView;
@@ -32,16 +33,17 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function3;
 import kotlin.Unit;
 
-public class ImportIndividualKeystoreFragment extends MVPBaseFragment<ImportIndividualKeystorePresenter> implements View.OnTouchListener, ImportIndividualKeystoreContract.View {
+public class ImportIndividualKeystoreFragment extends MVPBaseFragment<ImportIndividualKeystorePresenter> implements ImportIndividualKeystoreContract.View {
 
-    private EditText mEtKeystore;
-    private EditText mEtPassword;
-    private EditText mEtWalletName;
+    private EditText     mEtKeystore;
+    private EditText     mEtPassword;
+    private ImageView    mIvPasswordEyes;
+    private EditText     mEtWalletName;
     private ShadowButton mBtnImport;
-    private TextView mTvNameError;
-    private TextView mTvKeystoreError;
-    private TextView mTvPasswordError;
-    private Button mBtnPaste;
+    private TextView     mTvNameError;
+    private TextView     mTvKeystoreError;
+    private TextView     mTvPasswordError;
+    private Button       mBtnPaste;
     private boolean      mShowPassword;
 
     @Override
@@ -67,6 +69,7 @@ public class ImportIndividualKeystoreFragment extends MVPBaseFragment<ImportIndi
         mEtKeystore = rootView.findViewById(R.id.et_keystore);
         mTvKeystoreError = rootView.findViewById(R.id.tv_keystore_error);
         mEtPassword = rootView.findViewById(R.id.et_password);
+        mIvPasswordEyes = rootView.findViewById(R.id.iv_password_eyes);
         mTvPasswordError = rootView.findViewById(R.id.tv_password_error);
         mEtWalletName = rootView.findViewById(R.id.et_name);
         mTvNameError = rootView.findViewById(R.id.tv_name_error);
@@ -85,7 +88,12 @@ public class ImportIndividualKeystoreFragment extends MVPBaseFragment<ImportIndi
 
     private void addListeners() {
 
-        mEtPassword.setOnTouchListener(this);
+        RxView.clicks(mIvPasswordEyes).subscribe(new Consumer<Unit>() {
+            @Override
+            public void accept(Unit unit) throws Exception {
+                showPassword();
+            }
+        });
 
         RxView.clicks(mBtnImport).subscribe(new Consumer<Unit>() {
             @Override
@@ -170,33 +178,20 @@ public class ImportIndividualKeystoreFragment extends MVPBaseFragment<ImportIndi
         });
     }
 
-    private void showPassword(){
+    private void showPassword() {
         if (mShowPassword) {
             // 显示密码
-            mEtPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_open_eyes, 0);
             mEtPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
             mEtPassword.setSelection(mEtPassword.getText().toString().length());
+            mIvPasswordEyes.setImageResource(R.drawable.icon_open_eyes);
             mShowPassword = !mShowPassword;
         } else {
             // 隐藏密码
-            mEtPassword.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.icon_close_eyes, 0);
             mEtPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
             mEtPassword.setSelection(mEtPassword.getText().toString().length());
+            mIvPasswordEyes.setImageResource(R.drawable.icon_close_eyes);
             mShowPassword = !mShowPassword;
         }
-    }
-
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        Drawable drawable = mEtPassword.getCompoundDrawables()[2];
-        if (drawable == null)
-            return false;
-        if (event.getAction() != MotionEvent.ACTION_UP)
-            return false;
-        if (event.getX() > mEtPassword.getWidth() - mEtPassword.getPaddingRight() - drawable.getIntrinsicWidth()){
-            showPassword();
-        }
-        return false;
     }
 
     @Override

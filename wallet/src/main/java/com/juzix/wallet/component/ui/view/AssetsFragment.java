@@ -23,7 +23,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.juzhen.framework.network.NetState;
 import com.juzhen.framework.util.NumberParserUtils;
@@ -73,11 +72,9 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     AppBarLayout     appBarLayout;
     @BindView(R.id.v_tab_line)
     View   vTabLine;
-    //    @BindView(R.id.ctl_bar)
-//    CollapsingToolbarLayout ctlBar;
     @BindView(R.id.ll_assets_title)
     LinearLayout llAssetsTitle;
-    @BindView(R.id.tv_total_assets_unit)
+    @BindView(R.id.tv_total_assets_title)
     TextView tvTotalAssetsUnit;
     @BindView(R.id.iv_add)
     ImageView ivAdd;
@@ -113,15 +110,8 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     ShadowContainer scImportWallet;
     @BindView(R.id.sc_create_wallet)
     ShadowContainer scCreateWallet;
-    Unbinder unbinder1;
     private WalletHorizontalRecycleViewAdapter mWalletAdapter;
     private Dialog mPopDialog;
-    private int mExpandMarginsTop;
-    private int mCollapsMarginsTop;
-    private int mExpandIndicatorThickness;
-    private int mCollapsIndicatorThickness;
-    private int mExpandIndicatorCornerRadius;
-    private int mCollapsIndicatorCornerRadius;
 
     @Override
     protected AssetsPresenter createPresenter() {
@@ -138,11 +128,14 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         View rootView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_assets, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         EventPublisher.getInstance().register(this);
-        initView();
-        initDimen();
-        showAssets();
+        initHeader();
+        initTab();
+        showAssets(AppSettings.getInstance().getShowAssetsFlag());
+        showEmptyView(true);
+        mPresenter.init();
         return rootView;
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -197,10 +190,9 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
             unbinder.unbind();
         }
         EventPublisher.getInstance().register(this);
-        unbinder1.unbind();
     }
 
-    @OnClick({R.id.iv_scan, R.id.tv_total_assets_unit, R.id.tv_backup, R.id.iv_add})
+    @OnClick({R.id.iv_scan, R.id.tv_total_assets_title, R.id.tv_backup, R.id.iv_add})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_scan:
@@ -209,9 +201,9 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
             case R.id.iv_add:
                 showPopWindow();
                 break;
-            case R.id.tv_total_assets_unit:
+            case R.id.tv_total_assets_title:
                 AppSettings.getInstance().setShowAssetsFlag(!AppSettings.getInstance().getShowAssetsFlag());
-                showAssets();
+                showAssets(AppSettings.getInstance().getShowAssetsFlag());
                 break;
             case R.id.tv_backup:
                 mPresenter.backupWallet();
@@ -244,16 +236,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         }
     }
 
-    private void initDimen() {
-        mExpandMarginsTop = (int) getResources().getDimension(R.dimen.assetsMarginsTop);
-        mExpandIndicatorThickness = (int) getResources().getDimension(R.dimen.assetsTabLayoutHeight);
-        mExpandIndicatorCornerRadius = mExpandIndicatorThickness / 2;
-        mCollapsMarginsTop = 0;
-        mCollapsIndicatorThickness = (int) getResources().getDimension(R.dimen.assetsCollapsIndicatorThickness);
-        mCollapsIndicatorCornerRadius = mCollapsIndicatorThickness / 2;
-    }
-
-    private void initView() {
+    private void initHeader() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         rvWallet.setLayoutManager(linearLayoutManager);
@@ -268,7 +251,57 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         rvWallet.setAdapter(proxyAdapter);
         proxyAdapter.addFooterView(getCreateWalletView());
         proxyAdapter.addFooterView(getImportWalletView());
-        showEmptyView(true);
+    }
+
+    public void initTab() {
+        ArrayList<BaseFragment> fragments = getFragments(null);
+        stbBar.setCustomTabView(new SmartTabLayout.TabProvider() {
+            @Override
+            public View createTabView(ViewGroup container, int position, PagerAdapter adapter) {
+                return getTableView(position, container);
+            }
+        });
+        stbBar.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                currentActivity().hideSoftInput();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        int indicatorThickness = (int) getResources().getDimension(R.dimen.assetsCollapsIndicatorThickness);
+        int indicatorCornerRadius = indicatorThickness / 2;
+
+        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) stbBar.getLayoutParams();
+        params.topMargin = 0;
+        stbBar.setIndicatorCornerRadius(indicatorCornerRadius);
+        stbBar.setIndicatorThickness(indicatorThickness);
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener(){
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
+                vTabLine.setVisibility(Math.abs(i) >= appBarLayout.getTotalScrollRange() ? View.GONE : View.VISIBLE);
+                appBarLayout.setBackgroundColor(ContextCompat.getColor(getContext(), Math.abs(i) >= appBarLayout.getTotalScrollRange() ? R.color.color_ffffff : R.color.color_f9fbff));
+                if (i == 0) {
+                    //EXPANDED
+                } else if (Math.abs(i) >= appBarLayout.getTotalScrollRange()) {
+                    //COLLAPSED
+                } else {
+                }
+            }
+        });
+        vpContent.setOffscreenPageLimit(fragments.size());
+        vpContent.setAdapter(new TabAdapter(getChildFragmentManager(), getTitles(), fragments));
+        vpContent.setSlide(true);
+        stbBar.setViewPager(vpContent);
     }
 
     private View getCreateWalletView() {
@@ -297,10 +330,9 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         return view;
     }
 
-    private void showAssets() {
-        boolean showAssets = AppSettings.getInstance().getShowAssetsFlag();
-        tvTotalAssetsUnit.setCompoundDrawablesWithIntrinsicBounds(0, 0, showAssets ? R.drawable.icon_open_eyes : R.drawable.icon_close_eyes, 0);
-        tvTotalAssetsAmount.setTransformationMethod(showAssets ? HideReturnsTransformationMethod.getInstance() : PasswordTransformationMethod.getInstance());
+    private void showAssets(boolean visible) {
+        tvTotalAssetsUnit.setCompoundDrawablesWithIntrinsicBounds(0, 0, visible ? R.drawable.icon_open_eyes : R.drawable.icon_close_eyes, 0);
+        tvTotalAssetsAmount.setTransformationMethod(visible ? HideReturnsTransformationMethod.getInstance() : PasswordTransformationMethod.getInstance());
     }
 
     private ArrayList<String> getTitles() {
@@ -340,9 +372,11 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
                 fragment = new ReceiveTransactionFragment();
                 break;
         }
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(Constants.Extra.EXTRA_WALLET, walletEntity);
-        fragment.setArguments(bundle);
+        if (walletEntity != null) {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(Constants.Extra.EXTRA_WALLET, walletEntity);
+            fragment.setArguments(bundle);
+        }
 
         return fragment;
     }
@@ -416,50 +450,9 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
     @Override
     public void showWalletTab(WalletEntity walletEntity, int tabIndex) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(Constants.Extra.EXTRA_WALLET, walletEntity);
-        ArrayList<BaseFragment> fragments = getFragments(walletEntity);
-        stbBar.setCustomTabView(new SmartTabLayout.TabProvider() {
-            @Override
-            public View createTabView(ViewGroup container, int position, PagerAdapter adapter) {
-                return getTableView(position, container);
-            }
-        });
-        stbBar.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                currentActivity().hideSoftInput();
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener(){
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
-                vTabLine.setVisibility(Math.abs(i) >= appBarLayout.getTotalScrollRange() ? View.GONE : View.VISIBLE);
-                if (i == 0) {
-                    //EXPANDED
-                } else if (Math.abs(i) >= appBarLayout.getTotalScrollRange()) {
-                    //COLLAPSED
-                } else {
-                }
-            }
-        });
-        vpContent.setOffscreenPageLimit(fragments.size());
-        vpContent.setAdapter(new TabAdapter(getChildFragmentManager(), getTitles(), fragments));
-        vpContent.setSlide(true);
-        stbBar.setViewPager(vpContent);
-        setCollapsTableView(stbBar.getTabAt(tabIndex), tabIndex);
-        setCollapsIndicator();
-        vpContent.setCurrentItem(tabIndex, true);
+//        if (vpContent.getVisibility() == View.VISIBLE) {
+//            vpContent.setCurrentItem(1);
+//        }
     }
 
     @Override
@@ -479,7 +472,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         scCreateWallet.setVisibility(View.GONE);
         scImportWallet.setVisibility(View.GONE);
         mWalletAdapter.notifyDataSetChanged();
-        ((AppBarLayout.LayoutParams) llAssetsTitle.getLayoutParams()).setScrollFlags(isEmpty ? 0 : AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED);
+        ((AppBarLayout.LayoutParams) llAssetsTitle.getLayoutParams()).setScrollFlags(isEmpty ? 0 : AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED | AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
     }
 
     @Override
@@ -492,32 +485,23 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         return vpContent.getCurrentItem();
     }
 
-    private View getTableView(int position, ViewGroup container) {
-        View item = LayoutInflater.from(getContext()).inflate(R.layout.layout_app_tab_item1, container, false);
-        setCollapsTableView(item, position);
-        return item;
+    @Override
+    public void setArgument(WalletEntity entity) {
+        ArrayList<BaseFragment> fragments = ((TabAdapter) vpContent.getAdapter()).getFragments();
+        for (BaseFragment fragment : fragments){
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(Constants.Extra.EXTRA_WALLET, entity);
+            fragment.setArguments(bundle);
+        }
     }
 
-    private void setCollapsTableView(View contentView, int position) {
+    private View getTableView(int position, ViewGroup container) {
+        View contentView = LayoutInflater.from(getContext()).inflate(R.layout.layout_app_tab_item1, container, false);
         ImageView ivIcon = contentView.findViewById(R.id.iv_icon);
         ivIcon.setImageResource(getCollapsIcons().get(position));
         TextView tvTitle = contentView.findViewById(R.id.tv_title);
         tvTitle.setText(getTitles().get(position));
         tvTitle.setTextColor(ContextCompat.getColorStateList(getContext(), R.color.color_app_tab_text2));
-    }
-
-    private void setCollapsIndicator() {
-        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) stbBar.getLayoutParams();
-        params.topMargin = mCollapsMarginsTop;
-        stbBar.setIndicatorCornerRadius(mCollapsIndicatorCornerRadius);
-        stbBar.setIndicatorThickness(mCollapsIndicatorThickness);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO: inflate a fragment view
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        unbinder1 = ButterKnife.bind(this, rootView);
-        return rootView;
+        return contentView;
     }
 }
