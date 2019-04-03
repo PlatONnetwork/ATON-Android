@@ -9,7 +9,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.juzhen.framework.util.AndroidUtil;
 import com.juzhen.framework.util.crypt.Base64Utils;
@@ -23,9 +22,7 @@ import com.juzix.wallet.config.JZAppConfigure;
 import com.juzix.wallet.config.JZDirType;
 import com.juzix.wallet.config.PermissionConfigure;
 import com.juzix.wallet.engine.VersionManager;
-import com.juzix.wallet.entity.DownloadEntity;
 import com.juzix.wallet.entity.VersionEntity;
-import com.juzix.wallet.utils.FileUtil;
 import com.juzix.wallet.utils.ShareUtil;
 
 import java.io.File;
@@ -35,9 +32,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -115,7 +110,7 @@ public class AboutActivity extends BaseActivity{
                             tvUpdate.setText(string(R.string.latest_version,  newVersion));
                             vNewMsg.setVisibility(View.VISIBLE);
                         }else {
-                            tvUpdate.setText(string(R.string.current_version,  newVersion));
+                            tvUpdate.setText(string(R.string.current_version,  oldVersion));
                             vNewMsg.setVisibility(View.GONE);
                         }
                     }

@@ -3,12 +3,9 @@ package com.juzix.wallet.component.ui.view;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,15 +15,9 @@ import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.MVPBaseFragment;
 import com.juzix.wallet.component.ui.contract.ReceiveTransationContract;
-import com.juzix.wallet.component.ui.dialog.CommonDialogFragment;
-import com.juzix.wallet.component.ui.dialog.CommonTipsDialogFragment;
-import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
 import com.juzix.wallet.component.ui.presenter.ReceiveTransationPresenter;
-import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.component.widget.ShadowButton;
-import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.WalletEntity;
-import com.juzix.wallet.utils.CommonUtil;
 
 import java.util.concurrent.TimeUnit;
 
@@ -108,7 +99,7 @@ public class ReceiveTransactionFragment extends MVPBaseFragment<ReceiveTransatio
     @Override
     public void setWalletInfo(WalletEntity entity) {
         shareWalletAvatar.setImageResource(RUtils.drawable("icon_export_" + entity.getAvatar()));
-        tvAddress.setText(entity.getAddress());
+        tvAddress.setText(entity.getPrefixAddress());
     }
 
     @Override
