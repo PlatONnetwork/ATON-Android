@@ -54,7 +54,7 @@ public class SharedWalletEntity extends WalletEntity implements Cloneable {
     private SharedWalletEntity(Builder builder) {
         setUuid(builder.uuid);
         setName(builder.name);
-        setAddress(builder.walletAddress);
+        setAddress(builder.contractAddress);
         setCreatorAddress(builder.creatorAddress);
         setCreateTime(builder.createTime);
         setUpdateTime(builder.updateTime);
@@ -255,7 +255,7 @@ public class SharedWalletEntity extends WalletEntity implements Cloneable {
     public static final class Builder {
         private String uuid;
         private String name;
-        private String walletAddress;
+        private String contractAddress;
         private String creatorAddress;
         private long createTime;
         private long updateTime;
@@ -280,8 +280,8 @@ public class SharedWalletEntity extends WalletEntity implements Cloneable {
             return this;
         }
 
-        public Builder walletAddress(String val) {
-            walletAddress = val;
+        public Builder contractAddress(String val) {
+            contractAddress = val;
             return this;
         }
 

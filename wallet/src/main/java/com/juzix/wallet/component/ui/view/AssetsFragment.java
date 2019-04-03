@@ -67,7 +67,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     public static final int TAB2 = 1;
     public static final int TAB3 = 2;
 
-    Unbinder unbinder;
+     Unbinder unbinder;
     @BindView(R.id.app_bar_layout)
     AppBarLayout     appBarLayout;
     @BindView(R.id.v_tab_line)
@@ -79,7 +79,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     @BindView(R.id.iv_add)
     ImageView ivAdd;
     @BindView(R.id.iv_scan)
-    ImageView ivScan;
+    ImageView ivScan; 
     @BindView(R.id.tv_total_assets_amount)
     TextView tvTotalAssetsAmount;
     @BindView(R.id.stb_bar)
@@ -109,7 +109,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     @BindView(R.id.sc_import_wallet)
     ShadowContainer scImportWallet;
     @BindView(R.id.sc_create_wallet)
-    ShadowContainer scCreateWallet;
+    ShadowContainer scCreateWallet; 
     private WalletHorizontalRecycleViewAdapter mWalletAdapter;
     private Dialog mPopDialog;
 
@@ -190,11 +190,11 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
             unbinder.unbind();
         }
         EventPublisher.getInstance().register(this);
-    }
-
+    } 
+  
     @OnClick({R.id.iv_scan, R.id.tv_total_assets_title, R.id.tv_backup, R.id.iv_add})
     public void onClick(View view) {
-        switch (view.getId()) {
+      switch (view.getId()) {
             case R.id.iv_scan:
                 mPresenter.scanQRCode();
                 break;
@@ -210,7 +210,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
                 break;
             default:
                 break;
-        }
+        } 
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -329,11 +329,11 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         });
         return view;
     }
-
+  
     private void showAssets(boolean visible) {
         tvTotalAssetsUnit.setCompoundDrawablesWithIntrinsicBounds(0, 0, visible ? R.drawable.icon_open_eyes : R.drawable.icon_close_eyes, 0);
         tvTotalAssetsAmount.setTransformationMethod(visible ? HideReturnsTransformationMethod.getInstance() : PasswordTransformationMethod.getInstance());
-    }
+    } 
 
     private ArrayList<String> getTitles() {
         ArrayList<String> titleList = new ArrayList<>();

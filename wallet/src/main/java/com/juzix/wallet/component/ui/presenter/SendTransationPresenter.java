@@ -1,10 +1,9 @@
 package com.juzix.wallet.component.ui.presenter;
-
+ 
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.content.ContextCompat;
+import android.support.v4.content.ContextCompat; 
 import android.text.TextUtils;
-import android.view.View;
 
 import com.juzhen.framework.network.NetConnectivity;
 import com.juzhen.framework.util.NumberParserUtils;
@@ -13,10 +12,9 @@ import com.juzix.wallet.app.CustomThrowable;
 import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
-import com.juzix.wallet.component.ui.contract.SendTransationContract;
-import com.juzix.wallet.component.ui.dialog.CommonTipsDialogFragment;
+import com.juzix.wallet.component.ui.contract.SendTransationContract; 
+import com.juzix.wallet.component.ui.dialog.CommonTipsDialogFragment; 
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
-import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
 import com.juzix.wallet.component.ui.dialog.SendTransactionDialogFragment;
 import com.juzix.wallet.component.ui.view.AssetsFragment;
 import com.juzix.wallet.component.ui.view.MainActivity;
@@ -385,8 +383,8 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
                     }
                 })
                 .compose(new SchedulersTransformer())
-                .compose(LoadingTransformer.bindToSingleLifecycle(getView().currentActivity()))
                 .compose(bindToLifecycle())
+                .compose(LoadingTransformer.bindToSingleLifecycle(getView().currentActivity()))
                 .subscribe(new Consumer<SharedTransactionInfoEntity>() {
                     @Override
                     public void accept(SharedTransactionInfoEntity sharedTransactionInfoEntity) {

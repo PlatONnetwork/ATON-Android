@@ -21,18 +21,21 @@
         <RadioButton
             android:id="@+id/rb_default"
             style="@style/Text.105cfe.16"
+            android:background="@null"
             android:button="@null"
             android:text="@string/action_default" />
 
         <RadioButton
             android:id="@+id/rb_reward"
             style="@style/Text.000000.13"
+            android:background="@null"
             android:button="@null"
             android:text="@string/reward" />
 
         <RadioButton
             android:id="@+id/rb_location"
             style="@style/Text.000000.13"
+            android:background="@null"
             android:button="@null"
             android:text="@string/location" />
     </RadioGroup>

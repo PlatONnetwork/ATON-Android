@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.HttpClient;
+import com.juzhen.framework.util.MapUtils;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.db.entity.RegionInfoEntity;
 import com.juzix.wallet.db.entity.SingleVoteInfoEntity;
@@ -310,7 +311,7 @@ public class VoteManager {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        Log.e(TAG,"updateVoteTickets "+throwable.getMessage());
+                        Log.e(TAG, "updateVoteTickets " + throwable.getMessage());
                     }
                 });
     }
@@ -607,7 +608,6 @@ public class VoteManager {
 
         String transactionHash = singleVoteInfoEntity.getHash();
         String candidateId = singleVoteInfoEntity.getCandidateId();
-        String ticketPrice = singleVoteInfoEntity.getTicketPrice();
 
         sendTransaction(transactionHash)
                 .flatMap(new Function<TransactionReceipt, SingleSource<String>>() {
@@ -639,9 +639,12 @@ public class VoteManager {
                     @Override
                     public SingleSource<SingleVoteInfoEntity> apply(JSONObject jsonObject) throws Exception {
 
-                        String ticketNum = jsonObject.getString(jsonObject.getString("Data"));
+                        String data = MapUtils.getString(jsonObject, "Data");
+                        String[] array = data.split(":", 2);
+                        String validTicketNum = array[0];
+                        String ticketPrice = array[1];
 
-                        return Single.zip(getTransactionUuid(ticketNum, transactionHash), getTicketIdList(ticketNum, transactionHash), new BiFunction<String, List<String>, List<TicketInfoEntity>>() {
+                        return Single.zip(getTransactionUuid(validTicketNum, transactionHash), getTicketIdList(validTicketNum, transactionHash), new BiFunction<String, List<String>, List<TicketInfoEntity>>() {
                             @Override
                             public List<TicketInfoEntity> apply(String transactionUuid, List<String> ticketIdList) throws Exception {
                                 return getTicketInfoList(ticketIdList, transactionUuid, candidateId, ticketPrice).blockingGet();
@@ -675,7 +678,7 @@ public class VoteManager {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        Log.e(TAG,"updateVoteTicket "+throwable.getMessage());
+                        Log.e(TAG, "updateVoteTicket " + throwable.getMessage());
                     }
                 });
     }

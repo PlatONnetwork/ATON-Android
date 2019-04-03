@@ -139,6 +139,7 @@
     <string name="action_send_transation">发送</string>
     <string name="action_receive_transation">接收</string>
     <string name="vote">投票</string>
+    <string name="voting">投票</string>
     <string name="wallet_address">钱包地址</string>
     <string name="amount">数量</string>
     <string name="pay_wallet">支付钱包</string>

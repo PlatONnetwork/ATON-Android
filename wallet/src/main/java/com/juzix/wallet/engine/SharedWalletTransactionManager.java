@@ -1041,7 +1041,7 @@ public class SharedWalletTransactionManager {
                 transactionEntity.setLatestBlockNumber(Web3jManager.getInstance().getLatestBlockNumber());
                 transactionEntity.setOwnerEntityList(sharedWalletEntity.getOwner());
                 transactionEntity.setRequiredSignNumber(sharedWalletEntity.getRequiredSignNumber());
-                transactionEntity.setOwnerWalletAddress(sharedWalletEntity.getAddress());
+                transactionEntity.setOwnerWalletAddress(sharedWalletEntity.getCreatorAddress());
                 transactionEntity.setBlockNumber(getBlockNumberByHash(getHashByTransactionId(transactionEntity.getTransactionId())));
                 transactionEntity.setRead(getReadByTransactionId(getHashByTransactionId(transactionEntity.getTransactionId())));
                 if (!TextUtils.isEmpty(multiSigList)) {
