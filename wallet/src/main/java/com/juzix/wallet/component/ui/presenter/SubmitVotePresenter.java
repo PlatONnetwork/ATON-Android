@@ -176,7 +176,7 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
 
     private Map<String, String> buildTransactionInfo(String walletName, String walletAddress, double fee) {
         Map<String, String> map = new LinkedHashMap<>();
-        map.put(string(R.string.type), string(R.string.send_energon));
+        map.put(string(R.string.type), string(R.string.voting));
         map.put(string(R.string.pay_wallet), String.format("%s:%s", walletName, walletAddress));
         map.put(string(R.string.fee), string(R.string.amount_with_unit, NumberParserUtils.getPrettyNumber(fee, 8)));
         return map;

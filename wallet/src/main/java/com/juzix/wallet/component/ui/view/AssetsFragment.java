@@ -74,8 +74,8 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 //    CollapsingToolbarLayout ctlBar;
     @BindView(R.id.ll_assets_title)
     LinearLayout llAssetsTitle;
-    @BindView(R.id.tv_total_assets_unit)
-    TextView tvTotalAssetsUnit;
+    @BindView(R.id.iv_show_balance)
+    ImageView ivShowBalance;
     @BindView(R.id.iv_add)
     ImageView ivAdd;
     @BindView(R.id.iv_scan)
@@ -200,7 +200,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         unbinder1.unbind();
     }
 
-    @OnClick({R.id.iv_scan, R.id.tv_total_assets_unit, R.id.tv_backup, R.id.iv_add})
+    @OnClick({R.id.iv_scan, R.id.iv_show_balance, R.id.tv_backup, R.id.iv_add})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_scan:
@@ -209,7 +209,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
             case R.id.iv_add:
                 showPopWindow();
                 break;
-            case R.id.tv_total_assets_unit:
+            case R.id.iv_show_balance:
                 AppSettings.getInstance().setShowAssetsFlag(!AppSettings.getInstance().getShowAssetsFlag());
                 showAssets();
                 break;
@@ -299,7 +299,6 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
     private void showAssets() {
         boolean showAssets = AppSettings.getInstance().getShowAssetsFlag();
-        tvTotalAssetsUnit.setCompoundDrawablesWithIntrinsicBounds(0, 0, showAssets ? R.drawable.icon_open_eyes : R.drawable.icon_close_eyes, 0);
         tvTotalAssetsAmount.setTransformationMethod(showAssets ? HideReturnsTransformationMethod.getInstance() : PasswordTransformationMethod.getInstance());
     }
 
