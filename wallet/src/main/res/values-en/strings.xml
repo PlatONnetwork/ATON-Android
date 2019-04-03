@@ -92,13 +92,13 @@
     <string name="backupKeystore">Please keep the Keystore to prevent theft of assets.</string>
     <string name="understood">Understood</string>
     <string name="understood1">OK</string>
-    <string name="backupMnemonicTitle">Please write down the Mnemonic in the paper</string>
-    <string name="backupMnemonicDescrition">Those 12 mnemonic words are for recovering your wallet, write down correctly on paper and keep in a safe place</string>
+    <string name="backupMnemonicTitle">Please write down the Mnemonics in the paper</string>
+    <string name="backupMnemonicDescrition">Those 12 mnemonic words are for recovering your wallet, write down correctly on paper and keep in a safe place.</string>
     <string name="next">Next</string>
     <string name="individual_wallet">Classic Wallet</string>
     <string name="shared_wallet">Joint Wallet</string>
     <string name="verificationOfMnemonic">Verification of Mnemonic</string>
-    <string name="verificationOfMnemonicTitle">Please choose mnemonic words in order and make sure your mnemonic was correct written</string>
+    <string name="verificationOfMnemonicTitle">Please click below words in correct order</string>
     <string name="completeBackup">Submit</string>
     <string name="submit">Submit</string>
     <string name="empty">Empty</string>
@@ -143,7 +143,7 @@
     <string name="add">Add</string>
     <string name="action_create_wallet">Create</string>
     <string name="action_import_wallet">Import</string>
-    <string name="nav_property">Property</string>
+    <string name="nav_property">Assets</string>
     <string name="nav_vote">Vote</string>
     <string name="nav_me">Me</string>
     <string name="disclaimer">Disclaimer</string>
@@ -166,7 +166,7 @@
     <string name="validSharedWalletNameEmptyTips">Joint Wallet Name can\'t be empty</string>
     <string name="back">Back</string>
     <string name="qrCode">QR Code</string>
-    <string name="exportPrivateKeyTips">Note: Do not screen shots, please check around to prevent others from peeping or videotaping, please keep the Private Key properly.</string>
+    <string name="exportPrivateKeyTips">Note: Do not screenshots, please check around to prevent others from peeping or videotaping, Please keep the Keystore properly.</string>
     <string name="copy">Copy</string>
     <string name="msg_balance">Balance</string>
     <string name="delete_wallet">Delete</string>

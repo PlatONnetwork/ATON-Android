@@ -10,6 +10,12 @@
              android:paddingLeft="4dp"
              android:paddingRight="4dp">
 
+    <View
+        android:id="@+id/v_shadow"
+        android:layout_width="@dimen/assetsWalletSelectedItemWidth"
+        android:layout_height="@dimen/assetsWalletSelectedItemHeight">
+    </View>
+
     <!--联名钱包和普通钱包布局-->
     <RelativeLayout
         android:id="@+id/rl_item2"
@@ -58,10 +64,4 @@
         android:layout_width="@dimen/assetsWalletNormalItemWidth"
         android:layout_height="@dimen/assetsWalletNormalItemHeight"
         android:visibility="gone"/>
-
-    <View
-        android:id="@+id/v_shadow"
-        android:layout_width="@dimen/assetsWalletSelectedItemWidth"
-        android:layout_height="@dimen/assetsWalletSelectedItemHeight">
-    </View>
 </FrameLayout>

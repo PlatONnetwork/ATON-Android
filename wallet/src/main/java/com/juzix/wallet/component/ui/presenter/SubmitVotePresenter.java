@@ -126,7 +126,7 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
 
     @Override
     public void showSelectWalletDialogFragment() {
-        SelectIndividualWalletDialogFragment.newInstance(mIndividualWalletEntity != null ? mIndividualWalletEntity.getUuid() : "")
+        SelectIndividualWalletDialogFragment.newInstance(mIndividualWalletEntity != null ? mIndividualWalletEntity.getUuid() : "", true)
                 .setOnItemClickListener(new SelectIndividualWalletDialogFragment.OnItemClickListener() {
                     @Override
                     public void onItemClick(IndividualWalletEntity walletEntity) {

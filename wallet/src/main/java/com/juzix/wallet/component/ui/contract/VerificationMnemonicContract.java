@@ -58,9 +58,10 @@ public class VerificationMnemonicContract {
     }
 
     public interface View extends IView {
-        void showAllList(ArrayList<DataEntity> list);
 
-        void showCheckedList(ArrayList<DataEntity> list);
+        void showTopList(DataEntity[] list);
+
+        void showBottomList(ArrayList<DataEntity> list);
 
         void showDisclaimerDialog();
 
@@ -78,9 +79,11 @@ public class VerificationMnemonicContract {
     public interface Presenter extends IPresenter<View> {
         void init();
 
-        void checkAllListItem(int index);
+        void checkTopListItem(int index);
 
-        void uncheckItem(int index);
+        void checkBottomListItem(int index);
+
+//        void uncheckItem(int index);
 
         void emptyChecked();
 

@@ -444,6 +444,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener(){
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
+                vTabLine.setVisibility(Math.abs(i) >= appBarLayout.getTotalScrollRange() ? View.GONE : View.VISIBLE);
                 if (i == 0) {
                     //EXPANDED
                 } else if (Math.abs(i) >= appBarLayout.getTotalScrollRange()) {

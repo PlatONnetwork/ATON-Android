@@ -42,19 +42,10 @@
 
                     <TextView
                         android:id="@+id/tv_address"
-                        style="@style/Text.898c9e.12"
-                        android:layout_width="0dp"
+                        style="@style/Text.898c9e.14"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left"
-                        android:layout_weight="1"
-                        android:gravity="center_horizontal"  />
-
-                    <ImageView
-                        android:id="@+id/iv_copy"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/icon_copy"
-                        android:visibility="gone"/>
+                        android:gravity="left" />
                 </LinearLayout>
                 <TextView
                     android:visibility="gone"

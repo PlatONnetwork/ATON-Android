@@ -50,7 +50,7 @@ public final class ViewfinderView extends View {
     private static final int[] SCANNER_ALPHA              = {0, 64, 128, 192, 255, 192, 128, 64};
     private static final long  ANIMATION_DELAY            = 10L;
     private static final int   OPAQUE                     = 0xFF;
-    private static final int   CORNER_RECT_WIDTH          = 16;  //扫描区边角的宽
+    private static final int   CORNER_RECT_WIDTH          = 12;  //扫描区边角的宽
     private static final int   CORNER_RECT_HEIGHT         = 80; //扫描区边角的高
     private static final int   SCANNER_LINE_MOVE_DISTANCE = 5;  //扫描线移动距离
     private static final int   SCANNER_LINE_HEIGHT        = 10;  //扫描线宽度
@@ -250,7 +250,7 @@ public final class ViewfinderView extends View {
         paint.reset();
         paint.setColor(frameColor);
         paint.setStyle(Paint.Style.STROKE);// 画笔设置为空心
-        paint.setStrokeWidth(4);
+        paint.setStrokeWidth(1);
 
         canvas.drawRect(frame.left, frame.top, frame.right + 1, frame.top + 2, paint);
         canvas.drawRect(frame.left, frame.top + 2, frame.left + 2, frame.bottom - 1, paint);
