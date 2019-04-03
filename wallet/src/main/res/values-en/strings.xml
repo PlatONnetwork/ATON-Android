@@ -113,7 +113,7 @@
     <string name="vote">Vote</string>
     <string name="wallet_address">Wallet Address</string>
     <string name="amount">Amount</string>
-    <string name="pay_wallet">Type</string>
+    <string name="pay_wallet">From</string>
     <string name="change">Change</string>
     <string name="select_fee">Select Fee</string>
     <string name="cheaper">Cheaper</string>

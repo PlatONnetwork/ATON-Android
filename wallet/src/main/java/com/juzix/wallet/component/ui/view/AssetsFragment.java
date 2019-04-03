@@ -110,6 +110,9 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     ShadowContainer scImportWallet;
     @BindView(R.id.sc_create_wallet)
     ShadowContainer scCreateWallet;
+    @BindView(R.id.v_tab_line)
+    View vTabLine;
+
     Unbinder unbinder1;
     private WalletHorizontalRecycleViewAdapter mWalletAdapter;
     private Dialog mPopDialog;
