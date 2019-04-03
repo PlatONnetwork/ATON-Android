@@ -1045,10 +1045,7 @@ public class SharedWalletTransactionManager {
                 transactionEntity.setBlockNumber(getBlockNumberByHash(getHashByTransactionId(transactionEntity.getTransactionId())));
                 transactionEntity.setRead(getReadByTransactionId(getHashByTransactionId(transactionEntity.getTransactionId())));
                 if (!TextUtils.isEmpty(multiSigList)) {
-                    String[] array = multiSigList.split(":");
-                    if (array.length >= 3) {
-                        transactionEntity.setTransactionResult(getTransactionResultList(sharedWalletEntity.getOwner(), array[1], array[2]));
-                    }
+                    transactionEntity.setTransactionResult(getTransactionResultList(sharedWalletEntity.getOwner(), multiSigList.split(":")));
                 }
                 return transactionEntity;
             }
@@ -1060,21 +1057,27 @@ public class SharedWalletTransactionManager {
         }).toList();
     }
 
-    private List<TransactionResult> getTransactionResultList(List<OwnerEntity> ownerEntityList, String confirmList, String revokeList) {
+    private List<TransactionResult> getTransactionResultList(List<OwnerEntity> ownerEntityList, String[] array) {
         return Flowable.fromIterable(ownerEntityList).map(new Function<OwnerEntity, TransactionResult>() {
             @Override
             public TransactionResult apply(OwnerEntity ownerEntity) throws Exception {
-                return getTransactionResult(ownerEntity, confirmList, revokeList);
+                return getTransactionResult(ownerEntity, array);
             }
         }).toList().blockingGet();
     }
 
-    private TransactionResult getTransactionResult(OwnerEntity ownerEntity, String confirmList, String revokeList) {
+    private TransactionResult getTransactionResult(OwnerEntity ownerEntity, String[] array) {
         TransactionResult.Status status = TransactionResult.Status.OPERATION_UNDETERMINED;
-        if (!TextUtils.isEmpty(confirmList) && confirmList.contains(ownerEntity.getAddress().substring(2).toLowerCase())) {
-            status = TransactionResult.Status.OPERATION_APPROVAL;
-        } else if (!TextUtils.isEmpty(revokeList) && revokeList.contains(ownerEntity.getAddress().substring(2).toLowerCase())) {
-            status = TransactionResult.Status.OPERATION_REVOKE;
+        if (array.length > 1) {
+            if (array.length == 2) {
+                if (!TextUtils.isEmpty(array[1]) && array[1].contains(ownerEntity.getAddress().substring(2).toLowerCase())) {
+                    status = TransactionResult.Status.OPERATION_APPROVAL;
+                }
+            } else {
+                if (!TextUtils.isEmpty(array[2]) && array[2].contains(ownerEntity.getAddress().substring(2).toLowerCase())) {
+                    status = TransactionResult.Status.OPERATION_REVOKE;
+                }
+            }
         }
         return new TransactionResult(ownerEntity.getUuid(), ownerEntity.getName(), ownerEntity.getAddress(), status);
     }
@@ -1135,12 +1138,12 @@ public class SharedWalletTransactionManager {
         //备注
         String memo = new String(contents[4].getBytes(), Charset.forName("UTF-8"));
         //手续费
-        double  energonPrice  = BigDecimalUtil.div(contents[5], DEFAULT_WEI);
-        boolean isPending     = "1".equals(contents[6]);
-        boolean isExecuted    = "1".equals(contents[7]);
-        String  transactionId = contents[8];
-        String  uuid          = contractAddress + transactionId;
-        String  walletName    = IndividualWalletManager.getInstance().getWalletNameByWalletAddress(walletAddress);
+        double energonPrice = BigDecimalUtil.div(contents[5], DEFAULT_WEI);
+        boolean isPending = "1".equals(contents[6]);
+        boolean isExecuted = "1".equals(contents[7]);
+        String transactionId = contents[8];
+        String uuid = contractAddress + transactionId;
+        String walletName = IndividualWalletManager.getInstance().getWalletNameByWalletAddress(walletAddress);
 
         return new SharedTransactionEntity.Builder(uuid, createTime, walletName)
                 .fromAddress(fromAddress)
@@ -1150,6 +1153,8 @@ public class SharedWalletTransactionManager {
                 .energonPrice(energonPrice)
                 .pending(isPending)
                 .executed(isExecuted)
+                .contractAddress(contractAddress)
+                .transactionId(transactionId)
                 .transactionType(SharedTransactionEntity.TransactionType.SEND_TRANSACTION.getValue())
                 .build();
     }

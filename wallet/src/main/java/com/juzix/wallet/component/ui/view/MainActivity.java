@@ -22,8 +22,23 @@ import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.MainContract;
 import com.juzix.wallet.component.ui.presenter.MainPresenter;
 import com.juzix.wallet.component.widget.FragmentTabHost;
+<<<<<<< HEAD
 import com.juzix.wallet.entity.WalletEntity;
 import com.juzix.wallet.event.EventPublisher;
+=======
+import com.juzix.wallet.config.AppSettings;
+import com.juzix.wallet.config.JZAppConfigure;
+import com.juzix.wallet.config.JZDirType;
+import com.juzix.wallet.config.PermissionConfigure;
+import com.juzix.wallet.engine.VersionManager;
+import com.juzix.wallet.entity.VersionEntity;
+import com.juzix.wallet.event.EventPublisher;
+import com.juzix.wallet.utils.DateUtil;
+
+import java.io.File;
+import java.util.List;
+
+>>>>>>> a093e5238116e2080ccbdf5260d510075ad7ff36
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -93,6 +108,7 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
         unbinder = ButterKnife.bind(this);
         initViews();
         EventPublisher.getInstance().register(this);
+<<<<<<< HEAD
     }
 
     public void setSelectedWallet(WalletEntity wallet){
@@ -102,6 +118,9 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
 
     public WalletEntity getSelectedWallet() {
         return mSelectedWallet;
+=======
+        LoopService.startLoopService(this);
+>>>>>>> a093e5238116e2080ccbdf5260d510075ad7ff36
     }
 
     @Override

@@ -229,6 +229,9 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
             }
 
             if (isViewAttached()) {
+                if (!TextUtils.isEmpty(keyWord) && (candidateEntities == null || candidateEntities.isEmpty())) {
+                    showLongToast(R.string.query_no_result);
+                }
                 getView().notifyDataSetChanged(candidateEntities);
             }
         }

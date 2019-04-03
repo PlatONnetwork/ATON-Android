@@ -142,8 +142,8 @@
     <string name="add_shared_wallet">Add Joint Wallet</string>
     <string name="add">Add</string>
     <string name="action_create_wallet">Create</string>
-    <string name="action_import_wallet">Import</string>
-    <string name="nav_property">Assets</string>
+    <string name="action_import_wallet">Import</string> 
+    <string name="nav_property">Wallet</string> 
     <string name="nav_vote">Vote</string>
     <string name="nav_me">Me</string>
     <string name="disclaimer">Disclaimer</string>
@@ -329,7 +329,7 @@
     <string name="validTicket">Valid Ticket</string>
     <string name="invalidTicket">Invalid Ticket</string>
     <string name="validInvalidTicket">Valid/Invalid Ticket</string>
-    <string name="votingIncome">Profit</string>
+    <string name="votingIncome">Voting Reward</string>
     <string name="noVoteRecord">No voting record</string>
     <string name="votingDetail">Voting details</string>
     <string name="nodeDetail">Node details</string>
@@ -338,8 +338,8 @@
     <string name="estimatedActualExpirationTime">Estimated/Actual expiration time</string>
     <string name="nodeInformation">Node Information</string>
     <string name="joinTime">Join time: %1$s</string>
-    <string name="candidate">Candidate</string>
-    <string name="alternative">Alternative</string>
+    <string name="candidate">Nominees</string>
+    <string name="alternative">Candidates</string>
     <string name="stakedRanking">Staked Ranking</string>
     <string name="tickets">Tickets</string>
     <string name="voteNum">Tickets</string>
@@ -394,8 +394,12 @@
     <string name="hint_wallet_password">Input the wallet\'s password</string>
     <string name="vote_success">Vote Success!</string>
     <string name="vote_failed">Vote Failed!</string>
+<<<<<<< HEAD
     <string name="receive_address_error">Address format is incorrect</string>
     <string name="txn_init_failed_title">Transaction initiation failed</string>
     <string name="txn_init_failed_content">The associated Classic Wallet has been removed.</string>
+=======
+    <string name="query_no_result">Query no result！</string>
+>>>>>>> a093e5238116e2080ccbdf5260d510075ad7ff36
 </resources>
 
