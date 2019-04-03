@@ -49,8 +49,6 @@ public class ReceiveTransactionFragment extends MVPBaseFragment<ReceiveTransatio
     ImageView shareWalletAvatar;
     @BindView(R.id.tv_address)
     TextView tvAddress;
-    @BindView(R.id.iv_copy)
-    ImageView ivCopy;
     @BindView(R.id.sbtn_save)
     ShadowButton    btnSave;
     @BindString(R.string.warning)

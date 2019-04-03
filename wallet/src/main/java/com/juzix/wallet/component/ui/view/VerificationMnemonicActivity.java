@@ -148,12 +148,11 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
         mTvMnemonic10 = findViewById(R.id.tv_mnemonic10);
         mTvMnemonic11 = findViewById(R.id.tv_mnemonic11);
         mTvMnemonic12 = findViewById(R.id.tv_mnemonic12);
-        setCompletedBtnEnable(false);
-        setClearBtnEnable(false);
+        addMnemonicListener();
     }
 
     @Override
-    public void showAllList(ArrayList<VerificationMnemonicContract.DataEntity> list) {
+    public void showBottomList(ArrayList<VerificationMnemonicContract.DataEntity> list) {
         FlexboxLayout flAll = findViewById(R.id.fl_all);
         flAll.removeAllViews();
         for (int i = 0;i < list.size();i++){
@@ -163,11 +162,9 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
     }
 
     @Override
-    public void showCheckedList(ArrayList<VerificationMnemonicContract.DataEntity> list) {
-        clearAllCheckedView();
-        for (int i  = 0; i < list.size(); i++){
-            VerificationMnemonicContract.DataEntity dataEntity = list.get(i);
-            setCheckedView(i, dataEntity);
+    public void showTopList(VerificationMnemonicContract.DataEntity[] list) {
+        for (int i  = 0; i < list.length; i++){
+            setCheckedView(i, list[i]);
         }
     }
 
@@ -187,7 +184,7 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mPresenter.checkAllListItem(position);
+                mPresenter.checkBottomListItem(position);
             }
         });
         int paddingLeftAndRight = AndroidUtil.dip2px(this, 12f);
@@ -203,142 +200,119 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
         return textView;
     }
 
-    private void clearAllCheckedView(){
-        mTvMnemonic1.setText("");
-        mTvMnemonic1.setOnClickListener(null);
-        mTvMnemonic2.setText("");
-        mTvMnemonic2.setOnClickListener(null);
-        mTvMnemonic3.setText("");
-        mTvMnemonic3.setOnClickListener(null);
-        mTvMnemonic4.setText("");
-        mTvMnemonic4.setOnClickListener(null);
-        mTvMnemonic5.setText("");
-        mTvMnemonic5.setOnClickListener(null);
-        mTvMnemonic6.setText("");
-        mTvMnemonic6.setOnClickListener(null);
-        mTvMnemonic7.setText("");
-        mTvMnemonic7.setOnClickListener(null);
-        mTvMnemonic8.setText("");
-        mTvMnemonic8.setOnClickListener(null);
-        mTvMnemonic9.setText("");
-        mTvMnemonic9.setOnClickListener(null);
-        mTvMnemonic10.setText("");
-        mTvMnemonic10.setOnClickListener(null);
-        mTvMnemonic11.setText("");
-        mTvMnemonic11.setOnClickListener(null);
-        mTvMnemonic12.setText("");
-        mTvMnemonic12.setOnClickListener(null);
+    private void addMnemonicListener(){
+        mTvMnemonic1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.checkTopListItem(0);
+            }
+        });
+        mTvMnemonic2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.checkTopListItem(1);
+            }
+        });
+        mTvMnemonic3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.checkTopListItem(2);
+            }
+        });
+        mTvMnemonic4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.checkTopListItem(3);
+            }
+        });
+        mTvMnemonic5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.checkTopListItem(4);
+            }
+        });
+        mTvMnemonic6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.checkTopListItem(5);
+            }
+        });
+        mTvMnemonic7.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.checkTopListItem(6);
+            }
+        });
+        mTvMnemonic8.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.checkTopListItem(7);
+            }
+        });
+        mTvMnemonic9.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.checkTopListItem(8);
+            }
+        });
+        mTvMnemonic10.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.checkTopListItem(9);
+            }
+        });
+        mTvMnemonic11.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.checkTopListItem(10);
+            }
+        });
+        mTvMnemonic12.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.checkTopListItem(11);
+            }
+        });
     }
 
     private void setCheckedView(int position, VerificationMnemonicContract.DataEntity dataEntity){
+        String mnemonic = dataEntity == null ? "" : dataEntity.getMnemonic();
         switch (position){
             case 0:
-                mTvMnemonic1.setText(dataEntity.getMnemonic());
-                mTvMnemonic1.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mPresenter.uncheckItem(0);
-                    }
-                });
+                mTvMnemonic1.setText(mnemonic);
                 break;
             case 1:
-                mTvMnemonic2.setText(dataEntity.getMnemonic());
-                mTvMnemonic2.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mPresenter.uncheckItem(1);
-                    }
-                });
+                mTvMnemonic2.setText(mnemonic);
                 break;
             case 2:
-                mTvMnemonic3.setText(dataEntity.getMnemonic());
-                mTvMnemonic3.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mPresenter.uncheckItem(2);
-                    }
-                });
+                mTvMnemonic3.setText(mnemonic);
                 break;
             case 3:
-                mTvMnemonic4.setText(dataEntity.getMnemonic());
-                mTvMnemonic4.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mPresenter.uncheckItem(3);
-                    }
-                });
+                mTvMnemonic4.setText(mnemonic);
                 break;
             case 4:
-                mTvMnemonic5.setText(dataEntity.getMnemonic());
-                mTvMnemonic5.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mPresenter.uncheckItem(4);
-                    }
-                });
+                mTvMnemonic5.setText(mnemonic);
                 break;
             case 5:
-                mTvMnemonic6.setText(dataEntity.getMnemonic());
-                mTvMnemonic6.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mPresenter.uncheckItem(5);
-                    }
-                });
+                mTvMnemonic6.setText(mnemonic);
                 break;
             case 6:
-                mTvMnemonic7.setText(dataEntity.getMnemonic());
-                mTvMnemonic7.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mPresenter.uncheckItem(6);
-                    }
-                });
+                mTvMnemonic7.setText(mnemonic);
                 break;
             case 7:
-                mTvMnemonic8.setText(dataEntity.getMnemonic());
-                mTvMnemonic8.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mPresenter.uncheckItem(7);
-                    }
-                });
+                mTvMnemonic8.setText(mnemonic);
                 break;
             case 8:
-                mTvMnemonic9.setText(dataEntity.getMnemonic());
-                mTvMnemonic9.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mPresenter.uncheckItem(8);
-                    }
-                });
+                mTvMnemonic9.setText(mnemonic);
                 break;
             case 9:
-                mTvMnemonic10.setText(dataEntity.getMnemonic());
-                mTvMnemonic10.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mPresenter.uncheckItem(9);
-                    }
-                });
+                mTvMnemonic10.setText(mnemonic);
                 break;
             case 10:
-                mTvMnemonic11.setText(dataEntity.getMnemonic());
-                mTvMnemonic11.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mPresenter.uncheckItem(10);
-                    }
-                });
+                mTvMnemonic11.setText(mnemonic);
                 break;
             case 11:
-                mTvMnemonic12.setText(dataEntity.getMnemonic());
-                mTvMnemonic12.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mPresenter.uncheckItem(11);
-                    }
-                });
+                mTvMnemonic12.setText(mnemonic);
                 break;
         }
     }

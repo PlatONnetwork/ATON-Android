@@ -73,7 +73,7 @@ public class SelectIndividualWalletDialogFragment extends BaseDialogFragment {
         SelectIndividualWalletDialogFragment dialogFragment = new SelectIndividualWalletDialogFragment();
         Bundle bundle = new Bundle();
         bundle.putString(Constants.Bundle.BUNDLE_UUID, uuid);
-        bundle.putBoolean(Constants.Bundle.BUNDLE_FEE_AMOUNT, true);
+        bundle.putBoolean(Constants.Bundle.BUNDLE_FEE_AMOUNT, needAmount);
         dialogFragment.setArguments(bundle);
         return dialogFragment;
     }
@@ -177,14 +177,14 @@ public class SelectIndividualWalletDialogFragment extends BaseDialogFragment {
                             }else {
                                 newWalletEntityList.addAll(objects);
                             }
-                            Collections.sort(objects, new Comparator<WalletEntity>() {
+                            Collections.sort(newWalletEntityList, new Comparator<WalletEntity>() {
                                 @Override
                                 public int compare(WalletEntity o1, WalletEntity o2) {
                                     return Long.compare(o1.getUpdateTime(),  o2.getUpdateTime());
                                 }
                             });
                             selectWalletListAdapter.notifyDataChanged(newWalletEntityList);
-                            listWallet.setItemChecked(objects.indexOf(new IndividualWalletEntity.Builder().uuid(uuid).build()), true);
+                            listWallet.setItemChecked(newWalletEntityList.indexOf(new IndividualWalletEntity.Builder().uuid(uuid).build()), true);
                         }
                     }
                 });

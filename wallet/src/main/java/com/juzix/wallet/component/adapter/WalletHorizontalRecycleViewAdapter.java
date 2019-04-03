@@ -102,9 +102,10 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
         TextView tvName = holder.rlItem.findViewById(R.id.tv_item2_name);
         ImageView ivIcon = holder.rlItem.findViewById(R.id.iv_item2_icon);
         ShadowDrawable.setShadowDrawable(holder.vShadow,
+                ContextCompat.getColor(mContext, R.color.color_660051ff),
                 mShapeRadius,
-                ContextCompat.getColor(mContext, R.color.color_660051ff)
-                , mShadowRadius,
+                ContextCompat.getColor(mContext, R.color.color_660051ff),
+                mShadowRadius,
                 0,
                 0);
         if (mSelectedWallet == walletEntity){
@@ -140,6 +141,7 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
         TextView tvName = holder.rlItem.findViewById(R.id.tv_item2_name);
         ImageView ivIcon = holder.rlItem.findViewById(R.id.iv_item2_icon);
         ShadowDrawable.setShadowDrawable(holder.vShadow,
+                ContextCompat.getColor(mContext, R.color.color_660051ff),
                 mShapeRadius,
                 ContextCompat.getColor(mContext, R.color.color_660051ff)
                 , mShadowRadius,
