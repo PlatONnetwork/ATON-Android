@@ -86,7 +86,8 @@ public class Constants {
 //                String WEB3J_URL = "http://10.10.8.209:6789";
 //        String WEB3J_URL = "https://syde.platon.network/test";
         String IP_URL = "http://ip-api.com/batch/";
-        String UPDATE_URL = "https://api.github.com/repos/PlatONnetwork/ATON-Android/releases/latest";
+        String UPDATE_URL = "https://api.github.com/repos/zhanghuayao/ATON-Android/releases/latest";
+//        String UPDATE_URL = "https://api.github.com/repos/PlatONnetwork/ATON-Android/releases/latest";
     }
 
     public interface DBName {
