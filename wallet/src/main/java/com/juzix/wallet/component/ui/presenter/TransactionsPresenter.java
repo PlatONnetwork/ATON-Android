@@ -52,10 +52,10 @@ import io.reactivex.functions.Predicate;
  */
 public class TransactionsPresenter extends BasePresenter<TransactionsContract.View> implements TransactionsContract.Presenter {
 
-    private static final String       TAG = TransactionsPresenter.class.getSimpleName();
-    private              WalletEntity mWalletEntity;
-    private              Disposable   mDisposable;
-    private static final int        REFRESH_TIME = 2000;
+    private static final String TAG = TransactionsPresenter.class.getSimpleName();
+    private WalletEntity mWalletEntity;
+    private Disposable mDisposable;
+    private static final int REFRESH_TIME = 2000;
 
     public TransactionsPresenter(TransactionsContract.View view) {
         super(view);
@@ -84,7 +84,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
         }
         if (mWalletEntity instanceof IndividualWalletEntity) {
             fetchWalletTransactionList1();
-        }else {
+        } else {
             fetchWalletTransactionList2();
         }
     }
@@ -94,7 +94,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
         if (isViewAttached() && mWalletEntity != null) {
             if (mWalletEntity instanceof IndividualWalletEntity) {
                 enterTransactionDetailActivity1(transactionEntity);
-            }else {
+            } else {
                 enterTransactionDetailActivity2(transactionEntity);
             }
         }
@@ -109,7 +109,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
         mDisposable = Single.fromCallable(new Callable<List<TransactionEntity>>() {
             @Override
             public List<TransactionEntity> call() {
-               return getTransactionEntityList1(address).blockingGet();
+                return getTransactionEntityList1(address).blockingGet();
             }
         })
                 .compose(bindUntilEvent(FragmentEvent.STOP))
@@ -344,7 +344,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
             }
             BaseActivity activity = currentActivity();
             if (sharedTransactionEntity.transfered()) {
-                SharedTransactionDetailActivity.actionStart(activity, sharedTransactionEntity,mWalletEntity.getPrefixAddress());
+                SharedTransactionDetailActivity.actionStart(activity, sharedTransactionEntity, mWalletEntity.getPrefixAddress());
             } else {
                 SigningActivity.actionStart(activity, sharedTransactionEntity, (IndividualWalletEntity) mWalletEntity);
             }
@@ -359,7 +359,6 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
         }
 
         String contractAddress = ((SharedWalletEntity) mWalletEntity).getPrefixAddress();
-//        mDisposable = getTransactionEntityList2(contractAddress)
         mDisposable = Single.fromCallable(new Callable<List<TransactionEntity>>() {
             @Override
             public List<TransactionEntity> call() {

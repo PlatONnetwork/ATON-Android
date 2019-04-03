@@ -29,7 +29,6 @@ import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.dialog.CommonTipsDialogFragment;
 import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
 import com.juzix.wallet.component.widget.FragmentTabHost;
-import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.config.JZAppConfigure;
 import com.juzix.wallet.config.JZDirType;
@@ -38,7 +37,6 @@ import com.juzix.wallet.engine.VersionManager;
 import com.juzix.wallet.entity.VersionEntity;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.DateUtil;
-import com.juzix.wallet.utils.DensityUtil;
 
 import java.io.File;
 import java.util.List;
@@ -112,7 +110,7 @@ public class MainActivity extends BaseActivity {
         unbinder = ButterKnife.bind(this);
         initViews();
         EventPublisher.getInstance().register(this);
-//        updateMsgTips(SharedWalletTransactionManager.getInstance().unRead());
+        LoopService.startLoopService(this);
     }
 
     @Override

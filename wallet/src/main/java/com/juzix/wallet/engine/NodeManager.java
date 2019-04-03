@@ -81,7 +81,6 @@ public class NodeManager {
 
     public void switchNode(NodeEntity nodeEntity) {
         setCurNode(nodeEntity);
-        Web3jManager.getInstance().init(nodeEntity.getNodeAddress());
     }
 
     public Single<List<NodeEntity>> getNodeList() {
