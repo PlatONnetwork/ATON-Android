@@ -15,7 +15,6 @@ import com.juzix.wallet.config.JZAppConfigure;
 import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.SharedWalletManager;
-import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.event.EventPublisher;
 
 import java.util.HashMap;
@@ -64,10 +63,8 @@ public class AppFramework {
         //初始化偏好设置
         AppSettings.getInstance().init(context);
         //初始化网络模块
-        HttpClient.getInstance().init(context, "http://192.168.9.190:18060/", buildMultipleUrlMap());
+        HttpClient.getInstance().init(context, "http://192.168.9.190:10061/a-api/api/", buildMultipleUrlMap());
         //初始化节点配置
-        //todo,测试
-        Web3jManager.getInstance().init("http://192.168.120.82:6789");
         NodeManager.getInstance().init();
         //初始化普通钱包
         IndividualWalletManager.getInstance().init();
@@ -78,7 +75,7 @@ public class AppFramework {
     private Map<String, Object> buildMultipleUrlMap() {
         Map<String, Object> map = new HashMap<>();
         map.put(RequestInfo.URL_IP, "http://ip-api.com/");
-        map.put(RequestInfo.URL_VOTE, "http://10.10.8.8:8060/browser-server/");
+        map.put(RequestInfo.URL_VOTE, "http://192.168.9.190:10061/a-api/api/");
         return map;
     }
 

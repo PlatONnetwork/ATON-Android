@@ -50,37 +50,38 @@ public class NodeManager {
         nodeService.getNodeList()
                 .toFlowable()
                 .flatMap(new Function<List<NodeEntity>, Publisher<NodeEntity>>() {
-            @Override
-            public Publisher<NodeEntity> apply(List<NodeEntity> nodeEntityList) throws Exception {
-                if (nodeEntityList.isEmpty()) {
-                    return nodeService.insertNode(getDefaultNodeList()).flatMapPublisher(new Function<Boolean, Publisher<NodeEntity>>() {
-                        @Override
-                        public Publisher<NodeEntity> apply(Boolean aBoolean) throws Exception {
+                    @Override
+                    public Publisher<NodeEntity> apply(List<NodeEntity> nodeEntityList) throws Exception {
+                        if (nodeEntityList.isEmpty()) {
+                            return nodeService.insertNode(getDefaultNodeList()).flatMapPublisher(new Function<Boolean, Publisher<NodeEntity>>() {
+                                @Override
+                                public Publisher<NodeEntity> apply(Boolean aBoolean) throws Exception {
+                                    return getCheckedNode().toFlowable();
+                                }
+                            });
+                        } else {
                             return getCheckedNode().toFlowable();
                         }
-                    });
-                } else {
-                    return getCheckedNode().toFlowable();
-                }
-            }
-        })
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<NodeEntity>() {
 
-            @Override
-            public void accept(NodeEntity nodeEntity) throws Exception {
-                switchNode(nodeEntity);
-            }
-        }, new Consumer<Throwable>() {
-            @Override
-            public void accept(Throwable throwable) throws Exception {
+                    @Override
+                    public void accept(NodeEntity nodeEntity) throws Exception {
+                        switchNode(nodeEntity);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
 
-            }
-        });
+                    }
+                });
     }
 
     public void switchNode(NodeEntity nodeEntity) {
         setCurNode(nodeEntity);
+        Web3jManager.getInstance().init(nodeEntity.getNodeAddress());
     }
 
     public Single<List<NodeEntity>> getNodeList() {
@@ -103,13 +104,13 @@ public class NodeManager {
         nodeService.updateNode(nodeEntity.getId(), isChecked)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<Boolean>() {
-            @Override
-            public void accept(Boolean aBoolean) throws Exception {
-                if (aBoolean.booleanValue() && isChecked) {
-                    NodeManager.getInstance().switchNode(nodeEntity);
-                }
-            }
-        });
+                    @Override
+                    public void accept(Boolean aBoolean) throws Exception {
+                        if (aBoolean.booleanValue() && isChecked) {
+                            NodeManager.getInstance().switchNode(nodeEntity);
+                        }
+                    }
+                });
     }
 
     private List<NodeEntity> getDefaultNodeList() {

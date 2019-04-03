@@ -10,7 +10,6 @@ import io.reactivex.Single;
 import okhttp3.RequestBody;
 import retrofit2.Response;
 import retrofit2.http.Body;
-import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
 /**
@@ -24,7 +23,7 @@ public interface VoteService {
      * @param requestBody
      * @return
      */
-    @POST("browser-server/api/getBatchVoteSummary")
+    @POST("getBatchVoteSummary")
     Single<Response<ApiResponse<List<BatchVoteSummaryEntity>>>> getBatchVoteSummary(@Body RequestBody requestBody);
 
     /**
@@ -33,7 +32,7 @@ public interface VoteService {
      * @param requestBody
      * @return
      */
-    @POST("browser-server/api/getBatchVoteTransaction")
+    @POST("getBatchVoteTransaction")
     Single<Response<ApiResponse<List<BatchVoteTransactionEntity>>>> getBatchVoteTransaction(@Body RequestBody requestBody);
 
 }
