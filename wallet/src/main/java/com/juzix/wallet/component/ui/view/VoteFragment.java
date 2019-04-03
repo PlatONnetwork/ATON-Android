@@ -34,6 +34,7 @@ import com.juzix.wallet.R;
 import com.juzix.wallet.app.ClickTransformer;
 import com.juzix.wallet.component.adapter.VoteListAdapter;
 import com.juzix.wallet.component.ui.SortType;
+import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.base.MVPBaseFragment;
 import com.juzix.wallet.component.ui.contract.VoteContract;
 import com.juzix.wallet.component.ui.presenter.VotePresenter;
@@ -243,6 +244,7 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
                     public void accept(Object o) throws Exception {
                         mSearchEditOpened = false;
                         etSearchVote.setText("");
+                        ((BaseActivity)getActivity()).hideSoftInput();
                         toggleSearchEditText(mSearchEditOpened);
                     }
                 });

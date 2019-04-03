@@ -143,7 +143,7 @@
     <string name="add">Add</string>
     <string name="action_create_wallet">Create</string>
     <string name="action_import_wallet">Import</string>
-    <string name="nav_property">Property</string>
+    <string name="nav_property">Wallet</string>
     <string name="nav_vote">Vote</string>
     <string name="nav_me">Me</string>
     <string name="disclaimer">Disclaimer</string>
@@ -251,7 +251,7 @@
     <string name="no_transaction_record">No transaction yet</string>
     <string name="figerprintUnlockTips">Touch ID won\'t start, please Unlock with Wallet Password</string>
     <string name="openFigerprintError">Touch ID was disallowed,please check system settings and try again</string>
-    <string name="total_assets">Balance</string>
+    <string name="total_assets">Total Energon</string>
     <string name="transfer_succeed">Transfer succeed</string>
     <string name="transfer_failed">Transfer failed</string>
     <string name="input_again">Input again</string>
@@ -329,7 +329,7 @@
     <string name="validTicket">Valid Ticket</string>
     <string name="invalidTicket">Invalid Ticket</string>
     <string name="validInvalidTicket">Valid/Invalid Ticket</string>
-    <string name="votingIncome">Profit</string>
+    <string name="votingIncome">Voting Reward</string>
     <string name="noVoteRecord">No voting record</string>
     <string name="votingDetail">Voting details</string>
     <string name="nodeDetail">Node details</string>
@@ -338,8 +338,8 @@
     <string name="estimatedActualExpirationTime">Estimated/Actual expiration time</string>
     <string name="nodeInformation">Node Information</string>
     <string name="joinTime">Join time: %1$s</string>
-    <string name="candidate">Candidate</string>
-    <string name="alternative">Alternative</string>
+    <string name="candidate">Nominees</string>
+    <string name="alternative">Candidates</string>
     <string name="stakedRanking">Staked Ranking</string>
     <string name="tickets">Tickets</string>
     <string name="voteNum">Tickets</string>
@@ -394,5 +394,6 @@
     <string name="hint_wallet_password">Input the wallet\'s password</string>
     <string name="vote_success">Vote Success!</string>
     <string name="vote_failed">Vote Failed!</string>
+    <string name="query_no_result">Query no result！</string>
 </resources>
 

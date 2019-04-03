@@ -125,7 +125,6 @@ public class LoopService extends Service {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                Log.e(TAG, "startLoop....");
                 isServiceRuning = true;
                 VoteManager.getInstance().updateVoteTickets();
                 SharedWalletTransactionManager.getInstance().updateTransactionList();

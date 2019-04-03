@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
 import io.reactivex.Single;
@@ -113,12 +114,12 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
         })
                 .compose(bindUntilEvent(FragmentEvent.STOP))
                 .compose(new SchedulersTransformer())
-//                .repeatWhen(new Function<Flowable<Object>, Publisher<?>>() {
-//                    @Override
-//                    public Publisher<?> apply(Flowable<Object> objectFlowable) throws Exception {
-//                        return objectFlowable.delay(REFRESH_TIME, TimeUnit.MILLISECONDS);
-//                    }
-//                })
+                .repeatWhen(new Function<Flowable<Object>, Publisher<?>>() {
+                    @Override
+                    public Publisher<?> apply(Flowable<Object> objectFlowable) throws Exception {
+                        return objectFlowable.delay(REFRESH_TIME, TimeUnit.MILLISECONDS);
+                    }
+                })
                 .subscribe(new Consumer<List<TransactionEntity>>() {
                     @Override
                     public void accept(List<TransactionEntity> transactionEntityList) throws Exception {
@@ -358,7 +359,6 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
         }
 
         String contractAddress = ((SharedWalletEntity) mWalletEntity).getPrefixAddress();
-//        mDisposable = getTransactionEntityList2(contractAddress)
         mDisposable = Single.fromCallable(new Callable<List<TransactionEntity>>() {
             @Override
             public List<TransactionEntity> call() {
@@ -367,12 +367,12 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
         })
                 .compose(bindUntilEvent(FragmentEvent.STOP))
                 .compose(new SchedulersTransformer())
-//                .repeatWhen(new Function<Flowable<Object>, Publisher<?>>() {
-//                    @Override
-//                    public Publisher<?> apply(Flowable<Object> objectFlowable) throws Exception {
-//                        return objectFlowable.delay(REFRESH_TIME, TimeUnit.MILLISECONDS);
-//                    }
-//                })
+                .repeatWhen(new Function<Flowable<Object>, Publisher<?>>() {
+                    @Override
+                    public Publisher<?> apply(Flowable<Object> objectFlowable) throws Exception {
+                        return objectFlowable.delay(REFRESH_TIME, TimeUnit.MILLISECONDS);
+                    }
+                })
                 .subscribe(new Consumer<List<TransactionEntity>>() {
                     @Override
                     public void accept(List<TransactionEntity> transactionEntityList) throws Exception {
