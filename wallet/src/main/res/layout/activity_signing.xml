@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:clipToPadding="true"
-              android:fitsSystemWindows="true"
-              android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="true"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
 
     <com.juzix.wallet.component.widget.CommonTitleBar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:ctb_left_drawable="@drawable/icon_back_black"
-        app:ctb_title="@string/sign_confirming"/>
+        app:ctb_title="@string/sign_confirming" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -45,7 +45,7 @@
                         android:id="@+id/tv_transaction_status_desc"
                         style="@style/Text.61646e.16"
                         android:layout_centerHorizontal="true"
-                        tools:text="@string/transactionConfirmation"/>
+                        tools:text="@string/transactionConfirmation" />
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/gv_members"
@@ -56,7 +56,7 @@
                         android:layout_marginTop="16dp"
                         android:layout_marginBottom="16dp"
                         android:scrollbars="none"
-                        tools:listitem="@layout/item_sign_member"/>
+                        tools:listitem="@layout/item_sign_member" />
 
                     <TextView
                         android:id="@+id/tv_transaction_value_title"
@@ -64,7 +64,7 @@
                         android:layout_below="@id/gv_members"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="15dp"
-                        android:text="@string/totalValue"/>
+                        android:text="@string/totalValue" />
 
                     <TextView
                         android:id="@+id/tv_transaction_value"
@@ -72,7 +72,7 @@
                         android:layout_below="@id/tv_transaction_value_title"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="8dp"
-                        tools:text="5.00035Energon"/>
+                        tools:text="5.00035Energon" />
 
                 </RelativeLayout>
 
@@ -87,15 +87,15 @@
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"/>
+                        android:layout_height="0dp" />
 
-                    <include layout="@layout/include_transationer_info"/>
+                    <include layout="@layout/include_transationer_info" />
 
-                    <include layout="@layout/include_transation_detail_info"/>
+                    <include layout="@layout/include_transation_detail_info" />
 
                     <include
-                        android:visibility="gone"
-                        layout="@layout/include_transation_detail_hash"/>
+                        layout="@layout/include_transation_detail_hash"
+                        android:visibility="gone" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -106,61 +106,34 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="16dp" >
+            android:paddingLeft="8dp"
+            android:paddingTop="16dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="16dp">
 
-            <Button
-                android:id="@+id/btn_refuse"
+            <com.juzix.wallet.component.widget.ShadowButton
+                android:id="@+id/sbtn_refuse"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"
                 android:layout_weight="1"
-                android:background="@drawable/bg_shape_button1"
-                android:fontFamily="normal"
-                android:gravity="center"
-                android:paddingTop="13dp"
-                android:paddingBottom="13dp"
-                android:text="@string/refuse"
-                android:textAllCaps="false"
-                android:textColor="@color/color_000000"
-                android:textSize="16sp" />
+                app:enableShadowColor="@color/color_66969696"
+                app:text="@string/refuse"
+                app:textAppearance="@style/SecondaryButtonStyle"
+                app:textBackground="@drawable/bg_secondary_button" />
 
-            <Button
-                android:id="@+id/btn_agree"
+            <com.juzix.wallet.component.widget.ShadowButton
+                android:id="@+id/sbtn_agree"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"
                 android:layout_weight="1"
-                android:layout_marginLeft="16dp"
-                android:background="@drawable/bg_shape_button2"
-                android:fontFamily="normal"
-                android:gravity="center"
-                android:paddingTop="13dp"
-                android:paddingBottom="13dp"
-                android:text="@string/agree"
-                android:textAllCaps="false"
-                android:textColor="@color/color_ffffff"
-                android:textSize="16sp" />
+                app:text="@string/agree"
+                app:textAppearance="@style/MainButtonStyle"
+                app:textBackground="@drawable/bg_main_button" />
 
-            <!--<com.juzix.wallet.component.widget.RoundedTextView-->
-                <!--android:id="@+id/rtv_refuse"-->
-                <!--style="@style/Text.fff.14"-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_weight="1"-->
-                <!--android:paddingTop="10dp"-->
-                <!--android:paddingBottom="10dp"-->
-                <!--android:text="@string/refuse"-->
-                <!--app:rtv_background_color="@color/color_373E51"-->
-                <!--app:rtv_corner_radius="1dp"/>-->
-
-            <!--<com.juzix.wallet.component.widget.RoundedTextView-->
-                <!--android:id="@+id/rtv_agree"-->
-                <!--style="@style/Text.1b2137.14"-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_marginLeft="16dp"-->
-                <!--android:layout_weight="1"-->
-                <!--android:paddingTop="10dp"-->
-                <!--android:paddingBottom="10dp"-->
-                <!--android:text="@string/agree"-->
-                <!--app:rtv_background_color="@color/color_eff0f5"-->
-                <!--app:rtv_corner_radius="1dp"/>-->
         </LinearLayout>
     </LinearLayout>
 
