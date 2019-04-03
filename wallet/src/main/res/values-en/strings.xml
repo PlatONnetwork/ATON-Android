@@ -111,6 +111,7 @@
     <string name="action_send_transation">Send</string>
     <string name="action_receive_transation">Receive</string>
     <string name="vote">Vote</string>
+    <string name="voting">Voting</string>
     <string name="wallet_address">Wallet Address</string>
     <string name="amount">Amount</string>
     <string name="pay_wallet">From</string>
@@ -142,8 +143,8 @@
     <string name="add_shared_wallet">Add Joint Wallet</string>
     <string name="add">Add</string>
     <string name="action_create_wallet">Create</string>
-    <string name="action_import_wallet">Import</string> 
-    <string name="nav_property">Wallet</string> 
+    <string name="action_import_wallet">Import</string>
+    <string name="nav_property">Wallet</string>
     <string name="nav_vote">Vote</string>
     <string name="nav_me">Me</string>
     <string name="disclaimer">Disclaimer</string>

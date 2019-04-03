@@ -104,7 +104,7 @@ public class ReceiveTransationPresenter extends BasePresenter<ReceiveTransationC
     @Override
     public void copy() {
 
-        CommonUtil.copyTextToClipboard(getContext(), walletEntity.getAddress());
+        CommonUtil.copyTextToClipboard(getContext(), walletEntity.getPrefixAddress());
     }
 
     private String getImageName() {

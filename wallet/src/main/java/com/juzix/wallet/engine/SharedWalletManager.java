@@ -134,7 +134,7 @@ public class SharedWalletManager {
                     .uuid(UUID.randomUUID().toString())
                     .name(walletName)
                     .creatorAddress(individualWalletAddress)
-                    .walletAddress(contractAddress)
+                    .contractAddress(contractAddress)
                     .requiredSignNumber(requiredSignNumber)
                     .owner(members)
                     .avatar(getWalletAvatar())

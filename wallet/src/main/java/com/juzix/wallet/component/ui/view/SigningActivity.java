@@ -7,7 +7,6 @@ import android.support.constraint.Barrier;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -21,7 +20,7 @@ import com.juzix.wallet.component.adapter.SigningMemberAdapter;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.SigningContract;
 import com.juzix.wallet.component.ui.presenter.SigningPresenter;
-import com.juzix.wallet.component.widget.RoundedTextView;
+import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.component.widget.SpacesItemDecoration;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.SharedTransactionEntity;
@@ -31,7 +30,6 @@ import com.juzix.wallet.utils.CommonUtil;
 import com.juzix.wallet.utils.DateUtil;
 import com.juzix.wallet.utils.DensityUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -48,64 +46,64 @@ import kotlin.Unit;
 public class SigningActivity extends MVPBaseActivity<SigningPresenter> implements SigningContract.View {
 
     @BindView(R.id.tv_transaction_status_desc)
-    TextView       tvTransactionStatusDesc;
+    TextView tvTransactionStatusDesc;
     @BindView(R.id.gv_members)
-    RecyclerView   gvMembers;
+    RecyclerView gvMembers;
     @BindView(R.id.tv_transaction_value_title)
-    TextView       tvTransactionValueTitle;
+    TextView tvTransactionValueTitle;
     @BindView(R.id.tv_transaction_value)
-    TextView       tvTransactionValue;
+    TextView tvTransactionValue;
     @BindView(R.id.ll_button)
-    LinearLayout   llButton;
-    @BindView(R.id.btn_refuse)
-    Button         btnRefuse;
-    @BindView(R.id.btn_agree)
-    Button         btnAgree;
+    LinearLayout llButton;
+    @BindView(R.id.sbtn_refuse)
+    ShadowButton sbtnRefuse;
+    @BindView(R.id.sbtn_agree)
+    ShadowButton sbtnAgree;
     @BindView(R.id.tv_copy_from_name)
-    TextView       tvCopyFromName;
+    TextView tvCopyFromName;
     @BindView(R.id.iv_copy_from_address)
-    ImageView      ivCopyFromAddress;
+    ImageView ivCopyFromAddress;
     @BindView(R.id.tv_from_address)
-    TextView       tvFromAddress;
+    TextView tvFromAddress;
     @BindView(R.id.layout_from_address)
     RelativeLayout layoutFromAddress;
     @BindView(R.id.iv_copy_to_address)
-    ImageView      ivCopyToAddress;
+    ImageView ivCopyToAddress;
     @BindView(R.id.tv_to_address)
-    TextView       tvToAddress;
+    TextView tvToAddress;
     @BindView(R.id.layout_to_address)
     RelativeLayout layoutToAddress;
     @BindView(R.id.tv_transaction_type_title)
-    TextView       tvTransactionTypeTitle;
+    TextView tvTransactionTypeTitle;
     @BindView(R.id.tv_transaction_time_title)
-    TextView       tvTransactionTimeTitle;
+    TextView tvTransactionTimeTitle;
     @BindView(R.id.tv_transaction_amount_title)
-    TextView       tvTransactionAmountTitle;
+    TextView tvTransactionAmountTitle;
     @BindView(R.id.tv_transaction_energon_title)
-    TextView       tvTransactionEnergonTitle;
+    TextView tvTransactionEnergonTitle;
     @BindView(R.id.tv_transaction_wallet_name_title)
-    TextView       tvTransactionWalletNameTitle;
+    TextView tvTransactionWalletNameTitle;
     @BindView(R.id.barrier)
-    Barrier        barrier;
+    Barrier barrier;
     @BindView(R.id.tv_transaction_type)
-    TextView       tvTransactionType;
+    TextView tvTransactionType;
     @BindView(R.id.tv_transaction_time)
-    TextView       tvTransactionTime;
+    TextView tvTransactionTime;
     @BindView(R.id.tv_transaction_amount)
-    TextView       tvTransactionAmount;
+    TextView tvTransactionAmount;
     @BindView(R.id.tv_transaction_energon)
-    TextView       tvTransactionEnergon;
+    TextView tvTransactionEnergon;
     @BindView(R.id.tv_transaction_wallet_name)
-    TextView       tvTransactionWalletName;
+    TextView tvTransactionWalletName;
     @BindView(R.id.tv_memo)
-    TextView       tvMemo;
+    TextView tvMemo;
     @BindView(R.id.layout_transation_hash)
     RelativeLayout layoutTransationHash;
     @BindView(R.id.tv_transation_hash_title)
-    TextView       tvTransationHashTitle;
+    TextView tvTransationHashTitle;
 
-    private Unbinder             unbinder;
-    private GridLayoutManager    gridLayoutManager;
+    private Unbinder unbinder;
+    private GridLayoutManager gridLayoutManager;
     private SigningMemberAdapter signingMemberAdapter;
 
     @Override
@@ -129,7 +127,7 @@ public class SigningActivity extends MVPBaseActivity<SigningPresenter> implement
         tvTransationHashTitle.setVisibility(View.GONE);
         layoutTransationHash.setVisibility(View.GONE);
 
-        RxView.clicks(btnRefuse)
+        RxView.clicks(sbtnRefuse)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
                 .subscribe(new Consumer<Unit>() {
                     @Override
@@ -138,7 +136,7 @@ public class SigningActivity extends MVPBaseActivity<SigningPresenter> implement
                     }
                 });
 
-        RxView.clicks(btnAgree)
+        RxView.clicks(sbtnAgree)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
                 .subscribe(new Consumer<Unit>() {
                     @Override

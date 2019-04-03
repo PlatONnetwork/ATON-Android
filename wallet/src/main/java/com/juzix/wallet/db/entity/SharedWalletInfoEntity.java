@@ -24,7 +24,7 @@ public class SharedWalletInfoEntity extends RealmObject {
     /**
      * 合约地址
      */
-    private String                     address;
+    private String                     contractAddress;
     /**
      * 创建时间
      */
@@ -53,7 +53,7 @@ public class SharedWalletInfoEntity extends RealmObject {
         setUuid(builder.uuid);
         setName(builder.name);
         setCreatorAddress(builder.creatorAddress);
-        setAddress(builder.address);
+        setContractAddress(builder.address);
         setCreateTime(builder.createTime);
         setUpdateTime(builder.updateTime);
         setOwnerArrayList(builder.owner);
@@ -86,12 +86,12 @@ public class SharedWalletInfoEntity extends RealmObject {
         this.creatorAddress = creatorAddress;
     }
 
-    public String getAddress() {
-        return address;
+    public void setContractAddress(String contractAddress) {
+        this.contractAddress = contractAddress;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public String getContractAddress() {
+        return contractAddress;
     }
 
     public long getCreateTime() {
@@ -159,7 +159,7 @@ public class SharedWalletInfoEntity extends RealmObject {
         SharedWalletEntity.Builder builder = new SharedWalletEntity.Builder();
         builder.uuid(uuid);
         builder.name(name);
-        builder.walletAddress(address);
+        builder.contractAddress(contractAddress);
         builder.creatorAddress(creatorAddress);
         builder.createTime(createTime);
         builder.updateTime(updateTime);
@@ -184,7 +184,7 @@ public class SharedWalletInfoEntity extends RealmObject {
                 "uuid='" + uuid + '\'' +
                 ", name='" + name + '\'' +
                 ", creatorAddress='" + creatorAddress + '\'' +
-                ", address='" + address + '\'' +
+                ", address='" + contractAddress + '\'' +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 ", owner=" + owner +
