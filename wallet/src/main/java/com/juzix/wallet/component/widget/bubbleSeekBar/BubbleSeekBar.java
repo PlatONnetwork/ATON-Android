@@ -35,7 +35,6 @@ import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 
 import com.juzix.wallet.R;
-import com.juzix.wallet.utils.DensityUtil;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -56,7 +55,8 @@ import static com.juzix.wallet.component.widget.bubbleSeekBar.BubbleUtils.sp2px;
  * A beautiful and powerful Android custom seek bar, which has a bubble view with progress
  * appearing upon when seeking. Highly customizable, mostly demands has been considered.
  * <p>
- *@author matrixelement
+ *
+ * @author matrixelement
  */
 public class BubbleSeekBar extends View {
 
@@ -535,11 +535,11 @@ public class BubbleSeekBar extends View {
      * <p>
      * 控件的绘制顺序为：onMeasure-->onLayout-->onDraw
      */
-    public LinearGradient getLinearGradient() {
+    public LinearGradient getLinearGradient(int sectionCount) {
         //渐变颜色.colors和pos的个数一定要相等
-        float[] pos = {0f, 0.33333333333333333f};
-        int[] colors={Color.parseColor("#ff28adff"),Color.parseColor("#ff105cfe")};
-        LinearGradient linearGradient = new LinearGradient(0, 0, mLySpace / 2, mLySpace / 2, colors, pos, Shader.TileMode.REPEAT);
+        float[] pos = {0f, 0.5f};
+        int[] colors = {Color.parseColor("#ff28adff"), Color.parseColor("#ff105cfe")};
+        LinearGradient linearGradient = new LinearGradient(0, 0, mLySpace / (sectionCount - 1), mLySpace / (sectionCount - 1), colors, pos, Shader.TileMode.REPEAT);
         Matrix matrix = new Matrix();
         linearGradient.setLocalMatrix(matrix);
         return linearGradient;
@@ -661,7 +661,7 @@ public class BubbleSeekBar extends View {
             }
         }
         // draw track
-        mPaint.setShader(getLinearGradient());//渐变颜色
+        mPaint.setShader(getLinearGradient(mSectionCount));//渐变颜色
         mPaint.setStrokeWidth(mSecondTrackSize);
         mPaint.setColor(mSecondTrackColor);
         if (isRtl) {
@@ -682,10 +682,7 @@ public class BubbleSeekBar extends View {
 
         // draw thumb
         mPaint.setColor(mThumbColor);
-        mPaint.setShadowLayer(DensityUtil.dp2px(getContext(),2f), 0, DensityUtil.dp2px(getContext(),1f), Color.parseColor("#80284FFF"));
         canvas.drawCircle(mThumbCenterX, yTop, mThumbRadiusOnDragging, mPaint);
-        //关闭阴影
-        mPaint.setShadowLayer(0, 0, 0, Color.parseColor("#80284FFF"));
     }
 
     @Override
@@ -1437,14 +1434,14 @@ public class BubbleSeekBar extends View {
          * </p>
          * For example:
          * <com.juzix.pre> public SparseArray<String> onCustomize(int sectionCount, @NonNull SparseArray<String> array) {
-         *     array.clear();
-         *
-         *     array.put(0, "worst");
-         *     array.put(4, "bad");
-         *     array.put(6, "ok");
-         *     array.put(8, "good");
-         *     array.put(9, "great");
-         *     array.put(10, "excellent");
+         * array.clear();
+         * <p>
+         * array.put(0, "worst");
+         * array.put(4, "bad");
+         * array.put(6, "ok");
+         * array.put(8, "good");
+         * array.put(9, "great");
+         * array.put(10, "excellent");
          * }</com.juzix.pre>
          *
          * @param sectionCount The section count of the {@code BubbleSeekBar}.

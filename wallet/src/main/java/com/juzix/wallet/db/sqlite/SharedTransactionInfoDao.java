@@ -133,7 +133,9 @@ public class SharedTransactionInfoDao {
         try {
             realm = Realm.getDefaultInstance();
             SharedTransactionInfoEntity sharedTransactionInfoEntity = realm.where(SharedTransactionInfoEntity.class).equalTo("transactionId", transactionId).findFirst();
-            return realm.copyFromRealm(sharedTransactionInfoEntity);
+            if (sharedTransactionInfoEntity != null){
+                return realm.copyFromRealm(sharedTransactionInfoEntity);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
