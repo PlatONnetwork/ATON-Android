@@ -399,5 +399,7 @@
     <string name="txn_init_failed_title">Transaction initiation failed</string>
     <string name="txn_init_failed_content">The associated Classic Wallet has been removed.</string>
     <string name="query_no_result">Query no result！</string>
+    <string name="address_name">Address Name</string>
+    <string name="input_address_name">Name of address</string>
 </resources>
 

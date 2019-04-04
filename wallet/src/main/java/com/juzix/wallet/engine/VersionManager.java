@@ -79,7 +79,6 @@ public class VersionManager {
 
                     @Override
                     public void onNext(DownloadEntity downloadInfo) {
-                        System.out.println("***###***" + downloadInfo.getProgress());
                     }
 
                     @Override
@@ -139,6 +138,11 @@ public class VersionManager {
                     final File file = new File(destDir, fileName);
                     entity.setFile(file);
                     entity.setFileSize(responseLength);
+                    if (file.exists() && file.length() == responseLength){
+                        entity.setCurrentSize(total);
+                        emitter.onComplete();
+                        return;
+                    }
                     if (!destDir.exists()) {
                         destDir.mkdirs();
                     }
@@ -167,12 +171,11 @@ public class VersionManager {
                     fos.flush();
                     entity.setFile(file);
                     emitter.onComplete();
-                    mDownLoadSet.remove(url);
                 } catch (Exception e) {
                     entity.setErrorMsg(e);
                     emitter.onError(e);
-                    mDownLoadSet.remove(url);
                 } finally {
+                    mDownLoadSet.remove(url);
                     try {
                         if (fos != null) {
                             fos.close();
@@ -183,7 +186,6 @@ public class VersionManager {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-
                 }
             }
         });

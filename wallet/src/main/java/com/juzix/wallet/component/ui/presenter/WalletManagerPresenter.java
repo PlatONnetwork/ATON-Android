@@ -8,6 +8,7 @@ import com.juzix.wallet.component.ui.view.BackupMnemonicPhraseActivity;
 import com.juzix.wallet.component.ui.view.BackupWalletActivity;
 import com.juzix.wallet.component.ui.view.ManageIndividualWalletActivity;
 import com.juzix.wallet.component.ui.view.ManageSharedWalletActivity;
+import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.db.sqlite.IndividualWalletInfoDao;
 import com.juzix.wallet.db.sqlite.SharedWalletInfoDao;
 import com.juzix.wallet.engine.IndividualWalletManager;
@@ -59,6 +60,8 @@ public class WalletManagerPresenter extends BasePresenter<WalletManagerContract.
                 mWalletList.addAll(walletList2);
             }
             if (mWalletList.isEmpty()){
+                AppSettings.getInstance().setOperateMenuFlag(true);
+                AppSettings.getInstance().setFaceTouchIdFlag(false);
                 getView().showEmpty();
                 return;
             }

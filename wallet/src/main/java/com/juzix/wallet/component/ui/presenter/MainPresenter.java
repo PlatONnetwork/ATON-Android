@@ -63,11 +63,12 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
                 .subscribe(new Consumer<VersionEntity>() {
                     @Override
                     public void accept(VersionEntity versionEntity) {
-                        String newVersion = versionEntity.getVersion().toLowerCase();
                         String oldVersion = AndroidUtil.getVersionName(getContext()).toLowerCase();
-                        if (newVersion.startsWith("v") && !oldVersion.startsWith("v")) {
+                        if (!oldVersion.startsWith("v")){
                             oldVersion = "v" + oldVersion;
-                        } else if (!newVersion.startsWith("v") && oldVersion.startsWith("v")) {
+                        }
+                        String newVersion = versionEntity.getVersion().toLowerCase();
+                        if (!newVersion.startsWith("v")){
                             newVersion = "v" + newVersion;
                         }
                         if (oldVersion.compareTo(newVersion) < 0) {
