@@ -321,6 +321,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
         setTransferFeeAmount(feeAmount);
         bubbleSeekBar.setProgress(0);
         setSendTransactionButtonEnable(false);
+        setSaveAddressButtonEnable(false);
         etWalletAmount.addTextChangedListener(mEtWalletAmountWatcher);
         etWalletAddress.addTextChangedListener(mEtWalletAddressWatcher);
     }
