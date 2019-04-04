@@ -173,12 +173,6 @@ public class CandidateManager {
                 .map(new Function<CandidateEntity, CandidateEntity>() {
                     @Override
                     public CandidateEntity apply(CandidateEntity candidateEntity) throws Exception {
-                        return null;
-                    }
-                })
-                .map(new Function<CandidateEntity, CandidateEntity>() {
-                    @Override
-                    public CandidateEntity apply(CandidateEntity candidateEntity) throws Exception {
                         RegionInfoEntity regionInfo = RegionInfoDao.getInstance().getRegionInfoWithIp(candidateEntity.getHost());
                         if (regionInfo != null) {
                             candidateEntity.setRegionEntity(regionInfo.toRegionEntity());

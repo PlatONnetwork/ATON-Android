@@ -4,7 +4,7 @@ import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
 import com.juzix.wallet.entity.WalletEntity;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * @author matrixelement
