@@ -1,5 +1,7 @@
 package com.juzix.wallet.db.sqlite;
 
+import android.util.Log;
+
 import com.juzix.wallet.db.entity.SharedTransactionInfoEntity;
 
 import java.util.ArrayList;
@@ -142,6 +144,24 @@ public class SharedTransactionInfoDao {
         return null;
     }
 
+    public SharedTransactionInfoEntity getTransactionByUUID(String uuid) {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            SharedTransactionInfoEntity sharedTransactionInfoEntity = realm.where(SharedTransactionInfoEntity.class).equalTo("uuid", uuid).findFirst();
+            if (sharedTransactionInfoEntity != null) {
+                return realm.copyFromRealm(sharedTransactionInfoEntity);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return null;
+    }
+
     public boolean updateReadWithContractAddress(String contractAddress, boolean read) {
         Realm realm = null;
         try {
@@ -174,6 +194,7 @@ public class SharedTransactionInfoDao {
                     SharedTransactionInfoEntity transactionInfoEntity = realm.where(SharedTransactionInfoEntity.class)
                             .equalTo("uuid", uuid)
                             .findFirst();
+                    Log.e(TAG, "修改前：" + transactionInfoEntity.toString());
                     SharedTransactionInfoEntity sharedTransactionInfoEntity = realm.copyFromRealm(transactionInfoEntity);
                     sharedTransactionInfoEntity.setRead(read);
                     realm.copyToRealmOrUpdate(sharedTransactionInfoEntity);
@@ -229,7 +250,6 @@ public class SharedTransactionInfoDao {
             realm.commitTransaction();
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
             if (realm != null) {
                 realm.cancelTransaction();
             }

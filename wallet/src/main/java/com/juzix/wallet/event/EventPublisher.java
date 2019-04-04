@@ -61,18 +61,6 @@ public class EventPublisher {
         BusProvider.post(new Event.UpdateSharedWalletTransactionEvent());
     }
 
-    public void sendUpdateSharedWalletBlanceEvent(String prefixContractAddress, double balance) {
-        BusProvider.post(new Event.UpdateSharedWalletBalanceEvent(prefixContractAddress, balance));
-    }
-
-    public void sendUpdateIndividualWalletTransactionEvent() {
-        BusProvider.post(new Event.UpdateIndividualWalletTransactionEvent());
-    }
-
-    public void sendUpdateIndividualWalletBlanceEvent() {
-        BusProvider.post(new Event.UpdateIndividualWalletBalanceEvent());
-    }
-
     public void sendUpdateMessageTipsEvent(boolean unRead) {
         BusProvider.post(new Event.UpdateMessageTipsEvent(unRead));
     }

@@ -183,7 +183,6 @@ public class SharedWalletManager {
         for (SharedWalletEntity walletEntity : mWalletList) {
             try {
                 if (walletUuid.equals(walletEntity.getUuid())) {
-                    SharedWalletTransactionManager.getInstance().updateTransactionForRead(walletEntity);
                     mWalletList.remove(walletEntity);
                     break;
                 }
