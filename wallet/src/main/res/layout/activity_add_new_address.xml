@@ -30,7 +30,7 @@
             style="@style/Text.61646e.16"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/wallet_name" />
+            android:text="@string/address_name" />
 
         <EditText
             android:id="@+id/et_address_name"
@@ -39,7 +39,7 @@
             android:layout_height="40dp"
             android:background="@drawable/bg_edittext_underline"
             android:gravity="center_vertical|left"
-            android:hint="@string/nameOfWallet"
+            android:hint="@string/input_address_name"
             android:textColorHint="@color/color_b6bbd0" />
 
         <TextView
