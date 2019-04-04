@@ -307,6 +307,24 @@ public class CandidateEntity implements Cloneable, Parcelable {
         return candidateEntity;
     }
 
+    @Override
+    public int hashCode() {
+        return TextUtils.isEmpty(candidateId) ? 0 : candidateId.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof CandidateEntity) {
+            CandidateEntity candidateEntity = (CandidateEntity) obj;
+            return !TextUtils.isEmpty(candidateEntity.getCandidateId()) && candidateEntity.getCandidateId().equals(candidateId);
+
+        }
+        return super.equals(obj);
+    }
+
     public static final class Builder {
         private String deposit;
         private long blockNumber;

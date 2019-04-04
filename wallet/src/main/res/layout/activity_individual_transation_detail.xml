@@ -28,13 +28,11 @@
             android:paddingRight="15dp"
             android:paddingTop="20dp">
 
-            <TextView
-                android:id="@+id/tv_transaction_status"
-                style="@style/Text.000000.18"
-                android:layout_gravity="center_horizontal"
-                android:drawablePadding="10dp"
-                android:drawableTop="@drawable/icon_successed"
-                tools:text="@string/create_success" />
+            <include
+                layout="@layout/layout_transalation_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal" />
 
             <LinearLayout
                 android:layout_width="match_parent"

@@ -23,7 +23,6 @@ import com.juzix.wallet.component.ui.presenter.SharedTransactionDetailPresenter;
 import com.juzix.wallet.component.widget.ListViewForScrollView;
 import com.juzix.wallet.entity.SharedTransactionEntity;
 import com.juzix.wallet.entity.TransactionResult;
-import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.CommonUtil;
 import com.juzix.wallet.utils.DateUtil;
 import com.juzix.wallet.utils.DensityUtil;
@@ -48,14 +47,10 @@ public class SharedTransactionDetailActivity extends MVPBaseActivity<SharedTrans
     TextView tvCopyFromName;
     @BindView(R.id.tv_from_address)
     TextView tvFromAddress;
-    @BindView(R.id.layout_from_address)
-    RelativeLayout layoutFromAddress;
     @BindView(R.id.iv_copy_to_address)
     ImageView ivCopyToAddress;
     @BindView(R.id.tv_to_address)
     TextView tvToAddress;
-    @BindView(R.id.layout_to_address)
-    RelativeLayout layoutToAddress;
     @BindView(R.id.tv_transaction_type_title)
     TextView tvTransactionTypeTitle;
     @BindView(R.id.tv_transaction_time_title)
@@ -197,7 +192,7 @@ public class SharedTransactionDetailActivity extends MVPBaseActivity<SharedTrans
             @Override
             protected void convert(Context context, ViewHolder viewHolder, TransactionResult item, int position) {
                 viewHolder.setText(R.id.tv_name, item.getName());
-                viewHolder.setText(R.id.tv_address, AddressFormatUtil.formatAddress(item.getPrefixAddress()));
+                viewHolder.setText(R.id.tv_address, item.getPrefixAddress());
                 switch (item.getStatus()) {
                     case OPERATION_APPROVAL:
                         viewHolder.setImageResource(R.id.iv_hook, R.drawable.icon_hook_s);

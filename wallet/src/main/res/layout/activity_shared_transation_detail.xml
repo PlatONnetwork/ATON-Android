@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:clipToPadding="true"
-              android:fitsSystemWindows="true"
-              android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="true"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
 
     <com.juzix.wallet.component.widget.CommonTitleBar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:ctb_left_drawable="@drawable/icon_back_black"
-        app:ctb_title="@string/transaction_detail"/>
+        app:ctb_title="@string/transaction_detail" />
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -41,12 +41,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:orientation="vertical" >
+                android:orientation="vertical">
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_transation_list_divider"/>
+                    android:background="@drawable/bg_transation_list_divider" />
+
                 <TextView
                     android:id="@+id/tv_member_title"
                     style="@style/Text.61646e.14"
@@ -59,9 +60,11 @@
                     style="@style/List_common_style"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:dividerHeight="8dp"
-                    tools:listitem="@layout/item_shared_transaction_detail_member"/>
+                    android:divider="@drawable/divider_transaction_info_item"
+                    android:dividerHeight="16dp"
+                    tools:listitem="@layout/item_shared_transaction_detail_member" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -74,12 +77,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp" />
 
-                <include layout="@layout/include_transationer_info"/>
+                <include layout="@layout/include_transationer_info" />
 
-                <include layout="@layout/include_transation_detail_info"/>
+                <include layout="@layout/include_transation_detail_info" />
 
-                <include layout="@layout/include_transation_detail_hash"
-                    android:visibility="gone"/>
+                <include
+                    layout="@layout/include_transation_detail_hash"
+                    android:visibility="gone" />
 
             </LinearLayout>
 

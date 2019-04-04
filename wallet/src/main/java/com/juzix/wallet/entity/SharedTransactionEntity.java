@@ -14,6 +14,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.reactivex.Flowable;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
+
+import static com.juzix.wallet.entity.TransactionResult.Status.OPERATION_APPROVAL;
+import static com.juzix.wallet.entity.TransactionResult.Status.OPERATION_REVOKE;
+
 /**
  * @author matrixelement
  */
@@ -142,10 +149,6 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
         }
     };
 
-    public String getPrefixHash() {
-        return hash.toLowerCase().startsWith("0x") ? hash : "0x" + hash;
-    }
-
     public String getTransactionId() {
         return transactionId;
     }
@@ -266,7 +269,7 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
         int counter = 0;
         for (TransactionResult result : transactionResult) {
             TransactionResult.Status status = result.getStatus();
-            if (status == TransactionResult.Status.OPERATION_APPROVAL || status == TransactionResult.Status.OPERATION_REVOKE) {
+            if (status == OPERATION_APPROVAL || status == TransactionResult.Status.OPERATION_REVOKE) {
                 counter++;
             }
         }
@@ -426,41 +429,54 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
 
     @Override
     public TransactionStatus getTransactionStatus() {
-        int confirms = 0;
-        int undetermineds = 0;
-        if (TextUtils.isEmpty(hash)) {
-            //别人发起的交易
-            if (executed) {
-                return TransactionStatus.SUCCEED;
-            }
 
-        } else {
-            if (transactionResult == null || transactionResult.isEmpty()) {
-                return TransactionStatus.CREATE_JOINT_WALLET;
-            }
+        if (TextUtils.isEmpty(hash) && executed){
+            return TransactionStatus.SUCCEED;
         }
 
-        for (TransactionResult result : transactionResult) {
-            switch (result.getStatus()) {
-                case OPERATION_APPROVAL:
-                    confirms++;
-                    break;
-                case OPERATION_UNDETERMINED:
-                    undetermineds++;
-                    break;
-            }
+        if (transactionResult == null || transactionResult.isEmpty()){
+            return TransactionStatus.CREATE_JOINT_WALLET;
         }
-        //先判断是否达到签名数，未达到那就是“签名中”，达到签名数，但是executed是0，那就“交易失败”
-        //confirm是已经确认签名数
-        if (confirms >= requiredSignNumber) {
-            return executed ? TransactionStatus.SUCCEED : TransactionStatus.FAILED;
-        } else {
-            if (confirms + undetermineds == requiredSignNumber) {
-                return TransactionStatus.SIGNING;
-            } else {
-                return TransactionStatus.FAILED;
-            }
+
+        //同意数达到要求签名数
+        if (getApprovalCount() >= requiredSignNumber){
+            return TransactionStatus.SUCCEED;
         }
+
+        if (transactionResult.size() - getRevokeCount() <requiredSignNumber){
+            return TransactionStatus.FAILED;
+        }
+        return TransactionStatus.SIGNING;
+    }
+
+    public long getApprovalCount() {
+        return Flowable.fromIterable(transactionResult)
+                .map(new Function<TransactionResult, Boolean>() {
+                    @Override
+                    public Boolean apply(TransactionResult transactionResult) throws Exception {
+                        return transactionResult.getStatus() == OPERATION_APPROVAL;
+                    }
+                }).filter(new Predicate<Boolean>() {
+                    @Override
+                    public boolean test(Boolean aBoolean) throws Exception {
+                        return aBoolean;
+                    }
+                }).count().blockingGet();
+    }
+
+    public long getRevokeCount() {
+        return Flowable.fromIterable(transactionResult)
+                .map(new Function<TransactionResult, Boolean>() {
+                    @Override
+                    public Boolean apply(TransactionResult transactionResult) throws Exception {
+                        return transactionResult.getStatus() == OPERATION_REVOKE;
+                    }
+                }).filter(new Predicate<Boolean>() {
+                    @Override
+                    public boolean test(Boolean aBoolean) throws Exception {
+                        return aBoolean;
+                    }
+                }).count().blockingGet();
     }
 
     public List<SharedWalletOwnerInfoEntity> buildSharedWalletOwnerInfoEntityList() {

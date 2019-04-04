@@ -282,6 +282,12 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                         Log.e(TAG, "IndividualWalletTransaction: " + individualTransactionEntities.size());
                     }
                 })
+                .doOnError(new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Log.e(TAG, "getIndividualTransactionEntityList1" + throwable.getMessage());
+                    }
+                })
                 .onErrorReturnItem(new ArrayList<>());
     }
 
@@ -308,6 +314,11 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                                 public void accept(IndividualTransactionEntity individualTransactionEntity) throws Exception {
                                     IndividualTransactionInfoDao.getInstance().updateTransactionBlockNumber(individualTransactionEntity.getUuid(), individualTransactionEntity.getBlockNumber());
                                 }
+                            }).doOnError(new Consumer<Throwable>() {
+                                @Override
+                                public void accept(Throwable throwable) throws Exception {
+                                    Log.e(TAG, "getTransactionDetail.doOnSuccess" + throwable.getMessage());
+                                }
                             });
                         } else {
                             return getLatestBlockNumber.map(new Function<Long, IndividualTransactionEntity>() {
@@ -315,6 +326,11 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                                 public IndividualTransactionEntity apply(Long latestBlockNumber) throws Exception {
                                     individualTransactionEntity.setLatestBlockNumber(latestBlockNumber);
                                     return individualTransactionEntity;
+                                }
+                            }).doOnError(new Consumer<Throwable>() {
+                                @Override
+                                public void accept(Throwable throwable) throws Exception {
+                                    Log.e(TAG, "getLatestBlockNumber.doOnError" + throwable.getMessage());
                                 }
                             });
                         }
@@ -350,10 +366,10 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                     SharedWalletTransactionManager.getInstance().updateTransactionForRead(SharedWalletManager.getInstance().getWalletByContractAddress(sharedTransactionEntity.getContractAddress()), sharedTransactionEntity);
                 }
                 BaseActivity activity = currentActivity();
-                if (sharedTransactionEntity.transfered()) {
-                    SharedTransactionDetailActivity.actionStart(activity, sharedTransactionEntity, mWalletEntity.getPrefixAddress());
-                } else {
+                if (sharedTransactionEntity.getTransactionStatus() == TransactionEntity.TransactionStatus.SIGNING) {
                     SigningActivity.actionStart(activity, sharedTransactionEntity, (IndividualWalletEntity) mWalletEntity);
+                } else {
+                    SharedTransactionDetailActivity.actionStart(activity, sharedTransactionEntity, mWalletEntity.getPrefixAddress());
                 }
             }
         }
@@ -503,10 +519,10 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                     sharedTransactionEntity.setRead(true);
                     SharedWalletTransactionManager.getInstance().updateTransactionForRead(walletEntity, sharedTransactionEntity);
                 }
-                if (sharedTransactionEntity.transfered()) {
-                    SharedTransactionDetailActivity.actionStart(currentActivity(), sharedTransactionEntity, walletEntity.getPrefixAddress());
-                } else {
+                if (sharedTransactionEntity.getTransactionStatus() == TransactionEntity.TransactionStatus.SIGNING) {
                     SigningActivity.actionStart(currentActivity(), sharedTransactionEntity, IndividualWalletManager.getInstance().getWalletByAddress(sharedTransactionEntity.getOwnerWalletAddress()));
+                } else {
+                    SharedTransactionDetailActivity.actionStart(currentActivity(), sharedTransactionEntity, walletEntity.getPrefixAddress());
                 }
             } else {
                 IndividualTransactionDetailActivity.actionStart(currentActivity(), (IndividualTransactionEntity) transactionEntity, walletEntity.getPrefixAddress());

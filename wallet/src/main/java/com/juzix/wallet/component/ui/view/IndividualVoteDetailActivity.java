@@ -33,14 +33,10 @@ public class IndividualVoteDetailActivity extends MVPBaseActivity<IndividualVote
     ImageView ivCopyFromAddress;
     @BindView(R.id.tv_from_address)
     TextView tvFromAddress;
-    @BindView(R.id.layout_from_address)
-    RelativeLayout layoutFromAddress;
     @BindView(R.id.iv_copy_to_address)
     ImageView ivCopyToAddress;
     @BindView(R.id.tv_to_address)
     TextView tvToAddress;
-    @BindView(R.id.layout_to_address)
-    RelativeLayout layoutToAddress;
     @BindView(R.id.tv_transaction_type_title)
     TextView tvTransactionTypeTitle;
     @BindView(R.id.tv_transaction_time_title)

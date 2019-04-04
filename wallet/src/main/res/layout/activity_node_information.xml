@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:clipToPadding="true"
-              android:fitsSystemWindows="true"
-              android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="true"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
 
     <com.juzix.wallet.component.widget.CommonTitleBar
         android:id="@+id/commonTitleBar"
@@ -19,241 +19,278 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/color_1b2137">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:paddingLeft="12dp"
-            android:paddingRight="12dp"
             android:paddingTop="10dp"
+            android:paddingRight="12dp"
             android:paddingBottom="14dp">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_transation_list"
                 android:orientation="vertical"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
                 android:paddingLeft="10dp"
-                android:paddingRight="10dp">
+                android:paddingTop="10dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="10dp">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:orientation="horizontal">
+
                     <ImageView
                         android:id="@+id/iv_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="12dp"
-                        android:src="@drawable/icon_default_coin"/>
+                        android:src="@drawable/icon_default_coin" />
+
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical">
+
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
+
                             <TextView
                                 android:id="@+id/tv_name"
                                 style="@style/Text.fff.13"
-                                android:singleLine="true"
                                 android:ellipsize="end"
-                                tools:text="节点名称"/>
+                                android:singleLine="true"
+                                tools:text="节点名称" />
+
                             <TextView
                                 android:id="@+id/tv_location"
                                 style="@style/Text.c5cbdc.12"
-                                android:singleLine="true"
                                 android:ellipsize="end"
-                                tools:text="(区域)"/>
+                                android:singleLine="true"
+                                tools:text="(区域)" />
                         </LinearLayout>
+
                         <TextView
                             android:id="@+id/tv_time"
                             style="@style/Text.7a8092.10"
                             android:layout_marginTop="2dp"
-                            tools:text="@string/joinTime"/>
+                            tools:text="@string/joinTime" />
                     </LinearLayout>
+
                     <TextView
-                        android:layout_marginLeft="12dp"
                         android:id="@+id/tv_candidate"
                         style="@style/Text.dc5151.10"
-                        tools:text="@string/candidate"/>
+                        android:layout_marginLeft="12dp"
+                        tools:text="@string/candidate" />
                 </LinearLayout>
+
                 <View
-                    android:layout_marginTop="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/color_32394e"/>
+                    android:layout_marginTop="10dp"
+                    android:background="@color/color_32394e" />
+
                 <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:orientation="horizontal">
+
                     <TextView
                         style="@style/Text.7a8092.10"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_marginTop="2dp"
+                        android:layout_weight="1"
                         android:gravity="center_vertical|left"
-                        android:text="@string/stakedRanking"/>
+                        android:text="@string/stakedRanking" />
+
                     <TextView
                         style="@style/Text.7a8092.10"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_marginTop="2dp"
+                        android:layout_weight="1"
                         android:gravity="center_vertical|left"
-                        android:text="@string/staked_with_colon"/>
+                        android:text="@string/staked_with_colon" />
                 </LinearLayout>
+
                 <LinearLayout
-                    android:layout_marginTop="3dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
                     android:orientation="horizontal">
+
                     <TextView
                         android:id="@+id/tv_staked_ranking"
                         style="@style/Text.fff.13"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_marginTop="2dp"
+                        android:layout_weight="1"
                         android:gravity="center_vertical|left"
-                        tools:text="12"/>
+                        tools:text="12" />
+
                     <TextView
                         android:id="@+id/tv_staked"
                         style="@style/Text.fff.13"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_marginTop="2dp"
+                        android:layout_weight="1"
                         android:gravity="center_vertical|left"
-                        tools:text="123,166.0465ATP"/>
+                        tools:text="123,166.0465ATP" />
                 </LinearLayout>
+
                 <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:orientation="horizontal">
+
                     <TextView
                         style="@style/Text.7a8092.10"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_marginTop="2dp"
+                        android:layout_weight="1"
                         android:gravity="center_vertical|left"
-                        android:text="@string/tickets"/>
+                        android:text="@string/tickets" />
+
                     <TextView
                         style="@style/Text.7a8092.10"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_marginTop="2dp"
+                        android:layout_weight="1"
                         android:gravity="center_vertical|left"
-                        android:text="@string/ticketAge"/>
+                        android:text="@string/ticketAge" />
                 </LinearLayout>
+
                 <LinearLayout
-                    android:layout_marginTop="3dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
                     android:orientation="horizontal">
+
                     <TextView
                         android:id="@+id/tv_tickets"
                         style="@style/Text.fff.13"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_marginTop="2dp"
+                        android:layout_weight="1"
                         android:gravity="center_vertical|left"
-                        tools:text="1,532"/>
+                        tools:text="1,532" />
+
                     <TextView
                         android:id="@+id/tv_ticket_age"
                         style="@style/Text.fff.13"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_marginTop="2dp"
+                        android:layout_weight="1"
                         android:gravity="center_vertical|left"
-                        tools:text="1,564Bs"/>
+                        tools:text="1,564Bs" />
                 </LinearLayout>
             </LinearLayout>
+
             <TextView
-                android:layout_marginTop="20dp"
                 style="@style/Text.fff.14"
+                android:layout_marginTop="20dp"
                 android:gravity="center_vertical|left"
-                android:text="@string/nodeInfo"/>
+                android:text="@string/nodeInfo" />
+
             <TextView
-                android:layout_marginTop="12dp"
                 style="@style/Text.c5cbdc.12"
+                android:layout_marginTop="12dp"
                 android:gravity="center_vertical|left"
-                android:text="@string/nodeUrl"/>
+                android:text="@string/nodeUrl" />
+
             <TextView
                 android:id="@+id/tv_node_url"
-                android:layout_marginTop="6dp"
                 style="@style/Text.fff.13"
+                android:layout_marginTop="6dp"
                 android:gravity="center_vertical|left"
-                tools:text="http://mainnet.abc.cn:10332"/>
+                tools:text="http://mainnet.abc.cn:10332" />
+
             <TextView
-                android:layout_marginTop="12dp"
                 style="@style/Text.c5cbdc.12"
+                android:layout_marginTop="12dp"
                 android:gravity="center_vertical|left"
-                android:text="@string/nodeId"/>
+                android:text="@string/nodeId" />
+
             <TextView
                 android:id="@+id/tv_node_id"
-                android:layout_marginTop="6dp"
                 style="@style/Text.fff.13"
+                android:layout_marginTop="6dp"
                 android:gravity="center_vertical|left"
-                tools:text="0xdE41ad9010ED7ae4a7bBc42b55665151dcc8DEf4dE41ad9010ED7ae4a7bBc42b55665151dcc8DEf4dE41ad9010ED7ae4a7bBc42b55665151dcc8DEf4dcc8DEf4"/>
+                tools:text="0xdE41ad9010ED7ae4a7bBc42b55665151dcc8DEf4dE41ad9010ED7ae4a7bBc42b55665151dcc8DEf4dE41ad9010ED7ae4a7bBc42b55665151dcc8DEf4dcc8DEf4" />
+
             <TextView
-                android:layout_marginTop="12dp"
                 style="@style/Text.c5cbdc.12"
+                android:layout_marginTop="12dp"
                 android:gravity="center_vertical|left"
-                android:text="@string/reward_radio_with_colon_and_value"/>
+                android:text="@string/reward_radio_with_colon_and_value" />
+
             <TextView
                 android:id="@+id/tv_reward_radio"
-                android:layout_marginTop="6dp"
                 style="@style/Text.fff.13"
+                android:layout_marginTop="6dp"
                 android:gravity="center_vertical|left"
-                tools:text="12%"/>
+                tools:text="12%" />
+
             <TextView
-                android:layout_marginTop="12dp"
                 style="@style/Text.c5cbdc.12"
+                android:layout_marginTop="12dp"
                 android:gravity="center_vertical|left"
-                android:text="@string/institutionalName"/>
+                android:text="@string/institutionalName" />
+
             <TextView
                 android:id="@+id/tv_institutional_name"
-                android:layout_marginTop="6dp"
                 style="@style/Text.fff.13"
+                android:layout_marginTop="6dp"
                 android:gravity="center_vertical|left"
-                tools:text="XXXXXXXXXXXXX"/>
+                tools:text="XXXXXXXXXXXXX" />
+
             <TextView
-                android:layout_marginTop="12dp"
                 style="@style/Text.c5cbdc.12"
+                android:layout_marginTop="12dp"
                 android:gravity="center_vertical|left"
-                android:text="@string/institutionalWebsite"/>
+                android:text="@string/institutionalWebsite" />
+
             <TextView
                 android:id="@+id/tv_institutional_website"
-                android:layout_marginTop="6dp"
                 style="@style/Text.ffed54.13"
+                android:layout_marginTop="6dp"
                 android:gravity="center_vertical|left"
-                tools:text="https://www.platon.network/#/index"/>
+                tools:text="https://www.platon.network/#/index" />
+
             <TextView
-                android:layout_marginTop="12dp"
                 style="@style/Text.c5cbdc.12"
+                android:layout_marginTop="12dp"
                 android:gravity="center_vertical|left"
-                android:text="@string/nodeIntroduction"/>
+                android:text="@string/nodeIntroduction" />
+
             <TextView
                 android:id="@+id/tv_node_introduction"
-                android:layout_marginTop="6dp"
                 style="@style/Text.fff.13"
+                android:layout_marginTop="6dp"
                 android:gravity="center_vertical|left"
-                tools:text="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"/>
+                tools:text="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" />
+
             <com.juzix.wallet.component.widget.RoundedTextView
-                android:layout_marginTop="20dp"
                 android:id="@+id/rtv_vote"
                 style="@style/Text.1b2137.14"
                 android:layout_width="match_parent"
+                android:layout_marginTop="20dp"
                 android:enabled="true"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
                 android:text="@string/vote"
                 android:textColor="@color/color_heavy_button_text"
                 app:rtv_background_color="@color/bg_heavy_button"
-                app:rtv_corner_radius="1dp"/>
+                app:rtv_corner_radius="1dp" />
         </LinearLayout>
     </ScrollView>
 
