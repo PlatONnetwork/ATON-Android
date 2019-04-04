@@ -42,7 +42,7 @@
         <TextView
             android:id="@+id/tv_vote_price"
             style="@style/Text.898c9e.14"
-            android:layout_marginTop="18dp"
+            android:layout_marginTop="24dp"
             android:layout_marginRight="16dp"
             android:text="Ticket Price: ***"
             app:layout_constraintRight_toRightOf="parent"

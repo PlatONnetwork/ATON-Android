@@ -661,7 +661,6 @@ public class BubbleSeekBar extends View {
             }
         }
         // draw track
-        mPaint.setShader(getLinearGradient(4));//渐变颜色
         mPaint.setStrokeWidth(mSecondTrackSize);
         mPaint.setColor(mSecondTrackColor);
         if (isRtl) {

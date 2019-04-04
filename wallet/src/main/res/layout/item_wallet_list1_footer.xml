@@ -8,8 +8,8 @@
     <!--创建和导入普通钱包布局-->
     <LinearLayout
         android:layout_marginTop="@dimen/assetsWalletSelectedShadowRadius"
-        android:layout_marginLeft="6dp"
-        android:layout_marginRight="6dp"
+        android:layout_marginLeft="@dimen/assetsWalletSelectedShadowRadius"
+        android:layout_marginRight="@dimen/assetsWalletSelectedShadowRadius"
         android:layout_width="@dimen/assetsWalletNormalItemWidth"
         android:layout_height="@dimen/assetsWalletNormalItemHeight"
         android:background="@drawable/bg_shape_wallet_item1"

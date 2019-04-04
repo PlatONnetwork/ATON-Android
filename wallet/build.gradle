@@ -1,5 +1,12 @@
 apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
+// 注：需要配置符号表时，使用bugly插件
+apply plugin: 'bugly'
+bugly {
+    appId = '0970ddc6bd'
+    appKey = 'b947cbd1-d646-41bc-819c-4447ea7fe428'
+
+}
 
 android {
 
@@ -15,6 +22,7 @@ android {
         buildConfigField("String", "BETA_COUNT", "\"${beta_count}\"")
         buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
         buildConfigField("String", "UM_APPKEY", "${UM_APPKEY}")
+        buildConfigField("String", "BUGLY_APPID", "${BUGLY_APPID}")
         renderscriptTargetApi 19
         renderscriptSupportModeEnabled  true
 
@@ -145,4 +153,5 @@ dependencies {
     implementation rootProject.ext.dependencies.smarttablayout
     implementation rootProject.ext.dependencies.umeng_common
     implementation rootProject.ext.dependencies.umeng_analytics
+    implementation rootProject.ext.dependencies.bugly
 }

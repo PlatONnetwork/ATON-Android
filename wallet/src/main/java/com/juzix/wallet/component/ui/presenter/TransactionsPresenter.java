@@ -111,10 +111,10 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
         mDisposable = Single.fromCallable(new Callable<List<TransactionEntity>>() {
             @Override
             public List<TransactionEntity> call() {
-                if (mWalletEntity == null){
+                if (mWalletEntity == null) {
                     return null;
                 }
-               return getTransactionEntityList1(mWalletEntity.getPrefixAddress()).blockingGet();
+                return getTransactionEntityList1(mWalletEntity.getPrefixAddress()).blockingGet();
             }
         })
                 .compose(bindUntilEvent(FragmentEvent.STOP))
@@ -367,7 +367,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
         mDisposable = Single.fromCallable(new Callable<List<TransactionEntity>>() {
             @Override
             public List<TransactionEntity> call() {
-                if (mWalletEntity == null){
+                if (mWalletEntity == null) {
                     return null;
                 }
                 return getTransactionEntityList2(mWalletEntity.getPrefixAddress()).blockingGet();
@@ -500,8 +500,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                 SharedTransactionEntity sharedTransactionEntity = (SharedTransactionEntity) transactionEntity;
                 if (!sharedTransactionEntity.isRead()) {
                     sharedTransactionEntity.setRead(true);
-                    getView().notifyTransactionChanged(sharedTransactionEntity, walletEntity.getPrefixAddress());
-                    SharedWalletTransactionManager.getInstance().updateTransactionForRead(walletEntity, sharedTransactionEntity);
+//                    SharedWalletTransactionManager.getInstance().updateTransactionForRead(walletEntity, sharedTransactionEntity);
                 }
                 if (sharedTransactionEntity.transfered()) {
                     SharedTransactionDetailActivity.actionStart(currentActivity(), sharedTransactionEntity, walletEntity.getPrefixAddress());

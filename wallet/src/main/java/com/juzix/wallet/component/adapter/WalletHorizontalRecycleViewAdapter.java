@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.juzhen.framework.util.AndroidUtil;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.widget.CustomProgressBar;
 import com.juzix.wallet.component.widget.ShadowDrawable;
@@ -19,14 +18,14 @@ import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.SharedWalletEntity;
 import com.juzix.wallet.entity.WalletEntity;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<WalletHorizontalRecycleViewAdapter.ViewHolder> {
 
-    private Context                        mContext;
-    private ArrayList<WalletEntity>        mList;
+    private Context mContext;
+    private List<WalletEntity> mList;
     private OnRecycleViewItemClickListener mOnItemClickListener;
-    private WalletEntity                   mSelectedWallet;
+    private WalletEntity mSelectedWallet;
     private int mShapeRadius;
     private int mShadowRadius;
     private int mSelectWidth;
@@ -34,7 +33,7 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
     private int mNormalWidth;
     private int mNormalHeight;
 
-    public WalletHorizontalRecycleViewAdapter(Context context, ArrayList<WalletEntity> walletList) {
+    public WalletHorizontalRecycleViewAdapter(Context context, List<WalletEntity> walletList) {
         mContext = context;
         mList = walletList;
         mSelectedWallet = null;
@@ -50,13 +49,13 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
     public void onBindViewHolder(ViewHolder holder, int position) {
 
         final WalletEntity walletEntity = mList.get(position);
-        if (walletEntity instanceof IndividualWalletEntity){
+        if (walletEntity instanceof IndividualWalletEntity) {
             setIndividualWalletView(position, (IndividualWalletEntity) walletEntity, holder);
-        }else {
-            SharedWalletEntity sharedWalletEntity = (SharedWalletEntity)walletEntity;
+        } else {
+            SharedWalletEntity sharedWalletEntity = (SharedWalletEntity) walletEntity;
             if (!sharedWalletEntity.isFinished()) {
                 setLoadWalletView(position, sharedWalletEntity, holder);
-            }else {
+            } else {
                 setSharedWalletView(position, sharedWalletEntity, holder);
             }
         }
@@ -75,7 +74,7 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
         return mList.size();
     }
 
-    public void  setSelectedWallet(WalletEntity selectedWallet){
+    public void setSelectedWallet(WalletEntity selectedWallet) {
         mSelectedWallet = selectedWallet;
     }
 
@@ -87,7 +86,7 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
         void onContentViewClick(WalletEntity walletEntity);
     }
 
-    private void setLoadWalletView(final int position, final SharedWalletEntity walletEntity, ViewHolder holder){
+    private void setLoadWalletView(final int position, final SharedWalletEntity walletEntity, ViewHolder holder) {
         holder.vShadow.setVisibility(View.GONE);
         holder.rlItem.setVisibility(View.GONE);
         holder.progressBar.setVisibility(View.VISIBLE);
@@ -95,7 +94,7 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
         holder.progressBar.setOnClickListener(null);
     }
 
-    private void setIndividualWalletView(final int position, final IndividualWalletEntity walletEntity, ViewHolder holder){
+    private void setIndividualWalletView(final int position, final IndividualWalletEntity walletEntity, ViewHolder holder) {
         holder.progressBar.setVisibility(View.GONE);
         holder.rlItem.setVisibility(View.VISIBLE);
         holder.rlItem.findViewById(R.id.v_new_msg).setVisibility(View.GONE);
@@ -108,13 +107,13 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
                 mShadowRadius,
                 0,
                 0);
-        if (mSelectedWallet == walletEntity){
+        if (mSelectedWallet == walletEntity) {
             holder.vShadow.setVisibility(View.VISIBLE);
             holder.rlItem.setBackgroundResource(R.drawable.bg_assets_classic_h);
             ivIcon.setImageResource(R.drawable.icon_assets_classic_h);
             tvName.setTextColor(ContextCompat.getColor(mContext, R.color.color_ffffff));
             tvName.setText(walletEntity.getName());
-        }else {
+        } else {
             holder.vShadow.setVisibility(View.GONE);
             holder.rlItem.setBackgroundResource(R.drawable.bg_assets_classic_n);
             ivIcon.setImageResource(R.drawable.icon_assets_classic_n);
@@ -124,10 +123,10 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
         holder.rlItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mSelectedWallet != walletEntity){
+                if (mSelectedWallet != walletEntity) {
                     setSelectedWallet(walletEntity);
 //                    setIndividualWalletView(position, walletEntity, holder);
-                    if (mOnItemClickListener != null){
+                    if (mOnItemClickListener != null) {
                         mOnItemClickListener.onContentViewClick(walletEntity);
                     }
                 }
@@ -135,7 +134,7 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
         });
     }
 
-    private void setSharedWalletView(final int position, final SharedWalletEntity walletEntity, ViewHolder holder){
+    private void setSharedWalletView(final int position, final SharedWalletEntity walletEntity, ViewHolder holder) {
         holder.rlItem.setVisibility(View.VISIBLE);
         holder.progressBar.setVisibility(View.GONE);
         TextView tvName = holder.rlItem.findViewById(R.id.tv_item2_name);
@@ -147,27 +146,26 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
                 , mShadowRadius,
                 0,
                 0);
-        if (mSelectedWallet == walletEntity){
+        if (mSelectedWallet == walletEntity) {
             holder.rlItem.setBackgroundResource(R.drawable.bg_assets_joint_h);
             ivIcon.setImageResource(R.drawable.icon_assets_joint_h);
             tvName.setTextColor(ContextCompat.getColor(mContext, R.color.color_ffffff));
             tvName.setText(walletEntity.getName());
             holder.vShadow.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             holder.rlItem.setBackgroundResource(R.drawable.bg_assets_joint_n);
             ivIcon.setImageResource(R.drawable.icon_assets_joint_n);
             tvName.setTextColor(ContextCompat.getColor(mContext, R.color.color_105cfe));
             tvName.setText(walletEntity.getName());
             holder.vShadow.setVisibility(View.GONE);
         }
-        holder.rlItem.findViewById(R.id.v_new_msg).setVisibility(walletEntity.getUnread() > 0 ? View.VISIBLE : View.GONE);
+        holder.rlItem.findViewById(R.id.v_new_msg).setVisibility(walletEntity.isHasUnreadMessage() ? View.VISIBLE : View.GONE);
         holder.rlItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mSelectedWallet != walletEntity){
+                if (mSelectedWallet != walletEntity) {
                     setSelectedWallet(walletEntity);
-//                    setSharedWalletView(position, walletEntity, holder);
-                    if (mOnItemClickListener != null){
+                    if (mOnItemClickListener != null) {
                         mOnItemClickListener.onContentViewClick(walletEntity);
                     }
                 }
@@ -176,8 +174,8 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        public FrameLayout       flItem;
-        public RelativeLayout    rlItem;
+        public FrameLayout flItem;
+        public RelativeLayout rlItem;
         public CustomProgressBar progressBar;
         public View vShadow;
 
@@ -188,5 +186,30 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
             progressBar = (CustomProgressBar) convertView.findViewById(R.id.pb_create);
             vShadow = convertView.findViewById(R.id.v_shadow);
         }
+    }
+
+    public void notifyItemUnreadMessage(String contractAddress, boolean hasUnreadMessage) {
+        int position = getPositionByContractAddress(contractAddress);
+        if (position != -1) {
+            SharedWalletEntity sharedWalletEntity = (SharedWalletEntity) mList.get(position);
+            sharedWalletEntity.setHasUnreadMessage(hasUnreadMessage);
+            notifyItemChanged(position);
+        }
+    }
+
+    private int getPositionByContractAddress(String contractAddress) {
+        if (mList != null && !mList.isEmpty()) {
+            start:
+            for (int i = 0; i < mList.size(); i++) {
+                WalletEntity walletEntity = mList.get(i);
+                if (walletEntity instanceof SharedWalletEntity) {
+                    if (contractAddress.equals(walletEntity.getAddress())) {
+                        return i;
+                    }
+                }
+            }
+        }
+
+        return -1;
     }
 }

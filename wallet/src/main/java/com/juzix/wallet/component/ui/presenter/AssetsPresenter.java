@@ -275,6 +275,7 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
             mWalletList.addAll(walletList2);
         }
         if (mWalletList.isEmpty()){
+            getView().showTotalBalance(0);
             return;
         }
         Collections.sort(mWalletList, new Comparator<WalletEntity>() {

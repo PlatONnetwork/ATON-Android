@@ -11,6 +11,8 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:3.3.2'
         classpath 'io.realm:realm-gradle-plugin:5.8.0'
+        // 配置自动上传符号表插件，注：为了能快速并准确地定位用户APP发生Crash的代码位置，Bugly使用符号表对APP发生Crash的程序堆栈进行解析和还原
+        classpath 'com.tencent.bugly:symtabfileuploader:latest.release'
     }
 }
 
@@ -52,7 +54,8 @@ ext {
             immersionbar                    : 'com.gyf.immersionbar:immersionbar:2.3.3',
             smarttablayout                  : 'com.ogaclejapan.smarttablayout:utils-v4:1.7.0@aar',
             umeng_common                    : 'com.umeng.umsdk:common:2.0.2',
-            umeng_analytics                 : 'com.umeng.umsdk:analytics:8.0.2'
+            umeng_analytics                 : 'com.umeng.umsdk:analytics:8.0.2',
+            bugly                           : 'com.tencent.bugly:crashreport:latest.release'
 
     ]
 }

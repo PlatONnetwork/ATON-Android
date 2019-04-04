@@ -115,6 +115,15 @@ public class OwnerEntity implements Parcelable, Cloneable {
         }
     }
 
+    public String getWithoutPrefixAddress() {
+        if (!TextUtils.isEmpty(address)) {
+            if (address.toLowerCase().startsWith("0x")) {
+                return address.substring(2);
+            }
+        }
+        return address;
+    }
+
     @Override
     protected OwnerEntity clone() {
         OwnerEntity ownerEntity = null;

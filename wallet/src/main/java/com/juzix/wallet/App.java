@@ -12,6 +12,7 @@ import com.juzix.wallet.app.AppFramework;
 import com.juzix.wallet.component.ui.view.UnlockFigerprintActivity;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.engine.IndividualWalletManager;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
 
@@ -21,7 +22,7 @@ import io.reactivex.plugins.RxJavaPlugins;
 /**
  * @author matrixelement
  */
-public class  App extends CoreApp {
+public class App extends CoreApp {
 
     private final static String TAG = App.class.getSimpleName();
     private final static long MAX_TIMEINMILLS = 2 * 60 * 1000;
@@ -41,8 +42,13 @@ public class  App extends CoreApp {
         context = this;
         //初始化友盟
         initUMConfigure();
+        initBugly();
         AppFramework.getAppFramework().initAppFramework(this);
         registerActivityLifecycleCallbacks(mActivityLifecycleCallbacks);
+    }
+
+    private void initBugly() {
+        CrashReport.initCrashReport(getApplicationContext(), BuildConfig.BUGLY_APPID, true);
     }
 
     @Override

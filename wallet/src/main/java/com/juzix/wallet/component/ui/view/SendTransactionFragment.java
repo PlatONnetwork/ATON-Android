@@ -46,7 +46,6 @@ import com.juzix.wallet.utils.ToastUtil;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.web3j.crypto.WalletUtils;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -55,7 +54,6 @@ import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.OnTextChanged;
 import butterknife.Unbinder;
 import io.reactivex.functions.Consumer;
 import kotlin.Unit;
