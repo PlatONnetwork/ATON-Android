@@ -1,7 +1,5 @@
 package com.juzix.wallet.db.sqlite;
 
-import android.util.Log;
-
 import com.juzix.wallet.db.entity.SharedTransactionInfoEntity;
 
 import java.util.ArrayList;
@@ -25,8 +23,6 @@ public class SharedTransactionInfoDao {
     }
 
     public boolean insertTransaction(SharedTransactionInfoEntity transactionEntity) {
-
-        Log.e(TAG, "insertTransaction..." + transactionEntity.toString());
 
         Realm realm = null;
         try {
@@ -133,7 +129,7 @@ public class SharedTransactionInfoDao {
         try {
             realm = Realm.getDefaultInstance();
             SharedTransactionInfoEntity sharedTransactionInfoEntity = realm.where(SharedTransactionInfoEntity.class).equalTo("transactionId", transactionId).findFirst();
-            if (sharedTransactionInfoEntity != null){
+            if (sharedTransactionInfoEntity != null) {
                 return realm.copyFromRealm(sharedTransactionInfoEntity);
             }
         } catch (Exception e) {
@@ -172,12 +168,17 @@ public class SharedTransactionInfoDao {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
-            realm.beginTransaction();
-            realm.where(SharedTransactionInfoEntity.class)
-                    .equalTo("uuid", uuid)
-                    .findFirst()
-                    .setRead(read);
-            realm.commitTransaction();
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    SharedTransactionInfoEntity transactionInfoEntity = realm.where(SharedTransactionInfoEntity.class)
+                            .equalTo("uuid", uuid)
+                            .findFirst();
+                    SharedTransactionInfoEntity sharedTransactionInfoEntity = realm.copyFromRealm(transactionInfoEntity);
+                    sharedTransactionInfoEntity.setRead(read);
+                    realm.copyToRealmOrUpdate(sharedTransactionInfoEntity);
+                }
+            });
             return true;
         } catch (Exception e) {
             return false;
@@ -205,6 +206,35 @@ public class SharedTransactionInfoDao {
             return false;
         }
         return count > 0;
+    }
+
+    /**
+     * 共享钱包是否有未读消息
+     *
+     * @return
+     */
+    public boolean hasUnreadTransactionByContractAddress(String contractAddress) {
+        Realm realm = null;
+        long unreadCount = 0;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            unreadCount = realm.where(SharedTransactionInfoEntity.class)
+                    .equalTo("fromAddress", contractAddress)
+                    .or()
+                    .equalTo("toAddress", contractAddress)
+                    .and()
+                    .equalTo("read", false)
+                    .count();
+            realm.commitTransaction();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
+        }
+        return unreadCount > 0;
     }
 
     private static class InstanceHolder {

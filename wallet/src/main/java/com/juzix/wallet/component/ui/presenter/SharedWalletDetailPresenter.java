@@ -142,7 +142,6 @@ public class SharedWalletDetailPresenter extends BasePresenter<SharedWalletDetai
                 SharedTransactionEntity sharedTransactionEntity = (SharedTransactionEntity) transactionEntity;
                 if (!sharedTransactionEntity.isRead()) {
                     sharedTransactionEntity.setRead(true);
-                    getView().notifyTransactionChanged(sharedTransactionEntity, walletEntity.getPrefixAddress());
                     SharedWalletTransactionManager.getInstance().updateTransactionForRead(walletEntity, sharedTransactionEntity);
                 }
                 if (sharedTransactionEntity.transfered()) {

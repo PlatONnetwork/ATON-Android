@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.adapter.TransactionListsAdapter;
@@ -35,11 +36,11 @@ import butterknife.Unbinder;
 public class TransactionsFragment extends MVPBaseFragment<TransactionsPresenter> implements TransactionsContract.View {
 
     @BindView(R.id.list_transaction)
-    ListView  listTransaction;
+    ListView listTransaction;
     @BindView(R.id.layout_no_data)
-    View      emptyView;
+    View emptyView;
 
-    private Unbinder                unbinder;
+    private Unbinder unbinder;
     private TransactionListsAdapter transactionListAdapter;
 
     @Override
@@ -99,6 +100,11 @@ public class TransactionsFragment extends MVPBaseFragment<TransactionsPresenter>
         mPresenter.fetchWalletDetail();
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdateTransactionUnreadMessageEvent(Event.UpdateTransactionUnreadMessageEvent event) {
+        transactionListAdapter.updateItem(listTransaction, event.uuid, event.hasUnread);
+    }
+
     @Override
     public WalletEntity getWalletFromIntent() {
         return getArguments().getParcelable(Constants.Extra.EXTRA_WALLET);
@@ -110,7 +116,7 @@ public class TransactionsFragment extends MVPBaseFragment<TransactionsPresenter>
     }
 
     @Override
-    public void notifyTransactionChanged(SharedTransactionEntity transactionEntity, String walletAddress) {
-        transactionListAdapter.notifyDataChanged(transactionEntity, walletAddress);
+    public void notifyItem(SharedTransactionEntity transactionEntity) {
+        transactionListAdapter.updateItem(getActivity(), listTransaction, transactionEntity);
     }
 }

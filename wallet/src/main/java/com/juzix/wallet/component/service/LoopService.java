@@ -116,7 +116,7 @@ public class LoopService extends Service {
     }
 
     /**
-     * 启动轮询拉去消息
+     * 启动轮询拉取消息
      */
     private void startLoop() {
         if (timer == null) {

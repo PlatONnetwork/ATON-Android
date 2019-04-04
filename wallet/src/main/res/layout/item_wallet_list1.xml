@@ -22,8 +22,7 @@
         android:layout_marginLeft="@dimen/assetsWalletSelectedShadowRadius"
         android:layout_marginTop="@dimen/assetsWalletSelectedShadowRadius"
         android:layout_width="@dimen/assetsWalletNormalItemWidth"
-        android:layout_height="@dimen/assetsWalletNormalItemHeight"
-        android:gravity="center_vertical">
+        android:layout_height="@dimen/assetsWalletNormalItemHeight">
 
         <ImageView
             android:id="@+id/iv_item2_icon"

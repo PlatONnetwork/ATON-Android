@@ -97,4 +97,29 @@ public class Event {
             this.walletEntity = walletEntity;
         }
     }
+
+    public static class UpdateSharedWalletUnreadMessageEvent {
+
+        public String contractAddress;
+        public boolean hasUnreadMessage;
+
+        public UpdateSharedWalletUnreadMessageEvent(String contractAddress, boolean hasUnreadMessage) {
+            this.contractAddress = contractAddress;
+            this.hasUnreadMessage = hasUnreadMessage;
+        }
+    }
+
+    public static class UpdateTransactionUnreadMessageEvent {
+
+        public String uuid;
+        /**
+         * 是否未读
+         */
+        public boolean hasUnread;
+
+        public UpdateTransactionUnreadMessageEvent(String uuid, boolean hasUnread) {
+            this.uuid = uuid;
+            this.hasUnread = hasUnread;
+        }
+    }
 }

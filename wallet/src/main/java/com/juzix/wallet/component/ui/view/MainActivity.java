@@ -93,6 +93,7 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
         unbinder = ButterKnife.bind(this);
         initViews();
         EventPublisher.getInstance().register(this);
+        LoopService.startLoopService(this);
     }
 
     public void setSelectedWallet(WalletEntity wallet){

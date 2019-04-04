@@ -8,6 +8,7 @@ import com.juzix.wallet.App;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomThrowable;
 import com.juzix.wallet.app.FlowableSchedulersTransformer;
+import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.db.entity.SharedTransactionInfoEntity;
 import com.juzix.wallet.db.sqlite.SharedTransactionInfoDao;
 import com.juzix.wallet.entity.OwnerEntity;
@@ -846,9 +847,51 @@ public class SharedWalletTransactionManager {
     }
 
     public void updateTransactionForRead(SharedWalletEntity walletEntity, SharedTransactionEntity transactionEntity) {
-        SharedTransactionInfoDao.getInstance().updateReadWithUuid(transactionEntity.getContractAddress() + transactionEntity.getTransactionId(), true);
-        walletEntity.setUnread(walletEntity.getUnread() - 1);
-        EventPublisher.getInstance().sendUpdateMessageTipsEvent(unRead());
+
+        Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                Log.e(TAG, "updateReadWithUuid....");
+                return SharedTransactionInfoDao.getInstance().updateReadWithUuid(transactionEntity.getContractAddress() + transactionEntity.getTransactionId(), transactionEntity.isRead());
+            }
+        }).filter(new Predicate<Boolean>() {
+            @Override
+            public boolean test(Boolean aBoolean) throws Exception {
+                Log.e(TAG, "updateReadWithUuid...." + aBoolean);
+                return aBoolean;
+            }
+        }).doOnSuccess(new Consumer<Boolean>() {
+            @Override
+            public void accept(Boolean hasUnread) throws Exception {
+                Log.e(TAG, "doOnSuccess...." + hasUnread);
+                EventPublisher.getInstance().sendUpdateTransactionUnreadMessageEvent(transactionEntity.getUuid(), transactionEntity.isRead());
+            }
+        }).map(new Function<Boolean, Boolean>() {
+            @Override
+            public Boolean apply(Boolean aBoolean) throws Exception {
+                boolean hasUnread = SharedTransactionInfoDao.getInstance().hasUnreadTransactionByContractAddress(walletEntity.getAddress());
+                Log.e(TAG, "map...." + hasUnread);
+                return aBoolean;
+            }
+        }).filter(new Predicate<Boolean>() {
+            @Override
+            public boolean test(Boolean aBoolean) throws Exception {
+                return aBoolean;
+            }
+        }).toSingle().compose(new SchedulersTransformer())
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean hasUnread) {
+                        Log.e(TAG, "subscribe...." + hasUnread);
+                        walletEntity.setHasUnreadMessage(hasUnread);
+                        EventPublisher.getInstance().sendUpdateSharedWalletUnreadMessageEvent(walletEntity.getAddress(), hasUnread);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Log.e(TAG, throwable.getMessage());
+                    }
+                });
     }
 
     /**
@@ -870,47 +913,47 @@ public class SharedWalletTransactionManager {
             public Publisher<List<SharedTransactionEntity>> apply(SharedWalletEntity sharedWalletEntity) throws Exception {
                 return getSharedTransactionListFromNet(sharedWalletEntity).toFlowable();
             }
+        }).filter(new Predicate<List<SharedTransactionEntity>>() {
+            @Override
+            public boolean test(List<SharedTransactionEntity> sharedTransactionEntities) throws Exception {
+                return !sharedTransactionEntities.isEmpty();
+            }
         })
-                .flatMap(new Function<List<SharedTransactionEntity>, Publisher<Integer>>() {
+                .doOnNext(new Consumer<List<SharedTransactionEntity>>() {
                     @Override
-                    public Publisher<Integer> apply(List<SharedTransactionEntity> sharedTransactionEntityList) throws Exception {
-                        return getWalletUnreadCount(sharedTransactionEntityList)
-                                .doOnSuccess(new Consumer<Integer>() {
-                                    @Override
-                                    public void accept(Integer unreadCount) throws Exception {
-                                        //更新钱包未读消息数
-                                        SharedWalletManager.getInstance().updateWalletUnreadCount(sharedTransactionEntityList.get(0).getOwnerWalletAddress(), unreadCount);
-                                    }
-                                }).toFlowable();
+                    public void accept(List<SharedTransactionEntity> sharedTransactionEntities) throws Exception {
+                        String contractAddress = sharedTransactionEntities.get(0).getContractAddress();
+                        EventPublisher.getInstance().sendUpdateSharedWalletUnreadMessageEvent(contractAddress, getUnreadMessageCount(sharedTransactionEntities) > 0);
                     }
                 })
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Consumer<Object>() {
                     @Override
                     public void accept(Object o) throws Exception {
-                        EventPublisher.getInstance().sendUpdateMessageTipsEvent(SharedWalletTransactionManager.getInstance().unRead());
                         EventPublisher.getInstance().sendUpdateSharedWalletTransactionEvent();
                     }
                 });
-
     }
 
-    private Single<Integer> getWalletUnreadCount(List<SharedTransactionEntity> sharedTransactionEntityList) {
-        return Flowable
-                .fromIterable(sharedTransactionEntityList)
-                .map(new Function<SharedTransactionEntity, Integer>() {
+    /**
+     * 获取未读消息数
+     *
+     * @param sharedTransactionEntities
+     * @return
+     */
+    private Long getUnreadMessageCount(List<SharedTransactionEntity> sharedTransactionEntities) {
+        return Flowable.fromIterable(sharedTransactionEntities)
+                .map(new Function<SharedTransactionEntity, Boolean>() {
                     @Override
-                    public Integer apply(SharedTransactionEntity transactionEntity) throws Exception {
-                        return transactionEntity.isRead() ? 0 : 1;
+                    public Boolean apply(SharedTransactionEntity sharedTransactionEntity) throws Exception {
+                        return sharedTransactionEntity.isRead();
                     }
-                })
-                .reduce(new BiFunction<Integer, Integer, Integer>() {
+                }).filter(new Predicate<Boolean>() {
                     @Override
-                    public Integer apply(Integer integer, Integer integer2) throws Exception {
-                        return integer + integer2;
+                    public boolean test(Boolean isRead) throws Exception {
+                        return !isRead;
                     }
-                })
-                .toSingle();
+                }).count().blockingGet();
     }
 
     public List<SharedTransactionEntity> getAllTransactionList() {
@@ -1032,20 +1075,22 @@ public class SharedWalletTransactionManager {
         }).map(new Function<String[], SharedTransactionEntity>() {
             @Override
             public SharedTransactionEntity apply(String[] contents) throws Exception {
-                return parseSharedTransaction(contents, sharedWalletEntity.getPrefixAddress(), sharedWalletEntity.getPrefixCreatorAddress());
+                return parseSharedTransaction(contents, sharedWalletEntity.getPrefixAddress());
             }
         }).map(new Function<SharedTransactionEntity, SharedTransactionEntity>() {
             @Override
             public SharedTransactionEntity apply(SharedTransactionEntity transactionEntity) throws Exception {
                 String multiSigList = getMultiSigList(sharedWalletEntity.getPrefixAddress(), sharedWalletEntity.getPrefixCreatorAddress(), transactionEntity.getTransactionId());
+                String formatMultiSigList = multiSigList.replaceAll(":,", ":").replaceAll(",:", ":");
+                transactionEntity.setWalletName(transactionEntity.getWalletName());
                 transactionEntity.setLatestBlockNumber(Web3jManager.getInstance().getLatestBlockNumber());
                 transactionEntity.setOwnerEntityList(sharedWalletEntity.getOwner());
                 transactionEntity.setRequiredSignNumber(sharedWalletEntity.getRequiredSignNumber());
                 transactionEntity.setOwnerWalletAddress(sharedWalletEntity.getCreatorAddress());
                 transactionEntity.setBlockNumber(getBlockNumberByHash(getHashByTransactionId(transactionEntity.getTransactionId())));
                 transactionEntity.setRead(getReadByTransactionId(getHashByTransactionId(transactionEntity.getTransactionId())));
-                if (!TextUtils.isEmpty(multiSigList)) {
-                    transactionEntity.setTransactionResult(getTransactionResultList(sharedWalletEntity.getOwner(), multiSigList.split(":")));
+                if (!TextUtils.isEmpty(formatMultiSigList)) {
+                    transactionEntity.setTransactionResult(getTransactionResultList(sharedWalletEntity.getOwner(), formatMultiSigList.split(":")));
                 }
                 return transactionEntity;
             }
@@ -1058,23 +1103,25 @@ public class SharedWalletTransactionManager {
     }
 
     private List<TransactionResult> getTransactionResultList(List<OwnerEntity> ownerEntityList, String[] array) {
-        return Flowable.fromIterable(ownerEntityList).map(new Function<OwnerEntity, TransactionResult>() {
-            @Override
-            public TransactionResult apply(OwnerEntity ownerEntity) throws Exception {
-                return getTransactionResult(ownerEntity, array);
-            }
-        }).toList().blockingGet();
+
+        List<TransactionResult> transactionResultList = new ArrayList<>();
+        TransactionResult transactionResult = null;
+        for (OwnerEntity ownerEntity : ownerEntityList) {
+            transactionResult = getTransactionResult(ownerEntity, array);
+            transactionResultList.add(transactionResult);
+        }
+        return transactionResultList;
     }
 
     private TransactionResult getTransactionResult(OwnerEntity ownerEntity, String[] array) {
         TransactionResult.Status status = TransactionResult.Status.OPERATION_UNDETERMINED;
-        if (array.length > 1) {
-            if (array.length == 2) {
-                if (!TextUtils.isEmpty(array[1]) && array[1].contains(ownerEntity.getAddress().substring(2).toLowerCase())) {
-                    status = TransactionResult.Status.OPERATION_APPROVAL;
-                }
-            } else {
-                if (!TextUtils.isEmpty(array[2]) && array[2].contains(ownerEntity.getAddress().substring(2).toLowerCase())) {
+        if (array.length >= 2) {
+            if (!TextUtils.isEmpty(array[1]) && array[1].contains(ownerEntity.getWithoutPrefixAddress().substring(2).toLowerCase())) {
+                status = TransactionResult.Status.OPERATION_APPROVAL;
+            }
+
+            if (array.length >= 3) {
+                if (!TextUtils.isEmpty(array[2]) && array[2].contains(ownerEntity.getWithoutPrefixAddress().substring(2).toLowerCase())) {
                     status = TransactionResult.Status.OPERATION_REVOKE;
                 }
             }
@@ -1123,10 +1170,9 @@ public class SharedWalletTransactionManager {
      *
      * @param contents
      * @param contractAddress
-     * @param walletAddress
      * @return
      */
-    private SharedTransactionEntity parseSharedTransaction(String[] contents, String contractAddress, String walletAddress) {
+    private SharedTransactionEntity parseSharedTransaction(String[] contents, String contractAddress) {
         //交易发送方
         String fromAddress = contents[0];
         //交易接收方
@@ -1143,7 +1189,7 @@ public class SharedWalletTransactionManager {
         boolean isExecuted = "1".equals(contents[7]);
         String transactionId = contents[8];
         String uuid = contractAddress + transactionId;
-        String walletName = IndividualWalletManager.getInstance().getWalletNameByWalletAddress(walletAddress);
+        String walletName = SharedWalletManager.getInstance().getSharedWalletNameByContractAddress(contractAddress);
 
         return new SharedTransactionEntity.Builder(uuid, createTime, walletName)
                 .fromAddress(fromAddress)
