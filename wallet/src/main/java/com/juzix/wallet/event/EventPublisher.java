@@ -1,6 +1,7 @@
 package com.juzix.wallet.event;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.juzhen.framework.network.NetState;
 import com.juzix.wallet.entity.RegionEntity;
@@ -86,5 +87,14 @@ public class EventPublisher {
 
     public void sendUpdateSelectedWalletEvent(WalletEntity entity) {
         BusProvider.post(new Event.UpdateSelectedWalletEvent(entity));
+    }
+
+    public void sendUpdateSharedWalletUnreadMessageEvent(String contractAddress, boolean hasUnreadMessage) {
+        Log.e(TAG, contractAddress + ":" + hasUnreadMessage);
+        BusProvider.post(new Event.UpdateSharedWalletUnreadMessageEvent(contractAddress, hasUnreadMessage));
+    }
+
+    public void sendUpdateTransactionUnreadMessageEvent(String uuid, boolean hasUnread) {
+        BusProvider.post(new Event.UpdateTransactionUnreadMessageEvent(uuid, hasUnread));
     }
 }

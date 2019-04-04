@@ -15,10 +15,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-import io.reactivex.Flowable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Predicate;
-
 public class SharedWalletManager {
 
     private List<SharedWalletEntity> mWalletList = new ArrayList<>();
@@ -88,23 +84,6 @@ public class SharedWalletManager {
             sharedWalletEntity.setFinished(finished);
             mWalletList.set(index, sharedWalletEntity);
         }
-    }
-
-    public void updateWalletUnreadCount(String walletAddress, int unreadCount) {
-        Flowable.fromIterable(mWalletList)
-                .filter(new Predicate<SharedWalletEntity>() {
-                    @Override
-                    public boolean test(SharedWalletEntity sharedWalletEntity) throws Exception {
-                        return !TextUtils.isEmpty(walletAddress) && walletAddress.equals(sharedWalletEntity.getAddress());
-                    }
-                })
-                .firstElement()
-                .subscribe(new Consumer<SharedWalletEntity>() {
-                    @Override
-                    public void accept(SharedWalletEntity sharedWalletEntity) throws Exception {
-                        sharedWalletEntity.setUnread(unreadCount);
-                    }
-                });
     }
 
     public void removeWallet(SharedWalletEntity sharedWalletEntity) {
@@ -213,6 +192,17 @@ public class SharedWalletManager {
             }
         }
         return true;
+    }
+
+    public String getSharedWalletNameByContractAddress(String contractAddress) {
+        if (!mWalletList.isEmpty()) {
+            for (SharedWalletEntity walletEntity : mWalletList) {
+                if (contractAddress.contains(walletEntity.getAddressWithoutPrefix())) {
+                    return walletEntity.getName();
+                }
+            }
+        }
+        return null;
     }
 
     public SharedWalletEntity getWalletByUuid(String uuid) {

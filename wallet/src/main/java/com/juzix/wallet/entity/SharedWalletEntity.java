@@ -33,7 +33,7 @@ public class SharedWalletEntity extends WalletEntity implements Cloneable {
      */
     private boolean finished;
 
-    private int unread;
+    private boolean hasUnreadMessage;
 
     protected SharedWalletEntity(Parcel in) {
         uuid = in.readString();
@@ -46,7 +46,7 @@ public class SharedWalletEntity extends WalletEntity implements Cloneable {
         requiredSignNumber = in.readInt();
         balance = in.readDouble();
         avatar = in.readString();
-        unread = in.readInt();
+        hasUnreadMessage = in.readByte() != 0;
         progress = in.readInt();
         finished = in.readByte() != 0;
     }
@@ -62,7 +62,7 @@ public class SharedWalletEntity extends WalletEntity implements Cloneable {
         setRequiredSignNumber(builder.requiredSignNumber);
         setBalance(builder.balance);
         setAvatar(builder.avatar);
-        setUnread(builder.unread);
+        setHasUnreadMessage(builder.hasUnreadMessage);
         setProgress(builder.progress);
         setFinished(builder.finished);
     }
@@ -84,7 +84,7 @@ public class SharedWalletEntity extends WalletEntity implements Cloneable {
         dest.writeInt(requiredSignNumber);
         dest.writeDouble(balance);
         dest.writeString(avatar);
-        dest.writeInt(unread);
+        dest.writeByte((byte) (hasUnreadMessage ? 1 : 0));
         dest.writeInt(progress);
         dest.writeByte((byte) (finished ? 1 : 0));
     }
@@ -191,12 +191,12 @@ public class SharedWalletEntity extends WalletEntity implements Cloneable {
         return false;
     }
 
-    public void setUnread(int unread) {
-        this.unread = unread;
+    public void setHasUnreadMessage(boolean hasUnreadMessage) {
+        this.hasUnreadMessage = hasUnreadMessage;
     }
 
-    public int getUnread() {
-        return unread;
+    public boolean isHasUnreadMessage() {
+        return hasUnreadMessage;
     }
 
     public int getProgress() {
@@ -263,7 +263,7 @@ public class SharedWalletEntity extends WalletEntity implements Cloneable {
         private int requiredSignNumber;
         private double balance;
         private String avatar;
-        private int unread;
+        private boolean hasUnreadMessage;
         private int progress;
         private boolean finished;
 
@@ -320,8 +320,8 @@ public class SharedWalletEntity extends WalletEntity implements Cloneable {
             return this;
         }
 
-        public Builder unread(int val) {
-            unread = val;
+        public Builder hasUnreadMessage(boolean val) {
+            hasUnreadMessage = val;
             return this;
         }
 
@@ -362,7 +362,7 @@ public class SharedWalletEntity extends WalletEntity implements Cloneable {
                 ", owner=" + owner +
                 ", requiredSignNumber=" + requiredSignNumber +
                 ", progress=" + progress +
-                ", unread=" + unread +
+                ", hasUnreadMessage=" + hasUnreadMessage +
                 ", uuid='" + uuid + '\'' +
                 ", name='" + name + '\'' +
                 ", address='" + address + '\'' +

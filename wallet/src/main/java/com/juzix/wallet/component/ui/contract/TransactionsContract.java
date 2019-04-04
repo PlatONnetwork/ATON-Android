@@ -19,7 +19,7 @@ public class TransactionsContract {
 
         void notifyTransactionListChanged(List<TransactionEntity> transactionEntityList, String walletAddress);
 
-        void notifyTransactionChanged(SharedTransactionEntity transactionEntity, String walletAddress);
+        void notifyItem(SharedTransactionEntity transactionEntity);
     }
 
     public interface Presenter extends IPresenter<View> {

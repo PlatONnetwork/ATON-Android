@@ -8,18 +8,14 @@
         android:id="@+id/tv_vote"
         style="@style/Text.000000.18"
         android:text="@string/vote"
-        android:layout_alignParentLeft="true"
-        android:visibility="gone" />
-
+        android:layout_alignParentLeft="true" />
 
     <TextView
         android:id="@+id/tv_my_vote_close"
-        style="@style/Text.105cfe.11"
+        style="@style/Text.105cfe.14"
+        android:text="@string/myVote"
         android:layout_marginRight="16dp"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="2dp"
-        android:background="@drawable/icon_my_vote_bg"
-        android:text="@string/myVote" />
+        android:layout_alignParentRight="true" />
 
     <View
         android:id="@+id/bg_toolbar_close"

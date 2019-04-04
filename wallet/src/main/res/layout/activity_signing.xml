@@ -107,16 +107,14 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingLeft="8dp"
-            android:paddingTop="16dp"
+            android:paddingTop="12dp"
             android:paddingRight="8dp"
-            android:paddingBottom="16dp">
+            android:paddingBottom="12dp">
 
             <com.juzix.wallet.component.widget.ShadowButton
                 android:id="@+id/sbtn_refuse"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="24dp"
                 android:layout_weight="1"
                 app:enableShadowColor="@color/color_66969696"
                 app:text="@string/refuse"
@@ -127,8 +125,6 @@
                 android:id="@+id/sbtn_agree"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="24dp"
                 android:layout_weight="1"
                 app:text="@string/agree"
                 app:textAppearance="@style/MainButtonStyle"
