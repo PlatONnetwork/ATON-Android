@@ -63,6 +63,7 @@ public class AboutActivity extends BaseActivity{
         String versionName = AndroidUtil.getVersionName(this);
         if (!versionName.toLowerCase().startsWith("v"))
             versionName = "v" + versionName;
+        vNewMsg.setVisibility(View.GONE);
         tvUpdate.setText(string(R.string.current_version,  versionName));
     }
 
@@ -99,11 +100,12 @@ public class AboutActivity extends BaseActivity{
                 .subscribe(new Consumer<VersionEntity>() {
                     @Override
                     public void accept(VersionEntity versionEntity) {
-                        String newVersion = versionEntity.getVersion().toLowerCase();
                         String oldVersion = AndroidUtil.getVersionName(getContext()).toLowerCase();
-                        if (newVersion.startsWith("v") && !oldVersion.startsWith("v")){
+                        if (!oldVersion.startsWith("v")){
                             oldVersion = "v" + oldVersion;
-                        }else if (!newVersion.startsWith("v") && oldVersion.startsWith("v")){
+                        }
+                        String newVersion = versionEntity.getVersion().toLowerCase();
+                        if (!newVersion.startsWith("v")){
                             newVersion = "v" + newVersion;
                         }
                         if (oldVersion.compareTo(newVersion) < 0){
@@ -130,11 +132,12 @@ public class AboutActivity extends BaseActivity{
                     @Override
                     public void accept(VersionEntity versionEntity) {
                         dismissLoadingDialogImmediately();
-                        String newVersion = versionEntity.getVersion().toLowerCase();
                         String oldVersion = AndroidUtil.getVersionName(getContext()).toLowerCase();
-                        if (newVersion.startsWith("v") && !oldVersion.startsWith("v")){
+                        if (!oldVersion.startsWith("v")){
                             oldVersion = "v" + oldVersion;
-                        }else if (!newVersion.startsWith("v") && oldVersion.startsWith("v")){
+                        }
+                        String newVersion = versionEntity.getVersion().toLowerCase();
+                        if (!newVersion.startsWith("v")){
                             newVersion = "v" + newVersion;
                         }
                         if (oldVersion.compareTo(newVersion) >= 0) {

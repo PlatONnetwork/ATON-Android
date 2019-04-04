@@ -7,11 +7,15 @@ import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.CreateSharedWalletContract;
 import com.juzix.wallet.component.ui.dialog.SelectIndividualWalletDialogFragment;
 import com.juzix.wallet.component.ui.view.CreateSharedWalletSecondStepActivity;
+import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.engine.SharedWalletManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
+import com.juzix.wallet.entity.WalletEntity;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * @author matrixelement
@@ -26,14 +30,9 @@ public class CreateSharedWalletPresenter extends BasePresenter<CreateSharedWalle
 
     @Override
     public void init() {
-        ArrayList<IndividualWalletEntity> walletEntityList = IndividualWalletManager.getInstance().getWalletList();
-        if (!walletEntityList.isEmpty()){
-            for (IndividualWalletEntity walletEntity : walletEntityList) {
-                if (walletEntity.getBalance() > 0) {
-                    updateSelectOwner(walletEntity);
-                    break;
-                }
-            }
+        IndividualWalletEntity walletEntity = getSelectedWallet();
+        if (walletEntity != null){
+            updateSelectOwner(walletEntity);
         }
     }
 
@@ -112,5 +111,25 @@ public class CreateSharedWalletPresenter extends BasePresenter<CreateSharedWalle
     @Override
     public boolean isExists(String walletName) {
         return IndividualWalletManager.getInstance().walletNameExists(walletName) ? true : SharedWalletManager.getInstance().walletNameExists(walletName);
+    }
+
+    private IndividualWalletEntity getSelectedWallet(){
+        WalletEntity selectedWallet = MainActivity.sInstance.getSelectedWallet();
+        if (selectedWallet != null && selectedWallet instanceof IndividualWalletEntity && selectedWallet.getBalance() > 0){
+            return (IndividualWalletEntity) selectedWallet;
+        }
+        ArrayList<IndividualWalletEntity> walletEntityList = IndividualWalletManager.getInstance().getWalletList();
+        Collections.sort(walletEntityList, new Comparator<WalletEntity>() {
+            @Override
+            public int compare(WalletEntity o1, WalletEntity o2) {
+                return Long.compare(o1.getUpdateTime(),  o2.getUpdateTime());
+            }
+        });
+        for (IndividualWalletEntity walletEntity : walletEntityList) {
+            if (walletEntity.getBalance() > 0) {
+                return walletEntity;
+            }
+        }
+        return null;
     }
 }
