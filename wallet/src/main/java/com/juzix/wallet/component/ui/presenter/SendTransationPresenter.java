@@ -222,7 +222,6 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
                     CommonTipsDialogFragment.createDialogWithTitleAndOneButton(ContextCompat.getDrawable(getContext(), R.drawable.icon_dialog_tips), string(R.string.txn_init_failed_title),string(R.string.txn_init_failed_content), string(R.string.understood), new OnDialogViewClickListener() {
                         @Override
                         public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
-//                            showPasswordDialog(type, walletEntity);
                         }
                     }).show(currentActivity().getSupportFragmentManager(), "showError");
                     return;
@@ -263,6 +262,16 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
         String[] avatarArray = getContext().getResources().getStringArray(R.array.wallet_avatar);
         String avatar = avatarArray[new Random().nextInt(avatarArray.length)];
         getView().setSaveAddressButtonEnable(!AddressInfoDao.getInstance().insertAddressInfo(new AddressInfoEntity(UUID.randomUUID().toString(), address, name, avatar)));
+    }
+
+    @Override
+    public void updateAssetsTab(int tabIndex) {
+        if (isViewAttached()){
+            if (tabIndex != AssetsFragment.TAB2){
+                resetData();
+                getView().resetView(BigDecimalUtil.parseString(feeAmount));
+            }
+        }
     }
 
     @Override
@@ -471,7 +480,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
                 emitter.onSuccess("");
             }
         })
-                .delay(1500, TimeUnit.MILLISECONDS).compose(new SchedulersTransformer())
+                .delay(1000, TimeUnit.MILLISECONDS).compose(new SchedulersTransformer())
                 .subscribe(new Consumer<String>() {
                     @Override
                     public void accept(String text) throws Exception {

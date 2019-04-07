@@ -129,4 +129,11 @@ public class Event {
         public UpdateWalletListEvent() {
         }
     }
+
+    public static class UpdateAssetsTabEvent {
+        public int tabIndex;
+        public UpdateAssetsTabEvent(int tabIndex) {
+            this.tabIndex = tabIndex;
+        }
+    }
 }

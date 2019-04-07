@@ -224,13 +224,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateCreateJointWalletProgressEvent(Event.UpdateCreateJointWalletProgressEvent event) {
-        SharedWalletEntity sharedWalletEntity = event.sharedWalletEntity;
-        if (sharedWalletEntity != null) {
-            if (sharedWalletEntity.getProgress() == 100) {
-                SharedWalletManager.getInstance().updateWalletFinished(sharedWalletEntity.getUuid(), true);
-                sharedWalletEntity.updateFinished(true);
-            }
-        }
+        mPresenter.updateCreateJointWallet(event.sharedWalletEntity);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -272,17 +266,25 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         stbBar.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
             }
 
             @Override
             public void onPageSelected(int position) {
-                currentActivity().hideSoftInput();
+                switch (position){
+                    case 0:
+                        EventPublisher.getInstance().sendUpdateAssetsTabEvent(TAB1);
+                        break;
+                    case 1:
+                        EventPublisher.getInstance().sendUpdateAssetsTabEvent(TAB2);
+                        break;
+                    case 2:
+                        EventPublisher.getInstance().sendUpdateAssetsTabEvent(TAB3);
+                        break;
+                }
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
             }
         });
 
@@ -367,7 +369,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         return list;
     }
 
-    public BaseFragment getFragment(int tab, WalletEntity walletEntity) {
+    private BaseFragment getFragment(int tab, WalletEntity walletEntity) {
         BaseFragment fragment = null;
         switch (tab) {
             case TAB1:

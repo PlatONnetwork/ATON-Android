@@ -89,4 +89,8 @@ public class EventPublisher {
     public void sendUpdateWalletListEvent() {
         BusProvider.post(new Event.UpdateWalletListEvent());
     }
+
+    public void sendUpdateAssetsTabEvent(int tabIndex) {
+        BusProvider.post(new Event.UpdateAssetsTabEvent(tabIndex));
+    }
 }

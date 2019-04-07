@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -61,7 +62,7 @@ import kotlin.Unit;
 /**
  * @author matrixelement
  */
-public class SendTransactionFragment extends MVPBaseFragment<SendTransationPresenter> implements SendTransationContract.View {
+public class SendTransactionFragment extends MVPBaseFragment<SendTransationPresenter> implements SendTransationContract.View{
 
     @BindView(R.id.iv_address_book)
     ImageView        ivAddressBook;
@@ -132,6 +133,10 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
     private void initViews() {
         setSendTransactionButtonEnable(false);
         etWalletAmount.setFilters(new InputFilter[]{new PointLengthFilter()});
+        etWalletAddress.addTextChangedListener(mEtWalletAddressWatcher);
+        etWalletAmount.addTextChangedListener(mEtWalletAmountWatcher);
+        etWalletAddress.setOnFocusChangeListener(mEtWalletAddressFocusChangeListener);
+        etWalletAmount.setOnFocusChangeListener(mEtWalletAmountFocusChangeListener);
         bubbleSeekBar.setCustomSectionTextArray(new BubbleSeekBar.CustomSectionTextArray() {
             @androidx.annotation.NonNull
             @Override
@@ -143,31 +148,29 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
             }
         });
         bubbleSeekBar.setOnProgressChangedListener(mProgressListener);
-        etWalletAmount.addTextChangedListener(mEtWalletAmountWatcher);
-        etWalletAddress.addTextChangedListener(mEtWalletAddressWatcher);
 
-        RxView.focusChanges(etWalletAddress).skipInitialValue().subscribe(new Consumer<Boolean>() {
-            @Override
-            public void accept(Boolean hasFocus) throws Exception {
-                String address = etWalletAddress.getText().toString().trim();
-                if (!hasFocus) {
-                    mPresenter.checkToAddress(address);
-                }else {
-                    showToAddressError("");
-                }
-            }
-        });
-        RxView.focusChanges(etWalletAmount).skipInitialValue().subscribe(new Consumer<Boolean>() {
-            @Override
-            public void accept(Boolean hasFocus) throws Exception {
-                String amount = etWalletAmount.getText().toString().trim();
-                if (!hasFocus) {
-                    mPresenter.checkTransferAmount(amount);
-                }else {
-                    showAmountError("");
-                }
-            }
-        });
+//        RxView.focusChanges(etWalletAddress).skipInitialValue().subscribe(new Consumer<Boolean>() {
+//            @Override
+//            public void accept(Boolean hasFocus) throws Exception {
+//                String address = etWalletAddress.getText().toString().trim();
+//                if (!hasFocus) {
+//                    mPresenter.checkToAddress(address);
+//                }else {
+//                    showToAddressError("");
+//                }
+//            }
+//        });
+//        RxView.focusChanges(etWalletAmount).skipInitialValue().subscribe(new Consumer<Boolean>() {
+//            @Override
+//            public void accept(Boolean hasFocus) throws Exception {
+//                String amount = etWalletAmount.getText().toString().trim();
+//                if (!hasFocus) {
+//                    mPresenter.checkTransferAmount(amount);
+//                }else {
+//                    showAmountError("");
+//                }
+//            }
+//        });
 
         RxView.clicks(btnSendTransation)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
@@ -247,6 +250,13 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
         mPresenter.fetchDefaultWalletInfo();
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdateAssetsTabEvent(Event.UpdateAssetsTabEvent event) {
+        mPresenter.updateAssetsTab(event.tabIndex);
+//        System.out.println("****** index: " + event.tabIndex);
+//        mPresenter.fetchDefaultWalletInfo();
+    }
+
     @Override
     public void updateWalletInfo(WalletEntity walletEntity) {
         tvWalletBalance.setText(string(R.string.balance_text, NumberParserUtils.getPrettyBalance(walletEntity.getBalance())));
@@ -314,14 +324,29 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
     public void resetView(String feeAmount) {
         etWalletAddress.removeTextChangedListener(mEtWalletAddressWatcher);
         etWalletAmount.removeTextChangedListener(mEtWalletAmountWatcher);
+        etWalletAddress.setOnFocusChangeListener(null);
+        etWalletAmount.setOnFocusChangeListener(null);
+        currentActivity().hideSoftInput();
+        etWalletAddress.setFocusable(false);
+        etWalletAddress.setFocusableInTouchMode(false);
+        etWalletAmount.setFocusable(false);
+        etWalletAmount.setFocusableInTouchMode(false);
         etWalletAddress.setText("");
         etWalletAmount.setText("");
         setTransferFeeAmount(feeAmount);
         bubbleSeekBar.setProgress(0);
         setSendTransactionButtonEnable(false);
         setSaveAddressButtonEnable(false);
-        etWalletAmount.addTextChangedListener(mEtWalletAmountWatcher);
+        showToAddressError("");
+        showAmountError("");
+        etWalletAddress.setFocusable(true);
+        etWalletAddress.setFocusableInTouchMode(true);
+        etWalletAmount.setFocusable(true);
+        etWalletAmount.setFocusableInTouchMode(true);
         etWalletAddress.addTextChangedListener(mEtWalletAddressWatcher);
+        etWalletAmount.addTextChangedListener(mEtWalletAmountWatcher);
+        etWalletAddress.setOnFocusChangeListener(mEtWalletAddressFocusChangeListener);
+        etWalletAmount.setOnFocusChangeListener(mEtWalletAmountFocusChangeListener);
     }
 
     @Override
@@ -346,6 +371,18 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
 
     }
 
+    private View.OnFocusChangeListener mEtWalletAddressFocusChangeListener = new View.OnFocusChangeListener() {
+        @Override
+        public void onFocusChange(View v, boolean hasFocus) {
+                String address = etWalletAddress.getText().toString().trim();
+                if (!hasFocus) {
+                    mPresenter.checkToAddress(address);
+                }else {
+                    showToAddressError("");
+                }
+        }
+    };
+
     private TextWatcher mEtWalletAddressWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -362,6 +399,18 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
         @Override
         public void afterTextChanged(Editable s) {
 
+        }
+    };
+
+    private View.OnFocusChangeListener mEtWalletAmountFocusChangeListener = new View.OnFocusChangeListener() {
+        @Override
+        public void onFocusChange(View v, boolean hasFocus) {
+            String amount = etWalletAmount.getText().toString().trim();
+            if (!hasFocus) {
+                mPresenter.checkTransferAmount(amount);
+            }else {
+                showAmountError("");
+            }
         }
     };
 

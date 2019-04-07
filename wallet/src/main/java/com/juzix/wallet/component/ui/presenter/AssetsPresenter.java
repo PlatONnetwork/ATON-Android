@@ -48,7 +48,7 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
 
     private ArrayList<WalletEntity> mWalletList = new ArrayList<>();
     private Disposable              mDisposable;
-    private static final int        REFRESH_TIME = 25000;
+    private static final int        REFRESH_TIME = 5000;
 
     public AssetsPresenter(AssetsContract.View view) {
         super(view);
@@ -60,7 +60,7 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
     }
 
     @Override
-    public void start() { 
+    public void start() {
         if (mDisposable != null && !mDisposable.isDisposed()) {
             mDisposable.dispose();
         }
@@ -223,6 +223,21 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
            return true;
         }
         return false;
+    }
+
+    @Override
+    public void updateCreateJointWallet(SharedWalletEntity sharedWalletEntity) {
+        try {
+            if (sharedWalletEntity != null) {
+                if (sharedWalletEntity.getProgress() == 100) {
+                    SharedWalletManager.getInstance().updateWalletFinished(sharedWalletEntity.getUuid(), true);
+                    sharedWalletEntity.updateFinished(true);
+                }
+            }
+            getView().notifyAllChanged();
+        }catch (Exception exp){
+            exp.printStackTrace();
+        }
     }
 
     @Override
