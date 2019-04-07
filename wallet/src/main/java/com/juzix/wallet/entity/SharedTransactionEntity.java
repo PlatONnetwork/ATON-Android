@@ -7,12 +7,15 @@ import android.text.TextUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.db.entity.SharedTransactionInfoEntity;
 import com.juzix.wallet.db.entity.SharedWalletOwnerInfoEntity;
-import com.juzix.wallet.db.entity.TransactionInfoResult;
+import com.juzix.wallet.utils.JSONUtil;
+
+import org.reactivestreams.Publisher;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import io.reactivex.Flowable;
 import io.reactivex.functions.Function;
@@ -20,6 +23,7 @@ import io.reactivex.functions.Predicate;
 
 import static com.juzix.wallet.entity.TransactionResult.Status.OPERATION_APPROVAL;
 import static com.juzix.wallet.entity.TransactionResult.Status.OPERATION_REVOKE;
+import static com.juzix.wallet.entity.TransactionResult.Status.OPERATION_UNDETERMINED;
 
 /**
  * @author matrixelement
@@ -36,7 +40,7 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
     private String contractAddress;
     private boolean pending;
     private boolean executed;
-    private List<TransactionResult> transactionResult;
+    private String transactionResult;
     /**
      * 所需签名数
      */
@@ -97,7 +101,7 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
         memo = in.readString();
         transactionId = in.readString();
         contractAddress = in.readString();
-        transactionResult = in.readArrayList(TransactionResult.class.getClassLoader());
+        transactionResult = in.readString();
         pending = in.readByte() != 0;
         executed = in.readByte() != 0;
         requiredSignNumber = in.readInt();
@@ -127,7 +131,7 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
         dest.writeString(memo);
         dest.writeString(transactionId);
         dest.writeString(contractAddress);
-        dest.writeList(transactionResult);
+        dest.writeString(transactionResult);
         dest.writeByte((byte) (pending ? 1 : 0));
         dest.writeByte((byte) (executed ? 1 : 0));
         dest.writeInt(requiredSignNumber);
@@ -181,24 +185,11 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
         }
     }
 
-    public ArrayList<TransactionInfoResult> buildTransactionInfoResult() {
-        ArrayList<TransactionInfoResult> transactionInfoResults = new ArrayList<>();
-        for (TransactionResult result : transactionResult) {
-            transactionInfoResults.add(new TransactionInfoResult.Builder()
-                    .uuid(result.getUuid())
-                    .name(result.getName())
-                    .address(result.getAddress())
-                    .operation(result.getStatus().ordinal())
-                    .build());
-        }
-        return transactionInfoResults;
-    }
-
-    public List<TransactionResult> getTransactionResult() {
+    public String getTransactionResult() {
         return transactionResult;
     }
 
-    public void setTransactionResult(List<TransactionResult> transactionResult) {
+    public void setTransactionResult(String transactionResult) {
         this.transactionResult = transactionResult;
     }
 
@@ -265,30 +256,69 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
         return false;
     }
 
-    public int getConfirms() {
-        int counter = 0;
-        for (TransactionResult result : transactionResult) {
-            TransactionResult.Status status = result.getStatus();
-            if (status == OPERATION_APPROVAL || status == TransactionResult.Status.OPERATION_REVOKE) {
-                counter++;
+    /**
+     * 已经确认数，包括同意和拒绝
+     *
+     * @return
+     */
+    public long getConfirms() {
+
+        return Flowable.fromCallable(new Callable<List<TransactionResult>>() {
+            @Override
+            public List<TransactionResult> call() throws Exception {
+                return getTransactionResultList();
             }
-        }
-        return counter;
+        }).filter(new Predicate<List<TransactionResult>>() {
+            @Override
+            public boolean test(List<TransactionResult> transactionResults) throws Exception {
+                return !transactionResults.isEmpty();
+            }
+        }).flatMap(new Function<List<TransactionResult>, Publisher<TransactionResult>>() {
+            @Override
+            public Publisher<TransactionResult> apply(List<TransactionResult> transactionResults) throws Exception {
+                return Flowable.fromIterable(transactionResults);
+            }
+        })
+                .map(new Function<TransactionResult, TransactionResult.Status>() {
+                    @Override
+                    public TransactionResult.Status apply(TransactionResult transactionResult) throws Exception {
+                        return transactionResult.getStatus();
+                    }
+                }).filter(new Predicate<TransactionResult.Status>() {
+                    @Override
+                    public boolean test(TransactionResult.Status status) throws Exception {
+                        return status == OPERATION_APPROVAL || status == TransactionResult.Status.OPERATION_REVOKE;
+                    }
+                }).count().onErrorReturnItem(0L).blockingGet();
     }
 
-    public int getRevokes() {
-        int counter = 0;
-        for (TransactionResult result : transactionResult) {
-            TransactionResult.Status status = result.getStatus();
-            if (status == TransactionResult.Status.OPERATION_REVOKE) {
-                counter++;
-            }
-        }
-        return counter;
+    /**
+     * 获取拒绝数
+     *
+     * @return
+     */
+    public long getRevokes() {
+        return Flowable
+                .fromIterable(getTransactionResultList())
+                .map(new Function<TransactionResult, TransactionResult.Status>() {
+                    @Override
+                    public TransactionResult.Status apply(TransactionResult transactionResult) throws Exception {
+                        return transactionResult.getStatus();
+                    }
+                }).filter(new Predicate<TransactionResult.Status>() {
+                    @Override
+                    public boolean test(TransactionResult.Status status) throws Exception {
+                        return status == TransactionResult.Status.OPERATION_REVOKE;
+                    }
+                }).count().onErrorReturnItem(0L).blockingGet();
     }
 
     public int getRequired() {
         return TextUtils.isEmpty(hash) ? requiredSignNumber : 12;
+    }
+
+    public List<TransactionResult> getTransactionResultList() {
+        return JSONUtil.parseArray(transactionResult, TransactionResult.class);
     }
 
     public static final class Builder {
@@ -305,7 +335,7 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
         private String memo;
         private String transactionId;
         private String contractAddress;
-        private List<TransactionResult> transactionResult;
+        private String transactionResult;
         private boolean pending;
         private boolean executed;
         private int requiredSignNumber;
@@ -370,7 +400,7 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
             return this;
         }
 
-        public Builder transactionResult(List<TransactionResult> va1) {
+        public Builder transactionResult(String va1) {
             transactionResult = va1;
             return this;
         }
@@ -430,27 +460,45 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
     @Override
     public TransactionStatus getTransactionStatus() {
 
-        if (TextUtils.isEmpty(hash) && executed){
+        if (TextUtils.isEmpty(hash) && executed) {
             return TransactionStatus.SUCCEED;
         }
 
-        if (transactionResult == null || transactionResult.isEmpty()){
+        if (transactionResult == null || transactionResult.isEmpty()) {
             return TransactionStatus.CREATE_JOINT_WALLET;
         }
 
+        long approvalCount = getApprovalCount();
+        long undeterminedCount = getUndeterminedCount();
+
         //同意数达到要求签名数
-        if (getApprovalCount() >= requiredSignNumber){
+        if (approvalCount >= requiredSignNumber) {
             return TransactionStatus.SUCCEED;
         }
 
-        if (transactionResult.size() - getRevokeCount() <requiredSignNumber){
+        if (undeterminedCount + approvalCount < requiredSignNumber) {
             return TransactionStatus.FAILED;
         }
         return TransactionStatus.SIGNING;
     }
 
     public long getApprovalCount() {
-        return Flowable.fromIterable(transactionResult)
+        return Flowable.fromCallable(new Callable<List<TransactionResult>>() {
+            @Override
+            public List<TransactionResult> call() throws Exception {
+                return getTransactionResultList();
+            }
+        }).filter(new Predicate<List<TransactionResult>>() {
+            @Override
+            public boolean test(List<TransactionResult> transactionResults) throws Exception {
+                return !transactionResults.isEmpty();
+            }
+        }).flatMap(new Function<List<TransactionResult>, Publisher<TransactionResult>>() {
+            @Override
+            public Publisher<TransactionResult> apply(List<TransactionResult> transactionResults) throws Exception {
+                return Flowable.fromIterable(transactionResults);
+            }
+        })
                 .map(new Function<TransactionResult, Boolean>() {
                     @Override
                     public Boolean apply(TransactionResult transactionResult) throws Exception {
@@ -461,11 +509,26 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
                     public boolean test(Boolean aBoolean) throws Exception {
                         return aBoolean;
                     }
-                }).count().blockingGet();
+                }).count().onErrorReturnItem(0L).blockingGet();
     }
 
     public long getRevokeCount() {
-        return Flowable.fromIterable(transactionResult)
+        return Flowable.fromCallable(new Callable<List<TransactionResult>>() {
+            @Override
+            public List<TransactionResult> call() throws Exception {
+                return getTransactionResultList();
+            }
+        }).filter(new Predicate<List<TransactionResult>>() {
+            @Override
+            public boolean test(List<TransactionResult> transactionResults) throws Exception {
+                return !transactionResults.isEmpty();
+            }
+        }).flatMap(new Function<List<TransactionResult>, Publisher<TransactionResult>>() {
+            @Override
+            public Publisher<TransactionResult> apply(List<TransactionResult> transactionResults) throws Exception {
+                return Flowable.fromIterable(transactionResults);
+            }
+        })
                 .map(new Function<TransactionResult, Boolean>() {
                     @Override
                     public Boolean apply(TransactionResult transactionResult) throws Exception {
@@ -476,7 +539,37 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
                     public boolean test(Boolean aBoolean) throws Exception {
                         return aBoolean;
                     }
-                }).count().blockingGet();
+                }).count().onErrorReturnItem(0L).blockingGet();
+    }
+
+    public long getUndeterminedCount() {
+        return Flowable.fromCallable(new Callable<List<TransactionResult>>() {
+            @Override
+            public List<TransactionResult> call() throws Exception {
+                return getTransactionResultList();
+            }
+        }).filter(new Predicate<List<TransactionResult>>() {
+            @Override
+            public boolean test(List<TransactionResult> transactionResults) throws Exception {
+                return !transactionResults.isEmpty();
+            }
+        }).flatMap(new Function<List<TransactionResult>, Publisher<TransactionResult>>() {
+            @Override
+            public Publisher<TransactionResult> apply(List<TransactionResult> transactionResults) throws Exception {
+                return Flowable.fromIterable(transactionResults);
+            }
+        })
+                .map(new Function<TransactionResult, Boolean>() {
+                    @Override
+                    public Boolean apply(TransactionResult transactionResult) throws Exception {
+                        return transactionResult.getStatus() == OPERATION_UNDETERMINED;
+                    }
+                }).filter(new Predicate<Boolean>() {
+                    @Override
+                    public boolean test(Boolean aBoolean) throws Exception {
+                        return aBoolean;
+                    }
+                }).count().onErrorReturnItem(0L).blockingGet();
     }
 
     public List<SharedWalletOwnerInfoEntity> buildSharedWalletOwnerInfoEntityList() {
@@ -508,7 +601,7 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
                 .pending(isPending())
                 .executed(isExecuted())
                 .transactionId(getTransactionId())
-                .transactionResult(buildTransactionInfoResult())
+                .transactionResult(getTransactionResult())
                 .requiredSignNumber(getRequiredSignNumber())
                 .blockNumber(getBlockNumber())
                 .latestBlockNumber(getLatestBlockNumber())
@@ -566,5 +659,21 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
         }
 
         public abstract int getTransactionTypeDesc(String transactionToAddress, String queryAddress);
+    }
+
+    @Override
+    public String toString() {
+        return "SharedTransactionEntity{" +
+                "transactionId='" + transactionId + '\'' +
+                ", contractAddress='" + contractAddress + '\'' +
+                ", pending=" + pending +
+                ", executed=" + executed +
+                ", transactionResult=" + transactionResult +
+                ", requiredSignNumber=" + requiredSignNumber +
+                ", read=" + read +
+                ", ownerEntityList=" + ownerEntityList +
+                ", ownerWalletAddress='" + ownerWalletAddress + '\'' +
+                ", transactionType=" + transactionType +
+                '}';
     }
 }

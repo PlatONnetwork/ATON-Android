@@ -12,9 +12,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
-
-import com.juzix.biometric.R;
-
 import java.util.Objects;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;

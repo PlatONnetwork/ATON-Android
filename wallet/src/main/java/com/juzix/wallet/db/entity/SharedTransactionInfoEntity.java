@@ -2,14 +2,21 @@ package com.juzix.wallet.db.entity;
 
 import com.juzix.wallet.entity.OwnerEntity;
 import com.juzix.wallet.entity.SharedTransactionEntity;
+import com.juzix.wallet.entity.TransactionEntity;
 import com.juzix.wallet.entity.TransactionResult;
+import com.juzix.wallet.utils.JSONUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Flowable;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
+
+import static com.juzix.wallet.entity.TransactionResult.Status.OPERATION_UNDETERMINED;
 
 /**
  * @author matrixelement
@@ -78,7 +85,7 @@ public class SharedTransactionInfoEntity extends RealmObject {
     /**
      * 状态列表
      */
-    private RealmList<TransactionInfoResult> transactionResult;
+    private String transactionResult;
     /**
      * 所需签名数
      */
@@ -120,7 +127,7 @@ public class SharedTransactionInfoEntity extends RealmObject {
         setContractAddress(builder.contractAddress);
         setPending(builder.pending);
         setExecuted(builder.executed);
-        setTransactionResultArrayList(builder.transactionResult);
+        setTransactionResult(builder.transactionResult);
         setRequiredSignNumber(builder.requiredSignNumber);
         setRead(builder.read);
         setSharedWalletOwnerInfoEntityRealmList(builder.sharedWalletOwnerInfoEntityList);
@@ -248,16 +255,12 @@ public class SharedTransactionInfoEntity extends RealmObject {
         this.executed = executed;
     }
 
-    public RealmList<TransactionInfoResult> getTransactionResult() {
-        return transactionResult;
-    }
-
-    public void setTransactionResult(RealmList<TransactionInfoResult> transactionResult) {
+    public void setTransactionResult(String transactionResult) {
         this.transactionResult = transactionResult;
     }
 
-    public RealmList<SharedWalletOwnerInfoEntity> getSharedWalletOwnerInfoEntityRealmList() {
-        return sharedWalletOwnerInfoEntityRealmList;
+    public String getTransactionResult() {
+        return transactionResult;
     }
 
     public void setSharedWalletOwnerInfoEntityRealmList(List<SharedWalletOwnerInfoEntity> sharedWalletOwnerInfoEntityList) {
@@ -269,6 +272,10 @@ public class SharedTransactionInfoEntity extends RealmObject {
         for (SharedWalletOwnerInfoEntity sharedWalletOwnerInfoEntity : sharedWalletOwnerInfoEntityList) {
             this.sharedWalletOwnerInfoEntityRealmList.add(sharedWalletOwnerInfoEntity);
         }
+    }
+
+    public RealmList<SharedWalletOwnerInfoEntity> getSharedWalletOwnerInfoEntityRealmList() {
+        return sharedWalletOwnerInfoEntityRealmList;
     }
 
     public String getOwnerWalletAddress() {
@@ -296,35 +303,6 @@ public class SharedTransactionInfoEntity extends RealmObject {
         }
 
         return ownerEntityList;
-    }
-
-    public ArrayList<TransactionInfoResult> getTransactionResultArrayList() {
-        ArrayList<TransactionInfoResult> transactionInfoResults = new ArrayList<>();
-        if (this.transactionId == null) {
-            return transactionInfoResults;
-        }
-        for (TransactionInfoResult infoEntity : this.transactionResult) {
-            transactionInfoResults.add(infoEntity);
-        }
-        return transactionInfoResults;
-    }
-
-    public void setTransactionResultArrayList(ArrayList<TransactionInfoResult> transactionInfoResultList) {
-        if (transactionInfoResultList == null) {
-            return;
-        }
-        this.transactionResult = new RealmList<>();
-        for (TransactionInfoResult resultEntity : transactionInfoResultList) {
-            this.transactionResult.add(resultEntity);
-        }
-    }
-
-    public ArrayList<TransactionResult> buildTransactionResult() {
-        ArrayList<TransactionResult> transactionResults = new ArrayList<>();
-        for (TransactionInfoResult result : transactionResult) {
-            transactionResults.add(new TransactionResult(result.getUuid(), result.getName(), result.getAddress(), TransactionResult.Status.values()[result.getOperation()]));
-        }
-        return transactionResults;
     }
 
     public int getRequiredSignNumber() {
@@ -360,7 +338,7 @@ public class SharedTransactionInfoEntity extends RealmObject {
         private String contractAddress;
         private boolean pending;
         private boolean executed;
-        private ArrayList<TransactionInfoResult> transactionResult;
+        private String transactionResult;
         private int requiredSignNumber;
         private boolean read;
         private List<SharedWalletOwnerInfoEntity> sharedWalletOwnerInfoEntityList;
@@ -445,7 +423,7 @@ public class SharedTransactionInfoEntity extends RealmObject {
             return this;
         }
 
-        public Builder transactionResult(ArrayList<TransactionInfoResult> val) {
+        public Builder transactionResult(String val) {
             transactionResult = val;
             return this;
         }
@@ -492,7 +470,7 @@ public class SharedTransactionInfoEntity extends RealmObject {
                 .pending(isPending())
                 .executed(isExecuted())
                 .transactionId(getTransactionId())
-                .transactionResult(buildTransactionResult())
+                .transactionResult(getTransactionResult())
                 .requiredSignNumber(getRequiredSignNumber())
                 .blockNumber(getBlockNumber())
                 .latestBlockNumber(getLatestBlockNumber())
@@ -521,12 +499,73 @@ public class SharedTransactionInfoEntity extends RealmObject {
                 ", contractAddress='" + contractAddress + '\'' +
                 ", pending=" + pending +
                 ", executed=" + executed +
-                ", transactionResult=" + transactionResult +
+                ", transactionResult=" + getStatus() +
                 ", requiredSignNumber=" + requiredSignNumber +
                 ", read=" + read +
                 ", sharedWalletOwnerInfoEntityRealmList=" + sharedWalletOwnerInfoEntityRealmList +
                 ", ownerWalletAddress='" + ownerWalletAddress + '\'' +
                 ", transactionType=" + transactionType +
                 '}';
+    }
+
+    public List<TransactionResult> getTransactionResultList() {
+        return JSONUtil.parseArray(transactionResult, TransactionResult.class);
+    }
+
+    private TransactionEntity.TransactionStatus getStatus() {
+        if (getApprovalCount() >= requiredSignNumber) {
+            return TransactionEntity.TransactionStatus.SUCCEED;
+        }
+
+        if (getUndeterminedCount() + getApprovalCount() < requiredSignNumber) {
+            return TransactionEntity.TransactionStatus.FAILED;
+        }
+
+        return TransactionEntity.TransactionStatus.SIGNING;
+    }
+
+    private long getApprovalCount() {
+        return Flowable.fromIterable(getTransactionResultList())
+                .map(new Function<TransactionResult, Boolean>() {
+                    @Override
+                    public Boolean apply(TransactionResult transactionResult) throws Exception {
+                        return transactionResult.getStatus() == OPERATION_UNDETERMINED;
+                    }
+                }).filter(new Predicate<Boolean>() {
+                    @Override
+                    public boolean test(Boolean aBoolean) throws Exception {
+                        return aBoolean;
+                    }
+                }).count().onErrorReturnItem(0L).blockingGet();
+    }
+
+    private long getRevokeCount() {
+        return Flowable.fromIterable(getTransactionResultList())
+                .map(new Function<TransactionResult, Boolean>() {
+                    @Override
+                    public Boolean apply(TransactionResult transactionResult) throws Exception {
+                        return transactionResult.getStatus() == OPERATION_UNDETERMINED;
+                    }
+                }).filter(new Predicate<Boolean>() {
+                    @Override
+                    public boolean test(Boolean aBoolean) throws Exception {
+                        return aBoolean;
+                    }
+                }).count().onErrorReturnItem(0L).blockingGet();
+    }
+
+    private long getUndeterminedCount() {
+        return Flowable.fromIterable(getTransactionResultList())
+                .map(new Function<TransactionResult, Boolean>() {
+                    @Override
+                    public Boolean apply(TransactionResult transactionResult) throws Exception {
+                        return transactionResult.getStatus() == OPERATION_UNDETERMINED;
+                    }
+                }).filter(new Predicate<Boolean>() {
+                    @Override
+                    public boolean test(Boolean aBoolean) throws Exception {
+                        return aBoolean;
+                    }
+                }).count().onErrorReturnItem(0L).blockingGet();
     }
 }

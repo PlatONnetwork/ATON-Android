@@ -2,6 +2,7 @@ package com.juzix.wallet.component.adapter;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.widget.ListView;
 
 import com.juzhen.framework.util.NumberParserUtils;
@@ -69,6 +70,9 @@ public class TransactionListsAdapter extends CommonAdapter<TransactionEntity> {
                 SharedTransactionEntity sharedTransactionEntity = (SharedTransactionEntity) item;
                 SharedTransactionEntity.TransactionType transactionType = SharedTransactionEntity.TransactionType.getTransactionType(sharedTransactionEntity.getTransactionType());
                 SharedTransactionEntity.TransactionStatus transactionStatus = item.getTransactionStatus();
+                if (transactionType == SharedTransactionEntity.TransactionType.SEND_TRANSACTION) {
+                    Log.e(TAG, sharedTransactionEntity.toString() + ":::" + transactionStatus);
+                }
                 viewHolder.setVisible(R.id.v_new_msg, !sharedTransactionEntity.isRead());
                 viewHolder.setText(R.id.tv_transaction_status, context.getString(transactionType.getTransactionTypeDesc(sharedTransactionEntity.getToAddress(), walletAddress)));
                 viewHolder.setText(R.id.tv_transaction_time, DateUtil.format(item.getCreateTime(), DateUtil.DATETIME_FORMAT_PATTERN));

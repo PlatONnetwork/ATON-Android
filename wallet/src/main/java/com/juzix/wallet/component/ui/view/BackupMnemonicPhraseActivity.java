@@ -62,7 +62,7 @@ public class BackupMnemonicPhraseActivity extends BaseActivity implements View.O
                 exit();
             }
         });
-        findViewById(R.id.ll_next).setOnClickListener(this);
+        findViewById(R.id.sc_next).setOnClickListener(this);
     }
 
     private void exit(){
@@ -94,7 +94,7 @@ public class BackupMnemonicPhraseActivity extends BaseActivity implements View.O
     private void setMnemonic(String text){
         String[] words = text.split(" ");
         if (words != null && words.length == 12){
-            findViewById(R.id.ll_next).setEnabled(true);
+            findViewById(R.id.sc_next).setEnabled(true);
             ((TextView) findViewById(R.id.tv_mnemonic1)).setText(words[0]);
             ((TextView) findViewById(R.id.tv_mnemonic2)).setText(words[1]);
             ((TextView) findViewById(R.id.tv_mnemonic3)).setText(words[2]);
@@ -108,14 +108,14 @@ public class BackupMnemonicPhraseActivity extends BaseActivity implements View.O
             ((TextView) findViewById(R.id.tv_mnemonic11)).setText(words[10]);
             ((TextView) findViewById(R.id.tv_mnemonic12)).setText(words[11]);
         }else {
-            findViewById(R.id.ll_next).setEnabled(false);
+            findViewById(R.id.sc_next).setEnabled(false);
         }
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.ll_next:
+            case R.id.sc_next:
                 VerificationMnemonicActivity.actionStart(getContext(), getIntent().getStringExtra(Constants.Extra.EXTRA_PASSWORD),
                         getIntent().getParcelableExtra(Constants.Extra.EXTRA_WALLET), getIntent().getIntExtra(Constants.Extra.EXTRA_TYPE, 0));
                 BackupMnemonicPhraseActivity.this.finish();

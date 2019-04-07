@@ -2,16 +2,71 @@ package com.juzix.wallet.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
-public class TransactionResult extends AddressEntity implements Parcelable {
+public class TransactionResult implements Parcelable {
 
+    private String uuid;
+    /**
+     * 钱包名称
+     */
+    private String name;
+    /**
+     * 钱包地址
+     */
+    private String address;
+    /**
+     * 交易状态
+     */
     private Status status = Status.OPERATION_UNDETERMINED;
+
+    public TransactionResult() {
+    }
 
     public TransactionResult(String uuid, String name, String address, Status status) {
         setUuid(uuid);
         setName(name);
         setAddress(address);
         setStatus(status);
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPrefixAddress(){
+        try {
+            if(TextUtils.isEmpty(address)){
+                return null;
+            }
+            if (address.toLowerCase().startsWith("0x")){
+                return address;
+            }
+            return "0x" + address;
+        } catch (Exception exp) {
+            exp.printStackTrace();
+            return null;
+        }
     }
 
     protected TransactionResult(Parcel in) {
@@ -81,4 +136,10 @@ public class TransactionResult extends AddressEntity implements Parcelable {
         }
     }
 
+    @Override
+    public String toString() {
+        return "TransactionResult{" +
+                "status=" + status +
+                '}';
+    }
 }

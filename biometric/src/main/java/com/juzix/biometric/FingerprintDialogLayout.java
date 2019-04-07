@@ -8,8 +8,6 @@ import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.juzix.biometric.R;
-
 @RestrictTo({RestrictTo.Scope.LIBRARY})
 public class FingerprintDialogLayout extends LinearLayout {
 
