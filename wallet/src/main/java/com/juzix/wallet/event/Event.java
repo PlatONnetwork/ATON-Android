@@ -122,4 +122,11 @@ public class Event {
             this.hasUnread = hasUnread;
         }
     }
+
+
+    public static class UpdateWalletListEvent {
+
+        public UpdateWalletListEvent() {
+        }
+    }
 }

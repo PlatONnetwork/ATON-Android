@@ -85,4 +85,8 @@ public class EventPublisher {
     public void sendUpdateTransactionUnreadMessageEvent(String uuid, boolean hasUnread) {
         BusProvider.post(new Event.UpdateTransactionUnreadMessageEvent(uuid, hasUnread));
     }
+
+    public void sendUpdateWalletListEvent() {
+        BusProvider.post(new Event.UpdateWalletListEvent());
+    }
 }

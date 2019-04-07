@@ -120,6 +120,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
     @Override
     protected void onFragmentPageStart() {
+        mPresenter.fetchWalletList();
         mPresenter.start();
     }
 
@@ -217,6 +218,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     public void onNetWorkStateChangedEvent(Event.NetWorkStateChangedEvent event) {
         if (event.netState == NetState.CONNECTED) {
             mPresenter.fetchWalletList();
+            mPresenter.start();
         }
     }
 
@@ -229,6 +231,17 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
                 sharedWalletEntity.updateFinished(true);
             }
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdateSharedWalletUnreadMessageEvent(Event.UpdateSharedWalletUnreadMessageEvent event) {
+        mPresenter.updateUnreadMessage(event.contractAddress, event.hasUnreadMessage);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdateWalletListEvent(Event.UpdateWalletListEvent event) {
+        mPresenter.fetchWalletList();
+        mPresenter.start();
     }
 
     private void initHeader() {
@@ -427,11 +440,6 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUpdateSharedWalletUnreadMessageEvent(Event.UpdateSharedWalletUnreadMessageEvent event) {
-        mWalletAdapter.notifyItemUnreadMessage(event.contractAddress, event.hasUnreadMessage);
-    }
-
     @Override
     public void showTotalBalance(double totalBalance) {
         tvTotalAssetsAmount.setText(NumberParserUtils.getPrettyBalance(totalBalance));
@@ -493,6 +501,16 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
             bundle.putParcelable(Constants.Extra.EXTRA_WALLET, entity);
             fragment.setArguments(bundle);
         }
+    }
+
+    @Override
+    public void notifyWalletChanged(int position) {
+        mWalletAdapter.notifyItemChanged(position);
+    }
+
+    @Override
+    public void notifyAllChanged() {
+        mWalletAdapter.notifyDataSetChanged();
     }
 
     private View getTableView(int position, ViewGroup container) {

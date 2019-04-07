@@ -468,12 +468,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
         Single.create(new SingleOnSubscribe<String>() {
             @Override
             public void subscribe(SingleEmitter<String> emitter) throws Exception {
-                try {
-                    emitter.onSuccess("");
-                } catch (Exception exp) {
-                    exp.printStackTrace();
-                    emitter.onError(exp);
-                }
+                emitter.onSuccess("");
             }
         })
                 .delay(1500, TimeUnit.MILLISECONDS).compose(new SchedulersTransformer())
@@ -481,6 +476,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
                     @Override
                     public void accept(String text) throws Exception {
                         if (isViewAttached()) {
+                            EventPublisher.getInstance().sendUpdateWalletListEvent();
                             resetData();
                             getView().resetView(BigDecimalUtil.parseString(feeAmount));
                             MainActivity.actionStart(getContext(), MainActivity.TAB_PROPERTY, AssetsFragment.TAB1);

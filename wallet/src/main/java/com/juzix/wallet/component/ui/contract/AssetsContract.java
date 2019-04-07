@@ -21,6 +21,8 @@ public class AssetsContract {
         void showBalance(double balance);
         int getTabIndex();
         void setArgument(WalletEntity entity);
+        void notifyWalletChanged(int position);
+        void notifyAllChanged();
     }
 
     public interface Presenter extends IPresenter<View> {
@@ -36,5 +38,6 @@ public class AssetsContract {
         void addSharedWallet();
         void backupWallet();
         boolean needBackup(WalletEntity walletEntity);
+        void updateUnreadMessage(String contractAddress, boolean hasUnreadMessage);
     }
 }
