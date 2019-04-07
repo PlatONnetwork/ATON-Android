@@ -118,7 +118,7 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
                 .compose(new SchedulersTransformer())
                 .subscribe(new Consumer<Double>() {
                     @Override
-                    public void accept(Double balance) throws Exception {
+                    public void accept(Double o) throws Exception {
                         show();
                     }
                 });
@@ -134,7 +134,6 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
         MainActivity.sInstance.setSelectedWallet(walletEntity);
         getView().showWalletList(walletEntity);
         getView().showWalletInfo(walletEntity);
-        getView().showWalletTab(walletEntity, 0);
         getView().setArgument(walletEntity);
     }
 
@@ -310,7 +309,6 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
             walletEntity = MainActivity.sInstance.getSelectedWallet();
             getView().showWalletList(walletEntity);
             getView().showWalletInfo(walletEntity);
-            getView().showWalletTab(walletEntity, 0);
             getView().setArgument(walletEntity);
         }
     }
@@ -337,41 +335,4 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
             }
         });
     }
-
-//    private void refreshBalance() {
-//        Single.fromCallable(new Callable<Double>() {
-//            @Override
-//            public Double call() {
-//                return refreshWalletListBalance();
-//            }
-//        })
-//                .compose(new SchedulersTransformer())
-//                .subscribe(new Consumer<Double>() {
-//                    @Override
-//                    public void accept(Double balance) throws Exception {
-//                        if (isViewAttached()){
-//                            getView().showTotalBalance(balance);
-//                            WalletEntity walletEntity = MainActivity.sInstance.getSelectedWallet();
-//                            if (walletEntity != null){
-//                                getView().showBalance(walletEntity.getBalance());
-//                            }
-//                        }
-//                    }
-//                });
-//    }
-//
-//    private double refreshWalletListBalance(){
-//        double totalBalance = 0d;
-//        try {
-//            for (WalletEntity walletEntity : mWalletList) {
-//                String address = walletEntity.getPrefixAddress();
-//                double balance = Web3jManager.getInstance().getBalance(address);
-//                walletEntity.setBalance(balance);
-//                totalBalance += balance;
-//            }
-//        }catch (Exception exp){
-//            exp.printStackTrace();
-//        }
-//        return totalBalance;
-//    }
 }

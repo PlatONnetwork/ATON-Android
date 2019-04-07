@@ -125,7 +125,6 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
             public void onClick(View v) {
                 if (mSelectedWallet != walletEntity) {
                     setSelectedWallet(walletEntity);
-//                    setIndividualWalletView(position, walletEntity, holder);
                     if (mOnItemClickListener != null) {
                         mOnItemClickListener.onContentViewClick(walletEntity);
                     }
@@ -187,55 +186,4 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
             vShadow = convertView.findViewById(R.id.v_shadow);
         }
     }
-
-//    public void notifyItem(WalletEntity walletEntity){
-//        this.notifyItemChanged(mList.get());
-//    }
-//
-//    public void notifyItemUnreadMessage(String contractAddress, boolean hasUnreadMessage) {
-//        int position = getPositionByContractAddress(contractAddress);
-//        if (position != -1) {
-//            SharedWalletEntity sharedWalletEntity = (SharedWalletEntity) mList.get(position);
-//            sharedWalletEntity.setHasUnreadMessage(hasUnreadMessage);
-//            notifyItemChanged(position);
-//        }
-//    }
-
-//    public void notifyItem(WalletEntity walletEntity) {
-//        int position = getPositionByAddress(walletEntity.getAddress());
-//        if (position != -1) {
-//            mList.set(position, walletEntity);
-//            notifyItemChanged(position);
-//        }
-//    }
-
-//    private int getPositionByAddress(String address) {
-//        if (mList != null && !mList.isEmpty()) {
-//            start:
-//            for (int i = 0; i < mList.size(); i++) {
-//                WalletEntity walletEntity = mList.get(i);
-//                if (walletEntity instanceof SharedWalletEntity) {
-//                    if (address.equals(walletEntity.getAddressWithoutPrefix())) {
-//                        return i;
-//                    }
-//                }
-//            }
-//        }
-//        return -1;
-//    }
-//
-//    private int getPositionByContractAddress(String contractAddress) {
-//        if (mList != null && !mList.isEmpty()) {
-//            start:
-//            for (int i = 0; i < mList.size(); i++) {
-//                WalletEntity walletEntity = mList.get(i);
-//                if (walletEntity instanceof SharedWalletEntity) {
-//                    if (contractAddress.equals(walletEntity.getAddress())) {
-//                        return i;
-//                    }
-//                }
-//            }
-//        }
-//        return -1;
-//    }
 }

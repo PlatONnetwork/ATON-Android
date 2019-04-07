@@ -40,8 +40,6 @@ import com.juzix.wallet.component.widget.ShadowContainer;
 import com.juzix.wallet.component.widget.ViewPagerSlide;
 import com.juzix.wallet.component.widget.table.SmartTabLayout;
 import com.juzix.wallet.config.AppSettings;
-import com.juzix.wallet.engine.SharedWalletManager;
-import com.juzix.wallet.entity.SharedWalletEntity;
 import com.juzix.wallet.entity.WalletEntity;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
@@ -298,14 +296,9 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
-                vTabLine.setVisibility(Math.abs(i) >= appBarLayout.getTotalScrollRange() ? View.GONE : View.VISIBLE);
-                appBarLayout.setBackgroundColor(ContextCompat.getColor(getContext(), Math.abs(i) >= appBarLayout.getTotalScrollRange() ? R.color.color_ffffff : R.color.color_f9fbff));
-                if (i == 0) {
-                    //EXPANDED
-                } else if (Math.abs(i) >= appBarLayout.getTotalScrollRange()) {
-                    //COLLAPSED
-                } else {
-                }
+                boolean collapsed = Math.abs(i) >= appBarLayout.getTotalScrollRange();
+                vTabLine.setVisibility(collapsed ? View.GONE : View.VISIBLE);
+                appBarLayout.setBackgroundColor(ContextCompat.getColor(getContext(), collapsed ? R.color.color_ffffff : R.color.color_f9fbff));
             }
         });
         vpContent.setOffscreenPageLimit(fragments.size());
@@ -459,13 +452,6 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     }
 
     @Override
-    public void showWalletTab(WalletEntity walletEntity, int tabIndex) {
-//        if (vpContent.getVisibility() == View.VISIBLE) {
-//            vpContent.setCurrentItem(1);
-//        }
-    }
-
-    @Override
     public void showWalletInfo(WalletEntity walletEntity) {
         tvBackup.setVisibility(mPresenter.needBackup(walletEntity) ? View.VISIBLE : View.GONE);
         ivWalletAvatar.setImageResource(RUtils.drawable("icon_export_" + walletEntity.getAvatar()));
@@ -491,11 +477,6 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     }
 
     @Override
-    public int getTabIndex() {
-        return vpContent.getCurrentItem();
-    }
-
-    @Override
     public void setArgument(WalletEntity entity) {
         ArrayList<BaseFragment> fragments = ((TabAdapter) vpContent.getAdapter()).getFragments();
         for (BaseFragment fragment : fragments) {
@@ -506,7 +487,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     }
 
     @Override
-    public void notifyWalletChanged(int position) {
+    public void notifyItemChanged(int position) {
         mWalletAdapter.notifyItemChanged(position);
     }
 

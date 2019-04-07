@@ -15,14 +15,12 @@ public class AssetsContract {
     public interface View extends IView {
         void showTotalBalance(double totalBalance);
         void showWalletList(WalletEntity selectedWallet);
-        void showWalletTab(WalletEntity walletEntity, int tabIndex);
         void showWalletInfo(WalletEntity walletEntity);
         void showEmptyView(boolean isEmpty);
         void showCurrentItem(int index);
         void showBalance(double balance);
-        int getTabIndex();
         void setArgument(WalletEntity entity);
-        void notifyWalletChanged(int position);
+        void notifyItemChanged(int position);
         void notifyAllChanged();
     }
 

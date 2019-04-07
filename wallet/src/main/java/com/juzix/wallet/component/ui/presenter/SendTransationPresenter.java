@@ -455,7 +455,6 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
     private Map<String, String> buildSendTransactionInfo(String fromWallet, String fromAddress, String toAddress, String fee, String executor) {
         Map<String, String> map = new LinkedHashMap<>();
         map.put(string(R.string.payment_info), string(R.string.send_energon));
-//        map.put(string(R.string.from_wallet), fromWallet + "(" + AddressFormatUtil.formatAddress(fromAddress) + ")");
         map.put(string(R.string.from_wallet), fromWallet);
         if (!TextUtils.isEmpty(executor)){
             map.put(string(R.string.execute_wallet), executor);
@@ -474,20 +473,21 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
     }
 
     private void reset() {
-        Single.create(new SingleOnSubscribe<String>() {
+        Single.fromCallable(new Callable<Double>() {
             @Override
-            public void subscribe(SingleEmitter<String> emitter) throws Exception {
-                emitter.onSuccess("");
+            public Double call() throws Exception {
+                return feeAmount;
             }
         })
-                .delay(1000, TimeUnit.MILLISECONDS).compose(new SchedulersTransformer())
-                .subscribe(new Consumer<String>() {
+                .delay(1000, TimeUnit.MILLISECONDS)
+                .compose(new SchedulersTransformer())
+                .subscribe(new Consumer<Double>() {
                     @Override
-                    public void accept(String text) throws Exception {
+                    public void accept(Double o) throws Exception {
                         if (isViewAttached()) {
                             EventPublisher.getInstance().sendUpdateWalletListEvent();
                             resetData();
-                            getView().resetView(BigDecimalUtil.parseString(feeAmount));
+                            getView().resetView(BigDecimalUtil.parseString(o));
                             MainActivity.actionStart(getContext(), MainActivity.TAB_PROPERTY, AssetsFragment.TAB1);
                         }
                     }

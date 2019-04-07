@@ -149,29 +149,6 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
         });
         bubbleSeekBar.setOnProgressChangedListener(mProgressListener);
 
-//        RxView.focusChanges(etWalletAddress).skipInitialValue().subscribe(new Consumer<Boolean>() {
-//            @Override
-//            public void accept(Boolean hasFocus) throws Exception {
-//                String address = etWalletAddress.getText().toString().trim();
-//                if (!hasFocus) {
-//                    mPresenter.checkToAddress(address);
-//                }else {
-//                    showToAddressError("");
-//                }
-//            }
-//        });
-//        RxView.focusChanges(etWalletAmount).skipInitialValue().subscribe(new Consumer<Boolean>() {
-//            @Override
-//            public void accept(Boolean hasFocus) throws Exception {
-//                String amount = etWalletAmount.getText().toString().trim();
-//                if (!hasFocus) {
-//                    mPresenter.checkTransferAmount(amount);
-//                }else {
-//                    showAmountError("");
-//                }
-//            }
-//        });
-
         RxView.clicks(btnSendTransation)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
                 .subscribe(new Consumer<Unit>() {
@@ -253,8 +230,6 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateAssetsTabEvent(Event.UpdateAssetsTabEvent event) {
         mPresenter.updateAssetsTab(event.tabIndex);
-//        System.out.println("****** index: " + event.tabIndex);
-//        mPresenter.fetchDefaultWalletInfo();
     }
 
     @Override
@@ -422,8 +397,6 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-//            mPresenter.checkTransferAmount(s.toString());
-            //mPresenter.checkToAddressAndUpdateFee(etWalletAddress.getText().toString());
             mPresenter.updateSendTransactionButtonStatus();
         }
 
@@ -438,7 +411,6 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
         public void onProgressChanged(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat, boolean fromUser) {
             if (fromUser) {
                 mPresenter.calculateFeeAndTime(BigDecimalUtil.div(progress, bubbleSeekBar.getMax()));
-//                mPresenter.checkTransferAmount(etWalletAmount.getText().toString());
                 mPresenter.updateSendTransactionButtonStatus();
             }
         }
