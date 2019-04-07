@@ -40,8 +40,6 @@ import com.juzix.wallet.component.widget.ShadowContainer;
 import com.juzix.wallet.component.widget.ViewPagerSlide;
 import com.juzix.wallet.component.widget.table.SmartTabLayout;
 import com.juzix.wallet.config.AppSettings;
-import com.juzix.wallet.engine.SharedWalletManager;
-import com.juzix.wallet.entity.SharedWalletEntity;
 import com.juzix.wallet.entity.WalletEntity;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
@@ -120,6 +118,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
     @Override
     protected void onFragmentPageStart() {
+        mPresenter.fetchWalletList();
         mPresenter.start();
     }
 
@@ -217,18 +216,24 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     public void onNetWorkStateChangedEvent(Event.NetWorkStateChangedEvent event) {
         if (event.netState == NetState.CONNECTED) {
             mPresenter.fetchWalletList();
+            mPresenter.start();
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateCreateJointWalletProgressEvent(Event.UpdateCreateJointWalletProgressEvent event) {
-        SharedWalletEntity sharedWalletEntity = event.sharedWalletEntity;
-        if (sharedWalletEntity != null) {
-            if (sharedWalletEntity.getProgress() == 100) {
-                SharedWalletManager.getInstance().updateWalletFinished(sharedWalletEntity.getUuid(), true);
-                sharedWalletEntity.updateFinished(true);
-            }
-        }
+        mPresenter.updateCreateJointWallet(event.sharedWalletEntity);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdateSharedWalletUnreadMessageEvent(Event.UpdateSharedWalletUnreadMessageEvent event) {
+        mPresenter.updateUnreadMessage(event.contractAddress, event.hasUnreadMessage);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdateWalletListEvent(Event.UpdateWalletListEvent event) {
+        mPresenter.fetchWalletList();
+        mPresenter.start();
     }
 
     private void initHeader() {
@@ -259,17 +264,25 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         stbBar.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
             }
 
             @Override
             public void onPageSelected(int position) {
-                currentActivity().hideSoftInput();
+                switch (position){
+                    case 0:
+                        EventPublisher.getInstance().sendUpdateAssetsTabEvent(TAB1);
+                        break;
+                    case 1:
+                        EventPublisher.getInstance().sendUpdateAssetsTabEvent(TAB2);
+                        break;
+                    case 2:
+                        EventPublisher.getInstance().sendUpdateAssetsTabEvent(TAB3);
+                        break;
+                }
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
             }
         });
 
@@ -283,14 +296,9 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
-                vTabLine.setVisibility(Math.abs(i) >= appBarLayout.getTotalScrollRange() ? View.GONE : View.VISIBLE);
-                appBarLayout.setBackgroundColor(ContextCompat.getColor(getContext(), Math.abs(i) >= appBarLayout.getTotalScrollRange() ? R.color.color_ffffff : R.color.color_f9fbff));
-                if (i == 0) {
-                    //EXPANDED
-                } else if (Math.abs(i) >= appBarLayout.getTotalScrollRange()) {
-                    //COLLAPSED
-                } else {
-                }
+                boolean collapsed = Math.abs(i) >= appBarLayout.getTotalScrollRange();
+                vTabLine.setVisibility(collapsed ? View.GONE : View.VISIBLE);
+                appBarLayout.setBackgroundColor(ContextCompat.getColor(getContext(), collapsed ? R.color.color_ffffff : R.color.color_f9fbff));
             }
         });
         vpContent.setOffscreenPageLimit(fragments.size());
@@ -354,7 +362,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         return list;
     }
 
-    public BaseFragment getFragment(int tab, WalletEntity walletEntity) {
+    private BaseFragment getFragment(int tab, WalletEntity walletEntity) {
         BaseFragment fragment = null;
         switch (tab) {
             case TAB1:
@@ -427,11 +435,6 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUpdateSharedWalletUnreadMessageEvent(Event.UpdateSharedWalletUnreadMessageEvent event) {
-        mWalletAdapter.notifyItemUnreadMessage(event.contractAddress, event.hasUnreadMessage);
-    }
-
     @Override
     public void showTotalBalance(double totalBalance) {
         tvTotalAssetsAmount.setText(NumberParserUtils.getPrettyBalance(totalBalance));
@@ -446,13 +449,6 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     public void showWalletList(WalletEntity walletEntity) {
         mWalletAdapter.setSelectedWallet(walletEntity);
         mWalletAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void showWalletTab(WalletEntity walletEntity, int tabIndex) {
-//        if (vpContent.getVisibility() == View.VISIBLE) {
-//            vpContent.setCurrentItem(1);
-//        }
     }
 
     @Override
@@ -481,11 +477,6 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     }
 
     @Override
-    public int getTabIndex() {
-        return vpContent.getCurrentItem();
-    }
-
-    @Override
     public void setArgument(WalletEntity entity) {
         ArrayList<BaseFragment> fragments = ((TabAdapter) vpContent.getAdapter()).getFragments();
         for (BaseFragment fragment : fragments) {
@@ -493,6 +484,16 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
             bundle.putParcelable(Constants.Extra.EXTRA_WALLET, entity);
             fragment.setArguments(bundle);
         }
+    }
+
+    @Override
+    public void notifyItemChanged(int position) {
+        mWalletAdapter.notifyItemChanged(position);
+    }
+
+    @Override
+    public void notifyAllChanged() {
+        mWalletAdapter.notifyDataSetChanged();
     }
 
     private View getTableView(int position, ViewGroup container) {

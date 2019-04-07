@@ -63,5 +63,7 @@ public class SendTransationContract {
         void checkAddressBook(String address);
 
         void saveWallet(String name, String address);
+
+        void updateAssetsTab(int tabIndex);
     }
 }

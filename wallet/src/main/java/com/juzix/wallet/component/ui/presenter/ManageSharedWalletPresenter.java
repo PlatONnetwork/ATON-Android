@@ -9,6 +9,7 @@ import com.juzix.wallet.engine.SharedWalletManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.OwnerEntity;
 import com.juzix.wallet.entity.SharedWalletEntity;
+import com.juzix.wallet.event.EventPublisher;
 
 import org.web3j.crypto.Credentials;
 
@@ -86,6 +87,7 @@ public class ManageSharedWalletPresenter extends BasePresenter<ManageSharedWalle
                     public void accept(Boolean isSuccess) throws Exception {
                         if (isSuccess && isViewAttached()) {
                             getView().updateWalletName(name);
+                            EventPublisher.getInstance().sendUpdateWalletListEvent();
                         }
                     }
                 });
@@ -111,6 +113,7 @@ public class ManageSharedWalletPresenter extends BasePresenter<ManageSharedWalle
                     public void accept(Boolean isSuccess) throws Exception {
                         if (isSuccess && isViewAttached()) {
                             getView().updateWalletMemberName(name, memberIndex);
+                            EventPublisher.getInstance().sendUpdateWalletListEvent();
                         }
                     }
                 });
