@@ -29,7 +29,7 @@
             app:label_text_size="48"
             app:laser_color="@color/laser_color"
             app:mask_color="@color/viewfinder_mask"
-            app:result_color="@color/result_view"
+            app:result_color="@color/result_color"
             app:result_point_color="@color/result_point_color" />
 
         <ImageButton
