@@ -1,8 +1,7 @@
 package com.juzix.wallet.db.sqlite;
 
-import android.util.Log;
-
 import com.juzix.wallet.db.entity.SharedTransactionInfoEntity;
+import com.juzix.wallet.entity.SharedTransactionEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,9 +28,12 @@ public class SharedTransactionInfoDao {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
-            realm.beginTransaction();
-            realm.insertOrUpdate(transactionEntity);
-            realm.commitTransaction();
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    realm.copyToRealmOrUpdate(transactionEntity);
+                }
+            });
             return true;
         } catch (Exception exp) {
             if (realm != null) {
@@ -46,21 +48,38 @@ public class SharedTransactionInfoDao {
         return false;
     }
 
-    public boolean insertTransaction(ArrayList<SharedTransactionInfoEntity> entities) {
+    public boolean insertTransaction(List<SharedTransactionInfoEntity> entities) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
-            realm.insertOrUpdate(entities);
+            realm.copyToRealmOrUpdate(entities);
             realm.commitTransaction();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
-        } finally {
             if (realm != null) {
                 realm.close();
             }
+            return false;
+        }
+    }
+
+    public List<SharedTransactionInfoEntity> getSharedTransactionListByTransactionType() {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            List<SharedTransactionInfoEntity> list = realm.where(SharedTransactionInfoEntity.class).equalTo("transactionType", SharedTransactionEntity.TransactionType.SEND_TRANSACTION.getValue()).findAll();
+            List<SharedTransactionInfoEntity> sharedTransactionInfoEntityList =  realm.copyFromRealm(list);
+            realm.commitTransaction();
+            return sharedTransactionInfoEntityList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (realm != null) {
+                realm.close();
+            }
+            return new ArrayList<>();
         }
     }
 
@@ -194,7 +213,6 @@ public class SharedTransactionInfoDao {
                     SharedTransactionInfoEntity transactionInfoEntity = realm.where(SharedTransactionInfoEntity.class)
                             .equalTo("uuid", uuid)
                             .findFirst();
-                    Log.e(TAG, "修改前：" + transactionInfoEntity.toString());
                     SharedTransactionInfoEntity sharedTransactionInfoEntity = realm.copyFromRealm(transactionInfoEntity);
                     sharedTransactionInfoEntity.setRead(read);
                     realm.copyToRealmOrUpdate(sharedTransactionInfoEntity);

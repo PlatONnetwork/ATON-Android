@@ -104,7 +104,6 @@ android {
             outputFileName = "wallet_android_v${verName}_${innerVer}_${releaseTime}_${verCode}_${type}_${gitVersion}.apk";
         }
     }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8

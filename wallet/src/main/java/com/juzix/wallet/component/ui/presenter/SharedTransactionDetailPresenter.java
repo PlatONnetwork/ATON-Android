@@ -25,7 +25,7 @@ public class SharedTransactionDetailPresenter extends BasePresenter<SharedTransa
     @Override
     public void fetchTransactionDetail() {
         if (isViewAttached() && transactionEntity != null) {
-            List<TransactionResult> resultList = transactionEntity.getTransactionResult();
+            List<TransactionResult> resultList = transactionEntity.getTransactionResultList();
             List<TransactionResult> confirmList = new ArrayList<>();
             List<TransactionResult> revokeList = new ArrayList<>();
             List<TransactionResult> undeterminedList = new ArrayList<>();

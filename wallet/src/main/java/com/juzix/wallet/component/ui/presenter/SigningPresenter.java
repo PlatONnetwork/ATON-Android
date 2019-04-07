@@ -57,7 +57,7 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
     @Override
     public void fetchTransactionDetail() {
         if (isViewAttached() && transactionEntity != null) {
-            List<TransactionResult> resultList = transactionEntity.getTransactionResult();
+            List<TransactionResult> resultList = transactionEntity.getTransactionResultList();
             List<TransactionResult> confirmList = new ArrayList<>();
             List<TransactionResult> revokeList = new ArrayList<>();
             List<TransactionResult> undeterminedList = new ArrayList<>();
@@ -99,7 +99,7 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
             getView().setTransactionDetailInfo(transactionEntity, statusDesc);
             getView().showTransactionResult(resultList);
 
-            if (individualWalletEntity != null && isWaittingSigned(transactionEntity.getTransactionResult()) && subTransactoined) {
+            if (individualWalletEntity != null && isWaittingSigned(transactionEntity.getTransactionResultList()) && subTransactoined) {
                 getView().enableButtons(true);
             } else {
                 getView().enableButtons(false);

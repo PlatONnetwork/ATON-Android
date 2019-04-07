@@ -3,7 +3,11 @@ package com.juzix.biometric;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.hardware.fingerprint.FingerprintManager;
-import android.os.*;
+import android.os.Build;
+import android.os.CancellationSignal;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -11,13 +15,11 @@ import android.support.annotation.RestrictTo;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 
-import com.juzix.biometric.R;
+import java.security.Signature;
 
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
-import java.security.Signature;
 
 @RequiresApi(api = Build.VERSION_CODES.M)
 @RestrictTo({RestrictTo.Scope.LIBRARY})

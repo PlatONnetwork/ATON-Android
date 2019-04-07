@@ -135,4 +135,13 @@ public class OwnerEntity implements Parcelable, Cloneable {
 
         return ownerEntity;
     }
+
+    @Override
+    public String toString() {
+        return "OwnerEntity{" +
+                "uuid='" + uuid + '\'' +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                '}';
+    }
 }
