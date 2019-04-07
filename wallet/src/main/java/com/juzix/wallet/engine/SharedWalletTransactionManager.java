@@ -807,7 +807,7 @@ public class SharedWalletTransactionManager {
                         sharedTransactionInfoEntity.setFromAddress(sharedTransactionEntity.getOwnerWalletAddress());
                         sharedTransactionInfoEntity.setToAddress(sharedTransactionInfoEntity.getContractAddress());
                         sharedTransactionInfoEntity.setCreateTime(System.currentTimeMillis());
-                        sharedTransactionEntity.setRead(true);
+                        sharedTransactionInfoEntity.setRead(true);
                         sharedTransactionInfoEntity.setTransactionType(SharedTransactionEntity.TransactionType.EXECUTED_CONTRACT.getValue());
                         return sharedTransactionInfoEntity;
                     }
@@ -828,7 +828,7 @@ public class SharedWalletTransactionManager {
                         sharedTransactionInfoEntity.setSharedWalletOwnerInfoEntityRealmList(sharedTransactionInfoEntity.getSharedWalletOwnerInfoEntityRealmList());
                         sharedTransactionInfoEntity.setTransactionType(SharedTransactionEntity.TransactionType.SEND_TRANSACTION.getValue());
                         sharedTransactionInfoEntity.setValue(NumberParserUtils.parseDouble(sharedTransactionEntity.getValue()));
-                        sharedTransactionEntity.setRead(false);
+                        sharedTransactionInfoEntity.setRead(true);
                         return sharedTransactionInfoEntity;
                     }
                 })

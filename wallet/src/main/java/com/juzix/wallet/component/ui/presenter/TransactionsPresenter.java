@@ -362,7 +362,6 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                 SharedTransactionEntity sharedTransactionEntity = (SharedTransactionEntity) transactionEntity;
                 if (!sharedTransactionEntity.isRead()) {
                     sharedTransactionEntity.setRead(true);
-                    getView().notifyItem(sharedTransactionEntity);
                     SharedWalletTransactionManager.getInstance().updateTransactionForRead(SharedWalletManager.getInstance().getWalletByContractAddress(sharedTransactionEntity.getContractAddress()), sharedTransactionEntity);
                 }
                 BaseActivity activity = currentActivity();

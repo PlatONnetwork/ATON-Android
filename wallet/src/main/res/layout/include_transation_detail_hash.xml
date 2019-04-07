@@ -22,8 +22,7 @@
         android:id="@+id/tv_transation_hash_title"
         style="@style/Text.c5cdbc.12"
         android:layout_marginTop="13dp"
-        android:text="@string/transaction_hash"
-        android:visibility="gone" />
+        android:text="@string/transaction_hash" />
 
     <RelativeLayout
         android:id="@+id/layout_transation_hash"
@@ -34,8 +33,7 @@
         android:paddingBottom="6dp"
         android:paddingLeft="5dp"
         android:paddingRight="6dp"
-        android:paddingTop="6dp"
-        android:visibility="gone">
+        android:paddingTop="6dp">
 
         <ImageView
             android:id="@+id/iv_copy_transation_hash"
