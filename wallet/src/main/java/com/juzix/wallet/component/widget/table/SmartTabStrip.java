@@ -327,7 +327,7 @@ class SmartTabStrip extends LinearLayout {
           left = (int) (startOffset * nextStart + (1.0f - startOffset) * left);
           right = (int) (endOffset * nextEnd + (1.0f - endOffset) * right);
         }
-        thickness = thickness * thicknessOffset;
+        //thickness = thickness * thicknessOffset;
       }
 
       drawIndicator(canvas, left, right, height, thickness, color);

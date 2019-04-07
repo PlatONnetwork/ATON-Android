@@ -14,6 +14,7 @@ import com.juzix.wallet.component.ui.view.ExportIndividualPrivateKeyActivity;
 import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.engine.SharedWalletManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
+import com.juzix.wallet.event.EventPublisher;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.utils.Numeric;
@@ -80,6 +81,7 @@ public class ManageIndividualWalletPresenter extends BasePresenter<ManageIndivid
                     @Override
                     public void accept(Boolean isSuccess) throws Exception {
                         if (isSuccess && isViewAttached()) {
+                            EventPublisher.getInstance().sendUpdateWalletListEvent();
                             currentActivity().finish();
                         }
                     }
@@ -103,6 +105,7 @@ public class ManageIndividualWalletPresenter extends BasePresenter<ManageIndivid
                     public void accept(Boolean isSuccess) throws Exception {
                         if (isSuccess && isViewAttached()) {
                             getView().showWalletName(name);
+                            EventPublisher.getInstance().sendUpdateWalletListEvent();
                         }
                     }
                 });

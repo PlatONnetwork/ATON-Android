@@ -67,8 +67,18 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
         mDisposable = Single.fromCallable(new Callable<Double>() {
             @Override
             public Double call() {
-                refreshWalletList();
-                return 0D;
+                double totalBalance = 0d;
+                try {
+                    for (WalletEntity walletEntity : mWalletList) {
+                        String address = walletEntity.getPrefixAddress();
+                        double balance = Web3jManager.getInstance().getBalance(address);
+                        walletEntity.setBalance(balance);
+                        totalBalance += balance;
+                    }
+                }catch (Exception exp){
+                    exp.printStackTrace();
+                }
+                return totalBalance;
             }
         })
                 .compose(bindUntilEvent(FragmentEvent.STOP))
@@ -82,7 +92,13 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
                 .subscribe(new Consumer<Double>() {
                     @Override
                     public void accept(Double balance) throws Exception {
-                        show();
+                        if (isViewAttached()){
+                            getView().showTotalBalance(balance);
+                            WalletEntity walletEntity = MainActivity.sInstance.getSelectedWallet();
+                            if (walletEntity != null){
+                                getView().showBalance(walletEntity.getBalance());
+                            }
+                        }
                     }
                 });
     }
@@ -102,7 +118,7 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
                 .compose(new SchedulersTransformer())
                 .subscribe(new Consumer<Double>() {
                     @Override
-                    public void accept(Double balance) throws Exception {
+                    public void accept(Double o) throws Exception {
                         show();
                     }
                 });
@@ -118,7 +134,6 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
         MainActivity.sInstance.setSelectedWallet(walletEntity);
         getView().showWalletList(walletEntity);
         getView().showWalletInfo(walletEntity);
-        getView().showWalletTab(walletEntity, 0);
         getView().setArgument(walletEntity);
     }
 
@@ -209,6 +224,43 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
         return false;
     }
 
+    @Override
+    public void updateCreateJointWallet(SharedWalletEntity sharedWalletEntity) {
+        try {
+            if (sharedWalletEntity != null) {
+                if (sharedWalletEntity.getProgress() == 100) {
+                    SharedWalletManager.getInstance().updateWalletFinished(sharedWalletEntity.getUuid(), true);
+                    sharedWalletEntity.updateFinished(true);
+                }
+            }
+            getView().notifyAllChanged();
+        }catch (Exception exp){
+            exp.printStackTrace();
+        }
+    }
+
+    @Override
+    public void updateUnreadMessage(String contractAddress, boolean hasUnreadMessage) {
+        if (mWalletList == null || mWalletList.isEmpty()) {
+            return;
+        }
+        try {
+            for (int i = 0; i < mWalletList.size(); i++) {
+                WalletEntity walletEntity = mWalletList.get(i);
+                if (walletEntity instanceof SharedWalletEntity) {
+                    if (contractAddress.equals(walletEntity.getAddress())) {
+                        ((SharedWalletEntity) walletEntity).setHasUnreadMessage(hasUnreadMessage);
+//                        getView().notifyWalletChanged(i);
+                        break;
+                    }
+                }
+            }
+            getView().notifyAllChanged();
+        }catch (Exception exp){
+            exp.printStackTrace();
+        }
+    }
+
     private boolean isSelected(WalletEntity selectedWallet){
         if (selectedWallet == null){
             return false;
@@ -257,7 +309,6 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
             walletEntity = MainActivity.sInstance.getSelectedWallet();
             getView().showWalletList(walletEntity);
             getView().showWalletInfo(walletEntity);
-            getView().showWalletTab(walletEntity, 0);
             getView().setArgument(walletEntity);
         }
     }
@@ -275,7 +326,6 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
             mWalletList.addAll(walletList2);
         }
         if (mWalletList.isEmpty()){
-            getView().showTotalBalance(0);
             return;
         }
         Collections.sort(mWalletList, new Comparator<WalletEntity>() {
@@ -284,39 +334,5 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
                 return Long.compare(o1.getUpdateTime(),  o2.getUpdateTime());
             }
         });
-        refreshBalance();
-    }
-
-    private void refreshBalance() {
-        Single.fromCallable(new Callable<Double>() {
-            @Override
-            public Double call() {
-                double totalBalance = 0d;
-                try {
-                    for (WalletEntity walletEntity : mWalletList) {
-                        String address = walletEntity.getPrefixAddress();
-                        double balance = Web3jManager.getInstance().getBalance(address);
-                        walletEntity.setBalance(balance);
-                        totalBalance += balance;
-                    }
-                }catch (Exception exp){
-                    exp.printStackTrace();
-                }
-                return totalBalance;
-            }
-        })
-                .compose(new SchedulersTransformer())
-                .subscribe(new Consumer<Double>() {
-                    @Override
-                    public void accept(Double balance) throws Exception {
-                        if (isViewAttached()){
-                            getView().showTotalBalance(balance);
-                            WalletEntity walletEntity = MainActivity.sInstance.getSelectedWallet();
-                            if (walletEntity != null){
-                                getView().showBalance(walletEntity.getBalance());
-                            }
-                        }
-                    }
-                });
     }
 }

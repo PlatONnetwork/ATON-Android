@@ -56,7 +56,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
     private static final String TAG = TransactionsPresenter.class.getSimpleName();
     private WalletEntity mWalletEntity;
     private Disposable mDisposable;
-    private static final int REFRESH_TIME = 2000;
+    private static final int REFRESH_TIME = 5000;
 
     public TransactionsPresenter(TransactionsContract.View view) {
         super(view);
