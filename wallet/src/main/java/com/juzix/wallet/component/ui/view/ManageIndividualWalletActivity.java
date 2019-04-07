@@ -6,8 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.text.InputType;
-import android.view.View;
-import android.widget.Button;
+import android.view.View; 
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
