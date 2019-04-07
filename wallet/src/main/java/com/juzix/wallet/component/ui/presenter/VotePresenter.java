@@ -1,7 +1,6 @@
 package com.juzix.wallet.component.ui.presenter;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
@@ -47,6 +46,7 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
     private static final int REFRESH_TIME = 5000;
 
     private List<CandidateEntity> mCandidateEntiyList = new ArrayList<>();
+    private List<CandidateEntity> mVerifiersList = new ArrayList<>();
     private String mKeyword;
     private SortType mSortType = SortType.SORTED_BY_DEFAULT;
     private Disposable mTicketInfoDisposable;
@@ -153,12 +153,18 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
         mCandidateLsitDisposable = CandidateManager
                 .getInstance()
                 .getCandidateList()
+                .zipWith(CandidateManager.getInstance().getVerifiersList(), new BiFunction<List<CandidateEntity>, List<CandidateEntity>, List<CandidateEntity>>() {
+                    @Override
+                    public List<CandidateEntity> apply(List<CandidateEntity> candidateEntities, List<CandidateEntity> verifiersList) throws Exception {
+                        mVerifiersList = verifiersList;
+                        return candidateEntities;
+                    }
+                })
                 .compose(bindUntilEvent(FragmentEvent.STOP))
                 .compose(new SchedulersTransformer())
                 .doOnSubscribe(new Consumer<Disposable>() {
                     @Override
                     public void accept(Disposable disposable) throws Exception {
-                        Log.e(TAG, "doOnSubscribe" + (mCandidateEntiyList == null || mCandidateEntiyList.isEmpty() ? 0 : mCandidateEntiyList.size()));
                         if (mCandidateEntiyList == null || mCandidateEntiyList.isEmpty()) {
                             showLoadingDialog();
                         }
@@ -167,7 +173,6 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
                 .doFinally(new Action() {
                     @Override
                     public void run() throws Exception {
-                        Log.e(TAG, "doFinally...");
                         dismissLoadingDialogImmediately();
                     }
                 })
@@ -193,7 +198,7 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
                 });
     }
 
-    private List<CandidateEntity> getDefaultCandidateEntityList(List<CandidateEntity> candidateEntityList) {
+    private List<CandidateEntity> getDefaultCandidateEntityList(List<CandidateEntity> candidateEntityList, List<CandidateEntity> verifiersList) {
         List<CandidateEntity> candidateList = new ArrayList<>();
         List<CandidateEntity> alternativeList = new ArrayList<>();
         if (candidateEntityList != null) {
@@ -212,8 +217,21 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
                 }
             }
         }
+        //加入不在候选池中，就添加到候选池列表后面
+        candidateList.addAll(getVerifiersList(candidateList, alternativeList, verifiersList));
         candidateList.addAll(alternativeList);
         return candidateList;
+    }
+
+    private List<CandidateEntity> getVerifiersList(List<CandidateEntity> candidateEntityList, List<CandidateEntity> alternativeList, List<CandidateEntity> verifiersList) {
+        List<CandidateEntity> candidateEntities = new ArrayList<>();
+        for (CandidateEntity candidateEntity : verifiersList) {
+            if (!candidateEntityList.contains(candidateEntity) && !alternativeList.contains(candidateEntity)) {
+                candidateEntities.add(candidateEntity);
+            }
+        }
+
+        return candidateEntities;
     }
 
     private void showCandidateList(String keyWord, SortType sortType) {
@@ -225,7 +243,7 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
             Collections.sort(candidateEntities, sortType.getComparator());
 
             if (sortType == SortType.SORTED_BY_DEFAULT) {
-                candidateEntities = getDefaultCandidateEntityList(candidateEntities);
+                candidateEntities = getDefaultCandidateEntityList(candidateEntities, mVerifiersList);
             }
 
             if (isViewAttached()) {

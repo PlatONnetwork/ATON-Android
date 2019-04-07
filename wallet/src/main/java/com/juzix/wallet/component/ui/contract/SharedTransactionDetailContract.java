@@ -21,10 +21,6 @@ public class SharedTransactionDetailContract {
         void setTransactionDetailInfo(SharedTransactionEntity transactionEntity, String queryAddress);
 
         void showTransactionResult(List<TransactionResult> transactionResultList);
-
-        void showHash(String hash);
-
-        void visibleHash(boolean visible);
     }
 
     public interface Presenter extends IPresenter<View> {

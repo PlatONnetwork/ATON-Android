@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.juzhen.framework.util.NumberParserUtils;
@@ -23,7 +22,6 @@ import com.juzix.wallet.component.ui.presenter.SharedTransactionDetailPresenter;
 import com.juzix.wallet.component.widget.ListViewForScrollView;
 import com.juzix.wallet.entity.SharedTransactionEntity;
 import com.juzix.wallet.entity.TransactionResult;
-import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.CommonUtil;
 import com.juzix.wallet.utils.DateUtil;
 import com.juzix.wallet.utils.DensityUtil;
@@ -48,14 +46,10 @@ public class SharedTransactionDetailActivity extends MVPBaseActivity<SharedTrans
     TextView tvCopyFromName;
     @BindView(R.id.tv_from_address)
     TextView tvFromAddress;
-    @BindView(R.id.layout_from_address)
-    RelativeLayout layoutFromAddress;
     @BindView(R.id.iv_copy_to_address)
     ImageView ivCopyToAddress;
     @BindView(R.id.tv_to_address)
     TextView tvToAddress;
-    @BindView(R.id.layout_to_address)
-    RelativeLayout layoutToAddress;
     @BindView(R.id.tv_transaction_type_title)
     TextView tvTransactionTypeTitle;
     @BindView(R.id.tv_transaction_time_title)
@@ -78,18 +72,8 @@ public class SharedTransactionDetailActivity extends MVPBaseActivity<SharedTrans
     TextView tvTransactionEnergon;
     @BindView(R.id.tv_transaction_wallet_name)
     TextView tvTransactionWalletName;
-    @BindView(R.id.tv_memo)
-    TextView tvMemo;
-    @BindView(R.id.iv_copy_transation_hash)
-    ImageView ivCopyTransationHash;
-    @BindView(R.id.tv_transation_hash)
-    TextView tvTransationHash;
-    @BindView(R.id.layout_transation_hash)
-    RelativeLayout layoutTransationHash;
     @BindView(R.id.layout_transaction_result)
     LinearLayout layoutTransactionResult;
-    @BindView(R.id.tv_transation_hash_title)
-    TextView tvTransationHashTitle;
     @BindView(R.id.tv_transaction_status)
     TextView tvTransactionStatus;
     @BindView(R.id.tv_member_title)
@@ -112,7 +96,7 @@ public class SharedTransactionDetailActivity extends MVPBaseActivity<SharedTrans
         mPresenter.fetchTransactionDetail();
     }
 
-    @OnClick({R.id.iv_copy_from_address, R.id.iv_copy_to_address, R.id.iv_copy_transation_hash})
+    @OnClick({R.id.iv_copy_from_address, R.id.iv_copy_to_address})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_copy_from_address:
@@ -120,9 +104,6 @@ public class SharedTransactionDetailActivity extends MVPBaseActivity<SharedTrans
                 break;
             case R.id.iv_copy_to_address:
                 CommonUtil.copyTextToClipboard(this, tvToAddress.getText().toString());
-                break;
-            case R.id.iv_copy_transation_hash:
-                CommonUtil.copyTextToClipboard(this, tvTransationHash.getText().toString());
                 break;
             default:
                 break;
@@ -168,19 +149,7 @@ public class SharedTransactionDetailActivity extends MVPBaseActivity<SharedTrans
         tvTransactionEnergon.setText(energonPrice);
 
         tvTransactionWalletName.setText(transactionEntity.getWalletName());
-        tvMemo.setText(transactionEntity.getMemo());
         tvMemberTitle.setText(string(R.string.executeContractConfirm) + "(" + transactionEntity.getConfirms() + "/" + transactionEntity.getRequiredSignNumber() + ")");
-    }
-
-    @Override
-    public void showHash(String hash) {
-        tvTransationHash.setText(hash);
-    }
-
-    @Override
-    public void visibleHash(boolean visible) {
-        tvTransationHashTitle.setVisibility(visible ? View.VISIBLE : View.GONE);
-        layoutTransationHash.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -191,13 +160,11 @@ public class SharedTransactionDetailActivity extends MVPBaseActivity<SharedTrans
     }
 
     private void initView() {
-        tvTransationHashTitle.setVisibility(View.GONE);
-        layoutTransationHash.setVisibility(View.GONE);
         mAdapter = new CommonAdapter<TransactionResult>(R.layout.item_shared_transaction_detail_member, null) {
             @Override
             protected void convert(Context context, ViewHolder viewHolder, TransactionResult item, int position) {
                 viewHolder.setText(R.id.tv_name, item.getName());
-                viewHolder.setText(R.id.tv_address, AddressFormatUtil.formatAddress(item.getPrefixAddress()));
+                viewHolder.setText(R.id.tv_address, item.getPrefixAddress());
                 switch (item.getStatus()) {
                     case OPERATION_APPROVAL:
                         viewHolder.setImageResource(R.id.iv_hook, R.drawable.icon_hook_s);

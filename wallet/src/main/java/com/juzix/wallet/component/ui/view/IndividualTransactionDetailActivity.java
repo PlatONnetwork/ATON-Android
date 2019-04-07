@@ -4,10 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.constraint.Barrier;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -20,7 +18,6 @@ import com.juzix.wallet.component.ui.presenter.IndividualTransactionDetailPresen
 import com.juzix.wallet.entity.IndividualTransactionEntity;
 import com.juzix.wallet.utils.CommonUtil;
 import com.juzix.wallet.utils.DateUtil;
-import com.juzix.wallet.utils.DensityUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,14 +35,10 @@ public class IndividualTransactionDetailActivity extends MVPBaseActivity<Individ
     TextView tvCopyFromName;
     @BindView(R.id.tv_from_address)
     TextView tvFromAddress;
-    @BindView(R.id.layout_from_address)
-    RelativeLayout layoutFromAddress;
     @BindView(R.id.iv_copy_to_address)
     ImageView ivCopyToAddress;
     @BindView(R.id.tv_to_address)
     TextView tvToAddress;
-    @BindView(R.id.layout_to_address)
-    RelativeLayout layoutToAddress;
     @BindView(R.id.tv_transaction_type_title)
     TextView tvTransactionTypeTitle;
     @BindView(R.id.tv_transaction_time_title)
@@ -68,8 +61,14 @@ public class IndividualTransactionDetailActivity extends MVPBaseActivity<Individ
     TextView tvTransactionEnergon;
     @BindView(R.id.tv_transaction_wallet_name)
     TextView tvTransactionWalletName;
-    @BindView(R.id.tv_transaction_status)
-    TextView tvTransactionStatus;
+    @BindView(R.id.iv_failed)
+    ImageView ivFailed;
+    @BindView(R.id.iv_succeed)
+    ImageView ivSucceed;
+    @BindView(R.id.layout_pending)
+    RelativeLayout layoutPending;
+    @BindView(R.id.tv_transaction_status_desc)
+    TextView tvTransactionStatusDesc;
 
     private Unbinder unbinder;
 
@@ -119,6 +118,7 @@ public class IndividualTransactionDetailActivity extends MVPBaseActivity<Individ
     public IndividualTransactionEntity getTransactionFromIntent() {
         return getIntent().getParcelableExtra(Constants.Extra.EXTRA_TRANSACTION);
     }
+
     @Override
     public String getAddressFromIntent() {
         return getIntent().getStringExtra(Constants.Extra.EXTRA_ADDRESS);
@@ -127,10 +127,7 @@ public class IndividualTransactionDetailActivity extends MVPBaseActivity<Individ
     @Override
     public void setTransactionDetailInfo(IndividualTransactionEntity transactionEntity, String queryAddress) {
 
-        IndividualTransactionEntity.TransactionStatus status = transactionEntity.getTransactionStatus();
-        tvTransactionStatus.setText(status.getStatusDesc(this, transactionEntity.getSignedBlockNumber(), 12));
-        tvTransactionStatus.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(this, status.getStatusDrawable()), null, null);
-        tvTransactionStatus.setCompoundDrawablePadding(DensityUtil.dp2px(this, 10));
+        showTransactionStatus(transactionEntity.getTransactionStatus());
 
         tvCopyFromName.setText(transactionEntity.getWalletName());
         tvFromAddress.setText(transactionEntity.getFromAddress());
@@ -141,5 +138,30 @@ public class IndividualTransactionDetailActivity extends MVPBaseActivity<Individ
         tvTransactionAmount.setText(string(R.string.amount_with_unit, NumberParserUtils.getPrettyBalance(transactionEntity.getValue())));
         tvTransactionEnergon.setText(string(R.string.amount_with_unit, NumberParserUtils.getPrettyBalance(transactionEntity.getEnergonPrice())));
         tvTransactionWalletName.setText(transactionEntity.getWalletName());
+    }
+
+    private void showTransactionStatus(IndividualTransactionEntity.TransactionStatus status) {
+        switch (status) {
+            case PENDING:
+                tvTransactionStatusDesc.setText(R.string.pending);
+                ivFailed.setVisibility(View.GONE);
+                ivSucceed.setVisibility(View.GONE);
+                layoutPending.setVisibility(View.VISIBLE);
+                break;
+            case SUCCEED:
+                tvTransactionStatusDesc.setText(R.string.success);
+                ivFailed.setVisibility(View.GONE);
+                ivSucceed.setVisibility(View.VISIBLE);
+                layoutPending.setVisibility(View.GONE);
+                break;
+            case FAILED:
+                tvTransactionStatusDesc.setText(R.string.failed);
+                ivFailed.setVisibility(View.VISIBLE);
+                ivSucceed.setVisibility(View.GONE);
+                layoutPending.setVisibility(View.GONE);
+                break;
+            default:
+                break;
+        }
     }
 }

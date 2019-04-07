@@ -107,6 +107,57 @@ public class CandidateManager {
                 });
     }
 
+    public Single<List<CandidateEntity>> getVerifiersList() {
+
+        return Flowable
+                .fromCallable(new Callable<List<CandidateEntity>>() {
+                    @Override
+                    public List<CandidateEntity> call() throws Exception {
+                        return getVerifiersListFromNet();
+                    }
+                })
+                .flatMap(new Function<List<CandidateEntity>, Publisher<CandidateEntity>>() {
+                    @Override
+                    public Publisher<CandidateEntity> apply(List<CandidateEntity> candidateDtoList) throws Exception {
+                        return Flowable.fromIterable(candidateDtoList);
+                    }
+                })
+                .map(new Function<CandidateEntity, CandidateEntity>() {
+                    @Override
+                    public CandidateEntity apply(CandidateEntity candidateEntity) throws Exception {
+                        candidateEntity.setVotedNum(VoteManager.getInstance().getCandidateTicketIdsCounter(candidateEntity.getCandidateId()).blockingGet());
+                        return candidateEntity;
+                    }
+                })
+                .map(new Function<CandidateEntity, CandidateEntity>() {
+                    @Override
+                    public CandidateEntity apply(CandidateEntity candidateEntity) throws Exception {
+                        RegionInfoEntity regionInfoEntity = RegionInfoDao.getInstance().getRegionInfoEntityWithIp(candidateEntity.getHost());
+                        if (regionInfoEntity != null) {
+                            candidateEntity.setRegionEntity(regionInfoEntity.toRegionEntity());
+                        }
+                        return candidateEntity;
+                    }
+                })
+                .collect(new Callable<List<CandidateEntity>>() {
+                    @Override
+                    public List<CandidateEntity> call() throws Exception {
+                        return new ArrayList<>();
+                    }
+                }, new BiConsumer<List<CandidateEntity>, CandidateEntity>() {
+                    @Override
+                    public void accept(List<CandidateEntity> candidateEntities, CandidateEntity candidateEntity) throws Exception {
+                        candidateEntities.add(candidateEntity);
+                    }
+                })
+                .doOnSuccess(new Consumer<List<CandidateEntity>>() {
+                    @Override
+                    public void accept(List<CandidateEntity> candidateEntityList) throws Exception {
+                        updateBatchRegionInfoWithIpList(getIpList(candidateEntityList));
+                    }
+                });
+    }
+
     public void updateBatchRegionInfoWithIpList(List<String> ipList) {
 
         getRegionList(buildRegionRequestParams(ipList).blockingGet())
@@ -173,12 +224,6 @@ public class CandidateManager {
                 .map(new Function<CandidateEntity, CandidateEntity>() {
                     @Override
                     public CandidateEntity apply(CandidateEntity candidateEntity) throws Exception {
-                        return null;
-                    }
-                })
-                .map(new Function<CandidateEntity, CandidateEntity>() {
-                    @Override
-                    public CandidateEntity apply(CandidateEntity candidateEntity) throws Exception {
                         RegionInfoEntity regionInfo = RegionInfoDao.getInstance().getRegionInfoWithIp(candidateEntity.getHost());
                         if (regionInfo != null) {
                             candidateEntity.setRegionEntity(regionInfo.toRegionEntity());
@@ -214,6 +259,20 @@ public class CandidateManager {
         String candidateListResp = null;
         try {
             candidateListResp = candidateContract.CandidateList().send();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return JSONUtil.parseTwoDimensionArray(candidateListResp, CandidateEntity.class);
+    }
+
+    private List<CandidateEntity> getVerifiersListFromNet() {
+        Web3j web3j = Web3jManager.getInstance().getWeb3j();
+        CandidateContract candidateContract = CandidateContract.load(web3j,
+                new ReadonlyTransactionManager(web3j, CandidateContract.CONTRACT_ADDRESS),
+                new DefaultWasmGasProvider());
+        String candidateListResp = null;
+        try {
+            candidateListResp = candidateContract.VerifiersList().send();
         } catch (Exception e) {
             e.printStackTrace();
         }

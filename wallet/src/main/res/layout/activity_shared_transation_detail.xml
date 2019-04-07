@@ -1,32 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:clipToPadding="true"
-              android:fitsSystemWindows="true"
-              android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="true"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
 
     <com.juzix.wallet.component.widget.CommonTitleBar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:ctb_left_drawable="@drawable/icon_back_black"
-        app:ctb_title="@string/transaction_detail"/>
+        app:ctb_title="@string/transaction_detail" />
 
-    <android.support.v4.widget.NestedScrollView
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:divider="@drawable/bg_transation_list_divider"
             android:orientation="vertical"
             android:paddingLeft="15dp"
             android:paddingTop="20dp"
             android:paddingRight="15dp"
-            android:paddingBottom="19dp">
+            android:paddingBottom="19dp"
+            android:showDividers="middle">
 
             <TextView
                 android:id="@+id/tv_transaction_status"
@@ -34,34 +37,31 @@
                 android:layout_gravity="center_horizontal"
                 android:drawableTop="@drawable/icon_successed"
                 android:drawablePadding="10dp"
+                android:paddingBottom="32dp"
                 tools:text="@string/success" />
 
             <LinearLayout
                 android:id="@+id/layout_transaction_result"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:orientation="vertical" >
+                android:orientation="vertical"
+                android:paddingBottom="16dp">
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_transation_list_divider"/>
                 <TextView
                     android:id="@+id/tv_member_title"
                     style="@style/Text.61646e.14"
                     android:layout_marginTop="16dp"
-                    android:layout_marginBottom="8dp"
                     tools:text="@string/execute_contract_confirm" />
 
                 <com.juzix.wallet.component.widget.ListViewForScrollView
                     android:id="@+id/list_transaction_result"
                     style="@style/List_common_style"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:dividerHeight="8dp"
-                    tools:listitem="@layout/item_shared_transaction_detail_member"/>
+                    android:layout_marginTop="8dp"
+                    android:divider="@drawable/divider_transaction_info_item"
+                    android:dividerHeight="16dp"
+                    tools:listitem="@layout/item_shared_transaction_detail_member" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -70,21 +70,14 @@
                 android:orientation="vertical"
                 android:showDividers="middle">
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp" />
+                <include layout="@layout/include_transationer_info" />
 
-                <include layout="@layout/include_transationer_info"/>
-
-                <include layout="@layout/include_transation_detail_info"/>
-
-                <include layout="@layout/include_transation_detail_hash"
-                    android:visibility="gone"/>
+                <include layout="@layout/include_transation_detail_info" />
 
             </LinearLayout>
 
         </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
+    </ScrollView>
 
 
 </LinearLayout>

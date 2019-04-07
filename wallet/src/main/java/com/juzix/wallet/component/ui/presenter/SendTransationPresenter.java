@@ -110,18 +110,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
             SharedWalletEntity sharedWalletEntity = (SharedWalletEntity) walletEntity;
             individualWalletEntity = IndividualWalletManager.getInstance().getWalletByAddress(sharedWalletEntity.getCreatorAddress());
         }
-//        if (walletEntity instanceof SharedWalletEntity){
-//            SharedWalletEntity sharedWalletEntity = (SharedWalletEntity) walletEntity;
-//            individualWalletEntity = IndividualWalletManager.getInstance().getWalletByAddress(sharedWalletEntity.getCreatorAddress());
-//            if (individualWalletEntity != null && sharedWalletEntity.isOwner()) {
-//                getView().setSendTransactionButtonVisible(true);
-//            } else {
-//                getView().setSendTransactionButtonVisible(false);
-//            }
-//            getView().setSendTransactionButtonVisible(true);
-//        }else {
-//            getView().setSendTransactionButtonVisible(true);
-//        }
+
         if (mDisposable != null && !mDisposable.isDisposed()) {
             mDisposable.dispose();
         }

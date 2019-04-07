@@ -61,7 +61,6 @@ public class TransactionsFragment extends MVPBaseFragment<TransactionsPresenter>
         EventPublisher.getInstance().register(this);
         mPresenter.updateWalletEntity();
         setAdapter();
-        mPresenter.fetchWalletDetail();
         return rootView;
     }
 

@@ -303,7 +303,7 @@
     <string name="qq">QQ</string>
     <string name="all">全部</string>
     <string name="balance_text">当前余额:&#160;%1$s&#160;Energon</string>
-    <string name="fee">支付费用</string>
+    <string name="fee">手续费</string>
     <string name="joint_wallet_execution">执行联名钱包</string>
     <string name="create_joint_wallet">创建联名钱包</string>
     <string name="fee_of_contract_creation">创建合约手续费</string>
