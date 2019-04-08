@@ -96,6 +96,7 @@ public class NodeSettingsActivity extends MVPBaseActivity<NodeSettingsPresenter>
         }
         hideSoftInput();
         nodeListAdapter.setEditable(isEdit);
+
     }
 
     @Override

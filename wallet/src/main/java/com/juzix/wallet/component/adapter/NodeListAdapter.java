@@ -1,27 +1,34 @@
 package com.juzix.wallet.component.adapter;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.SchedulersTransformer;
+import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.widget.CustomEditText;
 import com.juzix.wallet.component.widget.TextChangedListener;
 import com.juzix.wallet.entity.NodeEntity;
+import com.juzix.wallet.utils.CommonUtil;
+import com.juzix.wallet.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Single;
+import io.reactivex.functions.Consumer;
 
 /**
  * @author matrixelement
@@ -30,7 +37,7 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
 
     private final static String TAG = NodeListAdapter.class.getSimpleName();
 
-    private Context context;
+    private BaseActivity activity;
 
     private Map<Long, String> map = new HashMap<>();
     private List<NodeEntity> mNodeList;
@@ -46,8 +53,8 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
         this.mCheckedListener = mListener;
     }
 
-    public NodeListAdapter(Context context, List<NodeEntity> nodeList) {
-        this.context = context;
+    public NodeListAdapter(BaseActivity activity, List<NodeEntity> nodeList) {
+        this.activity = activity;
         this.mNodeList = nodeList;
     }
 
@@ -173,8 +180,12 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
         }
 
         NodeEntity nodeEntity = mNodeList.get(position);
-
         holder.etNode.setEnabled(mIsEdit && !nodeEntity.isDefaultNode());
+        if (holder.etNode.isEnabled() && position == mNodeList.size() - 1){
+            showSoftInput(holder.etNode, true);
+        }else {
+            showSoftInput(holder.etNode, false);
+        }
 
         holder.etNode.setError(nodeEntity.isFormatCorrect() ? holder.nodeFormatError : null);
 
@@ -195,36 +206,75 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
         boolean isDefaultMainNetwork = nodeEntity.isDefaultNode() && nodeEntity.isMainNetworkNode();
         boolean isDefaultTestNetwork = nodeEntity.isDefaultNode() && !nodeEntity.isMainNetworkNode();
         if (isDefaultMainNetwork) {
-            holder.etNode.setText(String.format("%s(%s)", nodeAddress, context.getString(R.string.default_main_network)));
+            holder.etNode.setText(String.format("%s(%s)", nodeAddress, activity.getString(R.string.default_main_network)));
         } else if (isDefaultTestNetwork) {
-            holder.etNode.setText(String.format("%s(%s)", nodeAddress, context.getString(R.string.default_test_network)));
+            holder.etNode.setText(String.format("%s(%s)", nodeAddress, activity.getString(R.string.default_test_network)));
         } else {
             holder.etNode.setText(nodeAddress);
         }
-
         holder.ivDel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 removeNode(nodeEntity.getId());
+                if (nodeEntity.isChecked()) {
+                    setChecked(0);
+                    return;
+                }
+                if (mNodeList.size() == 1){
+                    showSoftInput(holder.etNode, false);
+                }
             }
         });
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (mIsEdit) {
                     return;
                 }
-
                 if (nodeEntity.isChecked()) {
                     return;
                 }
-
-                setChecked(position);
+                String address = nodeEntity.getNodeAddress();
+                checkAddress(position, address);
             }
         });
 
+    }
+
+    private void checkAddress(int position, String address){
+        activity.showLoadingDialog();
+        Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                return CommonUtil.validUrl(address);
+            }
+        })
+                .compose(new SchedulersTransformer())
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean o) throws Exception {
+                        activity.dismissLoadingDialogImmediately();
+                        if (o){
+                            setChecked(position);
+                        }
+                        ToastUtil.showShortToast(activity, o ? R.string.switch_node_successed : R.string.switch_node_failed);
+                    }
+                });
+    }
+
+    private void showSoftInput(EditText editText, boolean isShow){
+        if (isShow) {
+            activity.showSoftInput(editText);
+        }else {
+            activity.hideSoftInput(activity, editText);
+        }
+        editText.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                editText.setSelection(editText.getText().toString().length());
+            }
+        }, 150);
     }
 
     @Override

@@ -227,11 +227,12 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
     @Override
     public void updateCreateJointWallet(SharedWalletEntity sharedWalletEntity) {
         try {
-            if (sharedWalletEntity != null) {
-                if (sharedWalletEntity.getProgress() == 100) {
-                    SharedWalletManager.getInstance().updateWalletFinished(sharedWalletEntity.getUuid(), true);
-                    sharedWalletEntity.updateFinished(true);
-                }
+            if (sharedWalletEntity == null) {
+                return;
+            }
+            if (sharedWalletEntity.getProgress() == 100) {
+                SharedWalletManager.getInstance().updateWalletFinished(sharedWalletEntity.getUuid(), true);
+                sharedWalletEntity.updateFinished(true);
             }
             getView().notifyAllChanged();
         }catch (Exception exp){
@@ -247,12 +248,10 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
         try {
             for (int i = 0; i < mWalletList.size(); i++) {
                 WalletEntity walletEntity = mWalletList.get(i);
-                if (walletEntity instanceof SharedWalletEntity) {
-                    if (contractAddress.equals(walletEntity.getAddress())) {
-                        ((SharedWalletEntity) walletEntity).setHasUnreadMessage(hasUnreadMessage);
+                if (walletEntity instanceof SharedWalletEntity && contractAddress.equals(walletEntity.getAddress())) {
+                    ((SharedWalletEntity) walletEntity).setHasUnreadMessage(hasUnreadMessage);
 //                        getView().notifyWalletChanged(i);
-                        break;
-                    }
+                    break;
                 }
             }
             getView().notifyAllChanged();

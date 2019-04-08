@@ -272,13 +272,13 @@ public abstract class BaseActivity extends CoreFragmentActivity implements ICont
     /**
      * 显示软键盘
      */
-    public void showSoftInput(final EditText editText) {
-        if (mInputMethodManager != null && mDecorView != null) {
-            editText.requestFocus();
-            editText.postDelayed(new Runnable() {
+    public void showSoftInput(final View view) {
+        if (mInputMethodManager != null && view != null) {
+            view.requestFocus();
+            view.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    mInputMethodManager.showSoftInput(editText, 0);
+                    mInputMethodManager.showSoftInput(view, 0);
                 }
             }, 100);
         }

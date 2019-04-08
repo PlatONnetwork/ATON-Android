@@ -64,7 +64,6 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     public static final int TAB1 = 0;
     public static final int TAB2 = 1;
     public static final int TAB3 = 2;
-
     Unbinder unbinder;
     @BindView(R.id.app_bar_layout)
     AppBarLayout appBarLayout;
@@ -188,7 +187,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         if (unbinder != null) {
             unbinder.unbind();
         }
-        EventPublisher.getInstance().register(this);
+        EventPublisher.getInstance().unRegister(this);
     }
 
     @OnClick({R.id.iv_scan, R.id.tv_total_assets_title, R.id.tv_backup, R.id.iv_add})
@@ -380,7 +379,6 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
             bundle.putParcelable(Constants.Extra.EXTRA_WALLET, walletEntity);
             fragment.setArguments(bundle);
         }
-
         return fragment;
     }
 
