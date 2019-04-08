@@ -30,7 +30,7 @@
 
             <TextView
                 android:id="@+id/tv_add_node"
-                style="@style/Text.000.13"
+                style="@style/Text.000.14"
                 android:layout_marginTop="16dp"
                 android:drawableLeft="@drawable/icon_node_add"
                 android:drawablePadding="13dp"

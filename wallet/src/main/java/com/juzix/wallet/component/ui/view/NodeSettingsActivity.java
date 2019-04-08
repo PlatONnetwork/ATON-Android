@@ -132,8 +132,8 @@ public class NodeSettingsActivity extends MVPBaseActivity<NodeSettingsPresenter>
     private void initView() {
 
         rlTitleBar.setBackgroundColor(ContextCompat.getColor(this, R.color.color_ffffff));
-        tvRight.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
-        tvLeft.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+        tvRight.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+        tvLeft.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
 
         int padding = AndroidUtil.dip2px(this, 16);
         nodeListAdapter = new NodeListAdapter(this,null);
