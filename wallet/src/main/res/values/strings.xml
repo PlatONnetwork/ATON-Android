@@ -401,5 +401,7 @@
     <string name="query_no_result">查询无结果！</string>
     <string name="address_name">地址名称</string>
     <string name="input_address_name">输入地址名称</string>
+    <string name="switch_node_successed">节点切换成功</string>
+    <string name="switch_node_failed">节点切换失败</string>
 
 </resources>

@@ -401,5 +401,7 @@
     <string name="query_no_result">Query no result！</string>
     <string name="address_name">Address Name</string>
     <string name="input_address_name">Name of address</string>
+    <string name="switch_node_successed">Success</string>
+    <string name="switch_node_failed">Failed</string>
 </resources>
 

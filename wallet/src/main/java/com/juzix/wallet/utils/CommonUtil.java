@@ -30,6 +30,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -323,5 +325,47 @@ public class CommonUtil {
         } else {
             return cm.getPrimaryClip().getItemAt(0).coerceToText(context).toString();
         }
+    }
+
+    public static boolean validUrl(String uri) {
+        HttpURLConnection conn = null;
+        try{
+            URL url = new URL(uri);
+            conn = (HttpURLConnection)url.openConnection();
+            conn.setUseCaches(false);
+            conn.setInstanceFollowRedirects(true);
+            conn.setConnectTimeout(10000);
+            conn.setReadTimeout(10000);
+            try {
+                conn.connect();
+            } catch(Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+
+            int code = conn.getResponseCode();
+            if ((code >= 100) && (code < 400)){
+                return true;
+            }
+            return false;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }finally {
+            if (conn != null){
+                conn.disconnect();
+            }
+        }
+    }
+
+    public static boolean ping(String ip){
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process process = runtime.exec("ping -c 3 " + ip);
+            return process.waitFor() == 0;
+        }catch (Exception exp){
+            exp.printStackTrace();
+        }
+        return false;
     }
 }
