@@ -15,7 +15,6 @@ import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.CreateSharedWalletSecondStepContract;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.dialog.SendTransactionDialogFragment;
-import com.juzix.wallet.component.ui.view.AddNewAddressActivity;
 import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.component.ui.view.ScanQRCodeActivity;
 import com.juzix.wallet.component.ui.view.SelectAddressActivity;
@@ -185,8 +184,8 @@ public class CreateSharedWalletSecondStepPresenter extends BasePresenter<CreateS
     }
 
     @Override
-    public boolean needSaveAddressBook(String address){
-        if (TextUtils.isEmpty(address)){
+    public boolean needSaveAddressBook(String address) {
+        if (TextUtils.isEmpty(address)) {
             return false;
         }
         if (!JZWalletUtil.isValidAddress(address)) {
@@ -237,7 +236,7 @@ public class CreateSharedWalletSecondStepPresenter extends BasePresenter<CreateS
             return;
         }
 
-        List<CreateSharedWalletSecondStepContract.ContractEntity> list  = new ArrayList<>();
+        List<CreateSharedWalletSecondStepContract.ContractEntity> list = new ArrayList<>();
         list.add(new CreateSharedWalletSecondStepContract.ContractEntity.Builder()
                 .name(mWalletEntity.getName())
                 .address(mWalletEntity.getPrefixAddress())
@@ -303,7 +302,7 @@ public class CreateSharedWalletSecondStepPresenter extends BasePresenter<CreateS
                         boolean isBalanceSufficient = mWalletEntity != null && mWalletEntity.getBalance() >= feeAmount;
                         if (isBalanceSufficient) {
                             SendTransactionDialogFragment
-                                    .newInstance(string(R.string.create_contract), NumberParserUtils.getPrettyBalance(feeAmount), buildTransactionInfo(mWalletEntity.getName()))
+                                    .newInstance(string(R.string.create_shared_wallet), NumberParserUtils.getPrettyBalance(feeAmount), buildTransactionInfo(mWalletEntity.getName()))
                                     .setOnConfirmBtnClickListener(new SendTransactionDialogFragment.OnConfirmBtnClickListener() {
                                         @Override
                                         public void onConfirmBtnClick() {
@@ -334,7 +333,7 @@ public class CreateSharedWalletSecondStepPresenter extends BasePresenter<CreateS
     private Map<String, String> buildTransactionInfo(String walletName) {
         Map<String, String> map = new LinkedHashMap<>();
         map.put(string(R.string.execute_wallet), walletName);
-        map.put(string(R.string.payment_info), string(R.string.fee_of_contract_creation));
+        map.put(string(R.string.payment_info), string(R.string.fee_of_create_joint_wallet));
         return map;
     }
 
