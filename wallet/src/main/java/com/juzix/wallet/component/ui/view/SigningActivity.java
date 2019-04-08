@@ -173,9 +173,8 @@ public class SigningActivity extends MVPBaseActivity<SigningPresenter> implement
     }
 
     @Override
-    public void setTransactionDetailInfo(SharedTransactionEntity transactionEntity, String statusDesc) {
+    public void setTransactionDetailInfo(SharedTransactionEntity transactionEntity) {
         tvTransactionValue.setText(string(R.string.amount_with_unit, String.format("%s%s", transactionEntity.isReceiver(transactionEntity.getContractAddress()) ? "+" : "-", NumberParserUtils.getPrettyBalance(transactionEntity.getValue()))));
-        tvTransactionStatusDesc.setText(statusDesc);
         tvCopyFromName.setText(transactionEntity.getWalletName());
         tvFromAddress.setText(transactionEntity.getFromAddress());
         tvToAddress.setText(transactionEntity.getToAddress());
@@ -190,10 +189,13 @@ public class SigningActivity extends MVPBaseActivity<SigningPresenter> implement
 
     @Override
     public void showTransactionResult(List<TransactionResult> transactionResultList) {
-        int len = transactionResultList.size();
-        gridLayoutManager.setSpanCount(Math.min(len, 5));
+        gridLayoutManager.setSpanCount(Math.min(transactionResultList.size(), 5));
         signingMemberAdapter.notifyDataSetChanged(transactionResultList);
+    }
 
+    @Override
+    public void setTransactionConfirmResult(int requiredSignNumber, long confirms) {
+        tvTransactionStatusDesc.setText(String.format("%s(%d/%d)", string(R.string.transactionConfirmation), confirms, requiredSignNumber));
     }
 
     @Override

@@ -29,20 +29,22 @@ public class SharedTransactionDetailPresenter extends BasePresenter<SharedTransa
             List<TransactionResult> confirmList = new ArrayList<>();
             List<TransactionResult> revokeList = new ArrayList<>();
             List<TransactionResult> undeterminedList = new ArrayList<>();
-            for (TransactionResult transactionResult : resultList) {
-                switch (transactionResult.getStatus()) {
-                    case OPERATION_APPROVAL:
-                        confirmList.add(transactionResult);
-                        break;
-                    case OPERATION_REVOKE:
-                        revokeList.add(transactionResult);
-                        break;
-                    case OPERATION_UNDETERMINED:
-                        undeterminedList.add(transactionResult);
-                        break;
+            if (resultList != null && !resultList.isEmpty()) {
+                for (TransactionResult transactionResult : resultList) {
+                    switch (transactionResult.getStatus()) {
+                        case OPERATION_APPROVAL:
+                            confirmList.add(transactionResult);
+                            break;
+                        case OPERATION_REVOKE:
+                            revokeList.add(transactionResult);
+                            break;
+                        case OPERATION_UNDETERMINED:
+                            undeterminedList.add(transactionResult);
+                            break;
+                    }
                 }
             }
-            if (!resultList.isEmpty()) {
+            if (resultList != null && !resultList.isEmpty()) {
                 resultList.clear();
             }
             if (!confirmList.isEmpty()) {

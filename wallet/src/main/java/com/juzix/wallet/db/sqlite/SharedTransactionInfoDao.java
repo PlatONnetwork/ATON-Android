@@ -1,5 +1,7 @@
 package com.juzix.wallet.db.sqlite;
 
+import android.util.Log;
+
 import com.juzix.wallet.db.entity.SharedTransactionInfoEntity;
 import com.juzix.wallet.entity.SharedTransactionEntity;
 
@@ -71,7 +73,7 @@ public class SharedTransactionInfoDao {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
             List<SharedTransactionInfoEntity> list = realm.where(SharedTransactionInfoEntity.class).equalTo("transactionType", SharedTransactionEntity.TransactionType.SEND_TRANSACTION.getValue()).findAll();
-            List<SharedTransactionInfoEntity> sharedTransactionInfoEntityList =  realm.copyFromRealm(list);
+            List<SharedTransactionInfoEntity> sharedTransactionInfoEntityList = realm.copyFromRealm(list);
             realm.commitTransaction();
             return sharedTransactionInfoEntityList;
         } catch (Exception e) {
@@ -81,6 +83,31 @@ public class SharedTransactionInfoDao {
             }
             return new ArrayList<>();
         }
+    }
+
+    public String getSharedTransactionUUID(String contractAddress, String transactionId) {
+        Realm realm = null;
+        String uuid = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            SharedTransactionInfoEntity sharedTransactionInfoEntity = realm.where(SharedTransactionInfoEntity.class)
+                    .equalTo("contractAddress", contractAddress)
+                    .and()
+                    .equalTo("transactionId", transactionId)
+                    .findFirst();
+            if (sharedTransactionInfoEntity != null) {
+                uuid = realm.copyFromRealm(sharedTransactionInfoEntity).getUuid();
+            }
+            realm.commitTransaction();
+            return uuid;
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return uuid;
     }
 
     public ArrayList<SharedTransactionInfoEntity> getTransactionInfoList() {
@@ -163,6 +190,28 @@ public class SharedTransactionInfoDao {
         return null;
     }
 
+    public String getSharedTransactionHashByUUID(String uuid) {
+        Realm realm = null;
+        String transactionHash = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            SharedTransactionInfoEntity sharedTransactionInfoEntity = realm.where(SharedTransactionInfoEntity.class).equalTo("uuid", uuid).findFirst();
+            if (sharedTransactionInfoEntity != null) {
+                transactionHash = realm.copyFromRealm(sharedTransactionInfoEntity).getHash();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return transactionHash;
+    }
+
     public SharedTransactionInfoEntity getTransactionByUUID(String uuid) {
         Realm realm = null;
         try {
@@ -173,6 +222,9 @@ public class SharedTransactionInfoDao {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
         } finally {
             if (realm != null) {
                 realm.close();
@@ -216,15 +268,18 @@ public class SharedTransactionInfoDao {
                     SharedTransactionInfoEntity sharedTransactionInfoEntity = realm.copyFromRealm(transactionInfoEntity);
                     sharedTransactionInfoEntity.setRead(read);
                     realm.copyToRealmOrUpdate(sharedTransactionInfoEntity);
+
+                    SharedTransactionInfoEntity entity = realm.copyFromRealm(realm.where(SharedTransactionInfoEntity.class).equalTo("uuid", uuid).findFirst());
+                    Log.e(TAG, "插入后" + entity.toString());
                 }
             });
             return true;
         } catch (Exception e) {
-            return false;
-        } finally {
+            e.printStackTrace();
             if (realm != null) {
                 realm.close();
             }
+            return false;
         }
     }
 
