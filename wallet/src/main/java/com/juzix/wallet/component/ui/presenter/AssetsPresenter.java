@@ -304,8 +304,8 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
             getView().showWalletInfo(walletEntity);
         }else {
             //挑选一个当前选中的钱包
-            MainActivity.sInstance.setSelectedWallet(getSelectedWallet());
-            walletEntity = MainActivity.sInstance.getSelectedWallet();
+            walletEntity  = getSelectedWallet();
+            MainActivity.sInstance.setSelectedWallet(walletEntity);
             getView().showWalletList(walletEntity);
             getView().showWalletInfo(walletEntity);
             getView().setArgument(walletEntity);
