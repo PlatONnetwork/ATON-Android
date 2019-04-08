@@ -46,8 +46,11 @@
         <TextView
             android:id="@+id/tv_cancel"
             style="@style/Text.316def.14"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="8dp"
+            android:gravity="center_horizontal|top"
+            android:paddingTop="8dp"
             android:text="@string/cancel" />
 
     </LinearLayout>

@@ -74,17 +74,20 @@
         android:paddingTop="4dp"
         android:paddingRight="2dp"
         android:paddingBottom="8dp"
-        app:textAppearance="@style/MainButtonStyle"
-        app:textBackground="@drawable/bg_main_button"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/table_transaction_info"
-        app:text="@string/confirm" />
+        app:text="@string/confirm"
+        app:textAppearance="@style/MainButtonStyle"
+        app:textBackground="@drawable/bg_main_button" />
 
     <TextView
         android:id="@+id/tv_cancel"
         style="@style/Text.316def.14"
-        android:layout_marginTop="8dp"
+        android:layout_width="80dp"
+        android:layout_height="40dp"
+        android:gravity="top|center_horizontal"
+        android:paddingTop="8dp"
         android:text="@string/cancel"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

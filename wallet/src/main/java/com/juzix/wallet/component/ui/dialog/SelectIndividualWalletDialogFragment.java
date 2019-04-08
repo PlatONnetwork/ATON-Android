@@ -12,6 +12,7 @@ import android.widget.ListView;
 import com.jakewharton.rxbinding3.widget.RxAdapterView;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
+import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.adapter.SelectIndividualWalletListAdapter;
 import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.db.entity.IndividualWalletInfoEntity;
@@ -160,6 +161,8 @@ public class SelectIndividualWalletDialogFragment extends BaseDialogFragment {
                 })
                 .toList()
                 .onErrorReturnItem(new ArrayList<>())
+                .compose(bindToLifecycle())
+                .compose(new SchedulersTransformer())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BiConsumer<List<IndividualWalletEntity>, Throwable>() {
                     @Override
@@ -168,19 +171,19 @@ public class SelectIndividualWalletDialogFragment extends BaseDialogFragment {
                             String uuid = getArguments().getString(Constants.Bundle.BUNDLE_UUID);
                             boolean needAmount = getArguments().getBoolean(Constants.Bundle.BUNDLE_FEE_AMOUNT);
                             List<IndividualWalletEntity> newWalletEntityList = new ArrayList<>();
-                            if (needAmount){
-                                for (IndividualWalletEntity walletEntity : objects){
-                                    if (walletEntity.getBalance() > 0){
+                            if (needAmount) {
+                                for (IndividualWalletEntity walletEntity : objects) {
+                                    if (walletEntity.getBalance() > 0) {
                                         newWalletEntityList.add(walletEntity);
                                     }
                                 }
-                            }else {
+                            } else {
                                 newWalletEntityList.addAll(objects);
                             }
                             Collections.sort(newWalletEntityList, new Comparator<WalletEntity>() {
                                 @Override
                                 public int compare(WalletEntity o1, WalletEntity o2) {
-                                    return Long.compare(o1.getUpdateTime(),  o2.getUpdateTime());
+                                    return Long.compare(o1.getUpdateTime(), o2.getUpdateTime());
                                 }
                             });
                             selectWalletListAdapter.notifyDataChanged(newWalletEntityList);
