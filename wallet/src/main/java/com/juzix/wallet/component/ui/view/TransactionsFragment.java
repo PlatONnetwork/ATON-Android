@@ -93,6 +93,16 @@ public class TransactionsFragment extends MVPBaseFragment<TransactionsPresenter>
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdateIndividualWalletTransactionEvent(Event.UpdateIndividualWalletTransactionEvent event) {
+        mPresenter.fetchWalletTransactionList();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdateVoteTransactionListEvent(Event.UpdateVoteTransactionListEvent event) {
+        mPresenter.fetchWalletTransactionList();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateSelectedWalletEvent(Event.UpdateSelectedWalletEvent event) {
         mPresenter.updateWalletEntity();
         setAdapter();

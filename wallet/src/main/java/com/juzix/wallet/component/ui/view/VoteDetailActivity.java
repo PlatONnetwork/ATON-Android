@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
+import android.text.TextUtils;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -78,7 +79,7 @@ public class VoteDetailActivity extends MVPBaseActivity<VoteDetailPresenter> imp
     @Override
     public void showNodeDetailInfo(String candidateId, String nodeName) {
         tvNodeName.setText(nodeName);
-        tvNodeId.setText(candidateId);
+        tvNodeId.setText(getFormatCandidateId(candidateId));
     }
 
     @Override
@@ -91,5 +92,13 @@ public class VoteDetailActivity extends MVPBaseActivity<VoteDetailPresenter> imp
         intent.putExtra(Constants.Extra.EXTRA_CANDIDATE_ID, candidateId);
         intent.putExtra(Constants.Extra.EXTRA_CANDIDATE_NAME, candidateName);
         context.startActivity(intent);
+    }
+
+    private String getFormatCandidateId(String candidateId) {
+        if (TextUtils.isEmpty(candidateId) || candidateId.startsWith("0x")) {
+            return candidateId;
+        }
+
+        return "0x".concat(candidateId);
     }
 }

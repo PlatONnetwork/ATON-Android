@@ -41,18 +41,6 @@ public class EventPublisher {
         BusProvider.unRegister(obj);
     }
 
-    public void sendIndividualTransactionSucceedEvent() {
-        BusProvider.post(new Event.IndividualTransactionSucceedEvent());
-    }
-
-    public void sendSharedTransactionSucceedEvent() {
-        BusProvider.post(new Event.SharedTransactionSucceedEvent());
-    }
-
-    public void sendNodeChangedEvent() {
-        BusProvider.post(new Event.NodeChangedEvent());
-    }
-
     public void sendNetWorkStateChangedEvent(NetState netState) {
         BusProvider.post(new Event.NetWorkStateChangedEvent(netState));
     }
@@ -61,8 +49,8 @@ public class EventPublisher {
         BusProvider.post(new Event.UpdateSharedWalletTransactionEvent());
     }
 
-    public void sendUpdateMessageTipsEvent(boolean unRead) {
-        BusProvider.post(new Event.UpdateMessageTipsEvent(unRead));
+    public void sendUpdateIndividualWalletTransactionEvent() {
+        BusProvider.post(new Event.UpdateIndividualWalletTransactionEvent());
     }
 
     public void sendUpdateCreateJointWalletProgressEvent(SharedWalletEntity sharedWalletEntity) {
@@ -92,5 +80,9 @@ public class EventPublisher {
 
     public void sendUpdateAssetsTabEvent(int tabIndex) {
         BusProvider.post(new Event.UpdateAssetsTabEvent(tabIndex));
+    }
+
+    public void sendUpdateVoteTransactionListEvent() {
+        BusProvider.post(new Event.UpdateVoteTransactionListEvent());
     }
 }

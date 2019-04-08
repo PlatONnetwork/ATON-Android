@@ -22,6 +22,7 @@ import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.RegionEntity;
 import com.juzix.wallet.entity.SingleVoteEntity;
 import com.juzix.wallet.entity.TicketEntity;
+import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.AppUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.JSONUtil;
@@ -262,7 +263,7 @@ public class VoteManager {
                                 return new SingleVoteInfoEntity.Builder()
                                         .uuid(UUID.randomUUID().toString())
                                         .hash(transactionHash)
-                                        .transactionId(ticketInfoEntityList.get(0).getTransactionId())
+                                        .transactionId(ticketInfoEntityList.get(0).getTicketId())
                                         .candidateId(candidateId)
                                         .candidateName(candidateName)
                                         .host(candidateEntity.getHost())
@@ -285,6 +286,7 @@ public class VoteManager {
                     @Override
                     public void accept(SingleVoteInfoEntity voteInfoEntity) throws Exception {
                         SingleVoteInfoDao.getInstance().insertTransaction(voteInfoEntity);
+                        EventPublisher.getInstance().sendUpdateVoteTransactionListEvent();
                         updateVoteTicket(voteInfoEntity);
                     }
                 });

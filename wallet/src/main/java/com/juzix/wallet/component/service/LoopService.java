@@ -6,7 +6,6 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
-import android.util.Log;
 
 import com.juzix.wallet.engine.SharedWalletTransactionManager;
 import com.juzix.wallet.engine.VoteManager;
@@ -73,14 +72,12 @@ public class LoopService extends Service {
         if (context == null) {
             return;
         }
-        Log.e(TAG, "关闭轮询闹钟服务...");
         AlarmManager manager = (AlarmManager) context.getApplicationContext().getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context.getApplicationContext(), LoopService.class);
         intent.setAction(LoopService.ACTION);
         PendingIntent pendingIntent = PendingIntent.getService(context.getApplicationContext(), 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         manager.cancel(pendingIntent);
         // 关闭轮询服务
-        Log.e(TAG, "关闭轮询服务...");
         context.stopService(intent);
     }
 
@@ -93,7 +90,6 @@ public class LoopService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.e(TAG, "开始执行轮询服务....");
         // 启动轮询拉取消息
         if (!isServiceRuning) {
             startLoop();
@@ -104,7 +100,6 @@ public class LoopService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.e(TAG, "轮询服务退出，执行onDestory()方法，inServiceRuning赋值false");
         isServiceRuning = false;
         timer.cancel();
         timer = null;
