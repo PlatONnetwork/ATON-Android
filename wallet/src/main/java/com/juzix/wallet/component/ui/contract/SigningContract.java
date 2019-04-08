@@ -19,9 +19,11 @@ public class SigningContract {
 
         IndividualWalletEntity getIndividualWalletFromIntent();
 
-        void setTransactionDetailInfo(SharedTransactionEntity transactionEntity, String statusDesc);
+        void setTransactionDetailInfo(SharedTransactionEntity transactionEntity);
 
         void showTransactionResult(List<TransactionResult> transactionResultList);
+
+        void setTransactionConfirmResult(int requiredSignNumber, long confirms);
 
         void enableButtons(boolean enabaled);
 
@@ -37,6 +39,7 @@ public class SigningContract {
 
         void revoke();
 
-//        void getBalance();
+        void updateTransactionConfirmResult(List<TransactionResult> transactionResultList);
+
     }
 }

@@ -44,7 +44,6 @@ public class MyVoteActivity extends MVPBaseActivity<MyVotePresenter> implements 
     private Unbinder unbinder;
     private BatchVoteSummaryAdapter mBatchVoteSummaryAdapter;
     private BatchVoteTransactionAdapter mBatchVoteTransactionAdapter;
-    private int mScreenWidth;
 
     @Override
     protected MyVotePresenter createPresenter() {
@@ -61,8 +60,6 @@ public class MyVoteActivity extends MVPBaseActivity<MyVotePresenter> implements 
     }
 
     private void initViews() {
-
-        mScreenWidth = CommonUtil.getScreenWidth(this);
 
         mBatchVoteSummaryAdapter = new BatchVoteSummaryAdapter(R.layout.item_vote_info, null);
         mBatchVoteTransactionAdapter = new BatchVoteTransactionAdapter(R.layout.item_my_vote_list, null);
@@ -126,7 +123,7 @@ public class MyVoteActivity extends MVPBaseActivity<MyVotePresenter> implements 
         TextView tvValue = findTextView();
         for (VoteSummaryEntity voteSummaryEntity : voteSummaryEntityList) {
             float textWidth = tvValue.getPaint().measureText(voteSummaryEntity.getVoteSummaryValue());
-            if (textWidth >= mScreenWidth / 3) {
+            if (textWidth >= CommonUtil.getScreenWidth(this) / 3) {
                 return true;
             }
         }

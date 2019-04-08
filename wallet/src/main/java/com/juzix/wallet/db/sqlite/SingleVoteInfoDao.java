@@ -2,7 +2,6 @@ package com.juzix.wallet.db.sqlite;
 
 import com.juzix.wallet.db.entity.SingleVoteInfoEntity;
 import com.juzix.wallet.db.entity.TicketInfoEntity;
-import com.juzix.wallet.entity.SingleVoteEntity;
 
 import org.web3j.utils.Numeric;
 
@@ -129,6 +128,32 @@ public class SingleVoteInfoDao {
             }
         }
         return list;
+    }
+
+    public String getCandidateNameByCandidateId(String candidateId) {
+        Realm realm = null;
+        String candidateName = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            SingleVoteInfoEntity entity = realm.where(SingleVoteInfoEntity.class)
+                    .equalTo("candidateId", candidateId)
+                    .findFirst();
+            if (entity != null) {
+                candidateName = entity.getCandidateName();
+            }
+            realm.commitTransaction();
+        } catch (Exception exp) {
+            exp.printStackTrace();
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return candidateName;
     }
 
     public SingleVoteInfoEntity getTransactionByHash(String transactionHash) {

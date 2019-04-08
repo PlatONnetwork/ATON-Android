@@ -122,9 +122,11 @@ public class VoteManager {
                     @Override
                     public BatchVoteTransactionEntity apply(BatchVoteTransactionEntity batchVoteTransactionEntity) throws Exception {
                         SingleVoteInfoEntity singleVoteInfoEntity = SingleVoteInfoDao.getInstance().getTransactionByHash(batchVoteTransactionEntity.getTransactionHash());
+                        String nodeName = SingleVoteInfoDao.getInstance().getCandidateNameByCandidateId(batchVoteTransactionEntity.getCandidateId());
                         if (singleVoteInfoEntity != null) {
                             batchVoteTransactionEntity.setNodeName(singleVoteInfoEntity.getCandidateName());
                             batchVoteTransactionEntity.setVoteStaked(singleVoteInfoEntity.getVoteStaked());
+                            batchVoteTransactionEntity.setNodeName(nodeName);
                         }
 
                         return batchVoteTransactionEntity;

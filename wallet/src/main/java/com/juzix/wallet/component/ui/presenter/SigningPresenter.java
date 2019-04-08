@@ -18,6 +18,7 @@ import com.juzix.wallet.entity.TransactionResult;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.ToastUtil;
 
+import org.reactivestreams.Publisher;
 import org.web3j.crypto.Credentials;
 
 import java.math.BigInteger;
@@ -27,11 +28,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 
 /**
  * @author matrixelement
@@ -95,8 +99,8 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
                 resultList.addAll(undeterminedList);
             }
 
-            String statusDesc = string(R.string.transactionConfirmation) + "(" + confirmList.size() + "/" + transactionEntity.getRequiredSignNumber() + ")";
-            getView().setTransactionDetailInfo(transactionEntity, statusDesc);
+            getView().setTransactionConfirmResult(transactionEntity.getRequiredSignNumber(), confirmList.size());
+            getView().setTransactionDetailInfo(transactionEntity);
             getView().showTransactionResult(resultList);
 
             if (individualWalletEntity != null && isWaittingSigned(transactionEntity.getTransactionResultList()) && subTransactoined) {
@@ -105,6 +109,31 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
                 getView().enableButtons(false);
             }
         }
+    }
+
+    @Override
+    public void confirm() {
+        if (isViewAttached()) {
+            start(CONFIRM);
+        }
+    }
+
+    @Override
+    public void revoke() {
+        if (isViewAttached()) {
+            start(REFUSE);
+        }
+    }
+
+    @Override
+    public void updateTransactionConfirmResult(List<TransactionResult> transactionResultList) {
+        if (isViewAttached()) {
+            getView().setTransactionConfirmResult(getRequiredSignNumber(), getTransactionConfirmCount(transactionResultList));
+        }
+    }
+
+    private int getRequiredSignNumber() {
+        return transactionEntity == null ? 0 : transactionEntity.getRequiredSignNumber();
     }
 
     private boolean isWaittingSigned(List<TransactionResult> transactionResultList) {
@@ -122,18 +151,34 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
         return false;
     }
 
-    @Override
-    public void confirm() {
-        if (isViewAttached()) {
-            start(CONFIRM);
-        }
-    }
+    private long getTransactionConfirmCount(List<TransactionResult> transactionResultList) {
 
-    @Override
-    public void revoke() {
-        if (isViewAttached()) {
-            start(REFUSE);
-        }
+        return Flowable.fromCallable(new Callable<List<TransactionResult>>() {
+            @Override
+            public List<TransactionResult> call() throws Exception {
+                return transactionResultList;
+            }
+        }).filter(new Predicate<List<TransactionResult>>() {
+            @Override
+            public boolean test(List<TransactionResult> transactionResultList) throws Exception {
+                return !transactionResultList.isEmpty();
+            }
+        }).flatMap(new Function<List<TransactionResult>, Publisher<TransactionResult>>() {
+            @Override
+            public Publisher<TransactionResult> apply(List<TransactionResult> transactionResultList) throws Exception {
+                return Flowable.fromIterable(transactionResultList);
+            }
+        }).map(new Function<TransactionResult, TransactionResult.Status>() {
+            @Override
+            public TransactionResult.Status apply(TransactionResult transactionResult) throws Exception {
+                return transactionResult.getStatus();
+            }
+        }).filter(new Predicate<TransactionResult.Status>() {
+            @Override
+            public boolean test(TransactionResult.Status status) throws Exception {
+                return status == TransactionResult.Status.OPERATION_APPROVAL || status == TransactionResult.Status.OPERATION_REVOKE;
+            }
+        }).count().onErrorReturnItem(0L).blockingGet();
     }
 
     private void start(int type) {
@@ -206,9 +251,9 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
     }
 
     private void validPassword(Credentials credentials, SharedTransactionEntity sharedTransactionEntity, int type, BigInteger gasPrice, double feeAmount) {
-                checkBalance(individualWalletEntity, credentials, feeAmount)
+        checkBalance(individualWalletEntity, credentials, feeAmount)
                 .compose(new SchedulersTransformer())
-                        .compose(LoadingTransformer.bindToSingleLifecycle(getView().currentActivity()))
+                .compose(LoadingTransformer.bindToSingleLifecycle(getView().currentActivity()))
                 .compose(bindToLifecycle())
                 .subscribe(new Consumer<Credentials>() {
                     @Override
