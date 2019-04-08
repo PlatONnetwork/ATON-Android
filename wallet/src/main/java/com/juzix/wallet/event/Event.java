@@ -11,23 +11,6 @@ public class Event {
 
     }
 
-    public static class IndividualTransactionSucceedEvent {
-        public IndividualTransactionSucceedEvent() {
-        }
-    }
-
-    public static class SharedTransactionSucceedEvent {
-        public SharedTransactionSucceedEvent() {
-        }
-    }
-
-    public static class NodeChangedEvent {
-
-        public NodeChangedEvent() {
-
-        }
-    }
-
     public static class NetWorkStateChangedEvent {
 
         public NetState netState;
@@ -42,32 +25,9 @@ public class Event {
         }
     }
 
-    public static class UpdateSharedWalletBalanceEvent {
-
-        private String prefixContractAddress;
-        private double balance;
-
-        public UpdateSharedWalletBalanceEvent(String prefixContractAddress, double balance) {
-            this.prefixContractAddress = prefixContractAddress;
-            this.balance = balance;
-        }
-    }
-
     public static class UpdateIndividualWalletTransactionEvent {
         public UpdateIndividualWalletTransactionEvent() {
-        }
-    }
 
-    public static class UpdateIndividualWalletBalanceEvent {
-        public UpdateIndividualWalletBalanceEvent() {
-        }
-    }
-
-    public static class UpdateMessageTipsEvent {
-        public boolean unRead;
-
-        public UpdateMessageTipsEvent(boolean unRead) {
-            this.unRead = unRead;
         }
     }
 
@@ -123,7 +83,6 @@ public class Event {
         }
     }
 
-
     public static class UpdateWalletListEvent {
 
         public UpdateWalletListEvent() {
@@ -132,8 +91,14 @@ public class Event {
 
     public static class UpdateAssetsTabEvent {
         public int tabIndex;
+
         public UpdateAssetsTabEvent(int tabIndex) {
             this.tabIndex = tabIndex;
+        }
+    }
+
+    public static class UpdateVoteTransactionListEvent {
+        public UpdateVoteTransactionListEvent() {
         }
     }
 }

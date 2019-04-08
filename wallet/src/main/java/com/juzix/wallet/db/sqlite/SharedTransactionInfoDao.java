@@ -265,9 +265,10 @@ public class SharedTransactionInfoDao {
                     SharedTransactionInfoEntity transactionInfoEntity = realm.where(SharedTransactionInfoEntity.class)
                             .equalTo("uuid", uuid)
                             .findFirst();
-                    SharedTransactionInfoEntity sharedTransactionInfoEntity = realm.copyFromRealm(transactionInfoEntity);
-                    sharedTransactionInfoEntity.setRead(read);
-                    realm.copyToRealmOrUpdate(sharedTransactionInfoEntity);
+                    transactionInfoEntity.setRead(read);
+//                    SharedTransactionInfoEntity sharedTransactionInfoEntity = realm.copyFromRealm(transactionInfoEntity);
+//                    sharedTransactionInfoEntity.setRead(read);
+//                    realm.copyToRealmOrUpdate(sharedTransactionInfoEntity);
 
                     SharedTransactionInfoEntity entity = realm.copyFromRealm(realm.where(SharedTransactionInfoEntity.class).equalTo("uuid", uuid).findFirst());
                     Log.e(TAG, "插入后" + entity.toString());
