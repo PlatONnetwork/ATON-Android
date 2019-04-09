@@ -406,5 +406,6 @@
     <string name="switch_node_successed">Success</string>
     <string name="switch_node_failed">Failed</string>
     <string name="user_with_serial_number">User%1$d</string>
+    <string name="recipient_wallet">recipient</string>
 </resources>
 

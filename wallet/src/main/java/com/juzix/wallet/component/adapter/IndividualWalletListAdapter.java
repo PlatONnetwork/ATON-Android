@@ -22,7 +22,7 @@ public class IndividualWalletListAdapter extends CommonAdapter<IndividualWalletE
     @Override
     protected void convert(Context context, ViewHolder viewHolder, IndividualWalletEntity item, int position) {
         if (item != null) {
-            viewHolder.setText(R.id.tv_total_balance, context.getString(R.string.amount_with_unit, NumberParserUtils.getPrettyBalance(item.getBalance())));
+//            viewHolder.setText(R.id.tv_total_balance, context.getString(R.string.amount_with_unit, NumberParserUtils.getPrettyBalance(item.getBalance())));
             viewHolder.setText(R.id.tv_wallet_name, item.getName());
             viewHolder.setImageResource(R.id.iv_wallet_avatar, RUtils.drawable(item.getAvatar()));
             viewHolder.setVisible(R.id.progress_bar, false);

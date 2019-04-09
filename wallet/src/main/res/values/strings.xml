@@ -406,5 +406,6 @@
     <string name="switch_node_successed">节点切换成功</string>
     <string name="switch_node_failed">节点切换失败</string>
     <string name="user_with_serial_number">用户%1$d</string>
+    <string name="recipient_wallet">接收钱包</string>
 
 </resources>

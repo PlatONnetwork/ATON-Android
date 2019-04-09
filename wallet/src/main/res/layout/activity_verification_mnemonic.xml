@@ -54,7 +54,7 @@
                     android:hint="1"
                     android:textColorHint="@color/color_b6bbd0"
                     android:textColor="@color/color_000000"
-                    android:textSize="12sp"/>
+                    android:textSize="13sp"/>
 
                 <TextView
                     android:id="@+id/tv_mnemonic2"
@@ -67,7 +67,7 @@
                     android:hint="2"
                     android:textColorHint="@color/color_b6bbd0"
                     android:textColor="@color/color_000000"
-                    android:textSize="12sp"/>
+                    android:textSize="13sp"/>
 
                 <TextView
                     android:id="@+id/tv_mnemonic3"
@@ -79,7 +79,7 @@
                     android:hint="3"
                     android:textColorHint="@color/color_b6bbd0"
                     android:textColor="@color/color_000000"
-                    android:textSize="12sp"/>
+                    android:textSize="13sp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -99,7 +99,7 @@
                     android:hint="4"
                     android:textColorHint="@color/color_b6bbd0"
                     android:textColor="@color/color_000000"
-                    android:textSize="12sp"/>
+                    android:textSize="13sp"/>
 
                 <TextView
                     android:id="@+id/tv_mnemonic5"
@@ -112,7 +112,7 @@
                     android:hint="5"
                     android:textColorHint="@color/color_b6bbd0"
                     android:textColor="@color/color_000000"
-                    android:textSize="12sp"/>
+                    android:textSize="13sp"/>
 
                 <TextView
                     android:id="@+id/tv_mnemonic6"
@@ -124,7 +124,7 @@
                     android:hint="6"
                     android:textColorHint="@color/color_b6bbd0"
                     android:textColor="@color/color_000000"
-                    android:textSize="12sp"/>
+                    android:textSize="13sp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -144,7 +144,7 @@
                     android:hint="7"
                     android:textColorHint="@color/color_b6bbd0"
                     android:textColor="@color/color_000000"
-                    android:textSize="12sp"/>
+                    android:textSize="13sp"/>
 
                 <TextView
                     android:id="@+id/tv_mnemonic8"
@@ -157,7 +157,7 @@
                     android:hint="8"
                     android:textColorHint="@color/color_b6bbd0"
                     android:textColor="@color/color_000000"
-                    android:textSize="12sp"/>
+                    android:textSize="13sp"/>
 
                 <TextView
                     android:id="@+id/tv_mnemonic9"
@@ -169,7 +169,7 @@
                     android:hint="9"
                     android:textColorHint="@color/color_b6bbd0"
                     android:textColor="@color/color_000000"
-                    android:textSize="12sp"/>
+                    android:textSize="13sp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -189,7 +189,7 @@
                     android:hint="10"
                     android:textColorHint="@color/color_b6bbd0"
                     android:textColor="@color/color_000000"
-                    android:textSize="12sp"/>
+                    android:textSize="13sp"/>
 
                 <TextView
                     android:id="@+id/tv_mnemonic11"
@@ -202,7 +202,7 @@
                     android:hint="11"
                     android:textColorHint="@color/color_b6bbd0"
                     android:textColor="@color/color_000000"
-                    android:textSize="12sp"/>
+                    android:textSize="13sp"/>
 
                 <TextView
                     android:id="@+id/tv_mnemonic12"
@@ -214,7 +214,7 @@
                     android:hint="12"
                     android:textColorHint="@color/color_b6bbd0"
                     android:textColor="@color/color_000000"
-                    android:textSize="12sp"/>
+                    android:textSize="13sp"/>
             </LinearLayout>
         </LinearLayout>
 

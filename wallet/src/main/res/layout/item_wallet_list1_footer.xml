@@ -30,6 +30,6 @@
             android:layout_marginTop="2.5dp"
             android:text="@string/createIndividualWallet"
             android:textColor="@color/color_b6bbd0"
-            android:textSize="8sp"/>
+            android:textSize="9sp"/>
     </LinearLayout>
 </FrameLayout>

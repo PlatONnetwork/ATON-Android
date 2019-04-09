@@ -62,7 +62,7 @@
                     android:background="@color/color_f0f1f5"
                     android:gravity="center"
                     android:textColor="@color/color_000000"
-                    android:textSize="12sp"/>
+                    android:textSize="13sp"/>
 
                 <TextView
                     android:id="@+id/tv_mnemonic2"
@@ -74,7 +74,7 @@
                     android:gravity="center"
                     android:maxLength="12"
                     android:textColor="@color/color_000000"
-                    android:textSize="12sp"/>
+                    android:textSize="13sp"/>
 
                 <TextView
                     android:id="@+id/tv_mnemonic3"
@@ -84,7 +84,7 @@
                     android:background="@color/color_f0f1f5"
                     android:gravity="center"
                     android:textColor="@color/color_000000"
-                    android:textSize="12sp"/>
+                    android:textSize="13sp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -103,7 +103,7 @@
                     android:gravity="center"
                     android:maxLength="12"
                     android:textColor="@color/color_000000"
-                    android:textSize="12sp"/>
+                    android:textSize="13sp"/>
 
                 <TextView
                     android:id="@+id/tv_mnemonic5"
@@ -115,7 +115,7 @@
                     android:gravity="center"
                     android:maxLength="12"
                     android:textColor="@color/color_000000"
-                    android:textSize="12sp"/>
+                    android:textSize="13sp"/>
 
                 <TextView
                     android:id="@+id/tv_mnemonic6"
@@ -126,7 +126,7 @@
                     android:gravity="center"
                     android:maxLength="12"
                     android:textColor="@color/color_000000"
-                    android:textSize="12sp"/>
+                    android:textSize="13sp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -145,7 +145,7 @@
                     android:gravity="center"
                     android:maxLength="12"
                     android:textColor="@color/color_000000"
-                    android:textSize="12sp"/>
+                    android:textSize="13sp"/>
 
                 <TextView
                     android:id="@+id/tv_mnemonic8"
@@ -157,7 +157,7 @@
                     android:gravity="center"
                     android:maxLength="12"
                     android:textColor="@color/color_000000"
-                    android:textSize="12sp"/>
+                    android:textSize="13sp"/>
 
                 <TextView
                     android:id="@+id/tv_mnemonic9"
@@ -168,7 +168,7 @@
                     android:gravity="center"
                     android:maxLength="12"
                     android:textColor="@color/color_000000"
-                    android:textSize="12sp"/>
+                    android:textSize="13sp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -187,7 +187,7 @@
                     android:gravity="center"
                     android:maxLength="12"
                     android:textColor="@color/color_000000"
-                    android:textSize="12sp"/>
+                    android:textSize="13sp"/>
 
                 <TextView
                     android:id="@+id/tv_mnemonic11"
@@ -199,7 +199,7 @@
                     android:gravity="center"
                     android:maxLength="12"
                     android:textColor="@color/color_000000"
-                    android:textSize="12sp"/>
+                    android:textSize="13sp"/>
 
                 <TextView
                     android:id="@+id/tv_mnemonic12"
@@ -210,7 +210,7 @@
                     android:gravity="center"
                     android:maxLength="12"
                     android:textColor="@color/color_000000"
-                    android:textSize="12sp"/>
+                    android:textSize="13sp"/>
             </LinearLayout>
         </LinearLayout>
 
