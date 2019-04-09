@@ -404,5 +404,6 @@
     <string name="input_address_name">Name of address</string>
     <string name="switch_node_successed">Success</string>
     <string name="switch_node_failed">Failed</string>
+    <string name="recipient_wallet">recipient</string>
 </resources>
 
