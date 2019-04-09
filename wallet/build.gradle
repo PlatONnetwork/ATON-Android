@@ -24,7 +24,7 @@ android {
         buildConfigField("String", "UM_APPKEY", "${UM_APPKEY}")
         buildConfigField("String", "BUGLY_APPID", "${BUGLY_APPID}")
         renderscriptTargetApi 19
-        renderscriptSupportModeEnabled  true
+        renderscriptSupportModeEnabled true
 
         ndk {
             abiFilters "armeabi", "armeabi-v7a", "x86"
@@ -48,7 +48,6 @@ android {
 
 
     buildTypes {
-
         debug {
             debuggable true
             signingConfig signingConfigs.debug

@@ -74,7 +74,7 @@ public class CandidateManager {
                 .map(new Function<CandidateEntity, CandidateEntity>() {
                     @Override
                     public CandidateEntity apply(CandidateEntity candidateEntity) throws Exception {
-                        candidateEntity.setVotedNum(VoteManager.getInstance().getCandidateTicketIdsCounter(candidateEntity.getCandidateId()).blockingGet());
+                        candidateEntity.setVotedNum(VoteManager.getInstance().getCandidateTicketCount(candidateEntity.getCandidateId()).blockingGet());
                         return candidateEntity;
                     }
                 })
@@ -125,7 +125,7 @@ public class CandidateManager {
                 .map(new Function<CandidateEntity, CandidateEntity>() {
                     @Override
                     public CandidateEntity apply(CandidateEntity candidateEntity) throws Exception {
-                        candidateEntity.setVotedNum(VoteManager.getInstance().getCandidateTicketIdsCounter(candidateEntity.getCandidateId()).blockingGet());
+                        candidateEntity.setVotedNum(VoteManager.getInstance().getCandidateTicketCount(candidateEntity.getCandidateId()).blockingGet());
                         candidateEntity.setStatus(CandidateEntity.CandidateStatus.STATUS_VERIFY);
                         return candidateEntity;
                     }
@@ -218,7 +218,7 @@ public class CandidateManager {
                 .map(new Function<CandidateEntity, CandidateEntity>() {
                     @Override
                     public CandidateEntity apply(CandidateEntity candidateEntity) throws Exception {
-                        candidateEntity.setVotedNum(VoteManager.getInstance().getCandidateTicketIdsCounter(candidateEntity.getCandidateId()).blockingGet());
+                        candidateEntity.setVotedNum(VoteManager.getInstance().getCandidateTicketCount(candidateEntity.getCandidateId()).blockingGet());
                         return candidateEntity;
                     }
                 })
