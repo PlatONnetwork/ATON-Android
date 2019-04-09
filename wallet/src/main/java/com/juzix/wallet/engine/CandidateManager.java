@@ -12,6 +12,7 @@ import com.juzix.wallet.entity.CandidateEntity;
 import com.juzix.wallet.entity.RegionEntity;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.protocol.entity.GetRegionInfoRequestEntity;
+import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.FileUtil;
 import com.juzix.wallet.utils.JSONUtil;
 import com.juzix.wallet.utils.LanguageUtil;
@@ -75,6 +76,7 @@ public class CandidateManager {
                     @Override
                     public CandidateEntity apply(CandidateEntity candidateEntity) throws Exception {
                         candidateEntity.setVotedNum(VoteManager.getInstance().getCandidateTicketCount(candidateEntity.getCandidateId()).blockingGet());
+                        candidateEntity.setFee((int) BigDecimalUtil.sub(10E3, candidateEntity.getFee()));
                         return candidateEntity;
                     }
                 })
@@ -127,6 +129,7 @@ public class CandidateManager {
                     public CandidateEntity apply(CandidateEntity candidateEntity) throws Exception {
                         candidateEntity.setVotedNum(VoteManager.getInstance().getCandidateTicketCount(candidateEntity.getCandidateId()).blockingGet());
                         candidateEntity.setStatus(CandidateEntity.CandidateStatus.STATUS_VERIFY);
+                        candidateEntity.setFee((int) BigDecimalUtil.sub(10E3, candidateEntity.getFee()));
                         return candidateEntity;
                     }
                 })
