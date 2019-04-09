@@ -307,6 +307,7 @@
     <string name="joint_wallet_execution">Joint Wallet Execution</string>
     <string name="create_joint_wallet">Create Joint Wallet</string>
     <string name="fee_of_contract_creation">Fee of Contract Creation</string>
+    <string name="fee_of_create_joint_wallet">Fee of Create Joint Wallet</string>
     <string name="send_energon">Send&#160;Energon</string>
     <string name="can_not_send_to_itself">Do not send to the same address</string>
     <string name="default_main_network">Default main network</string>

@@ -106,6 +106,16 @@ public class AppFramework {
                             schema.get("SharedTransactionInfoEntity").addField("transactionResult", String.class);
                             schema.remove("TransactionInfoResult");
                             oldVersion++;
+                        } else if (oldVersion == 105) {
+                            schema.get("IndividualWalletInfoEntity").addField("mnemonic", String.class);
+                            schema.get("SharedWalletInfoEntity").addField("creatorAddress", String.class);
+                            schema.get("SingleVoteInfoEntity").removeField("avatar");
+                            schema.remove("RegionInfoEntity");
+                            schema.get("SharedTransactionInfoEntity").removeField("transactionResult");
+                            schema.get("SharedTransactionInfoEntity").addField("transactionResult", String.class);
+                            schema.remove("TransactionInfoResult");
+                            schema.get("NodeInfoEntity").removeField("nodeDesc");
+                            oldVersion++;
                         }
                     }
                 })

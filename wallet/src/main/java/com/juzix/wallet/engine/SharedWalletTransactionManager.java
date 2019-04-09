@@ -651,7 +651,6 @@ public class SharedWalletTransactionManager {
                     @Override
                     public void accept(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
                         SharedTransactionInfoDao.getInstance().insertTransaction(sharedTransactionInfoEntity);
-                        EventPublisher.getInstance().sendSharedTransactionSucceedEvent();
                     }
                 })
                 .map(new Function<SharedTransactionInfoEntity, SharedTransactionInfoEntity>() {
@@ -700,7 +699,6 @@ public class SharedWalletTransactionManager {
                 .doOnSuccess(new Consumer<SharedTransactionInfoEntity>() {
                     @Override
                     public void accept(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
-                        Log.e(TAG, "发送联名交易插入数据库.........");
                         String uuid = SharedTransactionInfoDao.getInstance().getSharedTransactionUUID(sharedTransactionInfoEntity.getContractAddress(), sharedTransactionInfoEntity.getTransactionId());
                         if (uuid != null) {
                             sharedTransactionInfoEntity.setUuid(uuid);
@@ -865,6 +863,7 @@ public class SharedWalletTransactionManager {
                 .subscribe(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean hasUnread) {
+                        EventPublisher.getInstance().sendUpdateSharedWalletUnreadMessageEvent(walletEntity.getPrefixAddress(), hasUnread);
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -902,7 +901,6 @@ public class SharedWalletTransactionManager {
                 .doOnNext(new Consumer<List<SharedTransactionInfoEntity>>() {
                     @Override
                     public void accept(List<SharedTransactionInfoEntity> sharedTransactionEntities) throws Exception {
-                        Log.e(TAG, "轮询联名交易插入数据库" + sharedTransactionEntities.get(0).toString());
                         SharedTransactionInfoDao.getInstance().insertTransaction(sharedTransactionEntities);
                         SharedTransactionInfoDao.getInstance().getSharedTransactionListByTransactionType();
                         String contractAddress = sharedTransactionEntities.get(0).getContractAddress();

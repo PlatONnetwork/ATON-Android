@@ -252,7 +252,7 @@ public class NumberParserUtils {
             e.printStackTrace();
         }
         if (TextUtils.isEmpty(bigDecimalStr)) {
-            return "0.00";
+            return "0";
         }
 
         if (maxDigit > 0 && !bigDecimalStr.contains(".")) {

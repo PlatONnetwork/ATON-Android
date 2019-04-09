@@ -307,6 +307,7 @@
     <string name="joint_wallet_execution">执行联名钱包</string>
     <string name="create_joint_wallet">创建联名钱包</string>
     <string name="fee_of_contract_creation">创建合约手续费</string>
+    <string name="fee_of_create_joint_wallet">创建联名钱包手续费</string>
     <string name="send_energon">Energon&#160;发送</string>
     <string name="can_not_send_to_itself">无法发送给自己</string>
     <string name="default_main_network">默认主网络</string>

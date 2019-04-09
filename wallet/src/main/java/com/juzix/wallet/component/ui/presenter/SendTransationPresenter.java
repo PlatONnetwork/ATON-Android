@@ -70,17 +70,17 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
 
     private final static String TAG = SendTransationPresenter.class.getSimpleName();
 
-    private final static double     DEFAULT_PERCENT = 0;
-    private final static long       DEAULT_GAS_LIMIT = 210000;
-    private final static double     MIN_GAS_PRICE_WEI = 1E9;
-    private final static double     MAX_GAS_PRICE_WEI = 1E10;
-    private final static double     D_GAS_PRICE_WEI = MAX_GAS_PRICE_WEI - MIN_GAS_PRICE_WEI;
-    private static final int        REFRESH_TIME = 5000;
-    private              Disposable mDisposable;
+    private final static double DEFAULT_PERCENT = 0;
+    private final static long DEAULT_GAS_LIMIT = 210000;
+    private final static double MIN_GAS_PRICE_WEI = 1E9;
+    private final static double MAX_GAS_PRICE_WEI = 1E10;
+    private final static double D_GAS_PRICE_WEI = MAX_GAS_PRICE_WEI - MIN_GAS_PRICE_WEI;
+    private static final int REFRESH_TIME = 5000;
+    private Disposable mDisposable;
 
     private WalletEntity walletEntity;
     private IndividualWalletEntity individualWalletEntity;
-    private String       toAddress;
+    private String toAddress;
 
     private double gasPrice = MIN_GAS_PRICE_WEI;
     private long gasLimit = DEAULT_GAS_LIMIT;
@@ -107,7 +107,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
             return;
         }
         String address = walletEntity.getPrefixAddress();
-        if (walletEntity instanceof SharedWalletEntity){
+        if (walletEntity instanceof SharedWalletEntity) {
             SharedWalletEntity sharedWalletEntity = (SharedWalletEntity) walletEntity;
             individualWalletEntity = IndividualWalletManager.getInstance().getWalletByAddress(sharedWalletEntity.getCreatorAddress());
         }
@@ -218,9 +218,9 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
                 showLongToast(R.string.can_not_send_to_itself);
                 return;
             }
-            if (walletEntity instanceof SharedWalletEntity){
-                if (individualWalletEntity == null || !((SharedWalletEntity) walletEntity).isOwner()){
-                    CommonTipsDialogFragment.createDialogWithTitleAndOneButton(ContextCompat.getDrawable(getContext(), R.drawable.icon_dialog_tips), string(R.string.txn_init_failed_title),string(R.string.txn_init_failed_content), string(R.string.understood), new OnDialogViewClickListener() {
+            if (walletEntity instanceof SharedWalletEntity) {
+                if (individualWalletEntity == null || !((SharedWalletEntity) walletEntity).isOwner()) {
+                    CommonTipsDialogFragment.createDialogWithTitleAndOneButton(ContextCompat.getDrawable(getContext(), R.drawable.icon_dialog_tips), string(R.string.txn_init_failed_title), string(R.string.txn_init_failed_content), string(R.string.understood), new OnDialogViewClickListener() {
                         @Override
                         public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
                         }
@@ -244,7 +244,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
                     .setOnConfirmBtnClickListener(new SendTransactionDialogFragment.OnConfirmBtnClickListener() {
                         @Override
                         public void onConfirmBtnClick() {
-                            showInputWalletPasswordDialogFragment( transferAmount, toAddress);
+                            showInputWalletPasswordDialogFragment(transferAmount, toAddress);
                         }
                     })
                     .show(currentActivity().getSupportFragmentManager(), "sendTransaction");
@@ -259,7 +259,6 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
             String toAddress = getView().getToAddress();
             boolean isToAddressFormatCorrect = !TextUtils.isEmpty(toAddress) && WalletUtils.isValidAddress(toAddress);
             boolean isTransferAmountValid = !TextUtils.isEmpty(transferAmount) && NumberParserUtils.parseDouble(transferAmount) > 0 && isBalanceEnough(transferAmount);
-
             getView().setSendTransactionButtonEnable(isToAddressFormatCorrect && isTransferAmountValid);
         }
 
@@ -274,8 +273,8 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
 
     @Override
     public void updateAssetsTab(int tabIndex) {
-        if (isViewAttached()){
-            if (tabIndex != AssetsFragment.TAB2){
+        if (isViewAttached()) {
+            if (tabIndex != AssetsFragment.TAB2) {
                 resetData();
                 getView().resetView(BigDecimalUtil.parseString(feeAmount));
             }
@@ -283,14 +282,14 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
     }
 
     @Override
-    public void checkAddressBook(String address){
-        if (TextUtils.isEmpty(address)){
+    public void checkAddressBook(String address) {
+        if (TextUtils.isEmpty(address)) {
             getView().setSaveAddressButtonEnable(false);
             return;
         }
         if (JZWalletUtil.isValidAddress(address)) {
             getView().setSaveAddressButtonEnable(!AddressInfoDao.getInstance().isExist(address));
-        }else {
+        } else {
             getView().setSaveAddressButtonEnable(false);
         }
     }
@@ -329,7 +328,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
                     @Override
                     public void accept(IndividualTransactionInfoEntity individualTransactionInfoEntity) throws Exception {
                         IndividualTransactionInfoDao.getInstance().insertTransaction(individualTransactionInfoEntity);
-                        EventPublisher.getInstance().sendIndividualTransactionSucceedEvent();
+                        EventPublisher.getInstance().sendUpdateIndividualWalletTransactionEvent();
                     }
                 })
                 .compose(new SchedulersTransformer())
@@ -390,6 +389,12 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
                         return sharedTransactionInfoEntity;
                     }
                 })
+                .doOnSuccess(new Consumer<SharedTransactionInfoEntity>() {
+                    @Override
+                    public void accept(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
+                        EventPublisher.getInstance().sendUpdateSharedWalletTransactionEvent();
+                    }
+                })
                 .compose(new SchedulersTransformer())
                 .compose(bindToLifecycle())
                 .compose(LoadingTransformer.bindToSingleLifecycle(getView().currentActivity()))
@@ -406,7 +411,8 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
                     public void accept(Throwable throwable) throws Exception {
                         if (isViewAttached()) {
                             if (throwable instanceof CustomThrowable) {
-                                CustomThrowable customThrowable = (CustomThrowable) throwable;if (customThrowable.getErrCode() == CustomThrowable.CODE_ERROR_NOT_SUFFICIENT_BALANCE) {
+                                CustomThrowable customThrowable = (CustomThrowable) throwable;
+                                if (customThrowable.getErrCode() == CustomThrowable.CODE_ERROR_NOT_SUFFICIENT_BALANCE) {
                                     showLongToast(R.string.insufficient_balance);
                                 }
                             } else {
@@ -423,7 +429,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
             public void onWalletPasswordCorrect(Credentials credentials) {
                 if (walletEntity instanceof IndividualWalletEntity) {
                     sendTransaction(credentials, transferAmount, toAddress);
-                }else {
+                } else {
                     validPassword(credentials, transferAmount, toAddress);
                 }
             }
@@ -464,7 +470,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
         Map<String, String> map = new LinkedHashMap<>();
         map.put(string(R.string.payment_info), string(R.string.send_energon));
         map.put(string(R.string.from_wallet), fromWallet);
-        if (!TextUtils.isEmpty(executor)){
+        if (!TextUtils.isEmpty(executor)) {
             map.put(string(R.string.execute_wallet), executor);
         }
         map.put(string(R.string.recipient_wallet), recipient);
@@ -472,7 +478,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
         return map;
     }
 
-    private void resetData(){
+    private void resetData() {
         toAddress = "";
         gasPrice = MIN_GAS_PRICE_WEI;
         gasLimit = DEAULT_GAS_LIMIT;

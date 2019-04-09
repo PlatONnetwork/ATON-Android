@@ -22,6 +22,7 @@ import com.juzix.wallet.engine.SharedWalletTransactionManager;
 import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.SharedWalletEntity;
+import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
 import com.juzix.wallet.utils.ToastUtil;
@@ -217,7 +218,7 @@ public class SendSharedTransationPresenter extends BasePresenter<SendSharedTrans
 //            SendTransactionDialogFragment.newInstance(transferAmount, toAddress, feeAmount).setOnSubmitClickListener(new SendTransactionDialogFragment.OnSubmitClickListener() {
 //                @Override
 //                public void onSubmitClick() {
-                    showInputWalletPasswordDialogFragment("", transferAmount, toAddress);
+            showInputWalletPasswordDialogFragment("", transferAmount, toAddress);
 //                }
 //            }).show(currentActivity().getSupportFragmentManager(), "sendTransation");
 
@@ -301,6 +302,12 @@ public class SendSharedTransationPresenter extends BasePresenter<SendSharedTrans
                     @Override
                     public SharedTransactionInfoEntity apply(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
                         return sharedTransactionInfoEntity;
+                    }
+                })
+                .doOnSuccess(new Consumer<SharedTransactionInfoEntity>() {
+                    @Override
+                    public void accept(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
+                        EventPublisher.getInstance().sendUpdateSharedWalletTransactionEvent();
                     }
                 })
                 .compose(new SchedulersTransformer())

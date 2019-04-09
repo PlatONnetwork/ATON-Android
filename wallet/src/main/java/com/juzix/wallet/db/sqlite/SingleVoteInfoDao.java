@@ -116,12 +116,17 @@ public class SingleVoteInfoDao {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
             RealmResults<SingleVoteInfoEntity> results = realm.where(SingleVoteInfoEntity.class)
                     .equalTo("candidateId", candidateId)
                     .findAll();
-            list.addAll(realm.copyFromRealm(results));
+            list = realm.copyFromRealm(results);
+            realm.commitTransaction();
         } catch (Exception exp) {
             exp.printStackTrace();
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
         } finally {
             if (realm != null) {
                 realm.close();
