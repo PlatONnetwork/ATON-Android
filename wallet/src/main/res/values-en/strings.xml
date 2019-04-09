@@ -133,7 +133,7 @@
     <string name="select_owner">Select Owner</string>
     <string name="shared_owners">Joint Owners</string>
     <string name="required_signatures">Required Signatures</string>
-    <string name="wallet_manage">Wallet Manage</string>
+    <string name="wallet_manage">Wallet Management</string>
     <string name="address_book">Address Book</string>
     <string name="settings">Settings</string>
     <string name="help">Help</string>
@@ -405,11 +405,7 @@
     <string name="input_address_name">Name of address</string>
     <string name="switch_node_successed">Success</string>
     <string name="switch_node_failed">Failed</string>
-<<<<<<< HEAD
-    <string name="recipient_wallet">To</string>
-=======
     <string name="user_with_serial_number">User%1$d</string>
-    <string name="recipient_wallet">recipient</string>
->>>>>>> upstream/master
+    <string name="recipient_wallet">To</string>
 </resources>
 

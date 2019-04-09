@@ -193,11 +193,7 @@ public class SharedWalletTransactionManager {
                 });
     }
 
-<<<<<<< HEAD
-    public void createSharedWallet(Credentials credentials, String walletName, String individualWalletAddress, String individualWalletName, int requiredSignNumber, ArrayList<OwnerEntity> members,
-=======
-    public void createSharedWallet(Credentials credentials, String walletName, String individualWalletAddress, int requiredSignNumber, List<OwnerEntity> members,
->>>>>>> upstream/master
+    public void createSharedWallet(Credentials credentials, String walletName, String individualWalletAddress, String individualWalletName, int requiredSignNumber, List<OwnerEntity> members,
                                    BigInteger ethGasPrice, double feeAmount) {
 
         long time = System.currentTimeMillis();
