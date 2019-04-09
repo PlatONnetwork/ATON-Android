@@ -31,8 +31,6 @@ public class AddNewAddressContract {
 
         void setBottonBtnText(String text);
 
-        void setAddNewAddressButtonEnable(boolean enable);
-
         void showAddress(String address);
     }
 
@@ -45,8 +43,6 @@ public class AddNewAddressContract {
         boolean checkAddressName(String name);
 
         boolean checkAddress(String address);
-
-        void updateAddNewAddressButtonStatus();
 
         void validQRCode(String text);
     }

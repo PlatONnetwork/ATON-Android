@@ -186,7 +186,7 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
                     @Override
                     public void accept(Map<String, Object> stringLongMap, BatchVoteSummaryEntity batchVoteSummaryEntity) throws Exception {
                         long invalidNum = NumberParserUtils.parseLong(batchVoteSummaryEntity.getTotalTicketNum()) - NumberParserUtils.parseLong(batchVoteSummaryEntity.getValidNum());
-                        stringLongMap.put(TAG_LOCKED, NumberParserUtils.parseLong(batchVoteSummaryEntity.getLocked(), MapUtils.getLong(stringLongMap, TAG_LOCKED)));
+                        stringLongMap.put(TAG_LOCKED, NumberParserUtils.parseLong(batchVoteSummaryEntity.getLocked()) + MapUtils.getLong(stringLongMap, TAG_LOCKED));
                         stringLongMap.put(TAG_EARNINGS, NumberParserUtils.parseLong(batchVoteSummaryEntity.getEarnings()) + MapUtils.getLong(stringLongMap, TAG_EARNINGS));
                         stringLongMap.put(TAG_INVALIDNUM, invalidNum + MapUtils.getLong(stringLongMap, TAG_INVALIDNUM));
                         stringLongMap.put(TAG_VALIDNUM, NumberParserUtils.parseLong(batchVoteSummaryEntity.getValidNum()) + MapUtils.getLong(stringLongMap, TAG_VALIDNUM));

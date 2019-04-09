@@ -123,9 +123,9 @@ public class AddNewAddressPresenter extends BasePresenter<AddNewAddressContract.
         if (TextUtils.isEmpty(address)) {
             errMsg = string(R.string.address_cannot_be_empty);
         } else {
-            if (!JZWalletUtil.isValidAddress(address)) {
+            //TODO 不是以0x开头的则提示格式错误，之后统一地址显示
+            if (!JZWalletUtil.isValidAddress(address) || !address.startsWith("0x")) {
                 errMsg = string(R.string.address_format_error);
-
             }
         }
 
@@ -137,18 +137,6 @@ public class AddNewAddressPresenter extends BasePresenter<AddNewAddressContract.
 
         return TextUtils.isEmpty(errMsg);
 
-    }
-
-    @Override
-    public void updateAddNewAddressButtonStatus() {
-
-        if (isViewAttached()) {
-
-            String addressName = getView().getName().trim();
-            String address = getView().getAddress().trim();
-
-            getView().setAddNewAddressButtonEnable(!TextUtils.isEmpty(addressName) && !TextUtils.isEmpty(address) && JZWalletUtil.isValidAddress(address));
-        }
     }
 
     @Override

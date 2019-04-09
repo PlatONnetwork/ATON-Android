@@ -41,7 +41,7 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
 
     private final static String TAG = VotePresenter.class.getSimpleName();
     private final static int MAX_TICKET_POOL_SIZE = 51200;
-    private final static int DEFAULT_VOTE_NUM = 100;
+    private final static int DEFAULT_VOTE_NUM = 512;
     private final static int DEFAULT_DEPOSIT_RANKING = 100;
     private static final int REFRESH_TIME = 5000;
 
@@ -261,7 +261,7 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
             if (i < 2 * DEFAULT_DEPOSIT_RANKING) {
                 entity.setStakedRanking(i + 1);
                 if (i < DEFAULT_DEPOSIT_RANKING && entity.getVotedNum() >= DEFAULT_VOTE_NUM) {
-                    entity.setStatus(CandidateEntity.CandidateStatus.STATUS_RESERVE);
+                    entity.setStatus(CandidateEntity.CandidateStatus.STATUS_CANDIDATE);
                     candidateList.add(entity);
                 }
             }
@@ -307,7 +307,7 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
         if (verifyList == null || verifyList.isEmpty() || candidateList == null || candidateList.isEmpty()) {
             return candidateList;
         }
-        List<CandidateEntity> tempCandidateList = candidateList;
+        List<CandidateEntity> tempCandidateList = new ArrayList<>();
 
         for (CandidateEntity candidateEntity : candidateList) {
             if (verifyList.contains(candidateEntity)) {

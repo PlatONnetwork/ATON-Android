@@ -260,7 +260,6 @@ public class CreateSharedWalletSecondStepPresenter extends BasePresenter<CreateS
             @Override
             public void onWalletPasswordCorrect(Credentials credentials) {
                 validPassword(credentials, price, feeAmount);
-
             }
         }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
     }
@@ -342,9 +341,27 @@ public class CreateSharedWalletSecondStepPresenter extends BasePresenter<CreateS
         addressEntityList.add(new OwnerEntity(UUID.randomUUID().toString(), mWalletEntity.getName(), mWalletEntity.getPrefixAddress()));
         for (int i = 0; i < mEntityList.size(); i++) {
             CreateSharedWalletSecondStepContract.ContractEntity contractEntity = mEntityList.get(i);
-            addressEntityList.add(new OwnerEntity(UUID.randomUUID().toString(), TextUtils.isEmpty(contractEntity.getName()) ? string(R.string.user_with_serial_number, i + 1) : contractEntity.getName(), contractEntity.getAddress()));
+            addressEntityList.add(new OwnerEntity(UUID.randomUUID().toString(), getAddressName(contractEntity, i), contractEntity.getAddress()));
         }
-
         return addressEntityList;
+    }
+
+    private String getAddressName(CreateSharedWalletSecondStepContract.ContractEntity contractEntity, int index) {
+        String dbName = AddressInfoDao.getInstance().getAddressNameByAddress(getFormatAddress(contractEntity.getAddress()));
+        if (TextUtils.isEmpty(contractEntity.getName())) {
+            return TextUtils.isEmpty(dbName) ? string(R.string.user_with_serial_number, index + 1) : dbName;
+        } else {
+            return contractEntity.getName();
+        }
+    }
+
+    private String getFormatAddress(String address) {
+        if (address == null) {
+            return "";
+        }
+        if (address.startsWith("0x")) {
+            return address;
+        }
+        return "0x" + address;
     }
 }

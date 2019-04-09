@@ -7,7 +7,6 @@ import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.VoteDetailContract;
 import com.juzix.wallet.db.entity.SingleVoteInfoEntity;
 import com.juzix.wallet.db.sqlite.SingleVoteInfoDao;
-import com.juzix.wallet.engine.VoteManager;
 import com.juzix.wallet.entity.SingleVoteEntity;
 import com.juzix.wallet.entity.VoteDetailItemEntity;
 import com.juzix.wallet.utils.BigDecimalUtil;
@@ -71,14 +70,6 @@ public class VoteDetailPresenter extends BasePresenter<VoteDetailContract.View> 
                     @Override
                     public SingleVoteEntity apply(SingleVoteInfoEntity singleVoteInfoEntity) throws Exception {
                         return singleVoteInfoEntity.buildSingleVoteEntity();
-                    }
-                })
-                .map(new Function<SingleVoteEntity, SingleVoteEntity>() {
-                    @Override
-                    public SingleVoteEntity apply(SingleVoteEntity singleVoteEntity) throws Exception {
-                        singleVoteEntity.setTickets(VoteManager.getInstance()
-                                .getTicketDetail(singleVoteEntity.getTransactionId()).blockingGet());
-                        return singleVoteEntity;
                     }
                 })
                 .map(new Function<SingleVoteEntity, VoteDetailItemEntity>() {
