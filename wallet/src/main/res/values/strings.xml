@@ -342,6 +342,7 @@
     <string name="joinTime">加入时间: %1$s</string>
     <string name="candidate">提名节点</string>
     <string name="alternative">候选节点</string>
+    <string name="validator">验证节点</string>
     <string name="stakedRanking">质押排名</string>
     <string name="tickets">得票数</string>
     <string name="voteNum">投票数</string>
@@ -404,5 +405,7 @@
     <string name="input_address_name">输入地址名称</string>
     <string name="switch_node_successed">节点切换成功</string>
     <string name="switch_node_failed">节点切换失败</string>
+    <string name="user_with_serial_number">用户%1$d</string>
+    <string name="recipient_wallet">接收钱包</string>
 
 </resources>

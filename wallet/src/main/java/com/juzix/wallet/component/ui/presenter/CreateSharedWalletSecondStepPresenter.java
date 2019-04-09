@@ -337,11 +337,12 @@ public class CreateSharedWalletSecondStepPresenter extends BasePresenter<CreateS
         return map;
     }
 
-    private ArrayList<OwnerEntity> getAddressEntityList() {
+    private List<OwnerEntity> getAddressEntityList() {
         ArrayList<OwnerEntity> addressEntityList = new ArrayList<>();
         addressEntityList.add(new OwnerEntity(UUID.randomUUID().toString(), mWalletEntity.getName(), mWalletEntity.getPrefixAddress()));
-        for (CreateSharedWalletSecondStepContract.ContractEntity contractEntity : mEntityList) {
-            addressEntityList.add(new OwnerEntity(UUID.randomUUID().toString(), contractEntity.getName(), contractEntity.getAddress()));
+        for (int i = 0; i < mEntityList.size(); i++) {
+            CreateSharedWalletSecondStepContract.ContractEntity contractEntity = mEntityList.get(i);
+            addressEntityList.add(new OwnerEntity(UUID.randomUUID().toString(), TextUtils.isEmpty(contractEntity.getName()) ? string(R.string.user_with_serial_number, i + 1) : contractEntity.getName(), contractEntity.getAddress()));
         }
 
         return addressEntityList;

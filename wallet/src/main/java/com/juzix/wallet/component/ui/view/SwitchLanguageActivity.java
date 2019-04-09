@@ -3,6 +3,7 @@ package com.juzix.wallet.component.ui.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 
@@ -49,7 +50,7 @@ public class SwitchLanguageActivity extends BaseActivity {
 
     private void initViews() {
         TextView tvRignt = commonTitleBar.findViewById(R.id.tv_right);
-        tvRignt.setTextSize(13);
+        tvRignt.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
         tvRignt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

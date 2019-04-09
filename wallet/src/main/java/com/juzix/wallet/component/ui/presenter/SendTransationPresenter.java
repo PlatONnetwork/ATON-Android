@@ -27,6 +27,7 @@ import com.juzix.wallet.db.sqlite.AddressInfoDao;
 import com.juzix.wallet.db.sqlite.IndividualTransactionInfoDao;
 import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.engine.IndividualWalletTransactionManager;
+import com.juzix.wallet.engine.SharedWalletManager;
 import com.juzix.wallet.engine.SharedWalletTransactionManager;
 import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
@@ -231,8 +232,15 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
             String fromAddress = address;
             String fee = NumberParserUtils.getPrettyBalance(feeAmount);
             String executor = walletEntity instanceof SharedWalletEntity ? individualWalletEntity.getName() : "";
+            String walletName = IndividualWalletManager.getInstance().getWalletNameByWalletAddress(toAddress);
+            if (TextUtils.isEmpty(walletName)){
+                walletName = SharedWalletManager.getInstance().getSharedWalletNameByContractAddress(toAddress);
+            }
+            if (TextUtils.isEmpty(walletName)){
+                walletName = AddressFormatUtil.formatAddress(toAddress);
+            }
             SendTransactionDialogFragment
-                    .newInstance(string(R.string.send_transation), NumberParserUtils.getPrettyBalance(transferAmount), buildSendTransactionInfo(fromWallet, fromAddress, toAddress, fee, executor))
+                    .newInstance(string(R.string.send_transation), NumberParserUtils.getPrettyBalance(transferAmount), buildSendTransactionInfo(fromWallet, fromAddress, walletName, fee, executor))
                     .setOnConfirmBtnClickListener(new SendTransactionDialogFragment.OnConfirmBtnClickListener() {
                         @Override
                         public void onConfirmBtnClick() {
@@ -458,14 +466,14 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
         return BigDecimalUtil.div(BigDecimalUtil.mul(gasLimit, MAX_GAS_PRICE_WEI), 1E18);
     }
 
-    private Map<String, String> buildSendTransactionInfo(String fromWallet, String fromAddress, String toAddress, String fee, String executor) {
+    private Map<String, String> buildSendTransactionInfo(String fromWallet, String fromAddress, String recipient, String fee, String executor) {
         Map<String, String> map = new LinkedHashMap<>();
         map.put(string(R.string.payment_info), string(R.string.send_energon));
         map.put(string(R.string.from_wallet), fromWallet);
         if (!TextUtils.isEmpty(executor)) {
             map.put(string(R.string.execute_wallet), executor);
         }
-        map.put(string(R.string.toAddress), AddressFormatUtil.formatAddress(toAddress));
+        map.put(string(R.string.recipient_wallet), recipient);
         map.put(string(R.string.fee), fee);
         return map;
     }
