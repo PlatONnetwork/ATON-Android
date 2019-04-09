@@ -149,7 +149,7 @@ public class SharedTransactionDetailActivity extends MVPBaseActivity<SharedTrans
         tvTransactionEnergon.setText(energonPrice);
 
         tvTransactionWalletName.setText(transactionEntity.getWalletName());
-        tvMemberTitle.setText(string(R.string.executeContractConfirm) + "(" + transactionEntity.getConfirms() + "/" + transactionEntity.getRequiredSignNumber() + ")");
+        tvMemberTitle.setText(string(R.string.executeContractConfirm) + "(" + transactionEntity.getApprovalCount() + "/" + transactionEntity.getRequiredSignNumber() + ")");
     }
 
     @Override

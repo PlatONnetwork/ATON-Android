@@ -125,8 +125,7 @@ public class NodeDetailActivity extends MVPBaseActivity<NodeDetailPresenter> imp
             tvInstitutionalWebsite.setText(extraEntity.getOfficialWebsite());
             tvInstitutionalIntroduction.setText(extraEntity.getNodeDiscription());
         }
-
-        rtvRankDesc.setText(candidateEntity.getStatus() == CandidateEntity.STATUS_CANDIDATE ? R.string.candidate : R.string.alternative);
+        rtvRankDesc.setText(candidateEntity.getStatus().getStatusDescRes());
         tvStakedRanking.setText(String.format("%d", candidateEntity.getStakedRanking()));
         tvStakedAmount.setText(NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(candidateEntity.getDeposit(), "1E18"), 4));
         tvTickets.setText(String.format("%d", candidateEntity.getVotedNum()));

@@ -37,7 +37,7 @@ public enum SortType {
             if (compare != 0) {
                 return compare;
             }
-            compare = Integer.compare(o1.getStatus(), o2.getStatus());
+            compare = Integer.compare(o1.getStatus().ordinal(), o2.getStatus().ordinal());
             if (compare != 0) {
                 return compare;
             }
