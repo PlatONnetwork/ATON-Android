@@ -231,8 +231,7 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
                 .subscribe(new Consumer<Integer>() {
                     @Override
                     public void accept(Integer checkedId) throws Exception {
-                        updateRadioButton(checkedId);
-                        updateCandidateListByCheckedId(checkedId);
+                        tabLayout.getTabAt(getTabIndexByCheckedId(checkedId)).select();
                     }
                 });
 
@@ -244,7 +243,7 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
                     public void accept(Object o) throws Exception {
                         mSearchEditOpened = false;
                         etSearchVote.setText("");
-                        ((BaseActivity)getActivity()).hideSoftInput();
+                        ((BaseActivity) getActivity()).hideSoftInput();
                         toggleSearchEditText(mSearchEditOpened);
                     }
                 });
@@ -337,7 +336,6 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
     }
 
 
-
     private void updateCandidateListByTabTag(String tag) {
         switch (tag) {
             case TAG_DEFAULT:
@@ -418,6 +416,20 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
                 break;
 
         }
+    }
+
+    private int getTabIndexByCheckedId(int checkedId) {
+        switch (checkedId) {
+            case R.id.rb_default:
+                return 0;
+            case R.id.rb_reward:
+                return 1;
+            case R.id.rb_location:
+                return 2;
+            default:
+                break;
+        }
+        return 0;
     }
 
 }

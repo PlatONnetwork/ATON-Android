@@ -126,6 +126,7 @@ public class CandidateManager {
                     @Override
                     public CandidateEntity apply(CandidateEntity candidateEntity) throws Exception {
                         candidateEntity.setVotedNum(VoteManager.getInstance().getCandidateTicketIdsCounter(candidateEntity.getCandidateId()).blockingGet());
+                        candidateEntity.setStatus(CandidateEntity.CandidateStatus.STATUS_VERIFY);
                         return candidateEntity;
                     }
                 })
@@ -276,7 +277,7 @@ public class CandidateManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return JSONUtil.parseTwoDimensionArray(candidateListResp, CandidateEntity.class);
+        return JSONUtil.parseArray(candidateListResp, CandidateEntity.class);
     }
 
     private List<CandidateEntity> getCandidateEntity(String nodeId) {
