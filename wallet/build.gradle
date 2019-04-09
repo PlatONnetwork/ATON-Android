@@ -31,6 +31,10 @@ android {
         }
     }
 
+    lintOptions {
+        abortOnError false
+    }
+
     signingConfigs {
         debug {
             storeFile file('../extras/debug.keystore')
@@ -61,7 +65,7 @@ android {
         releaseC {
             debuggable false
             signingConfig signingConfigs.release
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
             multiDexEnabled true
@@ -70,7 +74,7 @@ android {
         releaseX {
             debuggable false
             signingConfig signingConfigs.release
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeX}")
             zipAlignEnabled true
