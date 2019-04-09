@@ -403,5 +403,6 @@
     <string name="input_address_name">输入地址名称</string>
     <string name="switch_node_successed">节点切换成功</string>
     <string name="switch_node_failed">节点切换失败</string>
+    <string name="recipient_wallet">接收钱包</string>
 
 </resources>

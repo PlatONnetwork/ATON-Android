@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -173,7 +174,7 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
         textView.setText(dataEntity.getMnemonic());
         textView.setGravity(Gravity.CENTER);
         textView.setAllCaps(false);
-        textView.setTextSize(13);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
         if (!dataEntity.isChecked()){
             textView.setBackgroundResource(R.drawable.bg_shape_verify_mnemonic_n);
             textView.setTextColor(ContextCompat.getColor(this, R.color.color_316def));

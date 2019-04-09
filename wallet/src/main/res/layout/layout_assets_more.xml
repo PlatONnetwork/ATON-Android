@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/color_88000000"
-    android:fitsSystemWindows="true"
-    android:orientation="vertical"
-    android:paddingRight="8dp">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/color_88000000"
+              android:fitsSystemWindows="true"
+              android:orientation="vertical"
+              android:paddingRight="8dp">
 
     <View
         android:id="@+id/ll_item"
@@ -17,22 +17,22 @@
         android:background="@drawable/shape_triangle" />
 
     <LinearLayout
-        android:layout_width="165dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:background="@drawable/bg_shape_triangle"
-        android:gravity="right"
         android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/ll_create_individual_wallet"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingLeft="16dp"
+            android:paddingLeft="24dp"
             android:paddingTop="16dp"
-            android:paddingBottom="16dp">
+            android:paddingBottom="16dp"
+            android:paddingRight="24dp">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -42,28 +42,29 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
+                android:layout_marginLeft="8dp"
                 android:text="@string/createIndividualWallet"
                 android:textColor="@color/color_000000"
-                android:textSize="12sp" />
+                android:textSize="14sp" />
 
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginLeft="41dp"
+            android:layout_marginLeft="52dp"
             android:background="@color/color_ebeef4" />
 
         <LinearLayout
             android:id="@+id/ll_create_shared_wallet"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingLeft="16dp"
+            android:paddingLeft="24dp"
             android:paddingTop="16dp"
-            android:paddingBottom="16dp">
+            android:paddingBottom="16dp"
+            android:paddingRight="24dp">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -76,25 +77,26 @@
                 android:layout_marginLeft="5dp"
                 android:text="@string/create_shared_wallet"
                 android:textColor="@color/color_000000"
-                android:textSize="12sp" />
+                android:textSize="14sp" />
 
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginLeft="41dp"
+            android:layout_marginLeft="52dp"
             android:background="@color/color_ebeef4" />
 
         <LinearLayout
             android:id="@+id/ll_import_individual_wallet"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingLeft="16dp"
+            android:paddingLeft="24dp"
             android:paddingTop="16dp"
-            android:paddingBottom="16dp">
+            android:paddingBottom="16dp"
+            android:paddingRight="24dp">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -107,25 +109,26 @@
                 android:layout_marginLeft="5dp"
                 android:text="@string/importIndividualWallet"
                 android:textColor="@color/color_000000"
-                android:textSize="12sp" />
+                android:textSize="14sp" />
 
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginLeft="41dp"
+            android:layout_marginLeft="52dp"
             android:background="@color/color_ebeef4" />
 
         <LinearLayout
             android:id="@+id/ll_import_shared_wallet"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingLeft="16dp"
+            android:paddingLeft="24dp"
             android:paddingTop="16dp"
-            android:paddingBottom="16dp">
+            android:paddingBottom="16dp"
+            android:paddingRight="24dp">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -138,7 +141,7 @@
                 android:layout_marginLeft="5dp"
                 android:text="@string/add_shared_wallet"
                 android:textColor="@color/color_000000"
-                android:textSize="12sp" />
+                android:textSize="14sp" />
 
         </LinearLayout>
     </LinearLayout>
