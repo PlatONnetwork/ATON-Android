@@ -10,6 +10,7 @@ import com.juzix.wallet.app.CustomThrowable;
 import com.juzix.wallet.app.FlowableSchedulersTransformer;
 import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.db.entity.SharedTransactionInfoEntity;
+import com.juzix.wallet.db.sqlite.AddressInfoDao;
 import com.juzix.wallet.db.sqlite.SharedTransactionInfoDao;
 import com.juzix.wallet.entity.OwnerEntity;
 import com.juzix.wallet.entity.SharedTransactionEntity;
@@ -133,7 +134,9 @@ public class SharedWalletTransactionManager {
                 .map(new Function<Integer, OwnerEntity>() {
                     @Override
                     public OwnerEntity apply(Integer integer) throws Exception {
-                        return new OwnerEntity(UUID.randomUUID().toString(), App.getContext().getString(R.string.user_with_serial_number, integer + 1), owners.get(integer));
+                        String address = owners.get(integer);
+                        String dbName = AddressInfoDao.getInstance().getAddressNameByAddress(getFormatAddress(address));
+                        return new OwnerEntity(UUID.randomUUID().toString(), TextUtils.isEmpty(dbName) ? App.getContext().getString(R.string.user_with_serial_number, integer + 1) : dbName, address);
                     }
                 })
                 .toList();
@@ -1227,6 +1230,16 @@ public class SharedWalletTransactionManager {
             exp.printStackTrace();
         }
         return 0;
+    }
+
+    private String getFormatAddress(String address) {
+        if (address == null) {
+            return "";
+        }
+        if (address.startsWith("0x")) {
+            return address;
+        }
+        return "0x" + address;
     }
 
 }
