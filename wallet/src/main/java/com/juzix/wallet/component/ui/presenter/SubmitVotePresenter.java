@@ -7,7 +7,7 @@ import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.SubmitVoteContract;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
-import com.juzix.wallet.component.ui.dialog.SelectIndividualWalletDialogFragment;
+import com.juzix.wallet.component.ui.dialog.SelectWalletDialogFragment;
 import com.juzix.wallet.component.ui.dialog.SendTransactionDialogFragment;
 import com.juzix.wallet.db.entity.SingleVoteInfoEntity;
 import com.juzix.wallet.engine.IndividualWalletManager;
@@ -126,8 +126,8 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
 
     @Override
     public void showSelectWalletDialogFragment() {
-        SelectIndividualWalletDialogFragment.newInstance(mIndividualWalletEntity != null ? mIndividualWalletEntity.getUuid() : "", true)
-                .setOnItemClickListener(new SelectIndividualWalletDialogFragment.OnItemClickListener() {
+        SelectWalletDialogFragment.newInstance(mIndividualWalletEntity != null ? mIndividualWalletEntity.getUuid() : "", true)
+                .setOnItemClickListener(new SelectWalletDialogFragment.OnItemClickListener() {
                     @Override
                     public void onItemClick(IndividualWalletEntity walletEntity) {
                         if (isViewAttached()) {

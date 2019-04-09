@@ -17,7 +17,6 @@ import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.AddSharedWalletContract;
-import com.juzix.wallet.component.ui.dialog.SelectIndividualWalletDialogFragment;
 import com.juzix.wallet.component.ui.presenter.AddSharedWalletPresenter;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.component.widget.TextChangedListener;
