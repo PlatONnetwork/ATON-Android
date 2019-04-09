@@ -12,7 +12,8 @@ import android.widget.ListView;
 import com.jakewharton.rxbinding3.widget.RxAdapterView;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
-import com.juzix.wallet.component.adapter.SelectIndividualWalletListAdapter;
+import com.juzix.wallet.app.SchedulersTransformer;
+import com.juzix.wallet.component.adapter.SelectWalletListAdapter;
 import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.db.entity.IndividualWalletInfoEntity;
 import com.juzix.wallet.db.sqlite.IndividualWalletInfoDao;
@@ -38,12 +39,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * @author matrixelement
  */
-public class SelectIndividualWalletDialogFragment extends BaseDialogFragment {
+public class SelectWalletDialogFragment extends BaseDialogFragment {
 
     public final static String CREATE_SHARED_WALLET = "create_shared_wallet";
     public final static String SELECT_SHARED_WALLET_OWNER = "create_shared_wallet_owner";
@@ -56,11 +56,11 @@ public class SelectIndividualWalletDialogFragment extends BaseDialogFragment {
     LinearLayout layoutContent;
 
     private Unbinder unbinder;
-    private SelectIndividualWalletListAdapter selectWalletListAdapter;
+    private SelectWalletListAdapter selectWalletListAdapter;
     private OnItemClickListener mListener;
 
-    public static SelectIndividualWalletDialogFragment newInstance(String uuid) {
-        SelectIndividualWalletDialogFragment dialogFragment = new SelectIndividualWalletDialogFragment();
+    public static SelectWalletDialogFragment newInstance(String uuid) {
+        SelectWalletDialogFragment dialogFragment = new SelectWalletDialogFragment();
         Bundle bundle = new Bundle();
         bundle.putString(Constants.Bundle.BUNDLE_UUID, uuid);
         bundle.putBoolean(Constants.Bundle.BUNDLE_FEE_AMOUNT, false);
@@ -68,9 +68,8 @@ public class SelectIndividualWalletDialogFragment extends BaseDialogFragment {
         return dialogFragment;
     }
 
-
-    public static SelectIndividualWalletDialogFragment newInstance(String uuid, boolean needAmount) {
-        SelectIndividualWalletDialogFragment dialogFragment = new SelectIndividualWalletDialogFragment();
+    public static SelectWalletDialogFragment newInstance(String uuid, boolean needAmount) {
+        SelectWalletDialogFragment dialogFragment = new SelectWalletDialogFragment();
         Bundle bundle = new Bundle();
         bundle.putString(Constants.Bundle.BUNDLE_UUID, uuid);
         bundle.putBoolean(Constants.Bundle.BUNDLE_FEE_AMOUNT, needAmount);
@@ -78,7 +77,7 @@ public class SelectIndividualWalletDialogFragment extends BaseDialogFragment {
         return dialogFragment;
     }
 
-    public SelectIndividualWalletDialogFragment setOnItemClickListener(OnItemClickListener listener) {
+    public SelectWalletDialogFragment setOnItemClickListener(OnItemClickListener listener) {
         this.mListener = listener;
         return this;
     }
@@ -107,7 +106,7 @@ public class SelectIndividualWalletDialogFragment extends BaseDialogFragment {
                 0,
                 DensityUtil.dp2px(context, 2f));
 
-        selectWalletListAdapter = new SelectIndividualWalletListAdapter(R.layout.item_select_wallet_list, null, listWallet, getTag());
+        selectWalletListAdapter = new SelectWalletListAdapter(R.layout.item_select_wallet_list, null, listWallet, getTag());
         listWallet.setAdapter(selectWalletListAdapter);
 
         RxAdapterView.itemClicks(listWallet)
@@ -143,8 +142,6 @@ public class SelectIndividualWalletDialogFragment extends BaseDialogFragment {
                         return Flowable.fromIterable(individualWalletInfoEntities);
                     }
                 })
-                .compose(bindToLifecycle())
-                .subscribeOn(Schedulers.io())
                 .map(new Function<IndividualWalletInfoEntity, IndividualWalletEntity>() {
                     @Override
                     public IndividualWalletEntity apply(IndividualWalletInfoEntity walletInfoEntity) throws Exception {
@@ -160,6 +157,8 @@ public class SelectIndividualWalletDialogFragment extends BaseDialogFragment {
                 })
                 .toList()
                 .onErrorReturnItem(new ArrayList<>())
+                .compose(bindToLifecycle())
+                .compose(new SchedulersTransformer())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BiConsumer<List<IndividualWalletEntity>, Throwable>() {
                     @Override
@@ -168,19 +167,19 @@ public class SelectIndividualWalletDialogFragment extends BaseDialogFragment {
                             String uuid = getArguments().getString(Constants.Bundle.BUNDLE_UUID);
                             boolean needAmount = getArguments().getBoolean(Constants.Bundle.BUNDLE_FEE_AMOUNT);
                             List<IndividualWalletEntity> newWalletEntityList = new ArrayList<>();
-                            if (needAmount){
-                                for (IndividualWalletEntity walletEntity : objects){
-                                    if (walletEntity.getBalance() > 0){
+                            if (needAmount) {
+                                for (IndividualWalletEntity walletEntity : objects) {
+                                    if (walletEntity.getBalance() > 0) {
                                         newWalletEntityList.add(walletEntity);
                                     }
                                 }
-                            }else {
+                            } else {
                                 newWalletEntityList.addAll(objects);
                             }
                             Collections.sort(newWalletEntityList, new Comparator<WalletEntity>() {
                                 @Override
                                 public int compare(WalletEntity o1, WalletEntity o2) {
-                                    return Long.compare(o1.getUpdateTime(),  o2.getUpdateTime());
+                                    return Long.compare(o1.getUpdateTime(), o2.getUpdateTime());
                                 }
                             });
                             selectWalletListAdapter.notifyDataChanged(newWalletEntityList);

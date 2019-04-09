@@ -21,7 +21,6 @@ import com.juzix.wallet.entity.CandidateEntity;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.RegionEntity;
 import com.juzix.wallet.entity.SingleVoteEntity;
-import com.juzix.wallet.entity.TicketEntity;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.AppUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
@@ -47,7 +46,6 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -191,26 +189,7 @@ public class VoteManager {
         });
     }
 
-    public Map<String, List<String>> getBatchCandidateTicketIds(String nodeIds) {
-
-        Map<String, List<String>> map = new HashMap<>();
-
-        try {
-            Web3j web3j = Web3jManager.getInstance().getWeb3j();
-            TicketContract ticketContract = TicketContract.load(
-                    web3j,
-                    new ReadonlyTransactionManager(web3j, TicketContract.CONTRACT_ADDRESS),
-                    new DefaultWasmGasProvider());
-            String ticketIds = ticketContract.GetBatchCandidateTicketIds(nodeIds).send();
-            map = JSONUtil.parseObject(ticketIds, Map.class);
-        } catch (Exception exp) {
-            exp.printStackTrace();
-        }
-
-        return map;
-    }
-
-    public Single<Integer> getCandidateTicketIdsCounter(String nodeId) {
+    public Single<Integer> getCandidateTicketCount(String nodeId) {
 
         return Single.fromCallable(new Callable<Integer>() {
             @Override
@@ -220,8 +199,8 @@ public class VoteManager {
                         web3j,
                         new ReadonlyTransactionManager(web3j, TicketContract.CONTRACT_ADDRESS),
                         new DefaultWasmGasProvider());
-                String ticketIds = ticketContract.GetCandidateTicketIds(nodeId).send();
-                return JSONUtil.parseArray(ticketIds, String.class).size();
+                String ticketIds = ticketContract.GetCandidateTicketCount(nodeId).send();
+                return MapUtils.getInt(JSONUtil.parseObject(ticketIds, Map.class), nodeId);
             }
         }).onErrorReturnItem(0);
     }
@@ -318,111 +297,6 @@ public class VoteManager {
                         Log.e(TAG, "updateVoteTickets " + throwable.getMessage());
                     }
                 });
-    }
-
-    /**
-     * 分批获取投票详情
-     *
-     * @param ticketIds
-     * @return
-     */
-    public Single<Map<String, TicketEntity>> getTicketBatchDetail(String ticketIds) {
-
-        return Single.fromCallable(new Callable<String>() {
-            @Override
-            public String call() throws Exception {
-                Web3j web3j = Web3jManager.getInstance().getWeb3j();
-                TicketContract ticketContract = TicketContract.load(
-                        web3j,
-                        new ReadonlyTransactionManager(web3j, TicketContract.CONTRACT_ADDRESS),
-                        new DefaultWasmGasProvider());
-                return ticketContract.GetBatchTicketDetail(ticketIds).send();
-            }
-        }).map(new Function<String, List<TicketDto>>() {
-            @Override
-            public List<TicketDto> apply(String resp) throws Exception {
-                return JSONUtil.parseArray(resp, TicketDto.class);
-            }
-        })
-                .toFlowable()
-                .flatMap(new Function<List<TicketDto>, Publisher<TicketDto>>() {
-                    @Override
-                    public Publisher<TicketDto> apply(List<TicketDto> ticketDtos) throws Exception {
-                        return Flowable.fromIterable(ticketDtos);
-                    }
-                })
-                .map(new Function<TicketDto, TicketEntity>() {
-
-                    @Override
-                    public TicketEntity apply(TicketDto ticketDto) throws Exception {
-                        return new TicketEntity.Builder()
-                                .state(ticketDto.getState())
-                                .rBlockNumber(ticketDto.getRBlockNumber().longValue())
-                                .owner(ticketDto.getOwner())
-                                .deposit(ticketDto.getDeposit().toString())
-                                .candidateId(ticketDto.getCandidateId())
-                                .blockNumber(ticketDto.getBlockNumber().longValue())
-                                .ticketId(ticketDto.getTicketId())
-                                .build();
-                    }
-                })
-                .collect(new Callable<Map<String, TicketEntity>>() {
-                    @Override
-                    public Map<String, TicketEntity> call() throws Exception {
-                        return new HashMap<>();
-                    }
-                }, new BiConsumer<Map<String, TicketEntity>, TicketEntity>() {
-                    @Override
-                    public void accept(Map<String, TicketEntity> stringTicketEntityMap, TicketEntity ticketEntity) throws Exception {
-                        stringTicketEntityMap.put(ticketEntity.getTicketId(), ticketEntity);
-                    }
-                })
-                .onErrorReturnItem(new HashMap<>());
-    }
-
-    /**
-     * 获取投票详情
-     *
-     * @param ticketId
-     * @return
-     */
-    public Single<List<TicketEntity>> getTicketDetail(String ticketId) {
-
-        return Single.fromCallable(new Callable<String>() {
-            @Override
-            public String call() throws Exception {
-                Web3j web3j = Web3jManager.getInstance().getWeb3j();
-                TicketContract ticketContract = TicketContract.load(
-                        web3j,
-                        new ReadonlyTransactionManager(web3j, TicketContract.CONTRACT_ADDRESS),
-                        new DefaultWasmGasProvider());
-                return ticketContract.GetBatchTicketDetail(ticketId).send();
-            }
-        }).map(new Function<String, List<TicketDto>>() {
-            @Override
-            public List<TicketDto> apply(String resp) throws Exception {
-                return JSONUtil.parseArray(resp, TicketDto.class);
-            }
-        }).toFlowable().flatMap(new Function<List<TicketDto>, Publisher<TicketDto>>() {
-            @Override
-            public Publisher<TicketDto> apply(List<TicketDto> ticketDtos) throws Exception {
-                return Flowable.fromIterable(ticketDtos);
-            }
-        }).map(new Function<TicketDto, TicketEntity>() {
-            @Override
-            public TicketEntity apply(TicketDto ticketDto) throws Exception {
-                return new TicketEntity.Builder()
-                        .state(ticketDto.getState())
-                        .rBlockNumber(ticketDto.getRBlockNumber().longValue())
-                        .owner(ticketDto.getOwner())
-                        .deposit(ticketDto.getDeposit().toString())
-                        .candidateId(ticketDto.getCandidateId())
-                        .blockNumber(ticketDto.getBlockNumber().longValue())
-                        .ticketId(ticketDto.getTicketId())
-                        .build();
-            }
-        }).toList();
-
     }
 
     private Single<TransactionReceipt> voteTicket(Credentials credentials, String ticketPrice, String ticketNum, String candidateId) {

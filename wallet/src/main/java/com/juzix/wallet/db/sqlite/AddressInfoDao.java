@@ -1,9 +1,6 @@
 package com.juzix.wallet.db.sqlite;
 
-import android.text.TextUtils;
-
 import com.juzix.wallet.db.entity.AddressInfoEntity;
-import com.juzix.wallet.utils.JZWalletUtil;
 
 import java.util.ArrayList;
 
@@ -21,23 +18,47 @@ public class AddressInfoDao extends BaseDao {
     }
 
     public ArrayList<AddressInfoEntity> getAddressInfoList() {
-        ArrayList<AddressInfoEntity> list  = new ArrayList<>();
-        Realm                       realm = null;
+        ArrayList<AddressInfoEntity> list = new ArrayList<>();
+        Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
             RealmResults<AddressInfoEntity> results = realm.where(AddressInfoEntity.class).findAll();
             list.addAll(realm.copyFromRealm(results));
-        } catch (Exception exp){
+        } catch (Exception exp) {
             exp.printStackTrace();
             if (realm != null) {
                 realm.cancelTransaction();
             }
-        }finally {
+        } finally {
             if (realm != null) {
                 realm.close();
             }
         }
         return list;
+    }
+
+    public String getAddressNameByAddress(String address) {
+        String addressName = null;
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            AddressInfoEntity addressInfoEntity = realm.where(AddressInfoEntity.class)
+                    .equalTo("address", address)
+                    .findFirst();
+            if (addressInfoEntity != null) {
+                addressName = realm.copyFromRealm(addressInfoEntity).getName();
+            }
+        } catch (Exception exp) {
+            exp.printStackTrace();
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return addressName;
     }
 
     public boolean insertAddressInfo(AddressInfoEntity entity) {
@@ -108,7 +129,7 @@ public class AddressInfoDao extends BaseDao {
         }
     }
 
-    public boolean isExist(String address){ 
+    public boolean isExist(String address) {
         return getEntityWithAddress(address) != null;
     }
 
@@ -118,10 +139,10 @@ public class AddressInfoDao extends BaseDao {
             realm = Realm.getDefaultInstance();
             AddressInfoEntity entity = realm.where(AddressInfoEntity.class)
                     .equalTo("address", address).findFirst();
-            return  realm.copyFromRealm(entity);
+            return realm.copyFromRealm(entity);
         } catch (Exception e) {
             return null;
-        }finally {
+        } finally {
             if (realm != null) {
                 realm.close();
             }

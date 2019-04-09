@@ -272,7 +272,7 @@ public abstract class BaseDialogFragment extends DialogFragment implements Lifec
             layoutParams.width = fullWidthEnable ? WindowManager.LayoutParams.MATCH_PARENT : WindowManager.LayoutParams.WRAP_CONTENT;
             layoutParams.height = fullHeightEnable ? WindowManager.LayoutParams.MATCH_PARENT : WindowManager.LayoutParams.WRAP_CONTENT;
 
-            dialog.setCanceledOnTouchOutside(true);
+            dialog.setCanceledOnTouchOutside(false);
             dialog.setCancelable(true);
             dialog.getWindow().setGravity(gravity);
             dialog.getWindow().setWindowAnimations(animation);

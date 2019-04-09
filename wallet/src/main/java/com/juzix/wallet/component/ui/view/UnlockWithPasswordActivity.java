@@ -15,8 +15,7 @@ import android.widget.TextView;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.UnlockWithPasswordContract;
-import com.juzix.wallet.component.ui.dialog.SelectIndividualWalletDialogFragment;
-import com.juzix.wallet.component.ui.dialog.SelectWalletInfoDialogFragment;
+import com.juzix.wallet.component.ui.dialog.SelectWalletDialogFragment;
 import com.juzix.wallet.component.ui.presenter.UnlockWithPasswordPresenter;
 import com.juzix.wallet.component.widget.CommonTitleBar;
 import com.juzix.wallet.entity.IndividualWalletEntity;
@@ -97,13 +96,13 @@ public class UnlockWithPasswordActivity extends MVPBaseActivity<UnlockWithPasswo
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.layout_change_wallet:
-                SelectIndividualWalletDialogFragment.newInstance(mPresenter.getSelectedWallet().getUuid()).setOnItemClickListener(new SelectIndividualWalletDialogFragment.OnItemClickListener() {
+                SelectWalletDialogFragment.newInstance(mPresenter.getSelectedWallet().getUuid()).setOnItemClickListener(new SelectWalletDialogFragment.OnItemClickListener() {
                     @Override
                     public void onItemClick(IndividualWalletEntity walletEntity) {
                         mPresenter.setSelectWallet(walletEntity);
                     }
-                }).show(currentActivity().getSupportFragmentManager(), SelectIndividualWalletDialogFragment.SELECT_UNLOCK_WALLET);
-//                SelectIndividualWalletDialogFragment.newInstance(mPresenter.getSelectedPostion()).show(getSupportFragmentManager(), "selectWallet");
+                }).show(currentActivity().getSupportFragmentManager(), SelectWalletDialogFragment.SELECT_UNLOCK_WALLET);
+//                SelectWalletDialogFragment.newInstance(mPresenter.getSelectedPostion()).show(getSupportFragmentManager(), "selectWallet");
                 break;
             case R.id.btn_unlock:
                 mPresenter.unlock(etWalletPassword.getText().toString());

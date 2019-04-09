@@ -41,7 +41,7 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
 
     private final static String TAG = VotePresenter.class.getSimpleName();
     private final static int MAX_TICKET_POOL_SIZE = 51200;
-    private final static int DEFAULT_VOTE_NUM = 100;
+    private final static int DEFAULT_VOTE_NUM = 512;
     private final static int DEFAULT_DEPOSIT_RANKING = 100;
     private static final int REFRESH_TIME = 5000;
 
@@ -199,39 +199,27 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
     }
 
     private List<CandidateEntity> getDefaultCandidateEntityList(List<CandidateEntity> candidateEntityList, List<CandidateEntity> verifiersList) {
-        List<CandidateEntity> candidateList = new ArrayList<>();
-        List<CandidateEntity> alternativeList = new ArrayList<>();
-        if (candidateEntityList != null) {
-            for (int i = 0; i < candidateEntityList.size(); i++) {
-                //剔除排名200后的节点
-                if (i < 2 * DEFAULT_DEPOSIT_RANKING) {
-                    CandidateEntity entity = candidateEntityList.get(i);
-                    entity.setStakedRanking(i + 1);
-                    if (i < DEFAULT_DEPOSIT_RANKING && entity.getVotedNum() >= DEFAULT_VOTE_NUM) {
-                        entity.setStatus(CandidateEntity.STATUS_CANDIDATE);
-                        candidateList.add(entity);
-                    } else {
-                        entity.setStatus(CandidateEntity.STATUS_RESERVE);
-                        alternativeList.add(entity);
-                    }
-                }
-            }
-        }
-        //加入不在候选池中，就添加到候选池列表后面
-        candidateList.addAll(getVerifiersList(candidateList, alternativeList, verifiersList));
-        candidateList.addAll(alternativeList);
-        return candidateList;
-    }
+        //全量提名节点
+        List<CandidateEntity> allCandidateList = getAllCandidateList(candidateEntityList);
+        //全量候选节点
+        List<CandidateEntity> allAlternativeList = getAllReserveList(candidateEntityList);
 
-    private List<CandidateEntity> getVerifiersList(List<CandidateEntity> candidateEntityList, List<CandidateEntity> alternativeList, List<CandidateEntity> verifiersList) {
-        List<CandidateEntity> candidateEntities = new ArrayList<>();
-        for (CandidateEntity candidateEntity : verifiersList) {
-            if (!candidateEntityList.contains(candidateEntity) && !alternativeList.contains(candidateEntity)) {
-                candidateEntities.add(candidateEntity);
-            }
-        }
+        //不在池子中的验证节点
+        List<CandidateEntity> absentVerifiersList = getAbsentVerifiersList(allCandidateList, allAlternativeList, verifiersList);
+        //在池子中的验证节点
+        List<CandidateEntity> inVerifiersList = verifiersList;
+        //剔除掉验证节点的提名节点列表
+        List<CandidateEntity> partCandidateList = getCandidateList(allCandidateList, verifiersList);
+        //剔除掉验证节点的候选节点列表
+        List<CandidateEntity> partReserveList = getReserveList(allAlternativeList, verifiersList);
 
-        return candidateEntities;
+        //排序顺序为：验证节点(在池子中)+提名节点+验证人节点(不在池子中)+候选节点
+        inVerifiersList.removeAll(absentVerifiersList);
+        inVerifiersList.addAll(partCandidateList);
+        inVerifiersList.addAll(absentVerifiersList);
+        inVerifiersList.addAll(partReserveList);
+
+        return inVerifiersList;
     }
 
     private void showCandidateList(String keyWord, SortType sortType) {
@@ -253,6 +241,127 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
                 getView().notifyDataSetChanged(candidateEntities);
             }
         }
+    }
+
+    /**
+     * 获取全量的提名节点列表
+     *
+     * @param candidateEntityList
+     * @return
+     */
+    private List<CandidateEntity> getAllCandidateList(List<CandidateEntity> candidateEntityList) {
+        List<CandidateEntity> candidateList = new ArrayList<>();
+        if (candidateEntityList == null || candidateEntityList.isEmpty()) {
+            return candidateList;
+        }
+        CandidateEntity entity = null;
+        for (int i = 0; i < candidateEntityList.size(); i++) {
+            //剔除排名200后的节点
+            entity = candidateEntityList.get(i);
+            if (i < 2 * DEFAULT_DEPOSIT_RANKING) {
+                entity.setStakedRanking(i + 1);
+                if (i < DEFAULT_DEPOSIT_RANKING && entity.getVotedNum() >= DEFAULT_VOTE_NUM) {
+                    entity.setStatus(CandidateEntity.CandidateStatus.STATUS_CANDIDATE);
+                    candidateList.add(entity);
+                }
+            }
+        }
+
+        return candidateList;
+    }
+
+    /**
+     * 获取全量的候选节点
+     *
+     * @param candidateEntityList
+     * @return
+     */
+    private List<CandidateEntity> getAllReserveList(List<CandidateEntity> candidateEntityList) {
+        List<CandidateEntity> reserveList = new ArrayList<>();
+        if (candidateEntityList == null || candidateEntityList.isEmpty()) {
+            return reserveList;
+        }
+        CandidateEntity entity = null;
+        for (int i = 0; i < candidateEntityList.size(); i++) {
+            //剔除排名200后的节点
+            entity = candidateEntityList.get(i);
+            if (i < 2 * DEFAULT_DEPOSIT_RANKING) {
+                entity.setStakedRanking(i + 1);
+                if (i >= DEFAULT_DEPOSIT_RANKING || entity.getVotedNum() < DEFAULT_VOTE_NUM) {
+                    entity.setStatus(CandidateEntity.CandidateStatus.STATUS_RESERVE);
+                    reserveList.add(entity);
+                }
+            }
+        }
+        return reserveList;
+    }
+
+    /**
+     * 获取提名节点列表，剔除掉验证节点
+     *
+     * @param candidateList
+     * @param verifyList
+     * @return
+     */
+    private List<CandidateEntity> getCandidateList(List<CandidateEntity> candidateList, List<CandidateEntity> verifyList) {
+        if (verifyList == null || verifyList.isEmpty() || candidateList == null || candidateList.isEmpty()) {
+            return candidateList;
+        }
+        List<CandidateEntity> tempCandidateList = new ArrayList<>();
+
+        for (CandidateEntity candidateEntity : candidateList) {
+            if (verifyList.contains(candidateEntity)) {
+                tempCandidateList.add(candidateEntity);
+            }
+        }
+        candidateList.removeAll(tempCandidateList);
+        return candidateList;
+    }
+
+    /**
+     * 获取候选节点列表，剔除掉验证节点
+     *
+     * @param reserveList
+     * @param verifyList
+     * @return
+     */
+    private List<CandidateEntity> getReserveList(List<CandidateEntity> reserveList, List<CandidateEntity> verifyList) {
+
+        if (verifyList == null || verifyList.isEmpty() || reserveList == null || reserveList.isEmpty()) {
+            return reserveList;
+        }
+        List<CandidateEntity> tempReserveList = new ArrayList<>();
+
+        for (CandidateEntity candidateEntity : reserveList) {
+            if (verifyList.contains(candidateEntity)) {
+                tempReserveList.add(candidateEntity);
+            }
+        }
+        reserveList.removeAll(tempReserveList);
+
+        return reserveList;
+    }
+
+    /**
+     * 获取不在池子中的验证节点列表，要放在提名节点的后面
+     *
+     * @param candidateList
+     * @param reserveList
+     * @param verifyList
+     * @return
+     */
+    private List<CandidateEntity> getAbsentVerifiersList(List<CandidateEntity> candidateList, List<CandidateEntity> reserveList, List<CandidateEntity> verifyList) {
+        List<CandidateEntity> absentVerifiersList = new ArrayList<>();
+        if (verifyList == null || verifyList.isEmpty()) {
+            return absentVerifiersList;
+        }
+        for (CandidateEntity candidateEntity : verifyList) {
+            if (candidateList.contains(candidateEntity) || reserveList.contains(candidateEntity)) {
+                continue;
+            }
+            absentVerifiersList.add(candidateEntity);
+        }
+        return absentVerifiersList;
     }
 
     private List<CandidateEntity> getSearchResult(String keyWord, List<CandidateEntity> candidateEntityList) {

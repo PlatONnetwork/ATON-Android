@@ -41,7 +41,6 @@
             android:layout_marginLeft="18dp"
             android:layout_marginTop="20dp"
             android:layout_marginRight="18dp"
-            android:layout_marginBottom="8dp"
             app:text="@string/understood"
             app:textAppearance="@style/MainButtonStyle"
             app:textBackground="@drawable/bg_main_button" />
@@ -49,7 +48,11 @@
         <TextView
             android:id="@+id/text_cancel"
             style="@style/Text.316def.14"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
             android:layout_marginBottom="16dp"
+            android:gravity="center_horizontal|top"
+            android:paddingTop="8dp"
             tools:text="No" />
 
     </LinearLayout>

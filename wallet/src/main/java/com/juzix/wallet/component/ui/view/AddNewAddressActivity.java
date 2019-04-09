@@ -6,21 +6,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
-import android.widget.Button;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding3.view.RxView;
+import com.jakewharton.rxbinding3.widget.RxTextView;
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.ClickTransformer;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.AddNewAddressContract;
 import com.juzix.wallet.component.ui.presenter.AddNewAddressPresenter;
 import com.juzix.wallet.component.widget.CommonTitleBar;
+import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.config.PermissionConfigure;
 import com.juzix.wallet.entity.AddressEntity;
 
@@ -29,8 +30,10 @@ import java.util.List;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.reactivex.Observable;
+import io.reactivex.functions.BiFunction;
+import io.reactivex.functions.Consumer;
 
 /**
  * @author matrixelement
@@ -48,11 +51,11 @@ public class AddNewAddressActivity extends MVPBaseActivity<AddNewAddressPresente
     @BindView(R.id.tv_address_error)
     TextView tvAddressError;
     @BindString(R.string.add_new_address)
-    String   addNewAddressTitle;
+    String addNewAddressTitle;
     @BindString(R.string.edit_address)
-    String   editAddress;
-    @BindView(R.id.btn_add_address)
-    Button   btnAddAddress;
+    String editAddress;
+    @BindView(R.id.sbtn_add_address)
+    ShadowButton sbtnAddAddress;
     @BindView(R.id.commonTitleBar)
     CommonTitleBar commonTitleBar;
 
@@ -66,80 +69,66 @@ public class AddNewAddressActivity extends MVPBaseActivity<AddNewAddressPresente
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_add_new_address);
         unbinder = ButterKnife.bind(this);
         initViews();
         mPresenter.loadAddressInfo();
     }
 
-    @OnClick({R.id.btn_add_address, R.id.iv_address_scan})
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.btn_add_address:
-                hideSoftInput();
-                mPresenter.addAddress();
-                break;
-            case R.id.iv_address_scan:
-                hideSoftInput();
-                requestPermission(AddNewAddressActivity.this, 100, new PermissionConfigure.PermissionCallback() {
-                    @Override
-                    public void onSuccess(int what, @NonNull List<String> grantPermissions) {
-                        ScanQRCodeActivity.startActivityForResult(AddNewAddressActivity.this, Constants.RequestCode.REQUEST_CODE_SCAN_QRCODE);
-                    }
-
-                    @Override
-                    public void onHasPermission(int what) {
-                        ScanQRCodeActivity.startActivityForResult(AddNewAddressActivity.this, Constants.RequestCode.REQUEST_CODE_SCAN_QRCODE);
-                    }
-
-                    @Override
-                    public void onFail(int what, @NonNull List<String> deniedPermissions) {
-
-                    }
-                }, Manifest.permission.CAMERA);
-                break;
-        }
-    }
-
     private void initViews() {
 
-        etAddress.addTextChangedListener(new TextWatcher() {
+        Observable.combineLatest(RxTextView.textChanges(etAddress).skipInitialValue(), RxTextView.textChanges(etAddressName).skipInitialValue(), new BiFunction<CharSequence, CharSequence, Boolean>() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+            public Boolean apply(CharSequence address, CharSequence addressName) throws Exception {
+                return mPresenter.checkAddress(address.toString()) && mPresenter.checkAddressName(addressName.toString());
             }
+        }).compose(bindToLifecycle())
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean enabled) throws Exception {
+                        sbtnAddAddress.setEnabled(enabled);
+                    }
+                });
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                mPresenter.checkAddress(s.toString());
-                mPresenter.updateAddNewAddressButtonStatus();
-            }
+        RxView.clicks(sbtnAddAddress)
+                .compose(new ClickTransformer())
+                .compose(bindToLifecycle())
+                .subscribe(new Consumer() {
+                    @Override
+                    public void accept(Object o) throws Exception {
+                        hideSoftInput();
+                        mPresenter.addAddress();
+                    }
+                });
 
-            @Override
-            public void afterTextChanged(Editable s) {
+        RxView.clicks(ivAddressScan)
+                .compose(new ClickTransformer())
+                .compose(bindToLifecycle())
+                .subscribe(new Consumer() {
+                    @Override
+                    public void accept(Object o) throws Exception {
+                        hideSoftInput();
+                        requestPermission(AddNewAddressActivity.this, 100, new PermissionConfigure.PermissionCallback() {
+                            @Override
+                            public void onSuccess(int what, @NonNull List<String> grantPermissions) {
+                                ScanQRCodeActivity.startActivityForResult(AddNewAddressActivity.this, Constants.RequestCode.REQUEST_CODE_SCAN_QRCODE);
+                            }
 
-            }
-        });
+                            @Override
+                            public void onHasPermission(int what) {
+                                ScanQRCodeActivity.startActivityForResult(AddNewAddressActivity.this, Constants.RequestCode.REQUEST_CODE_SCAN_QRCODE);
+                            }
 
-        etAddressName.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                            @Override
+                            public void onFail(int what, @NonNull List<String> deniedPermissions) {
 
-            }
+                            }
+                        }, Manifest.permission.CAMERA);
+                    }
+                });
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                mPresenter.checkAddressName(s.toString());
-                mPresenter.updateAddNewAddressButtonStatus();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        if (getIntent().hasExtra(Constants.Extra.EXTRA_SCAN_QRCODE_DATA)){
+        if (getIntent().hasExtra(Constants.Extra.EXTRA_SCAN_QRCODE_DATA)) {
             etAddress.setText(getIntent().getStringExtra(Constants.Extra.EXTRA_SCAN_QRCODE_DATA));
         }
     }
@@ -209,14 +198,12 @@ public class AddNewAddressActivity extends MVPBaseActivity<AddNewAddressPresente
 
     @Override
     public void setBottonBtnText(String text) {
-        btnAddAddress.setText(text);
+        sbtnAddAddress.setText(text);
     }
 
     @Override
-    public void setAddNewAddressButtonEnable(boolean enable) {
-        btnAddAddress.setEnabled(enable);
-        btnAddAddress.setBackgroundResource(enable ? R.drawable.bg_shape_button2 : R.drawable.bg_shape_button1);
-        btnAddAddress.setTextColor(ContextCompat.getColor(getContext(), enable ? R.color.color_f6f6f6 : R.color.color_d8d8d8));
+    public void showAddress(String address) {
+        etAddress.setText(address);
     }
 
     public static void actionStartWithExtraForResult(Context context, AddressEntity addressEntity) {
@@ -239,8 +226,4 @@ public class AddNewAddressActivity extends MVPBaseActivity<AddNewAddressPresente
         finish();
     }
 
-    @Override
-    public void showAddress(String address) {
-        etAddress.setText(address);
-    }
 }

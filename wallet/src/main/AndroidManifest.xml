@@ -85,14 +85,6 @@
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".component.ui.view.IndividualReceiveTransationActivity"
-            android:launchMode="standard"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".component.ui.view.SharedReceiveTransationActivity"
-            android:launchMode="standard"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".component.ui.view.SelectAddressActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait"

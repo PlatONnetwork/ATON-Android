@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.juzix.wallet.R;
 import com.juzix.wallet.utils.JSONUtil;
 
 import org.web3j.utils.Numeric;
@@ -15,9 +16,6 @@ import org.web3j.utils.Numeric;
 public class CandidateEntity implements Cloneable, Parcelable {
 
     private final static long UPDATE_REGION_TIME_MILLS = 60 * 1000;
-
-    public static final int STATUS_CANDIDATE = 1;
-    public static final int STATUS_RESERVE = 2;
 
     /**
      * 质押金额 (单位：ADP)
@@ -82,7 +80,7 @@ public class CandidateEntity implements Cloneable, Parcelable {
     /**
      * 状态
      */
-    private int status;
+    private CandidateStatus status;
     /**
      * 质押排名
      */
@@ -127,7 +125,7 @@ public class CandidateEntity implements Cloneable, Parcelable {
         setTxHash(in.readString());
         setExtra(in.readString());
         setVotedNum(in.readLong());
-        setStatus(in.readInt());
+        setStatus(in.readParcelable(CandidateStatus.class.getClassLoader()));
         setStakedRanking(in.readInt());
         setRegionEntity(in.readParcelable(RegionEntity.class.getClassLoader()));
     }
@@ -146,7 +144,7 @@ public class CandidateEntity implements Cloneable, Parcelable {
         dest.writeString(getTxHash());
         dest.writeString(getExtra());
         dest.writeLong(getVotedNum());
-        dest.writeInt(getStatus());
+        dest.writeParcelable(status, flags);
         dest.writeInt(getStakedRanking());
         dest.writeParcelable(getRegionEntity(), flags);
     }
@@ -247,11 +245,11 @@ public class CandidateEntity implements Cloneable, Parcelable {
         this.votedNum = votedNum;
     }
 
-    public int getStatus() {
+    public CandidateStatus getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(CandidateStatus status) {
         this.status = status;
     }
 
@@ -338,7 +336,7 @@ public class CandidateEntity implements Cloneable, Parcelable {
         private String txHash;
         private String extra;
         private long votedNum;
-        private int status;
+        private CandidateStatus status;
         private int stakedRanking;
         private RegionEntity regionEntity;
 
@@ -405,7 +403,7 @@ public class CandidateEntity implements Cloneable, Parcelable {
             return this;
         }
 
-        public Builder status(int status) {
+        public Builder status(CandidateStatus status) {
             this.status = status;
             return this;
         }
@@ -455,5 +453,49 @@ public class CandidateEntity implements Cloneable, Parcelable {
         CandidateExtraEntity candidateExtraEntity = getCandidateExtraEntity();
         return candidateExtraEntity != null ? candidateExtraEntity.getNodeName() : "";
 
+    }
+
+    public enum CandidateStatus implements Parcelable {
+
+        STATUS_CANDIDATE {
+            @Override
+            public int getStatusDescRes() {
+                return R.string.candidate;
+            }
+        }, STATUS_RESERVE {
+            @Override
+            public int getStatusDescRes() {
+                return R.string.alternative;
+            }
+        }, STATUS_VERIFY {
+            @Override
+            public int getStatusDescRes() {
+                return R.string.validator;
+            }
+        };
+
+        public static final Creator<CandidateStatus> CREATOR = new Creator<CandidateStatus>() {
+            @Override
+            public CandidateStatus createFromParcel(Parcel in) {
+                return CandidateStatus.values()[in.readInt()];
+            }
+
+            @Override
+            public CandidateStatus[] newArray(int size) {
+                return new CandidateStatus[size];
+            }
+        };
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(ordinal());
+        }
+
+        public abstract int getStatusDescRes();
     }
 }

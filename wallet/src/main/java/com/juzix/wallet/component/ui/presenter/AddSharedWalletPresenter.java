@@ -8,7 +8,7 @@ import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.AddSharedWalletContract;
-import com.juzix.wallet.component.ui.dialog.SelectIndividualWalletDialogFragment;
+import com.juzix.wallet.component.ui.dialog.SelectWalletDialogFragment;
 import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.engine.SharedWalletManager;
 import com.juzix.wallet.engine.SharedWalletTransactionManager;
@@ -122,13 +122,13 @@ public class AddSharedWalletPresenter extends BasePresenter<AddSharedWalletContr
     @Override
     public void showSelectOwnerDialogFragment() {
         if (isViewAttached()) {
-            SelectIndividualWalletDialogFragment.newInstance(walletEntity == null ? "" : walletEntity.getUuid())
-                    .setOnItemClickListener(new SelectIndividualWalletDialogFragment.OnItemClickListener() {
+            SelectWalletDialogFragment.newInstance(walletEntity == null ? "" : walletEntity.getUuid())
+                    .setOnItemClickListener(new SelectWalletDialogFragment.OnItemClickListener() {
                         @Override
                         public void onItemClick(IndividualWalletEntity walletEntity) {
                             updateSelectOwner(walletEntity);
                         }
-                    }).show(currentActivity().getSupportFragmentManager(), SelectIndividualWalletDialogFragment.SELECT_SHARED_WALLET_OWNER);
+                    }).show(currentActivity().getSupportFragmentManager(), SelectWalletDialogFragment.SELECT_SHARED_WALLET_OWNER);
         }
     }
 

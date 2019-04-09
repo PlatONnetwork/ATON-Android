@@ -7,7 +7,7 @@ import com.juzhen.framework.util.NumberParserUtils;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.adapter.base.ViewHolder;
-import com.juzix.wallet.component.ui.dialog.SelectIndividualWalletDialogFragment;
+import com.juzix.wallet.component.ui.dialog.SelectWalletDialogFragment;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 
 import java.util.List;
@@ -15,12 +15,12 @@ import java.util.List;
 /**
  * @author matrixelement
  */
-public class SelectIndividualWalletListAdapter extends CommonAdapter<IndividualWalletEntity> {
+public class SelectWalletListAdapter extends CommonAdapter<IndividualWalletEntity> {
 
     private ListView listView;
     private String action;
 
-    public SelectIndividualWalletListAdapter(int layoutId, List<IndividualWalletEntity> datas, ListView listView, String action) {
+    public SelectWalletListAdapter(int layoutId, List<IndividualWalletEntity> datas, ListView listView, String action) {
         super(layoutId, datas);
         this.listView = listView;
         this.action = action;
@@ -48,6 +48,6 @@ public class SelectIndividualWalletListAdapter extends CommonAdapter<IndividualW
     }
 
     private boolean isEnabled(IndividualWalletEntity item) {
-        return !((SelectIndividualWalletDialogFragment.CREATE_SHARED_WALLET.equals(action) || SelectIndividualWalletDialogFragment.SELECT_TRANSACTION_WALLET.equals(action)) && item.getBalance() == 0);
+        return !((SelectWalletDialogFragment.CREATE_SHARED_WALLET.equals(action) || SelectWalletDialogFragment.SELECT_TRANSACTION_WALLET.equals(action)) && item.getBalance() == 0);
     }
 }

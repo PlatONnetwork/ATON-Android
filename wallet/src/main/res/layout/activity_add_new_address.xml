@@ -103,22 +103,17 @@
     </LinearLayout>
 
 
-    <Button
-        android:id="@+id/btn_add_address"
+    <com.juzix.wallet.component.widget.ShadowButton
+        android:id="@+id/sbtn_add_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="32dp"
-        android:background="@drawable/bg_shape_button1"
-        android:fontFamily="normal"
-        android:gravity="center"
-        android:paddingTop="13dp"
-        android:paddingBottom="13dp"
-        android:text="@string/add"
-        android:textAllCaps="false"
-        android:textColor="@color/color_d8d8d8"
-        android:textSize="16sp" />
-
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="24dp"
+        app:enabled="false"
+        app:text="@string/add"
+        app:textAppearance="@style/MainButtonStyle"
+        app:textBackground="@drawable/bg_main_button" />
 
 </LinearLayout>

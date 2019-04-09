@@ -52,15 +52,16 @@
     <ListView
         android:id="@+id/list_vote_detail"
         style="@style/List_common_style"
+        android:layout_height="0dp"
         android:divider="@drawable/divider_vote_list"
         android:dividerHeight="1dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layout_node_name"
         tools:listitem="@layout/item_vote_detail_list" />
-
 
 </android.support.constraint.ConstraintLayout>
 

@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.CreateSharedWalletContract;
-import com.juzix.wallet.component.ui.dialog.SelectIndividualWalletDialogFragment;
+import com.juzix.wallet.component.ui.dialog.SelectWalletDialogFragment;
 import com.juzix.wallet.component.ui.view.CreateSharedWalletSecondStepActivity;
 import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.engine.IndividualWalletManager;
@@ -39,13 +39,13 @@ public class CreateSharedWalletPresenter extends BasePresenter<CreateSharedWalle
     @Override
     public void showSelectWalletDialogFragment() {
         if (isViewAttached()) {
-            SelectIndividualWalletDialogFragment.newInstance(walletEntity == null ? "" : walletEntity.getUuid(), true)
-                    .setOnItemClickListener(new SelectIndividualWalletDialogFragment.OnItemClickListener() {
+            SelectWalletDialogFragment.newInstance(walletEntity == null ? "" : walletEntity.getUuid(), true)
+                    .setOnItemClickListener(new SelectWalletDialogFragment.OnItemClickListener() {
                         @Override
                         public void onItemClick(IndividualWalletEntity walletEntity) {
                             updateSelectOwner(walletEntity);
                         }
-                    }).show(currentActivity().getSupportFragmentManager(), SelectIndividualWalletDialogFragment.CREATE_SHARED_WALLET);
+                    }).show(currentActivity().getSupportFragmentManager(), SelectWalletDialogFragment.CREATE_SHARED_WALLET);
         }
     }
 

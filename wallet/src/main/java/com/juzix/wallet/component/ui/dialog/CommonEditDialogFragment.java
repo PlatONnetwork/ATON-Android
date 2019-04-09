@@ -137,6 +137,8 @@ public class CommonEditDialogFragment extends DialogFragment {
             getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
             dialog.getWindow().setLayout((int) (dm.widthPixels * 0.75), ViewGroup.LayoutParams.WRAP_CONTENT);
             dialog.getWindow().setWindowAnimations(R.style.Animation_CommonDialog);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.setCancelable(true);
         }
     }
 
