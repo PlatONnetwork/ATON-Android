@@ -21,20 +21,15 @@ public class CustomProgressBar extends ProgressBar {
     private              Context            mContext;
     private              Paint              mPaint;
     private              PorterDuffXfermode mPorterDuffXfermode;
-    private              int  mProgress;
-//    private              int    mState;
-    private              String mText;
-    private              int    mIconRes;
-    private static final int    COLOR_DEFAULT        = R.color.color_105cfe;
-    private static final int    COLOR_LOADING        = R.color.color_999999;
-    private static final int    COLOR_LOADINGXFERMODE        = R.color.color_105cfe;
-    // IconTextProgressBar的状态
-//    public static final int    STATE_DEFAULT        = 101;
-//    public static final int    STATE_LOADING        = 102;
-    // IconTextProgressBar的文字大小(sp)
-    private static final float  TEXT_SIZE_SP         = 12f;
-    // IconTextProgressBar的图标与文字间距(dp)
-    private static final float  ICON_TEXT_SPACING_DP = 5f;
+    private              int                mProgress;
+    private              String             mText;
+    private              int                mDefaultIconRes;
+    private              int                mLoadingIconRes;
+    private static final int                COLOR_DEFAULT        = R.color.color_105cfe;
+    private static final int                COLOR_LOADING        = R.color.color_999999;
+    private static final int                COLOR_LOADINGXFERMODE        = R.color.color_105cfe;
+    private static final float              TEXT_SIZE_SP         = 12f;
+    private static final float              ICON_TEXT_SPACING_DP = 5f;
 
     public CustomProgressBar(Context context) {
         super(context, null, android.R.attr.progressBarStyleHorizontal);
@@ -48,36 +43,13 @@ public class CustomProgressBar extends ProgressBar {
         init();
     }
 
-    public synchronized void setProgress(int progress, String text, int iconRes) {
+    public synchronized void setProgress(int progress, String text, int defaultIconRes, int loadingIconRes) {
         super.setProgress(progress);
-        mProgress = progress >= 100 ? 100 : progress;
+        mProgress = progress > 100 ? 100 : progress;
         mText = text;
-        mIconRes = iconRes;
+        mDefaultIconRes = defaultIconRes;
+        mLoadingIconRes = loadingIconRes;
         invalidate();
-    }
-
-    /**
-     * 文本
-     */
-    public synchronized void setText(String text) {
-        mText = text;
-        invalidate();
-    }
-
-    /**
-     * 文本
-     */
-    public synchronized void setIcon(int iconRes) {
-        mIconRes = iconRes;
-        invalidate();
-    }
-
-    /**
-     * 设置下载进度
-     */
-    public synchronized void setProgress(int progress) {
-        mProgress = progress >= 100 ? 100 : progress;
-        super.setProgress(mProgress);
     }
 
     @Override
@@ -88,8 +60,6 @@ public class CustomProgressBar extends ProgressBar {
 
     private void init() {
         setIndeterminate(false);
-        setIndeterminateDrawable(ContextCompat.getDrawable(mContext, android.R.drawable.progress_indeterminate_horizontal));
-        setProgressDrawable(ContextCompat.getDrawable(mContext, R.drawable.pb_shape_load));
         setMax(100);
         mPaint = new Paint();
         mPaint.setDither(true);
@@ -98,7 +68,6 @@ public class CustomProgressBar extends ProgressBar {
         mPaint.setTextAlign(Paint.Align.LEFT);
         mPaint.setTextSize(AndroidUtil.sp2px(mContext, TEXT_SIZE_SP));
         mPaint.setTypeface(Typeface.MONOSPACE);
-
         mPorterDuffXfermode = new PorterDuffXfermode(PorterDuff.Mode.SRC_IN);
     }
 
@@ -113,10 +82,11 @@ public class CustomProgressBar extends ProgressBar {
         Rect textRect = new Rect();
         mPaint.getTextBounds(text, 0, text.length(), textRect);
         // 绘制图标和文字
-        Bitmap icon = BitmapFactory.decodeResource(getResources(), mIconRes);
+        Bitmap defaultIcon = BitmapFactory.decodeResource(getResources(), mDefaultIconRes);
+        Bitmap loadingIcon = BitmapFactory.decodeResource(getResources(), mLoadingIconRes);
         float iconX = AndroidUtil.dip2px(mContext, ICON_TEXT_SPACING_DP);
-        float iconY = (getHeight() / 2) - icon.getHeight() / 2;
-        float textX = icon.getWidth() + 2 * iconX;
+        float iconY = (getHeight() / 2) - defaultIcon.getHeight() / 2;
+        float textX = defaultIcon.getWidth() + 2 * iconX;
         float textY = (getHeight() / 2) - textRect.centerY();
         float maxWidth = getWidth() - textX - iconX;
         String newText = text;
@@ -127,28 +97,37 @@ public class CustomProgressBar extends ProgressBar {
                 newText = text.substring(0, subIndex - 2) + "...";
             }
         }
-        canvas.drawBitmap(icon, iconX, iconY, mPaint);
         canvas.drawText(newText, textX, textY, mPaint);
-
-        if (mProgress == 100) return;
+        if (mProgress == 100) {
+            canvas.drawBitmap(loadingIcon, iconX, iconY, mPaint);
+            return;
+        }else {
+            canvas.drawBitmap(defaultIcon, iconX, iconY, mPaint);
+        }
 
         Bitmap bufferBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
         Canvas bufferCanvas = new Canvas(bufferBitmap);
-        bufferCanvas.drawBitmap(icon, iconX, iconY, mPaint);
         bufferCanvas.drawText(newText, textX, textY, mPaint);
         // 设置混合模式
         mPaint.setXfermode(mPorterDuffXfermode);
         mPaint.setColor(ContextCompat.getColor(mContext, COLOR_LOADINGXFERMODE));
-        RectF rectF = new RectF(0, 0, getWidth() * mProgress / 100, getHeight());
-        // 绘制源图形
+        int right = getWidth() * mProgress / 100;
+        RectF rectF = new RectF(0, 0, right, getHeight());
         bufferCanvas.drawRect(rectF, mPaint);
-        // 绘制目标图
         canvas.drawBitmap(bufferBitmap, 0, 0, null);
-        // 清除混合模式
         mPaint.setXfermode(null);
-
-        if (!icon.isRecycled()) {
-            icon.isRecycled();
+        int r = (int)(right - iconX);
+        int b = loadingIcon.getHeight();
+        if (r > iconX) {
+            Rect  srcRcet1 = new Rect(0, 0, r, b);
+            RectF dstRcet1 = new RectF(iconX, iconY, r + iconX, b + iconY);
+            canvas.drawBitmap(loadingIcon, srcRcet1, dstRcet1, mPaint);
+        }
+        if (!defaultIcon.isRecycled()) {
+            defaultIcon.isRecycled();
+        }
+        if (!loadingIcon.isRecycled()) {
+            loadingIcon.isRecycled();
         }
         if (!bufferBitmap.isRecycled()) {
             bufferBitmap.recycle();

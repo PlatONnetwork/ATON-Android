@@ -27,6 +27,8 @@ public class AddressBookListAdapter extends CommonAdapter<AddressEntity> {
             int avatar = RUtils.drawable(item.getAvatar());
             if (avatar != -1) {
                 viewHolder.setImageResource(R.id.iv_wallet_avatar, avatar);
+            }else {
+                viewHolder.setImageResource(R.id.iv_wallet_avatar, R.drawable.avatar_1);
             }
         }
     }

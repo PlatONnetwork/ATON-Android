@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -435,12 +436,12 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
     @Override
     public void showTotalBalance(double totalBalance) {
-        tvTotalAssetsAmount.setText(NumberParserUtils.getPrettyBalance(totalBalance));
+        tvTotalAssetsAmount.setText(totalBalance > 0 ? NumberParserUtils.getPrettyBalance(totalBalance) : "0.00");
     }
 
     @Override
     public void showBalance(double balance) {
-        tvWalletAmount.setText(NumberParserUtils.getPrettyBalance(balance));
+        tvWalletAmount.setText(balance > 0 ? NumberParserUtils.getPrettyBalance(balance) : "0.00");
     }
 
     @Override

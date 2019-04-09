@@ -75,13 +75,13 @@
     <string name="nameOfAddress">Address of wallet</string>
     <string name="importMnemonicPhraseResume">Input the Mnemonic phrase. Please pay attention to case sensitivity and sequence.</string>
     <string name="inputMnemonicPhraseTips">Please separate each Mnemonic Phrase with a space</string>
-    <string name="importPrivateKeyResume">Input the Private Key, or scan the Qr Code generated with Private Key to import. Please pay attention to case sensitivity.</string>
+    <string name="importPrivateKeyResume">Input the Private Key, or scan the QR Code generated with Private Key to import. Please pay attention to case sensitivity.</string>
     <string name="inputPrivateKeyTips">Enter Private Key</string>
     <string name="backupWallet">Backup Wallet</string>
     <string name="backupMnemonic">Backup Mnemonic</string>
     <string name="create_success">Success</string>
     <string name="backupWalletDescription">One last step，Back it up</string>
-    <string name="backupWalletResume">Mnemonic phrase consist of 12 common English words converted from 64-bit private keys by algorithm. Please write down the words on paper and keep them in a safe place. </string>
+    <string name="backupWalletResume">Mnemonic phrase consist of 12 common English words converted from 64-bit private key by algorithm. Please write down the words on paper and keep them in a safe place. </string>
     <string name="startBackup">Start to backup</string>
     <string name="InputWalletPassword">Input wallet password</string>
     <string name="cancel">Cancel</string>
@@ -92,13 +92,13 @@
     <string name="backupKeystore">Please keep the Keystore to prevent theft of assets.</string>
     <string name="understood">Understood</string>
     <string name="understood1">OK</string>
-    <string name="backupMnemonicTitle">Please write down the Mnemonics in the paper</string>
+    <string name="backupMnemonicTitle">Please write down the Mnemonics on the paper</string>
     <string name="backupMnemonicDescrition">Those 12 mnemonic words are for recovering your wallet, write down correctly on paper and keep in a safe place.</string>
     <string name="next">Next</string>
     <string name="individual_wallet">Classic Wallet</string>
     <string name="shared_wallet">Joint Wallet</string>
-    <string name="verificationOfMnemonic">Verification of Mnemonic</string>
-    <string name="verificationOfMnemonicTitle">Please click below words in correct order</string>
+    <string name="verificationOfMnemonic">Verification of Mnemonics</string>
+    <string name="verificationOfMnemonicTitle">Please click below words in correct order.</string>
     <string name="completeBackup">Submit</string>
     <string name="submit">Submit</string>
     <string name="empty">Empty</string>
@@ -148,7 +148,7 @@
     <string name="nav_vote">Vote</string>
     <string name="nav_me">Me</string>
     <string name="disclaimer">Disclaimer</string>
-    <string name="disclaimerResume">Please be sure to keep your mnemonics in a safe place. ATON is not responsible for any loss of assets caused by forgetting,&#160;losing or stolen.</string>
+    <string name="disclaimerResume">Please be sure to keep your mnemonics in a safe place. ATON is not responsible for any loss of assets caused by forgetting,&#160;losing or theft.</string>
     <string name="backupFailed">Backup Failed</string>
     <string name="backupMnemonicFailedResume">Confirm failed,please examine your mnemonic words.</string>
     <string name="manage">Manage</string>
@@ -239,7 +239,7 @@
     <string name="purse">Wallet</string>
     <string name="unlock">Unlock</string>
     <string name="unlockWithWalletPasswordTitle">Unlock with Wallet Password</string>
-    <string name="unlockWithWalletPasswordDesc">Use the selected wallet password to verify unlock</string>
+    <string name="unlockWithWalletPasswordDesc">Be sure to correspond password to wallet.</string>
     <string name="company_name">juzix（shenzhen)</string>
     <string name="copyright_resume">Powered by PlatON</string>
     <string name="language">Languages</string>
@@ -263,7 +263,7 @@
     <string name="action_submit">Submit</string>
     <string name="createSharedWalletTips1">required signatures number can\'t exceed joint owners number</string>
     <string name="member">Member%1$s</string>
-    <string name="remarkNonCompulsory">Name（Non - compulsory）</string>
+    <string name="remarkNonCompulsory">Name(Optional)</string>
     <string name="inputSharedWalletAddress">Set wallet address</string>
     <string name="changeMemberName">Change Member Name</string>
     <string name="transactionConfirmation">Transaction Confirmation</string>
@@ -404,6 +404,6 @@
     <string name="input_address_name">Name of address</string>
     <string name="switch_node_successed">Success</string>
     <string name="switch_node_failed">Failed</string>
-    <string name="recipient_wallet">recipient</string>
+    <string name="recipient_wallet">To</string>
 </resources>
 

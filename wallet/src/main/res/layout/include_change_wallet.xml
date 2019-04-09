@@ -12,8 +12,7 @@
         android:layout_height="42dp"
         android:layout_marginRight="5dp"
         android:scaleType="fitXY"
-        android:layout_centerVertical="true"
-        android:src="@drawable/icon_default_coin"/>
+        android:layout_centerVertical="true" />
 
     <RelativeLayout
         android:id="@+id/layout_change_wallet"

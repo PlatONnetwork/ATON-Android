@@ -251,7 +251,7 @@ public class CreateSharedWalletSecondStepPresenter extends BasePresenter<CreateS
 
     @Override
     public void validPassword(Credentials credentials, BigInteger gasPrice, double feeAmount) {
-        SharedWalletTransactionManager.getInstance().createSharedWallet(credentials, mWalletName, mWalletEntity.getPrefixAddress(), mRequiredSignatures, getAddressEntityList(), gasPrice, feeAmount);
+        SharedWalletTransactionManager.getInstance().createSharedWallet(credentials, mWalletName, mWalletEntity.getPrefixAddress(), mWalletEntity.getName(), mRequiredSignatures, getAddressEntityList(), gasPrice, feeAmount);
         MainActivity.actionStart(getContext());
     }
 
