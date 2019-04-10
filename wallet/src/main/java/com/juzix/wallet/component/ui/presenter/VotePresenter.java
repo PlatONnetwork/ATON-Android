@@ -199,6 +199,8 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
     }
 
     private List<CandidateEntity> getDefaultCandidateEntityList(List<CandidateEntity> candidateEntityList, List<CandidateEntity> verifiersList) {
+        //首先按默认的排序
+        Collections.sort(candidateEntityList, SortType.SORTED_BY_DEFAULT.getComparator());
         //全量提名节点
         List<CandidateEntity> allCandidateList = getAllCandidateList(candidateEntityList);
         //全量候选节点
@@ -226,19 +228,14 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
 
         if (mCandidateEntiyList != null) {
 
-            List<CandidateEntity> candidateEntities = getSearchResult(keyWord, mCandidateEntiyList);
-
-            Collections.sort(candidateEntities, sortType.getComparator());
-
-            if (sortType == SortType.SORTED_BY_DEFAULT) {
-                candidateEntities = getDefaultCandidateEntityList(candidateEntities, mVerifiersList);
-            }
+            List<CandidateEntity> candidateEntityList = getDefaultCandidateEntityList(getSearchResult(keyWord, mCandidateEntiyList), mVerifiersList);
+            Collections.sort(candidateEntityList, sortType.getComparator());
 
             if (isViewAttached()) {
-                if (!TextUtils.isEmpty(keyWord) && (candidateEntities == null || candidateEntities.isEmpty())) {
+                if (!TextUtils.isEmpty(keyWord) && (candidateEntityList == null || candidateEntityList.isEmpty())) {
                     showLongToast(R.string.query_no_result);
                 }
-                getView().notifyDataSetChanged(candidateEntities);
+                getView().notifyDataSetChanged(candidateEntityList);
             }
         }
     }
@@ -369,11 +366,11 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
             return candidateEntityList;
         } else {
             List<CandidateEntity> result = new ArrayList<>();
-            for (CandidateEntity candidateEntity : mCandidateEntiyList) {
+            for (CandidateEntity candidateEntity : candidateEntityList) {
                 CandidateExtraEntity candidateExtraEntity = candidateEntity.getCandidateExtraEntity();
                 if (candidateExtraEntity != null) {
                     String nodeName = candidateExtraEntity.getNodeName();
-                    if ((!TextUtils.isEmpty(nodeName)) && nodeName.toLowerCase().contains(mKeyword.toLowerCase())) {
+                    if ((!TextUtils.isEmpty(nodeName)) && nodeName.toLowerCase().contains(keyWord.toLowerCase())) {
                         result.add(candidateEntity);
                     }
                 }
