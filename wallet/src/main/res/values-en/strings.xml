@@ -293,7 +293,7 @@
     <string name="duplicateAddress">Duplicate address exists</string>
     <string name="saveAndShareImage">Save image and Share</string>
     <string name="versionUpdate">Version Update</string>
-    <string name="illegalWalletAddress">Illegal Wallet address</string>
+    <string name="illegalWalletAddress">Illegal wallet address</string>
     <string name="joint_wallet_can_not_added">Non-joint user wallet, unable to add</string>
     <string name="wechat">WeChat</string>
     <string name="more">More</string>
