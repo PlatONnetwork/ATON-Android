@@ -135,6 +135,8 @@
         <attr name="bsb_hide_bubble" format="boolean" /> <!--hide bubble, default: false-->
         <attr name="bsb_rtl" format="boolean" /> <!--right to left, default: false-->
         <attr name="android:enabled" />
+        <!--渐变色号，用_分割-->
+        <attr name="bsb_colors" format="string"/>
 
     </declare-styleable>
 
