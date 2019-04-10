@@ -413,6 +413,12 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
             if (fromUser) {
                 mPresenter.calculateFeeAndTime(BigDecimalUtil.div(progress, bubbleSeekBar.getMax()));
                 mPresenter.updateSendTransactionButtonStatus();
+                if (etWalletAmount.isFocused()){
+                    etWalletAmount.clearFocus();
+                }
+                if (etWalletAddress.isFocused()){
+                    etWalletAddress.clearFocus();
+                }
                 String amount = etWalletAmount.getText().toString().trim();
                 if (!TextUtils.isEmpty(amount)) {
                     mPresenter.checkTransferAmount(amount);

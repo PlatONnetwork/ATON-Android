@@ -86,7 +86,6 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         sInstance = this;
         mPresenter.init();
         setContentView(R.layout.activity_main);

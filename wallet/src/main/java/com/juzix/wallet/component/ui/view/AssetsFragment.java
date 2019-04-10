@@ -19,7 +19,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -453,7 +452,11 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     @Override
     public void showWalletInfo(WalletEntity walletEntity) {
         tvBackup.setVisibility(mPresenter.needBackup(walletEntity) ? View.VISIBLE : View.GONE);
-        ivWalletAvatar.setImageResource(RUtils.drawable("icon_export_" + walletEntity.getAvatar()));
+        int resId = RUtils.drawable(walletEntity.getExportAvatar());
+        if (resId < 0){
+            resId = R.drawable.icon_export_avatar_15;
+        }
+        ivWalletAvatar.setImageResource(resId);
         tvWalletName.setText(walletEntity.getName());
         showBalance(walletEntity.getBalance());
     }
