@@ -183,7 +183,7 @@ public class SharedWalletTransactionManager {
                 .flatMap(new Function<SharedTransactionInfoEntity, Publisher<TransactionReceipt>>() {
                     @Override
                     public Publisher<TransactionReceipt> apply(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
-                        return initWallet(credentials, sharedWalletEntity.getUuid(), members, ethGasPrice, sharedTransactionInfoEntity.getContractAddress(), requiredSignNumber);
+                        return initWallet(credentials, sharedWalletEntity.getUuid(), getOwners(members), ethGasPrice, sharedTransactionInfoEntity.getContractAddress(), requiredSignNumber);
                     }
                 })
                 .map(new Function<TransactionReceipt, SharedTransactionInfoEntity>() {
@@ -246,6 +246,27 @@ public class SharedWalletTransactionManager {
                         }
                     }
                 });
+    }
+
+    private String getOwners(List<OwnerEntity> members) {
+
+        return Flowable
+                .fromIterable(members)
+                .map(new Function<OwnerEntity, String>() {
+                    @Override
+                    public String apply(OwnerEntity ownerEntity) throws Exception {
+                        return ownerEntity.getPrefixAddress();
+                    }
+                })
+                .toList()
+                .map(new Function<List<String>, String>() {
+                    @Override
+                    public String apply(List<String> strings) throws Exception {
+                        return TextUtils.join(":", strings);
+                    }
+                })
+                .onErrorReturnItem("")
+                .blockingGet();
     }
 
     private Single<List<String>> getSharedWalletOwnerList(String contractAddress, String individualWalletAddress) {
@@ -435,7 +456,7 @@ public class SharedWalletTransactionManager {
         return progress;
     }
 
-    private Flowable<TransactionReceipt> initWallet(Credentials credentials, String uuid, List<OwnerEntity> members, BigInteger ethGasPrice, String contractAddress, int requiredSignNumber) {
+    private Flowable<TransactionReceipt> initWallet(Credentials credentials, String uuid, String members, BigInteger ethGasPrice, String contractAddress, int requiredSignNumber) {
 
         return Flowable.fromCallable(new Callable<String>() {
 
@@ -529,33 +550,10 @@ public class SharedWalletTransactionManager {
         return transactionHash;
     }
 
-    private String sendInitWalletTransaction(Credentials credentials, List<OwnerEntity> members, BigInteger ethGasPrice, String contractAddress, int requiredSignNumber) {
-        String data = Multisig.initWalletData(getOwners(members), new BigInteger(String.valueOf(requiredSignNumber)));
+    private String sendInitWalletTransaction(Credentials credentials, String members, BigInteger ethGasPrice, String contractAddress, int requiredSignNumber) {
+        String data = Multisig.initWalletData(members, new BigInteger(String.valueOf(requiredSignNumber)));
         String transactionHash = Web3jManager.getInstance().getTransactionHash(credentials, ethGasPrice, INVOKE_GAS_LIMIT, contractAddress, data, BigInteger.ZERO);
         return transactionHash;
-    }
-
-    private String getOwners(List<OwnerEntity> members) {
-        String owner = "";
-
-        if (members != null && !members.isEmpty()) {
-
-            int len = members.size();
-
-            for (int i = 0; i < len; i++) {
-
-                OwnerEntity member = members.get(i);
-
-                member.setUuid(UUID.randomUUID().toString());
-
-                owner += member.getPrefixAddress();
-                if (i != len - 1) {
-                    owner += ":";
-                }
-            }
-        }
-
-        return owner;
     }
 
     private TransactionReceipt submitTransaction(Multisig multisig, String destination, String from, String memo, String transferAmount) {

@@ -150,12 +150,6 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
 
         VoteManager.getInstance()
                 .getBatchVoteSummary(addressList)
-                .filter(new Predicate<List<BatchVoteSummaryEntity>>() {
-                    @Override
-                    public boolean test(List<BatchVoteSummaryEntity> batchVoteSummaryEntities) throws Exception {
-                        return !batchVoteSummaryEntities.isEmpty();
-                    }
-                })
                 .toFlowable()
                 .flatMap(new Function<List<BatchVoteSummaryEntity>, Publisher<BatchVoteSummaryEntity>>() {
                     @Override
@@ -184,6 +178,19 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
                         return buildVoteSummaryList(map);
                     }
                 })
+                .filter(new Predicate<List<VoteSummaryEntity>>() {
+                    @Override
+                    public boolean test(List<VoteSummaryEntity> voteSummaryEntities) throws Exception {
+                        return !voteSummaryEntities.isEmpty();
+                    }
+                })
+                .switchIfEmpty(new SingleSource<List<VoteSummaryEntity>>() {
+                    @Override
+                    public void subscribe(SingleObserver<? super List<VoteSummaryEntity>> observer) {
+                        observer.onSuccess(buildDefaultVoteSummaryList());
+                    }
+                })
+                .onErrorReturnItem(buildDefaultVoteSummaryList())
                 .compose(new SchedulersTransformer())
                 .compose(bindToLifecycle())
                 .subscribe(new Consumer<List<VoteSummaryEntity>>() {
@@ -223,7 +230,7 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
         List<VoteSummaryEntity> voteSummaryEntityList = new ArrayList<>();
         voteSummaryEntityList.add(new VoteSummaryEntity(String.format("%s%s", string(R.string.lockVote), "(Energon)"), String.valueOf("-")));
         voteSummaryEntityList.add(new VoteSummaryEntity(String.format("%s%s", string(R.string.votingIncome), "(Energon)"), String.valueOf("-")));
-        voteSummaryEntityList.add(new VoteSummaryEntity(String.format("%s", string(R.string.validInvalidTicket)), String.format("%d/%d", "-", "-")));
+        voteSummaryEntityList.add(new VoteSummaryEntity(String.format("%s", string(R.string.validInvalidTicket)), String.format("%s/%s", "-", "-")));
         return voteSummaryEntityList;
     }
 

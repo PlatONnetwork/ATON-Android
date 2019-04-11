@@ -50,7 +50,7 @@ public class TransactionsFragment extends MVPBaseFragment<TransactionsPresenter>
 
     @Override
     protected void onFragmentPageStart() {
-        mPresenter.fetchWalletDetail();
+        mPresenter.fetchWalletTransactionList();
     }
 
     @Nullable
@@ -106,7 +106,7 @@ public class TransactionsFragment extends MVPBaseFragment<TransactionsPresenter>
     public void onUpdateSelectedWalletEvent(Event.UpdateSelectedWalletEvent event) {
         mPresenter.updateWalletEntity();
         setAdapter();
-        mPresenter.fetchWalletDetail();
+        mPresenter.fetchWalletTransactionList();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

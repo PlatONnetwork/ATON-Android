@@ -21,13 +21,14 @@ public class IndividualTransactionInfoDao {
         return InstanceHolder.INSTANCE;
     }
 
-    public void insertTransaction(IndividualTransactionInfoEntity transactionEntity) {
+    public boolean insertTransaction(IndividualTransactionInfoEntity transactionEntity) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
-            realm.copyToRealm(transactionEntity);
+            realm.insertOrUpdate(transactionEntity);
             realm.commitTransaction();
+            return true;
         } catch (Exception exp) {
             if (realm != null) {
                 realm.cancelTransaction();
@@ -37,6 +38,7 @@ public class IndividualTransactionInfoDao {
                 realm.close();
             }
         }
+        return false;
     }
 
     public IndividualTransactionInfoEntity getTransactionByHash(String hash) {

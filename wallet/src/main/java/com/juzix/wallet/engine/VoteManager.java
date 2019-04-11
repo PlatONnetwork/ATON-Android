@@ -297,9 +297,11 @@ public class VoteManager {
                 .doOnSuccess(new Consumer<SingleVoteInfoEntity>() {
                     @Override
                     public void accept(SingleVoteInfoEntity voteInfoEntity) throws Exception {
-                        SingleVoteInfoDao.getInstance().insertTransaction(voteInfoEntity);
-                        EventPublisher.getInstance().sendUpdateVoteTransactionListEvent();
-                        updateVoteTicket(voteInfoEntity);
+                        boolean success = SingleVoteInfoDao.getInstance().insertTransaction(voteInfoEntity);
+                        if (success) {
+                            EventPublisher.getInstance().sendUpdateVoteTransactionListEvent();
+                            updateVoteTicket(voteInfoEntity);
+                        }
                     }
                 });
     }
@@ -580,7 +582,7 @@ public class VoteManager {
                         SingleVoteInfoDao.getInstance().insertTransaction(voteInfoEntity);
                     }
                 })
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe(new Consumer<SingleVoteInfoEntity>() {
                     @Override
                     public void accept(SingleVoteInfoEntity singleVoteInfoEntity) throws Exception {

@@ -3,14 +3,25 @@ package com.juzix.wallet.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.juzix.wallet.db.entity.IndividualTransactionInfoEntity;
-
 /**
  * @author matrixelement
  */
 public class IndividualTransactionEntity extends TransactionEntity implements Cloneable, Parcelable {
 
+    /**
+     * 交易完成
+     */
+    private boolean completed;
+
     public IndividualTransactionEntity() {
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
+
+    public boolean isCompleted() {
+        return completed;
     }
 
     private IndividualTransactionEntity(Builder builder) {
@@ -25,6 +36,7 @@ public class IndividualTransactionEntity extends TransactionEntity implements Cl
         setWalletName(builder.walletName);
         setEnergonPrice(builder.energonPrice);
         setMemo(builder.memo);
+        setCompleted(builder.completed);
     }
 
     protected IndividualTransactionEntity(Parcel in) {
@@ -39,6 +51,7 @@ public class IndividualTransactionEntity extends TransactionEntity implements Cl
         walletName = in.readString();
         energonPrice = in.readDouble();
         memo = in.readString();
+        completed = in.readByte() != 0;
     }
 
     public static final Creator<IndividualTransactionEntity> CREATOR = new Creator<IndividualTransactionEntity>() {
@@ -71,6 +84,7 @@ public class IndividualTransactionEntity extends TransactionEntity implements Cl
         dest.writeString(walletName);
         dest.writeDouble(energonPrice);
         dest.writeString(memo);
+        dest.writeByte((byte) (completed ? 1 : 0));
     }
 
     public static final class Builder {
@@ -85,6 +99,7 @@ public class IndividualTransactionEntity extends TransactionEntity implements Cl
         private String walletName;
         private double energonPrice;
         private String memo;
+        private boolean completed;
 
         public Builder(String uuid, long createTime, String walletName) {
             this.uuid = uuid;
@@ -132,6 +147,11 @@ public class IndividualTransactionEntity extends TransactionEntity implements Cl
             return this;
         }
 
+        public Builder completed(boolean val) {
+            completed = val;
+            return this;
+        }
+
         public IndividualTransactionEntity build() {
             return new IndividualTransactionEntity(this);
         }
@@ -161,20 +181,5 @@ public class IndividualTransactionEntity extends TransactionEntity implements Cl
                 return TransactionStatus.PENDING;
             }
         }
-    }
-
-    public IndividualTransactionInfoEntity buildIndividualTransactionInfoEntity() {
-
-        IndividualTransactionInfoEntity individualTransactionInfoEntity = new IndividualTransactionInfoEntity();
-        individualTransactionInfoEntity.setUuid(uuid);
-        individualTransactionInfoEntity.setBlockNumber(blockNumber);
-        individualTransactionInfoEntity.setCreateTime(createTime);
-        individualTransactionInfoEntity.setFrom(fromAddress);
-        individualTransactionInfoEntity.setTo(toAddress);
-        individualTransactionInfoEntity.setHash(hash);
-        individualTransactionInfoEntity.setMemo(memo);
-        individualTransactionInfoEntity.setWalletName(walletName);
-
-        return individualTransactionInfoEntity;
     }
 }

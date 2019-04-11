@@ -17,7 +17,6 @@ public class MyVoteContract {
         void showBatchVoteSummary(List<VoteSummaryEntity> voteSummaryEntityList);
 
         void showBatchVoteTransactionList(List<BatchVoteTransactionEntity> batchVoteTransactionEntityList);
-
     }
 
     public interface Presenter extends IPresenter<View> {
