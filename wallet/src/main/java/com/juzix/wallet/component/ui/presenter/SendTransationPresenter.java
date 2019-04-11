@@ -327,8 +327,10 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
                 .doOnSuccess(new Consumer<IndividualTransactionInfoEntity>() {
                     @Override
                     public void accept(IndividualTransactionInfoEntity individualTransactionInfoEntity) throws Exception {
-                        IndividualTransactionInfoDao.getInstance().insertTransaction(individualTransactionInfoEntity);
-                        EventPublisher.getInstance().sendUpdateIndividualWalletTransactionEvent();
+                        boolean success = IndividualTransactionInfoDao.getInstance().insertTransaction(individualTransactionInfoEntity);
+                        if (success){
+                            EventPublisher.getInstance().sendUpdateIndividualWalletTransactionEvent();
+                        }
                     }
                 })
                 .compose(new SchedulersTransformer())

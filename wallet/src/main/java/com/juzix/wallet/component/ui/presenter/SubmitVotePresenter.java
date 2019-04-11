@@ -47,7 +47,6 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
         showVotePayInfo();
     }
 
-
     @Override
     public void showVotePayInfo() {
 

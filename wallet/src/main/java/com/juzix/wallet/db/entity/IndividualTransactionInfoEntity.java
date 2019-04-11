@@ -39,8 +39,12 @@ public class IndividualTransactionInfoEntity extends RealmObject implements Clon
      * 当前交易区块
      */
     private long blockNumber;
+    /**
+     * 交易完成
+     */
+    private boolean completed;
 
-    public IndividualTransactionInfoEntity(){
+    public IndividualTransactionInfoEntity() {
 
     }
 
@@ -52,6 +56,7 @@ public class IndividualTransactionInfoEntity extends RealmObject implements Clon
         setFrom(builder.from);
         setTo(builder.to);
         setMemo(builder.memo);
+        setCompleted(builder.completed);
     }
 
     public String getUuid() {
@@ -118,6 +123,14 @@ public class IndividualTransactionInfoEntity extends RealmObject implements Clon
         this.blockNumber = blockNumber;
     }
 
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
     public static final class Builder {
         private String uuid;
         private String hash;
@@ -127,6 +140,7 @@ public class IndividualTransactionInfoEntity extends RealmObject implements Clon
         private String to;
         private String memo;
         private long blockNumber;
+        private boolean completed;
 
         public Builder() {
         }
@@ -168,6 +182,11 @@ public class IndividualTransactionInfoEntity extends RealmObject implements Clon
 
         public Builder blockNumber(long val) {
             blockNumber = val;
+            return this;
+        }
+
+        public Builder completed(boolean val) {
+            completed = val;
             return this;
         }
 

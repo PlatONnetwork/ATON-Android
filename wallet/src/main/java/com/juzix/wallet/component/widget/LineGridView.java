@@ -17,6 +17,7 @@ public class LineGridView extends GridView {
     private int mLinePaddingHorizontal;
     private int mLinePaddingVertical;
     private int mLineSize;
+    private int mWidth;
 
     public LineGridView(Context context) {
         this(context, null, 0);
@@ -35,7 +36,12 @@ public class LineGridView extends GridView {
         mLineSize = typedArray.getDimensionPixelSize(R.styleable.LineGridView_line_size, DensityUtil.dp2px(context, 1f));
 
         typedArray.recycle();
+    }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        mWidth = getWidth();
     }
 
     @Override
@@ -43,7 +49,7 @@ public class LineGridView extends GridView {
         super.dispatchDraw(canvas);
         View localView = getChildAt(0);
         //列数
-        int column = getWidth() / localView.getWidth();
+        int column = mWidth / localView.getWidth();
         //行数
         int row = getChildCount() % column == 0 ? getChildCount() / column : getChildCount() / column + 1;
         int childCount = getChildCount();

@@ -24,13 +24,14 @@ public class SingleVoteInfoDao {
         return InstanceHolder.INSTANCE;
     }
 
-    public void insertTransaction(SingleVoteInfoEntity entity) {
+    public boolean insertTransaction(SingleVoteInfoEntity entity) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
             realm.insertOrUpdate(entity);
             realm.commitTransaction();
+            return true;
         } catch (Exception exp) {
             if (realm != null) {
                 realm.cancelTransaction();
@@ -40,6 +41,7 @@ public class SingleVoteInfoDao {
                 realm.close();
             }
         }
+        return false;
     }
 
     public SingleVoteInfoEntity getTransactionByUuid(String uuid) {
@@ -124,7 +126,9 @@ public class SingleVoteInfoDao {
             RealmResults<SingleVoteInfoEntity> results = realm.where(SingleVoteInfoEntity.class)
                     .equalTo("status", status)
                     .findAll();
-            list.addAll(realm.copyFromRealm(results));
+            if (results != null){
+                list.addAll(realm.copyFromRealm(results));
+            }
         } catch (Exception exp) {
             exp.printStackTrace();
         } finally {
@@ -193,7 +197,9 @@ public class SingleVoteInfoDao {
             SingleVoteInfoEntity singleVoteInfoEntity = realm.where(SingleVoteInfoEntity.class)
                     .equalTo("hash", transactionHash)
                     .findFirst();
-            entity = realm.copyFromRealm(singleVoteInfoEntity);
+            if (singleVoteInfoEntity != null) {
+                entity = realm.copyFromRealm(singleVoteInfoEntity);
+            }
         } catch (Exception exp) {
             exp.printStackTrace();
         } finally {

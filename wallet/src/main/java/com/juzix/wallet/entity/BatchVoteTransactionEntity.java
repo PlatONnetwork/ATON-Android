@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.utils.BigDecimalUtil;
 
 /**
@@ -146,6 +147,10 @@ public class BatchVoteTransactionEntity implements Parcelable {
 
     public String getEarnings() {
         return earnings;
+    }
+
+    public String getShowEarnings() {
+        return NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(earnings, "1E18"), 4);
     }
 
     public void setEarnings(String earnings) {

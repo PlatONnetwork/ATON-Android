@@ -71,18 +71,22 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
         if (!isViewAttached() || mWalletEntity == null) {
             return;
         }
-        fetchWalletTransactionList();
+        if (mWalletEntity instanceof IndividualWalletEntity) {
+            fetchIndividualWalletTransactionList();
+        } else {
+            fetchSharedWalletTransactionList();
+        }
     }
 
     @Override
     public void fetchWalletTransactionList() {
-        if (mWalletEntity == null) {
+        if (!isViewAttached() || mWalletEntity == null) {
             return;
         }
         if (mWalletEntity instanceof IndividualWalletEntity) {
-            fetchWalletTransactionList1();
+            fetchIndividualWalletTransactionList();
         } else {
-            fetchWalletTransactionList2();
+            fetchSharedWalletTransactionList();
         }
     }
 
@@ -97,7 +101,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
         }
     }
 
-    private void fetchWalletTransactionList1() {
+    private void fetchIndividualWalletTransactionList() {
         if (mDisposable != null && !mDisposable.isDisposed()) {
             mDisposable.dispose();
         }
@@ -105,9 +109,6 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
         mDisposable = Single.fromCallable(new Callable<List<TransactionEntity>>() {
             @Override
             public List<TransactionEntity> call() {
-                if (mWalletEntity == null) {
-                    return null;
-                }
                 return getTransactionEntityList(mWalletEntity.getPrefixAddress()).blockingGet();
             }
         })
@@ -124,28 +125,6 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         Log.e(TAG, throwable.getMessage());
-                    }
-                });
-    }
-
-    private Single<List<TransactionEntity>> getTransactionEntityList(String address) {
-        return getSharedTransactionEntityList(address)
-                .zipWith(getIndividualTransactionEntityList(address), new BiFunction<List<SharedTransactionEntity>, List<IndividualTransactionEntity>, List<TransactionEntity>>() {
-                    @Override
-                    public List<TransactionEntity> apply(List<SharedTransactionEntity> sharedTransactionEntities, List<IndividualTransactionEntity> individualTransactionEntities) throws Exception {
-                        List<TransactionEntity> transactionEntityList = new ArrayList<>();
-                        transactionEntityList.addAll(sharedTransactionEntities);
-                        transactionEntityList.addAll(individualTransactionEntities);
-                        Collections.sort(transactionEntityList);
-                        return transactionEntityList;
-                    }
-                })
-                .zipWith(getVoteTransactionEntityList(address), new BiFunction<List<TransactionEntity>, List<? extends TransactionEntity>, List<TransactionEntity>>() {
-                    @Override
-                    public List<TransactionEntity> apply(List<TransactionEntity> transactionEntities, List<? extends TransactionEntity> transactionEntities2) throws Exception {
-                        transactionEntities.addAll(transactionEntities2);
-                        Collections.sort(transactionEntities);
-                        return transactionEntities;
                     }
                 });
     }
@@ -264,67 +243,28 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                     }
                 })
                 .toList()
-                .doOnSuccess(new Consumer<List<IndividualTransactionEntity>>() {
-                    @Override
-                    public void accept(List<IndividualTransactionEntity> individualTransactionEntities) throws Exception {
-                        Log.e(TAG, "IndividualWalletTransaction: " + individualTransactionEntities.size());
-                    }
-                })
-                .doOnError(new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        Log.e(TAG, "getIndividualTransactionEntityList1" + throwable.getMessage());
-                    }
-                })
                 .onErrorReturnItem(new ArrayList<>());
     }
 
     private Flowable<IndividualTransactionEntity> getIndividualTransactionEntity(IndividualTransactionEntity individualTransactionEntity) {
 
-        Single<Long> getLatestBlockNumber = Single.just(Web3jManager.getInstance().getLatestBlockNumber());
-        Single<IndividualTransactionEntity> getIndividualTransactionEntity = Single.just(IndividualWalletTransactionManager.getInstance().getTransactionByHash(individualTransactionEntity.getHash(), individualTransactionEntity.getCreateTime(), individualTransactionEntity.getWalletName(), individualTransactionEntity.getMemo()));
-        Single<IndividualTransactionEntity> getTransactionDetail = getIndividualTransactionEntity.zipWith(getLatestBlockNumber, new BiFunction<IndividualTransactionEntity, Long, IndividualTransactionEntity>() {
-            @Override
-            public IndividualTransactionEntity apply(IndividualTransactionEntity individualTransactionEntity, Long latestBlockNumber) throws Exception {
-                individualTransactionEntity.setLatestBlockNumber(latestBlockNumber);
-                return individualTransactionEntity;
-            }
-        });
-
         return Single
                 .just(individualTransactionEntity)
-                .flatMap(new Function<IndividualTransactionEntity, SingleSource<IndividualTransactionEntity>>() {
+                .filter(new Predicate<IndividualTransactionEntity>() {
                     @Override
-                    public SingleSource<IndividualTransactionEntity> apply(IndividualTransactionEntity individualTransactionEntity) throws Exception {
-                        if (individualTransactionEntity.getBlockNumber() == 0) {
-                            return getTransactionDetail.doOnSuccess(new Consumer<IndividualTransactionEntity>() {
-                                @Override
-                                public void accept(IndividualTransactionEntity individualTransactionEntity) throws Exception {
-                                    IndividualTransactionInfoDao.getInstance().updateTransactionBlockNumber(individualTransactionEntity.getUuid(), individualTransactionEntity.getBlockNumber());
-                                }
-                            }).doOnError(new Consumer<Throwable>() {
-                                @Override
-                                public void accept(Throwable throwable) throws Exception {
-                                    Log.e(TAG, "getTransactionDetail.doOnSuccess" + throwable.getMessage());
-                                }
-                            });
-                        } else {
-                            return getLatestBlockNumber.map(new Function<Long, IndividualTransactionEntity>() {
-                                @Override
-                                public IndividualTransactionEntity apply(Long latestBlockNumber) throws Exception {
-                                    individualTransactionEntity.setLatestBlockNumber(latestBlockNumber);
-                                    return individualTransactionEntity;
-                                }
-                            }).doOnError(new Consumer<Throwable>() {
-                                @Override
-                                public void accept(Throwable throwable) throws Exception {
-                                    Log.e(TAG, "getLatestBlockNumber.doOnError" + throwable.getMessage());
-                                }
-                            });
-                        }
+                    public boolean test(IndividualTransactionEntity individualTransactionEntity) throws Exception {
+                        return !individualTransactionEntity.isCompleted();
                     }
                 })
-                .toFlowable();
+                .defaultIfEmpty(individualTransactionEntity)
+                .map(new Function<IndividualTransactionEntity, IndividualTransactionEntity>() {
+                    @Override
+                    public IndividualTransactionEntity apply(IndividualTransactionEntity individualTransactionEntity) throws Exception {
+                        return IndividualWalletTransactionManager.getInstance().getTransactionByHash(individualTransactionEntity.getHash(), individualTransactionEntity.getCreateTime(), individualTransactionEntity.getWalletName(), individualTransactionEntity.getMemo());
+                    }
+                })
+                .toFlowable()
+                .onErrorReturnItem(individualTransactionEntity);
     }
 
     private String[] getContractAddressArray1(List<SharedWalletEntity> sharedWalletEntityList) {
@@ -364,7 +304,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
 
     }
 
-    private void fetchWalletTransactionList2() {
+    private void fetchSharedWalletTransactionList() {
         if (mDisposable != null && !mDisposable.isDisposed()) {
             mDisposable.dispose();
         }
@@ -383,7 +323,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                     @Override
                     public void accept(List<TransactionEntity> transactionEntityList) throws Exception {
                         if (isViewAttached() && mWalletEntity != null) {
-                            Log.e(TAG, "fetchWalletTransactionList2 transactionEntityList size is:   " + transactionEntityList.size());
+                            Log.e(TAG, "fetchSharedWalletTransactionList transactionEntityList size is:   " + transactionEntityList.size());
                             getView().notifyTransactionListChanged(transactionEntityList, mWalletEntity.getPrefixAddress());
                         }
                     }
@@ -391,6 +331,28 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                     @Override
                     public void accept(Throwable throwable) throws Exception {
 
+                    }
+                });
+    }
+
+    private Single<List<TransactionEntity>> getTransactionEntityList(String address) {
+        return getSharedTransactionEntityList(address)
+                .zipWith(getIndividualTransactionEntityList(address), new BiFunction<List<SharedTransactionEntity>, List<IndividualTransactionEntity>, List<TransactionEntity>>() {
+                    @Override
+                    public List<TransactionEntity> apply(List<SharedTransactionEntity> sharedTransactionEntities, List<IndividualTransactionEntity> individualTransactionEntities) throws Exception {
+                        List<TransactionEntity> transactionEntityList = new ArrayList<>();
+                        transactionEntityList.addAll(sharedTransactionEntities);
+                        transactionEntityList.addAll(individualTransactionEntities);
+                        Collections.sort(transactionEntityList);
+                        return transactionEntityList;
+                    }
+                })
+                .zipWith(getVoteTransactionEntityList(address), new BiFunction<List<TransactionEntity>, List<? extends TransactionEntity>, List<TransactionEntity>>() {
+                    @Override
+                    public List<TransactionEntity> apply(List<TransactionEntity> transactionEntities, List<? extends TransactionEntity> transactionEntities2) throws Exception {
+                        transactionEntities.addAll(transactionEntities2);
+                        Collections.sort(transactionEntities);
+                        return transactionEntities;
                     }
                 });
     }

@@ -46,6 +46,11 @@ public class IndividualWalletTransactionManager {
     public IndividualTransactionEntity getTransactionByHash(String transactionHash, long createTime, String walletName, String memo) {
         try {
             Transaction transaction = Web3jManager.getInstance().getTransactionByHash(transactionHash);
+            long latestBlockNumber = Web3jManager.getInstance().getLatestBlockNumber();
+            long blockNumber = NumericUtil.decodeQuantity(transaction.getBlockNumberRaw(), BigInteger.ZERO).longValue();
+            double energonPrice = BigDecimalUtil.div(BigDecimalUtil.mul(transaction.getGas().doubleValue(), transaction.getGasPrice().doubleValue()), 1E18);
+            double value = BigDecimalUtil.div(transaction.getValue().toString(), "1E18");
+            boolean completed = blockNumber > 0 && latestBlockNumber - blockNumber >= 1;
             if (transaction != null) {
                 transaction.setCreates(String.valueOf(createTime));
                 BigDecimalUtil.mul(transaction.getGas().doubleValue(), transaction.getGasPrice().doubleValue());
@@ -53,9 +58,11 @@ public class IndividualWalletTransactionManager {
                         .hash(transactionHash)
                         .fromAddress(transaction.getFrom())
                         .toAddress(transaction.getTo())
-                        .value(BigDecimalUtil.div(transaction.getValue().toString(), "1E18"))
-                        .blockNumber(NumericUtil.decodeQuantity(transaction.getBlockNumberRaw(), BigInteger.ZERO).longValue())
-                        .energonPrice(BigDecimalUtil.div(BigDecimalUtil.mul(transaction.getGas().doubleValue(), transaction.getGasPrice().doubleValue()), 1E18))
+                        .value(value)
+                        .blockNumber(blockNumber)
+                        .energonPrice(energonPrice)
+                        .latestBlockNumber(latestBlockNumber)
+                        .completed(completed)
                         .memo(memo)
                         .build();
                 return entity;
@@ -93,11 +100,6 @@ public class IndividualWalletTransactionManager {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public IndividualTransactionEntity getLatestBlockNumber(IndividualTransactionEntity transactionEntity) {
-        transactionEntity.setLatestBlockNumber(Web3jManager.getInstance().getLatestBlockNumber());
-        return transactionEntity;
     }
 
     private static class InstanceHolder {
