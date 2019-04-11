@@ -213,15 +213,17 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
             public void onTabSelected(TabLayout.Tab tab) {
                 updateRadioButton(getCheckedIdByTabTag((String) tab.getTag()));
                 updateCandidateListByTabTag((String) tab.getTag());
+
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-
+                   //添加未选中Tab的逻辑
             }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
+                //再次选中tab的逻辑
 
             }
         });
@@ -395,6 +397,10 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
                 rbReward.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
                 rbLocation.setTextColor(ContextCompat.getColor(getContext(), R.color.color_000000));
                 rbLocation.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
+                rbDefault.setChecked(true);
+                rbReward.setChecked(false);
+                rbLocation.setChecked(false);
+
                 break;
             case R.id.rb_reward:
                 rbDefault.setTextColor(ContextCompat.getColor(getContext(), R.color.color_000000));
@@ -403,6 +409,9 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
                 rbReward.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
                 rbLocation.setTextColor(ContextCompat.getColor(getContext(), R.color.color_000000));
                 rbLocation.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
+                rbDefault.setChecked(false);
+                rbReward.setChecked(true);
+                rbLocation.setChecked(false);
                 break;
             case R.id.rb_location:
                 rbDefault.setTextColor(ContextCompat.getColor(getContext(), R.color.color_000000));
@@ -411,6 +420,9 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
                 rbReward.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
                 rbLocation.setTextColor(ContextCompat.getColor(getContext(), R.color.color_105cfe));
                 rbLocation.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                rbDefault.setChecked(false);
+                rbReward.setChecked(false);
+                rbLocation.setChecked(true);
                 break;
             default:
                 break;

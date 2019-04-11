@@ -136,6 +136,9 @@ public class BubbleSeekBar extends View {
     private boolean isTouchToSeekAnimEnd = true;
     private float mPreSecValue; // previous SectionValue
     private BubbleConfigBuilder mConfigBuilder; // config attributes
+    private LinearGradient linearGradient;
+    private int[] colors;//颜色数组
+    private static final String COLOR_SPLIT = "_";//颜色分割符号
 
     public BubbleSeekBar(Context context) {
         this(context, null);
@@ -200,6 +203,14 @@ public class BubbleSeekBar extends View {
         mAlwaysShowBubbleDelay = duration < 0 ? 0 : duration;
         isHideBubble = a.getBoolean(R.styleable.BubbleSeekBar_bsb_hide_bubble, false);
         isRtl = a.getBoolean(R.styleable.BubbleSeekBar_bsb_rtl, false);
+
+        String colorStr = a.getString(R.styleable.BubbleSeekBar_bsb_colors);
+
+        if (colorStr == null || colorStr.equals("")) {
+            colorStr = "#ff28ADFF_#ff28ADFF_#ff105CFE";
+        }
+        parseStringToLayerColors(colorStr);
+
         setEnabled(a.getBoolean(R.styleable.BubbleSeekBar_android_enabled, isEnabled()));
         a.recycle();
 
@@ -388,6 +399,7 @@ public class BubbleSeekBar extends View {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
         mLySpace = getMeasuredWidth();
+        sweepGradientInit();
 
         int height = mThumbRadiusOnDragging * 2; // 默认高度为拖动时thumb圆的直径
         if (isShowThumbText) {
@@ -535,16 +547,56 @@ public class BubbleSeekBar extends View {
      * <p>
      * 控件的绘制顺序为：onMeasure-->onLayout-->onDraw
      */
-    public LinearGradient getLinearGradient(int sectionCount) {
+//    public LinearGradient getLinearGradient(int sectionCount) {
+//        //渐变颜色.colors和pos的个数一定要相等
+//        float[] pos = {0f, 0.5f};
+//        int[] colors = {Color.parseColor("#ff28adff"), Color.parseColor("#ff105cfe")};
+//        LinearGradient linearGradient = new LinearGradient(0, 0, mLySpace / (sectionCount - 1), mLySpace / (sectionCount - 1), colors, pos, Shader.TileMode.REPEAT);
+//        Matrix matrix = new Matrix();
+//        linearGradient.setLocalMatrix(matrix);
+//        return linearGradient;
+//    }
+    public void sweepGradientInit() {
         //渐变颜色.colors和pos的个数一定要相等
-        float[] pos = {0f, 0.5f};
-        int[] colors = {Color.parseColor("#ff28adff"), Color.parseColor("#ff105cfe")};
-        LinearGradient linearGradient = new LinearGradient(0, 0, mLySpace / (sectionCount - 1), mLySpace / (sectionCount - 1), colors, pos, Shader.TileMode.REPEAT);
+        float[] pos = {0f, 0.5f, 1f};
+        linearGradient = new LinearGradient(0, 0, mLySpace / 2, mLySpace / 2, colors, pos, Shader.TileMode.REPEAT);
         Matrix matrix = new Matrix();
         linearGradient.setLocalMatrix(matrix);
-        return linearGradient;
     }
 
+    /**
+     * @param colorStr string类型的颜色分割并转换为色值
+     */
+
+    private void parseStringToLayerColors(String colorStr) {
+
+        String[] colorArray = colorStr.split(COLOR_SPLIT);
+
+        colors = new int[colorArray.length];
+
+        for (int i = 0; i < colorArray.length; i++) {
+            try {
+                colors[i] = Color.parseColor(colorArray[i]);
+            } catch (IllegalArgumentException ex) {
+                throw new IllegalArgumentException("色值解析失败 | " + ex.getLocalizedMessage());
+            }
+        }
+    }
+    /**
+
+     * @param colors 渐变颜色
+
+     */
+
+    public void setColors(int[] colors) {
+        if (colors.length < 2) {
+            throw new IllegalArgumentException("色号小于1个我就崩给你看");
+        }
+        this.colors = colors;
+        sweepGradientInit();
+        invalidate();
+
+    }
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -661,6 +713,7 @@ public class BubbleSeekBar extends View {
             }
         }
         // draw track
+        mPaint.setShader(linearGradient);//渐变颜色
         mPaint.setStrokeWidth(mSecondTrackSize);
         mPaint.setColor(mSecondTrackColor);
         if (isRtl) {
