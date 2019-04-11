@@ -26,8 +26,6 @@ public class TransactionsContract {
 
         void updateWalletEntity();
 
-        int getWalletType();
-
         void fetchWalletDetail();
 
         void fetchWalletTransactionList();

@@ -54,19 +54,24 @@ public class TransactionResult implements Parcelable {
         this.address = address;
     }
 
-    public String getPrefixAddress(){
-        try {
-            if(TextUtils.isEmpty(address)){
-                return null;
-            }
-            if (address.toLowerCase().startsWith("0x")){
-                return address;
-            }
-            return "0x" + address;
-        } catch (Exception exp) {
-            exp.printStackTrace();
+    public String getPrefixAddress() {
+        if (TextUtils.isEmpty(address)) {
             return null;
         }
+        if (address.toLowerCase().startsWith("0x")) {
+            return address;
+        }
+        return "0x" + address;
+    }
+
+    public String getWithoutPrefixAddress() {
+        if (TextUtils.isEmpty(address)) {
+            return null;
+        }
+        if (address.toLowerCase().startsWith("0x")) {
+            return address.substring(2);
+        }
+        return address;
     }
 
     protected TransactionResult(Parcel in) {

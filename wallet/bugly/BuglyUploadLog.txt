@@ -1,0 +1,4 @@
+file=D:\Android\ATON-Android\wallet\build\outputs\mapping\releaseC\mapping.txt
+sha1=b0b42f4d256b23eadc0e2bc2f4ccde6ec4eb39fa
+appId=0970ddc6bd
+

@@ -9,12 +9,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding3.view.RxView;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.ClickTransformer;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.adapter.SigningMemberAdapter;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
@@ -31,7 +31,6 @@ import com.juzix.wallet.utils.DateUtil;
 import com.juzix.wallet.utils.DensityUtil;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -93,10 +92,6 @@ public class SigningActivity extends MVPBaseActivity<SigningPresenter> implement
     TextView tvTransactionWalletName;
     @BindView(R.id.tv_memo)
     TextView tvMemo;
-    @BindView(R.id.layout_transation_hash)
-    RelativeLayout layoutTransationHash;
-    @BindView(R.id.tv_transation_hash_title)
-    TextView tvTransationHashTitle;
 
     private Unbinder unbinder;
     private GridLayoutManager gridLayoutManager;
@@ -120,11 +115,9 @@ public class SigningActivity extends MVPBaseActivity<SigningPresenter> implement
 
     public void initViews() {
 
-        tvTransationHashTitle.setVisibility(View.GONE);
-        layoutTransationHash.setVisibility(View.GONE);
-
         RxView.clicks(sbtnRefuse)
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
+                .compose(new ClickTransformer())
+                .compose(bindToLifecycle())
                 .subscribe(new Consumer<Unit>() {
                     @Override
                     public void accept(Unit unit) throws Exception {
@@ -133,7 +126,8 @@ public class SigningActivity extends MVPBaseActivity<SigningPresenter> implement
                 });
 
         RxView.clicks(sbtnAgree)
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
+                .compose(new ClickTransformer())
+                .compose(bindToLifecycle())
                 .subscribe(new Consumer<Unit>() {
                     @Override
                     public void accept(Unit unit) throws Exception {
@@ -207,6 +201,9 @@ public class SigningActivity extends MVPBaseActivity<SigningPresenter> implement
     public void updateSigningStatus(String address, TransactionResult.Status status) {
         signingMemberAdapter.notifyItemChanged(address, status);
         enableButtons(status == TransactionResult.Status.OPERATION_UNDETERMINED);
+        if (status == TransactionResult.Status.OPERATION_REVOKE || status == TransactionResult.Status.OPERATION_APPROVAL) {
+            finish();
+        }
     }
 
     @Override

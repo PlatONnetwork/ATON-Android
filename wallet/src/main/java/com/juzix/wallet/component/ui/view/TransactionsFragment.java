@@ -75,7 +75,7 @@ public class TransactionsFragment extends MVPBaseFragment<TransactionsPresenter>
 
 
     private void setAdapter() {
-        transactionListAdapter = new TransactionListsAdapter(R.layout.item_transaction_list, null, mPresenter.getWalletType());
+        transactionListAdapter = new TransactionListsAdapter(R.layout.item_transaction_list, null);
         listTransaction.setAdapter(transactionListAdapter);
         listTransaction.setEmptyView(emptyView);
         listTransaction.setFocusable(false);

@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
 import io.reactivex.Single;
@@ -65,11 +64,6 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
     @Override
     public void updateWalletEntity() {
         mWalletEntity = MainActivity.sInstance.getSelectedWallet();
-    }
-
-    @Override
-    public int getWalletType() {
-        return mWalletEntity instanceof IndividualWalletEntity ? 0 : 1;
     }
 
     @Override
@@ -114,17 +108,11 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                 if (mWalletEntity == null) {
                     return null;
                 }
-                return getTransactionEntityList1(mWalletEntity.getPrefixAddress()).blockingGet();
+                return getTransactionEntityList(mWalletEntity.getPrefixAddress()).blockingGet();
             }
         })
                 .compose(bindUntilEvent(FragmentEvent.STOP))
                 .compose(new SchedulersTransformer())
-                .repeatWhen(new Function<Flowable<Object>, Publisher<?>>() {
-                    @Override
-                    public Publisher<?> apply(Flowable<Object> objectFlowable) throws Exception {
-                        return objectFlowable.delay(REFRESH_TIME, TimeUnit.MILLISECONDS);
-                    }
-                })
                 .subscribe(new Consumer<List<TransactionEntity>>() {
                     @Override
                     public void accept(List<TransactionEntity> transactionEntityList) throws Exception {
@@ -140,9 +128,9 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                 });
     }
 
-    private Single<List<TransactionEntity>> getTransactionEntityList1(String address) {
-        return getSharedTransactionEntityList1(address)
-                .zipWith(getIndividualTransactionEntityList1(address), new BiFunction<List<SharedTransactionEntity>, List<IndividualTransactionEntity>, List<TransactionEntity>>() {
+    private Single<List<TransactionEntity>> getTransactionEntityList(String address) {
+        return getSharedTransactionEntityList(address)
+                .zipWith(getIndividualTransactionEntityList(address), new BiFunction<List<SharedTransactionEntity>, List<IndividualTransactionEntity>, List<TransactionEntity>>() {
                     @Override
                     public List<TransactionEntity> apply(List<SharedTransactionEntity> sharedTransactionEntities, List<IndividualTransactionEntity> individualTransactionEntities) throws Exception {
                         List<TransactionEntity> transactionEntityList = new ArrayList<>();
@@ -152,7 +140,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                         return transactionEntityList;
                     }
                 })
-                .zipWith(getVoteTransactionEntityList1(address), new BiFunction<List<TransactionEntity>, List<? extends TransactionEntity>, List<TransactionEntity>>() {
+                .zipWith(getVoteTransactionEntityList(address), new BiFunction<List<TransactionEntity>, List<? extends TransactionEntity>, List<TransactionEntity>>() {
                     @Override
                     public List<TransactionEntity> apply(List<TransactionEntity> transactionEntities, List<? extends TransactionEntity> transactionEntities2) throws Exception {
                         transactionEntities.addAll(transactionEntities2);
@@ -162,7 +150,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                 });
     }
 
-    private Single<List<SharedTransactionEntity>> getSharedTransactionEntityList1(String address) {
+    private Single<List<SharedTransactionEntity>> getSharedTransactionEntityList(String address) {
 
         return Single.fromCallable(new Callable<List<SharedWalletEntity>>() {
             @Override
@@ -223,7 +211,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                 .onErrorReturnItem(new ArrayList<SharedTransactionEntity>());
     }
 
-    private Single<List<VoteTransactionEntity>> getVoteTransactionEntityList1(String address) {
+    private Single<List<VoteTransactionEntity>> getVoteTransactionEntityList(String address) {
 
         return Single.fromCallable(new Callable<List<VoteTransactionEntity>>() {
             @Override
@@ -258,7 +246,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
 
     }
 
-    private Single<List<IndividualTransactionEntity>> getIndividualTransactionEntityList1(String contractAddress) {
+    private Single<List<IndividualTransactionEntity>> getIndividualTransactionEntityList(String contractAddress) {
 
         List<IndividualTransactionInfoEntity> individualTransactionInfoEntityList = IndividualTransactionInfoDao.getInstance().getTransactionList(contractAddress);
         return Flowable
@@ -272,7 +260,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                 .flatMap(new Function<IndividualTransactionEntity, Publisher<IndividualTransactionEntity>>() {
                     @Override
                     public Publisher<IndividualTransactionEntity> apply(IndividualTransactionEntity individualTransactionEntity) throws Exception {
-                        return getIndividualTransactionEntity1(individualTransactionEntity);
+                        return getIndividualTransactionEntity(individualTransactionEntity);
                     }
                 })
                 .toList()
@@ -291,7 +279,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                 .onErrorReturnItem(new ArrayList<>());
     }
 
-    private Flowable<IndividualTransactionEntity> getIndividualTransactionEntity1(IndividualTransactionEntity individualTransactionEntity) {
+    private Flowable<IndividualTransactionEntity> getIndividualTransactionEntity(IndividualTransactionEntity individualTransactionEntity) {
 
         Single<Long> getLatestBlockNumber = Single.just(Web3jManager.getInstance().getLatestBlockNumber());
         Single<IndividualTransactionEntity> getIndividualTransactionEntity = Single.just(IndividualWalletTransactionManager.getInstance().getTransactionByHash(individualTransactionEntity.getHash(), individualTransactionEntity.getCreateTime(), individualTransactionEntity.getWalletName(), individualTransactionEntity.getMemo()));
@@ -376,7 +364,6 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
 
     }
 
-
     private void fetchWalletTransactionList2() {
         if (mDisposable != null && !mDisposable.isDisposed()) {
             mDisposable.dispose();
@@ -392,16 +379,11 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
         })
                 .compose(bindUntilEvent(FragmentEvent.STOP))
                 .compose(new SchedulersTransformer())
-                .repeatWhen(new Function<Flowable<Object>, Publisher<?>>() {
-                    @Override
-                    public Publisher<?> apply(Flowable<Object> objectFlowable) throws Exception {
-                        return objectFlowable.delay(REFRESH_TIME, TimeUnit.MILLISECONDS);
-                    }
-                })
                 .subscribe(new Consumer<List<TransactionEntity>>() {
                     @Override
                     public void accept(List<TransactionEntity> transactionEntityList) throws Exception {
                         if (isViewAttached() && mWalletEntity != null) {
+                            Log.e(TAG, "fetchWalletTransactionList2 transactionEntityList size is:   " + transactionEntityList.size());
                             getView().notifyTransactionListChanged(transactionEntityList, mWalletEntity.getPrefixAddress());
                         }
                     }

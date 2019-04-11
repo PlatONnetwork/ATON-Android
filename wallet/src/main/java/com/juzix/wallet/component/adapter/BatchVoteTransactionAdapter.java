@@ -39,7 +39,7 @@ public class BatchVoteTransactionAdapter extends CommonAdapter<BatchVoteTransact
         }
         viewHolder.setText(R.id.tv_node_name, item.getNodeName());
         viewHolder.setText(R.id.tv_valid_invalid_ticket, String.format("%s/%s", item.getValidNum(), NumberParserUtils.getPrettyNumber(BigDecimalUtil.sub(NumberParserUtils.parseDouble(item.getTotalTicketNum()), NumberParserUtils.parseDouble(item.getValidNum())), 0)));
-        viewHolder.setText(R.id.tv_vote_staked, String.valueOf(item.getVoteStaked()));
+        viewHolder.setText(R.id.tv_vote_staked, NumberParserUtils.getPrettyNumber(item.getVoteStaked(), 0));
         viewHolder.setText(R.id.tv_vote_staked_desc, String.format("%s(Energon)", context.getString(R.string.lockVote)));
         viewHolder.setText(R.id.tv_vote_profit, item.getEarnings());
         viewHolder.setText(R.id.tv_vote_profit_desc, String.format("%s(Energon)", context.getString(R.string.votingIncome)));

@@ -24,7 +24,7 @@ public class LoopService extends Service {
     /**
      * 轮询时间
      */
-    public static int MLOOP_INTERVAL_SECS = 2500;
+    public static int MLOOP_INTERVAL_SECS = 3500;
     /**
      * 当前服务是否正在执行
      */

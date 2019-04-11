@@ -29,6 +29,7 @@ public class Constants {
         String EXTRA_CANDIDATE_ID = "extra_candidate_id";
         String EXTRA_CANDIDATE_NAME = "extra_candidate_name";
         String EXTRA_NAME = "extra_name";
+        String EXTRA_BATCHVOTETRANSACTION = "extra_batch_vote_transaction";
     }
 
     public interface Bundle {

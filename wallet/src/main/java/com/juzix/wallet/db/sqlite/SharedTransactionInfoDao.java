@@ -1,7 +1,5 @@
 package com.juzix.wallet.db.sqlite;
 
-import android.util.Log;
-
 import com.juzix.wallet.db.entity.SharedTransactionInfoEntity;
 import com.juzix.wallet.entity.SharedTransactionEntity;
 
@@ -30,12 +28,9 @@ public class SharedTransactionInfoDao {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
-            realm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    realm.copyToRealmOrUpdate(transactionEntity);
-                }
-            });
+            realm.beginTransaction();
+            realm.insertOrUpdate(transactionEntity);
+            realm.commitTransaction();
             return true;
         } catch (Exception exp) {
             if (realm != null) {
@@ -85,16 +80,49 @@ public class SharedTransactionInfoDao {
         }
     }
 
-    public String getSharedTransactionUUID(String contractAddress, String transactionId) {
+    public SharedTransactionInfoEntity getSharedTransaction(String contractAddress, String transactionId, SharedTransactionEntity.TransactionType transactionType) {
+        Realm realm = null;
+        SharedTransactionInfoEntity transactionInfoEntity = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            SharedTransactionInfoEntity sharedTransactionInfoEntity = realm.where(SharedTransactionInfoEntity.class)
+                    .beginGroup()
+                    .equalTo("contractAddress", contractAddress)
+                    .and()
+                    .equalTo("transactionId", transactionId)
+                    .and()
+                    .equalTo("transactionType", transactionType.getValue())
+                    .endGroup()
+                    .findFirst();
+            if (sharedTransactionInfoEntity != null) {
+                transactionInfoEntity = realm.copyFromRealm(sharedTransactionInfoEntity);
+            }
+            realm.commitTransaction();
+            return transactionInfoEntity;
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return transactionInfoEntity;
+    }
+
+    public String getSharedTransactionUUID(String contractAddress, String transactionId, SharedTransactionEntity.TransactionType transactionType) {
         Realm realm = null;
         String uuid = null;
         try {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
             SharedTransactionInfoEntity sharedTransactionInfoEntity = realm.where(SharedTransactionInfoEntity.class)
+                    .beginGroup()
                     .equalTo("contractAddress", contractAddress)
                     .and()
                     .equalTo("transactionId", transactionId)
+                    .and()
+                    .equalTo("transactionType", transactionType.getValue())
+                    .endGroup()
                     .findFirst();
             if (sharedTransactionInfoEntity != null) {
                 uuid = realm.copyFromRealm(sharedTransactionInfoEntity).getUuid();
@@ -266,12 +294,6 @@ public class SharedTransactionInfoDao {
                             .equalTo("uuid", uuid)
                             .findFirst();
                     transactionInfoEntity.setRead(read);
-//                    SharedTransactionInfoEntity sharedTransactionInfoEntity = realm.copyFromRealm(transactionInfoEntity);
-//                    sharedTransactionInfoEntity.setRead(read);
-//                    realm.copyToRealmOrUpdate(sharedTransactionInfoEntity);
-
-                    SharedTransactionInfoEntity entity = realm.copyFromRealm(realm.where(SharedTransactionInfoEntity.class).equalTo("uuid", uuid).findFirst());
-                    Log.e(TAG, "插入后" + entity.toString());
                 }
             });
             return true;
@@ -315,11 +337,15 @@ public class SharedTransactionInfoDao {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
             unreadCount = realm.where(SharedTransactionInfoEntity.class)
+                    .beginGroup()
                     .equalTo("fromAddress", contractAddress)
                     .or()
                     .equalTo("toAddress", contractAddress)
+                    .endGroup()
+                    .beginGroup()
                     .and()
                     .equalTo("read", false)
+                    .endGroup()
                     .count();
             realm.commitTransaction();
         } catch (Exception e) {

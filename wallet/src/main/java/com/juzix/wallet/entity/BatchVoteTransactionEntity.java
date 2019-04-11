@@ -1,9 +1,15 @@
 package com.juzix.wallet.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.text.TextUtils;
+
+import com.juzix.wallet.utils.BigDecimalUtil;
+
 /**
  * @author matrixelement
  */
-public class BatchVoteTransactionEntity {
+public class BatchVoteTransactionEntity implements Parcelable {
 
     /**
      * 交易hash
@@ -46,8 +52,6 @@ public class BatchVoteTransactionEntity {
      */
     private String nodeName;
 
-    private double voteStaked;
-
     public BatchVoteTransactionEntity() {
 
     }
@@ -63,7 +67,57 @@ public class BatchVoteTransactionEntity {
         setValidNum(builder.validNum);
         setRegionEntity(builder.regionEntity);
         setNodeName(builder.nodeName);
-        setVoteStaked(builder.voteStaked);
+    }
+
+    protected BatchVoteTransactionEntity(Parcel in) {
+        TransactionHash = in.readString();
+        candidateId = in.readString();
+        owner = in.readString();
+        earnings = in.readString();
+        transactiontime = in.readString();
+        deposit = in.readString();
+        totalTicketNum = in.readString();
+        validNum = in.readString();
+        regionEntity = in.readParcelable(RegionEntity.class.getClassLoader());
+        nodeName = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(TransactionHash);
+        dest.writeString(candidateId);
+        dest.writeString(owner);
+        dest.writeString(earnings);
+        dest.writeString(transactiontime);
+        dest.writeString(deposit);
+        dest.writeString(totalTicketNum);
+        dest.writeString(validNum);
+        dest.writeParcelable(regionEntity, flags);
+        dest.writeString(nodeName);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<BatchVoteTransactionEntity> CREATOR = new Creator<BatchVoteTransactionEntity>() {
+        @Override
+        public BatchVoteTransactionEntity createFromParcel(Parcel in) {
+            return new BatchVoteTransactionEntity(in);
+        }
+
+        @Override
+        public BatchVoteTransactionEntity[] newArray(int size) {
+            return new BatchVoteTransactionEntity[size];
+        }
+    };
+
+    public String getFormatCandidateId() {
+        if (TextUtils.isEmpty(candidateId) || candidateId.startsWith("0x")) {
+            return candidateId;
+        }
+        return "0x".concat(candidateId);
     }
 
     public String getTransactionHash() {
@@ -147,13 +201,8 @@ public class BatchVoteTransactionEntity {
     }
 
     public double getVoteStaked() {
-        return voteStaked;
+        return BigDecimalUtil.div(BigDecimalUtil.mul(validNum, deposit).doubleValue(), 1E18);
     }
-
-    public void setVoteStaked(double voteStaked) {
-        this.voteStaked = voteStaked;
-    }
-
 
     public static final class Builder {
         private String TransactionHash;
@@ -166,7 +215,6 @@ public class BatchVoteTransactionEntity {
         private String validNum;
         private RegionEntity regionEntity;
         private String nodeName;
-        private double voteStaked;
 
         public Builder() {
         }
@@ -218,11 +266,6 @@ public class BatchVoteTransactionEntity {
 
         public Builder nodeName(String val) {
             nodeName = val;
-            return this;
-        }
-
-        public Builder voteStaked(double val) {
-            voteStaked = val;
             return this;
         }
 

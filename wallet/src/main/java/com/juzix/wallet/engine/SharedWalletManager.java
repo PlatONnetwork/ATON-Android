@@ -157,7 +157,6 @@ public class SharedWalletManager {
         ArrayList<OwnerInfoEntity> addressInfoEntityArrayList = new ArrayList<>();
         for (OwnerEntity entity : newAddressEntityList) {
             OwnerInfoEntity addressInfoEntity = new OwnerInfoEntity.Builder()
-//                    .uuid(entity.getUuid())
                     .uuid(UUID.randomUUID().toString())
                     .address(entity.getAddress())
                     .name(entity.getName())

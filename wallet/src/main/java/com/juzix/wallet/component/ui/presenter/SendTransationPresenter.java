@@ -380,7 +380,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
                     @Override
                     public SingleSource<SharedTransactionInfoEntity> apply(Credentials credentials) throws Exception {
                         return SharedWalletTransactionManager.getInstance()
-                                .submitTransaction(credentials, (SharedWalletEntity) walletEntity, toAddress, transferAmount, "", submitGasPrice, feeAmount);
+                                .submitTransaction(credentials, (SharedWalletEntity) walletEntity, toAddress, transferAmount, "", submitGasPrice);
                     }
                 })
                 .map(new Function<SharedTransactionInfoEntity, SharedTransactionInfoEntity>() {
@@ -468,7 +468,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
 
     private Map<String, String> buildSendTransactionInfo(String fromWallet, String fromAddress, String recipient, String fee, String executor) {
         Map<String, String> map = new LinkedHashMap<>();
-        map.put(string(R.string.payment_info), string(R.string.send_energon));
+        map.put(string(R.string.type), string(R.string.send_energon));
         map.put(string(R.string.from_wallet), fromWallet);
         if (!TextUtils.isEmpty(executor)) {
             map.put(string(R.string.execute_wallet), executor);

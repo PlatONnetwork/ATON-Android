@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
+import com.juzhen.framework.network.ApiErrorCode;
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.HttpClient;
@@ -84,7 +85,40 @@ public class VoteManager {
         return InstanceHolder.INSTANCE;
     }
 
-    public Single<Response<ApiResponse<List<BatchVoteSummaryEntity>>>> getBatchVoteSummary(String[] addressList) {
+    public Single<List<BatchVoteSummaryEntity>> getBatchVoteSummary(String[] addressList) {
+        return getBatchVoteSummaryFromNet(addressList)
+                .flatMap(new Function<Response<ApiResponse<List<BatchVoteSummaryEntity>>>, SingleSource<List<BatchVoteSummaryEntity>>>() {
+                    @Override
+                    public SingleSource<List<BatchVoteSummaryEntity>> apply(Response<ApiResponse<List<BatchVoteSummaryEntity>>> apiResponseResponse) throws Exception {
+                        if (apiResponseResponse.isSuccessful() && apiResponseResponse.body().getResult() == ApiErrorCode.SUCCESS) {
+                            return Single.just(apiResponseResponse.body().getData());
+                        } else {
+                            return getBatchVoteSummaryFromDB(addressList);
+                        }
+                    }
+                });
+    }
+
+    private Single<List<BatchVoteSummaryEntity>> getBatchVoteSummaryFromDB(String[] addressList) {
+        return Flowable.fromCallable(new Callable<List<SingleVoteInfoEntity>>() {
+            @Override
+            public List<SingleVoteInfoEntity> call() throws Exception {
+                return SingleVoteInfoDao.getInstance().getTransactionListByWalletAddress(addressList);
+            }
+        }).flatMap(new Function<List<SingleVoteInfoEntity>, Publisher<SingleVoteInfoEntity>>() {
+            @Override
+            public Publisher<SingleVoteInfoEntity> apply(List<SingleVoteInfoEntity> singleVoteInfoEntities) throws Exception {
+                return Flowable.fromIterable(singleVoteInfoEntities);
+            }
+        }).map(new Function<SingleVoteInfoEntity, BatchVoteSummaryEntity>() {
+            @Override
+            public BatchVoteSummaryEntity apply(SingleVoteInfoEntity singleVoteInfoEntity) throws Exception {
+                return new BatchVoteSummaryEntity(null, null, String.valueOf(singleVoteInfoEntity.getTicketNumber()), null);
+            }
+        }).defaultIfEmpty(new BatchVoteSummaryEntity()).toList();
+    }
+
+    private Single<Response<ApiResponse<List<BatchVoteSummaryEntity>>>> getBatchVoteSummaryFromNet(String[] addressList) {
         return HttpClient.getInstance().createService(VoteService.class).getBatchVoteSummary(ApiRequestBody.newBuilder()
                 .put("addressList", addressList)
                 .put("cid", "203")
@@ -124,7 +158,6 @@ public class VoteManager {
                         String nodeName = SingleVoteInfoDao.getInstance().getCandidateNameByCandidateId(batchVoteTransactionEntity.getCandidateId());
                         if (singleVoteInfoEntity != null) {
                             batchVoteTransactionEntity.setNodeName(singleVoteInfoEntity.getCandidateName());
-                            batchVoteTransactionEntity.setVoteStaked(singleVoteInfoEntity.getVoteStaked());
                             batchVoteTransactionEntity.setNodeName(nodeName);
                         }
 

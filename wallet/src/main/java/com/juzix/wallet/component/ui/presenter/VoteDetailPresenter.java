@@ -7,6 +7,7 @@ import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.VoteDetailContract;
 import com.juzix.wallet.db.entity.SingleVoteInfoEntity;
 import com.juzix.wallet.db.sqlite.SingleVoteInfoDao;
+import com.juzix.wallet.entity.BatchVoteTransactionEntity;
 import com.juzix.wallet.entity.SingleVoteEntity;
 import com.juzix.wallet.entity.VoteDetailItemEntity;
 import com.juzix.wallet.utils.BigDecimalUtil;
@@ -28,26 +29,27 @@ public class VoteDetailPresenter extends BasePresenter<VoteDetailContract.View> 
 
     private static final long EXPIRE_BLOCKNUMBER = 1536000;
 
-    private String mCandidateId;
-    private String mCandidateName;
+    private BatchVoteTransactionEntity mBatchVoteTransactionEntity;
 
     public VoteDetailPresenter(VoteDetailContract.View view) {
         super(view);
-        mCandidateId = view.getCandidateIdFromIntent();
-        mCandidateName = view.getCandidateNameFromIntent();
+        mBatchVoteTransactionEntity = view.getBatchVoteTransactionFromIntent();
     }
 
     @Override
     public void loadData() {
 
-        showNodeDetailInfo();
+        if (mBatchVoteTransactionEntity != null) {
 
-        loadVoteTicketList();
+            showNodeDetailInfo();
+
+            loadVoteTicketList();
+        }
     }
 
     private void showNodeDetailInfo() {
         if (isViewAttached()) {
-            getView().showNodeDetailInfo(mCandidateId, mCandidateName);
+            getView().showNodeDetailInfo(mBatchVoteTransactionEntity);
         }
     }
 
@@ -57,7 +59,7 @@ public class VoteDetailPresenter extends BasePresenter<VoteDetailContract.View> 
 
             @Override
             public List<SingleVoteInfoEntity> call() throws Exception {
-                return SingleVoteInfoDao.getInstance().getTransactionListByCandidateId(mCandidateId);
+                return SingleVoteInfoDao.getInstance().getTransactionListByCandidateId(mBatchVoteTransactionEntity.getCandidateId());
             }
         })
                 .flatMap(new Function<List<SingleVoteInfoEntity>, Publisher<SingleVoteInfoEntity>>() {
