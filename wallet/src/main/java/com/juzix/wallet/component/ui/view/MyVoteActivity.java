@@ -75,7 +75,7 @@ public class MyVoteActivity extends MVPBaseActivity<MyVotePresenter> implements 
                     @Override
                     public void accept(Integer position) throws Exception {
                         BatchVoteTransactionEntity batchVoteTransactionEntity = mBatchVoteTransactionAdapter.getItem(position);
-                        VoteDetailActivity.actionStart(MyVoteActivity.this, batchVoteTransactionEntity.getCandidateId(), batchVoteTransactionEntity.getNodeName());
+                        VoteDetailActivity.actionStart(MyVoteActivity.this, batchVoteTransactionEntity);
                     }
                 });
 

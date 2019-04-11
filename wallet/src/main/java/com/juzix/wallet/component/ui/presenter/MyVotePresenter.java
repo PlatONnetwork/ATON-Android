@@ -2,8 +2,6 @@ package com.juzix.wallet.component.ui.presenter;
 
 import android.util.Log;
 
-import com.juzhen.framework.network.ApiErrorCode;
-import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.util.MapUtils;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
@@ -42,7 +40,6 @@ import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
-import retrofit2.Response;
 
 /**
  * @author matrixelement
@@ -67,7 +64,6 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
         getBatchVoteSummary(walletAddressList.toArray(new String[walletAddressList.size()]));
 
         getBatchVoteTransaction(walletAddressList.toArray(new String[walletAddressList.size()]));
-
     }
 
     @Override
@@ -154,16 +150,6 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
 
         VoteManager.getInstance()
                 .getBatchVoteSummary(addressList)
-                .map(new Function<Response<ApiResponse<List<BatchVoteSummaryEntity>>>, List<BatchVoteSummaryEntity>>() {
-                    @Override
-                    public List<BatchVoteSummaryEntity> apply(Response<ApiResponse<List<BatchVoteSummaryEntity>>> apiResponseResponse) throws Exception {
-                        if (apiResponseResponse.isSuccessful() && apiResponseResponse.body().getResult() == ApiErrorCode.SUCCESS) {
-                            return apiResponseResponse.body().getData();
-                        } else {
-                            return new ArrayList<>();
-                        }
-                    }
-                })
                 .filter(new Predicate<List<BatchVoteSummaryEntity>>() {
                     @Override
                     public boolean test(List<BatchVoteSummaryEntity> batchVoteSummaryEntities) throws Exception {
@@ -231,6 +217,14 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
                         Log.e(TAG, throwable.getMessage());
                     }
                 });
+    }
+
+    private List<VoteSummaryEntity> buildDefaultVoteSummaryList() {
+        List<VoteSummaryEntity> voteSummaryEntityList = new ArrayList<>();
+        voteSummaryEntityList.add(new VoteSummaryEntity(String.format("%s%s", string(R.string.lockVote), "(Energon)"), String.valueOf("-")));
+        voteSummaryEntityList.add(new VoteSummaryEntity(String.format("%s%s", string(R.string.votingIncome), "(Energon)"), String.valueOf("-")));
+        voteSummaryEntityList.add(new VoteSummaryEntity(String.format("%s", string(R.string.validInvalidTicket)), String.format("%d/%d", "-", "-")));
+        return voteSummaryEntityList;
     }
 
     private List<VoteSummaryEntity> buildVoteSummaryList(Map<String, Object> map) {

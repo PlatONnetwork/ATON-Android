@@ -55,7 +55,7 @@
             android:layout_alignRight="@id/tv_transaction_status"
             android:layout_marginLeft="3.5dp"
             android:background="@drawable/bg_red_point"
-            android:visibility="gone" />
+            android:visibility="invisible" />
 
     </LinearLayout>
 

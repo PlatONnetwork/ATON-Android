@@ -199,22 +199,25 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
     }
 
     private List<CandidateEntity> getDefaultCandidateEntityList(List<CandidateEntity> candidateEntityList, List<CandidateEntity> verifiersList) {
+        //首先按默认的排序，根據排序來确定节点的状态，联名节点+验证节点+候选节点
+        Collections.sort(candidateEntityList, SortType.SORTED_BY_DEFAULT.getComparator());
         //全量提名节点
         List<CandidateEntity> allCandidateList = getAllCandidateList(candidateEntityList);
         //全量候选节点
         List<CandidateEntity> allAlternativeList = getAllReserveList(candidateEntityList);
-
         //不在池子中的验证节点
         List<CandidateEntity> absentVerifiersList = getAbsentVerifiersList(allCandidateList, allAlternativeList, verifiersList);
         //在池子中的验证节点
-        List<CandidateEntity> inVerifiersList = verifiersList;
+        List<CandidateEntity> inVerifiersList = new ArrayList<>();
+        inVerifiersList.addAll(verifiersList);
+        inVerifiersList.removeAll(absentVerifiersList);
+
         //剔除掉验证节点的提名节点列表
         List<CandidateEntity> partCandidateList = getCandidateList(allCandidateList, verifiersList);
         //剔除掉验证节点的候选节点列表
         List<CandidateEntity> partReserveList = getReserveList(allAlternativeList, verifiersList);
 
-        //排序顺序为：验证节点(在池子中)+提名节点+验证人节点(不在池子中)+候选节点
-        inVerifiersList.removeAll(absentVerifiersList);
+        //排序顺序为：验证节点(在池子中)+提名节点+临界状态的验证节点(投票数为0)+验证人节点(不在池子中)+候选节点+掉榜的验证节点(投票数小于512)
         inVerifiersList.addAll(partCandidateList);
         inVerifiersList.addAll(absentVerifiersList);
         inVerifiersList.addAll(partReserveList);
@@ -225,20 +228,16 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
     private void showCandidateList(String keyWord, SortType sortType) {
 
         if (mCandidateEntiyList != null) {
-
-            List<CandidateEntity> candidateEntities = getSearchResult(keyWord, mCandidateEntiyList);
-
-            Collections.sort(candidateEntities, sortType.getComparator());
-
-            if (sortType == SortType.SORTED_BY_DEFAULT) {
-                candidateEntities = getDefaultCandidateEntityList(candidateEntities, mVerifiersList);
-            }
+            //根据默认排序来确定节点的状态
+            List<CandidateEntity> candidateEntityList = getDefaultCandidateEntityList(getSearchResult(keyWord, mCandidateEntiyList), mVerifiersList);
+            //进行重新排序，按照各自的规则
+            Collections.sort(candidateEntityList, sortType.getComparator());
 
             if (isViewAttached()) {
-                if (!TextUtils.isEmpty(keyWord) && (candidateEntities == null || candidateEntities.isEmpty())) {
+                if (!TextUtils.isEmpty(keyWord) && (candidateEntityList == null || candidateEntityList.isEmpty())) {
                     showLongToast(R.string.query_no_result);
                 }
-                getView().notifyDataSetChanged(candidateEntities);
+                getView().notifyDataSetChanged(candidateEntityList);
             }
         }
     }
@@ -362,6 +361,25 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
             absentVerifiersList.add(candidateEntity);
         }
         return absentVerifiersList;
+    }
+
+    /**
+     * 获取掉榜的验证节点
+     *
+     * @return
+     */
+    private List<CandidateEntity> getOffVerifiersList(List<CandidateEntity> candidateList) {
+        List<CandidateEntity> offVerifiersList = new ArrayList<>();
+        if (candidateList == null || candidateList.isEmpty()) {
+            return offVerifiersList;
+        }
+
+        for (CandidateEntity candidateEntity : candidateList) {
+            if (candidateEntity.getVotedNum() < DEFAULT_VOTE_NUM) {
+                offVerifiersList.add(candidateEntity);
+            }
+        }
+        return offVerifiersList;
     }
 
     private List<CandidateEntity> getSearchResult(String keyWord, List<CandidateEntity> candidateEntityList) {

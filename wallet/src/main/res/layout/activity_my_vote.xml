@@ -23,7 +23,6 @@
         app:line_padding_horizontal="50dp"
         app:line_padding_vertical="24dp"
         app:line_size="1dp"
-        android:visibility="gone"
         tools:listitem="@layout/item_vote_info" />
 
     <ListView

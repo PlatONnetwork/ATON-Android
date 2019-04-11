@@ -74,6 +74,5 @@ public class SplashActivity extends BaseActivity {
 //        layoutParams.topMargin = marginTop;
 //
 //        layout.setLayoutParams(layoutParams);
-
     }
 }

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
-import android.text.TextUtils;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -14,6 +13,7 @@ import com.juzix.wallet.component.adapter.VoteDetailListAdapter;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.VoteDetailContract;
 import com.juzix.wallet.component.ui.presenter.VoteDetailPresenter;
+import com.juzix.wallet.entity.BatchVoteTransactionEntity;
 import com.juzix.wallet.entity.VoteDetailItemEntity;
 
 import java.util.List;
@@ -67,19 +67,14 @@ public class VoteDetailActivity extends MVPBaseActivity<VoteDetailPresenter> imp
     }
 
     @Override
-    public String getCandidateIdFromIntent() {
-        return getIntent().getStringExtra(Constants.Extra.EXTRA_CANDIDATE_ID);
+    public BatchVoteTransactionEntity getBatchVoteTransactionFromIntent() {
+        return getIntent().getParcelableExtra(Constants.Extra.EXTRA_BATCHVOTETRANSACTION);
     }
 
     @Override
-    public String getCandidateNameFromIntent() {
-        return getIntent().getStringExtra(Constants.Extra.EXTRA_CANDIDATE_NAME);
-    }
-
-    @Override
-    public void showNodeDetailInfo(String candidateId, String nodeName) {
-        tvNodeName.setText(nodeName);
-        tvNodeId.setText(getFormatCandidateId(candidateId));
+    public void showNodeDetailInfo(BatchVoteTransactionEntity batchVoteTransactionEntity) {
+        tvNodeName.setText(batchVoteTransactionEntity.getNodeName());
+        tvNodeId.setText(batchVoteTransactionEntity.getFormatCandidateId());
     }
 
     @Override
@@ -87,18 +82,9 @@ public class VoteDetailActivity extends MVPBaseActivity<VoteDetailPresenter> imp
         mVoteDetailListAdapter.notifyDataChanged(voteDetailItemEntityList);
     }
 
-    public static void actionStart(Context context, String candidateId, String candidateName) {
+    public static void actionStart(Context context, BatchVoteTransactionEntity batchVoteTransactionEntity) {
         Intent intent = new Intent(context, VoteDetailActivity.class);
-        intent.putExtra(Constants.Extra.EXTRA_CANDIDATE_ID, candidateId);
-        intent.putExtra(Constants.Extra.EXTRA_CANDIDATE_NAME, candidateName);
+        intent.putExtra(Constants.Extra.EXTRA_BATCHVOTETRANSACTION, batchVoteTransactionEntity);
         context.startActivity(intent);
-    }
-
-    private String getFormatCandidateId(String candidateId) {
-        if (TextUtils.isEmpty(candidateId) || candidateId.startsWith("0x")) {
-            return candidateId;
-        }
-
-        return "0x".concat(candidateId);
     }
 }

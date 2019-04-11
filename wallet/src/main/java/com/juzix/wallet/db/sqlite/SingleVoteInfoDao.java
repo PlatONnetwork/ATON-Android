@@ -73,6 +73,30 @@ public class SingleVoteInfoDao {
         return list;
     }
 
+    public List<SingleVoteInfoEntity> getTransactionListByWalletAddress(String[] walletAddress) {
+        List<SingleVoteInfoEntity> list = new ArrayList<>();
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            RealmResults<SingleVoteInfoEntity> results = realm.where(SingleVoteInfoEntity.class)
+                    .in("walletAddress", walletAddress)
+                    .findAll();
+            list = realm.copyFromRealm(results);
+            realm.commitTransaction();
+        } catch (Exception exp) {
+            exp.printStackTrace();
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return list;
+    }
+
     public List<TicketInfoEntity> getTicketListByCandidateId(String candidateId) {
         List<TicketInfoEntity> list = new ArrayList<>();
         Realm realm = null;

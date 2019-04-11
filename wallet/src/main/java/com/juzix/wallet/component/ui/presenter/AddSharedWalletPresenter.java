@@ -65,7 +65,7 @@ public class AddSharedWalletPresenter extends BasePresenter<AddSharedWalletContr
 
         SharedWalletTransactionManager
                 .getInstance()
-                .addWallet(name, contractAddress, walletEntity.getPrefixAddress())
+                .addWallet(currentActivity(),name, contractAddress, walletEntity.getPrefixAddress())
                 .compose(new SchedulersTransformer())
                 .compose(bindToLifecycle())
                 .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))

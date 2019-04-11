@@ -69,7 +69,15 @@ public enum SortType {
     static class DefaultComparator implements Comparator<CandidateEntity> {
         @Override
         public int compare(CandidateEntity o1, CandidateEntity o2) {
-            return Double.compare(NumberParserUtils.parseDouble(o2.getDeposit()), NumberParserUtils.parseDouble(o1.getDeposit()));
+            int compare = Double.compare(NumberParserUtils.parseDouble(o2.getDeposit()), NumberParserUtils.parseDouble(o1.getDeposit()));
+            if (compare != 0) {
+                return compare;
+            }
+            compare = Long.compare(o2.getVotedNum(), o1.getVotedNum());
+            if (compare != 0) {
+                return compare;
+            }
+            return compare;
         }
     }
 }

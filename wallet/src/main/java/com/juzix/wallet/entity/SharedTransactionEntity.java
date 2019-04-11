@@ -464,7 +464,7 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
             return TransactionStatus.SUCCEED;
         }
 
-        if (transactionResult == null || transactionResult.isEmpty()) {
+        if (transactionType == TransactionType.CREATE_JOINT_WALLET.typeValue || transactionType == TransactionType.EXECUTED_CONTRACT.typeValue) {
             return TransactionStatus.CREATE_JOINT_WALLET;
         }
 
