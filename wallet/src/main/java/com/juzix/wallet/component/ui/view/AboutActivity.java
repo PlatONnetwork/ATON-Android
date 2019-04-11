@@ -8,8 +8,10 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding3.view.RxView;
 import com.juzhen.framework.util.AndroidUtil;
 import com.juzhen.framework.util.crypt.Base64Utils;
 import com.juzhen.framework.util.crypt.MD5Utils;
@@ -27,6 +29,7 @@ import com.juzix.wallet.utils.ShareUtil;
 
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,6 +38,7 @@ import butterknife.Unbinder;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import kotlin.Unit;
 
 /**
  * @author matrixelement
@@ -43,10 +47,14 @@ public class AboutActivity extends BaseActivity{
 
 //    @BindView(R.id.tv_app_version)
 //    TextView tvAppVersion;
+    @BindView(R.id.tv_about_us)
+    TextView     tvAboutUs;
+    @BindView(R.id.ll_update)
+    LinearLayout llUpdate;
     @BindView(R.id.tv_update)
-    TextView tvUpdate;
+    TextView     tvUpdate;
     @BindView(R.id.v_new_msg)
-    View vNewMsg;
+    View         vNewMsg;
 
     private Unbinder unbinder;
 
@@ -65,6 +73,22 @@ public class AboutActivity extends BaseActivity{
             versionName = "v" + versionName;
         vNewMsg.setVisibility(View.GONE);
         tvUpdate.setText(string(R.string.current_version,  versionName));
+        RxView.clicks(tvAboutUs)
+                .throttleFirst(500, TimeUnit.MILLISECONDS)
+                .subscribe(new Consumer<Unit>() {
+                    @Override
+                    public void accept(Unit unit) throws Exception {
+                        ShareUtil.shareUrl(getContext(), "https://www.platon.network");
+                    }
+                });
+        RxView.clicks(llUpdate)
+                .throttleFirst(500, TimeUnit.MILLISECONDS)
+                .subscribe(new Consumer<Unit>() {
+                    @Override
+                    public void accept(Unit unit) throws Exception {
+                        update();
+                    }
+                });
     }
 
     @Override
@@ -78,19 +102,6 @@ public class AboutActivity extends BaseActivity{
     public static void actionStart(Context context) {
         Intent intent = new Intent(context, AboutActivity.class);
         context.startActivity(intent);
-    }
-
-    @OnClick({R.id.tv_about_us, R.id.ll_update})
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.tv_about_us:
-                ShareUtil.shareUrl(getContext(), "https://www.platon.network");
-                break;
-            case R.id.ll_update:
-                update();
-//                ShareUtil.shareUrl(getContext(), "https://developer.platon.network/mobile/index.html");
-                break;
-        }
     }
 
     private void checkVersion(){

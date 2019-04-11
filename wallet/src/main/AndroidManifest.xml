@@ -55,7 +55,7 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/MainTheme"
-            android:windowSoftInputMode="stateAlwaysHidden" />
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
 
         <activity
             android:name=".component.ui.view.ServiceTermsActivity"

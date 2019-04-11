@@ -24,10 +24,11 @@ public class AddressBookListAdapter extends CommonAdapter<AddressEntity> {
         if (item != null) {
             viewHolder.setText(R.id.tv_wallet_name, item.getName());
             viewHolder.setText(R.id.tv_wallet_address, AddressFormatUtil.formatAddress(item.getAddress()));
-            int avatar = RUtils.drawable(item.getAvatar());
-            if (avatar != -1) {
-                viewHolder.setImageResource(R.id.iv_wallet_avatar, avatar);
+            int resId = RUtils.drawable(item.getAvatar());
+            if (resId < 0){
+                resId = R.drawable.avatar_15;
             }
+            viewHolder.setImageResource(R.id.iv_wallet_avatar, resId);
         }
     }
 

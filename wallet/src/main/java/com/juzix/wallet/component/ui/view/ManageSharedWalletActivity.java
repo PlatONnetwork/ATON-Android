@@ -7,8 +7,10 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.text.InputType;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding3.view.RxView;
 import com.jakewharton.rxbinding3.widget.RxAdapterView;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
@@ -31,6 +33,7 @@ import org.web3j.crypto.Credentials;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,6 +41,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.reactivex.Single;
 import io.reactivex.functions.Consumer;
+import kotlin.Unit;
 
 /**
  * @author matrixelement
@@ -45,9 +49,13 @@ import io.reactivex.functions.Consumer;
 public class ManageSharedWalletActivity extends MVPBaseActivity<ManageSharedWalletPresenter> implements ManageSharedWalletContract.View {
 
     @BindView(R.id.commonTitleBar)
-    CommonTitleBar commonTitleBar;
+    CommonTitleBar        commonTitleBar;
+    @BindView(R.id.rl_rename)
+    RelativeLayout        rlRename;
     @BindView(R.id.tv_rename)
-    TextView tvWalletName;
+    TextView              tvWalletName;
+    @BindView(R.id.tv_delete)
+    TextView              tvDelete;
     @BindView(R.id.list_member)
     ListViewForScrollView listMember;
 
@@ -69,12 +77,30 @@ public class ManageSharedWalletActivity extends MVPBaseActivity<ManageSharedWall
     }
 
     private void initView() {
+        RxView.clicks(rlRename)
+                .throttleFirst(500, TimeUnit.MILLISECONDS)
+                .subscribe(new Consumer<Unit>() {
+                    @Override
+                    public void accept(Unit unit) throws Exception {
+                        showModifyWalletNameDialog();
+                    }
+                });
+        RxView.clicks(tvDelete)
+                .throttleFirst(500, TimeUnit.MILLISECONDS)
+                .subscribe(new Consumer<Unit>() {
+                    @Override
+                    public void accept(Unit unit) throws Exception {
+                        mPresenter.deleteAction(TYPE_DELETE_WALLET);
+                    }
+                });
 
         mAdapter = new SharedWalletMemberAdapter(R.layout.item_manage_shared_wallet_members, null);
 
         listMember.setAdapter(mAdapter);
 
-        RxAdapterView.itemClicks(listMember).subscribe(new Consumer<Integer>() {
+        RxAdapterView.itemClicks(listMember)
+                .throttleFirst(500, TimeUnit.MILLISECONDS)
+                .subscribe(new Consumer<Integer>() {
             @Override
             public void accept(Integer position) throws Exception {
                 if (position != 0) {
@@ -82,20 +108,6 @@ public class ManageSharedWalletActivity extends MVPBaseActivity<ManageSharedWall
                 }
             }
         });
-    }
-
-    @OnClick({R.id.rl_rename, R.id.tv_delete})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.rl_rename:
-                showModifyWalletNameDialog();
-                break;
-            case R.id.tv_delete:
-                mPresenter.deleteAction(TYPE_DELETE_WALLET);
-                break;
-            default:
-                break;
-        }
     }
 
     @Override

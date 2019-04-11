@@ -90,7 +90,7 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
         holder.vShadow.setVisibility(View.GONE);
         holder.rlItem.setVisibility(View.GONE);
         holder.progressBar.setVisibility(View.VISIBLE);
-        holder.progressBar.setProgress(walletEntity.getProgress(), walletEntity.getName(), R.drawable.icon_assets_joint_p);
+        holder.progressBar.setProgress(walletEntity.getProgress(), walletEntity.getName(), R.drawable.icon_assets_joint_p, R.drawable.icon_assets_joint_n);
         holder.progressBar.setOnClickListener(null);
     }
 
