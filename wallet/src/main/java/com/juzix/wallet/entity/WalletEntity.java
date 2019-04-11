@@ -69,6 +69,10 @@ public class WalletEntity implements Parcelable {
         return avatar;
     }
 
+    public String getExportAvatar() {
+        return "icon_export_" + avatar;
+    }
+
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }

@@ -38,7 +38,7 @@ import kotlin.Unit;
 /**
  * @author matrixelement
  */
-public class SubmitVoteActivity extends MVPBaseActivity<SubmitVotePresenter> implements SubmitVoteContract.View {
+public class SubmitVoteActivity extends MVPBaseActivity<SubmitVotePresenter> implements SubmitVoteContract.View  {
 
     @BindView(R.id.layout_node_name)
     ConstraintLayout layoutNodeName;
@@ -107,6 +107,7 @@ public class SubmitVoteActivity extends MVPBaseActivity<SubmitVotePresenter> imp
                     public void accept(CharSequence charSequence) throws Exception {
                         mTicketNum = NumberParserUtils.parseInt(charSequence);
                         mPresenter.updateVotePayInfo();
+                        sbtnVote.setEnabled(mTicketNum >= 1);
                     }
                 });
 
@@ -147,7 +148,6 @@ public class SubmitVoteActivity extends MVPBaseActivity<SubmitVotePresenter> imp
                 });
 
         mTicketNum = NumberParserUtils.parseInt(getTicketNum());
-
     }
 
     @OnClick({R.id.iv_sub_ticket, R.id.iv_add_ticket})

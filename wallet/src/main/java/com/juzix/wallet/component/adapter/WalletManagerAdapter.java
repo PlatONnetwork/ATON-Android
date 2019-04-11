@@ -51,7 +51,11 @@ public class WalletManagerAdapter extends RecyclerView.Adapter<WalletManagerAdap
     @Override
     public void onBindViewHolder(final ViewHolder viewHolder, int position) {
         final WalletEntity item = mWalletList.get(position);
-        viewHolder.ivWalletAvatar.setImageResource(RUtils.drawable(item.getAvatar()));
+        int resId = RUtils.drawable(item.getAvatar());
+        if (resId < 0){
+            resId = R.drawable.avatar_15;
+        }
+        viewHolder.ivWalletAvatar.setImageResource(resId);
         viewHolder.tvwalletName.setText(item.getName());
         viewHolder.tvWalletAddress.setText(AddressFormatUtil.formatAddress(item.getPrefixAddress()));
         viewHolder.ivWalletShared.setVisibility(item instanceof IndividualWalletEntity ? View.GONE : View.VISIBLE);

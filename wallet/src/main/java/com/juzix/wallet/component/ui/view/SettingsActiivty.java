@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.bigkoo.pickerview.OptionsPickerView;
 import com.bigkoo.pickerview.lib.WheelView;
+import com.jakewharton.rxbinding3.view.RxView;
 import com.juzix.biometric.BiometricPromptCompat;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.base.BaseActivity;
@@ -23,12 +24,15 @@ import com.juzix.wallet.utils.LanguageUtil;
 
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.reactivex.functions.Consumer;
+import kotlin.Unit;
 
 /**
  * @author matrixelement
@@ -97,20 +101,22 @@ public class SettingsActiivty extends BaseActivity {
                 }
             }
         });
-    }
-
-    @OnClick({R.id.tv_node_setting, R.id.layout_switch_language})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.tv_node_setting:
-                NodeSettingsActivity.actionStart(this);
-                break;
-            case R.id.layout_switch_language:
-                SwitchLanguageActivity.actionStart(this);
-                break;
-            default:
-                break;
-        }
+        RxView.clicks(tvNodeSetting)
+                .throttleFirst(500, TimeUnit.MILLISECONDS)
+                .subscribe(new Consumer<Unit>() {
+                    @Override
+                    public void accept(Unit unit) throws Exception {
+                        NodeSettingsActivity.actionStart(getContext());
+                    }
+                });
+        RxView.clicks(layoutSwitchLanguage)
+                .throttleFirst(500, TimeUnit.MILLISECONDS)
+                .subscribe(new Consumer<Unit>() {
+                    @Override
+                    public void accept(Unit unit) throws Exception {
+                        SwitchLanguageActivity.actionStart(getContext());
+                    }
+                });
     }
 
     private void switchToggleButton(boolean faceTouchFlag){

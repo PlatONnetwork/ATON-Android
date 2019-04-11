@@ -134,7 +134,6 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         return rootView;
     }
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -210,7 +209,6 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
                 break;
         }
     }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNetWorkStateChangedEvent(Event.NetWorkStateChangedEvent event) {
         if (event.netState == NetState.CONNECTED) {
@@ -435,12 +433,12 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
     @Override
     public void showTotalBalance(double totalBalance) {
-        tvTotalAssetsAmount.setText(NumberParserUtils.getPrettyBalance(totalBalance));
+        tvTotalAssetsAmount.setText(totalBalance > 0 ? NumberParserUtils.getPrettyBalance(totalBalance) : "0.00");
     }
 
     @Override
     public void showBalance(double balance) {
-        tvWalletAmount.setText(NumberParserUtils.getPrettyBalance(balance));
+        tvWalletAmount.setText(balance > 0 ? NumberParserUtils.getPrettyBalance(balance) : "0.00");
     }
 
     @Override
@@ -452,7 +450,11 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     @Override
     public void showWalletInfo(WalletEntity walletEntity) {
         tvBackup.setVisibility(mPresenter.needBackup(walletEntity) ? View.VISIBLE : View.GONE);
-        ivWalletAvatar.setImageResource(RUtils.drawable("icon_export_" + walletEntity.getAvatar()));
+        int resId = RUtils.drawable(walletEntity.getExportAvatar());
+        if (resId < 0){
+            resId = R.drawable.icon_export_avatar_15;
+        }
+        ivWalletAvatar.setImageResource(resId);
         tvWalletName.setText(walletEntity.getName());
         showBalance(walletEntity.getBalance());
     }

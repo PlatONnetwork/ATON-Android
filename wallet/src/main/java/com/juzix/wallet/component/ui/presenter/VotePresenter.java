@@ -230,7 +230,7 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
         if (mCandidateEntiyList != null) {
             //根据默认排序来确定节点的状态
             List<CandidateEntity> candidateEntityList = getDefaultCandidateEntityList(getSearchResult(keyWord, mCandidateEntiyList), mVerifiersList);
-            //进行重新排序，按照各自的规则
+           //进行重新排序，按照各自的规则
             Collections.sort(candidateEntityList, sortType.getComparator());
 
             if (isViewAttached()) {
@@ -387,11 +387,11 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
             return candidateEntityList;
         } else {
             List<CandidateEntity> result = new ArrayList<>();
-            for (CandidateEntity candidateEntity : mCandidateEntiyList) {
+            for (CandidateEntity candidateEntity : candidateEntityList) {
                 CandidateExtraEntity candidateExtraEntity = candidateEntity.getCandidateExtraEntity();
                 if (candidateExtraEntity != null) {
                     String nodeName = candidateExtraEntity.getNodeName();
-                    if ((!TextUtils.isEmpty(nodeName)) && nodeName.toLowerCase().contains(mKeyword.toLowerCase())) {
+                    if ((!TextUtils.isEmpty(nodeName)) && nodeName.toLowerCase().contains(keyWord.toLowerCase())) {
                         result.add(candidateEntity);
                     }
                 }

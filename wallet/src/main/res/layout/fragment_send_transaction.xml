@@ -188,7 +188,8 @@
                 app:bsb_thumb_text_size="11sp"
                 app:bsb_touch_to_seek="true"
                 app:bsb_track_color="@color/color_d5d8df"
-                app:bsb_track_size="2dp" />
+                app:bsb_track_size="2dp"
+                app:bsb_colors="#ff28ADFF_#ff105CFE_#ff105CFE"/>
 
 
         </RelativeLayout>

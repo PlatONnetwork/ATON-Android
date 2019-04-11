@@ -133,7 +133,7 @@ public class SharedWalletTransactionManager {
                 });
     }
 
-    public void createSharedWallet(Credentials credentials, String walletName, String individualWalletAddress, int requiredSignNumber, List<OwnerEntity> members,
+    public void createSharedWallet(Credentials credentials, String walletName, String individualWalletAddress, String individualWalletName, int requiredSignNumber, List<OwnerEntity> members,
                                    BigInteger ethGasPrice, double feeAmount) {
 
         long time = System.currentTimeMillis();
@@ -164,7 +164,7 @@ public class SharedWalletTransactionManager {
                                 .createTime(System.currentTimeMillis())
                                 .fromAddress(sharedWalletEntity.getCreatorAddress())
                                 .contractAddress(receipt.getContractAddress())
-                                .walletName(walletName)
+                                .walletName(individualWalletName)
                                 .read(true)
                                 .sharedWalletOwnerInfoEntityList(sharedWalletEntity.buildSharedWalletOwnerInfoEntityList())
                                 .ownerWalletAddress(individualWalletAddress)
@@ -196,7 +196,7 @@ public class SharedWalletTransactionManager {
                                 .createTime(System.currentTimeMillis())
                                 .fromAddress(sharedWalletEntity.getCreatorAddress())
                                 .contractAddress(receipt.getContractAddress())
-                                .walletName(walletName)
+                                .walletName(individualWalletName)
                                 .read(true)
                                 .sharedWalletOwnerInfoEntityList(sharedWalletEntity.buildSharedWalletOwnerInfoEntityList())
                                 .ownerWalletAddress(individualWalletAddress)
