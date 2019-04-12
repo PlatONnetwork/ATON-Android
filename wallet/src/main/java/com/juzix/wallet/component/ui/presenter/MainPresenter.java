@@ -19,19 +19,13 @@ import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.config.JZAppConfigure;
 import com.juzix.wallet.config.JZDirType;
 import com.juzix.wallet.config.PermissionConfigure;
-import com.juzix.wallet.engine.IndividualWalletManager;
-import com.juzix.wallet.engine.SharedWalletManager;
 import com.juzix.wallet.engine.VersionManager;
-import com.juzix.wallet.entity.IndividualWalletEntity;
-import com.juzix.wallet.entity.SharedWalletEntity;
 import com.juzix.wallet.entity.VersionEntity;
 import com.juzix.wallet.entity.WalletEntity;
+import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.DateUtil;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -40,7 +34,6 @@ import io.reactivex.schedulers.Schedulers;
 
 public class MainPresenter extends BasePresenter<MainContract.View> implements MainContract.Presenter{
 
-    private ArrayList<WalletEntity> mWalletList = new ArrayList<>();
     private       WalletEntity    mSelectedWallet;
 
     public MainPresenter(MainContract.View view) {
@@ -132,35 +125,6 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
     }
 
     @Override
-    public void updateWalletList(){
-        List<IndividualWalletEntity> individualWalletList = IndividualWalletManager.getInstance().getWalletList();
-        List<SharedWalletEntity>     sharedWalletList = SharedWalletManager.getInstance().getWalletList();
-        if (!mWalletList.isEmpty()){
-            mWalletList.clear();
-        }
-        if (!individualWalletList.isEmpty()){
-            mWalletList.addAll(individualWalletList);
-        }
-        if (!sharedWalletList.isEmpty()){
-            mWalletList.addAll(sharedWalletList);
-        }
-        if (mWalletList.isEmpty()){
-            return;
-        }
-        Collections.sort(mWalletList, new Comparator<WalletEntity>() {
-            @Override
-            public int compare(WalletEntity o1, WalletEntity o2) {
-                return Long.compare(o1.getUpdateTime(),  o2.getUpdateTime());
-            }
-        });
-    }
-
-    @Override
-    public ArrayList<WalletEntity> getWalletList() {
-        return mWalletList;
-    }
-
-    @Override
     public WalletEntity getSelectedWallet() {
         return mSelectedWallet;
     }
@@ -168,5 +132,6 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
     @Override
     public void setSelectedWallet(WalletEntity walletEntity) {
         mSelectedWallet = walletEntity;
+        EventPublisher.getInstance().sendUpdateSelectedWalletEvent(mSelectedWallet);
     }
 }
