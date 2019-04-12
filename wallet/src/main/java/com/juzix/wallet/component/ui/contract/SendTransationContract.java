@@ -35,7 +35,7 @@ public class SendTransationContract {
 
         void setSaveAddressButtonEnable(boolean enable);
 
-        void resetView(String feeAmount);
+        void resetView(double feeAmount);
 
         void showSaveAddressDialog();
     }

@@ -5,6 +5,10 @@ package com.juzix.wallet.app;
  */
 public class Constants {
 
+    public interface Common{
+        int REFRESH_TIME = 5000;
+    }
+
     public interface Extra {
         String EXTRA_PRIVATE_KEY = "extra_private_key";
         String EXTRA_PASSWORD = "extra_password";

@@ -7,6 +7,7 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 /**
  * @author matrixelement
@@ -109,6 +110,7 @@ public class IndividualTransactionInfoDao {
                     .equalTo("from", address)
                     .or()
                     .equalTo("to", address)
+                    .sort("createTime", Sort.DESCENDING)
                     .findAll();
             list.addAll(realm.copyFromRealm(results));
         } catch (Exception exp) {

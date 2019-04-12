@@ -16,8 +16,13 @@ import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.IndividualTransactionDetailContract;
 import com.juzix.wallet.component.ui.presenter.IndividualTransactionDetailPresenter;
 import com.juzix.wallet.entity.IndividualTransactionEntity;
+import com.juzix.wallet.event.Event;
+import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.CommonUtil;
 import com.juzix.wallet.utils.DateUtil;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -71,6 +76,8 @@ public class IndividualTransactionDetailActivity extends MVPBaseActivity<Individ
     TextView tvTransactionStatusDesc;
 
     private Unbinder unbinder;
+    private IndividualTransactionEntity mTransactionEntity;
+    private String mQueryAddress;
 
     @Override
     protected IndividualTransactionDetailPresenter createPresenter() {
@@ -81,8 +88,17 @@ public class IndividualTransactionDetailActivity extends MVPBaseActivity<Individ
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_individual_transation_detail);
+        EventPublisher.getInstance().register(this);
         unbinder = ButterKnife.bind(this);
-        mPresenter.fetchTransactionDetail();
+        initViews();
+    }
+
+    private void initViews() {
+
+        mTransactionEntity = getTransactionFromIntent();
+        mQueryAddress = getAddressFromIntent();
+
+        setTransactionDetailInfo(mTransactionEntity, mQueryAddress);
     }
 
     @OnClick({R.id.iv_copy_from_address, R.id.iv_copy_to_address})
@@ -100,21 +116,6 @@ public class IndividualTransactionDetailActivity extends MVPBaseActivity<Individ
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (unbinder != null) {
-            unbinder.unbind();
-        }
-    }
-
-    public static void actionStart(Context context, IndividualTransactionEntity transactionEntity, String queryAddress) {
-        Intent intent = new Intent(context, IndividualTransactionDetailActivity.class);
-        intent.putExtra(Constants.Extra.EXTRA_TRANSACTION, transactionEntity);
-        intent.putExtra(Constants.Extra.EXTRA_ADDRESS, queryAddress);
-        context.startActivity(intent);
-    }
-
-    @Override
     public IndividualTransactionEntity getTransactionFromIntent() {
         return getIntent().getParcelableExtra(Constants.Extra.EXTRA_TRANSACTION);
     }
@@ -127,6 +128,10 @@ public class IndividualTransactionDetailActivity extends MVPBaseActivity<Individ
     @Override
     public void setTransactionDetailInfo(IndividualTransactionEntity transactionEntity, String queryAddress) {
 
+        if (transactionEntity == null) {
+            return;
+        }
+
         showTransactionStatus(transactionEntity.getTransactionStatus());
 
         tvCopyFromName.setText(transactionEntity.getWalletName());
@@ -138,6 +143,11 @@ public class IndividualTransactionDetailActivity extends MVPBaseActivity<Individ
         tvTransactionAmount.setText(string(R.string.amount_with_unit, NumberParserUtils.getPrettyBalance(transactionEntity.getValue())));
         tvTransactionEnergon.setText(string(R.string.amount_with_unit, NumberParserUtils.getPrettyBalance(transactionEntity.getEnergonPrice())));
         tvTransactionWalletName.setText(transactionEntity.getWalletName());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdateIndividualWalletTransactionEvent(Event.UpdateIndividualWalletTransactionEvent updateIndividualWalletTransactionEvent) {
+        setTransactionDetailInfo(updateIndividualWalletTransactionEvent.individualTransactionEntity, mQueryAddress);
     }
 
     private void showTransactionStatus(IndividualTransactionEntity.TransactionStatus status) {
@@ -163,5 +173,21 @@ public class IndividualTransactionDetailActivity extends MVPBaseActivity<Individ
             default:
                 break;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (unbinder != null) {
+            unbinder.unbind();
+        }
+        EventPublisher.getInstance().unRegister(this);
+    }
+
+    public static void actionStart(Context context, IndividualTransactionEntity transactionEntity, String queryAddress) {
+        Intent intent = new Intent(context, IndividualTransactionDetailActivity.class);
+        intent.putExtra(Constants.Extra.EXTRA_TRANSACTION, transactionEntity);
+        intent.putExtra(Constants.Extra.EXTRA_ADDRESS, queryAddress);
+        context.startActivity(intent);
     }
 }

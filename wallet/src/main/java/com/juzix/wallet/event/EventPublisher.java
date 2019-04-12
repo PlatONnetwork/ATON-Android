@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.juzhen.framework.network.NetState;
+import com.juzix.wallet.entity.IndividualTransactionEntity;
 import com.juzix.wallet.entity.RegionEntity;
 import com.juzix.wallet.entity.SharedWalletEntity;
 import com.juzix.wallet.entity.WalletEntity;
@@ -49,8 +50,8 @@ public class EventPublisher {
         BusProvider.post(new Event.UpdateSharedWalletTransactionEvent());
     }
 
-    public void sendUpdateIndividualWalletTransactionEvent() {
-        BusProvider.post(new Event.UpdateIndividualWalletTransactionEvent());
+    public void sendUpdateIndividualWalletTransactionEvent(IndividualTransactionEntity individualTransactionEntity) {
+        BusProvider.post(new Event.UpdateIndividualWalletTransactionEvent(individualTransactionEntity));
     }
 
     public void sendUpdateCreateJointWalletProgressEvent(SharedWalletEntity sharedWalletEntity) {

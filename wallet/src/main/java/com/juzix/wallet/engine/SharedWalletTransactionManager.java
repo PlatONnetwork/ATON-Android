@@ -845,11 +845,11 @@ public class SharedWalletTransactionManager {
                     @Override
                     public void accept(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
                         //todo
-//                        String uuid = SharedTransactionInfoDao.getInstance().getSharedTransactionUUID(sharedTransactionEntity.getContractAddress(), sharedTransactionEntity.getTransactionId(), SharedTransactionEntity.TransactionType.SEND_TRANSACTION);
-//                        if (uuid != null) {
-//                            sharedTransactionInfoEntity.setUuid(uuid);
-//                            SharedTransactionInfoDao.getInstance().insertTransaction(sharedTransactionInfoEntity);
-//                        }
+                        String uuid = SharedTransactionInfoDao.getInstance().getSharedTransactionUUID(sharedTransactionEntity.getContractAddress(), sharedTransactionEntity.getTransactionId(), SharedTransactionEntity.TransactionType.SEND_TRANSACTION);
+                        if (uuid != null) {
+                            sharedTransactionInfoEntity.setUuid(uuid);
+                            SharedTransactionInfoDao.getInstance().insertTransaction(sharedTransactionInfoEntity);
+                        }
                     }
                 });
     }

@@ -106,6 +106,7 @@ public class AppFramework {
                             schema.get("SharedTransactionInfoEntity").addField("transactionResult", String.class);
                             schema.remove("TransactionInfoResult");
                             schema.get("IndividualTransactionInfoEntity").addField("completed", Boolean.class);
+                            schema.get("IndividualTransactionInfoEntity").addField("value", double.class);
                             oldVersion++;
                         } else if (oldVersion == 105) {
                             schema.get("IndividualWalletInfoEntity").addField("mnemonic", String.class);
@@ -117,6 +118,7 @@ public class AppFramework {
                             schema.remove("TransactionInfoResult");
                             schema.get("NodeInfoEntity").removeField("nodeDesc");
                             schema.get("IndividualTransactionInfoEntity").addField("completed", Boolean.class);
+                            schema.get("IndividualTransactionInfoEntity").addField("value", double.class);
                             oldVersion++;
                         }
                     }

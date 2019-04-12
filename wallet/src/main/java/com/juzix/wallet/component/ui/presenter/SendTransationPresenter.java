@@ -21,15 +21,14 @@ import com.juzix.wallet.component.ui.dialog.SendTransactionDialogFragment;
 import com.juzix.wallet.component.ui.view.AssetsFragment;
 import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.db.entity.AddressInfoEntity;
-import com.juzix.wallet.db.entity.IndividualTransactionInfoEntity;
 import com.juzix.wallet.db.entity.SharedTransactionInfoEntity;
 import com.juzix.wallet.db.sqlite.AddressInfoDao;
-import com.juzix.wallet.db.sqlite.IndividualTransactionInfoDao;
 import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.engine.IndividualWalletTransactionManager;
 import com.juzix.wallet.engine.SharedWalletManager;
 import com.juzix.wallet.engine.SharedWalletTransactionManager;
 import com.juzix.wallet.engine.Web3jManager;
+import com.juzix.wallet.entity.IndividualTransactionEntity;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.SharedWalletEntity;
 import com.juzix.wallet.entity.WalletEntity;
@@ -58,6 +57,7 @@ import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
 import io.reactivex.SingleSource;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
@@ -233,10 +233,10 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
             String fee = NumberParserUtils.getPrettyBalance(feeAmount);
             String executor = walletEntity instanceof SharedWalletEntity ? individualWalletEntity.getName() : "";
             String walletName = IndividualWalletManager.getInstance().getWalletNameByWalletAddress(toAddress);
-            if (TextUtils.isEmpty(walletName)){
+            if (TextUtils.isEmpty(walletName)) {
                 walletName = SharedWalletManager.getInstance().getSharedWalletNameByContractAddress(toAddress);
             }
-            if (TextUtils.isEmpty(walletName)){
+            if (TextUtils.isEmpty(walletName)) {
                 walletName = AddressFormatUtil.formatAddress(toAddress);
             }
             SendTransactionDialogFragment
@@ -276,7 +276,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
         if (isViewAttached()) {
             if (tabIndex != AssetsFragment.TAB2) {
                 resetData();
-                getView().resetView(BigDecimalUtil.parseString(feeAmount));
+                getView().resetView(feeAmount);
             }
         }
     }
@@ -294,59 +294,24 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
         }
     }
 
-    private Single<String> sendTransaction(String privateKey, String fromAddress, String toAddress, String transferAmount, long gasPrice, long gasLimit) {
-
-        return Single.create(new SingleOnSubscribe<String>() {
-            @Override
-            public void subscribe(SingleEmitter<String> emitter) throws Exception {
-                String transactionHash = IndividualWalletTransactionManager.getInstance().sendTransaction(privateKey, fromAddress, toAddress, transferAmount, NumberParserUtils.parseLong(BigDecimalUtil.parseString(gasPrice)), gasLimit);
-                if (TextUtils.isEmpty(transactionHash)) {
-                    emitter.onError(new CustomThrowable(CustomThrowable.CODE_ERROR_TRANSFER_FAILED));
-                } else {
-                    emitter.onSuccess(transactionHash);
-                }
-            }
-        });
-    }
-
     private void sendTransaction(Credentials credentials, String transferAmount, String toAddress) {
-        sendTransaction(Numeric.toHexStringNoPrefix(credentials.getEcKeyPair().getPrivateKey()), walletEntity.getPrefixAddress(), toAddress, transferAmount, NumberParserUtils.parseLong(BigDecimalUtil.parseString(gasPrice)), gasLimit)
-                .map(new Function<String, IndividualTransactionInfoEntity>() {
-                    @Override
-                    public IndividualTransactionInfoEntity apply(String hash) throws Exception {
-                        return new IndividualTransactionInfoEntity.Builder()
-                                .uuid(UUID.randomUUID().toString())
-                                .hash(hash)
-                                .createTime(System.currentTimeMillis())
-                                .from(walletEntity.getPrefixAddress())
-                                .to(toAddress)
-                                .walletName(walletEntity.getName())
-                                .build();
-                    }
-                })
-                .doOnSuccess(new Consumer<IndividualTransactionInfoEntity>() {
-                    @Override
-                    public void accept(IndividualTransactionInfoEntity individualTransactionInfoEntity) throws Exception {
-                        boolean success = IndividualTransactionInfoDao.getInstance().insertTransaction(individualTransactionInfoEntity);
-                        if (success){
-                            EventPublisher.getInstance().sendUpdateIndividualWalletTransactionEvent();
-                        }
-                    }
-                })
+        IndividualWalletTransactionManager
+                .getInstance()
+                .sendTransaction(Numeric.toHexStringNoPrefix(credentials.getEcKeyPair().getPrivateKey()), walletEntity.getPrefixAddress(), toAddress, walletEntity.getName(), transferAmount, NumberParserUtils.parseLong(BigDecimalUtil.parseString(gasPrice)), gasLimit)
                 .compose(new SchedulersTransformer())
                 .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
                 .compose(bindToLifecycle())
-                .subscribe(new Consumer<IndividualTransactionInfoEntity>() {
+                .subscribe(new Consumer<IndividualTransactionEntity>() {
                     @Override
-                    public void accept(IndividualTransactionInfoEntity transactionInfoEntity) throws Exception {
+                    public void accept(IndividualTransactionEntity transactionEntity) {
                         if (isViewAttached()) {
                             showLongToast(string(R.string.transfer_succeed));
-                            reset();
+                            backToTransactionListWithDelay();
                         }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
-                    public void accept(Throwable throwable) throws Exception {
+                    public void accept(Throwable throwable) {
                         if (isViewAttached()) {
                             if (throwable instanceof CustomThrowable) {
                                 CustomThrowable exception = (CustomThrowable) throwable;
@@ -354,6 +319,25 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
                                     showLongToast(string(R.string.transfer_failed));
                                 }
                             }
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 延迟指定时间后返回交易列表页
+     */
+    private void backToTransactionListWithDelay() {
+        Single
+                .timer(0, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+                .compose(bindToLifecycle())
+                .subscribe(new Consumer<Long>() {
+                    @Override
+                    public void accept(Long aLong) throws Exception {
+                        if (isViewAttached()) {
+                            resetData();
+                            getView().resetView(feeAmount);
+                            MainActivity.actionStart(getContext(), MainActivity.TAB_PROPERTY, AssetsFragment.TAB1);
                         }
                     }
                 });
@@ -405,12 +389,12 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
                     public void accept(SharedTransactionInfoEntity sharedTransactionInfoEntity) {
                         if (isViewAttached()) {
                             showLongToast(R.string.transfer_succeed);
-                            reset();
+                            backToTransactionListWithDelay();
                         }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
-                    public void accept(Throwable throwable) throws Exception {
+                    public void accept(Throwable throwable) {
                         if (isViewAttached()) {
                             if (throwable instanceof CustomThrowable) {
                                 CustomThrowable customThrowable = (CustomThrowable) throwable;
@@ -486,28 +470,6 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
         gasLimit = DEAULT_GAS_LIMIT;
         percent = DEFAULT_PERCENT;
         feeAmount = getMinFee();
-    }
-
-    private void reset() {
-        Single.fromCallable(new Callable<Double>() {
-            @Override
-            public Double call() throws Exception {
-                return feeAmount;
-            }
-        })
-                .delay(1000, TimeUnit.MILLISECONDS)
-                .compose(new SchedulersTransformer())
-                .subscribe(new Consumer<Double>() {
-                    @Override
-                    public void accept(Double o) throws Exception {
-                        if (isViewAttached()) {
-                            EventPublisher.getInstance().sendUpdateWalletListEvent();
-                            resetData();
-                            getView().resetView(BigDecimalUtil.parseString(o));
-                            MainActivity.actionStart(getContext(), MainActivity.TAB_PROPERTY, AssetsFragment.TAB1);
-                        }
-                    }
-                });
     }
 
 }

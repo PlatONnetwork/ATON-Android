@@ -8,6 +8,7 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 /**
  * @author matrixelement
@@ -165,7 +166,10 @@ public class SharedTransactionInfoDao {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
-            RealmResults<SharedTransactionInfoEntity> results = realm.where(SharedTransactionInfoEntity.class).in("contractAddress", contractAddressArray).findAll();
+            RealmResults<SharedTransactionInfoEntity> results = realm.where(SharedTransactionInfoEntity.class)
+                    .in("contractAddress", contractAddressArray)
+                    .sort("createTime", Sort.DESCENDING)
+                    .findAll();
             list.addAll(realm.copyFromRealm(results));
         } catch (Exception exp) {
             exp.printStackTrace();
