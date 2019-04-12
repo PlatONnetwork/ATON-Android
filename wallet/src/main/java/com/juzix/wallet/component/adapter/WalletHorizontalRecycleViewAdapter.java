@@ -22,16 +22,12 @@ import java.util.List;
 
 public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<WalletHorizontalRecycleViewAdapter.ViewHolder> {
 
-    private Context mContext;
-    private List<WalletEntity> mList;
+    private Context                        mContext;
+    private List<WalletEntity>             mList;
     private OnRecycleViewItemClickListener mOnItemClickListener;
-    private WalletEntity mSelectedWallet;
-    private int mShapeRadius;
-    private int mShadowRadius;
-    private int mSelectWidth;
-    private int mSelectHeight;
-    private int mNormalWidth;
-    private int mNormalHeight;
+    private WalletEntity                   mSelectedWallet;
+    private int                            mShapeRadius;
+    private int                            mShadowRadius;
 
     public WalletHorizontalRecycleViewAdapter(Context context, List<WalletEntity> walletList) {
         mContext = context;
@@ -39,15 +35,10 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
         mSelectedWallet = null;
         mShapeRadius = (int) context.getResources().getDimension(R.dimen.assetsWalletSelectedShapeRadius);
         mShadowRadius = (int) context.getResources().getDimension(R.dimen.assetsWalletSelectedShadowRadius);
-        mSelectWidth = (int) context.getResources().getDimension(R.dimen.assetsWalletSelectedItemWidth);
-        mSelectHeight = (int) context.getResources().getDimension(R.dimen.assetsWalletSelectedItemHeight);
-        mNormalWidth = (int) context.getResources().getDimension(R.dimen.assetsWalletNormalItemWidth);
-        mNormalHeight = (int) context.getResources().getDimension(R.dimen.assetsWalletNormalItemHeight);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-
         final WalletEntity walletEntity = mList.get(position);
         if (walletEntity instanceof IndividualWalletEntity) {
             setIndividualWalletView(position, (IndividualWalletEntity) walletEntity, holder);
@@ -64,9 +55,7 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        //负责创建视图
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_wallet_list1, null);
-        return new ViewHolder(view);
+        return new ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_wallet_list1, null));
     }
 
     @Override
@@ -98,7 +87,7 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
         holder.progressBar.setVisibility(View.GONE);
         holder.rlItem.setVisibility(View.VISIBLE);
         holder.rlItem.findViewById(R.id.v_new_msg).setVisibility(View.GONE);
-        TextView tvName = holder.rlItem.findViewById(R.id.tv_item2_name);
+        TextView  tvName = holder.rlItem.findViewById(R.id.tv_item2_name);
         ImageView ivIcon = holder.rlItem.findViewById(R.id.iv_item2_icon);
         ShadowDrawable.setShadowDrawable(holder.vShadow,
                 ContextCompat.getColor(mContext, R.color.color_660051ff),
@@ -136,7 +125,7 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
     private void setSharedWalletView(final int position, final SharedWalletEntity walletEntity, ViewHolder holder) {
         holder.rlItem.setVisibility(View.VISIBLE);
         holder.progressBar.setVisibility(View.GONE);
-        TextView tvName = holder.rlItem.findViewById(R.id.tv_item2_name);
+        TextView  tvName = holder.rlItem.findViewById(R.id.tv_item2_name);
         ImageView ivIcon = holder.rlItem.findViewById(R.id.iv_item2_icon);
         ShadowDrawable.setShadowDrawable(holder.vShadow,
                 ContextCompat.getColor(mContext, R.color.color_660051ff),
@@ -173,16 +162,16 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        public FrameLayout flItem;
-        public RelativeLayout rlItem;
+        public FrameLayout       flItem;
+        public RelativeLayout    rlItem;
         public CustomProgressBar progressBar;
-        public View vShadow;
+        public View              vShadow;
 
         public ViewHolder(View convertView) {
             super(convertView);
-            flItem = (FrameLayout) convertView.findViewById(R.id.fl_item);
-            rlItem = (RelativeLayout) convertView.findViewById(R.id.rl_item2);
-            progressBar = (CustomProgressBar) convertView.findViewById(R.id.pb_create);
+            flItem = convertView.findViewById(R.id.fl_item);
+            rlItem = convertView.findViewById(R.id.rl_item2);
+            progressBar = convertView.findViewById(R.id.pb_create);
             vShadow = convertView.findViewById(R.id.v_shadow);
         }
     }
