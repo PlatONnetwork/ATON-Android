@@ -24,7 +24,7 @@ import com.juzix.wallet.component.ui.presenter.MainPresenter;
 import com.juzix.wallet.component.widget.FragmentTabHost;
 import com.juzix.wallet.entity.WalletEntity;
 import com.juzix.wallet.event.EventPublisher;
-import butterknife.BindString;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -34,37 +34,26 @@ import butterknife.Unbinder;
  */
 public class MainActivity extends MVPBaseActivity<MainPresenter> implements MainContract.View {
 
-    private final static String TAG = MainActivity.class.getSimpleName();
-    private final static String TAG_PROPERTY = "property";
-    private final static String TAG_VOTE = "vote";
-    private final static String TAG_ME = "me";
-    public final static int TAB_PROPERTY = 0;
-    public final static int TAB_VOTE = 1;
-    public final static int TAB_ME = 2;
-    public static final int REQ_ASSETS_TAB_QR_CODE = 0x101;
-    public static final int REQ_ASSETS_ADDRESS_QR_CODE = 0x102;
-    public static final int REQ_ASSETS_SELECT_ADDRESS_BOOK = 0x103;
+    private final static String TAG                            = MainActivity.class.getSimpleName();
+    private final static String TAG_PROPERTY                   = "property";
+    private final static String TAG_VOTE                       = "vote";
+    private final static String TAG_ME                         = "me";
+    public final static  int    TAB_PROPERTY                   = 0;
+    public final static  int    TAB_VOTE                       = 1;
+    public final static  int    TAB_ME                         = 2;
+    public static final  int    REQ_ASSETS_TAB_QR_CODE         = 0x101;
+    public static final  int    REQ_ASSETS_ADDRESS_QR_CODE     = 0x102;
+    public static final  int    REQ_ASSETS_SELECT_ADDRESS_BOOK = 0x103;
 
     @BindView(R.id.realTabContent)
-    FrameLayout realTabContent;
+    FrameLayout     realTabContent;
     @BindView(android.R.id.tabhost)
     FragmentTabHost tabhost;
-    @BindString(R.string.nav_property)
-    String property;
-    @BindString(R.string.nav_vote)
-    String vote;
-    @BindString(R.string.nav_me)
-    String me;
-
-    View indicatorView1;
-    View indicatorView2;
-    View indicatorView3;
 
     private       Unbinder        unbinder;
     private       int             mCurIndex = TAB_PROPERTY;
     public static MainActivity    sInstance;
     public        FragmentManager fragmentManager;
-    private       WalletEntity    mSelectedWallet;
 
     public static void actionStart(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -96,13 +85,12 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
         LoopService.startLoopService(this);
     }
 
-    public void setSelectedWallet(WalletEntity wallet){
-        mSelectedWallet = wallet;
-        EventPublisher.getInstance().sendUpdateSelectedWalletEvent(mSelectedWallet);
+    public void setSelectedWallet(WalletEntity wallet) {
+        mPresenter.setSelectedWallet(wallet);
     }
 
     public WalletEntity getSelectedWallet() {
-        return mSelectedWallet;
+        return mPresenter.getSelectedWallet();
     }
 
     @Override
@@ -119,18 +107,14 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
     }
 
     private void initViews() {
-
         fragmentManager = getSupportFragmentManager();
         tabhost.setup(this, fragmentManager, R.id.realTabContent);
         TabWidget tabWidget = findViewById(android.R.id.tabs);
         tabWidget.setDividerDrawable(null);
-        indicatorView1 = getIndicatorView(TAG_PROPERTY, R.drawable.bg_nav_property, property);
-        indicatorView2 = getIndicatorView(TAG_VOTE, R.drawable.bg_nav_vote, vote);
-        indicatorView3 = getIndicatorView(TAG_ME, R.drawable.bg_nav_me, me);
 
-        tabhost.addTab(tabhost.newTabSpec(TAG_PROPERTY).setIndicator(indicatorView1), AssetsFragment.class, null);
-        tabhost.addTab(tabhost.newTabSpec(TAG_VOTE).setIndicator(indicatorView2), VoteFragment.class, null);
-        tabhost.addTab(tabhost.newTabSpec(TAG_ME).setIndicator(indicatorView3), MeFragment.class, null);
+        tabhost.addTab(tabhost.newTabSpec(TAG_PROPERTY).setIndicator(getIndicatorView(R.drawable.bg_nav_property, R.string.nav_property)), AssetsFragment.class, null);
+        tabhost.addTab(tabhost.newTabSpec(TAG_VOTE).setIndicator(getIndicatorView(R.drawable.bg_nav_vote, R.string.nav_vote)), VoteFragment.class, null);
+        tabhost.addTab(tabhost.newTabSpec(TAG_ME).setIndicator(getIndicatorView(R.drawable.bg_nav_me, R.string.nav_me)), MeFragment.class, null);
         tabhost.setCurrentTab(mCurIndex);
         tabhost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
@@ -138,13 +122,6 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
                 mCurIndex = getCurIndexByTabId(tabId);
             }
         });
-    }
-
-    private View getStatusBarView() {
-        View view = new View(getContext());
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0);
-        view.setLayoutParams(layoutParams);
-        return view;
     }
 
     private int getCurIndexByTabId(String tabId) {
@@ -172,19 +149,15 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
             AssetsFragment fragment = (AssetsFragment) fragmentManager.findFragmentByTag(TAG_PROPERTY);
             fragment.showCurrentItem(subIndex);
         }
-
     }
 
-    private View getIndicatorView(String tag, int drawableResId, String labelResId) {
-
+    private View getIndicatorView(int drawableResId, int labelResId) {
         LinearLayout rootView = (LinearLayout) getLayoutInflater().inflate(R.layout.layout_main_tab_indicator, tabhost, false);
         rootView.setLayoutParams(new LinearLayout.LayoutParams(0, rootView.getLayoutParams().height, 1.0f));
-
         TextView textView = rootView.findViewById(R.id.tv_navigation);
         textView.setText(labelResId);
         ImageView imageView = rootView.findViewById(R.id.iv_navigation);
         imageView.setImageResource(drawableResId);
-
         return rootView;
     }
 

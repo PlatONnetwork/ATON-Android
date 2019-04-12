@@ -17,8 +17,6 @@ public class MainContract {
 
     public interface Presenter extends IPresenter<View> {
         void init();
-        void updateWalletList();
-        ArrayList<WalletEntity> getWalletList();
         WalletEntity getSelectedWallet();
         void setSelectedWallet(WalletEntity walletEntity);
     }
