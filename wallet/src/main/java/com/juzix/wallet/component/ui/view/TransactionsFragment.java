@@ -35,6 +35,8 @@ import butterknife.Unbinder;
  */
 public class TransactionsFragment extends MVPBaseFragment<TransactionsPresenter> implements TransactionsContract.View {
 
+    private final static String TAG = TransactionsFragment.class.getSimpleName();
+
     @BindView(R.id.list_transaction)
     ListView listTransaction;
     @BindView(R.id.layout_no_data)
@@ -94,7 +96,11 @@ public class TransactionsFragment extends MVPBaseFragment<TransactionsPresenter>
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateIndividualWalletTransactionEvent(Event.UpdateIndividualWalletTransactionEvent event) {
-        mPresenter.fetchWalletTransactionList();
+        if (transactionListAdapter.getList() != null && transactionListAdapter.getList().contains(event.individualTransactionEntity)) {
+            transactionListAdapter.updateItem(currentActivity(), listTransaction, event.individualTransactionEntity);
+        } else {
+            transactionListAdapter.addItem(event.individualTransactionEntity);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

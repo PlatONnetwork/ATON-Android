@@ -229,8 +229,8 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateWalletListEvent(Event.UpdateWalletListEvent event) {
-        mPresenter.fetchWalletList();
-        mPresenter.start();
+//        mPresenter.fetchWalletList();
+//        mPresenter.start();
     }
 
     private void initHeader() {

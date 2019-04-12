@@ -100,8 +100,7 @@ public class TransactionRecordsPresenter extends BasePresenter<TransactionRecord
                                 .map(new Function<IndividualTransactionInfoEntity, IndividualTransactionEntity>() {
                                     @Override
                                     public IndividualTransactionEntity apply(IndividualTransactionInfoEntity entity) throws Exception {
-                                        IndividualTransactionEntity transactionInfoEntity = IndividualWalletTransactionManager.getInstance().getTransactionByHash(entity.getHash(),
-                                                entity.getCreateTime(), entity.getWalletName(), entity.getMemo());
+                                        IndividualTransactionEntity transactionInfoEntity = IndividualWalletTransactionManager.getInstance().getTransactionByHash(entity.buildIndividualTransactionEntity());
                                         transactionInfoEntity.setLatestBlockNumber(latestBlockNumbe);
                                         return transactionInfoEntity;
                                     }

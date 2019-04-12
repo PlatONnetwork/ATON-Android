@@ -1,7 +1,15 @@
 package com.juzix.wallet.engine;
 
+import android.text.TextUtils;
+import android.util.Log;
+
+import com.juzhen.framework.util.NumberParserUtils;
+import com.juzix.wallet.app.Constants;
+import com.juzix.wallet.app.CustomThrowable;
+import com.juzix.wallet.db.sqlite.IndividualTransactionInfoDao;
 import com.juzix.wallet.entity.IndividualTransactionEntity;
 import com.juzix.wallet.entity.IndividualWalletEntity;
+import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.NumericUtil;
 
@@ -24,11 +32,25 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Flowable;
+import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
+import io.reactivex.SingleSource;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * @author matrixelement
  */
 public class IndividualWalletTransactionManager {
+
+    private final static String TAG = IndividualWalletTransactionManager.class.getSimpleName();
 
     private IndividualWalletTransactionManager() {
 
@@ -43,19 +65,17 @@ public class IndividualWalletTransactionManager {
         return walletEntity;
     }
 
-    public IndividualTransactionEntity getTransactionByHash(String transactionHash, long createTime, String walletName, String memo) {
+    public IndividualTransactionEntity getTransactionByHash(IndividualTransactionEntity individualTransactionEntity) {
         try {
-            Transaction transaction = Web3jManager.getInstance().getTransactionByHash(transactionHash);
+            Transaction transaction = Web3jManager.getInstance().getTransactionByHash(individualTransactionEntity.getHash());
             long latestBlockNumber = Web3jManager.getInstance().getLatestBlockNumber();
-            long blockNumber = NumericUtil.decodeQuantity(transaction.getBlockNumberRaw(), BigInteger.ZERO).longValue();
-            double energonPrice = BigDecimalUtil.div(BigDecimalUtil.mul(transaction.getGas().doubleValue(), transaction.getGasPrice().doubleValue()), 1E18);
-            double value = BigDecimalUtil.div(transaction.getValue().toString(), "1E18");
-            boolean completed = blockNumber > 0 && latestBlockNumber - blockNumber >= 1;
             if (transaction != null) {
-                transaction.setCreates(String.valueOf(createTime));
-                BigDecimalUtil.mul(transaction.getGas().doubleValue(), transaction.getGasPrice().doubleValue());
-                IndividualTransactionEntity entity = new IndividualTransactionEntity.Builder(UUID.randomUUID().toString(), createTime, walletName)
-                        .hash(transactionHash)
+                long blockNumber = NumericUtil.decodeQuantity(transaction.getBlockNumberRaw(), BigInteger.ZERO).longValue();
+                double energonPrice = BigDecimalUtil.div(BigDecimalUtil.mul(transaction.getGas().doubleValue(), transaction.getGasPrice().doubleValue()), 1E18);
+                double value = BigDecimalUtil.div(transaction.getValue().toString(), "1E18");
+                boolean completed = blockNumber > 0 && latestBlockNumber - blockNumber >= 1;
+                IndividualTransactionEntity entity = new IndividualTransactionEntity.Builder(individualTransactionEntity.getUuid(), individualTransactionEntity.getCreateTime(), individualTransactionEntity.getWalletName())
+                        .hash(individualTransactionEntity.getHash())
                         .fromAddress(transaction.getFrom())
                         .toAddress(transaction.getTo())
                         .value(value)
@@ -63,7 +83,8 @@ public class IndividualWalletTransactionManager {
                         .energonPrice(energonPrice)
                         .latestBlockNumber(latestBlockNumber)
                         .completed(completed)
-                        .memo(memo)
+                        .memo(individualTransactionEntity.getMemo())
+                        .value(individualTransactionEntity.getValue())
                         .build();
                 return entity;
             }
@@ -73,7 +94,7 @@ public class IndividualWalletTransactionManager {
         return null;
     }
 
-    public String sendTransaction(String privateKey, String from, String toAddress, String amount, long gasPrice, long gasLimit) {
+    public String sendIndividualTransaction(String privateKey, String from, String toAddress, String amount, long gasPrice, long gasLimit) {
 
         BigInteger GAS_PRICE = BigInteger.valueOf(gasPrice);
         BigInteger GAS_LIMIT = BigInteger.valueOf(gasLimit);
@@ -95,11 +116,97 @@ public class IndividualWalletTransactionManager {
             EthSendTransaction transaction = Web3jManager.getInstance().getWeb3j().ethSendRawTransaction(hexValue).send();
 
             return transaction.getTransactionHash();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public Single<IndividualTransactionEntity> sendTransaction(String privateKey, String fromAddress, String toAddress, String walletName, String transferAmount, long gasPrice, long gasLimit) {
+
+        return Single.create(new SingleOnSubscribe<String>() {
+            @Override
+            public void subscribe(SingleEmitter<String> emitter) throws Exception {
+                String transactionHash = sendIndividualTransaction(privateKey, fromAddress, toAddress, transferAmount, NumberParserUtils.parseLong(BigDecimalUtil.parseString(gasPrice)), gasLimit);
+                if (TextUtils.isEmpty(transactionHash)) {
+                    emitter.onError(new CustomThrowable(CustomThrowable.CODE_ERROR_TRANSFER_FAILED));
+                } else {
+                    emitter.onSuccess(transactionHash);
+                }
+            }
+        }).flatMap(new Function<String, SingleSource<IndividualTransactionEntity>>() {
+            @Override
+            public SingleSource<IndividualTransactionEntity> apply(String hash) throws Exception {
+                IndividualTransactionEntity individualTransactionEntity = new IndividualTransactionEntity.Builder(UUID.randomUUID().toString(), System.currentTimeMillis(), walletName)
+                        .hash(hash)
+                        .fromAddress(fromAddress)
+                        .toAddress(toAddress)
+                        .value(NumberParserUtils.parseDouble(transferAmount))
+                        .build();
+                return Single.fromCallable(new Callable<Boolean>() {
+                    @Override
+                    public Boolean call() throws Exception {
+                        return IndividualTransactionInfoDao.getInstance().insertTransaction(individualTransactionEntity.buildIndividualTransactionInfoEntity());
+                    }
+                }).filter(new Predicate<Boolean>() {
+                    @Override
+                    public boolean test(Boolean aBoolean) throws Exception {
+                        return aBoolean;
+                    }
+                }).map(new Function<Boolean, IndividualTransactionEntity>() {
+                    @Override
+                    public IndividualTransactionEntity apply(Boolean aBoolean) throws Exception {
+                        return individualTransactionEntity;
+                    }
+                }).doOnSuccess(new Consumer<IndividualTransactionEntity>() {
+                    @Override
+                    public void accept(IndividualTransactionEntity individualTransactionEntity) throws Exception {
+                        EventPublisher.getInstance().sendUpdateIndividualWalletTransactionEvent(individualTransactionEntity);
+                    }
+                }).toSingle();
+            }
+        }).doOnSuccess(new Consumer<IndividualTransactionEntity>() {
+            @Override
+            public void accept(IndividualTransactionEntity individualTransactionEntity) throws Exception {
+                getIndividualTransactionByLoop(individualTransactionEntity)
+                        .subscribeOn(Schedulers.newThread())
+                        .subscribe(new Consumer<IndividualTransactionEntity>() {
+                            @Override
+                            public void accept(IndividualTransactionEntity individualTransactionEntity) throws Exception {
+                                Log.e(TAG, "getIndividualTransactionByLoop 轮询交易成功" + Thread.currentThread().getName());
+                            }
+                        });
+                ;
+            }
+        });
+    }
+
+    /**
+     * 通过轮询获取普通钱包的交易
+     */
+    public Flowable<IndividualTransactionEntity> getIndividualTransactionByLoop(IndividualTransactionEntity transactionEntity) {
+        return Flowable.interval(Constants.Common.REFRESH_TIME, TimeUnit.MILLISECONDS)
+                .map(new Function<Long, IndividualTransactionEntity>() {
+                    @Override
+                    public IndividualTransactionEntity apply(Long aLong) throws Exception {
+                        return getTransactionByHash(transactionEntity);
+                    }
+                })
+                .takeUntil(new Predicate<IndividualTransactionEntity>() {
+                    @Override
+                    public boolean test(IndividualTransactionEntity individualTransactionEntity) throws Exception {
+                        return individualTransactionEntity.isCompleted();
+                    }
+                })
+                .doOnNext(new Consumer<IndividualTransactionEntity>() {
+                    @Override
+                    public void accept(IndividualTransactionEntity individualTransactionEntity) throws Exception {
+                        boolean success = IndividualTransactionInfoDao.getInstance().insertTransaction(individualTransactionEntity.buildIndividualTransactionInfoEntity());
+                        if (success) {
+                            EventPublisher.getInstance().sendUpdateIndividualWalletTransactionEvent(individualTransactionEntity);
+                        }
+                    }
+                });
     }
 
     private static class InstanceHolder {

@@ -13,6 +13,7 @@ import com.juzix.wallet.entity.TransactionEntity;
 import com.juzix.wallet.entity.VoteTransactionEntity;
 import com.juzix.wallet.utils.DateUtil;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -51,7 +52,7 @@ public class TransactionListsAdapter extends CommonAdapter<TransactionEntity> {
             viewHolder.setText(R.id.tv_transaction_status, entity.isReceiver(walletAddress) ? context.getString(R.string.receive) : context.getString(R.string.send));
             viewHolder.setText(R.id.tv_transaction_time, DateUtil.format(entity.getCreateTime(), DateUtil.DATETIME_FORMAT_PATTERN));
             viewHolder.setText(R.id.tv_transaction_amount, context.getString(R.string.amount_with_unit, String.format("%s%s", isReceiver ? "+" : "-", NumberParserUtils.getPrettyBalance(entity.getValue()))));
-            viewHolder.setText(R.id.tv_transaction_status_desc, transactionStatus.getStatusDesc(context, entity.getSignedBlockNumber(), 1));
+            viewHolder.setText(R.id.tv_transaction_status_desc, entity.isCompleted() ? context.getString(R.string.success) : context.getString(R.string.pending));
             viewHolder.setTextColor(R.id.tv_transaction_status_desc, ContextCompat.getColor(context, transactionStatus.getStatusDescTextColor()));
             viewHolder.setImageResource(R.id.iv_transaction_status, entity.isReceiver(walletAddress) ? R.drawable.icon_receive_transaction : R.drawable.icon_send_transation);
         } else if (item instanceof VoteTransactionEntity) {
@@ -80,13 +81,6 @@ public class TransactionListsAdapter extends CommonAdapter<TransactionEntity> {
 
     }
 
-
-    public void notifyDataChanged(List<TransactionEntity> mDatas, String walletAddress) {
-        this.mDatas = mDatas;
-        this.walletAddress = walletAddress;
-        notifyDataSetChanged();
-    }
-
     public void updateItem(ListView listView, String uuid, boolean hasUnread) {
         int position = getPositionByUUID(uuid);
         if (position != -1) {
@@ -95,6 +89,14 @@ public class TransactionListsAdapter extends CommonAdapter<TransactionEntity> {
                 ((SharedTransactionEntity) transactionEntity).setRead(!hasUnread);
                 updateItem(mContext, listView, transactionEntity);
             }
+        }
+    }
+
+    public void addItem(TransactionEntity transactionEntity) {
+        if (mDatas != null && transactionEntity.isRelevantWalletAddress(walletAddress)) {
+            mDatas.add(transactionEntity);
+            Collections.sort(mDatas);
+            notifyDataChanged(mDatas);
         }
     }
 
@@ -109,4 +111,11 @@ public class TransactionListsAdapter extends CommonAdapter<TransactionEntity> {
         }
         return -1;
     }
+
+    public void notifyDataChanged(List<TransactionEntity> mDatas, String walletAddress) {
+        this.mDatas = mDatas;
+        this.walletAddress = walletAddress;
+        notifyDataSetChanged();
+    }
+
 }

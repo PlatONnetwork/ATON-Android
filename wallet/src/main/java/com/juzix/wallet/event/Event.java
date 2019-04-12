@@ -1,6 +1,7 @@
 package com.juzix.wallet.event;
 
 import com.juzhen.framework.network.NetState;
+import com.juzix.wallet.entity.IndividualTransactionEntity;
 import com.juzix.wallet.entity.RegionEntity;
 import com.juzix.wallet.entity.SharedWalletEntity;
 import com.juzix.wallet.entity.WalletEntity;
@@ -26,8 +27,11 @@ public class Event {
     }
 
     public static class UpdateIndividualWalletTransactionEvent {
-        public UpdateIndividualWalletTransactionEvent() {
 
+        public IndividualTransactionEntity individualTransactionEntity;
+
+        public UpdateIndividualWalletTransactionEvent(IndividualTransactionEntity individualTransactionEntity) {
+            this.individualTransactionEntity = individualTransactionEntity;
         }
     }
 

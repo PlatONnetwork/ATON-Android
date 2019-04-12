@@ -164,11 +164,31 @@ public abstract class TransactionEntity implements Comparable<TransactionEntity>
         return !TextUtils.isEmpty(toAddress) && toAddress.equals(walletAddress);
     }
 
-    public abstract TransactionStatus getTransactionStatus();
-
     @Override
     public int compareTo(@NonNull TransactionEntity o) {
         return Long.compare(o.createTime, createTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return TextUtils.isEmpty(uuid) ? 0 : uuid.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof TransactionEntity) {
+            TransactionEntity transactionEntity = (TransactionEntity) obj;
+            return transactionEntity.getUuid() != null && transactionEntity.getUuid().equals(uuid);
+        }
+
+        return super.equals(obj);
+    }
+
+    public boolean isRelevantWalletAddress(String walletAddress){
+        return fromAddress.equals(walletAddress) || toAddress.equals(walletAddress);
     }
 
     public enum TransactionStatus {
@@ -256,5 +276,7 @@ public abstract class TransactionEntity implements Comparable<TransactionEntity>
 
         public abstract int getStatusDrawable();
     }
+
+    public abstract TransactionStatus getTransactionStatus();
 }
 

@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -18,7 +17,6 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -27,6 +25,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding3.view.RxView;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.ClickTransformer;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.MVPBaseFragment;
 import com.juzix.wallet.component.ui.contract.SendTransationContract;
@@ -50,7 +49,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -63,34 +61,34 @@ import kotlin.Unit;
 /**
  * @author matrixelement
  */
-public class SendTransactionFragment extends MVPBaseFragment<SendTransationPresenter> implements SendTransationContract.View{
+public class SendTransactionFragment extends MVPBaseFragment<SendTransationPresenter> implements SendTransationContract.View {
 
     @BindView(R.id.iv_address_book)
-    ImageView        ivAddressBook;
+    ImageView ivAddressBook;
     @BindView(R.id.et_wallet_address)
-    EditText         etWalletAddress;
+    EditText etWalletAddress;
     @BindView(R.id.tv_transation_amount)
-    TextView         tvTransationAmount;
+    TextView tvTransationAmount;
     @BindView(R.id.et_wallet_amount)
-    EditText         etWalletAmount;
+    EditText etWalletAmount;
     @BindView(R.id.tv_all_amount)
-    TextView         tvAllAmount;
+    TextView tvAllAmount;
     @BindView(R.id.tv_fee_amount)
-    TextView         tvFeeAmount;
+    TextView tvFeeAmount;
     @BindView(R.id.bubbleSeekBar)
     BubbleSeekBar bubbleSeekBar;
     @BindView(R.id.sbtn_send_transation)
-    ShadowButton     btnSendTransation;
+    ShadowButton btnSendTransation;
     @BindView(R.id.tv_wallet_balance)
-    TextView         tvWalletBalance;
+    TextView tvWalletBalance;
     @BindView(R.id.layout_transation_amount)
-    FrameLayout      layoutTransationAmount;
+    FrameLayout layoutTransationAmount;
     @BindView(R.id.tv_to_address_error)
-    TextView         tvToAddressError;
+    TextView tvToAddressError;
     @BindView(R.id.tv_amount_error)
-    TextView         tvAmountError;
+    TextView tvAmountError;
     @BindView(R.id.tv_save_address)
-    TextView         tvSaveAddress;
+    TextView tvSaveAddress;
     @BindString(R.string.cheaper)
     String cheaper;
     @BindString(R.string.faster)
@@ -151,7 +149,8 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
         bubbleSeekBar.setOnProgressChangedListener(mProgressListener);
 
         RxView.clicks(btnSendTransation)
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
+                .compose(new ClickTransformer())
+                .compose(bindToLifecycle())
                 .subscribe(new Consumer<Unit>() {
                     @Override
                     public void accept(Unit unit) throws Exception {
@@ -282,7 +281,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
 
     @Override
     public void setSendTransactionButtonEnable(boolean enabled) {
-        btnSendTransation.setEnabled(enabled); 
+        btnSendTransation.setEnabled(enabled);
     }
 
     @Override
@@ -297,7 +296,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
     }
 
     @Override
-    public void resetView(String feeAmount) {
+    public void resetView(double feeAmount) {
         etWalletAddress.removeTextChangedListener(mEtWalletAddressWatcher);
         etWalletAmount.removeTextChangedListener(mEtWalletAmountWatcher);
         etWalletAddress.setOnFocusChangeListener(null);
@@ -309,7 +308,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
         etWalletAmount.setFocusableInTouchMode(false);
         etWalletAddress.setText("");
         etWalletAmount.setText("");
-        setTransferFeeAmount(feeAmount);
+        setTransferFeeAmount(String.valueOf(feeAmount));
         bubbleSeekBar.setProgress(0);
         setSendTransactionButtonEnable(false);
         setSaveAddressButtonEnable(false);
@@ -350,12 +349,12 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
     private View.OnFocusChangeListener mEtWalletAddressFocusChangeListener = new View.OnFocusChangeListener() {
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
-                String address = etWalletAddress.getText().toString().trim();
-                if (!hasFocus) {
-                    mPresenter.checkToAddress(address);
-                }else {
-                    showToAddressError("");
-                }
+            String address = etWalletAddress.getText().toString().trim();
+            if (!hasFocus) {
+                mPresenter.checkToAddress(address);
+            } else {
+                showToAddressError("");
+            }
         }
     };
 
@@ -384,7 +383,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
             String amount = etWalletAmount.getText().toString().trim();
             if (!hasFocus) {
                 mPresenter.checkTransferAmount(amount);
-            }else {
+            } else {
                 showAmountError("");
             }
         }
@@ -413,10 +412,10 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
             if (fromUser) {
                 mPresenter.calculateFeeAndTime(BigDecimalUtil.div(progress, bubbleSeekBar.getMax()));
                 mPresenter.updateSendTransactionButtonStatus();
-                if (etWalletAmount.isFocused()){
+                if (etWalletAmount.isFocused()) {
                     etWalletAmount.clearFocus();
                 }
-                if (etWalletAddress.isFocused()){
+                if (etWalletAddress.isFocused()) {
                     etWalletAddress.clearFocus();
                 }
                 String amount = etWalletAmount.getText().toString().trim();
