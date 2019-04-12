@@ -132,7 +132,7 @@ public class SharedWalletTransactionManager {
     }
 
     public Flowable<Boolean> createSharedWallet(Credentials credentials, String walletName, String individualWalletAddress, String individualWalletName, int requiredSignNumber, List<OwnerEntity> members,
-                                   BigInteger ethGasPrice, double feeAmount) {
+                                                BigInteger ethGasPrice, double feeAmount) {
 
         long time = System.currentTimeMillis();
         SharedWalletEntity sharedWalletEntity = new SharedWalletEntity.Builder()
@@ -232,7 +232,10 @@ public class SharedWalletTransactionManager {
                 .doOnError(new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        SharedWalletManager.getInstance().removeWallet(sharedWalletEntity);
+                        boolean success = SharedWalletManager.getInstance().removeWallet(sharedWalletEntity);
+                        if (success){
+                            EventPublisher.getInstance().sendRemoveSharedWalletEvent(sharedWalletEntity);
+                        }
                     }
                 });
     }

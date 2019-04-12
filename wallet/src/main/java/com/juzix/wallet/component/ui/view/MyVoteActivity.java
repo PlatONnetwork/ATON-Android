@@ -18,7 +18,7 @@ import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.MyVoteContract;
 import com.juzix.wallet.component.ui.presenter.MyVotePresenter;
 import com.juzix.wallet.component.widget.LineGridView;
-import com.juzix.wallet.entity.BatchVoteTransactionEntity;
+import com.juzix.wallet.entity.BatchVoteTransactionWrapEntity;
 import com.juzix.wallet.entity.VoteSummaryEntity;
 import com.juzix.wallet.utils.CommonUtil;
 
@@ -74,7 +74,7 @@ public class MyVoteActivity extends MVPBaseActivity<MyVotePresenter> implements 
                 .subscribe(new Consumer<Integer>() {
                     @Override
                     public void accept(Integer position) throws Exception {
-                        BatchVoteTransactionEntity batchVoteTransactionEntity = mBatchVoteTransactionAdapter.getItem(position);
+                        BatchVoteTransactionWrapEntity batchVoteTransactionEntity = mBatchVoteTransactionAdapter.getItem(position);
                         VoteDetailActivity.actionStart(MyVoteActivity.this, batchVoteTransactionEntity);
                     }
                 });
@@ -103,8 +103,8 @@ public class MyVoteActivity extends MVPBaseActivity<MyVotePresenter> implements 
     }
 
     @Override
-    public void showBatchVoteTransactionList(List<BatchVoteTransactionEntity> batchVoteTransactionEntityList) {
-        mBatchVoteTransactionAdapter.notifyDataChanged(batchVoteTransactionEntityList);
+    public void showBatchVoteTransactionList(List<BatchVoteTransactionWrapEntity> batchVoteTransactionWrapEntityList) {
+        mBatchVoteTransactionAdapter.notifyDataChanged(batchVoteTransactionWrapEntityList);
     }
 
     /**

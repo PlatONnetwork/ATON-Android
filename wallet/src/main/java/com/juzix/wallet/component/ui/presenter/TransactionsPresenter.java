@@ -7,7 +7,6 @@ import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.TransactionsContract;
 import com.juzix.wallet.component.ui.view.IndividualTransactionDetailActivity;
 import com.juzix.wallet.component.ui.view.IndividualVoteDetailActivity;
-import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.component.ui.view.SharedTransactionDetailActivity;
 import com.juzix.wallet.component.ui.view.SigningActivity;
 import com.juzix.wallet.db.entity.IndividualTransactionInfoEntity;
@@ -20,6 +19,7 @@ import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.engine.IndividualWalletTransactionManager;
 import com.juzix.wallet.engine.SharedWalletManager;
 import com.juzix.wallet.engine.SharedWalletTransactionManager;
+import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.IndividualTransactionEntity;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.SharedTransactionEntity;
@@ -60,7 +60,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
 
     @Override
     public void updateWalletEntity() {
-        mWalletEntity = MainActivity.sInstance.getSelectedWallet();
+        mWalletEntity = WalletManager.getInstance().getSelectedWallet();
     }
 
     @Override
@@ -103,7 +103,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                     @Override
                     public void accept(List<TransactionEntity> transactionEntityList) throws Exception {
                         if (isViewAttached() && mWalletEntity != null) {
-                            getView().notifyTransactionListChanged(transactionEntityList, mWalletEntity.getPrefixAddress());
+                            getView().notifyTransactionListChanged(transactionEntityList);
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -133,8 +133,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                     @Override
                     public void accept(List<TransactionEntity> transactionEntityList) throws Exception {
                         if (isViewAttached() && mWalletEntity != null) {
-                            Log.e(TAG, "fetchSharedWalletTransactionList transactionEntityList size is:   " + transactionEntityList.size());
-                            getView().notifyTransactionListChanged(transactionEntityList, mWalletEntity.getPrefixAddress());
+                            getView().notifyTransactionListChanged(transactionEntityList);
                         }
                     }
                 }, new Consumer<Throwable>() {

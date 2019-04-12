@@ -26,3 +26,7 @@ file=D:\Android\ATON-Android\wallet\build\outputs\mapping\releaseC\mapping.txt
 sha1=9096e70b88ba3b4e7cdecc2a8a72b49ccdf296d5
 appId=0970ddc6bd
 
+file=D:\Android\ATON-Android\wallet\build\outputs\mapping\releaseC\mapping.txt
+sha1=9096e70b88ba3b4e7cdecc2a8a72b49ccdf296d5
+appId=0970ddc6bd
+

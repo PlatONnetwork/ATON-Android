@@ -11,9 +11,9 @@ import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.ReceiveTransationContract;
 import com.juzix.wallet.component.ui.dialog.ShareDialogFragment;
-import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.config.JZAppConfigure;
 import com.juzix.wallet.config.JZDirType;
+import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.ShareAppInfo;
 import com.juzix.wallet.entity.WalletEntity;
 import com.juzix.wallet.utils.AppUtil;
@@ -44,7 +44,7 @@ public class ReceiveTransationPresenter extends BasePresenter<ReceiveTransationC
 
     @Override
     public void loadData() {
-        walletEntity = MainActivity.sInstance.getSelectedWallet();
+        walletEntity = WalletManager.getInstance().getSelectedWallet();
         if (isViewAttached() && walletEntity != null) {
 
             getView().setWalletInfo(walletEntity);

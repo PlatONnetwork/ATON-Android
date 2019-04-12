@@ -65,6 +65,18 @@ public class WalletEntity implements Parcelable {
         return TextUtils.isEmpty(uuid) ? 0 : uuid.hashCode();
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof WalletEntity) {
+            WalletEntity entity = (WalletEntity) obj;
+            return entity.getUuid() != null && entity.getUuid().equals(uuid);
+        }
+        return super.equals(obj);
+    }
+
     public String getAvatar() {
         return avatar;
     }

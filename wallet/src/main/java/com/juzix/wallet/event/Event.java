@@ -98,6 +98,15 @@ public class Event {
         }
     }
 
+    public static class RemoveSharedWalletEvent {
+
+        public SharedWalletEntity sharedWalletEntity;
+
+        public RemoveSharedWalletEvent(SharedWalletEntity sharedWalletEntity) {
+            this.sharedWalletEntity = sharedWalletEntity;
+        }
+    }
+
     public static class UpdateAssetsTabEvent {
         public int tabIndex;
 

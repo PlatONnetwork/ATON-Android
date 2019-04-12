@@ -61,22 +61,12 @@ public class TransactionsFragment extends MVPBaseFragment<TransactionsPresenter>
         View rootView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_transactions, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         EventPublisher.getInstance().register(this);
+        initViews();
         mPresenter.updateWalletEntity();
-        setAdapter();
         return rootView;
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (unbinder != null) {
-            unbinder.unbind();
-        }
-        EventPublisher.getInstance().unRegister(this);
-    }
-
-
-    private void setAdapter() {
+    private void initViews() {
         transactionListAdapter = new TransactionListsAdapter(R.layout.item_transaction_list, null);
         listTransaction.setAdapter(transactionListAdapter);
         listTransaction.setEmptyView(emptyView);
@@ -115,7 +105,7 @@ public class TransactionsFragment extends MVPBaseFragment<TransactionsPresenter>
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateSelectedWalletEvent(Event.UpdateSelectedWalletEvent event) {
         mPresenter.updateWalletEntity();
-        setAdapter();
+//        setAdapter();
         mPresenter.fetchWalletTransactionList();
     }
 
@@ -130,12 +120,21 @@ public class TransactionsFragment extends MVPBaseFragment<TransactionsPresenter>
     }
 
     @Override
-    public void notifyTransactionListChanged(List<TransactionEntity> transactionEntityList, String walletAddress) {
-        transactionListAdapter.notifyDataChanged(transactionEntityList, walletAddress);
+    public void notifyTransactionListChanged(List<TransactionEntity> transactionEntityList) {
+        transactionListAdapter.notifyDataChanged(transactionEntityList);
     }
 
     @Override
     public void notifyItem(SharedTransactionEntity transactionEntity) {
         transactionListAdapter.updateItem(getActivity(), listTransaction, transactionEntity);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (unbinder != null) {
+            unbinder.unbind();
+        }
+        EventPublisher.getInstance().unRegister(this);
     }
 }

@@ -27,6 +27,7 @@ import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.engine.IndividualWalletTransactionManager;
 import com.juzix.wallet.engine.SharedWalletManager;
 import com.juzix.wallet.engine.SharedWalletTransactionManager;
+import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.IndividualTransactionEntity;
 import com.juzix.wallet.entity.IndividualWalletEntity;
@@ -101,7 +102,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
 
     @Override
     public void fetchDefaultWalletInfo() {
-        walletEntity = MainActivity.sInstance.getSelectedWallet();
+        walletEntity = WalletManager.getInstance().getSelectedWallet();
         if (walletEntity == null) {
             return;
         }

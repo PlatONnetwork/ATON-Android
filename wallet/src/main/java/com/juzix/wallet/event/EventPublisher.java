@@ -87,4 +87,8 @@ public class EventPublisher {
     public void sendUpdateVoteTransactionListEvent() {
         BusProvider.post(new Event.UpdateVoteTransactionListEvent());
     }
+
+    public void sendRemoveSharedWalletEvent(SharedWalletEntity sharedWalletEntity) {
+        BusProvider.post(new Event.RemoveSharedWalletEvent(sharedWalletEntity));
+    }
 }

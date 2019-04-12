@@ -17,7 +17,7 @@ public class TransactionsContract {
 
         WalletEntity getWalletFromIntent();
 
-        void notifyTransactionListChanged(List<TransactionEntity> transactionEntityList, String walletAddress);
+        void notifyTransactionListChanged(List<TransactionEntity> transactionEntityList);
 
         void notifyItem(SharedTransactionEntity transactionEntity);
     }

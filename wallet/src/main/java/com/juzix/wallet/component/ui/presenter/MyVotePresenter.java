@@ -17,6 +17,7 @@ import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.engine.VoteManager;
 import com.juzix.wallet.entity.BatchVoteSummaryEntity;
 import com.juzix.wallet.entity.BatchVoteTransactionEntity;
+import com.juzix.wallet.entity.BatchVoteTransactionWrapEntity;
 import com.juzix.wallet.entity.CandidateEntity;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.VoteSummaryEntity;
@@ -27,6 +28,7 @@ import org.reactivestreams.Subscriber;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -207,15 +209,20 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
     private void getBatchVoteTransaction(String[] addressList) {
         VoteManager.getInstance()
                 .getBatchVoteTransaction(addressList)
-                .toFlowable()
+                .map(new Function<HashMap<String, List<BatchVoteTransactionEntity>>, List<BatchVoteTransactionWrapEntity>>() {
+                    @Override
+                    public List<BatchVoteTransactionWrapEntity> apply(HashMap<String, List<BatchVoteTransactionEntity>> stringListHashMap) throws Exception {
+                        return buildBatchVoteSummaryEntityList(stringListHashMap);
+                    }
+                })
                 .compose(new FlowableSchedulersTransformer())
                 .compose(bindToLifecycle())
                 .compose(LoadingTransformer.bindToFlowableLifecycle(currentActivity()))
-                .subscribe(new Consumer<List<BatchVoteTransactionEntity>>() {
+                .subscribe(new Consumer<List<BatchVoteTransactionWrapEntity>>() {
                     @Override
-                    public void accept(List<BatchVoteTransactionEntity> batchVoteTransactionEntityList) throws Exception {
+                    public void accept(List<BatchVoteTransactionWrapEntity> batchVoteTransactionWrapEntityList) throws Exception {
                         if (isViewAttached()) {
-                            getView().showBatchVoteTransactionList(batchVoteTransactionEntityList);
+                            getView().showBatchVoteTransactionList(batchVoteTransactionWrapEntityList);
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -224,6 +231,39 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
                         Log.e(TAG, throwable.getMessage());
                     }
                 });
+    }
+
+    private List<BatchVoteTransactionWrapEntity> buildBatchVoteSummaryEntityList(Map<String, List<BatchVoteTransactionEntity>> map) {
+        Iterator iterator = map.entrySet().iterator();
+        List<BatchVoteTransactionWrapEntity> batchVoteTransactionEntityList = new ArrayList<>();
+        while (iterator.hasNext()) {
+            java.util.Map.Entry entry = (Map.Entry) iterator.next();
+            List<BatchVoteTransactionEntity> value = (List<BatchVoteTransactionEntity>) entry.getValue();
+            batchVoteTransactionEntityList.add(new BatchVoteTransactionWrapEntity(buildBatchVoteTransactionEntity(value), value));
+        }
+        return batchVoteTransactionEntityList;
+    }
+
+    private BatchVoteTransactionEntity buildBatchVoteTransactionEntity(List<BatchVoteTransactionEntity> batchVoteTransactionEntities) {
+        return Flowable
+                .fromIterable(batchVoteTransactionEntities)
+                .collectInto(new BatchVoteTransactionEntity(), new BiConsumer<BatchVoteTransactionEntity, BatchVoteTransactionEntity>() {
+                    @Override
+                    public void accept(BatchVoteTransactionEntity batchVoteTransactionEntity, BatchVoteTransactionEntity batchVoteTransactionEntity2) throws Exception {
+                        double earnings = BigDecimalUtil.add(batchVoteTransactionEntity.getEarnings(), batchVoteTransactionEntity2.getEarnings());
+                        double totalTicketNum = BigDecimalUtil.add(batchVoteTransactionEntity.getTotalTicketNum(), batchVoteTransactionEntity2.getTotalTicketNum());
+                        double validNum = BigDecimalUtil.add(batchVoteTransactionEntity.getValidNum(), batchVoteTransactionEntity2.getValidNum());
+                        batchVoteTransactionEntity.setEarnings(String.valueOf(earnings));
+                        batchVoteTransactionEntity.setTotalTicketNum(String.valueOf(totalTicketNum));
+                        batchVoteTransactionEntity.setValidNum(String.valueOf(validNum));
+                        batchVoteTransactionEntity.setNodeName(batchVoteTransactionEntity2.getNodeName());
+                        batchVoteTransactionEntity.setCandidateId(batchVoteTransactionEntity2.getCandidateId());
+                        batchVoteTransactionEntity.setOwner(batchVoteTransactionEntity2.getOwner());
+                        batchVoteTransactionEntity.setDeposit(batchVoteTransactionEntity2.getDeposit());
+                        batchVoteTransactionEntity.setTransactiontime(batchVoteTransactionEntity2.getTransactiontime());
+                        batchVoteTransactionEntity.setTransactionHash(batchVoteTransactionEntity2.getTransactionHash());
+                    }
+                }).blockingGet();
     }
 
     private List<VoteSummaryEntity> buildDefaultVoteSummaryList() {

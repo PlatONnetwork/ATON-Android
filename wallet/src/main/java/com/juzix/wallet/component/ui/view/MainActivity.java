@@ -22,7 +22,6 @@ import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.MainContract;
 import com.juzix.wallet.component.ui.presenter.MainPresenter;
 import com.juzix.wallet.component.widget.FragmentTabHost;
-import com.juzix.wallet.entity.WalletEntity;
 import com.juzix.wallet.event.EventPublisher;
 
 import butterknife.BindView;
@@ -77,20 +76,12 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         sInstance = this;
-        mPresenter.init();
+        mPresenter.checkVersion();
         setContentView(R.layout.activity_main);
         unbinder = ButterKnife.bind(this);
         initViews();
         EventPublisher.getInstance().register(this);
         LoopService.startLoopService(this);
-    }
-
-    public void setSelectedWallet(WalletEntity wallet) {
-        mPresenter.setSelectedWallet(wallet);
-    }
-
-    public WalletEntity getSelectedWallet() {
-        return mPresenter.getSelectedWallet();
     }
 
     @Override

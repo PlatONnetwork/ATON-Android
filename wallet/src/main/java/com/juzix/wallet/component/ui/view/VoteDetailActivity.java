@@ -14,6 +14,7 @@ import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.VoteDetailContract;
 import com.juzix.wallet.component.ui.presenter.VoteDetailPresenter;
 import com.juzix.wallet.entity.BatchVoteTransactionEntity;
+import com.juzix.wallet.entity.BatchVoteTransactionWrapEntity;
 import com.juzix.wallet.entity.VoteDetailItemEntity;
 
 import java.util.List;
@@ -67,8 +68,8 @@ public class VoteDetailActivity extends MVPBaseActivity<VoteDetailPresenter> imp
     }
 
     @Override
-    public BatchVoteTransactionEntity getBatchVoteTransactionFromIntent() {
-        return getIntent().getParcelableExtra(Constants.Extra.EXTRA_BATCHVOTETRANSACTION);
+    public BatchVoteTransactionWrapEntity getBatchVoteWrapTransactionFromIntent() {
+        return getIntent().getParcelableExtra(Constants.Extra.EXTRA_BATCHVOTETWRAPRANSACTION);
     }
 
     @Override
@@ -82,9 +83,9 @@ public class VoteDetailActivity extends MVPBaseActivity<VoteDetailPresenter> imp
         mVoteDetailListAdapter.notifyDataChanged(voteDetailItemEntityList);
     }
 
-    public static void actionStart(Context context, BatchVoteTransactionEntity batchVoteTransactionEntity) {
+    public static void actionStart(Context context, BatchVoteTransactionWrapEntity batchVoteTransactionEntity) {
         Intent intent = new Intent(context, VoteDetailActivity.class);
-        intent.putExtra(Constants.Extra.EXTRA_BATCHVOTETRANSACTION, batchVoteTransactionEntity);
+        intent.putExtra(Constants.Extra.EXTRA_BATCHVOTETWRAPRANSACTION, batchVoteTransactionEntity);
         context.startActivity(intent);
     }
 }
