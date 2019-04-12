@@ -91,7 +91,11 @@ public class TransactionsFragment extends MVPBaseFragment<TransactionsPresenter>
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateSharedWalletTransactionEvent(Event.UpdateSharedWalletTransactionEvent event) {
-        mPresenter.fetchWalletTransactionList();
+        if (transactionListAdapter.getList() != null && transactionListAdapter.getList().contains(event.sharedTransactionEntity)) {
+            transactionListAdapter.updateItem(currentActivity(), listTransaction, event.sharedTransactionEntity);
+        } else {
+            transactionListAdapter.addItem(event.sharedTransactionEntity);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

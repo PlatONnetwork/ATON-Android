@@ -92,6 +92,10 @@ public class TransactionListsAdapter extends CommonAdapter<TransactionEntity> {
         }
     }
 
+    /**
+     * 如果当前是合约地址，则不需要将创建合约和部署合约的加到当前列表中
+     * @param transactionEntity
+     */
     public void addItem(TransactionEntity transactionEntity) {
         if (mDatas != null && transactionEntity.isRelevantWalletAddress(walletAddress)) {
             mDatas.add(transactionEntity);

@@ -168,15 +168,7 @@ public class IndividualWalletTransactionManager {
         }).doOnSuccess(new Consumer<IndividualTransactionEntity>() {
             @Override
             public void accept(IndividualTransactionEntity individualTransactionEntity) throws Exception {
-                getIndividualTransactionByLoop(individualTransactionEntity)
-                        .subscribeOn(Schedulers.newThread())
-                        .subscribe(new Consumer<IndividualTransactionEntity>() {
-                            @Override
-                            public void accept(IndividualTransactionEntity individualTransactionEntity) throws Exception {
-                                Log.e(TAG, "getIndividualTransactionByLoop 轮询交易成功" + Thread.currentThread().getName());
-                            }
-                        });
-                ;
+                getIndividualTransactionByLoop(individualTransactionEntity);
             }
         });
     }
@@ -184,8 +176,8 @@ public class IndividualWalletTransactionManager {
     /**
      * 通过轮询获取普通钱包的交易
      */
-    public Flowable<IndividualTransactionEntity> getIndividualTransactionByLoop(IndividualTransactionEntity transactionEntity) {
-        return Flowable.interval(Constants.Common.REFRESH_TIME, TimeUnit.MILLISECONDS)
+    public void getIndividualTransactionByLoop(IndividualTransactionEntity transactionEntity) {
+        Flowable.interval(Constants.Common.REFRESH_TIME, TimeUnit.MILLISECONDS)
                 .map(new Function<Long, IndividualTransactionEntity>() {
                     @Override
                     public IndividualTransactionEntity apply(Long aLong) throws Exception {
@@ -201,10 +193,19 @@ public class IndividualWalletTransactionManager {
                 .doOnNext(new Consumer<IndividualTransactionEntity>() {
                     @Override
                     public void accept(IndividualTransactionEntity individualTransactionEntity) throws Exception {
-                        boolean success = IndividualTransactionInfoDao.getInstance().insertTransaction(individualTransactionEntity.buildIndividualTransactionInfoEntity());
-                        if (success) {
-                            EventPublisher.getInstance().sendUpdateIndividualWalletTransactionEvent(individualTransactionEntity);
+                        if (individualTransactionEntity.isCompleted()){
+                            boolean success = IndividualTransactionInfoDao.getInstance().insertTransaction(individualTransactionEntity.buildIndividualTransactionInfoEntity());
+                            if (success) {
+                                EventPublisher.getInstance().sendUpdateIndividualWalletTransactionEvent(individualTransactionEntity);
+                            }
                         }
+                    }
+                })
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Consumer<IndividualTransactionEntity>() {
+                    @Override
+                    public void accept(IndividualTransactionEntity individualTransactionEntity) throws Exception {
+                        Log.e(TAG, "getIndividualTransactionByLoop 轮询交易成功" + Thread.currentThread().getName());
                     }
                 });
     }

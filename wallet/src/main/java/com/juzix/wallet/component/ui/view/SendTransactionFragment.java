@@ -239,7 +239,9 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
 
     @Override
     public void setToAddress(String address) {
-        etWalletAddress.setText(address);
+        if (etWalletAddress != null){
+            etWalletAddress.setText(address);
+        }
     }
 
     @Override

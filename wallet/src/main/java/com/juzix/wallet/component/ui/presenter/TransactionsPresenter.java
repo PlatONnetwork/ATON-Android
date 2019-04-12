@@ -213,11 +213,10 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
         }).flatMap(new Function<IndividualTransactionEntity, Publisher<IndividualTransactionEntity>>() {
             @Override
             public Publisher<IndividualTransactionEntity> apply(IndividualTransactionEntity individualTransactionEntity) throws Exception {
-                if (individualTransactionEntity.isCompleted()) {
-                    return Flowable.just(individualTransactionEntity);
-                } else {
-                    return IndividualWalletTransactionManager.getInstance().getIndividualTransactionByLoop(individualTransactionEntity);
+                if (!individualTransactionEntity.isCompleted()){
+                    IndividualWalletTransactionManager.getInstance().getIndividualTransactionByLoop(individualTransactionEntity);
                 }
+                return Flowable.just(individualTransactionEntity);
             }
         }).toList().onErrorReturnItem(new ArrayList<>());
     }

@@ -32,7 +32,6 @@ import com.juzix.wallet.entity.IndividualTransactionEntity;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.SharedWalletEntity;
 import com.juzix.wallet.entity.WalletEntity;
-import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
@@ -329,7 +328,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
      */
     private void backToTransactionListWithDelay() {
         Single
-                .timer(0, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+                .timer(1000, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
                 .compose(bindToLifecycle())
                 .subscribe(new Consumer<Long>() {
                     @Override
@@ -373,12 +372,6 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
                     @Override
                     public SharedTransactionInfoEntity apply(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
                         return sharedTransactionInfoEntity;
-                    }
-                })
-                .doOnSuccess(new Consumer<SharedTransactionInfoEntity>() {
-                    @Override
-                    public void accept(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
-                        EventPublisher.getInstance().sendUpdateSharedWalletTransactionEvent();
                     }
                 })
                 .compose(new SchedulersTransformer())

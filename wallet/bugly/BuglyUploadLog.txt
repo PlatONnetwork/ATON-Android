@@ -2,3 +2,27 @@ file=D:\Android\ATON-Android\wallet\build\outputs\mapping\releaseC\mapping.txt
 sha1=b0b42f4d256b23eadc0e2bc2f4ccde6ec4eb39fa
 appId=0970ddc6bd
 
+file=D:\Android\ATON-Android\wallet\build\outputs\mapping\releaseC\mapping.txt
+sha1=53d8706da14b10f85ded64b69dd91e567602e20d
+appId=0970ddc6bd
+
+file=D:\Android\ATON-Android\wallet\build\outputs\mapping\releaseC\mapping.txt
+sha1=eff7bb85680ea7cd8f7b794b038d153f282bcba7
+appId=0970ddc6bd
+
+file=D:\Android\ATON-Android\wallet\build\outputs\mapping\releaseC\mapping.txt
+sha1=53d8706da14b10f85ded64b69dd91e567602e20d
+appId=0970ddc6bd
+
+file=D:\Android\ATON-Android\wallet\build\outputs\mapping\releaseC\mapping.txt
+sha1=9096e70b88ba3b4e7cdecc2a8a72b49ccdf296d5
+appId=0970ddc6bd
+
+file=D:\Android\ATON-Android\wallet\build\outputs\mapping\releaseC\mapping.txt
+sha1=9096e70b88ba3b4e7cdecc2a8a72b49ccdf296d5
+appId=0970ddc6bd
+
+file=D:\Android\ATON-Android\wallet\build\outputs\mapping\releaseC\mapping.txt
+sha1=9096e70b88ba3b4e7cdecc2a8a72b49ccdf296d5
+appId=0970ddc6bd
+
