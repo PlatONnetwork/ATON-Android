@@ -18,7 +18,7 @@ public class LineGridView extends GridView {
     private int mLinePaddingVertical;
     private int mLineSize;
     private int mWidth;
-
+    private Paint localPaint;
     public LineGridView(Context context) {
         this(context, null, 0);
     }
@@ -29,6 +29,7 @@ public class LineGridView extends GridView {
 
     public LineGridView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        localPaint = new Paint();
 
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.LineGridView, defStyle, 0);
         mLinePaddingHorizontal = typedArray.getDimensionPixelSize(R.styleable.LineGridView_line_padding_horizontal, 0);
@@ -47,14 +48,26 @@ public class LineGridView extends GridView {
     @Override
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
+//        View localView = getChildAt(0);
+
         View localView = getChildAt(0);
+
+//        Log.d("LineGridView","当前view宽度"+localView.getWidth());
+//        Log.d("LineGridView","当前view2宽度"+localView2.getWidth());
+
+        if(localView==null){
+            return;
+        }
+
         //列数
         int column = mWidth / localView.getWidth();
         //行数
         int row = getChildCount() % column == 0 ? getChildCount() / column : getChildCount() / column + 1;
         int childCount = getChildCount();
-        Paint localPaint;
-        localPaint = new Paint();
+
+//        Paint localPaint;
+//        localPaint = new Paint();
+
         localPaint.setAntiAlias(true);
         localPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         localPaint.setStrokeWidth(mLineSize);
