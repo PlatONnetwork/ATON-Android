@@ -19,6 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
+        android:listSelector="@android:color/transparent"
         android:numColumns="2"
         app:line_padding_horizontal="50dp"
         app:line_padding_vertical="24dp"
