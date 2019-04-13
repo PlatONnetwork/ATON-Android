@@ -668,12 +668,13 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
                 ", contractAddress='" + contractAddress + '\'' +
                 ", pending=" + pending +
                 ", executed=" + executed +
-                ", transactionResult=" + transactionResult +
+                ", transactionResult='" + transactionResult + '\'' +
                 ", requiredSignNumber=" + requiredSignNumber +
                 ", read=" + read +
                 ", ownerEntityList=" + ownerEntityList +
                 ", ownerWalletAddress='" + ownerWalletAddress + '\'' +
                 ", transactionType=" + transactionType +
+                ", uuid='" + uuid + '\'' +
                 '}';
     }
 }

@@ -123,7 +123,7 @@ public class TransactionListsAdapter extends CommonAdapter<TransactionEntity> {
             SharedTransactionEntity sharedTransactionEntity = (SharedTransactionEntity) transactionEntity;
             SharedTransactionEntity.TransactionType transactionType = SharedTransactionEntity.TransactionType.getTransactionType(sharedTransactionEntity.getTransactionType());
             //创建联名钱包+执行联名钱包只在创建者交易记录里展示
-            return transactionType != SharedTransactionEntity.TransactionType.SEND_TRANSACTION && sharedTransactionEntity.getFromAddress().equals(walletAddress);
+            return transactionType == SharedTransactionEntity.TransactionType.SEND_TRANSACTION || sharedTransactionEntity.getFromAddress().equals(walletAddress);
         }
         return true;
     }

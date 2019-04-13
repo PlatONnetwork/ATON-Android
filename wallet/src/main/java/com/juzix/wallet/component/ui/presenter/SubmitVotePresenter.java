@@ -70,10 +70,10 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
     @Override
     public void submitVote() {
 
-        if (mCandidateEntity.getVotedNum() == 0 && isViewAttached()) {
-            showLongToast(R.string.node_exit_consensus);
-            return;
-        }
+//        if (mCandidateEntity.getVotedNum() == 0 && isViewAttached()) {
+//            showLongToast(R.string.node_exit_consensus);
+//            return;
+//        }
 
         Single
                 .zip(VoteManager.getInstance().getPoolRemainder(), VoteManager.getInstance().getTicketPrice(), new BiFunction<Long, String, String>() {

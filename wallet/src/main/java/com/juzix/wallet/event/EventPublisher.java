@@ -48,6 +48,7 @@ public class EventPublisher {
     }
 
     public void sendUpdateSharedWalletTransactionEvent(SharedTransactionEntity sharedTransactionEntity) {
+        Log.e(TAG,"sendUpdateSharedWalletTransactionEvent"+sharedTransactionEntity.toString());
         BusProvider.post(new Event.UpdateSharedWalletTransactionEvent(sharedTransactionEntity));
     }
 

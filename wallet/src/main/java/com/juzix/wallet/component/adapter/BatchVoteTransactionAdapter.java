@@ -40,7 +40,7 @@ public class BatchVoteTransactionAdapter extends CommonAdapter<BatchVoteTransact
             viewHolder.setText(R.id.tv_location, batchVoteTransactionEntity.getRegionEntity().getCountryPinyin());
         }
         viewHolder.setText(R.id.tv_node_name, batchVoteTransactionEntity.getNodeName());
-        viewHolder.setText(R.id.tv_valid_invalid_ticket, String.format("%s/%s", batchVoteTransactionEntity.getValidNum(), NumberParserUtils.getPrettyNumber(BigDecimalUtil.sub(NumberParserUtils.parseDouble(batchVoteTransactionEntity.getTotalTicketNum()), NumberParserUtils.parseDouble(batchVoteTransactionEntity.getValidNum())), 0)));
+        viewHolder.setText(R.id.tv_valid_invalid_ticket, String.format("%s/%s", NumberParserUtils.getPrettyNumber(batchVoteTransactionEntity.getValidNum(),0), NumberParserUtils.getPrettyNumber(BigDecimalUtil.sub(NumberParserUtils.parseDouble(batchVoteTransactionEntity.getTotalTicketNum()), NumberParserUtils.parseDouble(batchVoteTransactionEntity.getValidNum())), 0)));
         viewHolder.setText(R.id.tv_vote_staked, NumberParserUtils.getPrettyNumber(batchVoteTransactionEntity.getVoteStaked(), 0));
         viewHolder.setText(R.id.tv_vote_staked_desc, String.format("%s(Energon)", context.getString(R.string.lockVote)));
         viewHolder.setText(R.id.tv_vote_profit, batchVoteTransactionEntity.getShowEarnings());

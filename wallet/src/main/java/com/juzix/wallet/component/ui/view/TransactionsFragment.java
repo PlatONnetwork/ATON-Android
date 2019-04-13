@@ -2,6 +2,7 @@ package com.juzix.wallet.component.ui.view;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,6 +82,7 @@ public class TransactionsFragment extends MVPBaseFragment<TransactionsPresenter>
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateSharedWalletTransactionEvent(Event.UpdateSharedWalletTransactionEvent event) {
+        Log.e(TAG, "onUpdateSharedWalletTransactionEvent" + event.sharedTransactionEntity.toString());
         if (transactionListAdapter.getList() != null && transactionListAdapter.getList().contains(event.sharedTransactionEntity)) {
             transactionListAdapter.updateItem(currentActivity(), listTransaction, event.sharedTransactionEntity);
         } else {

@@ -653,6 +653,7 @@ public class SharedWalletTransactionManager {
                     public void accept(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
                         boolean success = SharedTransactionInfoDao.getInstance().insertTransaction(sharedTransactionInfoEntity);
                         if (success) {
+                            Log.e(TAG,"accept: 执行合约1 "+sharedTransactionInfoEntity.toString());
                             EventPublisher.getInstance().sendUpdateSharedWalletTransactionEvent(sharedTransactionInfoEntity.buildSharedTransactionEntity());
                         }
                     }
@@ -686,6 +687,7 @@ public class SharedWalletTransactionManager {
                     public void accept(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
                         boolean success = SharedTransactionInfoDao.getInstance().insertTransaction(sharedTransactionInfoEntity);
                         if (success) {
+                            Log.e(TAG,"accept: 执行合约2 "+sharedTransactionInfoEntity.toString());
                             EventPublisher.getInstance().sendUpdateSharedWalletTransactionEvent(sharedTransactionInfoEntity.buildSharedTransactionEntity());
                         }
                     }
@@ -710,10 +712,10 @@ public class SharedWalletTransactionManager {
                         SharedTransactionInfoEntity transactionInfoEntity = SharedTransactionInfoDao.getInstance().getSharedTransaction(sharedTransactionInfoEntity.getContractAddress(), sharedTransactionInfoEntity.getTransactionId(), SharedTransactionEntity.TransactionType.SEND_TRANSACTION);
                         //不能全部替换，只能更新某些字段
                         if (transactionInfoEntity == null) {
-                            Log.e(TAG, "发送交易插入:" + sharedTransactionInfoEntity.toString());
                             boolean isSuccess = SharedTransactionInfoDao.getInstance().insertTransaction(sharedTransactionInfoEntity);
                             if (isSuccess) {
                                 mTransactionContractAddressList.remove(sharedTransactionInfoEntity.getContractAddress());
+                                Log.e(TAG, "发送交易插入:" + sharedTransactionInfoEntity.toString());
                                 EventPublisher.getInstance().sendUpdateSharedWalletTransactionEvent(sharedTransactionInfoEntity.buildSharedTransactionEntity());
                             }
                         } else {
