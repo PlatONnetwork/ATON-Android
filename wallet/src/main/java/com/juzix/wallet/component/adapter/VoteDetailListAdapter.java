@@ -26,7 +26,7 @@ public class VoteDetailListAdapter extends CommonAdapter<VoteDetailItemEntity> {
         viewHolder.setText(R.id.tv_ticket_price, context.getString(R.string.amount_with_unit, NumberParserUtils.getPrettyNumber(item.getTicketPrice(), 0)));
         viewHolder.setText(R.id.tv_vote_staked_and_unstaked, String.format("%s/%s", NumberParserUtils.getPrettyNumber(item.getVoteStaked(), 0), NumberParserUtils.getPrettyNumber(item.getVoteUnStaked(), 0)));
         viewHolder.setText(R.id.tv_vote_profit, context.getString(R.string.amount_with_unit, NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(item.getProfit(), "1E18"), 4)));
-        viewHolder.setText(R.id.tv_wallet_address_and_name, String.format("%s(%s)", item.getWalletAddress(), item.getWalletName()));
+        viewHolder.setText(R.id.tv_wallet_address_and_name, String.format("%s%s", item.getWalletAddress(), item.getWalletName()));
         viewHolder.setText(R.id.tv_expire_time, item.getExpireTime());
     }
 }

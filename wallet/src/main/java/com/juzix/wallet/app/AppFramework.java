@@ -98,27 +98,20 @@ public class AppFramework {
                             schema.get("IndividualTransactionInfoEntity").addField("blockNumber", long.class);
                             oldVersion++;
                         } else if (oldVersion == 104) {
+                            schema.get("IndividualTransactionInfoEntity").addField("completed", boolean.class);
+                            schema.get("IndividualTransactionInfoEntity").addField("value", double.class);
                             schema.get("IndividualWalletInfoEntity").addField("mnemonic", String.class);
-                            schema.get("SharedWalletInfoEntity").addField("creatorAddress", String.class);
-                            schema.get("SingleVoteInfoEntity").removeField("avatar");
-                            schema.remove("RegionInfoEntity");
+
+                            schema.get("RegionInfoEntity").removeField("uuid");
+                            schema.get("RegionInfoEntity").addPrimaryKey("ip");
+
                             schema.get("SharedTransactionInfoEntity").removeField("transactionResult");
                             schema.get("SharedTransactionInfoEntity").addField("transactionResult", String.class);
-                            schema.remove("TransactionInfoResult");
-                            schema.get("IndividualTransactionInfoEntity").addField("completed", Boolean.class);
-                            schema.get("IndividualTransactionInfoEntity").addField("value", double.class);
-                            oldVersion++;
-                        } else if (oldVersion == 105) {
-                            schema.get("IndividualWalletInfoEntity").addField("mnemonic", String.class);
-                            schema.get("SharedWalletInfoEntity").addField("creatorAddress", String.class);
+
+                            schema.get("SharedWalletInfoEntity").renameField("walletAddress", "creatorAddress");
                             schema.get("SingleVoteInfoEntity").removeField("avatar");
-                            schema.remove("RegionInfoEntity");
-                            schema.get("SharedTransactionInfoEntity").removeField("transactionResult");
-                            schema.get("SharedTransactionInfoEntity").addField("transactionResult", String.class);
+
                             schema.remove("TransactionInfoResult");
-                            schema.get("NodeInfoEntity").removeField("nodeDesc");
-                            schema.get("IndividualTransactionInfoEntity").addField("completed", Boolean.class);
-                            schema.get("IndividualTransactionInfoEntity").addField("value", double.class);
                             oldVersion++;
                         }
                     }
