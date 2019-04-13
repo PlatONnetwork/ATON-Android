@@ -185,6 +185,10 @@ public class BatchVoteTransactionEntity implements Parcelable {
         return validNum;
     }
 
+    public String getInvalidVoteNum() {
+        return String.valueOf(BigDecimalUtil.sub(totalTicketNum, validNum));
+    }
+
     public void setValidNum(String validNum) {
         this.validNum = validNum;
     }

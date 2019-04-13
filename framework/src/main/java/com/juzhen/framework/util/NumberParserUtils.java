@@ -262,4 +262,28 @@ public class NumberParserUtils {
         return bigDecimalStr;
     }
 
+    public static String getPrettyNumber(String value, int maxDigit) {
+
+        String bigDecimalStr = null;
+        try {//当number==NaN，会throw "Infinity or NaN",所以要catch
+            // TODO: 2018/11/6 判断是否为0
+            BigDecimal bigDecimal = new BigDecimal(value);
+            bigDecimal = bigDecimal.setScale(maxDigit, BigDecimal.ROUND_DOWN);
+            if (bigDecimal.doubleValue() != 0) {
+                bigDecimalStr = bigDecimal.stripTrailingZeros().toPlainString();
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        if (TextUtils.isEmpty(bigDecimalStr)) {
+            return "0";
+        }
+
+        if (maxDigit > 0 && !bigDecimalStr.contains(".")) {
+            return bigDecimalStr.concat(".00");
+        }
+
+        return bigDecimalStr;
+    }
+
 }

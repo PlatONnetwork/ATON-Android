@@ -8,6 +8,8 @@ import com.juzhen.framework.network.NetConnectivity;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
+import com.juzix.wallet.app.CustomThrowable;
+import com.juzix.wallet.app.FlowableSchedulersTransformer;
 import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BaseActivity;
@@ -28,6 +30,7 @@ import com.juzix.wallet.entity.OwnerEntity;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
 
+import org.reactivestreams.Subscription;
 import org.web3j.crypto.Credentials;
 
 import java.math.BigInteger;
@@ -251,8 +254,32 @@ public class CreateSharedWalletSecondStepPresenter extends BasePresenter<CreateS
 
     @Override
     public void validPassword(Credentials credentials, BigInteger gasPrice, double feeAmount) {
-        SharedWalletTransactionManager.getInstance().createSharedWallet(credentials, mWalletName, mWalletEntity.getPrefixAddress(), mWalletEntity.getName(), mRequiredSignatures, getAddressEntityList(), gasPrice, feeAmount);
-        MainActivity.actionStart(getContext());
+        SharedWalletTransactionManager
+                .getInstance()
+                .createSharedWallet(credentials, mWalletName, mWalletEntity.getPrefixAddress(), mWalletEntity.getName(), mRequiredSignatures, getAddressEntityList(), gasPrice, feeAmount)
+                .doOnSubscribe(new Consumer<Subscription>() {
+                    @Override
+                    public void accept(Subscription subscription) throws Exception {
+                        if (isViewAttached()) {
+                            MainActivity.actionStart(currentActivity());
+                        }
+                    }
+                })
+                .compose(new FlowableSchedulersTransformer())
+                .subscribe(new Consumer() {
+                    @Override
+                    public void accept(Object o) throws Exception {
+
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        if (throwable instanceof CustomThrowable) {
+                            CustomThrowable customThrowable = (CustomThrowable) throwable;
+                            showLongToast(customThrowable.getDetailMsgRes());
+                        }
+                    }
+                });
     }
 
     private void showInputWalletPasswordDialogFragment(BigInteger price, double feeAmount) {

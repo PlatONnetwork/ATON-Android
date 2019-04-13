@@ -9,6 +9,7 @@ import com.juzix.wallet.R;
 import com.juzix.wallet.app.ClickTransformer;
 import com.juzix.wallet.component.adapter.base.ViewHolder;
 import com.juzix.wallet.entity.BatchVoteTransactionEntity;
+import com.juzix.wallet.entity.BatchVoteTransactionWrapEntity;
 import com.juzix.wallet.utils.BigDecimalUtil;
 
 import java.util.List;
@@ -18,7 +19,7 @@ import io.reactivex.functions.Consumer;
 /**
  * @author matrixelement
  */
-public class BatchVoteTransactionAdapter extends CommonAdapter<BatchVoteTransactionEntity> {
+public class BatchVoteTransactionAdapter extends CommonAdapter<BatchVoteTransactionWrapEntity> {
 
     private OnItemVoteClickListener mListener;
 
@@ -26,22 +27,23 @@ public class BatchVoteTransactionAdapter extends CommonAdapter<BatchVoteTransact
         this.mListener = listener;
     }
 
-    public BatchVoteTransactionAdapter(int layoutId, List<BatchVoteTransactionEntity> datas) {
+    public BatchVoteTransactionAdapter(int layoutId, List<BatchVoteTransactionWrapEntity> datas) {
         super(layoutId, datas);
     }
 
     @Override
-    protected void convert(Context context, ViewHolder viewHolder, BatchVoteTransactionEntity item, int position) {
-        if (item.getRegionEntity() == null || TextUtils.isEmpty(item.getRegionEntity().getCountryPinyin())) {
+    protected void convert(Context context, ViewHolder viewHolder, BatchVoteTransactionWrapEntity item, int position) {
+        BatchVoteTransactionEntity batchVoteTransactionEntity = item.getBatchVoteTransactionEntity();
+        if (batchVoteTransactionEntity.getRegionEntity() == null || TextUtils.isEmpty(batchVoteTransactionEntity.getRegionEntity().getCountryPinyin())) {
             viewHolder.setText(R.id.tv_location, context.getString(R.string.unknownRegion));
         } else {
-            viewHolder.setText(R.id.tv_location, item.getRegionEntity().getCountryPinyin());
+            viewHolder.setText(R.id.tv_location, batchVoteTransactionEntity.getRegionEntity().getCountryPinyin());
         }
-        viewHolder.setText(R.id.tv_node_name, item.getNodeName());
-        viewHolder.setText(R.id.tv_valid_invalid_ticket, String.format("%s/%s", item.getValidNum(), NumberParserUtils.getPrettyNumber(BigDecimalUtil.sub(NumberParserUtils.parseDouble(item.getTotalTicketNum()), NumberParserUtils.parseDouble(item.getValidNum())), 0)));
-        viewHolder.setText(R.id.tv_vote_staked, NumberParserUtils.getPrettyNumber(item.getVoteStaked(), 0));
+        viewHolder.setText(R.id.tv_node_name, batchVoteTransactionEntity.getNodeName());
+        viewHolder.setText(R.id.tv_valid_invalid_ticket, String.format("%s/%s", NumberParserUtils.getPrettyNumber(batchVoteTransactionEntity.getValidNum(),0), NumberParserUtils.getPrettyNumber(BigDecimalUtil.sub(NumberParserUtils.parseDouble(batchVoteTransactionEntity.getTotalTicketNum()), NumberParserUtils.parseDouble(batchVoteTransactionEntity.getValidNum())), 0)));
+        viewHolder.setText(R.id.tv_vote_staked, NumberParserUtils.getPrettyNumber(batchVoteTransactionEntity.getVoteStaked(), 0));
         viewHolder.setText(R.id.tv_vote_staked_desc, String.format("%s(Energon)", context.getString(R.string.lockVote)));
-        viewHolder.setText(R.id.tv_vote_profit, item.getShowEarnings());
+        viewHolder.setText(R.id.tv_vote_profit, batchVoteTransactionEntity.getShowEarnings());
         viewHolder.setText(R.id.tv_vote_profit_desc, String.format("%s(Energon)", context.getString(R.string.votingIncome)));
 
         RxView.clicks(viewHolder.getView(R.id.rtv_vote))
@@ -50,7 +52,7 @@ public class BatchVoteTransactionAdapter extends CommonAdapter<BatchVoteTransact
                     @Override
                     public void accept(Object o) throws Exception {
                         if (mListener != null) {
-                            mListener.onItemVoteClick(item.getCandidateId());
+                            mListener.onItemVoteClick(batchVoteTransactionEntity.getCandidateId());
                         }
                     }
                 });

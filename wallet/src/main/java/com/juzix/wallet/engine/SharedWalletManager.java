@@ -86,8 +86,8 @@ public class SharedWalletManager {
         }
     }
 
-    public void removeWallet(SharedWalletEntity sharedWalletEntity) {
-        mWalletList.remove(sharedWalletEntity);
+    public boolean removeWallet(SharedWalletEntity sharedWalletEntity) {
+        return mWalletList.remove(sharedWalletEntity);
     }
 
     public List<SharedWalletEntity> getWalletList() {

@@ -21,6 +21,7 @@ import com.juzix.wallet.component.ui.view.ScanQRCodeActivity;
 import com.juzix.wallet.config.PermissionConfigure;
 import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.engine.SharedWalletManager;
+import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.SharedWalletEntity;
@@ -94,7 +95,7 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
                     public void accept(Double balance) throws Exception {
                         if (isViewAttached()) {
                             getView().showTotalBalance(balance);
-                            WalletEntity walletEntity = MainActivity.sInstance.getSelectedWallet();
+                            WalletEntity walletEntity = WalletManager.getInstance().getSelectedWallet();
                             if (walletEntity != null) {
                                 getView().showBalance(walletEntity.getBalance());
                             }
@@ -131,7 +132,7 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
 
     @Override
     public void clickRecycleViewItem(WalletEntity walletEntity) {
-        MainActivity.sInstance.setSelectedWallet(walletEntity);
+        WalletManager.getInstance().setSelectedWallet(walletEntity);
         getView().showWalletList(walletEntity);
         getView().showWalletInfo(walletEntity);
         getView().setArgument(walletEntity);
@@ -200,7 +201,7 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
 
     @Override
     public void backupWallet() {
-        IndividualWalletEntity walletEntity = (IndividualWalletEntity) MainActivity.sInstance.getSelectedWallet();
+        IndividualWalletEntity walletEntity = (IndividualWalletEntity) WalletManager.getInstance().getSelectedWallet();
         InputWalletPasswordDialogFragment.newInstance(walletEntity).setOnWalletCorrectListener(new InputWalletPasswordDialogFragment.OnWalletCorrectListener() {
             @Override
             public void onCorrect(Credentials credentials, String password) {
@@ -291,14 +292,14 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
             return;
         }
         getView().showEmptyView(false);
-        WalletEntity walletEntity = MainActivity.sInstance.getSelectedWallet();
+        WalletEntity walletEntity = WalletManager.getInstance().getSelectedWallet();
         if (isSelected(walletEntity)) {
             getView().showWalletList(walletEntity);
             getView().showWalletInfo(walletEntity);
         } else {
             //挑选一个当前选中的钱包
             walletEntity = getSelectedWallet();
-            MainActivity.sInstance.setSelectedWallet(walletEntity);
+            WalletManager.getInstance().setSelectedWallet(walletEntity);
             getView().showWalletList(walletEntity);
             getView().showWalletInfo(walletEntity);
             getView().setArgument(walletEntity);

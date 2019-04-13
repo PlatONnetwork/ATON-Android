@@ -6,6 +6,7 @@ import android.util.Log;
 import com.juzhen.framework.network.NetState;
 import com.juzix.wallet.entity.IndividualTransactionEntity;
 import com.juzix.wallet.entity.RegionEntity;
+import com.juzix.wallet.entity.SharedTransactionEntity;
 import com.juzix.wallet.entity.SharedWalletEntity;
 import com.juzix.wallet.entity.WalletEntity;
 
@@ -46,8 +47,9 @@ public class EventPublisher {
         BusProvider.post(new Event.NetWorkStateChangedEvent(netState));
     }
 
-    public void sendUpdateSharedWalletTransactionEvent() {
-        BusProvider.post(new Event.UpdateSharedWalletTransactionEvent());
+    public void sendUpdateSharedWalletTransactionEvent(SharedTransactionEntity sharedTransactionEntity) {
+        Log.e(TAG,"sendUpdateSharedWalletTransactionEvent"+sharedTransactionEntity.toString());
+        BusProvider.post(new Event.UpdateSharedWalletTransactionEvent(sharedTransactionEntity));
     }
 
     public void sendUpdateIndividualWalletTransactionEvent(IndividualTransactionEntity individualTransactionEntity) {
@@ -85,5 +87,9 @@ public class EventPublisher {
 
     public void sendUpdateVoteTransactionListEvent() {
         BusProvider.post(new Event.UpdateVoteTransactionListEvent());
+    }
+
+    public void sendRemoveSharedWalletEvent(SharedWalletEntity sharedWalletEntity) {
+        BusProvider.post(new Event.RemoveSharedWalletEvent(sharedWalletEntity));
     }
 }

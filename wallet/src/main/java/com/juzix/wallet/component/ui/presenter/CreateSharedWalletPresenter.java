@@ -7,9 +7,9 @@ import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.CreateSharedWalletContract;
 import com.juzix.wallet.component.ui.dialog.SelectWalletDialogFragment;
 import com.juzix.wallet.component.ui.view.CreateSharedWalletSecondStepActivity;
-import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.engine.SharedWalletManager;
+import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.WalletEntity;
 
@@ -114,7 +114,7 @@ public class CreateSharedWalletPresenter extends BasePresenter<CreateSharedWalle
     }
 
     private IndividualWalletEntity getSelectedWallet(){
-        WalletEntity selectedWallet = MainActivity.sInstance.getSelectedWallet();
+        WalletEntity selectedWallet = WalletManager.getInstance().getSelectedWallet();
         if (selectedWallet != null && selectedWallet instanceof IndividualWalletEntity && selectedWallet.getBalance() > 0){
             return (IndividualWalletEntity) selectedWallet;
         }

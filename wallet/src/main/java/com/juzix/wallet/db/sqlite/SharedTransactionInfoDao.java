@@ -287,27 +287,30 @@ public class SharedTransactionInfoDao {
         }
     }
 
-    public boolean updateReadWithUuid(String uuid, boolean read) {
+    public SharedTransactionInfoEntity updateReadWithUUID(String uuid, boolean read) {
         Realm realm = null;
+        SharedTransactionInfoEntity sharedTransactionInfoEntity = null;
         try {
             realm = Realm.getDefaultInstance();
-            realm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    SharedTransactionInfoEntity transactionInfoEntity = realm.where(SharedTransactionInfoEntity.class)
-                            .equalTo("uuid", uuid)
-                            .findFirst();
-                    transactionInfoEntity.setRead(read);
-                }
-            });
-            return true;
+            realm.beginTransaction();
+            SharedTransactionInfoEntity transactionInfoEntity = realm.where(SharedTransactionInfoEntity.class)
+                    .equalTo("uuid", uuid)
+                    .findFirst();
+            transactionInfoEntity.setRead(read);
+            sharedTransactionInfoEntity = realm.copyFromRealm(transactionInfoEntity);
+            realm.commitTransaction();
         } catch (Exception e) {
             e.printStackTrace();
             if (realm != null) {
+                realm.cancelTransaction();
+            }
+        } finally {
+            if (realm != null) {
                 realm.close();
             }
-            return false;
         }
+
+        return sharedTransactionInfoEntity;
     }
 
 

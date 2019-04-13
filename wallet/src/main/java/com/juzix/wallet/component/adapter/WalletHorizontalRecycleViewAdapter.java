@@ -75,6 +75,18 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
         void onContentViewClick(WalletEntity walletEntity);
     }
 
+    public void removeItem(WalletEntity walletEntity) {
+        if (mList == null || mList.isEmpty()) {
+            return;
+        }
+        int position = mList.indexOf(walletEntity);
+        if (position != -1) {
+            if (mList.remove(position) != null) {
+                notifyItemRemoved(position);
+            }
+        }
+    }
+
     private void setLoadWalletView(final int position, final SharedWalletEntity walletEntity, ViewHolder holder) {
         holder.vShadow.setVisibility(View.GONE);
         holder.rlItem.setVisibility(View.GONE);

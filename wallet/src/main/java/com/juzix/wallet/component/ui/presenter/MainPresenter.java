@@ -21,8 +21,6 @@ import com.juzix.wallet.config.JZDirType;
 import com.juzix.wallet.config.PermissionConfigure;
 import com.juzix.wallet.engine.VersionManager;
 import com.juzix.wallet.entity.VersionEntity;
-import com.juzix.wallet.entity.WalletEntity;
-import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.DateUtil;
 
 import java.io.File;
@@ -34,18 +32,12 @@ import io.reactivex.schedulers.Schedulers;
 
 public class MainPresenter extends BasePresenter<MainContract.View> implements MainContract.Presenter{
 
-    private       WalletEntity    mSelectedWallet;
-
     public MainPresenter(MainContract.View view) {
         super(view);
     }
 
     @Override
-    public void init() {
-        checkVersion();
-    }
-
-    private void checkVersion() {
+    public void checkVersion() {
         long lastUpdateTime = AppSettings.getInstance().getUpdateVersionTime();
         if (lastUpdateTime != 0 && DateUtil.isToday(lastUpdateTime)) {
             return;
@@ -122,16 +114,5 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
             }
         });
 
-    }
-
-    @Override
-    public WalletEntity getSelectedWallet() {
-        return mSelectedWallet;
-    }
-
-    @Override
-    public void setSelectedWallet(WalletEntity walletEntity) {
-        mSelectedWallet = walletEntity;
-        EventPublisher.getInstance().sendUpdateSelectedWalletEvent(mSelectedWallet);
     }
 }

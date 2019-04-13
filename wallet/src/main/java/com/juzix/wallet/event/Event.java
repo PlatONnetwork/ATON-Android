@@ -3,6 +3,7 @@ package com.juzix.wallet.event;
 import com.juzhen.framework.network.NetState;
 import com.juzix.wallet.entity.IndividualTransactionEntity;
 import com.juzix.wallet.entity.RegionEntity;
+import com.juzix.wallet.entity.SharedTransactionEntity;
 import com.juzix.wallet.entity.SharedWalletEntity;
 import com.juzix.wallet.entity.WalletEntity;
 
@@ -22,7 +23,11 @@ public class Event {
     }
 
     public static class UpdateSharedWalletTransactionEvent {
-        public UpdateSharedWalletTransactionEvent() {
+
+        public SharedTransactionEntity sharedTransactionEntity;
+
+        public UpdateSharedWalletTransactionEvent(SharedTransactionEntity sharedTransactionEntity) {
+            this.sharedTransactionEntity = sharedTransactionEntity;
         }
     }
 
@@ -90,6 +95,15 @@ public class Event {
     public static class UpdateWalletListEvent {
 
         public UpdateWalletListEvent() {
+        }
+    }
+
+    public static class RemoveSharedWalletEvent {
+
+        public SharedWalletEntity sharedWalletEntity;
+
+        public RemoveSharedWalletEvent(SharedWalletEntity sharedWalletEntity) {
+            this.sharedWalletEntity = sharedWalletEntity;
         }
     }
 

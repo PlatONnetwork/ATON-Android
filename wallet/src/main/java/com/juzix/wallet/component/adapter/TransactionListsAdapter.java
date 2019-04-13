@@ -7,6 +7,7 @@ import android.widget.ListView;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.adapter.base.ViewHolder;
+import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.IndividualTransactionEntity;
 import com.juzix.wallet.entity.SharedTransactionEntity;
 import com.juzix.wallet.entity.TransactionEntity;
@@ -22,8 +23,6 @@ import java.util.List;
 public class TransactionListsAdapter extends CommonAdapter<TransactionEntity> {
 
     private final static String TAG = TransactionListsAdapter.class.getSimpleName();
-
-    private String walletAddress;
 
     private Context mContext;
 
@@ -44,6 +43,7 @@ public class TransactionListsAdapter extends CommonAdapter<TransactionEntity> {
     }
 
     private void convert(Context context, ViewHolder viewHolder, TransactionEntity item) {
+        String walletAddress = WalletManager.getInstance().getSelectedWalletAddress();
         if (item instanceof IndividualTransactionEntity) {
             IndividualTransactionEntity entity = (IndividualTransactionEntity) item;
             IndividualTransactionEntity.TransactionStatus transactionStatus = entity.getTransactionStatus();
@@ -92,12 +92,40 @@ public class TransactionListsAdapter extends CommonAdapter<TransactionEntity> {
         }
     }
 
+    /**
+     * 如果当前是合约地址，则不需要将创建合约和部署合约的加到当前列表中
+     *
+     * @param transactionEntity
+     */
     public void addItem(TransactionEntity transactionEntity) {
-        if (mDatas != null && transactionEntity.isRelevantWalletAddress(walletAddress)) {
+        if (mDatas != null && isNeedUpdateItem(transactionEntity)) {
             mDatas.add(transactionEntity);
             Collections.sort(mDatas);
             notifyDataChanged(mDatas);
         }
+    }
+
+    /**
+     * 是否需要更新item
+     * 1.普通钱包
+     * 2.联名钱包交易，如果是非交易类型，则只显示在联名钱包创建者交易列表里
+     *
+     * @param transactionEntity
+     * @return
+     */
+    private boolean isNeedUpdateItem(TransactionEntity transactionEntity) {
+        String walletAddress = WalletManager.getInstance().getSelectedWalletAddress();
+        //地址是否与交易有关
+        if (!transactionEntity.isRelevantWalletAddress(walletAddress)) {
+            return false;
+        }
+        if (transactionEntity instanceof SharedTransactionEntity) {
+            SharedTransactionEntity sharedTransactionEntity = (SharedTransactionEntity) transactionEntity;
+            SharedTransactionEntity.TransactionType transactionType = SharedTransactionEntity.TransactionType.getTransactionType(sharedTransactionEntity.getTransactionType());
+            //创建联名钱包+执行联名钱包只在创建者交易记录里展示
+            return transactionType == SharedTransactionEntity.TransactionType.SEND_TRANSACTION || sharedTransactionEntity.getFromAddress().equals(walletAddress);
+        }
+        return true;
     }
 
     private int getPositionByUUID(String uuid) {
@@ -112,9 +140,8 @@ public class TransactionListsAdapter extends CommonAdapter<TransactionEntity> {
         return -1;
     }
 
-    public void notifyDataChanged(List<TransactionEntity> mDatas, String walletAddress) {
+    public void notifyDataChanged(List<TransactionEntity> mDatas) {
         this.mDatas = mDatas;
-        this.walletAddress = walletAddress;
         notifyDataSetChanged();
     }
 

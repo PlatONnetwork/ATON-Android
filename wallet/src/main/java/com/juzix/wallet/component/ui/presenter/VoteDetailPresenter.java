@@ -7,7 +7,9 @@ import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.VoteDetailContract;
 import com.juzix.wallet.db.entity.SingleVoteInfoEntity;
 import com.juzix.wallet.db.sqlite.SingleVoteInfoDao;
+import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.entity.BatchVoteTransactionEntity;
+import com.juzix.wallet.entity.BatchVoteTransactionWrapEntity;
 import com.juzix.wallet.entity.SingleVoteEntity;
 import com.juzix.wallet.entity.VoteDetailItemEntity;
 import com.juzix.wallet.utils.BigDecimalUtil;
@@ -29,11 +31,11 @@ public class VoteDetailPresenter extends BasePresenter<VoteDetailContract.View> 
 
     private static final long EXPIRE_BLOCKNUMBER = 1536000;
 
-    private BatchVoteTransactionEntity mBatchVoteTransactionEntity;
+    private BatchVoteTransactionWrapEntity mBatchVoteTransactionEntity;
 
     public VoteDetailPresenter(VoteDetailContract.View view) {
         super(view);
-        mBatchVoteTransactionEntity = view.getBatchVoteTransactionFromIntent();
+        mBatchVoteTransactionEntity = view.getBatchVoteWrapTransactionFromIntent();
     }
 
     @Override
@@ -41,25 +43,62 @@ public class VoteDetailPresenter extends BasePresenter<VoteDetailContract.View> 
 
         if (mBatchVoteTransactionEntity != null) {
 
-            showNodeDetailInfo();
+            getView().showNodeDetailInfo(mBatchVoteTransactionEntity.getBatchVoteTransactionEntity());
 
-            loadVoteTicketList();
+            if (mBatchVoteTransactionEntity.getBatchVoteTransactionEntityList() == null || mBatchVoteTransactionEntity.getBatchVoteTransactionEntityList().isEmpty()) {
+                loadVoteTicketListFromDB(mBatchVoteTransactionEntity.getBatchVoteTransactionEntity().getCandidateId());
+            } else {
+                loadVoteTicketListFromMemory(mBatchVoteTransactionEntity.getBatchVoteTransactionEntityList());
+            }
         }
     }
 
-    private void showNodeDetailInfo() {
-        if (isViewAttached()) {
-            getView().showNodeDetailInfo(mBatchVoteTransactionEntity);
-        }
+    private void loadVoteTicketListFromMemory(List<BatchVoteTransactionEntity> batchVoteTransactionEntityList) {
+        Flowable
+                .fromIterable(batchVoteTransactionEntityList)
+                .map(new Function<BatchVoteTransactionEntity, VoteDetailItemEntity>() {
+                    @Override
+                    public VoteDetailItemEntity apply(BatchVoteTransactionEntity batchVoteTransactionEntity) throws Exception {
+                        return new VoteDetailItemEntity.Builder()
+                                .candidateId(batchVoteTransactionEntity.getCandidateId())
+                                .ticketPrice(BigDecimalUtil.div(NumberParserUtils.parseDouble(batchVoteTransactionEntity.getDeposit()), 1E18))
+                                .voteStaked(batchVoteTransactionEntity.getVoteStaked())
+                                .validVoteNum(NumberParserUtils.parseLong(batchVoteTransactionEntity.getValidNum()))
+                                .invalidVoteNum(NumberParserUtils.parseLong(batchVoteTransactionEntity.getInvalidVoteNum()))
+                                .walletAddress(batchVoteTransactionEntity.getOwner())
+                                .createTime(NumberParserUtils.parseLong(batchVoteTransactionEntity.getTransactiontime()) + EXPIRE_BLOCKNUMBER)
+                                .walletName(IndividualWalletManager.getInstance().getWalletNameByWalletAddress(batchVoteTransactionEntity.getOwner()))
+                                .build();
+                    }
+                })
+                .toList()
+                .compose(new SchedulersTransformer())
+                .compose(bindToLifecycle())
+                .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
+                .subscribe(new Consumer<List<VoteDetailItemEntity>>() {
+                    @Override
+                    public void accept(List<VoteDetailItemEntity> voteDetailItemEntityList) {
+                        if (isViewAttached()) {
+                            Collections.sort(voteDetailItemEntityList);
+                            getView().notifyDataSetChanged(voteDetailItemEntityList);
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+
+                    }
+                });
+        ;
     }
 
-    private void loadVoteTicketList() {
+    private void loadVoteTicketListFromDB(String candidateid) {
 
         Flowable.fromCallable(new Callable<List<SingleVoteInfoEntity>>() {
 
             @Override
             public List<SingleVoteInfoEntity> call() throws Exception {
-                return SingleVoteInfoDao.getInstance().getTransactionListByCandidateId(mBatchVoteTransactionEntity.getCandidateId());
+                return SingleVoteInfoDao.getInstance().getTransactionListByCandidateId(candidateid);
             }
         })
                 .flatMap(new Function<List<SingleVoteInfoEntity>, Publisher<SingleVoteInfoEntity>>() {

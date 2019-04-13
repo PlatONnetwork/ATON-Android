@@ -209,12 +209,18 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
                 break;
         }
     }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNetWorkStateChangedEvent(Event.NetWorkStateChangedEvent event) {
         if (event.netState == NetState.CONNECTED) {
             mPresenter.fetchWalletList();
             mPresenter.start();
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRemoveSharedWalletEvent(Event.RemoveSharedWalletEvent event) {
+        mWalletAdapter.removeItem(event.sharedWalletEntity);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -265,7 +271,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
             @Override
             public void onPageSelected(int position) {
-                switch (position){
+                switch (position) {
                     case 0:
                         EventPublisher.getInstance().sendUpdateAssetsTabEvent(TAB1);
                         break;
@@ -451,7 +457,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     public void showWalletInfo(WalletEntity walletEntity) {
         tvBackup.setVisibility(mPresenter.needBackup(walletEntity) ? View.VISIBLE : View.GONE);
         int resId = RUtils.drawable(walletEntity.getExportAvatar());
-        if (resId < 0){
+        if (resId < 0) {
             resId = R.drawable.icon_export_avatar_15;
         }
         ivWalletAvatar.setImageResource(resId);

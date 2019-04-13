@@ -47,6 +47,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -125,7 +126,7 @@ public class VoteManager {
                 .build());
     }
 
-    public Single<List<BatchVoteTransactionEntity>> getBatchVoteTransaction(String[] walletAddrs) {
+    public Flowable<HashMap<String, List<BatchVoteTransactionEntity>>> getBatchVoteTransaction(String[] walletAddrs) {
         return HttpClient.getInstance().createService(VoteService.class).getBatchVoteTransaction(ApiRequestBody.newBuilder()
                 .put("walletAddrs", walletAddrs)
                 .put("cid", "203")
@@ -164,7 +165,20 @@ public class VoteManager {
                         return batchVoteTransactionEntity;
                     }
                 })
-                .toList();
+                .collectInto(new HashMap<String, List<BatchVoteTransactionEntity>>(), new BiConsumer<HashMap<String, List<BatchVoteTransactionEntity>>, BatchVoteTransactionEntity>() {
+                    @Override
+                    public void accept(HashMap<String, List<BatchVoteTransactionEntity>> stringListHashMap, BatchVoteTransactionEntity batchVoteTransactionEntity) throws Exception {
+                        String candidateId = batchVoteTransactionEntity.getCandidateId();
+                        List<BatchVoteTransactionEntity> voteTransactionEntityList = null;
+                        if (stringListHashMap.containsKey(candidateId)) {
+                            voteTransactionEntityList = stringListHashMap.get(candidateId);
+                        } else {
+                            voteTransactionEntityList = new ArrayList<>();
+                        }
+                        voteTransactionEntityList.add(batchVoteTransactionEntity);
+                        stringListHashMap.put(candidateId, voteTransactionEntityList);
+                    }
+                }).toFlowable();
     }
 
 
