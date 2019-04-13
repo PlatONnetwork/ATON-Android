@@ -318,7 +318,7 @@ public class CommonUtil {
         ToastUtil.showLongToast(context, context.getResources().getString(R.string.copy_succeed));
     }
 
-    public static String getTextFromClipboard(Context context){
+    public static String getTextFromClipboard(Context context) {
         ClipboardManager cm = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
         if (!cm.hasPrimaryClip()) {
             return "";
@@ -329,43 +329,56 @@ public class CommonUtil {
 
     public static boolean validUrl(String uri) {
         HttpURLConnection conn = null;
-        try{
+        try {
             URL url = new URL(uri);
-            conn = (HttpURLConnection)url.openConnection();
+            conn = (HttpURLConnection) url.openConnection();
             conn.setUseCaches(false);
             conn.setInstanceFollowRedirects(true);
             conn.setConnectTimeout(10000);
             conn.setReadTimeout(10000);
             try {
                 conn.connect();
-            } catch(Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return false;
             }
 
             int code = conn.getResponseCode();
-            if ((code >= 100) && (code < 400)){
+            if ((code >= 100) && (code < 400)) {
                 return true;
             }
             return false;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
-        }finally {
-            if (conn != null){
+        } finally {
+            if (conn != null) {
                 conn.disconnect();
             }
         }
     }
 
-    public static boolean ping(String ip){
+    public static boolean ping(String ip) {
         Runtime runtime = Runtime.getRuntime();
         try {
             Process process = runtime.exec("ping -c 3 " + ip);
             return process.waitFor() == 0;
-        }catch (Exception exp){
+        } catch (Exception exp) {
             exp.printStackTrace();
         }
         return false;
+    }
+
+    public static String transport(String inputStr) {
+        char arr[] = inputStr.toCharArray();
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] == ' ') {
+                arr[i] = '\u3000';
+            } else if (arr[i] < '\177') {
+                arr[i] = (char) (arr[i] + 65248);
+            }
+
+        }
+        return new String(arr);
     }
 }

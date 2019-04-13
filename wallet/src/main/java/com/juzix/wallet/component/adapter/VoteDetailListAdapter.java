@@ -22,7 +22,7 @@ public class VoteDetailListAdapter extends CommonAdapter<VoteDetailItemEntity> {
     @Override
     protected void convert(Context context, ViewHolder viewHolder, VoteDetailItemEntity item, int position) {
         viewHolder.setText(R.id.tv_create_time, item.getCreateTime());
-        viewHolder.setText(R.id.tv_valid_and_invalid_ticket, String.format("%s/%s", item.getValidVoteNum(), item.getInvalidVoteNum()));
+        viewHolder.setText(R.id.tv_valid_and_invalid_ticket, String.format("%s/%s", NumberParserUtils.getPrettyNumber(item.getValidVoteNum(),0), NumberParserUtils.getPrettyNumber(item.getInvalidVoteNum(),0)));
         viewHolder.setText(R.id.tv_ticket_price, context.getString(R.string.amount_with_unit, NumberParserUtils.getPrettyNumber(item.getTicketPrice(), 0)));
         viewHolder.setText(R.id.tv_vote_staked_and_unstaked, String.format("%s/%s", NumberParserUtils.getPrettyNumber(item.getVoteStaked(), 0), NumberParserUtils.getPrettyNumber(item.getVoteUnStaked(), 0)));
         viewHolder.setText(R.id.tv_vote_profit, context.getString(R.string.amount_with_unit, NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(item.getProfit(), "1E18"), 4)));

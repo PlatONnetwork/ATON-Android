@@ -49,11 +49,11 @@ public class VoteDetailItemEntity implements Comparable<VoteDetailItemEntity> {
     /**
      * 有效票数量
      */
-    private long validVoteNum;
+    private double validVoteNum;
     /**
      * 失效票数量
      */
-    private long invalidVoteNum;
+    private double invalidVoteNum;
 
     private VoteDetailItemEntity(Builder builder) {
         setCreateTime(builder.createTime);
@@ -145,19 +145,19 @@ public class VoteDetailItemEntity implements Comparable<VoteDetailItemEntity> {
         this.transactionId = transactionId;
     }
 
-    public long getValidVoteNum() {
+    public double getValidVoteNum() {
         return validVoteNum;
     }
 
-    public void setValidVoteNum(long validVoteNum) {
+    public void setValidVoteNum(double validVoteNum) {
         this.validVoteNum = validVoteNum;
     }
 
-    public long getInvalidVoteNum() {
+    public double getInvalidVoteNum() {
         return invalidVoteNum;
     }
 
-    public void setInvalidVoteNum(long invalidVoteNum) {
+    public void setInvalidVoteNum(double invalidVoteNum) {
         this.invalidVoteNum = invalidVoteNum;
     }
 
@@ -176,8 +176,8 @@ public class VoteDetailItemEntity implements Comparable<VoteDetailItemEntity> {
         private String walletName;
         private String candidateId;
         private String transactionId;
-        private long validVoteNum;
-        private long invalidVoteNum;
+        private double validVoteNum;
+        private double invalidVoteNum;
 
         public Builder() {
         }
@@ -227,12 +227,12 @@ public class VoteDetailItemEntity implements Comparable<VoteDetailItemEntity> {
             return this;
         }
 
-        public Builder validVoteNum(long val) {
+        public Builder validVoteNum(double val) {
             validVoteNum = val;
             return this;
         }
 
-        public Builder invalidVoteNum(long val) {
+        public Builder invalidVoteNum(double val) {
             invalidVoteNum = val;
             return this;
         }
