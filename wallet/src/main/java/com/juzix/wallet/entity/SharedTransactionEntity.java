@@ -473,7 +473,7 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
 
         //同意数达到要求签名数
         if (approvalCount >= requiredSignNumber) {
-            return TransactionStatus.SUCCEED;
+            return executed ? TransactionStatus.SUCCEED : TransactionStatus.FAILED;
         }
 
         if (undeterminedCount + approvalCount < requiredSignNumber) {

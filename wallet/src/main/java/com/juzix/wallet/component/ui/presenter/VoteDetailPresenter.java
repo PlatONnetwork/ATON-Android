@@ -13,6 +13,7 @@ import com.juzix.wallet.entity.BatchVoteTransactionWrapEntity;
 import com.juzix.wallet.entity.SingleVoteEntity;
 import com.juzix.wallet.entity.VoteDetailItemEntity;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.DateUtil;
 
 import org.reactivestreams.Publisher;
 
@@ -28,8 +29,6 @@ import io.reactivex.functions.Function;
  * @author matrixelement
  */
 public class VoteDetailPresenter extends BasePresenter<VoteDetailContract.View> implements VoteDetailContract.Presenter {
-
-    private static final long EXPIRE_BLOCKNUMBER = 1536000;
 
     private BatchVoteTransactionWrapEntity mBatchVoteTransactionEntity;
 
@@ -66,8 +65,10 @@ public class VoteDetailPresenter extends BasePresenter<VoteDetailContract.View> 
                                 .validVoteNum(NumberParserUtils.parseLong(batchVoteTransactionEntity.getValidNum()))
                                 .invalidVoteNum(NumberParserUtils.parseLong(batchVoteTransactionEntity.getInvalidVoteNum()))
                                 .walletAddress(batchVoteTransactionEntity.getOwner())
-                                .createTime(NumberParserUtils.parseLong(batchVoteTransactionEntity.getTransactiontime()) + EXPIRE_BLOCKNUMBER)
+                                .createTime(batchVoteTransactionEntity.getTransactiontime())
                                 .walletName(IndividualWalletManager.getInstance().getWalletNameByWalletAddress(batchVoteTransactionEntity.getOwner()))
+                                .profit(batchVoteTransactionEntity.getEarnings())
+                                .voteUnStaked(batchVoteTransactionEntity.getVoteUnStaked())
                                 .build();
                     }
                 })
@@ -118,11 +119,10 @@ public class VoteDetailPresenter extends BasePresenter<VoteDetailContract.View> 
                     public VoteDetailItemEntity apply(SingleVoteEntity singleVoteEntity) throws Exception {
                         return new VoteDetailItemEntity.Builder()
                                 .candidateId(singleVoteEntity.getCandidateId())
-                                .createTime(singleVoteEntity.getCreateTime())
+                                .createTime(DateUtil.format(singleVoteEntity.getCreateTime(), DateUtil.DATETIME_FORMAT_PATTERN_WITH_SECOND))
                                 .walletName(singleVoteEntity.getWalletName())
                                 .walletAddress(singleVoteEntity.getWalletAddress())
                                 .transactionId(singleVoteEntity.getTransactionId())
-                                .expireTime(singleVoteEntity.getCreateTime() + EXPIRE_BLOCKNUMBER)
                                 .ticketPrice(BigDecimalUtil.div(NumberParserUtils.parseDouble(singleVoteEntity.getTicketPrice()), 1E18))
                                 .voteStaked(singleVoteEntity.getVoteStaked())
                                 .validVoteNum(singleVoteEntity.getValidVoteNum())

@@ -167,11 +167,11 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
                 }, new BiConsumer<Map<String, Object>, BatchVoteSummaryEntity>() {
                     @Override
                     public void accept(Map<String, Object> stringLongMap, BatchVoteSummaryEntity batchVoteSummaryEntity) throws Exception {
-                        long invalidNum = NumberParserUtils.parseLong(batchVoteSummaryEntity.getTotalTicketNum()) - NumberParserUtils.parseLong(batchVoteSummaryEntity.getValidNum());
-                        stringLongMap.put(TAG_LOCKED, NumberParserUtils.parseLong(batchVoteSummaryEntity.getLocked()) + MapUtils.getLong(stringLongMap, TAG_LOCKED));
-                        stringLongMap.put(TAG_EARNINGS, NumberParserUtils.parseLong(batchVoteSummaryEntity.getEarnings()) + MapUtils.getLong(stringLongMap, TAG_EARNINGS));
-                        stringLongMap.put(TAG_INVALIDNUM, invalidNum + MapUtils.getLong(stringLongMap, TAG_INVALIDNUM));
-                        stringLongMap.put(TAG_VALIDNUM, NumberParserUtils.parseLong(batchVoteSummaryEntity.getValidNum()) + MapUtils.getLong(stringLongMap, TAG_VALIDNUM));
+                        double invalidNum = BigDecimalUtil.sub(batchVoteSummaryEntity.getTotalTicketNum(), batchVoteSummaryEntity.getValidNum());
+                        stringLongMap.put(TAG_LOCKED, NumberParserUtils.parseDouble(batchVoteSummaryEntity.getLocked()) + MapUtils.getDouble(stringLongMap, TAG_LOCKED));
+                        stringLongMap.put(TAG_EARNINGS, NumberParserUtils.parseDouble(batchVoteSummaryEntity.getEarnings()) + MapUtils.getDouble(stringLongMap, TAG_EARNINGS));
+                        stringLongMap.put(TAG_INVALIDNUM, invalidNum + MapUtils.getDouble(stringLongMap, TAG_INVALIDNUM));
+                        stringLongMap.put(TAG_VALIDNUM, BigDecimalUtil.add(NumberParserUtils.parseDouble(batchVoteSummaryEntity.getValidNum()), MapUtils.getDouble(stringLongMap, TAG_VALIDNUM)));
                     }
                 })
                 .map(new Function<Map<String, Object>, List<VoteSummaryEntity>>() {
@@ -277,14 +277,14 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
     private List<VoteSummaryEntity> buildVoteSummaryList(Map<String, Object> map) {
         List<VoteSummaryEntity> voteSummaryEntityList = new ArrayList<>();
         if (map != null && !map.isEmpty()) {
-            long locked = MapUtils.getLong(map, TAG_LOCKED);
-            long earnings = MapUtils.getLong(map, TAG_EARNINGS);
-            long invalidNum = MapUtils.getLong(map, TAG_INVALIDNUM);
-            long validNum = MapUtils.getLong(map, TAG_VALIDNUM);
+            double locked = MapUtils.getDouble(map, TAG_LOCKED);
+            double earnings = MapUtils.getDouble(map, TAG_EARNINGS);
+            double invalidNum = MapUtils.getDouble(map, TAG_INVALIDNUM);
+            double validNum = MapUtils.getDouble(map, TAG_VALIDNUM);
 
-            voteSummaryEntityList.add(new VoteSummaryEntity(String.format("%s%s", string(R.string.lockVote), "(Energon)"), String.valueOf(locked)));
-            voteSummaryEntityList.add(new VoteSummaryEntity(String.format("%s%s", string(R.string.votingIncome), "(Energon)"), String.valueOf(earnings)));
-            voteSummaryEntityList.add(new VoteSummaryEntity(String.format("%s", string(R.string.validInvalidTicket)), String.format("%d/%d", validNum, invalidNum)));
+            voteSummaryEntityList.add(new VoteSummaryEntity(String.format("%s%s", string(R.string.lockVote), "(Energon)"), NumberParserUtils.getPrettyNumber(locked, 0)));
+            voteSummaryEntityList.add(new VoteSummaryEntity(String.format("%s%s", string(R.string.votingIncome), "(Energon)"), NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(earnings, 1E18), 4)));
+            voteSummaryEntityList.add(new VoteSummaryEntity(String.format("%s", string(R.string.validInvalidTicket)), String.format("%s/%s", NumberParserUtils.getPrettyNumber(validNum, 0), NumberParserUtils.getPrettyNumber(invalidNum, 0))));
         }
 
         return voteSummaryEntityList;

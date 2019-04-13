@@ -1,5 +1,6 @@
 package com.juzix.wallet.utils;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
@@ -28,8 +29,18 @@ public class DateUtil {
         }
     }
 
+    public static long parse(String timeText, String pattern) {
+        simpleDateFormat.applyPattern(pattern);
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT+8"));
+        try {
+            return simpleDateFormat.parse(timeText).getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return 0L;
+    }
 
-    public static boolean isToday(long time){
+    public static boolean isToday(long time) {
         SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
         String nowDay = sf.format(new Date());
         //对比的时间
