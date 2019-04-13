@@ -84,11 +84,15 @@ public class CustomProgressBar extends ProgressBar {
         // 绘制图标和文字
         Bitmap defaultIcon = BitmapFactory.decodeResource(getResources(), mDefaultIconRes);
         Bitmap loadingIcon = BitmapFactory.decodeResource(getResources(), mLoadingIconRes);
+        int width = getWidth();
+        int height = getHeight();
+        int iconWidth = defaultIcon.getWidth();
+        int iconHeight = defaultIcon.getHeight();
         float iconX = AndroidUtil.dip2px(mContext, ICON_TEXT_SPACING_DP);
-        float iconY = (getHeight() / 2) - defaultIcon.getHeight() / 2;
-        float textX = defaultIcon.getWidth() + 2 * iconX;
-        float textY = (getHeight() / 2) - textRect.centerY();
-        float maxWidth = getWidth() - textX - iconX;
+        float iconY = (height / 2) - iconHeight / 2;
+        float textX = iconWidth + 2 * iconX;
+        float textY = (height / 2) - textRect.centerY();
+        float maxWidth = width - textX - iconX;
         String newText = text;
         if(text != null && text.length() > 0) {
             float textWidth = mPaint.measureText(text);
@@ -101,27 +105,28 @@ public class CustomProgressBar extends ProgressBar {
         if (mProgress == 100) {
             canvas.drawBitmap(loadingIcon, iconX, iconY, mPaint);
             return;
-        }else {
-            canvas.drawBitmap(defaultIcon, iconX, iconY, mPaint);
         }
-
-        Bitmap bufferBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+        canvas.drawBitmap(defaultIcon, iconX, iconY, mPaint);
+        Bitmap bufferBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas bufferCanvas = new Canvas(bufferBitmap);
         bufferCanvas.drawText(newText, textX, textY, mPaint);
         // 设置混合模式
         mPaint.setXfermode(mPorterDuffXfermode);
         mPaint.setColor(ContextCompat.getColor(mContext, COLOR_LOADINGXFERMODE));
-        int right = getWidth() * mProgress / 100;
-        RectF rectF = new RectF(0, 0, right, getHeight());
+        int right = width * mProgress / 100;
+        RectF rectF = new RectF(0, 0, right, height);
         bufferCanvas.drawRect(rectF, mPaint);
         canvas.drawBitmap(bufferBitmap, 0, 0, null);
         mPaint.setXfermode(null);
-        int r = (int)(right - iconX);
-        int b = loadingIcon.getHeight();
-        if (r > iconX) {
-            Rect  srcRcet1 = new Rect(0, 0, r, b);
-            RectF dstRcet1 = new RectF(iconX, iconY, r + iconX, b + iconY);
-            canvas.drawBitmap(loadingIcon, srcRcet1, dstRcet1, mPaint);
+        int offset = (int)(right - iconX);
+        if (offset > iconX) {
+            if (offset < iconWidth){
+                Rect  srcRcet1 = new Rect(0, 0, offset, iconHeight);
+                RectF dstRcet1 = new RectF(iconX, iconY, offset + iconX, iconHeight + iconY);
+                canvas.drawBitmap(loadingIcon, srcRcet1, dstRcet1, mPaint);
+            }else {
+                canvas.drawBitmap(loadingIcon, iconX, iconY, mPaint);
+            }
         }
         if (!defaultIcon.isRecycled()) {
             defaultIcon.isRecycled();
@@ -133,14 +138,5 @@ public class CustomProgressBar extends ProgressBar {
             bufferBitmap.recycle();
         }
     }
-
-    private float getOffsetX(float iconWidth, float textHalfWidth, float spacing, boolean isText) {
-        float totalWidth = iconWidth + AndroidUtil.dip2px(mContext, spacing) + textHalfWidth * 2;
-        // 文字偏移量
-        if (isText) return totalWidth / 2 - iconWidth - spacing;
-        // 图标偏移量
-        return totalWidth / 2 - iconWidth;
-    }
-
 }
 

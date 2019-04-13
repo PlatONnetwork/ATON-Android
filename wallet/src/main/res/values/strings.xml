@@ -259,7 +259,7 @@
     <string name="network_error">网络异常，请稍候重试</string>
     <string name="walletExists">钱包已存在</string>
     <string name="create_contract">创建合约</string>
-    <string name="payment_info">支付信息</string>
+    <string name="payment_info">支付类型</string>
     <string name="action_submit">创建</string>
     <string name="createSharedWalletTips1">所需签名数不得超过已选择的联名用户数</string>
     <string name="member">用户%1$s</string>

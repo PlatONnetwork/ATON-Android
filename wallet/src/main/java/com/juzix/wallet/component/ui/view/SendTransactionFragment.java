@@ -296,7 +296,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
     }
 
     @Override
-    public void resetView(double feeAmount) {
+    public void resetView(String feeAmount) {
         etWalletAddress.removeTextChangedListener(mEtWalletAddressWatcher);
         etWalletAmount.removeTextChangedListener(mEtWalletAmountWatcher);
         etWalletAddress.setOnFocusChangeListener(null);
@@ -308,7 +308,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
         etWalletAmount.setFocusableInTouchMode(false);
         etWalletAddress.setText("");
         etWalletAmount.setText("");
-        setTransferFeeAmount(String.valueOf(feeAmount));
+        setTransferFeeAmount(feeAmount);
         bubbleSeekBar.setProgress(0);
         setSendTransactionButtonEnable(false);
         setSaveAddressButtonEnable(false);

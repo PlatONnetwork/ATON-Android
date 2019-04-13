@@ -276,7 +276,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
         if (isViewAttached()) {
             if (tabIndex != AssetsFragment.TAB2) {
                 resetData();
-                getView().resetView(feeAmount);
+                getView().resetView(BigDecimalUtil.parseString(feeAmount));
             }
         }
     }
@@ -336,7 +336,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
                     public void accept(Long aLong) throws Exception {
                         if (isViewAttached()) {
                             resetData();
-                            getView().resetView(feeAmount);
+                            getView().resetView(BigDecimalUtil.parseString(feeAmount));
                             MainActivity.actionStart(getContext(), MainActivity.TAB_PROPERTY, AssetsFragment.TAB1);
                         }
                     }
