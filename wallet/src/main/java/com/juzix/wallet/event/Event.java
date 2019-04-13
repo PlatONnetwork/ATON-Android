@@ -5,6 +5,7 @@ import com.juzix.wallet.entity.IndividualTransactionEntity;
 import com.juzix.wallet.entity.RegionEntity;
 import com.juzix.wallet.entity.SharedTransactionEntity;
 import com.juzix.wallet.entity.SharedWalletEntity;
+import com.juzix.wallet.entity.VoteTransactionEntity;
 import com.juzix.wallet.entity.WalletEntity;
 
 public class Event {
@@ -116,7 +117,11 @@ public class Event {
     }
 
     public static class UpdateVoteTransactionListEvent {
-        public UpdateVoteTransactionListEvent() {
+
+        public VoteTransactionEntity voteTransactionEntity;
+
+        public UpdateVoteTransactionListEvent(VoteTransactionEntity voteTransactionEntity) {
+            this.voteTransactionEntity = voteTransactionEntity;
         }
     }
 }

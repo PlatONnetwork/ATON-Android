@@ -2,15 +2,18 @@ package com.juzix.wallet.entity;
 
 import android.support.annotation.NonNull;
 
+import com.juzix.wallet.utils.DateUtil;
+
 /**
  * @author matrixelement
  */
 public class VoteDetailItemEntity implements Comparable<VoteDetailItemEntity> {
 
+    private static final long EXPIRE_BLOCKNUMBER = 1536000;
     /**
      * 创建时间
      */
-    private long createTime;
+    private String createTime;
     /**
      * 票价
      */
@@ -26,7 +29,7 @@ public class VoteDetailItemEntity implements Comparable<VoteDetailItemEntity> {
     /**
      * 收益
      */
-    private double profit;
+    private String profit;
     /**
      * 投票钱包地址
      */
@@ -35,10 +38,6 @@ public class VoteDetailItemEntity implements Comparable<VoteDetailItemEntity> {
      * 投票钱包名称
      */
     private String walletName;
-    /**
-     * 预计/过期时间
-     */
-    private long expireTime;
     /**
      * 候选人id
      */
@@ -64,18 +63,17 @@ public class VoteDetailItemEntity implements Comparable<VoteDetailItemEntity> {
         setProfit(builder.profit);
         setWalletAddress(builder.walletAddress);
         setWalletName(builder.walletName);
-        setExpireTime(builder.expireTime);
         setCandidateId(builder.candidateId);
         setTransactionId(builder.transactionId);
         setValidVoteNum(builder.validVoteNum);
         setInvalidVoteNum(builder.invalidVoteNum);
     }
 
-    public long getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(long createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
@@ -103,11 +101,11 @@ public class VoteDetailItemEntity implements Comparable<VoteDetailItemEntity> {
         this.voteUnStaked = voteUnStaked;
     }
 
-    public double getProfit() {
+    public String getProfit() {
         return profit;
     }
 
-    public void setProfit(double profit) {
+    public void setProfit(String profit) {
         this.profit = profit;
     }
 
@@ -127,12 +125,8 @@ public class VoteDetailItemEntity implements Comparable<VoteDetailItemEntity> {
         this.walletName = walletName;
     }
 
-    public long getExpireTime() {
-        return expireTime;
-    }
-
-    public void setExpireTime(long expireTime) {
-        this.expireTime = expireTime;
+    public String getExpireTime() {
+        return DateUtil.format(DateUtil.parse(createTime, DateUtil.DATETIME_FORMAT_PATTERN_WITH_SECOND) + EXPIRE_BLOCKNUMBER, DateUtil.DATETIME_FORMAT_PATTERN_WITH_SECOND);
     }
 
     public String getCandidateId() {
@@ -169,18 +163,17 @@ public class VoteDetailItemEntity implements Comparable<VoteDetailItemEntity> {
 
     @Override
     public int compareTo(@NonNull VoteDetailItemEntity o) {
-        return Long.compare(o.createTime, createTime);
+        return Long.compare(DateUtil.parse(o.createTime, DateUtil.DATETIME_FORMAT_PATTERN_WITH_SECOND), DateUtil.parse(createTime, DateUtil.DATETIME_FORMAT_PATTERN_WITH_SECOND));
     }
 
     public static final class Builder {
-        private long createTime;
+        private String createTime;
         private double ticketPrice;
         private double voteStaked;
         private double voteUnStaked;
-        private double profit;
+        private String profit;
         private String walletAddress;
         private String walletName;
-        private long expireTime;
         private String candidateId;
         private String transactionId;
         private long validVoteNum;
@@ -189,7 +182,7 @@ public class VoteDetailItemEntity implements Comparable<VoteDetailItemEntity> {
         public Builder() {
         }
 
-        public Builder createTime(long val) {
+        public Builder createTime(String val) {
             createTime = val;
             return this;
         }
@@ -209,7 +202,7 @@ public class VoteDetailItemEntity implements Comparable<VoteDetailItemEntity> {
             return this;
         }
 
-        public Builder profit(double val) {
+        public Builder profit(String val) {
             profit = val;
             return this;
         }
@@ -221,11 +214,6 @@ public class VoteDetailItemEntity implements Comparable<VoteDetailItemEntity> {
 
         public Builder walletName(String val) {
             walletName = val;
-            return this;
-        }
-
-        public Builder expireTime(long val) {
-            expireTime = val;
             return this;
         }
 

@@ -137,10 +137,14 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
                     @Override
                     public void accept(String result) throws Exception {
                         if (isViewAttached()) {
-                            String poolRemainder = result.split(":", 2)[0];
+                            long poolRemainder = NumberParserUtils.parseLong(result.split(":", 2)[0]);
                             String ticketPrice = result.split(":", 2)[1];
-                            long votedNum = MAX_TICKET_POOL_SIZE - NumberParserUtils.parseLong(poolRemainder);
-                            getView().setVotedInfo(MAX_TICKET_POOL_SIZE, votedNum, ticketPrice);
+                            if (poolRemainder != -1 && !ticketPrice.equals("0")) {
+                                long votedNum = MAX_TICKET_POOL_SIZE - poolRemainder;
+                                getView().setVotedInfo(MAX_TICKET_POOL_SIZE, votedNum, ticketPrice);
+                            } else {
+                                getView().setVotedInfo(0, 0, "0");
+                            }
                         }
                     }
                 });
@@ -229,15 +233,18 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
 
         if (mCandidateEntiyList != null) {
             //根据默认排序来确定节点的状态
-            List<CandidateEntity> candidateEntityList = getDefaultCandidateEntityList(getSearchResult(keyWord, mCandidateEntiyList), mVerifiersList);
-           //进行重新排序，按照各自的规则
-            Collections.sort(candidateEntityList, sortType.getComparator());
+            List<CandidateEntity> candidateEntityList = getDefaultCandidateEntityList(mCandidateEntiyList, mVerifiersList);
+
+            List<CandidateEntity> resultList = getSearchResult(keyWord, candidateEntityList);
+
+            //进行重新排序，按照各自的规则
+            Collections.sort(resultList, sortType.getComparator());
 
             if (isViewAttached()) {
-                if (!TextUtils.isEmpty(keyWord) && (candidateEntityList == null || candidateEntityList.isEmpty())) {
+                if (!TextUtils.isEmpty(keyWord) && (resultList == null || resultList.isEmpty())) {
                     showLongToast(R.string.query_no_result);
                 }
-                getView().notifyDataSetChanged(candidateEntityList);
+                getView().notifyDataSetChanged(resultList);
             }
         }
     }

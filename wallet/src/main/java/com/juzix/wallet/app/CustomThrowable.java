@@ -23,6 +23,7 @@ public class CustomThrowable extends Throwable {
     public static final int CODE_ERROR_VOTE_TICKET_INSUFFICIENT_BALANCE = -205;
     public static final int CODE_ERROR_NOT_EXIST_VALID_WALLET = -206;
     public static final int CODE_ERROR_ADD_SHARE_WALLET = -207;
+    public static final int CODE_NODE_EXIT_CONSENSUS = -208;
 
 
     private int errCode;
@@ -80,6 +81,9 @@ public class CustomThrowable extends Throwable {
                 break;
             case CODE_ERROR_ADD_SHARE_WALLET:
                 detailMsgRes = R.string.addWalletFailed;
+                break;
+            case CODE_NODE_EXIT_CONSENSUS:
+                detailMsgRes = R.string.node_exit_consensus;
                 break;
             default:
                 break;

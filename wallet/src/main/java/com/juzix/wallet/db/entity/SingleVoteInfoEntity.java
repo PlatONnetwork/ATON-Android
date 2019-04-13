@@ -2,6 +2,7 @@ package com.juzix.wallet.db.entity;
 
 import com.juzix.wallet.entity.SingleVoteEntity;
 import com.juzix.wallet.entity.TicketEntity;
+import com.juzix.wallet.entity.VoteTransactionEntity;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.JSONUtil;
 
@@ -327,14 +328,14 @@ public class SingleVoteInfoEntity extends RealmObject implements Cloneable {
         private String contractAddress;
         private String walletName;
         private String walletAddress;
-        private long   createTime;
+        private long createTime;
         private double value;
-        private long   ticketNumber;
+        private long ticketNumber;
         private String ticketPrice;
-        private long   blockNumber;
-        private long   latestBlockNumber;
-        private double                      energonPrice;
-        private int                         status;
+        private long blockNumber;
+        private long latestBlockNumber;
+        private double energonPrice;
+        private int status;
         private List<TicketInfoEntity> tickets;
 
         public Builder() {
@@ -435,7 +436,20 @@ public class SingleVoteInfoEntity extends RealmObject implements Cloneable {
         }
     }
 
-    public SingleVoteEntity buildSingleVoteEntity(){
-        return JSONUtil.parseObject(JSONUtil.toJSONString(this),SingleVoteEntity.class);
+    public SingleVoteEntity buildSingleVoteEntity() {
+        return JSONUtil.parseObject(JSONUtil.toJSONString(this), SingleVoteEntity.class);
+    }
+
+    public VoteTransactionEntity buildVoteTransactionEntity() {
+        return new VoteTransactionEntity.Builder(getUuid(), getCreateTime(), getWalletName())
+                .hash(getHash())
+                .fromAddress(getWalletAddress())
+                .toAddress(getContractAddress())
+                .value(getValue())
+                .blockNumber(getBlockNumber())
+                .latestBlockNumber(getLatestBlockNumber())
+                .energonPrice(getEnergonPrice())
+                .status(getStatus())
+                .build();
     }
 }

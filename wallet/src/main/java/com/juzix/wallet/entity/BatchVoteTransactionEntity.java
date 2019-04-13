@@ -29,7 +29,7 @@ public class BatchVoteTransactionEntity implements Parcelable {
      */
     private String earnings;
     /**
-     * Unix时间戳，毫秒级,交易时间
+     * 交易时间(2019-04-13 11:11:03)
      */
     private String transactiontime;
     /**
@@ -211,6 +211,10 @@ public class BatchVoteTransactionEntity implements Parcelable {
 
     public double getVoteStaked() {
         return BigDecimalUtil.div(BigDecimalUtil.mul(validNum, deposit).doubleValue(), 1E18);
+    }
+
+    public double getVoteUnStaked() {
+        return BigDecimalUtil.div(BigDecimalUtil.mul(getInvalidVoteNum(), deposit).doubleValue(), 1E18);
     }
 
     public static final class Builder {

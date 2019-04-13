@@ -110,6 +110,10 @@ public class VoteTransactionEntity extends TransactionEntity implements Cloneabl
         return TransactionStatus.PENDING;
     }
 
+    public boolean isVoter(String walletAddress){
+        return walletAddress != null && walletAddress.equals(fromAddress);
+    }
+
     public static final class Builder {
         private String uuid;
         private String hash;

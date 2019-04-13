@@ -374,7 +374,7 @@
     <string name="vote_rate_with_colon_and_value">Vote Rate：%1$s</string>
     <string name="vote_rate_with_colon">Vote Rate：</string>
     <string name="voted_num_with_colon">Voted：%1$d</string>
-    <string name="vote_price_with_colon">Ticket Price：%1$sEnergon</string>
+    <string name="vote_price_with_colon">Ticket Price：%1$s&#160;Energon</string>
     <string name="node_name">Node name</string>
     <string name="estimated_payment">Estimated payment</string>
     <string name="execute_wallet">Executor</string>

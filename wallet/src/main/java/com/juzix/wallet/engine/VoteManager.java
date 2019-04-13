@@ -194,7 +194,7 @@ public class VoteManager {
                             new DefaultWasmGasProvider());
                     return NumberParserUtils.parseLong(ticketContract.GetPoolRemainder().send());
                 } catch (Exception exp) {
-                    return 0L;
+                    return -1L;
                 }
             }
         });
@@ -313,7 +313,7 @@ public class VoteManager {
                     public void accept(SingleVoteInfoEntity voteInfoEntity) throws Exception {
                         boolean success = SingleVoteInfoDao.getInstance().insertTransaction(voteInfoEntity);
                         if (success) {
-                            EventPublisher.getInstance().sendUpdateVoteTransactionListEvent();
+                            EventPublisher.getInstance().sendUpdateVoteTransactionListEvent(voteInfoEntity.buildVoteTransactionEntity());
                             updateVoteTicket(voteInfoEntity);
                         }
                     }
@@ -593,7 +593,10 @@ public class VoteManager {
                 .doOnSuccess(new Consumer<SingleVoteInfoEntity>() {
                     @Override
                     public void accept(SingleVoteInfoEntity voteInfoEntity) throws Exception {
-                        SingleVoteInfoDao.getInstance().insertTransaction(voteInfoEntity);
+                        boolean success = SingleVoteInfoDao.getInstance().insertTransaction(voteInfoEntity);
+                        if (success) {
+                            EventPublisher.getInstance().sendUpdateVoteTransactionListEvent(voteInfoEntity.buildVoteTransactionEntity());
+                        }
                     }
                 })
                 .subscribeOn(Schedulers.io())

@@ -101,7 +101,11 @@ public class TransactionsFragment extends MVPBaseFragment<TransactionsPresenter>
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateVoteTransactionListEvent(Event.UpdateVoteTransactionListEvent event) {
-        mPresenter.fetchWalletTransactionList();
+        if (transactionListAdapter.getList() != null && transactionListAdapter.getList().contains(event.voteTransactionEntity)) {
+            transactionListAdapter.updateItem(currentActivity(), listTransaction, event.voteTransactionEntity);
+        } else {
+            transactionListAdapter.addItem(event.voteTransactionEntity);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

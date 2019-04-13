@@ -8,6 +8,7 @@ import com.juzix.wallet.entity.IndividualTransactionEntity;
 import com.juzix.wallet.entity.RegionEntity;
 import com.juzix.wallet.entity.SharedTransactionEntity;
 import com.juzix.wallet.entity.SharedWalletEntity;
+import com.juzix.wallet.entity.VoteTransactionEntity;
 import com.juzix.wallet.entity.WalletEntity;
 
 public class EventPublisher {
@@ -85,8 +86,8 @@ public class EventPublisher {
         BusProvider.post(new Event.UpdateAssetsTabEvent(tabIndex));
     }
 
-    public void sendUpdateVoteTransactionListEvent() {
-        BusProvider.post(new Event.UpdateVoteTransactionListEvent());
+    public void sendUpdateVoteTransactionListEvent(VoteTransactionEntity voteTransactionEntity) {
+        BusProvider.post(new Event.UpdateVoteTransactionListEvent(voteTransactionEntity));
     }
 
     public void sendRemoveSharedWalletEvent(SharedWalletEntity sharedWalletEntity) {

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -44,25 +45,25 @@ public class AddSharedWalletActivity extends MVPBaseActivity<AddSharedWalletPres
     @BindView(R.id.layout_change_wallet)
     RelativeLayout layoutChangeWallet;
     @BindView(R.id.iv_wallet_avatar)
-    ImageView    ivWalletAvatar;
+    ImageView ivWalletAvatar;
     @BindView(R.id.tv_wallet_name)
-    TextView     tvWalletName;
+    TextView tvWalletName;
     @BindView(R.id.tv_wallet_address)
-    TextView     tvWalletAddress;
+    TextView tvWalletAddress;
     @BindView(R.id.tv_wallet_address_info)
-    TextView     tvWalletAddressInfo;
+    TextView tvWalletAddressInfo;
     @BindView(R.id.et_wallet_address)
-    EditText     etWalletAddress;
+    EditText etWalletAddress;
     @BindView(R.id.iv_address_book)
-    ImageView    ivAddressBook;
+    ImageView ivAddressBook;
     @BindView(R.id.iv_address_scan)
-    ImageView    ivAddressScan;
+    ImageView ivAddressScan;
     @BindView(R.id.sbtn_add_shared_wallet)
     ShadowButton btnAddSharedWallet;
     @BindView(R.id.tv_wallet_name_error)
-    TextView     tvWalletNameError;
+    TextView tvWalletNameError;
     @BindView(R.id.tv_wallet_address_error)
-    TextView     tvWalletAddressError;
+    TextView tvWalletAddressError;
 
     private Unbinder unbinder;
 
@@ -74,6 +75,7 @@ public class AddSharedWalletActivity extends MVPBaseActivity<AddSharedWalletPres
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_add_shared_wallet);
         unbinder = ButterKnife.bind(this);
         initViews();
@@ -93,7 +95,7 @@ public class AddSharedWalletActivity extends MVPBaseActivity<AddSharedWalletPres
         etWalletAddress.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus){
+                if (!hasFocus) {
                     mPresenter.checkWalletAddress(etWalletAddress.getText().toString());
                 }
             }

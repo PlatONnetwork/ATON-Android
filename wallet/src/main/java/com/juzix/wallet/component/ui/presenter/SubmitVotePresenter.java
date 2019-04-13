@@ -2,14 +2,17 @@ package com.juzix.wallet.component.ui.presenter;
 
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.CustomThrowable;
 import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.app.SchedulersTransformer;
+import com.juzix.wallet.component.ui.SortType;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.SubmitVoteContract;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.dialog.SelectWalletDialogFragment;
 import com.juzix.wallet.component.ui.dialog.SendTransactionDialogFragment;
 import com.juzix.wallet.db.entity.SingleVoteInfoEntity;
+import com.juzix.wallet.engine.CandidateManager;
 import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.engine.VoteManager;
 import com.juzix.wallet.entity.CandidateEntity;
@@ -17,19 +20,32 @@ import com.juzix.wallet.entity.CandidateExtraEntity;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.utils.BigDecimalUtil;
 
+import org.reactivestreams.Publisher;
 import org.web3j.crypto.Credentials;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
+import io.reactivex.Flowable;
 import io.reactivex.Single;
+import io.reactivex.SingleObserver;
+import io.reactivex.SingleSource;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 
 /**
  * @author matrixelement
  */
 public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> implements SubmitVoteContract.Presenter {
+
+    private final static int MAX_TICKET_POOL_SIZE = 51200;
+    private final static int DEFAULT_VOTE_NUM = 512;
+    private final static int DEFAULT_DEPOSIT_RANKING = 100;
 
     private CandidateEntity mCandidateEntity;
     private IndividualWalletEntity mIndividualWalletEntity;
@@ -70,16 +86,30 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
     @Override
     public void submitVote() {
 
-//        if (mCandidateEntity.getVotedNum() == 0 && isViewAttached()) {
-//            showLongToast(R.string.node_exit_consensus);
-//            return;
-//        }
-
-        Single
-                .zip(VoteManager.getInstance().getPoolRemainder(), VoteManager.getInstance().getTicketPrice(), new BiFunction<Long, String, String>() {
+        getAbsentVerifiersList()
+                .contains(mCandidateEntity.getCandidateId())
+                .filter(new Predicate<Boolean>() {
                     @Override
-                    public String apply(Long poolRemainder, String ticketPrice) throws Exception {
-                        return poolRemainder + ":" + ticketPrice;
+                    public boolean test(Boolean aBoolean) throws Exception {
+                        return !aBoolean;
+                    }
+                })
+                .switchIfEmpty(new SingleSource<Boolean>() {
+                    @Override
+                    public void subscribe(SingleObserver<? super Boolean> observer) {
+                        observer.onError(new CustomThrowable(CustomThrowable.CODE_NODE_EXIT_CONSENSUS));
+                    }
+                })
+                .flatMap(new Function<Boolean, SingleSource<String>>() {
+                    @Override
+                    public SingleSource<String> apply(Boolean aBoolean) throws Exception {
+                        return Single
+                                .zip(VoteManager.getInstance().getPoolRemainder(), VoteManager.getInstance().getTicketPrice(), new BiFunction<Long, String, String>() {
+                                    @Override
+                                    public String apply(Long poolRemainder, String ticketPrice) throws Exception {
+                                        return poolRemainder + ":" + ticketPrice;
+                                    }
+                                });
                     }
                 })
                 .compose(new SchedulersTransformer())
@@ -125,6 +155,18 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
 
                         }
                     }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        if (isViewAttached()) {
+                            if (throwable instanceof CustomThrowable) {
+                                CustomThrowable customThrowable = (CustomThrowable) throwable;
+                                showLongToast(customThrowable.getDetailMsgRes());
+                            } else {
+                                showLongToast(R.string.vote_failed);
+                            }
+                        }
+                    }
                 });
     }
 
@@ -151,6 +193,119 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
             double ticketAmount = BigDecimalUtil.mul(ticketPrice, ticketNum);
             getView().showVotePayInfo(ticketPrice, ticketAmount);
         }
+    }
+
+    private Single<List<String>> getAbsentVerifiersList() {
+        return CandidateManager
+                .getInstance()
+                .getCandidateList()
+                .zipWith(CandidateManager.getInstance().getVerifiersList(), new BiFunction<List<CandidateEntity>, List<CandidateEntity>, List<CandidateEntity>>() {
+                    @Override
+                    public List<CandidateEntity> apply(List<CandidateEntity> candidateEntities, List<CandidateEntity> verifiersList) throws Exception {
+                        return getAbsentVerifiersList(candidateEntities, verifiersList);
+                    }
+                })
+                .toFlowable()
+                .flatMap(new Function<List<CandidateEntity>, Publisher<CandidateEntity>>() {
+                    @Override
+                    public Publisher<CandidateEntity> apply(List<CandidateEntity> candidateEntities) throws Exception {
+                        return Flowable.fromIterable(candidateEntities);
+                    }
+                })
+                .map(new Function<CandidateEntity, String>() {
+                    @Override
+                    public String apply(CandidateEntity candidateEntity) throws Exception {
+                        return candidateEntity.getCandidateId();
+                    }
+                })
+                .toList();
+    }
+
+    private List<CandidateEntity> getAbsentVerifiersList(List<CandidateEntity> candidateEntityList, List<CandidateEntity> verifiersList) {
+        //首先按默认的排序，根據排序來确定节点的状态，联名节点+验证节点+候选节点
+        Collections.sort(candidateEntityList, SortType.SORTED_BY_DEFAULT.getComparator());
+        //全量提名节点
+        List<CandidateEntity> allCandidateList = getAllCandidateList(candidateEntityList);
+        //全量候选节点
+        List<CandidateEntity> allAlternativeList = getAllReserveList(candidateEntityList);
+        //不在池子中的验证节点
+        List<CandidateEntity> absentVerifiersList = getAbsentVerifiersList(allCandidateList, allAlternativeList, verifiersList);
+        return absentVerifiersList;
+    }
+
+    /**
+     * 获取全量的提名节点列表
+     *
+     * @param candidateEntityList
+     * @return
+     */
+    private List<CandidateEntity> getAllCandidateList(List<CandidateEntity> candidateEntityList) {
+        List<CandidateEntity> candidateList = new ArrayList<>();
+        if (candidateEntityList == null || candidateEntityList.isEmpty()) {
+            return candidateList;
+        }
+        CandidateEntity entity = null;
+        for (int i = 0; i < candidateEntityList.size(); i++) {
+            //剔除排名200后的节点
+            entity = candidateEntityList.get(i);
+            if (i < 2 * DEFAULT_DEPOSIT_RANKING) {
+                entity.setStakedRanking(i + 1);
+                if (i < DEFAULT_DEPOSIT_RANKING && entity.getVotedNum() >= DEFAULT_VOTE_NUM) {
+                    entity.setStatus(CandidateEntity.CandidateStatus.STATUS_CANDIDATE);
+                    candidateList.add(entity);
+                }
+            }
+        }
+
+        return candidateList;
+    }
+
+    /**
+     * 获取全量的候选节点
+     *
+     * @param candidateEntityList
+     * @return
+     */
+    private List<CandidateEntity> getAllReserveList(List<CandidateEntity> candidateEntityList) {
+        List<CandidateEntity> reserveList = new ArrayList<>();
+        if (candidateEntityList == null || candidateEntityList.isEmpty()) {
+            return reserveList;
+        }
+        CandidateEntity entity = null;
+        for (int i = 0; i < candidateEntityList.size(); i++) {
+            //剔除排名200后的节点
+            entity = candidateEntityList.get(i);
+            if (i < 2 * DEFAULT_DEPOSIT_RANKING) {
+                entity.setStakedRanking(i + 1);
+                if (i >= DEFAULT_DEPOSIT_RANKING || entity.getVotedNum() < DEFAULT_VOTE_NUM) {
+                    entity.setStatus(CandidateEntity.CandidateStatus.STATUS_RESERVE);
+                    reserveList.add(entity);
+                }
+            }
+        }
+        return reserveList;
+    }
+
+    /**
+     * 获取不在池子中的验证节点列表，要放在提名节点的后面
+     *
+     * @param candidateList
+     * @param reserveList
+     * @param verifyList
+     * @return
+     */
+    private List<CandidateEntity> getAbsentVerifiersList(List<CandidateEntity> candidateList, List<CandidateEntity> reserveList, List<CandidateEntity> verifyList) {
+        List<CandidateEntity> absentVerifiersList = new ArrayList<>();
+        if (verifyList == null || verifyList.isEmpty()) {
+            return absentVerifiersList;
+        }
+        for (CandidateEntity candidateEntity : verifyList) {
+            if (candidateList.contains(candidateEntity) || reserveList.contains(candidateEntity)) {
+                continue;
+            }
+            absentVerifiersList.add(candidateEntity);
+        }
+        return absentVerifiersList;
     }
 
     private void submitVote(Credentials credentials, String ticketNum, String ticketPrice) {
