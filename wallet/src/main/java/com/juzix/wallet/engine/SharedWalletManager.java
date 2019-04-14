@@ -31,7 +31,7 @@ public class SharedWalletManager {
         if (!mWalletList.isEmpty()) {
             mWalletList.clear();
         }
-        ArrayList<SharedWalletInfoEntity> walletInfoList = SharedWalletInfoDao.getInstance().getWalletInfoList();
+        List<SharedWalletInfoEntity> walletInfoList = SharedWalletInfoDao.getWalletInfoList();
         for (SharedWalletInfoEntity walletInfoEntity : walletInfoList) {
             try {
                 mWalletList.add(walletInfoEntity.buildWalletEntity());
@@ -120,8 +120,9 @@ public class SharedWalletManager {
                     .finished(true)
                     .createTime(time)
                     .updateTime(time)
+                    .nodeAddress(NodeManager.getInstance().getCurNodeAddress())
                     .build();
-            if (SharedWalletInfoDao.getInstance().insertWalletInfo(sharedWalletEntity.buildWalletInfoEntity())) {
+            if (SharedWalletInfoDao.insertWalletInfo(sharedWalletEntity.buildWalletInfoEntity())) {
                 mWalletList.add(sharedWalletEntity);
                 return true;
             }
@@ -134,7 +135,7 @@ public class SharedWalletManager {
 
     public boolean saveShareWallet(SharedWalletEntity sharedWalletEntity) {
 
-        if (SharedWalletInfoDao.getInstance().insertWalletInfo(sharedWalletEntity.buildWalletInfoEntity())) {
+        if (SharedWalletInfoDao.insertWalletInfo(sharedWalletEntity.buildWalletInfoEntity())) {
             if (!mWalletList.contains(sharedWalletEntity)) {
                 mWalletList.add(sharedWalletEntity);
             }
@@ -150,7 +151,7 @@ public class SharedWalletManager {
                 break;
             }
         }
-        return SharedWalletInfoDao.getInstance().updateNameWithUuid(walletUuid, newName);
+        return SharedWalletInfoDao.updateNameWithUuid(walletUuid, newName);
     }
 
     public boolean updateOwner(String walletUuid, List<OwnerEntity> newAddressEntityList) {
@@ -163,7 +164,7 @@ public class SharedWalletManager {
                     .build();
             addressInfoEntityArrayList.add(addressInfoEntity);
         }
-        if (!SharedWalletInfoDao.getInstance().updateOwnerNameWithUuid(walletUuid, addressInfoEntityArrayList)) {
+        if (!SharedWalletInfoDao.updateOwnerNameWithUuid(walletUuid, addressInfoEntityArrayList)) {
             return false;
         }
         for (SharedWalletEntity walletEntity : mWalletList) {
@@ -176,7 +177,7 @@ public class SharedWalletManager {
     }
 
     public boolean deleteWallet(String walletUuid) {
-        if (!SharedWalletInfoDao.getInstance().deleteWalletInfo(walletUuid)) {
+        if (!SharedWalletInfoDao.deleteWalletInfo(walletUuid)) {
             return false;
         }
         for (SharedWalletEntity walletEntity : mWalletList) {

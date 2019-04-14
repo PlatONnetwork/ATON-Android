@@ -133,7 +133,7 @@ public class SelectWalletDialogFragment extends BaseDialogFragment {
         Flowable.fromCallable(new Callable<List<IndividualWalletInfoEntity>>() {
             @Override
             public List<IndividualWalletInfoEntity> call() throws Exception {
-                return IndividualWalletInfoDao.getInstance().getWalletInfoList();
+                return IndividualWalletInfoDao.getWalletInfoList();
             }
         })
                 .flatMap(new Function<List<IndividualWalletInfoEntity>, Publisher<IndividualWalletInfoEntity>>() {

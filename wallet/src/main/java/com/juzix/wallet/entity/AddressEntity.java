@@ -115,12 +115,12 @@ public class AddressEntity implements Parcelable {
         this.avatar = avatar;
     }
 
-    public String getPrefixAddress(){
+    public String getPrefixAddress() {
         try {
-            if(TextUtils.isEmpty(address)){
+            if (TextUtils.isEmpty(address)) {
                 return null;
             }
-            if (address.toLowerCase().startsWith("0x")){
+            if (address.toLowerCase().startsWith("0x")) {
                 return address;
             }
             return "0x" + address;

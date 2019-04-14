@@ -268,7 +268,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
     public void saveWallet(String name, String address) {
         String[] avatarArray = getContext().getResources().getStringArray(R.array.wallet_avatar);
         String avatar = avatarArray[new Random().nextInt(avatarArray.length)];
-        getView().setSaveAddressButtonEnable(!AddressInfoDao.getInstance().insertAddressInfo(new AddressInfoEntity(UUID.randomUUID().toString(), address, name, avatar)));
+        getView().setSaveAddressButtonEnable(!AddressInfoDao.insertAddressInfo(new AddressInfoEntity(UUID.randomUUID().toString(), address, name, avatar)));
     }
 
     @Override
@@ -288,7 +288,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
             return;
         }
         if (JZWalletUtil.isValidAddress(address)) {
-            getView().setSaveAddressButtonEnable(!AddressInfoDao.getInstance().isExist(address));
+            getView().setSaveAddressButtonEnable(!AddressInfoDao.isExist(address));
         } else {
             getView().setSaveAddressButtonEnable(false);
         }

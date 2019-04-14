@@ -4,6 +4,8 @@ import com.juzix.wallet.db.entity.NodeInfoEntity;
 import com.juzix.wallet.db.sqlite.NodeInfoDao;
 import com.juzix.wallet.entity.NodeEntity;
 
+import org.reactivestreams.Publisher;
+
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -20,16 +22,25 @@ public class NodeService implements INodeService {
     @Override
     public Single<List<NodeEntity>> getNodeList() {
 
-        return Flowable.fromIterable(NodeInfoDao.getInstance()
-                .getNodeList())
+        return Single.fromCallable(new Callable<List<NodeInfoEntity>>() {
+            @Override
+            public List<NodeInfoEntity> call() throws Exception {
+                return NodeInfoDao.getNodeList();
+            }
+        }).toFlowable()
+                .flatMap(new Function<List<NodeInfoEntity>, Publisher<NodeInfoEntity>>() {
+                    @Override
+                    public Publisher<NodeInfoEntity> apply(List<NodeInfoEntity> nodeInfoEntities) throws Exception {
+                        return Flowable.fromIterable(nodeInfoEntities);
+                    }
+                })
                 .map(new Function<NodeInfoEntity, NodeEntity>() {
                     @Override
                     public NodeEntity apply(NodeInfoEntity nodeInfoEntity) throws Exception {
                         return nodeInfoEntity.createNode();
                     }
                 })
-                .toList()
-                .subscribeOn(Schedulers.io());
+                .toList();
     }
 
     @Override
@@ -37,7 +48,7 @@ public class NodeService implements INodeService {
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return NodeInfoDao.getInstance().insertNode(nodeInfoEntity);
+                return NodeInfoDao.insertNode(nodeInfoEntity);
             }
         }).subscribeOn(Schedulers.io());
     }
@@ -57,54 +68,54 @@ public class NodeService implements INodeService {
                 .map(new Function<List<NodeInfoEntity>, Boolean>() {
                     @Override
                     public Boolean apply(List<NodeInfoEntity> nodeInfoEntityList) throws Exception {
-                        return NodeInfoDao.getInstance().insertNodeList(nodeInfoEntityList);
+                        return NodeInfoDao.insertNodeList(nodeInfoEntityList);
                     }
                 }).subscribeOn(Schedulers.io());
     }
 
     @Override
-    public Single<Boolean> deleteNode(long id) {
+    public Single<Boolean> deleteNode(String uuid) {
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return NodeInfoDao.getInstance().deleteNode(id);
+                return NodeInfoDao.deleteNode(uuid);
             }
         }).subscribeOn(Schedulers.io());
     }
 
     @Override
-    public Single<Boolean> deleteNode(List<Long> idList) {
+    public Single<Boolean> deleteNode(List<String> idList) {
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return NodeInfoDao.getInstance().deleteNode(idList);
+                return NodeInfoDao.deleteNode(idList);
             }
         }).subscribeOn(Schedulers.io());
     }
 
     @Override
-    public Single<Boolean> updateNode(long id, String nodeAddress) {
+    public Single<Boolean> updateNode(String uuid, String nodeAddress) {
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return NodeInfoDao.getInstance().updateNode(id, nodeAddress);
+                return NodeInfoDao.updateNode(uuid, nodeAddress);
             }
         }).subscribeOn(Schedulers.io());
     }
 
     @Override
-    public Single<Boolean> updateNode(long id, boolean isChecked) {
+    public Single<Boolean> updateNode(String uuid, boolean isChecked) {
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return NodeInfoDao.getInstance().updateNode(id, isChecked);
+                return NodeInfoDao.updateNode(uuid, isChecked);
             }
         }).subscribeOn(Schedulers.io());
     }
 
     @Override
     public Single<NodeEntity> getNode(boolean isChecked) {
-        return Flowable.fromIterable(NodeInfoDao.getInstance().getNode(isChecked))
+        return Flowable.fromIterable(NodeInfoDao.getNode(isChecked))
                 .firstElement()
                 .map(new Function<NodeInfoEntity, NodeEntity>() {
                     @Override

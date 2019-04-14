@@ -35,6 +35,8 @@ public class SharedWalletEntity extends WalletEntity implements Cloneable {
 
     private boolean hasUnreadMessage;
 
+    private String nodeAddress;
+
     protected SharedWalletEntity(Parcel in) {
         uuid = in.readString();
         name = in.readString();
@@ -49,6 +51,7 @@ public class SharedWalletEntity extends WalletEntity implements Cloneable {
         hasUnreadMessage = in.readByte() != 0;
         progress = in.readInt();
         finished = in.readByte() != 0;
+        nodeAddress = in.readString();
     }
 
     private SharedWalletEntity(Builder builder) {
@@ -65,6 +68,7 @@ public class SharedWalletEntity extends WalletEntity implements Cloneable {
         setHasUnreadMessage(builder.hasUnreadMessage);
         setProgress(builder.progress);
         setFinished(builder.finished);
+        setNodeAddress(builder.nodeAddress);
     }
 
     @Override
@@ -87,6 +91,7 @@ public class SharedWalletEntity extends WalletEntity implements Cloneable {
         dest.writeByte((byte) (hasUnreadMessage ? 1 : 0));
         dest.writeInt(progress);
         dest.writeByte((byte) (finished ? 1 : 0));
+        dest.writeString(nodeAddress);
     }
 
     public static final Creator<SharedWalletEntity> CREATOR = new Creator<SharedWalletEntity>() {
@@ -154,6 +159,16 @@ public class SharedWalletEntity extends WalletEntity implements Cloneable {
 
     public void setCreatorAddress(String creatorAddress) {
         this.creatorAddress = creatorAddress;
+    }
+
+    @Override
+    public String getNodeAddress() {
+        return nodeAddress;
+    }
+
+    @Override
+    public void setNodeAddress(String nodeAddress) {
+        this.nodeAddress = nodeAddress;
     }
 
     public String getPrefixCreatorAddress() {
@@ -235,7 +250,9 @@ public class SharedWalletEntity extends WalletEntity implements Cloneable {
                 .updateTime(updateTime)
                 .owner(buildAddressInfoEntityArrayList())
                 .requiredSignNumber(requiredSignNumber)
-                .avatar(avatar).build();
+                .avatar(avatar)
+                .nodeAddress(nodeAddress)
+                .build();
         return entity;
     }
 
@@ -246,6 +263,7 @@ public class SharedWalletEntity extends WalletEntity implements Cloneable {
                     .uuid(entity.getUuid())
                     .address(entity.getAddress())
                     .name(entity.getName())
+                    .nodeAddress(entity.getNodeAddress())
                     .build();
             addressInfoEntityArrayList.add(addressInfoEntity);
         }
@@ -266,6 +284,7 @@ public class SharedWalletEntity extends WalletEntity implements Cloneable {
         private boolean hasUnreadMessage;
         private int progress;
         private boolean finished;
+        private String nodeAddress;
 
         public Builder() {
         }
@@ -335,6 +354,11 @@ public class SharedWalletEntity extends WalletEntity implements Cloneable {
             return this;
         }
 
+        public Builder nodeAddress(String val){
+            nodeAddress = val;
+            return this;
+        }
+
         public SharedWalletEntity build() {
             return new SharedWalletEntity(this);
         }
@@ -348,6 +372,7 @@ public class SharedWalletEntity extends WalletEntity implements Cloneable {
                 sharedWalletOwnerInfoEntity.setUuid(ownerEntity.getUuid());
                 sharedWalletOwnerInfoEntity.setAddress(ownerEntity.getAddress());
                 sharedWalletOwnerInfoEntity.setName(ownerEntity.getName());
+                sharedWalletOwnerInfoEntity.setNodeAddress(ownerEntity.getNodeAddress());
                 sharedWalletOwnerInfoEntityList.add(sharedWalletOwnerInfoEntity);
             }
         }
@@ -362,14 +387,9 @@ public class SharedWalletEntity extends WalletEntity implements Cloneable {
                 ", owner=" + owner +
                 ", requiredSignNumber=" + requiredSignNumber +
                 ", progress=" + progress +
+                ", finished=" + finished +
                 ", hasUnreadMessage=" + hasUnreadMessage +
-                ", uuid='" + uuid + '\'' +
-                ", name='" + name + '\'' +
-                ", address='" + address + '\'' +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
-                ", balance=" + balance +
-                ", avatar='" + avatar + '\'' +
+                ", nodeAddress='" + nodeAddress + '\'' +
                 '}';
     }
 }

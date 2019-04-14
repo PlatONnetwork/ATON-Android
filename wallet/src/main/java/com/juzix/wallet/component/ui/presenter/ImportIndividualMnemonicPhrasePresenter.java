@@ -10,10 +10,10 @@ import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.ImportIndividualMnemonicPhraseContract;
 import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.engine.IndividualWalletManager;
+import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.SharedWalletManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -68,7 +68,7 @@ public class ImportIndividualMnemonicPhrasePresenter extends BasePresenter<Impor
         new Thread(){
             @Override
             public void run() {
-                IndividualWalletEntity walletEntity = new IndividualWalletEntity.Builder().build();
+                IndividualWalletEntity walletEntity = new IndividualWalletEntity.Builder().nodeAddress(NodeManager.getInstance().getCurNodeAddress()).build();
                 int                    code         = IndividualWalletManager.getInstance().importMnemonic(walletEntity, phrase, name, password);
                 switch (code) {
                     case IndividualWalletManager.CODE_OK:

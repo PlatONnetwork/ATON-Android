@@ -99,7 +99,7 @@ public class VoteDetailPresenter extends BasePresenter<VoteDetailContract.View> 
 
             @Override
             public List<SingleVoteInfoEntity> call() throws Exception {
-                return SingleVoteInfoDao.getInstance().getTransactionListByCandidateId(candidateid);
+                return SingleVoteInfoDao.getTransactionListByCandidateId(candidateid);
             }
         })
                 .flatMap(new Function<List<SingleVoteInfoEntity>, Publisher<SingleVoteInfoEntity>>() {

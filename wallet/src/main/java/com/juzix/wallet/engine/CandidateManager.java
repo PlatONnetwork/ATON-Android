@@ -76,6 +76,7 @@ public class CandidateManager {
                     @Override
                     public CandidateEntity apply(CandidateEntity candidateEntity) throws Exception {
                         candidateEntity.setVotedNum(VoteManager.getInstance().getCandidateTicketCount(candidateEntity.getCandidateId()).blockingGet());
+                        candidateEntity.setTicketPrice(VoteManager.getInstance().getTicketPrice().blockingGet());
                         candidateEntity.setFee((int) BigDecimalUtil.sub(10E3, candidateEntity.getFee()));
                         return candidateEntity;
                     }
@@ -83,7 +84,7 @@ public class CandidateManager {
                 .map(new Function<CandidateEntity, CandidateEntity>() {
                     @Override
                     public CandidateEntity apply(CandidateEntity candidateEntity) throws Exception {
-                        RegionInfoEntity regionInfoEntity = RegionInfoDao.getInstance().getRegionInfoEntityWithIp(candidateEntity.getHost());
+                        RegionInfoEntity regionInfoEntity = RegionInfoDao.getRegionInfoEntityWithIp(candidateEntity.getHost());
                         if (regionInfoEntity != null) {
                             candidateEntity.setRegionEntity(regionInfoEntity.toRegionEntity());
                         }
@@ -128,6 +129,7 @@ public class CandidateManager {
                     @Override
                     public CandidateEntity apply(CandidateEntity candidateEntity) throws Exception {
                         candidateEntity.setVotedNum(VoteManager.getInstance().getCandidateTicketCount(candidateEntity.getCandidateId()).blockingGet());
+                        candidateEntity.setTicketPrice(VoteManager.getInstance().getTicketPrice().blockingGet());
                         candidateEntity.setStatus(CandidateEntity.CandidateStatus.STATUS_VERIFY);
                         candidateEntity.setFee((int) BigDecimalUtil.sub(10E3, candidateEntity.getFee()));
                         return candidateEntity;
@@ -136,7 +138,7 @@ public class CandidateManager {
                 .map(new Function<CandidateEntity, CandidateEntity>() {
                     @Override
                     public CandidateEntity apply(CandidateEntity candidateEntity) throws Exception {
-                        RegionInfoEntity regionInfoEntity = RegionInfoDao.getInstance().getRegionInfoEntityWithIp(candidateEntity.getHost());
+                        RegionInfoEntity regionInfoEntity = RegionInfoDao.getRegionInfoEntityWithIp(candidateEntity.getHost());
                         if (regionInfoEntity != null) {
                             candidateEntity.setRegionEntity(regionInfoEntity.toRegionEntity());
                         }
@@ -181,6 +183,7 @@ public class CandidateManager {
                         regionEntity.setCountryZh(countryZh);
                         regionEntity.setCountryPinyin(Pinyin.toPinyin(countryZh, ""));
                         regionEntity.setUpdateTime(System.currentTimeMillis());
+                        regionEntity.setNodeAddress(NodeManager.getInstance().getCurNodeAddress());
                         return regionEntity;
                     }
                 })
@@ -195,7 +198,7 @@ public class CandidateManager {
                 .subscribe(new Consumer<List<RegionEntity>>() {
                     @Override
                     public void accept(List<RegionEntity> regionEntities) throws Exception {
-                        RegionInfoDao.getInstance().insertBatchRegionInfo(buildRegionInfoEntityList(regionEntities));
+                        RegionInfoDao.insertBatchRegionInfo(buildRegionInfoEntityList(regionEntities));
                     }
                 });
     }
@@ -228,7 +231,7 @@ public class CandidateManager {
                 .map(new Function<CandidateEntity, CandidateEntity>() {
                     @Override
                     public CandidateEntity apply(CandidateEntity candidateEntity) throws Exception {
-                        RegionInfoEntity regionInfo = RegionInfoDao.getInstance().getRegionInfoWithIp(candidateEntity.getHost());
+                        RegionInfoEntity regionInfo = RegionInfoDao.getRegionInfoWithIp(candidateEntity.getHost());
                         if (regionInfo != null) {
                             candidateEntity.setRegionEntity(regionInfo.toRegionEntity());
                         }

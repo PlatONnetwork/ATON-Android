@@ -1,11 +1,9 @@
 package com.juzix.wallet.component.ui.presenter;
 
-import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.AddressBookContract;
 import com.juzix.wallet.component.ui.view.AddNewAddressActivity;
-import com.juzix.wallet.component.ui.view.SharedTransactionDetailActivity;
 import com.juzix.wallet.db.entity.AddressInfoEntity;
 import com.juzix.wallet.db.sqlite.AddressInfoDao;
 import com.juzix.wallet.entity.AddressEntity;
@@ -36,7 +34,7 @@ public class AddressBookPresenter extends BasePresenter<AddressBookContract.View
 
     @Override
     public void fetchAddressList() {
-        Flowable.fromIterable(AddressInfoDao.getInstance().getAddressInfoList()).filter(new Predicate<AddressInfoEntity>() {
+        Flowable.fromIterable(AddressInfoDao.getAddressInfoList()).filter(new Predicate<AddressInfoEntity>() {
             @Override
             public boolean test(AddressInfoEntity addressInfoEntity) throws Exception {
                 return addressInfoEntity != null;
@@ -64,7 +62,7 @@ public class AddressBookPresenter extends BasePresenter<AddressBookContract.View
             @Override
             public Boolean call() throws Exception {
                 if (addressEntityList != null && addressEntityList.size() > position) {
-                    return AddressInfoDao.getInstance().deleteAddressInfo(addressEntityList.get(position).getAddress());
+                    return AddressInfoDao.deleteAddressInfo(addressEntityList.get(position).getAddress());
                 } else {
                     return false;
                 }

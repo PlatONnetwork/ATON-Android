@@ -10,7 +10,7 @@ public class TicketEntity implements Cloneable, Parcelable {
     /**
      * 正常
      */
-    public static final int NORMAL   = 1;
+    public static final int NORMAL = 1;
     /**
      * 被选中
      */
@@ -18,11 +18,11 @@ public class TicketEntity implements Cloneable, Parcelable {
     /**
      * 过期
      */
-    public static final int EXPIRED  = 3;
+    public static final int EXPIRED = 3;
     /**
      * 掉榜
      */
-    public static final int OFF      = 4;
+    public static final int OFF = 4;
 
     private String uuid;
     /**
@@ -51,7 +51,7 @@ public class TicketEntity implements Cloneable, Parcelable {
     private long blockNumber;
 
     /**
-     *选票状态（1->正常，2->被选中，3->过期，4->掉榜）
+     * 选票状态（1->正常，2->被选中，3->过期，4->掉榜）
      */
     private int state;
 
@@ -59,6 +59,8 @@ public class TicketEntity implements Cloneable, Parcelable {
      * 票被释放时的块高
      */
     private long rBlockNumber;
+
+    private String nodeAddress;
 
     public TicketEntity() {
     }
@@ -72,6 +74,7 @@ public class TicketEntity implements Cloneable, Parcelable {
         setBlockNumber(in.readLong());
         setState(in.readInt());
         setRBlockNumber(in.readLong());
+        setNodeAddress(in.readString());
     }
 
     private TicketEntity(Builder builder) {
@@ -83,6 +86,7 @@ public class TicketEntity implements Cloneable, Parcelable {
         setBlockNumber(builder.blockNumber);
         setState(builder.state);
         setRBlockNumber(builder.rBlockNumber);
+        setNodeAddress(builder.nodeAddress);
     }
 
     @Override
@@ -95,6 +99,7 @@ public class TicketEntity implements Cloneable, Parcelable {
         dest.writeLong(getBlockNumber());
         dest.writeInt(getState());
         dest.writeLong(getRBlockNumber());
+        dest.writeString(getNodeAddress());
     }
 
     @Override
@@ -190,6 +195,14 @@ public class TicketEntity implements Cloneable, Parcelable {
         this.rBlockNumber = rBlockNumber;
     }
 
+    public String getNodeAddress() {
+        return nodeAddress;
+    }
+
+    public void setNodeAddress(String nodeAddress) {
+        this.nodeAddress = nodeAddress;
+    }
+
     public static final class Builder {
 
         private String uuid;
@@ -197,9 +210,10 @@ public class TicketEntity implements Cloneable, Parcelable {
         private String owner;
         private String deposit;
         private String candidateId;
-        private long   blockNumber;
-        private int    state;
-        private long   rBlockNumber;
+        private long blockNumber;
+        private int state;
+        private long rBlockNumber;
+        private String nodeAddress;
 
         public Builder() {
         }
@@ -241,6 +255,11 @@ public class TicketEntity implements Cloneable, Parcelable {
 
         public Builder rBlockNumber(long rBlockNumber) {
             this.rBlockNumber = rBlockNumber;
+            return this;
+        }
+
+        public Builder nodeAddress(String val) {
+            this.nodeAddress = val;
             return this;
         }
 

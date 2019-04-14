@@ -15,12 +15,17 @@ import com.juzix.wallet.config.JZAppConfigure;
 import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.SharedWalletManager;
+import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import io.realm.DynamicRealm;
+import io.realm.FieldAttribute;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmMigration;
@@ -52,24 +57,22 @@ public class AppFramework {
     public void initAppFramework(Context context) {
 
         mContext = context;
+
         JZAppConfigure.getInstance().init(context);
+
         EventPublisher.getInstance().register(this);
         //注册网络状态变化
         registerNetStateChangedBC();
         //初始化realm
         initRealm(context);
+        //初始化节点配置
+        NodeManager.getInstance().init();
         //初始化RUtils
         RUtils.init(context);
         //初始化偏好设置
         AppSettings.getInstance().init(context);
         //初始化网络模块
         HttpClient.getInstance().init(context, "http://192.168.9.190:10061/a-api/api/", buildMultipleUrlMap());
-        //初始化节点配置
-        NodeManager.getInstance().init();
-        //初始化普通钱包
-        IndividualWalletManager.getInstance().init();
-        //初始化共享钱包
-        SharedWalletManager.getInstance().init();
     }
 
     private Map<String, Object> buildMultipleUrlMap() {
@@ -88,30 +91,44 @@ public class AppFramework {
                     @Override
                     public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
                         RealmSchema schema = realm.getSchema();
-                        if (oldVersion == 100) {
-                            schema.get("AddressInfoEntity").addField("avatar", String.class);
-                            oldVersion++;
-                        } else if (oldVersion == 101) {
-                            schema.get("NodeInfoEntity").addField("isMainNetworkNode", boolean.class);
-                            oldVersion++;
-                        } else if (oldVersion == 102) {
-                            schema.get("IndividualTransactionInfoEntity").addField("blockNumber", long.class);
-                            oldVersion++;
-                        } else if (oldVersion == 104) {
-                            schema.get("IndividualTransactionInfoEntity").addField("completed", boolean.class);
-                            schema.get("IndividualTransactionInfoEntity").addField("value", double.class);
-                            schema.get("IndividualWalletInfoEntity").addField("mnemonic", String.class);
+                        if (oldVersion == 104) {
+                            schema.get("IndividualTransactionInfoEntity")
+                                    .addField("completed", boolean.class)
+                                    .addField("value", double.class);
 
-                            schema.get("RegionInfoEntity").removeField("uuid");
-                            schema.get("RegionInfoEntity").addPrimaryKey("ip");
+                            schema.get("IndividualWalletInfoEntity")
+                                    .addField("mnemonic", String.class);
 
-                            schema.get("SharedTransactionInfoEntity").removeField("transactionResult");
-                            schema.get("SharedTransactionInfoEntity").addField("transactionResult", String.class);
+                            schema.get("RegionInfoEntity")
+                                    .removeField("uuid")
+                                    .addPrimaryKey("ip");
 
-                            schema.get("SharedWalletInfoEntity").renameField("walletAddress", "creatorAddress");
-                            schema.get("SingleVoteInfoEntity").removeField("avatar");
+                            schema.get("NodeInfoEntity")
+                                    .removeField("id")
+                                    .addField("uuid", String.class, FieldAttribute.PRIMARY_KEY);
+
+                            schema.get("SharedTransactionInfoEntity")
+                                    .removeField("transactionResult")
+                                    .addField("transactionResult", String.class);
+
+                            schema.get("SharedWalletInfoEntity")
+                                    .renameField("walletAddress", "creatorAddress");
+
+                            schema.get("SingleVoteInfoEntity")
+                                    .removeField("avatar");
 
                             schema.remove("TransactionInfoResult");
+
+                            //新增AB网数据隔离逻辑，每个数据库都加上nodeAddress进行唯一标识
+                            schema.get("IndividualTransactionInfoEntity").addField("nodeAddress", String.class);
+                            schema.get("IndividualWalletInfoEntity").addField("nodeAddress", String.class);
+                            schema.get("OwnerInfoEntity").addField("nodeAddress", String.class);
+                            schema.get("RegionInfoEntity").addField("nodeAddress", String.class);
+                            schema.get("SharedTransactionInfoEntity").addField("nodeAddress", String.class);
+                            schema.get("SharedWalletInfoEntity").addField("nodeAddress", String.class);
+                            schema.get("SharedWalletOwnerInfoEntity").addField("nodeAddress", String.class);
+                            schema.get("SingleVoteInfoEntity").addField("nodeAddress", String.class);
+                            schema.get("TicketInfoEntity").addField("nodeAddress", String.class);
                             oldVersion++;
                         }
                     }
@@ -125,6 +142,14 @@ public class AppFramework {
     private void registerNetStateChangedBC() {
         IntentFilter intentFilter = new IntentFilter(NetConnectivity.ACITION_CONNECTIVITY_CHANGE);
         mContext.registerReceiver(new NetStateBroadcastReceiver(), intentFilter);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onNodeChangedEvent(Event.NodeChangedEvent event) {
+        //初始化普通钱包
+        IndividualWalletManager.getInstance().init();
+        //初始化共享钱包
+        SharedWalletManager.getInstance().init();
     }
 
     static class NetStateBroadcastReceiver extends BroadcastReceiver {

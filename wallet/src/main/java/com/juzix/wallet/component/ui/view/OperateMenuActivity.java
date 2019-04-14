@@ -67,4 +67,10 @@ public class OperateMenuActivity extends BaseActivity {
         Intent intent = new Intent(context, OperateMenuActivity.class);
         context.startActivity(intent);
     }
+
+    public static void actionStartWithFlag(Context context) {
+        Intent intent = new Intent(context, OperateMenuActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
 }

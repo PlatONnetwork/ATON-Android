@@ -2,6 +2,7 @@ package com.juzix.wallet.component.ui;
 
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.entity.CandidateEntity;
+import com.juzix.wallet.utils.BigDecimalUtil;
 
 import java.util.Comparator;
 
@@ -69,15 +70,11 @@ public enum SortType {
     static class DefaultComparator implements Comparator<CandidateEntity> {
         @Override
         public int compare(CandidateEntity o1, CandidateEntity o2) {
-            int compare = Double.compare(NumberParserUtils.parseDouble(o2.getDeposit()), NumberParserUtils.parseDouble(o1.getDeposit()));
-            if (compare != 0) {
-                return compare;
-            }
-            compare = Long.compare(o2.getVotedNum(), o1.getVotedNum());
-            if (compare != 0) {
-                return compare;
-            }
-            return compare;
+
+            double o1Amount = BigDecimalUtil.add(o1.getDeposit(), BigDecimalUtil.mul(String.valueOf(o1.getVotedNum()), o1.getTicketPrice()).toPlainString());
+            double o2Amount = BigDecimalUtil.add(o2.getDeposit(), BigDecimalUtil.mul(String.valueOf(o2.getVotedNum()), o2.getTicketPrice()).toPlainString());
+
+            return Double.compare(o2Amount,o1Amount);
         }
     }
 }

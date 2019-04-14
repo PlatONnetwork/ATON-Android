@@ -10,6 +10,7 @@ import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.ImportIndividualKeystoreContract;
 import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.engine.IndividualWalletManager;
+import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.SharedWalletManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.utils.CommonUtil;
@@ -61,7 +62,7 @@ public class ImportIndividualKeystorePresenter extends BasePresenter<ImportIndiv
         new Thread(){
             @Override
             public void run() {
-                IndividualWalletEntity walletEntity = new IndividualWalletEntity.Builder().build();
+                IndividualWalletEntity walletEntity = new IndividualWalletEntity.Builder().nodeAddress(NodeManager.getInstance().getCurNodeAddress()).build();
                 int                    code         = IndividualWalletManager.getInstance().importKeystore(walletEntity, keystore, name, password);
                 switch (code) {
                     case IndividualWalletManager.CODE_OK:

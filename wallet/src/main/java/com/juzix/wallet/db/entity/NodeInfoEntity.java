@@ -4,6 +4,8 @@ import android.text.TextUtils;
 
 import com.juzix.wallet.entity.NodeEntity;
 
+import java.util.UUID;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -13,7 +15,7 @@ import io.realm.annotations.PrimaryKey;
 public class NodeInfoEntity extends RealmObject {
 
     @PrimaryKey
-    private long id;
+    private String uuid;
     /**
      * 节点地址
      */
@@ -29,9 +31,10 @@ public class NodeInfoEntity extends RealmObject {
 
     private boolean isChecked;
 
+
     public NodeEntity createNode() {
         return new NodeEntity.Builder()
-                .id(id)
+                .uuid(uuid)
                 .nodeAddress(nodeAddress)
                 .isDefaultNode(isDefaultNode)
                 .isChecked(isChecked)
@@ -42,14 +45,14 @@ public class NodeInfoEntity extends RealmObject {
     }
 
     public NodeInfoEntity(String nodeAddress, boolean isDefaultNode, boolean isChecked) {
-        this.id = System.currentTimeMillis();
+        this.uuid = UUID.randomUUID().toString();
         this.nodeAddress = nodeAddress;
         this.isDefaultNode = isDefaultNode;
         this.isChecked = isChecked;
     }
 
-    public NodeInfoEntity(long id, String nodeAddress, boolean isDefaultNode, boolean isChecked, boolean isMainNetworkNode) {
-        this.id = id;
+    public NodeInfoEntity(String uuid, String nodeAddress, boolean isDefaultNode, boolean isChecked, boolean isMainNetworkNode) {
+        this.uuid = uuid;
         this.nodeAddress = nodeAddress;
         this.isDefaultNode = isDefaultNode;
         this.isChecked = isChecked;
@@ -58,7 +61,7 @@ public class NodeInfoEntity extends RealmObject {
 
     public NodeEntity buildNodeEntity() {
         return TextUtils.isEmpty(nodeAddress) ? NodeEntity.createNullNode() : new NodeEntity.Builder()
-                .id(id)
+                .uuid(uuid)
                 .nodeAddress(nodeAddress)
                 .isDefaultNode(isDefaultNode)
                 .isChecked(isChecked)
@@ -90,12 +93,12 @@ public class NodeInfoEntity extends RealmObject {
         isChecked = checked;
     }
 
-    public long getId() {
-        return id;
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public String getUuid() {
+        return uuid;
     }
 
     public boolean isMainNetworkNode() {

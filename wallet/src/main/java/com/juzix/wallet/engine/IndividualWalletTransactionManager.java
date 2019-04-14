@@ -85,6 +85,7 @@ public class IndividualWalletTransactionManager {
                         .completed(completed)
                         .memo(individualTransactionEntity.getMemo())
                         .value(individualTransactionEntity.getValue())
+                        .nodeAddress(NodeManager.getInstance().getCurNodeAddress())
                         .build();
                 return entity;
             }
@@ -142,11 +143,12 @@ public class IndividualWalletTransactionManager {
                         .fromAddress(fromAddress)
                         .toAddress(toAddress)
                         .value(NumberParserUtils.parseDouble(transferAmount))
+                        .nodeAddress(NodeManager.getInstance().getCurNodeAddress())
                         .build();
                 return Single.fromCallable(new Callable<Boolean>() {
                     @Override
                     public Boolean call() throws Exception {
-                        return IndividualTransactionInfoDao.getInstance().insertTransaction(individualTransactionEntity.buildIndividualTransactionInfoEntity());
+                        return IndividualTransactionInfoDao.insertTransaction(individualTransactionEntity.buildIndividualTransactionInfoEntity());
                     }
                 }).filter(new Predicate<Boolean>() {
                     @Override
@@ -193,8 +195,8 @@ public class IndividualWalletTransactionManager {
                 .doOnNext(new Consumer<IndividualTransactionEntity>() {
                     @Override
                     public void accept(IndividualTransactionEntity individualTransactionEntity) throws Exception {
-                        if (individualTransactionEntity.isCompleted()){
-                            boolean success = IndividualTransactionInfoDao.getInstance().insertTransaction(individualTransactionEntity.buildIndividualTransactionInfoEntity());
+                        if (individualTransactionEntity.isCompleted()) {
+                            boolean success = IndividualTransactionInfoDao.insertTransaction(individualTransactionEntity.buildIndividualTransactionInfoEntity());
                             if (success) {
                                 EventPublisher.getInstance().sendUpdateIndividualWalletTransactionEvent(individualTransactionEntity);
                             }

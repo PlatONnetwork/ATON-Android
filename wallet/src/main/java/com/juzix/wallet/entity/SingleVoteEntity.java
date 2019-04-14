@@ -50,6 +50,7 @@ public class SingleVoteEntity implements Cloneable, Parcelable {
     private double energonPrice;
     private int status;
     private List<TicketEntity> tickets;
+    private String nodeAddress;
 
     public SingleVoteEntity() {
     }
@@ -73,6 +74,7 @@ public class SingleVoteEntity implements Cloneable, Parcelable {
         energonPrice = in.readDouble();
         status = in.readInt();
         tickets = in.readArrayList(TicketEntity.class.getClassLoader());
+        nodeAddress = in.readString();
     }
 
     private SingleVoteEntity(Builder builder) {
@@ -94,6 +96,7 @@ public class SingleVoteEntity implements Cloneable, Parcelable {
         setEnergonPrice(builder.energonPrice);
         setStatus(builder.status);
         setTickets(builder.tickets);
+        setNodeAddress(builder.nodeAddress);
     }
 
     @Override
@@ -132,6 +135,7 @@ public class SingleVoteEntity implements Cloneable, Parcelable {
         dest.writeDouble(energonPrice);
         dest.writeInt(status);
         dest.writeList(tickets);
+        dest.writeString(nodeAddress);
     }
 
     public String getUuid() {
@@ -286,6 +290,14 @@ public class SingleVoteEntity implements Cloneable, Parcelable {
         this.transactionId = transactionId;
     }
 
+    public String getNodeAddress() {
+        return nodeAddress;
+    }
+
+    public void setNodeAddress(String nodeAddress) {
+        this.nodeAddress = nodeAddress;
+    }
+
     public static final class Builder {
         private String uuid;
         private String transactionId;
@@ -305,6 +317,7 @@ public class SingleVoteEntity implements Cloneable, Parcelable {
         private double energonPrice;
         private int status;
         private ArrayList<TicketEntity> tickets;
+        private String nodeAddress;
 
         public Builder() {
         }
@@ -396,6 +409,11 @@ public class SingleVoteEntity implements Cloneable, Parcelable {
 
         public Builder transactionId(String val) {
             this.transactionId = val;
+            return this;
+        }
+
+        public Builder nodeAddress(String val) {
+            this.nodeAddress = val;
             return this;
         }
 

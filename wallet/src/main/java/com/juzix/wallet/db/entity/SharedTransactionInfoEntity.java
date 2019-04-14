@@ -106,6 +106,10 @@ public class SharedTransactionInfoEntity extends RealmObject {
      * 交易类型
      */
     private int transactionType;
+    /**
+     * 节点地址
+     */
+    private String nodeAddress;
 
     public SharedTransactionInfoEntity() {
 
@@ -133,6 +137,7 @@ public class SharedTransactionInfoEntity extends RealmObject {
         setSharedWalletOwnerInfoEntityRealmList(builder.sharedWalletOwnerInfoEntityList);
         setOwnerWalletAddress(builder.ownerWalletAddress);
         setTransactionType(builder.transactionType);
+        setNodeAddress(builder.nodeAddress);
     }
 
     public String getUuid() {
@@ -298,7 +303,7 @@ public class SharedTransactionInfoEntity extends RealmObject {
         List<OwnerEntity> ownerEntityList = new ArrayList<>();
         if (sharedWalletOwnerInfoEntityRealmList != null && !sharedWalletOwnerInfoEntityRealmList.isEmpty()) {
             for (SharedWalletOwnerInfoEntity sharedWalletOwnerInfoEntity : sharedWalletOwnerInfoEntityRealmList) {
-                ownerEntityList.add(new OwnerEntity(sharedWalletOwnerInfoEntity.getUuid(), sharedWalletOwnerInfoEntity.getName(), sharedWalletOwnerInfoEntity.getAddress()));
+                ownerEntityList.add(new OwnerEntity(sharedWalletOwnerInfoEntity.getUuid(), sharedWalletOwnerInfoEntity.getName(), sharedWalletOwnerInfoEntity.getAddress(),sharedWalletOwnerInfoEntity.getNodeAddress()));
             }
         }
 
@@ -321,6 +326,13 @@ public class SharedTransactionInfoEntity extends RealmObject {
         this.read = read;
     }
 
+    public String getNodeAddress() {
+        return nodeAddress;
+    }
+
+    public void setNodeAddress(String nodeAddress) {
+        this.nodeAddress = nodeAddress;
+    }
 
     public static final class Builder {
         private String uuid;
@@ -344,6 +356,7 @@ public class SharedTransactionInfoEntity extends RealmObject {
         private List<SharedWalletOwnerInfoEntity> sharedWalletOwnerInfoEntityList;
         private String ownerWalletAddress;
         private int transactionType;
+        private String nodeAddress;
 
         public Builder() {
         }
@@ -453,6 +466,11 @@ public class SharedTransactionInfoEntity extends RealmObject {
             return this;
         }
 
+        public Builder nodeAddress(String val) {
+            nodeAddress = val;
+            return this;
+        }
+
         public SharedTransactionInfoEntity build() {
             return new SharedTransactionInfoEntity(this);
         }
@@ -477,8 +495,13 @@ public class SharedTransactionInfoEntity extends RealmObject {
                 .read(isRead())
                 .ownerEntityList(buildOwnerEntityList())
                 .ownerWalletAddress(getOwnerWalletAddress())
-                .transactionType(transactionType)
+                .transactionType(getTransactionType())
+                .nodeAddress(getNodeAddress())
                 .build();
+    }
+
+    public List<TransactionResult> getTransactionResultList() {
+        return JSONUtil.parseArray(transactionResult, TransactionResult.class);
     }
 
     @Override
@@ -499,17 +522,14 @@ public class SharedTransactionInfoEntity extends RealmObject {
                 ", contractAddress='" + contractAddress + '\'' +
                 ", pending=" + pending +
                 ", executed=" + executed +
-                ", transactionResult=" + getStatus() +
+                ", transactionResult='" + transactionResult + '\'' +
                 ", requiredSignNumber=" + requiredSignNumber +
                 ", read=" + read +
                 ", sharedWalletOwnerInfoEntityRealmList=" + sharedWalletOwnerInfoEntityRealmList +
                 ", ownerWalletAddress='" + ownerWalletAddress + '\'' +
                 ", transactionType=" + transactionType +
+                ", nodeAddress='" + nodeAddress + '\'' +
                 '}';
-    }
-
-    public List<TransactionResult> getTransactionResultList() {
-        return JSONUtil.parseArray(transactionResult, TransactionResult.class);
     }
 
     private TransactionEntity.TransactionStatus getStatus() {

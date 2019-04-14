@@ -91,6 +91,8 @@ public class CandidateEntity implements Cloneable, Parcelable {
 
     private RegionEntity regionEntity;
 
+    private String ticketPrice;
+
     public CandidateEntity() {
     }
 
@@ -110,6 +112,7 @@ public class CandidateEntity implements Cloneable, Parcelable {
         setStatus(builder.status);
         setStakedRanking(builder.stakedRanking);
         setRegionEntity(builder.regionEntity);
+        setTicketPrice(ticketPrice);
     }
 
     protected CandidateEntity(Parcel in) {
@@ -128,6 +131,7 @@ public class CandidateEntity implements Cloneable, Parcelable {
         setStatus(in.readParcelable(CandidateStatus.class.getClassLoader()));
         setStakedRanking(in.readInt());
         setRegionEntity(in.readParcelable(RegionEntity.class.getClassLoader()));
+        setTicketPrice(in.readString());
     }
 
     @Override
@@ -147,6 +151,7 @@ public class CandidateEntity implements Cloneable, Parcelable {
         dest.writeParcelable(status, flags);
         dest.writeInt(getStakedRanking());
         dest.writeParcelable(getRegionEntity(), flags);
+        dest.writeString(getTicketPrice());
     }
 
     @Override
@@ -285,6 +290,14 @@ public class CandidateEntity implements Cloneable, Parcelable {
         this.extra = extra;
     }
 
+    public void setTicketPrice(String ticketPrice) {
+        this.ticketPrice = ticketPrice;
+    }
+
+    public String getTicketPrice() {
+        return ticketPrice;
+    }
+
     public RegionEntity getRegionEntity() {
         return regionEntity;
     }
@@ -339,6 +352,7 @@ public class CandidateEntity implements Cloneable, Parcelable {
         private CandidateStatus status;
         private int stakedRanking;
         private RegionEntity regionEntity;
+        private double ticketPrice;
 
         public Builder() {
         }
@@ -415,6 +429,11 @@ public class CandidateEntity implements Cloneable, Parcelable {
 
         public Builder regionEntity(RegionEntity regionEntity) {
             this.regionEntity = regionEntity;
+            return this;
+        }
+
+        public Builder ticketPrice(double val){
+            this.ticketPrice = val;
             return this;
         }
 

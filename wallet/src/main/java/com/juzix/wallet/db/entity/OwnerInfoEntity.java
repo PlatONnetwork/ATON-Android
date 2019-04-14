@@ -18,20 +18,27 @@ public class OwnerInfoEntity extends RealmObject {
      */
     private String name;
 
+    /**
+     * 节点地址
+     */
+    private String nodeAddress;
+
     public OwnerInfoEntity() {
 
     }
 
-    public OwnerInfoEntity(String uuid, String address, String name) {
+    public OwnerInfoEntity(String uuid, String address, String name, String nodeAddress) {
         setUuid(uuid);
         setAddress(address);
         setName(name);
+        setNodeAddress(nodeAddress);
     }
 
     private OwnerInfoEntity(Builder builder) {
         setUuid(builder.uuid);
         setAddress(builder.address);
         setName(builder.name);
+        setNodeAddress(builder.nodeAddress);
     }
 
     public String getName() {
@@ -52,6 +59,14 @@ public class OwnerInfoEntity extends RealmObject {
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
+    }
+
+    public void setNodeAddress(String nodeAddress) {
+        this.nodeAddress = nodeAddress;
+    }
+
+    public String getNodeAddress() {
+        return nodeAddress;
     }
 
     /**
@@ -82,19 +97,13 @@ public class OwnerInfoEntity extends RealmObject {
         }
     }
 
-    public OwnerInfoEntity buildAddressEntity() {
-        OwnerInfoEntity.Builder builder = new OwnerInfoEntity.Builder();
-        builder.uuid(uuid);
-        builder.name(name);
-        builder.address(address);
-        return builder.build();
-    }
-
     @Override
     public String toString() {
-        return "WalletInfoEntity{" +
-                " name='" + name + '\'' +
+        return "OwnerInfoEntity{" +
+                "uuid='" + uuid + '\'' +
                 ", address='" + address + '\'' +
+                ", name='" + name + '\'' +
+                ", nodeAddress='" + nodeAddress + '\'' +
                 '}';
     }
 
@@ -102,6 +111,7 @@ public class OwnerInfoEntity extends RealmObject {
         private String uuid;
         private String address;
         private String name;
+        private String nodeAddress;
 
         public Builder() {
         }
@@ -118,6 +128,11 @@ public class OwnerInfoEntity extends RealmObject {
 
         public Builder name(String val) {
             name = val;
+            return this;
+        }
+
+        public Builder nodeAddress(String val) {
+            nodeAddress = val;
             return this;
         }
 

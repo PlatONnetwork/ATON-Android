@@ -104,7 +104,7 @@ public class VoteManager {
         return Flowable.fromCallable(new Callable<List<SingleVoteInfoEntity>>() {
             @Override
             public List<SingleVoteInfoEntity> call() throws Exception {
-                return SingleVoteInfoDao.getInstance().getTransactionListByWalletAddress(addressList);
+                return SingleVoteInfoDao.getTransactionListByWalletAddress(addressList);
             }
         }).flatMap(new Function<List<SingleVoteInfoEntity>, Publisher<SingleVoteInfoEntity>>() {
             @Override
@@ -155,8 +155,8 @@ public class VoteManager {
                 }).map(new Function<BatchVoteTransactionEntity, BatchVoteTransactionEntity>() {
                     @Override
                     public BatchVoteTransactionEntity apply(BatchVoteTransactionEntity batchVoteTransactionEntity) throws Exception {
-                        SingleVoteInfoEntity singleVoteInfoEntity = SingleVoteInfoDao.getInstance().getTransactionByHash(batchVoteTransactionEntity.getTransactionHash());
-                        String nodeName = SingleVoteInfoDao.getInstance().getCandidateNameByCandidateId(batchVoteTransactionEntity.getCandidateId());
+                        SingleVoteInfoEntity singleVoteInfoEntity = SingleVoteInfoDao.getTransactionByHash(batchVoteTransactionEntity.getTransactionHash());
+                        String nodeName = SingleVoteInfoDao.getCandidateNameByCandidateId(batchVoteTransactionEntity.getCandidateId());
                         if (singleVoteInfoEntity != null) {
                             batchVoteTransactionEntity.setNodeName(singleVoteInfoEntity.getCandidateName());
                             batchVoteTransactionEntity.setNodeName(nodeName);
@@ -303,6 +303,7 @@ public class VoteManager {
                                         .energonPrice(energonPrice)
                                         .status(SingleVoteEntity.STATUS_PENDING)
                                         .tickets(ticketInfoEntityList)
+                                        .nodeAddress(NodeManager.getInstance().getCurNodeAddress())
                                         .build();
                             }
                         });
@@ -311,7 +312,7 @@ public class VoteManager {
                 .doOnSuccess(new Consumer<SingleVoteInfoEntity>() {
                     @Override
                     public void accept(SingleVoteInfoEntity voteInfoEntity) throws Exception {
-                        boolean success = SingleVoteInfoDao.getInstance().insertTransaction(voteInfoEntity);
+                        boolean success = SingleVoteInfoDao.insertTransaction(voteInfoEntity);
                         if (success) {
                             EventPublisher.getInstance().sendUpdateVoteTransactionListEvent(voteInfoEntity.buildVoteTransactionEntity());
                             updateVoteTicket(voteInfoEntity);
@@ -327,7 +328,7 @@ public class VoteManager {
         Flowable.fromCallable(new Callable<List<SingleVoteInfoEntity>>() {
             @Override
             public List<SingleVoteInfoEntity> call() throws Exception {
-                return SingleVoteInfoDao.getInstance().getTransactionListByStatus(SingleVoteEntity.STATUS_PENDING);
+                return SingleVoteInfoDao.getTransactionListByStatus(SingleVoteEntity.STATUS_PENDING);
             }
         }).flatMap(new Function<List<SingleVoteInfoEntity>, Publisher<SingleVoteInfoEntity>>() {
             @Override
@@ -379,7 +380,7 @@ public class VoteManager {
         return Flowable.fromCallable(new Callable<List<SingleVoteInfoEntity>>() {
             @Override
             public List<SingleVoteInfoEntity> call() throws Exception {
-                return SingleVoteInfoDao.getInstance().getTransactionListByCandidateId(candidateId);
+                return SingleVoteInfoDao.getTransactionListByCandidateId(candidateId);
             }
         }).filter(new Predicate<List<SingleVoteInfoEntity>>() {
             @Override
@@ -399,7 +400,7 @@ public class VoteManager {
         }).map(new Function<SingleVoteInfoEntity, Optional<RegionEntity>>() {
             @Override
             public Optional<RegionEntity> apply(SingleVoteInfoEntity voteInfoEntity) throws Exception {
-                RegionInfoEntity regionInfoEntity = RegionInfoDao.getInstance().getRegionInfoWithIp(voteInfoEntity.getHost());
+                RegionInfoEntity regionInfoEntity = RegionInfoDao.getRegionInfoWithIp(voteInfoEntity.getHost());
                 if (regionInfoEntity == null) {
                     return new Optional<RegionEntity>(null);
                 } else {
@@ -556,7 +557,7 @@ public class VoteManager {
                         if (!ret) {
                             SingleVoteInfoEntity tempVoteInfoEntity = singleVoteInfoEntity.clone();
                             tempVoteInfoEntity.setStatus(SingleVoteEntity.STATUS_FAILED);
-                            SingleVoteInfoDao.getInstance().insertTransaction(tempVoteInfoEntity);
+                            SingleVoteInfoDao.insertTransaction(tempVoteInfoEntity);
                         }
                         return ret;
                     }
@@ -593,7 +594,7 @@ public class VoteManager {
                 .doOnSuccess(new Consumer<SingleVoteInfoEntity>() {
                     @Override
                     public void accept(SingleVoteInfoEntity voteInfoEntity) throws Exception {
-                        boolean success = SingleVoteInfoDao.getInstance().insertTransaction(voteInfoEntity);
+                        boolean success = SingleVoteInfoDao.insertTransaction(voteInfoEntity);
                         if (success) {
                             EventPublisher.getInstance().sendUpdateVoteTransactionListEvent(voteInfoEntity.buildVoteTransactionEntity());
                         }

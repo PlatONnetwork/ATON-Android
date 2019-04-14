@@ -39,6 +39,7 @@ public class IndividualTransactionEntity extends TransactionEntity implements Cl
         setEnergonPrice(builder.energonPrice);
         setMemo(builder.memo);
         setCompleted(builder.completed);
+        setNodeAddress(builder.nodeAddress);
     }
 
     protected IndividualTransactionEntity(Parcel in) {
@@ -54,6 +55,7 @@ public class IndividualTransactionEntity extends TransactionEntity implements Cl
         energonPrice = in.readDouble();
         memo = in.readString();
         completed = in.readByte() != 0;
+        nodeAddress = in.readString();
     }
 
     public static final Creator<IndividualTransactionEntity> CREATOR = new Creator<IndividualTransactionEntity>() {
@@ -87,6 +89,7 @@ public class IndividualTransactionEntity extends TransactionEntity implements Cl
         dest.writeDouble(energonPrice);
         dest.writeString(memo);
         dest.writeByte((byte) (completed ? 1 : 0));
+        dest.writeString(nodeAddress);
     }
 
     public static final class Builder {
@@ -102,6 +105,7 @@ public class IndividualTransactionEntity extends TransactionEntity implements Cl
         private double energonPrice;
         private String memo;
         private boolean completed;
+        private String nodeAddress;
 
         public Builder(String uuid, long createTime, String walletName) {
             this.uuid = uuid;
@@ -154,6 +158,11 @@ public class IndividualTransactionEntity extends TransactionEntity implements Cl
             return this;
         }
 
+        public Builder nodeAddress(String val) {
+            nodeAddress = val;
+            return this;
+        }
+
         public IndividualTransactionEntity build() {
             return new IndividualTransactionEntity(this);
         }
@@ -188,6 +197,7 @@ public class IndividualTransactionEntity extends TransactionEntity implements Cl
                 .walletName(walletName)
                 .memo(memo)
                 .value(value)
+                .nodeAddress(nodeAddress)
                 .build();
     }
 }

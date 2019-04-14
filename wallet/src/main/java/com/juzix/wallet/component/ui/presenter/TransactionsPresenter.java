@@ -197,7 +197,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
         return Flowable.fromCallable(new Callable<List<IndividualTransactionInfoEntity>>() {
             @Override
             public List<IndividualTransactionInfoEntity> call() throws Exception {
-                return IndividualTransactionInfoDao.getInstance().getTransactionList(contractAddress);
+                return IndividualTransactionInfoDao.getTransactionList(contractAddress);
             }
         }).flatMap(new Function<List<IndividualTransactionInfoEntity>, Publisher<IndividualTransactionInfoEntity>>() {
             @Override
@@ -254,7 +254,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                         return Flowable.fromCallable(new Callable<List<SharedTransactionInfoEntity>>() {
                             @Override
                             public List<SharedTransactionInfoEntity> call() throws Exception {
-                                return SharedTransactionInfoDao.getInstance().getTransactionListByContractAddress(contractaddressArray);
+                                return SharedTransactionInfoDao.getTransactionListByContractAddress(contractaddressArray);
                             }
                         })
                                 .flatMap(new Function<List<SharedTransactionInfoEntity>, Publisher<SharedTransactionInfoEntity>>() {
@@ -298,7 +298,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
         return Flowable.fromCallable(new Callable<List<SharedTransactionInfoEntity>>() {
             @Override
             public List<SharedTransactionInfoEntity> call() throws Exception {
-                return SharedTransactionInfoDao.getInstance().getTransactionListByContractAddress(contractAddress);
+                return SharedTransactionInfoDao.getTransactionListByContractAddress(contractAddress);
             }
         }).flatMap(new Function<List<SharedTransactionInfoEntity>, Publisher<SharedTransactionInfoEntity>>() {
             @Override
@@ -334,7 +334,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
         return Single.fromCallable(new Callable<List<VoteTransactionEntity>>() {
             @Override
             public List<VoteTransactionEntity> call() throws Exception {
-                List<SingleVoteInfoEntity> singleVoteInfoEntities = SingleVoteInfoDao.getInstance().getTransactionListByWalletAddress(address);
+                List<SingleVoteInfoEntity> singleVoteInfoEntities = SingleVoteInfoDao.getTransactionListByWalletAddress(address);
                 List<VoteTransactionEntity> transactionEntityList = new ArrayList<>();
                 for (SingleVoteInfoEntity voteInfoEntity : singleVoteInfoEntities) {
                     VoteTransactionEntity entity = new VoteTransactionEntity.Builder(voteInfoEntity.getUuid(), voteInfoEntity.getCreateTime(), voteInfoEntity.getWalletName())

@@ -3,27 +3,23 @@ package com.juzix.wallet.db.sqlite;
 import com.juzix.wallet.db.entity.AddressInfoEntity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
 
-public class AddressInfoDao extends BaseDao {
+public class AddressInfoDao {
 
-    private AddressInfoDao() {
-        super();
-    }
-
-    public static AddressInfoDao getInstance() {
-        return InstanceHolder.INSTANCE;
-    }
-
-    public ArrayList<AddressInfoEntity> getAddressInfoList() {
-        ArrayList<AddressInfoEntity> list = new ArrayList<>();
+    public static List<AddressInfoEntity> getAddressInfoList() {
+        List<AddressInfoEntity> list = new ArrayList<>();
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
-            RealmResults<AddressInfoEntity> results = realm.where(AddressInfoEntity.class).findAll();
-            list.addAll(realm.copyFromRealm(results));
+            RealmResults<AddressInfoEntity> results = realm.where(AddressInfoEntity.class)
+                    .findAll();
+            if (results != null) {
+                list = realm.copyFromRealm(results);
+            }
         } catch (Exception exp) {
             exp.printStackTrace();
             if (realm != null) {
@@ -37,7 +33,7 @@ public class AddressInfoDao extends BaseDao {
         return list;
     }
 
-    public String getAddressNameByAddress(String address) {
+    public static String getAddressNameByAddress(String address) {
         String addressName = null;
         Realm realm = null;
         try {
@@ -61,7 +57,7 @@ public class AddressInfoDao extends BaseDao {
         return addressName;
     }
 
-    public boolean insertAddressInfo(AddressInfoEntity entity) {
+    public static boolean insertAddressInfo(AddressInfoEntity entity) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
@@ -73,15 +69,15 @@ public class AddressInfoDao extends BaseDao {
             if (realm != null) {
                 realm.cancelTransaction();
             }
-            return false;
         } finally {
             if (realm != null) {
                 realm.close();
             }
         }
+        return false;
     }
 
-    public boolean updateAddressInfo(AddressInfoEntity oldAddressInfo, AddressInfoEntity newAddressInfo) {
+    public static boolean updateAddressInfo(AddressInfoEntity oldAddressInfo, AddressInfoEntity newAddressInfo) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
@@ -94,7 +90,10 @@ public class AddressInfoDao extends BaseDao {
                         .setName(newAddressInfo.getName());
             } else {
                 //delete
-                realm.where(AddressInfoEntity.class).equalTo("address", oldAddressInfo.getAddress()).findAll().deleteFirstFromRealm();
+                realm.where(AddressInfoEntity.class)
+                        .equalTo("address", oldAddressInfo.getAddress())
+                        .findAll()
+                        .deleteFirstFromRealm();
                 //insert
                 realm.copyToRealmOrUpdate(newAddressInfo);
 
@@ -105,12 +104,16 @@ public class AddressInfoDao extends BaseDao {
             if (realm != null) {
                 realm.cancelTransaction();
             }
-            return false;
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
         }
+        return false;
 
     }
 
-    public boolean updateNameWithAddress(String address, String name) {
+    public static boolean updateNameWithAddress(String address, String name) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
@@ -125,63 +128,58 @@ public class AddressInfoDao extends BaseDao {
             if (realm != null) {
                 realm.cancelTransaction();
             }
-            return false;
-        }
-    }
-
-    public boolean isExist(String address) {
-        return getEntityWithAddress(address) != null;
-    }
-
-    public AddressInfoEntity getEntityWithAddress(String address) {
-        Realm realm = null;
-        try {
-            realm = Realm.getDefaultInstance();
-            AddressInfoEntity entity = realm.where(AddressInfoEntity.class)
-                    .equalTo("address", address).findFirst();
-            return realm.copyFromRealm(entity);
-        } catch (Exception e) {
-            return null;
         } finally {
             if (realm != null) {
                 realm.close();
             }
         }
+        return false;
     }
 
-    public boolean deleteAddressInfo(String address) {
+    public static boolean isExist(String address) {
+        return getEntityWithAddress(address) != null;
+    }
+
+    public static AddressInfoEntity getEntityWithAddress(String address) {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            AddressInfoEntity entity = realm.where(AddressInfoEntity.class)
+                    .equalTo("address", address)
+                    .findFirst();
+            return realm.copyFromRealm(entity);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return null;
+    }
+
+    public static boolean deleteAddressInfo(String address) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
-            realm.where(AddressInfoEntity.class).equalTo("address", address).findAll().deleteFirstFromRealm();
+            realm.where(AddressInfoEntity.class)
+                    .equalTo("address", address)
+                    .findAll()
+                    .deleteFirstFromRealm();
             realm.commitTransaction();
             return true;
         } catch (Exception e) {
             if (realm != null) {
                 realm.cancelTransaction();
             }
-            return false;
-        }
-    }
-
-    public boolean deleteAll() {
-        Realm realm = null;
-        try {
-            realm = Realm.getDefaultInstance();
-            realm.beginTransaction();
-            realm.delete(AddressInfoEntity.class);
-            realm.commitTransaction();
-            return true;
-        } catch (Exception e) {
-            if (realm != null) {
-                realm.cancelTransaction();
+        }finally {
+            if (realm != null){
+                realm.close();
             }
-            return false;
         }
+
+        return false;
     }
 
-    private final static class InstanceHolder {
-        private final static AddressInfoDao INSTANCE = new AddressInfoDao();
-    }
 }

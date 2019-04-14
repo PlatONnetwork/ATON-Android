@@ -97,20 +97,13 @@ public class AddressInfoEntity extends RealmObject {
         }
     }
 
-    public AddressInfoEntity buildAddressEntity() {
-        AddressInfoEntity.Builder builder = new AddressInfoEntity.Builder();
-        builder.uuid(uuid);
-        builder.name(name);
-        builder.address(address);
-        return builder.build();
-    }
-
     @Override
     public String toString() {
-        return "WalletInfoEntity{" +
-                " uuid='" + uuid + '\'' +
-                " name='" + name + '\'' +
+        return "AddressInfoEntity{" +
+                "uuid='" + uuid + '\'' +
                 ", address='" + address + '\'' +
+                ", name='" + name + '\'' +
+                ", avatar='" + avatar + '\'' +
                 '}';
     }
 

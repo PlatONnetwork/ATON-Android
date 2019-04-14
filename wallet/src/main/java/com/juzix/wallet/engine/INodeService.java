@@ -18,13 +18,13 @@ public interface INodeService {
 
     Single<Boolean> insertNode(List<NodeEntity> nodeInfoEntityList);
 
-    Single<Boolean> deleteNode(long id);
+    Single<Boolean> deleteNode(String nodeAddress);
 
-    Single<Boolean> deleteNode(List<Long> idList);
+    Single<Boolean> deleteNode(List<String> idList);
 
-    Single<Boolean> updateNode(long id, String nodeAddress);
+    Single<Boolean> updateNode(String uuid, String nodeAddress);
 
-    Single<Boolean> updateNode(long id, boolean isChecked);
+    Single<Boolean> updateNode(String uuid, boolean isChecked);
 
     Single<NodeEntity> getNode(boolean isChecked);
 }

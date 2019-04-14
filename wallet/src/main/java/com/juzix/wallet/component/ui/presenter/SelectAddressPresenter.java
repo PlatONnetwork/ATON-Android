@@ -31,7 +31,7 @@ public class SelectAddressPresenter extends BasePresenter<SelectAddressContract.
 
     @Override
     public void fetchAddressList() {
-        Flowable.fromIterable(AddressInfoDao.getInstance().getAddressInfoList()).filter(new Predicate<AddressInfoEntity>() {
+        Flowable.fromIterable(AddressInfoDao.getAddressInfoList()).filter(new Predicate<AddressInfoEntity>() {
             @Override
             public boolean test(AddressInfoEntity addressInfoEntity) throws Exception {
                 return addressInfoEntity != null;

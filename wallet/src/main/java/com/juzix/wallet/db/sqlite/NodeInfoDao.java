@@ -13,15 +13,7 @@ import io.realm.RealmResults;
  */
 public class NodeInfoDao {
 
-    private NodeInfoDao() {
-
-    }
-
-    public static NodeInfoDao getInstance() {
-        return InstanceHolder.INSTANCE;
-    }
-
-    public boolean insertNode(NodeInfoEntity nodeInfoEntity) {
+    public static boolean insertNode(NodeInfoEntity nodeInfoEntity) {
 
         Realm realm = null;
         try {
@@ -38,11 +30,11 @@ public class NodeInfoDao {
             if (realm != null) {
                 realm.close();
             }
-            return false;
         }
+        return false;
     }
 
-    public boolean insertNodeList(List<NodeInfoEntity> nodeInfoEntityList) {
+    public static boolean insertNodeList(List<NodeInfoEntity> nodeInfoEntityList) {
 
         Realm realm = null;
         try {
@@ -59,16 +51,19 @@ public class NodeInfoDao {
             if (realm != null) {
                 realm.close();
             }
-            return false;
         }
+        return false;
     }
 
-    public boolean deleteNode(long id) {
+    public static boolean deleteNode(String uuid) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
-            realm.where(NodeInfoEntity.class).equalTo("id", id).findAll().deleteFirstFromRealm();
+            realm.where(NodeInfoEntity.class)
+                    .equalTo("uuid", uuid)
+                    .findAll()
+                    .deleteFirstFromRealm();
             realm.commitTransaction();
             return true;
         } catch (Exception exp) {
@@ -83,52 +78,15 @@ public class NodeInfoDao {
         return false;
     }
 
-    public boolean deleteNode(List<Long> idList) {
+    public static boolean deleteNode(List<String> idList) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
-            realm.where(NodeInfoEntity.class).in("id", idList.toArray(new Long[0])).findAll().deleteAllFromRealm();
-            realm.commitTransaction();
-            return true;
-        } catch (Exception exp) {
-            if (realm != null) {
-                realm.cancelTransaction();
-            }
-        } finally {
-            if (realm != null) {
-                realm.close();
-            }
-            return false;
-        }
-    }
-
-    public boolean updateNode(long id, String nodeAddress) {
-        Realm realm = null;
-        try {
-            realm = Realm.getDefaultInstance();
-            realm.beginTransaction();
-            realm.where(NodeInfoEntity.class).equalTo("id", id).findFirst().setNodeAddress(nodeAddress);
-            realm.commitTransaction();
-            return true;
-        } catch (Exception exp) {
-            if (realm != null) {
-                realm.cancelTransaction();
-            }
-        } finally {
-            if (realm != null) {
-                realm.close();
-            }
-            return false;
-        }
-    }
-
-    public boolean updateNode(long id, boolean isChecked) {
-        Realm realm = null;
-        try {
-            realm = Realm.getDefaultInstance();
-            realm.beginTransaction();
-            realm.where(NodeInfoEntity.class).equalTo("id", id).findFirst().setChecked(isChecked);
+            realm.where(NodeInfoEntity.class)
+                    .in("uuid", idList.toArray(new Long[0]))
+                    .findAll()
+                    .deleteAllFromRealm();
             realm.commitTransaction();
             return true;
         } catch (Exception exp) {
@@ -140,18 +98,65 @@ public class NodeInfoDao {
                 realm.close();
             }
         }
-
         return false;
     }
 
-    public List<NodeInfoEntity> getNodeList() {
+    public static boolean updateNode(String uuid, String nodeAddress) {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            realm.where(NodeInfoEntity.class)
+                    .equalTo("uuid", uuid)
+                    .findFirst()
+                    .setNodeAddress(nodeAddress);
+            realm.commitTransaction();
+            return true;
+        } catch (Exception exp) {
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return false;
+    }
+
+    public static boolean updateNode(String uuid, boolean isChecked) {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            realm.where(NodeInfoEntity.class)
+                    .equalTo("uuid", uuid)
+                    .findFirst()
+                    .setChecked(isChecked);
+            realm.commitTransaction();
+            return true;
+        } catch (Exception exp) {
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return false;
+    }
+
+    public static List<NodeInfoEntity> getNodeList() {
 
         List<NodeInfoEntity> list = new ArrayList<>();
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
             RealmResults<NodeInfoEntity> results = realm.where(NodeInfoEntity.class).findAll();
-            list.addAll(realm.copyFromRealm(results));
+            if (results != null) {
+                list = realm.copyFromRealm(results);
+            }
         } catch (Exception exp) {
             exp.printStackTrace();
         } finally {
@@ -162,15 +167,18 @@ public class NodeInfoDao {
         return list;
     }
 
-    public List<NodeInfoEntity> getNode(boolean isChecked) {
+    public static List<NodeInfoEntity> getNode(boolean isChecked) {
 
         List<NodeInfoEntity> nodeInfoEntityList = new ArrayList<>();
-
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
-            RealmResults<NodeInfoEntity> results = realm.where(NodeInfoEntity.class).equalTo("isChecked", isChecked).findAll();
-            nodeInfoEntityList.addAll(realm.copyFromRealm(results));
+            RealmResults<NodeInfoEntity> results = realm.where(NodeInfoEntity.class)
+                    .equalTo("isChecked", isChecked)
+                    .findAll();
+            if (results != null){
+                nodeInfoEntityList = realm.copyFromRealm(results);
+            }
         } catch (Exception exp) {
             exp.printStackTrace();
         } finally {
@@ -180,9 +188,5 @@ public class NodeInfoDao {
         }
 
         return nodeInfoEntityList;
-    }
-
-    private final static class InstanceHolder {
-        private final static NodeInfoDao INSTANCE = new NodeInfoDao();
     }
 }

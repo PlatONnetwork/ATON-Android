@@ -1,13 +1,17 @@
 package com.juzix.wallet.entity;
 
+import android.text.TextUtils;
+
 import com.juzix.wallet.db.entity.NodeInfoEntity;
+
+import java.util.UUID;
 
 /**
  * @author matrixelement
  */
 public class NodeEntity implements Cloneable, Nullable {
 
-    private long id;
+    private String uuid;
     /**
      * 节点地址
      */
@@ -30,7 +34,7 @@ public class NodeEntity implements Cloneable, Nullable {
     }
 
     private NodeEntity(Builder builder) {
-        setId(builder.id);
+        setUuid(builder.uuid);
         setNodeAddress(builder.nodeAddress);
         setDefaultNode(builder.isDefaultNode);
         setFormatCorrect(builder.isFormatCorrect);
@@ -43,7 +47,7 @@ public class NodeEntity implements Cloneable, Nullable {
     }
 
     public NodeInfoEntity createNodeInfo() {
-        return new NodeInfoEntity(id, nodeAddress, isDefaultNode, isChecked,isMainNetworkNode);
+        return new NodeInfoEntity(uuid, nodeAddress, isDefaultNode, isChecked, isMainNetworkNode);
     }
 
     public String getNodeAddress() {
@@ -78,12 +82,12 @@ public class NodeEntity implements Cloneable, Nullable {
         isChecked = checked;
     }
 
-    public long getId() {
-        return id;
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public String getUuid() {
+        return uuid;
     }
 
     public boolean isMainNetworkNode() {
@@ -96,7 +100,7 @@ public class NodeEntity implements Cloneable, Nullable {
 
     @Override
     public int hashCode() {
-        return (int) (id ^ (id >>> 32));
+        return TextUtils.isEmpty(uuid) ? 0 : uuid.hashCode();
     }
 
     @Override
@@ -107,7 +111,7 @@ public class NodeEntity implements Cloneable, Nullable {
 
         if (obj instanceof NodeEntity) {
             NodeEntity node = (NodeEntity) obj;
-            return id == node.id;
+            return node.getUuid() != null && node.getUuid().equals(uuid);
         }
         return super.equals(obj);
     }
@@ -130,7 +134,7 @@ public class NodeEntity implements Cloneable, Nullable {
 
 
     public static final class Builder {
-        private long id;
+        private String uuid;
         private String nodeAddress;
         private boolean isDefaultNode;
         private boolean isFormatCorrect;
@@ -138,11 +142,11 @@ public class NodeEntity implements Cloneable, Nullable {
         private boolean isMainNetworkNode;
 
         public Builder() {
-            id = System.currentTimeMillis();
+            uuid = UUID.randomUUID().toString();
         }
 
-        public Builder id(long val) {
-            id = val;
+        public Builder uuid(String val) {
+            uuid = val;
             return this;
         }
 
