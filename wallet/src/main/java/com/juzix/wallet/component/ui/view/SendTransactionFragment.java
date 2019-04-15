@@ -328,7 +328,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
 
     @Override
     public void showSaveAddressDialog() {
-        CommonEditDialogFragment.createCommonEditDialogFragment(string(R.string.nameOfWallet), "", InputType.TYPE_CLASS_TEXT, string(R.string.confirm), string(R.string.cancel), new OnDialogViewClickListener() {
+        CommonEditDialogFragment.createCommonEditDialogFragment(string(R.string.nameOfAddress), "", InputType.TYPE_CLASS_TEXT, string(R.string.confirm), string(R.string.cancel), new OnDialogViewClickListener() {
             @Override
             public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
                 String text = extra.getString(Constants.Bundle.BUNDLE_TEXT);

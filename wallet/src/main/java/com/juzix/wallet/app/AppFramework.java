@@ -26,6 +26,7 @@ import java.util.Map;
 
 import io.realm.DynamicRealm;
 import io.realm.DynamicRealmObject;
+import io.realm.FieldAttribute;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmMigration;
@@ -187,8 +188,8 @@ public class AppFramework {
 
                             schema.remove("TransactionInfoResult");
 
-                            schema.create("CandidateInfoDao")
-                                .addField("candidateId",String.class)
+                            schema.create("CandidateInfoEntity")
+                                .addField("candidateId",String.class, FieldAttribute.PRIMARY_KEY)
                                 .addField("deposit",String.class)
                                 .addField("blockNumber",long.class)
                                 .addField("owner",String.class)
@@ -201,7 +202,6 @@ public class AppFramework {
                                 .addField("extra",String.class)
                                 .addField("nodeAddress",String.class)
                                 .addField("candidateName",String.class);
-
                             oldVersion++;
                         }
                     }
