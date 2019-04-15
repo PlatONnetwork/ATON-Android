@@ -20,9 +20,11 @@
         style="@style/List_common_style"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:divider="@drawable/bg_address_book_list_divider"
+        android:divider="@drawable/bg_txn_list_divider"
         android:dividerHeight="1dp"
         android:paddingTop="10dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
         android:layout_height="match_parent"
         tools:listitem="@layout/item_transaction_record" />
 
