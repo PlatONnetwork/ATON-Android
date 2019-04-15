@@ -8,7 +8,7 @@ import java.util.UUID;
 public class NullNodeEntity extends NodeEntity {
 
     private NullNodeEntity() {
-        this.setUuid(UUID.randomUUID().toString());
+        this.setId(UUID.randomUUID().hashCode());
     }
     
     public static NullNodeEntity getInstance() {

@@ -25,10 +25,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.realm.DynamicRealm;
-import io.realm.FieldAttribute;
+import io.realm.DynamicRealmObject;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmMigration;
+import io.realm.RealmObjectSchema;
 import io.realm.RealmSchema;
 
 /**
@@ -92,43 +93,100 @@ public class AppFramework {
                     public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
                         RealmSchema schema = realm.getSchema();
                         if (oldVersion == 104) {
+
+                            schema.get("IndividualTransactionInfoEntity").addField("completed", boolean.class);
+                            schema.get("IndividualTransactionInfoEntity").addField("value", double.class);
                             schema.get("IndividualTransactionInfoEntity")
-                                    .addField("completed", boolean.class)
-                                    .addField("value", double.class);
+                                    .addField("nodeAddress", String.class)
+                                    .transform(new RealmObjectSchema.Function() {
+                                        @Override
+                                        public void apply(DynamicRealmObject obj) {
+                                            obj.set("nodeAddress", "https://test-amigo.platon.network/test");
+                                        }
+                                    });
 
+                            schema.get("IndividualWalletInfoEntity").addField("mnemonic", String.class);
                             schema.get("IndividualWalletInfoEntity")
-                                    .addField("mnemonic", String.class);
+                                    .addField("nodeAddress", String.class)
+                                    .transform(new RealmObjectSchema.Function() {
+                                        @Override
+                                        public void apply(DynamicRealmObject obj) {
+                                            obj.set("nodeAddress", "https://test-amigo.platon.network/test");
+                                        }
+                                    });
 
-                            schema.get("RegionInfoEntity")
-                                    .removeField("uuid")
-                                    .addPrimaryKey("ip");
+                            schema.get("OwnerInfoEntity").addField("nodeAddress", String.class);
 
                             schema.get("NodeInfoEntity")
-                                    .removeField("id")
-                                    .addField("uuid", String.class, FieldAttribute.PRIMARY_KEY);
+                                    .transform(new RealmObjectSchema.Function() {
+                                        @Override
+                                        public void apply(DynamicRealmObject obj) {
+                                            obj.set("isChecked", false);
+                                        }
+                                    });
 
+                            schema.get("RegionInfoEntity").removeField("uuid");
+                            schema.get("RegionInfoEntity").addPrimaryKey("ip");
+                            schema.get("RegionInfoEntity")
+                                    .addField("nodeAddress", String.class)
+                                    .transform(new RealmObjectSchema.Function() {
+                                        @Override
+                                        public void apply(DynamicRealmObject obj) {
+                                            obj.set("nodeAddress", "https://test-amigo.platon.network/test");
+                                        }
+                                    });
+
+                            schema.get("SharedTransactionInfoEntity").removeField("transactionResult");
+                            schema.get("SharedTransactionInfoEntity").addField("transactionResult", String.class);
                             schema.get("SharedTransactionInfoEntity")
-                                    .removeField("transactionResult")
-                                    .addField("transactionResult", String.class);
+                                    .addField("nodeAddress", String.class)
+                                    .transform(new RealmObjectSchema.Function() {
+                                        @Override
+                                        public void apply(DynamicRealmObject obj) {
+                                            obj.set("nodeAddress", "https://test-amigo.platon.network/test");
+                                        }
+                                    });
 
+                            schema.get("SharedWalletInfoEntity").renameField("walletAddress", "creatorAddress");
                             schema.get("SharedWalletInfoEntity")
-                                    .renameField("walletAddress", "creatorAddress");
+                                    .addField("nodeAddress", String.class)
+                                    .transform(new RealmObjectSchema.Function() {
+                                        @Override
+                                        public void apply(DynamicRealmObject obj) {
+                                            obj.set("nodeAddress", "https://test-amigo.platon.network/test");
+                                        }
+                                    });
+                            schema.get("SingleVoteInfoEntity").removeField("avatar");
+
+                            schema.get("SharedWalletOwnerInfoEntity")
+                                    .addField("nodeAddress", String.class)
+                                    .transform(new RealmObjectSchema.Function() {
+                                        @Override
+                                        public void apply(DynamicRealmObject obj) {
+                                            obj.set("nodeAddress", "https://test-amigo.platon.network/test");
+                                        }
+                                    });
 
                             schema.get("SingleVoteInfoEntity")
-                                    .removeField("avatar");
+                                    .addField("nodeAddress", String.class)
+                                    .transform(new RealmObjectSchema.Function() {
+                                        @Override
+                                        public void apply(DynamicRealmObject obj) {
+                                            obj.set("nodeAddress", "https://test-amigo.platon.network/test");
+                                        }
+                                    });
+
+                            schema.get("TicketInfoEntity")
+                                    .addField("nodeAddress", String.class)
+                                    .transform(new RealmObjectSchema.Function() {
+                                        @Override
+                                        public void apply(DynamicRealmObject obj) {
+                                            obj.set("nodeAddress", "https://test-amigo.platon.network/test");
+                                        }
+                                    });
 
                             schema.remove("TransactionInfoResult");
 
-                            //新增AB网数据隔离逻辑，每个数据库都加上nodeAddress进行唯一标识
-                            schema.get("IndividualTransactionInfoEntity").addField("nodeAddress", String.class);
-                            schema.get("IndividualWalletInfoEntity").addField("nodeAddress", String.class);
-                            schema.get("OwnerInfoEntity").addField("nodeAddress", String.class);
-                            schema.get("RegionInfoEntity").addField("nodeAddress", String.class);
-                            schema.get("SharedTransactionInfoEntity").addField("nodeAddress", String.class);
-                            schema.get("SharedWalletInfoEntity").addField("nodeAddress", String.class);
-                            schema.get("SharedWalletOwnerInfoEntity").addField("nodeAddress", String.class);
-                            schema.get("SingleVoteInfoEntity").addField("nodeAddress", String.class);
-                            schema.get("TicketInfoEntity").addField("nodeAddress", String.class);
                             oldVersion++;
                         }
                     }

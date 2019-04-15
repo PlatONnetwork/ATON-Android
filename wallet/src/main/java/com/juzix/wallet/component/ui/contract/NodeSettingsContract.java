@@ -20,7 +20,7 @@ public class NodeSettingsContract {
 
         void notifyDataChanged(List<NodeEntity> nodeEntityList);
 
-        String getNodeAddress(String id);
+        String getNodeAddress(long id);
 
         List<NodeEntity> getNodeList();
 

@@ -74,17 +74,17 @@ public class NodeService implements INodeService {
     }
 
     @Override
-    public Single<Boolean> deleteNode(String uuid) {
+    public Single<Boolean> deleteNode(long id) {
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return NodeInfoDao.deleteNode(uuid);
+                return NodeInfoDao.deleteNode(id);
             }
         }).subscribeOn(Schedulers.io());
     }
 
     @Override
-    public Single<Boolean> deleteNode(List<String> idList) {
+    public Single<Boolean> deleteNode(List<Long> idList) {
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
@@ -94,21 +94,21 @@ public class NodeService implements INodeService {
     }
 
     @Override
-    public Single<Boolean> updateNode(String uuid, String nodeAddress) {
+    public Single<Boolean> updateNode(long id, String nodeAddress) {
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return NodeInfoDao.updateNode(uuid, nodeAddress);
+                return NodeInfoDao.updateNode(id, nodeAddress);
             }
         }).subscribeOn(Schedulers.io());
     }
 
     @Override
-    public Single<Boolean> updateNode(String uuid, boolean isChecked) {
+    public Single<Boolean> updateNode(long id, boolean isChecked) {
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return NodeInfoDao.updateNode(uuid, isChecked);
+                return NodeInfoDao.updateNode(id, isChecked);
             }
         }).subscribeOn(Schedulers.io());
     }

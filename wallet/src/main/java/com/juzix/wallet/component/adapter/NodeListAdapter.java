@@ -40,7 +40,7 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
 
     private BaseActivity activity;
 
-    private Map<String, String> map = new HashMap<>();
+    private Map<Long, String> map = new HashMap<>();
     private List<NodeEntity> mNodeList;
     private boolean mIsEdit;
     private OnItemRemovedListener mRemovedListener;
@@ -73,7 +73,7 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
         notifyDataSetChanged();
     }
 
-    public String getNodeAddress(String id) {
+    public String getNodeAddress(long id) {
         return map.get(id);
     }
 
@@ -95,26 +95,26 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
 
         for (NodeEntity nodeEntity : nodeEntityList) {
             notifyItemRemoved(mNodeList.indexOf(nodeEntity));
-            map.remove(nodeEntity.getUuid());
+            map.remove(nodeEntity.getId());
         }
 
         mNodeList.removeAll(nodeEntityList);
     }
 
-    public void removeNode(String uuid) {
+    public void removeNode(long id) {
 
         if (mNodeList == null || mNodeList.isEmpty()) {
             return;
         }
 
         NodeEntity tempNodeEntity = new NodeEntity.Builder()
-                .uuid(uuid)
+                .id(id)
                 .build();
 
         if (mNodeList.contains(tempNodeEntity)) {
             int position = mNodeList.indexOf(tempNodeEntity);
             if (mNodeList.remove(position) != null) {
-                map.remove(tempNodeEntity.getUuid());
+                map.remove(tempNodeEntity.getId());
                 notifyItemRemoved(position);
 
                 if (mRemovedListener != null) {
@@ -197,13 +197,13 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
         TextChangedListener textChangedListener = new TextChangedListener() {
             @Override
             protected void onTextChanged(CharSequence s) {
-                map.put(nodeEntity.getUuid(), s.toString());
+                map.put(nodeEntity.getId(), s.toString());
             }
         };
 
         holder.etNode.addTextChangedListener(textChangedListener);
         holder.etNode.setTag(textChangedListener);
-        String nodeAddress = TextUtils.isEmpty(nodeEntity.getNodeAddress()) ? map.get(nodeEntity.getUuid()) : nodeEntity.getNodeAddress();
+        String nodeAddress = TextUtils.isEmpty(nodeEntity.getNodeAddress()) ? map.get(nodeEntity.getId()) : nodeEntity.getNodeAddress();
         boolean isDefaultMainNetwork = nodeEntity.isDefaultNode() && nodeEntity.isMainNetworkNode();
         boolean isDefaultTestNetwork = nodeEntity.isDefaultNode() && !nodeEntity.isMainNetworkNode();
         if (isDefaultMainNetwork) {
@@ -216,7 +216,7 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
         holder.ivDel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                removeNode(nodeEntity.getUuid());
+                removeNode(nodeEntity.getId());
                 if (nodeEntity.isChecked()) {
                     setChecked(0);
                     return;

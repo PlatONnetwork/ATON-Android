@@ -70,7 +70,7 @@ public class NodeSettingsPresenter extends BasePresenter<NodeSettingsContract.Vi
                         continue;
                     }
 
-                    String nodeAddress = getView().getNodeAddress(node.getUuid());
+                    String nodeAddress = getView().getNodeAddress(node.getId());
                     if (TextUtils.isEmpty(nodeAddress) || !nodeAddress.trim().matches(IP_WITH_HTTP_PREFIX)) {
                         removeNodeList.add(node);
                     }
@@ -120,7 +120,7 @@ public class NodeSettingsPresenter extends BasePresenter<NodeSettingsContract.Vi
                         continue;
                     }
 
-                    String nodeAddress = getView().getNodeAddress(node.getUuid());
+                    String nodeAddress = getView().getNodeAddress(node.getId());
 
                     if (TextUtils.isEmpty(nodeAddress)) {
                         removeNodeList.add(node);

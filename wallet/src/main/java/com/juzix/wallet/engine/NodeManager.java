@@ -1,14 +1,13 @@
 package com.juzix.wallet.engine;
 
 import com.juzix.wallet.app.Constants;
-import com.juzix.wallet.app.FlowableSchedulersTransformer;
+import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.entity.NodeEntity;
 import com.juzix.wallet.event.EventPublisher;
 
-import org.reactivestreams.Publisher;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import io.reactivex.Single;
 import io.reactivex.functions.Consumer;
@@ -54,29 +53,19 @@ public class NodeManager {
 
         nodeService = new NodeService();
 
-        nodeService.getNodeList()
-                .toFlowable()
-                .flatMap(new Function<List<NodeEntity>, Publisher<NodeEntity>>() {
-                    @Override
-                    public Publisher<NodeEntity> apply(List<NodeEntity> nodeEntityList) throws Exception {
-                        if (nodeEntityList.isEmpty()) {
-                            return nodeService.insertNode(buildDefaultNodeList()).filter(new Predicate<Boolean>() {
-                                @Override
-                                public boolean test(Boolean aBoolean) throws Exception {
-                                    return aBoolean;
-                                }
-                            }).map(new Function<Boolean, NodeEntity>() {
-                                @Override
-                                public NodeEntity apply(Boolean aBoolean) throws Exception {
-                                    return getCheckedNode().blockingGet();
-                                }
-                            }).toFlowable();
-                        } else {
-                            return getCheckedNode().toFlowable();
-                        }
-                    }
-                })
-                .compose(new FlowableSchedulersTransformer())
+        nodeService
+                .insertNode(buildDefaultNodeList()).filter(new Predicate<Boolean>() {
+            @Override
+            public boolean test(Boolean aBoolean) throws Exception {
+                return aBoolean;
+            }
+        }).map(new Function<Boolean, NodeEntity>() {
+            @Override
+            public NodeEntity apply(Boolean aBoolean) throws Exception {
+                return getCheckedNode().blockingGet();
+            }
+        }).toSingle()
+                .compose(new SchedulersTransformer())
                 .subscribe(new Consumer<NodeEntity>() {
                     @Override
                     public void accept(NodeEntity nodeEntity) throws Exception {
@@ -109,11 +98,11 @@ public class NodeManager {
     }
 
     public Single<Boolean> deleteNode(NodeEntity nodeEntity) {
-        return nodeService.deleteNode(nodeEntity.getUuid());
+        return nodeService.deleteNode(nodeEntity.getId());
     }
 
     public Single<Boolean> updateNode(NodeEntity nodeEntity, boolean isChecked) {
-        return nodeService.updateNode(nodeEntity.getUuid(), isChecked);
+        return nodeService.updateNode(nodeEntity.getId(), isChecked);
     }
 
     private List<NodeEntity> buildDefaultNodeList() {
@@ -124,6 +113,7 @@ public class NodeManager {
 
         for (int i = 0; i < DEFAULT_NODE_URL_LIST.length; i++) {
             nodeEntity = new NodeEntity.Builder()
+                    .id(UUID.randomUUID().hashCode())
                     .nodeAddress(DEFAULT_NODE_URL_LIST[i])
                     .isDefaultNode(true)
                     .isChecked(i == 0)

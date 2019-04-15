@@ -110,7 +110,7 @@ public class NodeSettingsActivity extends MVPBaseActivity<NodeSettingsPresenter>
     }
 
     @Override
-    public String getNodeAddress(String id) {
+    public String getNodeAddress(long id) {
         return nodeListAdapter.getNodeAddress(id);
     }
 
