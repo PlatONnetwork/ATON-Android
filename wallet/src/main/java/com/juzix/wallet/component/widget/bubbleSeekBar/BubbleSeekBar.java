@@ -582,10 +582,9 @@ public class BubbleSeekBar extends View {
             }
         }
     }
+
     /**
-
      * @param colors 渐变颜色
-
      */
 
     public void setColors(int[] colors) {
@@ -597,6 +596,7 @@ public class BubbleSeekBar extends View {
         invalidate();
 
     }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -655,41 +655,6 @@ public class BubbleSeekBar extends View {
         boolean isShowTextBelowSectionMark = isShowSectionText && mSectionTextPosition ==
                 BELOW_SECTION_MARK;
 
-        // draw sectionMark & sectionText BELOW_SECTION_MARK
-        if (isShowTextBelowSectionMark || isShowSectionMark) {
-            mPaint.setTextSize(mSectionTextSize);
-            mPaint.getTextBounds("0123456789", 0, "0123456789".length(), mRectText); // compute solid height
-
-            float x_;
-            float y_ = yTop + mRectText.height() + mThumbRadiusOnDragging + mTextSpace + mSelectionTextMargin;
-            float r = (mThumbRadiusOnDragging - dp2px(2)) / 2f;
-            float junction; // where secondTrack meets firstTrack
-            if (isRtl) {
-                junction = mRight - mTrackLength / mDelta * Math.abs(mProgress - mMin);
-            } else {
-                junction = mLeft + mTrackLength / mDelta * Math.abs(mProgress - mMin);
-            }
-
-            for (int i = 0; i <= mSectionCount; i++) {
-                x_ = xLeft + i * mSectionOffset;
-                if (isRtl) {
-                    mPaint.setColor(x_ <= junction ? mTrackColor : mSecondTrackColor);
-                } else {
-                    mPaint.setColor(x_ <= junction ? mSecondTrackColor : mTrackColor);
-                }
-                // sectionMark
-                canvas.drawCircle(x_, yTop, r, mPaint);
-
-                // sectionText belows section
-                if (isShowTextBelowSectionMark) {
-                    mPaint.setColor(mSectionTextColor);
-                    if (mSectionTextArray.get(i, null) != null) {
-                        canvas.drawText(mSectionTextArray.get(i), x_, y_, mPaint);
-                    }
-                }
-            }
-        }
-
         if (!isThumbOnDragging || isAlwaysShowBubble) {
             if (isRtl) {
                 mThumbCenterX = xRight - mTrackLength / mDelta * (mProgress - mMin);
@@ -730,6 +695,44 @@ public class BubbleSeekBar extends View {
             canvas.drawLine(mThumbCenterX, yTop, xLeft, yTop, mPaint);
         } else {
             canvas.drawLine(mThumbCenterX, yTop, xRight, yTop, mPaint);
+        }
+
+        // draw sectionMark & sectionText BELOW_SECTION_MARK
+        if (isShowTextBelowSectionMark || isShowSectionMark) {
+            mPaint.setTextSize(mSectionTextSize);
+            mPaint.getTextBounds("0123456789", 0, "0123456789".length(), mRectText); // compute solid height
+
+            float x_;
+            float y_ = yTop + mRectText.height() + mThumbRadiusOnDragging + mTextSpace + mSelectionTextMargin;
+            float r = (mThumbRadiusOnDragging - dp2px(2)) / 2f;
+            float junction; // where secondTrack meets firstTrack
+            if (isRtl) {
+                junction = mRight - mTrackLength / mDelta * Math.abs(mProgress - mMin);
+            } else {
+                junction = mLeft + mTrackLength / mDelta * Math.abs(mProgress - mMin);
+            }
+
+            for (int i = 0; i <= mSectionCount; i++) {
+                x_ = xLeft + i * mSectionOffset;
+                if (isRtl) {
+                    mPaint.setColor(x_ <= junction ? mTrackColor : mSecondTrackColor);
+                } else {
+                    mPaint.setColor(x_ <= junction ? mSecondTrackColor : mTrackColor);
+                }
+                if (i < colors.length) {
+                    mPaint.setColor(x_ <= junction ? colors[i] : mTrackColor);
+                }
+                // sectionMark
+                canvas.drawCircle(x_, yTop, r, mPaint);
+
+                // sectionText belows section
+                if (isShowTextBelowSectionMark) {
+                    mPaint.setColor(mSectionTextColor);
+                    if (mSectionTextArray.get(i, null) != null) {
+                        canvas.drawText(mSectionTextArray.get(i), x_, y_, mPaint);
+                    }
+                }
+            }
         }
 
         // draw thumb
