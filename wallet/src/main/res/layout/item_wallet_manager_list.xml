@@ -16,11 +16,13 @@
             android:id="@+id/iv_wallet_avatar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/icon_default_coin"/>
+            android:src="@drawable/avatar_15"/>
         <ImageView
             android:id="@+id/iv_wallet_shared"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="6dp"
+            android:layout_marginBottom="6dp"
             android:layout_gravity="right|bottom"
             android:src="@drawable/icon_joint"/>
     </FrameLayout>
