@@ -41,6 +41,7 @@
             android:layout_marginLeft="18dp"
             android:layout_marginTop="20dp"
             android:layout_marginRight="18dp"
+            android:layout_marginBottom="10dp"
             app:text="@string/understood"
             app:textAppearance="@style/MainButtonStyle"
             app:textBackground="@drawable/bg_main_button" />
