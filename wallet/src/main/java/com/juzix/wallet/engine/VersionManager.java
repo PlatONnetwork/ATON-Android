@@ -87,17 +87,17 @@ public class VersionManager {
 
                     @Override
                     public void onComplete() {
-                        FileUtil.install(MainActivity.sInstance, new File(destDir, filename));
+                        FileUtil.install(MainActivity.sInstance, new File(destDir, filename.replace(File.separator, "")));
                     }
                 });
     }
 
-    private Observable<DownloadEntity> startDownload(String url, final File destDir, final String fileName) {
+    private Observable<DownloadEntity> startDownload(String url, final File destDir, final String filename) {
        return mRetrofit.create(UpdateVersionService.class)
                 .download(url).flatMap(new Function<ResponseBody, ObservableSource<DownloadEntity>>() {
                     @Override
                     public ObservableSource<DownloadEntity> apply(final ResponseBody responseBody) throws Exception {
-                        return getDownloadEntity(url, responseBody, destDir, fileName);
+                        return getDownloadEntity(url, responseBody, destDir, filename);
                     }
                 });
     }
