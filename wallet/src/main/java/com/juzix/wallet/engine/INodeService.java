@@ -27,4 +27,6 @@ public interface INodeService {
     Single<Boolean> updateNode(long id, boolean isChecked);
 
     Single<NodeEntity> getNode(boolean isChecked);
+
+    Single<List<NodeEntity>> getNode(String nodeAddress);
 }

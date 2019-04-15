@@ -121,7 +121,7 @@ public class AppFramework {
                                     .transform(new RealmObjectSchema.Function() {
                                         @Override
                                         public void apply(DynamicRealmObject obj) {
-                                            obj.set("isChecked", false);
+                                            obj.deleteFromRealm();
                                         }
                                     });
 
