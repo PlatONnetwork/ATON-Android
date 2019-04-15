@@ -734,7 +734,6 @@ public class BubbleSeekBar extends View {
                 }
             }
         }
-
         // draw thumb
         mPaint.setColor(mThumbColor);
         canvas.drawCircle(mThumbCenterX, yTop, mThumbRadiusOnDragging, mPaint);
