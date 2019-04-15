@@ -72,7 +72,8 @@
     <string name="startImporting">Start to import</string>
     <string name="walletPassword">Wallet password</string>
     <string name="nameOfWallet">Name of wallet</string>
-    <string name="nameOfAddress">Address of wallet</string>
+    <string name="nameOfAddress">Name of address</string>
+    <string name="addressOfWallet">Address of Wallet</string>
     <string name="importMnemonicPhraseResume">Input the Mnemonic phrase. Please pay attention to case sensitivity and sequence.</string>
     <string name="inputMnemonicPhraseTips">Please separate each Mnemonic Phrase with a space</string>
     <string name="importPrivateKeyResume">Input the Private Key, or scan the QR Code generated with Private Key to import. Please pay attention to case sensitivity.</string>
