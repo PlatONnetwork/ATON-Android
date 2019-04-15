@@ -145,16 +145,15 @@ public class SharedWalletTransactionManager {
                 .createTime(time)
                 .updateTime(time)
                 .progress(10)
+                .nodeAddress(NodeManager.getInstance().getCurNodeAddress())
                 .build();
 
         SharedWalletManager.getInstance().addOrUpdateWallet(sharedWalletEntity);
 
         return deployContractAddress(credentials, sharedWalletEntity.getUuid(), ethGasPrice)
                 .map(new Function<TransactionReceipt, SharedTransactionInfoEntity>() {
-
                     @Override
                     public SharedTransactionInfoEntity apply(TransactionReceipt receipt) throws Exception {
-
                         return new SharedTransactionInfoEntity.Builder()
                                 .uuid(UUID.randomUUID().toString())
                                 .hash(receipt.getTransactionHash())
@@ -168,6 +167,7 @@ public class SharedWalletTransactionManager {
                                 .ownerWalletAddress(individualWalletAddress)
                                 .transactionType(SharedTransactionEntity.TransactionType.CREATE_JOINT_WALLET.getValue())
                                 .energonPrice(getGasUsed(receipt.getGasUsedRaw()))
+                                .nodeAddress(NodeManager.getInstance().getCurNodeAddress())
                                 .build();
                     }
                 })
@@ -175,7 +175,7 @@ public class SharedWalletTransactionManager {
                     @Override
                     public void accept(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
                         sharedWalletEntity.setAddress(sharedTransactionInfoEntity.getContractAddress());
-                        boolean success = SharedTransactionInfoDao.getInstance().insertTransaction(sharedTransactionInfoEntity);
+                        boolean success = SharedTransactionInfoDao.insertTransaction(sharedTransactionInfoEntity);
                         if (success) {
                             EventPublisher.getInstance().sendUpdateSharedWalletTransactionEvent(sharedTransactionInfoEntity.buildSharedTransactionEntity());
                         }
@@ -203,6 +203,7 @@ public class SharedWalletTransactionManager {
                                 .ownerWalletAddress(individualWalletAddress)
                                 .transactionType(SharedTransactionEntity.TransactionType.EXECUTED_CONTRACT.getValue())
                                 .energonPrice(getGasUsed(receipt.getGasUsedRaw()))
+                                .nodeAddress(NodeManager.getInstance().getCurNodeAddress())
                                 .build();
                     }
                 })
@@ -210,7 +211,7 @@ public class SharedWalletTransactionManager {
                     @Override
                     public Boolean apply(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
                         boolean saveSharedWalletSuccess = SharedWalletManager.getInstance().saveShareWallet(sharedWalletEntity);
-                        boolean saveTransactionSuccess = SharedTransactionInfoDao.getInstance().insertTransaction(sharedTransactionInfoEntity);
+                        boolean saveTransactionSuccess = SharedTransactionInfoDao.insertTransaction(sharedTransactionInfoEntity);
                         if (saveTransactionSuccess) {
                             EventPublisher.getInstance().sendUpdateSharedWalletTransactionEvent(sharedTransactionInfoEntity.buildSharedTransactionEntity());
                         }
@@ -233,7 +234,7 @@ public class SharedWalletTransactionManager {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         boolean success = SharedWalletManager.getInstance().removeWallet(sharedWalletEntity);
-                        if (success){
+                        if (success) {
                             EventPublisher.getInstance().sendRemoveSharedWalletEvent(sharedWalletEntity);
                         }
                     }
@@ -312,8 +313,8 @@ public class SharedWalletTransactionManager {
                     @Override
                     public OwnerEntity apply(Integer integer) throws Exception {
                         String address = owners.get(integer);
-                        String dbName = AddressInfoDao.getInstance().getAddressNameByAddress(getFormatAddress(address));
-                        return new OwnerEntity(UUID.randomUUID().toString(), TextUtils.isEmpty(dbName) ? context.getString(R.string.user_with_serial_number, integer + 1) : dbName, address);
+                        String dbName = AddressInfoDao.getAddressNameByAddress(getFormatAddress(address));
+                        return new OwnerEntity(UUID.randomUUID().toString(), TextUtils.isEmpty(dbName) ? context.getString(R.string.user_with_serial_number, integer + 1) : dbName, address, NodeManager.getInstance().getCurNodeAddress());
                     }
                 })
                 .toList();
@@ -633,6 +634,7 @@ public class SharedWalletTransactionManager {
                                 .energonPrice(getGasUsed(gasUsed))
                                 .requiredSignNumber(sharedWalletEntity.getRequiredSignNumber())
                                 .transactionResult(JSONUtil.toJSONString(getTransactionResultList(sharedWalletEntity.getOwner(), null)))
+                                .nodeAddress(NodeManager.getInstance().getCurNodeAddress())
                                 .build();
                     }
                 })
@@ -651,9 +653,9 @@ public class SharedWalletTransactionManager {
                 .doOnSuccess(new Consumer<SharedTransactionInfoEntity>() {
                     @Override
                     public void accept(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
-                        boolean success = SharedTransactionInfoDao.getInstance().insertTransaction(sharedTransactionInfoEntity);
+                        boolean success = SharedTransactionInfoDao.insertTransaction(sharedTransactionInfoEntity);
                         if (success) {
-                            Log.e(TAG,"accept: 执行合约1 "+sharedTransactionInfoEntity.toString());
+                            Log.e(TAG, "accept: 执行合约1 " + sharedTransactionInfoEntity.toString());
                             EventPublisher.getInstance().sendUpdateSharedWalletTransactionEvent(sharedTransactionInfoEntity.buildSharedTransactionEntity());
                         }
                     }
@@ -685,9 +687,9 @@ public class SharedWalletTransactionManager {
                 .doOnSuccess(new Consumer<SharedTransactionInfoEntity>() {
                     @Override
                     public void accept(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
-                        boolean success = SharedTransactionInfoDao.getInstance().insertTransaction(sharedTransactionInfoEntity);
+                        boolean success = SharedTransactionInfoDao.insertTransaction(sharedTransactionInfoEntity);
                         if (success) {
-                            Log.e(TAG,"accept: 执行合约2 "+sharedTransactionInfoEntity.toString());
+                            Log.e(TAG, "accept: 执行合约2 " + sharedTransactionInfoEntity.toString());
                             EventPublisher.getInstance().sendUpdateSharedWalletTransactionEvent(sharedTransactionInfoEntity.buildSharedTransactionEntity());
                         }
                     }
@@ -709,10 +711,10 @@ public class SharedWalletTransactionManager {
                 .doOnSuccess(new Consumer<SharedTransactionInfoEntity>() {
                     @Override
                     public void accept(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
-                        SharedTransactionInfoEntity transactionInfoEntity = SharedTransactionInfoDao.getInstance().getSharedTransaction(sharedTransactionInfoEntity.getContractAddress(), sharedTransactionInfoEntity.getTransactionId(), SharedTransactionEntity.TransactionType.SEND_TRANSACTION);
+                        SharedTransactionInfoEntity transactionInfoEntity = SharedTransactionInfoDao.getSharedTransaction(sharedTransactionInfoEntity.getContractAddress(), sharedTransactionInfoEntity.getTransactionId(), SharedTransactionEntity.TransactionType.SEND_TRANSACTION);
                         //不能全部替换，只能更新某些字段
                         if (transactionInfoEntity == null) {
-                            boolean isSuccess = SharedTransactionInfoDao.getInstance().insertTransaction(sharedTransactionInfoEntity);
+                            boolean isSuccess = SharedTransactionInfoDao.insertTransaction(sharedTransactionInfoEntity);
                             if (isSuccess) {
                                 mTransactionContractAddressList.remove(sharedTransactionInfoEntity.getContractAddress());
                                 Log.e(TAG, "发送交易插入:" + sharedTransactionInfoEntity.toString());
@@ -720,7 +722,7 @@ public class SharedWalletTransactionManager {
                             }
                         } else {
                             if (!transactionInfoEntity.isRead()) {
-                                SharedTransactionInfoEntity entity = SharedTransactionInfoDao.getInstance().updateReadWithUUID(transactionInfoEntity.getUuid(), sharedTransactionInfoEntity.isRead());
+                                SharedTransactionInfoEntity entity = SharedTransactionInfoDao.updateReadWithUUID(transactionInfoEntity.getUuid(), sharedTransactionInfoEntity.isRead());
                                 if (entity != null) {
                                     EventPublisher.getInstance().sendUpdateSharedWalletTransactionEvent(entity.buildSharedTransactionEntity());
                                 }
@@ -810,6 +812,7 @@ public class SharedWalletTransactionManager {
                                 .ownerWalletAddress(sharedTransactionEntity.getOwnerWalletAddress())
                                 .contractAddress(sharedTransactionEntity.getContractAddress())
                                 .energonPrice(getGasUsed(transactionReceipt.getGasUsedRaw()))
+                                .nodeAddress(NodeManager.getInstance().getCurNodeAddress())
                                 .build();
                     }
                 })
@@ -828,34 +831,34 @@ public class SharedWalletTransactionManager {
                 .doOnSuccess(new Consumer<SharedTransactionInfoEntity>() {
                     @Override
                     public void accept(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
-                        SharedTransactionInfoDao.getInstance().insertTransaction(sharedTransactionInfoEntity);
-                    }
-                })
-                .map(new Function<SharedTransactionInfoEntity, SharedTransactionInfoEntity>() {
-                    @Override
-                    public SharedTransactionInfoEntity apply(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
-                        sharedTransactionInfoEntity.setUuid(UUID.randomUUID().toString());
-                        sharedTransactionInfoEntity.setFromAddress(sharedTransactionInfoEntity.getContractAddress());
-                        sharedTransactionInfoEntity.setToAddress(sharedTransactionEntity.getToAddress());
-                        sharedTransactionInfoEntity.setCreateTime(System.currentTimeMillis());
-                        sharedTransactionInfoEntity.setSharedWalletOwnerInfoEntityRealmList(sharedTransactionInfoEntity.getSharedWalletOwnerInfoEntityRealmList());
-                        sharedTransactionInfoEntity.setTransactionType(SharedTransactionEntity.TransactionType.SEND_TRANSACTION.getValue());
-                        sharedTransactionInfoEntity.setValue(NumberParserUtils.parseDouble(sharedTransactionEntity.getValue()));
-                        sharedTransactionInfoEntity.setRead(true);
-                        return sharedTransactionInfoEntity;
-                    }
-                })
-                .doOnSuccess(new Consumer<SharedTransactionInfoEntity>() {
-                    @Override
-                    public void accept(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
-                        //todo
-                        String uuid = SharedTransactionInfoDao.getInstance().getSharedTransactionUUID(sharedTransactionEntity.getContractAddress(), sharedTransactionEntity.getTransactionId(), SharedTransactionEntity.TransactionType.SEND_TRANSACTION);
-                        if (uuid != null) {
-                            sharedTransactionInfoEntity.setUuid(uuid);
-                            SharedTransactionInfoDao.getInstance().insertTransaction(sharedTransactionInfoEntity);
-                        }
+                        SharedTransactionInfoDao.insertTransaction(sharedTransactionInfoEntity);
                     }
                 });
+//                .map(new Function<SharedTransactionInfoEntity, SharedTransactionInfoEntity>() {
+//                    @Override
+//                    public SharedTransactionInfoEntity apply(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
+//                        sharedTransactionInfoEntity.setUuid(UUID.randomUUID().toString());
+//                        sharedTransactionInfoEntity.setFromAddress(sharedTransactionInfoEntity.getContractAddress());
+//                        sharedTransactionInfoEntity.setToAddress(sharedTransactionEntity.getToAddress());
+//                        sharedTransactionInfoEntity.setCreateTime(System.currentTimeMillis());
+//                        sharedTransactionInfoEntity.setSharedWalletOwnerInfoEntityRealmList(sharedTransactionInfoEntity.getSharedWalletOwnerInfoEntityRealmList());
+//                        sharedTransactionInfoEntity.setTransactionType(SharedTransactionEntity.TransactionType.SEND_TRANSACTION.getValue());
+//                        sharedTransactionInfoEntity.setValue(NumberParserUtils.parseDouble(sharedTransactionEntity.getValue()));
+//                        sharedTransactionInfoEntity.setRead(true);
+//                        return sharedTransactionInfoEntity;
+//                    }
+//                })
+//                .doOnSuccess(new Consumer<SharedTransactionInfoEntity>() {
+//                    @Override
+//                    public void accept(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
+////                        //todo
+////                        String uuid = SharedTransactionInfoDao.getSharedTransactionUUID(sharedTransactionEntity.getContractAddress(), sharedTransactionEntity.getTransactionId(), SharedTransactionEntity.TransactionType.SEND_TRANSACTION);
+////                        if (uuid != null) {
+////                            sharedTransactionInfoEntity.setUuid(uuid);
+////                            SharedTransactionInfoDao.insertTransaction(sharedTransactionInfoEntity);
+////                        }
+//                    }
+//                });
     }
 
     public void updateTransactionForRead(SharedWalletEntity walletEntity, SharedTransactionEntity transactionEntity) {
@@ -864,7 +867,7 @@ public class SharedWalletTransactionManager {
             @Override
             public Boolean call() throws Exception {
                 Log.e(TAG, "updateReadWithUUID....");
-                return SharedTransactionInfoDao.getInstance().insertTransaction(transactionEntity.buildSharedTransactionInfoEntity());
+                return SharedTransactionInfoDao.insertTransaction(transactionEntity.buildSharedTransactionInfoEntity());
             }
         }).filter(new Predicate<Boolean>() {
             @Override
@@ -876,7 +879,7 @@ public class SharedWalletTransactionManager {
             @Override
             public Boolean apply(Boolean aBoolean) throws Exception {
                 Log.e(TAG, "map....");
-                return SharedTransactionInfoDao.getInstance().hasUnreadTransactionByContractAddress(walletEntity.getAddress());
+                return SharedTransactionInfoDao.hasUnreadTransactionByContractAddress(walletEntity.getAddress());
             }
         }).filter(new Predicate<Boolean>() {
             @Override
@@ -965,7 +968,7 @@ public class SharedWalletTransactionManager {
 
     public List<SharedTransactionEntity> getAllTransactionList() {
         ArrayList<SharedTransactionEntity> transactionEntities = new ArrayList<>();
-        ArrayList<SharedTransactionInfoEntity> transactionInfoEntities = SharedTransactionInfoDao.getInstance().getTransactionInfoList();
+        List<SharedTransactionInfoEntity> transactionInfoEntities = SharedTransactionInfoDao.getTransactionInfoList();
         for (SharedTransactionInfoEntity entity : transactionInfoEntities) {
             SharedTransactionEntity transactionEntity = new SharedTransactionEntity.Builder(entity.getUuid(), entity.getCreateTime(), entity.getWalletName())
                     .hash(entity.getHash())
@@ -1096,6 +1099,7 @@ public class SharedWalletTransactionManager {
                 transactionEntity.setOwnerWalletAddress(sharedWalletEntity.getCreatorAddress());
                 transactionEntity.setBlockNumber(getBlockNumberByHash(getHashByTransactionId(transactionEntity.getTransactionId())));
                 transactionEntity.setRead(getRead(sharedWalletEntity.getAddress(), transactionEntity.getTransactionId()));
+                transactionEntity.setNodeAddress(NodeManager.getInstance().getCurNodeAddress());
                 if (!TextUtils.isEmpty(formatMultiSigList)) {
                     String transactionResult = JSONUtil.toJSONString(getTransactionResultList(sharedWalletEntity.getOwner(), formatMultiSigList.split(":")));
                     transactionEntity.setTransactionResult(transactionResult);
@@ -1110,10 +1114,10 @@ public class SharedWalletTransactionManager {
         }).doOnNext(new Consumer<SharedTransactionInfoEntity>() {
             @Override
             public void accept(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
-                String uuid = SharedTransactionInfoDao.getInstance().getSharedTransactionUUID(sharedTransactionInfoEntity.getContractAddress(), sharedTransactionInfoEntity.getTransactionId(), SharedTransactionEntity.TransactionType.SEND_TRANSACTION);
+                String uuid = SharedTransactionInfoDao.getSharedTransactionUUID(sharedTransactionInfoEntity.getContractAddress(), sharedTransactionInfoEntity.getTransactionId(), SharedTransactionEntity.TransactionType.SEND_TRANSACTION);
                 sharedTransactionInfoEntity.setUuid(uuid == null ? UUID.randomUUID().toString() : uuid);
                 Log.e(TAG, "loopservice:" + sharedTransactionInfoEntity.toString());
-                boolean success = SharedTransactionInfoDao.getInstance().insertTransaction(sharedTransactionInfoEntity);
+                boolean success = SharedTransactionInfoDao.insertTransaction(sharedTransactionInfoEntity);
                 if (success) {
                     mTransactionContractAddressList.remove(sharedTransactionInfoEntity.getContractAddress());
                     EventPublisher.getInstance().sendUpdateSharedWalletTransactionEvent(sharedTransactionInfoEntity.buildSharedTransactionEntity());
@@ -1126,7 +1130,7 @@ public class SharedWalletTransactionManager {
         return Flowable.fromCallable(new Callable<List<SharedTransactionInfoEntity>>() {
             @Override
             public List<SharedTransactionInfoEntity> call() throws Exception {
-                return SharedTransactionInfoDao.getInstance().getTransactionListByContractAddress(contractAddress);
+                return SharedTransactionInfoDao.getTransactionListByContractAddress(contractAddress);
             }
         }).flatMap(new Function<List<SharedTransactionInfoEntity>, Publisher<SharedTransactionInfoEntity>>() {
             @Override
@@ -1199,7 +1203,7 @@ public class SharedWalletTransactionManager {
         return Single.fromCallable(new Callable<SharedTransactionInfoEntity>() {
             @Override
             public SharedTransactionInfoEntity call() throws Exception {
-                return SharedTransactionInfoDao.getInstance().getTransactionByTransactionId(transactionId);
+                return SharedTransactionInfoDao.getTransactionByTransactionId(transactionId);
             }
         }).map(new Function<SharedTransactionInfoEntity, String>() {
             @Override
@@ -1224,7 +1228,7 @@ public class SharedWalletTransactionManager {
             return Single.fromCallable(new Callable<SharedTransactionInfoEntity>() {
                 @Override
                 public SharedTransactionInfoEntity call() throws Exception {
-                    return SharedTransactionInfoDao.getInstance().getSharedTransaction(contractAddress, transactionId, SharedTransactionEntity.TransactionType.SEND_TRANSACTION);
+                    return SharedTransactionInfoDao.getSharedTransaction(contractAddress, transactionId, SharedTransactionEntity.TransactionType.SEND_TRANSACTION);
                 }
             }).map(new Function<SharedTransactionInfoEntity, Boolean>() {
                 @Override

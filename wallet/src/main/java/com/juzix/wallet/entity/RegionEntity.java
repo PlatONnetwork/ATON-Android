@@ -23,6 +23,7 @@ public class RegionEntity implements Parcelable {
     private String countryEn;
     private String countryZh;
     private String countryPinyin;
+    private String nodeAddress;
 
     public RegionEntity() {
         super();
@@ -35,6 +36,7 @@ public class RegionEntity implements Parcelable {
         setCountryEn(builder.countryEn);
         setCountryZh(builder.countryZh);
         setCountryPinyin(builder.countryPinyin);
+        setNodeAddress(builder.nodeAddress);
     }
 
     protected RegionEntity(Parcel in) {
@@ -44,6 +46,7 @@ public class RegionEntity implements Parcelable {
         countryEn = in.readString();
         countryZh = in.readString();
         countryPinyin = in.readString();
+        nodeAddress = in.readString();
     }
 
     public static final Creator<RegionEntity> CREATOR = new Creator<RegionEntity>() {
@@ -106,6 +109,14 @@ public class RegionEntity implements Parcelable {
         this.countryPinyin = countryPinyin;
     }
 
+    public String getNodeAddress() {
+        return nodeAddress;
+    }
+
+    public void setNodeAddress(String nodeAddress) {
+        this.nodeAddress = nodeAddress;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -119,6 +130,7 @@ public class RegionEntity implements Parcelable {
         dest.writeString(countryEn);
         dest.writeString(countryZh);
         dest.writeString(countryPinyin);
+        dest.writeString(nodeAddress);
     }
 
 
@@ -130,6 +142,7 @@ public class RegionEntity implements Parcelable {
         private String countryEn;
         private String countryZh;
         private String countryPinyin;
+        private String nodeAddress;
 
         public Builder() {
         }
@@ -169,6 +182,11 @@ public class RegionEntity implements Parcelable {
             return this;
         }
 
+        public Builder nodeAddress(String val){
+            nodeAddress = val;
+            return this;
+        }
+
         public RegionEntity build() {
             return new RegionEntity(this);
         }
@@ -199,6 +217,7 @@ public class RegionEntity implements Parcelable {
                 ", countryEn='" + countryEn + '\'' +
                 ", countryZh='" + countryZh + '\'' +
                 ", countryPinyin='" + countryPinyin + '\'' +
+                ", nodeAddress='" + nodeAddress + '\'' +
                 '}';
     }
 }

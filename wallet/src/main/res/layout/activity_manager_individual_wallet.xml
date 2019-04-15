@@ -15,13 +15,11 @@
         android:layout_height="wrap_content"
         app:ctb_left_drawable="@drawable/icon_back_black"
         app:ctb_title="@string/wallet_manage" />
-    />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
 
         <RelativeLayout
             android:id="@+id/rl_wallet_address"

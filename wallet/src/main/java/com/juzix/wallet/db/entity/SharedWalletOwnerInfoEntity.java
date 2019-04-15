@@ -19,6 +19,11 @@ public class SharedWalletOwnerInfoEntity extends RealmObject {
      */
     private String name;
 
+    /**
+     * 节点地址
+     */
+    private String nodeAddress;
+
     public String getUuid() {
         return uuid;
     }
@@ -41,5 +46,13 @@ public class SharedWalletOwnerInfoEntity extends RealmObject {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getNodeAddress() {
+        return nodeAddress;
+    }
+
+    public void setNodeAddress(String nodeAddress) {
+        this.nodeAddress = nodeAddress;
     }
 }

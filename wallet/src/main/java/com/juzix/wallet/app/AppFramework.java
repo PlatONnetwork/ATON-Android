@@ -15,15 +15,21 @@ import com.juzix.wallet.config.JZAppConfigure;
 import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.SharedWalletManager;
+import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import io.realm.DynamicRealm;
+import io.realm.DynamicRealmObject;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmMigration;
+import io.realm.RealmObjectSchema;
 import io.realm.RealmSchema;
 
 /**
@@ -52,24 +58,22 @@ public class AppFramework {
     public void initAppFramework(Context context) {
 
         mContext = context;
+
         JZAppConfigure.getInstance().init(context);
+
         EventPublisher.getInstance().register(this);
         //注册网络状态变化
         registerNetStateChangedBC();
         //初始化realm
         initRealm(context);
+        //初始化节点配置
+        NodeManager.getInstance().init();
         //初始化RUtils
         RUtils.init(context);
         //初始化偏好设置
         AppSettings.getInstance().init(context);
         //初始化网络模块
         HttpClient.getInstance().init(context, "http://192.168.9.190:10061/a-api/api/", buildMultipleUrlMap());
-        //初始化节点配置
-        NodeManager.getInstance().init();
-        //初始化普通钱包
-        IndividualWalletManager.getInstance().init();
-        //初始化共享钱包
-        SharedWalletManager.getInstance().init();
     }
 
     private Map<String, Object> buildMultipleUrlMap() {
@@ -88,37 +92,101 @@ public class AppFramework {
                     @Override
                     public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
                         RealmSchema schema = realm.getSchema();
-                        if (oldVersion == 100) {
-                            schema.get("AddressInfoEntity").addField("avatar", String.class);
-                            oldVersion++;
-                        } else if (oldVersion == 101) {
-                            schema.get("NodeInfoEntity").addField("isMainNetworkNode", boolean.class);
-                            oldVersion++;
-                        } else if (oldVersion == 102) {
-                            schema.get("IndividualTransactionInfoEntity").addField("blockNumber", long.class);
-                            oldVersion++;
-                        } else if (oldVersion == 104) {
+                        if (oldVersion == 104) {
+
+                            schema.get("IndividualTransactionInfoEntity").addField("completed", boolean.class);
+                            schema.get("IndividualTransactionInfoEntity").addField("value", double.class);
+                            schema.get("IndividualTransactionInfoEntity")
+                                    .addField("nodeAddress", String.class)
+                                    .transform(new RealmObjectSchema.Function() {
+                                        @Override
+                                        public void apply(DynamicRealmObject obj) {
+                                            obj.set("nodeAddress", "https://test-amigo.platon.network/test");
+                                        }
+                                    });
+
                             schema.get("IndividualWalletInfoEntity").addField("mnemonic", String.class);
-                            schema.get("SharedWalletInfoEntity").addField("creatorAddress", String.class);
-                            schema.get("SingleVoteInfoEntity").removeField("avatar");
-                            schema.remove("RegionInfoEntity");
+                            schema.get("IndividualWalletInfoEntity")
+                                    .addField("nodeAddress", String.class)
+                                    .transform(new RealmObjectSchema.Function() {
+                                        @Override
+                                        public void apply(DynamicRealmObject obj) {
+                                            obj.set("nodeAddress", "https://test-amigo.platon.network/test");
+                                        }
+                                    });
+
+                            schema.get("OwnerInfoEntity").addField("nodeAddress", String.class);
+
+                            schema.get("NodeInfoEntity")
+                                    .transform(new RealmObjectSchema.Function() {
+                                        @Override
+                                        public void apply(DynamicRealmObject obj) {
+                                            obj.set("isChecked", false);
+                                        }
+                                    });
+
+                            schema.get("RegionInfoEntity").removeField("uuid");
+                            schema.get("RegionInfoEntity").addPrimaryKey("ip");
+                            schema.get("RegionInfoEntity")
+                                    .addField("nodeAddress", String.class)
+                                    .transform(new RealmObjectSchema.Function() {
+                                        @Override
+                                        public void apply(DynamicRealmObject obj) {
+                                            obj.set("nodeAddress", "https://test-amigo.platon.network/test");
+                                        }
+                                    });
+
                             schema.get("SharedTransactionInfoEntity").removeField("transactionResult");
                             schema.get("SharedTransactionInfoEntity").addField("transactionResult", String.class);
-                            schema.remove("TransactionInfoResult");
-                            schema.get("IndividualTransactionInfoEntity").addField("completed", Boolean.class);
-                            schema.get("IndividualTransactionInfoEntity").addField("value", double.class);
-                            oldVersion++;
-                        } else if (oldVersion == 105) {
-                            schema.get("IndividualWalletInfoEntity").addField("mnemonic", String.class);
-                            schema.get("SharedWalletInfoEntity").addField("creatorAddress", String.class);
+                            schema.get("SharedTransactionInfoEntity")
+                                    .addField("nodeAddress", String.class)
+                                    .transform(new RealmObjectSchema.Function() {
+                                        @Override
+                                        public void apply(DynamicRealmObject obj) {
+                                            obj.set("nodeAddress", "https://test-amigo.platon.network/test");
+                                        }
+                                    });
+
+                            schema.get("SharedWalletInfoEntity").renameField("walletAddress", "creatorAddress");
+                            schema.get("SharedWalletInfoEntity")
+                                    .addField("nodeAddress", String.class)
+                                    .transform(new RealmObjectSchema.Function() {
+                                        @Override
+                                        public void apply(DynamicRealmObject obj) {
+                                            obj.set("nodeAddress", "https://test-amigo.platon.network/test");
+                                        }
+                                    });
                             schema.get("SingleVoteInfoEntity").removeField("avatar");
-                            schema.remove("RegionInfoEntity");
-                            schema.get("SharedTransactionInfoEntity").removeField("transactionResult");
-                            schema.get("SharedTransactionInfoEntity").addField("transactionResult", String.class);
+
+                            schema.get("SharedWalletOwnerInfoEntity")
+                                    .addField("nodeAddress", String.class)
+                                    .transform(new RealmObjectSchema.Function() {
+                                        @Override
+                                        public void apply(DynamicRealmObject obj) {
+                                            obj.set("nodeAddress", "https://test-amigo.platon.network/test");
+                                        }
+                                    });
+
+                            schema.get("SingleVoteInfoEntity")
+                                    .addField("nodeAddress", String.class)
+                                    .transform(new RealmObjectSchema.Function() {
+                                        @Override
+                                        public void apply(DynamicRealmObject obj) {
+                                            obj.set("nodeAddress", "https://test-amigo.platon.network/test");
+                                        }
+                                    });
+
+                            schema.get("TicketInfoEntity")
+                                    .addField("nodeAddress", String.class)
+                                    .transform(new RealmObjectSchema.Function() {
+                                        @Override
+                                        public void apply(DynamicRealmObject obj) {
+                                            obj.set("nodeAddress", "https://test-amigo.platon.network/test");
+                                        }
+                                    });
+
                             schema.remove("TransactionInfoResult");
-                            schema.get("NodeInfoEntity").removeField("nodeDesc");
-                            schema.get("IndividualTransactionInfoEntity").addField("completed", Boolean.class);
-                            schema.get("IndividualTransactionInfoEntity").addField("value", double.class);
+
                             oldVersion++;
                         }
                     }
@@ -132,6 +200,14 @@ public class AppFramework {
     private void registerNetStateChangedBC() {
         IntentFilter intentFilter = new IntentFilter(NetConnectivity.ACITION_CONNECTIVITY_CHANGE);
         mContext.registerReceiver(new NetStateBroadcastReceiver(), intentFilter);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onNodeChangedEvent(Event.NodeChangedEvent event) {
+        //初始化普通钱包
+        IndividualWalletManager.getInstance().init();
+        //初始化共享钱包
+        SharedWalletManager.getInstance().init();
     }
 
     static class NetStateBroadcastReceiver extends BroadcastReceiver {

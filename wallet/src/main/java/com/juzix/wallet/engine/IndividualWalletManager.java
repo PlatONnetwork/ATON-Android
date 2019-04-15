@@ -41,7 +41,7 @@ public class IndividualWalletManager {
             mWalletList.clear();
         }
 
-        ArrayList<IndividualWalletInfoEntity> walletInfoList = IndividualWalletInfoDao.getInstance().getWalletInfoList();
+        List<IndividualWalletInfoEntity> walletInfoList = IndividualWalletInfoDao.getWalletInfoList();
         for (IndividualWalletInfoEntity walletInfoEntity : walletInfoList) {
             try {
                 mWalletList.add(walletInfoEntity.buildWalletEntity());
@@ -133,8 +133,9 @@ public class IndividualWalletManager {
             }
             entity.setMnemonic(JZWalletUtil.encryptMnemonic(entity.getKey(), mnemonic, password));
             walletEntity.setWalletEntity(entity);
+            walletEntity.setNodeAddress(NodeManager.getInstance().getCurNodeAddress());
             mWalletList.add(walletEntity);
-            IndividualWalletInfoDao.getInstance().insertWalletInfo(walletEntity.buildWalletInfoEntity());
+            IndividualWalletInfoDao.insertWalletInfo(walletEntity.buildWalletInfoEntity());
             AppSettings.getInstance().setOperateMenuFlag(false);
             return CODE_OK;
         } catch (Exception exp) {
@@ -164,8 +165,9 @@ public class IndividualWalletManager {
             }
             entity.setMnemonic("");
             walletEntity.setWalletEntity(entity);
+            walletEntity.setNodeAddress(NodeManager.getInstance().getCurNodeAddress());
             mWalletList.add(walletEntity);
-            IndividualWalletInfoDao.getInstance().insertWalletInfo(walletEntity.buildWalletInfoEntity());
+            IndividualWalletInfoDao.insertWalletInfo(walletEntity.buildWalletInfoEntity());
             AppSettings.getInstance().setOperateMenuFlag(false);
             return CODE_OK;
         } catch (Exception exp) {
@@ -195,8 +197,9 @@ public class IndividualWalletManager {
             }
             entity.setMnemonic("");
             walletEntity.setWalletEntity(entity);
+            walletEntity.setNodeAddress(NodeManager.getInstance().getCurNodeAddress());
             mWalletList.add(walletEntity);
-            IndividualWalletInfoDao.getInstance().insertWalletInfo(walletEntity.buildWalletInfoEntity());
+            IndividualWalletInfoDao.insertWalletInfo(walletEntity.buildWalletInfoEntity());
             AppSettings.getInstance().setOperateMenuFlag(false);
             return CODE_OK;
         } catch (Exception exp) {
@@ -226,8 +229,9 @@ public class IndividualWalletManager {
             }
             entity.setMnemonic("");
             walletEntity.setWalletEntity(entity);
+            walletEntity.setNodeAddress(NodeManager.getInstance().getCurNodeAddress());
             mWalletList.add(walletEntity);
-            IndividualWalletInfoDao.getInstance().insertWalletInfo(walletEntity.buildWalletInfoEntity());
+            IndividualWalletInfoDao.insertWalletInfo(walletEntity.buildWalletInfoEntity());
             AppSettings.getInstance().setOperateMenuFlag(false);
             return CODE_OK;
         } catch (Exception exp) {
@@ -252,20 +256,20 @@ public class IndividualWalletManager {
                 break;
             }
         }
-        if (TextUtils.isEmpty(uuid)){
+        if (TextUtils.isEmpty(uuid)) {
             return false;
         }
-        return IndividualWalletInfoDao.getInstance().updateMnemonicWithUuid(uuid, "");
+        return IndividualWalletInfoDao.updateMnemonicWithUuid(uuid, "");
     }
 
     public boolean updateWalletName(IndividualWalletEntity wallet, String newName) {
         for (IndividualWalletEntity walletEntity : mWalletList) {
             if (wallet.getUuid().equals(walletEntity.getUuid())) {
                 walletEntity.setName(newName);
-                break;
+                return true;
             }
         }
-        return IndividualWalletInfoDao.getInstance().updateNameWithUuid(wallet.getUuid(), newName);
+        return false;
     }
 
     public IndividualWalletEntity getWalletByAddress(String address) {
@@ -287,7 +291,7 @@ public class IndividualWalletManager {
                 break;
             }
         }
-        return IndividualWalletInfoDao.getInstance().deleteWalletInfo(wallet.getUuid());
+        return IndividualWalletInfoDao.deleteWalletInfo(wallet.getUuid());
     }
 
     public boolean isValidWallet(IndividualWalletEntity walletEntity, String password) {

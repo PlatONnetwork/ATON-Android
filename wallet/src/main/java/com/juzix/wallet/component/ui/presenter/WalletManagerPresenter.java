@@ -3,9 +3,7 @@ package com.juzix.wallet.component.ui.presenter;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.WalletManagerContract;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
-import com.juzix.wallet.component.ui.view.AddNewAddressActivity;
 import com.juzix.wallet.component.ui.view.BackupMnemonicPhraseActivity;
-import com.juzix.wallet.component.ui.view.BackupWalletActivity;
 import com.juzix.wallet.component.ui.view.ManageIndividualWalletActivity;
 import com.juzix.wallet.component.ui.view.ManageSharedWalletActivity;
 import com.juzix.wallet.config.AppSettings;
@@ -26,8 +24,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
-import io.reactivex.Scheduler;
-import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
@@ -89,9 +85,9 @@ public class WalletManagerPresenter extends BasePresenter<WalletManagerContract.
                         updateTime += 10;
                         walletEntity.setUpdateTime(updateTime);
                         if (walletEntity instanceof IndividualWalletEntity){
-                            IndividualWalletInfoDao.getInstance().updateUpdateTimeWithUuid(walletEntity.getUuid(), updateTime);
+                            IndividualWalletInfoDao.updateUpdateTimeWithUuid(walletEntity.getUuid(), updateTime);
                         }else {
-                            SharedWalletInfoDao.getInstance().updateUpdateTimeWithUuid(walletEntity.getUuid(), updateTime);
+                            SharedWalletInfoDao.updateUpdateTimeWithUuid(walletEntity.getUuid(), updateTime);
                         }
                     }
                     return null;

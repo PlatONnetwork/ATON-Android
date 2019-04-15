@@ -11,6 +11,7 @@ import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.CreateIndividualWalletContract;
 import com.juzix.wallet.component.ui.view.BackupWalletActivity;
 import com.juzix.wallet.engine.IndividualWalletManager;
+import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.SharedWalletManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 
@@ -39,7 +40,7 @@ public class CreateIndividualWalletPresenter extends BasePresenter<CreateIndivid
             @Override
             public void run() {
                 String                 mnemonic     = IndividualWalletManager.getInstance().generateMnemonic();
-                IndividualWalletEntity walletEntity = new IndividualWalletEntity.Builder().build();
+                IndividualWalletEntity walletEntity = new IndividualWalletEntity.Builder().nodeAddress(NodeManager.getInstance().getCurNodeAddress()).build();
                 int                    code         = IndividualWalletManager.getInstance().createWalletWithMnemonic(walletEntity, mnemonic, name, password);
                 switch (code) {
                     case IndividualWalletManager.CODE_OK:

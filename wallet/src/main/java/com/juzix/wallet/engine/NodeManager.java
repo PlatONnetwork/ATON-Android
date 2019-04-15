@@ -1,24 +1,26 @@
 package com.juzix.wallet.engine;
 
 import com.juzix.wallet.app.Constants;
+import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.entity.NodeEntity;
-
-import org.reactivestreams.Publisher;
+import com.juzix.wallet.event.EventPublisher;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import io.reactivex.Single;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 
 /**
  * @author matrixelement
  */
 public class NodeManager {
 
-    private final static String[] DEFAULT_NODE_URL_LIST = new String[]{Constants.URL.WEB3J_URL};
+    private final static String TAG = NodeManager.class.getSimpleName();
+    private final static String[] DEFAULT_NODE_URL_LIST = new String[]{Constants.URL.URL_TEST_A, Constants.URL.URL_TEST_B};
 
     private NodeEntity curNode;
     private NodeService nodeService;
@@ -39,6 +41,10 @@ public class NodeManager {
         return curNode;
     }
 
+    public String getCurNodeAddress() {
+        return curNode == null ? null : curNode.getNodeAddress();
+    }
+
     public void setCurNode(NodeEntity curNode) {
         this.curNode = curNode;
     }
@@ -47,29 +53,24 @@ public class NodeManager {
 
         nodeService = new NodeService();
 
-        nodeService.getNodeList()
-                .toFlowable()
-                .flatMap(new Function<List<NodeEntity>, Publisher<NodeEntity>>() {
-                    @Override
-                    public Publisher<NodeEntity> apply(List<NodeEntity> nodeEntityList) throws Exception {
-                        if (nodeEntityList.isEmpty()) {
-                            return nodeService.insertNode(getDefaultNodeList()).flatMapPublisher(new Function<Boolean, Publisher<NodeEntity>>() {
-                                @Override
-                                public Publisher<NodeEntity> apply(Boolean aBoolean) throws Exception {
-                                    return getCheckedNode().toFlowable();
-                                }
-                            });
-                        } else {
-                            return getCheckedNode().toFlowable();
-                        }
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
+        nodeService
+                .insertNode(buildDefaultNodeList()).filter(new Predicate<Boolean>() {
+            @Override
+            public boolean test(Boolean aBoolean) throws Exception {
+                return aBoolean;
+            }
+        }).map(new Function<Boolean, NodeEntity>() {
+            @Override
+            public NodeEntity apply(Boolean aBoolean) throws Exception {
+                return getCheckedNode().blockingGet();
+            }
+        }).toSingle()
+                .compose(new SchedulersTransformer())
                 .subscribe(new Consumer<NodeEntity>() {
-
                     @Override
                     public void accept(NodeEntity nodeEntity) throws Exception {
                         switchNode(nodeEntity);
+                        EventPublisher.getInstance().sendNodeChangedEvent();
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -100,25 +101,24 @@ public class NodeManager {
         return nodeService.deleteNode(nodeEntity.getId());
     }
 
-    public void updateNode(NodeEntity nodeEntity, boolean isChecked) {
-        nodeService.updateNode(nodeEntity.getId(), isChecked)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(Boolean aBoolean) throws Exception {
-                        if (aBoolean.booleanValue() && isChecked) {
-                            NodeManager.getInstance().switchNode(nodeEntity);
-                        }
-                    }
-                });
+    public Single<Boolean> updateNode(NodeEntity nodeEntity, boolean isChecked) {
+        return nodeService.updateNode(nodeEntity.getId(), isChecked);
     }
 
-    private List<NodeEntity> getDefaultNodeList() {
+    private List<NodeEntity> buildDefaultNodeList() {
 
         List<NodeEntity> nodeInfoEntityList = new ArrayList<>();
 
+        NodeEntity nodeEntity = null;
+
         for (int i = 0; i < DEFAULT_NODE_URL_LIST.length; i++) {
-            nodeInfoEntityList.add(new NodeEntity.Builder().nodeAddress(DEFAULT_NODE_URL_LIST[i]).isDefaultNode(true).isChecked(i == 0).isMainNetworkNode(false).build());
+            nodeEntity = new NodeEntity.Builder()
+                    .id(UUID.randomUUID().hashCode())
+                    .nodeAddress(DEFAULT_NODE_URL_LIST[i])
+                    .isDefaultNode(true)
+                    .isChecked(i == 0)
+                    .build();
+            nodeInfoEntityList.add(nodeEntity);
         }
         return nodeInfoEntityList;
     }

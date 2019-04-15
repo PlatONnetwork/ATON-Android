@@ -2,34 +2,37 @@ package com.juzix.wallet.db.sqlite;
 
 import com.juzix.wallet.db.entity.OwnerInfoEntity;
 import com.juzix.wallet.db.entity.SharedWalletInfoEntity;
+import com.juzix.wallet.engine.NodeManager;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 
-public class SharedWalletInfoDao extends BaseDao {
+public class SharedWalletInfoDao {
 
-    private SharedWalletInfoDao() {
-        super();
-    }
+    public static List<SharedWalletInfoEntity> getWalletInfoList() {
 
-    public static SharedWalletInfoDao getInstance() {
-        return InstanceHolder.INSTANCE;
-    }
-
-    public ArrayList<SharedWalletInfoEntity> getWalletInfoList() {
-
-        ArrayList<SharedWalletInfoEntity> list  = new ArrayList<>();
-        Realm                                 realm = null;
+        List<SharedWalletInfoEntity> list = new ArrayList<>();
+        Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
-            RealmResults<SharedWalletInfoEntity> results = realm.where(SharedWalletInfoEntity.class).findAll();
-            list.addAll(realm.copyFromRealm(results));
-        } catch (Exception exp){
+            realm.beginTransaction();
+            RealmResults<SharedWalletInfoEntity> results = realm.where(SharedWalletInfoEntity.class)
+                    .equalTo("nodeAddress", NodeManager.getInstance().getCurNodeAddress())
+                    .findAll();
+            if (results != null) {
+                list = realm.copyFromRealm(results);
+            }
+            realm.commitTransaction();
+        } catch (Exception exp) {
             exp.printStackTrace();
-        }finally {
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
+        } finally {
             if (realm != null) {
                 realm.close();
             }
@@ -37,7 +40,7 @@ public class SharedWalletInfoDao extends BaseDao {
         return list;
     }
 
-    public boolean insertWalletInfo(SharedWalletInfoEntity entity) {
+    public static boolean insertWalletInfo(SharedWalletInfoEntity entity) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
@@ -49,15 +52,15 @@ public class SharedWalletInfoDao extends BaseDao {
             if (realm != null) {
                 realm.cancelTransaction();
             }
-            return false;
         } finally {
             if (realm != null) {
                 realm.close();
             }
         }
+        return false;
     }
 
-    public boolean insertWalletInfoList(ArrayList<SharedWalletInfoEntity> list) {
+    public static boolean insertWalletInfoList(ArrayList<SharedWalletInfoEntity> list) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
@@ -65,92 +68,124 @@ public class SharedWalletInfoDao extends BaseDao {
             realm.copyToRealm(list);
             realm.commitTransaction();
             return true;
-        } catch (Exception e) {
+        } catch (Exception exp) {
             if (realm != null) {
                 realm.cancelTransaction();
             }
-            return false;
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
         }
+        return false;
     }
 
-    public boolean updateOwnerNameWithUuid(String uuid, ArrayList<OwnerInfoEntity> entityArrayList) {
+    public static boolean updateOwnerNameWithUuid(String uuid, ArrayList<OwnerInfoEntity> entityArrayList) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
             RealmList<OwnerInfoEntity> entityRealmList = new RealmList<>();
-            for (OwnerInfoEntity entity : entityArrayList){
+            for (OwnerInfoEntity entity : entityArrayList) {
                 entityRealmList.add(realm.copyToRealmOrUpdate(entity));
             }
             realm.where(SharedWalletInfoEntity.class)
                     .equalTo("uuid", uuid)
+                    .and()
+                    .equalTo("nodeAddress", NodeManager.getInstance().getCurNodeAddress())
                     .findFirst()
                     .setOwner(entityRealmList);
             realm.commitTransaction();
             return true;
-        } catch (Exception e) {
+        } catch (Exception exp) {
             if (realm != null) {
                 realm.cancelTransaction();
             }
-            return false;
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
         }
+        return false;
     }
 
-    public boolean updateNameWithUuid(String uuid, String name) {
+    public static boolean updateNameWithUuid(String uuid, String name) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
             realm.where(SharedWalletInfoEntity.class)
                     .equalTo("uuid", uuid)
+                    .and()
+                    .equalTo("nodeAddress", NodeManager.getInstance().getCurNodeAddress())
                     .findFirst()
                     .setName(name);
             realm.commitTransaction();
             return true;
-        } catch (Exception e) {
+        } catch (Exception exp) {
             if (realm != null) {
                 realm.cancelTransaction();
             }
-            return false;
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
         }
+        return false;
     }
 
-    public boolean updateUpdateTimeWithUuid(String uuid, long updateTime) {
+    public static boolean updateUpdateTimeWithUuid(String uuid, long updateTime) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
             realm.where(SharedWalletInfoEntity.class)
                     .equalTo("uuid", uuid)
+                    .and()
+                    .equalTo("nodeAddress", NodeManager.getInstance().getCurNodeAddress())
                     .findFirst()
                     .setUpdateTime(updateTime);
             realm.commitTransaction();
             return true;
-        } catch (Exception e) {
+        } catch (Exception exp) {
             if (realm != null) {
                 realm.cancelTransaction();
             }
-            return false;
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
         }
+        return false;
     }
 
-    public boolean deleteWalletInfo(String uuid) {
+    public static boolean deleteWalletInfo(String uuid) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
-            realm.where(SharedWalletInfoEntity.class).equalTo("uuid", uuid).findAll().deleteFirstFromRealm();
+            realm.where(SharedWalletInfoEntity.class)
+                    .equalTo("uuid", uuid)
+                    .and()
+                    .equalTo("nodeAddress", NodeManager.getInstance().getCurNodeAddress())
+                    .findAll()
+                    .deleteFirstFromRealm();
             realm.commitTransaction();
             return true;
-        } catch (Exception e) {
+        } catch (Exception exp) {
             if (realm != null) {
                 realm.cancelTransaction();
             }
-            return false;
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
         }
+
+        return false;
     }
 
-    public boolean deleteAll() {
+    public static boolean deleteAll() {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
@@ -158,15 +193,17 @@ public class SharedWalletInfoDao extends BaseDao {
             realm.delete(SharedWalletInfoEntity.class);
             realm.commitTransaction();
             return true;
-        } catch (Exception e) {
+        } catch (Exception exp) {
             if (realm != null) {
                 realm.cancelTransaction();
             }
-            return false;
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
         }
+
+        return false;
     }
 
-    private final static class InstanceHolder {
-        private final static SharedWalletInfoDao INSTANCE = new SharedWalletInfoDao();
-    }
 }

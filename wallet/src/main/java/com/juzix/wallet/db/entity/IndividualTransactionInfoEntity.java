@@ -48,6 +48,10 @@ public class IndividualTransactionInfoEntity extends RealmObject implements Clon
      * 交易金额
      */
     protected double value;
+    /**
+     * 节点地址
+     */
+    private String nodeAddress;
 
     public IndividualTransactionInfoEntity() {
 
@@ -63,6 +67,7 @@ public class IndividualTransactionInfoEntity extends RealmObject implements Clon
         setMemo(builder.memo);
         setCompleted(builder.completed);
         setValue(builder.value);
+        setNodeAddress(builder.nodeAddress);
     }
 
     public String getUuid() {
@@ -145,6 +150,14 @@ public class IndividualTransactionInfoEntity extends RealmObject implements Clon
         return value;
     }
 
+    public String getNodeAddress() {
+        return nodeAddress;
+    }
+
+    public void setNodeAddress(String nodeAddress) {
+        this.nodeAddress = nodeAddress;
+    }
+
     public static final class Builder {
         private String uuid;
         private String hash;
@@ -156,6 +169,7 @@ public class IndividualTransactionInfoEntity extends RealmObject implements Clon
         private long blockNumber;
         private boolean completed;
         private double value;
+        private String nodeAddress;
 
         public Builder() {
         }
@@ -210,6 +224,11 @@ public class IndividualTransactionInfoEntity extends RealmObject implements Clon
             return this;
         }
 
+        public Builder nodeAddress(String val) {
+            nodeAddress = val;
+            return this;
+        }
+
         public IndividualTransactionInfoEntity build() {
             return new IndividualTransactionInfoEntity(this);
         }
@@ -224,6 +243,7 @@ public class IndividualTransactionInfoEntity extends RealmObject implements Clon
                 .memo(memo)
                 .value(value)
                 .completed(completed)
+                .nodeAddress(nodeAddress)
                 .build();
     }
 }

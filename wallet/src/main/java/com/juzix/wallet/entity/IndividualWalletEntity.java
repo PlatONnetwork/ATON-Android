@@ -33,6 +33,7 @@ public class IndividualWalletEntity extends WalletEntity implements Parcelable, 
         setBalance(builder.balance);
         setAvatar(builder.avatar);
         setMnemonic(builder.mnemonic);
+        setNodeAddress(builder.nodeAddress);
     }
 
     protected IndividualWalletEntity(Parcel in) {
@@ -46,6 +47,7 @@ public class IndividualWalletEntity extends WalletEntity implements Parcelable, 
         balance = in.readDouble();
         avatar = in.readString();
         mnemonic = in.readString();
+        nodeAddress = in.readString();
     }
 
     @Override
@@ -65,6 +67,7 @@ public class IndividualWalletEntity extends WalletEntity implements Parcelable, 
         dest.writeDouble(balance);
         dest.writeString(avatar);
         dest.writeString(mnemonic);
+        dest.writeString(nodeAddress);
     }
 
     public static final Creator<IndividualWalletEntity> CREATOR = new Creator<IndividualWalletEntity>() {
@@ -152,7 +155,15 @@ public class IndividualWalletEntity extends WalletEntity implements Parcelable, 
         this.mnemonic = mnemonic;
     }
 
-    public void setWalletEntity(IndividualWalletEntity walletEntity){
+    public String getNodeAddress() {
+        return nodeAddress;
+    }
+
+    public void setNodeAddress(String nodeAddress) {
+        this.nodeAddress = nodeAddress;
+    }
+
+    public void setWalletEntity(IndividualWalletEntity walletEntity) {
         setUuid(walletEntity.uuid);
         setKey(walletEntity.key);
         setName(walletEntity.name);
@@ -163,6 +174,7 @@ public class IndividualWalletEntity extends WalletEntity implements Parcelable, 
         setBalance(walletEntity.balance);
         setAvatar(walletEntity.avatar);
         setMnemonic(walletEntity.mnemonic);
+        setNodeAddress(walletEntity.nodeAddress);
     }
 
     public IndividualWalletInfoEntity buildWalletInfoEntity() {
@@ -174,8 +186,9 @@ public class IndividualWalletEntity extends WalletEntity implements Parcelable, 
         builder.keystorePath(getKeystorePath());
         builder.createTime(getCreateTime());
         builder.updateTime(getUpdateTime());
-        builder.avatar(avatar);
-        builder.mnemonic(mnemonic);
+        builder.avatar(getAvatar());
+        builder.mnemonic(getMnemonic());
+        builder.nodeAddress(getNodeAddress());
         return builder.build();
     }
 
@@ -190,6 +203,7 @@ public class IndividualWalletEntity extends WalletEntity implements Parcelable, 
         private double balance;
         private String avatar;
         private String mnemonic;
+        private String nodeAddress;
 
         public Builder() {
         }
@@ -204,6 +218,7 @@ public class IndividualWalletEntity extends WalletEntity implements Parcelable, 
             updateTime = entity.updateTime;
             balance = entity.balance;
             avatar = entity.avatar;
+            nodeAddress = entity.nodeAddress;
         }
 
         public Builder uuid(String val) {
@@ -256,6 +271,11 @@ public class IndividualWalletEntity extends WalletEntity implements Parcelable, 
             return this;
         }
 
+        public Builder nodeAddress(String val) {
+            nodeAddress = val;
+            return this;
+        }
+
         public IndividualWalletEntity build() {
             return new IndividualWalletEntity(this);
         }
@@ -263,12 +283,14 @@ public class IndividualWalletEntity extends WalletEntity implements Parcelable, 
 
     @Override
     public String toString() {
-        return "WalletEntity{" +
-                "uuid='" + uuid + '\'' +
-                ", key='" + key + '\'' +
+        return "IndividualWalletEntity{" +
+                "key='" + key + '\'' +
+                ", keystorePath='" + keystorePath + '\'' +
+                ", mnemonic='" + mnemonic + '\'' +
+                ", nodeAddress='" + nodeAddress + '\'' +
+                ", uuid='" + uuid + '\'' +
                 ", name='" + name + '\'' +
                 ", address='" + address + '\'' +
-                ", keystorePath='" + keystorePath + '\'' +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 ", balance=" + balance +

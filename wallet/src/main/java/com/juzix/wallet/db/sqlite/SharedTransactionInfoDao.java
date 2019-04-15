@@ -1,6 +1,7 @@
 package com.juzix.wallet.db.sqlite;
 
 import com.juzix.wallet.db.entity.SharedTransactionInfoEntity;
+import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.entity.SharedTransactionEntity;
 
 import java.util.ArrayList;
@@ -15,16 +16,7 @@ import io.realm.Sort;
  */
 public class SharedTransactionInfoDao {
 
-    private final static String TAG = SharedTransactionInfoDao.class.getSimpleName();
-
-    private SharedTransactionInfoDao() {
-    }
-
-    public static SharedTransactionInfoDao getInstance() {
-        return InstanceHolder.INSTANCE;
-    }
-
-    public boolean insertTransaction(SharedTransactionInfoEntity transactionEntity) {
+    public static boolean insertTransaction(SharedTransactionInfoEntity transactionEntity) {
 
         Realm realm = null;
         try {
@@ -46,7 +38,7 @@ public class SharedTransactionInfoDao {
         return false;
     }
 
-    public boolean insertTransaction(List<SharedTransactionInfoEntity> entities) {
+    public static boolean insertTransaction(List<SharedTransactionInfoEntity> entities) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
@@ -63,25 +55,37 @@ public class SharedTransactionInfoDao {
         }
     }
 
-    public List<SharedTransactionInfoEntity> getSharedTransactionListByTransactionType() {
+    public static List<SharedTransactionInfoEntity> getSharedTransactionListByTransactionType() {
         Realm realm = null;
+        List<SharedTransactionInfoEntity> sharedTransactionInfoEntityList = null;
         try {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
-            List<SharedTransactionInfoEntity> list = realm.where(SharedTransactionInfoEntity.class).equalTo("transactionType", SharedTransactionEntity.TransactionType.SEND_TRANSACTION.getValue()).findAll();
-            List<SharedTransactionInfoEntity> sharedTransactionInfoEntityList = realm.copyFromRealm(list);
+            List<SharedTransactionInfoEntity> list = realm.where(SharedTransactionInfoEntity.class)
+                    .beginGroup()
+                    .equalTo("transactionType", SharedTransactionEntity.TransactionType.SEND_TRANSACTION.getValue())
+                    .and()
+                    .equalTo("nodeAddress", NodeManager.getInstance().getCurNodeAddress())
+                    .endGroup()
+                    .findAll();
+            if (list != null) {
+                sharedTransactionInfoEntityList = realm.copyFromRealm(list);
+            }
             realm.commitTransaction();
-            return sharedTransactionInfoEntityList;
         } catch (Exception e) {
             e.printStackTrace();
             if (realm != null) {
+                realm.cancelTransaction();
+            }
+        } finally {
+            if (realm != null) {
                 realm.close();
             }
-            return new ArrayList<>();
         }
+        return sharedTransactionInfoEntityList;
     }
 
-    public SharedTransactionInfoEntity getSharedTransaction(String contractAddress, String transactionId, SharedTransactionEntity.TransactionType transactionType) {
+    public static SharedTransactionInfoEntity getSharedTransaction(String contractAddress, String transactionId, SharedTransactionEntity.TransactionType transactionType) {
         Realm realm = null;
         SharedTransactionInfoEntity transactionInfoEntity = null;
         try {
@@ -94,15 +98,20 @@ public class SharedTransactionInfoDao {
                     .equalTo("transactionId", transactionId)
                     .and()
                     .equalTo("transactionType", transactionType.getValue())
+                    .and()
+                    .equalTo("nodeAddress", NodeManager.getInstance().getCurNodeAddress())
                     .endGroup()
                     .findFirst();
             if (sharedTransactionInfoEntity != null) {
                 transactionInfoEntity = realm.copyFromRealm(sharedTransactionInfoEntity);
             }
             realm.commitTransaction();
-            return transactionInfoEntity;
         } catch (Exception e) {
             e.printStackTrace();
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
+        } finally {
             if (realm != null) {
                 realm.close();
             }
@@ -110,7 +119,7 @@ public class SharedTransactionInfoDao {
         return transactionInfoEntity;
     }
 
-    public String getSharedTransactionUUID(String contractAddress, String transactionId, SharedTransactionEntity.TransactionType transactionType) {
+    public static String getSharedTransactionUUID(String contractAddress, String transactionId, SharedTransactionEntity.TransactionType transactionType) {
         Realm realm = null;
         String uuid = null;
         try {
@@ -123,15 +132,20 @@ public class SharedTransactionInfoDao {
                     .equalTo("transactionId", transactionId)
                     .and()
                     .equalTo("transactionType", transactionType.getValue())
+                    .and()
+                    .equalTo("nodeAddress", NodeManager.getInstance().getCurNodeAddress())
                     .endGroup()
                     .findFirst();
             if (sharedTransactionInfoEntity != null) {
                 uuid = realm.copyFromRealm(sharedTransactionInfoEntity).getUuid();
             }
             realm.commitTransaction();
-            return uuid;
         } catch (Exception e) {
             e.printStackTrace();
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
+        } finally {
             if (realm != null) {
                 realm.close();
             }
@@ -139,14 +153,20 @@ public class SharedTransactionInfoDao {
         return uuid;
     }
 
-    public ArrayList<SharedTransactionInfoEntity> getTransactionInfoList() {
+    public static List<SharedTransactionInfoEntity> getTransactionInfoList() {
 
-        ArrayList<SharedTransactionInfoEntity> list = new ArrayList<>();
+        List<SharedTransactionInfoEntity> list = new ArrayList<>();
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
-            RealmResults<SharedTransactionInfoEntity> results = realm.where(SharedTransactionInfoEntity.class).findAll();
-            list.addAll(realm.copyFromRealm(results));
+            realm.beginTransaction();
+            RealmResults<SharedTransactionInfoEntity> results = realm.where(SharedTransactionInfoEntity.class)
+                    .equalTo("nodeAddress", NodeManager.getInstance().getCurNodeAddress())
+                    .findAll();
+            if (results != null) {
+                list = realm.copyFromRealm(results);
+            }
+            realm.commitTransaction();
         } catch (Exception exp) {
             exp.printStackTrace();
             if (realm != null) {
@@ -161,18 +181,29 @@ public class SharedTransactionInfoDao {
     }
 
 
-    public List<SharedTransactionInfoEntity> getTransactionListByContractAddress(String[] contractAddressArray) {
-        ArrayList<SharedTransactionInfoEntity> list = new ArrayList<>();
+    public static List<SharedTransactionInfoEntity> getTransactionListByContractAddress(String[] contractAddressArray) {
+        List<SharedTransactionInfoEntity> list = new ArrayList<>();
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
             RealmResults<SharedTransactionInfoEntity> results = realm.where(SharedTransactionInfoEntity.class)
+                    .beginGroup()
                     .in("contractAddress", contractAddressArray)
+                    .and()
+                    .equalTo("nodeAddress", NodeManager.getInstance().getCurNodeAddress())
+                    .endGroup()
                     .sort("createTime", Sort.DESCENDING)
                     .findAll();
-            list.addAll(realm.copyFromRealm(results));
-        } catch (Exception exp) {
-            exp.printStackTrace();
+            if (results != null) {
+                list = realm.copyFromRealm(results);
+            }
+            realm.commitTransaction();
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
         } finally {
             if (realm != null) {
                 realm.close();
@@ -182,19 +213,28 @@ public class SharedTransactionInfoDao {
         return list;
     }
 
-    public List<SharedTransactionInfoEntity> getTransactionListByContractAddress(String contractAddress) {
-        ArrayList<SharedTransactionInfoEntity> list = new ArrayList<>();
+    public static List<SharedTransactionInfoEntity> getTransactionListByContractAddress(String contractAddress) {
+        List<SharedTransactionInfoEntity> list = new ArrayList<>();
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
             RealmResults<SharedTransactionInfoEntity> results = realm.where(SharedTransactionInfoEntity.class)
+                    .beginGroup()
                     .equalTo("contractAddress", contractAddress)
                     .or()
                     .equalTo("toAddress", contractAddress)
+                    .endGroup()
+                    .and()
+                    .equalTo("nodeAddress", NodeManager.getInstance().getCurNodeAddress())
                     .findAll();
-            list.addAll(realm.copyFromRealm(results));
-        } catch (Exception exp) {
-            exp.printStackTrace();
+            if (results != null) {
+                list = realm.copyFromRealm(results);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
         } finally {
             if (realm != null) {
                 realm.close();
@@ -204,30 +244,44 @@ public class SharedTransactionInfoDao {
         return list;
     }
 
-    public SharedTransactionInfoEntity getTransactionByTransactionId(String transactionId) {
+    public static SharedTransactionInfoEntity getTransactionByTransactionId(String transactionId) {
         Realm realm = null;
+        SharedTransactionInfoEntity transactionInfoEntity = null;
         try {
             realm = Realm.getDefaultInstance();
-            SharedTransactionInfoEntity sharedTransactionInfoEntity = realm.where(SharedTransactionInfoEntity.class).equalTo("transactionId", transactionId).findFirst();
+            realm.beginTransaction();
+            SharedTransactionInfoEntity sharedTransactionInfoEntity = realm.where(SharedTransactionInfoEntity.class)
+                    .equalTo("transactionId", transactionId)
+                    .and()
+                    .equalTo("nodeAddress", NodeManager.getInstance().getCurNodeAddress())
+                    .findFirst();
             if (sharedTransactionInfoEntity != null) {
-                return realm.copyFromRealm(sharedTransactionInfoEntity);
+                transactionInfoEntity = realm.copyFromRealm(sharedTransactionInfoEntity);
             }
+            realm.commitTransaction();
         } catch (Exception e) {
             e.printStackTrace();
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
         } finally {
             if (realm != null) {
                 realm.close();
             }
         }
-        return null;
+        return transactionInfoEntity;
     }
 
-    public String getSharedTransactionHashByUUID(String uuid) {
+    public static String getSharedTransactionHashByUUID(String uuid) {
         Realm realm = null;
         String transactionHash = null;
         try {
             realm = Realm.getDefaultInstance();
-            SharedTransactionInfoEntity sharedTransactionInfoEntity = realm.where(SharedTransactionInfoEntity.class).equalTo("uuid", uuid).findFirst();
+            SharedTransactionInfoEntity sharedTransactionInfoEntity = realm.where(SharedTransactionInfoEntity.class)
+                    .equalTo("uuid", uuid)
+                    .and()
+                    .equalTo("nodeAddress", NodeManager.getInstance().getCurNodeAddress())
+                    .findFirst();
             if (sharedTransactionInfoEntity != null) {
                 transactionHash = realm.copyFromRealm(sharedTransactionInfoEntity).getHash();
             }
@@ -244,13 +298,18 @@ public class SharedTransactionInfoDao {
         return transactionHash;
     }
 
-    public SharedTransactionInfoEntity getTransactionByUUID(String uuid) {
+    public static SharedTransactionInfoEntity getTransactionByUUID(String uuid) {
         Realm realm = null;
+        SharedTransactionInfoEntity transactionInfoEntity = null;
         try {
             realm = Realm.getDefaultInstance();
-            SharedTransactionInfoEntity sharedTransactionInfoEntity = realm.where(SharedTransactionInfoEntity.class).equalTo("uuid", uuid).findFirst();
+            SharedTransactionInfoEntity sharedTransactionInfoEntity = realm.where(SharedTransactionInfoEntity.class)
+                    .equalTo("uuid", uuid)
+                    .and()
+                    .equalTo("nodeAddress", NodeManager.getInstance().getCurNodeAddress())
+                    .findFirst();
             if (sharedTransactionInfoEntity != null) {
-                return realm.copyFromRealm(sharedTransactionInfoEntity);
+                transactionInfoEntity = realm.copyFromRealm(sharedTransactionInfoEntity);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -262,16 +321,18 @@ public class SharedTransactionInfoDao {
                 realm.close();
             }
         }
-        return null;
+        return transactionInfoEntity;
     }
 
-    public boolean updateReadWithContractAddress(String contractAddress, boolean read) {
+    public static boolean updateReadWithContractAddress(String contractAddress, boolean read) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
             RealmResults<SharedTransactionInfoEntity> realmResults = realm.where(SharedTransactionInfoEntity.class)
                     .equalTo("contractAddress", contractAddress)
+                    .and()
+                    .equalTo("nodeAddress", NodeManager.getInstance().getCurNodeAddress())
                     .findAll();
             for (int i = 0; i < realmResults.size(); i++) {
                 realmResults.get(i).setRead(read);
@@ -279,15 +340,19 @@ public class SharedTransactionInfoDao {
             realm.commitTransaction();
             return true;
         } catch (Exception e) {
-            return false;
+            e.printStackTrace();
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
         } finally {
             if (realm != null) {
                 realm.close();
             }
         }
+        return false;
     }
 
-    public SharedTransactionInfoEntity updateReadWithUUID(String uuid, boolean read) {
+    public static SharedTransactionInfoEntity updateReadWithUUID(String uuid, boolean read) {
         Realm realm = null;
         SharedTransactionInfoEntity sharedTransactionInfoEntity = null;
         try {
@@ -295,9 +360,13 @@ public class SharedTransactionInfoDao {
             realm.beginTransaction();
             SharedTransactionInfoEntity transactionInfoEntity = realm.where(SharedTransactionInfoEntity.class)
                     .equalTo("uuid", uuid)
+                    .and()
+                    .equalTo("nodeAddress", NodeManager.getInstance().getCurNodeAddress())
                     .findFirst();
-            transactionInfoEntity.setRead(read);
-            sharedTransactionInfoEntity = realm.copyFromRealm(transactionInfoEntity);
+            if (transactionInfoEntity != null) {
+                transactionInfoEntity.setRead(read);
+                sharedTransactionInfoEntity = realm.copyFromRealm(transactionInfoEntity);
+            }
             realm.commitTransaction();
         } catch (Exception e) {
             e.printStackTrace();
@@ -314,20 +383,27 @@ public class SharedTransactionInfoDao {
     }
 
 
-    public boolean hasUnRead() {
+    public static boolean hasUnRead() {
         long count = 0;
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
             count = realm.where(SharedTransactionInfoEntity.class)
-                    .equalTo("read", false).count();
+                    .equalTo("read", false)
+                    .and()
+                    .equalTo("nodeAddress", NodeManager.getInstance().getCurNodeAddress())
+                    .count();
             realm.commitTransaction();
         } catch (Exception e) {
+            e.printStackTrace();
             if (realm != null) {
                 realm.cancelTransaction();
             }
-            return false;
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
         }
         return count > 0;
     }
@@ -337,7 +413,7 @@ public class SharedTransactionInfoDao {
      *
      * @return
      */
-    public boolean hasUnreadTransactionByContractAddress(String contractAddress) {
+    public static boolean hasUnreadTransactionByContractAddress(String contractAddress) {
         Realm realm = null;
         long unreadCount = 0;
         try {
@@ -350,6 +426,7 @@ public class SharedTransactionInfoDao {
                     .equalTo("toAddress", contractAddress)
                     .endGroup()
                     .beginGroup()
+                    .equalTo("nodeAddress", NodeManager.getInstance().getCurNodeAddress())
                     .and()
                     .equalTo("read", false)
                     .endGroup()
@@ -360,12 +437,11 @@ public class SharedTransactionInfoDao {
             if (realm != null) {
                 realm.cancelTransaction();
             }
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
         }
         return unreadCount > 0;
     }
-
-    private static class InstanceHolder {
-        private static final SharedTransactionInfoDao INSTANCE = new SharedTransactionInfoDao();
-    }
-
 }

@@ -28,7 +28,7 @@ public class IndividualVoteDetailPresenter extends BasePresenter<IndividualVoteD
                 public void run() {
                     Message msg = mHandler.obtainMessage();
                     msg.what = MSG_UPDATE_TRANSACTIONS;
-                    SingleVoteInfoEntity voteInfoEntity = SingleVoteInfoDao.getInstance().getTransactionByUuid(getView().getTransactionUuidFromIntent());
+                    SingleVoteInfoEntity voteInfoEntity = SingleVoteInfoDao.getTransactionByUuid(getView().getTransactionUuidFromIntent());
                     if (voteInfoEntity != null) {
                         String candidateId = voteInfoEntity.getCandidateId();
                         if (!candidateId.startsWith("0x")) {

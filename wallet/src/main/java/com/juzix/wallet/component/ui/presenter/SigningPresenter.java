@@ -206,8 +206,7 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
                 .fromCallable(new Callable<BigInteger>() {
                     @Override
                     public BigInteger call() throws Exception {
-                        BigInteger gasPrice = Web3jManager.getInstance().getWeb3j().ethGasPrice().send().getGasPrice();
-                        return gasPrice;
+                        return Web3jManager.getInstance().getWeb3j().ethGasPrice().send().getGasPrice();
                     }
                 })
                 .compose(new SchedulersTransformer())

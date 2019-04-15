@@ -35,7 +35,7 @@ public class TicketInfoEntity extends RealmObject implements Cloneable {
     private long blockNumber;
 
     /**
-     *选票状态（1->正常，2->被选中，3->过期，4->掉榜）
+     * 选票状态（1->正常，2->被选中，3->过期，4->掉榜）
      */
     private int state;
 
@@ -48,8 +48,12 @@ public class TicketInfoEntity extends RealmObject implements Cloneable {
      * 单次投票id
      */
     private String transactionId;
+    /**
+     * 节点地址
+     */
+    private String nodeAddress;
 
-    public TicketInfoEntity(){
+    public TicketInfoEntity() {
 
     }
 
@@ -63,6 +67,7 @@ public class TicketInfoEntity extends RealmObject implements Cloneable {
         setState(builder.state);
         setRBlockNumber(builder.rBlockNumber);
         setTransactionId(builder.transactionId);
+        setNodeAddress(builder.nodeAddress);
     }
 
     public String getUuid() {
@@ -137,16 +142,25 @@ public class TicketInfoEntity extends RealmObject implements Cloneable {
         this.transactionId = transactionId;
     }
 
+    public String getNodeAddress() {
+        return nodeAddress;
+    }
+
+    public void setNodeAddress(String nodeAddress) {
+        this.nodeAddress = nodeAddress;
+    }
+
     public static final class Builder {
         private String uuid;
         private String ticketId;
         private String owner;
         private String deposit;
         private String candidateId;
-        private long   blockNumber;
-        private int    state;
-        private long   rBlockNumber;
+        private long blockNumber;
+        private int state;
+        private long rBlockNumber;
         private String transactionId;
+        private String nodeAddress;
 
         public Builder() {
         }
@@ -193,6 +207,11 @@ public class TicketInfoEntity extends RealmObject implements Cloneable {
 
         public Builder transactionUuid(String transactionUuid) {
             this.transactionId = transactionUuid;
+            return this;
+        }
+
+        public Builder nodeAddress(String nodeAddress) {
+            this.nodeAddress = nodeAddress;
             return this;
         }
 

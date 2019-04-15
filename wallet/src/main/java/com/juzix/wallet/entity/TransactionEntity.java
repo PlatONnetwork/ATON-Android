@@ -53,6 +53,8 @@ public abstract class TransactionEntity implements Comparable<TransactionEntity>
      */
     protected String memo;
 
+    protected String nodeAddress;
+
     public TransactionEntity() {
     }
 
@@ -158,6 +160,14 @@ public abstract class TransactionEntity implements Comparable<TransactionEntity>
 
     public void setMemo(String memo) {
         this.memo = memo;
+    }
+
+    public String getNodeAddress() {
+        return nodeAddress;
+    }
+
+    public void setNodeAddress(String nodeAddress) {
+        this.nodeAddress = nodeAddress;
     }
 
     public boolean isReceiver(String walletAddress) {

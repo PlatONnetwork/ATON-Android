@@ -90,7 +90,7 @@ public class TransactionRecordsPresenter extends BasePresenter<TransactionRecord
                     @Override
                     public Publisher<TransactionEntity> apply(Long latestBlockNumbe) throws Exception {
                         return Flowable
-                                .just(IndividualTransactionInfoDao.getInstance().getTransactionList())
+                                .just(IndividualTransactionInfoDao.getTransactionList())
                                 .flatMap(new Function<List<IndividualTransactionInfoEntity>, Publisher<IndividualTransactionInfoEntity>>() {
                                     @Override
                                     public Publisher<IndividualTransactionInfoEntity> apply(List<IndividualTransactionInfoEntity> individualTransactionInfoEntities) throws Exception {
@@ -141,7 +141,7 @@ public class TransactionRecordsPresenter extends BasePresenter<TransactionRecord
         return Single.fromCallable(new Callable<List<VoteTransactionEntity>>() {
             @Override
             public List<VoteTransactionEntity> call() throws Exception {
-                List<SingleVoteInfoEntity> singleVoteInfoEntities = SingleVoteInfoDao.getInstance().getTransactionList();
+                List<SingleVoteInfoEntity> singleVoteInfoEntities = SingleVoteInfoDao.getTransactionList();
                 List<VoteTransactionEntity> transactionEntityList = new ArrayList<>();
                 for (SingleVoteInfoEntity voteInfoEntity : singleVoteInfoEntities){
                     VoteTransactionEntity entity = new VoteTransactionEntity.Builder(voteInfoEntity.getUuid(), voteInfoEntity.getCreateTime(), voteInfoEntity.getWalletName())

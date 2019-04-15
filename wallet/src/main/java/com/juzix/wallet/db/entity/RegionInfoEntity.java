@@ -13,10 +13,14 @@ public class RegionInfoEntity extends RealmObject {
     @JSONField(name = "query")
     private String ip;
     private String countryCode;
-    private long   updateTime;
+    private long updateTime;
     private String countryEn;
     private String countryZh;
     private String countryPinyin;
+    /**
+     * 节点地址
+     */
+    private String nodeAddress;
 
     public RegionInfoEntity() {
 
@@ -29,6 +33,7 @@ public class RegionInfoEntity extends RealmObject {
         setCountryEn(builder.countryEn);
         setCountryZh(builder.countryZh);
         setCountryPinyin(builder.countryPinyin);
+        setNodeAddress(builder.nodeAddress);
     }
 
     public String getIp() {
@@ -79,21 +84,24 @@ public class RegionInfoEntity extends RealmObject {
         this.countryPinyin = countryPinyin;
     }
 
+    public String getNodeAddress() {
+        return nodeAddress;
+    }
+
+    public void setNodeAddress(String nodeAddress) {
+        this.nodeAddress = nodeAddress;
+    }
+
     public static final class Builder {
-        private String uuid;
         private String ip;
         private String countryCode;
-        private long   updateTime;
+        private long updateTime;
         private String countryEn;
         private String countryZh;
         private String countryPinyin;
+        private String nodeAddress;
 
         public Builder() {
-        }
-
-        public Builder uuid(String uuid) {
-            this.uuid = uuid;
-            return this;
         }
 
         public Builder ip(String ip) {
@@ -123,6 +131,11 @@ public class RegionInfoEntity extends RealmObject {
 
         public Builder countryPinyin(String countryPinyin) {
             this.countryPinyin = countryPinyin;
+            return this;
+        }
+
+        public Builder nodeAddress(String nodeAddress) {
+            this.nodeAddress = nodeAddress;
             return this;
         }
 

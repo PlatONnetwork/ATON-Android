@@ -8,10 +8,10 @@ import android.os.Parcelable;
  */
 public class VoteTransactionEntity extends TransactionEntity implements Cloneable, Parcelable {
 
-    public static final int                            STATUS_PENDING = 0;
-    public static final int                            STATUS_SUCCESS = 1;
-    public static final int                            STATUS_FAILED  = 2;
-    public static final Creator<VoteTransactionEntity> CREATOR        = new Creator<VoteTransactionEntity>() {
+    public static final int STATUS_PENDING = 0;
+    public static final int STATUS_SUCCESS = 1;
+    public static final int STATUS_FAILED = 2;
+    public static final Creator<VoteTransactionEntity> CREATOR = new Creator<VoteTransactionEntity>() {
         @Override
         public VoteTransactionEntity createFromParcel(Parcel in) {
             return new VoteTransactionEntity(in);
@@ -41,6 +41,7 @@ public class VoteTransactionEntity extends TransactionEntity implements Cloneabl
         setEnergonPrice(builder.energonPrice);
         setMemo(builder.memo);
         setStatus(builder.status);
+        setNodeAddress(builder.nodeAddress);
     }
 
     protected VoteTransactionEntity(Parcel in) {
@@ -56,6 +57,7 @@ public class VoteTransactionEntity extends TransactionEntity implements Cloneabl
         energonPrice = in.readDouble();
         memo = in.readString();
         status = in.readInt();
+        nodeAddress = in.readString();
     }
 
     @Override
@@ -77,6 +79,7 @@ public class VoteTransactionEntity extends TransactionEntity implements Cloneabl
         dest.writeDouble(energonPrice);
         dest.writeString(memo);
         dest.writeInt(status);
+        dest.writeString(nodeAddress);
     }
 
     public int getStatus() {
@@ -101,16 +104,16 @@ public class VoteTransactionEntity extends TransactionEntity implements Cloneabl
 
     @Override
     public TransactionStatus getTransactionStatus() {
-        if (status == STATUS_SUCCESS){
+        if (status == STATUS_SUCCESS) {
             return TransactionStatus.SUCCEED;
         }
-        if (status == STATUS_FAILED){
+        if (status == STATUS_FAILED) {
             return TransactionStatus.FAILED;
         }
         return TransactionStatus.PENDING;
     }
 
-    public boolean isVoter(String walletAddress){
+    public boolean isVoter(String walletAddress) {
         return walletAddress != null && walletAddress.equals(fromAddress);
     }
 
@@ -119,14 +122,15 @@ public class VoteTransactionEntity extends TransactionEntity implements Cloneabl
         private String hash;
         private String fromAddress;
         private String toAddress;
-        private long   createTime;
+        private long createTime;
         private double value;
-        private long   blockNumber;
-        private long   latestBlockNumber;
+        private long blockNumber;
+        private long latestBlockNumber;
         private String walletName;
         private double energonPrice;
         private String memo;
         private int status;
+        private String nodeAddress;
 
         public Builder(String uuid, long createTime, String walletName) {
             this.uuid = uuid;
@@ -176,6 +180,11 @@ public class VoteTransactionEntity extends TransactionEntity implements Cloneabl
 
         public Builder status(int va1) {
             status = va1;
+            return this;
+        }
+
+        public Builder nodeAddress(String val) {
+            nodeAddress = val;
             return this;
         }
 

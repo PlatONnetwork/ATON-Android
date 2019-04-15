@@ -203,8 +203,6 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
     }
 
     private List<CandidateEntity> getDefaultCandidateEntityList(List<CandidateEntity> candidateEntityList, List<CandidateEntity> verifiersList) {
-        //首先按默认的排序，根據排序來确定节点的状态，联名节点+验证节点+候选节点
-        Collections.sort(candidateEntityList, SortType.SORTED_BY_DEFAULT.getComparator());
         //全量提名节点
         List<CandidateEntity> allCandidateList = getAllCandidateList(candidateEntityList);
         //全量候选节点
@@ -220,10 +218,22 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
         List<CandidateEntity> partCandidateList = getCandidateList(allCandidateList, verifiersList);
         //剔除掉验证节点的候选节点列表
         List<CandidateEntity> partReserveList = getReserveList(allAlternativeList, verifiersList);
+        //掉榜的验证节点
+        List<CandidateEntity> offVerifiersList = getOffVerifiersList(inVerifiersList);
 
         //排序顺序为：验证节点(在池子中)+提名节点+临界状态的验证节点(投票数为0)+验证人节点(不在池子中)+候选节点+掉榜的验证节点(投票数小于512)
+        //去除掉榜的验证节点
+        inVerifiersList.removeAll(offVerifiersList);
+        //验证节点与提名节点不分先后，按照质押金+票价*票数
         inVerifiersList.addAll(partCandidateList);
+        Collections.sort(inVerifiersList, SortType.SORTED_BY_DEFAULT.getComparator());
+
+        //不在池子中的
         inVerifiersList.addAll(absentVerifiersList);
+        //候选节点和掉榜的节点
+        partReserveList.addAll(offVerifiersList);
+        Collections.sort(partReserveList, SortType.SORTED_BY_DEFAULT.getComparator());
+        //候选节点和掉榜的节点
         inVerifiersList.addAll(partReserveList);
 
         return inVerifiersList;
@@ -236,9 +246,11 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
             List<CandidateEntity> candidateEntityList = getDefaultCandidateEntityList(mCandidateEntiyList, mVerifiersList);
 
             List<CandidateEntity> resultList = getSearchResult(keyWord, candidateEntityList);
-
-            //进行重新排序，按照各自的规则
-            Collections.sort(resultList, sortType.getComparator());
+            //如果不是默认排序
+            if (sortType != SortType.SORTED_BY_DEFAULT) {
+                //进行重新排序，按照各自的规则
+                Collections.sort(resultList, sortType.getComparator());
+            }
 
             if (isViewAttached()) {
                 if (!TextUtils.isEmpty(keyWord) && (resultList == null || resultList.isEmpty())) {
@@ -321,6 +333,7 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
             }
         }
         candidateList.removeAll(tempCandidateList);
+        Collections.sort(candidateList, SortType.SORTED_BY_DEFAULT.getComparator());
         return candidateList;
     }
 
@@ -344,7 +357,7 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
             }
         }
         reserveList.removeAll(tempReserveList);
-
+        Collections.sort(reserveList, SortType.SORTED_BY_DEFAULT.getComparator());
         return reserveList;
     }
 
@@ -367,6 +380,7 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
             }
             absentVerifiersList.add(candidateEntity);
         }
+        Collections.sort(absentVerifiersList, SortType.SORTED_BY_DEFAULT.getComparator());
         return absentVerifiersList;
     }
 
@@ -386,6 +400,7 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
                 offVerifiersList.add(candidateEntity);
             }
         }
+        Collections.sort(offVerifiersList, SortType.SORTED_BY_DEFAULT.getComparator());
         return offVerifiersList;
     }
 

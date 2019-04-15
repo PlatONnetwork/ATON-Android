@@ -4,18 +4,31 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.CustomThrowable;
+import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.NodeSettingsContract;
+import com.juzix.wallet.component.ui.view.OperateMenuActivity;
+import com.juzix.wallet.config.AppSettings;
+import com.juzix.wallet.db.entity.IndividualWalletInfoEntity;
+import com.juzix.wallet.db.sqlite.IndividualWalletInfoDao;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.entity.NodeEntity;
+import com.juzix.wallet.event.EventPublisher;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
+import io.reactivex.SingleSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 
 /**
  * @author matrixelement
@@ -76,6 +89,7 @@ public class NodeSettingsPresenter extends BasePresenter<NodeSettingsContract.Vi
 
         NodeManager.getInstance()
                 .getNodeList()
+                .compose(new SchedulersTransformer())
                 .compose(((BaseActivity) getView()).bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<List<NodeEntity>>() {
@@ -151,18 +165,74 @@ public class NodeSettingsPresenter extends BasePresenter<NodeSettingsContract.Vi
                 .deleteNode(nodeEntity)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<Boolean>() {
-            @Override
-            public void accept(Boolean aBoolean) throws Exception {
-                if (aBoolean && nodeEntity.isChecked() && isViewAttached()) {
-                    getView().setChecked(0);
-                }
-            }
-        });
+                    @Override
+                    public void accept(Boolean aBoolean) throws Exception {
+                        if (aBoolean && nodeEntity.isChecked() && isViewAttached()) {
+                            getView().setChecked(0);
+                        }
+                    }
+                });
     }
 
     @Override
     public void updateNode(NodeEntity nodeEntity, boolean isChecked) {
-        NodeManager.getInstance().updateNode(nodeEntity, isChecked);
+        NodeManager
+                .getInstance()
+                .updateNode(nodeEntity, isChecked)
+                .filter(new Predicate<Boolean>() {
+                    @Override
+                    public boolean test(Boolean success) throws Exception {
+                        return success && isChecked;
+                    }
+                })
+                .toSingle()
+                .doOnSuccess(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean aBoolean) throws Exception {
+                        NodeManager.getInstance().switchNode(nodeEntity);
+                        EventPublisher.getInstance().sendNodeChangedEvent();
+                    }
+                })
+                .flatMap(new Function<Boolean, SingleSource<Boolean>>() {
+                    @Override
+                    public SingleSource<Boolean> apply(Boolean aBoolean) throws Exception {
+                        return checkIndividualWalletList();
+                    }
+                })
+                .compose(new SchedulersTransformer())
+                .compose(bindToLifecycle())
+                .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean success) throws Exception {
+
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        if (isViewAttached()) {
+                            if (throwable instanceof CustomThrowable) {
+                                AppSettings.getInstance().setOperateMenuFlag(true);
+                                OperateMenuActivity.actionStartWithFlag(currentActivity());
+                                currentActivity().finish();
+                            }
+                        }
+                    }
+                });
+    }
+
+    private Single<Boolean> checkIndividualWalletList() {
+        return Single.create(new SingleOnSubscribe<Boolean>() {
+            @Override
+            public void subscribe(SingleEmitter<Boolean> emitter) throws Exception {
+                List<IndividualWalletInfoEntity> individualWalletInfoEntityList = IndividualWalletInfoDao.getWalletInfoList();
+                if (individualWalletInfoEntityList.isEmpty()) {
+                    emitter.onError(new CustomThrowable(CustomThrowable.CODE_ERROR_NOT_EXIST_VALID_WALLET));
+                } else {
+                    emitter.onSuccess(true);
+                }
+            }
+        });
     }
 
     private void insertNodeList(List<NodeEntity> nodeEntityList) {

@@ -68,17 +68,17 @@ public class AddNewAddressPresenter extends BasePresenter<AddNewAddressContract.
                 @Override
                 public Boolean call() throws Exception {
                     if (addressEntity == null) {
-                        AddressInfoEntity entity = AddressInfoDao.getInstance().getEntityWithAddress(addressInfoEntity.getAddress());
+                        AddressInfoEntity entity = AddressInfoDao.getEntityWithAddress(addressInfoEntity.getAddress());
                         if (entity != null){
-                            return AddressInfoDao.getInstance().updateNameWithAddress(addressInfoEntity.getAddress(), addressInfoEntity.getName());
+                            return AddressInfoDao.updateNameWithAddress(addressInfoEntity.getAddress(), addressInfoEntity.getName());
                         }else {
-                            return AddressInfoDao.getInstance().insertAddressInfo(addressInfoEntity);
+                            return AddressInfoDao.insertAddressInfo(addressInfoEntity);
                         }
                     } else {
                         AddressInfoEntity oldAddressInfo = new AddressInfoEntity();
                         oldAddressInfo.setName(addressEntity.getName());
                         oldAddressInfo.setAddress(addressEntity.getAddress());
-                        return AddressInfoDao.getInstance().updateAddressInfo(oldAddressInfo, addressInfoEntity);
+                        return AddressInfoDao.updateAddressInfo(oldAddressInfo, addressInfoEntity);
                     }
                 }
             }).compose(((BaseActivity) getView()).bindToLifecycle()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BiConsumer<Boolean, Throwable>() {

@@ -16,20 +16,24 @@ public class OwnerEntity implements Parcelable, Cloneable {
      */
     private String address;
 
+    private String nodeAddress;
+
     public OwnerEntity() {
 
     }
 
-    public OwnerEntity(String uuid, String name, String address) {
+    public OwnerEntity(String uuid, String name, String address,String nodeAddress) {
         this.uuid = uuid;
         this.name = name;
         this.address = address;
+        this.nodeAddress = nodeAddress;
     }
 
     protected OwnerEntity(Parcel in) {
         uuid = in.readString();
         name = in.readString();
         address = in.readString();
+        nodeAddress = in.readString();
     }
 
     @Override
@@ -42,6 +46,7 @@ public class OwnerEntity implements Parcelable, Cloneable {
         dest.writeString(uuid);
         dest.writeString(name);
         dest.writeString(address);
+        dest.writeString(nodeAddress);
     }
 
     public static final Creator<OwnerEntity> CREATOR = new Creator<OwnerEntity>() {
@@ -100,6 +105,14 @@ public class OwnerEntity implements Parcelable, Cloneable {
         this.address = address;
     }
 
+    public String getNodeAddress() {
+        return nodeAddress;
+    }
+
+    public void setNodeAddress(String nodeAddress) {
+        this.nodeAddress = nodeAddress;
+    }
+
     public String getPrefixAddress() {
         try {
             if (TextUtils.isEmpty(address)) {
@@ -142,6 +155,7 @@ public class OwnerEntity implements Parcelable, Cloneable {
                 "uuid='" + uuid + '\'' +
                 ", name='" + name + '\'' +
                 ", address='" + address + '\'' +
+                ", nodeAddress='" + nodeAddress + '\'' +
                 '}';
     }
 }

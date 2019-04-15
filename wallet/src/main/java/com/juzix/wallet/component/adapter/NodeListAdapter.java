@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.widget.CustomEditText;
@@ -181,9 +182,9 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
 
         NodeEntity nodeEntity = mNodeList.get(position);
         holder.etNode.setEnabled(mIsEdit && !nodeEntity.isDefaultNode());
-        if (holder.etNode.isEnabled() && position == mNodeList.size() - 1){
+        if (holder.etNode.isEnabled() && position == mNodeList.size() - 1) {
             showSoftInput(holder.etNode, true);
-        }else {
+        } else {
             showSoftInput(holder.etNode, false);
         }
 
@@ -220,7 +221,7 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
                     setChecked(0);
                     return;
                 }
-                if (mNodeList.size() == 1){
+                if (mNodeList.size() == 1) {
                     showSoftInput(holder.etNode, false);
                 }
             }
@@ -235,15 +236,14 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
                 if (nodeEntity.isChecked()) {
                     return;
                 }
-                String address = nodeEntity.getNodeAddress();
-                checkAddress(position, address);
+                checkAddress(position, nodeEntity.getNodeAddress());
             }
         });
 
     }
 
-    private void checkAddress(int position, String address){
-        activity.showLoadingDialog();
+    private void checkAddress(int position, String address) {
+
         Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
@@ -251,22 +251,22 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
             }
         })
                 .compose(new SchedulersTransformer())
+                .compose(LoadingTransformer.bindToSingleLifecycle(activity))
                 .subscribe(new Consumer<Boolean>() {
                     @Override
-                    public void accept(Boolean o) throws Exception {
-                        activity.dismissLoadingDialogImmediately();
-                        if (o){
+                    public void accept(Boolean isValid) throws Exception {
+                        if (isValid) {
                             setChecked(position);
                         }
-                        ToastUtil.showShortToast(activity, o ? R.string.switch_node_successed : R.string.switch_node_failed);
+                        ToastUtil.showShortToast(activity, isValid ? R.string.switch_node_successed : R.string.switch_node_failed);
                     }
                 });
     }
 
-    private void showSoftInput(EditText editText, boolean isShow){
+    private void showSoftInput(EditText editText, boolean isShow) {
         if (isShow) {
             activity.showSoftInput(editText);
-        }else {
+        } else {
             activity.hideSoftInput(activity, editText);
         }
         editText.postDelayed(new Runnable() {

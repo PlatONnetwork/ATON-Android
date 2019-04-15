@@ -32,11 +32,11 @@ public class IndividualWalletInfoEntity extends RealmObject {
     /**
      * 创建时间
      */
-    private long   createTime;
+    private long createTime;
     /**
      * 更新时间
      */
-    private long   updateTime;
+    private long updateTime;
     /**
      * 钱包头图
      */
@@ -45,9 +45,12 @@ public class IndividualWalletInfoEntity extends RealmObject {
      * 助记词
      */
     private String mnemonic;
+    /**
+     * 节点地址
+     */
+    private String nodeAddress;
 
-
-    public IndividualWalletInfoEntity(){
+    public IndividualWalletInfoEntity() {
 
     }
 
@@ -61,6 +64,7 @@ public class IndividualWalletInfoEntity extends RealmObject {
         setUpdateTime(builder.updateTime);
         setAvatar(builder.avatar);
         setMnemonic(builder.mnemonic);
+        setNodeAddress(builder.nodeAddress);
     }
 
     public String getAvatar() {
@@ -135,16 +139,25 @@ public class IndividualWalletInfoEntity extends RealmObject {
         this.mnemonic = mnemonic;
     }
 
+    public void setNodeAddress(String nodeAddress) {
+        this.nodeAddress = nodeAddress;
+    }
+
+    public String getNodeAddress() {
+        return nodeAddress;
+    }
+
     public static final class Builder {
         private String uuid;
         private String keyJson;
         private String name;
         public String address;
         private String keystorePath;
-        private long   createTime;
-        private long   updateTime;
+        private long createTime;
+        private long updateTime;
         private String avatar;
         private String mnemonic;
+        private String nodeAddress;
 
         public Builder() {
         }
@@ -194,6 +207,11 @@ public class IndividualWalletInfoEntity extends RealmObject {
             return this;
         }
 
+        public Builder nodeAddress(String val) {
+            nodeAddress = val;
+            return this;
+        }
+
         public IndividualWalletInfoEntity build() {
             return new IndividualWalletInfoEntity(this);
         }
@@ -210,12 +228,13 @@ public class IndividualWalletInfoEntity extends RealmObject {
         builder.updateTime(updateTime);
         builder.avatar(avatar);
         builder.mnemonic(mnemonic);
+        builder.nodeAddress(nodeAddress);
         return builder.build();
     }
 
     @Override
     public String toString() {
-        return "WalletInfoEntity{" +
+        return "IndividualWalletInfoEntity{" +
                 "uuid='" + uuid + '\'' +
                 ", keyJson='" + keyJson + '\'' +
                 ", name='" + name + '\'' +
@@ -224,6 +243,8 @@ public class IndividualWalletInfoEntity extends RealmObject {
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 ", avatar='" + avatar + '\'' +
+                ", mnemonic='" + mnemonic + '\'' +
+                ", nodeAddress='" + nodeAddress + '\'' +
                 '}';
     }
 }

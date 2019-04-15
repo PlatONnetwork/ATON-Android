@@ -5,7 +5,7 @@ package com.juzix.wallet.app;
  */
 public class Constants {
 
-    public interface Common{
+    public interface Common {
         int REFRESH_TIME = 5000;
     }
 
@@ -87,17 +87,15 @@ public class Constants {
     }
 
     public interface URL {
-                String WEB3J_URL = "http://192.168.120.82:6789";
-//                String WEB3J_URL = "http://192.168.9.76:8792";
-//                String WEB3J_URL = "http://10.10.8.209:6789";
-//        String WEB3J_URL = "https://syde.platon.network/test";
         String IP_URL = "http://ip-api.com/batch/";
         String UPDATE_URL = "https://api.github.com/repos/PlatONnetwork/ATON-Android/releases/latest";
+        String URL_TEST_A = "https://test-amigo.platon.network/test";
+        String URL_TEST_B = " https://test-beta.platon.network/test";
     }
 
     public interface DBName {
         //数据库名称
         String PORTAL = "portal";
-        int VERSION = 106;
+        int VERSION = 105;
     }
 }

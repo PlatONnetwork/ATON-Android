@@ -34,6 +34,10 @@ public class WalletEntity implements Parcelable {
      * 钱包头图
      */
     protected String avatar;
+    /**
+     * 节点地址
+     */
+    protected String nodeAddress;
 
     public WalletEntity() {
     }
@@ -46,6 +50,7 @@ public class WalletEntity implements Parcelable {
         updateTime = in.readLong();
         balance = in.readDouble();
         avatar = in.readString();
+        nodeAddress = in.readString();
     }
 
     public static final Creator<WalletEntity> CREATOR = new Creator<WalletEntity>() {
@@ -142,6 +147,14 @@ public class WalletEntity implements Parcelable {
         this.balance = balance;
     }
 
+    public String getNodeAddress() {
+        return nodeAddress;
+    }
+
+    public void setNodeAddress(String nodeAddress) {
+        this.nodeAddress = nodeAddress;
+    }
+
     public String getAddressWithoutPrefix() {
         if (!TextUtils.isEmpty(address)) {
             if (address.startsWith("0x")) {
@@ -184,6 +197,7 @@ public class WalletEntity implements Parcelable {
                 ", updateTime=" + updateTime +
                 ", balance=" + balance +
                 ", avatar='" + avatar + '\'' +
+                ", nodeAddress='" + nodeAddress + '\'' +
                 '}';
     }
 
@@ -201,6 +215,7 @@ public class WalletEntity implements Parcelable {
         dest.writeLong(updateTime);
         dest.writeDouble(balance);
         dest.writeString(avatar);
+        dest.writeString(nodeAddress);
     }
 
 

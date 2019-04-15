@@ -62,8 +62,8 @@ public class VoteDetailPresenter extends BasePresenter<VoteDetailContract.View> 
                                 .candidateId(batchVoteTransactionEntity.getCandidateId())
                                 .ticketPrice(BigDecimalUtil.div(NumberParserUtils.parseDouble(batchVoteTransactionEntity.getDeposit()), 1E18))
                                 .voteStaked(batchVoteTransactionEntity.getVoteStaked())
-                                .validVoteNum(NumberParserUtils.parseLong(batchVoteTransactionEntity.getValidNum()))
-                                .invalidVoteNum(NumberParserUtils.parseLong(batchVoteTransactionEntity.getInvalidVoteNum()))
+                                .validVoteNum(NumberParserUtils.parseDouble(batchVoteTransactionEntity.getValidNum()))
+                                .invalidVoteNum(NumberParserUtils.parseDouble(batchVoteTransactionEntity.getInvalidVoteNum()))
                                 .walletAddress(batchVoteTransactionEntity.getOwner())
                                 .createTime(batchVoteTransactionEntity.getTransactiontime())
                                 .walletName(IndividualWalletManager.getInstance().getWalletNameByWalletAddress(batchVoteTransactionEntity.getOwner()))
@@ -99,7 +99,7 @@ public class VoteDetailPresenter extends BasePresenter<VoteDetailContract.View> 
 
             @Override
             public List<SingleVoteInfoEntity> call() throws Exception {
-                return SingleVoteInfoDao.getInstance().getTransactionListByCandidateId(candidateid);
+                return SingleVoteInfoDao.getTransactionListByCandidateId(candidateid);
             }
         })
                 .flatMap(new Function<List<SingleVoteInfoEntity>, Publisher<SingleVoteInfoEntity>>() {

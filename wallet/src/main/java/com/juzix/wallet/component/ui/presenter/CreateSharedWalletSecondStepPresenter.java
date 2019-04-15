@@ -23,6 +23,7 @@ import com.juzix.wallet.component.ui.view.SelectAddressActivity;
 import com.juzix.wallet.config.PermissionConfigure;
 import com.juzix.wallet.db.entity.AddressInfoEntity;
 import com.juzix.wallet.db.sqlite.AddressInfoDao;
+import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.SharedWalletTransactionManager;
 import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
@@ -195,14 +196,14 @@ public class CreateSharedWalletSecondStepPresenter extends BasePresenter<CreateS
             return false;
         }
 
-        return !AddressInfoDao.getInstance().isExist(address);
+        return !AddressInfoDao.isExist(address);
     }
 
     @Override
     public boolean saveWallet(String name, String address) {
         String[] avatarArray = getContext().getResources().getStringArray(R.array.wallet_avatar);
         String avatar = avatarArray[new Random().nextInt(avatarArray.length)];
-        return AddressInfoDao.getInstance().insertAddressInfo(new AddressInfoEntity(UUID.randomUUID().toString(), address, name, avatar));
+        return AddressInfoDao.insertAddressInfo(new AddressInfoEntity(UUID.randomUUID().toString(), address, name, avatar));
     }
 
     @Override
@@ -230,7 +231,9 @@ public class CreateSharedWalletSecondStepPresenter extends BasePresenter<CreateS
         if (!enabled) {
             return;
         }
-        if (addressSet.size() != mEntityList.size()) {
+        //解决用户地址与联名钱包创建地址之间存在重复的问题
+        addressSet.add(mWalletEntity.getPrefixAddress());
+        if (addressSet.size() != mEntityList.size()+1) {
             showLongToast(R.string.duplicateAddress);
             return;
         }
@@ -365,16 +368,16 @@ public class CreateSharedWalletSecondStepPresenter extends BasePresenter<CreateS
 
     private List<OwnerEntity> getAddressEntityList() {
         ArrayList<OwnerEntity> addressEntityList = new ArrayList<>();
-        addressEntityList.add(new OwnerEntity(UUID.randomUUID().toString(), mWalletEntity.getName(), mWalletEntity.getPrefixAddress()));
+        addressEntityList.add(new OwnerEntity(UUID.randomUUID().toString(), mWalletEntity.getName(), mWalletEntity.getPrefixAddress(), NodeManager.getInstance().getCurNodeAddress()));
         for (int i = 0; i < mEntityList.size(); i++) {
             CreateSharedWalletSecondStepContract.ContractEntity contractEntity = mEntityList.get(i);
-            addressEntityList.add(new OwnerEntity(UUID.randomUUID().toString(), getAddressName(contractEntity, i), contractEntity.getAddress()));
+            addressEntityList.add(new OwnerEntity(UUID.randomUUID().toString(), getAddressName(contractEntity, i), contractEntity.getAddress(), NodeManager.getInstance().getCurNodeAddress()));
         }
         return addressEntityList;
     }
 
     private String getAddressName(CreateSharedWalletSecondStepContract.ContractEntity contractEntity, int index) {
-        String dbName = AddressInfoDao.getInstance().getAddressNameByAddress(getFormatAddress(contractEntity.getAddress()));
+        String dbName = AddressInfoDao.getAddressNameByAddress(getFormatAddress(contractEntity.getAddress()));
         if (TextUtils.isEmpty(contractEntity.getName())) {
             return TextUtils.isEmpty(dbName) ? string(R.string.user_with_serial_number, index + 1) : dbName;
         } else {

@@ -124,4 +124,11 @@ public class Event {
             this.voteTransactionEntity = voteTransactionEntity;
         }
     }
+
+    public static class NodeChangedEvent {
+
+        public NodeChangedEvent() {
+
+        }
+    }
 }

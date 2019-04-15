@@ -5,7 +5,6 @@ import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomThrowable;
 import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.app.SchedulersTransformer;
-import com.juzix.wallet.component.ui.SortType;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.SubmitVoteContract;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
@@ -24,7 +23,6 @@ import org.reactivestreams.Publisher;
 import org.web3j.crypto.Credentials;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,7 +84,7 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
     @Override
     public void submitVote() {
 
-        getAbsentVerifiersList()
+        getVerifiersList()
                 .contains(mCandidateEntity.getCandidateId())
                 .filter(new Predicate<Boolean>() {
                     @Override
@@ -195,21 +193,21 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
         }
     }
 
-    private Single<List<String>> getAbsentVerifiersList() {
+    private Single<List<String>> getVerifiersList() {
         return CandidateManager
                 .getInstance()
-                .getCandidateList()
-                .zipWith(CandidateManager.getInstance().getVerifiersList(), new BiFunction<List<CandidateEntity>, List<CandidateEntity>, List<CandidateEntity>>() {
-                    @Override
-                    public List<CandidateEntity> apply(List<CandidateEntity> candidateEntities, List<CandidateEntity> verifiersList) throws Exception {
-                        return getAbsentVerifiersList(candidateEntities, verifiersList);
-                    }
-                })
+                .getVerifiersList()
                 .toFlowable()
                 .flatMap(new Function<List<CandidateEntity>, Publisher<CandidateEntity>>() {
                     @Override
                     public Publisher<CandidateEntity> apply(List<CandidateEntity> candidateEntities) throws Exception {
                         return Flowable.fromIterable(candidateEntities);
+                    }
+                })
+                .filter(new Predicate<CandidateEntity>() {
+                    @Override
+                    public boolean test(CandidateEntity candidateEntity) throws Exception {
+                        return candidateEntity.getVotedNum() == 0;
                     }
                 })
                 .map(new Function<CandidateEntity, String>() {
@@ -219,18 +217,6 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
                     }
                 })
                 .toList();
-    }
-
-    private List<CandidateEntity> getAbsentVerifiersList(List<CandidateEntity> candidateEntityList, List<CandidateEntity> verifiersList) {
-        //首先按默认的排序，根據排序來确定节点的状态，联名节点+验证节点+候选节点
-        Collections.sort(candidateEntityList, SortType.SORTED_BY_DEFAULT.getComparator());
-        //全量提名节点
-        List<CandidateEntity> allCandidateList = getAllCandidateList(candidateEntityList);
-        //全量候选节点
-        List<CandidateEntity> allAlternativeList = getAllReserveList(candidateEntityList);
-        //不在池子中的验证节点
-        List<CandidateEntity> absentVerifiersList = getAbsentVerifiersList(allCandidateList, allAlternativeList, verifiersList);
-        return absentVerifiersList;
     }
 
     /**

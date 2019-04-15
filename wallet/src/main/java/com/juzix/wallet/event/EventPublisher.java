@@ -49,7 +49,7 @@ public class EventPublisher {
     }
 
     public void sendUpdateSharedWalletTransactionEvent(SharedTransactionEntity sharedTransactionEntity) {
-        Log.e(TAG,"sendUpdateSharedWalletTransactionEvent"+sharedTransactionEntity.toString());
+        Log.e(TAG, "sendUpdateSharedWalletTransactionEvent" + sharedTransactionEntity.toString());
         BusProvider.post(new Event.UpdateSharedWalletTransactionEvent(sharedTransactionEntity));
     }
 
@@ -92,5 +92,9 @@ public class EventPublisher {
 
     public void sendRemoveSharedWalletEvent(SharedWalletEntity sharedWalletEntity) {
         BusProvider.post(new Event.RemoveSharedWalletEvent(sharedWalletEntity));
+    }
+
+    public void sendNodeChangedEvent() {
+        BusProvider.post(new Event.NodeChangedEvent());
     }
 }

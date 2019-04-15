@@ -90,16 +90,18 @@ public class SingleVoteInfoEntity extends RealmObject implements Cloneable {
      * 手续费
      */
     private double energonPrice;
-
     /**
      * 状态
      */
     private int status;
-
     /**
      * 总票数
      */
     private RealmList<TicketInfoEntity> tickets;
+    /**
+     * 节点地址
+     */
+    private String nodeAddress;
 
     public SingleVoteInfoEntity() {
 
@@ -123,7 +125,8 @@ public class SingleVoteInfoEntity extends RealmObject implements Cloneable {
         setLatestBlockNumber(builder.latestBlockNumber);
         setEnergonPrice(builder.energonPrice);
         setStatus(builder.status);
-        setTicketInfoEntityArrayList((ArrayList<TicketInfoEntity>) builder.tickets);
+        setTicketInfoEntityArrayList(builder.tickets);
+        setNodeAddress(builder.nodeAddress);
     }
 
     public String getUuid() {
@@ -270,6 +273,14 @@ public class SingleVoteInfoEntity extends RealmObject implements Cloneable {
         this.tickets = tickets;
     }
 
+    public String getNodeAddress() {
+        return nodeAddress;
+    }
+
+    public void setNodeAddress(String nodeAddress) {
+        this.nodeAddress = nodeAddress;
+    }
+
     public void setTicketInfoEntityArrayList(List<TicketInfoEntity> ticketInfoEntityList) {
         if (ticketInfoEntityList == null) {
             return;
@@ -337,6 +348,7 @@ public class SingleVoteInfoEntity extends RealmObject implements Cloneable {
         private double energonPrice;
         private int status;
         private List<TicketInfoEntity> tickets;
+        private String nodeAddress;
 
         public Builder() {
         }
@@ -431,6 +443,11 @@ public class SingleVoteInfoEntity extends RealmObject implements Cloneable {
             return this;
         }
 
+        public Builder nodeAddress(String val) {
+            this.nodeAddress = val;
+            return this;
+        }
+
         public SingleVoteInfoEntity build() {
             return new SingleVoteInfoEntity(this);
         }
@@ -450,6 +467,7 @@ public class SingleVoteInfoEntity extends RealmObject implements Cloneable {
                 .latestBlockNumber(getLatestBlockNumber())
                 .energonPrice(getEnergonPrice())
                 .status(getStatus())
+                .nodeAddress(getNodeAddress())
                 .build();
     }
 }

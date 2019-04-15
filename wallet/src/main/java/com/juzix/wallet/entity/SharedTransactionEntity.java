@@ -85,6 +85,7 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
         setOwnerEntityList(builder.ownerEntityList);
         setOwnerWalletAddress(builder.ownerWalletAddress);
         setTransactionType(builder.transactionType);
+        setNodeAddress(builder.nodeAddress);
     }
 
     protected SharedTransactionEntity(Parcel in) {
@@ -109,6 +110,7 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
         ownerEntityList = in.readArrayList(OwnerEntity.class.getClassLoader());
         ownerWalletAddress = in.readString();
         transactionType = in.readInt();
+        nodeAddress = in.readString();
     }
 
     @Override
@@ -139,6 +141,7 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
         dest.writeList(ownerEntityList);
         dest.writeString(ownerWalletAddress);
         dest.writeInt(transactionType);
+        dest.writeString(nodeAddress);
     }
 
     public static final Creator<SharedTransactionEntity> CREATOR = new Creator<SharedTransactionEntity>() {
@@ -249,6 +252,7 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
         this.transactionType = transactionType;
     }
 
+
     public boolean transfered() {
         if (getConfirms() >= requiredSignNumber || getRevokes() > 0) {
             return true;
@@ -343,6 +347,7 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
         private List<OwnerEntity> ownerEntityList;
         private String ownerWalletAddress;
         private int transactionType;
+        private String nodeAddress;
 
         public Builder(String uuid, long createTime, String walletName) {
             this.uuid = uuid;
@@ -437,6 +442,11 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
 
         public Builder transactionType(int val) {
             this.transactionType = val;
+            return this;
+        }
+
+        public Builder nodeAddress(String val){
+            this.nodeAddress = val;
             return this;
         }
 
@@ -580,6 +590,7 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
                 sharedWalletOwnerInfoEntity.setUuid(ownerEntity.getUuid());
                 sharedWalletOwnerInfoEntity.setAddress(ownerEntity.getAddress());
                 sharedWalletOwnerInfoEntity.setName(ownerEntity.getName());
+                sharedWalletOwnerInfoEntity.setNodeAddress(ownerEntity.getNodeAddress());
                 sharedWalletOwnerInfoEntityList.add(sharedWalletOwnerInfoEntity);
             }
         }
@@ -610,6 +621,7 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
                 .transactionType(getTransactionType())
                 .sharedWalletOwnerInfoEntityList(buildSharedWalletOwnerInfoEntityList())
                 .walletName(getWalletName())
+                .nodeAddress(getNodeAddress())
                 .build();
     }
 
@@ -659,22 +671,5 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
         }
 
         public abstract int getTransactionTypeDesc(String transactionToAddress, String queryAddress);
-    }
-
-    @Override
-    public String toString() {
-        return "SharedTransactionEntity{" +
-                "transactionId='" + transactionId + '\'' +
-                ", contractAddress='" + contractAddress + '\'' +
-                ", pending=" + pending +
-                ", executed=" + executed +
-                ", transactionResult='" + transactionResult + '\'' +
-                ", requiredSignNumber=" + requiredSignNumber +
-                ", read=" + read +
-                ", ownerEntityList=" + ownerEntityList +
-                ", ownerWalletAddress='" + ownerWalletAddress + '\'' +
-                ", transactionType=" + transactionType +
-                ", uuid='" + uuid + '\'' +
-                '}';
     }
 }

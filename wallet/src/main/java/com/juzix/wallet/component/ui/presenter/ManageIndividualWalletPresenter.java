@@ -8,9 +8,9 @@ import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.ManageIndividualWalletContract;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.view.BackupMnemonicPhraseActivity;
-import com.juzix.wallet.component.ui.view.BackupWalletActivity;
 import com.juzix.wallet.component.ui.view.ExportIndividualKeystoreActivity;
 import com.juzix.wallet.component.ui.view.ExportIndividualPrivateKeyActivity;
+import com.juzix.wallet.db.sqlite.IndividualWalletInfoDao;
 import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.engine.SharedWalletManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
@@ -24,6 +24,8 @@ import java.util.concurrent.Callable;
 
 import io.reactivex.Single;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 
 public class ManageIndividualWalletPresenter extends BasePresenter<ManageIndividualWalletContract.View> implements ManageIndividualWalletContract.Presenter {
 
@@ -39,7 +41,7 @@ public class ManageIndividualWalletPresenter extends BasePresenter<ManageIndivid
     public void showIndividualWalletInfo() {
         if (mWalletEntity != null && isViewAttached()) {
             ArrayList<IndividualWalletEntity> walletList = IndividualWalletManager.getInstance().getWalletList();
-            for (IndividualWalletEntity walletEntity : walletList){
+            for (IndividualWalletEntity walletEntity : walletList) {
                 if (mWalletEntity.getUuid().equals(walletEntity.getUuid())) {
                     mWalletEntity = walletEntity;
                 }
@@ -94,9 +96,28 @@ public class ManageIndividualWalletPresenter extends BasePresenter<ManageIndivid
                 .fromCallable(new Callable<Boolean>() {
                     @Override
                     public Boolean call() throws Exception {
+                        return IndividualWalletInfoDao.updateNameWithUuid(mWalletEntity.getUuid(), name);
+                    }
+                })
+                .filter(new Predicate<Boolean>() {
+                    @Override
+                    public boolean test(Boolean success) throws Exception {
+                        return success;
+                    }
+                })
+                .map(new Function<Boolean, Boolean>() {
+                    @Override
+                    public Boolean apply(Boolean aBoolean) throws Exception {
                         return IndividualWalletManager.getInstance().updateWalletName(mWalletEntity, name);
                     }
                 })
+                .filter(new Predicate<Boolean>() {
+                    @Override
+                    public boolean test(Boolean success) throws Exception {
+                        return success;
+                    }
+                })
+                .toSingle()
                 .compose(new SchedulersTransformer())
                 .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
                 .compose(bindToLifecycle())
@@ -112,7 +133,7 @@ public class ManageIndividualWalletPresenter extends BasePresenter<ManageIndivid
     }
 
     @Override
-    public void backup() { 
+    public void backup() {
         InputWalletPasswordDialogFragment.newInstance((IndividualWalletEntity) mWalletEntity).setOnWalletCorrectListener(new InputWalletPasswordDialogFragment.OnWalletCorrectListener() {
             @Override
             public void onCorrect(Credentials credentials, String password) {

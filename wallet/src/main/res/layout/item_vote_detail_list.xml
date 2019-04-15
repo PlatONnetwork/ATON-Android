@@ -71,7 +71,7 @@
         style="@style/Text.000000.14"
         android:layout_width="match_parent"
         android:layout_marginTop="8dp"
-        android:gravity="center_vertical|left"
+        android:gravity="left"
         tools:text="0xA7a7899d944fE658c4B0a1803BAB2F490bd3849e(钱包名称)" />
 
     <TextView
