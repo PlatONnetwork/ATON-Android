@@ -189,7 +189,7 @@
                 app:bsb_touch_to_seek="true"
                 app:bsb_track_color="@color/color_d5d8df"
                 app:bsb_track_size="2dp"
-                app:bsb_colors="#ff28ADFF_#ff105CFE_#ff105CFE"/>
+                app:bsb_colors="#ff28ADFF_#ff2092FF_#ff1877FE_#ff105CFE"/>
 
 
         </RelativeLayout>
