@@ -6,6 +6,8 @@ import android.text.TextUtils;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.juzix.wallet.R;
+import com.juzix.wallet.db.entity.CandidateInfoEntity;
+import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.utils.JSONUtil;
 
 import org.web3j.utils.Numeric;
@@ -432,7 +434,7 @@ public class CandidateEntity implements Cloneable, Parcelable {
             return this;
         }
 
-        public Builder ticketPrice(double val){
+        public Builder ticketPrice(double val) {
             this.ticketPrice = val;
             return this;
         }
@@ -516,5 +518,23 @@ public class CandidateEntity implements Cloneable, Parcelable {
         }
 
         public abstract int getStatusDescRes();
+    }
+
+    public CandidateInfoEntity buildCandidateInfo() {
+        return new CandidateInfoEntity.Builder()
+                .setDeposit(deposit)
+                .setBlockNumber(blockNumber)
+                .setOwner(owner)
+                .setTxIndex(txIndex)
+                .setCandidateId(candidateId)
+                .setFrom(from)
+                .setFee(fee)
+                .setHost(host)
+                .setPort(port)
+                .setTxHash(txHash)
+                .setNodeAddress(NodeManager.getInstance().getCurNodeAddress())
+                .setCandidateName(getCandidateExtraEntity() != null ? getCandidateExtraEntity().getNodeName() : null)
+                .build();
+
     }
 }

@@ -94,9 +94,9 @@ public class AppFramework {
                         RealmSchema schema = realm.getSchema();
                         if (oldVersion == 104) {
 
-                            schema.get("IndividualTransactionInfoEntity").addField("completed", boolean.class);
-                            schema.get("IndividualTransactionInfoEntity").addField("value", double.class);
                             schema.get("IndividualTransactionInfoEntity")
+                                    .addField("completed", boolean.class)
+                                    .addField("value", double.class)
                                     .addField("nodeAddress", String.class)
                                     .transform(new RealmObjectSchema.Function() {
                                         @Override
@@ -105,8 +105,8 @@ public class AppFramework {
                                         }
                                     });
 
-                            schema.get("IndividualWalletInfoEntity").addField("mnemonic", String.class);
                             schema.get("IndividualWalletInfoEntity")
+                                    .addField("mnemonic", String.class)
                                     .addField("nodeAddress", String.class)
                                     .transform(new RealmObjectSchema.Function() {
                                         @Override
@@ -125,9 +125,9 @@ public class AppFramework {
                                         }
                                     });
 
-                            schema.get("RegionInfoEntity").removeField("uuid");
-                            schema.get("RegionInfoEntity").addPrimaryKey("ip");
                             schema.get("RegionInfoEntity")
+                                    .removeField("uuid")
+                                    .addPrimaryKey("ip")
                                     .addField("nodeAddress", String.class)
                                     .transform(new RealmObjectSchema.Function() {
                                         @Override
@@ -136,9 +136,9 @@ public class AppFramework {
                                         }
                                     });
 
-                            schema.get("SharedTransactionInfoEntity").removeField("transactionResult");
-                            schema.get("SharedTransactionInfoEntity").addField("transactionResult", String.class);
                             schema.get("SharedTransactionInfoEntity")
+                                    .removeField("transactionResult")
+                                    .addField("transactionResult", String.class)
                                     .addField("nodeAddress", String.class)
                                     .transform(new RealmObjectSchema.Function() {
                                         @Override
@@ -147,8 +147,8 @@ public class AppFramework {
                                         }
                                     });
 
-                            schema.get("SharedWalletInfoEntity").renameField("walletAddress", "creatorAddress");
                             schema.get("SharedWalletInfoEntity")
+                                    .renameField("walletAddress", "creatorAddress")
                                     .addField("nodeAddress", String.class)
                                     .transform(new RealmObjectSchema.Function() {
                                         @Override
@@ -186,6 +186,21 @@ public class AppFramework {
                                     });
 
                             schema.remove("TransactionInfoResult");
+
+                            schema.create("CandidateInfoDao")
+                                .addField("candidateId",String.class)
+                                .addField("deposit",String.class)
+                                .addField("blockNumber",long.class)
+                                .addField("owner",String.class)
+                                .addField("txIndex",int.class)
+                                .addField("from",String.class)
+                                .addField("fee",int.class)
+                                .addField("host",String.class)
+                                .addField("port",String.class)
+                                .addField("txHash",String.class)
+                                .addField("extra",String.class)
+                                .addField("nodeAddress",String.class)
+                                .addField("candidateName",String.class);
 
                             oldVersion++;
                         }

@@ -10,9 +10,11 @@ import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.HttpClient;
 import com.juzhen.framework.util.MapUtils;
 import com.juzhen.framework.util.NumberParserUtils;
+import com.juzix.wallet.db.entity.CandidateInfoEntity;
 import com.juzix.wallet.db.entity.RegionInfoEntity;
 import com.juzix.wallet.db.entity.SingleVoteInfoEntity;
 import com.juzix.wallet.db.entity.TicketInfoEntity;
+import com.juzix.wallet.db.sqlite.CandidateInfoDao;
 import com.juzix.wallet.db.sqlite.RegionInfoDao;
 import com.juzix.wallet.db.sqlite.SingleVoteInfoDao;
 import com.juzix.wallet.engine.service.VoteService;
@@ -155,11 +157,9 @@ public class VoteManager {
                 }).map(new Function<BatchVoteTransactionEntity, BatchVoteTransactionEntity>() {
                     @Override
                     public BatchVoteTransactionEntity apply(BatchVoteTransactionEntity batchVoteTransactionEntity) throws Exception {
-                        SingleVoteInfoEntity singleVoteInfoEntity = SingleVoteInfoDao.getTransactionByHash(batchVoteTransactionEntity.getTransactionHash());
-                        String nodeName = SingleVoteInfoDao.getCandidateNameByCandidateId(batchVoteTransactionEntity.getCandidateId());
-                        if (singleVoteInfoEntity != null) {
-                            batchVoteTransactionEntity.setNodeName(singleVoteInfoEntity.getCandidateName());
-                            batchVoteTransactionEntity.setNodeName(nodeName);
+                        CandidateInfoEntity candidateInfoEntity = CandidateInfoDao.getCandidateInfoById(batchVoteTransactionEntity.getCandidateId());
+                        if (candidateInfoEntity != null) {
+                            batchVoteTransactionEntity.setNodeName(candidateInfoEntity.getCandidateName());
                         }
 
                         return batchVoteTransactionEntity;

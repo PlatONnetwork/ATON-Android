@@ -6,6 +6,7 @@ import com.github.promeg.pinyinhelper.Pinyin;
 import com.juzhen.framework.network.HttpClient;
 import com.juzix.wallet.App;
 import com.juzix.wallet.db.entity.RegionInfoEntity;
+import com.juzix.wallet.db.sqlite.CandidateInfoDao;
 import com.juzix.wallet.db.sqlite.RegionInfoDao;
 import com.juzix.wallet.engine.service.RegionService;
 import com.juzix.wallet.entity.CandidateEntity;
@@ -91,6 +92,12 @@ public class CandidateManager {
                         return candidateEntity;
                     }
                 })
+                .doOnNext(new Consumer<CandidateEntity>() {
+                    @Override
+                    public void accept(CandidateEntity candidateEntity) throws Exception {
+                        CandidateInfoDao.insertCandidateInfo(candidateEntity.buildCandidateInfo());
+                    }
+                })
                 .collect(new Callable<List<CandidateEntity>>() {
                     @Override
                     public List<CandidateEntity> call() throws Exception {
@@ -143,6 +150,12 @@ public class CandidateManager {
                             candidateEntity.setRegionEntity(regionInfoEntity.toRegionEntity());
                         }
                         return candidateEntity;
+                    }
+                })
+                .doOnNext(new Consumer<CandidateEntity>() {
+                    @Override
+                    public void accept(CandidateEntity candidateEntity) throws Exception {
+                        CandidateInfoDao.insertCandidateInfo(candidateEntity.buildCandidateInfo());
                     }
                 })
                 .collect(new Callable<List<CandidateEntity>>() {
