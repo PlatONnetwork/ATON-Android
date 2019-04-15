@@ -19,7 +19,7 @@ public class NodeInfoDao {
         try {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
-            realm.copyToRealmOrUpdate(nodeInfoEntity);
+            realm.insertOrUpdate(nodeInfoEntity);
             realm.commitTransaction();
             return true;
         } catch (Exception exp) {
@@ -40,7 +40,7 @@ public class NodeInfoDao {
         try {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
-            realm.copyToRealmOrUpdate(nodeInfoEntityList);
+            realm.insertOrUpdate(nodeInfoEntityList);
             realm.commitTransaction();
             return true;
         } catch (Exception exp) {
@@ -174,7 +174,28 @@ public class NodeInfoDao {
                 realm.close();
             }
         }
-
         return nodeInfoEntityList;
+    }
+
+    public static List<NodeInfoEntity> getNode(String nodeAddress) {
+
+        List<NodeInfoEntity> infoEntityList = new ArrayList<>();
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            List<NodeInfoEntity> nodeInfoEntityList = realm.where(NodeInfoEntity.class)
+                    .equalTo("nodeAddress", nodeAddress)
+                    .findAll();
+            if (nodeInfoEntityList != null) {
+                infoEntityList = realm.copyFromRealm(nodeInfoEntityList);
+            }
+        } catch (Exception exp) {
+            exp.printStackTrace();
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return infoEntityList;
     }
 }

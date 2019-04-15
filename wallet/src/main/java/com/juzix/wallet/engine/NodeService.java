@@ -58,7 +58,6 @@ public class NodeService implements INodeService {
 
         return Flowable.fromIterable(nodeEntityList)
                 .map(new Function<NodeEntity, NodeInfoEntity>() {
-
                     @Override
                     public NodeInfoEntity apply(NodeEntity nodeEntity) throws Exception {
                         return nodeEntity.createNodeInfo();
@@ -124,6 +123,19 @@ public class NodeService implements INodeService {
                     }
                 })
                 .toSingle()
+                .subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Single<List<NodeEntity>> getNode(String nodeAddress) {
+        return Flowable.fromIterable(NodeInfoDao.getNode(nodeAddress))
+                .map(new Function<NodeInfoEntity, NodeEntity>() {
+                    @Override
+                    public NodeEntity apply(NodeInfoEntity nodeInfoEntity) throws Exception {
+                        return nodeInfoEntity.buildNodeEntity();
+                    }
+                })
+                .toList()
                 .subscribeOn(Schedulers.io());
     }
 }
