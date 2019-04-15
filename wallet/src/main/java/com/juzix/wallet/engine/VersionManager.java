@@ -135,7 +135,7 @@ public class VersionManager {
                     int    len = 0;
                     responseLength = responseBody.contentLength();
                     inputStream = responseBody.byteStream();
-                    final File file = new File(destDir, fileName);
+                    final File file = new File(destDir, fileName.replace(File.separator, ""));
                     entity.setFile(file);
                     entity.setFileSize(responseLength);
                     if (file.exists() && file.length() == responseLength){
