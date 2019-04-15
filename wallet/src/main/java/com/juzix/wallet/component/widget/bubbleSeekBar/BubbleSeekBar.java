@@ -207,7 +207,7 @@ public class BubbleSeekBar extends View {
         String colorStr = a.getString(R.styleable.BubbleSeekBar_bsb_colors);
 
         if (colorStr == null || colorStr.equals("")) {
-            colorStr = "#ff28ADFF_#ff28ADFF_#ff105CFE";
+            colorStr = "#ff28ADFF_#ff2092FF_#ff1877FE_#ff105CFE";
         }
         parseStringToLayerColors(colorStr);
 
@@ -558,7 +558,7 @@ public class BubbleSeekBar extends View {
 //    }
     public void sweepGradientInit() {
         //渐变颜色.colors和pos的个数一定要相等
-        float[] pos = {0f, 0.5f, 1f};
+        float[] pos = {0f, 0.25f,0.5f, 1f};
         linearGradient = new LinearGradient(0, 0, mLySpace / 2, mLySpace / 2, colors, pos, Shader.TileMode.REPEAT);
         Matrix matrix = new Matrix();
         linearGradient.setLocalMatrix(matrix);
