@@ -18,7 +18,6 @@ public class RequestInfo {
 
     public static final String DEFAULT_URL_KEY = "RESTFUL";
     public static final String URL_IP = "url_ip";
-    public static final String URL_VOTE = "url_vote";
 
     public enum EncryptionType {
         TYPE_PLATFORM,

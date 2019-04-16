@@ -193,7 +193,7 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
         }
     }
 
-    private Single<List<String>> getVerifiersList() {
+    private Flowable<String> getVerifiersList() {
         return CandidateManager
                 .getInstance()
                 .getVerifiersList()
@@ -215,8 +215,7 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
                     public String apply(CandidateEntity candidateEntity) throws Exception {
                         return candidateEntity.getCandidateId();
                     }
-                })
-                .toList();
+                });
     }
 
     /**

@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.juzhen.framework.network.NetState;
 import com.juzix.wallet.entity.IndividualTransactionEntity;
+import com.juzix.wallet.entity.NodeEntity;
 import com.juzix.wallet.entity.RegionEntity;
 import com.juzix.wallet.entity.SharedTransactionEntity;
 import com.juzix.wallet.entity.SharedWalletEntity;
@@ -94,7 +95,7 @@ public class EventPublisher {
         BusProvider.post(new Event.RemoveSharedWalletEvent(sharedWalletEntity));
     }
 
-    public void sendNodeChangedEvent() {
-        BusProvider.post(new Event.NodeChangedEvent());
+    public void sendNodeChangedEvent(NodeEntity nodeEntity) {
+        BusProvider.post(new Event.NodeChangedEvent(nodeEntity));
     }
 }

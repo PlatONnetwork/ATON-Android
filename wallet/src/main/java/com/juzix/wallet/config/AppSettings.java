@@ -68,11 +68,11 @@ public class AppSettings {
         setBooleanItem(Constants.Preference.KEY_SHOW_ASSETS_FLAG, showAssetsFlag);
     }
 
-    public long getUpdateVersionTime(){
+    public long getUpdateVersionTime() {
         return getLongItem(Constants.Preference.KEY_UPDATE_VERSION_TIME, 0);
     }
 
-    public void setUpdateVersionTime(long updateVersionTime){
+    public void setUpdateVersionTime(long updateVersionTime) {
         setLongItem(Constants.Preference.KEY_UPDATE_VERSION_TIME, updateVersionTime);
     }
 
@@ -124,4 +124,11 @@ public class AppSettings {
         return getBooleanItem(Constants.Preference.KEY_FIRST_ENTER, true);
     }
 
+    public void setCurrentNodeAddress(String nodeAddress) {
+        setStringItem(Constants.Preference.KEY_CURRENT_NODE_ADDRESS, nodeAddress);
+    }
+
+    public String getCurrentNodeAddress(){
+        return getStringItem(Constants.Preference.KEY_CURRENT_NODE_ADDRESS,null);
+    }
 }

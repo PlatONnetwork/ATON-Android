@@ -190,7 +190,7 @@ public class NodeSettingsPresenter extends BasePresenter<NodeSettingsContract.Vi
                     @Override
                     public void accept(Boolean aBoolean) throws Exception {
                         NodeManager.getInstance().switchNode(nodeEntity);
-                        EventPublisher.getInstance().sendNodeChangedEvent();
+                        EventPublisher.getInstance().sendNodeChangedEvent(nodeEntity);
                     }
                 })
                 .flatMap(new Function<Boolean, SingleSource<Boolean>>() {

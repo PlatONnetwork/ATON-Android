@@ -74,13 +74,12 @@ public class AppFramework {
         //初始化偏好设置
         AppSettings.getInstance().init(context);
         //初始化网络模块
-        HttpClient.getInstance().init(context, "http://192.168.9.190:10061/a-api/api/", buildMultipleUrlMap());
+        HttpClient.getInstance().init(mContext, Constants.URL.URL_HTTP_C, buildMultipleUrlMap());
     }
 
     private Map<String, Object> buildMultipleUrlMap() {
         Map<String, Object> map = new HashMap<>();
-        map.put(RequestInfo.URL_IP, "http://ip-api.com/");
-        map.put(RequestInfo.URL_VOTE, "http://192.168.9.190:10061/a-api/api/");
+        map.put(RequestInfo.URL_IP, Constants.URL.URL_IP_SERVICE);
         return map;
     }
 
@@ -189,19 +188,19 @@ public class AppFramework {
                             schema.remove("TransactionInfoResult");
 
                             schema.create("CandidateInfoEntity")
-                                .addField("candidateId",String.class, FieldAttribute.PRIMARY_KEY)
-                                .addField("deposit",String.class)
-                                .addField("blockNumber",long.class)
-                                .addField("owner",String.class)
-                                .addField("txIndex",int.class)
-                                .addField("from",String.class)
-                                .addField("fee",int.class)
-                                .addField("host",String.class)
-                                .addField("port",String.class)
-                                .addField("txHash",String.class)
-                                .addField("extra",String.class)
-                                .addField("nodeAddress",String.class)
-                                .addField("candidateName",String.class);
+                                    .addField("candidateId", String.class, FieldAttribute.PRIMARY_KEY)
+                                    .addField("deposit", String.class)
+                                    .addField("blockNumber", long.class)
+                                    .addField("owner", String.class)
+                                    .addField("txIndex", int.class)
+                                    .addField("from", String.class)
+                                    .addField("fee", int.class)
+                                    .addField("host", String.class)
+                                    .addField("port", String.class)
+                                    .addField("txHash", String.class)
+                                    .addField("extra", String.class)
+                                    .addField("nodeAddress", String.class)
+                                    .addField("candidateName", String.class);
                             oldVersion++;
                         }
                     }
@@ -223,6 +222,8 @@ public class AppFramework {
         IndividualWalletManager.getInstance().init();
         //初始化共享钱包
         SharedWalletManager.getInstance().init();
+        //初始化网络
+//        HttpClient.getInstance().init(mContext, Constants.URL.URL_HTTP_C, buildMultipleUrlMap());
     }
 
     static class NetStateBroadcastReceiver extends BroadcastReceiver {
