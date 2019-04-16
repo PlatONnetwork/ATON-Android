@@ -91,8 +91,8 @@ public class Constants {
         String UPDATE_URL = "https://api.github.com/repos/PlatONnetwork/ATON-Android/releases/latest";
         String URL_TEST_A = "https://test-amigo.platon.network/test";
         String URL_TEST_B = " https://test-beta.platon.network/test";
-        String URL_HTTP_A = "http:ip:port/api-203";
-        String URL_HTTP_B = "http:ip:port/api-1";
+        String URL_HTTP_A = "http://192.168.9.190:10061/api-203/";
+        String URL_HTTP_B = "http://192.168.9.190:10061/api-1/";
         String URL_HTTP_C = "http://192.168.9.190:10061/a-api/api/";
         String URL_IP_SERVICE = "http://ip-api.com/";
     }

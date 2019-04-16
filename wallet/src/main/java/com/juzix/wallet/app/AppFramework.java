@@ -223,7 +223,7 @@ public class AppFramework {
         //初始化共享钱包
         SharedWalletManager.getInstance().init();
         //初始化网络
-//        HttpClient.getInstance().init(mContext, Constants.URL.URL_HTTP_C, buildMultipleUrlMap());
+        HttpClient.getInstance().init(mContext, event.nodeEntity.getHttpUrl(), buildMultipleUrlMap());
     }
 
     static class NetStateBroadcastReceiver extends BroadcastReceiver {

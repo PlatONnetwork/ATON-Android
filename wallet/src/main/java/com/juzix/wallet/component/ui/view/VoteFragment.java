@@ -218,7 +218,7 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                   //添加未选中Tab的逻辑
+                //添加未选中Tab的逻辑
             }
 
             @Override
@@ -322,6 +322,11 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateCandidateRegionInfoEvent(Event.UpdateCandidateRegionInfoEvent event) {
         mVoteListAdapter.updateRegionInfo(event.regionEntity);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onNodeChangedEvent(Event.NodeChangedEvent event) {
+        mPresenter.clearCandidateList();
     }
 
     private int getCheckedIdByTabTag(String tag) {
