@@ -29,7 +29,7 @@
 
     <com.juzix.wallet.component.widget.CustomEditText
         android:id="@+id/et_node"
-        style="@style/Text.000.13"
+        style="@style/Text.000.14"
         android:layout_width="0dp"
         android:layout_marginLeft="12dp"
         android:background="@null"
