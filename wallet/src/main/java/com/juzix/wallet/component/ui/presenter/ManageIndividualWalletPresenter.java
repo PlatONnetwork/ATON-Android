@@ -15,8 +15,10 @@ import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.engine.SharedWalletManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.event.EventPublisher;
+import com.juzix.wallet.utils.JZWalletUtil;
 
 import org.web3j.crypto.Credentials;
+import org.web3j.crypto.Keys;
 import org.web3j.utils.Numeric;
 
 import java.util.ArrayList;
@@ -61,7 +63,8 @@ public class ManageIndividualWalletPresenter extends BasePresenter<ManageIndivid
                 || viewType == ManageIndividualWalletContract.View.TYPE_DELETE_WALLET) {
             deleteWallet();
         } else if (viewType == ManageIndividualWalletContract.View.TYPE_EXPORT_PRIVATE_KEY) {
-            ExportIndividualPrivateKeyActivity.actionStart(getContext(), Numeric.toHexStringNoPrefix(credentials.getEcKeyPair().getPrivateKey()));
+            String privateKey = Numeric.toHexStringNoPrefixZeroPadded(credentials.getEcKeyPair().getPrivateKey(), Keys.PRIVATE_KEY_LENGTH_IN_HEX);
+            ExportIndividualPrivateKeyActivity.actionStart(getContext(), privateKey);
         } else if (viewType == ManageIndividualWalletContract.View.TYPE_EXPORT_KEYSTORE) {
             ExportIndividualKeystoreActivity.actionStart(getContext(), mWalletEntity.getKey());
         }
