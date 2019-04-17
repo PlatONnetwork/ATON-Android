@@ -32,7 +32,7 @@ public class MultipleUrlInterceptor implements Interceptor {
             if (RequestInfo.URL_IP.equals(headerValue)) {
                 newBaseUrl = HttpUrl.parse(RequestInfo.getUrl(RequestInfo.URL_IP));
             } else {
-                newBaseUrl = HttpUrl.parse(RequestInfo.getUrl(RequestInfo.URL_VOTE));
+                newBaseUrl = HttpUrl.parse(RequestInfo.getUrl(RequestInfo.DEFAULT_URL_KEY));
             }
             request = origin.newBuilder()
                     .url(newBaseUrl)

@@ -1,5 +1,6 @@
 package com.juzix.wallet.entity;
 
+import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.db.entity.NodeInfoEntity;
 
 /**
@@ -43,7 +44,7 @@ public class NodeEntity implements Cloneable, Nullable {
     }
 
     public NodeInfoEntity createNodeInfo() {
-        return new NodeInfoEntity(id, nodeAddress, isDefaultNode, isChecked,isMainNetworkNode);
+        return new NodeInfoEntity(id, nodeAddress, isDefaultNode, isChecked, isMainNetworkNode);
     }
 
     public String getNodeAddress() {
@@ -173,6 +174,17 @@ public class NodeEntity implements Cloneable, Nullable {
 
         public NodeEntity build() {
             return new NodeEntity(this);
+        }
+    }
+
+    public String getHttpUrl() {
+
+        if (Constants.URL.URL_TEST_A.equals(nodeAddress)) {
+            return Constants.URL.URL_HTTP_A;
+        } else if (Constants.URL.URL_TEST_B.equals(nodeAddress)) {
+            return Constants.URL.URL_HTTP_B;
+        } else {
+            return Constants.URL.URL_HTTP_C;
         }
     }
 }

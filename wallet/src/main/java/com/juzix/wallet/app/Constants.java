@@ -69,6 +69,7 @@ public class Constants {
         String KEY_FIRST_ENTER = "firstEnter";
         String KEY_SHOW_ASSETS_FLAG = "showAssetsFlag";
         String KEY_UPDATE_VERSION_TIME = "updateVersionTime";
+        String KEY_CURRENT_NODE_ADDRESS = "currentNodeAddress";
     }
 
     public interface Permission {
@@ -87,10 +88,13 @@ public class Constants {
     }
 
     public interface URL {
-        String IP_URL = "http://ip-api.com/batch/";
         String UPDATE_URL = "https://api.github.com/repos/PlatONnetwork/ATON-Android/releases/latest";
         String URL_TEST_A = "https://test-amigo.platon.network/test";
         String URL_TEST_B = " https://test-beta.platon.network/test";
+        String URL_HTTP_A = "http://192.168.9.190:10061/api-203/";
+        String URL_HTTP_B = "http://192.168.9.190:10061/api-1/";
+        String URL_HTTP_C = "http://192.168.9.190:10061/a-api/api/";
+        String URL_IP_SERVICE = "http://ip-api.com/";
     }
 
     public interface DBName {

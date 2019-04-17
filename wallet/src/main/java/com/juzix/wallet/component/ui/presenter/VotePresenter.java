@@ -114,6 +114,12 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
 
     }
 
+    @Override
+    public void clearCandidateList() {
+        mCandidateEntiyList.clear();
+        mVerifiersList.clear();
+    }
+
     private void getTicketInfo() {
         if (mTicketInfoDisposable != null && !mTicketInfoDisposable.isDisposed()) {
             mTicketInfoDisposable.dispose();

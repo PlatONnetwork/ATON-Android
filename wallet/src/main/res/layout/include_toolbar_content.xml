@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="149dp">
 
@@ -25,6 +26,7 @@
             android:layout_marginRight="16dp"
             android:max="100"
             android:progress="0"
+            tools:progress="80"
             android:progressDrawable="@drawable/bg_progressbar_vote_rate"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"

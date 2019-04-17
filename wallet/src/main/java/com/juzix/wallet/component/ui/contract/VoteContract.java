@@ -4,7 +4,6 @@ import com.juzix.wallet.component.ui.SortType;
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
 import com.juzix.wallet.entity.CandidateEntity;
-import com.juzix.wallet.entity.IndividualWalletEntity;
 
 import java.util.List;
 
@@ -29,5 +28,7 @@ public class VoteContract {
         void search(String keyword);
 
         void voteTicket(CandidateEntity candidateEntity);
+
+        void clearCandidateList();
     }
 }

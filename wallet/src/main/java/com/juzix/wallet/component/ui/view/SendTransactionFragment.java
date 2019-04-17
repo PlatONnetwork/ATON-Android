@@ -205,14 +205,18 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
                     AddressEntity addressEntity = data.getParcelableExtra(Constants.Extra.EXTRA_ADDRESS);
                     if (addressEntity != null) {
                         setToAddress(addressEntity.getAddress());
-                        mPresenter.calculateFee();
+                        if (mPresenter != null) {
+                            mPresenter.calculateFee();
+                        }
                     }
                     break;
                 case MainActivity.REQ_ASSETS_ADDRESS_QR_CODE:
                     String address = data.getStringExtra(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
                     if (JZWalletUtil.isValidAddress(address)) {
                         setToAddress(address);
-                        mPresenter.calculateFee();
+                        if (mPresenter != null) {
+                            mPresenter.calculateFee();
+                        }
                     } else {
                         ToastUtil.showLongToast(getContext(), string(R.string.unrecognized));
                     }
@@ -239,7 +243,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
 
     @Override
     public void setToAddress(String address) {
-        if (etWalletAddress != null){
+        if (etWalletAddress != null) {
             etWalletAddress.setText(address);
         }
     }

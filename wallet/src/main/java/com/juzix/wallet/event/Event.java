@@ -2,6 +2,7 @@ package com.juzix.wallet.event;
 
 import com.juzhen.framework.network.NetState;
 import com.juzix.wallet.entity.IndividualTransactionEntity;
+import com.juzix.wallet.entity.NodeEntity;
 import com.juzix.wallet.entity.RegionEntity;
 import com.juzix.wallet.entity.SharedTransactionEntity;
 import com.juzix.wallet.entity.SharedWalletEntity;
@@ -127,8 +128,10 @@ public class Event {
 
     public static class NodeChangedEvent {
 
-        public NodeChangedEvent() {
+        public NodeEntity nodeEntity;
 
+        public NodeChangedEvent(NodeEntity nodeEntity) {
+            this.nodeEntity = nodeEntity;
         }
     }
 }

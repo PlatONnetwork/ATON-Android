@@ -1,7 +1,10 @@
 package com.juzix.wallet.engine;
 
+import android.text.TextUtils;
+
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.SchedulersTransformer;
+import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.entity.NodeEntity;
 import com.juzix.wallet.event.EventPublisher;
 
@@ -45,7 +48,7 @@ public class NodeManager {
     }
 
     public String getCurNodeAddress() {
-        return curNode == null ? null : curNode.getNodeAddress();
+        return curNode == null || TextUtils.isEmpty(curNode.getNodeAddress()) ? AppSettings.getInstance().getCurrentNodeAddress() : curNode.getNodeAddress();
     }
 
     public void setCurNode(NodeEntity curNode) {
@@ -95,7 +98,7 @@ public class NodeManager {
                     @Override
                     public void accept(NodeEntity nodeEntity) throws Exception {
                         switchNode(nodeEntity);
-                        EventPublisher.getInstance().sendNodeChangedEvent();
+                        EventPublisher.getInstance().sendNodeChangedEvent(nodeEntity);
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -107,6 +110,7 @@ public class NodeManager {
 
     public void switchNode(NodeEntity nodeEntity) {
         setCurNode(nodeEntity);
+        AppSettings.getInstance().setCurrentNodeAddress(nodeEntity.getNodeAddress());
         Web3jManager.getInstance().init(nodeEntity.getNodeAddress());
     }
 
