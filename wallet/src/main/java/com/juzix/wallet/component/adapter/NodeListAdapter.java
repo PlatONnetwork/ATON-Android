@@ -1,14 +1,21 @@
 package com.juzix.wallet.component.adapter;
 
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.style.AbsoluteSizeSpan;
+import android.text.style.BackgroundColorSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.juzhen.framework.util.AndroidUtil;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.app.SchedulersTransformer;
@@ -206,12 +213,28 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
         String nodeAddress = TextUtils.isEmpty(nodeEntity.getNodeAddress()) ? map.get(nodeEntity.getId()) : nodeEntity.getNodeAddress();
         boolean isDefaultMainNetwork = nodeEntity.isDefaultNode() && nodeEntity.isMainNetworkNode();
         boolean isDefaultTestNetwork = nodeEntity.isDefaultNode() && !nodeEntity.isMainNetworkNode();
+        SpannableStringBuilder stringBuilder;
         if (isDefaultMainNetwork) {
-            holder.etNode.setText(String.format("%s(%s)", nodeAddress, activity.getString(R.string.default_main_network)));
+            String                 text          = String.format("(%1$s)", activity.getString(R.string.default_main_network));
+            stringBuilder = new SpannableStringBuilder(nodeAddress + text);
+            stringBuilder.setSpan(new ForegroundColorSpan(ContextCompat.getColor(activity, R.color.color_000000)), 0, nodeAddress.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            stringBuilder.setSpan(new ForegroundColorSpan(ContextCompat.getColor(activity, R.color.color_898c9e)), nodeAddress.length(), nodeAddress.length() + text.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            stringBuilder.setSpan(new AbsoluteSizeSpan(AndroidUtil.sp2px(activity, 14)), 0, nodeAddress.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            stringBuilder.setSpan(new AbsoluteSizeSpan(AndroidUtil.sp2px(activity, 12)), nodeAddress.length(), nodeAddress.length() + text.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            holder.etNode.setText(stringBuilder);
         } else if (isDefaultTestNetwork) {
-            holder.etNode.setText(String.format("%s(%s)", nodeAddress, activity.getString(R.string.default_test_network)));
-        } else {
-            holder.etNode.setText(nodeAddress);
+            String                 text          = String.format("(%1$s)", activity.getString(R.string.default_test_network));
+            stringBuilder = new SpannableStringBuilder(nodeAddress + text);
+            stringBuilder.setSpan(new ForegroundColorSpan(ContextCompat.getColor(activity, R.color.color_000000)), 0, nodeAddress.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            stringBuilder.setSpan(new ForegroundColorSpan(ContextCompat.getColor(activity, R.color.color_898c9e)), nodeAddress.length(), nodeAddress.length() + text.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            stringBuilder.setSpan(new AbsoluteSizeSpan(AndroidUtil.sp2px(activity, 14)), 0, nodeAddress.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            stringBuilder.setSpan(new AbsoluteSizeSpan(AndroidUtil.sp2px(activity, 12)), nodeAddress.length(), nodeAddress.length() + text.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            holder.etNode.setText(stringBuilder);
+        } else if (!TextUtils.isEmpty(nodeAddress)){
+            stringBuilder = new SpannableStringBuilder(nodeAddress);
+            stringBuilder.setSpan(new ForegroundColorSpan(ContextCompat.getColor(activity, R.color.color_000000)), 0, nodeAddress.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            stringBuilder.setSpan(new AbsoluteSizeSpan(AndroidUtil.sp2px(activity, 14)), 0, nodeAddress.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            holder.etNode.setText(stringBuilder);
         }
         holder.ivDel.setOnClickListener(new View.OnClickListener() {
             @Override
