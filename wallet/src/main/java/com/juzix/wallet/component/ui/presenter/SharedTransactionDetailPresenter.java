@@ -57,7 +57,7 @@ public class SharedTransactionDetailPresenter extends BasePresenter<SharedTransa
                 resultList.addAll(undeterminedList);
             }
 
-            getView().showTransactionResult(resultList);
+            getView().showTransactionResult(resultList,transactionEntity);
 
             getView().setTransactionDetailInfo(transactionEntity, queryAddress);
         }

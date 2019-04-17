@@ -258,16 +258,6 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
 
     }
 
-    @Override
-    public List<WalletEntity> getWalletList() {
-        return mWalletList;
-    }
-
-    @Override
-    public void setWalletList(List<WalletEntity> walletList) {
-        this.mWalletList = walletList;
-    }
-
     private boolean isSelected(WalletEntity selectedWallet) {
         if (selectedWallet == null) {
             return false;

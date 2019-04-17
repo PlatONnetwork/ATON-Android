@@ -153,8 +153,8 @@ public class SharedTransactionDetailActivity extends MVPBaseActivity<SharedTrans
     }
 
     @Override
-    public void showTransactionResult(List<TransactionResult> transactionResultList) {
-        layoutTransactionResult.setVisibility(transactionResultList == null || transactionResultList.isEmpty() ? View.GONE : View.VISIBLE);
+    public void showTransactionResult(List<TransactionResult> transactionResultList, SharedTransactionEntity transactionEntity) {
+        layoutTransactionResult.setVisibility(transactionEntity.getTransactionType() == SharedTransactionEntity.TransactionType.SEND_TRANSACTION.getValue() ? View.VISIBLE : View.GONE);
         mAdapter.notifyDataChanged(transactionResultList);
     }
 
