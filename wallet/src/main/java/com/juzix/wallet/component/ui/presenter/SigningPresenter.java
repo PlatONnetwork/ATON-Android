@@ -257,7 +257,7 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
                 .subscribe(new Consumer<Credentials>() {
                     @Override
                     public void accept(Credentials credentials) throws Exception {
-                        sendTransaction(sharedTransactionEntity, credentials, type, gasPrice);
+                        sendTransaction(sharedTransactionEntity, credentials,individualWalletEntity.getPrefixAddress(), type, gasPrice);
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -276,10 +276,10 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
 
     }
 
-    private void sendTransaction(SharedTransactionEntity sharedTransactionEntity, Credentials credentials, int type, BigInteger gasPrice) {
+    private void sendTransaction(SharedTransactionEntity sharedTransactionEntity, Credentials credentials,String walletAddress, int type, BigInteger gasPrice) {
 
         SharedWalletTransactionManager.getInstance()
-                .sendTransaction(sharedTransactionEntity, credentials, transactionEntity.getContractAddress(), transactionEntity.getTransactionId(), gasPrice, type)
+                .sendTransaction(sharedTransactionEntity, credentials, transactionEntity.getContractAddress(),walletAddress, transactionEntity.getTransactionId(), gasPrice, type)
                 .compose(new SchedulersTransformer())
                 .doOnSubscribe(new Consumer<Disposable>() {
                     @Override

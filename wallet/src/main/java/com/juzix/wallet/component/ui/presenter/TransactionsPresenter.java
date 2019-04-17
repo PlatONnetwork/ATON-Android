@@ -212,7 +212,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
         }).flatMap(new Function<IndividualTransactionEntity, Publisher<IndividualTransactionEntity>>() {
             @Override
             public Publisher<IndividualTransactionEntity> apply(IndividualTransactionEntity individualTransactionEntity) throws Exception {
-                if (!individualTransactionEntity.isCompleted()){
+                if (!individualTransactionEntity.isCompleted()) {
                     IndividualWalletTransactionManager.getInstance().getIndividualTransactionByLoop(individualTransactionEntity);
                 }
                 return Flowable.just(individualTransactionEntity);
@@ -267,6 +267,16 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                                     @Override
                                     public SharedTransactionEntity apply(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
                                         return sharedTransactionInfoEntity.buildSharedTransactionEntity();
+                                    }
+                                })
+                                .filter(new Predicate<SharedTransactionEntity>() {
+                                    @Override
+                                    public boolean test(SharedTransactionEntity sharedTransactionEntity) throws Exception {
+                                        SharedTransactionEntity.TransactionType transactionType = SharedTransactionEntity.TransactionType.getTransactionType(sharedTransactionEntity.getTransactionType());
+                                        if (transactionType != SharedTransactionEntity.TransactionType.SEND_TRANSACTION && !mWalletEntity.getPrefixAddress().equals(sharedTransactionEntity.getFromAddress())) {
+                                            return false;
+                                        }
+                                        return true;
                                     }
                                 })
                                 .toList();
@@ -366,6 +376,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
 
     /**
      * 拼接共享钱包的地址
+     *
      * @param sharedWalletEntityList
      * @return
      */

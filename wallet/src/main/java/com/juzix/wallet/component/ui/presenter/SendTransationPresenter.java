@@ -366,7 +366,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
                     @Override
                     public SingleSource<SharedTransactionInfoEntity> apply(Credentials credentials) throws Exception {
                         return SharedWalletTransactionManager.getInstance()
-                                .submitTransaction(credentials, (SharedWalletEntity) walletEntity, toAddress, transferAmount, "", submitGasPrice);
+                                .submitTransaction(credentials, (SharedWalletEntity) walletEntity,individualWalletEntity.getPrefixAddress(), toAddress, transferAmount, "", submitGasPrice);
                     }
                 })
                 .map(new Function<SharedTransactionInfoEntity, SharedTransactionInfoEntity>() {
