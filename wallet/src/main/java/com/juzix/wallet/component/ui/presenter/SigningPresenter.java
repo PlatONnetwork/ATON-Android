@@ -218,7 +218,7 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
                         double gasLimit = type == 1 ? SharedWalletTransactionManager.APPROVE_GAS_LIMIT.doubleValue() : SharedWalletTransactionManager.REVOKE_GAS_LIMIT.doubleValue();
                         final double feeAmount = BigDecimalUtil.div(BigDecimalUtil.mul(gasPrice.doubleValue(), gasLimit), DEFAULT_WEI);
                         SendTransactionDialogFragment
-                                .newInstance(string(R.string.execute_contract_confirm), NumberParserUtils.getPrettyBalance(feeAmount), buildTransactionInfo(individualWalletEntity.getName()))
+                                .newInstance(string(R.string.joint_wallet_execution), NumberParserUtils.getPrettyBalance(feeAmount), buildTransactionInfo(individualWalletEntity.getName()))
                                 .setOnConfirmBtnClickListener(new SendTransactionDialogFragment.OnConfirmBtnClickListener() {
                                     @Override
                                     public void onConfirmBtnClick() {

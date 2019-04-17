@@ -87,6 +87,10 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
         }
     }
 
+    public List<WalletEntity> getWalletList(){
+        return mList;
+    }
+
     private void setLoadWalletView(final int position, final SharedWalletEntity walletEntity, ViewHolder holder) {
         holder.vShadow.setVisibility(View.GONE);
         holder.rlItem.setVisibility(View.GONE);

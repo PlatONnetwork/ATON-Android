@@ -134,7 +134,7 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
                             double feeAmount = BigDecimalUtil.div(BigDecimalUtil.mul(VoteManager.GAS_PRICE.doubleValue(), VoteManager.GAS_LIMIT.doubleValue()), 1E18);
 
                             SendTransactionDialogFragment
-                                    .newInstance(NumberParserUtils.getPrettyNumber(ticketAmount, 0), buildTransactionInfo(mIndividualWalletEntity.getName(), mIndividualWalletEntity.getPrefixAddress(), feeAmount))
+                                    .newInstance(NumberParserUtils.getPrettyNumber(ticketAmount, 0), buildTransactionInfo(mIndividualWalletEntity.getName(), feeAmount))
                                     .setOnConfirmBtnClickListener(new SendTransactionDialogFragment.OnConfirmBtnClickListener() {
                                         @Override
                                         public void onConfirmBtnClick() {
@@ -318,10 +318,10 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
                 });
     }
 
-    private Map<String, String> buildTransactionInfo(String walletName, String walletAddress, double fee) {
+    private Map<String, String> buildTransactionInfo(String walletName, double fee) {
         Map<String, String> map = new LinkedHashMap<>();
         map.put(string(R.string.type), string(R.string.voting));
-        map.put(string(R.string.pay_wallet), String.format("%s:%s", walletName, walletAddress));
+        map.put(string(R.string.pay_wallet), walletName);
         map.put(string(R.string.fee), string(R.string.amount_with_unit, NumberParserUtils.getPrettyNumber(fee, 8)));
         return map;
     }

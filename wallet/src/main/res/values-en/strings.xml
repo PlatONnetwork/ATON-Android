@@ -339,6 +339,8 @@
     <string name="voteStakedUnstaked">Vote Staked/Unstaked</string>
     <string name="votingWallet">Voting wallet</string>
     <string name="estimatedActualExpirationTime">Estimated/Actual expiration time</string>
+    <string name="estimatedTime">Estimated expiration Time</string>
+    <string name="actualExpirationTime">Actual expiration time</string>
     <string name="nodeInformation">Node Information</string>
     <string name="joinTime">Join time: %1$s</string>
     <string name="candidate">Nominees</string>
