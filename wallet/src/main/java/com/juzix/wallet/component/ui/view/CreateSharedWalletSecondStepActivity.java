@@ -50,7 +50,7 @@ import kotlin.Unit;
 public class CreateSharedWalletSecondStepActivity extends MVPBaseActivity<CreateSharedWalletSecondStepPresenter> implements CreateSharedWalletSecondStepContract.View {
 
     @BindView(R.id.list_shared_owner)
-    ListView     listSharedOwner;
+    ListView listSharedOwner;
     @BindView(R.id.sbtn_create_shared_wallet)
     ShadowButton btnCreateSharedWallet;
 
@@ -175,7 +175,7 @@ public class CreateSharedWalletSecondStepActivity extends MVPBaseActivity<Create
                         mPresenter.focusAddress(position);
                         etWalletAddress.requestFocus();
                         etWalletAddress.onWindowFocusChanged(true);
-                        showSaveAddressDialog(tvSaveAddress, etWalletAddress.getText().toString());
+                        showSaveAddressDialog(tvSaveAddress, etWalletAddress.getText().toString().trim(),etWalletName.getText().toString().trim());
                     }
                 };
 
@@ -298,10 +298,10 @@ public class CreateSharedWalletSecondStepActivity extends MVPBaseActivity<Create
 
     @Override
     public void showWalletInfo(IndividualWalletEntity walletEntity) {
-        ((TextView)headerView.findViewById(R.id.tv_wallet_address_info)).setText(getString(R.string.member, String.valueOf("1")));
-        ((ImageView)headerView.findViewById(R.id.iv_wallet_avatar)).setImageResource(RUtils.drawable(walletEntity.getAvatar()));
-        ((TextView)headerView.findViewById(R.id.tv_wallet_name)).setText(walletEntity.getName());
-        ((TextView)headerView.findViewById(R.id.tv_wallet_address)).setText(AddressFormatUtil.formatAddress(walletEntity.getPrefixAddress()));
+        ((TextView) headerView.findViewById(R.id.tv_wallet_address_info)).setText(getString(R.string.member, String.valueOf("1")));
+        ((ImageView) headerView.findViewById(R.id.iv_wallet_avatar)).setImageResource(RUtils.drawable(walletEntity.getAvatar()));
+        ((TextView) headerView.findViewById(R.id.tv_wallet_name)).setText(walletEntity.getName());
+        ((TextView) headerView.findViewById(R.id.tv_wallet_address)).setText(AddressFormatUtil.formatAddress(walletEntity.getPrefixAddress()));
 
     }
 
@@ -325,8 +325,8 @@ public class CreateSharedWalletSecondStepActivity extends MVPBaseActivity<Create
         tvAddress.setTextColor(ContextCompat.getColor(getContext(), enable ? R.color.color_105cfe : R.color.color_b6bbd0));
     }
 
-    public void showSaveAddressDialog(final TextView tvSaveAddress, final String address) {
-        CommonEditDialogFragment.createCommonEditDialogFragment(string(R.string.nameOfWallet), "", InputType.TYPE_CLASS_TEXT, string(R.string.confirm), string(R.string.cancel), new OnDialogViewClickListener() {
+    public void showSaveAddressDialog(final TextView tvSaveAddress, final String address, final String addressName) {
+        CommonEditDialogFragment.createCommonEditDialogFragment(string(R.string.nameOfAddress), addressName, InputType.TYPE_CLASS_TEXT, string(R.string.confirm), string(R.string.cancel), new OnDialogViewClickListener() {
             @Override
             public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
                 String text = extra.getString(Constants.Bundle.BUNDLE_TEXT);
@@ -335,7 +335,7 @@ public class CreateSharedWalletSecondStepActivity extends MVPBaseActivity<Create
                             string(R.string.formatError), string(R.string.validWalletNameTips), string(R.string.understood), new OnDialogViewClickListener() {
                                 @Override
                                 public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
-                                    showSaveAddressDialog(tvSaveAddress, address);
+                                    showSaveAddressDialog(tvSaveAddress, address, addressName);
                                 }
                             }).show(getSupportFragmentManager(), "showTips");
                 } else {
