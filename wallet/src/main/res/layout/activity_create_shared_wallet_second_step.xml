@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-              android:background="@color/color_ffffff"
+    android:background="@color/color_ffffff"
     android:clipToPadding="true"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
@@ -28,28 +28,29 @@
             android:layout_marginRight="16dp"
             android:clipChildren="false"
             android:clipToPadding="false"
-            android:paddingTop="17dp"
             android:divider="@drawable/bg_transparent_list_divider"
             android:dividerHeight="16dp"
+            android:paddingTop="17dp"
             android:paddingBottom="71dp"
-            tools:listitem="@layout/item_create_shared_owner_list"
-            tools:listheader="@layout/layout_create_shared_owner_list_header"/>
+            tools:listheader="@layout/layout_create_shared_owner_list_header"
+            tools:listitem="@layout/item_create_shared_owner_list" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/color_ffffff"
             android:layout_gravity="bottom"
+            android:background="@color/color_ffffff"
             android:orientation="vertical"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:paddingBottom="14dp">
+
             <com.juzix.wallet.component.widget.ShadowButton
                 android:id="@+id/sbtn_create_shared_wallet"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:text="@string/create"
                 app:enabled="false"
+                app:text="@string/create"
                 app:textAppearance="@style/MainButtonStyle"
                 app:textBackground="@drawable/bg_main_button" />
         </LinearLayout>
