@@ -252,7 +252,6 @@ public class SharedTransactionEntity extends TransactionEntity implements Clonea
         this.transactionType = transactionType;
     }
 
-
     public boolean transfered() {
         if (getConfirms() >= requiredSignNumber || getRevokes() > 0) {
             return true;

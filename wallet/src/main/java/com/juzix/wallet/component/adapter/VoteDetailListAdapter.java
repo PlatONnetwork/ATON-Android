@@ -30,7 +30,7 @@ public class VoteDetailListAdapter extends CommonAdapter<VoteDetailItemEntity> {
         viewHolder.setText(R.id.tv_vote_staked_and_unstaked, String.format("%s/%s", NumberParserUtils.getPrettyNumber(item.getVoteStaked(), 0), NumberParserUtils.getPrettyNumber(item.getVoteUnStaked(), 0)));
         viewHolder.setText(R.id.tv_vote_profit, context.getString(R.string.amount_with_unit, NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(item.getProfit(), "1E18"), 4)));
         TextView tv = (AutoTextView) viewHolder.getView(R.id.tv_wallet_address_and_name);
-        tv.setText(String.format("%s%s", item.getWalletAddress(), "(" + item.getWalletName() + ")"));
+        tv.setText(String.format("%s(%s)", item.getWalletAddress(), item.getWalletName()));
         boolean exceedExpireTime = DateUtil.parse(item.getExpireTime(), DateUtil.DATETIME_FORMAT_PATTERN_WITH_SECOND) > System.currentTimeMillis();
         viewHolder.setText(R.id.tv_time_desc, exceedExpireTime ? context.getString(R.string.estimatedTime) : context.getString(R.string.actualExpirationTime));
         viewHolder.setText(R.id.tv_expire_time, item.getExpireTime());

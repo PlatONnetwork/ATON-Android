@@ -339,8 +339,8 @@
     <string name="voteStakedUnstaked">投票锁定/已解除</string>
     <string name="votingWallet">投票钱包</string>
     <string name="estimatedActualExpirationTime">预计/过期时间</string>
-    <string name="estimatedTime">预计时间</string>
-    <string name="actualExpirationTime">过期时间</string>
+    <string name="estimatedTime">预计过期时间</string>
+    <string name="actualExpirationTime">实际过期时间</string>
     <string name="nodeInformation">节点详情</string>
     <string name="joinTime">加入时间: %1$s</string>
     <string name="candidate">提名节点</string>

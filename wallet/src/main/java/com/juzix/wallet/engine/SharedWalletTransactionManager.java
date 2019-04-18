@@ -595,12 +595,13 @@ public class SharedWalletTransactionManager {
 
     public Single<SharedTransactionInfoEntity> submitTransaction(Credentials credentials,
                                                                  SharedWalletEntity sharedWalletEntity,
-                                                                 String from,
+                                                                 String fromWalletAddress,
                                                                  String to,
                                                                  String amount,
                                                                  String memo,
                                                                  BigInteger gasPrice) {
 
+        String from = sharedWalletEntity.getPrefixAddress();
         long time = System.currentTimeMillis();
         Multisig multisig = Multisig.load(FileUtil.getStringFromAssets(App.getContext(), BIN_NAME), from, Web3jManager.getInstance().getWeb3j(), credentials, new StaticGasProvider(gasPrice, INVOKE_GAS_LIMIT));
         return Single
@@ -608,7 +609,7 @@ public class SharedWalletTransactionManager {
                     @Override
                     public TransactionReceipt call() throws Exception {
                         mTransactionContractAddressList.add(sharedWalletEntity.getAddress());
-                        return submitTransaction(multisig, to, sharedWalletEntity.getPrefixAddress(), memo, amount);
+                        return submitTransaction(multisig, to, from, memo, amount);
                     }
                 })
                 .flatMap(new Function<TransactionReceipt, SingleSource<String>>() {
@@ -642,7 +643,7 @@ public class SharedWalletTransactionManager {
                     @Override
                     public SharedTransactionInfoEntity apply(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
                         sharedTransactionInfoEntity.setUuid(UUID.randomUUID().toString());
-                        sharedTransactionInfoEntity.setFromAddress(from);
+                        sharedTransactionInfoEntity.setFromAddress(fromWalletAddress);
                         sharedTransactionInfoEntity.setToAddress(sharedTransactionInfoEntity.getContractAddress());
                         sharedTransactionInfoEntity.setTransactionType(SharedTransactionEntity.TransactionType.EXECUTED_CONTRACT.getValue());
                         sharedTransactionInfoEntity.setCreateTime(time);
@@ -676,7 +677,7 @@ public class SharedWalletTransactionManager {
                     @Override
                     public SharedTransactionInfoEntity apply(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
                         sharedTransactionInfoEntity.setUuid(UUID.randomUUID().toString());
-                        sharedTransactionInfoEntity.setFromAddress(from);
+                        sharedTransactionInfoEntity.setFromAddress(fromWalletAddress);
                         sharedTransactionInfoEntity.setToAddress(sharedTransactionInfoEntity.getContractAddress());
                         sharedTransactionInfoEntity.setCreateTime(System.currentTimeMillis());
                         sharedTransactionInfoEntity.setTransactionType(SharedTransactionEntity.TransactionType.EXECUTED_CONTRACT.getValue());

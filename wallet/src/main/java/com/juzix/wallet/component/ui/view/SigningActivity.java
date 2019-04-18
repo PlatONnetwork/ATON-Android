@@ -7,6 +7,7 @@ import android.support.constraint.Barrier;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -105,6 +106,7 @@ public class SigningActivity extends MVPBaseActivity<SigningPresenter> implement
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_signing);
         unbinder = ButterKnife.bind(this);
         EventPublisher.getInstance().register(this);
