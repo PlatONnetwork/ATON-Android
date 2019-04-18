@@ -362,7 +362,7 @@ public class CreateSharedWalletSecondStepPresenter extends BasePresenter<CreateS
     private Map<String, String> buildTransactionInfo(String walletName) {
         Map<String, String> map = new LinkedHashMap<>();
         map.put(string(R.string.execute_wallet), walletName);
-        map.put(string(R.string.payment_info), string(R.string.fee_of_create_joint_wallet));
+        map.put(string(R.string.type), string(R.string.create_joint_wallet));
         return map;
     }
 

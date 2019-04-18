@@ -194,7 +194,7 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
         InputWalletPasswordDialogFragment.newInstance(individualWalletEntity).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
             @Override
             public void onWalletPasswordCorrect(Credentials credentials) {
-                validPassword(credentials, sharedTransactionEntity, type, gasPrice, feeAmount);
+                validPassword(credentials, sharedTransactionEntity, individualWalletEntity.getPrefixAddress(),type, gasPrice, feeAmount);
 
             }
         }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
@@ -218,7 +218,7 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
                         double gasLimit = type == 1 ? SharedWalletTransactionManager.APPROVE_GAS_LIMIT.doubleValue() : SharedWalletTransactionManager.REVOKE_GAS_LIMIT.doubleValue();
                         final double feeAmount = BigDecimalUtil.div(BigDecimalUtil.mul(gasPrice.doubleValue(), gasLimit), DEFAULT_WEI);
                         SendTransactionDialogFragment
-                                .newInstance(string(R.string.execute_contract_confirm), NumberParserUtils.getPrettyBalance(feeAmount), buildTransactionInfo(individualWalletEntity.getName()))
+                                .newInstance(string(R.string.joint_wallet_execution), NumberParserUtils.getPrettyBalance(feeAmount), buildTransactionInfo(individualWalletEntity.getName()))
                                 .setOnConfirmBtnClickListener(new SendTransactionDialogFragment.OnConfirmBtnClickListener() {
                                     @Override
                                     public void onConfirmBtnClick() {
@@ -249,7 +249,7 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
         });
     }
 
-    private void validPassword(Credentials credentials, SharedTransactionEntity sharedTransactionEntity, int type, BigInteger gasPrice, double feeAmount) {
+    private void validPassword(Credentials credentials, SharedTransactionEntity sharedTransactionEntity,String walletAddress, int type, BigInteger gasPrice, double feeAmount) {
         checkBalance(individualWalletEntity, credentials, feeAmount)
                 .compose(new SchedulersTransformer())
                 .compose(LoadingTransformer.bindToSingleLifecycle(getView().currentActivity()))
@@ -257,7 +257,7 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
                 .subscribe(new Consumer<Credentials>() {
                     @Override
                     public void accept(Credentials credentials) throws Exception {
-                        sendTransaction(sharedTransactionEntity, credentials, type, gasPrice);
+                        sendTransaction(sharedTransactionEntity, credentials,walletAddress, type, gasPrice);
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -276,10 +276,10 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
 
     }
 
-    private void sendTransaction(SharedTransactionEntity sharedTransactionEntity, Credentials credentials, int type, BigInteger gasPrice) {
+    private void sendTransaction(SharedTransactionEntity sharedTransactionEntity, Credentials credentials,String walletAddress, int type, BigInteger gasPrice) {
 
         SharedWalletTransactionManager.getInstance()
-                .sendTransaction(sharedTransactionEntity, credentials, transactionEntity.getContractAddress(), transactionEntity.getTransactionId(), gasPrice, type)
+                .sendTransaction(sharedTransactionEntity, credentials, transactionEntity.getContractAddress(), walletAddress,transactionEntity.getTransactionId(), gasPrice, type)
                 .compose(new SchedulersTransformer())
                 .doOnSubscribe(new Consumer<Disposable>() {
                     @Override

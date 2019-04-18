@@ -72,10 +72,10 @@
         android:layout_width="match_parent"
         android:layout_marginTop="8dp"
         android:gravity="left"
-        android:text="0xA7a7899d944fE658c4B0a1803adfaasdfasdfasBAB2F490bd3849e(我的钱包)"
-        />
+        android:text="0xA7a7899d944fE658c4B0a1803adfaasdfasdfasBAB2F490bd3849e(我的钱包)" />
 
     <TextView
+        android:id="@+id/tv_time_desc"
         style="@style/Text.61646e.14"
         android:layout_marginTop="16dp"
         android:text="@string/estimatedActualExpirationTime" />

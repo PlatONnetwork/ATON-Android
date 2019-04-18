@@ -20,7 +20,7 @@ public class SharedTransactionDetailContract {
 
         void setTransactionDetailInfo(SharedTransactionEntity transactionEntity, String queryAddress);
 
-        void showTransactionResult(List<TransactionResult> transactionResultList);
+        void showTransactionResult(List<TransactionResult> transactionResultList,SharedTransactionEntity transactionEntity);
     }
 
     public interface Presenter extends IPresenter<View> {

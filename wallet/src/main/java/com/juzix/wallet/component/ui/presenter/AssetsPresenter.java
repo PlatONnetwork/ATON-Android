@@ -47,7 +47,9 @@ import io.reactivex.functions.Function;
 
 public class AssetsPresenter extends BasePresenter<AssetsContract.View> implements AssetsContract.Presenter {
 
-    private ArrayList<WalletEntity> mWalletList = new ArrayList<>();
+    private static final String TAG = AssetsPresenter.class.getSimpleName();
+
+    private List<WalletEntity> mWalletList = new ArrayList<>();
     private Disposable mDisposable;
     private static final int REFRESH_TIME = 5000;
 
@@ -120,13 +122,15 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
                 .subscribe(new Consumer<Double>() {
                     @Override
                     public void accept(Double o) throws Exception {
-                        show();
+                        if (isViewAttached()) {
+                            show();
+                        }
                     }
                 });
     }
 
     @Override
-    public ArrayList<WalletEntity> getRecycleViewDataSource() {
+    public List<WalletEntity> getRecycleViewDataSource() {
         return mWalletList;
     }
 

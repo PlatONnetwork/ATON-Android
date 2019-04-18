@@ -9,7 +9,7 @@ import com.juzix.wallet.utils.DateUtil;
  */
 public class VoteDetailItemEntity implements Comparable<VoteDetailItemEntity> {
 
-    private static final long EXPIRE_BLOCKNUMBER = 1536000;
+    private static final long EXPIRE_BLOCKNUMBER = 1536000000;
     /**
      * 创建时间
      */

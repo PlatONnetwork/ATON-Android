@@ -93,10 +93,10 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
                         SharedWalletTransactionManager.getInstance().updateTransactionForRead(mSharedWalletEntity, sharedTransactionEntity);
                     }
                     BaseActivity activity = currentActivity();
-                    if (sharedTransactionEntity.transfered()) {
-                        SharedTransactionDetailActivity.actionStart(activity, sharedTransactionEntity, null);
-                    } else {
+                    if (sharedTransactionEntity.getTransactionStatus() == TransactionEntity.TransactionStatus.SIGNING) {
                         SigningActivity.actionStart(activity, sharedTransactionEntity, IndividualWalletManager.getInstance().getWalletByAddress(sharedTransactionEntity.getOwnerWalletAddress()));
+                    } else {
+                        SharedTransactionDetailActivity.actionStart(activity, sharedTransactionEntity, null);
                     }
                 }
             }

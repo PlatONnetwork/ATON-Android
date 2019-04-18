@@ -33,26 +33,27 @@ import butterknife.Unbinder;
  */
 public class MainActivity extends MVPBaseActivity<MainPresenter> implements MainContract.View {
 
-    private final static String TAG                            = MainActivity.class.getSimpleName();
-    private final static String TAG_PROPERTY                   = "property";
-    private final static String TAG_VOTE                       = "vote";
-    private final static String TAG_ME                         = "me";
-    public final static  int    TAB_PROPERTY                   = 0;
-    public final static  int    TAB_VOTE                       = 1;
-    public final static  int    TAB_ME                         = 2;
-    public static final  int    REQ_ASSETS_TAB_QR_CODE         = 0x101;
-    public static final  int    REQ_ASSETS_ADDRESS_QR_CODE     = 0x102;
-    public static final  int    REQ_ASSETS_SELECT_ADDRESS_BOOK = 0x103;
+    private final static String TAG = MainActivity.class.getSimpleName();
+    private final static String TAG_PROPERTY = "property";
+    private final static String TAG_VOTE = "vote";
+    private final static String TAG_ME = "me";
+    private final static String TAG_ASSET = "asset";
+    public final static int TAB_PROPERTY = 0;
+    public final static int TAB_VOTE = 1;
+    public final static int TAB_ME = 2;
+    public static final int REQ_ASSETS_TAB_QR_CODE = 0x101;
+    public static final int REQ_ASSETS_ADDRESS_QR_CODE = 0x102;
+    public static final int REQ_ASSETS_SELECT_ADDRESS_BOOK = 0x103;
 
     @BindView(R.id.realTabContent)
-    FrameLayout     realTabContent;
+    FrameLayout realTabContent;
     @BindView(android.R.id.tabhost)
     FragmentTabHost tabhost;
 
-    private       Unbinder        unbinder;
-    private       int             mCurIndex = TAB_PROPERTY;
-    public static MainActivity    sInstance;
-    public        FragmentManager fragmentManager;
+    private Unbinder unbinder;
+    private int mCurIndex = TAB_PROPERTY;
+    public static MainActivity sInstance;
+    private FragmentManager fragmentManager;
 
     public static void actionStart(Context context) {
         Intent intent = new Intent(context, MainActivity.class);

@@ -595,6 +595,7 @@ public class SharedWalletTransactionManager {
 
     public Single<SharedTransactionInfoEntity> submitTransaction(Credentials credentials,
                                                                  SharedWalletEntity sharedWalletEntity,
+                                                                 String fromWalletAddress,
                                                                  String to,
                                                                  String amount,
                                                                  String memo,
@@ -642,7 +643,7 @@ public class SharedWalletTransactionManager {
                     @Override
                     public SharedTransactionInfoEntity apply(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
                         sharedTransactionInfoEntity.setUuid(UUID.randomUUID().toString());
-                        sharedTransactionInfoEntity.setFromAddress(sharedWalletEntity.getCreatorAddress());
+                        sharedTransactionInfoEntity.setFromAddress(fromWalletAddress);
                         sharedTransactionInfoEntity.setToAddress(sharedTransactionInfoEntity.getContractAddress());
                         sharedTransactionInfoEntity.setTransactionType(SharedTransactionEntity.TransactionType.EXECUTED_CONTRACT.getValue());
                         sharedTransactionInfoEntity.setCreateTime(time);
@@ -676,7 +677,7 @@ public class SharedWalletTransactionManager {
                     @Override
                     public SharedTransactionInfoEntity apply(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
                         sharedTransactionInfoEntity.setUuid(UUID.randomUUID().toString());
-                        sharedTransactionInfoEntity.setFromAddress(sharedWalletEntity.getCreatorAddress());
+                        sharedTransactionInfoEntity.setFromAddress(fromWalletAddress);
                         sharedTransactionInfoEntity.setToAddress(sharedTransactionInfoEntity.getContractAddress());
                         sharedTransactionInfoEntity.setCreateTime(System.currentTimeMillis());
                         sharedTransactionInfoEntity.setTransactionType(SharedTransactionEntity.TransactionType.EXECUTED_CONTRACT.getValue());
@@ -781,7 +782,7 @@ public class SharedWalletTransactionManager {
      * @param type
      * @return
      */
-    public Single<SharedTransactionInfoEntity> sendTransaction(SharedTransactionEntity sharedTransactionEntity, Credentials credentials, String contractAddress, String transactionId, BigInteger gasPrice, int type) {
+    public Single<SharedTransactionInfoEntity> sendTransaction(SharedTransactionEntity sharedTransactionEntity, Credentials credentials, String contractAddress,String walletAddress, String transactionId, BigInteger gasPrice, int type) {
 
         return Single.fromCallable(new Callable<TransactionReceipt>() {
             @Override
@@ -820,7 +821,7 @@ public class SharedWalletTransactionManager {
                     @Override
                     public SharedTransactionInfoEntity apply(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
                         sharedTransactionInfoEntity.setUuid(UUID.randomUUID().toString());
-                        sharedTransactionInfoEntity.setFromAddress(sharedTransactionEntity.getOwnerWalletAddress());
+                        sharedTransactionInfoEntity.setFromAddress(walletAddress);
                         sharedTransactionInfoEntity.setToAddress(sharedTransactionInfoEntity.getContractAddress());
                         sharedTransactionInfoEntity.setCreateTime(System.currentTimeMillis());
                         sharedTransactionInfoEntity.setRead(true);
@@ -834,31 +835,6 @@ public class SharedWalletTransactionManager {
                         SharedTransactionInfoDao.insertTransaction(sharedTransactionInfoEntity);
                     }
                 });
-//                .map(new Function<SharedTransactionInfoEntity, SharedTransactionInfoEntity>() {
-//                    @Override
-//                    public SharedTransactionInfoEntity apply(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
-//                        sharedTransactionInfoEntity.setUuid(UUID.randomUUID().toString());
-//                        sharedTransactionInfoEntity.setFromAddress(sharedTransactionInfoEntity.getContractAddress());
-//                        sharedTransactionInfoEntity.setToAddress(sharedTransactionEntity.getToAddress());
-//                        sharedTransactionInfoEntity.setCreateTime(System.currentTimeMillis());
-//                        sharedTransactionInfoEntity.setSharedWalletOwnerInfoEntityRealmList(sharedTransactionInfoEntity.getSharedWalletOwnerInfoEntityRealmList());
-//                        sharedTransactionInfoEntity.setTransactionType(SharedTransactionEntity.TransactionType.SEND_TRANSACTION.getValue());
-//                        sharedTransactionInfoEntity.setValue(NumberParserUtils.parseDouble(sharedTransactionEntity.getValue()));
-//                        sharedTransactionInfoEntity.setRead(true);
-//                        return sharedTransactionInfoEntity;
-//                    }
-//                })
-//                .doOnSuccess(new Consumer<SharedTransactionInfoEntity>() {
-//                    @Override
-//                    public void accept(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
-////                        //todo
-////                        String uuid = SharedTransactionInfoDao.getSharedTransactionUUID(sharedTransactionEntity.getContractAddress(), sharedTransactionEntity.getTransactionId(), SharedTransactionEntity.TransactionType.SEND_TRANSACTION);
-////                        if (uuid != null) {
-////                            sharedTransactionInfoEntity.setUuid(uuid);
-////                            SharedTransactionInfoDao.insertTransaction(sharedTransactionInfoEntity);
-////                        }
-//                    }
-//                });
     }
 
     public void updateTransactionForRead(SharedWalletEntity walletEntity, SharedTransactionEntity transactionEntity) {
