@@ -596,6 +596,7 @@ public class SharedWalletTransactionManager {
     public Single<SharedTransactionInfoEntity> submitTransaction(Credentials credentials,
                                                                  SharedWalletEntity sharedWalletEntity,
                                                                  String fromWalletAddress,
+                                                                 String fromWalletName,
                                                                  String to,
                                                                  String amount,
                                                                  String memo,
@@ -629,7 +630,6 @@ public class SharedWalletTransactionManager {
                                 .createTime(time)
                                 .memo(memo)
                                 .transactionId(transactionId)
-                                .walletName(sharedWalletEntity.getName())
                                 .ownerWalletAddress(sharedWalletEntity.getCreatorAddress())
                                 .contractAddress(sharedWalletEntity.getPrefixAddress())
                                 .energonPrice(getGasUsed(gasUsed))
@@ -643,6 +643,7 @@ public class SharedWalletTransactionManager {
                     @Override
                     public SharedTransactionInfoEntity apply(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
                         sharedTransactionInfoEntity.setUuid(UUID.randomUUID().toString());
+                        sharedTransactionInfoEntity.setWalletName(fromWalletName);
                         sharedTransactionInfoEntity.setFromAddress(fromWalletAddress);
                         sharedTransactionInfoEntity.setToAddress(sharedTransactionInfoEntity.getContractAddress());
                         sharedTransactionInfoEntity.setTransactionType(SharedTransactionEntity.TransactionType.EXECUTED_CONTRACT.getValue());
@@ -677,6 +678,7 @@ public class SharedWalletTransactionManager {
                     @Override
                     public SharedTransactionInfoEntity apply(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
                         sharedTransactionInfoEntity.setUuid(UUID.randomUUID().toString());
+                        sharedTransactionInfoEntity.setWalletName(fromWalletName);
                         sharedTransactionInfoEntity.setFromAddress(fromWalletAddress);
                         sharedTransactionInfoEntity.setToAddress(sharedTransactionInfoEntity.getContractAddress());
                         sharedTransactionInfoEntity.setCreateTime(System.currentTimeMillis());
@@ -699,6 +701,7 @@ public class SharedWalletTransactionManager {
                     @Override
                     public SharedTransactionInfoEntity apply(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
                         sharedTransactionInfoEntity.setUuid(UUID.randomUUID().toString());
+                        sharedTransactionInfoEntity.setWalletName(sharedWalletEntity.getName());
                         sharedTransactionInfoEntity.setFromAddress(sharedWalletEntity.getPrefixAddress());
                         sharedTransactionInfoEntity.setToAddress(to);
                         sharedTransactionInfoEntity.setCreateTime(System.currentTimeMillis());
@@ -782,7 +785,7 @@ public class SharedWalletTransactionManager {
      * @param type
      * @return
      */
-    public Single<SharedTransactionInfoEntity> sendTransaction(SharedTransactionEntity sharedTransactionEntity, Credentials credentials, String contractAddress,String walletAddress, String transactionId, BigInteger gasPrice, int type) {
+    public Single<SharedTransactionInfoEntity> sendTransaction(SharedTransactionEntity sharedTransactionEntity, Credentials credentials, String contractAddress, String walletAddress,String walletName,String transactionId, BigInteger gasPrice, int type) {
 
         return Single.fromCallable(new Callable<TransactionReceipt>() {
             @Override
@@ -809,7 +812,6 @@ public class SharedWalletTransactionManager {
                                 .hash(transactionReceipt.getTransactionHash())
                                 .memo(sharedTransactionEntity.getMemo())
                                 .transactionId(transactionId)
-                                .walletName(sharedTransactionEntity.getWalletName())
                                 .ownerWalletAddress(sharedTransactionEntity.getOwnerWalletAddress())
                                 .contractAddress(sharedTransactionEntity.getContractAddress())
                                 .energonPrice(getGasUsed(transactionReceipt.getGasUsedRaw()))
@@ -821,6 +823,7 @@ public class SharedWalletTransactionManager {
                     @Override
                     public SharedTransactionInfoEntity apply(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
                         sharedTransactionInfoEntity.setUuid(UUID.randomUUID().toString());
+                        sharedTransactionInfoEntity.setWalletName(walletName);
                         sharedTransactionInfoEntity.setFromAddress(walletAddress);
                         sharedTransactionInfoEntity.setToAddress(sharedTransactionInfoEntity.getContractAddress());
                         sharedTransactionInfoEntity.setCreateTime(System.currentTimeMillis());

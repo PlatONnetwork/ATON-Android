@@ -194,7 +194,7 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
         InputWalletPasswordDialogFragment.newInstance(individualWalletEntity).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
             @Override
             public void onWalletPasswordCorrect(Credentials credentials) {
-                validPassword(credentials, sharedTransactionEntity, individualWalletEntity.getPrefixAddress(),type, gasPrice, feeAmount);
+                validPassword(credentials, sharedTransactionEntity, individualWalletEntity.getPrefixAddress(),individualWalletEntity.getName(),type, gasPrice, feeAmount);
 
             }
         }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
@@ -249,7 +249,7 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
         });
     }
 
-    private void validPassword(Credentials credentials, SharedTransactionEntity sharedTransactionEntity,String walletAddress, int type, BigInteger gasPrice, double feeAmount) {
+    private void validPassword(Credentials credentials, SharedTransactionEntity sharedTransactionEntity,String walletAddress,String walletName, int type, BigInteger gasPrice, double feeAmount) {
         checkBalance(individualWalletEntity, credentials, feeAmount)
                 .compose(new SchedulersTransformer())
                 .compose(LoadingTransformer.bindToSingleLifecycle(getView().currentActivity()))
@@ -257,7 +257,7 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
                 .subscribe(new Consumer<Credentials>() {
                     @Override
                     public void accept(Credentials credentials) throws Exception {
-                        sendTransaction(sharedTransactionEntity, credentials,walletAddress, type, gasPrice);
+                        sendTransaction(sharedTransactionEntity, credentials,walletAddress,walletName, type, gasPrice);
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -276,10 +276,10 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
 
     }
 
-    private void sendTransaction(SharedTransactionEntity sharedTransactionEntity, Credentials credentials,String walletAddress, int type, BigInteger gasPrice) {
+    private void sendTransaction(SharedTransactionEntity sharedTransactionEntity, Credentials credentials,String walletAddress,String walletName, int type, BigInteger gasPrice) {
 
         SharedWalletTransactionManager.getInstance()
-                .sendTransaction(sharedTransactionEntity, credentials, transactionEntity.getContractAddress(), walletAddress,transactionEntity.getTransactionId(), gasPrice, type)
+                .sendTransaction(sharedTransactionEntity, credentials, transactionEntity.getContractAddress(), walletAddress,walletName,transactionEntity.getTransactionId(), gasPrice, type)
                 .compose(new SchedulersTransformer())
                 .doOnSubscribe(new Consumer<Disposable>() {
                     @Override
