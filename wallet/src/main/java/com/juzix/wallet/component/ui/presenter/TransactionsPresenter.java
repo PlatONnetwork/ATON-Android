@@ -103,6 +103,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                     @Override
                     public void accept(List<TransactionEntity> transactionEntityList) throws Exception {
                         if (isViewAttached() && mWalletEntity != null) {
+                            Collections.sort(transactionEntityList);
                             getView().notifyTransactionListChanged(transactionEntityList);
                         }
                     }
@@ -133,6 +134,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                     @Override
                     public void accept(List<TransactionEntity> transactionEntityList) throws Exception {
                         if (isViewAttached() && mWalletEntity != null) {
+                            Collections.sort(transactionEntityList);
                             getView().notifyTransactionListChanged(transactionEntityList);
                         }
                     }
