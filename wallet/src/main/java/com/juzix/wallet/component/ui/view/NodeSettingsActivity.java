@@ -80,7 +80,7 @@ public class NodeSettingsActivity extends MVPBaseActivity<NodeSettingsPresenter>
             tvLeft.setVisibility(View.VISIBLE);
             tvMiddle.setText(R.string.editNode);
             tvMiddle.setTextColor(ContextCompat.getColor(this, R.color.color_000000));
-            tvRight.setVisibility(View.VISIBLE);
+            tvRight.setVisibility(View.GONE);
             tvRight.setText(R.string.save);
             tvRight.setTextColor(ContextCompat.getColor(this, R.color.color_105cfe));
             tvAddNode.setVisibility(View.VISIBLE);
@@ -89,7 +89,7 @@ public class NodeSettingsActivity extends MVPBaseActivity<NodeSettingsPresenter>
             tvLeft.setVisibility(View.GONE);
             tvMiddle.setText(R.string.node_settings);
             tvMiddle.setTextColor(ContextCompat.getColor(this, R.color.color_000000));
-            tvRight.setVisibility(View.VISIBLE);
+            tvRight.setVisibility(View.GONE);
             tvRight.setText(R.string.edit);
             tvRight.setTextColor(ContextCompat.getColor(this, R.color.color_105cfe));
             tvAddNode.setVisibility(View.GONE);

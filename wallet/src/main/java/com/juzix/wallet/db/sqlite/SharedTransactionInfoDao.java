@@ -162,6 +162,7 @@ public class SharedTransactionInfoDao {
             realm.beginTransaction();
             RealmResults<SharedTransactionInfoEntity> results = realm.where(SharedTransactionInfoEntity.class)
                     .equalTo("nodeAddress", NodeManager.getInstance().getCurNodeAddress())
+                    .sort("createTime",Sort.DESCENDING)
                     .findAll();
             if (results != null) {
                 list = realm.copyFromRealm(results);
@@ -226,6 +227,7 @@ public class SharedTransactionInfoDao {
                     .endGroup()
                     .and()
                     .equalTo("nodeAddress", NodeManager.getInstance().getCurNodeAddress())
+                    .sort("createTime",Sort.DESCENDING)
                     .findAll();
             if (results != null) {
                 list = realm.copyFromRealm(results);

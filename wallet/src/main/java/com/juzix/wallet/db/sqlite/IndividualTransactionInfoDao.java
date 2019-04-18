@@ -71,6 +71,7 @@ public class IndividualTransactionInfoDao {
             realm = Realm.getDefaultInstance();
             RealmResults<IndividualTransactionInfoEntity> results = realm.where(IndividualTransactionInfoEntity.class)
                     .equalTo("nodeAddress", NodeManager.getInstance().getCurNodeAddress())
+                    .sort("createTime",Sort.DESCENDING)
                     .findAll();
             list.addAll(realm.copyFromRealm(results));
         } catch (Exception exp) {
@@ -95,6 +96,7 @@ public class IndividualTransactionInfoDao {
                     .and()
                     .equalTo("nodeAddress", NodeManager.getInstance().getCurNodeAddress())
                     .endGroup()
+                    .sort("createTime",Sort.DESCENDING)
                     .findAll();
             if (results != null){
                 list = realm.copyFromRealm(results);
