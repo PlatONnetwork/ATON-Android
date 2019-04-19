@@ -36,6 +36,7 @@
         android:ellipsize="end"
         android:gravity="center_vertical|left"
         android:lines="2"
+        android:layout_marginRight="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/iv_del"
         app:layout_constraintRight_toLeftOf="@id/iv_selected"

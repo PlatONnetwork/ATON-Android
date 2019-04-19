@@ -313,6 +313,8 @@
     <string name="can_not_send_to_itself">Do not send to the same address</string>
     <string name="default_main_network">Default main network</string>
     <string name="default_test_network">Default test network</string>
+    <string name="amigo_test_net">Amigo Testnet</string>
+    <string name="batalla_test_net">Batalla Testnet</string>
     <string name="myVote">My Vote</string>
     <string name="voteRate">Vote Rate</string>
     <string name="votes">Votes</string>

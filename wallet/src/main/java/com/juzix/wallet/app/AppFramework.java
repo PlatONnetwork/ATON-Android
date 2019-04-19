@@ -101,7 +101,7 @@ public class AppFramework {
                                     .transform(new RealmObjectSchema.Function() {
                                         @Override
                                         public void apply(DynamicRealmObject obj) {
-                                            obj.set("nodeAddress", "https://test-amigo.platon.network/test");
+                                            obj.getDynamicRealm().where("IndividualTransactionInfoEntity").findAll().deleteAllFromRealm();
                                         }
                                     });
 
@@ -115,13 +115,20 @@ public class AppFramework {
                                         }
                                     });
 
-                            schema.get("OwnerInfoEntity").addField("nodeAddress", String.class);
+                            schema.get("OwnerInfoEntity")
+                                    .addField("nodeAddress", String.class)
+                                    .transform(new RealmObjectSchema.Function() {
+                                        @Override
+                                        public void apply(DynamicRealmObject obj) {
+                                            obj.getDynamicRealm().where("OwnerInfoEntity").findAll().deleteAllFromRealm();
+                                        }
+                                    });
 
                             schema.get("NodeInfoEntity")
                                     .transform(new RealmObjectSchema.Function() {
                                         @Override
                                         public void apply(DynamicRealmObject obj) {
-                                            obj.deleteFromRealm();
+                                            obj.getDynamicRealm().where("NodeInfoEntity").findAll().deleteAllFromRealm();
                                         }
                                     });
 
@@ -132,7 +139,7 @@ public class AppFramework {
                                     .transform(new RealmObjectSchema.Function() {
                                         @Override
                                         public void apply(DynamicRealmObject obj) {
-                                            obj.set("nodeAddress", "https://test-amigo.platon.network/test");
+                                            obj.getDynamicRealm().where("RegionInfoEntity").findAll().deleteAllFromRealm();
                                         }
                                     });
 
@@ -143,7 +150,7 @@ public class AppFramework {
                                     .transform(new RealmObjectSchema.Function() {
                                         @Override
                                         public void apply(DynamicRealmObject obj) {
-                                            obj.set("nodeAddress", "https://test-amigo.platon.network/test");
+                                            obj.getDynamicRealm().where("SharedTransactionInfoEntity").findAll().deleteAllFromRealm();
                                         }
                                     });
 
@@ -153,17 +160,25 @@ public class AppFramework {
                                     .transform(new RealmObjectSchema.Function() {
                                         @Override
                                         public void apply(DynamicRealmObject obj) {
-                                            obj.set("nodeAddress", "https://test-amigo.platon.network/test");
+                                            obj.getDynamicRealm().where("SharedWalletInfoEntity").findAll().deleteAllFromRealm();
                                         }
                                     });
-                            schema.get("SingleVoteInfoEntity").removeField("avatar");
+
+                            schema.get("SingleVoteInfoEntity")
+                                    .removeField("avatar")
+                                    .transform(new RealmObjectSchema.Function() {
+                                        @Override
+                                        public void apply(DynamicRealmObject obj) {
+                                            obj.getDynamicRealm().where("SingleVoteInfoEntity").findAll().deleteAllFromRealm();
+                                        }
+                                    });
 
                             schema.get("SharedWalletOwnerInfoEntity")
                                     .addField("nodeAddress", String.class)
                                     .transform(new RealmObjectSchema.Function() {
                                         @Override
                                         public void apply(DynamicRealmObject obj) {
-                                            obj.set("nodeAddress", "https://test-amigo.platon.network/test");
+                                            obj.getDynamicRealm().where("SharedWalletOwnerInfoEntity").findAll().deleteAllFromRealm();
                                         }
                                     });
 
@@ -172,7 +187,7 @@ public class AppFramework {
                                     .transform(new RealmObjectSchema.Function() {
                                         @Override
                                         public void apply(DynamicRealmObject obj) {
-                                            obj.set("nodeAddress", "https://test-amigo.platon.network/test");
+                                            obj.getDynamicRealm().where("SingleVoteInfoEntity").findAll().deleteAllFromRealm();
                                         }
                                     });
 
@@ -181,7 +196,7 @@ public class AppFramework {
                                     .transform(new RealmObjectSchema.Function() {
                                         @Override
                                         public void apply(DynamicRealmObject obj) {
-                                            obj.set("nodeAddress", "https://test-amigo.platon.network/test");
+                                            obj.getDynamicRealm().where("TicketInfoEntity").findAll().deleteAllFromRealm();
                                         }
                                     });
 
