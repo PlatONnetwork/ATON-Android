@@ -40,8 +40,8 @@ ext {
             rxjava2_rxjava                  : 'io.reactivex.rxjava2:rxjava:2.1.6',
             rxjava2_rxandroid               : 'io.reactivex.rxjava2:rxandroid:2.0.1',
             rxbinding3                      : 'com.jakewharton.rxbinding3:rxbinding:3.0.0-alpha1',
-            web3j_core                      : "com.platon.client:core:0.5.4-android",
-            web3j_crypto                    : "com.platon.client:crypto:0.5.4-android",
+            web3j_core                      : "com.platon.client:core:0.6.0-android",
+            web3j_crypto                    : "com.platon.client:crypto:0.6.0-android",
             bitcoinj_core                   : "org.bitcoinj:bitcoinj-core:0.14.7",
             eventbus                        : 'org.greenrobot:eventbus:3.1.1',
             rxlifecycle                     : 'com.trello.rxlifecycle2:rxlifecycle:2.2.2',
@@ -65,8 +65,8 @@ allprojects {
         google()
         jcenter()
         maven {
-//            url "https://sdk.platon.network/nexus/content/groups/public/"
-            url "http://192.168.9.39:8081/repository/maven-releases/"
+            url "https://sdk.platon.network/nexus/content/groups/public/"
+//            url "http://192.168.9.39:8081/repository/maven-releases/"
         }
         maven { url 'https://dl.bintray.com/umsdk/release' }
     }
