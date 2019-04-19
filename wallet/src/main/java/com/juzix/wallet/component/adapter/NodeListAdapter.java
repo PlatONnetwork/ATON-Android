@@ -7,7 +7,6 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.AbsoluteSizeSpan;
-import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +16,7 @@ import android.widget.ImageView;
 
 import com.juzhen.framework.util.AndroidUtil;
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BaseActivity;
@@ -215,7 +215,7 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
         boolean isDefaultTestNetwork = nodeEntity.isDefaultNode() && !nodeEntity.isMainNetworkNode();
         SpannableStringBuilder stringBuilder;
         if (isDefaultMainNetwork) {
-            String                 text          = String.format("(%1$s)", activity.getString(R.string.default_main_network));
+            String text = String.format("(%1$s)", activity.getString(R.string.default_main_network));
             stringBuilder = new SpannableStringBuilder(nodeAddress + text);
             stringBuilder.setSpan(new ForegroundColorSpan(ContextCompat.getColor(activity, R.color.color_000000)), 0, nodeAddress.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
             stringBuilder.setSpan(new ForegroundColorSpan(ContextCompat.getColor(activity, R.color.color_898c9e)), nodeAddress.length(), nodeAddress.length() + text.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
@@ -223,14 +223,14 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
             stringBuilder.setSpan(new AbsoluteSizeSpan(AndroidUtil.sp2px(activity, 12)), nodeAddress.length(), nodeAddress.length() + text.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
             holder.etNode.setText(stringBuilder);
         } else if (isDefaultTestNetwork) {
-            String                 text          = String.format("(%1$s)", activity.getString(R.string.default_test_network));
+            String text = getNodeDesc(nodeAddress);
             stringBuilder = new SpannableStringBuilder(nodeAddress + text);
             stringBuilder.setSpan(new ForegroundColorSpan(ContextCompat.getColor(activity, R.color.color_000000)), 0, nodeAddress.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
             stringBuilder.setSpan(new ForegroundColorSpan(ContextCompat.getColor(activity, R.color.color_898c9e)), nodeAddress.length(), nodeAddress.length() + text.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
             stringBuilder.setSpan(new AbsoluteSizeSpan(AndroidUtil.sp2px(activity, 14)), 0, nodeAddress.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
             stringBuilder.setSpan(new AbsoluteSizeSpan(AndroidUtil.sp2px(activity, 12)), nodeAddress.length(), nodeAddress.length() + text.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
             holder.etNode.setText(stringBuilder);
-        } else if (!TextUtils.isEmpty(nodeAddress)){
+        } else if (!TextUtils.isEmpty(nodeAddress)) {
             stringBuilder = new SpannableStringBuilder(nodeAddress);
             stringBuilder.setSpan(new ForegroundColorSpan(ContextCompat.getColor(activity, R.color.color_000000)), 0, nodeAddress.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
             stringBuilder.setSpan(new AbsoluteSizeSpan(AndroidUtil.sp2px(activity, 14)), 0, nodeAddress.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
@@ -263,6 +263,16 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
             }
         });
 
+    }
+
+    private String getNodeDesc(String nodeAddress) {
+        if (Constants.URL.URL_TEST_A.equals(nodeAddress)) {
+            return String.format("(%s)", activity.getString(R.string.amigo_test_net));
+        } else if (Constants.URL.URL_TEST_B.equals(nodeAddress)) {
+            return String.format("(%s)", activity.getString(R.string.batalla_test_net));
+        }
+
+        return "";
     }
 
     private void checkAddress(int position, String address) {

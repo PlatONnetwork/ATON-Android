@@ -313,6 +313,8 @@
     <string name="can_not_send_to_itself">无法发送给自己</string>
     <string name="default_main_network">默认主网络</string>
     <string name="default_test_network">默认测试网络</string>
+    <string name="amigo_test_net">Amigo 测试网</string>
+    <string name="batalla_test_net">Batalla 测试网</string>
     <string name="myVote">我的投票</string>
     <string name="voteRate">投票率</string>
     <string name="votes">已投票</string>
