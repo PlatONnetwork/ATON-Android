@@ -91,10 +91,11 @@ public class Constants {
         String UPDATE_URL = "https://api.github.com/repos/PlatONnetwork/ATON-Android/releases/latest";
         String URL_TEST_A = "https://test-amigo.platon.network/test";
         String URL_TEST_B = " https://test-beta.platon.network/test";
-        String URL_HTTP_A = "https://aton.platon.network/api-203/";
-        String URL_HTTP_B = "https://aton.platon.network/api-1/";
-        String URL_HTTP_C = "https://aton.platon.network/a-api/api/";
-        String URL_IP_SERVICE = "http://ip-api.com/";
+        String URL_HTTP_A = "https://aton.platon.network";
+        //        String URL_HTTP_A = "http://54.252.202.130:10000/";
+        String URL_HTTP_B = "https://aton.platon.network";
+        String URL_HTTP_C = "https://aton.platon.network";
+        String URL_IP_SERVICE = "http://ip-api.com";
     }
 
     public interface DBName {

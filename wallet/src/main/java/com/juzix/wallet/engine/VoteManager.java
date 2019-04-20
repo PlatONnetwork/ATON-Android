@@ -122,16 +122,16 @@ public class VoteManager {
     }
 
     private Single<Response<ApiResponse<List<BatchVoteSummaryEntity>>>> getBatchVoteSummaryFromNet(String[] addressList) {
-        return HttpClient.getInstance().createService(VoteService.class).getBatchVoteSummary(ApiRequestBody.newBuilder()
+        return HttpClient.getInstance().createService(VoteService.class).getBatchVoteSummary(String.format("%s-%s", "api", Web3jManager.getInstance().getChainId()), ApiRequestBody.newBuilder()
                 .put("addressList", addressList)
-                .put("cid", "203")
+                .put("cid", Web3jManager.getInstance().getChainId())
                 .build());
     }
 
     public Flowable<HashMap<String, List<BatchVoteTransactionEntity>>> getBatchVoteTransaction(String[] walletAddrs) {
-        return HttpClient.getInstance().createService(VoteService.class).getBatchVoteTransaction(ApiRequestBody.newBuilder()
+        return HttpClient.getInstance().createService(VoteService.class).getBatchVoteTransaction(String.format("%s-%s", "api", Web3jManager.getInstance().getChainId()), ApiRequestBody.newBuilder()
                 .put("walletAddrs", walletAddrs)
-                .put("cid", "203")
+                .put("cid", Web3jManager.getInstance().getChainId())
                 .put("pageNo", 1)
                 .put("pageSize", 10)
                 .build())

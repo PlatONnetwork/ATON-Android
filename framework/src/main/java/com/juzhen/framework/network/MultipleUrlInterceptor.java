@@ -34,8 +34,16 @@ public class MultipleUrlInterceptor implements Interceptor {
             } else {
                 newBaseUrl = HttpUrl.parse(RequestInfo.getUrl(RequestInfo.DEFAULT_URL_KEY));
             }
+
+            HttpUrl httpUrl = origin.url()
+                    .newBuilder()
+                    .scheme(newBaseUrl.scheme())
+                    .host(newBaseUrl.host())
+                    .port(newBaseUrl.port())
+                    .build();
+
             request = origin.newBuilder()
-                    .url(newBaseUrl)
+                    .url(httpUrl.url())
                     .method(origin.method(), origin.body())
                     .build();
         } else {

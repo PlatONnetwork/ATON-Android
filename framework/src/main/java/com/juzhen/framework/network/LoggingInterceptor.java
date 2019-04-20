@@ -32,7 +32,7 @@ public class LoggingInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
 
-        String reqInfo = "--> " + request.method() + ' ' + request.url() + ' ' + request.headers();
+        String reqInfo = "--> " + request.method() + ' ' + request.url() + ' ' + request.headers() + ":" + request.body();
         
         if (request.body() instanceof ApiRequestBody) {
             ApiRequestBody apiRequestBody = (ApiRequestBody) request.body();

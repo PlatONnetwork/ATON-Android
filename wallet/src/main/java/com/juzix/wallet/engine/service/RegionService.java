@@ -17,7 +17,6 @@ import retrofit2.http.POST;
 public interface RegionService {
 
     @Headers({"name:url_ip"})
-    @POST("batch/")
+    @POST("/batch")
     Single<Response<List<RegionEntity>>> getRegionInfoList(@Body RequestBody requestBody);
-
 }
