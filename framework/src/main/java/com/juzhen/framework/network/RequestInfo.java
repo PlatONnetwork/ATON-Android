@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
  */
 public class RequestInfo {
 
-    public static final String DEFAULT_URL_KEY = "RESTFUL";
+    public static final String DEFAULT_URL_KEY = "restful";
     public static final String URL_IP = "url_ip";
 
     public enum EncryptionType {
@@ -51,7 +51,7 @@ public class RequestInfo {
             Iterator<String> iterator = addressMap.keySet().iterator();
             while (iterator.hasNext()) {
                 String key = iterator.next();
-                URL_MAP.put(key.toUpperCase(), MapUtils.getString(addressMap, key));
+                URL_MAP.put(key, MapUtils.getString(addressMap, key));
             }
         }
         URL_MAP.put(DEFAULT_URL_KEY, defaultBaseUrl);

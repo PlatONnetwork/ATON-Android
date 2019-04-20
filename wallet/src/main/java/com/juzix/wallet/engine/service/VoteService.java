@@ -11,6 +11,7 @@ import okhttp3.RequestBody;
 import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 /**
  * @author matrixelement
@@ -23,8 +24,8 @@ public interface VoteService {
      * @param requestBody
      * @return
      */
-    @POST("getBatchVoteSummary")
-    Single<Response<ApiResponse<List<BatchVoteSummaryEntity>>>> getBatchVoteSummary(@Body RequestBody requestBody);
+    @POST("/{chainId}/api/getBatchVoteSummary")
+    Single<Response<ApiResponse<List<BatchVoteSummaryEntity>>>> getBatchVoteSummary(@Path("chainId") String chainId, @Body RequestBody requestBody);
 
     /**
      * 批量获选票交易
@@ -32,7 +33,7 @@ public interface VoteService {
      * @param requestBody
      * @return
      */
-    @POST("getBatchVoteTransaction")
-    Single<Response<ApiResponse<List<BatchVoteTransactionEntity>>>> getBatchVoteTransaction(@Body RequestBody requestBody);
+    @POST("/{chainId}/api/getBatchVoteTransaction")
+    Single<Response<ApiResponse<List<BatchVoteTransactionEntity>>>> getBatchVoteTransaction(@Path("chainId") String chainId, @Body RequestBody requestBody);
 
 }

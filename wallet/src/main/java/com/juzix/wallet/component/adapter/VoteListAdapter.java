@@ -115,10 +115,12 @@ public class VoteListAdapter extends RecyclerView.Adapter<VoteListAdapter.ViewHo
     public void updateRegionInfo(RegionEntity regionEntity) {
         Log.e(TAG, regionEntity.getIp() + ":" + regionEntity.getCountry() + ":" + regionEntity.getCountryCode());
         int position = getPosition(regionEntity.getIp());
-        CandidateEntity candidateEntity = mCandidateEntityList.get(position);
-        candidateEntity.setRegionEntity(regionEntity);
-        mCandidateEntityList.set(position, candidateEntity);
-        notifyItemChanged(position);
+        if (position != -1) {
+            CandidateEntity candidateEntity = mCandidateEntityList.get(position);
+            candidateEntity.setRegionEntity(regionEntity);
+            mCandidateEntityList.set(position, candidateEntity);
+            notifyItemChanged(position);
+        }
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

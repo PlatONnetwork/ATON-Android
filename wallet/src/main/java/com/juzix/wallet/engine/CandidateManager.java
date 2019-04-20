@@ -1,6 +1,7 @@
 package com.juzix.wallet.engine;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.github.promeg.pinyinhelper.Pinyin;
 import com.juzhen.framework.network.HttpClient;
@@ -207,11 +208,16 @@ public class CandidateManager {
                     }
                 })
                 .toList()
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.newThread())
                 .subscribe(new Consumer<List<RegionEntity>>() {
                     @Override
                     public void accept(List<RegionEntity> regionEntities) throws Exception {
                         RegionInfoDao.insertBatchRegionInfo(buildRegionInfoEntityList(regionEntities));
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Log.e(TAG, throwable.getMessage());
                     }
                 });
     }

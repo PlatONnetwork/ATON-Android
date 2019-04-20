@@ -1,5 +1,7 @@
 package com.juzix.wallet.engine;
 
+import com.juzix.wallet.app.Constants;
+
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.Web3jFactory;
@@ -22,6 +24,9 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 public class Web3jManager {
+
+    private final static String CHAINID_TEST_NET_A = "103";
+    private final static String CHAINID_TEST_NET_B = "104";
 
     private Web3j mWeb3j;
 
@@ -141,6 +146,10 @@ public class Web3jManager {
         }
 
         return transactionReceipt;
+    }
+
+    public String getChainId() {
+        return Constants.URL.URL_TEST_A.equals(NodeManager.getInstance().getCurNodeAddress()) ? CHAINID_TEST_NET_A : CHAINID_TEST_NET_B;
     }
 
     private static class InstanceHolder {

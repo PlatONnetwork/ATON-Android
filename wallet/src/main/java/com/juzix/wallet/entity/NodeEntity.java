@@ -178,7 +178,6 @@ public class NodeEntity implements Cloneable, Nullable {
     }
 
     public String getHttpUrl() {
-
         if (Constants.URL.URL_TEST_A.equals(nodeAddress)) {
             return Constants.URL.URL_HTTP_A;
         } else if (Constants.URL.URL_TEST_B.equals(nodeAddress)) {
@@ -187,4 +186,5 @@ public class NodeEntity implements Cloneable, Nullable {
             return Constants.URL.URL_HTTP_C;
         }
     }
+
 }
