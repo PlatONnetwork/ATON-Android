@@ -6,6 +6,7 @@ import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.db.entity.IndividualWalletInfoEntity;
 import com.juzix.wallet.db.sqlite.IndividualWalletInfoDao;
 import com.juzix.wallet.entity.IndividualWalletEntity;
+import com.juzix.wallet.entity.WalletEntity;
 import com.juzix.wallet.utils.JZWalletUtil;
 
 import java.util.ArrayList;
@@ -270,6 +271,20 @@ public class IndividualWalletManager {
             }
         }
         return false;
+    }
+
+    public void updateWalletBalance(String address, double balance) {
+        int position = -1;
+        for (int i = 0; i < mWalletList.size(); i++) {
+            WalletEntity walletEntity = mWalletList.get(i);
+            if (address.equals(walletEntity.getPrefixAddress())) {
+                position = i;
+                break;
+            }
+        }
+        if (position != -1) {
+            mWalletList.get(position).setBalance(balance);
+        }
     }
 
     public IndividualWalletEntity getWalletByAddress(String address) {

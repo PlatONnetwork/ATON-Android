@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BaseActivity;
@@ -42,6 +43,7 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 
@@ -67,24 +69,36 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
         if (mDisposable != null && !mDisposable.isDisposed()) {
             mDisposable.dispose();
         }
-        mDisposable = Single.fromCallable(new Callable<Double>() {
-            @Override
-            public Double call() {
-                double totalBalance = 0d;
-                try {
-                    for (WalletEntity walletEntity : mWalletList) {
-                        String address = walletEntity.getPrefixAddress();
-                        double balance = Web3jManager.getInstance().getBalance(address);
-                        walletEntity.setBalance(balance);
-                        totalBalance += balance;
+        mDisposable = Flowable
+                .fromIterable(mWalletList)
+                .map(new Function<WalletEntity, String>() {
+                    @Override
+                    public String apply(WalletEntity walletEntity) throws Exception {
+                        return String.format("%s&%d", walletEntity.getPrefixAddress(), Web3jManager.getInstance().getBalance(walletEntity.getPrefixAddress()));
                     }
-                } catch (Exception exp) {
-                    exp.printStackTrace();
-                }
-                return totalBalance;
-            }
-        })
+                })
+                .doOnNext(new Consumer<String>() {
+                    @Override
+                    public void accept(String s) throws Exception {
+                        String[] array = s.split("&", 2);
+                        IndividualWalletManager.getInstance().updateWalletBalance(array[0], NumberParserUtils.parseDouble(array[1]));
+                        SharedWalletManager.getInstance().updateWalletBalance(array[0], NumberParserUtils.parseDouble(array[1]));
+                    }
+                })
+                .map(new Function<String, Double>() {
+                    @Override
+                    public Double apply(String s) throws Exception {
+                        return NumberParserUtils.parseDouble(s.split("&", 2)[1]);
+                    }
+                })
+                .reduce(new BiFunction<Double, Double, Double>() {
+                    @Override
+                    public Double apply(Double aDouble, Double aDouble2) throws Exception {
+                        return BigDecimalUtil.add(aDouble, aDouble2);
+                    }
+                })
                 .compose(bindUntilEvent(FragmentEvent.STOP))
+                .toSingle()
                 .compose(new SchedulersTransformer())
                 .repeatWhen(new Function<Flowable<Object>, Publisher<?>>() {
                     @Override

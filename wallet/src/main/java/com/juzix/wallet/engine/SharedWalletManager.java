@@ -9,6 +9,7 @@ import com.juzix.wallet.db.entity.SharedWalletInfoEntity;
 import com.juzix.wallet.db.sqlite.SharedWalletInfoDao;
 import com.juzix.wallet.entity.OwnerEntity;
 import com.juzix.wallet.entity.SharedWalletEntity;
+import com.juzix.wallet.entity.WalletEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -152,6 +153,20 @@ public class SharedWalletManager {
             }
         }
         return SharedWalletInfoDao.updateNameWithUuid(walletUuid, newName);
+    }
+
+    public void updateWalletBalance(String address, double balance) {
+        int position = -1;
+        for (int i = 0; i < mWalletList.size(); i++) {
+            WalletEntity walletEntity = mWalletList.get(i);
+            if (address.equals(walletEntity.getPrefixAddress())) {
+                position = i;
+                break;
+            }
+        }
+        if (position != -1) {
+            mWalletList.get(position).setBalance(balance);
+        }
     }
 
     public boolean updateOwner(String walletUuid, List<OwnerEntity> newAddressEntityList) {
