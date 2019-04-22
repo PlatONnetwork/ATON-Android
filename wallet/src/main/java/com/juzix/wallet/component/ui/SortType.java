@@ -1,10 +1,13 @@
 package com.juzix.wallet.component.ui;
 
 import com.juzhen.framework.util.NumberParserUtils;
+import com.juzix.wallet.App;
 import com.juzix.wallet.entity.CandidateEntity;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.LanguageUtil;
 
 import java.util.Comparator;
+import java.util.Locale;
 
 /**
  * @author matrixelement
@@ -63,7 +66,11 @@ public enum SortType {
             if (o2.getRegionEntity() == null) {
                 return 1;
             }
-            return o1.getRegionEntity().getCountryPinyin().compareToIgnoreCase(o2.getRegionEntity().getCountryPinyin());
+            if (Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage())) {
+                return o1.getRegionEntity().getCountryPinyin().compareToIgnoreCase(o2.getRegionEntity().getCountryPinyin());
+            } else {
+                return o1.getRegionEntity().getCountryEn().compareToIgnoreCase(o2.getRegionEntity().getCountryEn());
+            }
         }
     }
 
@@ -74,7 +81,7 @@ public enum SortType {
             double o1Amount = BigDecimalUtil.add(o1.getDeposit(), BigDecimalUtil.mul(String.valueOf(o1.getVotedNum()), o1.getTicketPrice()).toPlainString());
             double o2Amount = BigDecimalUtil.add(o2.getDeposit(), BigDecimalUtil.mul(String.valueOf(o2.getVotedNum()), o2.getTicketPrice()).toPlainString());
 
-            return Double.compare(o2Amount,o1Amount);
+            return Double.compare(o2Amount, o1Amount);
         }
     }
 }
