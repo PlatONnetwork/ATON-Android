@@ -11,8 +11,10 @@ import com.juzix.wallet.component.adapter.base.ViewHolder;
 import com.juzix.wallet.entity.BatchVoteTransactionEntity;
 import com.juzix.wallet.entity.BatchVoteTransactionWrapEntity;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.LanguageUtil;
 
 import java.util.List;
+import java.util.Locale;
 
 import io.reactivex.functions.Consumer;
 
@@ -34,13 +36,13 @@ public class BatchVoteTransactionAdapter extends CommonAdapter<BatchVoteTransact
     @Override
     protected void convert(Context context, ViewHolder viewHolder, BatchVoteTransactionWrapEntity item, int position) {
         BatchVoteTransactionEntity batchVoteTransactionEntity = item.getBatchVoteTransactionEntity();
-        if (batchVoteTransactionEntity.getRegionEntity() == null || TextUtils.isEmpty(batchVoteTransactionEntity.getRegionEntity().getCountryPinyin())) {
+        if (batchVoteTransactionEntity.getRegionEntity() == null || TextUtils.isEmpty(batchVoteTransactionEntity.getRegionEntity().getCountryEn()) || TextUtils.isEmpty(batchVoteTransactionEntity.getRegionEntity().getCountryZh())) {
             viewHolder.setText(R.id.tv_location, context.getString(R.string.unknownRegion));
         } else {
-            viewHolder.setText(R.id.tv_location, batchVoteTransactionEntity.getRegionEntity().getCountryPinyin());
+            viewHolder.setText(R.id.tv_location, Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(context).getLanguage()) ? batchVoteTransactionEntity.getRegionEntity().getCountryZh() : batchVoteTransactionEntity.getRegionEntity().getCountryEn());
         }
         viewHolder.setText(R.id.tv_node_name, batchVoteTransactionEntity.getNodeName());
-        viewHolder.setText(R.id.tv_valid_invalid_ticket, String.format("%s/%s", NumberParserUtils.getPrettyNumber(batchVoteTransactionEntity.getValidNum(),0), NumberParserUtils.getPrettyNumber(BigDecimalUtil.sub(NumberParserUtils.parseDouble(batchVoteTransactionEntity.getTotalTicketNum()), NumberParserUtils.parseDouble(batchVoteTransactionEntity.getValidNum())), 0)));
+        viewHolder.setText(R.id.tv_valid_invalid_ticket, String.format("%s/%s", NumberParserUtils.getPrettyNumber(batchVoteTransactionEntity.getValidNum(), 0), NumberParserUtils.getPrettyNumber(BigDecimalUtil.sub(NumberParserUtils.parseDouble(batchVoteTransactionEntity.getTotalTicketNum()), NumberParserUtils.parseDouble(batchVoteTransactionEntity.getValidNum())), 0)));
         viewHolder.setText(R.id.tv_vote_staked, NumberParserUtils.getPrettyNumber(batchVoteTransactionEntity.getVoteStaked(), 0));
         viewHolder.setText(R.id.tv_vote_staked_desc, String.format("%s(Energon)", context.getString(R.string.lockVote)));
         viewHolder.setText(R.id.tv_vote_profit, batchVoteTransactionEntity.getShowEarnings());

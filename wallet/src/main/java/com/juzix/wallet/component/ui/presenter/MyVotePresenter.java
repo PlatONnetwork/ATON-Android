@@ -262,6 +262,7 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
                         batchVoteTransactionEntity.setDeposit(batchVoteTransactionEntity2.getDeposit());
                         batchVoteTransactionEntity.setTransactiontime(batchVoteTransactionEntity2.getTransactiontime());
                         batchVoteTransactionEntity.setTransactionHash(batchVoteTransactionEntity2.getTransactionHash());
+                        batchVoteTransactionEntity.setRegionEntity(batchVoteTransactionEntity2.getRegionEntity());
                     }
                 }).blockingGet();
     }

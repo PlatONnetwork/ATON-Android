@@ -53,5 +53,30 @@ public class CandidateInfoDao {
         return candidateInfoEntity;
     }
 
+    public static String getCandidateHostById(String candidateId) {
+        Realm realm = null;
+        String host = "";
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            CandidateInfoEntity infoEntity = realm.where(CandidateInfoEntity.class)
+                    .equalTo("candidateId", candidateId)
+                    .findFirst();
+            if (infoEntity != null) {
+                host = realm.copyFromRealm(infoEntity).getHost();
+            }
+            realm.commitTransaction();
+        } catch (Exception exp) {
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return host;
+    }
+
 
 }
