@@ -377,30 +377,25 @@ public class VoteManager {
     }
 
     private Optional<RegionEntity> getBatchVoteTransactionRegion(String candidateId) {
-        return Flowable.fromCallable(new Callable<List<SingleVoteInfoEntity>>() {
+        return Flowable.fromCallable(new Callable<String>() {
             @Override
-            public List<SingleVoteInfoEntity> call() throws Exception {
-                return SingleVoteInfoDao.getTransactionListByCandidateId(candidateId);
+            public String call() throws Exception {
+                return CandidateInfoDao.getCandidateHostById(candidateId);
             }
-        }).filter(new Predicate<List<SingleVoteInfoEntity>>() {
+        }).filter(new Predicate<String>() {
             @Override
-            public boolean test(List<SingleVoteInfoEntity> singleVoteInfoEntityList) throws Exception {
-                return !singleVoteInfoEntityList.isEmpty();
+            public boolean test(String s) throws Exception {
+                return !TextUtils.isEmpty(s);
             }
-        }).switchIfEmpty(new Flowable<List<SingleVoteInfoEntity>>() {
+        }).switchIfEmpty(new Flowable<String>() {
             @Override
-            protected void subscribeActual(Subscriber<? super List<SingleVoteInfoEntity>> observer) {
-                observer.onError(new Throwable());
+            protected void subscribeActual(Subscriber<? super String> s) {
+                s.onError(new Throwable());
             }
-        }).flatMap(new Function<List<SingleVoteInfoEntity>, Publisher<SingleVoteInfoEntity>>() {
+        }).map(new Function<String, Optional<RegionEntity>>() {
             @Override
-            public Publisher<SingleVoteInfoEntity> apply(List<SingleVoteInfoEntity> singleVoteInfoEntities) throws Exception {
-                return Flowable.fromIterable(singleVoteInfoEntities);
-            }
-        }).map(new Function<SingleVoteInfoEntity, Optional<RegionEntity>>() {
-            @Override
-            public Optional<RegionEntity> apply(SingleVoteInfoEntity voteInfoEntity) throws Exception {
-                RegionInfoEntity regionInfoEntity = RegionInfoDao.getRegionInfoWithIp(voteInfoEntity.getHost());
+            public Optional<RegionEntity> apply(String host) throws Exception {
+                RegionInfoEntity regionInfoEntity = RegionInfoDao.getRegionInfoWithIp(host);
                 if (regionInfoEntity == null) {
                     return new Optional<RegionEntity>(null);
                 } else {
