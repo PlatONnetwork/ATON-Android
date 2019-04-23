@@ -3,6 +3,9 @@
 build/
 */build
 
+# keystore file
+extras/
+
 # Local configuration file (sdk path, etc)
 local.properties
 
