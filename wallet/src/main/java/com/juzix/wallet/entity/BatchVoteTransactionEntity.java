@@ -130,6 +130,9 @@ public class BatchVoteTransactionEntity implements Parcelable {
     }
 
     public String getCandidateId() {
+        if (!TextUtils.isEmpty(candidateId) && candidateId.startsWith("0x")) {
+            return candidateId.substring(2);
+        }
         return candidateId;
     }
 

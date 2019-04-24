@@ -1,6 +1,7 @@
 package com.juzix.wallet.db.sqlite;
 
 import com.juzix.wallet.db.entity.CandidateInfoEntity;
+import com.juzix.wallet.engine.NodeManager;
 
 import io.realm.Realm;
 
@@ -36,6 +37,8 @@ public class CandidateInfoDao {
             realm.beginTransaction();
             CandidateInfoEntity infoEntity = realm.where(CandidateInfoEntity.class)
                     .equalTo("candidateId", candidateId)
+                    .and()
+                    .equalTo("nodeAddress", NodeManager.getInstance().getCurNodeAddress())
                     .findFirst();
             if (infoEntity != null) {
                 candidateInfoEntity = realm.copyFromRealm(infoEntity);
@@ -61,6 +64,8 @@ public class CandidateInfoDao {
             realm.beginTransaction();
             CandidateInfoEntity infoEntity = realm.where(CandidateInfoEntity.class)
                     .equalTo("candidateId", candidateId)
+                    .and()
+                    .equalTo("nodeAddress", NodeManager.getInstance().getCurNodeAddress())
                     .findFirst();
             if (infoEntity != null) {
                 host = realm.copyFromRealm(infoEntity).getHost();
