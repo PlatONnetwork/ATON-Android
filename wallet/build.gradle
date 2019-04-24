@@ -117,6 +117,18 @@ def getGitVersion() {
     return 'git rev-parse --short HEAD'.execute().text.trim()
 }
 
+task getReleasePassword << {
+    def password = ''
+    if (rootProject.file('password.properties').exist()){
+        Properties properties = new Properties();
+        properties.load(rootProject.file('password.properties').newDataInputStream())
+        password = properties.getProperty("release.password");
+    }
+    if (!password?.trim()){
+        password = new String(System.console().readPassword("\n what's the keystore password"))
+    }
+}
+
 repositories {
     maven {
         url "https://jitpack.io"

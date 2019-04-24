@@ -13,50 +13,45 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding3.view.RxView;
 import com.juzhen.framework.util.AndroidUtil;
-import com.juzhen.framework.util.crypt.Base64Utils;
-import com.juzhen.framework.util.crypt.MD5Utils;
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.dialog.CommonTipsDialogFragment;
 import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
-import com.juzix.wallet.config.JZAppConfigure;
-import com.juzix.wallet.config.JZDirType;
 import com.juzix.wallet.config.PermissionConfigure;
 import com.juzix.wallet.engine.VersionManager;
+import com.juzix.wallet.engine.VersionUpdate;
 import com.juzix.wallet.entity.VersionEntity;
 import com.juzix.wallet.utils.ShareUtil;
 
-import java.io.File;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 import kotlin.Unit;
 
 /**
  * @author matrixelement
  */
-public class AboutActivity extends BaseActivity{
+public class AboutActivity extends BaseActivity {
 
-//    @BindView(R.id.tv_app_version)
-//    TextView tvAppVersion;
+    private final static String TAG = AboutActivity.class.getSimpleName();
+
     @BindView(R.id.tv_about_us)
-    TextView     tvAboutUs;
+    TextView tvAboutUs;
     @BindView(R.id.ll_update)
     LinearLayout llUpdate;
     @BindView(R.id.tv_update)
-    TextView     tvUpdate;
+    TextView tvUpdate;
     @BindView(R.id.v_new_msg)
-    View         vNewMsg;
+    View vNewMsg;
 
     private Unbinder unbinder;
+    private VersionUpdate mVersionUpdate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,11 +63,12 @@ public class AboutActivity extends BaseActivity{
     }
 
     private void initViews() {
+
         String versionName = AndroidUtil.getVersionName(this);
         if (!versionName.toLowerCase().startsWith("v"))
             versionName = "v" + versionName;
         vNewMsg.setVisibility(View.GONE);
-        tvUpdate.setText(string(R.string.current_version,  versionName));
+        tvUpdate.setText(string(R.string.current_version, versionName));
         RxView.clicks(tvAboutUs)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
                 .subscribe(new Consumer<Unit>() {
@@ -104,7 +100,7 @@ public class AboutActivity extends BaseActivity{
         context.startActivity(intent);
     }
 
-    private void checkVersion(){
+    private void checkVersion() {
         VersionManager.getInstance().getVersion()
                 .compose(new SchedulersTransformer())
                 .compose(bindToLifecycle())
@@ -112,18 +108,18 @@ public class AboutActivity extends BaseActivity{
                     @Override
                     public void accept(VersionEntity versionEntity) {
                         String oldVersion = AndroidUtil.getVersionName(getContext()).toLowerCase();
-                        if (!oldVersion.startsWith("v")){
+                        if (!oldVersion.startsWith("v")) {
                             oldVersion = "v" + oldVersion;
                         }
                         String newVersion = versionEntity.getVersion().toLowerCase();
-                        if (!newVersion.startsWith("v")){
+                        if (!newVersion.startsWith("v")) {
                             newVersion = "v" + newVersion;
                         }
-                        if (oldVersion.compareTo(newVersion) < 0){
-                            tvUpdate.setText(string(R.string.latest_version,  newVersion));
+                        if (oldVersion.compareTo(newVersion) < 0) {
+                            tvUpdate.setText(string(R.string.latest_version, newVersion));
                             vNewMsg.setVisibility(View.VISIBLE);
-                        }else {
-                            tvUpdate.setText(string(R.string.current_version,  oldVersion));
+                        } else {
+                            tvUpdate.setText(string(R.string.current_version, oldVersion));
                             vNewMsg.setVisibility(View.GONE);
                         }
                     }
@@ -134,35 +130,37 @@ public class AboutActivity extends BaseActivity{
                 });
     }
 
-    private void update(){
-        showLoadingDialog();
+    private void update() {
         VersionManager.getInstance().getVersion()
-                .subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .compose(new SchedulersTransformer())
+                .compose(LoadingTransformer.bindToSingleLifecycle(this))
                 .subscribe(new Consumer<VersionEntity>() {
                     @Override
                     public void accept(VersionEntity versionEntity) {
-                        dismissLoadingDialogImmediately();
                         String oldVersion = AndroidUtil.getVersionName(getContext()).toLowerCase();
-                        if (!oldVersion.startsWith("v")){
+                        if (!oldVersion.startsWith("v")) {
                             oldVersion = "v" + oldVersion;
                         }
                         String newVersion = versionEntity.getVersion().toLowerCase();
-                        if (!newVersion.startsWith("v")){
+                        if (!newVersion.startsWith("v")) {
                             newVersion = "v" + newVersion;
                         }
                         if (oldVersion.compareTo(newVersion) >= 0) {
-                            tvUpdate.setText(string(R.string.current_version,  oldVersion));
+                            tvUpdate.setText(string(R.string.current_version, oldVersion));
                             vNewMsg.setVisibility(View.GONE);
                             showLongToast(string(R.string.latest_version_tips));
                             return;
                         }
-                        tvUpdate.setText(string(R.string.latest_version,  newVersion));
+
+                        mVersionUpdate = new VersionUpdate(AboutActivity.this, versionEntity.getDownloadUrl(), versionEntity.getVersion(), false);
+
+                        tvUpdate.setText(string(R.string.latest_version, newVersion));
                         vNewMsg.setVisibility(View.VISIBLE);
-                        if (VersionManager.getInstance().isDownloading(versionEntity.getDownloadUrl())){
+                        if (VersionManager.getInstance().isDownloading(versionEntity.getDownloadUrl())) {
                             showLongToast(string(R.string.download_tips));
                             return;
                         }
+
                         CommonTipsDialogFragment.createDialogWithTitleAndTwoButton(ContextCompat.getDrawable(getContext(), R.drawable.icon_dialog_tips),
                                 string(R.string.version_update),
                                 string(R.string.version_update_tips, newVersion),
@@ -175,12 +173,12 @@ public class AboutActivity extends BaseActivity{
                                         requestPermission(currentActivity(), 100, new PermissionConfigure.PermissionCallback() {
                                             @Override
                                             public void onSuccess(int what, @NonNull List<String> grantPermissions) {
-                                                download(versionEntity.getDownloadUrl());
+                                                mVersionUpdate.execute();
                                             }
 
                                             @Override
                                             public void onHasPermission(int what) {
-                                                download(versionEntity.getDownloadUrl());
+                                                mVersionUpdate.execute();
                                             }
 
                                             @Override
@@ -200,24 +198,6 @@ public class AboutActivity extends BaseActivity{
                                     }
                                 }).show(getSupportFragmentManager(), "showTips");
                     }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        dismissLoadingDialogImmediately();
-                    }
                 });
-    }
-
-    private void download(String url){
-        JZAppConfigure.getInstance().getDir(currentActivity(), JZDirType.raw, new JZAppConfigure.DirCallback() {
-            @Override
-            public void callback(File dir) {
-                if (dir == null) {
-                    return;
-                }
-                VersionManager.getInstance().download(url, dir, new String(Base64Utils.encodeToString(MD5Utils.encode(url))) + ".apk");
-            }
-        });
-
     }
 }
