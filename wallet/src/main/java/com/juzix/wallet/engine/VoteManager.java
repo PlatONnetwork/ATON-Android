@@ -133,7 +133,7 @@ public class VoteManager {
                 .put("walletAddrs", walletAddrs)
                 .put("cid", Web3jManager.getInstance().getChainId())
                 .put("pageNo", 1)
-                .put("pageSize", 10)
+                .put("pageSize", Integer.MAX_VALUE)
                 .build())
                 .toFlowable()
                 .flatMap(new Function<Response<ApiResponse<List<BatchVoteTransactionEntity>>>, Publisher<BatchVoteTransactionEntity>>() {
