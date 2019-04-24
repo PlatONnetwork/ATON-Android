@@ -152,7 +152,7 @@ public class AboutActivity extends BaseActivity {
                             return;
                         }
 
-                        mVersionUpdate = new VersionUpdate(AboutActivity.this, versionEntity.getDownloadUrl(), versionEntity.getVersion(), false);
+                        mVersionUpdate = new VersionUpdate(AboutActivity.this, versionEntity.getDownloadUrl(), versionEntity.getVersionWithoutPrefix(), false);
 
                         tvUpdate.setText(string(R.string.latest_version, newVersion));
                         vNewMsg.setVisibility(View.VISIBLE);

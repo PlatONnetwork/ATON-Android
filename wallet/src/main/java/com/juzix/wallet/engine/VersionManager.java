@@ -8,6 +8,7 @@ import com.juzix.wallet.engine.service.UpdateVersionService;
 import com.juzix.wallet.entity.DownloadEntity;
 import com.juzix.wallet.entity.VersionEntity;
 import com.juzix.wallet.utils.FileUtil;
+import com.juzix.wallet.utils.JSONUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -56,10 +57,11 @@ public class VersionManager {
     public Single<VersionEntity> getVersion() {
         return HttpClient.getInstance()
                 .createService(UpdateVersionService.class)
-                .getVersionInfo(Constants.URL.UPDATE_URL).flatMap(new Function<String, SingleSource<VersionEntity>>() {
+                .getVersionInfo(Constants.URL.UPDATE_URL)
+                .flatMap(new Function<String, SingleSource<VersionEntity>>() {
                     @Override
                     public SingleSource<VersionEntity> apply(String body) throws Exception {
-                        return getVersionInfo(body);
+                        return Single.just(JSONUtil.parseObject(body,VersionEntity.class));
                     }
                 });
     }
