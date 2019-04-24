@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths xmlns:android="http://schemas.android.com/apk/res/android">
     <!--<external-path-->
-        <!--name="external_files"-->
-        <!--path=""/>-->
+    <!--name="external_files"-->
+    <!--path=""/>-->
     <external-path
         name="download"
-        path="JZPlatON/raw"/>
+        path="JZPlatON/raw" />
     <external-files-path
         name="Download"
-        path="JZPlatON/raw"/>
+        path="JZPlatON/raw" />
     <root-path
         name="name"
-        path=""/>
+        path="" />
+    <external-path
+        name="files_root"
+        path="storage/emulated/0/" />
+    <external-path
+        name="external_storage_root"
+        path="." />
 </paths>

@@ -404,7 +404,7 @@
     <string name="vote_failed">投票失败!</string>
     <string name="receive_address_error">接收地址不正确</string>
     <string name="txn_init_failed_title">提示</string>
-    <string name="txn_init_failed_content">关联的经典钱包已被删除，改钱包无法发起交易</string>
+    <string name="txn_init_failed_content">关联的普通钱包已被删除，该钱包无法发起交易</string>
     <string name="query_no_result">查询无结果！</string>
     <string name="address_name">地址名称</string>
     <string name="input_address_name">输入地址名称</string>

@@ -108,6 +108,11 @@ public class AppSettings {
         preferences.edit().putBoolean(key, value).commit();
     }
 
+    public boolean removeSharedPreferenceByKey(String key) {
+        preferences.edit().remove(key);
+        return preferences.edit().commit();
+    }
+
     public void setLanguage(String language) {
         setStringItem(Constants.Preference.KEY_LANGUAGE, language);
     }
@@ -130,5 +135,13 @@ public class AppSettings {
 
     public String getCurrentNodeAddress(){
         return getStringItem(Constants.Preference.KEY_CURRENT_NODE_ADDRESS,null);
+    }
+
+    public void setDownloadManagerId(long downloadManagerId) {
+        setLongItem("downloadManagerId", downloadManagerId);
+    }
+
+    public long getDownloadManagerId() {
+        return getLongItem("downloadManagerId", -1);
     }
 }
