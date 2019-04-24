@@ -88,7 +88,7 @@ public class Constants {
     }
 
     public interface URL {
-        String UPDATE_URL = "https://api.github.com/repos/PlatONnetwork/ATON-Android/releases/latest";
+        String UPDATE_URL = "https://download.platon.network/aton-update.json";
         String URL_TEST_A = "https://test-amigo.platon.network/test";
         String URL_TEST_B = " https://test-beta.platon.network/test";
         String URL_HTTP_A = "https://aton.platon.network";

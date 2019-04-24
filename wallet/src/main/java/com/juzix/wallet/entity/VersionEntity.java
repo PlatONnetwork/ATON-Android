@@ -2,6 +2,7 @@ package com.juzix.wallet.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 /**
  * @author matrixelement
@@ -37,6 +38,13 @@ public class VersionEntity implements Parcelable {
     };
 
     public String getVersion() {
+        return version;
+    }
+
+    public String getVersionWithoutPrefix(){
+        if (!TextUtils.isEmpty(version) && version.startsWith("v")){
+            return version.substring(1);
+        }
         return version;
     }
 

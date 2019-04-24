@@ -55,7 +55,7 @@ public class VersionUpdate {
         this.mContext = context;
         this.url = url;
         this.isForceUpdate = isForceUpdate;
-        mVersionName = "ATON_" + versionName + ".apk";
+        mVersionName = "aton-android-" + versionName + ".apk";
         init(context);
     }
 
@@ -226,7 +226,7 @@ public class VersionUpdate {
      * 更新进度
      */
     private void updateView() {
-        if (mHandler != null){
+        if (mHandler != null) {
             if (isForceUpdate) {
                 int[] bytesAndStatus = mDownloadManagerPro.getBytesAndStatus(lastDownloadId);
                 int downloadedBytes = bytesAndStatus[0];
