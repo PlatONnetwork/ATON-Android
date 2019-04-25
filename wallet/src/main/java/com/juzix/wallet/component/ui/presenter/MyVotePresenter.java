@@ -27,6 +27,7 @@ import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -222,6 +223,7 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
                     @Override
                     public void accept(List<BatchVoteTransactionWrapEntity> batchVoteTransactionWrapEntityList) throws Exception {
                         if (isViewAttached()) {
+                            Collections.sort(batchVoteTransactionWrapEntityList);
                             getView().showBatchVoteTransactionList(batchVoteTransactionWrapEntityList);
                         }
                     }
@@ -245,6 +247,8 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
     }
 
     private BatchVoteTransactionEntity buildBatchVoteTransactionEntity(List<BatchVoteTransactionEntity> batchVoteTransactionEntities) {
+        //根据时间正序排序
+        Collections.sort(batchVoteTransactionEntities, Collections.reverseOrder());
         return Flowable
                 .fromIterable(batchVoteTransactionEntities)
                 .collectInto(new BatchVoteTransactionEntity(), new BiConsumer<BatchVoteTransactionEntity, BatchVoteTransactionEntity>() {

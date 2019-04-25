@@ -2,16 +2,16 @@ package com.juzix.wallet.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import java.util.List;
 
-public class BatchVoteTransactionWrapEntity implements Parcelable {
+public class BatchVoteTransactionWrapEntity implements Parcelable, Comparable<BatchVoteTransactionWrapEntity> {
 
     /**
      * 投票合并类
      */
     private BatchVoteTransactionEntity batchVoteTransactionEntity;
-
     /**
      * 投票列表
      */
@@ -64,5 +64,10 @@ public class BatchVoteTransactionWrapEntity implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(batchVoteTransactionEntity, flags);
         dest.writeTypedList(batchVoteTransactionEntityList);
+    }
+
+    @Override
+    public int compareTo(@NonNull BatchVoteTransactionWrapEntity o) {
+        return batchVoteTransactionEntity.compareTo(o.batchVoteTransactionEntity);
     }
 }

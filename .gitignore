@@ -22,6 +22,5 @@ captures/
 # svn temp directory
 tmp_commit/
 wallet/src/test/
-wallet/bugly/
 framework/src/test/
 
