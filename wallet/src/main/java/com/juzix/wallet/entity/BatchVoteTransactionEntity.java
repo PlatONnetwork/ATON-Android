@@ -2,15 +2,17 @@ package com.juzix.wallet.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.DateUtil;
 
 /**
  * @author matrixelement
  */
-public class BatchVoteTransactionEntity implements Parcelable {
+public class BatchVoteTransactionEntity implements Parcelable, Comparable<BatchVoteTransactionEntity> {
 
     /**
      * 交易hash
@@ -130,6 +132,9 @@ public class BatchVoteTransactionEntity implements Parcelable {
     }
 
     public String getCandidateId() {
+        if (!TextUtils.isEmpty(candidateId) && candidateId.startsWith("0x")) {
+            return candidateId.substring(2);
+        }
         return candidateId;
     }
 
@@ -215,6 +220,11 @@ public class BatchVoteTransactionEntity implements Parcelable {
 
     public double getVoteUnStaked() {
         return BigDecimalUtil.div(BigDecimalUtil.mul(getInvalidVoteNum(), deposit).doubleValue(), 1E18);
+    }
+
+    @Override
+    public int compareTo(@NonNull BatchVoteTransactionEntity o) {
+        return Long.compare(DateUtil.parse(o.transactiontime, DateUtil.DATETIME_FORMAT_PATTERN_WITH_SECOND), DateUtil.parse(transactiontime, DateUtil.DATETIME_FORMAT_PATTERN_WITH_SECOND));
     }
 
     public static final class Builder {
