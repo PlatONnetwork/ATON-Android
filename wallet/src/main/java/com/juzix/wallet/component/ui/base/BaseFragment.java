@@ -12,7 +12,6 @@ import com.juzhen.framework.app.activity.CoreFragment;
 import com.juzhen.framework.app.log.Log;
 import com.juzix.wallet.component.ui.BaseContextImpl;
 import com.juzix.wallet.component.ui.IContext;
-import com.juzix.wallet.config.PermissionConfigure;
 import com.trello.rxlifecycle2.LifecycleProvider;
 import com.trello.rxlifecycle2.LifecycleTransformer;
 import com.trello.rxlifecycle2.RxLifecycle;
@@ -229,11 +228,6 @@ public class BaseFragment extends CoreFragment implements IContext, LifecyclePro
     @Override
     public void showLoadingDialogWithCancelable(String text) {
         mContextImpl.showLoadingDialogWithCancelable(text);
-    }
-
-    @Override
-    public void requestPermission(BaseActivity activity, int what, PermissionConfigure.PermissionCallback callback, String... permissions) {
-        mContextImpl.requestPermission(activity, what, callback, permissions);
     }
 
     private BaseContextImpl mContextImpl = new BaseContextImpl() {

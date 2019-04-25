@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -19,13 +18,12 @@ import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.dialog.CommonTipsDialogFragment;
 import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
-import com.juzix.wallet.config.PermissionConfigure;
 import com.juzix.wallet.engine.VersionManager;
 import com.juzix.wallet.engine.VersionUpdate;
 import com.juzix.wallet.entity.VersionEntity;
 import com.juzix.wallet.utils.ShareUtil;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -170,22 +168,16 @@ public class AboutActivity extends BaseActivity {
                                         if (fragment != null) {
                                             fragment.dismiss();
                                         }
-                                        requestPermission(currentActivity(), 100, new PermissionConfigure.PermissionCallback() {
-                                            @Override
-                                            public void onSuccess(int what, @NonNull List<String> grantPermissions) {
-                                                mVersionUpdate.execute();
-                                            }
-
-                                            @Override
-                                            public void onHasPermission(int what) {
-                                                mVersionUpdate.execute();
-                                            }
-
-                                            @Override
-                                            public void onFail(int what, @NonNull List<String> deniedPermissions) {
-
-                                            }
-                                        }, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE);
+                                        new RxPermissions(currentActivity())
+                                                .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                                                .subscribe(new Consumer<Boolean>() {
+                                                    @Override
+                                                    public void accept(Boolean success) throws Exception {
+                                                        if (success){
+                                                            mVersionUpdate.execute();
+                                                        }
+                                                    }
+                                                });
 
                                     }
                                 },

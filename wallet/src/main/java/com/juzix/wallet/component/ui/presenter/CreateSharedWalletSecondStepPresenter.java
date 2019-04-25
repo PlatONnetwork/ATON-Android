@@ -1,7 +1,6 @@
 package com.juzix.wallet.component.ui.presenter;
 
 import android.Manifest;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.juzhen.framework.network.NetConnectivity;
@@ -12,7 +11,6 @@ import com.juzix.wallet.app.CustomThrowable;
 import com.juzix.wallet.app.FlowableSchedulersTransformer;
 import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.app.SchedulersTransformer;
-import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.CreateSharedWalletSecondStepContract;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
@@ -20,7 +18,6 @@ import com.juzix.wallet.component.ui.dialog.SendTransactionDialogFragment;
 import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.component.ui.view.ScanQRCodeActivity;
 import com.juzix.wallet.component.ui.view.SelectAddressActivity;
-import com.juzix.wallet.config.PermissionConfigure;
 import com.juzix.wallet.db.entity.AddressInfoEntity;
 import com.juzix.wallet.db.sqlite.AddressInfoDao;
 import com.juzix.wallet.engine.NodeManager;
@@ -30,6 +27,7 @@ import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.OwnerEntity;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import org.reactivestreams.Subscription;
 import org.web3j.crypto.Credentials;
@@ -90,23 +88,16 @@ public class CreateSharedWalletSecondStepPresenter extends BasePresenter<CreateS
 
     @Override
     public void scanAddress() {
-        BaseActivity activity = currentActivity();
-        requestPermission(activity, 100, new PermissionConfigure.PermissionCallback() {
-            @Override
-            public void onSuccess(int what, @NonNull List<String> grantPermissions) {
-                ScanQRCodeActivity.startActivityForResult(activity, Constants.RequestCode.REQUEST_CODE_SCAN_QRCODE);
-            }
-
-            @Override
-            public void onHasPermission(int what) {
-                ScanQRCodeActivity.startActivityForResult(activity, Constants.RequestCode.REQUEST_CODE_SCAN_QRCODE);
-            }
-
-            @Override
-            public void onFail(int what, @NonNull List<String> deniedPermissions) {
-
-            }
-        }, Manifest.permission.CAMERA);
+        new RxPermissions(currentActivity())
+                .request(Manifest.permission.CAMERA)
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean success) throws Exception {
+                        if (isViewAttached() && success) {
+                            ScanQRCodeActivity.startActivityForResult(currentActivity(), Constants.RequestCode.REQUEST_CODE_SCAN_QRCODE);
+                        }
+                    }
+                });
     }
 
     @Override
@@ -233,7 +224,7 @@ public class CreateSharedWalletSecondStepPresenter extends BasePresenter<CreateS
         }
         //解决用户地址与联名钱包创建地址之间存在重复的问题
         addressSet.add(mWalletEntity.getPrefixAddress());
-        if (addressSet.size() != mEntityList.size()+1) {
+        if (addressSet.size() != mEntityList.size() + 1) {
             showLongToast(R.string.duplicateAddress);
             return;
         }

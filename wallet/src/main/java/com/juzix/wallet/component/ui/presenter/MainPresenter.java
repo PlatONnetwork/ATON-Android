@@ -2,7 +2,6 @@ package com.juzix.wallet.component.ui.presenter;
 
 import android.Manifest;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -16,13 +15,11 @@ import com.juzix.wallet.component.ui.contract.MainContract;
 import com.juzix.wallet.component.ui.dialog.CommonTipsDialogFragment;
 import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
 import com.juzix.wallet.config.AppSettings;
-import com.juzix.wallet.config.PermissionConfigure;
 import com.juzix.wallet.engine.VersionManager;
 import com.juzix.wallet.engine.VersionUpdate;
 import com.juzix.wallet.entity.VersionEntity;
 import com.juzix.wallet.utils.DateUtil;
-
-import java.util.List;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import io.reactivex.functions.Consumer;
 
@@ -66,23 +63,16 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
                                             if (fragment != null) {
                                                 fragment.dismiss();
                                             }
-                                            requestPermission(currentActivity(), 100, new PermissionConfigure.PermissionCallback() {
-                                                @Override
-                                                public void onSuccess(int what, @NonNull List<String> grantPermissions) {
-                                                    mVersionUpdate.execute();
-                                                }
-
-                                                @Override
-                                                public void onHasPermission(int what) {
-                                                    mVersionUpdate.execute();
-                                                }
-
-                                                @Override
-                                                public void onFail(int what, @NonNull List<String> deniedPermissions) {
-
-                                                }
-                                            }, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE);
-
+                                            new RxPermissions(currentActivity())
+                                                    .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                                                    .subscribe(new Consumer<Boolean>() {
+                                                        @Override
+                                                        public void accept(Boolean success) throws Exception {
+                                                            if (isViewAttached() && success) {
+                                                                mVersionUpdate.execute();
+                                                            }
+                                                        }
+                                                    });
                                         }
                                     },
                                     string(R.string.not_now), new OnDialogViewClickListener() {

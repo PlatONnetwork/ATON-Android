@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
@@ -36,7 +35,6 @@ import com.juzix.wallet.component.ui.presenter.SendTransationPresenter;
 import com.juzix.wallet.component.widget.PointLengthFilter;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.component.widget.bubbleSeekBar.BubbleSeekBar;
-import com.juzix.wallet.config.PermissionConfigure;
 import com.juzix.wallet.entity.AddressEntity;
 import com.juzix.wallet.entity.WalletEntity;
 import com.juzix.wallet.event.Event;
@@ -44,11 +42,10 @@ import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
 import com.juzix.wallet.utils.ToastUtil;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.List;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -167,22 +164,16 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
                 SelectAddressActivity.actionStartForResult(getContext(), Constants.Action.ACTION_GET_ADDRESS, MainActivity.REQ_ASSETS_SELECT_ADDRESS_BOOK);
                 break;
             case R.id.iv_address_scan:
-                requestPermission(currentActivity(), 100, new PermissionConfigure.PermissionCallback() {
-                    @Override
-                    public void onSuccess(int what, @NonNull List<String> grantPermissions) {
-                        ScanQRCodeActivity.startActivityForResult(currentActivity(), MainActivity.REQ_ASSETS_ADDRESS_QR_CODE);
-                    }
-
-                    @Override
-                    public void onHasPermission(int what) {
-                        ScanQRCodeActivity.startActivityForResult(currentActivity(), MainActivity.REQ_ASSETS_ADDRESS_QR_CODE);
-                    }
-
-                    @Override
-                    public void onFail(int what, @NonNull List<String> deniedPermissions) {
-
-                    }
-                }, Manifest.permission.CAMERA);
+                new RxPermissions(currentActivity())
+                        .request(Manifest.permission.CAMERA)
+                        .subscribe(new Consumer<Boolean>() {
+                            @Override
+                            public void accept(Boolean success) throws Exception {
+                                if (success) {
+                                    ScanQRCodeActivity.startActivityForResult(currentActivity(), MainActivity.REQ_ASSETS_ADDRESS_QR_CODE);
+                                }
+                            }
+                        });
                 break;
             case R.id.tv_save_address:
                 showSaveAddressDialog();

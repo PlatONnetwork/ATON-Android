@@ -1,15 +1,16 @@
 package com.juzix.wallet.config;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
-import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
 
 import com.juzhen.framework.app.config.AppConfigure;
 import com.juzhen.framework.app.log.TUncaughtExceptionHandler;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.io.File;
-import java.util.List;
+
+import io.reactivex.functions.Consumer;
 
 /**
  * 全局变量配置
@@ -46,34 +47,24 @@ public class JZAppConfigure {
      * @param dirType 定义在{@link JZDirType}或其子类
      * @return
      */
-    public void getDir(final Activity activity, final String dirType, final DirCallback callback) {
-        String[] params = {Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,};
-        PermissionConfigure.request(activity, 100, new PermissionConfigure.PermissionCallback() {
-            @Override
-            public void onSuccess(int what, @NonNull List<String> grantPermissions) {
-                setConfigure(activity.getApplication());
-                if (callback != null) {
-                    callback.callback(AppConfigure.getDir(dirType));
-                }
-            }
-
-            @Override
-            public void onHasPermission(int what) {
-                setConfigure(activity.getApplication());
-                if (callback != null) {
-                    callback.callback(AppConfigure.getDir(dirType));
-                }
-            }
-
-            @Override
-            public void onFail(int what, @NonNull List<String> deniedPermissions) {
-//                showLongToast(deniedPermissions.toString());
-                if (callback != null) {
-                    callback.callback(null);
-                }
-            }
-        }, params);
+    public void getDir(final FragmentActivity activity, final String dirType, final DirCallback callback) {
+        new RxPermissions(activity)
+                .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean success) throws Exception {
+                        if (success) {
+                            setConfigure(activity.getApplication());
+                            if (callback != null) {
+                                callback.callback(AppConfigure.getDir(dirType));
+                            }
+                        } else {
+                            if (callback != null) {
+                                callback.callback(null);
+                            }
+                        }
+                    }
+                });
     }
 
     /**
@@ -83,34 +74,24 @@ public class JZAppConfigure {
      * @param userDirType 定义在{@link JZUserDirType}或其子类
      * @return
      */
-    public void getUserDir(final Activity activity, final String userID, final String userDirType, final DirCallback callback) {
-        String[] params = {Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,};
-        PermissionConfigure.request(activity, 100, new PermissionConfigure.PermissionCallback() {
-            @Override
-            public void onSuccess(int what, @NonNull List<String> grantPermissions) {
-                setConfigure(activity.getApplication());
-                if (callback != null) {
-                    callback.callback(createUserFile(userID, userDirType));
-                }
-            }
-
-            @Override
-            public void onHasPermission(int what) {
-                setConfigure(activity.getApplication());
-                if (callback != null) {
-                    callback.callback(createUserFile(userID, userDirType));
-                }
-            }
-
-            @Override
-            public void onFail(int what, @NonNull List<String> deniedPermissions) {
-//                showLongToast(deniedPermissions.toString());
-                if (callback != null) {
-                    callback.callback(null);
-                }
-            }
-        }, params);
+    public void getUserDir(final FragmentActivity activity, final String userID, final String userDirType, final DirCallback callback) {
+        new RxPermissions(activity)
+                .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean success) throws Exception {
+                        if (success) {
+                            setConfigure(activity.getApplication());
+                            if (callback != null) {
+                                callback.callback(createUserFile(userID, userDirType));
+                            }
+                        } else {
+                            if (callback != null) {
+                                callback.callback(null);
+                            }
+                        }
+                    }
+                });
     }
 
 
@@ -121,34 +102,25 @@ public class JZAppConfigure {
      * @param toUserId 定义在{@link JZUserDirType}或其子类
      * @return
      */
-    public void getUserImageDir(final Activity activity, final String userID, final String toUserId, final DirCallback callback) {
-        String[] params = {Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,};
-        PermissionConfigure.request(activity, 100, new PermissionConfigure.PermissionCallback() {
-            @Override
-            public void onSuccess(int what, @NonNull List<String> grantPermissions) {
-                setConfigure(activity.getApplication());
-                if (callback != null) {
-                    callback.callback(createUserImageFile(userID, toUserId));
-                }
-            }
+    public void getUserImageDir(final FragmentActivity activity, final String userID, final String toUserId, final DirCallback callback) {
 
-            @Override
-            public void onHasPermission(int what) {
-                setConfigure(activity.getApplication());
-                if (callback != null) {
-                    callback.callback(createUserImageFile(userID, toUserId));
-                }
-            }
-
-            @Override
-            public void onFail(int what, @NonNull List<String> deniedPermissions) {
-//                showLongToast(deniedPermissions.toString());
-                if (callback != null) {
-                    callback.callback(null);
-                }
-            }
-        }, params);
+        new RxPermissions(activity)
+                .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean success) throws Exception {
+                        if (success) {
+                            setConfigure(activity.getApplication());
+                            if (callback != null) {
+                                callback.callback(createUserImageFile(userID, toUserId));
+                            }
+                        } else {
+                            if (callback != null) {
+                                callback.callback(null);
+                            }
+                        }
+                    }
+                });
     }
 
     private File createUserFile(String userID, String userDirType) {
@@ -178,7 +150,7 @@ public class JZAppConfigure {
         File userImageFile = null;
         try {
             userImageFile = new File(createUserFile(userID, JZUserDirType.image), toUserId);
-            
+
             if (!userImageFile.exists()) {
                 userImageFile.mkdir();
             }

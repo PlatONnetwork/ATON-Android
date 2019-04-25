@@ -3,7 +3,6 @@ package com.juzix.wallet.component.ui.base;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.juzix.wallet.config.PermissionConfigure;
 import com.trello.rxlifecycle2.LifecycleProvider;
 import com.trello.rxlifecycle2.LifecycleTransformer;
 import com.trello.rxlifecycle2.android.FragmentEvent;
@@ -122,9 +121,5 @@ public class BasePresenter<T extends IView> implements IPresenter<T> {
 
     protected void showLoadingDialogWithCancelable(String text) {
         getView().showLoadingDialogWithCancelable(text);
-    }
-
-    protected void requestPermission(BaseActivity activity, int what, PermissionConfigure.PermissionCallback callback, String... permissions) {
-        getView().requestPermission(activity, what, callback, permissions);
     }
 }

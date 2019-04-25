@@ -74,12 +74,11 @@ public class UserQRCodePresenter extends BasePresenter<UserQRCodeContract.View> 
         if (mQRCodeBitmap == null){
             return;
         }
-        final Activity activity = currentActivity();
-        JZAppConfigure.getInstance().getDir(activity, JZDirType.plat, new JZAppConfigure.DirCallback() {
+        JZAppConfigure.getInstance().getDir(currentActivity(), JZDirType.plat, new JZAppConfigure.DirCallback() {
             @Override
             public void callback(File dir) {
                 if (dir != null) {
-                    boolean saved = PhotoUtil.saveImageToAlbum(activity, dir, getImageName(), screenShot(activity, false));
+                    boolean saved = PhotoUtil.saveImageToAlbum(currentActivity(), dir, getImageName(), screenShot(currentActivity(), false));
                     if (saved){
                         showLongToast(string(R.string.save_image_tips, dir.getAbsolutePath()));
                     }else {

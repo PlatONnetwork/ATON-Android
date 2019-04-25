@@ -1,13 +1,10 @@
 package com.juzix.wallet.component.ui.presenter;
 
 import android.Manifest;
-import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.SchedulersTransformer;
-import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.AssetsContract;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
@@ -18,7 +15,6 @@ import com.juzix.wallet.component.ui.view.CreateSharedWalletActivity;
 import com.juzix.wallet.component.ui.view.ImportIndividualWalletActivity;
 import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.component.ui.view.ScanQRCodeActivity;
-import com.juzix.wallet.config.PermissionConfigure;
 import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.engine.SharedWalletManager;
 import com.juzix.wallet.engine.WalletManager;
@@ -27,6 +23,7 @@ import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.SharedWalletEntity;
 import com.juzix.wallet.entity.WalletEntity;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.trello.rxlifecycle2.android.FragmentEvent;
 
 import org.reactivestreams.Publisher;
@@ -144,25 +141,17 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
 
     @Override
     public void scanQRCode() {
-        final BaseActivity activity = currentActivity();
-        requestPermission(activity, 100, new PermissionConfigure.PermissionCallback() {
-            @Override
-            public void onSuccess(int what, @NonNull List<String> grantPermissions) {
-                Intent intent = new Intent(currentActivity(), ScanQRCodeActivity.class);
-                activity.startActivityForResult(intent, MainActivity.REQ_ASSETS_TAB_QR_CODE);
-            }
+        new RxPermissions(currentActivity())
+                .request(Manifest.permission.CAMERA)
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean success) throws Exception {
+                        if (isViewAttached() && success) {
+                            ScanQRCodeActivity.startActivityForResult(currentActivity(), MainActivity.REQ_ASSETS_TAB_QR_CODE);
+                        }
+                    }
+                });
 
-            @Override
-            public void onHasPermission(int what) {
-                Intent intent = new Intent(currentActivity(), ScanQRCodeActivity.class);
-                activity.startActivityForResult(intent, MainActivity.REQ_ASSETS_TAB_QR_CODE);
-            }
-
-            @Override
-            public void onFail(int what, @NonNull List<String> deniedPermissions) {
-
-            }
-        }, Manifest.permission.CAMERA);
     }
 
     @Override

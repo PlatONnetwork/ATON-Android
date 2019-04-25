@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.gyf.barlibrary.ImmersionBar;
@@ -17,7 +16,6 @@ import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.BaseContextImpl;
 import com.juzix.wallet.component.ui.CustomContextWrapper;
 import com.juzix.wallet.component.ui.IContext;
-import com.juzix.wallet.config.PermissionConfigure;
 import com.juzix.wallet.utils.LanguageUtil;
 import com.trello.rxlifecycle2.LifecycleProvider;
 import com.trello.rxlifecycle2.LifecycleTransformer;
@@ -231,11 +229,6 @@ public abstract class BaseActivity extends CoreFragmentActivity implements ICont
         mContextImpl.showLoadingDialog(text, cancelable);
     }
 
-    @Override
-    public void requestPermission(BaseActivity activity, int what, PermissionConfigure.PermissionCallback callback, String... permissions) {
-        mContextImpl.requestPermission(activity, what, callback, permissions);
-    }
-
     private BaseContextImpl mContextImpl = new BaseContextImpl() {
         @Override
         public Context getContext() {
@@ -260,10 +253,11 @@ public abstract class BaseActivity extends CoreFragmentActivity implements ICont
 
     /**
      * 隐藏输入软键盘
+     *
      * @param context
      * @param view
      */
-    public void hideSoftInput(Context context, View view){
+    public void hideSoftInput(Context context, View view) {
         if (mInputMethodManager != null && view != null) {
             mInputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }

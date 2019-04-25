@@ -15,8 +15,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.view.SurfaceHolder;
@@ -28,65 +26,57 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.zxing.BarcodeFormat;
-import com.google.zxing.BinaryBitmap;
-import com.google.zxing.DecodeHintType;
-import com.google.zxing.MultiFormatReader;
 import com.google.zxing.Result;
 import com.google.zxing.camera.CameraManager;
-import com.google.zxing.common.GlobalHistogramBinarizer;
-import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.decoding.CaptureProviderHandler;
 import com.google.zxing.decoding.ICaptureProvider;
 import com.google.zxing.decoding.InactivityTimer;
-import com.google.zxing.decoding.RGBLuminanceSource;
 import com.google.zxing.view.ViewfinderView;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.base.BaseActivity;
-import com.juzix.wallet.config.PermissionConfigure;
 import com.juzix.wallet.utils.PhotoUtil;
 import com.juzix.wallet.utils.QRCodeDecoder;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Vector;
+
+import io.reactivex.functions.Consumer;
 
 
 public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider, View.OnClickListener, SurfaceHolder.Callback {
 
-    public static final  String                           EXTRA_SCAN_QRCODE_DATA    = "extra_scan_qrcode_data";
-    private static final int                              REQUEST_CODE_SCAN_GALLERY = 100;
-    private static final float                            BEEP_VOLUME               = 0.10f;
-    private static final long                             VIBRATE_DURATION          = 200L;
+    public static final String EXTRA_SCAN_QRCODE_DATA = "extra_scan_qrcode_data";
+    private static final int REQUEST_CODE_SCAN_GALLERY = 100;
+    private static final float BEEP_VOLUME = 0.10f;
+    private static final long VIBRATE_DURATION = 200L;
     /**
      * When the beep has finished playing, rewind to queue up another one.
      */
-    private final        MediaPlayer.OnCompletionListener beepListener              = new MediaPlayer.OnCompletionListener() {
+    private final MediaPlayer.OnCompletionListener beepListener = new MediaPlayer.OnCompletionListener() {
         public void onCompletion(MediaPlayer mediaPlayer) {
             mediaPlayer.seekTo(0);
         }
     };
 
     private CaptureProviderHandler handler;
-    private ViewfinderView         viewfinderView;
-    private ImageButton            back;
-    private ImageButton            btnFlash;
-    private Button                 btnAlbum; // 相册
-    private boolean                isFlashOn = false;
-    private boolean                hasSurface;
-    private Vector<BarcodeFormat>  decodeFormats;
-    private String                 characterSet;
-    private InactivityTimer        inactivityTimer;
-    private MediaPlayer            mediaPlayer;
-    private boolean                playBeep;
-    private boolean                vibrate;
-    private ProgressDialog         mProgress;
+    private ViewfinderView viewfinderView;
+    private ImageButton back;
+    private ImageButton btnFlash;
+    private Button btnAlbum; // 相册
+    private boolean isFlashOn = false;
+    private boolean hasSurface;
+    private Vector<BarcodeFormat> decodeFormats;
+    private String characterSet;
+    private InactivityTimer inactivityTimer;
+    private MediaPlayer mediaPlayer;
+    private boolean playBeep;
+    private boolean vibrate;
+    private ProgressDialog mProgress;
     //	private Button cancelScanButton;
-    private Uri                    photoUri;
-    private Bitmap                 scanBitmap;
+    private Uri photoUri;
+    private Bitmap scanBitmap;
 
     public static void actionStart(Activity activity, int requestCode) {
         activity.startActivityForResult(new Intent(activity, ScanQRCodeActivity.class), requestCode);
@@ -123,17 +113,17 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
     private void initView() {
         findViewById(R.id.ll_left).setOnClickListener(this);
 //        ((TextView) findViewById(R.id.tv_middle)).setText(R.string.scan_qr_code);
-        ((ImageView)findViewById(R.id.iv_left)).setImageResource(R.drawable.icon_back_white);
-        TextView tvRight =  findViewById(R.id.tv_right);
+        ((ImageView) findViewById(R.id.iv_left)).setImageResource(R.drawable.icon_back_white);
+        TextView tvRight = findViewById(R.id.tv_right);
         tvRight.setVisibility(View.VISIBLE);
         tvRight.setText(R.string.photo_album);
 
         findViewById(R.id.ll_left).setOnClickListener(this);
         findViewById(R.id.ll_right).setOnClickListener(this);
         CameraManager.init(getApplication());
-        viewfinderView =  findViewById(R.id.viewfinder_content);
+        viewfinderView = findViewById(R.id.viewfinder_content);
 
-        btnFlash =  findViewById(R.id.btn_flash);
+        btnFlash = findViewById(R.id.btn_flash);
         btnFlash.setOnClickListener(flashListener);
         hasSurface = false;
         inactivityTimer = new InactivityTimer(this);
@@ -166,39 +156,20 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
     }
 
     private void openAlbum() {
-        final BaseActivity activity = currentActivity();
-        String[] params = {
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE
-        };
-        requestPermission(activity, 100, new PermissionConfigure.PermissionCallback() {
-            @Override
-            public void onSuccess(int what, @NonNull List<String> grantPermissions) {
-                //打开手机中的相册
-//            Intent innerIntent = new Intent(Intent.ACTION_GET_CONTENT); //"android.intent.action.GET_CONTENT"
-//            innerIntent.setType("image/*");
-//            startActivityForResult(innerIntent, REQUEST_CODE_SCAN_GALLERY);
-                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, REQUEST_CODE_SCAN_GALLERY);
-            }
 
-            @Override
-            public void onHasPermission(int what) {
-                //打开手机中的相册
-//            Intent innerIntent = new Intent(Intent.ACTION_GET_CONTENT); //"android.intent.action.GET_CONTENT"
-//            innerIntent.setType("image/*");
-//            startActivityForResult(innerIntent, REQUEST_CODE_SCAN_GALLERY);
-                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, REQUEST_CODE_SCAN_GALLERY);
-            }
-
-            @Override
-            public void onFail(int what, @NonNull List<String> deniedPermissions) {
-
-            }
-        }, params);
+        new RxPermissions(currentActivity())
+                .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean success) throws Exception {
+                        if (success){
+                            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                            startActivityForResult(intent, REQUEST_CODE_SCAN_GALLERY);
+                        }
+                    }
+                });
     }
- 
+
     private void handleAlbumPic(Intent data) {
         photoUri = Uri.parse(PhotoUtil.getPath(this, data.getData()));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -215,7 +186,7 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
                 Result result = scanningImage(photoUri);
                 if (result != null) {
                     Intent resultIntent = new Intent();
-                    Bundle bundle       = new Bundle();
+                    Bundle bundle = new Bundle();
                     bundle.putString(EXTRA_SCAN_QRCODE_DATA, result.getText());
                     resultIntent.putExtras(bundle);
                     ScanQRCodeActivity.this.setResult(RESULT_OK, resultIntent);
@@ -238,7 +209,7 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
     @Override
     protected void onResume() {
         super.onResume();
-        SurfaceView   surfaceView   = (SurfaceView) findViewById(R.id.scanner_view);
+        SurfaceView surfaceView = (SurfaceView) findViewById(R.id.scanner_view);
         SurfaceHolder surfaceHolder = surfaceView.getHolder();
         if (hasSurface) {
             initCamera(surfaceHolder);
@@ -344,7 +315,7 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
             showLongToast(R.string.scan_qr_code_failed_tips);
         } else {
             Intent resultIntent = new Intent();
-            Bundle bundle       = new Bundle();
+            Bundle bundle = new Bundle();
             bundle.putString(EXTRA_SCAN_QRCODE_DATA, resultString);
             // 不能使用Intent传递大于40kb的bitmap，可以使用一个单例对象存储这个bitmap
 //            bundle.putParcelable("bitmap", barcode);
@@ -357,7 +328,7 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
 
     @Override
     public void onScanResult(int resultCode, Intent data) {
-        Bundle bundle     = data.getExtras();
+        Bundle bundle = data.getExtras();
         String scanResult = bundle.getString(EXTRA_SCAN_QRCODE_DATA);
         showLongToast(scanResult);
         ScanQRCodeActivity.this.setResult(resultCode, data);
