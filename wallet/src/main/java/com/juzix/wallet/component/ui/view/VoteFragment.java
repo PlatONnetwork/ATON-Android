@@ -26,9 +26,9 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding3.view.RxView;
-import com.jakewharton.rxbinding3.widget.RxRadioGroup;
-import com.jakewharton.rxbinding3.widget.RxTextView;
+import com.jakewharton.rxbinding2.view.RxView;
+import com.jakewharton.rxbinding2.widget.RxRadioGroup;
+import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.ClickTransformer;

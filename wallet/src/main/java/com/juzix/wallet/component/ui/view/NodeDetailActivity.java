@@ -7,7 +7,7 @@ import android.support.constraint.ConstraintLayout;
 import android.text.TextUtils;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding3.view.RxView;
+import com.jakewharton.rxbinding2.view.RxView;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
@@ -28,7 +28,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.reactivex.functions.Consumer;
-import kotlin.Unit;
 
 /**
  * @author matrixelement
@@ -88,9 +87,9 @@ public class NodeDetailActivity extends MVPBaseActivity<NodeDetailPresenter> imp
                 .clicks(tvInstitutionalWebsite)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
                 .compose(bindToLifecycle())
-                .subscribe(new Consumer<Unit>() {
+                .subscribe(new Consumer<Object>() {
                     @Override
-                    public void accept(Unit unit) throws Exception {
+                    public void accept(Object object) throws Exception {
                         String text = tvInstitutionalWebsite.getText().toString();
                         if (!TextUtils.isEmpty(text)) {
                             ShareUtil.shareUrl(getContext(), text);
@@ -102,9 +101,9 @@ public class NodeDetailActivity extends MVPBaseActivity<NodeDetailPresenter> imp
                 .clicks(sbtnVote)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
                 .compose(bindToLifecycle())
-                .subscribe(new Consumer<Unit>() {
+                .subscribe(new Consumer<Object>() {
                     @Override
-                    public void accept(Unit unit) throws Exception {
+                    public void accept(Object object) throws Exception {
                         mPresenter.voteTicket();
                     }
                 });

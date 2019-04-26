@@ -1,7 +1,7 @@
 package com.juzix.wallet.component.widget.bubbleSeekBar;
 
-import androidx.annotation.ColorInt;
-import androidx.annotation.IntRange;
+import android.support.annotation.ColorInt;
+import android.support.annotation.IntRange;
 
 import static com.juzix.wallet.component.widget.bubbleSeekBar.BubbleUtils.dp2px;
 import static com.juzix.wallet.component.widget.bubbleSeekBar.BubbleUtils.sp2px;

@@ -12,8 +12,8 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding3.view.RxView;
-import com.jakewharton.rxbinding3.widget.RxTextView;
+import com.jakewharton.rxbinding2.view.RxView;
+import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.ClickTransformer;
 import com.juzix.wallet.app.Constants;
@@ -36,7 +36,6 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.reactivex.Single;
 import io.reactivex.functions.Consumer;
-import kotlin.Unit;
 
 /**
  * @author matrixelement
@@ -115,9 +114,9 @@ public class InputWalletPasswordDialogFragment extends BaseDialogFragment {
         RxView.clicks(textCancel)
                 .compose(bindToLifecycle())
                 .compose(new ClickTransformer())
-                .subscribe(new Consumer<Unit>() {
+                .subscribe(new Consumer<Object>() {
                     @Override
-                    public void accept(Unit unit) throws Exception {
+                    public void accept(Object object) throws Exception {
                         dismiss();
                     }
                 });
@@ -125,9 +124,9 @@ public class InputWalletPasswordDialogFragment extends BaseDialogFragment {
         RxView.clicks(buttonConfirm)
                 .compose(bindToLifecycle())
                 .compose(new ClickTransformer())
-                .subscribe(new Consumer<Unit>() {
+                .subscribe(new Consumer<Object>() {
                     @Override
-                    public void accept(Unit unit) throws Exception {
+                    public void accept(Object object) throws Exception {
                         Single.fromCallable(new Callable<Credentials>() {
                             @Override
                             public Credentials call() throws Exception {

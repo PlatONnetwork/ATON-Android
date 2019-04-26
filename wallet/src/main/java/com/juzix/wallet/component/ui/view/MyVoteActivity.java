@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding3.widget.RxAdapterView;
+import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.ClickTransformer;
 import com.juzix.wallet.component.adapter.BatchVoteSummaryAdapter;

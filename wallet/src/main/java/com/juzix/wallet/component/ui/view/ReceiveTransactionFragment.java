@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding3.view.RxView;
+import com.jakewharton.rxbinding2.view.RxView;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
@@ -32,7 +32,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.reactivex.functions.Consumer;
-import kotlin.Unit;
 
 /**
  * @author matrixelement
@@ -78,9 +77,9 @@ public class ReceiveTransactionFragment extends MVPBaseFragment<ReceiveTransatio
     private void initViews() {
         RxView.clicks(btnSave)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Unit>() {
+                .subscribe(new Consumer<Object>() {
                     @Override
-                    public void accept(Unit unit) throws Exception {
+                    public void accept(Object object) throws Exception {
                         mPresenter.shareView();
                     }
                 });

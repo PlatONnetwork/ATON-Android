@@ -29,7 +29,7 @@ android {
 }
 
 dependencies {
-    implementation rootProject.ext.dependencies.support_annotations
-    implementation rootProject.ext.dependencies.support_vector_drawable
-    implementation rootProject.ext.dependencies.support_animated_vector_drawable
+    implementation rootProject.ext.dependencies["support-annotations"]
+    implementation rootProject.ext.dependencies["support-vector-drawable"]
+    implementation rootProject.ext.dependencies["support-animated-vector-drawable"]
 }

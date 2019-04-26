@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding3.view.RxView;
+import com.jakewharton.rxbinding2.view.RxView;
 import com.juzix.wallet.BuildConfig;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
@@ -24,7 +24,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.reactivex.functions.Consumer;
-import kotlin.Unit;
 
 /**
  * @author matrixelement
@@ -80,89 +79,89 @@ public class MeFragment extends BaseFragment {
     private void init(){
         RxView.clicks(layoutWalletManage)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Unit>() {
+                .subscribe(new Consumer<Object>() {
                     @Override
-                    public void accept(Unit unit) throws Exception {
+                    public void accept(Object object) throws Exception {
                         WalletManagerActivity.actionStart(getActivity());
                     }
                 });
         RxView.clicks(layoutWalletTransations)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Unit>() {
+                .subscribe(new Consumer<Object>() {
                     @Override
-                    public void accept(Unit unit) throws Exception {
+                    public void accept(Object object) throws Exception {
                         TransactionRecordsActivity.actionStart(getActivity());
                     }
                 });
         RxView.clicks(layoutWalletAddressBook)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Unit>() {
+                .subscribe(new Consumer<Object>() {
                     @Override
-                    public void accept(Unit unit) throws Exception {
+                    public void accept(Object object) throws Exception {
                         AddressBookActivity.actionStart(getActivity(), Constants.Action.ACTION_NONE);
                     }
                 });
         RxView.clicks(layoutSettings)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Unit>() {
+                .subscribe(new Consumer<Object>() {
                     @Override
-                    public void accept(Unit unit) throws Exception {
+                    public void accept(Object object) throws Exception {
                         SettingsActiivty.actionStart(getActivity());
                     }
                 });
         RxView.clicks(layoutAbout)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Unit>() {
+                .subscribe(new Consumer<Object>() {
                     @Override
-                    public void accept(Unit unit) throws Exception {
+                    public void accept(Object object) throws Exception {
                         AboutActivity.actionStart(getActivity());
                     }
                 });
         RxView.clicks(ivTelegram)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Unit>() {
+                .subscribe(new Consumer<Object>() {
                     @Override
-                    public void accept(Unit unit) throws Exception {
+                    public void accept(Object object) throws Exception {
                         ShareUtil.shareUrl(getActivity(), "https://t.me/PlatONHK");
                     }
                 });
         RxView.clicks(ivGithub)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Unit>() {
+                .subscribe(new Consumer<Object>() {
                     @Override
-                    public void accept(Unit unit) throws Exception {
+                    public void accept(Object object) throws Exception {
                         ShareUtil.shareUrl(getActivity(), "https://github.com/PlatONnetwork");
                     }
                 });
         RxView.clicks(ivTwitter)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Unit>() {
+                .subscribe(new Consumer<Object>() {
                     @Override
-                    public void accept(Unit unit) throws Exception {
+                    public void accept(Object object) throws Exception {
                         ShareUtil.shareUrl(getActivity(), "https://twitter.com/PlatON_Network");
                     }
                 });
         RxView.clicks(ivFacebook)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Unit>() {
+                .subscribe(new Consumer<Object>() {
                     @Override
-                    public void accept(Unit unit) throws Exception {
+                    public void accept(Object object) throws Exception {
                         ShareUtil.shareUrl(getActivity(), "https://www.facebook.com/PlatONNetwork/");
                     }
                 });
         RxView.clicks(ivRabbit)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Unit>() {
+                .subscribe(new Consumer<Object>() {
                     @Override
-                    public void accept(Unit unit) throws Exception {
+                    public void accept(Object object) throws Exception {
                         ShareUtil.shareUrl(getActivity(), "https://www.reddit.com/user/PlatON_Network");
                     }
                 });
         RxView.clicks(ivMedium)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Unit>() {
+                .subscribe(new Consumer<Object>() {
                     @Override
-                    public void accept(Unit unit) throws Exception {
+                    public void accept(Object object) throws Exception {
                         ShareUtil.shareUrl(getActivity(), "https://medium.com/@PlatON_Network");
                     }
                 });

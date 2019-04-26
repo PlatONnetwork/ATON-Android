@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
@@ -21,7 +22,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding3.view.RxView;
+import com.jakewharton.rxbinding2.view.RxView;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.ClickTransformer;
@@ -46,6 +47,7 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.web3j.utils.Convert;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -53,7 +55,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.reactivex.functions.Consumer;
-import kotlin.Unit;
 
 /**
  * @author matrixelement
@@ -134,9 +135,9 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
         etWalletAddress.setOnFocusChangeListener(mEtWalletAddressFocusChangeListener);
         etWalletAmount.setOnFocusChangeListener(mEtWalletAmountFocusChangeListener);
         bubbleSeekBar.setCustomSectionTextArray(new BubbleSeekBar.CustomSectionTextArray() {
-            @androidx.annotation.NonNull
+            @NonNull
             @Override
-            public SparseArray<String> onCustomize(int sectionCount, @androidx.annotation.NonNull SparseArray<String> array) {
+            public SparseArray<String> onCustomize(int sectionCount, @NonNull SparseArray<String> array) {
                 array.clear();
                 array.put(0, cheaper);
                 array.put(3, faster);
@@ -148,9 +149,9 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
         RxView.clicks(btnSendTransation)
                 .compose(new ClickTransformer())
                 .compose(bindToLifecycle())
-                .subscribe(new Consumer<Unit>() {
+                .subscribe(new Consumer<Object>() {
                     @Override
-                    public void accept(Unit unit) throws Exception {
+                    public void accept(Object object) throws Exception {
                         mPresenter.submit();
                     }
                 });

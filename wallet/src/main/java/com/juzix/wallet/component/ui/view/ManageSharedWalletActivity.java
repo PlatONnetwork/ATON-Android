@@ -10,8 +10,8 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding3.view.RxView;
-import com.jakewharton.rxbinding3.widget.RxAdapterView;
+import com.jakewharton.rxbinding2.view.RxView;
+import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.SharedWalletMemberAdapter;
@@ -41,7 +41,6 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.reactivex.Single;
 import io.reactivex.functions.Consumer;
-import kotlin.Unit;
 
 /**
  * @author matrixelement
@@ -79,17 +78,17 @@ public class ManageSharedWalletActivity extends MVPBaseActivity<ManageSharedWall
     private void initView() {
         RxView.clicks(rlRename)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Unit>() {
+                .subscribe(new Consumer<Object>() {
                     @Override
-                    public void accept(Unit unit) throws Exception {
+                    public void accept(Object object) throws Exception {
                         showModifyWalletNameDialog();
                     }
                 });
         RxView.clicks(tvDelete)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Unit>() {
+                .subscribe(new Consumer<Object>() {
                     @Override
-                    public void accept(Unit unit) throws Exception {
+                    public void accept(Object object) throws Exception {
                         mPresenter.deleteAction(TYPE_DELETE_WALLET);
                     }
                 });

@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding3.view.RxView;
+import com.jakewharton.rxbinding2.view.RxView;
 import com.juzhen.framework.util.AndroidUtil;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.LoadingTransformer;
@@ -30,7 +30,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.reactivex.functions.Consumer;
-import kotlin.Unit;
 
 /**
  * @author matrixelement
@@ -69,17 +68,17 @@ public class AboutActivity extends BaseActivity {
         tvUpdate.setText(string(R.string.current_version, versionName));
         RxView.clicks(tvAboutUs)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Unit>() {
+                .subscribe(new Consumer<Object>() {
                     @Override
-                    public void accept(Unit unit) throws Exception {
+                    public void accept(Object object) throws Exception {
                         ShareUtil.shareUrl(getContext(), "https://www.platon.network");
                     }
                 });
         RxView.clicks(llUpdate)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Unit>() {
+                .subscribe(new Consumer<Object>() {
                     @Override
-                    public void accept(Unit unit) throws Exception {
+                    public void accept(Object object) throws Exception {
                         update();
                     }
                 });

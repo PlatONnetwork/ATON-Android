@@ -138,36 +138,42 @@ repositories {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':zxing')
-    implementation project(':framework')
     implementation project(':biometric')
-    implementation rootProject.ext.dependencies.support_v4
-    implementation rootProject.ext.dependencies.gridlayout
-    implementation rootProject.ext.dependencies.appcompat_v7
-    implementation rootProject.ext.dependencies.support_design
-    implementation rootProject.ext.dependencies.support_annotations
-    implementation rootProject.ext.dependencies.support_recyclerview
-    implementation rootProject.ext.dependencies.support_zxing
-    implementation rootProject.ext.dependencies.support_constraintLayout
-    implementation rootProject.ext.dependencies.support_multidex
-    implementation rootProject.ext.dependencies.web3j_core
-    implementation rootProject.ext.dependencies.web3j_crypto
-    implementation rootProject.ext.dependencies.bitcoinj_core
-    implementation rootProject.ext.dependencies.eventbus
-    implementation rootProject.ext.dependencies.rxjava2_rxjava
-    implementation rootProject.ext.dependencies.rxjava2_rxandroid
-    implementation rootProject.ext.dependencies.rxlifecycle
-    implementation rootProject.ext.dependencies.rxlifecycle_android
-    implementation rootProject.ext.dependencies.rxbinding3
-    implementation rootProject.ext.dependencies.rxpermissions
-    implementation rootProject.ext.dependencies.butterknife
-    annotationProcessor rootProject.ext.dependencies.butterknife_compiler
-    implementation rootProject.ext.dependencies.picker
-    implementation rootProject.ext.dependencies.support_zxing
-    implementation rootProject.ext.dependencies.flexbox
-    implementation rootProject.ext.dependencies.tinypinyin
-    implementation rootProject.ext.dependencies.immersionbar
-    implementation rootProject.ext.dependencies.smarttablayout
-    implementation rootProject.ext.dependencies.umeng_common
-    implementation rootProject.ext.dependencies.umeng_analytics
-    implementation rootProject.ext.dependencies.bugly
+    implementation project(':framework')
+    implementation rootProject.ext.dependencies["support-gridlayout"]
+    implementation rootProject.ext.dependencies["support-design"]
+    implementation rootProject.ext.dependencies["support-annotations"]
+    implementation rootProject.ext.dependencies["support-recyclerview-v7"]
+    implementation rootProject.ext.dependencies["support-zxing"]
+    implementation rootProject.ext.dependencies["support-constraint-layout"]
+    implementation rootProject.ext.dependencies["support-multidex"]
+    implementation (rootProject.ext.dependencies["web3j_core"]){
+        exclude group: 'io.reactivex'
+    }
+    implementation rootProject.ext.dependencies["web3j_crypto"]
+    implementation rootProject.ext.dependencies["bitcoinj_core"]
+    implementation rootProject.ext.dependencies["eventbus"]
+    implementation rootProject.ext.dependencies["rxlifecycle"]
+    implementation rootProject.ext.dependencies["rxlifecycle-android"]
+    implementation (rootProject.ext.dependencies["rxbinding"]){
+        exclude group: 'com.android.support'
+    }
+    api (rootProject.ext.dependencies["rxbinding-appcompat-v7"]){
+        exclude  group: 'com.android.support'
+    }
+    api(rootProject.ext.dependencies["rxbinding-recyclerview-v7"]) {
+        exclude  group: 'com.android.support'
+    }
+    implementation rootProject.ext.dependencies["rxpermissions"]
+    implementation rootProject.ext.dependencies["butterknife"]
+    annotationProcessor rootProject.ext.dependencies["butterknife-compiler"]
+    implementation rootProject.ext.dependencies["PickerView"]
+    implementation rootProject.ext.dependencies["support-zxing"]
+    implementation rootProject.ext.dependencies["flexbox"]
+    implementation rootProject.ext.dependencies["tinypinyin"]
+    implementation rootProject.ext.dependencies["immersionbar"]
+    implementation rootProject.ext.dependencies["smarttablayout"]
+    implementation rootProject.ext.dependencies["umeng_common"]
+    implementation rootProject.ext.dependencies["umeng_analytics"]
+    implementation rootProject.ext.dependencies["bugly"]
 }

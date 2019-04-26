@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding3.view.RxView;
+import com.jakewharton.rxbinding2.view.RxView;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.ClickTransformer;
@@ -23,7 +23,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.functions.Consumer;
-import kotlin.Unit;
 
 /**
  * @author matrixelement
@@ -75,9 +74,9 @@ public class VoteListAdapter extends RecyclerView.Adapter<VoteListAdapter.ViewHo
             RxView
                     .clicks(holder.itemView)
                     .compose(new ClickTransformer())
-                    .subscribe(new Consumer<Unit>() {
+                    .subscribe(new Consumer<Object>() {
                         @Override
-                        public void accept(Unit unit) throws Exception {
+                        public void accept(Object object) throws Exception {
                             if (mOnItemClickListener != null) {
                                 mOnItemClickListener.onItemClick(candidateEntity);
                             }
@@ -87,9 +86,9 @@ public class VoteListAdapter extends RecyclerView.Adapter<VoteListAdapter.ViewHo
             RxView
                     .clicks(holder.tvVote)
                     .compose(new ClickTransformer())
-                    .subscribe(new Consumer<Unit>() {
+                    .subscribe(new Consumer<Object>() {
                         @Override
-                        public void accept(Unit unit) throws Exception {
+                        public void accept(Object unit) throws Exception {
                             if (mOnVoteTicketClickListener != null) {
                                 mOnVoteTicketClickListener.onVoteTicketClick(candidateEntity);
                             }
