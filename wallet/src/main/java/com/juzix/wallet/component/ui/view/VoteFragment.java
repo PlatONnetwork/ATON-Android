@@ -31,7 +31,6 @@ import com.jakewharton.rxbinding2.widget.RxRadioGroup;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
-import com.juzix.wallet.app.ClickTransformer;
 import com.juzix.wallet.component.adapter.VoteListAdapter;
 import com.juzix.wallet.component.ui.SortType;
 import com.juzix.wallet.component.ui.base.BaseActivity;

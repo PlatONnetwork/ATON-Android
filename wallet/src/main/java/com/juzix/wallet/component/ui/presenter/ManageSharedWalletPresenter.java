@@ -1,7 +1,6 @@
 package com.juzix.wallet.component.ui.presenter;
 
 import com.juzix.wallet.app.LoadingTransformer;
-import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.ManageSharedWalletContract;
 import com.juzix.wallet.engine.IndividualWalletManager;
@@ -13,7 +12,6 @@ import com.juzix.wallet.event.EventPublisher;
 
 import org.web3j.crypto.Credentials;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 

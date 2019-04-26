@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.juzix.wallet.R;
-import com.juzix.wallet.app.ClickTransformer;
 import com.juzix.wallet.component.adapter.BatchVoteSummaryAdapter;
 import com.juzix.wallet.component.adapter.BatchVoteTransactionAdapter;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;

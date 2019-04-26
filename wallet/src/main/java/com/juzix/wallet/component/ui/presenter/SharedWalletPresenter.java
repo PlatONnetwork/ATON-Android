@@ -1,10 +1,7 @@
 package com.juzix.wallet.component.ui.presenter;
 
 
-import android.util.Log;
-
 import com.juzix.wallet.R;
-import com.juzix.wallet.app.FlowableSchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.SharedWalletContract;
 import com.juzix.wallet.component.ui.view.AddSharedWalletActivity;

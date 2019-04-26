@@ -18,12 +18,12 @@ import com.juzhen.framework.util.AndroidUtil;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.LoadingTransformer;
-import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.widget.CustomEditText;
 import com.juzix.wallet.component.widget.TextChangedListener;
 import com.juzix.wallet.entity.NodeEntity;
 import com.juzix.wallet.utils.CommonUtil;
+import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.ToastUtil;
 
 import java.util.ArrayList;
@@ -283,7 +283,7 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
                 return CommonUtil.validUrl(address);
             }
         })
-                .compose(new SchedulersTransformer())
+                .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(LoadingTransformer.bindToSingleLifecycle(activity))
                 .subscribe(new Consumer<Boolean>() {
                     @Override

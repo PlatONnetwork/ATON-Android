@@ -19,6 +19,11 @@ import com.trello.rxlifecycle2.android.FragmentEvent;
 import com.trello.rxlifecycle2.android.RxLifecycleAndroid;
 
 import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.subjects.BehaviorSubject;
 
 
@@ -36,6 +41,7 @@ public class BaseFragment extends CoreFragment implements IContext, LifecyclePro
     private static final String TAG = BaseFragment.class.getSimpleName();
 
     private boolean mResumedForFirstTime;
+    private CompositeDisposable mCompositeDisposable;
 
     private final BehaviorSubject<FragmentEvent> lifecycleSubject = BehaviorSubject.create();
 
@@ -70,6 +76,7 @@ public class BaseFragment extends CoreFragment implements IContext, LifecyclePro
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         lifecycleSubject.onNext(FragmentEvent.CREATE);
+        mCompositeDisposable = new CompositeDisposable();
     }
 
     @Override
@@ -112,6 +119,9 @@ public class BaseFragment extends CoreFragment implements IContext, LifecyclePro
     @Override
     public void onDestroyView() {
         lifecycleSubject.onNext(FragmentEvent.DESTROY_VIEW);
+        if (mCompositeDisposable != null) {
+            mCompositeDisposable.dispose();
+        }
         super.onDestroyView();
     }
 
@@ -241,4 +251,63 @@ public class BaseFragment extends CoreFragment implements IContext, LifecyclePro
             return (BaseActivity) getActivity();
         }
     };
+
+    public abstract class CustomObserver<T> implements Observer<T> {
+
+        final Consumer<? super T> collector;
+        boolean done;
+
+        public CustomObserver() {
+
+            this.collector = new Consumer<T>() {
+                @Override
+                public void accept(T t) throws Exception {
+                    CustomObserver.this.accept(t);
+                }
+            };
+        }
+
+        @Override
+        public void onSubscribe(Disposable d) {
+            if (d == null) {
+                RxJavaPlugins.onError(new NullPointerException("disposable is null"));
+                return;
+            }
+            mCompositeDisposable.add(d);
+        }
+
+        @Override
+        public void onNext(T t) {
+            if (done) {
+                return;
+            }
+            try {
+                collector.accept(t);
+            } catch (Throwable e) {
+                onError(e);
+            }
+        }
+
+
+        @Override
+        public void onError(Throwable t) {
+            if (done) {
+                RxJavaPlugins.onError(t);
+                return;
+            }
+            done = true;
+        }
+
+        @Override
+        public void onComplete() {
+            if (done) {
+                return;
+            }
+            done = true;
+        }
+
+        public abstract void accept(T t) throws Exception;
+
+    }
+
 }

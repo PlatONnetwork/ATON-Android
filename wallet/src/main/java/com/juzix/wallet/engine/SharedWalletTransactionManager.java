@@ -8,7 +8,6 @@ import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.App;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomThrowable;
-import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.db.entity.SharedTransactionInfoEntity;
 import com.juzix.wallet.db.sqlite.AddressInfoDao;
 import com.juzix.wallet.db.sqlite.SharedTransactionInfoDao;

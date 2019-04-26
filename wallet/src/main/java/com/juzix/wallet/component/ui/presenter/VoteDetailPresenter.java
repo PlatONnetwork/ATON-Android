@@ -2,7 +2,6 @@ package com.juzix.wallet.component.ui.presenter;
 
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.app.LoadingTransformer;
-import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.VoteDetailContract;
 import com.juzix.wallet.db.entity.SingleVoteInfoEntity;

@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.juzix.wallet.R;
-import com.juzix.wallet.app.ClickTransformer;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.AddNewAddressContract;
@@ -22,6 +21,7 @@ import com.juzix.wallet.component.ui.presenter.AddNewAddressPresenter;
 import com.juzix.wallet.component.widget.CommonTitleBar;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.entity.AddressEntity;
+import com.juzix.wallet.utils.RxUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import butterknife.BindString;
@@ -81,7 +81,7 @@ public class AddNewAddressActivity extends MVPBaseActivity<AddNewAddressPresente
                 return mPresenter.checkAddress(address.toString()) && mPresenter.checkAddressName(addressName.toString());
             }
         }).compose(bindToLifecycle())
-                .subscribe(new Consumer<Boolean>() {
+                .subscribe(new CustomObserver<Boolean>() {
                     @Override
                     public void accept(Boolean enabled) throws Exception {
                         sbtnAddAddress.setEnabled(enabled);
@@ -89,9 +89,9 @@ public class AddNewAddressActivity extends MVPBaseActivity<AddNewAddressPresente
                 });
 
         RxView.clicks(sbtnAddAddress)
-                .compose(new ClickTransformer())
-                .compose(bindToLifecycle())
-                .subscribe(new Consumer() {
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) throws Exception {
                         hideSoftInput();
@@ -100,10 +100,10 @@ public class AddNewAddressActivity extends MVPBaseActivity<AddNewAddressPresente
                 });
 
         RxView.clicks(ivAddressScan)
-                .compose(new ClickTransformer())
-                .compose(bindToLifecycle())
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
                 .compose(new RxPermissions(AddNewAddressActivity.this).ensure(Manifest.permission.CAMERA))
-                .subscribe(new Consumer<Boolean>() {
+                .subscribe(new CustomObserver<Boolean>() {
                     @Override
                     public void accept(Boolean success) throws Exception {
                         if (success) {

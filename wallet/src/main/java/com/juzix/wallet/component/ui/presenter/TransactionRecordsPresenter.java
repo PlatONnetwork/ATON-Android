@@ -1,7 +1,6 @@
 package com.juzix.wallet.component.ui.presenter;
 
 import com.juzix.wallet.app.LoadingTransformer;
-import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.TransactionRecordsContract;
 import com.juzix.wallet.db.entity.IndividualTransactionInfoEntity;

@@ -11,16 +11,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
+import com.juzhen.framework.network.SchedulersTransformer;
 import com.juzhen.framework.util.AndroidUtil;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.LoadingTransformer;
-import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.dialog.CommonTipsDialogFragment;
 import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
 import com.juzix.wallet.engine.VersionManager;
 import com.juzix.wallet.engine.VersionUpdate;
 import com.juzix.wallet.entity.VersionEntity;
+import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.ShareUtil;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
@@ -66,17 +67,21 @@ public class AboutActivity extends BaseActivity {
             versionName = "v" + versionName;
         vNewMsg.setVisibility(View.GONE);
         tvUpdate.setText(string(R.string.current_version, versionName));
+
         RxView.clicks(tvAboutUs)
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Object>() {
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) throws Exception {
                         ShareUtil.shareUrl(getContext(), "https://www.platon.network");
                     }
                 });
+
         RxView.clicks(llUpdate)
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Object>() {
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) throws Exception {
                         update();
@@ -99,8 +104,8 @@ public class AboutActivity extends BaseActivity {
 
     private void checkVersion() {
         VersionManager.getInstance().getVersion()
-                .compose(new SchedulersTransformer())
-                .compose(bindToLifecycle())
+                .compose(RxUtils.getSingleSchedulerTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new Consumer<VersionEntity>() {
                     @Override
                     public void accept(VersionEntity versionEntity) {
@@ -119,10 +124,6 @@ public class AboutActivity extends BaseActivity {
                             tvUpdate.setText(string(R.string.current_version, oldVersion));
                             vNewMsg.setVisibility(View.GONE);
                         }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
                     }
                 });
     }

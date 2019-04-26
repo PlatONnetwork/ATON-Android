@@ -2,7 +2,6 @@ package com.juzix.wallet.component.ui.presenter;
 
 import android.util.Log;
 
-import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.TransactionsContract;
 import com.juzix.wallet.component.ui.view.IndividualTransactionDetailActivity;

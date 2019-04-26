@@ -1,6 +1,5 @@
 package com.juzix.wallet.component.ui.presenter;
 
-import com.juzix.wallet.app.FlowableSchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.IndividualWalletContract;
 import com.juzix.wallet.engine.IndividualWalletManager;

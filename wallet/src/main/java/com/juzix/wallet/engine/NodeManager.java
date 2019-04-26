@@ -3,7 +3,6 @@ package com.juzix.wallet.engine;
 import android.text.TextUtils;
 
 import com.juzix.wallet.app.Constants;
-import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.entity.NodeEntity;
 import com.juzix.wallet.event.EventPublisher;

@@ -25,6 +25,7 @@ import com.juzix.wallet.component.widget.ShadowContainer;
 import com.juzix.wallet.component.widget.TextChangedListener;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.utils.AddressFormatUtil;
+import com.juzix.wallet.utils.RxUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -102,14 +103,18 @@ public class CreateSharedWalletActivity extends MVPBaseActivity<CreateSharedWall
             }
         });
 
-        RxView.focusChanges(etWalletName).skipInitialValue().subscribe(new Consumer<Boolean>() {
-            @Override
-            public void accept(Boolean hasFocus) throws Exception {
-                if (!hasFocus) {
-                    mPresenter.checkWalletName(etWalletName.getText().toString().trim());
-                }
-            }
-        });
+        RxView
+                .focusChanges(etWalletName)
+                .skipInitialValue()
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Boolean>() {
+                    @Override
+                    public void accept(Boolean hasFocus) throws Exception {
+                        if (!hasFocus) {
+                            mPresenter.checkWalletName(etWalletName.getText().toString().trim());
+                        }
+                    }
+                });
 
         setNextButtonEnable(false);
     }

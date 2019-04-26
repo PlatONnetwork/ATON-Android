@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.juzix.wallet.R;
-import com.juzix.wallet.app.FlowableSchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.ReceiveTransationContract;

@@ -4,6 +4,11 @@ import android.content.Context;
 
 import com.juzix.wallet.component.ui.base.BaseActivity;
 
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.plugins.RxJavaPlugins;
+
 
 public interface IContext {
 
@@ -37,4 +42,5 @@ public interface IContext {
      * @param text
      */
     void showLoadingDialogWithCancelable(String text);
+
 }
