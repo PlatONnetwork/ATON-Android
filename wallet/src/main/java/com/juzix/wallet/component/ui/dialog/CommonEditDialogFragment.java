@@ -27,6 +27,7 @@ import com.juzix.wallet.component.widget.CustomUnderlineEditText;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.utils.DensityUtil;
+import com.juzix.wallet.utils.RxUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -190,7 +191,7 @@ public class CommonEditDialogFragment extends DialogFragment {
             dialog.buttonConfirm.setVisibility(View.VISIBLE);
             dialog.buttonConfirm.setText(topButton.label);
             RxView.clicks(dialog.buttonConfirm)
-                    .compose(new ClickTransformer())
+                    .compose(RxUtils.getClickTransformer())
                     .subscribe(new Consumer<Object>() {
                         @Override
                         public void accept(Object unit) throws Exception {

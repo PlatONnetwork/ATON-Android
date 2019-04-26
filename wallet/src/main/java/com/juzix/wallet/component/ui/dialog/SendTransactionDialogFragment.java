@@ -19,6 +19,7 @@ import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
+import com.juzix.wallet.utils.RxUtils;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -117,7 +118,7 @@ public class SendTransactionDialogFragment extends BaseDialogFragment {
                 DensityUtil.dp2px(context, 2f));
 
         RxView.clicks(sbtnConfirm)
-                .compose(new ClickTransformer())
+                .compose(RxUtils.getClickTransformer())
                 .compose(bindToLifecycle())
                 .subscribe(new Consumer() {
                     @Override
@@ -129,7 +130,7 @@ public class SendTransactionDialogFragment extends BaseDialogFragment {
                     }
                 });
         RxView.clicks(tvCancel)
-                .compose(new ClickTransformer())
+                .compose(RxUtils.getClickTransformer())
                 .compose(bindToLifecycle())
                 .subscribe(new Consumer() {
                     @Override

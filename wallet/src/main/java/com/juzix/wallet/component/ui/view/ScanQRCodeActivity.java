@@ -36,6 +36,7 @@ import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.utils.PhotoUtil;
 import com.juzix.wallet.utils.QRCodeDecoder;
+import com.juzix.wallet.utils.RxUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.io.File;
@@ -159,7 +160,8 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
 
         new RxPermissions(currentActivity())
                 .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .subscribe(new Consumer<Boolean>() {
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Boolean>() {
                     @Override
                     public void accept(Boolean success) throws Exception {
                         if (success){

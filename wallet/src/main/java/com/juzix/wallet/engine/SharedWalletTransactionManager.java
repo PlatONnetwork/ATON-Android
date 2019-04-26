@@ -21,6 +21,7 @@ import com.juzix.wallet.utils.FileUtil;
 import com.juzix.wallet.utils.JSONUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
 import com.juzix.wallet.utils.NumericUtil;
+import com.juzix.wallet.utils.RxUtils;
 
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
@@ -864,7 +865,7 @@ public class SharedWalletTransactionManager {
             public boolean test(Boolean aBoolean) throws Exception {
                 return aBoolean;
             }
-        }).toSingle().compose(new SchedulersTransformer())
+        }).toSingle().compose(RxUtils.getSingleSchedulerTransformer())
                 .subscribe(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean hasUnread) {

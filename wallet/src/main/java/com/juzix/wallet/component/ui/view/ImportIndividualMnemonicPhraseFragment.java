@@ -114,42 +114,11 @@ public class ImportIndividualMnemonicPhraseFragment extends MVPBaseFragment<Impo
     protected View onCreateFragmentPage(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_import_individual_mnemonic_phrase, container, false);
         unbinder = ButterKnife.bind(this, view);
-//        initViews(view);
         addListeners();
         addTextWatcher();
         initDatas();
         return view;
     }
-
-//    private void initViews(View rootView) {
-//        mEtMnemonicPhrase1 = rootView.findViewById(R.id.et_mnemonic1);
-//        mEtMnemonicPhrase2 = rootView.findViewById(R.id.et_mnemonic2);
-//        mEtMnemonicPhrase3 = rootView.findViewById(R.id.et_mnemonic3);
-//        mEtMnemonicPhrase4 = rootView.findViewById(R.id.et_mnemonic4);
-//        mEtMnemonicPhrase5 = rootView.findViewById(R.id.et_mnemonic5);
-//        mEtMnemonicPhrase6 = rootView.findViewById(R.id.et_mnemonic6);
-//        mEtMnemonicPhrase7 = rootView.findViewById(R.id.et_mnemonic7);
-//        mEtMnemonicPhrase8 = rootView.findViewById(R.id.et_mnemonic8);
-//        mEtMnemonicPhrase9 = rootView.findViewById(R.id.et_mnemonic9);
-//        mEtMnemonicPhrase10 = rootView.findViewById(R.id.et_mnemonic10);
-//        mEtMnemonicPhrase11 = rootView.findViewById(R.id.et_mnemonic11);
-//        mEtMnemonicPhrase12 = rootView.findViewById(R.id.et_mnemonic12);
-//        mTvMnemonicError = rootView.findViewById(R.id.tv_mnemonic_phrase_error);
-//        mEtWalletName = rootView.findViewById(R.id.et_name);
-//        mTvNameError = rootView.findViewById(R.id.tv_name_error);
-//        mEtPassword = rootView.findViewById(R.id.et_password);
-//        mEtRepeatPassword = rootView.findViewById(R.id.et_repeat_password);
-//        mIvPasswordEyes = rootView.findViewById(R.id.iv_password_eyes);
-//        mIvRepeatPasswordEyes = rootView.findViewById(R.id.iv_repeat_password_eyes);
-//        mTvPasswordError = rootView.findViewById(R.id.tv_password_error);
-//        mTvPasswordDesc = rootView.findViewById(R.id.tv_password_desc);
-//        mBtnImport = rootView.findViewById(R.id.sbtn_import);
-//        mTvStrength = rootView.findViewById(R.id.tv_strength);
-//        mVLine1 = rootView.findViewById(R.id.v_line1);
-//        mVLine2 = rootView.findViewById(R.id.v_line2);
-//        mVLine3 = rootView.findViewById(R.id.v_line3);
-//        mVLine4 = rootView.findViewById(R.id.v_line4);
-//    }
 
     private void addListeners() {
         RxView.clicks(mIvPasswordEyes).subscribe(new Consumer<Object>() {

@@ -6,6 +6,7 @@ import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.entity.NodeEntity;
 import com.juzix.wallet.event.EventPublisher;
+import com.juzix.wallet.utils.RxUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,7 +93,7 @@ public class NodeManager {
                     }
                 })
                 .toSingle()
-                .compose(new SchedulersTransformer())
+                .compose(RxUtils.getSingleSchedulerTransformer())
                 .subscribe(new Consumer<NodeEntity>() {
                     @Override
                     public void accept(NodeEntity nodeEntity) throws Exception {

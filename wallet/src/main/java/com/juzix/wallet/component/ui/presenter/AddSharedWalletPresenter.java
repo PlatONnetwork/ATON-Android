@@ -2,6 +2,7 @@ package com.juzix.wallet.component.ui.presenter;
 
 import android.text.TextUtils;
 
+import com.juzhen.framework.network.SchedulersTransformer;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomThrowable;
 import com.juzix.wallet.app.LoadingTransformer;
@@ -13,6 +14,7 @@ import com.juzix.wallet.engine.SharedWalletManager;
 import com.juzix.wallet.engine.SharedWalletTransactionManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.utils.JZWalletUtil;
+import com.juzix.wallet.utils.RxUtils;
 
 import java.util.ArrayList;
 
@@ -65,7 +67,7 @@ public class AddSharedWalletPresenter extends BasePresenter<AddSharedWalletContr
         SharedWalletTransactionManager
                 .getInstance()
                 .addWallet(currentActivity(),name, contractAddress, walletEntity.getPrefixAddress())
-                .compose(new SchedulersTransformer())
+                .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(bindToLifecycle())
                 .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
                 .subscribe(new Consumer<Boolean>() {

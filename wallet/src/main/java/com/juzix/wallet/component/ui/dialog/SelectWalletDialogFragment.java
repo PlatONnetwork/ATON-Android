@@ -20,6 +20,7 @@ import com.juzix.wallet.engine.IndividualWalletTransactionManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.WalletEntity;
 import com.juzix.wallet.utils.DensityUtil;
+import com.juzix.wallet.utils.RxUtils;
 
 import org.reactivestreams.Publisher;
 
@@ -157,7 +158,7 @@ public class SelectWalletDialogFragment extends BaseDialogFragment {
                 .toList()
                 .onErrorReturnItem(new ArrayList<>())
                 .compose(bindToLifecycle())
-                .compose(new SchedulersTransformer())
+                .compose(RxUtils.getSingleSchedulerTransformer())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BiConsumer<List<IndividualWalletEntity>, Throwable>() {
                     @Override

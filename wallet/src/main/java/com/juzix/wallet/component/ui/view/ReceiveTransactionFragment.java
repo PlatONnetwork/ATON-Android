@@ -20,6 +20,7 @@ import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.entity.WalletEntity;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
+import com.juzix.wallet.utils.RxUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -76,8 +77,9 @@ public class ReceiveTransactionFragment extends MVPBaseFragment<ReceiveTransatio
 
     private void initViews() {
         RxView.clicks(btnSave)
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Object>() {
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) throws Exception {
                         mPresenter.shareView();

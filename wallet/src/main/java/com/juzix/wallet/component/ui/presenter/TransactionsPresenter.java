@@ -2,6 +2,7 @@ package com.juzix.wallet.component.ui.presenter;
 
 import android.util.Log;
 
+import com.juzhen.framework.network.SchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.TransactionsContract;
 import com.juzix.wallet.component.ui.view.IndividualTransactionDetailActivity;
@@ -26,6 +27,7 @@ import com.juzix.wallet.entity.SharedWalletEntity;
 import com.juzix.wallet.entity.TransactionEntity;
 import com.juzix.wallet.entity.VoteTransactionEntity;
 import com.juzix.wallet.entity.WalletEntity;
+import com.juzix.wallet.utils.RxUtils;
 import com.trello.rxlifecycle2.android.FragmentEvent;
 
 import org.reactivestreams.Publisher;
@@ -97,7 +99,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
             }
         })
                 .compose(bindUntilEvent(FragmentEvent.STOP))
-                .compose(new SchedulersTransformer())
+                .compose(RxUtils.getSingleSchedulerTransformer())
                 .subscribe(new Consumer<List<TransactionEntity>>() {
                     @Override
                     public void accept(List<TransactionEntity> transactionEntityList) throws Exception {

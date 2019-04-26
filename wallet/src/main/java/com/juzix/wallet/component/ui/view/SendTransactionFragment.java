@@ -41,6 +41,7 @@ import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
+import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.ToastUtil;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
@@ -145,9 +146,9 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
         bubbleSeekBar.setOnProgressChangedListener(mProgressListener);
 
         RxView.clicks(btnSendTransation)
-                .compose(new ClickTransformer())
-                .compose(bindToLifecycle())
-                .subscribe(new Consumer<Object>() {
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) throws Exception {
                         mPresenter.submit();

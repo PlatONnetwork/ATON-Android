@@ -10,6 +10,7 @@ import com.juzix.wallet.engine.VoteManager;
 import com.juzix.wallet.entity.CandidateEntity;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.RxUtils;
 
 import java.util.ArrayList;
 
@@ -42,7 +43,7 @@ public class NodeDetailPresenter extends BasePresenter<NodeDetailContract.View> 
                         .getInstance()
                         .getCandidateEpoch(mCandidateEntity.getCandidateId())
                         .compose(bindToLifecycle())
-                        .compose(new SchedulersTransformer())
+                        .compose(RxUtils.getSingleSchedulerTransformer())
                         .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
                         .subscribe(new Consumer<Long>() {
                             @Override

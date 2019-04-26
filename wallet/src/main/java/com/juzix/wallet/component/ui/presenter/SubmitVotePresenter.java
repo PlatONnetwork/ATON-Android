@@ -1,5 +1,6 @@
 package com.juzix.wallet.component.ui.presenter;
 
+import com.juzhen.framework.network.SchedulersTransformer;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomThrowable;
@@ -17,6 +18,7 @@ import com.juzix.wallet.entity.CandidateEntity;
 import com.juzix.wallet.entity.CandidateExtraEntity;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.RxUtils;
 
 import org.reactivestreams.Publisher;
 import org.web3j.crypto.Credentials;
@@ -66,7 +68,7 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
         VoteManager
                 .getInstance()
                 .getTicketPrice()
-                .compose(new SchedulersTransformer())
+                .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(bindToLifecycle())
                 .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
                 .subscribe(new Consumer<String>() {

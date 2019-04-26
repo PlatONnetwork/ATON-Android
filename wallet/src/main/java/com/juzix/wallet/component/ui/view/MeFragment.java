@@ -14,6 +14,7 @@ import com.juzix.wallet.BuildConfig;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.BaseFragment;
+import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.ShareUtil;
 import com.juzix.wallet.utils.ToastUtil;
 
@@ -31,7 +32,7 @@ import io.reactivex.functions.Consumer;
 public class MeFragment extends BaseFragment {
 
     @BindView(R.id.tv_title)
-    TextView     tvTitle;
+    TextView tvTitle;
     @BindView(R.id.layout_wallet_manage)
     LinearLayout layoutWalletManage;
     @BindView(R.id.layout_wallet_transations)
@@ -45,19 +46,19 @@ public class MeFragment extends BaseFragment {
     @BindView(R.id.layout_about)
     LinearLayout layoutAbout;
     @BindView(R.id.iv_telegram)
-    ImageView    ivTelegram;
+    ImageView ivTelegram;
     @BindView(R.id.iv_wechat)
-    ImageView    ivWechat;
+    ImageView ivWechat;
     @BindView(R.id.iv_github)
-    ImageView    ivGithub;
+    ImageView ivGithub;
     @BindView(R.id.iv_twitter)
-    ImageView    ivTwitter;
+    ImageView ivTwitter;
     @BindView(R.id.iv_facebook)
-    ImageView    ivFacebook;
+    ImageView ivFacebook;
     @BindView(R.id.iv_rabbit)
-    ImageView    ivRabbit;
+    ImageView ivRabbit;
     @BindView(R.id.iv_medium)
-    ImageView    ivMedium;
+    ImageView ivMedium;
     Unbinder unbinder;
 
     @Nullable
@@ -76,90 +77,101 @@ public class MeFragment extends BaseFragment {
         return rootView;
     }
 
-    private void init(){
+    private void init() {
         RxView.clicks(layoutWalletManage)
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Object>() {
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) throws Exception {
                         WalletManagerActivity.actionStart(getActivity());
                     }
                 });
         RxView.clicks(layoutWalletTransations)
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Object>() {
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) throws Exception {
                         TransactionRecordsActivity.actionStart(getActivity());
                     }
                 });
         RxView.clicks(layoutWalletAddressBook)
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Object>() {
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) throws Exception {
                         AddressBookActivity.actionStart(getActivity(), Constants.Action.ACTION_NONE);
                     }
                 });
         RxView.clicks(layoutSettings)
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Object>() {
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) throws Exception {
                         SettingsActiivty.actionStart(getActivity());
                     }
                 });
         RxView.clicks(layoutAbout)
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Object>() {
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) throws Exception {
                         AboutActivity.actionStart(getActivity());
                     }
                 });
         RxView.clicks(ivTelegram)
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Object>() {
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) throws Exception {
                         ShareUtil.shareUrl(getActivity(), "https://t.me/PlatONHK");
                     }
                 });
         RxView.clicks(ivGithub)
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Object>() {
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) throws Exception {
                         ShareUtil.shareUrl(getActivity(), "https://github.com/PlatONnetwork");
                     }
                 });
         RxView.clicks(ivTwitter)
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Object>() {
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) throws Exception {
                         ShareUtil.shareUrl(getActivity(), "https://twitter.com/PlatON_Network");
                     }
                 });
         RxView.clicks(ivFacebook)
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Object>() {
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) throws Exception {
                         ShareUtil.shareUrl(getActivity(), "https://www.facebook.com/PlatONNetwork/");
                     }
                 });
         RxView.clicks(ivRabbit)
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Object>() {
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) throws Exception {
                         ShareUtil.shareUrl(getActivity(), "https://www.reddit.com/user/PlatON_Network");
                     }
                 });
         RxView.clicks(ivMedium)
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Object>() {
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) throws Exception {
                         ShareUtil.shareUrl(getActivity(), "https://medium.com/@PlatON_Network");

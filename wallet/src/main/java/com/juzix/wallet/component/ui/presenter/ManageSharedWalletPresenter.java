@@ -1,5 +1,6 @@
 package com.juzix.wallet.component.ui.presenter;
 
+import com.juzhen.framework.network.SchedulersTransformer;
 import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.ManageSharedWalletContract;
@@ -9,6 +10,7 @@ import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.OwnerEntity;
 import com.juzix.wallet.entity.SharedWalletEntity;
 import com.juzix.wallet.event.EventPublisher;
+import com.juzix.wallet.utils.RxUtils;
 
 import org.web3j.crypto.Credentials;
 
@@ -77,7 +79,7 @@ public class ManageSharedWalletPresenter extends BasePresenter<ManageSharedWalle
                         return SharedWalletManager.getInstance().updateWalletName(mWalletEntity.getUuid(), name);
                     }
                 })
-                .compose(new SchedulersTransformer())
+                .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
                 .compose(bindToLifecycle())
                 .subscribe(new Consumer<Boolean>() {

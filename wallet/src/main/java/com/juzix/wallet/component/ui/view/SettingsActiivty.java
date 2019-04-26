@@ -22,6 +22,7 @@ import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.widget.togglebutton.ToggleButton;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.utils.LanguageUtil;
+import com.juzix.wallet.utils.RxUtils;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -102,16 +103,19 @@ public class SettingsActiivty extends BaseActivity {
             }
         });
         RxView.clicks(tvNodeSetting)
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Object>() {
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) throws Exception {
                         NodeSettingsActivity.actionStart(getContext());
                     }
                 });
+
         RxView.clicks(layoutSwitchLanguage)
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Object>() {
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) throws Exception {
                         SwitchLanguageActivity.actionStart(getContext());

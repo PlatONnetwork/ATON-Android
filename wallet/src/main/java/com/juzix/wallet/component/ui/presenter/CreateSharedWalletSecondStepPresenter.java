@@ -4,6 +4,7 @@ import android.Manifest;
 import android.text.TextUtils;
 
 import com.juzhen.framework.network.NetConnectivity;
+import com.juzhen.framework.network.SchedulersTransformer;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
@@ -25,6 +26,7 @@ import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.OwnerEntity;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
+import com.juzix.wallet.utils.RxUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import org.reactivestreams.Subscription;
@@ -257,7 +259,7 @@ public class CreateSharedWalletSecondStepPresenter extends BasePresenter<CreateS
                         }
                     }
                 })
-                .compose(new FlowableSchedulersTransformer())
+                .compose(RxUtils.getFlowableSchedulerTransformer())
                 .subscribe(new Consumer() {
                     @Override
                     public void accept(Object o) throws Exception {

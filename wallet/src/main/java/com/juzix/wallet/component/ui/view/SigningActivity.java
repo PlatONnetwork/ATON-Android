@@ -29,6 +29,7 @@ import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.CommonUtil;
 import com.juzix.wallet.utils.DateUtil;
 import com.juzix.wallet.utils.DensityUtil;
+import com.juzix.wallet.utils.RxUtils;
 
 import java.util.List;
 
@@ -116,9 +117,9 @@ public class SigningActivity extends MVPBaseActivity<SigningPresenter> implement
     public void initViews() {
 
         RxView.clicks(sbtnRefuse)
-                .compose(new ClickTransformer())
-                .compose(bindToLifecycle())
-                .subscribe(new Consumer<Object>() {
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) throws Exception {
                         mPresenter.revoke();
@@ -126,9 +127,9 @@ public class SigningActivity extends MVPBaseActivity<SigningPresenter> implement
                 });
 
         RxView.clicks(sbtnAgree)
-                .compose(new ClickTransformer())
-                .compose(bindToLifecycle())
-                .subscribe(new Consumer<Object>() {
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) throws Exception {
                         mPresenter.confirm();

@@ -3,6 +3,7 @@ package com.juzix.wallet.component.ui.presenter;
 import android.Manifest;
 import android.text.TextUtils;
 
+import com.juzhen.framework.network.SchedulersTransformer;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.AssetsContract;
@@ -22,6 +23,7 @@ import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.SharedWalletEntity;
 import com.juzix.wallet.entity.WalletEntity;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.RxUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.trello.rxlifecycle2.android.FragmentEvent;
 
@@ -81,7 +83,7 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
             }
         })
                 .compose(bindUntilEvent(FragmentEvent.STOP))
-                .compose(new SchedulersTransformer())
+                .compose(RxUtils.getSingleSchedulerTransformer())
                 .repeatWhen(new Function<Flowable<Object>, Publisher<?>>() {
                     @Override
                     public Publisher<?> apply(Flowable<Object> objectFlowable) throws Exception {

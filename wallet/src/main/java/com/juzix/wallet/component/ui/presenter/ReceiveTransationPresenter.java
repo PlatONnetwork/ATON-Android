@@ -20,6 +20,7 @@ import com.juzix.wallet.utils.CommonUtil;
 import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.PhotoUtil;
 import com.juzix.wallet.utils.QRCodeEncoder;
+import com.juzix.wallet.utils.RxUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -58,7 +59,7 @@ public class ReceiveTransationPresenter extends BasePresenter<ReceiveTransationC
                     }
                     return QRCodeEncoder.syncEncodeQRCode(text, DensityUtil.dp2px(getContext(), 250f));
                 }
-            }).compose(new FlowableSchedulersTransformer())
+            }).compose(RxUtils.getFlowableSchedulerTransformer())
                     .subscribe(new Consumer<Bitmap>() {
                         @Override
                         public void accept(Bitmap bitmap) throws Exception {

@@ -2,6 +2,7 @@ package com.juzix.wallet.component.ui.presenter;
 
 import android.text.TextUtils;
 
+import com.juzhen.framework.network.SchedulersTransformer;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.SortType;
@@ -15,6 +16,7 @@ import com.juzix.wallet.entity.CandidateEntity;
 import com.juzix.wallet.entity.CandidateExtraEntity;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.RxUtils;
 import com.trello.rxlifecycle2.android.FragmentEvent;
 
 import org.reactivestreams.Publisher;
@@ -135,7 +137,7 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
                         return objectFlowable.delay(REFRESH_TIME, TimeUnit.MILLISECONDS);
                     }
                 })
-                .compose(new FlowableSchedulersTransformer())
+                .compose(RxUtils.getFlowableSchedulerTransformer())
                 .compose(bindUntilEvent(FragmentEvent.STOP))
                 .subscribe(new Consumer<String>() {
                     @Override

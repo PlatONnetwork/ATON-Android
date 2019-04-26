@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.juzhen.framework.network.NetConnectivity;
+import com.juzhen.framework.network.SchedulersTransformer;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomThrowable;
@@ -35,6 +36,7 @@ import com.juzix.wallet.entity.WalletEntity;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
+import com.juzix.wallet.utils.RxUtils;
 import com.trello.rxlifecycle2.android.FragmentEvent;
 
 import org.reactivestreams.Publisher;
@@ -121,7 +123,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
             }
         })
                 .compose(bindUntilEvent(FragmentEvent.STOP))
-                .compose(new SchedulersTransformer())
+                .compose(RxUtils.getSingleSchedulerTransformer())
                 .repeatWhen(new Function<Flowable<Object>, Publisher<?>>() {
                     @Override
                     public Publisher<?> apply(Flowable<Object> objectFlowable) throws Exception {
