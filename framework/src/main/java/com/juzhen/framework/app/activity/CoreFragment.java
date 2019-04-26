@@ -10,6 +10,12 @@ import android.view.ViewGroup;
 
 import com.juzhen.framework.app.log.Log;
 
+import io.reactivex.Observer;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.plugins.RxJavaPlugins;
+
 /**
  * @author ziv
  */
@@ -125,6 +131,5 @@ public class CoreFragment extends Fragment {
         super.setUserVisibleHint(isVisibleToUser);
         Log.debug(TAG, "[" + getClass().getSimpleName() + "]: setUserVisibleHint " + isVisibleToUser);
     }
-
 
 }

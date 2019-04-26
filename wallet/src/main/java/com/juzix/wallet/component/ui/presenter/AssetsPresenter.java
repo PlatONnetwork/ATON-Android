@@ -4,7 +4,6 @@ import android.Manifest;
 import android.text.TextUtils;
 
 import com.juzix.wallet.R;
-import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.AssetsContract;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;

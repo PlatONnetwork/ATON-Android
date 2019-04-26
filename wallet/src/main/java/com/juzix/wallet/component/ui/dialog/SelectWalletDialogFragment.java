@@ -12,7 +12,6 @@ import android.widget.ListView;
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
-import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.adapter.SelectWalletListAdapter;
 import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.db.entity.IndividualWalletInfoEntity;

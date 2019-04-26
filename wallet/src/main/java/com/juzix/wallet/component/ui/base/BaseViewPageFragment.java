@@ -15,7 +15,7 @@ import com.juzhen.framework.app.log.Log;
  *
  * @author matrixelement
  */
-public abstract class BaseViewPageFragment extends CoreFragment {
+public abstract class BaseViewPageFragment extends BaseFragment {
 
     private static final String TAG = BaseViewPageFragment.class.getSimpleName();
     private View mRootView;

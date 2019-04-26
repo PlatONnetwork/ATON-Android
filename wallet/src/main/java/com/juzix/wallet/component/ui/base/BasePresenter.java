@@ -33,6 +33,8 @@ public class BasePresenter<T extends IView> implements IPresenter<T> {
      *
      * @return
      */
+
+
     @Override
     public T getView() {
         return mViewReference.get();

@@ -5,6 +5,12 @@ import android.support.v4.app.FragmentActivity;
 
 import com.juzhen.framework.app.log.Log;
 
+import io.reactivex.Observer;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.plugins.RxJavaPlugins;
+
 /**
  * @author ziv
  */
@@ -66,5 +72,4 @@ public class CoreFragmentActivity extends FragmentActivity {
         mIsDestroyed = true;
         ActivityManager.getInstance().removeManagedActivity(this);
     }
-
 }

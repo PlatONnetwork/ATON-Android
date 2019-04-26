@@ -1,0 +1,98 @@
+package com.juzix.wallet.utils;
+
+import android.support.annotation.NonNull;
+
+import com.juzix.wallet.component.ui.IContext;
+import com.juzix.wallet.component.ui.base.BaseActivity;
+import com.juzix.wallet.component.ui.base.BaseFragment;
+import com.trello.rxlifecycle2.LifecycleTransformer;
+
+import org.reactivestreams.Publisher;
+
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Flowable;
+import io.reactivex.FlowableTransformer;
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.ObservableTransformer;
+import io.reactivex.Single;
+import io.reactivex.SingleSource;
+import io.reactivex.SingleTransformer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+
+public class RxUtils {
+
+    private RxUtils() {
+        throw new RuntimeException("No instances.");
+    }
+
+    public static <T> LifecycleTransformer<T> bindToLifecycle(IContext context) {
+        if (context instanceof BaseFragment) {
+            return ((BaseFragment) context).bindToLifecycle();
+        } else if (context instanceof BaseActivity) {
+            return ((BaseActivity) context).bindToLifecycle();
+        } else {
+            throw new IllegalArgumentException("context isn't activity or fragment");
+        }
+    }
+
+    public static <T> FlowableTransformer<T, T> getFlowableSchedulerTransformer() {
+        return new FlowableTransformer<T, T>() {
+            @Override
+            public Publisher<T> apply(Flowable<T> upstream) {
+                return upstream
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread());
+            }
+        };
+    }
+
+    public static <T> SingleTransformer<T, T> getSingleSchedulerTransformer() {
+        return new SingleTransformer<T, T>() {
+            @Override
+            public SingleSource<T> apply(Single<T> upstream) {
+                return upstream
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread());
+            }
+        };
+    }
+
+    public static <T> ObservableTransformer<T, T> getSchedulerTransformer() {
+        return new ObservableTransformer<T, T>() {
+            @Override
+            public ObservableSource<T> apply(@NonNull Observable<T> upstream) {
+                return upstream
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread());
+            }
+        };
+    }
+
+    public static <T> ObservableTransformer<T, T> getClickTransformer() {
+        return new ObservableTransformer<T, T>() {
+            @Override
+            public ObservableSource<T> apply(@NonNull Observable<T> upstream) {
+                return upstream
+                        .throttleFirst(500, TimeUnit.MILLISECONDS);
+            }
+        };
+    }
+
+    public static <T> ObservableTransformer<T, T> getSearchTransformer() {
+        return new ObservableTransformer<T, T>() {
+            @Override
+            public ObservableSource<T> apply(Observable<T> upstream) {
+                return upstream
+                        .debounce(500, TimeUnit.MILLISECONDS);
+            }
+        };
+    }
+
+
+}

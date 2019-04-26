@@ -27,6 +27,7 @@ import com.juzix.wallet.component.ui.contract.ImportIndividualKeystoreContract;
 import com.juzix.wallet.component.ui.presenter.ImportIndividualKeystorePresenter;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.utils.CommonUtil;
+import com.juzix.wallet.utils.RxUtils;
 
 import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
@@ -34,16 +35,16 @@ import io.reactivex.functions.Function3;
 
 public class ImportIndividualKeystoreFragment extends MVPBaseFragment<ImportIndividualKeystorePresenter> implements ImportIndividualKeystoreContract.View {
 
-    private EditText     mEtKeystore;
-    private EditText     mEtPassword;
-    private ImageView    mIvPasswordEyes;
-    private EditText     mEtWalletName;
+    private EditText mEtKeystore;
+    private EditText mEtPassword;
+    private ImageView mIvPasswordEyes;
+    private EditText mEtWalletName;
     private ShadowButton mBtnImport;
-    private TextView     mTvNameError;
-    private TextView     mTvKeystoreError;
-    private TextView     mTvPasswordError;
-    private Button       mBtnPaste;
-    private boolean      mShowPassword;
+    private TextView mTvNameError;
+    private TextView mTvKeystoreError;
+    private TextView mTvPasswordError;
+    private Button mBtnPaste;
+    private boolean mShowPassword;
 
     @Override
     protected ImportIndividualKeystorePresenter createPresenter() {
@@ -87,94 +88,118 @@ public class ImportIndividualKeystoreFragment extends MVPBaseFragment<ImportIndi
 
     private void addListeners() {
 
-        RxView.clicks(mIvPasswordEyes).subscribe(new Consumer<Object>() {
-            @Override
-            public void accept(Object unit) throws Exception {
-                showPassword();
-            }
-        });
+        RxView.clicks(mIvPasswordEyes)
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object unit) {
+                        showPassword();
+                    }
+                });
 
-        RxView.clicks(mBtnImport).subscribe(new Consumer<Object>() {
-            @Override
-            public void accept(Object unit) throws Exception {
-                mPresenter.importKeystore(mEtKeystore.getText().toString(),
-                        mEtWalletName.getText().toString(),
-                        mEtPassword.getText().toString());
-            }
-        });
+        RxView.
+                clicks(mBtnImport)
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object unit) throws Exception {
+                        mPresenter.importKeystore(mEtKeystore.getText().toString(),
+                                mEtWalletName.getText().toString(),
+                                mEtPassword.getText().toString());
+                    }
+                });
 
-        RxView.clicks(mBtnPaste).subscribe(new Consumer<Object>() {
-            @Override
-            public void accept(Object unit) throws Exception {
-                mEtKeystore.setText(CommonUtil.getTextFromClipboard(getContext()));
-                mEtKeystore.setSelection(mEtKeystore.getText().toString().length());
-            }
-        });
+        RxView
+                .clicks(mBtnPaste)
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object unit) throws Exception {
+                        mEtKeystore.setText(CommonUtil.getTextFromClipboard(getContext()));
+                        mEtKeystore.setSelection(mEtKeystore.getText().toString().length());
+                    }
+                });
 
         Observable<CharSequence> keystoreObservable = RxTextView.textChanges(mEtKeystore).skipInitialValue();
         Observable<CharSequence> passwordObservable = RxTextView.textChanges(mEtPassword).skipInitialValue();
         Observable<CharSequence> walletNameObservable = RxTextView.textChanges(mEtWalletName).skipInitialValue();
 
-        Observable.combineLatest(keystoreObservable, passwordObservable, walletNameObservable, new Function3<CharSequence, CharSequence, CharSequence, Boolean>() {
-            @Override
-            public Boolean apply(CharSequence charSequence, CharSequence charSequence2, CharSequence charSequence3) throws Exception {
-                String keystore = charSequence.toString().trim();
-                String passsword = charSequence2.toString().trim();
-                String walletName = charSequence3.toString().trim();
-                return !TextUtils.isEmpty(keystore) && !TextUtils.isEmpty(passsword) && passsword.length() >= 6 && !TextUtils.isEmpty(walletName) && walletName.length() <= 12;
-            }
-        }).subscribe(new Consumer<Boolean>() {
+        Observable
+                .combineLatest(keystoreObservable, passwordObservable, walletNameObservable, new Function3<CharSequence, CharSequence, CharSequence, Boolean>() {
+                    @Override
+                    public Boolean apply(CharSequence charSequence, CharSequence charSequence2, CharSequence charSequence3) throws Exception {
+                        String keystore = charSequence.toString().trim();
+                        String passsword = charSequence2.toString().trim();
+                        String walletName = charSequence3.toString().trim();
+                        return !TextUtils.isEmpty(keystore) && !TextUtils.isEmpty(passsword) && passsword.length() >= 6 && !TextUtils.isEmpty(walletName) && walletName.length() <= 12;
+                    }
+                }).compose(RxUtils.bindToLifecycle(this)).subscribe(new CustomObserver<Boolean>() {
             @Override
             public void accept(Boolean aBoolean) throws Exception {
                 enableImport(aBoolean);
             }
         });
 
-        RxView.focusChanges(mEtKeystore).skipInitialValue().subscribe(new Consumer<Boolean>() {
-            @Override
-            public void accept(Boolean hasFocus) throws Exception {
-                String keystore = mEtKeystore.getText().toString().trim();
-                if (!hasFocus) {
-                    if (TextUtils.isEmpty(keystore)) {
-                        showKeystoreError(string(R.string.validKeystoreEmptyTips), true);
-                    } else {
-                        showKeystoreError("", false);
+        RxView
+                .focusChanges(mEtKeystore)
+                .skipInitialValue()
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Boolean>() {
+                    @Override
+                    public void accept(Boolean hasFocus) throws Exception {
+                        String keystore = mEtKeystore.getText().toString().trim();
+                        if (!hasFocus) {
+                            if (TextUtils.isEmpty(keystore)) {
+                                showKeystoreError(string(R.string.validKeystoreEmptyTips), true);
+                            } else {
+                                showKeystoreError("", false);
+                            }
+                        }
                     }
-                }
-            }
-        });
-        RxView.focusChanges(mEtWalletName).skipInitialValue().subscribe(new Consumer<Boolean>() {
-            @Override
-            public void accept(Boolean hasFocus) throws Exception {
-                String walletName = mEtWalletName.getText().toString().trim();
-                if (!hasFocus) {
-                    if (TextUtils.isEmpty(walletName)) {
-                        showNameError(string(R.string.validWalletNameEmptyTips), true);
-                    } else if (walletName.length() > 12) {
-                        showNameError(string(R.string.validWalletNameTips), true);
-                    } else if (mPresenter.isExists(walletName)){
-                        showNameError(string(R.string.wallet_name_exists), true);
-                    }else {
-                        showNameError("", false);
+                });
+        RxView
+                .focusChanges(mEtWalletName)
+                .skipInitialValue()
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Boolean>() {
+                    @Override
+                    public void accept(Boolean hasFocus) throws Exception {
+                        String walletName = mEtWalletName.getText().toString().trim();
+                        if (!hasFocus) {
+                            if (TextUtils.isEmpty(walletName)) {
+                                showNameError(string(R.string.validWalletNameEmptyTips), true);
+                            } else if (walletName.length() > 12) {
+                                showNameError(string(R.string.validWalletNameTips), true);
+                            } else if (mPresenter.isExists(walletName)) {
+                                showNameError(string(R.string.wallet_name_exists), true);
+                            } else {
+                                showNameError("", false);
+                            }
+                        }
                     }
-                }
-            }
-        });
-        RxView.focusChanges(mEtPassword).skipInitialValue().subscribe(new Consumer<Boolean>() {
-            @Override
-            public void accept(Boolean hasFocus) throws Exception {
-                String password = mEtPassword.getText().toString().trim();
-                if (!hasFocus) {
-                    if (TextUtils.isEmpty(password)) {
-                        showPasswordError(string(R.string.validPasswordEmptyTips), true);
-                    } else if (password.length() < 6) {
-                        showPasswordError(string(R.string.validPasswordTips), true);
-                    } else {
-                        showPasswordError("", false);
+                });
+        RxView
+                .focusChanges(mEtPassword)
+                .skipInitialValue()
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Boolean>() {
+                    @Override
+                    public void accept(Boolean hasFocus) throws Exception {
+                        String password = mEtPassword.getText().toString().trim();
+                        if (!hasFocus) {
+                            if (TextUtils.isEmpty(password)) {
+                                showPasswordError(string(R.string.validPasswordEmptyTips), true);
+                            } else if (password.length() < 6) {
+                                showPasswordError(string(R.string.validPasswordTips), true);
+                            } else {
+                                showPasswordError("", false);
+                            }
+                        }
                     }
-                }
-            }
-        });
+                });
     }
 
     private void showPassword() {

@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
-import com.juzix.wallet.app.ClickTransformer;
 import com.juzix.wallet.component.adapter.base.ViewHolder;
 import com.juzix.wallet.entity.BatchVoteTransactionEntity;
 import com.juzix.wallet.entity.BatchVoteTransactionWrapEntity;

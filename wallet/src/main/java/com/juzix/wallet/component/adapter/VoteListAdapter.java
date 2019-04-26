@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
-import com.juzix.wallet.app.ClickTransformer;
 import com.juzix.wallet.entity.CandidateEntity;
 import com.juzix.wallet.entity.CandidateExtraEntity;
 import com.juzix.wallet.entity.RegionEntity;

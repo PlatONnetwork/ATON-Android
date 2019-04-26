@@ -36,6 +36,7 @@ import com.juzix.wallet.entity.AddressEntity;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
+import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.ToastUtil;
 
 import java.util.List;
@@ -174,7 +175,7 @@ public class CreateSharedWalletSecondStepActivity extends MVPBaseActivity<Create
                         mPresenter.focusAddress(position);
                         etWalletAddress.requestFocus();
                         etWalletAddress.onWindowFocusChanged(true);
-                        showSaveAddressDialog(tvSaveAddress, etWalletAddress.getText().toString().trim(),etWalletName.getText().toString().trim());
+                        showSaveAddressDialog(tvSaveAddress, etWalletAddress.getText().toString().trim(), etWalletName.getText().toString().trim());
                     }
                 };
 
@@ -238,9 +239,11 @@ public class CreateSharedWalletSecondStepActivity extends MVPBaseActivity<Create
         headerView = LayoutInflater.from(this).inflate(R.layout.layout_create_shared_owner_list_header, null);
         listSharedOwner.addHeaderView(headerView);
 
-        RxView.clicks(btnCreateSharedWallet)
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Object>() {
+        RxView
+                .clicks(btnCreateSharedWallet)
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object unit) throws Exception {
                         mPresenter.createContract();

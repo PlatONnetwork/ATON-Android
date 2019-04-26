@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.juzix.wallet.R;
-import com.juzix.wallet.app.ClickTransformer;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.component.widget.ShadowDrawable;

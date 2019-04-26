@@ -2,8 +2,8 @@ package com.juzix.wallet.component.ui.presenter;
 
 import android.text.TextUtils;
 
+import com.juzhen.framework.network.SchedulersTransformer;
 import com.juzix.wallet.app.LoadingTransformer;
-import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.ManageIndividualWalletContract;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
@@ -15,7 +15,7 @@ import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.engine.SharedWalletManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.event.EventPublisher;
-import com.juzix.wallet.utils.JZWalletUtil;
+import com.juzix.wallet.utils.RxUtils;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.Keys;
@@ -79,9 +79,9 @@ public class ManageIndividualWalletPresenter extends BasePresenter<ManageIndivid
                         return IndividualWalletManager.getInstance().deleteWallet(mWalletEntity);
                     }
                 })
-                .compose(new SchedulersTransformer())
+                .compose(RxUtils.getSingleSchedulerTransformer())
+                .compose(RxUtils.bindToLifecycle(currentActivity()))
                 .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
-                .compose(bindToLifecycle())
                 .subscribe(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean isSuccess) throws Exception {

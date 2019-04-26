@@ -9,7 +9,6 @@ import android.view.View;
 import com.juzhen.framework.util.AndroidUtil;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.LoadingTransformer;
-import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.MainContract;
 import com.juzix.wallet.component.ui.dialog.CommonTipsDialogFragment;

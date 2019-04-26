@@ -7,18 +7,14 @@ import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.juzix.wallet.R;
-import com.juzix.wallet.app.ClickTransformer;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.LoadingTransformer;
-import com.juzix.wallet.app.SchedulersTransformer;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.widget.CustomUnderlineEditText;
 import com.juzix.wallet.component.widget.ShadowButton;

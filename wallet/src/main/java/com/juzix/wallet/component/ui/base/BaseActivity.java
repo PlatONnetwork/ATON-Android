@@ -25,6 +25,11 @@ import com.trello.rxlifecycle2.android.RxLifecycleAndroid;
 import com.umeng.analytics.MobclickAgent;
 
 import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.subjects.BehaviorSubject;
 
 
@@ -37,6 +42,7 @@ public abstract class BaseActivity extends CoreFragmentActivity implements ICont
     private InputMethodManager mInputMethodManager;
     protected View mDecorView;
     protected ViewGroup mRootView;
+    protected CompositeDisposable mCompositeDisposable;
     private int mDefaultStatusBarColor = R.color.color_ffffff;
 
     @Override
@@ -73,6 +79,7 @@ public abstract class BaseActivity extends CoreFragmentActivity implements ICont
         mInputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         mDecorView = getWindow().getDecorView();
         mRootView = mDecorView.findViewById(android.R.id.content);
+        mCompositeDisposable = new CompositeDisposable();
         if (immersiveBarInitEnabled()) {
             if (immersiveBarViewEnabled()) {
                 setStatusBarView();
@@ -149,10 +156,13 @@ public abstract class BaseActivity extends CoreFragmentActivity implements ICont
     @Override
     protected void onDestroy() {
         lifecycleSubject.onNext(ActivityEvent.DESTROY);
-        super.onDestroy();
         if (immersiveBarInitEnabled()) {
             ImmersionBar.with(this).destroy();
         }
+        if (mCompositeDisposable != null) {
+            mCompositeDisposable.dispose();
+        }
+        super.onDestroy();
     }
 
     protected boolean immersiveBarInitEnabled() {
@@ -282,5 +292,62 @@ public abstract class BaseActivity extends CoreFragmentActivity implements ICont
         if (mInputMethodManager != null && mDecorView != null) {
             mInputMethodManager.toggleSoftInput(0, 0);
         }
+    }
+
+    public abstract class CustomObserver<T> implements Observer<T> {
+
+        final Consumer<? super T> collector;
+        boolean done;
+
+        public CustomObserver() {
+            this.collector = new Consumer<T>() {
+                @Override
+                public void accept(T t) throws Exception{
+                    CustomObserver.this.accept(t);
+                }
+            };
+        }
+
+        @Override
+        public void onSubscribe(Disposable d) {
+            if (d == null) {
+                RxJavaPlugins.onError(new NullPointerException("disposable is null"));
+                return;
+            }
+            mCompositeDisposable.add(d);
+        }
+
+        @Override
+        public void onNext(T t) {
+            if (done) {
+                return;
+            }
+            try {
+                collector.accept(t);
+            } catch (Throwable e) {
+                onError(e);
+            }
+        }
+
+
+        @Override
+        public void onError(Throwable t) {
+            if (done) {
+                RxJavaPlugins.onError(t);
+                return;
+            }
+            done = true;
+        }
+
+        @Override
+        public void onComplete() {
+            if (done) {
+                return;
+            }
+            done = true;
+        }
+
+        public abstract void accept(T t) throws Exception;
+
     }
 }
