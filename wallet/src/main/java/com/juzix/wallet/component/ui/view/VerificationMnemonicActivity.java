@@ -29,23 +29,43 @@ import com.juzix.wallet.entity.IndividualWalletEntity;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMnemonicPresenter> implements VerificationMnemonicContract.View, View.OnClickListener {
 
-    private final static String       TAG = VerificationMnemonicActivity.class.getSimpleName();
-    private              TextView     mTvMnemonic1;
-    private              TextView     mTvMnemonic2;
-    private              TextView     mTvMnemonic3;
-    private              TextView     mTvMnemonic4;
-    private              TextView     mTvMnemonic5;
-    private              TextView     mTvMnemonic6;
-    private              TextView     mTvMnemonic7;
-    private              TextView     mTvMnemonic8;
-    private              TextView     mTvMnemonic9;
-    private              TextView     mTvMnemonic10;
-    private              TextView     mTvMnemonic11;
-    private              TextView     mTvMnemonic12;
-    private              ShadowButton mBtnSubmit;
-    private              Button       mBtnEmpty;
+    private final static String TAG = VerificationMnemonicActivity.class.getSimpleName();
+    Unbinder unbinder;
+
+    @BindView(R.id.tv_mnemonic1)
+    TextView mTvMnemonic1;
+    @BindView(R.id.tv_mnemonic2)
+    TextView mTvMnemonic2;
+    @BindView(R.id.tv_mnemonic3)
+    TextView mTvMnemonic3;
+    @BindView(R.id.tv_mnemonic4)
+    TextView mTvMnemonic4;
+    @BindView(R.id.tv_mnemonic5)
+    TextView mTvMnemonic5;
+    @BindView(R.id.tv_mnemonic6)
+    TextView mTvMnemonic6;
+    @BindView(R.id.tv_mnemonic7)
+    TextView mTvMnemonic7;
+    @BindView(R.id.tv_mnemonic8)
+    TextView mTvMnemonic8;
+    @BindView(R.id.tv_mnemonic9)
+    TextView mTvMnemonic9;
+    @BindView(R.id.tv_mnemonic10)
+    TextView mTvMnemonic10;
+    @BindView(R.id.tv_mnemonic11)
+    TextView mTvMnemonic11;
+    @BindView(R.id.tv_mnemonic12)
+    TextView mTvMnemonic12;
+    @BindView(R.id.sbtn_submit)
+    ShadowButton mBtnSubmit;
+    @BindView(R.id.btn_empty)
+    Button mBtnEmpty;
 
     public static void actionStart(Context context, String password, IndividualWalletEntity walletEntity, int type) {
         Intent intent = new Intent(context, VerificationMnemonicActivity.class);
@@ -85,6 +105,7 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verification_mnemonic);
+        unbinder = ButterKnife.bind(this);
         initView();
 
         mPresenter.init();
@@ -133,22 +154,23 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
                exit();
             }
         });
-        mBtnSubmit = findViewById(R.id.sbtn_submit);
-        mBtnEmpty = findViewById(R.id.btn_empty);
+//        mBtnSubmit = findViewById(R.id.sbtn_submit);
+//        mBtnEmpty = findViewById(R.id.btn_empty);
+//        mTvMnemonic1 = findViewById(R.id.tv_mnemonic1);
+//        mTvMnemonic2 = findViewById(R.id.tv_mnemonic2);
+//        mTvMnemonic3 = findViewById(R.id.tv_mnemonic3);
+//        mTvMnemonic4 = findViewById(R.id.tv_mnemonic4);
+//        mTvMnemonic5 = findViewById(R.id.tv_mnemonic5);
+//        mTvMnemonic6 = findViewById(R.id.tv_mnemonic6);
+//        mTvMnemonic7 = findViewById(R.id.tv_mnemonic7);
+//        mTvMnemonic8 = findViewById(R.id.tv_mnemonic8);
+//        mTvMnemonic9 = findViewById(R.id.tv_mnemonic9);
+//        mTvMnemonic10 = findViewById(R.id.tv_mnemonic10);
+//        mTvMnemonic11 = findViewById(R.id.tv_mnemonic11);
+//        mTvMnemonic12 = findViewById(R.id.tv_mnemonic12);
+
         mBtnSubmit.setOnClickListener(this);
         mBtnEmpty.setOnClickListener(this);
-        mTvMnemonic1 = findViewById(R.id.tv_mnemonic1);
-        mTvMnemonic2 = findViewById(R.id.tv_mnemonic2);
-        mTvMnemonic3 = findViewById(R.id.tv_mnemonic3);
-        mTvMnemonic4 = findViewById(R.id.tv_mnemonic4);
-        mTvMnemonic5 = findViewById(R.id.tv_mnemonic5);
-        mTvMnemonic6 = findViewById(R.id.tv_mnemonic6);
-        mTvMnemonic7 = findViewById(R.id.tv_mnemonic7);
-        mTvMnemonic8 = findViewById(R.id.tv_mnemonic8);
-        mTvMnemonic9 = findViewById(R.id.tv_mnemonic9);
-        mTvMnemonic10 = findViewById(R.id.tv_mnemonic10);
-        mTvMnemonic11 = findViewById(R.id.tv_mnemonic11);
-        mTvMnemonic12 = findViewById(R.id.tv_mnemonic12);
         addMnemonicListener();
     }
 
@@ -276,9 +298,9 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
         });
     }
 
-    private void setCheckedView(int position, VerificationMnemonicContract.DataEntity dataEntity){
+    private void setCheckedView(int position, VerificationMnemonicContract.DataEntity dataEntity) {
         String mnemonic = dataEntity == null ? "" : dataEntity.getMnemonic();
-        switch (position){
+        switch (position) {
             case 0:
                 mTvMnemonic1.setText(mnemonic);
                 break;
@@ -331,7 +353,7 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
     }
 
     @Override
-    public void showDisclaimerDialog(){
+    public void showDisclaimerDialog() {
         CommonTipsDialogFragment.createDialogWithTitleAndOneButton(ContextCompat.getDrawable(this, R.drawable.icon_dialog_tips), string(R.string.disclaimer), string(R.string.disclaimerResume), string(R.string.understood), new OnDialogViewClickListener() {
             @Override
             public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
@@ -344,11 +366,11 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
     }
 
     @Override
-    public void showBackupFailedDialog(){
+    public void showBackupFailedDialog() {
         CommonTipsDialogFragment.createDialogWithTitleAndOneButton(ContextCompat.getDrawable(this, R.drawable.icon_dialog_tips), string(R.string.backupFailed), string(R.string.backupMnemonicFailedResume), string(R.string.understood), new OnDialogViewClickListener() {
             @Override
             public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
-                if (fragment != null){
+                if (fragment != null) {
                     fragment.dismiss();
                 }
             }

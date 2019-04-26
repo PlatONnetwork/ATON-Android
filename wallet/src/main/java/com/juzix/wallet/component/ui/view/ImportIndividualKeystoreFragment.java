@@ -28,22 +28,35 @@ import com.juzix.wallet.component.ui.presenter.ImportIndividualKeystorePresenter
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.utils.CommonUtil;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function3;
 
 public class ImportIndividualKeystoreFragment extends MVPBaseFragment<ImportIndividualKeystorePresenter> implements ImportIndividualKeystoreContract.View {
+    Unbinder unbinder;
+    @BindView(R.id.et_keystore)
+    EditText mEtKeystore;
+    @BindView(R.id.et_password)
+    EditText mEtPassword;
+    @BindView(R.id.iv_password_eyes)
+    ImageView mIvPasswordEyes;
+    @BindView(R.id.et_name)
+    EditText mEtWalletName;
+    @BindView(R.id.sbtn_import)
+    ShadowButton mBtnImport;
+    @BindView(R.id.tv_name_error)
+    TextView mTvNameError;
+    @BindView(R.id.tv_keystore_error)
+    TextView mTvKeystoreError;
+    @BindView(R.id.tv_password_error)
+    TextView mTvPasswordError;
+    @BindView(R.id.btn_paste)
+    Button mBtnPaste;
 
-    private EditText     mEtKeystore;
-    private EditText     mEtPassword;
-    private ImageView    mIvPasswordEyes;
-    private EditText     mEtWalletName;
-    private ShadowButton mBtnImport;
-    private TextView     mTvNameError;
-    private TextView     mTvKeystoreError;
-    private TextView     mTvPasswordError;
-    private Button       mBtnPaste;
-    private boolean      mShowPassword;
+    private boolean mShowPassword;
 
     @Override
     protected ImportIndividualKeystorePresenter createPresenter() {
@@ -58,23 +71,31 @@ public class ImportIndividualKeystoreFragment extends MVPBaseFragment<ImportIndi
     @Override
     protected View onCreateFragmentPage(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_import_individual_keystore, container, false);
-        initViews(view);
+        unbinder = ButterKnife.bind(this, view);
+//        initViews(view);
+
         addListeners();
         initDatas();
         return view;
     }
 
-    private void initViews(View rootView) {
-        mEtKeystore = rootView.findViewById(R.id.et_keystore);
-        mTvKeystoreError = rootView.findViewById(R.id.tv_keystore_error);
-        mEtPassword = rootView.findViewById(R.id.et_password);
-        mIvPasswordEyes = rootView.findViewById(R.id.iv_password_eyes);
-        mTvPasswordError = rootView.findViewById(R.id.tv_password_error);
-        mEtWalletName = rootView.findViewById(R.id.et_name);
-        mTvNameError = rootView.findViewById(R.id.tv_name_error);
-        mBtnImport = rootView.findViewById(R.id.sbtn_import);
-        mBtnPaste = rootView.findViewById(R.id.btn_paste);
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        addListeners();
     }
+
+    //    private void initViews(View rootView) {
+//        mEtKeystore = rootView.findViewById(R.id.et_keystore);
+//        mTvKeystoreError = rootView.findViewById(R.id.tv_keystore_error);
+//        mEtPassword = rootView.findViewById(R.id.et_password);
+//        mIvPasswordEyes = rootView.findViewById(R.id.iv_password_eyes);
+//        mTvPasswordError = rootView.findViewById(R.id.tv_password_error);
+//        mEtWalletName = rootView.findViewById(R.id.et_name);
+//        mTvNameError = rootView.findViewById(R.id.tv_name_error);
+//        mBtnImport = rootView.findViewById(R.id.sbtn_import);
+//        mBtnPaste = rootView.findViewById(R.id.btn_paste);
+//    }
 
     private void initDatas() {
         enableImport(false);
@@ -152,9 +173,9 @@ public class ImportIndividualKeystoreFragment extends MVPBaseFragment<ImportIndi
                         showNameError(string(R.string.validWalletNameEmptyTips), true);
                     } else if (walletName.length() > 12) {
                         showNameError(string(R.string.validWalletNameTips), true);
-                    } else if (mPresenter.isExists(walletName)){
+                    } else if (mPresenter.isExists(walletName)) {
                         showNameError(string(R.string.wallet_name_exists), true);
-                    }else {
+                    } else {
                         showNameError("", false);
                     }
                 }
