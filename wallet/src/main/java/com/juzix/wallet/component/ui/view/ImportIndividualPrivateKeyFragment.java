@@ -29,31 +29,52 @@ import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.utils.CheckStrength;
 import com.juzix.wallet.utils.CommonUtil;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import io.reactivex.Observable;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 
 public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportIndividualPrivateKeyPresenter> implements ImportIndividualPrivateKeyContract.View {
+    Unbinder unbinder;
+    @BindView(R.id.et_private_key)
+    EditText mEtPrivateKey;
+    @BindView(R.id.et_name)
+    EditText mEtWalletName;
+    @BindView(R.id.et_password)
+    EditText mEtPassword;
+    @BindView(R.id.et_repeat_password)
+    EditText mEtRepeatPassword;
+    @BindView(R.id.iv_password_eyes)
+    ImageView mIvPasswordEyes;
+    @BindView(R.id.iv_repeat_password_eyes)
+    ImageView mIvRepeatPasswordEyes;
+    @BindView(R.id.tv_password_desc)
+    TextView mTvPasswordDesc;
+    @BindView(R.id.sbtn_import)
+    ShadowButton mBtnImport;
+    @BindView(R.id.tv_strength)
+    TextView mTvStrength;
+    @BindView(R.id.v_line1)
+    View mVLine1;
+    @BindView(R.id.v_line2)
+    View mVLine2;
+    @BindView(R.id.v_line3)
+    View mVLine3;
+    @BindView(R.id.v_line4)
+    View mVLine4;
+    @BindView(R.id.tv_private_key_error)
+    TextView mTvPrivateKeyError;
+    @BindView(R.id.tv_name_error)
+    TextView mTvNameError;
+    @BindView(R.id.tv_password_error)
+    TextView mTvPasswordError;
+    @BindView(R.id.btn_paste)
+    Button mBtnPaste;
 
-    private EditText     mEtPrivateKey;
-    private EditText     mEtWalletName;
-    private EditText     mEtPassword;
-    private EditText     mEtRepeatPassword;
-    private ImageView mIvPasswordEyes;
-    private ImageView mIvRepeatPasswordEyes;
-    private TextView     mTvPasswordDesc;
-    private ShadowButton mBtnImport;
-    private boolean      mShowPassword;
-    private boolean      mShowRepeatPassword;
-    private TextView     mTvStrength;
-    private View         mVLine1;
-    private View         mVLine2;
-    private View         mVLine3;
-    private View         mVLine4;
-    private TextView     mTvPrivateKeyError;
-    private TextView     mTvNameError;
-    private TextView     mTvPasswordError;
-    private Button       mBtnPaste;
+    private boolean mShowPassword;
+    private boolean mShowRepeatPassword;
 
     @Override
     protected ImportIndividualPrivateKeyPresenter createPresenter() {
@@ -68,31 +89,32 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportIn
     @Override
     protected View onCreateFragmentPage(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_import_individual_private_key, container, false);
-        initViews(view);
+//        initViews(view);
+        unbinder = ButterKnife.bind(this, view);
         addListeners();
         initDatas();
         return view;
     }
 
-    private void initViews(View rootView) {
-        mEtPrivateKey = rootView.findViewById(R.id.et_private_key);
-        mTvPrivateKeyError = rootView.findViewById(R.id.tv_private_key_error);
-        mEtWalletName = rootView.findViewById(R.id.et_name);
-        mTvNameError = rootView.findViewById(R.id.tv_name_error);
-        mEtPassword = rootView.findViewById(R.id.et_password);
-        mEtRepeatPassword = rootView.findViewById(R.id.et_repeat_password);
-        mIvPasswordEyes = rootView.findViewById(R.id.iv_password_eyes);
-        mIvRepeatPasswordEyes = rootView.findViewById(R.id.iv_repeat_password_eyes);
-        mTvPasswordDesc = rootView.findViewById(R.id.tv_password_desc);
-        mTvPasswordError = rootView.findViewById(R.id.tv_password_error);
-        mBtnPaste = rootView.findViewById(R.id.btn_paste);
-        mBtnImport = rootView.findViewById(R.id.sbtn_import);
-        mTvStrength = rootView.findViewById(R.id.tv_strength);
-        mVLine1 = rootView.findViewById(R.id.v_line1);
-        mVLine2 = rootView.findViewById(R.id.v_line2);
-        mVLine3 = rootView.findViewById(R.id.v_line3);
-        mVLine4 = rootView.findViewById(R.id.v_line4);
-    }
+//    private void initViews(View rootView) {
+//        mEtPrivateKey = rootView.findViewById(R.id.et_private_key);
+//        mTvPrivateKeyError = rootView.findViewById(R.id.tv_private_key_error);
+//        mEtWalletName = rootView.findViewById(R.id.et_name);
+//        mTvNameError = rootView.findViewById(R.id.tv_name_error);
+//        mEtPassword = rootView.findViewById(R.id.et_password);
+//        mEtRepeatPassword = rootView.findViewById(R.id.et_repeat_password);
+//        mIvPasswordEyes = rootView.findViewById(R.id.iv_password_eyes);
+//        mIvRepeatPasswordEyes = rootView.findViewById(R.id.iv_repeat_password_eyes);
+//        mTvPasswordDesc = rootView.findViewById(R.id.tv_password_desc);
+//        mTvPasswordError = rootView.findViewById(R.id.tv_password_error);
+//        mBtnPaste = rootView.findViewById(R.id.btn_paste);
+//        mBtnImport = rootView.findViewById(R.id.sbtn_import);
+//        mTvStrength = rootView.findViewById(R.id.tv_strength);
+//        mVLine1 = rootView.findViewById(R.id.v_line1);
+//        mVLine2 = rootView.findViewById(R.id.v_line2);
+//        mVLine3 = rootView.findViewById(R.id.v_line3);
+//        mVLine4 = rootView.findViewById(R.id.v_line4);
+//    }
 
     private void addListeners() {
 
@@ -177,9 +199,9 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportIn
                         showNameError(string(R.string.validWalletNameEmptyTips), true);
                     } else if (name.length() > 12) {
                         showNameError(string(R.string.validWalletNameTips), true);
-                    } else if (mPresenter.isExists(name)){
+                    } else if (mPresenter.isExists(name)) {
                         showNameError(string(R.string.wallet_name_exists), true);
-                    }else {
+                    } else {
                         showNameError("", false);
                     }
                 }
@@ -265,7 +287,7 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportIn
         mBtnImport.setEnabled(enabled);
     }
 
-    private void showPassword(){
+    private void showPassword() {
         if (mShowPassword) {
             // 显示密码
             mEtPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
@@ -281,7 +303,7 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportIn
         }
     }
 
-    private void showRepeatPassword(){
+    private void showRepeatPassword() {
         if (mShowRepeatPassword) {
             // 显示密码
             mEtRepeatPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());

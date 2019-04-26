@@ -2,7 +2,6 @@ package com.juzix.wallet.component.ui.view;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
@@ -10,7 +9,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -23,25 +21,45 @@ import com.juzix.wallet.component.ui.presenter.CreateIndividualWalletPresenter;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.utils.CheckStrength;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 public class CreateIndividualWalletActivity extends MVPBaseActivity<CreateIndividualWalletPresenter> implements CreateIndividualWalletContract.View, View.OnClickListener, TextWatcher, View.OnFocusChangeListener {
 
-    private final static String       TAG = CreateIndividualWalletActivity.class.getSimpleName();
-    private              EditText     mEtName;
-    private              TextView     mTvNameError;
-    private              EditText     mEtPassword;
-    private              EditText     mEtRepeatPassword;
-    private ImageView mIvPasswordEyes;
-    private ImageView mIvRepeatPasswordEyes;
-    private              TextView     mTvPasswordDesc;
-    private              TextView     mTvPasswordError;
-    private              ShadowButton mSbtnCreate;
-    private              TextView     mTvStrength;
-    private              View         mVLine1;
-    private              View         mVLine2;
-    private              View         mVLine3;
-    private              View         mVLine4;
-    private              boolean      mShowPassword;
-    private              boolean      mShowRepeatPassword;
+    private final static String TAG = CreateIndividualWalletActivity.class.getSimpleName();
+
+    Unbinder unbinder;
+    @BindView(R.id.et_name)
+    EditText mEtName;
+    @BindView(R.id.tv_name_error)
+    TextView mTvNameError;
+    @BindView(R.id.et_password)
+    EditText mEtPassword;
+    @BindView(R.id.et_repeat_password)
+    EditText mEtRepeatPassword;
+    @BindView(R.id.iv_password_eyes)
+    ImageView mIvPasswordEyes;
+    @BindView(R.id.iv_repeat_password_eyes)
+    ImageView mIvRepeatPasswordEyes;
+    @BindView(R.id.tv_password_desc)
+    TextView mTvPasswordDesc;
+    @BindView(R.id.tv_password_error)
+    TextView mTvPasswordError;
+    @BindView(R.id.sbtn_create)
+    ShadowButton mSbtnCreate;
+    @BindView(R.id.tv_strength)
+    TextView mTvStrength;
+    @BindView(R.id.v_line1)
+    View mVLine1;
+    @BindView(R.id.v_line2)
+    View mVLine2;
+    @BindView(R.id.v_line3)
+    View mVLine3;
+    @BindView(R.id.v_line4)
+    View mVLine4;
+    private boolean mShowPassword;
+    private boolean mShowRepeatPassword;
 
     public static void actionStart(Context context) {
         context.startActivity(new Intent(context, CreateIndividualWalletActivity.class));
@@ -56,27 +74,30 @@ public class CreateIndividualWalletActivity extends MVPBaseActivity<CreateIndivi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_individual_wallet);
+        unbinder = ButterKnife.bind(this);
         initView();
         showPassword();
         showRepeatPassword();
     }
 
     private void initView() {
-        mEtName = findViewById(R.id.et_name);
-        mTvNameError = findViewById(R.id.tv_name_error);
-        mEtPassword = findViewById(R.id.et_password);
-        mEtRepeatPassword = findViewById(R.id.et_repeat_password);
-        mIvPasswordEyes = findViewById(R.id.iv_password_eyes);
-        mIvRepeatPasswordEyes = findViewById(R.id.iv_repeat_password_eyes);
-        mTvPasswordError = findViewById(R.id.tv_password_error);
-        mTvPasswordDesc = findViewById(R.id.tv_password_desc);
-        mSbtnCreate = findViewById(R.id.sbtn_create);
+//        mEtName = findViewById(R.id.et_name);
+//        mTvNameError = findViewById(R.id.tv_name_error);
+//        mEtPassword = findViewById(R.id.et_password);
+//        mEtRepeatPassword = findViewById(R.id.et_repeat_password);
+//        mIvPasswordEyes = findViewById(R.id.iv_password_eyes);
+//        mIvRepeatPasswordEyes = findViewById(R.id.iv_repeat_password_eyes);
+//        mTvPasswordError = findViewById(R.id.tv_password_error);
+//        mTvPasswordDesc = findViewById(R.id.tv_password_desc);
+//        mSbtnCreate = findViewById(R.id.sbtn_create);
+//        mTvStrength = findViewById(R.id.tv_strength);
+//        mVLine1 = findViewById(R.id.v_line1);
+//        mVLine2 = findViewById(R.id.v_line2);
+//        mVLine3 = findViewById(R.id.v_line3);
+//        mVLine4 = findViewById(R.id.v_line4);
+//
+
         mSbtnCreate.setOnClickListener(this);
-        mTvStrength = findViewById(R.id.tv_strength);
-        mVLine1 = findViewById(R.id.v_line1);
-        mVLine2 = findViewById(R.id.v_line2);
-        mVLine3 = findViewById(R.id.v_line3);
-        mVLine4 = findViewById(R.id.v_line4);
         mEtName.addTextChangedListener(this);
         mEtPassword.addTextChangedListener(this);
         mEtRepeatPassword.addTextChangedListener(this);
@@ -159,17 +180,17 @@ public class CreateIndividualWalletActivity extends MVPBaseActivity<CreateIndivi
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
-        String name           = mEtName.getText().toString().trim();
-        String password       = mEtPassword.getText().toString().trim();
+        String name = mEtName.getText().toString().trim();
+        String password = mEtPassword.getText().toString().trim();
         String repeatPassword = mEtRepeatPassword.getText().toString().trim();
         if (v == mEtName && !hasFocus) {
             if (TextUtils.isEmpty(name)) {
                 showNameError(string(R.string.validWalletNameEmptyTips), true);
             } else if (name.length() > 12) {
                 showNameError(string(R.string.validWalletNameTips), true);
-            } else if (mPresenter.isExists(name)){
+            } else if (mPresenter.isExists(name)) {
                 showNameError(string(R.string.wallet_name_exists), true);
-            }else {
+            } else {
                 showNameError("", false);
             }
         }
@@ -209,8 +230,8 @@ public class CreateIndividualWalletActivity extends MVPBaseActivity<CreateIndivi
 
     @Override
     public void afterTextChanged(Editable s) {
-        String name           = mEtName.getText().toString().trim();
-        String password       = mEtPassword.getText().toString().trim();
+        String name = mEtName.getText().toString().trim();
+        String password = mEtPassword.getText().toString().trim();
         String repeatPassword = mEtRepeatPassword.getText().toString().trim();
         enableCreate(!TextUtils.isEmpty(name) && !TextUtils.isEmpty(password) && !TextUtils.isEmpty(repeatPassword) && password.length() >= 6 && name.length() <= 12);
         checkPwdStreng(password);

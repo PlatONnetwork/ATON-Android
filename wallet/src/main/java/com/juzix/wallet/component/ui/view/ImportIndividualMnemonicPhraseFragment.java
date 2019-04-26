@@ -33,42 +33,73 @@ import com.juzix.wallet.utils.CheckStrength;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import io.reactivex.Observable;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 
 public class ImportIndividualMnemonicPhraseFragment extends MVPBaseFragment<ImportIndividualMnemonicPhrasePresenter> implements ImportIndividualMnemonicPhraseContract.View {
+    Unbinder unbinder;
+    @BindView(R.id.et_mnemonic1)
+    EditText mEtMnemonicPhrase1;
+    @BindView(R.id.et_mnemonic2)
+    EditText mEtMnemonicPhrase2;
+    @BindView(R.id.et_mnemonic3)
+    EditText mEtMnemonicPhrase3;
+    @BindView(R.id.et_mnemonic4)
+    EditText mEtMnemonicPhrase4;
+    @BindView(R.id.et_mnemonic5)
+    EditText mEtMnemonicPhrase5;
+    @BindView(R.id.et_mnemonic6)
+    EditText mEtMnemonicPhrase6;
+    @BindView(R.id.et_mnemonic7)
+    EditText mEtMnemonicPhrase7;
+    @BindView(R.id.et_mnemonic8)
+    EditText mEtMnemonicPhrase8;
+    @BindView(R.id.et_mnemonic9)
+    EditText mEtMnemonicPhrase9;
+    @BindView(R.id.et_mnemonic10)
+    EditText mEtMnemonicPhrase10;
+    @BindView(R.id.et_mnemonic11)
+    EditText mEtMnemonicPhrase11;
+    @BindView(R.id.et_mnemonic12)
+    EditText mEtMnemonicPhrase12;
+    @BindView(R.id.et_name)
+    EditText mEtWalletName;
+    @BindView(R.id.et_password)
+    EditText mEtPassword;
+    @BindView(R.id.et_repeat_password)
+    EditText mEtRepeatPassword;
+    @BindView(R.id.iv_password_eyes)
+    ImageView mIvPasswordEyes;
+    @BindView(R.id.iv_repeat_password_eyes)
+    ImageView mIvRepeatPasswordEyes;
+    @BindView(R.id.tv_password_desc)
+    TextView mTvPasswordDesc;
+    @BindView(R.id.sbtn_import)
+    ShadowButton mBtnImport;
+    @BindView(R.id.tv_strength)
+    TextView mTvStrength;
+    @BindView(R.id.v_line1)
+    View mVLine1;
+    @BindView(R.id.v_line2)
+    View mVLine2;
+    @BindView(R.id.v_line3)
+    View mVLine3;
+    @BindView(R.id.v_line4)
+    View mVLine4;
+    @BindView(R.id.tv_name_error)
+    TextView mTvNameError;
+    @BindView(R.id.tv_mnemonic_phrase_error)
+    TextView mTvMnemonicError;
+    @BindView(R.id.tv_password_error)
+    TextView mTvPasswordError;
 
-    private EditText     mEtMnemonicPhrase1;
-    private EditText mEtMnemonicPhrase2;
-    private EditText mEtMnemonicPhrase3;
-    private EditText     mEtMnemonicPhrase4;
-    private EditText     mEtMnemonicPhrase5;
-    private EditText     mEtMnemonicPhrase6;
-    private EditText     mEtMnemonicPhrase7;
-    private EditText     mEtMnemonicPhrase8;
-    private EditText     mEtMnemonicPhrase9;
-    private EditText     mEtMnemonicPhrase10;
-    private EditText     mEtMnemonicPhrase11;
-    private EditText     mEtMnemonicPhrase12;
-    private EditText     mEtWalletName;
-    private EditText     mEtPassword;
-    private EditText     mEtRepeatPassword;
-    private ImageView mIvPasswordEyes;
-    private ImageView mIvRepeatPasswordEyes;
-    private TextView     mTvPasswordDesc;
-    private ShadowButton mBtnImport;
-    private boolean      mShowPassword;
-    private boolean      mShowRepeatPassword;
-    private TextView     mTvStrength;
-    private View         mVLine1;
-    private View         mVLine2;
-    private View         mVLine3;
-    private View         mVLine4;
-    private TextView     mTvNameError;
-    private TextView     mTvMnemonicError;
-    private TextView     mTvPasswordError;
+    private boolean mShowPassword;
+    private boolean mShowRepeatPassword;
 
     @Override
     protected ImportIndividualMnemonicPhrasePresenter createPresenter() {
@@ -82,42 +113,43 @@ public class ImportIndividualMnemonicPhraseFragment extends MVPBaseFragment<Impo
     @Override
     protected View onCreateFragmentPage(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_import_individual_mnemonic_phrase, container, false);
-        initViews(view);
+        unbinder = ButterKnife.bind(this, view);
+//        initViews(view);
         addListeners();
         addTextWatcher();
         initDatas();
         return view;
     }
 
-    private void initViews(View rootView) {
-        mEtMnemonicPhrase1 = rootView.findViewById(R.id.et_mnemonic1);
-        mEtMnemonicPhrase2 = rootView.findViewById(R.id.et_mnemonic2);
-        mEtMnemonicPhrase3 = rootView.findViewById(R.id.et_mnemonic3);
-        mEtMnemonicPhrase4 = rootView.findViewById(R.id.et_mnemonic4);
-        mEtMnemonicPhrase5 = rootView.findViewById(R.id.et_mnemonic5);
-        mEtMnemonicPhrase6 = rootView.findViewById(R.id.et_mnemonic6);
-        mEtMnemonicPhrase7 = rootView.findViewById(R.id.et_mnemonic7);
-        mEtMnemonicPhrase8 = rootView.findViewById(R.id.et_mnemonic8);
-        mEtMnemonicPhrase9 = rootView.findViewById(R.id.et_mnemonic9);
-        mEtMnemonicPhrase10 = rootView.findViewById(R.id.et_mnemonic10);
-        mEtMnemonicPhrase11 = rootView.findViewById(R.id.et_mnemonic11);
-        mEtMnemonicPhrase12 = rootView.findViewById(R.id.et_mnemonic12);
-        mTvMnemonicError = rootView.findViewById(R.id.tv_mnemonic_phrase_error);
-        mEtWalletName = rootView.findViewById(R.id.et_name);
-        mTvNameError = rootView.findViewById(R.id.tv_name_error);
-        mEtPassword = rootView.findViewById(R.id.et_password);
-        mEtRepeatPassword = rootView.findViewById(R.id.et_repeat_password);
-        mIvPasswordEyes = rootView.findViewById(R.id.iv_password_eyes);
-        mIvRepeatPasswordEyes = rootView.findViewById(R.id.iv_repeat_password_eyes);
-        mTvPasswordError = rootView.findViewById(R.id.tv_password_error);
-        mTvPasswordDesc = rootView.findViewById(R.id.tv_password_desc);
-        mBtnImport = rootView.findViewById(R.id.sbtn_import);
-        mTvStrength = rootView.findViewById(R.id.tv_strength);
-        mVLine1 = rootView.findViewById(R.id.v_line1);
-        mVLine2 = rootView.findViewById(R.id.v_line2);
-        mVLine3 = rootView.findViewById(R.id.v_line3);
-        mVLine4 = rootView.findViewById(R.id.v_line4);
-    }
+//    private void initViews(View rootView) {
+//        mEtMnemonicPhrase1 = rootView.findViewById(R.id.et_mnemonic1);
+//        mEtMnemonicPhrase2 = rootView.findViewById(R.id.et_mnemonic2);
+//        mEtMnemonicPhrase3 = rootView.findViewById(R.id.et_mnemonic3);
+//        mEtMnemonicPhrase4 = rootView.findViewById(R.id.et_mnemonic4);
+//        mEtMnemonicPhrase5 = rootView.findViewById(R.id.et_mnemonic5);
+//        mEtMnemonicPhrase6 = rootView.findViewById(R.id.et_mnemonic6);
+//        mEtMnemonicPhrase7 = rootView.findViewById(R.id.et_mnemonic7);
+//        mEtMnemonicPhrase8 = rootView.findViewById(R.id.et_mnemonic8);
+//        mEtMnemonicPhrase9 = rootView.findViewById(R.id.et_mnemonic9);
+//        mEtMnemonicPhrase10 = rootView.findViewById(R.id.et_mnemonic10);
+//        mEtMnemonicPhrase11 = rootView.findViewById(R.id.et_mnemonic11);
+//        mEtMnemonicPhrase12 = rootView.findViewById(R.id.et_mnemonic12);
+//        mTvMnemonicError = rootView.findViewById(R.id.tv_mnemonic_phrase_error);
+//        mEtWalletName = rootView.findViewById(R.id.et_name);
+//        mTvNameError = rootView.findViewById(R.id.tv_name_error);
+//        mEtPassword = rootView.findViewById(R.id.et_password);
+//        mEtRepeatPassword = rootView.findViewById(R.id.et_repeat_password);
+//        mIvPasswordEyes = rootView.findViewById(R.id.iv_password_eyes);
+//        mIvRepeatPasswordEyes = rootView.findViewById(R.id.iv_repeat_password_eyes);
+//        mTvPasswordError = rootView.findViewById(R.id.tv_password_error);
+//        mTvPasswordDesc = rootView.findViewById(R.id.tv_password_desc);
+//        mBtnImport = rootView.findViewById(R.id.sbtn_import);
+//        mTvStrength = rootView.findViewById(R.id.tv_strength);
+//        mVLine1 = rootView.findViewById(R.id.v_line1);
+//        mVLine2 = rootView.findViewById(R.id.v_line2);
+//        mVLine3 = rootView.findViewById(R.id.v_line3);
+//        mVLine4 = rootView.findViewById(R.id.v_line4);
+//    }
 
     private void addListeners() {
         RxView.clicks(mIvPasswordEyes).subscribe(new Consumer<Object>() {
@@ -149,13 +181,13 @@ public class ImportIndividualMnemonicPhraseFragment extends MVPBaseFragment<Impo
                 String mnemonic12 = mEtMnemonicPhrase12.getText().toString().trim();
                 if (TextUtils.isEmpty(mnemonic1) || TextUtils.isEmpty(mnemonic2) || TextUtils.isEmpty(mnemonic3) || TextUtils.isEmpty(mnemonic4)
                         || TextUtils.isEmpty(mnemonic5) || TextUtils.isEmpty(mnemonic6) || TextUtils.isEmpty(mnemonic7) || TextUtils.isEmpty(mnemonic8)
-                        || TextUtils.isEmpty(mnemonic9) || TextUtils.isEmpty(mnemonic10) || TextUtils.isEmpty(mnemonic11) || TextUtils.isEmpty(mnemonic12)){
+                        || TextUtils.isEmpty(mnemonic9) || TextUtils.isEmpty(mnemonic10) || TextUtils.isEmpty(mnemonic11) || TextUtils.isEmpty(mnemonic12)) {
                     showLongToast(string(R.string.validMnenonicEmptyTips));
                     return;
                 }
                 if (TextUtils.isEmpty(mnemonic1) && TextUtils.isEmpty(mnemonic2) && TextUtils.isEmpty(mnemonic3) && TextUtils.isEmpty(mnemonic4)
                         && TextUtils.isEmpty(mnemonic5) && TextUtils.isEmpty(mnemonic6) && TextUtils.isEmpty(mnemonic7) && TextUtils.isEmpty(mnemonic8)
-                        && TextUtils.isEmpty(mnemonic9) && TextUtils.isEmpty(mnemonic10) && TextUtils.isEmpty(mnemonic11) && TextUtils.isEmpty(mnemonic12)){
+                        && TextUtils.isEmpty(mnemonic9) && TextUtils.isEmpty(mnemonic10) && TextUtils.isEmpty(mnemonic11) && TextUtils.isEmpty(mnemonic12)) {
                     showLongToast(string(R.string.validMnenonicEmptyTips));
                     return;
                 }
