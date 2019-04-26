@@ -28,6 +28,7 @@ import com.juzix.wallet.component.widget.ListViewForScrollView;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.OwnerEntity;
 import com.juzix.wallet.entity.SharedWalletEntity;
+import com.juzix.wallet.utils.RxUtils;
 
 import org.web3j.crypto.Credentials;
 
@@ -77,16 +78,18 @@ public class ManageSharedWalletActivity extends MVPBaseActivity<ManageSharedWall
 
     private void initView() {
         RxView.clicks(rlRename)
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Object>() {
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) throws Exception {
                         showModifyWalletNameDialog();
                     }
                 });
         RxView.clicks(tvDelete)
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Object>() {
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) throws Exception {
                         mPresenter.deleteAction(TYPE_DELETE_WALLET);
@@ -98,8 +101,9 @@ public class ManageSharedWalletActivity extends MVPBaseActivity<ManageSharedWall
         listMember.setAdapter(mAdapter);
 
         RxAdapterView.itemClicks(listMember)
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Integer>() {
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Integer>() {
             @Override
             public void accept(Integer position) throws Exception {
                 if (position != 0) {

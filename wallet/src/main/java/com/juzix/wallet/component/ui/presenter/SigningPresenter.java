@@ -1,6 +1,7 @@
 package com.juzix.wallet.component.ui.presenter;
 
 import com.juzhen.framework.network.NetConnectivity;
+import com.juzhen.framework.network.SchedulersTransformer;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomThrowable;
@@ -15,6 +16,7 @@ import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.SharedTransactionEntity;
 import com.juzix.wallet.entity.TransactionResult;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.ToastUtil;
 
 import org.reactivestreams.Publisher;
@@ -208,7 +210,7 @@ public class SigningPresenter extends BasePresenter<SigningContract.View> implem
                         return Web3jManager.getInstance().getWeb3j().ethGasPrice().send().getGasPrice();
                     }
                 })
-                .compose(new SchedulersTransformer())
+                .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(LoadingTransformer.bindToSingleLifecycle(getView().currentActivity()))
                 .compose(bindToLifecycle())
                 .subscribe(new Consumer<BigInteger>() {

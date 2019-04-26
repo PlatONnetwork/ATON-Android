@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.zxing.qrcode.encoder.QRCode;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.juzix.wallet.R;
@@ -166,9 +167,8 @@ public class ImportIndividualKeystoreFragment extends MVPBaseFragment<ImportIndi
                             }
                         }
                     }
-                }
-            }
         });
+
         RxView.focusChanges(mEtWalletName).skipInitialValue().subscribe(new Consumer<Boolean>() {
             @Override
             public void accept(Boolean hasFocus) throws Exception {
@@ -183,7 +183,10 @@ public class ImportIndividualKeystoreFragment extends MVPBaseFragment<ImportIndi
                     } else {
                         showNameError("", false);
                     }
+                }
+            }
                 });
+
         RxView
                 .focusChanges(mEtPassword)
                 .skipInitialValue()

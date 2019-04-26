@@ -2,6 +2,8 @@ package com.juzix.wallet.component.ui.presenter;
 
 import android.util.Log;
 
+import com.juzhen.framework.network.FlowableSchedulersTransformer;
+import com.juzhen.framework.network.SchedulersTransformer;
 import com.juzhen.framework.util.MapUtils;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
@@ -20,6 +22,7 @@ import com.juzix.wallet.entity.CandidateEntity;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.VoteSummaryEntity;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.RxUtils;
 
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
@@ -123,7 +126,7 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
                                     .getCandidateDetail(candidateId);
                         }
                     })
-                    .compose(new SchedulersTransformer())
+                    .compose(RxUtils.getSingleSchedulerTransformer())
                     .compose(bindToLifecycle())
                     .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
                     .subscribe(new Consumer<CandidateEntity>() {

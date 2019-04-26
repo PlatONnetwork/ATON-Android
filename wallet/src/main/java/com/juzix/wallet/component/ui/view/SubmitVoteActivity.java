@@ -23,6 +23,7 @@ import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.entity.CandidateEntity;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.utils.AddressFormatUtil;
+import com.juzix.wallet.utils.RxUtils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -37,7 +38,7 @@ import io.reactivex.functions.Consumer;
 /**
  * @author matrixelement
  */
-public class SubmitVoteActivity extends MVPBaseActivity<SubmitVotePresenter> implements SubmitVoteContract.View  {
+public class SubmitVoteActivity extends MVPBaseActivity<SubmitVotePresenter> implements SubmitVoteContract.View {
 
     @BindView(R.id.layout_node_name)
     ConstraintLayout layoutNodeName;
@@ -101,7 +102,9 @@ public class SubmitVoteActivity extends MVPBaseActivity<SubmitVotePresenter> imp
         RxTextView
                 .textChanges(etTicketNum)
                 .skipInitialValue()
-                .subscribe(new Consumer<CharSequence>() {
+                .compose(RxUtils.getSearchTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<CharSequence>() {
                     @Override
                     public void accept(CharSequence charSequence) throws Exception {
                         mTicketNum = NumberParserUtils.parseInt(charSequence);
@@ -111,9 +114,9 @@ public class SubmitVoteActivity extends MVPBaseActivity<SubmitVotePresenter> imp
                 });
 
         RxView.clicks(sbtnVote)
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .compose(bindToLifecycle())
-                .subscribe(new Consumer<Object>() {
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) throws Exception {
                         mPresenter.submitVote();
@@ -121,9 +124,9 @@ public class SubmitVoteActivity extends MVPBaseActivity<SubmitVotePresenter> imp
                 });
 
         RxView.clicks(tvChangeWallet)
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .compose(bindToLifecycle())
-                .subscribe(new Consumer<Object>() {
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) throws Exception {
                         mPresenter.showSelectWalletDialogFragment();
@@ -139,7 +142,8 @@ public class SubmitVoteActivity extends MVPBaseActivity<SubmitVotePresenter> imp
                         return !TextUtils.isEmpty(charSequence) && !TextUtils.isEmpty(charSequence2);
                     }
                 })
-                .subscribe(new Consumer<Boolean>() {
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Boolean>() {
                     @Override
                     public void accept(Boolean aBoolean) throws Exception {
                         sbtnVote.setEnabled(aBoolean);

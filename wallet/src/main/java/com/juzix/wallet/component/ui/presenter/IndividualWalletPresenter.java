@@ -5,6 +5,7 @@ import com.juzix.wallet.component.ui.contract.IndividualWalletContract;
 import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
+import com.juzix.wallet.utils.RxUtils;
 
 import org.reactivestreams.Publisher;
 
@@ -100,7 +101,7 @@ public class IndividualWalletPresenter extends BasePresenter<IndividualWalletCon
                         return objectFlowable.delay(5, TimeUnit.SECONDS);
                     }
                 })
-                .compose(new FlowableSchedulersTransformer())
+                .compose(RxUtils.getFlowableSchedulerTransformer())
                 .compose(bindToLifecycle())
                 .subscribe(new Consumer<Double>() {
                     @Override

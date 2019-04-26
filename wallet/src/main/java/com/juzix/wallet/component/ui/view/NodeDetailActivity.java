@@ -20,6 +20,7 @@ import com.juzix.wallet.entity.CandidateEntity;
 import com.juzix.wallet.entity.CandidateExtraEntity;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.DateUtil;
+import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.ShareUtil;
 
 import java.util.concurrent.TimeUnit;
@@ -85,9 +86,9 @@ public class NodeDetailActivity extends MVPBaseActivity<NodeDetailPresenter> imp
 
         RxView
                 .clicks(tvInstitutionalWebsite)
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .compose(bindToLifecycle())
-                .subscribe(new Consumer<Object>() {
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) throws Exception {
                         String text = tvInstitutionalWebsite.getText().toString();
@@ -99,9 +100,9 @@ public class NodeDetailActivity extends MVPBaseActivity<NodeDetailPresenter> imp
 
         RxView
                 .clicks(sbtnVote)
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .compose(bindToLifecycle())
-                .subscribe(new Consumer<Object>() {
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) throws Exception {
                         mPresenter.voteTicket();

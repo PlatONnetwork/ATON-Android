@@ -20,6 +20,7 @@ import com.juzix.wallet.component.widget.LineGridView;
 import com.juzix.wallet.entity.BatchVoteTransactionWrapEntity;
 import com.juzix.wallet.entity.VoteSummaryEntity;
 import com.juzix.wallet.utils.CommonUtil;
+import com.juzix.wallet.utils.RxUtils;
 
 import java.util.List;
 
@@ -68,9 +69,9 @@ public class MyVoteActivity extends MVPBaseActivity<MyVotePresenter> implements 
         listVoteInfo.setEmptyView(layoutNoVoted);
 
         RxAdapterView.itemClicks(listVoteInfo)
-                .compose(bindToLifecycle())
-                .compose(new ClickTransformer())
-                .subscribe(new Consumer<Integer>() {
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Integer>() {
                     @Override
                     public void accept(Integer position) throws Exception {
                         BatchVoteTransactionWrapEntity batchVoteTransactionEntity = mBatchVoteTransactionAdapter.getItem(position);

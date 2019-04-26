@@ -41,6 +41,7 @@ import com.juzix.wallet.entity.CandidateEntity;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.RxUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -227,9 +228,11 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
             }
         });
 
-        RxRadioGroup.checkedChanges(rgSelectCondition)
+        RxRadioGroup
+                .checkedChanges(rgSelectCondition)
                 .skipInitialValue()
-                .subscribe(new Consumer<Integer>() {
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Integer>() {
                     @Override
                     public void accept(Integer checkedId) throws Exception {
                         tabLayout.getTabAt(getTabIndexByCheckedId(checkedId)).select();
@@ -237,9 +240,9 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
                 });
 
         RxView.clicks(ivClear)
-                .compose(new ClickTransformer())
-                .compose(bindToLifecycle())
-                .subscribe(new Consumer() {
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) throws Exception {
                         mSearchEditOpened = false;
@@ -250,9 +253,9 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
                 });
 
         RxView.clicks(tvMyVoteOpen)
-                .compose(bindToLifecycle())
-                .compose(new ClickTransformer())
-                .subscribe(new Consumer() {
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) throws Exception {
                         MyVoteActivity.actionStart(currentActivity());
@@ -260,9 +263,9 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
                 });
 
         RxView.clicks(tvMyVoteClose)
-                .compose(bindToLifecycle())
-                .compose(new ClickTransformer())
-                .subscribe(new Consumer() {
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) throws Exception {
                         MyVoteActivity.actionStart(currentActivity());
@@ -270,9 +273,9 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
                 });
 
         RxView.clicks(ivSearchVote)
-                .compose(bindToLifecycle())
-                .compose(new ClickTransformer())
-                .subscribe(new Consumer() {
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) throws Exception {
                         mSearchEditOpened = !mSearchEditOpened;
@@ -282,9 +285,10 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
 
         RxTextView.textChanges(etSearchVote)
                 .skipInitialValue()
-                .debounce(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+                .compose(RxUtils.getSearchTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
                 .compose(bindToLifecycle())
-                .subscribe(new Consumer<CharSequence>() {
+                .subscribe(new CustomObserver<CharSequence>() {
                     @Override
                     public void accept(CharSequence charSequence) throws Exception {
                         mPresenter.search(charSequence.toString().trim());

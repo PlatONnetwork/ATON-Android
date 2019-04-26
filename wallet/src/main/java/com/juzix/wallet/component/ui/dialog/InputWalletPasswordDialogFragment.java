@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
+import com.juzhen.framework.network.SchedulersTransformer;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.LoadingTransformer;
@@ -22,6 +23,7 @@ import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
+import com.juzix.wallet.utils.RxUtils;
 
 import org.web3j.crypto.Credentials;
 
@@ -109,7 +111,7 @@ public class InputWalletPasswordDialogFragment extends BaseDialogFragment {
 
         RxView.clicks(textCancel)
                 .compose(bindToLifecycle())
-                .compose(new ClickTransformer())
+                .compose(RxUtils.getClickTransformer())
                 .subscribe(new Consumer<Object>() {
                     @Override
                     public void accept(Object object) throws Exception {
@@ -119,7 +121,7 @@ public class InputWalletPasswordDialogFragment extends BaseDialogFragment {
 
         RxView.clicks(buttonConfirm)
                 .compose(bindToLifecycle())
-                .compose(new ClickTransformer())
+                .compose(RxUtils.getClickTransformer())
                 .subscribe(new Consumer<Object>() {
                     @Override
                     public void accept(Object object) throws Exception {

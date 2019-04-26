@@ -18,6 +18,7 @@ import com.juzix.wallet.engine.VersionManager;
 import com.juzix.wallet.engine.VersionUpdate;
 import com.juzix.wallet.entity.VersionEntity;
 import com.juzix.wallet.utils.DateUtil;
+import com.juzix.wallet.utils.RxUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import io.reactivex.functions.Consumer;
@@ -37,7 +38,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
             return;
         }
         VersionManager.getInstance().getVersion()
-                .compose(new SchedulersTransformer())
+                .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
                 .subscribe(new Consumer<VersionEntity>() {
                     @Override

@@ -11,6 +11,7 @@ import com.juzix.wallet.entity.BatchVoteTransactionEntity;
 import com.juzix.wallet.entity.BatchVoteTransactionWrapEntity;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.LanguageUtil;
+import com.juzix.wallet.utils.RxUtils;
 
 import java.util.List;
 import java.util.Locale;
@@ -48,7 +49,7 @@ public class BatchVoteTransactionAdapter extends CommonAdapter<BatchVoteTransact
         viewHolder.setText(R.id.tv_vote_profit_desc, String.format("%s(Energon)", context.getString(R.string.votingIncome)));
 
         RxView.clicks(viewHolder.getView(R.id.rtv_vote))
-                .compose(new ClickTransformer())
+                .compose(RxUtils.getClickTransformer())
                 .subscribe(new Consumer() {
                     @Override
                     public void accept(Object o) throws Exception {

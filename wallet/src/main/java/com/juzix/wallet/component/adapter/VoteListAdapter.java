@@ -16,6 +16,7 @@ import com.juzix.wallet.entity.CandidateEntity;
 import com.juzix.wallet.entity.CandidateExtraEntity;
 import com.juzix.wallet.entity.RegionEntity;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.RxUtils;
 
 import java.util.List;
 
@@ -72,7 +73,7 @@ public class VoteListAdapter extends RecyclerView.Adapter<VoteListAdapter.ViewHo
 
             RxView
                     .clicks(holder.itemView)
-                    .compose(new ClickTransformer())
+                    .compose(RxUtils.getClickTransformer())
                     .subscribe(new Consumer<Object>() {
                         @Override
                         public void accept(Object object) throws Exception {
@@ -84,7 +85,7 @@ public class VoteListAdapter extends RecyclerView.Adapter<VoteListAdapter.ViewHo
 
             RxView
                     .clicks(holder.tvVote)
-                    .compose(new ClickTransformer())
+                    .compose(RxUtils.getClickTransformer())
                     .subscribe(new Consumer<Object>() {
                         @Override
                         public void accept(Object unit) throws Exception {

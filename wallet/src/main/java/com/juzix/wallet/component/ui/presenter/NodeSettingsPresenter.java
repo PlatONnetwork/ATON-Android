@@ -3,6 +3,7 @@ package com.juzix.wallet.component.ui.presenter;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.juzhen.framework.network.SchedulersTransformer;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomThrowable;
 import com.juzix.wallet.app.LoadingTransformer;
@@ -16,6 +17,7 @@ import com.juzix.wallet.db.sqlite.IndividualWalletInfoDao;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.entity.NodeEntity;
 import com.juzix.wallet.event.EventPublisher;
+import com.juzix.wallet.utils.RxUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +90,7 @@ public class NodeSettingsPresenter extends BasePresenter<NodeSettingsContract.Vi
 
         NodeManager.getInstance()
                 .getNodeList()
-                .compose(new SchedulersTransformer())
+                .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(((BaseActivity) getView()).bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<List<NodeEntity>>() {

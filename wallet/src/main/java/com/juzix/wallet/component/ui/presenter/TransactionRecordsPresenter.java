@@ -14,6 +14,7 @@ import com.juzix.wallet.entity.IndividualTransactionEntity;
 import com.juzix.wallet.entity.SharedTransactionEntity;
 import com.juzix.wallet.entity.TransactionEntity;
 import com.juzix.wallet.entity.VoteTransactionEntity;
+import com.juzix.wallet.utils.RxUtils;
 
 import org.reactivestreams.Publisher;
 
@@ -57,7 +58,7 @@ public class TransactionRecordsPresenter extends BasePresenter<TransactionRecord
                         return transactionEntities;
                     }
                 })
-                .compose(new SchedulersTransformer())
+                .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(bindToLifecycle())
                 .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
                 .subscribe(new Consumer<List<TransactionEntity>>() {
