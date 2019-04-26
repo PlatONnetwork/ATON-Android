@@ -119,12 +119,12 @@ def getGitVersion() {
 
 task getReleasePassword << {
     def password = ''
-    if (rootProject.file('password.properties').exist()){
+    if (rootProject.file('password.properties').exist()) {
         Properties properties = new Properties();
         properties.load(rootProject.file('password.properties').newDataInputStream())
         password = properties.getProperty("release.password");
     }
-    if (!password?.trim()){
+    if (!password?.trim()) {
         password = new String(System.console().readPassword("\n what's the keystore password"))
     }
 }
@@ -147,22 +147,20 @@ dependencies {
     implementation rootProject.ext.dependencies["support-zxing"]
     implementation rootProject.ext.dependencies["support-constraint-layout"]
     implementation rootProject.ext.dependencies["support-multidex"]
-    implementation (rootProject.ext.dependencies["web3j_core"]){
-        exclude group: 'io.reactivex'
-    }
-    implementation rootProject.ext.dependencies["web3j_crypto"]
-    implementation rootProject.ext.dependencies["bitcoinj_core"]
+    implementation rootProject.ext.dependencies["web3j-core"]
+    implementation rootProject.ext.dependencies["web3j-crypto"]
+    implementation rootProject.ext.dependencies["bitcoinj-core"]
     implementation rootProject.ext.dependencies["eventbus"]
     implementation rootProject.ext.dependencies["rxlifecycle"]
     implementation rootProject.ext.dependencies["rxlifecycle-android"]
-    implementation (rootProject.ext.dependencies["rxbinding"]){
+    implementation(rootProject.ext.dependencies["rxbinding"]) {
         exclude group: 'com.android.support'
     }
-    api (rootProject.ext.dependencies["rxbinding-appcompat-v7"]){
-        exclude  group: 'com.android.support'
+    api(rootProject.ext.dependencies["rxbinding-appcompat-v7"]) {
+        exclude group: 'com.android.support'
     }
     api(rootProject.ext.dependencies["rxbinding-recyclerview-v7"]) {
-        exclude  group: 'com.android.support'
+        exclude group: 'com.android.support'
     }
     implementation rootProject.ext.dependencies["rxpermissions"]
     implementation rootProject.ext.dependencies["butterknife"]

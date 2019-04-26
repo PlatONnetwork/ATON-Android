@@ -54,10 +54,10 @@ project.ext {
             "retrofit-converter"              : "com.squareup.retrofit2:converter-scalars:${retrofitVersion}",
             "retrofit-converter-gson"         : "com.squareup.retrofit2:converter-gson:${retrofitVersion}",
             //web3j
-            "web3j_core"                      : "com.platon.client:core:${web3jVersion}",
-            "web3j_crypto"                    : "com.platon.client:crypto:${web3jVersion}",
+            "web3j-core"                      : "com.platon.client:core:${web3jVersion}",
+            "web3j-crypto"                    : "com.platon.client:crypto:${web3jVersion}",
             //bitcoinj_core
-            "bitcoinj_core"                   : "org.bitcoinj:bitcoinj-core:0.14.7",
+            "bitcoinj-core"                   : "org.bitcoinj:bitcoinj-core:0.14.7",
             //router
             // 替换成最新版本, 需要注意的是api
             // 要与compiler匹配使用，均使用最新版可以保证兼容
