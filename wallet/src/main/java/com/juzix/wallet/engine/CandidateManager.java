@@ -298,6 +298,10 @@ public class CandidateManager {
                 new DefaultWasmGasProvider());
         String candidateListResp = null;
         try {
+
+
+
+
             candidateListResp = candidateContract.VerifiersList().send();
         } catch (Exception e) {
             e.printStackTrace();
