@@ -18,8 +18,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding3.view.RxView;
-import com.jakewharton.rxbinding3.widget.RxTextView;
+import com.jakewharton.rxbinding2.view.RxView;
+import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.MVPBaseFragment;
@@ -32,7 +32,6 @@ import com.juzix.wallet.utils.CommonUtil;
 import io.reactivex.Observable;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
-import kotlin.Unit;
 
 public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportIndividualPrivateKeyPresenter> implements ImportIndividualPrivateKeyContract.View {
 
@@ -97,30 +96,30 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportIn
 
     private void addListeners() {
 
-        RxView.clicks(mIvPasswordEyes).subscribe(new Consumer<Unit>() {
+        RxView.clicks(mIvPasswordEyes).subscribe(new Consumer<Object>() {
             @Override
-            public void accept(Unit unit) throws Exception {
+            public void accept(Object object) throws Exception {
                 showPassword();
             }
         });
-        RxView.clicks(mIvRepeatPasswordEyes).subscribe(new Consumer<Unit>() {
+        RxView.clicks(mIvRepeatPasswordEyes).subscribe(new Consumer<Object>() {
             @Override
-            public void accept(Unit unit) throws Exception {
+            public void accept(Object object) throws Exception {
                 showRepeatPassword();
             }
         });
-        RxView.clicks(mBtnImport).subscribe(new Consumer<Unit>() {
+        RxView.clicks(mBtnImport).subscribe(new Consumer<Object>() {
             @Override
-            public void accept(Unit unit) throws Exception {
+            public void accept(Object unit) throws Exception {
                 mPresenter.importPrivateKey(mEtPrivateKey.getText().toString(),
                         mEtWalletName.getText().toString(),
                         mEtPassword.getText().toString(),
                         mEtRepeatPassword.getText().toString());
             }
         });
-        RxView.clicks(mBtnPaste).subscribe(new Consumer<Unit>() {
+        RxView.clicks(mBtnPaste).subscribe(new Consumer<Object>() {
             @Override
-            public void accept(Unit unit) throws Exception {
+            public void accept(Object unit) throws Exception {
                 mEtPrivateKey.setText(CommonUtil.getTextFromClipboard(getContext()));
                 mEtPrivateKey.setSelection(mEtPrivateKey.getText().toString().length());
             }

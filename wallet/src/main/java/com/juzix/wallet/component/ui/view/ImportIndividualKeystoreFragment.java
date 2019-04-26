@@ -18,8 +18,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding3.view.RxView;
-import com.jakewharton.rxbinding3.widget.RxTextView;
+import com.jakewharton.rxbinding2.view.RxView;
+import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.MVPBaseFragment;
@@ -31,7 +31,6 @@ import com.juzix.wallet.utils.CommonUtil;
 import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function3;
-import kotlin.Unit;
 
 public class ImportIndividualKeystoreFragment extends MVPBaseFragment<ImportIndividualKeystorePresenter> implements ImportIndividualKeystoreContract.View {
 
@@ -88,25 +87,25 @@ public class ImportIndividualKeystoreFragment extends MVPBaseFragment<ImportIndi
 
     private void addListeners() {
 
-        RxView.clicks(mIvPasswordEyes).subscribe(new Consumer<Unit>() {
+        RxView.clicks(mIvPasswordEyes).subscribe(new Consumer<Object>() {
             @Override
-            public void accept(Unit unit) throws Exception {
+            public void accept(Object unit) throws Exception {
                 showPassword();
             }
         });
 
-        RxView.clicks(mBtnImport).subscribe(new Consumer<Unit>() {
+        RxView.clicks(mBtnImport).subscribe(new Consumer<Object>() {
             @Override
-            public void accept(Unit unit) throws Exception {
+            public void accept(Object unit) throws Exception {
                 mPresenter.importKeystore(mEtKeystore.getText().toString(),
                         mEtWalletName.getText().toString(),
                         mEtPassword.getText().toString());
             }
         });
 
-        RxView.clicks(mBtnPaste).subscribe(new Consumer<Unit>() {
+        RxView.clicks(mBtnPaste).subscribe(new Consumer<Object>() {
             @Override
-            public void accept(Unit unit) throws Exception {
+            public void accept(Object unit) throws Exception {
                 mEtKeystore.setText(CommonUtil.getTextFromClipboard(getContext()));
                 mEtKeystore.setSelection(mEtKeystore.getText().toString().length());
             }

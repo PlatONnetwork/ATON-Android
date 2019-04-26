@@ -5,15 +5,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding3.view.RxView;
-import com.jakewharton.rxbinding3.widget.RxTextView;
+import com.jakewharton.rxbinding2.view.RxView;
+import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.ClickTransformer;
 import com.juzix.wallet.app.Constants;
@@ -22,10 +21,8 @@ import com.juzix.wallet.component.ui.contract.AddNewAddressContract;
 import com.juzix.wallet.component.ui.presenter.AddNewAddressPresenter;
 import com.juzix.wallet.component.widget.CommonTitleBar;
 import com.juzix.wallet.component.widget.ShadowButton;
-import com.juzix.wallet.config.PermissionConfigure;
 import com.juzix.wallet.entity.AddressEntity;
-
-import java.util.List;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -105,26 +102,13 @@ public class AddNewAddressActivity extends MVPBaseActivity<AddNewAddressPresente
         RxView.clicks(ivAddressScan)
                 .compose(new ClickTransformer())
                 .compose(bindToLifecycle())
-                .subscribe(new Consumer() {
+                .compose(new RxPermissions(AddNewAddressActivity.this).ensure(Manifest.permission.CAMERA))
+                .subscribe(new Consumer<Boolean>() {
                     @Override
-                    public void accept(Object o) throws Exception {
-                        hideSoftInput();
-                        requestPermission(AddNewAddressActivity.this, 100, new PermissionConfigure.PermissionCallback() {
-                            @Override
-                            public void onSuccess(int what, @NonNull List<String> grantPermissions) {
-                                ScanQRCodeActivity.startActivityForResult(AddNewAddressActivity.this, Constants.RequestCode.REQUEST_CODE_SCAN_QRCODE);
-                            }
-
-                            @Override
-                            public void onHasPermission(int what) {
-                                ScanQRCodeActivity.startActivityForResult(AddNewAddressActivity.this, Constants.RequestCode.REQUEST_CODE_SCAN_QRCODE);
-                            }
-
-                            @Override
-                            public void onFail(int what, @NonNull List<String> deniedPermissions) {
-
-                            }
-                        }, Manifest.permission.CAMERA);
+                    public void accept(Boolean success) throws Exception {
+                        if (success) {
+                            ScanQRCodeActivity.startActivityForResult(AddNewAddressActivity.this, Constants.RequestCode.REQUEST_CODE_SCAN_QRCODE);
+                        }
                     }
                 });
 

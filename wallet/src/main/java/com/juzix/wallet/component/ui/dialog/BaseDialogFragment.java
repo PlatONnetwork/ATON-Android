@@ -117,17 +117,12 @@ public abstract class BaseDialogFragment extends DialogFragment implements Lifec
 
     private final BehaviorSubject<FragmentEvent> lifecycleSubject = BehaviorSubject.create();
 
-    @Override
-    @androidx.annotation.NonNull
-    @androidx.annotation.CheckResult
     public final Observable<FragmentEvent> lifecycle() {
         return lifecycleSubject.hide();
     }
 
     @Override
-    @androidx.annotation.NonNull
-    @androidx.annotation.CheckResult
-    public final <T> LifecycleTransformer<T> bindUntilEvent(@androidx.annotation.NonNull FragmentEvent event) {
+    public final <T> LifecycleTransformer<T> bindUntilEvent(FragmentEvent event) {
         return RxLifecycle.bindUntilEvent(lifecycleSubject, event);
     }
 
@@ -226,7 +221,7 @@ public abstract class BaseDialogFragment extends DialogFragment implements Lifec
     }
 
     @Override
-    public void onCreate(@androidx.annotation.Nullable Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.e(TAG, "onCreate");
         lifecycleSubject.onNext(FragmentEvent.CREATE);

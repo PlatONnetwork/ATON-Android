@@ -19,8 +19,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding3.view.RxView;
-import com.jakewharton.rxbinding3.widget.RxTextView;
+import com.jakewharton.rxbinding2.view.RxView;
+import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.ClickTransformer;
 import com.juzix.wallet.app.Constants;
@@ -32,7 +32,6 @@ import com.juzix.wallet.utils.DensityUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.functions.Consumer;
-import kotlin.Unit;
 
 /**
  * @author matrixelement
@@ -175,9 +174,9 @@ public class CommonEditDialogFragment extends DialogFragment {
         } else {
             dialog.tvCancel.setVisibility(View.VISIBLE);
             dialog.tvCancel.setText(bottomButton.label);
-            RxView.clicks(dialog.tvCancel).subscribe(new Consumer<Unit>() {
+            RxView.clicks(dialog.tvCancel).subscribe(new Consumer<Object>() {
                 @Override
-                public void accept(Unit unit) throws Exception {
+                public void accept(Object unit) throws Exception {
                     dismiss();
                     if (bottomButton.listener != null) {
                         bottomButton.listener.onDialogViewClick(CommonEditDialogFragment.this, dialog.tvCancel, null);
@@ -193,9 +192,9 @@ public class CommonEditDialogFragment extends DialogFragment {
             dialog.buttonConfirm.setText(topButton.label);
             RxView.clicks(dialog.buttonConfirm)
                     .compose(new ClickTransformer())
-                    .subscribe(new Consumer<Unit>() {
+                    .subscribe(new Consumer<Object>() {
                         @Override
-                        public void accept(Unit unit) throws Exception {
+                        public void accept(Object unit) throws Exception {
                             dismiss();
                             if (topButton.listener != null) {
                                 String inputInfo = dialog.etInputInfo.getText().toString().trim();

@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding3.view.RxView;
+import com.jakewharton.rxbinding2.view.RxView;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.utils.DensityUtil;
@@ -25,7 +25,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.reactivex.functions.Consumer;
-import kotlin.Unit;
 
 /**
  * @author matrixelement
@@ -175,9 +174,9 @@ public class CommonTitleBar extends LinearLayout {
 
         RxView.clicks(tvTitle)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Unit>() {
+                .subscribe(new Consumer<Object>() {
                     @Override
-                    public void accept(Unit unit) throws Exception {
+                    public void accept(Object object) throws Exception {
                         if (mContext instanceof Activity) {
                             BaseActivity baseActivity = (BaseActivity) mContext;
                             baseActivity.hideSoftInput();
@@ -231,9 +230,9 @@ public class CommonTitleBar extends LinearLayout {
 
         RxView.clicks(ivLeft)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Unit>() {
+                .subscribe(new Consumer<Object>() {
                     @Override
-                    public void accept(Unit unit) throws Exception {
+                    public void accept(Object object) throws Exception {
                         if (mContext instanceof Activity) {
                             BaseActivity baseActivity = (BaseActivity) mContext;
                             baseActivity.hideSoftInput();
@@ -254,9 +253,9 @@ public class CommonTitleBar extends LinearLayout {
 
         RxView.clicks(ivLeft)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Consumer<Unit>() {
+                .subscribe(new Consumer<Object>() {
                     @Override
-                    public void accept(Unit unit) throws Exception {
+                    public void accept(Object object) throws Exception {
                         if (mContext instanceof Activity) {
                             BaseActivity baseActivity = (BaseActivity) mContext;
                             baseActivity.hideSoftInput();
@@ -297,9 +296,9 @@ public class CommonTitleBar extends LinearLayout {
         if (ivLeft.getVisibility() == VISIBLE) {
             RxView.clicks(ivLeft)
                     .throttleFirst(500, TimeUnit.MILLISECONDS)
-                    .subscribe(new Consumer<Unit>() {
+                    .subscribe(new Consumer<Object>() {
                         @Override
-                        public void accept(Unit unit) throws Exception {
+                        public void accept(Object object) throws Exception {
                             if (listener != null) {
                                 listener.onClick(ivLeft);
                             }
@@ -312,9 +311,9 @@ public class CommonTitleBar extends LinearLayout {
         if (ivRight.getVisibility() == VISIBLE) {
             RxView.clicks(ivRight)
                     .throttleFirst(500, TimeUnit.MILLISECONDS)
-                    .subscribe(new Consumer<Unit>() {
+                    .subscribe(new Consumer<Object>() {
                         @Override
-                        public void accept(Unit unit) throws Exception {
+                        public void accept(Object object) throws Exception {
                             if (listener != null) {
                                 listener.onClick(ivRight);
                             }

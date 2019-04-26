@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding3.view.RxView;
+import com.jakewharton.rxbinding2.view.RxView;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.ClickTransformer;
@@ -38,7 +38,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.reactivex.functions.Consumer;
-import kotlin.Unit;
 
 /**
  * @author matrixelement
@@ -120,9 +119,9 @@ public class SigningActivity extends MVPBaseActivity<SigningPresenter> implement
         RxView.clicks(sbtnRefuse)
                 .compose(new ClickTransformer())
                 .compose(bindToLifecycle())
-                .subscribe(new Consumer<Unit>() {
+                .subscribe(new Consumer<Object>() {
                     @Override
-                    public void accept(Unit unit) throws Exception {
+                    public void accept(Object object) throws Exception {
                         mPresenter.revoke();
                     }
                 });
@@ -130,9 +129,9 @@ public class SigningActivity extends MVPBaseActivity<SigningPresenter> implement
         RxView.clicks(sbtnAgree)
                 .compose(new ClickTransformer())
                 .compose(bindToLifecycle())
-                .subscribe(new Consumer<Unit>() {
+                .subscribe(new Consumer<Object>() {
                     @Override
-                    public void accept(Unit unit) throws Exception {
+                    public void accept(Object object) throws Exception {
                         mPresenter.confirm();
                     }
                 });

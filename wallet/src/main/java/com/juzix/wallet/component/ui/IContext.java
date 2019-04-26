@@ -3,7 +3,6 @@ package com.juzix.wallet.component.ui;
 import android.content.Context;
 
 import com.juzix.wallet.component.ui.base.BaseActivity;
-import com.juzix.wallet.config.PermissionConfigure;
 
 
 public interface IContext {
@@ -38,15 +37,4 @@ public interface IContext {
      * @param text
      */
     void showLoadingDialogWithCancelable(String text);
-
-    /**
-     * 获取应用权限
-     *
-     * @param activity
-     * @param what
-     * @param callback
-     * @param permissions
-     */
-    void requestPermission(BaseActivity activity, int what, PermissionConfigure.PermissionCallback callback,
-                           String... permissions);
 }

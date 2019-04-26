@@ -10,9 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.juzix.wallet.R;
-import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.dialog.BaseDialog;
-import com.juzix.wallet.config.PermissionConfigure;
 import com.juzix.wallet.utils.ToastUtil;
 
 
@@ -118,10 +116,6 @@ public abstract class BaseContextImpl implements IContext {
         return getContext().getString(resId, formatArgs);
     }
 
-    @Override
-    public void requestPermission(BaseActivity activity, int what, PermissionConfigure.PermissionCallback callback, String... permissions) {
-        PermissionConfigure.request(activity, what, callback, permissions);
-    }
     private BaseDialog createProgressDialog(String msg) {
         BaseDialog dialog = new BaseDialog(getContext(), R.style.LoadingDialogStyle);
         View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_progress_dialog, null);

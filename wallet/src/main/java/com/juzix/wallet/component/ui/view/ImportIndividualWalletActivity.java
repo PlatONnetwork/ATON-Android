@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
@@ -24,20 +23,21 @@ import com.juzix.wallet.component.widget.table.PagerItem;
 import com.juzix.wallet.component.widget.table.PagerItemAdapter;
 import com.juzix.wallet.component.widget.table.PagerItems;
 import com.juzix.wallet.component.widget.table.SmartTabLayout;
-import com.juzix.wallet.config.PermissionConfigure;
 import com.juzix.wallet.utils.JZWalletUtil;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class ImportIndividualWalletActivity extends BaseActivity{
-    public static final int            TAB1                  = 0;
-    public static final int            TAB2                  = 1;
-    public static final int            TAB3                  = 2;
+import io.reactivex.functions.Consumer;
+
+public class ImportIndividualWalletActivity extends BaseActivity {
+    public static final int TAB1 = 0;
+    public static final int TAB2 = 1;
+    public static final int TAB3 = 2;
     public static final int REQ_QR_CODE = 101;
     private ViewPagerSlide mVpContent;
 
-    private final static String    TAG = ImportIndividualWalletActivity.class.getSimpleName();
+    private final static String TAG = ImportIndividualWalletActivity.class.getSimpleName();
 
     public static void actionStart(Context context) {
         context.startActivity(new Intent(context, ImportIndividualWalletActivity.class));
@@ -72,14 +72,14 @@ public class ImportIndividualWalletActivity extends BaseActivity{
                 scanQRCode();
             }
         });
-        int            indicatorThickness = AndroidUtil.dip2px(getContext(), 2.0f);
-        SmartTabLayout stbBar             = mRootView.findViewById(R.id.stb_bar);
+        int indicatorThickness = AndroidUtil.dip2px(getContext(), 2.0f);
+        SmartTabLayout stbBar = mRootView.findViewById(R.id.stb_bar);
         stbBar.setIndicatorThickness(indicatorThickness);
         stbBar.setIndicatorCornerRadius(indicatorThickness / 2);
         ArrayList<Class<? extends BaseFragment>> fragments = getFragments();
         Intent intent = getIntent();
         int index = -1;
-        if (intent.hasExtra(Constants.Extra.EXTRA_TYPE)){
+        if (intent.hasExtra(Constants.Extra.EXTRA_TYPE)) {
             index = intent.getIntExtra(Constants.Extra.EXTRA_TYPE, TAB1);
         }
         stbBar.setCustomTabView(new SmartTabLayout.TabProvider() {
@@ -88,12 +88,12 @@ public class ImportIndividualWalletActivity extends BaseActivity{
                 return getTableView(position, container);
             }
         });
-        PagerItems pages  = new PagerItems(getContext());
-        int        tabNum = fragments.size();
+        PagerItems pages = new PagerItems(getContext());
+        int tabNum = fragments.size();
         for (int i = 0; i < tabNum; i++) {
-            if (i == index){
+            if (i == index) {
                 pages.add(PagerItem.of(getTitles().get(i), fragments.get(i), intent.getExtras()));
-            }else {
+            } else {
                 pages.add(PagerItem.of(getTitles().get(i), fragments.get(i), new Bundle()));
             }
         }
@@ -132,19 +132,19 @@ public class ImportIndividualWalletActivity extends BaseActivity{
         if (requestCode == ImportIndividualWalletActivity.REQ_QR_CODE) {
             Bundle bundle = data.getExtras();
             String scanResult = bundle.getString(ScanQRCodeActivity.EXTRA_SCAN_QRCODE_DATA);
-            if (JZWalletUtil.isValidKeystore(scanResult)){
+            if (JZWalletUtil.isValidKeystore(scanResult)) {
                 mVpContent.setCurrentItem(0);
-                ((PagerItemAdapter)mVpContent.getAdapter()).getPage(0).onActivityResult(requestCode, resultCode, data);
+                ((PagerItemAdapter) mVpContent.getAdapter()).getPage(0).onActivityResult(requestCode, resultCode, data);
                 return;
             }
-            if (JZWalletUtil.isValidPrivateKey(scanResult)){
+            if (JZWalletUtil.isValidPrivateKey(scanResult)) {
                 mVpContent.setCurrentItem(2);
-                ((PagerItemAdapter)mVpContent.getAdapter()).getPage(2).onActivityResult(requestCode, resultCode, data);
+                ((PagerItemAdapter) mVpContent.getAdapter()).getPage(2).onActivityResult(requestCode, resultCode, data);
                 return;
             }
-            if (JZWalletUtil.isValidMnemonic(scanResult)){
+            if (JZWalletUtil.isValidMnemonic(scanResult)) {
                 mVpContent.setCurrentItem(1);
-                ((PagerItemAdapter)mVpContent.getAdapter()).getPage(1).onActivityResult(requestCode, resultCode, data);
+                ((PagerItemAdapter) mVpContent.getAdapter()).getPage(1).onActivityResult(requestCode, resultCode, data);
                 return;
             }
             showLongToast(string(R.string.unrecognized));
@@ -152,23 +152,16 @@ public class ImportIndividualWalletActivity extends BaseActivity{
     }
 
     private void scanQRCode() {
-        final BaseActivity activity = currentActivity();
-        requestPermission(activity, 100, new PermissionConfigure.PermissionCallback() {
-            @Override
-            public void onSuccess(int what, @NonNull List<String> grantPermissions) {
-                ScanQRCodeActivity.actionStart(currentActivity(), REQ_QR_CODE);
-            }
-
-            @Override
-            public void onHasPermission(int what) {
-                ScanQRCodeActivity.actionStart(currentActivity(), REQ_QR_CODE);
-            }
-
-            @Override
-            public void onFail(int what, @NonNull List<String> deniedPermissions) {
-
-            }
-        }, Manifest.permission.CAMERA);
+        new RxPermissions(currentActivity())
+                .request(Manifest.permission.CAMERA)
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean success) throws Exception {
+                        if (success) {
+                            ScanQRCodeActivity.actionStart(currentActivity(), REQ_QR_CODE);
+                        }
+                    }
+                });
     }
 
     private View getTableView(int position, ViewGroup container) {

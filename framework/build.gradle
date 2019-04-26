@@ -24,18 +24,15 @@ android {
 dependencies {
     implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.8.1'
     api files('libs/bcprov-jdk16-146.jar')
-    api rootProject.ext.dependencies.support_v4
-    api rootProject.ext.dependencies.appcompat_v7
-    api 'com.squareup.picasso:picasso:2.5.2'
-    api 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0'
-    api 'com.alibaba:fastjson:1.2.36'
-    api 'com.squareup.retrofit2:converter-gson:2.3.0'
-    api 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
-    api 'com.squareup.okhttp3:okhttp:3.8.1'
-    api 'com.squareup.retrofit2:retrofit:2.3.0'
-    api 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
-    implementation rootProject.ext.dependencies.rxjava2_rxjava
-    implementation rootProject.ext.dependencies.rxjava2_rxandroid
-    api 'com.facebook.stetho:stetho:1.5.0'
-    api 'com.facebook.stetho:stetho-okhttp3:1.5.0'
+    api rootProject.ext.dependencies["support-v4"]
+    api rootProject.ext.dependencies["support-appcompat-v7"]
+    api rootProject.ext.dependencies["fastjson"]
+    api rootProject.ext.dependencies["retrofit-converter-gson"]
+    api rootProject.ext.dependencies["okhttp3"]
+    api rootProject.ext.dependencies["retrofit"]
+    api rootProject.ext.dependencies["adapter-rxjava"]
+    api rootProject.ext.dependencies["stetho"]
+    api rootProject.ext.dependencies["stetho-okhttp3"]
+    api rootProject.ext.dependencies["rxjava"]
+    api rootProject.ext.dependencies["rxandroid"]
 }

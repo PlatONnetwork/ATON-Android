@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
@@ -21,19 +20,18 @@ import com.juzix.wallet.component.ui.contract.AddSharedWalletContract;
 import com.juzix.wallet.component.ui.presenter.AddSharedWalletPresenter;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.component.widget.TextChangedListener;
-import com.juzix.wallet.config.PermissionConfigure;
 import com.juzix.wallet.entity.AddressEntity;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
 import com.juzix.wallet.utils.ToastUtil;
-
-import java.util.List;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.reactivex.functions.Consumer;
 
 /**
  * @author matrixelement
@@ -127,22 +125,16 @@ public class AddSharedWalletActivity extends MVPBaseActivity<AddSharedWalletPres
                 SelectAddressActivity.actionStartForResult(this, Constants.Action.ACTION_GET_ADDRESS, Constants.RequestCode.REQUEST_CODE_GET_ADDRESS);
                 break;
             case R.id.iv_address_scan:
-                requestPermission(AddSharedWalletActivity.this, 100, new PermissionConfigure.PermissionCallback() {
-                    @Override
-                    public void onSuccess(int what, @NonNull List<String> grantPermissions) {
-                        ScanQRCodeActivity.startActivityForResult(AddSharedWalletActivity.this, Constants.RequestCode.REQUEST_CODE_SCAN_QRCODE);
-                    }
-
-                    @Override
-                    public void onHasPermission(int what) {
-                        ScanQRCodeActivity.startActivityForResult(AddSharedWalletActivity.this, Constants.RequestCode.REQUEST_CODE_SCAN_QRCODE);
-                    }
-
-                    @Override
-                    public void onFail(int what, @NonNull List<String> deniedPermissions) {
-
-                    }
-                }, Manifest.permission.CAMERA);
+                new RxPermissions(AddSharedWalletActivity.this)
+                        .request(Manifest.permission.CAMERA)
+                        .subscribe(new Consumer<Boolean>() {
+                            @Override
+                            public void accept(Boolean success) throws Exception {
+                                if (success) {
+                                    ScanQRCodeActivity.startActivityForResult(AddSharedWalletActivity.this, Constants.RequestCode.REQUEST_CODE_SCAN_QRCODE);
+                                }
+                            }
+                        });
                 break;
             case R.id.sbtn_add_shared_wallet:
                 mPresenter.addWallet(getWalletName(), getWalletAddress());

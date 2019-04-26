@@ -161,7 +161,6 @@ public class VoteManager {
                         if (candidateInfoEntity != null) {
                             batchVoteTransactionEntity.setNodeName(candidateInfoEntity.getCandidateName());
                         }
-
                         return batchVoteTransactionEntity;
                     }
                 })
