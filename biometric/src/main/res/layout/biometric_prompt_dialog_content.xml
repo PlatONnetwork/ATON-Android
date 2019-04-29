@@ -11,7 +11,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
         android:layout_marginTop="8dp"
+        tools:targetApi="21"
         style="@android:style/TextAppearance.Material.Subhead"
         tools:text="Subtitle"/>
 
@@ -21,7 +23,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
         android:layout_marginTop="8dp"
+        tools:targetApi="21"
         tools:text="Description: blabla."/>
 
     <com.juzix.biometric.FingerprintIconView
@@ -38,6 +42,7 @@
         android:layout_marginTop="16dp"
         android:layout_gravity="center_horizontal"
         style="@android:style/TextAppearance.Material.Small"
+        tools:targetApi="21"
         android:text="@string/touch_fingerprint_sensor_hint"/>
 
     <View
