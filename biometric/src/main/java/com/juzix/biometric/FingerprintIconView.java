@@ -1,5 +1,6 @@
 package com.juzix.biometric;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
@@ -60,6 +61,7 @@ class FingerprintIconView extends ImageView {
         this.state = state;
     }
 
+    @TargetApi(21)
     @DrawableRes
     private static int getDrawable(State currentState, State newState, boolean animate) {
         switch (newState) {
