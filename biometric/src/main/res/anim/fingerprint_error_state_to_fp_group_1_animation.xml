@@ -15,7 +15,7 @@
   ~ limitations under the License
   -->
 
-<set
+<set xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android" >
     <objectAnimator
         android:duration="416"
@@ -23,5 +23,6 @@
         android:valueFrom="430.0"
         android:valueTo="206.0"
         android:valueType="floatType"
-        android:interpolator="@android:interpolator/fast_out_linear_in" />
+        android:interpolator="@android:interpolator/fast_out_linear_in"
+        tools:targetApi="lollipop" />
 </set>
