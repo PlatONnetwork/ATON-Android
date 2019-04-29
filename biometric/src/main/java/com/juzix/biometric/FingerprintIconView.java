@@ -61,7 +61,6 @@ class FingerprintIconView extends ImageView {
         this.state = state;
     }
 
-    @TargetApi(21)
     @DrawableRes
     private static int getDrawable(State currentState, State newState, boolean animate) {
         switch (newState) {
