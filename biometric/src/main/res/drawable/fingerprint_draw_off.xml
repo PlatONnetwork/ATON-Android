@@ -16,6 +16,7 @@
   -->
 <vector
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:name="fingerprint_draw_off"
     android:width="32dp"
     android:viewportWidth="32"
@@ -37,7 +38,8 @@
                     android:strokeColor="?android:attr/colorControlActivated"
                     android:strokeAlpha="1.0"
                     android:strokeWidth="1.45"
-                    android:strokeLineCap="round" />
+                    android:strokeLineCap="round"
+                    tools:targetApi="lollipop" />
             </group>
             <group
                 android:name="ridge_4" >
@@ -47,7 +49,8 @@
                     android:strokeColor="?android:attr/colorControlActivated"
                     android:strokeAlpha="1.0"
                     android:strokeWidth="1.45"
-                    android:strokeLineCap="round" />
+                    android:strokeLineCap="round"
+                    tools:targetApi="lollipop" />
             </group>
             <group
                 android:name="ridge_3" >
@@ -57,7 +60,8 @@
                     android:strokeColor="?android:attr/colorControlActivated"
                     android:strokeAlpha="1.0"
                     android:strokeWidth="1.45"
-                    android:strokeLineCap="round" />
+                    android:strokeLineCap="round"
+                    tools:targetApi="lollipop" />
             </group>
             <group
                 android:name="ridge_2" >
@@ -67,7 +71,8 @@
                     android:strokeColor="?android:attr/colorControlActivated"
                     android:strokeAlpha="1.0"
                     android:strokeWidth="1.45"
-                    android:strokeLineCap="round" />
+                    android:strokeLineCap="round"
+                    tools:targetApi="lollipop" />
             </group>
             <group
                 android:name="ridge_1"
@@ -79,7 +84,8 @@
                     android:strokeColor="?android:attr/colorControlActivated"
                     android:strokeAlpha="1.0"
                     android:strokeWidth="1.45"
-                    android:strokeLineCap="round" />
+                    android:strokeLineCap="round"
+                    tools:targetApi="lollipop" />
             </group>
         </group>
     </group>

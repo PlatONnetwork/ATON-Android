@@ -16,6 +16,7 @@
   -->
 <vector
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:name="fingerprint_error_state_to_fp"
     android:width="32dp"
     android:viewportWidth="32"
@@ -39,7 +40,8 @@
                     android:strokeAlpha="1.0"
                     android:strokeWidth="1.45"
                     android:strokeLineCap="round"
-                    android:trimPathEnd="0" />
+                    android:trimPathEnd="0"
+                    tools:targetApi="lollipop" />
             </group>
             <group
                 android:name="ridge_4" >
@@ -50,7 +52,8 @@
                     android:strokeAlpha="1.0"
                     android:strokeWidth="1.45"
                     android:strokeLineCap="round"
-                    android:trimPathStart="1" />
+                    android:trimPathStart="1"
+                    tools:targetApi="lollipop" />
             </group>
             <group
                 android:name="ridge_3" >
@@ -61,7 +64,8 @@
                     android:strokeAlpha="1.0"
                     android:strokeWidth="1.45"
                     android:strokeLineCap="round"
-                    android:trimPathStart="1" />
+                    android:trimPathStart="1"
+                    tools:targetApi="lollipop" />
             </group>
             <group
                 android:name="ridge_2" >
@@ -72,7 +76,8 @@
                     android:strokeAlpha="1.0"
                     android:strokeWidth="1.45"
                     android:strokeLineCap="round"
-                    android:trimPathStart="1" />
+                    android:trimPathStart="1"
+                    tools:targetApi="lollipop" />
             </group>
             <group
                 android:name="ridge_1"
@@ -85,7 +90,8 @@
                     android:strokeAlpha="1.0"
                     android:strokeWidth="1.45"
                     android:strokeLineCap="round"
-                    android:trimPathEnd="0" />
+                    android:trimPathEnd="0"
+                    tools:targetApi="lollipop" />
             </group>
         </group>
     </group>

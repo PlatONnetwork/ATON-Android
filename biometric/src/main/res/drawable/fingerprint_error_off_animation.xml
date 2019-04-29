@@ -16,7 +16,9 @@
   -->
 <animated-vector
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:drawable="@drawable/fingerprint_error_off" >
+    xmlns:tools="http://schemas.android.com/tools"
+    android:drawable="@drawable/fingerprint_error_off"
+    tools:targetApi="lollipop">
     <target
         android:name="group_2"
         android:animation="@anim/fingerprint_error_state_to_fp_group_2_animation" />
