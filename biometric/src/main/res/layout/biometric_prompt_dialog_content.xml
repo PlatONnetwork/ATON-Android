@@ -12,16 +12,16 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
-        android:textAppearance="@android:style/TextAppearance.Material.Subhead"
+        style="@android:style/TextAppearance.Material.Subhead"
         tools:text="Subtitle"/>
 
     <TextView
         android:id="@+id/description"
+        style="@android:style/TextAppearance.Material.Subhead"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
-        android:textAppearance="@android:style/TextAppearance.Material.Subhead"
         tools:text="Description: blabla."/>
 
     <com.juzix.biometric.FingerprintIconView
@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_gravity="center_horizontal"
-        android:textAppearance="@android:style/TextAppearance.Material.Small"
+        style="@android:style/TextAppearance.Material.Small"
         android:text="@string/touch_fingerprint_sensor_hint"/>
 
     <View
