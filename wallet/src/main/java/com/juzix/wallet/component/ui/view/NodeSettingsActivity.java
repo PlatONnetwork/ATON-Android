@@ -74,22 +74,18 @@ public class NodeSettingsActivity extends MVPBaseActivity<NodeSettingsPresenter>
     @Override
     public void showTitleView(boolean isEdit) {
         if (isEdit) {
-            ivLeft.setVisibility(View.GONE);
             tvLeft.setText(R.string.cancel);
             tvLeft.setTextColor(ContextCompat.getColor(this, R.color.color_000000));
             tvLeft.setVisibility(View.VISIBLE);
             tvMiddle.setText(R.string.editNode);
             tvMiddle.setTextColor(ContextCompat.getColor(this, R.color.color_000000));
-            tvRight.setVisibility(View.GONE);
             tvRight.setText(R.string.save);
             tvRight.setTextColor(ContextCompat.getColor(this, R.color.color_105cfe));
             tvAddNode.setVisibility(View.VISIBLE);
         } else {
-            ivLeft.setVisibility(View.VISIBLE);
             tvLeft.setVisibility(View.GONE);
             tvMiddle.setText(R.string.node_settings);
             tvMiddle.setTextColor(ContextCompat.getColor(this, R.color.color_000000));
-            tvRight.setVisibility(View.GONE);
             tvRight.setText(R.string.edit);
             tvRight.setTextColor(ContextCompat.getColor(this, R.color.color_105cfe));
             tvAddNode.setVisibility(View.GONE);
@@ -130,7 +126,7 @@ public class NodeSettingsActivity extends MVPBaseActivity<NodeSettingsPresenter>
     }
 
     private void initView() {
-
+        tvRight.setVisibility(View.VISIBLE);
         rlTitleBar.setBackgroundColor(ContextCompat.getColor(this, R.color.color_ffffff));
         tvRight.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
         tvLeft.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
