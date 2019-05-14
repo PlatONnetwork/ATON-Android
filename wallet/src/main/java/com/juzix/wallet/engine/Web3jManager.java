@@ -66,7 +66,7 @@ public class Web3jManager {
     public double getBalance(String address) {
         try {
             EthGetBalance ethGetBalance = Web3jManager.getInstance().getWeb3j().ethGetBalance(address, DefaultBlockParameterName.LATEST).send();
-            if (ethGetBalance != null) {
+            if (ethGetBalance != null && !ethGetBalance.hasError()) {
                 return Convert.fromWei(new BigDecimal(ethGetBalance.getBalance()), Convert.Unit.ETHER).doubleValue();
             }
         } catch (Exception e) {

@@ -55,10 +55,11 @@
     <string name="passwordTips">Password don\'t match</string>
     <string name="validPasswordEmptyTips">Password can\'t be empty</string>
     <string name="validPasswordTips">Password at least 6 characters</string>
-    <string name="validRepeatPasswordEmptyTips">Repeat password can\'t be empty</string>
+    <string name="validRepeatPasswordEmptyTips">Confirm password can\'t be empty</string>
     <string name="create">Create</string>
     <string name="setPassword">Set password</string>
-    <string name="repeatPassword">Repeat password</string>
+    <!--<string name="repeatPassword">Repeat password</string>-->
+    <string name="repeatPassword">Confirm password</string>
     <string name="strength">Strength</string>
     <string name="weak">Weak</string>
     <string name="so_so">Ordinary</string>

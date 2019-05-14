@@ -55,31 +55,31 @@
             android:layout_marginLeft="45dp"
             android:background="@color/color_ebeef4" />
 
-        <LinearLayout
-            android:id="@+id/ll_create_shared_wallet"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingLeft="20dp"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp"
-            android:paddingRight="20dp">
+        <!--<LinearLayout-->
+            <!--android:id="@+id/ll_create_shared_wallet"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:paddingLeft="20dp"-->
+            <!--android:paddingTop="16dp"-->
+            <!--android:paddingBottom="16dp"-->
+            <!--android:paddingRight="20dp">-->
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/icon_more_joint_create" />
+            <!--<ImageView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:src="@drawable/icon_more_joint_create" />-->
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:text="@string/create_shared_wallet"
-                android:textColor="@color/color_000000"
-                android:textSize="14sp" />
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginLeft="5dp"-->
+                <!--android:text="@string/create_shared_wallet"-->
+                <!--android:textColor="@color/color_000000"-->
+                <!--android:textSize="14sp" />-->
 
-        </LinearLayout>
+        <!--</LinearLayout>-->
 
         <View
             android:layout_width="match_parent"
@@ -113,36 +113,36 @@
 
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginLeft="45dp"
-            android:background="@color/color_ebeef4" />
+        <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dp"-->
+            <!--android:layout_marginLeft="45dp"-->
+            <!--android:background="@color/color_ebeef4" />-->
 
-        <LinearLayout
-            android:id="@+id/ll_import_shared_wallet"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingLeft="20dp"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp"
-            android:paddingRight="20dp">
+        <!--<LinearLayout-->
+            <!--android:id="@+id/ll_import_shared_wallet"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:paddingLeft="20dp"-->
+            <!--android:paddingTop="16dp"-->
+            <!--android:paddingBottom="16dp"-->
+            <!--android:paddingRight="20dp">-->
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/icon_more_joint_add" />
+            <!--<ImageView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:src="@drawable/icon_more_joint_add" />-->
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:text="@string/add_shared_wallet"
-                android:textColor="@color/color_000000"
-                android:textSize="14sp" />
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginLeft="5dp"-->
+                <!--android:text="@string/add_shared_wallet"-->
+                <!--android:textColor="@color/color_000000"-->
+                <!--android:textSize="14sp" />-->
 
-        </LinearLayout>
+        <!--</LinearLayout>-->
     </LinearLayout>
 </LinearLayout>

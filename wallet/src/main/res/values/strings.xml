@@ -55,10 +55,12 @@
     <string name="passwordTips">两次密码不一致</string>
     <string name="validPasswordEmptyTips">密码不能为空</string>
     <string name="validPasswordTips">密码至少6个字符</string>
-    <string name="validRepeatPasswordEmptyTips">重复密码不能为空</string>
+    <!--<string name="validRepeatPasswordEmptyTips">重复密码不能为空</string>-->
+    <string name="validRepeatPasswordEmptyTips">确认密码不能为空</string>
     <string name="create">创建钱包</string>
     <string name="setPassword">不少于6位字符，建议混合大小写、数字、符号</string>
-    <string name="repeatPassword">重复钱包密码</string>
+    <!--<string name="repeatPassword">重复钱包密码</string>-->
+    <string name="repeatPassword">确认钱包密码</string>
     <string name="strength">强度</string>
     <string name="weak">弱</string>
     <string name="so_so">一般</string>
