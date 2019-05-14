@@ -197,7 +197,7 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
     private Flowable<String> getVerifiersList() {
         return CandidateManager
                 .getInstance()
-                .getVerifiersList()
+                .getVerifiersList(mTicketPrice)
                 .toFlowable()
                 .flatMap(new Function<List<CandidateEntity>, Publisher<CandidateEntity>>() {
                     @Override

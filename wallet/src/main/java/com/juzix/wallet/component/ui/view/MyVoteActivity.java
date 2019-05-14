@@ -56,7 +56,6 @@ public class MyVoteActivity extends MVPBaseActivity<MyVotePresenter> implements 
         setContentView(R.layout.activity_my_vote);
         unbinder = ButterKnife.bind(this);
         initViews();
-        mPresenter.loadData();
     }
 
     private void initViews() {
@@ -85,6 +84,12 @@ public class MyVoteActivity extends MVPBaseActivity<MyVotePresenter> implements 
                 mPresenter.voteTicket(candidateId);
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mPresenter.loadData();
     }
 
     @Override

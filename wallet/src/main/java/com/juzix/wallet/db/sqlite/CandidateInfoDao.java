@@ -3,6 +3,8 @@ package com.juzix.wallet.db.sqlite;
 import com.juzix.wallet.db.entity.CandidateInfoEntity;
 import com.juzix.wallet.engine.NodeManager;
 
+import java.util.List;
+
 import io.realm.Realm;
 
 public class CandidateInfoDao {
@@ -15,6 +17,26 @@ public class CandidateInfoDao {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
             realm.insertOrUpdate(candidateInfoEntity);
+            realm.commitTransaction();
+            return true;
+        } catch (Exception exp) {
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return false;
+    }
+
+    public static boolean insertCandidateInfoList(List<CandidateInfoEntity> candidateInfoEntityList) {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            realm.insertOrUpdate(candidateInfoEntityList);
             realm.commitTransaction();
             return true;
         } catch (Exception exp) {

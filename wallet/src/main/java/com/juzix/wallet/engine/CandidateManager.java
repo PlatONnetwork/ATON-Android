@@ -1,11 +1,13 @@
 package com.juzix.wallet.engine;
 
+import android.support.annotation.CheckResult;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.github.promeg.pinyinhelper.Pinyin;
 import com.juzhen.framework.network.HttpClient;
 import com.juzix.wallet.App;
+import com.juzix.wallet.db.entity.CandidateInfoEntity;
 import com.juzix.wallet.db.entity.RegionInfoEntity;
 import com.juzix.wallet.db.sqlite.CandidateInfoDao;
 import com.juzix.wallet.db.sqlite.RegionInfoDao;
@@ -33,6 +35,7 @@ import java.util.Locale;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Flowable;
+import io.reactivex.Scheduler;
 import io.reactivex.Single;
 import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.Consumer;
@@ -55,11 +58,15 @@ public class CandidateManager {
 
     }
 
+    private static class InstanceHolder {
+        private static volatile CandidateManager INSTANCE = new CandidateManager();
+    }
+
     public static CandidateManager getInstance() {
         return InstanceHolder.INSTANCE;
     }
 
-    public Single<List<CandidateEntity>> getCandidateList() {
+    public Single<List<CandidateEntity>> getCandidateList(String ticketPrice) {
 
         return Flowable
                 .fromCallable(new Callable<List<CandidateEntity>>() {
@@ -77,26 +84,12 @@ public class CandidateManager {
                 .map(new Function<CandidateEntity, CandidateEntity>() {
                     @Override
                     public CandidateEntity apply(CandidateEntity candidateEntity) throws Exception {
-                        candidateEntity.setVotedNum(VoteManager.getInstance().getCandidateTicketCount(candidateEntity.getCandidateId()).blockingGet());
-                        candidateEntity.setTicketPrice(VoteManager.getInstance().getTicketPrice().blockingGet());
-                        candidateEntity.setFee((int) BigDecimalUtil.sub(10E3, candidateEntity.getFee()));
-                        return candidateEntity;
-                    }
-                })
-                .map(new Function<CandidateEntity, CandidateEntity>() {
-                    @Override
-                    public CandidateEntity apply(CandidateEntity candidateEntity) throws Exception {
                         RegionInfoEntity regionInfoEntity = RegionInfoDao.getRegionInfoEntityWithIp(candidateEntity.getHost());
-                        if (regionInfoEntity != null) {
+                        if (regionInfoEntity != null){
                             candidateEntity.setRegionEntity(regionInfoEntity.toRegionEntity());
                         }
+                        candidateEntity.setTicketPrice(ticketPrice);
                         return candidateEntity;
-                    }
-                })
-                .doOnNext(new Consumer<CandidateEntity>() {
-                    @Override
-                    public void accept(CandidateEntity candidateEntity) throws Exception {
-                        CandidateInfoDao.insertCandidateInfo(candidateEntity.buildCandidateInfo());
                     }
                 })
                 .collect(new Callable<List<CandidateEntity>>() {
@@ -113,12 +106,13 @@ public class CandidateManager {
                 .doOnSuccess(new Consumer<List<CandidateEntity>>() {
                     @Override
                     public void accept(List<CandidateEntity> candidateEntityList) throws Exception {
+                        insertCandidateInfoList(candidateEntityList);
                         updateBatchRegionInfoWithIpList(getIpList(candidateEntityList));
                     }
                 });
     }
 
-    public Single<List<CandidateEntity>> getVerifiersList() {
+    public Single<List<CandidateEntity>> getVerifiersList(String ticketPrice) {
 
         return Flowable
                 .fromCallable(new Callable<List<CandidateEntity>>() {
@@ -136,27 +130,13 @@ public class CandidateManager {
                 .map(new Function<CandidateEntity, CandidateEntity>() {
                     @Override
                     public CandidateEntity apply(CandidateEntity candidateEntity) throws Exception {
-                        candidateEntity.setVotedNum(VoteManager.getInstance().getCandidateTicketCount(candidateEntity.getCandidateId()).blockingGet());
-                        candidateEntity.setTicketPrice(VoteManager.getInstance().getTicketPrice().blockingGet());
-                        candidateEntity.setStatus(CandidateEntity.CandidateStatus.STATUS_VERIFY);
-                        candidateEntity.setFee((int) BigDecimalUtil.sub(10E3, candidateEntity.getFee()));
-                        return candidateEntity;
-                    }
-                })
-                .map(new Function<CandidateEntity, CandidateEntity>() {
-                    @Override
-                    public CandidateEntity apply(CandidateEntity candidateEntity) throws Exception {
                         RegionInfoEntity regionInfoEntity = RegionInfoDao.getRegionInfoEntityWithIp(candidateEntity.getHost());
-                        if (regionInfoEntity != null) {
+                        if (regionInfoEntity != null){
                             candidateEntity.setRegionEntity(regionInfoEntity.toRegionEntity());
                         }
+                        candidateEntity.setStatus(CandidateEntity.CandidateStatus.STATUS_VERIFY);
+                        candidateEntity.setTicketPrice(ticketPrice);
                         return candidateEntity;
-                    }
-                })
-                .doOnNext(new Consumer<CandidateEntity>() {
-                    @Override
-                    public void accept(CandidateEntity candidateEntity) throws Exception {
-                        CandidateInfoDao.insertCandidateInfo(candidateEntity.buildCandidateInfo());
                     }
                 })
                 .collect(new Callable<List<CandidateEntity>>() {
@@ -173,6 +153,7 @@ public class CandidateManager {
                 .doOnSuccess(new Consumer<List<CandidateEntity>>() {
                     @Override
                     public void accept(List<CandidateEntity> candidateEntityList) throws Exception {
+                        insertCandidateInfoList(candidateEntityList);
                         updateBatchRegionInfoWithIpList(getIpList(candidateEntityList));
                     }
                 });
@@ -259,6 +240,36 @@ public class CandidateManager {
                 });
     }
 
+    private void insertCandidateInfoList(List<CandidateEntity> candidateEntityList) {
+        Single
+                .fromCallable(new Callable<Boolean>() {
+                    @Override
+                    public Boolean call() throws Exception {
+                        return CandidateInfoDao.insertCandidateInfoList(getCandidateInfoEntityList(candidateEntityList));
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean aBoolean) throws Exception {
+
+                    }
+                });
+    }
+
+    private List<CandidateInfoEntity> getCandidateInfoEntityList(List<CandidateEntity> candidateEntityList) {
+        return Flowable
+                .fromIterable(candidateEntityList)
+                .map(new Function<CandidateEntity, CandidateInfoEntity>() {
+                    @Override
+                    public CandidateInfoEntity apply(CandidateEntity candidateEntity) throws Exception {
+                        return candidateEntity.buildCandidateInfo();
+                    }
+                })
+                .toList()
+                .blockingGet();
+    }
+
     private List<String> getIpList(List<CandidateEntity> candidateEntityList) {
         return Flowable.fromIterable(candidateEntityList)
                 .filter(new Predicate<CandidateEntity>() {
@@ -278,6 +289,7 @@ public class CandidateManager {
     }
 
     private List<CandidateEntity> getCandidateListFromNet() {
+        Log.e(TAG, "start getCandidateListFromNet");
         Web3j web3j = Web3jManager.getInstance().getWeb3j();
         CandidateContract candidateContract = CandidateContract.load(web3j,
                 new ReadonlyTransactionManager(web3j, CandidateContract.CONTRACT_ADDRESS),
@@ -288,24 +300,23 @@ public class CandidateManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        Log.e(TAG, "end getCandidateListFromNet");
         return JSONUtil.parseTwoDimensionArray(candidateListResp, CandidateEntity.class);
     }
 
     private List<CandidateEntity> getVerifiersListFromNet() {
+        Log.e(TAG, "start getVerifiersListFromNet");
         Web3j web3j = Web3jManager.getInstance().getWeb3j();
         CandidateContract candidateContract = CandidateContract.load(web3j,
                 new ReadonlyTransactionManager(web3j, CandidateContract.CONTRACT_ADDRESS),
                 new DefaultWasmGasProvider());
         String candidateListResp = null;
         try {
-
-
-
-
             candidateListResp = candidateContract.VerifiersList().send();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        Log.e(TAG, "end getVerifiersListFromNet");
         return JSONUtil.parseArray(candidateListResp, CandidateEntity.class);
     }
 
@@ -356,18 +367,6 @@ public class CandidateManager {
                 });
     }
 
-    /**
-     * 获取国家名称
-     *
-     * @return
-     */
-    public String getCountry(String countryCode) {
-
-        Locale locale = LanguageUtil.getLocale(App.getContext());
-
-        return getCountryByName(Locale.CHINESE.getLanguage().equals(locale.getLanguage()) ? "CN" : "EN", countryCode);
-    }
-
     private String getCountryByName(String name, String countryCode) {
         JSONObject object = getRegionObject(countryCode);
         if (object != null) {
@@ -390,9 +389,5 @@ public class CandidateManager {
             e.printStackTrace();
         }
         return object;
-    }
-
-    private static class InstanceHolder {
-        private static volatile CandidateManager INSTANCE = new CandidateManager();
     }
 }
