@@ -40,6 +40,7 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 
@@ -65,23 +66,26 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
         if (mDisposable != null && !mDisposable.isDisposed()) {
             mDisposable.dispose();
         }
-        mDisposable = Single.fromCallable(new Callable<Double>() {
-            @Override
-            public Double call() {
-                double totalBalance = 0d;
-                try {
-                    for (WalletEntity walletEntity : mWalletList) {
-                        String address = walletEntity.getPrefixAddress();
-                        double balance = Web3jManager.getInstance().getBalance(address);
-                        walletEntity.setBalance(balance);
-                        totalBalance += balance;
+
+        mDisposable = Flowable
+                .fromIterable(mWalletList)
+                .map(new Function<WalletEntity, Double>() {
+                    @Override
+                    public Double apply(WalletEntity walletEntity) throws Exception {
+                        double balance = Web3jManager.getInstance().getBalance(walletEntity.getPrefixAddress());
+                        walletEntity.setBalance(balance == 0 ? walletEntity.getBalance() : balance);
+//                        Log.d("aaaaaa", "数量1111111111-------->" + walletEntity.getBalance());
+                        return balance == 0 ? walletEntity.getBalance() : balance;
                     }
-                } catch (Exception exp) {
-                    exp.printStackTrace();
-                }
-                return totalBalance;
-            }
-        })
+                })
+                .reduce(new BiFunction<Double, Double, Double>() {
+                    @Override
+                    public Double apply(Double aDouble, Double aDouble2) throws Exception {
+//                        Log.d("aaaaaa", "数量33333333333333------>" + aDouble + aDouble2);
+                        return aDouble + aDouble2;
+                    }
+                })
+                .toSingle()
                 .compose(bindUntilEvent(FragmentEvent.STOP))
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .repeatWhen(new Function<Flowable<Object>, Publisher<?>>() {
@@ -94,6 +98,7 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
                     @Override
                     public void accept(Double balance) throws Exception {
                         if (isViewAttached()) {
+//                            Log.d("aaaaaa", "数量2222222222----------->" + balance);
                             getView().showTotalBalance(balance);
                             WalletEntity walletEntity = WalletManager.getInstance().getSelectedWallet();
                             if (walletEntity != null) {
@@ -102,6 +107,45 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
                         }
                     }
                 });
+
+//        mDisposable = Single.fromCallable(new Callable<Double>() {
+//            @Override
+//            public Double call() {
+//                double totalBalance = 0d;
+//                try {
+//                    for (WalletEntity walletEntity : mWalletList) {
+//                        String address = walletEntity.getPrefixAddress();
+//                        double balance = Web3jManager.getInstance().getBalance(address);
+//                        walletEntity.setBalance(balance);
+//                        totalBalance += balance;
+//                    }
+//                } catch (Exception exp) {
+//                    exp.printStackTrace();
+//                }
+//                return totalBalance;
+//            }
+//        })
+//                .compose(bindUntilEvent(FragmentEvent.STOP))
+//                .compose(RxUtils.getSingleSchedulerTransformer())
+//                .repeatWhen(new Function<Flowable<Object>, Publisher<?>>() {
+//                    @Override
+//                    public Publisher<?> apply(Flowable<Object> objectFlowable) throws Exception {
+//                        return objectFlowable.delay(REFRESH_TIME, TimeUnit.MILLISECONDS);
+//
+//                    }
+//                })
+//                .subscribe(new Consumer<Double>() {
+//                    @Override
+//                    public void accept(Double balance) throws Exception {
+//                        if (isViewAttached()) {
+//                            getView().showTotalBalance(balance);
+//                            WalletEntity walletEntity = WalletManager.getInstance().getSelectedWallet();
+//                            if (walletEntity != null) {
+//                                getView().showBalance(walletEntity.getBalance());
+//                            }
+//                        }
+//                    }
+//                });
     }
 
     @Override
@@ -300,18 +344,18 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
         }
     }
 
-    private void refreshWalletList() {
+    private void refreshWalletList() {//联名钱包相关的先屏蔽掉
         List<IndividualWalletEntity> walletList1 = IndividualWalletManager.getInstance().getWalletList();
-        List<SharedWalletEntity> walletList2 = SharedWalletManager.getInstance().getWalletList();
+//        List<SharedWalletEntity> walletList2 = SharedWalletManager.getInstance().getWalletList();
         if (!mWalletList.isEmpty()) {
             mWalletList.clear();
         }
         if (!walletList1.isEmpty()) {
             mWalletList.addAll(walletList1);
         }
-        if (!walletList2.isEmpty()) {
-            mWalletList.addAll(walletList2);
-        }
+//        if (!walletList2.isEmpty()) {
+//            mWalletList.addAll(walletList2);
+//        }
         if (mWalletList.isEmpty()) {
             return;
         }

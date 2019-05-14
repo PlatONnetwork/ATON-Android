@@ -395,13 +395,13 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
                 dimissPopWindow();
             }
         });
-        view.findViewById(R.id.ll_create_shared_wallet).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPresenter.createSharedWallet();
-                dimissPopWindow();
-            }
-        });
+//        view.findViewById(R.id.ll_create_shared_wallet).setOnClickListener(new View.OnClickListener() { //创建联名钱包相关的先屏蔽
+//            @Override
+//            public void onClick(View v) {
+//                mPresenter.createSharedWallet();
+//                dimissPopWindow();
+//            }
+//        });
         view.findViewById(R.id.ll_import_individual_wallet).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -409,13 +409,13 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
                 dimissPopWindow();
             }
         });
-        view.findViewById(R.id.ll_import_shared_wallet).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPresenter.addSharedWallet();
-                dimissPopWindow();
-            }
-        });
+//        view.findViewById(R.id.ll_import_shared_wallet).setOnClickListener(new View.OnClickListener() {//添加联名钱包的先屏蔽掉
+//            @Override
+//            public void onClick(View v) {
+////                mPresenter.addSharedWallet();
+//                dimissPopWindow();
+//            }
+//        });
         view.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -438,12 +438,12 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     }
 
     @Override
-    public void showTotalBalance(double totalBalance) {
+    public void showTotalBalance(double totalBalance) {//显示总资产
         tvTotalAssetsAmount.setText(totalBalance > 0 ? NumberParserUtils.getPrettyBalance(totalBalance) : "0.00");
     }
 
     @Override
-    public void showBalance(double balance) {
+    public void showBalance(double balance) {//当前钱包的资产
         tvWalletAmount.setText(balance > 0 ? NumberParserUtils.getPrettyBalance(balance) : "0.00");
     }
 

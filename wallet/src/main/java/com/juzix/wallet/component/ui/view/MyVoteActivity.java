@@ -56,6 +56,12 @@ public class MyVoteActivity extends MVPBaseActivity<MyVotePresenter> implements 
         setContentView(R.layout.activity_my_vote);
         unbinder = ButterKnife.bind(this);
         initViews();
+//        mPresenter.loadData();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         mPresenter.loadData();
     }
 
