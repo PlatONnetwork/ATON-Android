@@ -1,3 +1,4 @@
+
 apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
 // 注：需要配置符号表时，使用bugly插件
@@ -7,6 +8,8 @@ bugly {
     appKey = 'b947cbd1-d646-41bc-819c-4447ea7fe428'
 
 }
+
+//def IS_JENKINS=true
 
 android {
 
@@ -36,18 +39,39 @@ android {
     }
 
     signingConfigs {
-        debug {
-            storeFile file('../extras/debug.keystore')
+
+        if("true".equals(IS_JENKINS)){
+
+            debug{
+                storeFile file('/Users/jenkins/extras/debug.keystore')
+            }
+
+            release {
+                storeFile file("/Users/jenkins/extras/wallet.keystore")
+                storePassword "123456"
+                keyAlias "wallet"
+                keyPassword "123456"
+
+                v2SigningEnabled false
+            }
+
+        }else {
+
+            debug {
+                storeFile file('../extras/debug.keystore')
+            }
+
+            release {
+                storeFile file("../extras/wallet.keystore")
+                storePassword "123456"
+                keyAlias "wallet"
+                keyPassword "123456"
+
+                v2SigningEnabled false
+            }
+
         }
 
-        release {
-            storeFile file("../extras/wallet.keystore")
-            storePassword "123456"
-            keyAlias "wallet"
-            keyPassword "123456"
-
-            v2SigningEnabled false
-        }
     }
 
 

@@ -16,7 +16,9 @@
   -->
 <animated-vector
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:drawable="@drawable/fingerprint_fp_to_error_state" >
+    xmlns:tools="http://schemas.android.com/tools"
+    android:drawable="@drawable/fingerprint_fp_to_error_state"
+    tools:targetApi="lollipop">
     <target
         android:name="white_fingerprint_ridges"
         android:animation="@anim/fingerprint_fp_to_error_state_white_fingerprint_ridges_animation" />
