@@ -8,6 +8,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.juzix.wallet.R;
 import com.juzix.wallet.db.entity.CandidateInfoEntity;
 import com.juzix.wallet.engine.NodeManager;
+import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.JSONUtil;
 
 import org.web3j.utils.Numeric;
@@ -229,7 +230,7 @@ public class CandidateEntity implements Cloneable, Parcelable {
     }
 
     public int getFee() {
-        return fee;
+        return (int) BigDecimalUtil.sub(10E3, fee);
     }
 
     public void setFee(int fee) {

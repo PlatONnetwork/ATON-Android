@@ -251,6 +251,28 @@ public class VoteManager {
         }).onErrorReturnItem(0);
     }
 
+    public Single<Map<String, Integer>> getCandidateTicketCountList(List<String> nodeIds) {
+
+        return Single.fromCallable(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                Web3j web3j = Web3jManager.getInstance().getWeb3j();
+                TicketContract ticketContract = TicketContract.load(
+                        web3j,
+                        new ReadonlyTransactionManager(web3j, TicketContract.CONTRACT_ADDRESS),
+                        new DefaultWasmGasProvider());
+                String ticketCounts = ticketContract.GetCandidateTicketCount(TextUtils.join(":", nodeIds)).send();
+                return ticketCounts;
+            }
+        }).map(new Function<String, Map<String, Integer>>() {
+            @Override
+            public Map<String, Integer> apply(String s) throws Exception {
+                return JSONUtil.parseObject(s, Map.class);
+            }
+        })
+                .onErrorReturnItem(new HashMap<>());
+    }
+
     public Single<SingleVoteInfoEntity> submitVote(Credentials credentials, IndividualWalletEntity walletEntity, CandidateEntity candidateEntity, String ticketNum, String ticketPrice) {
 
         String walletName = walletEntity.getName();

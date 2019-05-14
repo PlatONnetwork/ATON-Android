@@ -1,5 +1,7 @@
 package com.juzix.wallet.utils;
 
+import android.text.TextUtils;
+
 import com.juzhen.framework.util.NumberParserUtils;
 
 import java.math.BigDecimal;
@@ -32,29 +34,31 @@ public class BigDecimalUtil {
      * @return 两个参数的和
      */
     public static double add(double v1, double v2) {
-        BigDecimal b1 = new BigDecimal(Double.toString(v1));
-        BigDecimal b2 = new BigDecimal(Double.toString(v2));
-        return b1.add(b2).doubleValue();
+        double result = 0D;
+        try {
+            BigDecimal b1 = new BigDecimal(Double.toString(v1));
+            BigDecimal b2 = new BigDecimal(Double.toString(v2));
+            result = b1.add(b2).doubleValue();
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+
     }
 
     public static double add(double v1, double v2, int scale, RoundingMode roundingMode) {
-        BigDecimal b1 = new BigDecimal(Double.toString(v1));
-        BigDecimal b2 = new BigDecimal(Double.toString(v2));
-        BigDecimal b3 = b1.add(b2);
-        return b3.setScale(scale, roundingMode).doubleValue();
-    }
+        double result = 0D;
+        try {
+            BigDecimal b1 = new BigDecimal(Double.toString(v1));
+            BigDecimal b2 = new BigDecimal(Double.toString(v2));
+            BigDecimal b3 = b1.add(b2);
+            result = b3.setScale(scale, roundingMode).doubleValue();
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
 
-    /**
-     * 提供精确的加法运算。
-     *
-     * @param v1 被加数
-     * @param v2 加数
-     * @return 两个参数的和
-     */
-    public static String addReturnString(double v1, double v2) {
-        BigDecimal b1 = new BigDecimal(Double.toString(v1));
-        BigDecimal b2 = new BigDecimal(Double.toString(v2));
-        return b1.add(b2).toPlainString();
+        return result;
     }
 
     /**
@@ -65,9 +69,15 @@ public class BigDecimalUtil {
      * @return 两个参数的差
      */
     public static double sub(double v1, double v2) {
-        BigDecimal b1 = new BigDecimal(Double.toString(v1));
-        BigDecimal b2 = new BigDecimal(Double.toString(v2));
-        return b1.subtract(b2).doubleValue();
+        double result = 0D;
+        try {
+            BigDecimal b1 = new BigDecimal(Double.toString(v1));
+            BigDecimal b2 = new BigDecimal(Double.toString(v2));
+            result = b1.subtract(b2).doubleValue();
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     /**
@@ -78,9 +88,15 @@ public class BigDecimalUtil {
      * @return 两个参数的差
      */
     public static double sub(String v1, String v2) {
-        BigDecimal b1 = new BigDecimal(v1);
-        BigDecimal b2 = new BigDecimal(v2);
-        return b1.subtract(b2).doubleValue();
+        double result = 0D;
+        try {
+            BigDecimal b1 = new BigDecimal(v1);
+            BigDecimal b2 = new BigDecimal(v2);
+            result = b1.subtract(b2).doubleValue();
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     /**
@@ -91,9 +107,15 @@ public class BigDecimalUtil {
      * @return 两个参数的积
      */
     public static double mul(double v1, double v2) {
-        BigDecimal b1 = new BigDecimal(Double.toString(v1));
-        BigDecimal b2 = new BigDecimal(Double.toString(v2));
-        return b1.multiply(b2).doubleValue();
+        double result = 0D;
+        try {
+            BigDecimal b1 = new BigDecimal(Double.toString(v1));
+            BigDecimal b2 = new BigDecimal(Double.toString(v2));
+            result = b1.multiply(b2).doubleValue();
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     /**
@@ -104,9 +126,18 @@ public class BigDecimalUtil {
      * @return 两个参数的积
      */
     public static BigDecimal mul(String v1, String v2) {
-        BigDecimal b1 = new BigDecimal(v1);
-        BigDecimal b2 = new BigDecimal(v2);
-        return b1.multiply(b2);
+        BigDecimal result = new BigDecimal(0);
+        if (TextUtils.isEmpty(v1) || TextUtils.isEmpty(v2)) {
+            return result;
+        }
+        try {
+            BigDecimal b1 = new BigDecimal(v1);
+            BigDecimal b2 = new BigDecimal(v2);
+            result = b1.multiply(b2);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     public static double div(String v1, String v2) {
@@ -133,18 +164,18 @@ public class BigDecimalUtil {
      * @return 两个参数的商
      */
     public static double div(double v1, double v2, int scale) {
-        if (scale >= 0) {
-
+        double result = 0D;
+        try {
             BigDecimal b1 = new BigDecimal(Double.toString(v1));
             BigDecimal b2 = new BigDecimal(Double.toString(v2));
-            try {
-                return b1.divide(b2, scale, BigDecimal.ROUND_HALF_UP).doubleValue();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            result = b1.divide(b2, scale, BigDecimal.ROUND_HALF_UP).doubleValue();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (ArithmeticException e) {
+            e.printStackTrace();
         }
 
-        return 0;
+        return result;
     }
 
     /**
@@ -155,13 +186,17 @@ public class BigDecimalUtil {
      * @return 四舍五入后的结果
      */
     public static double round(double v, int scale) {
-        if (scale < 0) {
-            throw new IllegalArgumentException(
-                    "The scale must be a positive integer or zero");
+        double result = 0D;
+        try {
+            BigDecimal b = new BigDecimal(Double.toString(v));
+            BigDecimal one = new BigDecimal("1");
+            result = b.divide(one, scale, BigDecimal.ROUND_HALF_UP).doubleValue();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (ArithmeticException e) {
+            e.printStackTrace();
         }
-        BigDecimal b = new BigDecimal(Double.toString(v));
-        BigDecimal one = new BigDecimal("1");
-        return b.divide(one, scale, BigDecimal.ROUND_HALF_UP).doubleValue();
+        return result;
     }
 
     /**
@@ -171,8 +206,15 @@ public class BigDecimalUtil {
      * @return 返回转换结果
      */
     public static float convertsToFloat(double v) {
-        BigDecimal b = new BigDecimal(v);
-        return b.floatValue();
+        float result = 0f;
+        try {
+            BigDecimal b = new BigDecimal(v);
+            result = b.floatValue();
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 
     /**
@@ -182,8 +224,14 @@ public class BigDecimalUtil {
      * @return 返回转换结果
      */
     public static int convertsToInt(double v) {
-        BigDecimal b = new BigDecimal(v);
-        return b.intValue();
+        int result = 0;
+        try {
+            BigDecimal b = new BigDecimal(v);
+            result = b.intValue();
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     /**
@@ -193,8 +241,14 @@ public class BigDecimalUtil {
      * @return 返回转换结果
      */
     public static long convertsToLong(double v) {
-        BigDecimal b = new BigDecimal(v);
-        return b.longValue();
+        long result = 0L;
+        try {
+            BigDecimal b = new BigDecimal(v);
+            result = b.longValue();
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     /**
@@ -205,9 +259,15 @@ public class BigDecimalUtil {
      * @return 返回两个数中大的一个值
      */
     public static double returnMax(double v1, double v2) {
-        BigDecimal b1 = new BigDecimal(v1);
-        BigDecimal b2 = new BigDecimal(v2);
-        return b1.max(b2).doubleValue();
+        double result = 0D;
+        try {
+            BigDecimal b1 = new BigDecimal(v1);
+            BigDecimal b2 = new BigDecimal(v2);
+            result = b1.max(b2).doubleValue();
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     /**
@@ -218,9 +278,15 @@ public class BigDecimalUtil {
      * @return 返回两个数中小的一个值
      */
     public static double returnMin(double v1, double v2) {
-        BigDecimal b1 = new BigDecimal(v1);
-        BigDecimal b2 = new BigDecimal(v2);
-        return b1.min(b2).doubleValue();
+        double result = 0D;
+        try {
+            BigDecimal b1 = new BigDecimal(v1);
+            BigDecimal b2 = new BigDecimal(v2);
+            result = b1.min(b2).doubleValue();
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     /**
@@ -231,9 +297,15 @@ public class BigDecimalUtil {
      * @return 如果两个数一样则返回0，如果第一个数比第二个数大则返回1，反之返回-1
      */
     public static int compareTo(double v1, double v2) {
-        BigDecimal b1 = new BigDecimal(v1);
-        BigDecimal b2 = new BigDecimal(v2);
-        return b1.compareTo(b2);
+        int result = 0;
+        try {
+            BigDecimal b1 = new BigDecimal(v1);
+            BigDecimal b2 = new BigDecimal(v2);
+            result = b1.compareTo(b2);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     public static String parseString(double value) {

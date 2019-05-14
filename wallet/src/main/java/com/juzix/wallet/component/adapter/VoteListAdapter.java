@@ -1,6 +1,8 @@
 package com.juzix.wallet.component.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -22,7 +24,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Flowable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Predicate;
 
 /**
  * @author matrixelement
@@ -99,6 +103,28 @@ public class VoteListAdapter extends RecyclerView.Adapter<VoteListAdapter.ViewHo
     }
 
     @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull List<Object> payloads) {
+        if (payloads.isEmpty()) {
+            onBindViewHolder(holder, position);
+        } else {
+            //更新局部控件
+            CandidateEntity candidateEntity = mCandidateEntityList.get(position);
+            if (candidateEntity != null) {
+                CandidateExtraEntity extraEntity = candidateEntity.getCandidateExtraEntity();
+                if (extraEntity != null) {
+                    holder.tvNodeName.setText(extraEntity.getNodeName());
+                }
+                RegionEntity regionEntity = candidateEntity.getRegionEntity();
+                if (regionEntity == null || TextUtils.isEmpty(regionEntity.getCountry())) {
+                    holder.tvLocation.setText(String.format("(%s)", mContext.getString(R.string.unknownRegion)));
+                } else {
+                    holder.tvLocation.setText(String.format("(%s)", regionEntity.getCountry()));
+                }
+            }
+        }
+    }
+
+    @Override
     public int getItemCount() {
         if (mCandidateEntityList != null) {
             return mCandidateEntityList.size();
@@ -111,15 +137,24 @@ public class VoteListAdapter extends RecyclerView.Adapter<VoteListAdapter.ViewHo
         notifyDataSetChanged();
     }
 
+    @SuppressLint("CheckResult")
     public void updateRegionInfo(RegionEntity regionEntity) {
-        Log.e(TAG, regionEntity.getIp() + ":" + regionEntity.getCountry() + ":" + regionEntity.getCountryCode());
-        int position = getPosition(regionEntity.getIp());
-        if (position != -1) {
-            CandidateEntity candidateEntity = mCandidateEntityList.get(position);
-            candidateEntity.setRegionEntity(regionEntity);
-            mCandidateEntityList.set(position, candidateEntity);
-            notifyItemChanged(position);
-        }
+        Flowable
+                .range(0, mCandidateEntityList.size())
+                .filter(new Predicate<Integer>() {
+                    @Override
+                    public boolean test(Integer position) throws Exception {
+                        return regionEntity.getIp().equals(mCandidateEntityList.get(position).getHost());
+                    }
+                })
+                .subscribe(new Consumer<Integer>() {
+                    @Override
+                    public void accept(Integer position) throws Exception {
+                        CandidateEntity candidateEntity = mCandidateEntityList.get(position);
+                        candidateEntity.setRegionEntity(regionEntity);
+                        notifyItemChanged(position, "updateRegionInfo");
+                    }
+                });
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -151,16 +186,4 @@ public class VoteListAdapter extends RecyclerView.Adapter<VoteListAdapter.ViewHo
         void onVoteTicketClick(CandidateEntity candidateEntity);
     }
 
-    private int getPosition(String ip) {
-
-        if (mCandidateEntityList != null && !mCandidateEntityList.isEmpty()) {
-            for (int i = 0; i < mCandidateEntityList.size(); i++) {
-                CandidateEntity candidateEntity = mCandidateEntityList.get(i);
-                if (ip.equals(candidateEntity.getHost())) {
-                    return i;
-                }
-            }
-        }
-        return -1;
-    }
 }

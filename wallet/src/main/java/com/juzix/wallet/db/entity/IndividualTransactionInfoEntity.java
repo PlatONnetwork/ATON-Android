@@ -9,6 +9,7 @@ import io.realm.annotations.PrimaryKey;
  * @author matrixelement
  */
 public class IndividualTransactionInfoEntity extends RealmObject implements Cloneable {
+
     @PrimaryKey
     private String uuid;
     /**
@@ -32,7 +33,7 @@ public class IndividualTransactionInfoEntity extends RealmObject implements Clon
      */
     private String to;
     /**
-     * 转账备注
+     * 转账备注(去掉)
      */
     private String memo;
     /**
@@ -40,10 +41,9 @@ public class IndividualTransactionInfoEntity extends RealmObject implements Clon
      */
     private long blockNumber;
     /**
-     * 交易完成
+     * 交易状态，改为txReceiptStatus
      */
     private boolean completed;
-
     /**
      * 交易金额
      */
@@ -52,6 +52,40 @@ public class IndividualTransactionInfoEntity extends RealmObject implements Clon
      * 节点地址
      */
     private String nodeAddress;
+    /**
+     * 交易类型 transfer ：转账
+     * MPCtransaction ： MPC交易
+     * contractCreate ： 合约创建
+     * vote ： 投票
+     * transactionExecute ： 合约执行
+     * authorization ： 权限
+     * candidateDeposit：竞选质押
+     * candidateApplyWithdraw：减持质押
+     * candidateWithdraw：提取质押
+     * unknown：未知
+     */
+    private int txType;
+    /**
+     * 交易状态 1 成功 0 失败
+     */
+    private int txReceiptStatus;
+    /**
+     * // 排列序号：由区块号和交易索引拼接而成
+     */
+    private long sequence;
+    /**
+     * 交易接收者类型（to是合约还是账户）contract合约、 account账户
+     */
+    private String receiveType;
+    /**
+     * 链id
+     */
+    private String chainId;
+    /**
+     * 交易实际花费值(手续费)，单位：wei
+     * "21168000000000"
+     */
+    private String actualTxCost;
 
     public IndividualTransactionInfoEntity() {
 

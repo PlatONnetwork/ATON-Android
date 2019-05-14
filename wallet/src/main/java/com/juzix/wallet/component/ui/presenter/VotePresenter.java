@@ -1,7 +1,10 @@
 package com.juzix.wallet.component.ui.presenter;
 
+import android.annotation.SuppressLint;
 import android.text.TextUtils;
+import android.util.Log;
 
+import com.juzhen.framework.network.FlowableSchedulersTransformer;
 import com.juzhen.framework.network.SchedulersTransformer;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
@@ -24,15 +27,19 @@ import org.reactivestreams.Publisher;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
 import io.reactivex.Single;
+import io.reactivex.SingleSource;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 
 /**
  * @author matrixelement
@@ -49,6 +56,7 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
     private List<CandidateEntity> mVerifiersList = new ArrayList<>();
     private String mKeyword;
     private SortType mSortType = SortType.SORTED_BY_DEFAULT;
+    private String mTicketPrice;
     private Disposable mTicketInfoDisposable;
     private Disposable mCandidateLsitDisposable;
 
@@ -156,18 +164,26 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
                 });
     }
 
+    @SuppressLint("CheckResult")
     private void getCandidateList() {
         if (mCandidateLsitDisposable != null && !mCandidateLsitDisposable.isDisposed()) {
             mCandidateLsitDisposable.dispose();
         }
-        mCandidateLsitDisposable = CandidateManager
+        Log.e("CandidateManager", "start getCandidateList");
+        mCandidateLsitDisposable = VoteManager
                 .getInstance()
-                .getCandidateList()
-                .zipWith(CandidateManager.getInstance().getVerifiersList(), new BiFunction<List<CandidateEntity>, List<CandidateEntity>, List<CandidateEntity>>() {
+                .getTicketPrice()
+                .flatMap(new Function<String, SingleSource<List<CandidateEntity>>>() {
                     @Override
-                    public List<CandidateEntity> apply(List<CandidateEntity> candidateEntities, List<CandidateEntity> verifiersList) throws Exception {
-                        mVerifiersList = verifiersList;
-                        return candidateEntities;
+                    public SingleSource<List<CandidateEntity>> apply(String ticketPrice) throws Exception {
+                        return getCandidateList(ticketPrice)
+                                .zipWith(getVerifiersList(ticketPrice), new BiFunction<List<CandidateEntity>, List<CandidateEntity>, List<CandidateEntity>>() {
+                                    @Override
+                                    public List<CandidateEntity> apply(List<CandidateEntity> candidateEntities, List<CandidateEntity> verifiersList) throws Exception {
+                                        mVerifiersList = verifiersList;
+                                        return candidateEntities;
+                                    }
+                                });
                     }
                 })
                 .compose(bindUntilEvent(FragmentEvent.STOP))
@@ -175,15 +191,19 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
                 .doOnSubscribe(new Consumer<Disposable>() {
                     @Override
                     public void accept(Disposable disposable) throws Exception {
-                        if (mCandidateEntiyList == null || mCandidateEntiyList.isEmpty()) {
-                            showLoadingDialog();
+                        if (isViewAttached()){
+                            if (mCandidateEntiyList == null || mCandidateEntiyList.isEmpty()) {
+                                showLoadingDialog();
+                            }
                         }
                     }
                 })
                 .doFinally(new Action() {
                     @Override
                     public void run() throws Exception {
-                        dismissLoadingDialogImmediately();
+                        if (isViewAttached()){
+                            dismissLoadingDialogImmediately();
+                        }
                     }
                 })
                 .repeatWhen(new Function<Flowable<Object>, Publisher<?>>() {
@@ -196,6 +216,7 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
                     @Override
                     public void accept(List<CandidateEntity> candidateEntityList) throws Exception {
                         if (isViewAttached()) {
+                            Log.e("CandidateManager", "end getCandidateList");
                             mCandidateEntiyList = candidateEntityList;
                             showCandidateList(mKeyword, mSortType);
                         }
@@ -203,9 +224,68 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-
+                        Log.e(TAG, throwable.getMessage());
                     }
                 });
+    }
+
+    private Single<List<CandidateEntity>> getCandidateList(String ticketPrice) {
+        return CandidateManager
+                .getInstance()
+                .getCandidateList(ticketPrice)
+                .map(new Function<List<CandidateEntity>, List<CandidateEntity>>() {
+                    @Override
+                    public List<CandidateEntity> apply(List<CandidateEntity> candidateEntityList) throws Exception {
+                        Map<String, Integer> map = VoteManager.getInstance().getCandidateTicketCountList(getCandidateIdList(candidateEntityList)).blockingGet();
+                        return Flowable
+                                .fromIterable(candidateEntityList)
+                                .map(new Function<CandidateEntity, CandidateEntity>() {
+                                    @Override
+                                    public CandidateEntity apply(CandidateEntity candidateEntity) throws Exception {
+                                        candidateEntity.setVotedNum(map.get(candidateEntity.getCandidateId()));
+                                        return candidateEntity;
+                                    }
+                                })
+                                .toList()
+                                .blockingGet();
+                    }
+                });
+    }
+
+    private Single<List<CandidateEntity>> getVerifiersList(String ticketPrice) {
+        return CandidateManager
+                .getInstance()
+                .getVerifiersList(ticketPrice)
+                .map(new Function<List<CandidateEntity>, List<CandidateEntity>>() {
+                    @Override
+                    public List<CandidateEntity> apply(List<CandidateEntity> candidateEntityList) throws Exception {
+                        Map<String, Integer> map = VoteManager.getInstance().getCandidateTicketCountList(getCandidateIdList(candidateEntityList)).blockingGet();
+                        return Flowable
+                                .fromIterable(candidateEntityList)
+                                .map(new Function<CandidateEntity, CandidateEntity>() {
+                                    @Override
+                                    public CandidateEntity apply(CandidateEntity candidateEntity) throws Exception {
+                                        candidateEntity.setVotedNum(map.get(candidateEntity.getCandidateId()));
+                                        return candidateEntity;
+                                    }
+                                })
+                                .toList()
+                                .blockingGet();
+                    }
+                });
+    }
+
+    private List<String> getCandidateIdList(List<CandidateEntity> candidateEntityList) {
+        return Flowable
+                .fromIterable(candidateEntityList)
+                .map(new Function<CandidateEntity, String>() {
+                    @Override
+                    public String apply(CandidateEntity candidateEntity) throws Exception {
+                        return candidateEntity.getCandidateId();
+                    }
+                })
+                .toList()
+                .blockingGet();
     }
 
     private List<CandidateEntity> getDefaultCandidateEntityList(List<CandidateEntity> candidateEntityList, List<CandidateEntity> verifiersList) {
