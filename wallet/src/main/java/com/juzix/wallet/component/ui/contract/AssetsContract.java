@@ -47,11 +47,11 @@ public class AssetsContract {
 
         void createIndividualWallet();
 
-        void createSharedWallet();
+//        void createSharedWallet();
 
         void importIndividualWallet();
 
-        void addSharedWallet();
+//        void addSharedWallet();
 
         void backupWallet();
 
