@@ -45,16 +45,16 @@ public class WalletManagerPresenter extends BasePresenter<WalletManagerContract.
     public void fetchWalletList() {
         if (isViewAttached()) {
             List<IndividualWalletEntity> walletList1 = IndividualWalletManager.getInstance().getWalletList();
-            List<SharedWalletEntity>     walletList2 = SharedWalletManager.getInstance().getWalletList();
+//            List<SharedWalletEntity>     walletList2 = SharedWalletManager.getInstance().getWalletList();//联名钱包相关的先屏蔽掉
             if (!mWalletList.isEmpty()){
                 mWalletList.clear();
             }
             if (!walletList1.isEmpty()){
                 mWalletList.addAll(walletList1);
             }
-            if (!walletList2.isEmpty()){
-                mWalletList.addAll(walletList2);
-            }
+//            if (!walletList2.isEmpty()){
+//                mWalletList.addAll(walletList2);
+//            }
             if (mWalletList.isEmpty()){
                 AppSettings.getInstance().setOperateMenuFlag(true);
                 AppSettings.getInstance().setFaceTouchIdFlag(false);

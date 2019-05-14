@@ -58,6 +58,12 @@ public class MyVoteActivity extends MVPBaseActivity<MyVotePresenter> implements 
         initViews();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mPresenter.loadData();
+    }
+
     private void initViews() {
 
         mBatchVoteSummaryAdapter = new BatchVoteSummaryAdapter(R.layout.item_vote_info, null);
