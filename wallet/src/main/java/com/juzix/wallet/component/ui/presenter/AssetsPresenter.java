@@ -4,14 +4,11 @@ import android.Manifest;
 import android.text.TextUtils;
 
 import com.juzhen.framework.network.SchedulersTransformer;
-import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.AssetsContract;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
-import com.juzix.wallet.component.ui.view.AddSharedWalletActivity;
 import com.juzix.wallet.component.ui.view.BackupMnemonicPhraseActivity;
 import com.juzix.wallet.component.ui.view.CreateIndividualWalletActivity;
-import com.juzix.wallet.component.ui.view.CreateSharedWalletActivity;
 import com.juzix.wallet.component.ui.view.ImportIndividualWalletActivity;
 import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.component.ui.view.ScanQRCodeActivity;
@@ -22,7 +19,6 @@ import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.SharedWalletEntity;
 import com.juzix.wallet.entity.WalletEntity;
-import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.trello.rxlifecycle2.android.FragmentEvent;
@@ -204,38 +200,38 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
         CreateIndividualWalletActivity.actionStart(getContext());
     }
 
-    @Override
-    public void createSharedWallet() {
-        ArrayList<IndividualWalletEntity> walletEntityList = IndividualWalletManager.getInstance().getWalletList();
-        if (walletEntityList.isEmpty()) {
-            showLongToast(R.string.noWalletTips);
-            return;
-        }
-        double totalBalance = 0.0D;
-        for (IndividualWalletEntity walletEntity : walletEntityList) {
-            totalBalance = BigDecimalUtil.add(totalBalance, walletEntity.getBalance());
-        }
-        if (totalBalance <= 0) {
-            showLongToast(R.string.insufficientBalanceTips);
-            return;
-        }
-        CreateSharedWalletActivity.actionStart(getContext());
-    }
+//    @Override
+//    public void createSharedWallet() {
+//        ArrayList<IndividualWalletEntity> walletEntityList = IndividualWalletManager.getInstance().getWalletList();
+//        if (walletEntityList.isEmpty()) {
+//            showLongToast(R.string.noWalletTips);
+//            return;
+//        }
+//        double totalBalance = 0.0D;
+//        for (IndividualWalletEntity walletEntity : walletEntityList) {
+//            totalBalance = BigDecimalUtil.add(totalBalance, walletEntity.getBalance());
+//        }
+//        if (totalBalance <= 0) {
+//            showLongToast(R.string.insufficientBalanceTips);
+//            return;
+//        }
+//        CreateSharedWalletActivity.actionStart(getContext());
+//    }
 
     @Override
     public void importIndividualWallet() {
         ImportIndividualWalletActivity.actionStart(getContext());
     }
 
-    @Override
-    public void addSharedWallet() {
-        ArrayList<IndividualWalletEntity> walletEntityList = IndividualWalletManager.getInstance().getWalletList();
-        if (walletEntityList.isEmpty()) {
-            showLongToast(R.string.noWalletTips);
-            return;
-        }
-        AddSharedWalletActivity.actionStart(getContext());
-    }
+//    @Override
+//    public void addSharedWallet() {
+//        ArrayList<IndividualWalletEntity> walletEntityList = IndividualWalletManager.getInstance().getWalletList();
+//        if (walletEntityList.isEmpty()) {
+//            showLongToast(R.string.noWalletTips);
+//            return;
+//        }
+//        AddSharedWalletActivity.actionStart(getContext());
+//    }
 
     @Override
     public void backupWallet() {

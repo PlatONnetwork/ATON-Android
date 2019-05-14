@@ -128,7 +128,7 @@ public class AddWalletAcitivity extends BaseActivity {
             showLongToast(R.string.insufficientBalanceTips);
             return;
         }
-        CreateSharedWalletActivity.actionStart(this);
+//        CreateSharedWalletActivity.actionStart(this);
         this.finish();
     }
 
@@ -138,7 +138,7 @@ public class AddWalletAcitivity extends BaseActivity {
             showLongToast(R.string.noWalletTips);
             return;
         }
-        AddSharedWalletActivity.actionStart(this);
+//        AddSharedWalletActivity.actionStart(this);
         this.finish();
     }
 
