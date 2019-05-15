@@ -5,14 +5,11 @@ import com.juzix.wallet.component.ui.contract.WalletManagerContract;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.view.BackupMnemonicPhraseActivity;
 import com.juzix.wallet.component.ui.view.ManageIndividualWalletActivity;
-import com.juzix.wallet.component.ui.view.ManageSharedWalletActivity;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.db.sqlite.IndividualWalletInfoDao;
 import com.juzix.wallet.db.sqlite.SharedWalletInfoDao;
 import com.juzix.wallet.engine.IndividualWalletManager;
-import com.juzix.wallet.engine.SharedWalletManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
-import com.juzix.wallet.entity.SharedWalletEntity;
 import com.juzix.wallet.entity.WalletEntity;
 
 import org.web3j.crypto.Credentials;
@@ -119,7 +116,7 @@ public class WalletManagerPresenter extends BasePresenter<WalletManagerContract.
        if (entity instanceof IndividualWalletEntity){
            ManageIndividualWalletActivity.actionStart(currentActivity(), (IndividualWalletEntity) entity);
        }else {
-           ManageSharedWalletActivity.actionStart(currentActivity(), (SharedWalletEntity) entity);
+//           ManageSharedWalletActivity.actionStart(currentActivity(), (SharedWalletEntity) entity);
        }
     }
 
