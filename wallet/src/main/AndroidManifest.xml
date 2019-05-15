@@ -124,15 +124,7 @@
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".component.ui.view.SigningActivity"
-            android:launchMode="standard"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".component.ui.view.IndividualTransactionDetailActivity"
-            android:launchMode="standard"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".component.ui.view.SharedTransactionDetailActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity

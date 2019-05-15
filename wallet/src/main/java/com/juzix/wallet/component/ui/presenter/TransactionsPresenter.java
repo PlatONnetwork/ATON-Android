@@ -7,8 +7,6 @@ import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.TransactionsContract;
 import com.juzix.wallet.component.ui.view.IndividualTransactionDetailActivity;
 import com.juzix.wallet.component.ui.view.IndividualVoteDetailActivity;
-import com.juzix.wallet.component.ui.view.SharedTransactionDetailActivity;
-import com.juzix.wallet.component.ui.view.SigningActivity;
 import com.juzix.wallet.db.entity.IndividualTransactionInfoEntity;
 import com.juzix.wallet.db.entity.SharedTransactionInfoEntity;
 import com.juzix.wallet.db.entity.SingleVoteInfoEntity;
@@ -421,11 +419,11 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                     getView().notifyItem(sharedTransactionEntity);
                     SharedWalletTransactionManager.getInstance().updateTransactionForRead(SharedWalletManager.getInstance().getWalletByContractAddress(sharedTransactionEntity.getContractAddress()), sharedTransactionEntity);
                 }
-                if (sharedTransactionEntity.getTransactionStatus() == TransactionEntity.TransactionStatus.SIGNING) {
-                    SigningActivity.actionStart(currentActivity(), sharedTransactionEntity, (IndividualWalletEntity) mWalletEntity);
-                } else {
-                    SharedTransactionDetailActivity.actionStart(currentActivity(), sharedTransactionEntity, mWalletEntity.getPrefixAddress());
-                }
+//                if (sharedTransactionEntity.getTransactionStatus() == TransactionEntity.TransactionStatus.SIGNING) {
+//                    SigningActivity.actionStart(currentActivity(), sharedTransactionEntity, (IndividualWalletEntity) mWalletEntity);
+//                } else {
+//                    SharedTransactionDetailActivity.actionStart(currentActivity(), sharedTransactionEntity, mWalletEntity.getPrefixAddress());
+//                }
             }
         }
     }
@@ -445,11 +443,11 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                     getView().notifyItem(sharedTransactionEntity);
                     SharedWalletTransactionManager.getInstance().updateTransactionForRead(walletEntity, sharedTransactionEntity);
                 }
-                if (sharedTransactionEntity.getTransactionStatus() == TransactionEntity.TransactionStatus.SIGNING) {
-                    SigningActivity.actionStart(currentActivity(), sharedTransactionEntity, IndividualWalletManager.getInstance().getWalletByAddress(sharedTransactionEntity.getOwnerWalletAddress()));
-                } else {
-                    SharedTransactionDetailActivity.actionStart(currentActivity(), sharedTransactionEntity, walletEntity.getPrefixAddress());
-                }
+//                if (sharedTransactionEntity.getTransactionStatus() == TransactionEntity.TransactionStatus.SIGNING) {
+//                    SigningActivity.actionStart(currentActivity(), sharedTransactionEntity, IndividualWalletManager.getInstance().getWalletByAddress(sharedTransactionEntity.getOwnerWalletAddress()));
+//                } else {
+//                    SharedTransactionDetailActivity.actionStart(currentActivity(), sharedTransactionEntity, walletEntity.getPrefixAddress());
+//                }
             } else {
                 IndividualTransactionDetailActivity.actionStart(currentActivity(), (IndividualTransactionEntity) transactionEntity, walletEntity.getPrefixAddress());
             }
