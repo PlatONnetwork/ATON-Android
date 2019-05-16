@@ -99,5 +99,7 @@ project.ext {
             "umeng_common"                    : 'com.umeng.umsdk:common:2.0.2',
             "umeng_analytics"                 : 'com.umeng.umsdk:analytics:8.0.2',
             "bugly"                           : 'com.tencent.bugly:crashreport:latest.release',
+            "SmartRefreshLayout"              : 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-25',
+            "SmartRefreshHeader"              : 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0-alpha-25',
     ]
 }

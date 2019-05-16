@@ -186,4 +186,10 @@ dependencies {
     implementation rootProject.ext.dependencies["umeng_common"]
     implementation rootProject.ext.dependencies["umeng_analytics"]
     implementation rootProject.ext.dependencies["bugly"]
+
+    implementation rootProject.ext.dependencies["SmartRefreshLayout"]
+    implementation rootProject.ext.dependencies["SmartRefreshHeader"]
+
+
+
 }
