@@ -17,7 +17,6 @@ import java.util.regex.Pattern;
 public class RequestInfo {
 
     public static final String DEFAULT_URL_KEY = "restful";
-    public static final String URL_IP = "url_ip";
 
     public enum EncryptionType {
         TYPE_PLATFORM,

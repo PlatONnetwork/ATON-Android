@@ -29,35 +29,35 @@ public class VoteTransactionEntity extends TransactionEntity implements Cloneabl
     }
 
     private VoteTransactionEntity(Builder builder) {
-        setUuid(builder.uuid);
-        setHash(builder.hash);
-        setFromAddress(builder.fromAddress);
-        setToAddress(builder.toAddress);
-        setCreateTime(builder.createTime);
-        setValue(builder.value);
-        setBlockNumber(builder.blockNumber);
-        setLatestBlockNumber(builder.latestBlockNumber);
-        setWalletName(builder.walletName);
-        setEnergonPrice(builder.energonPrice);
-        setMemo(builder.memo);
-        setStatus(builder.status);
-        setNodeAddress(builder.nodeAddress);
+//        setUuid(builder.uuid);
+//        setHash(builder.hash);
+//        setFromAddress(builder.fromAddress);
+//        setToAddress(builder.toAddress);
+//        setCreateTime(builder.createTime);
+//        setValue(builder.value);
+//        setBlockNumber(builder.blockNumber);
+//        setLatestBlockNumber(builder.latestBlockNumber);
+//        setWalletName(builder.walletName);
+//        setEnergonPrice(builder.energonPrice);
+//        setMemo(builder.memo);
+//        setStatus(builder.status);
+//        setNodeAddress(builder.nodeAddress);
     }
 
     protected VoteTransactionEntity(Parcel in) {
-        uuid = in.readString();
-        hash = in.readString();
-        fromAddress = in.readString();
-        toAddress = in.readString();
-        createTime = in.readLong();
-        value = in.readDouble();
-        blockNumber = in.readLong();
-        latestBlockNumber = in.readLong();
-        walletName = in.readString();
-        energonPrice = in.readDouble();
-        memo = in.readString();
-        status = in.readInt();
-        nodeAddress = in.readString();
+//        uuid = in.readString();
+//        hash = in.readString();
+//        fromAddress = in.readString();
+//        toAddress = in.readString();
+//        createTime = in.readLong();
+//        value = in.readDouble();
+//        blockNumber = in.readLong();
+//        latestBlockNumber = in.readLong();
+//        walletName = in.readString();
+//        energonPrice = in.readDouble();
+//        memo = in.readString();
+//        status = in.readInt();
+//        nodeAddress = in.readString();
     }
 
     @Override
@@ -67,19 +67,19 @@ public class VoteTransactionEntity extends TransactionEntity implements Cloneabl
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(uuid);
-        dest.writeString(hash);
-        dest.writeString(fromAddress);
-        dest.writeString(toAddress);
-        dest.writeLong(createTime);
-        dest.writeDouble(value);
-        dest.writeLong(blockNumber);
-        dest.writeLong(latestBlockNumber);
-        dest.writeString(walletName);
-        dest.writeDouble(energonPrice);
-        dest.writeString(memo);
-        dest.writeInt(status);
-        dest.writeString(nodeAddress);
+//        dest.writeString(uuid);
+//        dest.writeString(hash);
+//        dest.writeString(fromAddress);
+//        dest.writeString(toAddress);
+//        dest.writeLong(createTime);
+//        dest.writeDouble(value);
+//        dest.writeLong(blockNumber);
+//        dest.writeLong(latestBlockNumber);
+//        dest.writeString(walletName);
+//        dest.writeDouble(energonPrice);
+//        dest.writeString(memo);
+//        dest.writeInt(status);
+//        dest.writeString(nodeAddress);
     }
 
     public int getStatus() {
@@ -103,19 +103,24 @@ public class VoteTransactionEntity extends TransactionEntity implements Cloneabl
     }
 
     @Override
-    public TransactionStatus getTransactionStatus() {
-        if (status == STATUS_SUCCESS) {
-            return TransactionStatus.SUCCEED;
-        }
-        if (status == STATUS_FAILED) {
-            return TransactionStatus.FAILED;
-        }
-        return TransactionStatus.PENDING;
+    public int compareTo(TransactionEntity o) {
+        return 0;
     }
 
-    public boolean isVoter(String walletAddress) {
-        return walletAddress != null && walletAddress.equals(fromAddress);
-    }
+//    @Override
+//    public TransactionStatus getTransactionStatus() {
+//        if (status == STATUS_SUCCESS) {
+//            return TransactionStatus.SUCCEED;
+//        }
+//        if (status == STATUS_FAILED) {
+//            return TransactionStatus.FAILED;
+//        }
+//        return TransactionStatus.PENDING;
+//    }
+
+//    public boolean isVoter(String walletAddress) {
+//        return walletAddress != null && walletAddress.equals(fromAddress);
+//    }
 
     public static final class Builder {
         private String uuid;

@@ -15,12 +15,9 @@ import android.widget.TextView;
 
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
-import com.juzix.wallet.db.sqlite.AddressInfoDao;
 import com.juzix.wallet.entity.IndividualWalletEntity;
-import com.juzix.wallet.entity.SharedWalletEntity;
 import com.juzix.wallet.entity.WalletEntity;
 import com.juzix.wallet.utils.AddressFormatUtil;
-import com.juzix.wallet.utils.JZWalletUtil;
 
 import java.util.ArrayList;
 

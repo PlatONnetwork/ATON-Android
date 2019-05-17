@@ -12,7 +12,6 @@ import com.juzix.wallet.component.ui.view.ExportIndividualKeystoreActivity;
 import com.juzix.wallet.component.ui.view.ExportIndividualPrivateKeyActivity;
 import com.juzix.wallet.db.sqlite.IndividualWalletInfoDao;
 import com.juzix.wallet.engine.IndividualWalletManager;
-import com.juzix.wallet.engine.SharedWalletManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.RxUtils;
@@ -147,7 +146,7 @@ public class ManageIndividualWalletPresenter extends BasePresenter<ManageIndivid
 
     @Override
     public boolean isExists(String walletName) {
-        return IndividualWalletManager.getInstance().walletNameExists(walletName) ? true : SharedWalletManager.getInstance().walletNameExists(walletName);
+        return IndividualWalletManager.getInstance().walletNameExists(walletName);
     }
 
 }

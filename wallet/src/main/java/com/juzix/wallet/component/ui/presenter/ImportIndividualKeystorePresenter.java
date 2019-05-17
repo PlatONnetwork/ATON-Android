@@ -11,7 +11,6 @@ import com.juzix.wallet.component.ui.contract.ImportIndividualKeystoreContract;
 import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.engine.NodeManager;
-import com.juzix.wallet.engine.SharedWalletManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.utils.CommonUtil;
 
@@ -89,7 +88,7 @@ public class ImportIndividualKeystorePresenter extends BasePresenter<ImportIndiv
 
     @Override
     public boolean isExists(String walletName) {
-        return IndividualWalletManager.getInstance().walletNameExists(walletName) ? true : SharedWalletManager.getInstance().walletNameExists(walletName);
+        return IndividualWalletManager.getInstance().walletNameExists(walletName);
     }
 
     private static final int MSG_OK = 1;

@@ -15,7 +15,6 @@ import com.juzix.wallet.R;
 import com.juzix.wallet.component.widget.CustomProgressBar;
 import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.entity.IndividualWalletEntity;
-import com.juzix.wallet.entity.SharedWalletEntity;
 import com.juzix.wallet.entity.WalletEntity;
 
 import java.util.List;
@@ -42,13 +41,6 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
         final WalletEntity walletEntity = mList.get(position);
         if (walletEntity instanceof IndividualWalletEntity) {
             setIndividualWalletView(position, (IndividualWalletEntity) walletEntity, holder);
-        } else {
-            SharedWalletEntity sharedWalletEntity = (SharedWalletEntity) walletEntity;
-            if (!sharedWalletEntity.isFinished()) {
-                setLoadWalletView(position, sharedWalletEntity, holder);
-            } else {
-                setSharedWalletView(position, sharedWalletEntity, holder);
-            }
         }
         holder.itemView.setTag(position);//将位置保存在tag中
     }
@@ -91,14 +83,6 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
         return mList;
     }
 
-    private void setLoadWalletView(final int position, final SharedWalletEntity walletEntity, ViewHolder holder) {
-        holder.vShadow.setVisibility(View.GONE);
-        holder.rlItem.setVisibility(View.GONE);
-        holder.progressBar.setVisibility(View.VISIBLE);
-        holder.progressBar.setProgress(walletEntity.getProgress(), walletEntity.getName(), R.drawable.icon_assets_joint_p, R.drawable.icon_assets_joint_n);
-        holder.progressBar.setOnClickListener(null);
-    }
-
     private void setIndividualWalletView(final int position, final IndividualWalletEntity walletEntity, ViewHolder holder) {
         holder.progressBar.setVisibility(View.GONE);
         holder.rlItem.setVisibility(View.VISIBLE);
@@ -125,45 +109,6 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
             tvName.setTextColor(ContextCompat.getColor(mContext, R.color.color_105cfe));
             tvName.setText(walletEntity.getName());
         }
-        holder.rlItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mSelectedWallet != walletEntity) {
-                    setSelectedWallet(walletEntity);
-                    if (mOnItemClickListener != null) {
-                        mOnItemClickListener.onContentViewClick(walletEntity);
-                    }
-                }
-            }
-        });
-    }
-
-    private void setSharedWalletView(final int position, final SharedWalletEntity walletEntity, ViewHolder holder) {
-        holder.rlItem.setVisibility(View.VISIBLE);
-        holder.progressBar.setVisibility(View.GONE);
-        TextView  tvName = holder.rlItem.findViewById(R.id.tv_item2_name);
-        ImageView ivIcon = holder.rlItem.findViewById(R.id.iv_item2_icon);
-        ShadowDrawable.setShadowDrawable(holder.vShadow,
-                ContextCompat.getColor(mContext, R.color.color_660051ff),
-                mShapeRadius,
-                ContextCompat.getColor(mContext, R.color.color_660051ff)
-                , mShadowRadius,
-                0,
-                0);
-        if (mSelectedWallet == walletEntity) {
-            holder.rlItem.setBackgroundResource(R.drawable.bg_assets_joint_h);
-            ivIcon.setImageResource(R.drawable.icon_assets_joint_h);
-            tvName.setTextColor(ContextCompat.getColor(mContext, R.color.color_ffffff));
-            tvName.setText(walletEntity.getName());
-            holder.vShadow.setVisibility(View.VISIBLE);
-        } else {
-            holder.rlItem.setBackgroundResource(R.drawable.bg_assets_joint_n);
-            ivIcon.setImageResource(R.drawable.icon_assets_joint_n);
-            tvName.setTextColor(ContextCompat.getColor(mContext, R.color.color_105cfe));
-            tvName.setText(walletEntity.getName());
-            holder.vShadow.setVisibility(View.GONE);
-        }
-        holder.rlItem.findViewById(R.id.v_new_msg).setVisibility(walletEntity.isHasUnreadMessage() ? View.VISIBLE : View.GONE);
         holder.rlItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

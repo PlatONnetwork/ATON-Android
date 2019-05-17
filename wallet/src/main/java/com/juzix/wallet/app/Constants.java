@@ -95,12 +95,12 @@ public class Constants {
         //        String URL_HTTP_A = "http://54.252.202.130:10000/";
         String URL_HTTP_B = "https://aton.platon.network";
         String URL_HTTP_C = "https://aton.platon.network";
-        String URL_IP_SERVICE = "http://ip-api.com";
     }
 
     public interface DBName {
         //数据库名称
         String PORTAL = "portal";
-        int VERSION = 105;
+        //2019/5/15
+        int VERSION = 106;
     }
 }

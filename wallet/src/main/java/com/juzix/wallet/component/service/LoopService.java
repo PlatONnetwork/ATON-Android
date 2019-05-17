@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 
-import com.juzix.wallet.engine.SharedWalletTransactionManager;
 import com.juzix.wallet.engine.VoteManager;
 
 import java.util.Timer;
@@ -121,8 +120,6 @@ public class LoopService extends Service {
             @Override
             public void run() {
                 isServiceRuning = true;
-                VoteManager.getInstance().updateVoteTickets();
-                SharedWalletTransactionManager.getInstance().updateTransactionList();
 
             }
         }, 0, MLOOP_INTERVAL_SECS);

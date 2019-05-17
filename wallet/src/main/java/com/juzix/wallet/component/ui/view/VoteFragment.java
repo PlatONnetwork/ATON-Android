@@ -322,10 +322,6 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
         mVoteListAdapter.notifyDataChanged(candidateList);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUpdateCandidateRegionInfoEvent(Event.UpdateCandidateRegionInfoEvent event) {
-        mVoteListAdapter.updateRegionInfo(event.regionEntity);
-    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNodeChangedEvent(Event.NodeChangedEvent event) {

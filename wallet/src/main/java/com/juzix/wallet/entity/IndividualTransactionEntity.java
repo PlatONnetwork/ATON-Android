@@ -8,7 +8,7 @@ import com.juzix.wallet.db.entity.IndividualTransactionInfoEntity;
 /**
  * @author matrixelement
  */
-public class IndividualTransactionEntity extends TransactionEntity implements Cloneable, Parcelable {
+public class IndividualTransactionEntity  implements Cloneable, Parcelable {
 
     /**
      * 交易完成
@@ -27,35 +27,35 @@ public class IndividualTransactionEntity extends TransactionEntity implements Cl
     }
 
     private IndividualTransactionEntity(Builder builder) {
-        setUuid(builder.uuid);
-        setHash(builder.hash);
-        setFromAddress(builder.fromAddress);
-        setToAddress(builder.toAddress);
-        setCreateTime(builder.createTime);
-        setValue(builder.value);
-        setBlockNumber(builder.blockNumber);
-        setLatestBlockNumber(builder.latestBlockNumber);
-        setWalletName(builder.walletName);
-        setEnergonPrice(builder.energonPrice);
-        setMemo(builder.memo);
-        setCompleted(builder.completed);
-        setNodeAddress(builder.nodeAddress);
+//        setUuid(builder.uuid);
+//        setHash(builder.hash);
+//        setFromAddress(builder.fromAddress);
+//        setToAddress(builder.toAddress);
+//        setCreateTime(builder.createTime);
+//        setValue(builder.value);
+//        setBlockNumber(builder.blockNumber);
+//        setLatestBlockNumber(builder.latestBlockNumber);
+//        setWalletName(builder.walletName);
+//        setEnergonPrice(builder.energonPrice);
+//        setMemo(builder.memo);
+//        setCompleted(builder.completed);
+//        setNodeAddress(builder.nodeAddress);
     }
 
     protected IndividualTransactionEntity(Parcel in) {
-        uuid = in.readString();
-        hash = in.readString();
-        fromAddress = in.readString();
-        toAddress = in.readString();
-        createTime = in.readLong();
-        value = in.readDouble();
-        blockNumber = in.readLong();
-        latestBlockNumber = in.readLong();
-        walletName = in.readString();
-        energonPrice = in.readDouble();
-        memo = in.readString();
-        completed = in.readByte() != 0;
-        nodeAddress = in.readString();
+//        uuid = in.readString();
+//        hash = in.readString();
+//        fromAddress = in.readString();
+//        toAddress = in.readString();
+//        createTime = in.readLong();
+//        value = in.readDouble();
+//        blockNumber = in.readLong();
+//        latestBlockNumber = in.readLong();
+//        walletName = in.readString();
+//        energonPrice = in.readDouble();
+//        memo = in.readString();
+//        completed = in.readByte() != 0;
+//        nodeAddress = in.readString();
     }
 
     public static final Creator<IndividualTransactionEntity> CREATOR = new Creator<IndividualTransactionEntity>() {
@@ -77,19 +77,19 @@ public class IndividualTransactionEntity extends TransactionEntity implements Cl
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(uuid);
-        dest.writeString(hash);
-        dest.writeString(fromAddress);
-        dest.writeString(toAddress);
-        dest.writeLong(createTime);
-        dest.writeDouble(value);
-        dest.writeLong(blockNumber);
-        dest.writeLong(latestBlockNumber);
-        dest.writeString(walletName);
-        dest.writeDouble(energonPrice);
-        dest.writeString(memo);
-        dest.writeByte((byte) (completed ? 1 : 0));
-        dest.writeString(nodeAddress);
+//        dest.writeString(uuid);
+//        dest.writeString(hash);
+//        dest.writeString(fromAddress);
+//        dest.writeString(toAddress);
+//        dest.writeLong(createTime);
+//        dest.writeDouble(value);
+//        dest.writeLong(blockNumber);
+//        dest.writeLong(latestBlockNumber);
+//        dest.writeString(walletName);
+//        dest.writeDouble(energonPrice);
+//        dest.writeString(memo);
+//        dest.writeByte((byte) (completed ? 1 : 0));
+//        dest.writeString(nodeAddress);
     }
 
     public static final class Builder {
@@ -180,24 +180,24 @@ public class IndividualTransactionEntity extends TransactionEntity implements Cl
         return transactionEntity;
     }
 
-    @Override
-    public TransactionStatus getTransactionStatus() {
-        return completed ? TransactionStatus.SUCCEED : TransactionStatus.PENDING;
-    }
+//    @Override
+//    public TransactionStatus getTransactionStatus() {
+//        return completed ? TransactionStatus.SUCCEED : TransactionStatus.PENDING;
+//    }
 
-    public IndividualTransactionInfoEntity buildIndividualTransactionInfoEntity() {
-        return new IndividualTransactionInfoEntity.Builder()
-                .uuid(uuid)
-                .blockNumber(blockNumber)
-                .completed(completed)
-                .from(fromAddress)
-                .to(toAddress)
-                .hash(hash)
-                .createTime(createTime)
-                .walletName(walletName)
-                .memo(memo)
-                .value(value)
-                .nodeAddress(nodeAddress)
-                .build();
-    }
+//    public IndividualTransactionInfoEntity buildIndividualTransactionInfoEntity() {
+//        return new IndividualTransactionInfoEntity.Builder()
+//                .uuid(uuid)
+//                .blockNumber(blockNumber)
+//                .completed(completed)
+//                .from(fromAddress)
+//                .to(toAddress)
+//                .hash(hash)
+//                .createTime(createTime)
+//                .walletName(walletName)
+//                .memo(memo)
+//                .value(value)
+//                .nodeAddress(nodeAddress)
+//                .build();
+//    }
 }

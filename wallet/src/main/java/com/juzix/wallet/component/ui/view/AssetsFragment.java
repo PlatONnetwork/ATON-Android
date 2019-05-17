@@ -218,27 +218,6 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onRemoveSharedWalletEvent(Event.RemoveSharedWalletEvent event) {
-        mWalletAdapter.removeItem(event.sharedWalletEntity);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUpdateCreateJointWalletProgressEvent(Event.UpdateCreateJointWalletProgressEvent event) {
-        mPresenter.updateCreateJointWallet(event.sharedWalletEntity);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUpdateSharedWalletUnreadMessageEvent(Event.UpdateSharedWalletUnreadMessageEvent event) {
-        mPresenter.updateUnreadMessage(event.contractAddress, event.hasUnreadMessage);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUpdateWalletListEvent(Event.UpdateWalletListEvent event) {
-//        mPresenter.fetchWalletList();
-//        mPresenter.start();
-    }
-
     private void initHeader() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -449,7 +428,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
     @Override
     public void showWalletList(WalletEntity walletEntity) {
-        mWalletAdapter.setSelectedWallet(walletEntity);
+//        mWalletAdapter.setSelectedWallet(walletEntity);
         mWalletAdapter.notifyDataSetChanged();
     }
 

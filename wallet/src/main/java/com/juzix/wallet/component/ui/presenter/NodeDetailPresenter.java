@@ -41,7 +41,7 @@ public class NodeDetailPresenter extends BasePresenter<NodeDetailContract.View> 
 
                 VoteManager
                         .getInstance()
-                        .getCandidateEpoch(mCandidateEntity.getCandidateId())
+                        .getCandidateEpoch(mCandidateEntity.getNodeId())
                         .compose(bindToLifecycle())
                         .compose(RxUtils.getSingleSchedulerTransformer())
                         .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))

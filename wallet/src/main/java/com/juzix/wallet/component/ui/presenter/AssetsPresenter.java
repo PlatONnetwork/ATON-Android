@@ -13,11 +13,9 @@ import com.juzix.wallet.component.ui.view.ImportIndividualWalletActivity;
 import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.component.ui.view.ScanQRCodeActivity;
 import com.juzix.wallet.engine.IndividualWalletManager;
-import com.juzix.wallet.engine.SharedWalletManager;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
-import com.juzix.wallet.entity.SharedWalletEntity;
 import com.juzix.wallet.entity.WalletEntity;
 import com.juzix.wallet.utils.RxUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
@@ -103,45 +101,6 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
                         }
                     }
                 });
-
-//        mDisposable = Single.fromCallable(new Callable<Double>() {
-//            @Override
-//            public Double call() {
-//                double totalBalance = 0d;
-//                try {
-//                    for (WalletEntity walletEntity : mWalletList) {
-//                        String address = walletEntity.getPrefixAddress();
-//                        double balance = Web3jManager.getInstance().getBalance(address);
-//                        walletEntity.setBalance(balance);
-//                        totalBalance += balance;
-//                    }
-//                } catch (Exception exp) {
-//                    exp.printStackTrace();
-//                }
-//                return totalBalance;
-//            }
-//        })
-//                .compose(bindUntilEvent(FragmentEvent.STOP))
-//                .compose(RxUtils.getSingleSchedulerTransformer())
-//                .repeatWhen(new Function<Flowable<Object>, Publisher<?>>() {
-//                    @Override
-//                    public Publisher<?> apply(Flowable<Object> objectFlowable) throws Exception {
-//                        return objectFlowable.delay(REFRESH_TIME, TimeUnit.MILLISECONDS);
-//
-//                    }
-//                })
-//                .subscribe(new Consumer<Double>() {
-//                    @Override
-//                    public void accept(Double balance) throws Exception {
-//                        if (isViewAttached()) {
-//                            getView().showTotalBalance(balance);
-//                            WalletEntity walletEntity = WalletManager.getInstance().getSelectedWallet();
-//                            if (walletEntity != null) {
-//                                getView().showBalance(walletEntity.getBalance());
-//                            }
-//                        }
-//                    }
-//                });
     }
 
     @Override
@@ -223,15 +182,7 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
         ImportIndividualWalletActivity.actionStart(getContext());
     }
 
-//    @Override
-//    public void addSharedWallet() {
-//        ArrayList<IndividualWalletEntity> walletEntityList = IndividualWalletManager.getInstance().getWalletList();
-//        if (walletEntityList.isEmpty()) {
-//            showLongToast(R.string.noWalletTips);
-//            return;
-//        }
-//        AddSharedWalletActivity.actionStart(getContext());
-//    }
+
 
     @Override
     public void backupWallet() {
@@ -249,9 +200,6 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
         if (walletEntity == null) {
             return false;
         }
-        if (walletEntity instanceof SharedWalletEntity) {
-            return false;
-        }
         IndividualWalletEntity entity = (IndividualWalletEntity) walletEntity;
         if (!TextUtils.isEmpty(entity.getMnemonic())) {
             return true;
@@ -259,34 +207,6 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
         return false;
     }
 
-    @Override
-    public void updateCreateJointWallet(SharedWalletEntity sharedWalletEntity) {
-        if (sharedWalletEntity == null) {
-            return;
-        }
-        if (sharedWalletEntity.getProgress() == 100) {
-            SharedWalletManager.getInstance().updateWalletFinished(sharedWalletEntity.getUuid(), true);
-            sharedWalletEntity.updateFinished(true);
-        }
-        getView().notifyAllChanged();
-
-    }
-
-    @Override
-    public void updateUnreadMessage(String contractAddress, boolean hasUnreadMessage) {
-        if (mWalletList == null || mWalletList.isEmpty()) {
-            return;
-        }
-        for (int i = 0; i < mWalletList.size(); i++) {
-            WalletEntity walletEntity = mWalletList.get(i);
-            if (walletEntity instanceof SharedWalletEntity && contractAddress.equals(walletEntity.getAddress())) {
-                ((SharedWalletEntity) walletEntity).setHasUnreadMessage(hasUnreadMessage);
-                break;
-            }
-        }
-        getView().notifyAllChanged();
-
-    }
 
     private boolean isSelected(WalletEntity selectedWallet) {
         if (selectedWallet == null) {
@@ -305,12 +225,6 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
             WalletEntity walletEntity = mWalletList.get(i);
             if (walletEntity instanceof IndividualWalletEntity) {
                 return walletEntity;
-            }
-            if (walletEntity instanceof SharedWalletEntity) {
-                SharedWalletEntity sharedWalletEntity = (SharedWalletEntity) walletEntity;
-                if (sharedWalletEntity.isFinished()) {
-                    return sharedWalletEntity;
-                }
             }
         }
         return null;
