@@ -5,21 +5,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
-import com.juzhen.framework.network.HttpClient;
 import com.juzhen.framework.network.NetConnectivity;
 import com.juzhen.framework.network.NetState;
-import com.juzhen.framework.network.RequestInfo;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.config.JZAppConfigure;
 import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.engine.NodeManager;
-import com.juzix.wallet.engine.SharedWalletManager;
+import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.w3c.dom.Node;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -73,153 +72,15 @@ public class AppFramework {
         RUtils.init(context);
         //初始化偏好设置
         AppSettings.getInstance().init(context);
-        //初始化网络模块
-        HttpClient.getInstance().init(mContext, Constants.URL.URL_HTTP_C, buildMultipleUrlMap());
     }
 
-    private Map<String, Object> buildMultipleUrlMap() {
-        Map<String, Object> map = new HashMap<>();
-        map.put(RequestInfo.URL_IP, Constants.URL.URL_IP_SERVICE);
-        return map;
-    }
 
     private void initRealm(Context context) {
         Realm.init(context);
         Realm.setDefaultConfiguration(new RealmConfiguration.Builder()
                 .name(Constants.DBName.PORTAL)
                 .schemaVersion(Constants.DBName.VERSION)
-                .migration(new RealmMigration() {
-                    @Override
-                    public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
-                        RealmSchema schema = realm.getSchema();
-                        if (oldVersion == 104) {
-
-                            schema.get("IndividualTransactionInfoEntity")
-                                    .addField("completed", boolean.class)
-                                    .addField("value", double.class)
-                                    .addField("nodeAddress", String.class)
-                                    .transform(new RealmObjectSchema.Function() {
-                                        @Override
-                                        public void apply(DynamicRealmObject obj) {
-                                            obj.getDynamicRealm().where("IndividualTransactionInfoEntity").findAll().deleteAllFromRealm();
-                                        }
-                                    });
-
-                            schema.get("IndividualWalletInfoEntity")
-                                    .addField("mnemonic", String.class)
-                                    .addField("nodeAddress", String.class)
-                                    .transform(new RealmObjectSchema.Function() {
-                                        @Override
-                                        public void apply(DynamicRealmObject obj) {
-                                            obj.set("nodeAddress", "https://test-amigo.platon.network/test");
-                                        }
-                                    });
-
-                            schema.get("OwnerInfoEntity")
-                                    .addField("nodeAddress", String.class)
-                                    .transform(new RealmObjectSchema.Function() {
-                                        @Override
-                                        public void apply(DynamicRealmObject obj) {
-                                            obj.getDynamicRealm().where("OwnerInfoEntity").findAll().deleteAllFromRealm();
-                                        }
-                                    });
-
-                            schema.get("NodeInfoEntity")
-                                    .transform(new RealmObjectSchema.Function() {
-                                        @Override
-                                        public void apply(DynamicRealmObject obj) {
-                                            obj.getDynamicRealm().where("NodeInfoEntity").findAll().deleteAllFromRealm();
-                                        }
-                                    });
-
-                            schema.get("RegionInfoEntity")
-                                    .removeField("uuid")
-                                    .addPrimaryKey("ip")
-                                    .addField("nodeAddress", String.class)
-                                    .transform(new RealmObjectSchema.Function() {
-                                        @Override
-                                        public void apply(DynamicRealmObject obj) {
-                                            obj.getDynamicRealm().where("RegionInfoEntity").findAll().deleteAllFromRealm();
-                                        }
-                                    });
-
-                            schema.get("SharedTransactionInfoEntity")
-                                    .removeField("transactionResult")
-                                    .addField("transactionResult", String.class)
-                                    .addField("nodeAddress", String.class)
-                                    .transform(new RealmObjectSchema.Function() {
-                                        @Override
-                                        public void apply(DynamicRealmObject obj) {
-                                            obj.getDynamicRealm().where("SharedTransactionInfoEntity").findAll().deleteAllFromRealm();
-                                        }
-                                    });
-
-                            schema.get("SharedWalletInfoEntity")
-                                    .renameField("walletAddress", "creatorAddress")
-                                    .addField("nodeAddress", String.class)
-                                    .transform(new RealmObjectSchema.Function() {
-                                        @Override
-                                        public void apply(DynamicRealmObject obj) {
-                                            obj.getDynamicRealm().where("SharedWalletInfoEntity").findAll().deleteAllFromRealm();
-                                        }
-                                    });
-
-                            schema.get("SingleVoteInfoEntity")
-                                    .removeField("avatar")
-                                    .transform(new RealmObjectSchema.Function() {
-                                        @Override
-                                        public void apply(DynamicRealmObject obj) {
-                                            obj.getDynamicRealm().where("SingleVoteInfoEntity").findAll().deleteAllFromRealm();
-                                        }
-                                    });
-
-                            schema.get("SharedWalletOwnerInfoEntity")
-                                    .addField("nodeAddress", String.class)
-                                    .transform(new RealmObjectSchema.Function() {
-                                        @Override
-                                        public void apply(DynamicRealmObject obj) {
-                                            obj.getDynamicRealm().where("SharedWalletOwnerInfoEntity").findAll().deleteAllFromRealm();
-                                        }
-                                    });
-
-                            schema.get("SingleVoteInfoEntity")
-                                    .addField("nodeAddress", String.class)
-                                    .transform(new RealmObjectSchema.Function() {
-                                        @Override
-                                        public void apply(DynamicRealmObject obj) {
-                                            obj.getDynamicRealm().where("SingleVoteInfoEntity").findAll().deleteAllFromRealm();
-                                        }
-                                    });
-
-                            schema.get("TicketInfoEntity")
-                                    .addField("nodeAddress", String.class)
-                                    .transform(new RealmObjectSchema.Function() {
-                                        @Override
-                                        public void apply(DynamicRealmObject obj) {
-                                            obj.getDynamicRealm().where("TicketInfoEntity").findAll().deleteAllFromRealm();
-                                        }
-                                    });
-
-                            schema.remove("TransactionInfoResult");
-
-                            schema.create("CandidateInfoEntity")
-                                    .addField("candidateId", String.class, FieldAttribute.PRIMARY_KEY)
-                                    .addField("deposit", String.class)
-                                    .addField("blockNumber", long.class)
-                                    .addField("owner", String.class)
-                                    .addField("txIndex", int.class)
-                                    .addField("from", String.class)
-                                    .addField("fee", int.class)
-                                    .addField("host", String.class)
-                                    .addField("port", String.class)
-                                    .addField("txHash", String.class)
-                                    .addField("extra", String.class)
-                                    .addField("nodeAddress", String.class)
-                                    .addField("candidateName", String.class);
-                            oldVersion++;
-                        }
-                    }
-                })
+                .migration(new ATONRealmMigration())
                 .build());
     }
 
@@ -235,10 +96,6 @@ public class AppFramework {
     public void onNodeChangedEvent(Event.NodeChangedEvent event) {
         //初始化普通钱包
         IndividualWalletManager.getInstance().init();
-        //初始化共享钱包
-        SharedWalletManager.getInstance().init();
-        //初始化网络
-        HttpClient.getInstance().init(mContext, event.nodeEntity.getHttpUrl(), buildMultipleUrlMap());
     }
 
     static class NetStateBroadcastReceiver extends BroadcastReceiver {
@@ -246,6 +103,161 @@ public class AppFramework {
         public void onReceive(Context context, Intent intent) {
             final NetState state = (NetState) intent.getSerializableExtra(NetConnectivity.EXTRA_NETSTATE);
             EventPublisher.getInstance().sendNetWorkStateChangedEvent(state);
+        }
+    }
+
+    static class ATONRealmMigration implements RealmMigration {
+
+        @Override
+        public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
+            RealmSchema schema = realm.getSchema();
+
+            if (oldVersion == 104) {
+
+                schema.get("IndividualTransactionInfoEntity")
+                        .addField("completed", boolean.class)
+                        .addField("value", double.class)
+                        .addField("nodeAddress", String.class)
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.getDynamicRealm().where("IndividualTransactionInfoEntity").findAll().deleteAllFromRealm();
+                            }
+                        });
+
+                schema.get("IndividualWalletInfoEntity")
+                        .addField("mnemonic", String.class)
+                        .addField("nodeAddress", String.class)
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.set("nodeAddress", "https://test-amigo.platon.network/test");
+                            }
+                        });
+
+                schema.get("OwnerInfoEntity")
+                        .addField("nodeAddress", String.class)
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.getDynamicRealm().where("OwnerInfoEntity").findAll().deleteAllFromRealm();
+                            }
+                        });
+
+                schema.get("NodeInfoEntity")
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.getDynamicRealm().where("NodeInfoEntity").findAll().deleteAllFromRealm();
+                            }
+                        });
+
+                schema.get("RegionInfoEntity")
+                        .removeField("uuid")
+                        .addPrimaryKey("ip")
+                        .addField("nodeAddress", String.class)
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.getDynamicRealm().where("RegionInfoEntity").findAll().deleteAllFromRealm();
+                            }
+                        });
+
+                schema.get("SharedTransactionInfoEntity")
+                        .removeField("transactionResult")
+                        .addField("transactionResult", String.class)
+                        .addField("nodeAddress", String.class)
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.getDynamicRealm().where("SharedTransactionInfoEntity").findAll().deleteAllFromRealm();
+                            }
+                        });
+
+                schema.get("SharedWalletInfoEntity")
+                        .renameField("walletAddress", "creatorAddress")
+                        .addField("nodeAddress", String.class)
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.getDynamicRealm().where("SharedWalletInfoEntity").findAll().deleteAllFromRealm();
+                            }
+                        });
+
+                schema.get("SingleVoteInfoEntity")
+                        .removeField("avatar")
+                        .addField("nodeAddress", String.class)
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.getDynamicRealm().where("SingleVoteInfoEntity").findAll().deleteAllFromRealm();
+                            }
+                        });
+
+                schema.get("SharedWalletOwnerInfoEntity")
+                        .addField("nodeAddress", String.class)
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.getDynamicRealm().where("SharedWalletOwnerInfoEntity").findAll().deleteAllFromRealm();
+                            }
+                        });
+
+                schema.get("TicketInfoEntity")
+                        .addField("nodeAddress", String.class)
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.getDynamicRealm().where("TicketInfoEntity").findAll().deleteAllFromRealm();
+                            }
+                        });
+
+                schema.remove("TransactionInfoResult");
+
+                schema.create("CandidateInfoEntity")
+                        .addField("candidateId", String.class, FieldAttribute.PRIMARY_KEY)
+                        .addField("deposit", String.class)
+                        .addField("blockNumber", long.class)
+                        .addField("owner", String.class)
+                        .addField("txIndex", int.class)
+                        .addField("from", String.class)
+                        .addField("fee", int.class)
+                        .addField("host", String.class)
+                        .addField("port", String.class)
+                        .addField("txHash", String.class)
+                        .addField("extra", String.class)
+                        .addField("nodeAddress", String.class)
+                        .addField("candidateName", String.class);
+                oldVersion++;
+            } else if (oldVersion == 105) {
+                //删除联名钱包OwnerInfoEntity
+                schema.remove("OwnerInfoEntity");
+                //删除联名钱包交易记录
+                schema.remove("SharedTransactionInfoEntity");
+                //删除联名钱包记录
+                schema.remove("SharedWalletInfoEntity");
+                //删除联名钱包SharedWalletOwnerInfoEntity
+                schema.remove("SharedWalletOwnerInfoEntity");
+                //删除联名钱包交易结果TransactionInfoResult
+                schema.remove("TransactionInfoResult");
+                //删除节点数据
+                schema.remove("CandidateInfoEntity");
+                //删除区域信息数据
+                schema.remove("RegionInfoEntity");
+                //增加普通钱包数据库字段
+                schema.get("IndividualTransactionInfoEntity")
+                        .removeField("uuid")
+                        .addPrimaryKey("hash")
+                        .removeField("completed")
+                        .removeField("memo")
+                        .addField("txType", int.class)
+                        .addField("txReceiptStatus", int.class)
+                        .addField("sequence", long.class)
+                        .addField("receiveType", String.class)
+                        .addField("chainId", String.class)
+                        .addField("actualTxCost", String.class);
+                oldVersion++;
+            }
         }
     }
 

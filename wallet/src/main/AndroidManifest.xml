@@ -133,11 +133,6 @@
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".component.ui.view.AddWalletAcitivity"
-            android:launchMode="standard"
-            android:screenOrientation="portrait"
-            android:theme="@style/Activity_Translucent" />
-        <activity
             android:name=".component.ui.view.TransactionRecordsActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />

@@ -52,20 +52,7 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
 
     private Unbinder unbinder;
     private int mCurIndex = TAB_PROPERTY;
-    public static MainActivity sInstance;
     private FragmentManager fragmentManager;
-
-    public static void actionStart(Context context) {
-        Intent intent = new Intent(context, MainActivity.class);
-        context.startActivity(intent);
-    }
-
-    public static void actionStart(Context context, int index, int subIndex) {
-        Intent intent = new Intent(context, MainActivity.class);
-        intent.putExtra(Constants.Extra.EXTRA_WALLET_INDEX, index);
-        intent.putExtra(Constants.Extra.EXTRA_WALLET_SUB_INDEX, subIndex);
-        context.startActivity(intent);
-    }
 
     @Override
     protected MainPresenter createPresenter() {
@@ -76,13 +63,11 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-        sInstance = this;
         mPresenter.checkVersion();
         setContentView(R.layout.activity_main);
         unbinder = ButterKnife.bind(this);
         initViews();
         EventPublisher.getInstance().register(this);
-        LoopService.startLoopService(this);
     }
 
     @Override
@@ -169,17 +154,27 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
     protected void onDestroy() {
         super.onDestroy();
         EventPublisher.getInstance().unRegister(this);
-        LoopService.quitLoopService(this);
-        sInstance = null;
         if (unbinder != null) {
             unbinder.unbind();
         }
     }
 
     public static void restart(Context context) {
-        ((Activity) context).finish();
         Intent intent = new Intent(context, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        context.startActivity(intent);
+        ((Activity)context).finish();
+    }
+
+    public static void actionStart(Context context) {
+        Intent intent = new Intent(context, MainActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void actionStart(Context context, int index, int subIndex) {
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.putExtra(Constants.Extra.EXTRA_WALLET_INDEX, index);
+        intent.putExtra(Constants.Extra.EXTRA_WALLET_SUB_INDEX, subIndex);
         context.startActivity(intent);
     }
 }

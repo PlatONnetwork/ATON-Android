@@ -7,7 +7,6 @@ import com.juzix.wallet.component.ui.view.BackupMnemonicPhraseActivity;
 import com.juzix.wallet.component.ui.view.ManageIndividualWalletActivity;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.db.sqlite.IndividualWalletInfoDao;
-import com.juzix.wallet.db.sqlite.SharedWalletInfoDao;
 import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.WalletEntity;
@@ -83,8 +82,6 @@ public class WalletManagerPresenter extends BasePresenter<WalletManagerContract.
                         walletEntity.setUpdateTime(updateTime);
                         if (walletEntity instanceof IndividualWalletEntity){
                             IndividualWalletInfoDao.updateUpdateTimeWithUuid(walletEntity.getUuid(), updateTime);
-                        }else {
-                            SharedWalletInfoDao.updateUpdateTimeWithUuid(walletEntity.getUuid(), updateTime);
                         }
                     }
                     return null;

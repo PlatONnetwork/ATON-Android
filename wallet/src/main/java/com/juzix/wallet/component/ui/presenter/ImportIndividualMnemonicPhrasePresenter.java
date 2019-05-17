@@ -11,7 +11,6 @@ import com.juzix.wallet.component.ui.contract.ImportIndividualMnemonicPhraseCont
 import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.engine.NodeManager;
-import com.juzix.wallet.engine.SharedWalletManager;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 
 import java.util.Arrays;
@@ -95,7 +94,7 @@ public class ImportIndividualMnemonicPhrasePresenter extends BasePresenter<Impor
 
     @Override
     public boolean isExists(String walletName) {
-        return IndividualWalletManager.getInstance().walletNameExists(walletName) ? true : SharedWalletManager.getInstance().walletNameExists(walletName);
+        return IndividualWalletManager.getInstance().walletNameExists(walletName);
     }
 
     private static final int MSG_OK = 1;

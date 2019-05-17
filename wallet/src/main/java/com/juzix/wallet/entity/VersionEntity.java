@@ -8,6 +8,7 @@ import android.text.TextUtils;
  * @author matrixelement
  */
 public class VersionEntity implements Parcelable {
+
     private String version;
     private String downloadUrl;
 

@@ -12,16 +12,10 @@ import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.adapter.CommonAdapter;
 import com.juzix.wallet.component.adapter.base.ViewHolder;
-import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.TransactionRecordsContract;
 import com.juzix.wallet.component.ui.presenter.TransactionRecordsPresenter;
-import com.juzix.wallet.engine.IndividualWalletManager;
-import com.juzix.wallet.engine.SharedWalletManager;
-import com.juzix.wallet.engine.SharedWalletTransactionManager;
 import com.juzix.wallet.entity.IndividualTransactionEntity;
-import com.juzix.wallet.entity.SharedTransactionEntity;
-import com.juzix.wallet.entity.SharedWalletEntity;
 import com.juzix.wallet.entity.TransactionEntity;
 import com.juzix.wallet.entity.VoteTransactionEntity;
 import com.juzix.wallet.event.EventPublisher;
@@ -54,25 +48,18 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
         mAdapter = new CommonAdapter<TransactionEntity>(R.layout.item_transaction_record, transactionEntities) {
             @Override
             protected void convert(Context context, ViewHolder viewHolder, TransactionEntity item, int position) {
-                TransactionEntity.TransactionStatus status = item.getTransactionStatus();
-                if (item instanceof SharedTransactionEntity) {
-                    SharedTransactionEntity entity = (SharedTransactionEntity) item;
-                    SharedTransactionEntity.TransactionStatus transactionStatus = item.getTransactionStatus();
-                    SharedTransactionEntity.TransactionType transactionType = SharedTransactionEntity.TransactionType.getTransactionType(entity.getTransactionType());
-                    viewHolder.setText(R.id.tv_amount, String.format("%s%s", "-", NumberParserUtils.getPrettyBalance(item.getValue())));
-                    viewHolder.setText(R.id.tv_name, context.getString(transactionType.getTransactionTypeDesc(entity.getToAddress(), null)));
-                    viewHolder.setText(R.id.tv_desc, transactionStatus.getStatusDesc(context, entity.getConfirms(), entity.getRequiredSignNumber()));
-                } else if (item instanceof VoteTransactionEntity) {
-                    viewHolder.setText(R.id.tv_name, string(R.string.vote));
-                    viewHolder.setText(R.id.tv_desc, status.getStatusDesc(context, item.getSignedBlockNumber(), 12));
-                } else {
-                    IndividualTransactionEntity entity = (IndividualTransactionEntity) item;
-                    viewHolder.setText(R.id.tv_name, string(R.string.action_send_transation));
-                    viewHolder.setText(R.id.tv_desc, status.getStatusDesc(context, item.getSignedBlockNumber(), 12));
-                }
-                viewHolder.setText(R.id.tv_amount, context.getString(R.string.amount_with_unit, NumberParserUtils.getPrettyNumber(item.getValue(), 4)));
-                viewHolder.setText(R.id.tv_time, DateUtil.format(item.getCreateTime(), DateUtil.DATETIME_FORMAT_PATTERN));
-                viewHolder.setTextColor(R.id.tv_desc, ContextCompat.getColor(context, status.getStatusDescTextColor()));
+//                TransactionEntity.TransactionStatus status = item.getTransactionStatus();
+//                if (item instanceof VoteTransactionEntity) {
+//                    viewHolder.setText(R.id.tv_name, string(R.string.vote));
+//                    viewHolder.setText(R.id.tv_desc, status.getStatusDesc(context, item.getSignedBlockNumber(), 12));
+//                } else {
+//                    IndividualTransactionEntity entity = (IndividualTransactionEntity) item;
+//                    viewHolder.setText(R.id.tv_name, string(R.string.action_send_transation));
+//                    viewHolder.setText(R.id.tv_desc, status.getStatusDesc(context, item.getSignedBlockNumber(), 12));
+//                }
+//                viewHolder.setText(R.id.tv_amount, context.getString(R.string.amount_with_unit, NumberParserUtils.getPrettyNumber(item.getValue(), 4)));
+//                viewHolder.setText(R.id.tv_time, DateUtil.format(item.getCreateTime(), DateUtil.DATETIME_FORMAT_PATTERN));
+//                viewHolder.setTextColor(R.id.tv_desc, ContextCompat.getColor(context, status.getStatusDescTextColor()));
             }
         };
         listView.setAdapter(mAdapter);
@@ -80,33 +67,20 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                TransactionEntity item = (TransactionEntity) parent.getAdapter().getItem(position);
-                if (item instanceof IndividualTransactionEntity) {
-                    IndividualTransactionDetailActivity.actionStart(currentActivity(), (IndividualTransactionEntity) item, null);
-                } else if (item instanceof VoteTransactionEntity) {
-                    IndividualVoteDetailActivity.actionStart(currentActivity(), item.getUuid());
-                } else if (item instanceof SharedTransactionEntity) {
-                    SharedTransactionEntity sharedTransactionEntity = (SharedTransactionEntity) item;
-                    SharedWalletEntity mSharedWalletEntity = SharedWalletManager.getInstance().getWalletByContractAddress(sharedTransactionEntity.getContractAddress());
-                    if (!sharedTransactionEntity.isRead()) {
-                        sharedTransactionEntity.setRead(true);
-                        SharedWalletTransactionManager.getInstance().updateTransactionForRead(mSharedWalletEntity, sharedTransactionEntity);
-                    }
-                    BaseActivity activity = currentActivity();
-//                    if (sharedTransactionEntity.getTransactionStatus() == TransactionEntity.TransactionStatus.SIGNING) {
-//                        SigningActivity.actionStart(activity, sharedTransactionEntity, IndividualWalletManager.getInstance().getWalletByAddress(sharedTransactionEntity.getOwnerWalletAddress()));
-//                    } else {
-//                        SharedTransactionDetailActivity.actionStart(activity, sharedTransactionEntity, null);
-//                    }
-                }
+//                TransactionEntity item = (TransactionEntity) parent.getAdapter().getItem(position);
+//                if (item instanceof IndividualTransactionEntity) {
+//                    IndividualTransactionDetailActivity.actionStart(currentActivity(), (IndividualTransactionEntity) item, null);
+//                } else if (item instanceof VoteTransactionEntity) {
+//                    IndividualVoteDetailActivity.actionStart(currentActivity(), item.getUuid());
+//                }
             }
         });
     }
 
     @Override
     protected void onDestroy() {
-        EventPublisher.getInstance().unRegister(this);
         super.onDestroy();
+        EventPublisher.getInstance().unRegister(this);
     }
 
     public static void actionStart(Context context) {

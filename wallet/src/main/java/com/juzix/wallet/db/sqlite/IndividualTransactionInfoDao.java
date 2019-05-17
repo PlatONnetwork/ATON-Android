@@ -71,7 +71,7 @@ public class IndividualTransactionInfoDao {
             realm = Realm.getDefaultInstance();
             RealmResults<IndividualTransactionInfoEntity> results = realm.where(IndividualTransactionInfoEntity.class)
                     .equalTo("nodeAddress", NodeManager.getInstance().getCurNodeAddress())
-                    .sort("createTime",Sort.DESCENDING)
+                    .sort("createTime", Sort.DESCENDING)
                     .findAll();
             list.addAll(realm.copyFromRealm(results));
         } catch (Exception exp) {
@@ -84,21 +84,31 @@ public class IndividualTransactionInfoDao {
         return list;
     }
 
-    public static List<IndividualTransactionInfoEntity> getTransactionListByWalletAddress(String walletAddress) {
-
+    /**
+     * 分页加载获取交易记录
+     * @param walletAddress
+     * @param createTime
+     * @param size
+     * @return
+     */
+    public static List<IndividualTransactionInfoEntity> getTransactionListByWalletAddress(String walletAddress, long createTime,long size) {
         List<IndividualTransactionInfoEntity> list = new ArrayList<>();
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
             RealmResults<IndividualTransactionInfoEntity> results = realm.where(IndividualTransactionInfoEntity.class)
                     .beginGroup()
-                    .equalTo("walletAddress", walletAddress)
+                        .equalTo("from", walletAddress)
+                        .or()
+                        .equalTo("to", walletAddress)
+                    .endGroup()
                     .and()
                     .equalTo("nodeAddress", NodeManager.getInstance().getCurNodeAddress())
-                    .endGroup()
-                    .sort("createTime",Sort.DESCENDING)
+                    .lessThan("createTime",createTime)
+                    .sort("createTime", Sort.DESCENDING)
+                    .limit(size)
                     .findAll();
-            if (results != null){
+            if (results != null) {
                 list = realm.copyFromRealm(results);
             }
         } catch (Exception exp) {
@@ -128,7 +138,7 @@ public class IndividualTransactionInfoDao {
                     .endGroup()
                     .sort("createTime", Sort.DESCENDING)
                     .findAll();
-            if (results != null){
+            if (results != null) {
                 list = realm.copyFromRealm(results);
             }
         } catch (Exception exp) {

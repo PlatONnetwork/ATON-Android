@@ -3,9 +3,6 @@ package com.juzix.wallet.event;
 import com.juzhen.framework.network.NetState;
 import com.juzix.wallet.entity.IndividualTransactionEntity;
 import com.juzix.wallet.entity.NodeEntity;
-import com.juzix.wallet.entity.RegionEntity;
-import com.juzix.wallet.entity.SharedTransactionEntity;
-import com.juzix.wallet.entity.SharedWalletEntity;
 import com.juzix.wallet.entity.VoteTransactionEntity;
 import com.juzix.wallet.entity.WalletEntity;
 
@@ -24,39 +21,12 @@ public class Event {
         }
     }
 
-    public static class UpdateSharedWalletTransactionEvent {
-
-        public SharedTransactionEntity sharedTransactionEntity;
-
-        public UpdateSharedWalletTransactionEvent(SharedTransactionEntity sharedTransactionEntity) {
-            this.sharedTransactionEntity = sharedTransactionEntity;
-        }
-    }
-
     public static class UpdateIndividualWalletTransactionEvent {
 
         public IndividualTransactionEntity individualTransactionEntity;
 
         public UpdateIndividualWalletTransactionEvent(IndividualTransactionEntity individualTransactionEntity) {
             this.individualTransactionEntity = individualTransactionEntity;
-        }
-    }
-
-    public static class UpdateCreateJointWalletProgressEvent {
-
-        public SharedWalletEntity sharedWalletEntity;
-
-        public UpdateCreateJointWalletProgressEvent(SharedWalletEntity sharedWalletEntity) {
-            this.sharedWalletEntity = sharedWalletEntity;
-        }
-    }
-
-    public static class UpdateCandidateRegionInfoEvent {
-
-        public RegionEntity regionEntity;
-
-        public UpdateCandidateRegionInfoEvent(RegionEntity regionEntity) {
-            this.regionEntity = regionEntity;
         }
     }
 
@@ -97,15 +67,6 @@ public class Event {
     public static class UpdateWalletListEvent {
 
         public UpdateWalletListEvent() {
-        }
-    }
-
-    public static class RemoveSharedWalletEvent {
-
-        public SharedWalletEntity sharedWalletEntity;
-
-        public RemoveSharedWalletEvent(SharedWalletEntity sharedWalletEntity) {
-            this.sharedWalletEntity = sharedWalletEntity;
         }
     }
 

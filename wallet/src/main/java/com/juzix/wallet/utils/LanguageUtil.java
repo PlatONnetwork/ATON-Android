@@ -47,6 +47,7 @@ public class LanguageUtil {
         AppSettings.getInstance().setLanguage(locale.getLanguage());
 
         MainActivity.restart(context);
+
     }
 
 }

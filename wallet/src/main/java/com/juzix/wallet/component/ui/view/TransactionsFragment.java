@@ -2,22 +2,17 @@ package com.juzix.wallet.component.ui.view;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.juzix.wallet.R;
-import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.adapter.TransactionListsAdapter;
 import com.juzix.wallet.component.ui.base.MVPBaseFragment;
 import com.juzix.wallet.component.ui.contract.TransactionsContract;
 import com.juzix.wallet.component.ui.presenter.TransactionsPresenter;
-import com.juzix.wallet.entity.SharedTransactionEntity;
 import com.juzix.wallet.entity.TransactionEntity;
-import com.juzix.wallet.entity.WalletEntity;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 
@@ -28,7 +23,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnItemClick;
 import butterknife.Unbinder;
 
 /**
@@ -51,11 +45,6 @@ public class TransactionsFragment extends MVPBaseFragment<TransactionsPresenter>
         return new TransactionsPresenter(this);
     }
 
-    @Override
-    protected void onFragmentPageStart() {
-        mPresenter.fetchWalletTransactionList();
-    }
-
     @Nullable
     @Override
     public View onCreateFragmentPage(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -63,7 +52,6 @@ public class TransactionsFragment extends MVPBaseFragment<TransactionsPresenter>
         unbinder = ButterKnife.bind(this, rootView);
         EventPublisher.getInstance().register(this);
         initViews();
-        mPresenter.updateWalletEntity();
         return rootView;
     }
 
@@ -74,29 +62,13 @@ public class TransactionsFragment extends MVPBaseFragment<TransactionsPresenter>
         listTransaction.setFocusable(false);
     }
 
-    @OnItemClick({R.id.list_transaction})
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        TransactionEntity transactionEntity = (TransactionEntity) parent.getAdapter().getItem(position);
-        mPresenter.enterTransactionDetailActivity(transactionEntity);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUpdateSharedWalletTransactionEvent(Event.UpdateSharedWalletTransactionEvent event) {
-        Log.e(TAG, "onUpdateSharedWalletTransactionEvent" + event.sharedTransactionEntity.toString());
-        if (transactionListAdapter.getList() != null && transactionListAdapter.getList().contains(event.sharedTransactionEntity)) {
-            transactionListAdapter.updateItem(currentActivity(), listTransaction, event.sharedTransactionEntity);
-        } else {
-            transactionListAdapter.addItem(event.sharedTransactionEntity);
-        }
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateIndividualWalletTransactionEvent(Event.UpdateIndividualWalletTransactionEvent event) {
-        if (transactionListAdapter.getList() != null && transactionListAdapter.getList().contains(event.individualTransactionEntity)) {
-            transactionListAdapter.updateItem(currentActivity(), listTransaction, event.individualTransactionEntity);
-        } else {
-            transactionListAdapter.addItem(event.individualTransactionEntity);
-        }
+//        if (transactionListAdapter.getList() != null && transactionListAdapter.getList().contains(event.individualTransactionEntity)) {
+//            transactionListAdapter.updateItem(currentActivity(), listTransaction, event.individualTransactionEntity);
+//        } else {
+//            transactionListAdapter.addItem(event.individualTransactionEntity);
+//        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -109,30 +81,14 @@ public class TransactionsFragment extends MVPBaseFragment<TransactionsPresenter>
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUpdateSelectedWalletEvent(Event.UpdateSelectedWalletEvent event) {
-        mPresenter.updateWalletEntity();
-//        setAdapter();
-        mPresenter.fetchWalletTransactionList();
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateTransactionUnreadMessageEvent(Event.UpdateTransactionUnreadMessageEvent event) {
-        transactionListAdapter.updateItem(listTransaction, event.uuid, event.hasUnread);
+//        transactionListAdapter.updateItem(listTransaction, event.uuid, event.hasUnread);
     }
 
-    @Override
-    public WalletEntity getWalletFromIntent() {
-        return getArguments().getParcelable(Constants.Extra.EXTRA_WALLET);
-    }
 
     @Override
     public void notifyTransactionListChanged(List<TransactionEntity> transactionEntityList) {
         transactionListAdapter.notifyDataChanged(transactionEntityList);
-    }
-
-    @Override
-    public void notifyItem(SharedTransactionEntity transactionEntity) {
-        transactionListAdapter.updateItem(getActivity(), listTransaction, transactionEntity);
     }
 
     @Override
@@ -142,5 +98,10 @@ public class TransactionsFragment extends MVPBaseFragment<TransactionsPresenter>
             unbinder.unbind();
         }
         EventPublisher.getInstance().unRegister(this);
+    }
+
+    @Override
+    protected void onFragmentPageStart() {
+
     }
 }

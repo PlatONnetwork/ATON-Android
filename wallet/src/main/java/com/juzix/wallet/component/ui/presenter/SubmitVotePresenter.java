@@ -11,7 +11,6 @@ import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.dialog.SelectWalletDialogFragment;
 import com.juzix.wallet.component.ui.dialog.SendTransactionDialogFragment;
 import com.juzix.wallet.db.entity.SingleVoteInfoEntity;
-import com.juzix.wallet.engine.CandidateManager;
 import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.engine.VoteManager;
 import com.juzix.wallet.entity.CandidateEntity;
@@ -57,9 +56,9 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
 
     @Override
     public void showVoteInfo() {
-        showNodeInfo(mCandidateEntity);
-        showSelectedWalletInfo();
-        showVotePayInfo();
+//        showNodeInfo(mCandidateEntity);
+//        showSelectedWalletInfo();
+//        showVotePayInfo();
     }
 
     @Override
@@ -85,88 +84,88 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
     @Override
     public void submitVote() {
 
-        getVerifiersList()
-                .contains(mCandidateEntity.getCandidateId())
-                .filter(new Predicate<Boolean>() {
-                    @Override
-                    public boolean test(Boolean aBoolean) throws Exception {
-                        return !aBoolean;
-                    }
-                })
-                .switchIfEmpty(new SingleSource<Boolean>() {
-                    @Override
-                    public void subscribe(SingleObserver<? super Boolean> observer) {
-                        observer.onError(new CustomThrowable(CustomThrowable.CODE_NODE_EXIT_CONSENSUS));
-                    }
-                })
-                .flatMap(new Function<Boolean, SingleSource<String>>() {
-                    @Override
-                    public SingleSource<String> apply(Boolean aBoolean) throws Exception {
-                        return Single
-                                .zip(VoteManager.getInstance().getPoolRemainder(), VoteManager.getInstance().getTicketPrice(), new BiFunction<Long, String, String>() {
-                                    @Override
-                                    public String apply(Long poolRemainder, String ticketPrice) throws Exception {
-                                        return poolRemainder + ":" + ticketPrice;
-                                    }
-                                });
-                    }
-                })
-                .compose(new SchedulersTransformer())
-                .compose(bindToLifecycle())
-                .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
-                .subscribe(new Consumer<String>() {
-                    @Override
-                    public void accept(String result) throws Exception {
-                        if (isViewAttached()) {
-                            String ticketNum = getView().getTicketNum();
-                            String poolRemainder = result.split(":", 2)[0];
-                            String ticketPrice = result.split(":", 2)[1];
-                            double ticketAmount = BigDecimalUtil.div(BigDecimalUtil.mul(Double.parseDouble(ticketPrice), NumberParserUtils.parseInt(ticketNum)), 1E18);
-                            if (ticketAmount >= mIndividualWalletEntity.getBalance()) {
-                                showLongToast(R.string.voteTicketInsufficientBalanceTips);
-                                return;
-                            }
-
-                            if (NumberParserUtils.parseInt(ticketNum) > NumberParserUtils.parseInt(poolRemainder)) {
-                                showLongToast(R.string.voteLimitFailed);
-                                return;
-                            }
-
-                            double feeAmount = BigDecimalUtil.div(BigDecimalUtil.mul(VoteManager.GAS_PRICE.doubleValue(), VoteManager.GAS_LIMIT.doubleValue()), 1E18);
-
-                            SendTransactionDialogFragment
-                                    .newInstance(NumberParserUtils.getPrettyNumber(ticketAmount, 0), buildTransactionInfo(mIndividualWalletEntity.getName(), feeAmount))
-                                    .setOnConfirmBtnClickListener(new SendTransactionDialogFragment.OnConfirmBtnClickListener() {
-                                        @Override
-                                        public void onConfirmBtnClick() {
-                                            InputWalletPasswordDialogFragment
-                                                    .newInstance(mIndividualWalletEntity)
-                                                    .setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
-                                                        @Override
-                                                        public void onWalletPasswordCorrect(Credentials credentials) {
-                                                            submitVote(credentials, ticketNum, ticketPrice);
-                                                        }
-                                                    })
-                                                    .show(currentActivity().getSupportFragmentManager(), "inputWalletPasssword");
-                                        }
-                                    })
-                                    .show(currentActivity().getSupportFragmentManager(), "sendTransaction");
-
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        if (isViewAttached()) {
-                            if (throwable instanceof CustomThrowable) {
-                                CustomThrowable customThrowable = (CustomThrowable) throwable;
-                                showLongToast(customThrowable.getDetailMsgRes());
-                            } else {
-                                showLongToast(R.string.vote_failed);
-                            }
-                        }
-                    }
-                });
+//        getVerifiersList()
+//                .contains(mCandidateEntity.getCandidateId())
+//                .filter(new Predicate<Boolean>() {
+//                    @Override
+//                    public boolean test(Boolean aBoolean) throws Exception {
+//                        return !aBoolean;
+//                    }
+//                })
+//                .switchIfEmpty(new SingleSource<Boolean>() {
+//                    @Override
+//                    public void subscribe(SingleObserver<? super Boolean> observer) {
+//                        observer.onError(new CustomThrowable(CustomThrowable.CODE_NODE_EXIT_CONSENSUS));
+//                    }
+//                })
+//                .flatMap(new Function<Boolean, SingleSource<String>>() {
+//                    @Override
+//                    public SingleSource<String> apply(Boolean aBoolean) throws Exception {
+//                        return Single
+//                                .zip(VoteManager.getInstance().getPoolRemainder(), VoteManager.getInstance().getTicketPrice(), new BiFunction<Long, String, String>() {
+//                                    @Override
+//                                    public String apply(Long poolRemainder, String ticketPrice) throws Exception {
+//                                        return poolRemainder + ":" + ticketPrice;
+//                                    }
+//                                });
+//                    }
+//                })
+//                .compose(new SchedulersTransformer())
+//                .compose(bindToLifecycle())
+//                .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
+//                .subscribe(new Consumer<String>() {
+//                    @Override
+//                    public void accept(String result) throws Exception {
+//                        if (isViewAttached()) {
+//                            String ticketNum = getView().getTicketNum();
+//                            String poolRemainder = result.split(":", 2)[0];
+//                            String ticketPrice = result.split(":", 2)[1];
+//                            double ticketAmount = BigDecimalUtil.div(BigDecimalUtil.mul(Double.parseDouble(ticketPrice), NumberParserUtils.parseInt(ticketNum)), 1E18);
+//                            if (ticketAmount >= mIndividualWalletEntity.getBalance()) {
+//                                showLongToast(R.string.voteTicketInsufficientBalanceTips);
+//                                return;
+//                            }
+//
+//                            if (NumberParserUtils.parseInt(ticketNum) > NumberParserUtils.parseInt(poolRemainder)) {
+//                                showLongToast(R.string.voteLimitFailed);
+//                                return;
+//                            }
+//
+//                            double feeAmount = BigDecimalUtil.div(BigDecimalUtil.mul(VoteManager.GAS_PRICE.doubleValue(), VoteManager.GAS_LIMIT.doubleValue()), 1E18);
+//
+//                            SendTransactionDialogFragment
+//                                    .newInstance(NumberParserUtils.getPrettyNumber(ticketAmount, 0), buildTransactionInfo(mIndividualWalletEntity.getName(), feeAmount))
+//                                    .setOnConfirmBtnClickListener(new SendTransactionDialogFragment.OnConfirmBtnClickListener() {
+//                                        @Override
+//                                        public void onConfirmBtnClick() {
+//                                            InputWalletPasswordDialogFragment
+//                                                    .newInstance(mIndividualWalletEntity)
+//                                                    .setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
+//                                                        @Override
+//                                                        public void onWalletPasswordCorrect(Credentials credentials) {
+//                                                            submitVote(credentials, ticketNum, ticketPrice);
+//                                                        }
+//                                                    })
+//                                                    .show(currentActivity().getSupportFragmentManager(), "inputWalletPasssword");
+//                                        }
+//                                    })
+//                                    .show(currentActivity().getSupportFragmentManager(), "sendTransaction");
+//
+//                        }
+//                    }
+//                }, new Consumer<Throwable>() {
+//                    @Override
+//                    public void accept(Throwable throwable) throws Exception {
+//                        if (isViewAttached()) {
+//                            if (throwable instanceof CustomThrowable) {
+//                                CustomThrowable customThrowable = (CustomThrowable) throwable;
+//                                showLongToast(customThrowable.getDetailMsgRes());
+//                            } else {
+//                                showLongToast(R.string.vote_failed);
+//                            }
+//                        }
+//                    }
+//                });
     }
 
     @Override
@@ -192,84 +191,6 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
             double ticketAmount = BigDecimalUtil.mul(ticketPrice, ticketNum);
             getView().showVotePayInfo(ticketPrice, ticketAmount);
         }
-    }
-
-    private Flowable<String> getVerifiersList() {
-        return CandidateManager
-                .getInstance()
-                .getVerifiersList(mTicketPrice)
-                .toFlowable()
-                .flatMap(new Function<List<CandidateEntity>, Publisher<CandidateEntity>>() {
-                    @Override
-                    public Publisher<CandidateEntity> apply(List<CandidateEntity> candidateEntities) throws Exception {
-                        return Flowable.fromIterable(candidateEntities);
-                    }
-                })
-                .filter(new Predicate<CandidateEntity>() {
-                    @Override
-                    public boolean test(CandidateEntity candidateEntity) throws Exception {
-                        return candidateEntity.getVotedNum() == 0;
-                    }
-                })
-                .map(new Function<CandidateEntity, String>() {
-                    @Override
-                    public String apply(CandidateEntity candidateEntity) throws Exception {
-                        return candidateEntity.getCandidateId();
-                    }
-                });
-    }
-
-    /**
-     * 获取全量的提名节点列表
-     *
-     * @param candidateEntityList
-     * @return
-     */
-    private List<CandidateEntity> getAllCandidateList(List<CandidateEntity> candidateEntityList) {
-        List<CandidateEntity> candidateList = new ArrayList<>();
-        if (candidateEntityList == null || candidateEntityList.isEmpty()) {
-            return candidateList;
-        }
-        CandidateEntity entity = null;
-        for (int i = 0; i < candidateEntityList.size(); i++) {
-            //剔除排名200后的节点
-            entity = candidateEntityList.get(i);
-            if (i < 2 * DEFAULT_DEPOSIT_RANKING) {
-                entity.setStakedRanking(i + 1);
-                if (i < DEFAULT_DEPOSIT_RANKING && entity.getVotedNum() >= DEFAULT_VOTE_NUM) {
-                    entity.setStatus(CandidateEntity.CandidateStatus.STATUS_CANDIDATE);
-                    candidateList.add(entity);
-                }
-            }
-        }
-
-        return candidateList;
-    }
-
-    /**
-     * 获取全量的候选节点
-     *
-     * @param candidateEntityList
-     * @return
-     */
-    private List<CandidateEntity> getAllReserveList(List<CandidateEntity> candidateEntityList) {
-        List<CandidateEntity> reserveList = new ArrayList<>();
-        if (candidateEntityList == null || candidateEntityList.isEmpty()) {
-            return reserveList;
-        }
-        CandidateEntity entity = null;
-        for (int i = 0; i < candidateEntityList.size(); i++) {
-            //剔除排名200后的节点
-            entity = candidateEntityList.get(i);
-            if (i < 2 * DEFAULT_DEPOSIT_RANKING) {
-                entity.setStakedRanking(i + 1);
-                if (i >= DEFAULT_DEPOSIT_RANKING || entity.getVotedNum() < DEFAULT_VOTE_NUM) {
-                    entity.setStatus(CandidateEntity.CandidateStatus.STATUS_RESERVE);
-                    reserveList.add(entity);
-                }
-            }
-        }
-        return reserveList;
     }
 
     /**
@@ -327,15 +248,15 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
         return map;
     }
 
-    private void showNodeInfo(CandidateEntity candidateEntity) {
-        if (candidateEntity == null) {
-            return;
-        }
-        CandidateExtraEntity candidateExtraEntity = candidateEntity.getCandidateExtraEntity();
-        if (candidateExtraEntity != null) {
-            getView().showNodeInfo(candidateExtraEntity.getNodeName(), candidateEntity.getCandidateIdWithPrefix());
-        }
-    }
+//    private void showNodeInfo(CandidateEntity candidateEntity) {
+//        if (candidateEntity == null) {
+//            return;
+//        }
+//        CandidateExtraEntity candidateExtraEntity = candidateEntity.getCandidateExtraEntity();
+//        if (candidateExtraEntity != null) {
+//            getView().showNodeInfo(candidateExtraEntity.getNodeName(), candidateEntity.getCandidateIdWithPrefix());
+//        }
+//    }
 
     private void showSelectedWalletInfo() {
         mIndividualWalletEntity = IndividualWalletManager.getInstance().getFirstValidIndividualWalletBalance();

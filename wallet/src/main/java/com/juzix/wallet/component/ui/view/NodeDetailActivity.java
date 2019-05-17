@@ -117,21 +117,21 @@ public class NodeDetailActivity extends MVPBaseActivity<NodeDetailPresenter> imp
 
     @Override
     public void showNodeDetailInfo(CandidateEntity candidateEntity) {
-        CandidateExtraEntity extraEntity = candidateEntity.getCandidateExtraEntity();
-        if (extraEntity != null) {
-            tvNodeName.setText(extraEntity.getNodeName());
-            tvJoinTime.setText(string(R.string.joinTime, DateUtil.format(extraEntity.getTime(), DateUtil.DATETIME_FORMAT_PATTERN)));
-            tvInstitutionalName.setText(extraEntity.getNodeDepartment());
-            tvInstitutionalWebsite.setText(extraEntity.getOfficialWebsite());
-            tvInstitutionalIntroduction.setText(extraEntity.getNodeDiscription());
-        }
-        rtvRankDesc.setText(candidateEntity.getStatus().getStatusDescRes());
-        tvStakedRanking.setText(String.format("%d", candidateEntity.getStakedRanking()));
-        tvStakedAmount.setText(NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(candidateEntity.getDeposit(), "1E18"), 4));
-        tvTickets.setText(String.format("%d", candidateEntity.getVotedNum()));
-        tvNodeUrl.setText(String.format("%s:%s", candidateEntity.getHost(), candidateEntity.getPort()));
-        tvNodeId.setText(candidateEntity.getCandidateIdWithPrefix());
-        tvRewardRadio.setText(String.format("%s%%", NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(candidateEntity.getFee(), 100D), 0)));
+//        CandidateExtraEntity extraEntity = candidateEntity.getCandidateExtraEntity();
+//        if (extraEntity != null) {
+//            tvNodeName.setText(extraEntity.getNodeName());
+//            tvJoinTime.setText(string(R.string.joinTime, DateUtil.format(extraEntity.getTime(), DateUtil.DATETIME_FORMAT_PATTERN)));
+//            tvInstitutionalName.setText(extraEntity.getNodeDepartment());
+//            tvInstitutionalWebsite.setText(extraEntity.getOfficialWebsite());
+//            tvInstitutionalIntroduction.setText(extraEntity.getNodeDiscription());
+//        }
+//        rtvRankDesc.setText(candidateEntity.getStatus().getStatusDescRes());
+//        tvStakedRanking.setText(String.format("%d", candidateEntity.getStakedRanking()));
+//        tvStakedAmount.setText(NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(candidateEntity.getDeposit(), "1E18"), 4));
+//        tvTickets.setText(String.format("%d", candidateEntity.getVotedNum()));
+//        tvNodeUrl.setText(String.format("%s:%s", candidateEntity.getHost(), candidateEntity.getPort()));
+//        tvNodeId.setText(candidateEntity.getCandidateIdWithPrefix());
+//        tvRewardRadio.setText(String.format("%s%%", NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(candidateEntity.getFee(), 100D), 0)));
 
     }
 

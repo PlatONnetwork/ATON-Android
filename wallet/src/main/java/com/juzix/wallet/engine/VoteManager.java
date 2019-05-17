@@ -7,28 +7,19 @@ import com.alibaba.fastjson.JSONObject;
 import com.juzhen.framework.network.ApiErrorCode;
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
-import com.juzhen.framework.network.HttpClient;
 import com.juzhen.framework.util.MapUtils;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.db.entity.CandidateInfoEntity;
-import com.juzix.wallet.db.entity.RegionInfoEntity;
 import com.juzix.wallet.db.entity.SingleVoteInfoEntity;
 import com.juzix.wallet.db.entity.TicketInfoEntity;
-import com.juzix.wallet.db.sqlite.CandidateInfoDao;
-import com.juzix.wallet.db.sqlite.RegionInfoDao;
 import com.juzix.wallet.db.sqlite.SingleVoteInfoDao;
-import com.juzix.wallet.engine.service.VoteService;
-import com.juzix.wallet.entity.BatchVoteSummaryEntity;
-import com.juzix.wallet.entity.BatchVoteTransactionEntity;
 import com.juzix.wallet.entity.CandidateEntity;
 import com.juzix.wallet.entity.IndividualWalletEntity;
-import com.juzix.wallet.entity.RegionEntity;
 import com.juzix.wallet.entity.SingleVoteEntity;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.AppUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.JSONUtil;
-
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 import org.web3j.crypto.Credentials;
@@ -87,99 +78,6 @@ public class VoteManager {
     public static VoteManager getInstance() {
         return InstanceHolder.INSTANCE;
     }
-
-    public Single<List<BatchVoteSummaryEntity>> getBatchVoteSummary(String[] addressList) {
-        return getBatchVoteSummaryFromNet(addressList)
-                .flatMap(new Function<Response<ApiResponse<List<BatchVoteSummaryEntity>>>, SingleSource<List<BatchVoteSummaryEntity>>>() {
-                    @Override
-                    public SingleSource<List<BatchVoteSummaryEntity>> apply(Response<ApiResponse<List<BatchVoteSummaryEntity>>> apiResponseResponse) throws Exception {
-                        if (apiResponseResponse.isSuccessful() && apiResponseResponse.body().getResult() == ApiErrorCode.SUCCESS) {
-                            return Single.just(apiResponseResponse.body().getData());
-                        } else {
-                            return getBatchVoteSummaryFromDB(addressList);
-                        }
-                    }
-                });
-    }
-
-    private Single<List<BatchVoteSummaryEntity>> getBatchVoteSummaryFromDB(String[] addressList) {
-        return Flowable.fromCallable(new Callable<List<SingleVoteInfoEntity>>() {
-            @Override
-            public List<SingleVoteInfoEntity> call() throws Exception {
-                return SingleVoteInfoDao.getTransactionListByWalletAddress(addressList);
-            }
-        }).flatMap(new Function<List<SingleVoteInfoEntity>, Publisher<SingleVoteInfoEntity>>() {
-            @Override
-            public Publisher<SingleVoteInfoEntity> apply(List<SingleVoteInfoEntity> singleVoteInfoEntities) throws Exception {
-                return Flowable.fromIterable(singleVoteInfoEntities);
-            }
-        }).map(new Function<SingleVoteInfoEntity, BatchVoteSummaryEntity>() {
-            @Override
-            public BatchVoteSummaryEntity apply(SingleVoteInfoEntity singleVoteInfoEntity) throws Exception {
-                return new BatchVoteSummaryEntity(null, null, String.valueOf(singleVoteInfoEntity.getTicketNumber()), null);
-            }
-        }).defaultIfEmpty(new BatchVoteSummaryEntity()).toList();
-    }
-
-    private Single<Response<ApiResponse<List<BatchVoteSummaryEntity>>>> getBatchVoteSummaryFromNet(String[] addressList) {
-        return HttpClient.getInstance().createService(VoteService.class).getBatchVoteSummary(String.format("%s-%s", "api", Web3jManager.getInstance().getChainId()), ApiRequestBody.newBuilder()
-                .put("addressList", addressList)
-                .put("cid", Web3jManager.getInstance().getChainId())
-                .build());
-    }
-
-    public Flowable<HashMap<String, List<BatchVoteTransactionEntity>>> getBatchVoteTransaction(String[] walletAddrs) {
-        return HttpClient.getInstance().createService(VoteService.class).getBatchVoteTransaction(String.format("%s-%s", "api", Web3jManager.getInstance().getChainId()), ApiRequestBody.newBuilder()
-                .put("walletAddrs", walletAddrs)
-                .put("cid", Web3jManager.getInstance().getChainId())
-                .put("pageNo", 1)
-                .put("pageSize", Integer.MAX_VALUE)
-                .build())
-                .toFlowable()
-                .flatMap(new Function<Response<ApiResponse<List<BatchVoteTransactionEntity>>>, Publisher<BatchVoteTransactionEntity>>() {
-                    @Override
-                    public Publisher<BatchVoteTransactionEntity> apply(Response<ApiResponse<List<BatchVoteTransactionEntity>>> apiResponseResponse) throws Exception {
-                        if (apiResponseResponse.body() != null) {
-                            return Flowable.fromIterable(apiResponseResponse.body().getData());
-                        } else {
-                            return Flowable.fromIterable(Collections.emptyList());
-                        }
-                    }
-                }).map(new Function<BatchVoteTransactionEntity, BatchVoteTransactionEntity>() {
-                    @Override
-                    public BatchVoteTransactionEntity apply(BatchVoteTransactionEntity batchVoteTransactionEntity) throws Exception {
-                        Optional<RegionEntity> optional = getBatchVoteTransactionRegion(batchVoteTransactionEntity.getCandidateId());
-                        if (!optional.isEmpty()) {
-                            batchVoteTransactionEntity.setRegionEntity(optional.get());
-                        }
-                        return batchVoteTransactionEntity;
-                    }
-                }).map(new Function<BatchVoteTransactionEntity, BatchVoteTransactionEntity>() {
-                    @Override
-                    public BatchVoteTransactionEntity apply(BatchVoteTransactionEntity batchVoteTransactionEntity) throws Exception {
-                        CandidateInfoEntity candidateInfoEntity = CandidateInfoDao.getCandidateInfoById(batchVoteTransactionEntity.getCandidateId());
-                        if (candidateInfoEntity != null) {
-                            batchVoteTransactionEntity.setNodeName(candidateInfoEntity.getCandidateName());
-                        }
-                        return batchVoteTransactionEntity;
-                    }
-                })
-                .collectInto(new HashMap<String, List<BatchVoteTransactionEntity>>(), new BiConsumer<HashMap<String, List<BatchVoteTransactionEntity>>, BatchVoteTransactionEntity>() {
-                    @Override
-                    public void accept(HashMap<String, List<BatchVoteTransactionEntity>> stringListHashMap, BatchVoteTransactionEntity batchVoteTransactionEntity) throws Exception {
-                        String candidateId = batchVoteTransactionEntity.getCandidateId();
-                        List<BatchVoteTransactionEntity> voteTransactionEntityList = null;
-                        if (stringListHashMap.containsKey(candidateId)) {
-                            voteTransactionEntityList = stringListHashMap.get(candidateId);
-                        } else {
-                            voteTransactionEntityList = new ArrayList<>();
-                        }
-                        voteTransactionEntityList.add(batchVoteTransactionEntity);
-                        stringListHashMap.put(candidateId, voteTransactionEntityList);
-                    }
-                }).toFlowable();
-    }
-
 
     public Single<Long> getPoolRemainder() {
         return Single.fromCallable(new Callable<Long>() {
@@ -277,8 +175,8 @@ public class VoteManager {
 
         String walletName = walletEntity.getName();
         String walletAddress = walletEntity.getPrefixAddress();
-        String candidateId = candidateEntity.getCandidateId();
-        String candidateName = candidateEntity.getCandidateName();
+        String candidateId = candidateEntity.getNodeId();
+        String candidateName = candidateEntity.getName();
         BigInteger value = BigDecimalUtil.mul(ticketPrice, ticketNum).toBigInteger();
         double energonPrice = BigDecimalUtil.div(BigDecimalUtil.mul(GAS_PRICE.doubleValue(), GAS_LIMIT.doubleValue()), 1E18);
 
@@ -313,7 +211,8 @@ public class VoteManager {
                                         .transactionId(ticketInfoEntityList.get(0).getTicketId())
                                         .candidateId(candidateId)
                                         .candidateName(candidateName)
-                                        .host(candidateEntity.getHost())
+                                        //todo
+//                                        .host(candidateEntity.getHost())
                                         .contractAddress(TicketContract.CONTRACT_ADDRESS)
                                         .walletName(walletName)
                                         .walletAddress(walletAddress)
@@ -395,37 +294,6 @@ public class VoteManager {
             e.printStackTrace();
         }
         return transactionHash;
-    }
-
-    private Optional<RegionEntity> getBatchVoteTransactionRegion(String candidateId) {
-        return Flowable.fromCallable(new Callable<String>() {
-            @Override
-            public String call() throws Exception {
-                return CandidateInfoDao.getCandidateHostById(candidateId);
-            }
-        }).filter(new Predicate<String>() {
-            @Override
-            public boolean test(String s) throws Exception {
-                return !TextUtils.isEmpty(s);
-            }
-        }).switchIfEmpty(new Flowable<String>() {
-            @Override
-            protected void subscribeActual(Subscriber<? super String> s) {
-                s.onError(new Throwable());
-            }
-        }).map(new Function<String, Optional<RegionEntity>>() {
-            @Override
-            public Optional<RegionEntity> apply(String host) throws Exception {
-                RegionInfoEntity regionInfoEntity = RegionInfoDao.getRegionInfoWithIp(host);
-                if (regionInfoEntity == null) {
-                    return new Optional<RegionEntity>(null);
-                } else {
-                    return new Optional<RegionEntity>(regionInfoEntity.toRegionEntity());
-                }
-            }
-        })
-                .onErrorReturnItem(new Optional<RegionEntity>(null))
-                .blockingFirst();
     }
 
     private Single<String> getTransactionUuid(String ticketNum, String transactionHash) {

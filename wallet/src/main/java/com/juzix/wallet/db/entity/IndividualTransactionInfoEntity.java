@@ -1,7 +1,5 @@
 package com.juzix.wallet.db.entity;
 
-import com.juzix.wallet.entity.IndividualTransactionEntity;
-
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -10,11 +8,10 @@ import io.realm.annotations.PrimaryKey;
  */
 public class IndividualTransactionInfoEntity extends RealmObject implements Cloneable {
 
-    @PrimaryKey
-    private String uuid;
     /**
      * 交易hash
      */
+    @PrimaryKey
     private String hash;
     /**
      * 交易创建时间
@@ -33,17 +30,9 @@ public class IndividualTransactionInfoEntity extends RealmObject implements Clon
      */
     private String to;
     /**
-     * 转账备注(去掉)
-     */
-    private String memo;
-    /**
      * 当前交易区块
      */
     private long blockNumber;
-    /**
-     * 交易状态，改为txReceiptStatus
-     */
-    private boolean completed;
     /**
      * 交易金额
      */
@@ -88,28 +77,23 @@ public class IndividualTransactionInfoEntity extends RealmObject implements Clon
     private String actualTxCost;
 
     public IndividualTransactionInfoEntity() {
-
     }
 
-    private IndividualTransactionInfoEntity(Builder builder) {
-        setUuid(builder.uuid);
-        setHash(builder.hash);
-        setCreateTime(builder.createTime);
-        setWalletName(builder.walletName);
-        setFrom(builder.from);
-        setTo(builder.to);
-        setMemo(builder.memo);
-        setCompleted(builder.completed);
-        setValue(builder.value);
-        setNodeAddress(builder.nodeAddress);
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public IndividualTransactionInfoEntity(Builder builder) {
+        this.hash = builder.hash;
+        this.createTime = builder.createTime;
+        this.walletName = builder.walletName;
+        this.from = builder.from;
+        this.to = builder.to;
+        this.blockNumber = builder.blockNumber;
+        this.value = builder.value;
+        this.nodeAddress = builder.nodeAddress;
+        this.txType = builder.txType;
+        this.txReceiptStatus = builder.txReceiptStatus;
+        this.sequence = builder.sequence;
+        this.receiveType = builder.receiveType;
+        this.chainId = builder.chainId;
+        this.actualTxCost = builder.actualTxCost;
     }
 
     public String getHash() {
@@ -152,14 +136,6 @@ public class IndividualTransactionInfoEntity extends RealmObject implements Clon
         this.to = to;
     }
 
-    public String getMemo() {
-        return memo;
-    }
-
-    public void setMemo(String memo) {
-        this.memo = memo;
-    }
-
     public long getBlockNumber() {
         return blockNumber;
     }
@@ -168,20 +144,12 @@ public class IndividualTransactionInfoEntity extends RealmObject implements Clon
         this.blockNumber = blockNumber;
     }
 
-    public void setCompleted(boolean completed) {
-        this.completed = completed;
-    }
-
-    public boolean isCompleted() {
-        return completed;
+    public double getValue() {
+        return value;
     }
 
     public void setValue(double value) {
         this.value = value;
-    }
-
-    public double getValue() {
-        return value;
     }
 
     public String getNodeAddress() {
@@ -192,92 +160,125 @@ public class IndividualTransactionInfoEntity extends RealmObject implements Clon
         this.nodeAddress = nodeAddress;
     }
 
-    public static final class Builder {
-        private String uuid;
+    public int getTxType() {
+        return txType;
+    }
+
+    public void setTxType(int txType) {
+        this.txType = txType;
+    }
+
+    public int getTxReceiptStatus() {
+        return txReceiptStatus;
+    }
+
+    public void setTxReceiptStatus(int txReceiptStatus) {
+        this.txReceiptStatus = txReceiptStatus;
+    }
+
+    public long getSequence() {
+        return sequence;
+    }
+
+    public void setSequence(long sequence) {
+        this.sequence = sequence;
+    }
+
+    public String getReceiveType() {
+        return receiveType;
+    }
+
+    public void setReceiveType(String receiveType) {
+        this.receiveType = receiveType;
+    }
+
+    public String getChainId() {
+        return chainId;
+    }
+
+    public void setChainId(String chainId) {
+        this.chainId = chainId;
+    }
+
+    public String getActualTxCost() {
+        return actualTxCost;
+    }
+
+    public void setActualTxCost(String actualTxCost) {
+        this.actualTxCost = actualTxCost;
+    }
+
+    static final class Builder {
         private String hash;
         private long createTime;
         private String walletName;
         private String from;
         private String to;
-        private String memo;
         private long blockNumber;
-        private boolean completed;
         private double value;
         private String nodeAddress;
+        private int txType;
+        private int txReceiptStatus;
+        private long sequence;
+        private String receiveType;
+        private String chainId;
+        private String actualTxCost;
 
-        public Builder() {
+        public Builder(String hash, String walletName, String from, String to, long createTime) {
+            this.hash = hash;
+            this.walletName = walletName;
+            this.from = from;
+            this.to = to;
+            this.createTime = createTime;
         }
 
-        public Builder uuid(String val) {
-            uuid = val;
+        public Builder setBlockNumber(long blockNumber) {
+            this.blockNumber = blockNumber;
             return this;
         }
 
-        public Builder hash(String val) {
-            hash = val;
+        public Builder setValue(double value) {
+            this.value = value;
             return this;
         }
 
-        public Builder createTime(long val) {
-            createTime = val;
+        public Builder setNodeAddress(String nodeAddress) {
+            this.nodeAddress = nodeAddress;
             return this;
         }
 
-        public Builder walletName(String val) {
-            walletName = val;
+        public Builder setTxType(int txType) {
+            this.txType = txType;
             return this;
         }
 
-        public Builder from(String val) {
-            from = val;
+        public Builder setTxReceiptStatus(int txReceiptStatus) {
+            this.txReceiptStatus = txReceiptStatus;
             return this;
         }
 
-        public Builder to(String val) {
-            to = val;
+        public Builder setSequence(long sequence) {
+            this.sequence = sequence;
             return this;
         }
 
-        public Builder memo(String val) {
-            memo = val;
+        public Builder setReceiveType(String receiveType) {
+            this.receiveType = receiveType;
             return this;
         }
 
-        public Builder blockNumber(long val) {
-            blockNumber = val;
+        public Builder setChainId(String chainId) {
+            this.chainId = chainId;
             return this;
         }
 
-        public Builder completed(boolean val) {
-            completed = val;
-            return this;
-        }
-
-        public Builder value(double val) {
-            value = val;
-            return this;
-        }
-
-        public Builder nodeAddress(String val) {
-            nodeAddress = val;
+        public Builder setActualTxCost(String actualTxCost) {
+            this.actualTxCost = actualTxCost;
             return this;
         }
 
         public IndividualTransactionInfoEntity build() {
             return new IndividualTransactionInfoEntity(this);
         }
-    }
-
-    public IndividualTransactionEntity buildIndividualTransactionEntity() {
-        return new IndividualTransactionEntity.Builder(uuid, createTime, walletName)
-                .blockNumber(blockNumber)
-                .fromAddress(from)
-                .toAddress(to)
-                .hash(hash)
-                .memo(memo)
-                .value(value)
-                .completed(completed)
-                .nodeAddress(nodeAddress)
-                .build();
     }
 }

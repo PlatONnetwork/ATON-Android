@@ -21,17 +21,13 @@ import com.juzix.wallet.component.ui.dialog.SendTransactionDialogFragment;
 import com.juzix.wallet.component.ui.view.AssetsFragment;
 import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.db.entity.AddressInfoEntity;
-import com.juzix.wallet.db.entity.SharedTransactionInfoEntity;
 import com.juzix.wallet.db.sqlite.AddressInfoDao;
 import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.engine.IndividualWalletTransactionManager;
-import com.juzix.wallet.engine.SharedWalletManager;
-import com.juzix.wallet.engine.SharedWalletTransactionManager;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.IndividualTransactionEntity;
 import com.juzix.wallet.entity.IndividualWalletEntity;
-import com.juzix.wallet.entity.SharedWalletEntity;
 import com.juzix.wallet.entity.WalletEntity;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
@@ -108,10 +104,6 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
             return;
         }
         String address = walletEntity.getPrefixAddress();
-        if (walletEntity instanceof SharedWalletEntity) {
-            SharedWalletEntity sharedWalletEntity = (SharedWalletEntity) walletEntity;
-            individualWalletEntity = IndividualWalletManager.getInstance().getWalletByAddress(sharedWalletEntity.getCreatorAddress());
-        }
 
         if (mDisposable != null && !mDisposable.isDisposed()) {
             mDisposable.dispose();
@@ -219,29 +211,17 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
                 showLongToast(R.string.can_not_send_to_itself);
                 return;
             }
-            if (walletEntity instanceof SharedWalletEntity) {
-                if (individualWalletEntity == null || !((SharedWalletEntity) walletEntity).isOwner()) {
-                    CommonTipsDialogFragment.createDialogWithTitleAndOneButton(ContextCompat.getDrawable(getContext(), R.drawable.icon_dialog_tips), string(R.string.txn_init_failed_title), string(R.string.txn_init_failed_content), string(R.string.understood), new OnDialogViewClickListener() {
-                        @Override
-                        public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
-                        }
-                    }).show(currentActivity().getSupportFragmentManager(), "showError");
-                    return;
-                }
-            }
+
             String fromWallet = walletEntity.getName();
             String fromAddress = address;
             String fee = NumberParserUtils.getPrettyBalance(feeAmount);
-            String executor = walletEntity instanceof SharedWalletEntity ? individualWalletEntity.getName() : "";
             String walletName = IndividualWalletManager.getInstance().getWalletNameByWalletAddress(toAddress);
-            if (TextUtils.isEmpty(walletName)) {
-                walletName = SharedWalletManager.getInstance().getSharedWalletNameByContractAddress(toAddress);
-            }
+
             if (TextUtils.isEmpty(walletName)) {
                 walletName = AddressFormatUtil.formatAddress(toAddress);
             }
             SendTransactionDialogFragment
-                    .newInstance(string(R.string.send_transation), NumberParserUtils.getPrettyBalance(transferAmount), buildSendTransactionInfo(fromWallet, fromAddress, walletName, fee, executor))
+                    .newInstance(string(R.string.send_transation), NumberParserUtils.getPrettyBalance(transferAmount), buildSendTransactionInfo(fromWallet, fromAddress, walletName, fee))
                     .setOnConfirmBtnClickListener(new SendTransactionDialogFragment.OnConfirmBtnClickListener() {
                         @Override
                         public void onConfirmBtnClick() {
@@ -360,59 +340,11 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
     }
 
 
-    private void validPassword(Credentials credentials, String transferAmount, String toAddress) {
-        BigInteger submitGasPrice = BigInteger.valueOf(NumberParserUtils.parseLong(BigDecimalUtil.parseString(gasPrice)));
-        checkBalance(individualWalletEntity, credentials, submitGasPrice)
-                .flatMap(new Function<Credentials, SingleSource<SharedTransactionInfoEntity>>() {
-                    @Override
-                    public SingleSource<SharedTransactionInfoEntity> apply(Credentials credentials) throws Exception {
-                        return SharedWalletTransactionManager.getInstance()
-                                .submitTransaction(credentials, (SharedWalletEntity) walletEntity,individualWalletEntity.getPrefixAddress(),individualWalletEntity.getName(), toAddress, transferAmount, "", submitGasPrice);
-                    }
-                })
-                .map(new Function<SharedTransactionInfoEntity, SharedTransactionInfoEntity>() {
-                    @Override
-                    public SharedTransactionInfoEntity apply(SharedTransactionInfoEntity sharedTransactionInfoEntity) throws Exception {
-                        return sharedTransactionInfoEntity;
-                    }
-                })
-                .compose(new SchedulersTransformer())
-                .compose(bindToLifecycle())
-                .compose(LoadingTransformer.bindToSingleLifecycle(getView().currentActivity()))
-                .subscribe(new Consumer<SharedTransactionInfoEntity>() {
-                    @Override
-                    public void accept(SharedTransactionInfoEntity sharedTransactionInfoEntity) {
-                        if (isViewAttached()) {
-                            showLongToast(R.string.transfer_succeed);
-                            backToTransactionListWithDelay();
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) {
-                        if (isViewAttached()) {
-                            if (throwable instanceof CustomThrowable) {
-                                CustomThrowable customThrowable = (CustomThrowable) throwable;
-                                if (customThrowable.getErrCode() == CustomThrowable.CODE_ERROR_NOT_SUFFICIENT_BALANCE) {
-                                    showLongToast(R.string.insufficient_balance);
-                                }
-                            } else {
-                                showLongToast(R.string.transfer_failed);
-                            }
-                        }
-                    }
-                });
-    }
-
     private void showInputWalletPasswordDialogFragment(String transferAmount, String toAddress) {
-        InputWalletPasswordDialogFragment.newInstance(walletEntity instanceof SharedWalletEntity ? individualWalletEntity : (IndividualWalletEntity) walletEntity).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
+        InputWalletPasswordDialogFragment.newInstance((IndividualWalletEntity) walletEntity).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
             @Override
             public void onWalletPasswordCorrect(Credentials credentials) {
-                if (walletEntity instanceof IndividualWalletEntity) {
-                    sendTransaction(credentials, transferAmount, toAddress);
-                } else {
-                    validPassword(credentials, transferAmount, toAddress);
-                }
+                sendTransaction(credentials, transferAmount, toAddress);
             }
         }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
     }
@@ -447,13 +379,10 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
         return BigDecimalUtil.div(BigDecimalUtil.mul(gasLimit, MAX_GAS_PRICE_WEI), 1E18);
     }
 
-    private Map<String, String> buildSendTransactionInfo(String fromWallet, String fromAddress, String recipient, String fee, String executor) {
+    private Map<String, String> buildSendTransactionInfo(String fromWallet, String fromAddress, String recipient, String fee) {
         Map<String, String> map = new LinkedHashMap<>();
         map.put(string(R.string.type), string(R.string.send_energon));
         map.put(string(R.string.from_wallet), fromWallet);
-        if (!TextUtils.isEmpty(executor)) {
-            map.put(string(R.string.execute_wallet), executor);
-        }
         map.put(string(R.string.recipient_wallet), recipient);
         map.put(string(R.string.fee), fee);
         return map;

@@ -131,18 +131,18 @@ public class IndividualTransactionDetailActivity extends MVPBaseActivity<Individ
         if (transactionEntity == null) {
             return;
         }
-
-        showTransactionStatus(transactionEntity.getTransactionStatus());
-
-        tvCopyFromName.setText(transactionEntity.getWalletName());
-        tvFromAddress.setText(transactionEntity.getFromAddress());
-        tvToAddress.setText(transactionEntity.getToAddress());
-
-        tvTransactionType.setText(transactionEntity.isReceiver(queryAddress) ? R.string.receive : R.string.send);
-        tvTransactionTime.setText(DateUtil.format(transactionEntity.getCreateTime(), DateUtil.DATETIME_FORMAT_PATTERN));
-        tvTransactionAmount.setText(string(R.string.amount_with_unit, NumberParserUtils.getPrettyBalance(transactionEntity.getValue())));
-        tvTransactionEnergon.setText(string(R.string.amount_with_unit, NumberParserUtils.getPrettyBalance(transactionEntity.getEnergonPrice())));
-        tvTransactionWalletName.setText(transactionEntity.getWalletName());
+//
+//        showTransactionStatus(transactionEntity.getTransactionStatus());
+//
+//        tvCopyFromName.setText(transactionEntity.getWalletName());
+//        tvFromAddress.setText(transactionEntity.getFromAddress());
+//        tvToAddress.setText(transactionEntity.getToAddress());
+//
+//        tvTransactionType.setText(transactionEntity.isReceiver(queryAddress) ? R.string.receive : R.string.send);
+//        tvTransactionTime.setText(DateUtil.format(transactionEntity.getCreateTime(), DateUtil.DATETIME_FORMAT_PATTERN));
+//        tvTransactionAmount.setText(string(R.string.amount_with_unit, NumberParserUtils.getPrettyBalance(transactionEntity.getValue())));
+//        tvTransactionEnergon.setText(string(R.string.amount_with_unit, NumberParserUtils.getPrettyBalance(transactionEntity.getEnergonPrice())));
+//        tvTransactionWalletName.setText(transactionEntity.getWalletName());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -150,30 +150,30 @@ public class IndividualTransactionDetailActivity extends MVPBaseActivity<Individ
         setTransactionDetailInfo(updateIndividualWalletTransactionEvent.individualTransactionEntity, mQueryAddress);
     }
 
-    private void showTransactionStatus(IndividualTransactionEntity.TransactionStatus status) {
-        switch (status) {
-            case PENDING:
-                tvTransactionStatusDesc.setText(R.string.pending);
-                ivFailed.setVisibility(View.GONE);
-                ivSucceed.setVisibility(View.GONE);
-                layoutPending.setVisibility(View.VISIBLE);
-                break;
-            case SUCCEED:
-                tvTransactionStatusDesc.setText(R.string.success);
-                ivFailed.setVisibility(View.GONE);
-                ivSucceed.setVisibility(View.VISIBLE);
-                layoutPending.setVisibility(View.GONE);
-                break;
-            case FAILED:
-                tvTransactionStatusDesc.setText(R.string.failed);
-                ivFailed.setVisibility(View.VISIBLE);
-                ivSucceed.setVisibility(View.GONE);
-                layoutPending.setVisibility(View.GONE);
-                break;
-            default:
-                break;
-        }
-    }
+//    private void showTransactionStatus(IndividualTransactionEntity.TransactionStatus status) {
+//        switch (status) {
+//            case PENDING:
+//                tvTransactionStatusDesc.setText(R.string.pending);
+//                ivFailed.setVisibility(View.GONE);
+//                ivSucceed.setVisibility(View.GONE);
+//                layoutPending.setVisibility(View.VISIBLE);
+//                break;
+//            case SUCCEED:
+//                tvTransactionStatusDesc.setText(R.string.success);
+//                ivFailed.setVisibility(View.GONE);
+//                ivSucceed.setVisibility(View.VISIBLE);
+//                layoutPending.setVisibility(View.GONE);
+//                break;
+//            case FAILED:
+//                tvTransactionStatusDesc.setText(R.string.failed);
+//                ivFailed.setVisibility(View.VISIBLE);
+//                ivSucceed.setVisibility(View.GONE);
+//                layoutPending.setVisibility(View.GONE);
+//                break;
+//            default:
+//                break;
+//        }
+//    }
 
     @Override
     protected void onDestroy() {

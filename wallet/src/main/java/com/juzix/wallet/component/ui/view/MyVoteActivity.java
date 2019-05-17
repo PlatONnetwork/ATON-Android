@@ -12,12 +12,10 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.adapter.BatchVoteSummaryAdapter;
-import com.juzix.wallet.component.adapter.BatchVoteTransactionAdapter;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.MyVoteContract;
 import com.juzix.wallet.component.ui.presenter.MyVotePresenter;
 import com.juzix.wallet.component.widget.LineGridView;
-import com.juzix.wallet.entity.BatchVoteTransactionWrapEntity;
 import com.juzix.wallet.entity.VoteSummaryEntity;
 import com.juzix.wallet.utils.CommonUtil;
 import com.juzix.wallet.utils.RxUtils;
@@ -27,12 +25,11 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import io.reactivex.functions.Consumer;
 
 /**
  * @author matrixelement
  */
-public class MyVoteActivity extends MVPBaseActivity<MyVotePresenter> implements MyVoteContract.View {
+public class MyVoteActivity extends MVPBaseActivity<MyVotePresenter>{
 
     @BindView(R.id.grid_vote_info)
     LineGridView gridVoteInfo;
@@ -43,11 +40,11 @@ public class MyVoteActivity extends MVPBaseActivity<MyVotePresenter> implements 
 
     private Unbinder unbinder;
     private BatchVoteSummaryAdapter mBatchVoteSummaryAdapter;
-    private BatchVoteTransactionAdapter mBatchVoteTransactionAdapter;
+//    private BatchVoteTransactionAdapter mBatchVoteTransactionAdapter;
 
     @Override
     protected MyVotePresenter createPresenter() {
-        return new MyVotePresenter(this);
+        return null;
     }
 
     @Override
@@ -61,41 +58,35 @@ public class MyVoteActivity extends MVPBaseActivity<MyVotePresenter> implements 
     @Override
     protected void onResume() {
         super.onResume();
-        mPresenter.loadData();
+//        mPresenter.loadData();
     }
 
     private void initViews() {
 
-        mBatchVoteSummaryAdapter = new BatchVoteSummaryAdapter(R.layout.item_vote_info, null);
-        mBatchVoteTransactionAdapter = new BatchVoteTransactionAdapter(R.layout.item_my_vote_list, null);
-
-        gridVoteInfo.setAdapter(mBatchVoteSummaryAdapter);
-        listVoteInfo.setAdapter(mBatchVoteTransactionAdapter);
-        listVoteInfo.setEmptyView(layoutNoVoted);
-
-        RxAdapterView.itemClicks(listVoteInfo)
-                .compose(RxUtils.getClickTransformer())
-                .compose(RxUtils.bindToLifecycle(this))
-                .subscribe(new CustomObserver<Integer>() {
-                    @Override
-                    public void accept(Integer position) throws Exception {
-                        BatchVoteTransactionWrapEntity batchVoteTransactionEntity = mBatchVoteTransactionAdapter.getItem(position);
-                        VoteDetailActivity.actionStart(MyVoteActivity.this, batchVoteTransactionEntity);
-                    }
-                });
-
-        mBatchVoteTransactionAdapter.setOnItemVoteClickListener(new BatchVoteTransactionAdapter.OnItemVoteClickListener() {
-            @Override
-            public void onItemVoteClick(String candidateId) {
-                mPresenter.voteTicket(candidateId);
-            }
-        });
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mPresenter.loadData();
+//        mBatchVoteSummaryAdapter = new BatchVoteSummaryAdapter(R.layout.item_vote_info, null);
+//        mBatchVoteTransactionAdapter = new BatchVoteTransactionAdapter(R.layout.item_my_vote_list, null);
+//
+//        gridVoteInfo.setAdapter(mBatchVoteSummaryAdapter);
+//        listVoteInfo.setAdapter(mBatchVoteTransactionAdapter);
+//        listVoteInfo.setEmptyView(layoutNoVoted);
+//
+//        RxAdapterView.itemClicks(listVoteInfo)
+//                .compose(RxUtils.getClickTransformer())
+//                .compose(RxUtils.bindToLifecycle(this))
+//                .subscribe(new CustomObserver<Integer>() {
+//                    @Override
+//                    public void accept(Integer position) throws Exception {
+//                        BatchVoteTransactionWrapEntity batchVoteTransactionEntity = mBatchVoteTransactionAdapter.getItem(position);
+//                        VoteDetailActivity.actionStart(MyVoteActivity.this, batchVoteTransactionEntity);
+//                    }
+//                });
+//
+//        mBatchVoteTransactionAdapter.setOnItemVoteClickListener(new BatchVoteTransactionAdapter.OnItemVoteClickListener() {
+//            @Override
+//            public void onItemVoteClick(String candidateId) {
+//                mPresenter.voteTicket(candidateId);
+//            }
+//        });
     }
 
     @Override
@@ -106,17 +97,13 @@ public class MyVoteActivity extends MVPBaseActivity<MyVotePresenter> implements 
         }
     }
 
-    @Override
-    public void showBatchVoteSummary(List<VoteSummaryEntity> voteSummaryEntityList) {
-        gridVoteInfo.setVisibility(voteSummaryEntityList.isEmpty() ? View.GONE : View.VISIBLE);
-        gridVoteInfo.setNumColumns(isContainValueLengthExceedSpecificallyLength(voteSummaryEntityList) ? 2 : 3);
-        mBatchVoteSummaryAdapter.notifyDataChanged(voteSummaryEntityList);
-    }
+//    @Override
+//    public void showBatchVoteSummary(List<VoteSummaryEntity> voteSummaryEntityList) {
+//        gridVoteInfo.setVisibility(voteSummaryEntityList.isEmpty() ? View.GONE : View.VISIBLE);
+//        gridVoteInfo.setNumColumns(isContainValueLengthExceedSpecificallyLength(voteSummaryEntityList) ? 2 : 3);
+//        mBatchVoteSummaryAdapter.notifyDataChanged(voteSummaryEntityList);
+//    }
 
-    @Override
-    public void showBatchVoteTransactionList(List<BatchVoteTransactionWrapEntity> batchVoteTransactionWrapEntityList) {
-        mBatchVoteTransactionAdapter.notifyDataChanged(batchVoteTransactionWrapEntityList);
-    }
 
     /**
      * 是否包含子view value字段的长度超过屏幕的三分之一

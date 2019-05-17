@@ -25,8 +25,9 @@ import io.reactivex.functions.Predicate;
  */
 public class NodeManager {
 
-    private final static String TAG = NodeManager.class.getSimpleName();
     private final static String[] DEFAULT_NODE_URL_LIST = new String[]{Constants.URL.URL_TEST_A, Constants.URL.URL_TEST_B};
+    private final static String CHAINID_TEST_NET_A = "103";
+    private final static String CHAINID_TEST_NET_B = "104";
 
     private NodeEntity curNode;
     private NodeService nodeService;
@@ -132,6 +133,10 @@ public class NodeManager {
 
     public Single<Boolean> updateNode(NodeEntity nodeEntity, boolean isChecked) {
         return nodeService.updateNode(nodeEntity.getId(), isChecked);
+    }
+
+    public String getChainId() {
+        return Constants.URL.URL_TEST_A.equals(NodeManager.getInstance().getCurNodeAddress()) ? CHAINID_TEST_NET_A : CHAINID_TEST_NET_B;
     }
 
     private List<NodeEntity> buildDefaultNodeList() {

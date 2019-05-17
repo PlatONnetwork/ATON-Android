@@ -5,7 +5,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,6 @@ import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.entity.CandidateEntity;
 import com.juzix.wallet.entity.CandidateExtraEntity;
-import com.juzix.wallet.entity.RegionEntity;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.RxUtils;
 
@@ -59,19 +57,8 @@ public class VoteListAdapter extends RecyclerView.Adapter<VoteListAdapter.ViewHo
     public void onBindViewHolder(ViewHolder holder, int position) {
         CandidateEntity candidateEntity = mCandidateEntityList.get(position);
         if (candidateEntity != null) {
-            CandidateExtraEntity extraEntity = candidateEntity.getCandidateExtraEntity();
-            if (extraEntity != null) {
-                holder.tvNodeName.setText(extraEntity.getNodeName());
-            }
-            RegionEntity regionEntity = candidateEntity.getRegionEntity();
 
-            if (regionEntity == null || TextUtils.isEmpty(regionEntity.getCountry())) {
-                holder.tvLocation.setText(String.format("(%s)", mContext.getString(R.string.unknownRegion)));
-            } else {
-                holder.tvLocation.setText(String.format("(%s)", regionEntity.getCountry()));
-            }
-
-            holder.tvRewardRatio.setText(mContext.getString(R.string.reward_radio_with_colon_and_value, String.format("%s%%", NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(candidateEntity.getFee(), 100D), 0))));
+//            holder.tvRewardRatio.setText(mContext.getString(R.string.reward_radio_with_colon_and_value, String.format("%s%%", NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(candidateEntity.getFee(), 100D), 0))));
 
             holder.tvStaked.setText(mContext.getString(R.string.staked_with_colon, NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(candidateEntity.getDeposit(), "1E18"), 0)));
 
@@ -110,16 +97,7 @@ public class VoteListAdapter extends RecyclerView.Adapter<VoteListAdapter.ViewHo
             //更新局部控件
             CandidateEntity candidateEntity = mCandidateEntityList.get(position);
             if (candidateEntity != null) {
-                CandidateExtraEntity extraEntity = candidateEntity.getCandidateExtraEntity();
-                if (extraEntity != null) {
-                    holder.tvNodeName.setText(extraEntity.getNodeName());
-                }
-                RegionEntity regionEntity = candidateEntity.getRegionEntity();
-                if (regionEntity == null || TextUtils.isEmpty(regionEntity.getCountry())) {
-                    holder.tvLocation.setText(String.format("(%s)", mContext.getString(R.string.unknownRegion)));
-                } else {
-                    holder.tvLocation.setText(String.format("(%s)", regionEntity.getCountry()));
-                }
+
             }
         }
     }
@@ -135,26 +113,6 @@ public class VoteListAdapter extends RecyclerView.Adapter<VoteListAdapter.ViewHo
     public void notifyDataChanged(List<CandidateEntity> candidateEntityList) {
         this.mCandidateEntityList = candidateEntityList;
         notifyDataSetChanged();
-    }
-
-    @SuppressLint("CheckResult")
-    public void updateRegionInfo(RegionEntity regionEntity) {
-        Flowable
-                .range(0, mCandidateEntityList.size())
-                .filter(new Predicate<Integer>() {
-                    @Override
-                    public boolean test(Integer position) throws Exception {
-                        return regionEntity.getIp().equals(mCandidateEntityList.get(position).getHost());
-                    }
-                })
-                .subscribe(new Consumer<Integer>() {
-                    @Override
-                    public void accept(Integer position) throws Exception {
-                        CandidateEntity candidateEntity = mCandidateEntityList.get(position);
-                        candidateEntity.setRegionEntity(regionEntity);
-                        notifyItemChanged(position, "updateRegionInfo");
-                    }
-                });
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

@@ -6,9 +6,6 @@ import android.util.Log;
 import com.juzhen.framework.network.NetState;
 import com.juzix.wallet.entity.IndividualTransactionEntity;
 import com.juzix.wallet.entity.NodeEntity;
-import com.juzix.wallet.entity.RegionEntity;
-import com.juzix.wallet.entity.SharedTransactionEntity;
-import com.juzix.wallet.entity.SharedWalletEntity;
 import com.juzix.wallet.entity.VoteTransactionEntity;
 import com.juzix.wallet.entity.WalletEntity;
 
@@ -49,21 +46,8 @@ public class EventPublisher {
         BusProvider.post(new Event.NetWorkStateChangedEvent(netState));
     }
 
-    public void sendUpdateSharedWalletTransactionEvent(SharedTransactionEntity sharedTransactionEntity) {
-        Log.e(TAG, "sendUpdateSharedWalletTransactionEvent" + sharedTransactionEntity.toString());
-        BusProvider.post(new Event.UpdateSharedWalletTransactionEvent(sharedTransactionEntity));
-    }
-
     public void sendUpdateIndividualWalletTransactionEvent(IndividualTransactionEntity individualTransactionEntity) {
         BusProvider.post(new Event.UpdateIndividualWalletTransactionEvent(individualTransactionEntity));
-    }
-
-    public void sendUpdateCreateJointWalletProgressEvent(SharedWalletEntity sharedWalletEntity) {
-        BusProvider.post(new Event.UpdateCreateJointWalletProgressEvent(sharedWalletEntity));
-    }
-
-    public void sendUpdateCandidateRegionInfoEvent(RegionEntity regionEntity) {
-        BusProvider.post(new Event.UpdateCandidateRegionInfoEvent(regionEntity));
     }
 
     public void sendUpdateSelectedWalletEvent(WalletEntity entity) {
@@ -89,10 +73,6 @@ public class EventPublisher {
 
     public void sendUpdateVoteTransactionListEvent(VoteTransactionEntity voteTransactionEntity) {
         BusProvider.post(new Event.UpdateVoteTransactionListEvent(voteTransactionEntity));
-    }
-
-    public void sendRemoveSharedWalletEvent(SharedWalletEntity sharedWalletEntity) {
-        BusProvider.post(new Event.RemoveSharedWalletEvent(sharedWalletEntity));
     }
 
     public void sendNodeChangedEvent(NodeEntity nodeEntity) {

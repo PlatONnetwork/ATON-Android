@@ -13,8 +13,6 @@ import com.juzix.wallet.component.adapter.VoteDetailListAdapter;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.VoteDetailContract;
 import com.juzix.wallet.component.ui.presenter.VoteDetailPresenter;
-import com.juzix.wallet.entity.BatchVoteTransactionEntity;
-import com.juzix.wallet.entity.BatchVoteTransactionWrapEntity;
 import com.juzix.wallet.entity.VoteDetailItemEntity;
 
 import java.util.List;
@@ -51,7 +49,6 @@ public class VoteDetailActivity extends MVPBaseActivity<VoteDetailPresenter> imp
         setContentView(R.layout.activity_vote_detail);
         unbinder = ButterKnife.bind(this);
         initViews();
-        mPresenter.loadData();
     }
 
     private void initViews() {
@@ -67,25 +64,4 @@ public class VoteDetailActivity extends MVPBaseActivity<VoteDetailPresenter> imp
         }
     }
 
-    @Override
-    public BatchVoteTransactionWrapEntity getBatchVoteWrapTransactionFromIntent() {
-        return getIntent().getParcelableExtra(Constants.Extra.EXTRA_BATCHVOTETWRAPRANSACTION);
-    }
-
-    @Override
-    public void showNodeDetailInfo(BatchVoteTransactionEntity batchVoteTransactionEntity) {
-        tvNodeName.setText(batchVoteTransactionEntity.getNodeName());
-        tvNodeId.setText(batchVoteTransactionEntity.getFormatCandidateId());
-    }
-
-    @Override
-    public void notifyDataSetChanged(List<VoteDetailItemEntity> voteDetailItemEntityList) {
-        mVoteDetailListAdapter.notifyDataChanged(voteDetailItemEntityList);
-    }
-
-    public static void actionStart(Context context, BatchVoteTransactionWrapEntity batchVoteTransactionEntity) {
-        Intent intent = new Intent(context, VoteDetailActivity.class);
-        intent.putExtra(Constants.Extra.EXTRA_BATCHVOTETWRAPRANSACTION, batchVoteTransactionEntity);
-        context.startActivity(intent);
-    }
 }
