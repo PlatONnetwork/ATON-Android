@@ -25,9 +25,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class CreateIndividualWalletActivity extends MVPBaseActivity<CreateIndividualWalletPresenter> implements CreateIndividualWalletContract.View, View.OnClickListener, TextWatcher, View.OnFocusChangeListener {
+public class CreateWalletActivity extends MVPBaseActivity<CreateIndividualWalletPresenter> implements CreateIndividualWalletContract.View, View.OnClickListener, TextWatcher, View.OnFocusChangeListener {
 
-    private final static String TAG = CreateIndividualWalletActivity.class.getSimpleName();
+    private final static String TAG = CreateWalletActivity.class.getSimpleName();
 
     Unbinder unbinder;
     @BindView(R.id.et_name)
@@ -62,7 +62,7 @@ public class CreateIndividualWalletActivity extends MVPBaseActivity<CreateIndivi
     private boolean mShowRepeatPassword;
 
     public static void actionStart(Context context) {
-        context.startActivity(new Intent(context, CreateIndividualWalletActivity.class));
+        context.startActivity(new Intent(context, CreateWalletActivity.class));
     }
 
     @Override
@@ -81,21 +81,6 @@ public class CreateIndividualWalletActivity extends MVPBaseActivity<CreateIndivi
     }
 
     private void initView() {
-//        mEtName = findViewById(R.id.et_name);
-//        mTvNameError = findViewById(R.id.tv_name_error);
-//        mEtPassword = findViewById(R.id.et_password);
-//        mEtRepeatPassword = findViewById(R.id.et_repeat_password);
-//        mIvPasswordEyes = findViewById(R.id.iv_password_eyes);
-//        mIvRepeatPasswordEyes = findViewById(R.id.iv_repeat_password_eyes);
-//        mTvPasswordError = findViewById(R.id.tv_password_error);
-//        mTvPasswordDesc = findViewById(R.id.tv_password_desc);
-//        mSbtnCreate = findViewById(R.id.sbtn_create);
-//        mTvStrength = findViewById(R.id.tv_strength);
-//        mVLine1 = findViewById(R.id.v_line1);
-//        mVLine2 = findViewById(R.id.v_line2);
-//        mVLine3 = findViewById(R.id.v_line3);
-//        mVLine4 = findViewById(R.id.v_line4);
-//
 
         mSbtnCreate.setOnClickListener(this);
         mEtName.addTextChangedListener(this);

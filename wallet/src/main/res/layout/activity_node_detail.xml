@@ -19,10 +19,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="24dp"
         android:layout_marginLeft="10dp"
+        android:layout_marginTop="24dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="16dp"
+        android:visibility="gone"
         app:enabled="true"
         app:text="@string/vote"
         app:textAppearance="@style/MainButtonStyle"
@@ -39,13 +40,16 @@
         android:scrollbars="none">
 
         <android.support.constraint.ConstraintLayout
+            android:id="@+id/layout_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            tools:visibility="invisible">
 
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/layout_node_staked_info"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="202dp"
                 android:layout_marginTop="6dp"
                 android:layout_marginEnd="6dp"
                 android:layout_marginRight="6dp"
@@ -53,7 +57,6 @@
                 android:paddingLeft="26dp"
                 android:paddingTop="16dp"
                 android:paddingRight="26dp"
-                app:layout_constraintDimensionRatio="9:5"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -82,7 +85,7 @@
                     android:paddingTop="5dp"
                     android:paddingRight="6dp"
                     android:paddingBottom="5dp"
-                    android:text="@string/candidate"
+                    android:text="@string/nominees"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:rtv_background_color="@color/color_256afe_10"
@@ -133,20 +136,6 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_tickets_desc"
                     tools:text="1532" />
-
-                <TextView
-                    android:id="@+id/tv_ticket_age_desc"
-                    style="@style/Text.898c9e.12"
-                    android:text="@string/ticketAge"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/tv_tickets_desc" />
-
-                <TextView
-                    android:id="@+id/tv_ticket_age"
-                    style="@style/Text.000000.14"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/tv_tickets"
-                    tools:text="1,564Bs" />
 
             </android.support.constraint.ConstraintLayout>
 

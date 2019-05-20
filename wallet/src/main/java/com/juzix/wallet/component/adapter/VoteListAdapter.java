@@ -14,7 +14,6 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.entity.CandidateEntity;
-import com.juzix.wallet.entity.CandidateExtraEntity;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.RxUtils;
 
@@ -22,9 +21,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.Flowable;
 import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Predicate;
 
 /**
  * @author matrixelement
@@ -53,40 +50,41 @@ public class VoteListAdapter extends RecyclerView.Adapter<VoteListAdapter.ViewHo
         return new ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_vote_list, parent, false));
     }
 
+    @SuppressLint("CheckResult")
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         CandidateEntity candidateEntity = mCandidateEntityList.get(position);
-        if (candidateEntity != null) {
 
-//            holder.tvRewardRatio.setText(mContext.getString(R.string.reward_radio_with_colon_and_value, String.format("%s%%", NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(candidateEntity.getFee(), 100D), 0))));
+        holder.tvRewardRatio.setText(mContext.getString(R.string.reward_radio_with_colon_and_value, String.format("%s%%", NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(NumberParserUtils.parseDouble(candidateEntity.getReward()), 100D), 0))));
 
-            holder.tvStaked.setText(mContext.getString(R.string.staked_with_colon, NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(candidateEntity.getDeposit(), "1E18"), 0)));
+        holder.tvStaked.setText(mContext.getString(R.string.staked_with_colon, NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(candidateEntity.getDeposit(), "1E18"), 0)));
 
-            RxView
-                    .clicks(holder.itemView)
-                    .compose(RxUtils.getClickTransformer())
-                    .subscribe(new Consumer<Object>() {
-                        @Override
-                        public void accept(Object object) throws Exception {
-                            if (mOnItemClickListener != null) {
-                                mOnItemClickListener.onItemClick(candidateEntity);
-                            }
+        holder.tvLocation.setText(String.format("(%s)", candidateEntity.getCountryName(mContext)));
+
+        RxView
+                .clicks(holder.itemView)
+                .compose(RxUtils.getClickTransformer())
+                .subscribe(new Consumer<Object>() {
+                    @Override
+                    public void accept(Object object) throws Exception {
+                        if (mOnItemClickListener != null) {
+                            mOnItemClickListener.onItemClick(candidateEntity);
                         }
-                    });
+                    }
+                });
 
-            RxView
-                    .clicks(holder.tvVote)
-                    .compose(RxUtils.getClickTransformer())
-                    .subscribe(new Consumer<Object>() {
-                        @Override
-                        public void accept(Object unit) throws Exception {
-                            if (mOnVoteTicketClickListener != null) {
-                                mOnVoteTicketClickListener.onVoteTicketClick(candidateEntity);
-                            }
+        RxView
+                .clicks(holder.tvVote)
+                .compose(RxUtils.getClickTransformer())
+                .subscribe(new Consumer<Object>() {
+                    @Override
+                    public void accept(Object unit) throws Exception {
+                        if (mOnVoteTicketClickListener != null) {
+                            mOnVoteTicketClickListener.onVoteTicketClick(candidateEntity);
                         }
-                    });
+                    }
+                });
 
-        }
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.juzix.wallet.component.ui.view;
 
+import android.Manifest;
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,13 +10,11 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -35,6 +33,7 @@ import com.juzix.wallet.component.adapter.WalletHorizontalRecycleViewAdapter;
 import com.juzix.wallet.component.ui.base.BaseFragment;
 import com.juzix.wallet.component.ui.base.MVPBaseFragment;
 import com.juzix.wallet.component.ui.contract.AssetsContract;
+import com.juzix.wallet.component.ui.dialog.AssetsMoreDialogFragment;
 import com.juzix.wallet.component.ui.presenter.AssetsPresenter;
 import com.juzix.wallet.component.widget.ShadowContainer;
 import com.juzix.wallet.component.widget.ViewPagerSlide;
@@ -43,13 +42,14 @@ import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.entity.WalletEntity;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
-import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -61,10 +61,11 @@ import butterknife.Unbinder;
  * @author matrixelement
  */
 public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements AssetsContract.View {
+
     public static final int TAB1 = 0;
     public static final int TAB2 = 1;
     public static final int TAB3 = 2;
-    Unbinder unbinder;
+
     @BindView(R.id.app_bar_layout)
     AppBarLayout appBarLayout;
     @BindView(R.id.v_tab_line)
@@ -107,8 +108,9 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     ShadowContainer scImportWallet;
     @BindView(R.id.sc_create_wallet)
     ShadowContainer scCreateWallet;
+
     private WalletHorizontalRecycleViewAdapter mWalletAdapter;
-    private Dialog mPopDialog;
+    private Unbinder unbinder;
 
     @Override
     protected AssetsPresenter createPresenter() {
@@ -126,117 +128,20 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         View rootView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_assets, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         EventPublisher.getInstance().register(this);
+        initViews();
+        return rootView;
+    }
+
+    private void initViews() {
         initHeader();
         initTab();
         showAssets(AppSettings.getInstance().getShowAssetsFlag());
         showEmptyView(true);
-        mPresenter.init();
-        return rootView;
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode != Activity.RESULT_OK) {
-            return;
-        }
-        switch (requestCode) {
-            case MainActivity.REQ_ASSETS_TAB_QR_CODE:
-                Bundle bundle = data.getExtras();
-                String result = bundle.getString(ScanQRCodeActivity.EXTRA_SCAN_QRCODE_DATA);
-                if (JZWalletUtil.isValidAddress(result)) {
-                    if (vpContent.getVisibility() == View.VISIBLE) {
-                        vpContent.setCurrentItem(1);
-                        ((TabAdapter) vpContent.getAdapter()).getItem(1).onActivityResult(MainActivity.REQ_ASSETS_ADDRESS_QR_CODE, resultCode, data);
-                    } else {
-                        AddNewAddressActivity.actionStartWithAddress(getContext(), result);
-                    }
-                    return;
-                }
-                if (JZWalletUtil.isValidKeystore(result)) {
-                    ImportIndividualWalletActivity.actionStart(currentActivity(), 0, result);
-                    return;
-                }
-                if (JZWalletUtil.isValidMnemonic(result)) {
-                    ImportIndividualWalletActivity.actionStart(currentActivity(), 1, result);
-                    return;
-                }
-                if (JZWalletUtil.isValidPrivateKey(result)) {
-                    ImportIndividualWalletActivity.actionStart(currentActivity(), 2, result);
-                    return;
-                }
-                showLongToast(currentActivity().string(R.string.unrecognized));
-                break;
-            case MainActivity.REQ_ASSETS_ADDRESS_QR_CODE:
-                if (vpContent.getVisibility() == View.VISIBLE) {
-                    ((TabAdapter) vpContent.getAdapter()).getItem(1).onActivityResult(requestCode, resultCode, data);
-                }
-                break;
-            case MainActivity.REQ_ASSETS_SELECT_ADDRESS_BOOK:
-                if (vpContent.getVisibility() == View.VISIBLE) {
-                    ((TabAdapter) vpContent.getAdapter()).getItem(1).onActivityResult(requestCode, resultCode, data);
-                }
-                break;
-        }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (unbinder != null) {
-            unbinder.unbind();
-        }
-        EventPublisher.getInstance().unRegister(this);
-    }
-
-    @OnClick({R.id.iv_scan, R.id.tv_total_assets_title, R.id.tv_backup, R.id.iv_add})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.iv_scan:
-                mPresenter.scanQRCode();
-                break;
-            case R.id.iv_add:
-                showPopWindow();
-                break;
-            case R.id.tv_total_assets_title:
-                AppSettings.getInstance().setShowAssetsFlag(!AppSettings.getInstance().getShowAssetsFlag());
-                showAssets(AppSettings.getInstance().getShowAssetsFlag());
-                break;
-            case R.id.tv_backup:
-                mPresenter.backupWallet();
-                break;
-            default:
-                break;
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onNetWorkStateChangedEvent(Event.NetWorkStateChangedEvent event) {
-        if (event.netState == NetState.CONNECTED) {
-            mPresenter.fetchWalletList();
-            mPresenter.start();
-        }
-    }
-
-    private void initHeader() {
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        rvWallet.setLayoutManager(linearLayoutManager);
-        mWalletAdapter = new WalletHorizontalRecycleViewAdapter(getContext(), mPresenter.getRecycleViewDataSource());
-        mWalletAdapter.setOnItemClickListener(new WalletHorizontalRecycleViewAdapter.OnRecycleViewItemClickListener() {
-            @Override
-            public void onContentViewClick(WalletEntity walletEntity) {
-                mPresenter.clickRecycleViewItem(walletEntity);
-            }
-        });
-        RecycleViewProxyAdapter proxyAdapter = new RecycleViewProxyAdapter(mWalletAdapter);
-        rvWallet.setAdapter(proxyAdapter);
-        proxyAdapter.addFooterView(getCreateWalletView());
-        proxyAdapter.addFooterView(getImportWalletView());
-    }
 
     public void initTab() {
-        ArrayList<BaseFragment> fragments = getFragments(null);
+        List<BaseFragment> fragments = getFragments(null);
         stbBar.setCustomTabView(new SmartTabLayout.TabProvider() {
             @Override
             public View createTabView(ViewGroup container, int position, PagerAdapter adapter) {
@@ -259,6 +164,8 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
                         break;
                     case 2:
                         EventPublisher.getInstance().sendUpdateAssetsTabEvent(TAB3);
+                        break;
+                    default:
                         break;
                 }
             }
@@ -289,27 +196,148 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         stbBar.setViewPager(vpContent);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+        switch (requestCode) {
+            case MainActivity.REQ_ASSETS_TAB_QR_CODE:
+                String result = data.getStringExtra(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
+                if (JZWalletUtil.isValidAddress(result)) {
+                    if (vpContent.getVisibility() == View.VISIBLE) {
+                        vpContent.setCurrentItem(1);
+                        ((TabAdapter) vpContent.getAdapter()).getItem(1).onActivityResult(MainActivity.REQ_ASSETS_ADDRESS_QR_CODE, resultCode, data);
+                    } else {
+                        AddNewAddressActivity.actionStartWithAddress(getContext(), result);
+                    }
+                    return;
+                }
+                if (JZWalletUtil.isValidKeystore(result)) {
+                    ImportWalletActivity.actionStart(currentActivity(), 0, result);
+                    return;
+                }
+                if (JZWalletUtil.isValidMnemonic(result)) {
+                    ImportWalletActivity.actionStart(currentActivity(), 1, result);
+                    return;
+                }
+                if (JZWalletUtil.isValidPrivateKey(result)) {
+                    ImportWalletActivity.actionStart(currentActivity(), 2, result);
+                    return;
+                }
+                showLongToast(currentActivity().string(R.string.unrecognized));
+                break;
+            case MainActivity.REQ_ASSETS_ADDRESS_QR_CODE:
+                if (vpContent.getVisibility() == View.VISIBLE) {
+                    ((TabAdapter) vpContent.getAdapter()).getItem(1).onActivityResult(requestCode, resultCode, data);
+                }
+                break;
+            case MainActivity.REQ_ASSETS_SELECT_ADDRESS_BOOK:
+                if (vpContent.getVisibility() == View.VISIBLE) {
+                    ((TabAdapter) vpContent.getAdapter()).getItem(1).onActivityResult(requestCode, resultCode, data);
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    @OnClick({R.id.iv_scan, R.id.tv_total_assets_title, R.id.tv_backup, R.id.iv_add})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.iv_scan:
+                new RxPermissions(currentActivity())
+                        .request(Manifest.permission.CAMERA)
+                        .subscribe(new CustomObserver<Boolean>() {
+                            @Override
+                            public void accept(Boolean success) throws Exception {
+                                if (success) {
+                                    ScanQRCodeActivity.startActivityForResult(currentActivity(), MainActivity.REQ_ASSETS_TAB_QR_CODE);
+                                }
+                            }
+                        });
+                break;
+            case R.id.iv_add:
+                AssetsMoreDialogFragment.newInstance().setOnAssetMoreClickListener(new AssetsMoreDialogFragment.OnAssetMoreClickListener() {
+                    @Override
+                    public void onCreateWalletClick() {
+                        CreateWalletActivity.actionStart(getContext());
+                    }
+
+                    @Override
+                    public void onImportWalletClick() {
+                        ImportWalletActivity.actionStart(getContext());
+                    }
+                }).show(getChildFragmentManager(), "showAssetsMore");
+                break;
+            case R.id.tv_total_assets_title:
+                AppSettings.getInstance().setShowAssetsFlag(!AppSettings.getInstance().getShowAssetsFlag());
+                showAssets(AppSettings.getInstance().getShowAssetsFlag());
+                break;
+            case R.id.tv_backup:
+                mPresenter.backupWallet();
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onNetWorkStateChangedEvent(Event.NetWorkStateChangedEvent event) {
+        if (event.netState == NetState.CONNECTED) {
+            mPresenter.fetchWalletList();
+            mPresenter.start();
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (unbinder != null) {
+            unbinder.unbind();
+        }
+        EventPublisher.getInstance().unRegister(this);
+    }
+
+    private void initHeader() {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        rvWallet.setLayoutManager(linearLayoutManager);
+        mWalletAdapter = new WalletHorizontalRecycleViewAdapter(getContext(), mPresenter.getRecycleViewDataSource());
+        mWalletAdapter.setOnItemClickListener(new WalletHorizontalRecycleViewAdapter.OnRecycleViewItemClickListener() {
+            @Override
+            public void onContentViewClick(WalletEntity walletEntity) {
+                mPresenter.clickRecycleViewItem(walletEntity);
+            }
+        });
+        RecycleViewProxyAdapter proxyAdapter = new RecycleViewProxyAdapter(mWalletAdapter);
+        rvWallet.setAdapter(proxyAdapter);
+        proxyAdapter.addFooterView(getCreateWalletView());
+        proxyAdapter.addFooterView(getImportWalletView());
+    }
+
     private View getCreateWalletView() {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.item_wallet_list1_footer, null);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.item_wallet_list_footer, null);
         ((TextView) view.findViewById(R.id.tv_name)).setText(R.string.createIndividualWallet);
         ((ImageView) view.findViewById(R.id.iv_icon)).setImageResource(R.drawable.icon_assets_create);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.createIndividualWallet();
+                CreateWalletActivity.actionStart(getContext());
             }
         });
         return view;
     }
 
     private View getImportWalletView() {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.item_wallet_list1_footer, null);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.item_wallet_list_footer, null);
         ((TextView) view.findViewById(R.id.tv_name)).setText(R.string.importIndividualWallet);
         ((ImageView) view.findViewById(R.id.iv_icon)).setImageResource(R.drawable.icon_assets_import);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.importIndividualWallet();
+                ImportWalletActivity.actionStart(getContext());
             }
         });
         return view;
@@ -330,14 +358,14 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
     private ArrayList<Integer> getCollapsIcons() {
         ArrayList<Integer> titleList = new ArrayList<>();
-        titleList.add(R.drawable.assets_tab_transactions2_icon);
-        titleList.add(R.drawable.assets_tab_send2_icon);
-        titleList.add(R.drawable.assets_tab_receive2_icon);
+        titleList.add(R.drawable.assets_tab_transactions_icon);
+        titleList.add(R.drawable.assets_tab_send_icon);
+        titleList.add(R.drawable.assets_tab_receive_icon);
         return titleList;
     }
 
-    private ArrayList<BaseFragment> getFragments(WalletEntity walletEntity) {
-        ArrayList<BaseFragment> list = new ArrayList<>();
+    private List<BaseFragment> getFragments(WalletEntity walletEntity) {
+        List<BaseFragment> list = new ArrayList<>();
         list.add(getFragment(TAB1, walletEntity));
         list.add(getFragment(TAB2, walletEntity));
         list.add(getFragment(TAB3, walletEntity));
@@ -363,57 +391,6 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
             fragment.setArguments(bundle);
         }
         return fragment;
-    }
-
-    private void showPopWindow() {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_assets_more, null);
-        view.findViewById(R.id.ll_create_individual_wallet).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPresenter.createIndividualWallet();
-                dimissPopWindow();
-            }
-        });
-//        view.findViewById(R.id.ll_create_shared_wallet).setOnClickListener(new View.OnClickListener() { //创建联名钱包相关的先屏蔽
-//            @Override
-//            public void onClick(View v) {
-//                mPresenter.createSharedWallet();
-//                dimissPopWindow();
-//            }
-//        });
-        view.findViewById(R.id.ll_import_individual_wallet).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPresenter.importIndividualWallet();
-                dimissPopWindow();
-            }
-        });
-//        view.findViewById(R.id.ll_import_shared_wallet).setOnClickListener(new View.OnClickListener() {//添加联名钱包的先屏蔽掉
-//            @Override
-//            public void onClick(View v) {
-////                mPresenter.addSharedWallet();
-//                dimissPopWindow();
-//            }
-//        });
-        view.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (!DensityUtil.isTouchInView(view.findViewById(R.id.ll_item), event) && event.getAction() == MotionEvent.ACTION_UP) {
-                    dimissPopWindow();
-                }
-                return true;
-            }
-        });
-        mPopDialog = new AppCompatDialog(getContext(), R.style.Dialog_FullScreen);
-        mPopDialog.setContentView(view);
-        mPopDialog.show();
-        mPopDialog.setCancelable(true);
-    }
-
-    private void dimissPopWindow() {
-        if (mPopDialog != null && mPopDialog.isShowing()) {
-            mPopDialog.dismiss();
-        }
     }
 
     @Override
@@ -463,7 +440,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
     @Override
     public void setArgument(WalletEntity entity) {
-        ArrayList<BaseFragment> fragments = ((TabAdapter) vpContent.getAdapter()).getFragments();
+        List<BaseFragment> fragments = ((TabAdapter) vpContent.getAdapter()).getFragments();
         for (BaseFragment fragment : fragments) {
             Bundle bundle = new Bundle();
             bundle.putParcelable(Constants.Extra.EXTRA_WALLET, entity);

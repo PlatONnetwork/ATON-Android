@@ -1,17 +1,25 @@
 package com.juzix.wallet.entity;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.text.TextUtils;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.parser.DefaultJSONParser;
+import com.alibaba.fastjson.parser.deserializer.JSONPDeserializer;
+import com.alibaba.fastjson.parser.deserializer.ObjectDeserializer;
+import com.alibaba.fastjson.serializer.JSONSerializable;
+import com.alibaba.fastjson.serializer.JSONSerializer;
+import com.alibaba.fastjson.serializer.ObjectSerializer;
+import com.alibaba.fastjson.util.TypeUtils;
 import com.juzix.wallet.R;
-import com.juzix.wallet.db.entity.CandidateInfoEntity;
-import com.juzix.wallet.engine.NodeManager;
-import com.juzix.wallet.utils.BigDecimalUtil;
-import com.juzix.wallet.utils.JSONUtil;
+import com.juzix.wallet.utils.LanguageUtil;
 
-import org.web3j.utils.Numeric;
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * @author matrixelement
@@ -35,17 +43,10 @@ public class CandidateEntity implements Parcelable {
      */
     private String countryCode;
     /**
-     * 国家英文名称
+     * 国家区域信息
      */
-    private String countryEnName;
-    /**
-     * 国家中文名称
-     */
-    private String countryCnName;
-    /**
-     * 国家拼音名称，中文环境下，区域进行排序
-     */
-    private String countrySpellName;
+    @JSONField(deserialize = false, serialize = false)
+    private CountryEntity countryEntity;
     /**
      * 质押金(单位:Energon)
      */
@@ -53,7 +54,23 @@ public class CandidateEntity implements Parcelable {
     /**
      * 投票激励:小数
      */
-    private double rewardRatio;
+    private String reward;
+    /**
+     * 票价
+     */
+    private String ticketPrice;
+    /**
+     * 得票数
+     */
+    private String ticketCount;
+    /**
+     * 加入时间
+     */
+    private long joinTime;
+    /**
+     * 节点类型
+     */
+    private String nodeType;
 
     /**
      * 默认构造函数fastJson自动解析
@@ -66,11 +83,10 @@ public class CandidateEntity implements Parcelable {
         name = in.readString();
         ranking = in.readInt();
         countryCode = in.readString();
-        countryEnName = in.readString();
-        countryCnName = in.readString();
-        countrySpellName = in.readString();
         deposit = in.readString();
-        rewardRatio = in.readDouble();
+        reward = in.readString();
+        ticketPrice = in.readString();
+        countryEntity = in.readParcelable(countryEntity.getClass().getClassLoader());
     }
 
     @Override
@@ -79,11 +95,10 @@ public class CandidateEntity implements Parcelable {
         dest.writeString(name);
         dest.writeInt(ranking);
         dest.writeString(countryCode);
-        dest.writeString(countryEnName);
-        dest.writeString(countryCnName);
-        dest.writeString(countrySpellName);
         dest.writeString(deposit);
-        dest.writeDouble(rewardRatio);
+        dest.writeString(reward);
+        dest.writeString(ticketPrice);
+        dest.writeParcelable(countryEntity, flags);
     }
 
     @Override
@@ -135,30 +150,6 @@ public class CandidateEntity implements Parcelable {
         this.countryCode = countryCode;
     }
 
-    public String getCountryEnName() {
-        return countryEnName;
-    }
-
-    public void setCountryEnName(String countryEnName) {
-        this.countryEnName = countryEnName;
-    }
-
-    public String getCountryCnName() {
-        return countryCnName;
-    }
-
-    public void setCountryCnName(String countryCnName) {
-        this.countryCnName = countryCnName;
-    }
-
-    public String getCountrySpellName() {
-        return countrySpellName;
-    }
-
-    public void setCountrySpellName(String countrySpellName) {
-        this.countrySpellName = countrySpellName;
-    }
-
     public String getDeposit() {
         return deposit;
     }
@@ -167,11 +158,63 @@ public class CandidateEntity implements Parcelable {
         this.deposit = deposit;
     }
 
-    public double getRewardRatio() {
-        return rewardRatio;
+    public String getReward() {
+        return reward;
     }
 
-    public void setRewardRatio(double rewardRatio) {
-        this.rewardRatio = rewardRatio;
+    public void setReward(String reward) {
+        this.reward = reward;
     }
+
+    public CountryEntity getCountryEntity() {
+        return countryEntity;
+    }
+
+    public void setCountryEntity(CountryEntity countryEntity) {
+        this.countryEntity = countryEntity;
+    }
+
+    public String getTicketPrice() {
+        return ticketPrice;
+    }
+
+    public void setTicketPrice(String ticketPrice) {
+        this.ticketPrice = ticketPrice;
+    }
+
+    public String getTicketCount() {
+        return ticketCount;
+    }
+
+    public void setTicketCount(String ticketCount) {
+        this.ticketCount = ticketCount;
+    }
+
+    public long getJoinTime() {
+        return joinTime;
+    }
+
+    public void setJoinTime(long joinTime) {
+        this.joinTime = joinTime;
+    }
+
+    public NodeType getNodeType() {
+        return NodeType.getNodeTypeByName(nodeType);
+    }
+
+    public void setNodeType(String nodeType) {
+        this.nodeType = nodeType;
+    }
+
+    public String getCountryName(Context context) {
+        if (countryEntity == null) {
+            return null;
+        }
+        if (Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(context).getLanguage())) {
+            return countryEntity.getZhName();
+        } else {
+            return countryEntity.getEnName();
+        }
+    }
+
 }

@@ -1,6 +1,9 @@
 package com.juzix.wallet.entity;
 
-public class CandidateDetailEntity {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class CandidateDetailEntity implements Parcelable {
 
     /**
      * 节点ID
@@ -21,7 +24,7 @@ public class CandidateDetailEntity {
     /**
      * 投票激励:小数
      */
-    private double rewardRatio;
+    private String reward;
     /**
      * 机构名称
      */
@@ -57,6 +60,54 @@ public class CandidateDetailEntity {
     public CandidateDetailEntity() {
     }
 
+    protected CandidateDetailEntity(Parcel in) {
+        nodeId = in.readString();
+        name = in.readString();
+        deposit = in.readString();
+        ranking = in.readInt();
+        reward = in.readString();
+        orgName = in.readString();
+        orgWebsite = in.readString();
+        intro = in.readString();
+        nodeUrl = in.readString();
+        ticketCount = in.readString();
+        joinTime = in.readLong();
+        nodeType = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(nodeId);
+        dest.writeString(name);
+        dest.writeString(deposit);
+        dest.writeInt(ranking);
+        dest.writeString(reward);
+        dest.writeString(orgName);
+        dest.writeString(orgWebsite);
+        dest.writeString(intro);
+        dest.writeString(nodeUrl);
+        dest.writeString(ticketCount);
+        dest.writeLong(joinTime);
+        dest.writeString(nodeType);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<CandidateDetailEntity> CREATOR = new Creator<CandidateDetailEntity>() {
+        @Override
+        public CandidateDetailEntity createFromParcel(Parcel in) {
+            return new CandidateDetailEntity(in);
+        }
+
+        @Override
+        public CandidateDetailEntity[] newArray(int size) {
+            return new CandidateDetailEntity[size];
+        }
+    };
+
     public String getNodeId() {
         return nodeId;
     }
@@ -89,12 +140,12 @@ public class CandidateDetailEntity {
         this.ranking = ranking;
     }
 
-    public double getRewardRatio() {
-        return rewardRatio;
+    public String getReward() {
+        return reward;
     }
 
-    public void setRewardRatio(double rewardRatio) {
-        this.rewardRatio = rewardRatio;
+    public void setReward(String reward) {
+        this.reward = reward;
     }
 
     public String getOrgName() {
@@ -145,8 +196,8 @@ public class CandidateDetailEntity {
         this.joinTime = joinTime;
     }
 
-    public String getNodeType() {
-        return nodeType;
+    public NodeType getNodeType() {
+        return NodeType.getNodeTypeByName(nodeType);
     }
 
     public void setNodeType(String nodeType) {

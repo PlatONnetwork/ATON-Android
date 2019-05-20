@@ -1,12 +1,18 @@
 package com.juzix.wallet.component.ui.presenter;
 
+import com.juzhen.framework.network.ApiRequestBody;
+import com.juzhen.framework.network.ApiResponse;
+import com.juzhen.framework.network.ApiSingleObserver;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.NodeDetailContract;
 import com.juzix.wallet.component.ui.view.SubmitVoteActivity;
 import com.juzix.wallet.engine.IndividualWalletManager;
+import com.juzix.wallet.engine.NodeManager;
+import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.VoteManager;
+import com.juzix.wallet.entity.CandidateDetailEntity;
 import com.juzix.wallet.entity.CandidateEntity;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.utils.BigDecimalUtil;
@@ -24,37 +30,39 @@ import io.reactivex.functions.Function;
  */
 public class NodeDetailPresenter extends BasePresenter<NodeDetailContract.View> implements NodeDetailContract.Presenter {
 
-    private CandidateEntity mCandidateEntity;
+    private String mCandidateId;
+    private CandidateDetailEntity mCandidateDetailEntity;
 
     public NodeDetailPresenter(NodeDetailContract.View view) {
         super(view);
-        mCandidateEntity = getView().getCandidateEntityFromIntent();
+        mCandidateId = getView().getCandidateIdFromIntent();
     }
 
     @Override
     public void getNodeDetailInfo() {
         if (isViewAttached()) {
-
-            if (mCandidateEntity != null) {
-
-                getView().showNodeDetailInfo(mCandidateEntity);
-
-                VoteManager
-                        .getInstance()
-                        .getCandidateEpoch(mCandidateEntity.getNodeId())
-                        .compose(bindToLifecycle())
-                        .compose(RxUtils.getSingleSchedulerTransformer())
-                        .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
-                        .subscribe(new Consumer<Long>() {
-                            @Override
-                            public void accept(Long epoch) throws Exception {
-                                if (isViewAttached()) {
-                                    getView().showEpoch(epoch);
-                                }
+            ServerUtils
+                    .getCommonApi()
+                    .getCandidateDetail(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
+                            .put("nodeId", mCandidateId)
+                            .build())
+                    .compose(RxUtils.bindToLifecycle(getView()))
+                    .compose(RxUtils.getSingleSchedulerTransformer())
+                    .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
+                    .subscribe(new ApiSingleObserver<CandidateDetailEntity>() {
+                        @Override
+                        public void onApiSuccess(CandidateDetailEntity candidateDetailEntity) {
+                            if (isViewAttached()) {
+                                mCandidateDetailEntity = candidateDetailEntity;
+                                getView().showNodeDetailInfo(candidateDetailEntity);
                             }
-                        });
+                        }
 
-            }
+                        @Override
+                        public void onApiFailure(ApiResponse response) {
+
+                        }
+                    });
         }
     }
 
@@ -88,7 +96,9 @@ public class NodeDetailPresenter extends BasePresenter<NodeDetailContract.View> 
                             if (totalBalance <= 0) {
                                 showLongToast(R.string.voteTicketInsufficientBalanceTips);
                             } else {
-                                SubmitVoteActivity.actionStart(currentActivity(), mCandidateEntity);
+                                if (mCandidateDetailEntity != null){
+                                    SubmitVoteActivity.actionStart(currentActivity(), mCandidateId,mCandidateDetailEntity.getName());
+                                }
                             }
                         }
                     });

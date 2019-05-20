@@ -4,6 +4,7 @@ import com.juzix.wallet.component.ui.SortType;
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
 import com.juzix.wallet.entity.CandidateEntity;
+import com.juzix.wallet.entity.CandidateExtraEntity;
 
 import java.util.List;
 
@@ -17,11 +18,13 @@ public class VoteContract {
         void setVotedInfo(long sumVoteNum, long votedNum, String ticketPrice);
 
         void notifyDataSetChanged(List<CandidateEntity> candidateList);
+
+        void finishRefresh();
     }
 
     public interface Presenter extends IPresenter<View> {
 
-        void start();
+        void getCandidateList();
 
         void sort(SortType sortType);
 

@@ -1,6 +1,7 @@
 package com.juzix.wallet.component.ui.view;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
@@ -42,6 +43,9 @@ import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.RxUtils;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -64,6 +68,8 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
     private final static String TAG_REWARD = "tag_reward";
     private final static String TAG_REGION = "tag_region";
 
+    @BindView(R.id.layout_fresh)
+    SmartRefreshLayout smartRefreshLayout;
     @BindView(R.id.tv_vote_rate)
     TextView tvVoteRate;
     @BindView(R.id.pb_vote_rate)
@@ -132,7 +138,7 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
 
     @Override
     protected void onFragmentPageStart() {
-        mPresenter.start();
+        smartRefreshLayout.autoRefresh();
     }
 
     @Override
@@ -165,7 +171,7 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
         mVoteListAdapter.setOnItemClickListener(new VoteListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(CandidateEntity candidateEntity) {
-                NodeDetailActivity.actionStart(currentActivity(), candidateEntity);
+                NodeDetailActivity.actionStart(currentActivity(), candidateEntity.getNodeId());
             }
         });
 
@@ -225,6 +231,13 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
             public void onTabReselected(TabLayout.Tab tab) {
                 //再次选中tab的逻辑
 
+            }
+        });
+
+        smartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                mPresenter.getCandidateList();
             }
         });
 
@@ -322,6 +335,10 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
         mVoteListAdapter.notifyDataChanged(candidateList);
     }
 
+    @Override
+    public void finishRefresh() {
+        smartRefreshLayout.finishRefresh();
+    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNodeChangedEvent(Event.NodeChangedEvent event) {

@@ -2,7 +2,6 @@ package com.juzix.wallet.component.ui.view;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -10,7 +9,6 @@ import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -35,7 +33,6 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.reactivex.Observable;
 import io.reactivex.functions.BiFunction;
-import io.reactivex.functions.Consumer;
 
 public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportIndividualPrivateKeyPresenter> implements ImportIndividualPrivateKeyContract.View {
     Unbinder unbinder;
@@ -277,9 +274,9 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportIn
         if (resultCode != Activity.RESULT_OK) {
             return;
         }
-        if (requestCode == ImportIndividualWalletActivity.REQ_QR_CODE) {
+        if (requestCode == ImportWalletActivity.REQ_QR_CODE) {
             Bundle bundle = data.getExtras();
-            String scanResult = bundle.getString(ScanQRCodeActivity.EXTRA_SCAN_QRCODE_DATA);
+            String scanResult = bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
             mPresenter.parseQRCode(scanResult);
         }
     }

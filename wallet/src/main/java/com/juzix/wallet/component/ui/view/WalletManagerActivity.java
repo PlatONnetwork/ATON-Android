@@ -82,10 +82,10 @@ public class WalletManagerActivity extends MVPBaseActivity<WalletManagerPresente
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.sc_create_wallet:
-                CreateIndividualWalletActivity.actionStart(this);
+                CreateWalletActivity.actionStart(this);
                 break;
             case R.id.sc_import_wallet:
-                ImportIndividualWalletActivity.actionStart(this);
+                ImportWalletActivity.actionStart(this);
                 break;
             default:
                 break;

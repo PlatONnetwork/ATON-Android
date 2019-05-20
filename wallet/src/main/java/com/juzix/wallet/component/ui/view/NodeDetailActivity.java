@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
@@ -16,19 +17,15 @@ import com.juzix.wallet.component.ui.contract.NodeDetailContract;
 import com.juzix.wallet.component.ui.presenter.NodeDetailPresenter;
 import com.juzix.wallet.component.widget.RoundedTextView;
 import com.juzix.wallet.component.widget.ShadowButton;
-import com.juzix.wallet.entity.CandidateEntity;
-import com.juzix.wallet.entity.CandidateExtraEntity;
+import com.juzix.wallet.entity.CandidateDetailEntity;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.DateUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.ShareUtil;
 
-import java.util.concurrent.TimeUnit;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import io.reactivex.functions.Consumer;
 
 /**
  * @author matrixelement
@@ -45,8 +42,6 @@ public class NodeDetailActivity extends MVPBaseActivity<NodeDetailPresenter> imp
     TextView tvStakedAmount;
     @BindView(R.id.tv_tickets)
     TextView tvTickets;
-    @BindView(R.id.tv_ticket_age)
-    TextView tvTicketAge;
     @BindView(R.id.layout_node_staked_info)
     ConstraintLayout layoutNodeStakedInfo;
     @BindView(R.id.tv_node_url)
@@ -65,6 +60,8 @@ public class NodeDetailActivity extends MVPBaseActivity<NodeDetailPresenter> imp
     ShadowButton sbtnVote;
     @BindView(R.id.rtv_rank_desc)
     RoundedTextView rtvRankDesc;
+    @BindView(R.id.layout_content)
+    ConstraintLayout layoutContent;
 
     Unbinder unbinder;
 
@@ -111,34 +108,30 @@ public class NodeDetailActivity extends MVPBaseActivity<NodeDetailPresenter> imp
     }
 
     @Override
-    public CandidateEntity getCandidateEntityFromIntent() {
-        return getIntent().getParcelableExtra(Constants.Extra.EXTRA_CANDIDATE);
+    public String getCandidateIdFromIntent() {
+        return getIntent().getStringExtra(Constants.Extra.EXTRA_CANDIDATE_ID);
     }
 
     @Override
-    public void showNodeDetailInfo(CandidateEntity candidateEntity) {
-//        CandidateExtraEntity extraEntity = candidateEntity.getCandidateExtraEntity();
-//        if (extraEntity != null) {
-//            tvNodeName.setText(extraEntity.getNodeName());
-//            tvJoinTime.setText(string(R.string.joinTime, DateUtil.format(extraEntity.getTime(), DateUtil.DATETIME_FORMAT_PATTERN)));
-//            tvInstitutionalName.setText(extraEntity.getNodeDepartment());
-//            tvInstitutionalWebsite.setText(extraEntity.getOfficialWebsite());
-//            tvInstitutionalIntroduction.setText(extraEntity.getNodeDiscription());
-//        }
-//        rtvRankDesc.setText(candidateEntity.getStatus().getStatusDescRes());
-//        tvStakedRanking.setText(String.format("%d", candidateEntity.getStakedRanking()));
-//        tvStakedAmount.setText(NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(candidateEntity.getDeposit(), "1E18"), 4));
-//        tvTickets.setText(String.format("%d", candidateEntity.getVotedNum()));
-//        tvNodeUrl.setText(String.format("%s:%s", candidateEntity.getHost(), candidateEntity.getPort()));
-//        tvNodeId.setText(candidateEntity.getCandidateIdWithPrefix());
-//        tvRewardRadio.setText(String.format("%s%%", NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(candidateEntity.getFee(), 100D), 0)));
+    public void showNodeDetailInfo(CandidateDetailEntity candidateDetailEntity) {
 
+        layoutContent.setVisibility(View.VISIBLE);
+        sbtnVote.setVisibility(View.VISIBLE);
+
+        tvNodeName.setText(candidateDetailEntity.getName());
+        tvJoinTime.setText(string(R.string.joinTime, DateUtil.format(candidateDetailEntity.getJoinTime(), DateUtil.DATETIME_FORMAT_PATTERN)));
+        tvInstitutionalName.setText(candidateDetailEntity.getOrgName());
+        tvInstitutionalWebsite.setText(candidateDetailEntity.getOrgWebsite());
+        tvInstitutionalIntroduction.setText(candidateDetailEntity.getIntro());
+        rtvRankDesc.setText(candidateDetailEntity.getNodeType().getStatusDescRes());
+        tvStakedRanking.setText(String.format("%d", candidateDetailEntity.getRanking()));
+        tvStakedAmount.setText(NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(candidateDetailEntity.getDeposit(), "1E18"), 4));
+        tvTickets.setText(candidateDetailEntity.getTicketCount());
+        tvNodeUrl.setText(candidateDetailEntity.getNodeUrl());
+        tvNodeId.setText(candidateDetailEntity.getNodeId());
+        tvRewardRadio.setText(String.format("%s%%", NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(NumberParserUtils.parseDouble(candidateDetailEntity.getReward()), 100D), 0)));
     }
 
-    @Override
-    public void showEpoch(long epoch) {
-        tvTicketAge.setText(String.format("%dBs", epoch));
-    }
 
     @Override
     protected void onDestroy() {
@@ -148,9 +141,9 @@ public class NodeDetailActivity extends MVPBaseActivity<NodeDetailPresenter> imp
         }
     }
 
-    public static void actionStart(Context context, CandidateEntity candidateEntity) {
+    public static void actionStart(Context context, String candidateId) {
         Intent intent = new Intent(context, NodeDetailActivity.class);
-        intent.putExtra(Constants.Extra.EXTRA_CANDIDATE, candidateEntity);
+        intent.putExtra(Constants.Extra.EXTRA_CANDIDATE_ID, candidateId);
         context.startActivity(intent);
     }
 }

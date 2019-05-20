@@ -2,7 +2,6 @@ package com.juzix.wallet.component.ui.view;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -12,10 +11,8 @@ import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,7 +27,6 @@ import com.juzix.wallet.component.ui.presenter.ImportIndividualMnemonicPhrasePre
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.utils.CheckStrength;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -327,9 +323,9 @@ public class ImportIndividualMnemonicPhraseFragment extends MVPBaseFragment<Impo
         if (resultCode != Activity.RESULT_OK) {
             return;
         }
-        if (requestCode == ImportIndividualWalletActivity.REQ_QR_CODE) {
+        if (requestCode == ImportWalletActivity.REQ_QR_CODE) {
             Bundle bundle = data.getExtras();
-            String scanResult = bundle.getString(ScanQRCodeActivity.EXTRA_SCAN_QRCODE_DATA);
+            String scanResult = bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
             mPresenter.parseQRCode(scanResult);
         }
     }

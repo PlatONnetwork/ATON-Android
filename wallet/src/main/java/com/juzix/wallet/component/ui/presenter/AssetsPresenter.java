@@ -8,8 +8,6 @@ import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.AssetsContract;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.view.BackupMnemonicPhraseActivity;
-import com.juzix.wallet.component.ui.view.CreateIndividualWalletActivity;
-import com.juzix.wallet.component.ui.view.ImportIndividualWalletActivity;
 import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.component.ui.view.ScanQRCodeActivity;
 import com.juzix.wallet.engine.IndividualWalletManager;
@@ -51,11 +49,6 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
     }
 
     @Override
-    public void init() {
-        getView().showCurrentItem(0);
-    }
-
-    @Override
     public void start() {
         if (mDisposable != null && !mDisposable.isDisposed()) {
             mDisposable.dispose();
@@ -68,14 +61,12 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
                     public Double apply(WalletEntity walletEntity) throws Exception {
                         double balance = Web3jManager.getInstance().getBalance(walletEntity.getPrefixAddress());
                         walletEntity.setBalance(balance == 0 ? walletEntity.getBalance() : balance);
-//                        Log.d("aaaaaa", "数量1111111111-------->" + walletEntity.getBalance());
                         return balance == 0 ? walletEntity.getBalance() : balance;
                     }
                 })
                 .reduce(new BiFunction<Double, Double, Double>() {
                     @Override
                     public Double apply(Double aDouble, Double aDouble2) throws Exception {
-//                        Log.d("aaaaaa", "数量33333333333333------>" + aDouble + aDouble2);
                         return aDouble + aDouble2;
                     }
                 })
@@ -92,7 +83,6 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
                     @Override
                     public void accept(Double balance) throws Exception {
                         if (isViewAttached()) {
-//                            Log.d("aaaaaa", "数量2222222222----------->" + balance);
                             getView().showTotalBalance(balance);
                             WalletEntity walletEntity = WalletManager.getInstance().getSelectedWallet();
                             if (walletEntity != null) {
@@ -138,51 +128,6 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
         getView().showWalletInfo(walletEntity);
         getView().setArgument(walletEntity);
     }
-
-    @Override
-    public void scanQRCode() {
-        new RxPermissions(currentActivity())
-                .request(Manifest.permission.CAMERA)
-                .subscribe(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(Boolean success) throws Exception {
-                        if (isViewAttached() && success) {
-                            ScanQRCodeActivity.startActivityForResult(currentActivity(), MainActivity.REQ_ASSETS_TAB_QR_CODE);
-                        }
-                    }
-                });
-
-    }
-
-    @Override
-    public void createIndividualWallet() {
-        CreateIndividualWalletActivity.actionStart(getContext());
-    }
-
-//    @Override
-//    public void createSharedWallet() {
-//        ArrayList<IndividualWalletEntity> walletEntityList = IndividualWalletManager.getInstance().getWalletList();
-//        if (walletEntityList.isEmpty()) {
-//            showLongToast(R.string.noWalletTips);
-//            return;
-//        }
-//        double totalBalance = 0.0D;
-//        for (IndividualWalletEntity walletEntity : walletEntityList) {
-//            totalBalance = BigDecimalUtil.add(totalBalance, walletEntity.getBalance());
-//        }
-//        if (totalBalance <= 0) {
-//            showLongToast(R.string.insufficientBalanceTips);
-//            return;
-//        }
-//        CreateSharedWalletActivity.actionStart(getContext());
-//    }
-
-    @Override
-    public void importIndividualWallet() {
-        ImportIndividualWalletActivity.actionStart(getContext());
-    }
-
-
 
     @Override
     public void backupWallet() {
@@ -256,16 +201,12 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
 
     private void refreshWalletList() {//联名钱包相关的先屏蔽掉
         List<IndividualWalletEntity> walletList1 = IndividualWalletManager.getInstance().getWalletList();
-//        List<SharedWalletEntity> walletList2 = SharedWalletManager.getInstance().getWalletList();
         if (!mWalletList.isEmpty()) {
             mWalletList.clear();
         }
         if (!walletList1.isEmpty()) {
             mWalletList.addAll(walletList1);
         }
-//        if (!walletList2.isEmpty()) {
-//            mWalletList.addAll(walletList2);
-//        }
         if (mWalletList.isEmpty()) {
             return;
         }

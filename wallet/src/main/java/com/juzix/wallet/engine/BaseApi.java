@@ -52,12 +52,11 @@ public interface BaseApi {
     /**
      * 获取节点详情
      *
-     * @param nodeId
+     * @param requestBody
      * @return
      */
-    @FormUrlEncoded
-    @POST("app-{cid}/v060/node/details")
-    Single<Response<ApiResponse<CandidateDetailEntity>>> getCandidateDetail(@Path("cid") String cid, @Field("nodeId") String nodeId);
+    @POST("app-{cid}/v060/node/detail")
+    Single<Response<ApiResponse<CandidateDetailEntity>>> getCandidateDetail(@Path("cid") String cid, @Body ApiRequestBody requestBody);
 
     /**
      * 获得用户有投票的节点列表

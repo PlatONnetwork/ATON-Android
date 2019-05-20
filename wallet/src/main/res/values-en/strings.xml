@@ -346,8 +346,8 @@
     <string name="actualExpirationTime">Actual expiration time</string>
     <string name="nodeInformation">Node Information</string>
     <string name="joinTime">Join time: %1$s</string>
-    <string name="candidate">Nominees</string>
-    <string name="alternative">Candidates</string>
+    <string name="nominees">Nominees</string>
+    <string name="candidates">Candidates</string>
     <string name="validator">Validator</string>
     <string name="stakedRanking">Staked Ranking</string>
     <string name="tickets">Tickets</string>
