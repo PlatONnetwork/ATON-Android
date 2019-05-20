@@ -5,6 +5,7 @@ import com.juzhen.framework.network.ApiResponse;
 import com.juzix.wallet.entity.CandidateDetailEntity;
 import com.juzix.wallet.entity.CandidateEntity;
 import com.juzix.wallet.entity.CandidateExtraEntity;
+import com.juzix.wallet.entity.CandidateWrapEntity;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.VotedCandidateEntity;
 
@@ -17,6 +18,7 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Url;
 
 public interface BaseApi {
@@ -29,6 +31,7 @@ public interface BaseApi {
      */
     @GET()
     Single<String> getVersionInfo(@Url String url);
+
     /**
      * 获取交易记录
      *
@@ -43,8 +46,8 @@ public interface BaseApi {
      *
      * @return
      */
-    @POST("v060/node/listAll")
-    Single<Response<ApiResponse<CandidateExtraEntity>>> getCandidateList();
+    @POST("app-{cid}/v060/node/list")
+    Single<Response<ApiResponse<CandidateWrapEntity>>> getCandidateList(@Path("cid") String cid);
 
     /**
      * 获取节点详情
@@ -53,8 +56,8 @@ public interface BaseApi {
      * @return
      */
     @FormUrlEncoded
-    @POST("v060/node/details")
-    Single<Response<ApiResponse<CandidateDetailEntity>>> getCandidateDetail(@Field("nodeId") String nodeId);
+    @POST("app-{cid}/v060/node/details")
+    Single<Response<ApiResponse<CandidateDetailEntity>>> getCandidateDetail(@Path("cid") String cid, @Field("nodeId") String nodeId);
 
     /**
      * 获得用户有投票的节点列表
@@ -63,8 +66,8 @@ public interface BaseApi {
      * @return
      */
     @FormUrlEncoded
-    @POST("v060/node/listUserVoteNode")
-    Single<Response<ApiResponse<List<VotedCandidateEntity>>>> getVotedCandidateList(@Field("walletAddrs") String[] walletAddrs);
+    @POST("app-{cid}/v060/node/listUserVoteNode")
+    Single<Response<ApiResponse<List<VotedCandidateEntity>>>> getVotedCandidateList(@Path("cid") String cid, @Field("walletAddrs") String[] walletAddrs);
 
     /**
      * 参数查询投票交易列表
@@ -79,6 +82,6 @@ public interface BaseApi {
      *             ]
      * @return
      */
-    @POST("v060/transaction/list")
-    Single<Response<ApiResponse<List<VotedCandidateEntity>>>> getVotedCandidateDetailList(@Body ApiRequestBody body);
+    @POST("app-{cid}/v060/transaction/list")
+    Single<Response<ApiResponse<List<VotedCandidateEntity>>>> getVotedCandidateDetailList(@Path("cid") String cid, @Body ApiRequestBody body);
 }

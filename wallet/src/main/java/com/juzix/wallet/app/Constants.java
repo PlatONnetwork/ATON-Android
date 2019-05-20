@@ -94,7 +94,7 @@ public class Constants {
         String URL_HTTP_A = "https://aton.platon.network";
         //        String URL_HTTP_A = "http://54.252.202.130:10000/";
         String URL_HTTP_B = "https://aton.platon.network";
-        String URL_HTTP_C = "https://aton.platon.network";
+        String URL_HTTP_C = "http://192.168.9.190:20060/";
     }
 
     public interface DBName {

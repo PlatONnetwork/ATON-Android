@@ -26,8 +26,12 @@ import io.reactivex.functions.Predicate;
 public class NodeManager {
 
     private final static String[] DEFAULT_NODE_URL_LIST = new String[]{Constants.URL.URL_TEST_A, Constants.URL.URL_TEST_B};
+    //线上A网
     private final static String CHAINID_TEST_NET_A = "103";
+    //线上B网
     private final static String CHAINID_TEST_NET_B = "104";
+    //测试环境
+    private final static String CHAINID_TEST_NET_C = "203";
 
     private NodeEntity curNode;
     private NodeService nodeService;
@@ -136,7 +140,13 @@ public class NodeManager {
     }
 
     public String getChainId() {
-        return Constants.URL.URL_TEST_A.equals(NodeManager.getInstance().getCurNodeAddress()) ? CHAINID_TEST_NET_A : CHAINID_TEST_NET_B;
+        if (Constants.URL.URL_TEST_A.equals(NodeManager.getInstance().getCurNodeAddress())) {
+            return CHAINID_TEST_NET_A;
+        } else if (Constants.URL.URL_TEST_B.equals(NodeManager.getInstance().getCurNodeAddress())) {
+            return CHAINID_TEST_NET_B;
+        } else {
+            return CHAINID_TEST_NET_C;
+        }
     }
 
     private List<NodeEntity> buildDefaultNodeList() {

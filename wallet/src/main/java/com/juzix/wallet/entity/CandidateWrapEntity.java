@@ -15,7 +15,7 @@ public class CandidateWrapEntity {
     /**
      * 票价（单位Energon）
      */
-    private double ticketPrice;
+    private String ticketPrice;
 
     private List<CandidateEntity> candidateEntityList;
 
@@ -41,11 +41,11 @@ public class CandidateWrapEntity {
         this.proportion = proportion;
     }
 
-    public double getTicketPrice() {
+    public String getTicketPrice() {
         return ticketPrice;
     }
 
-    public void setTicketPrice(double ticketPrice) {
+    public void setTicketPrice(String ticketPrice) {
         this.ticketPrice = ticketPrice;
     }
 
@@ -55,5 +55,15 @@ public class CandidateWrapEntity {
 
     public void setCandidateEntityList(List<CandidateEntity> candidateEntityList) {
         this.candidateEntityList = candidateEntityList;
+    }
+
+    @Override
+    public String toString() {
+        return "CandidateWrapEntity{" +
+                "voteCount=" + voteCount +
+                ", proportion=" + proportion +
+                ", ticketPrice='" + ticketPrice + '\'' +
+                ", candidateEntityList=" + candidateEntityList +
+                '}';
     }
 }

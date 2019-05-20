@@ -55,7 +55,7 @@ public class ServerUtils {
             if (mBaseApi == null) {
                 synchronized (ServerUtils.class) {
                     if (mBaseApi == null) {
-                        mBaseApi = createService(BaseApi.class, Constants.URL.URL_HTTP_C);
+                        mBaseApi = createService(BaseApi.class, Constants.URL.URL_HTTP_A);
                     }
                 }
             }
@@ -100,7 +100,7 @@ public class ServerUtils {
 
     private static Map<String, String> buildHeadsMap() {
         Map<String, String> map = new HashMap<>();
-        map.put("cid", NodeManager.getInstance().getChainId());
+        map.put("x-aton-cid", NodeManager.getInstance().getChainId());
         return map;
     }
 
