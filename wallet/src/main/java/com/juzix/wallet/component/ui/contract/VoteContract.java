@@ -18,6 +18,8 @@ public class VoteContract {
         void setVotedInfo(long sumVoteNum, long votedNum, String ticketPrice);
 
         void notifyDataSetChanged(List<CandidateEntity> candidateList);
+
+        void finishRefresh();
     }
 
     public interface Presenter extends IPresenter<View> {

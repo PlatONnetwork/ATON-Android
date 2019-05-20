@@ -13,6 +13,7 @@ import com.juzix.wallet.db.entity.CandidateInfoEntity;
 import com.juzix.wallet.db.entity.SingleVoteInfoEntity;
 import com.juzix.wallet.db.entity.TicketInfoEntity;
 import com.juzix.wallet.db.sqlite.SingleVoteInfoDao;
+import com.juzix.wallet.entity.CandidateDetailEntity;
 import com.juzix.wallet.entity.CandidateEntity;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.SingleVoteEntity;
@@ -20,6 +21,7 @@ import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.AppUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.JSONUtil;
+
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 import org.web3j.crypto.Credentials;
@@ -171,16 +173,14 @@ public class VoteManager {
                 .onErrorReturnItem(new HashMap<>());
     }
 
-    public Single<SingleVoteInfoEntity> submitVote(Credentials credentials, IndividualWalletEntity walletEntity, CandidateEntity candidateEntity, String ticketNum, String ticketPrice) {
+    public Single<SingleVoteInfoEntity> submitVote(Credentials credentials, IndividualWalletEntity walletEntity, String nodeId, String nodeName, String ticketNum, String ticketPrice) {
 
         String walletName = walletEntity.getName();
         String walletAddress = walletEntity.getPrefixAddress();
-        String candidateId = candidateEntity.getNodeId();
-        String candidateName = candidateEntity.getName();
         BigInteger value = BigDecimalUtil.mul(ticketPrice, ticketNum).toBigInteger();
         double energonPrice = BigDecimalUtil.div(BigDecimalUtil.mul(GAS_PRICE.doubleValue(), GAS_LIMIT.doubleValue()), 1E18);
 
-        return voteTicket(credentials, ticketPrice, ticketNum, candidateId)
+        return voteTicket(credentials, ticketPrice, ticketNum, nodeId)
                 .filter(new Predicate<TransactionReceipt>() {
                     @Override
                     public boolean test(TransactionReceipt transactionReceipt) throws Exception {
@@ -200,7 +200,7 @@ public class VoteManager {
                         return Single.zip(getTransactionUuid(ticketNum, transactionHash), getTicketIdList(ticketNum, transactionHash), new BiFunction<String, List<String>, List<TicketInfoEntity>>() {
                             @Override
                             public List<TicketInfoEntity> apply(String transactionUuid, List<String> ticketIdList) throws Exception {
-                                return getTicketInfoList(ticketIdList, transactionUuid, candidateId, ticketPrice).blockingGet();
+                                return getTicketInfoList(ticketIdList, transactionUuid, nodeId, ticketPrice).blockingGet();
                             }
                         }).map(new Function<List<TicketInfoEntity>, SingleVoteInfoEntity>() {
                             @Override
@@ -209,8 +209,8 @@ public class VoteManager {
                                         .uuid(UUID.randomUUID().toString())
                                         .hash(transactionHash)
                                         .transactionId(ticketInfoEntityList.get(0).getTicketId())
-                                        .candidateId(candidateId)
-                                        .candidateName(candidateName)
+                                        .candidateId(nodeId)
+                                        .candidateName(nodeName)
                                         //todo
 //                                        .host(candidateEntity.getHost())
                                         .contractAddress(TicketContract.CONTRACT_ADDRESS)

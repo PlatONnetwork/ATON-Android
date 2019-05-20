@@ -5,9 +5,21 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson.parser.DefaultJSONParser;
+import com.alibaba.fastjson.parser.deserializer.JSONPDeserializer;
+import com.alibaba.fastjson.parser.deserializer.ObjectDeserializer;
+import com.alibaba.fastjson.serializer.JSONSerializable;
+import com.alibaba.fastjson.serializer.JSONSerializer;
+import com.alibaba.fastjson.serializer.ObjectSerializer;
+import com.alibaba.fastjson.util.TypeUtils;
+import com.juzix.wallet.R;
 import com.juzix.wallet.utils.LanguageUtil;
 
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * @author matrixelement
@@ -43,6 +55,22 @@ public class CandidateEntity implements Parcelable {
      * 投票激励:小数
      */
     private String reward;
+    /**
+     * 票价
+     */
+    private String ticketPrice;
+    /**
+     * 得票数
+     */
+    private String ticketCount;
+    /**
+     * 加入时间
+     */
+    private long joinTime;
+    /**
+     * 节点类型
+     */
+    private String nodeType;
 
     /**
      * 默认构造函数fastJson自动解析
@@ -57,6 +85,8 @@ public class CandidateEntity implements Parcelable {
         countryCode = in.readString();
         deposit = in.readString();
         reward = in.readString();
+        ticketPrice = in.readString();
+        countryEntity = in.readParcelable(countryEntity.getClass().getClassLoader());
     }
 
     @Override
@@ -67,6 +97,8 @@ public class CandidateEntity implements Parcelable {
         dest.writeString(countryCode);
         dest.writeString(deposit);
         dest.writeString(reward);
+        dest.writeString(ticketPrice);
+        dest.writeParcelable(countryEntity, flags);
     }
 
     @Override
@@ -142,6 +174,38 @@ public class CandidateEntity implements Parcelable {
         this.countryEntity = countryEntity;
     }
 
+    public String getTicketPrice() {
+        return ticketPrice;
+    }
+
+    public void setTicketPrice(String ticketPrice) {
+        this.ticketPrice = ticketPrice;
+    }
+
+    public String getTicketCount() {
+        return ticketCount;
+    }
+
+    public void setTicketCount(String ticketCount) {
+        this.ticketCount = ticketCount;
+    }
+
+    public long getJoinTime() {
+        return joinTime;
+    }
+
+    public void setJoinTime(long joinTime) {
+        this.joinTime = joinTime;
+    }
+
+    public NodeType getNodeType() {
+        return NodeType.getNodeTypeByName(nodeType);
+    }
+
+    public void setNodeType(String nodeType) {
+        this.nodeType = nodeType;
+    }
+
     public String getCountryName(Context context) {
         if (countryEntity == null) {
             return null;
@@ -152,4 +216,5 @@ public class CandidateEntity implements Parcelable {
             return countryEntity.getEnName();
         }
     }
+
 }

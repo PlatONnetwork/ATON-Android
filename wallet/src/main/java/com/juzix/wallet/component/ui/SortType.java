@@ -37,42 +37,40 @@ public enum SortType {
     static class RewardComparator implements Comparator<CandidateEntity> {
         @Override
         public int compare(CandidateEntity o1, CandidateEntity o2) {
-//            int compare = Integer.compare(o2.getFee(), o1.getFee());
-//            if (compare != 0) {
-//                return compare;
-//            }
-//            compare = Integer.compare(o1.getStatus().ordinal(), o2.getStatus().ordinal());
-//            if (compare != 0) {
-//                return compare;
-//            }
-//            compare = Double.compare(NumberParserUtils.parseDouble(o2.getDeposit()), NumberParserUtils.parseDouble(o1.getDeposit()));
-//            if (compare != 0) {
-//                return compare;
-//            }
-//            compare = Long.compare(o2.getVotedNum(), o1.getVotedNum());
-//            if (compare != 0) {
-//                return compare;
-//            }
-//            return Long.compare(o1.getCandidateExtraEntity().getTime(), o2.getCandidateExtraEntity().getTime());
-            return 0;
+            int compare = Long.compare(NumberParserUtils.parseLong(o2.getReward()), NumberParserUtils.parseLong(o1.getReward()));
+            if (compare != 0) {
+                return compare;
+            }
+            compare = Integer.compare(o1.getNodeType().ordinal(), o2.getNodeType().ordinal());
+            if (compare != 0) {
+                return compare;
+            }
+            compare = Double.compare(NumberParserUtils.parseDouble(o2.getDeposit()), NumberParserUtils.parseDouble(o1.getDeposit()));
+            if (compare != 0) {
+                return compare;
+            }
+            compare = Long.compare(NumberParserUtils.parseLong(o2.getTicketCount()), NumberParserUtils.parseLong(o1.getTicketCount()));
+            if (compare != 0) {
+                return compare;
+            }
+            return Long.compare(o1.getJoinTime(), o2.getJoinTime());
         }
     }
 
     static class RegionComparator implements Comparator<CandidateEntity> {
         @Override
         public int compare(CandidateEntity o1, CandidateEntity o2) {
-//            if (o1.getRegionEntity() == null) {
-//                return 0;
-//            }
-//            if (o2.getRegionEntity() == null) {
-//                return 1;
-//            }
-//            if (Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage())) {
-//                return o1.getRegionEntity().getCountryPinyin().compareToIgnoreCase(o2.getRegionEntity().getCountryPinyin());
-//            } else {
-//                return o1.getRegionEntity().getCountryEn().compareToIgnoreCase(o2.getRegionEntity().getCountryEn());
-//            }
-            return 0;
+            if (o1.getCountryEntity() == null) {
+                return 0;
+            }
+            if (o2.getCountryEntity() == null) {
+                return 1;
+            }
+            if (Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage())) {
+                return o1.getCountryEntity().getZhPinyinName().compareToIgnoreCase(o2.getCountryEntity().getZhPinyinName());
+            } else {
+                return o1.getCountryEntity().getEnName().compareToIgnoreCase(o2.getCountryEntity().getEnName());
+            }
         }
     }
 
@@ -80,11 +78,10 @@ public enum SortType {
         @Override
         public int compare(CandidateEntity o1, CandidateEntity o2) {
 
-//            double o1Amount = BigDecimalUtil.add(o1.getDeposit(), BigDecimalUtil.mul(String.valueOf(o1.getVotedNum()), o1.getTicketPrice()).toPlainString());
-//            double o2Amount = BigDecimalUtil.add(o2.getDeposit(), BigDecimalUtil.mul(String.valueOf(o2.getVotedNum()), o2.getTicketPrice()).toPlainString());
+            double o1Amount = BigDecimalUtil.add(o1.getDeposit(), BigDecimalUtil.mul(String.valueOf(o1.getTicketCount()), o1.getTicketPrice()).toPlainString());
+            double o2Amount = BigDecimalUtil.add(o2.getDeposit(), BigDecimalUtil.mul(String.valueOf(o2.getTicketCount()), o2.getTicketPrice()).toPlainString());
 
-//            return Double.compare(o2Amount, o1Amount);
-            return 0;
+            return Double.compare(o2Amount, o1Amount);
         }
     }
 }

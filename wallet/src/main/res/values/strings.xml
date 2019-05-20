@@ -347,8 +347,8 @@
     <string name="actualExpirationTime">实际过期时间</string>
     <string name="nodeInformation">节点详情</string>
     <string name="joinTime">加入时间: %1$s</string>
-    <string name="candidate">提名节点</string>
-    <string name="alternative">候选节点</string>
+    <string name="nominees">提名节点</string>
+    <string name="candidates">候选节点</string>
     <string name="validator">验证节点</string>
     <string name="stakedRanking">质押排名</string>
     <string name="tickets">得票数</string>

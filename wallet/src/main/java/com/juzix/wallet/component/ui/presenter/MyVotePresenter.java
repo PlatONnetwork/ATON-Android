@@ -125,7 +125,7 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> {
                         @Override
                         public void accept(CandidateEntity candidateEntity) throws Exception {
                             if (isViewAttached()) {
-                                SubmitVoteActivity.actionStart(currentActivity(), candidateEntity);
+//                                SubmitVoteActivity.actionStart(currentActivity(), candidateEntity);
                             }
                         }
                     }, new Consumer<Throwable>() {

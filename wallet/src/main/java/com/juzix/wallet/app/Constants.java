@@ -28,13 +28,12 @@ public class Constants {
         String EXTRA_WALLET_INDEX = "extra_index";
         String EXTRA_WALLET_SUB_INDEX = "extra_sub_index";
         String EXTRA_CANDIDATE = "extra_candidate_entity";
+        String EXTRA_CANDIDATE_DETAIL = "extra_candidate_detail_entity";
         String EXTRA_VOTE = "extra_vote_entity";
         String EXTRA_ID = "extra_id";
         String EXTRA_CANDIDATE_ID = "extra_candidate_id";
         String EXTRA_CANDIDATE_NAME = "extra_candidate_name";
-        String EXTRA_NAME = "extra_name";
-        String EXTRA_BATCHVOTETRANSACTION = "extra_batch_vote_transaction";
-        String EXTRA_BATCHVOTETWRAPRANSACTION = "extra_batch_vote_wrap_transaction";
+        String EXTRA_TICKET_PRICE = "extra_ticket_price";
     }
 
     public interface Bundle {

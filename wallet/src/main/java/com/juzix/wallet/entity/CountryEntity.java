@@ -1,8 +1,11 @@
 package com.juzix.wallet.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.alibaba.fastjson.annotation.JSONField;
 
-public class CountryEntity implements Nullable{
+public class CountryEntity implements Nullable, Parcelable {
 
     /**
      * 中文名称
@@ -37,6 +40,27 @@ public class CountryEntity implements Nullable{
 
     public CountryEntity() {
     }
+
+    protected CountryEntity(Parcel in) {
+        enName = in.readString();
+        alpha3Code = in.readString();
+        zhName = in.readString();
+        zhPinyinName = in.readString();
+        countryCode = in.readString();
+        telephoneCode = in.readString();
+    }
+
+    public static final Creator<CountryEntity> CREATOR = new Creator<CountryEntity>() {
+        @Override
+        public CountryEntity createFromParcel(Parcel in) {
+            return new CountryEntity(in);
+        }
+
+        @Override
+        public CountryEntity[] newArray(int size) {
+            return new CountryEntity[size];
+        }
+    };
 
     public static NullCountryEntity getNullInstance() {
         return new NullCountryEntity();
@@ -93,5 +117,20 @@ public class CountryEntity implements Nullable{
     @Override
     public boolean isNull() {
         return false;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(enName);
+        dest.writeString(alpha3Code);
+        dest.writeString(zhName);
+        dest.writeString(zhPinyinName);
+        dest.writeString(countryCode);
+        dest.writeString(telephoneCode);
     }
 }

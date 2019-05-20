@@ -4,7 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -20,6 +23,7 @@ import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.SubmitVoteContract;
 import com.juzix.wallet.component.ui.presenter.SubmitVotePresenter;
 import com.juzix.wallet.component.widget.ShadowButton;
+import com.juzix.wallet.entity.CandidateDetailEntity;
 import com.juzix.wallet.entity.CandidateEntity;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.utils.AddressFormatUtil;
@@ -101,8 +105,6 @@ public class SubmitVoteActivity extends MVPBaseActivity<SubmitVotePresenter> imp
 
         RxTextView
                 .textChanges(etTicketNum)
-                .skipInitialValue()
-                .compose(RxUtils.getSearchTransformer())
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<CharSequence>() {
                     @Override
@@ -172,16 +174,13 @@ public class SubmitVoteActivity extends MVPBaseActivity<SubmitVotePresenter> imp
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (unbinder != null) {
-            unbinder.unbind();
-        }
+    public String getCandidateIdFromIntent() {
+        return getIntent().getStringExtra(Constants.Extra.EXTRA_CANDIDATE_ID);
     }
 
     @Override
-    public CandidateEntity getCandidateFromIntent() {
-        return getIntent().getParcelableExtra(Constants.Extra.EXTRA_CANDIDATE);
+    public String getCandidateNameFromIntent() {
+        return getIntent().getStringExtra(Constants.Extra.EXTRA_CANDIDATE_NAME);
     }
 
     @Override
@@ -213,9 +212,18 @@ public class SubmitVoteActivity extends MVPBaseActivity<SubmitVotePresenter> imp
         etTicketNum.setSelection(String.valueOf(ticketNum).length());
     }
 
-    public static void actionStart(Context context, CandidateEntity candidateEntity) {
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (unbinder != null) {
+            unbinder.unbind();
+        }
+    }
+
+    public static void actionStart(Context context, String nodeId, String nodeName) {
         Intent intent = new Intent(context, SubmitVoteActivity.class);
-        intent.putExtra(Constants.Extra.EXTRA_CANDIDATE, candidateEntity);
+        intent.putExtra(Constants.Extra.EXTRA_CANDIDATE_ID, nodeId);
+        intent.putExtra(Constants.Extra.EXTRA_CANDIDATE_NAME, nodeName);
         context.startActivity(intent);
     }
 }

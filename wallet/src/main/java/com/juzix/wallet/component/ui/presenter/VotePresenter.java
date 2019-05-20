@@ -32,6 +32,7 @@ import org.reactivestreams.Publisher;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -54,19 +55,9 @@ import retrofit2.Response;
  */
 public class VotePresenter extends BasePresenter<VoteContract.View> implements VoteContract.Presenter {
 
-    private final static String TAG = VotePresenter.class.getSimpleName();
-    private final static int MAX_TICKET_POOL_SIZE = 51200;
-    private final static int DEFAULT_VOTE_NUM = 512;
-    private final static int DEFAULT_DEPOSIT_RANKING = 100;
-    private static final int REFRESH_TIME = 5000;
-
     private List<CandidateEntity> mCandidateEntiyList = new ArrayList<>();
-    private List<CandidateEntity> mVerifiersList = new ArrayList<>();
     private String mKeyword;
     private SortType mSortType = SortType.SORTED_BY_DEFAULT;
-    private String mTicketPrice;
-    private Disposable mTicketInfoDisposable;
-    private Disposable mCandidateLsitDisposable;
 
     public VotePresenter(VoteContract.View view) {
         super(view);
@@ -91,6 +82,7 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
                                         @Override
                                         public CandidateEntity apply(CandidateEntity candidateEntity) throws Exception {
                                             candidateEntity.setCountryEntity(getCountryEntityByCountryCode(countryEntityList, candidateEntity.getCountryCode()));
+                                            candidateEntity.setTicketPrice(candidateWrapEntity.getTicketPrice());
                                             return candidateEntity;
                                         }
                                     })
@@ -112,14 +104,18 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
                     @Override
                     public void onApiSuccess(CandidateWrapEntity candidateWrapEntity) {
                         if (isViewAttached()) {
+                            mCandidateEntiyList = candidateWrapEntity.getCandidateEntityList();
                             getView().setVotedInfo(candidateWrapEntity.getTotalCount(), candidateWrapEntity.getVoteCount(), candidateWrapEntity.getTicketPrice());
-                            getView().notifyDataSetChanged(candidateWrapEntity.getCandidateEntityList());
+                            showCandidateList(mKeyword, mSortType);
+                            getView().finishRefresh();
                         }
                     }
 
                     @Override
                     public void onApiFailure(ApiResponse response) {
-
+                        if (isViewAttached()) {
+                            getView().finishRefresh();
+                        }
                     }
                 });
 
@@ -128,15 +124,16 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
     @Override
     public void sort(SortType sortType) {
         this.mSortType = sortType;
-//        showCandidateList(mKeyword, sortType);
+        showCandidateList(mKeyword, sortType);
     }
 
     @Override
     public void search(String keyword) {
         this.mKeyword = keyword;
-//        showCandidateList(keyword, mSortType);
+        showCandidateList(keyword, mSortType);
     }
 
+    @SuppressLint("CheckResult")
     @Override
     public void voteTicket(CandidateEntity candidateEntity) {
 
@@ -169,7 +166,7 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
                             if (totalBalance <= 0) {
                                 showLongToast(R.string.voteTicketInsufficientBalanceTips);
                             } else {
-                                SubmitVoteActivity.actionStart(currentActivity(), candidateEntity);
+                                SubmitVoteActivity.actionStart(currentActivity(), candidateEntity.getNodeId(),candidateEntity.getName());
                             }
                         }
                     });
@@ -180,6 +177,37 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
     @Override
     public void clearCandidateList() {
 
+    }
+
+    private void showCandidateList(String keyWord, SortType sortType) {
+        if (mCandidateEntiyList == null || mCandidateEntiyList.isEmpty()){
+            return;
+        }
+        List<CandidateEntity> resultList = getSearchResult(keyWord, mCandidateEntiyList);
+        //如果不是默认排序
+        Collections.sort(resultList, sortType.getComparator());
+
+        if (isViewAttached()) {
+            if (!TextUtils.isEmpty(keyWord) && (resultList == null || resultList.isEmpty())) {
+                showLongToast(R.string.query_no_result);
+            }
+            getView().notifyDataSetChanged(resultList);
+        }
+    }
+
+    private List<CandidateEntity> getSearchResult(String keyWord, List<CandidateEntity> candidateEntityList) {
+        if (TextUtils.isEmpty(keyWord)) {
+            return candidateEntityList;
+        } else {
+            List<CandidateEntity> result = new ArrayList<>();
+            for (CandidateEntity candidateEntity : candidateEntityList) {
+                String nodeName = candidateEntity.getName();
+                if ((!TextUtils.isEmpty(nodeName)) && nodeName.toLowerCase().contains(keyWord.toLowerCase())) {
+                    result.add(candidateEntity);
+                }
+            }
+            return result;
+        }
     }
 
     private CountryEntity getCountryEntityByCountryCode(List<CountryEntity> countryEntityList, String countryCode) {
