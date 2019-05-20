@@ -117,4 +117,6 @@ public class CandidateExtraEntity implements Parcelable {
     public void setTime(long time) {
         this.time = time;
     }
+
+
 }
