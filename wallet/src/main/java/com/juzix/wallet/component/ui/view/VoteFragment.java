@@ -132,7 +132,7 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
 
     @Override
     protected void onFragmentPageStart() {
-        mPresenter.start();
+        mPresenter.getCandidateList();
     }
 
     @Override

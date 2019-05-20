@@ -22,25 +22,25 @@ public class CreateIndividualWalletPresenter extends BasePresenter<CreateIndivid
 
     @Override
     public void createWallet(String name, String password, String repeatePassword) {
-        if (name.length() > 12){
+        if (name.length() > 12) {
             getView().showNameError(string(R.string.validWalletNameTips), true);
             return;
         }
-        if (!password.equals(repeatePassword)){
+        if (!password.equals(repeatePassword)) {
             getView().showPasswordError(string(R.string.passwordTips), true);
             return;
         }
-        if (isExists(name)){
+        if (isExists(name)) {
             return;
         }
 
         showLoadingDialog();
-        new Thread(){
+        new Thread() {
             @Override
             public void run() {
-                String                 mnemonic     = IndividualWalletManager.getInstance().generateMnemonic();
+                String mnemonic = IndividualWalletManager.getInstance().generateMnemonic();
                 IndividualWalletEntity walletEntity = new IndividualWalletEntity.Builder().nodeAddress(NodeManager.getInstance().getCurNodeAddress()).build();
-                int                    code         = IndividualWalletManager.getInstance().createWalletWithMnemonic(walletEntity, mnemonic, name, password);
+                int code = IndividualWalletManager.getInstance().createWalletWithMnemonic(walletEntity, mnemonic, name, password);
                 switch (code) {
                     case IndividualWalletManager.CODE_OK:
                         Bundle bundle = new Bundle();
@@ -80,11 +80,11 @@ public class CreateIndividualWalletPresenter extends BasePresenter<CreateIndivid
     private static final int MSG_MNEMONIC_ERROR = -2;
     private static final int MSG_WALLET_EXISTS = -3;
 
-    private Handler mHandler = new Handler(){
+    private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case MSG_OK:
                     dismissLoadingDialogImmediately();
                     BaseActivity activity = currentActivity();

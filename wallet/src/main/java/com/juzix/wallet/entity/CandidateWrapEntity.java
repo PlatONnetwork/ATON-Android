@@ -1,5 +1,7 @@
 package com.juzix.wallet.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.util.List;
 
 public class CandidateWrapEntity {
@@ -11,12 +13,13 @@ public class CandidateWrapEntity {
     /**
      * 投票率:小数
      */
-    private double proportion;
+    private long totalCount;
     /**
      * 票价（单位Energon）
      */
     private String ticketPrice;
 
+    @JSONField(name = "list")
     private List<CandidateEntity> candidateEntityList;
 
     /**
@@ -33,12 +36,12 @@ public class CandidateWrapEntity {
         this.voteCount = voteCount;
     }
 
-    public double getProportion() {
-        return proportion;
+    public long getTotalCount() {
+        return totalCount;
     }
 
-    public void setProportion(double proportion) {
-        this.proportion = proportion;
+    public void setTotalCount(long totalCount) {
+        this.totalCount = totalCount;
     }
 
     public String getTicketPrice() {
@@ -61,7 +64,7 @@ public class CandidateWrapEntity {
     public String toString() {
         return "CandidateWrapEntity{" +
                 "voteCount=" + voteCount +
-                ", proportion=" + proportion +
+                ", totalCount=" + totalCount +
                 ", ticketPrice='" + ticketPrice + '\'' +
                 ", candidateEntityList=" + candidateEntityList +
                 '}';

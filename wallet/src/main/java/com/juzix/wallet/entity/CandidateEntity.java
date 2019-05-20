@@ -1,17 +1,13 @@
 package com.juzix.wallet.entity;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.text.TextUtils;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import com.juzix.wallet.R;
-import com.juzix.wallet.db.entity.CandidateInfoEntity;
-import com.juzix.wallet.engine.NodeManager;
-import com.juzix.wallet.utils.BigDecimalUtil;
-import com.juzix.wallet.utils.JSONUtil;
+import com.juzix.wallet.utils.LanguageUtil;
 
-import org.web3j.utils.Numeric;
+import java.util.Locale;
 
 /**
  * @author matrixelement
@@ -35,17 +31,10 @@ public class CandidateEntity implements Parcelable {
      */
     private String countryCode;
     /**
-     * 国家英文名称
+     * 国家区域信息
      */
-    private String countryEnName;
-    /**
-     * 国家中文名称
-     */
-    private String countryCnName;
-    /**
-     * 国家拼音名称，中文环境下，区域进行排序
-     */
-    private String countrySpellName;
+    @JSONField(deserialize = false, serialize = false)
+    private CountryEntity countryEntity;
     /**
      * 质押金(单位:Energon)
      */
@@ -53,7 +42,7 @@ public class CandidateEntity implements Parcelable {
     /**
      * 投票激励:小数
      */
-    private double rewardRatio;
+    private String reward;
 
     /**
      * 默认构造函数fastJson自动解析
@@ -66,11 +55,8 @@ public class CandidateEntity implements Parcelable {
         name = in.readString();
         ranking = in.readInt();
         countryCode = in.readString();
-        countryEnName = in.readString();
-        countryCnName = in.readString();
-        countrySpellName = in.readString();
         deposit = in.readString();
-        rewardRatio = in.readDouble();
+        reward = in.readString();
     }
 
     @Override
@@ -79,11 +65,8 @@ public class CandidateEntity implements Parcelable {
         dest.writeString(name);
         dest.writeInt(ranking);
         dest.writeString(countryCode);
-        dest.writeString(countryEnName);
-        dest.writeString(countryCnName);
-        dest.writeString(countrySpellName);
         dest.writeString(deposit);
-        dest.writeDouble(rewardRatio);
+        dest.writeString(reward);
     }
 
     @Override
@@ -135,30 +118,6 @@ public class CandidateEntity implements Parcelable {
         this.countryCode = countryCode;
     }
 
-    public String getCountryEnName() {
-        return countryEnName;
-    }
-
-    public void setCountryEnName(String countryEnName) {
-        this.countryEnName = countryEnName;
-    }
-
-    public String getCountryCnName() {
-        return countryCnName;
-    }
-
-    public void setCountryCnName(String countryCnName) {
-        this.countryCnName = countryCnName;
-    }
-
-    public String getCountrySpellName() {
-        return countrySpellName;
-    }
-
-    public void setCountrySpellName(String countrySpellName) {
-        this.countrySpellName = countrySpellName;
-    }
-
     public String getDeposit() {
         return deposit;
     }
@@ -167,11 +126,30 @@ public class CandidateEntity implements Parcelable {
         this.deposit = deposit;
     }
 
-    public double getRewardRatio() {
-        return rewardRatio;
+    public String getReward() {
+        return reward;
     }
 
-    public void setRewardRatio(double rewardRatio) {
-        this.rewardRatio = rewardRatio;
+    public void setReward(String reward) {
+        this.reward = reward;
+    }
+
+    public CountryEntity getCountryEntity() {
+        return countryEntity;
+    }
+
+    public void setCountryEntity(CountryEntity countryEntity) {
+        this.countryEntity = countryEntity;
+    }
+
+    public String getCountryName(Context context) {
+        if (countryEntity == null) {
+            return null;
+        }
+        if (Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(context).getLanguage())) {
+            return countryEntity.getZhName();
+        } else {
+            return countryEntity.getEnName();
+        }
     }
 }

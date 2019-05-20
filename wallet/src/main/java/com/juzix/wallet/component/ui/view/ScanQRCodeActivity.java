@@ -33,6 +33,7 @@ import com.google.zxing.decoding.ICaptureProvider;
 import com.google.zxing.decoding.InactivityTimer;
 import com.google.zxing.view.ViewfinderView;
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.utils.PhotoUtil;
 import com.juzix.wallet.utils.QRCodeDecoder;
@@ -48,7 +49,6 @@ import io.reactivex.functions.Consumer;
 
 public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider, View.OnClickListener, SurfaceHolder.Callback {
 
-    public static final String EXTRA_SCAN_QRCODE_DATA = "extra_scan_qrcode_data";
     private static final int REQUEST_CODE_SCAN_GALLERY = 100;
     private static final float BEEP_VOLUME = 0.10f;
     private static final long VIBRATE_DURATION = 200L;
@@ -189,7 +189,7 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
                 if (result != null) {
                     Intent resultIntent = new Intent();
                     Bundle bundle = new Bundle();
-                    bundle.putString(EXTRA_SCAN_QRCODE_DATA, result.getText());
+                    bundle.putString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA, result.getText());
                     resultIntent.putExtras(bundle);
                     ScanQRCodeActivity.this.setResult(RESULT_OK, resultIntent);
                     ScanQRCodeActivity.this.finish();
@@ -318,10 +318,7 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
         } else {
             Intent resultIntent = new Intent();
             Bundle bundle = new Bundle();
-            bundle.putString(EXTRA_SCAN_QRCODE_DATA, resultString);
-            // 不能使用Intent传递大于40kb的bitmap，可以使用一个单例对象存储这个bitmap
-//            bundle.putParcelable("bitmap", barcode);
-//            Logger.d("saomiao",resultString);
+            bundle.putString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA, resultString);
             resultIntent.putExtras(bundle);
             ScanQRCodeActivity.this.setResult(RESULT_OK, resultIntent);
         }
@@ -331,7 +328,7 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
     @Override
     public void onScanResult(int resultCode, Intent data) {
         Bundle bundle = data.getExtras();
-        String scanResult = bundle.getString(EXTRA_SCAN_QRCODE_DATA);
+        String scanResult = bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
         showLongToast(scanResult);
         ScanQRCodeActivity.this.setResult(resultCode, data);
         ScanQRCodeActivity.this.finish();

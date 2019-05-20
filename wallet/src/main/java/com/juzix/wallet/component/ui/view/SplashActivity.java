@@ -2,13 +2,16 @@ package com.juzix.wallet.component.ui.view;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.widget.LinearLayout;
 
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.engine.IndividualWalletManager;
+import com.juzix.wallet.utils.CommonUtil;
 
 public class SplashActivity extends BaseActivity {
 
@@ -63,18 +66,18 @@ public class SplashActivity extends BaseActivity {
 
     private void initViews() {
 
-//        LinearLayout layout = findViewById(R.id.layout_logo);
-//
-//        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) layout.getLayoutParams();
-//
-//        int marginTop = 0;
-//
-//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-//            marginTop = CommonUtil.getStatusBarHeight(this);
-//        }
-//
-//        layoutParams.topMargin = marginTop;
-//
-//        layout.setLayoutParams(layoutParams);
+        LinearLayout layout = findViewById(R.id.layout_logo);
+
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) layout.getLayoutParams();
+
+        int marginTop = 0;
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            marginTop = CommonUtil.getStatusBarHeight(this);
+        }
+
+        layoutParams.topMargin = marginTop;
+
+        layout.setLayoutParams(layoutParams);
     }
 }

@@ -63,11 +63,11 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-        mPresenter.checkVersion();
         setContentView(R.layout.activity_main);
         unbinder = ButterKnife.bind(this);
-        initViews();
         EventPublisher.getInstance().register(this);
+        initViews();
+        mPresenter.checkVersion();
     }
 
     @Override

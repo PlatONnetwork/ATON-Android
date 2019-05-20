@@ -13,10 +13,10 @@ import java.io.InputStream;
 
 public class FileUtil {
 
-    public static String getStringFromAssets(Context context, String filename){
+    public static String getStringFromAssets(Context context, String fileName) {
         try {
-            InputStream is   = context.getAssets().open(filename);
-            int         size = is.available();
+            InputStream is = context.getAssets().open(fileName);
+            int size = is.available();
             byte[] buffer = new byte[size];
             is.read(buffer);
             is.close();
@@ -27,10 +27,10 @@ public class FileUtil {
         return "";
     }
 
-    public static String getAssets(Context context, String filename){
+    public static String getAssets(Context context, String fileName) {
         try {
-            InputStream is   = context.getAssets().open(filename);
-            int         size = is.available();
+            InputStream is = context.getAssets().open(fileName);
+            int size = is.available();
             byte[] buffer = new byte[size];
             is.read(buffer);
             is.close();
@@ -39,22 +39,5 @@ public class FileUtil {
             e.printStackTrace();
         }
         return "";
-    }
-
-    public static void install(Context context, File apkFile) {
-        Intent intent  = new Intent(Intent.ACTION_VIEW);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            Uri contentUri = FileProvider.getUriForFile(
-                    context
-                    , context.getPackageName() + ".fileprovider"
-                    , apkFile);
-
-            intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
-        } else {
-            intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
-        }
-        context.startActivity(intent);
     }
 }

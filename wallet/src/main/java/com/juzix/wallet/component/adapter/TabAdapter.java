@@ -7,13 +7,14 @@ import android.view.ViewGroup;
 import com.juzix.wallet.component.ui.base.BaseFragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TabAdapter extends FragmentStatePagerAdapter {
 
-    private ArrayList<BaseFragment> mFragments;
-    private ArrayList<String>       mTitles;
+    private List<BaseFragment> mFragments;
+    private List<String> mTitles;
 
-    public TabAdapter(FragmentManager fm, ArrayList<String> mTitles, ArrayList<BaseFragment> fragments) {
+    public TabAdapter(FragmentManager fm, List<String> mTitles, List<BaseFragment> fragments) {
         super(fm);
         this.mFragments = fragments;
         this.mTitles = mTitles;
@@ -31,11 +32,11 @@ public class TabAdapter extends FragmentStatePagerAdapter {
         }
     }
 
-    public ArrayList<BaseFragment> getFragments() {
+    public List<BaseFragment> getFragments() {
         return mFragments;
     }
 
-    public ArrayList<String> getTitles() {
+    public List<String> getTitles() {
         return mTitles;
     }
 

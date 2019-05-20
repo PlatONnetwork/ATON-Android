@@ -32,21 +32,14 @@ public class AssetsContract {
     }
 
     public interface Presenter extends IPresenter<View> {
-        void init();
 
         void start();
-
-        void scanQRCode();
 
         List<WalletEntity> getRecycleViewDataSource();
 
         void fetchWalletList();
 
         void clickRecycleViewItem(WalletEntity walletEntity);
-
-        void createIndividualWallet();
-
-        void importIndividualWallet();
 
         void backupWallet();
 

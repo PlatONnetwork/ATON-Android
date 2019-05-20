@@ -68,12 +68,12 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".component.ui.view.CreateIndividualWalletActivity"
+            android:name=".component.ui.view.CreateWalletActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".component.ui.view.ImportIndividualWalletActivity"
+            android:name=".component.ui.view.ImportWalletActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity

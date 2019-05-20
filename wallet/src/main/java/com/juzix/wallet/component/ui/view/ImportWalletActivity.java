@@ -30,21 +30,19 @@ import java.util.ArrayList;
 
 import io.reactivex.functions.Consumer;
 
-public class ImportIndividualWalletActivity extends BaseActivity {
+public class ImportWalletActivity extends BaseActivity {
     public static final int TAB1 = 0;
     public static final int TAB2 = 1;
     public static final int TAB3 = 2;
     public static final int REQ_QR_CODE = 101;
     private ViewPagerSlide mVpContent;
 
-    private final static String TAG = ImportIndividualWalletActivity.class.getSimpleName();
-
     public static void actionStart(Context context) {
-        context.startActivity(new Intent(context, ImportIndividualWalletActivity.class));
+        context.startActivity(new Intent(context, ImportWalletActivity.class));
     }
 
     public static void actionStart(Context context, int type, String content) {
-        Intent intent = new Intent(context, ImportIndividualWalletActivity.class);
+        Intent intent = new Intent(context, ImportWalletActivity.class);
         intent.putExtra(Constants.Extra.EXTRA_TYPE, type);
         intent.putExtra(Constants.Extra.EXTRA_SCAN_QRCODE_DATA, content);
         context.startActivity(intent);
@@ -129,9 +127,9 @@ public class ImportIndividualWalletActivity extends BaseActivity {
         if (resultCode != Activity.RESULT_OK) {
             return;
         }
-        if (requestCode == ImportIndividualWalletActivity.REQ_QR_CODE) {
+        if (requestCode == ImportWalletActivity.REQ_QR_CODE) {
             Bundle bundle = data.getExtras();
-            String scanResult = bundle.getString(ScanQRCodeActivity.EXTRA_SCAN_QRCODE_DATA);
+            String scanResult = bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
             if (JZWalletUtil.isValidKeystore(scanResult)) {
                 mVpContent.setCurrentItem(0);
                 ((PagerItemAdapter) mVpContent.getAdapter()).getPage(0).onActivityResult(requestCode, resultCode, data);
@@ -176,4 +174,5 @@ public class ImportIndividualWalletActivity extends BaseActivity {
         tvTitle.setText(getTitles().get(position));
         tvTitle.setTextColor(ContextCompat.getColorStateList(getContext(), R.color.color_app_tab_text2));
     }
+
 }
