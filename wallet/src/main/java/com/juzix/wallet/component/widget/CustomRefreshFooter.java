@@ -2,7 +2,6 @@ package com.juzix.wallet.component.widget;
 
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
-import android.nfc.Tag;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -15,17 +14,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.juzix.wallet.R;
-import com.scwang.smartrefresh.layout.api.RefreshHeader;
+import com.scwang.smartrefresh.layout.api.RefreshFooter;
 import com.scwang.smartrefresh.layout.api.RefreshKernel;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.constant.RefreshState;
 import com.scwang.smartrefresh.layout.constant.SpinnerStyle;
 
 /**
- * 自定义下拉刷新的头
+ * 自定义上拉加载更多的footer
  */
-
-public class CustomRefreshHeader extends LinearLayout implements RefreshHeader {
+public class CustomRefreshFooter extends LinearLayout implements RefreshFooter {
     private ImageView imageView;
     private TextView textView;
     private AnimationDrawable mAnimPull;
@@ -33,17 +31,17 @@ public class CustomRefreshHeader extends LinearLayout implements RefreshHeader {
 
     private RotateAnimation mRotateAnimation;
     private Runnable mRunnable;
-    private static final String TAG = "CustomRefreshHeader";
+    private static final String TAG = "CustomRefreshFooter";
 
-    public CustomRefreshHeader(Context context) {
+    public CustomRefreshFooter(Context context) {
         this(context, null, 0);
     }
 
-    public CustomRefreshHeader(Context context, AttributeSet attrs) {
+    public CustomRefreshFooter(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public CustomRefreshHeader(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CustomRefreshFooter(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         View view = View.inflate(context, R.layout.layout_refresh_header, this);
         imageView = view.findViewById(R.id.iv_loading);
@@ -81,25 +79,14 @@ public class CustomRefreshHeader extends LinearLayout implements RefreshHeader {
     @Override
     public void onStateChanged(@NonNull RefreshLayout refreshLayout, @NonNull RefreshState oldState, @NonNull RefreshState newState) {
         switch (newState) {
-            //1,下拉刷新的开始状态：下拉可以刷新
-            case PullDownToRefresh:
-                Log.d(TAG, "状态显示----------->" + "PullDownToRefresh");
-                textView.setText(R.string.pulldown_to_refresh);
-                imageView.setImageResource(R.drawable.icon_loading_16);
+            case None:
                 break;
-            //2,下拉到最底部的状态：释放立即刷新
-            case ReleaseToRefresh:
-                Log.d(TAG, "状态显示----------->" + "ReleaseToRefresh");
-
-                textView.setText(R.string.release_to_refresh);
-                imageView.setImageResource(R.drawable.icon_loading_16);
+            case PullUpToLoad:
+                textView.setText(R.string.pullup_to_load);
                 break;
-            //3,下拉到最底部后松手的状态：正在刷新
-            case Refreshing:
-                Log.d(TAG, "状态显示----------->" + "Refreshing");
-
-                imageView.setImageResource(R.drawable.bg_loading);
-                textView.setText(R.string.refreshing);
+            case Loading:
+            case LoadReleased:
+                textView.setText(R.string.loading_footer);
                 mAnimRefresh = (AnimationDrawable) imageView.getBackground();
                 mAnimRefresh.start();
                 mRunnable = new Runnable() {
@@ -113,13 +100,19 @@ public class CustomRefreshHeader extends LinearLayout implements RefreshHeader {
                 imageView.postDelayed(mRunnable, 640);
 
                 break;
+            case ReleaseToLoad:
+                textView.setText(R.string.release_to_load);
+                break;
+            case Refreshing:
+                textView.setText(R.string.refreshing_footer);
+                break;
 
         }
     }
 
     @Override
     public int onFinish(@NonNull RefreshLayout refreshLayout, boolean success) {
-        Log.d(TAG,"完成了调用----------->" +"" +success);
+        Log.d(TAG, "完成了调用----------->" + "" + success);
         if (mAnimRefresh != null && mAnimRefresh.isRunning()) {
             mAnimRefresh.stop();
         }
@@ -165,4 +158,13 @@ public class CustomRefreshHeader extends LinearLayout implements RefreshHeader {
         return rotateAnimation;
     }
 
+
+    /**
+     * @param noMoreData true 支持全部加载完成的状态显示 false 不支持
+     * @return
+     */
+    @Override
+    public boolean setNoMoreData(boolean noMoreData) {
+        return true;
+    }
 }

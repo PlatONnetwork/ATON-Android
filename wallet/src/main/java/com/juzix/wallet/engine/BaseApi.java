@@ -64,9 +64,9 @@ public interface BaseApi {
      * @param walletAddrs
      * @return
      */
-    @FormUrlEncoded
+
     @POST("app-{cid}/v060/node/listUserVoteNode")
-    Single<Response<ApiResponse<List<VotedCandidateEntity>>>> getVotedCandidateList(@Path("cid") String cid, @Field("walletAddrs") String[] walletAddrs);
+    Single<Response<ApiResponse<List<VotedCandidateEntity>>>> getVotedCandidateList(@Path("cid") String cid, @Body ApiRequestBody requestBody);
 
     /**
      * 参数查询投票交易列表
@@ -81,6 +81,6 @@ public interface BaseApi {
      *             ]
      * @return
      */
-    @POST("app-{cid}/v060/transaction/list")
+    @POST("app-{cid}/v060/transaction/listVote")
     Single<Response<ApiResponse<List<VotedCandidateEntity>>>> getVotedCandidateDetailList(@Path("cid") String cid, @Body ApiRequestBody body);
 }
