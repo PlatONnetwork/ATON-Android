@@ -34,6 +34,7 @@ public class Constants {
         String EXTRA_CANDIDATE_ID = "extra_candidate_id";
         String EXTRA_CANDIDATE_NAME = "extra_candidate_name";
         String EXTRA_TICKET_PRICE = "extra_ticket_price";
+        String EXTRA_VOTE_ACTION = "extra_vote_action";
     }
 
     public interface Bundle {
@@ -94,6 +95,14 @@ public class Constants {
         //        String URL_HTTP_A = "http://54.252.202.130:10000/";
         String URL_HTTP_B = "https://aton.platon.network";
         String URL_HTTP_C = "http://192.168.9.190:20060/";
+    }
+
+    public interface VoteConstants {
+        String IS_VALID = "0";// 0 表示无效
+        String REQUEST_DIRECTION = "old";//请求参数传递的方向
+        int LIST_SIZE = 10; //请求列表大小
+        int NEWEST_DATA = -1; //请求最新的数据
+
     }
 
     public interface DBName {
