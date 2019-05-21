@@ -4,7 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.view.KeyEvent;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.juzix.wallet.R;
@@ -34,24 +36,24 @@ public class SplashActivity extends BaseActivity {
 
         initViews();
 
-        mDecorView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (AppSettings.getInstance().getOperateMenuFlag()) {
-                    OperateMenuActivity.actionStart(SplashActivity.this);
-                    SplashActivity.this.finish();
-                    return;
-                }
-                if (AppSettings.getInstance().getFaceTouchIdFlag() &&
-                        !IndividualWalletManager.getInstance().getWalletList().isEmpty()) {
-                    UnlockFigerprintActivity.actionStartMainActivity(SplashActivity.this);
-                    SplashActivity.this.finish();
-                    return;
-                }
-                MainActivity.actionStart(SplashActivity.this);
-                SplashActivity.this.finish();
-            }
-        }, 1000);
+//        mDecorView.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                if (AppSettings.getInstance().getOperateMenuFlag()) {
+//                    OperateMenuActivity.actionStart(SplashActivity.this);
+//                    SplashActivity.this.finish();
+//                    return;
+//                }
+//                if (AppSettings.getInstance().getFaceTouchIdFlag() &&
+//                        !IndividualWalletManager.getInstance().getWalletList().isEmpty()) {
+//                    UnlockFigerprintActivity.actionStartMainActivity(SplashActivity.this);
+//                    SplashActivity.this.finish();
+//                    return;
+//                }
+//                MainActivity.actionStart(SplashActivity.this);
+//                SplashActivity.this.finish();
+//            }
+//        }, 1000);
 
     }
 
@@ -66,18 +68,14 @@ public class SplashActivity extends BaseActivity {
 
     private void initViews() {
 
-        LinearLayout layout = findViewById(R.id.layout_logo);
+        ImageView iconIv = findViewById(R.id.iv_icon);
 
-        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) layout.getLayoutParams();
+        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) iconIv.getLayoutParams();
 
-        int marginTop = 0;
+        int marginBottom = CommonUtil.getStatusBarHeight(this);
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            marginTop = CommonUtil.getStatusBarHeight(this);
-        }
+        layoutParams.bottomMargin = marginBottom;
 
-        layoutParams.topMargin = marginTop;
-
-        layout.setLayoutParams(layoutParams);
+        iconIv.setLayoutParams(layoutParams);
     }
 }

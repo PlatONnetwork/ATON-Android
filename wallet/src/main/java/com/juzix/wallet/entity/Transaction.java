@@ -55,8 +55,7 @@ public class Transaction implements Comparable<Transaction> {
     /**
      * 交易状态
      */
-    @JSONField(serializeUsing = TxReceiptStatusCodec.class, deserializeUsing = TxReceiptStatusCodec.class)
-    private TxReceiptStatus txReceiptStatus;
+    private String txReceiptStatus;
     /**
      * 交易类型
      * transfer ：转账
@@ -149,10 +148,10 @@ public class Transaction implements Comparable<Transaction> {
     }
 
     public TxReceiptStatus getTxReceiptStatus() {
-        return txReceiptStatus;
+        return TxReceiptStatus.getTxReceiptStatusByName(txReceiptStatus);
     }
 
-    public void setTxReceiptStatus(TxReceiptStatus txReceiptStatus) {
+    public void setTxReceiptStatus(String txReceiptStatus) {
         this.txReceiptStatus = txReceiptStatus;
     }
 
@@ -174,27 +173,7 @@ public class Transaction implements Comparable<Transaction> {
 
     @Override
     public int compareTo(Transaction o) {
-        return Long.compare(o.createTime, createTime);
-    }
-
-    //ObjectSerializer和ObjectDeserializer分别是fastjson的编码器和解码器接口
-    public class TxReceiptStatusCodec implements ObjectSerializer, ObjectDeserializer {
-        //反序列化过程
-        @Override
-        public <T> T deserialze(DefaultJSONParser parser, Type type, Object fieldName) {
-            Object value = parser.parse();
-            return value == null ? null : (T) TxReceiptStatus.getTxReceiptStatusByName(TypeUtils.castToString(value));
-        }
-
-        //暂时还不清楚
-        public int getFastMatchToken() {
-            return 0;
-        }
-
-        //序列化过程
-        public void write(JSONSerializer serializer, Object object, Object fieldName, Type fieldType, int features) throws IOException {
-            serializer.write((object).toString());
-        }
+        return Long.compare(o.sequence, sequence);
     }
 
     public enum TxReceiptStatus {

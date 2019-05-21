@@ -17,7 +17,7 @@ import com.juzix.wallet.component.ui.contract.NodeDetailContract;
 import com.juzix.wallet.component.ui.presenter.NodeDetailPresenter;
 import com.juzix.wallet.component.widget.RoundedTextView;
 import com.juzix.wallet.component.widget.ShadowButton;
-import com.juzix.wallet.entity.CandidateDetailEntity;
+import com.juzix.wallet.entity.CandidateEntity;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.DateUtil;
 import com.juzix.wallet.utils.RxUtils;
@@ -108,28 +108,28 @@ public class NodeDetailActivity extends MVPBaseActivity<NodeDetailPresenter> imp
     }
 
     @Override
-    public String getCandidateIdFromIntent() {
-        return getIntent().getStringExtra(Constants.Extra.EXTRA_CANDIDATE_ID);
+    public CandidateEntity getCandidateFromIntent() {
+        return getIntent().getParcelableExtra(Constants.Extra.EXTRA_CANDIDATE);
     }
 
     @Override
-    public void showNodeDetailInfo(CandidateDetailEntity candidateDetailEntity) {
+    public void showNodeDetailInfo(CandidateEntity candidateEntity) {
 
         layoutContent.setVisibility(View.VISIBLE);
         sbtnVote.setVisibility(View.VISIBLE);
 
-        tvNodeName.setText(candidateDetailEntity.getName());
-        tvJoinTime.setText(string(R.string.joinTime, DateUtil.format(candidateDetailEntity.getJoinTime(), DateUtil.DATETIME_FORMAT_PATTERN)));
-        tvInstitutionalName.setText(candidateDetailEntity.getOrgName());
-        tvInstitutionalWebsite.setText(candidateDetailEntity.getOrgWebsite());
-        tvInstitutionalIntroduction.setText(candidateDetailEntity.getIntro());
-        rtvRankDesc.setText(candidateDetailEntity.getNodeType().getStatusDescRes());
-        tvStakedRanking.setText(String.format("%d", candidateDetailEntity.getRanking()));
-        tvStakedAmount.setText(NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(candidateDetailEntity.getDeposit(), "1E18"), 4));
-        tvTickets.setText(candidateDetailEntity.getTicketCount());
-        tvNodeUrl.setText(candidateDetailEntity.getNodeUrl());
-        tvNodeId.setText(candidateDetailEntity.getNodeId());
-        tvRewardRadio.setText(String.format("%s%%", NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(NumberParserUtils.parseDouble(candidateDetailEntity.getReward()), 100D), 0)));
+        tvNodeName.setText(candidateEntity.getName());
+        tvJoinTime.setText(string(R.string.joinTime, DateUtil.format(candidateEntity.getJoinTime(), DateUtil.DATETIME_FORMAT_PATTERN)));
+        tvInstitutionalName.setText(candidateEntity.getOrgName());
+        tvInstitutionalWebsite.setText(candidateEntity.getOrgWebsite());
+        tvInstitutionalIntroduction.setText(candidateEntity.getIntro());
+        rtvRankDesc.setText(candidateEntity.getNodeType().getStatusDescRes());
+        tvStakedRanking.setText(String.format("%d", candidateEntity.getRanking()));
+        tvStakedAmount.setText(NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(candidateEntity.getDeposit(), "1E18"), 4));
+        tvTickets.setText(candidateEntity.getTicketCount());
+        tvNodeUrl.setText(candidateEntity.getNodeUrl());
+        tvNodeId.setText(candidateEntity.getNodeId());
+        tvRewardRadio.setText(String.format("%s%%", NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(NumberParserUtils.parseDouble(candidateEntity.getReward()), 100D), 0)));
     }
 
 
@@ -141,9 +141,9 @@ public class NodeDetailActivity extends MVPBaseActivity<NodeDetailPresenter> imp
         }
     }
 
-    public static void actionStart(Context context, String candidateId) {
+    public static void actionStart(Context context, CandidateEntity candidateEntity) {
         Intent intent = new Intent(context, NodeDetailActivity.class);
-        intent.putExtra(Constants.Extra.EXTRA_CANDIDATE_ID, candidateId);
+        intent.putExtra(Constants.Extra.EXTRA_CANDIDATE, candidateEntity);
         context.startActivity(intent);
     }
 }

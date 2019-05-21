@@ -2,6 +2,7 @@ package com.juzix.wallet.component.ui.contract;
 
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
+import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionEntity;
 
 import java.util.ArrayList;
@@ -13,10 +14,16 @@ import java.util.List;
 public class TransactionRecordsContract {
 
     public interface View extends IView {
-        void showTransactions(List<TransactionEntity> transactionEntities);
+
+        void finishLoadMore();
+
+        void finishRefresh();
+
+        void showTransactions(List<Transaction> transactionList);
     }
 
     public interface Presenter extends IPresenter<View> {
-        void fetchTransactions();
+
+        void fetchTransactions(String direction);
     }
 }

@@ -2,9 +2,6 @@ package com.juzix.wallet.engine;
 
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
-import com.juzix.wallet.entity.CandidateDetailEntity;
-import com.juzix.wallet.entity.CandidateEntity;
-import com.juzix.wallet.entity.CandidateExtraEntity;
 import com.juzix.wallet.entity.CandidateWrapEntity;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.VotedCandidateEntity;
@@ -38,8 +35,8 @@ public interface BaseApi {
      * @param body
      * @return
      */
-    @POST("transaction/list")
-    Single<Response<ApiResponse<List<Transaction>>>> getTransactionList(@Body ApiRequestBody body);
+    @POST("app-{cid}/v060/transaction/list")
+    Single<Response<ApiResponse<List<Transaction>>>> getTransactionList(@Path("cid") String cid,@Body ApiRequestBody body);
 
     /**
      * 获取节点列表
@@ -48,16 +45,6 @@ public interface BaseApi {
      */
     @POST("app-{cid}/v060/node/list")
     Single<Response<ApiResponse<CandidateWrapEntity>>> getCandidateList(@Path("cid") String cid);
-
-    /**
-     * 获取节点详情
-     *
-     * @param requestBody
-     * @return
-     */
-    @POST("app-{cid}/v060/node/detail")
-    Single<Response<ApiResponse<CandidateDetailEntity>>> getCandidateDetail(@Path("cid") String cid, @Body ApiRequestBody requestBody);
-
     /**
      * 获得用户有投票的节点列表
      *

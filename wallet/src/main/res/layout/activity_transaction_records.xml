@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_ffffff"
     android:clipToPadding="true"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
@@ -12,22 +11,47 @@
     <com.juzix.wallet.component.widget.CommonTitleBar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:ctb_title="@string/transactions"
-        app:ctb_left_drawable="@drawable/icon_back_black" />
+        app:ctb_left_drawable="@drawable/icon_back_black"
+        app:ctb_title="@string/transactions" />
 
-    <ListView
-        android:id="@+id/list_transactions"
-        style="@style/List_common_style"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:divider="@drawable/bg_txn_list_divider"
-        android:dividerHeight="1dp"
-        android:paddingTop="10dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/layout_refresh"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/item_transaction_record" />
+        android:background="@color/color_f9fbff"
+        app:srlEnableLoadMoreWhenContentNotFull="false">
 
-    <include layout="@layout/include_no_transaction" />
+        <com.scwang.smartrefresh.layout.header.ClassicsHeader
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/list_transactions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/color_ffffff"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:paddingLeft="16dp"
+                android:paddingTop="10dp"
+                android:paddingRight="16dp"
+                android:visibility="gone"
+                tools:listitem="@layout/item_transaction_record" />
+
+            <include layout="@layout/include_no_transaction" />
+
+        </LinearLayout>
+
+        <com.scwang.smartrefresh.layout.footer.ClassicsFooter
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
 
 </LinearLayout>

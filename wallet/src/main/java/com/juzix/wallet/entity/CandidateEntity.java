@@ -5,21 +5,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import com.alibaba.fastjson.parser.DefaultJSONParser;
-import com.alibaba.fastjson.parser.deserializer.JSONPDeserializer;
-import com.alibaba.fastjson.parser.deserializer.ObjectDeserializer;
-import com.alibaba.fastjson.serializer.JSONSerializable;
-import com.alibaba.fastjson.serializer.JSONSerializer;
-import com.alibaba.fastjson.serializer.ObjectSerializer;
-import com.alibaba.fastjson.util.TypeUtils;
-import com.juzix.wallet.R;
 import com.juzix.wallet.utils.LanguageUtil;
-
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * @author matrixelement
@@ -56,6 +43,22 @@ public class CandidateEntity implements Parcelable {
      */
     private String reward;
     /**
+     * 机构名称
+     */
+    private String orgName;
+    /**
+     * 机构官网
+     */
+    private String orgWebsite;
+    /**
+     * 节点简介
+     */
+    private String intro;
+    /**
+     * 节点地址
+     */
+    private String nodeUrl;
+    /**
      * 票价
      */
     private String ticketPrice;
@@ -86,7 +89,13 @@ public class CandidateEntity implements Parcelable {
         deposit = in.readString();
         reward = in.readString();
         ticketPrice = in.readString();
-        countryEntity = in.readParcelable(countryEntity.getClass().getClassLoader());
+        countryEntity = in.readParcelable(CountryEntity.class.getClassLoader());
+        orgName = in.readString();
+        orgWebsite = in.readString();
+        intro = in.readString();
+        nodeUrl = in.readString();
+        nodeType = in.readString();
+        ticketCount = in.readString();
     }
 
     @Override
@@ -99,6 +108,12 @@ public class CandidateEntity implements Parcelable {
         dest.writeString(reward);
         dest.writeString(ticketPrice);
         dest.writeParcelable(countryEntity, flags);
+        dest.writeString(orgName);
+        dest.writeString(orgWebsite);
+        dest.writeString(intro);
+        dest.writeString(nodeUrl);
+        dest.writeString(nodeType);
+        dest.writeString(ticketCount);
     }
 
     @Override
@@ -164,6 +179,38 @@ public class CandidateEntity implements Parcelable {
 
     public void setReward(String reward) {
         this.reward = reward;
+    }
+
+    public String getOrgName() {
+        return orgName;
+    }
+
+    public void setOrgName(String orgName) {
+        this.orgName = orgName;
+    }
+
+    public String getOrgWebsite() {
+        return orgWebsite;
+    }
+
+    public void setOrgWebsite(String orgWebsite) {
+        this.orgWebsite = orgWebsite;
+    }
+
+    public String getIntro() {
+        return intro;
+    }
+
+    public void setIntro(String intro) {
+        this.intro = intro;
+    }
+
+    public String getNodeUrl() {
+        return nodeUrl;
+    }
+
+    public void setNodeUrl(String nodeUrl) {
+        this.nodeUrl = nodeUrl;
     }
 
     public CountryEntity getCountryEntity() {

@@ -42,12 +42,14 @@ import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.SingleSource;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Response;
 
 /**
@@ -98,8 +100,26 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
                     }
 
                 })
-                .compose(RxUtils.bindToLifecycle(getView()))
+                .compose(bindUntilEvent(FragmentEvent.STOP))
                 .compose(RxUtils.getSingleSchedulerTransformer())
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                        if (isViewAttached()){
+                            if (mCandidateEntiyList == null || mCandidateEntiyList.isEmpty()) {
+                                showLoadingDialog();
+                            }
+                        }
+                    }
+                })
+                .doFinally(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        if (isViewAttached()){
+                            dismissLoadingDialogImmediately();
+                        }
+                    }
+                })
                 .subscribe(new ApiSingleObserver<CandidateWrapEntity>() {
                     @Override
                     public void onApiSuccess(CandidateWrapEntity candidateWrapEntity) {
@@ -166,7 +186,7 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
                             if (totalBalance <= 0) {
                                 showLongToast(R.string.voteTicketInsufficientBalanceTips);
                             } else {
-                                SubmitVoteActivity.actionStart(currentActivity(), candidateEntity.getNodeId(),candidateEntity.getName());
+                                SubmitVoteActivity.actionStart(currentActivity(), candidateEntity.getNodeId(), candidateEntity.getName());
                             }
                         }
                     });
@@ -180,7 +200,7 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
     }
 
     private void showCandidateList(String keyWord, SortType sortType) {
-        if (mCandidateEntiyList == null || mCandidateEntiyList.isEmpty()){
+        if (mCandidateEntiyList == null || mCandidateEntiyList.isEmpty()) {
             return;
         }
         List<CandidateEntity> resultList = getSearchResult(keyWord, mCandidateEntiyList);
