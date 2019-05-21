@@ -89,8 +89,8 @@ project.ext {
             "immersionbar"                    : 'com.gyf.immersionbar:immersionbar:2.3.3',
             "smarttablayout"                  : 'com.ogaclejapan.smarttablayout:utils-v4:1.7.0@aar',
             //下拉刷新
-            "smartRefreshLayout"               : "com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-22",
-            "smartRefreshHeader"              : "com.scwang.smartrefresh:SmartRefreshHeader:1.1.0-alpha-22",
+            "SmartRefreshLayout"              : 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-25',
+            "SmartRefreshHeader"              : 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0-alpha-25',
             //第三方功能
             "tinypinyin"                      : 'com.github.promeg:tinypinyin:2.0.3',
             "fastjson"                        : 'com.alibaba:fastjson:1.2.36',
@@ -101,8 +101,6 @@ project.ext {
             //第三方服务
             "umeng_common"                    : 'com.umeng.umsdk:common:2.0.2',
             "umeng_analytics"                 : 'com.umeng.umsdk:analytics:8.0.2',
-            "bugly"                           : 'com.tencent.bugly:crashreport:latest.release',
-            "SmartRefreshLayout"              : 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-25',
-            "SmartRefreshHeader"              : 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0-alpha-25',
+            "bugly"                           : 'com.tencent.bugly:crashreport:latest.release'
     ]
 }

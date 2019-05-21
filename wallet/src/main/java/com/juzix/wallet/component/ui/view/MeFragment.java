@@ -66,13 +66,6 @@ public class MeFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_me, container, false);
         unbinder = ButterKnife.bind(this, rootView);
-        tvTitle.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                ToastUtil.showLongToast(getContext(), BuildConfig.VERSION_NAME);
-                return true;
-            }
-        });
         init();
         return rootView;
     }
@@ -175,6 +168,16 @@ public class MeFragment extends BaseFragment {
                     @Override
                     public void accept(Object object) throws Exception {
                         ShareUtil.shareUrl(getActivity(), "https://medium.com/@PlatON_Network");
+                    }
+                });
+        RxView
+                .longClicks(tvTitle)
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) throws Exception {
+                        ToastUtil.showLongToast(getContext(), BuildConfig.VERSION_NAME);
                     }
                 });
     }

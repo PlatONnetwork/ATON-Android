@@ -4,17 +4,11 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
-import com.juzhen.framework.network.ApiErrorCode;
-import com.juzhen.framework.network.ApiRequestBody;
-import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.util.MapUtils;
 import com.juzhen.framework.util.NumberParserUtils;
-import com.juzix.wallet.db.entity.CandidateInfoEntity;
 import com.juzix.wallet.db.entity.SingleVoteInfoEntity;
 import com.juzix.wallet.db.entity.TicketInfoEntity;
 import com.juzix.wallet.db.sqlite.SingleVoteInfoDao;
-import com.juzix.wallet.entity.CandidateDetailEntity;
-import com.juzix.wallet.entity.CandidateEntity;
 import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.SingleVoteEntity;
 import com.juzix.wallet.event.EventPublisher;
@@ -23,7 +17,6 @@ import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.JSONUtil;
 
 import org.reactivestreams.Publisher;
-import org.reactivestreams.Subscriber;
 import org.web3j.crypto.Credentials;
 import org.web3j.platon.contracts.TicketContract;
 import org.web3j.protocol.Web3j;
@@ -41,7 +34,6 @@ import org.web3j.utils.Numeric;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +49,6 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.Response;
 
 
 /**

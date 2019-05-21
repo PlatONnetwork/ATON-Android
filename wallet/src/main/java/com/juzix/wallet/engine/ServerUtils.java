@@ -50,6 +50,9 @@ public class ServerUtils {
 
     private volatile static BaseApi mBaseApi;
 
+    private ServerUtils() {
+    }
+
     public static BaseApi getCommonApi() {
         try {
             if (mBaseApi == null) {

@@ -1,5 +1,9 @@
 package com.juzix.wallet.component.ui.view;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -42,6 +46,7 @@ import com.juzix.wallet.entity.CandidateEntity;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -129,6 +134,7 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
 
     private Unbinder unbinder;
     private VoteListAdapter mVoteListAdapter;
+    private int mSearchLayoutWidth;
     private boolean mSearchEditOpened;
 
     @Override
@@ -138,7 +144,7 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
 
     @Override
     protected void onFragmentPageStart() {
-        smartRefreshLayout.autoRefresh();
+        mPresenter.getCandidateList();
     }
 
     @Override
@@ -151,6 +157,8 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
     }
 
     private void initViews() {
+
+        mSearchLayoutWidth = DensityUtil.getScreenWidth(getContext()) - DensityUtil.dp2px(getContext(), 16f) * 2;
 
         tabLayout.addTab(tabLayout.newTab().setText(string(R.string.action_default)).setTag(TAG_DEFAULT));
         tabLayout.addTab(tabLayout.newTab().setText(string(R.string.reward)).setTag(TAG_REWARD));
@@ -171,7 +179,7 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
         mVoteListAdapter.setOnItemClickListener(new VoteListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(CandidateEntity candidateEntity) {
-                NodeDetailActivity.actionStart(currentActivity(), candidateEntity.getNodeId());
+                NodeDetailActivity.actionStart(currentActivity(), candidateEntity);
             }
         });
 
@@ -391,22 +399,33 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
         }
     }
 
-    private TranslateAnimation getSearchEditTextShowAnimation() {
-        TranslateAnimation showAnimation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.8f,
-                Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
-                0.0f, Animation.RELATIVE_TO_SELF, 0.0f);
-        showAnimation.setDuration(500);
-        return showAnimation;
+    private static Animator createOpenAnimation(final View targetView, int start, int end) {
+        ValueAnimator animator = ValueAnimator.ofInt(start, end);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator arg0) {
+                int value = (int) arg0.getAnimatedValue();
+                ViewGroup.LayoutParams layoutParams = targetView.getLayoutParams();
+                layoutParams.width = value;
+                targetView.setLayoutParams(layoutParams);
+            }
+        });
+        animator.setDuration(5000);
+//        AnimatorSet set = new AnimatorSet();
+//        ObjectAnimator alphaAnimator = ObjectAnimator.ofFloat(targetView, View.ALPHA, 0.0f, 1.0f);
+//        set.playTogether(animator, alphaAnimator);
+//        set.setDuration(5000);
+        return animator;
     }
 
     private void toggleSearchEditText(boolean searchEditTextOpened) {
         etSearchVote.setVisibility(searchEditTextOpened ? View.VISIBLE : View.GONE);
         ivSearchVote.setVisibility(searchEditTextOpened ? View.GONE : View.VISIBLE);
         rgSelectCondition.setVisibility(searchEditTextOpened ? View.GONE : View.VISIBLE);
-        if (searchEditTextOpened) {
-            layoutSearch.startAnimation(getSearchEditTextShowAnimation());
-        }
         layoutSearch.setVisibility(searchEditTextOpened ? View.VISIBLE : View.GONE);
+        if (searchEditTextOpened) {
+            createOpenAnimation(layoutSearch, 0, mSearchLayoutWidth).start();
+        }
     }
 
     private void updateRadioButton(int checkedId) {

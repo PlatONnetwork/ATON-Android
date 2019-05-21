@@ -2,7 +2,6 @@ package com.juzix.wallet.component.ui.contract;
 
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
-import com.juzix.wallet.entity.CandidateDetailEntity;
 import com.juzix.wallet.entity.CandidateEntity;
 
 /**
@@ -15,14 +14,14 @@ public class NodeDetailContract {
         /**
          * @return
          */
-        String getCandidateIdFromIntent();
+        CandidateEntity getCandidateFromIntent();
 
         /**
          * 展示节点详情信息
          *
-         * @param candidateDetailEntity
+         * @param candidateEntity
          */
-        void showNodeDetailInfo(CandidateDetailEntity candidateDetailEntity);
+        void showNodeDetailInfo(CandidateEntity candidateEntity);
     }
 
     public interface Presenter extends IPresenter<View> {
