@@ -36,24 +36,24 @@ public class SplashActivity extends BaseActivity {
 
         initViews();
 
-//        mDecorView.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                if (AppSettings.getInstance().getOperateMenuFlag()) {
-//                    OperateMenuActivity.actionStart(SplashActivity.this);
-//                    SplashActivity.this.finish();
-//                    return;
-//                }
-//                if (AppSettings.getInstance().getFaceTouchIdFlag() &&
-//                        !IndividualWalletManager.getInstance().getWalletList().isEmpty()) {
-//                    UnlockFigerprintActivity.actionStartMainActivity(SplashActivity.this);
-//                    SplashActivity.this.finish();
-//                    return;
-//                }
-//                MainActivity.actionStart(SplashActivity.this);
-//                SplashActivity.this.finish();
-//            }
-//        }, 1000);
+        mDecorView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (AppSettings.getInstance().getOperateMenuFlag()) {
+                    OperateMenuActivity.actionStart(SplashActivity.this);
+                    SplashActivity.this.finish();
+                    return;
+                }
+                if (AppSettings.getInstance().getFaceTouchIdFlag() &&
+                        !IndividualWalletManager.getInstance().getWalletList().isEmpty()) {
+                    UnlockFigerprintActivity.actionStartMainActivity(SplashActivity.this);
+                    SplashActivity.this.finish();
+                    return;
+                }
+                MainActivity.actionStart(SplashActivity.this);
+                SplashActivity.this.finish();
+            }
+        }, 1000);
 
     }
 
