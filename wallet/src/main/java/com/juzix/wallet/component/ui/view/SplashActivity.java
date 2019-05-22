@@ -2,13 +2,10 @@ package com.juzix.wallet.component.ui.view;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.view.KeyEvent;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.config.AppSettings;
