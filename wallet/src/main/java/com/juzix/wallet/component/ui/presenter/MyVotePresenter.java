@@ -135,21 +135,26 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
                 .subscribe(new ApiSingleObserver<List<VotedCandidateEntity>>() {
                     @Override
                     public void onApiSuccess(List<VotedCandidateEntity> entityList) {
-                        if (entityList != null && entityList.size() > 0) {
-                            getView().showBatchVoteSummary(buildVoteTitleList(entityList));
+                        if(isViewAttached()){
+                            if (entityList != null && entityList.size() > 0) {
+                                getView().showBatchVoteSummary(buildVoteTitleList(entityList));
 //                            getView().showMyVoteListData(entityList);
-                            getView().showMyVoteListData(BuildSortList(entityList));
+                                getView().showMyVoteListData(BuildSortList(entityList));
 
-                        } else {
-                            getView().showBatchVoteSummary(buildDefaultVoteSummaryList());
-                            getView().showMyVoteListData(entityList);
+                            } else {
+                                getView().showBatchVoteSummary(buildDefaultVoteSummaryList());
+                                getView().showMyVoteListData(entityList);
+                            }
                         }
+
                     }
 
                     @Override
                     public void onApiFailure(ApiResponse response) {
                         //请求数据失败
-                        getView().showMyVoteListDataFailed();
+                        if(isViewAttached()){
+                            getView().showMyVoteListDataFailed();
+                        }
 
                     }
 

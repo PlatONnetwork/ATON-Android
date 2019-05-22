@@ -58,17 +58,20 @@ public class VoteDetailPresenter extends BasePresenter<VoteDetailContract.View> 
                 .subscribe(new ApiSingleObserver<List<VotedCandidateEntity>>() {
                     @Override
                     public void onApiSuccess(List<VotedCandidateEntity> entityList) {
-                        if (entityList != null && entityList.size() > 0) {
-                            getView().getVoteDetailListDataSuccess(buildSortVoteDetailList(entityList));
-                        } else {
-                            getView().getVoteDetailListDataSuccess(entityList);
+                        if(isViewAttached()){
+                            if (entityList != null && entityList.size() > 0) {
+                                getView().getVoteDetailListDataSuccess(buildSortVoteDetailList(entityList));
+                            } else {
+                                getView().getVoteDetailListDataSuccess(entityList);
+                            }
                         }
-
                     }
 
                     @Override
                     public void onApiFailure(ApiResponse response) {
-                        getView().getVoteDetailListDataFailed();
+                        if(isViewAttached()){
+                            getView().getVoteDetailListDataFailed();
+                        }
                     }
                 });
 
