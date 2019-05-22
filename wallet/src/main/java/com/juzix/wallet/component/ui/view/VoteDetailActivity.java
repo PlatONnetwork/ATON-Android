@@ -106,10 +106,14 @@ public class VoteDetailActivity extends MVPBaseActivity<VoteDetailPresenter> imp
     }
 
     @Override
-    public VotedCandidateEntity getVotedCandidatEntityFromIntent() {
-        return getIntent().getParcelableExtra(Constants.Extra.EXTRA_VOTE_ACTION);
+    public String getCandidateIdFromIntent() {
+        return getIntent().getStringExtra(Constants.Extra.EXTRA_CANDIDATE_ID);
     }
 
+    @Override
+    public String getCandidateNameFromIntent() {
+        return getIntent().getStringExtra(Constants.Extra.EXTRA_CANDIDATE_NAME);
+    }
 
     @Override
     public void getVoteDetailListDataSuccess(List<VotedCandidateEntity> entityList) {
@@ -134,14 +138,15 @@ public class VoteDetailActivity extends MVPBaseActivity<VoteDetailPresenter> imp
     }
 
     @Override
-    public void showVoteDetailTileInfo(VotedCandidateEntity candidateEntity) {
-        tvNodeName.setText(candidateEntity.getName());
-        tvNodeId.setText(candidateEntity.getNodeId());
+    public void showNodeInfo(String nodeName, String nodeId) {
+        tvNodeId.setText(nodeId);
+        tvNodeName.setText(nodeName);
     }
 
-    public static void actionStart(Context context, VotedCandidateEntity entity) {
+    public static void actionStart(Context context, String nodeId, String nodeName) {
         Intent intent = new Intent(context, VoteDetailActivity.class);
-        intent.putExtra(Constants.Extra.EXTRA_VOTE_ACTION, entity);
+        intent.putExtra(Constants.Extra.EXTRA_CANDIDATE_ID, nodeId);
+        intent.putExtra(Constants.Extra.EXTRA_CANDIDATE_NAME, nodeName);
         context.startActivity(intent);
     }
 }
