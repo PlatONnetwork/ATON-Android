@@ -60,12 +60,13 @@ public enum SortType {
     static class RegionComparator implements Comparator<CandidateEntity> {
         @Override
         public int compare(CandidateEntity o1, CandidateEntity o2) {
-            if (o1.getCountryEntity() == null) {
+            if (o1.getCountryEntity().isNull()) {
                 return 0;
             }
-            if (o2.getCountryEntity() == null) {
+            if (o2.getCountryEntity().isNull()) {
                 return 1;
             }
+
             if (Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage())) {
                 return o1.getCountryEntity().getZhPinyinName().compareToIgnoreCase(o2.getCountryEntity().getZhPinyinName());
             } else {
