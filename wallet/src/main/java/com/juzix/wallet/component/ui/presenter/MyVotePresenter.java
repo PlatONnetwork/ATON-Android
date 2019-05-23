@@ -1,28 +1,27 @@
 package com.juzix.wallet.component.ui.presenter;
 
+import android.text.TextUtils;
+
+import com.juzhen.framework.network.ApiErrorCode;
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.ApiSingleObserver;
 import com.juzhen.framework.util.MapUtils;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
-import com.juzix.wallet.app.CustomThrowable;
-import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.MyVoteContract;
 import com.juzix.wallet.component.ui.view.SubmitVoteActivity;
-import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
-import com.juzix.wallet.entity.Candidate;
+import com.juzix.wallet.engine.WalletManager;
+import com.juzix.wallet.entity.Country;
 import com.juzix.wallet.entity.VoteSummary;
 import com.juzix.wallet.entity.VotedCandidate;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.CountryUtil;
 import com.juzix.wallet.utils.RxUtils;
-
-import org.reactivestreams.Publisher;
-import org.reactivestreams.Subscriber;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,6 +37,7 @@ import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
+import retrofit2.Response;
 
 /**
  * @author matrixelement
@@ -61,30 +61,19 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
     }
 
 
-    public void voteTicket(String nodeId,String nodeName) {
-
+    public void voteTicket(String nodeId, String nodeName) {
         if (isViewAttached()) {
 
-            Flowable.just(WalletManager.getInstance().getWalletList())
-                    .filter(new Predicate<List<Wallet>>() {
-                        @Override
-                        public boolean test(List<Wallet> individualWalletEntities) throws Exception {
-                            return !individualWalletEntities.isEmpty();
-                        }
-                    })
-                    .switchIfEmpty(new Flowable<ArrayList<Wallet>>() {
-                        @Override
-                        protected void subscribeActual(Subscriber<? super ArrayList<Wallet>> s) {
-                            s.onError(new CustomThrowable(CustomThrowable.CODE_ERROR_NOT_EXIST_VALID_WALLET));
-                        }
-                    })
-                    .flatMap(new Function<List<Wallet>, Publisher<Wallet>>() {
-                        @Override
-                        public Publisher<Wallet> apply(List<Wallet> individualWalletEntities) throws Exception {
-                            return Flowable.fromIterable(individualWalletEntities);
-                        }
-                    })
+            List<Wallet> walletEntityList = WalletManager.getInstance().getWalletList();
+            if (walletEntityList.isEmpty()) {
+                showLongToast(R.string.voteTicketCreateWalletTips);
+                return;
+            }
+
+            Flowable
+                    .fromIterable(walletEntityList)
                     .map(new Function<Wallet, Double>() {
+
                         @Override
                         public Double apply(Wallet individualWalletEntity) throws Exception {
                             return individualWalletEntity.getBalance();
@@ -96,72 +85,76 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
                             return BigDecimalUtil.add(aDouble, aDouble2);
                         }
                     })
-                    .filter(new Predicate<Double>() {
+                    .subscribe(new Consumer<Double>() {
                         @Override
-                        public boolean test(Double totalBalance) throws Exception {
-                            return totalBalance > 0;
-                        }
-                    })
-                    .switchIfEmpty(new Single<Double>() {
-                        @Override
-                        protected void subscribeActual(SingleObserver<? super Double> observer) {
-                            observer.onError(new CustomThrowable(CustomThrowable.CODE_ERROR_VOTE_TICKET_INSUFFICIENT_BALANCE));
-                        }
-                    })
-                    .flatMap(new Function<Double, SingleSource<Candidate>>() {
-                        @Override
-                        public SingleSource<Candidate> apply(Double aDouble) throws Exception {
-                            return null;
-                        }
-                    })
-                    .compose(RxUtils.getSingleSchedulerTransformer())
-                    .compose(bindToLifecycle())
-                    .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
-                    .subscribe(new Consumer<Candidate>() {
-                        @Override
-                        public void accept(Candidate candidateEntity) throws Exception {
-                            if (isViewAttached()) {
-                                SubmitVoteActivity.actionStart(currentActivity(), nodeId,nodeName);
-                            }
-                        }
-                    }, new Consumer<Throwable>() {
-                        @Override
-                        public void accept(Throwable throwable) throws Exception {
-                            if (throwable instanceof CustomThrowable) {
-                                showLongToast(((CustomThrowable) throwable).getDetailMsgRes());
+                        public void accept(Double totalBalance) throws Exception {
+                            if (totalBalance <= 0) {
+                                showLongToast(R.string.voteTicketInsufficientBalanceTips);
+                            } else {
+                                SubmitVoteActivity.actionStart(currentActivity(), nodeId, nodeName);
                             }
                         }
                     });
-
         }
 
     }
 
     private void getBatchVoteTransaction(String[] addressList) {
 
-        ServerUtils.getCommonApi().getVotedCandidateList(NodeManager.getInstance().getChainId(),ApiRequestBody.newBuilder()
-                .put("walletAddrs",addressList)
+        ServerUtils.getCommonApi().getVotedCandidateList(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
+                .put("walletAddrs", addressList)
                 .build())
+                .flatMap(new Function<Response<ApiResponse<List<VotedCandidate>>>, SingleSource<Response<ApiResponse<List<VotedCandidate>>>>>() {
+                    @Override
+                    public SingleSource<Response<ApiResponse<List<VotedCandidate>>>> apply(Response<ApiResponse<List<VotedCandidate>>> apiResponseResponse) throws Exception {
+                        if (apiResponseResponse == null || !apiResponseResponse.isSuccessful()) {
+                            return Single.just(Response.success(new ApiResponse(ApiErrorCode.NETWORK_ERROR)));
+                        } else {
+                            List<VotedCandidate> list = apiResponseResponse.body().getData();
+                            List<Country> countryEntityList = CountryUtil.getCountryList(getContext());
+                            return Flowable.fromIterable(list)
+                                    .map(new Function<VotedCandidate, VotedCandidate>() {
+                                        @Override
+                                        public VotedCandidate apply(VotedCandidate votedCandidateEntity) throws Exception {
+                                            votedCandidateEntity.setCountryEntity(getCountryEntityByCountryCode(countryEntityList, votedCandidateEntity.getCountryCode()));
+                                            return votedCandidateEntity;
+                                        }
+                                    }).toList()
+                                    .map(new Function<List<VotedCandidate>, Response<ApiResponse<List<VotedCandidate>>>>() {
+                                        @Override
+                                        public Response<ApiResponse<List<VotedCandidate>>> apply(List<VotedCandidate> entityList) throws Exception {
+                                            return Response.success(new ApiResponse<>(ApiErrorCode.SUCCESS, entityList));
+                                        }
+                                    });
+                        }
+
+                    }
+                })
                 .compose(bindToLifecycle())
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .subscribe(new ApiSingleObserver<List<VotedCandidate>>() {
                     @Override
                     public void onApiSuccess(List<VotedCandidate> entityList) {
-                        if (entityList != null && entityList.size() > 0) {
-                            getView().showBatchVoteSummary(buildVoteTitleList(entityList));
+                        if(isViewAttached()){
+                            if (entityList != null && entityList.size() > 0) {
+                                getView().showBatchVoteSummary(buildVoteTitleList(entityList));
 //                            getView().showMyVoteListData(entityList);
-                            getView().showMyVoteListData(BuildSortList(entityList));
+                                getView().showMyVoteListData(BuildSortList(entityList));
 
-                        } else {
-                            getView().showBatchVoteSummary(buildDefaultVoteSummaryList());
-                            getView().showMyVoteListData(entityList);
+                            } else {
+                                getView().showBatchVoteSummary(buildDefaultVoteSummaryList());
+                                getView().showMyVoteListData(entityList);
+                            }
                         }
+
                     }
 
                     @Override
                     public void onApiFailure(ApiResponse response) {
                         //请求数据失败
-                        getView().showMyVoteListDataFailed();
+                        if(isViewAttached()){
+                            getView().showMyVoteListDataFailed();
+                        }
 
                     }
 
@@ -199,6 +192,29 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
 
         return buildVoteSummaryList(stringObjectMap);
 
+    }
+
+    private Country getCountryEntityByCountryCode(List<Country> countryEntityList, String countryCode) {
+        if (countryEntityList == null || TextUtils.isEmpty(countryCode)) {
+            return Country.getNullInstance();
+        }
+        return Flowable
+                .fromIterable(countryEntityList)
+                .filter(new Predicate<Country>() {
+                    @Override
+                    public boolean test(Country countryEntity) throws Exception {
+                        return countryCode.equals(countryEntity.getCountryCode());
+                    }
+                })
+                .firstElement()
+                .switchIfEmpty(new SingleSource<Country>() {
+                    @Override
+                    public void subscribe(SingleObserver<? super Country> observer) {
+                        observer.onError(new Throwable());
+                    }
+                })
+                .onErrorReturnItem(Country.getNullInstance())
+                .blockingGet();
     }
 
     private List<VotedCandidate> BuildSortList(List<VotedCandidate> list) {

@@ -11,6 +11,7 @@ import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.entity.VotedCandidate;
 import com.juzix.wallet.utils.RxUtils;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -20,19 +21,21 @@ import java.util.List;
  * @author matrixelement
  */
 public class VoteDetailPresenter extends BasePresenter<VoteDetailContract.View> implements VoteDetailContract.Presenter {
-    private VotedCandidate votedCandidateEntity;
+
+    private String mNodeId;
+    private String mNodeName;
 
     public VoteDetailPresenter(VoteDetailContract.View view) {
         super(view);
-        votedCandidateEntity = view.getVotedCandidatEntityFromIntent();
+        mNodeId = getView().getCandidateIdFromIntent();
+        mNodeName = getView().getCandidateNameFromIntent();
     }
-
 
     @Override
     public void loadVoteDetailData(int beginSequence) {
-        getView().showVoteDetailTileInfo(votedCandidateEntity);
+        getView().showNodeInfo(mNodeName,mNodeId);
         List<String> walletAddressList = WalletManager.getInstance().getAddressList();
-        getVoteDetailListData(beginSequence, Constants.VoteConstants.LIST_SIZE, votedCandidateEntity.getNodeId(), Constants.VoteConstants.REQUEST_DIRECTION, walletAddressList.toArray(new String[walletAddressList.size()]));
+        getVoteDetailListData(beginSequence, Constants.VoteConstants.LIST_SIZE, mNodeId, Constants.VoteConstants.REQUEST_DIRECTION, walletAddressList.toArray(new String[walletAddressList.size()]));
     }
 
     /**
@@ -61,12 +64,13 @@ public class VoteDetailPresenter extends BasePresenter<VoteDetailContract.View> 
                         }else {
                              getView().getVoteDetailListDataSuccess(entityList);
                         }
-
                     }
 
                     @Override
                     public void onApiFailure(ApiResponse response) {
-                        getView().getVoteDetailListDataFailed();
+                        if(isViewAttached()){
+                            getView().getVoteDetailListDataFailed();
+                        }
                     }
                 });
 

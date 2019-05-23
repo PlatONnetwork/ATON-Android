@@ -38,7 +38,7 @@ public class BatchVoteTransactionAdapter extends CommonAdapter<VotedCandidate> {
         if (TextUtils.isEmpty(item.getCountryCode())) {
             viewHolder.setText(R.id.tv_location, context.getString(R.string.unknownRegion));
         } else {
-            //todo  国家名称还没显示
+            viewHolder.setText(R.id.tv_location, String.format("(%s)", item.getCountryName(context)));
         }
         viewHolder.setText(R.id.tv_node_name, item.getName()); //节点名称
         viewHolder.setText(R.id.tv_valid_invalid_ticket, String.format("%s/%s", NumberParserUtils.getPrettyNumber(item.getValidNum(), 0), NumberParserUtils.getPrettyNumber(BigDecimalUtil.sub(NumberParserUtils.parseDouble(item.getTotalTicketNum()), NumberParserUtils.parseDouble(item.getValidNum())), 0)));
@@ -56,7 +56,7 @@ public class BatchVoteTransactionAdapter extends CommonAdapter<VotedCandidate> {
                     @Override
                     public void accept(Object o) throws Exception {
                         if (mListener != null) {
-                            mListener.onItemVoteClick(item.getNodeId(),item.getName());
+                            mListener.onItemVoteClick(item.getNodeId(), item.getName());
                         }
                     }
                 });
@@ -69,6 +69,6 @@ public class BatchVoteTransactionAdapter extends CommonAdapter<VotedCandidate> {
 
     public interface OnItemVoteClickListener {
 
-        void onItemVoteClick(String candidateId,String nodeName);
+        void onItemVoteClick(String candidateId, String nodeName);
     }
 }

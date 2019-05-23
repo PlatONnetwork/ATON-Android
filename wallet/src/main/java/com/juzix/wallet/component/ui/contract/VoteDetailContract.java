@@ -12,7 +12,10 @@ import java.util.List;
 public class VoteDetailContract {
 
     public interface View extends IView {
-        VotedCandidate getVotedCandidatEntityFromIntent();
+
+        String getCandidateIdFromIntent();
+
+        String getCandidateNameFromIntent();
 
         /**
          * 获取投票详情列表数据 成功
@@ -27,8 +30,7 @@ public class VoteDetailContract {
          */
         void getVoteDetailListDataFailed();
 
-
-        void showVoteDetailTileInfo(VotedCandidate candidateEntity);
+        void showNodeInfo(String nodeName, String nodeId);
 
     }
 

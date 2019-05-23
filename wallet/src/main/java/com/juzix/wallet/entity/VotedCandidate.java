@@ -1,13 +1,17 @@
 package com.juzix.wallet.entity;
 
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.juzhen.framework.util.NumberParserUtils;
+import com.juzix.wallet.utils.LanguageUtil;
+
+import java.util.Locale;
 
 public class VotedCandidate implements Parcelable, Comparable<VotedCandidate> {
-    private static final long EXPIRE_BLOCKNUMBER = 1536000000;
     /**
      * 节点ID
      */
@@ -20,18 +24,13 @@ public class VotedCandidate implements Parcelable, Comparable<VotedCandidate> {
      * 国家代码
      */
     private String countryCode;
+
     /**
-     * 国家英文名称
+     * 国家区域信息
      */
-    private String countryEnName;
-    /**
-     * 国家中文名称
-     */
-    private String countryCnName;
-    /**
-     * 国家拼音名称，中文环境下，区域进行排序
-     */
-    private String countrySpellName;
+    @JSONField(deserialize = false, serialize = false)
+    private Country countryEntity;
+
     /**
      * 有效票数
      */
@@ -97,9 +96,6 @@ public class VotedCandidate implements Parcelable, Comparable<VotedCandidate> {
         nodeId = in.readString();
         name = in.readString();
         countryCode = in.readString();
-        countryEnName = in.readString();
-        countryCnName = in.readString();
-        countrySpellName = in.readString();
         validNum = in.readString();
         totalTicketNum = in.readString();
         locked = in.readString();
@@ -113,6 +109,7 @@ public class VotedCandidate implements Parcelable, Comparable<VotedCandidate> {
         price = in.readString();
         walletAddress = in.readString();
         isValid = in.readString();
+        countryEntity = in.readParcelable(countryEntity.getClass().getClassLoader());
     }
 
     public static final Creator<VotedCandidate> CREATOR = new Creator<VotedCandidate>() {
@@ -126,6 +123,14 @@ public class VotedCandidate implements Parcelable, Comparable<VotedCandidate> {
             return new VotedCandidate[size];
         }
     };
+
+    public Country getCountryEntity() {
+        return countryEntity;
+    }
+
+    public void setCountryEntity(Country countryEntity) {
+        this.countryEntity = countryEntity;
+    }
 
     public String getNodeId() {
         return nodeId;
@@ -149,30 +154,6 @@ public class VotedCandidate implements Parcelable, Comparable<VotedCandidate> {
 
     public void setCountryCode(String countryCode) {
         this.countryCode = countryCode;
-    }
-
-    public String getCountryEnName() {
-        return countryEnName;
-    }
-
-    public void setCountryEnName(String countryEnName) {
-        this.countryEnName = countryEnName;
-    }
-
-    public String getCountryCnName() {
-        return countryCnName;
-    }
-
-    public void setCountryCnName(String countryCnName) {
-        this.countryCnName = countryCnName;
-    }
-
-    public String getCountrySpellName() {
-        return countrySpellName;
-    }
-
-    public void setCountrySpellName(String countrySpellName) {
-        this.countrySpellName = countrySpellName;
     }
 
     public String getValidNum() {
@@ -289,9 +270,6 @@ public class VotedCandidate implements Parcelable, Comparable<VotedCandidate> {
         dest.writeString(nodeId);
         dest.writeString(name);
         dest.writeString(countryCode);
-        dest.writeString(countryEnName);
-        dest.writeString(countryCnName);
-        dest.writeString(countrySpellName);
         dest.writeString(validNum);
         dest.writeString(totalTicketNum);
         dest.writeString(locked);
@@ -305,6 +283,7 @@ public class VotedCandidate implements Parcelable, Comparable<VotedCandidate> {
         dest.writeString(price);
         dest.writeString(walletAddress);
         dest.writeString(isValid);
+        dest.writeParcelable(countryEntity, flags);
 
     }
 
@@ -314,5 +293,16 @@ public class VotedCandidate implements Parcelable, Comparable<VotedCandidate> {
 //        return Long.compare(DateUtil.parse(o.transactionTime,DateUtil.DATETIME_FORMAT_PATTERN_WITH_SECOND),DateUtil.parse(transactionTime,DateUtil.DATETIME_FORMAT_PATTERN_WITH_SECOND));
         return Long.compare(NumberParserUtils.parseLong(o.transactionTime), NumberParserUtils.parseLong(transactionTime));
 
+    }
+
+    public String getCountryName(Context context) {
+        if (countryEntity == null) {
+            return null;
+        }
+        if (Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(context).getLanguage())) {
+            return countryEntity.getZhName();
+        } else {
+            return countryEntity.getEnName();
+        }
     }
 }
