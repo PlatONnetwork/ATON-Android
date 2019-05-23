@@ -14,7 +14,7 @@ import com.juzix.wallet.config.JZAppConfigure;
 import com.juzix.wallet.config.JZDirType;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.ShareAppInfo;
-import com.juzix.wallet.entity.WalletEntity;
+import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.AppUtil;
 import com.juzix.wallet.utils.CommonUtil;
 import com.juzix.wallet.utils.DensityUtil;
@@ -35,7 +35,7 @@ import io.reactivex.functions.Consumer;
  */
 public class ReceiveTransationPresenter extends BasePresenter<ReceiveTransationContract.View> implements ReceiveTransationContract.Presenter {
 
-    private WalletEntity walletEntity;
+    private Wallet walletEntity;
     private Bitmap mQRCodeBitmap;
 
     public ReceiveTransationPresenter(ReceiveTransationContract.View view) {

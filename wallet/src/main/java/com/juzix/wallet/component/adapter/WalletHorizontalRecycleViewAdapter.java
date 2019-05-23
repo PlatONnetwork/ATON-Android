@@ -12,23 +12,21 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.juzix.wallet.R;
-import com.juzix.wallet.component.widget.CustomProgressBar;
 import com.juzix.wallet.component.widget.ShadowDrawable;
-import com.juzix.wallet.entity.IndividualWalletEntity;
-import com.juzix.wallet.entity.WalletEntity;
+import com.juzix.wallet.entity.Wallet;
 
 import java.util.List;
 
 public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<WalletHorizontalRecycleViewAdapter.ViewHolder> {
 
     private Context mContext;
-    private List<WalletEntity> mList;
+    private List<Wallet> mList;
     private OnRecycleViewItemClickListener mOnItemClickListener;
-    private WalletEntity mSelectedWallet;
+    private Wallet mSelectedWallet;
     private int mShapeRadius;
     private int mShadowRadius;
 
-    public WalletHorizontalRecycleViewAdapter(Context context, List<WalletEntity> walletList) {
+    public WalletHorizontalRecycleViewAdapter(Context context, List<Wallet> walletList) {
         mContext = context;
         mList = walletList;
         mSelectedWallet = null;
@@ -38,10 +36,7 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final WalletEntity walletEntity = mList.get(position);
-        if (walletEntity instanceof IndividualWalletEntity) {
-            setIndividualWalletView(position, (IndividualWalletEntity) walletEntity, holder);
-        }
+        setIndividualWalletView(position, mList.get(position), holder);
         holder.itemView.setTag(position);//将位置保存在tag中
     }
 
@@ -55,7 +50,7 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
         return mList.size();
     }
 
-    public void setSelectedWallet(WalletEntity selectedWallet) {
+    public void setSelectedWallet(Wallet selectedWallet) {
         mSelectedWallet = selectedWallet;
     }
 
@@ -64,10 +59,10 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
     }
 
     public interface OnRecycleViewItemClickListener {
-        void onContentViewClick(WalletEntity walletEntity);
+        void onContentViewClick(Wallet walletEntity);
     }
 
-    public void removeItem(WalletEntity walletEntity) {
+    public void removeItem(Wallet walletEntity) {
         if (mList == null || mList.isEmpty()) {
             return;
         }
@@ -79,11 +74,11 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
         }
     }
 
-    public List<WalletEntity> getWalletList() {
+    public List<Wallet> getWalletList() {
         return mList;
     }
 
-    private void setIndividualWalletView(final int position, final IndividualWalletEntity walletEntity, ViewHolder holder) {
+    private void setIndividualWalletView(final int position, final Wallet walletEntity, ViewHolder holder) {
         holder.rlItem.setVisibility(View.VISIBLE);
         holder.rlItem.findViewById(R.id.v_new_msg).setVisibility(View.GONE);
         TextView tvName = holder.rlItem.findViewById(R.id.tv_item2_name);

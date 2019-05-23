@@ -2,7 +2,7 @@ package com.juzix.wallet.component.ui.contract;
 
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
-import com.juzix.wallet.entity.CandidateEntity;
+import com.juzix.wallet.entity.Candidate;
 
 /**
  * @author matrixelement
@@ -10,8 +10,8 @@ import com.juzix.wallet.entity.CandidateEntity;
 public class NodeInformationContract {
 
     public interface View extends IView {
-        CandidateEntity getCandidateEntityFromIntent();
-        void showDetailInfo(CandidateEntity candidateEntity);
+        Candidate getCandidateEntityFromIntent();
+        void showDetailInfo(Candidate candidateEntity);
         void showEpoch(long epoch);
     }
 

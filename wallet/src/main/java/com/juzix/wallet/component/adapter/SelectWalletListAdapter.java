@@ -8,26 +8,26 @@ import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.adapter.base.ViewHolder;
 import com.juzix.wallet.component.ui.dialog.SelectWalletDialogFragment;
-import com.juzix.wallet.entity.IndividualWalletEntity;
+import com.juzix.wallet.entity.Wallet;
 
 import java.util.List;
 
 /**
  * @author matrixelement
  */
-public class SelectWalletListAdapter extends CommonAdapter<IndividualWalletEntity> {
+public class SelectWalletListAdapter extends CommonAdapter<Wallet> {
 
     private ListView listView;
     private String action;
 
-    public SelectWalletListAdapter(int layoutId, List<IndividualWalletEntity> datas, ListView listView, String action) {
+    public SelectWalletListAdapter(int layoutId, List<Wallet> datas, ListView listView, String action) {
         super(layoutId, datas);
         this.listView = listView;
         this.action = action;
     }
 
     @Override
-    protected void convert(Context context, ViewHolder viewHolder, IndividualWalletEntity item, int position) {
+    protected void convert(Context context, ViewHolder viewHolder, Wallet item, int position) {
         if (item != null) {
             viewHolder.getConvertView().setEnabled(isEnabled(item));
             viewHolder.setText(R.id.tv_wallet_name, item.getName());
@@ -47,7 +47,7 @@ public class SelectWalletListAdapter extends CommonAdapter<IndividualWalletEntit
         return isEnabled(getList().get(position));
     }
 
-    private boolean isEnabled(IndividualWalletEntity item) {
+    private boolean isEnabled(Wallet item) {
         return !((SelectWalletDialogFragment.CREATE_SHARED_WALLET.equals(action) || SelectWalletDialogFragment.SELECT_TRANSACTION_WALLET.equals(action)) && item.getBalance() == 0);
     }
 }

@@ -1,17 +1,10 @@
 package com.juzix.wallet.component.adapter;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
-import android.widget.ListView;
 
-import com.juzhen.framework.util.NumberParserUtils;
-import com.juzix.wallet.R;
 import com.juzix.wallet.component.adapter.base.ViewHolder;
 import com.juzix.wallet.engine.WalletManager;
-import com.juzix.wallet.entity.IndividualTransactionEntity;
-import com.juzix.wallet.entity.TransactionEntity;
-import com.juzix.wallet.entity.VoteTransactionEntity;
-import com.juzix.wallet.utils.DateUtil;
+import com.juzix.wallet.entity.Transaction;
 
 import java.util.Collections;
 import java.util.List;
@@ -19,18 +12,18 @@ import java.util.List;
 /**
  * @author matrixelement
  */
-public class TransactionListsAdapter extends CommonAdapter<TransactionEntity> {
+public class TransactionListsAdapter extends CommonAdapter<Transaction> {
 
     private final static String TAG = TransactionListsAdapter.class.getSimpleName();
 
     private Context mContext;
 
-    public TransactionListsAdapter(int layoutId, List<TransactionEntity> datas) {
+    public TransactionListsAdapter(int layoutId, List<Transaction> datas) {
         super(layoutId, datas);
     }
 
     @Override
-    protected void convert(Context context, ViewHolder viewHolder, TransactionEntity item, int position) {
+    protected void convert(Context context, ViewHolder viewHolder, Transaction item, int position) {
         this.mContext = context;
         convert(context, viewHolder, item);
     }
@@ -41,7 +34,7 @@ public class TransactionListsAdapter extends CommonAdapter<TransactionEntity> {
         convert(context, viewHolder, mDatas.get(position));
     }
 
-    private void convert(Context context, ViewHolder viewHolder, TransactionEntity item) {
+    private void convert(Context context, ViewHolder viewHolder, Transaction item) {
 //        String walletAddress = WalletManager.getInstance().getSelectedWalletAddress();
 //        if (item instanceof IndividualTransactionEntity) {
 //            IndividualTransactionEntity entity = (IndividualTransactionEntity) item;
@@ -54,9 +47,9 @@ public class TransactionListsAdapter extends CommonAdapter<TransactionEntity> {
 //            viewHolder.setText(R.id.tv_transaction_status_desc, entity.isCompleted() ? context.getString(R.string.success) : context.getString(R.string.pending));
 //            viewHolder.setTextColor(R.id.tv_transaction_status_desc, ContextCompat.getColor(context, transactionStatus.getStatusDescTextColor()));
 //            viewHolder.setImageResource(R.id.iv_transaction_status, entity.isReceiver(walletAddress) ? R.drawable.icon_receive_transaction : R.drawable.icon_send_transation);
-//        } else if (item instanceof VoteTransactionEntity) {
-//            VoteTransactionEntity entity = (VoteTransactionEntity) item;
-//            VoteTransactionEntity.TransactionStatus transactionStatus = entity.getTransactionStatus();
+//        } else if (item instanceof VoteTransaction) {
+//            VoteTransaction entity = (VoteTransaction) item;
+//            VoteTransaction.TransactionStatus transactionStatus = entity.getTransactionStatus();
 //            boolean isReceiver = entity.isReceiver(walletAddress);
 //            viewHolder.setVisible(R.id.v_new_msg, false);
 //            viewHolder.setText(R.id.tv_transaction_status, context.getString(R.string.vote));
@@ -74,7 +67,7 @@ public class TransactionListsAdapter extends CommonAdapter<TransactionEntity> {
      *
      * @param transactionEntity
      */
-    public void addItem(TransactionEntity transactionEntity) {
+    public void addItem(Transaction transactionEntity) {
         if (mDatas != null && isNeedUpdateItem(transactionEntity)) {
             mDatas.add(transactionEntity);
             Collections.sort(mDatas);
@@ -90,7 +83,7 @@ public class TransactionListsAdapter extends CommonAdapter<TransactionEntity> {
      * @param transactionEntity
      * @return
      */
-    private boolean isNeedUpdateItem(TransactionEntity transactionEntity) {
+    private boolean isNeedUpdateItem(Transaction transactionEntity) {
         String walletAddress = WalletManager.getInstance().getSelectedWalletAddress();
         //地址是否与交易有关
 //        if (!transactionEntity.isRelevantWalletAddress(walletAddress)) {
@@ -102,14 +95,14 @@ public class TransactionListsAdapter extends CommonAdapter<TransactionEntity> {
 //            //创建联名钱包+执行联名钱包只在创建者交易记录里展示
 //            return transactionType == SharedTransactionEntity.TransactionType.SEND_TRANSACTION || sharedTransactionEntity.getFromAddress().equals(walletAddress);
 //        }
-//        if (transactionEntity instanceof VoteTransactionEntity) {
-//            return ((VoteTransactionEntity) transactionEntity).isVoter(walletAddress);
+//        if (transactionEntity instanceof VoteTransaction) {
+//            return ((VoteTransaction) transactionEntity).isVoter(walletAddress);
 //        }
         return true;
     }
 
 
-    public void notifyDataChanged(List<TransactionEntity> mDatas) {
+    public void notifyDataChanged(List<Transaction> mDatas) {
         this.mDatas = mDatas;
         notifyDataSetChanged();
     }

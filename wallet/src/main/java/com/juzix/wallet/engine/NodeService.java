@@ -1,8 +1,8 @@
 package com.juzix.wallet.engine;
 
-import com.juzix.wallet.db.entity.NodeInfoEntity;
+import com.juzix.wallet.db.entity.NodeEntity;
 import com.juzix.wallet.db.sqlite.NodeInfoDao;
-import com.juzix.wallet.entity.NodeEntity;
+import com.juzix.wallet.entity.Node;
 
 import org.reactivestreams.Publisher;
 
@@ -20,23 +20,23 @@ import io.reactivex.schedulers.Schedulers;
 public class NodeService implements INodeService {
 
     @Override
-    public Single<List<NodeEntity>> getNodeList() {
+    public Single<List<Node>> getNodeList() {
 
-        return Single.fromCallable(new Callable<List<NodeInfoEntity>>() {
+        return Single.fromCallable(new Callable<List<NodeEntity>>() {
             @Override
-            public List<NodeInfoEntity> call() throws Exception {
+            public List<NodeEntity> call() throws Exception {
                 return NodeInfoDao.getNodeList();
             }
         }).toFlowable()
-                .flatMap(new Function<List<NodeInfoEntity>, Publisher<NodeInfoEntity>>() {
+                .flatMap(new Function<List<NodeEntity>, Publisher<NodeEntity>>() {
                     @Override
-                    public Publisher<NodeInfoEntity> apply(List<NodeInfoEntity> nodeInfoEntities) throws Exception {
+                    public Publisher<NodeEntity> apply(List<NodeEntity> nodeInfoEntities) throws Exception {
                         return Flowable.fromIterable(nodeInfoEntities);
                     }
                 })
-                .map(new Function<NodeInfoEntity, NodeEntity>() {
+                .map(new Function<NodeEntity, Node>() {
                     @Override
-                    public NodeEntity apply(NodeInfoEntity nodeInfoEntity) throws Exception {
+                    public Node apply(NodeEntity nodeInfoEntity) throws Exception {
                         return nodeInfoEntity.createNode();
                     }
                 })
@@ -44,7 +44,7 @@ public class NodeService implements INodeService {
     }
 
     @Override
-    public Single<Boolean> insertNode(NodeInfoEntity nodeInfoEntity) {
+    public Single<Boolean> insertNode(NodeEntity nodeInfoEntity) {
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
@@ -54,19 +54,19 @@ public class NodeService implements INodeService {
     }
 
     @Override
-    public Single<Boolean> insertNode(List<NodeEntity> nodeEntityList) {
+    public Single<Boolean> insertNode(List<Node> nodeEntityList) {
 
         return Flowable.fromIterable(nodeEntityList)
-                .map(new Function<NodeEntity, NodeInfoEntity>() {
+                .map(new Function<Node, NodeEntity>() {
                     @Override
-                    public NodeInfoEntity apply(NodeEntity nodeEntity) throws Exception {
+                    public NodeEntity apply(Node nodeEntity) throws Exception {
                         return nodeEntity.createNodeInfo();
                     }
                 })
                 .toList()
-                .map(new Function<List<NodeInfoEntity>, Boolean>() {
+                .map(new Function<List<NodeEntity>, Boolean>() {
                     @Override
-                    public Boolean apply(List<NodeInfoEntity> nodeInfoEntityList) throws Exception {
+                    public Boolean apply(List<NodeEntity> nodeInfoEntityList) throws Exception {
                         return NodeInfoDao.insertNodeList(nodeInfoEntityList);
                     }
                 }).subscribeOn(Schedulers.io());
@@ -113,12 +113,12 @@ public class NodeService implements INodeService {
     }
 
     @Override
-    public Single<NodeEntity> getNode(boolean isChecked) {
+    public Single<Node> getNode(boolean isChecked) {
         return Flowable.fromIterable(NodeInfoDao.getNode(isChecked))
                 .firstElement()
-                .map(new Function<NodeInfoEntity, NodeEntity>() {
+                .map(new Function<NodeEntity, Node>() {
                     @Override
-                    public NodeEntity apply(NodeInfoEntity nodeInfoEntity) throws Exception {
+                    public Node apply(NodeEntity nodeInfoEntity) throws Exception {
                         return nodeInfoEntity.buildNodeEntity();
                     }
                 })
@@ -127,11 +127,11 @@ public class NodeService implements INodeService {
     }
 
     @Override
-    public Single<List<NodeEntity>> getNode(String nodeAddress) {
+    public Single<List<Node>> getNode(String nodeAddress) {
         return Flowable.fromIterable(NodeInfoDao.getNode(nodeAddress))
-                .map(new Function<NodeInfoEntity, NodeEntity>() {
+                .map(new Function<NodeEntity, Node>() {
                     @Override
-                    public NodeEntity apply(NodeInfoEntity nodeInfoEntity) throws Exception {
+                    public Node apply(NodeEntity nodeInfoEntity) throws Exception {
                         return nodeInfoEntity.buildNodeEntity();
                     }
                 })

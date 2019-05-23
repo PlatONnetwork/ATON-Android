@@ -14,19 +14,16 @@ import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.adapter.SelectWalletListAdapter;
 import com.juzix.wallet.component.widget.ShadowDrawable;
-import com.juzix.wallet.db.entity.IndividualWalletInfoEntity;
-import com.juzix.wallet.db.sqlite.IndividualWalletInfoDao;
-import com.juzix.wallet.engine.IndividualWalletTransactionManager;
-import com.juzix.wallet.entity.IndividualWalletEntity;
-import com.juzix.wallet.entity.WalletEntity;
+import com.juzix.wallet.db.entity.WalletEntity;
+import com.juzix.wallet.db.sqlite.WalletInfoDao;
+import com.juzix.wallet.engine.TransactionManager;
+import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.RxUtils;
 
 import org.reactivestreams.Publisher;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -115,7 +112,7 @@ public class SelectWalletDialogFragment extends BaseDialogFragment {
                 .subscribe(new Consumer<Integer>() {
                     @Override
                     public void accept(Integer position) throws Exception {
-                        IndividualWalletEntity walletEntity = selectWalletListAdapter.getItem(position);
+                        Wallet walletEntity = selectWalletListAdapter.getItem(position);
                         selectWalletListAdapter.notifyDataSetChanged();
                         dismiss();
                         if (mListener != null) {
@@ -130,29 +127,28 @@ public class SelectWalletDialogFragment extends BaseDialogFragment {
 
     private void loadWalletList() {
 
-        Flowable.fromCallable(new Callable<List<IndividualWalletInfoEntity>>() {
+        Flowable.fromCallable(new Callable<List<WalletEntity>>() {
             @Override
-            public List<IndividualWalletInfoEntity> call() throws Exception {
-                return IndividualWalletInfoDao.getWalletInfoList();
+            public List<WalletEntity> call() throws Exception {
+                return WalletInfoDao.getWalletInfoList();
             }
         })
-                .flatMap(new Function<List<IndividualWalletInfoEntity>, Publisher<IndividualWalletInfoEntity>>() {
+                .flatMap(new Function<List<WalletEntity>, Publisher<WalletEntity>>() {
                     @Override
-                    public Publisher<IndividualWalletInfoEntity> apply(List<IndividualWalletInfoEntity> individualWalletInfoEntities) throws Exception {
+                    public Publisher<WalletEntity> apply(List<WalletEntity> individualWalletInfoEntities) throws Exception {
                         return Flowable.fromIterable(individualWalletInfoEntities);
                     }
                 })
-                .map(new Function<IndividualWalletInfoEntity, IndividualWalletEntity>() {
+                .map(new Function<WalletEntity, Wallet>() {
                     @Override
-                    public IndividualWalletEntity apply(IndividualWalletInfoEntity walletInfoEntity) throws Exception {
+                    public Wallet apply(WalletEntity walletInfoEntity) throws Exception {
                         return walletInfoEntity.buildWalletEntity();
                     }
                 })
-                .map(new Function<IndividualWalletEntity, IndividualWalletEntity>() {
-
+                .map(new Function<Wallet, Wallet>() {
                     @Override
-                    public IndividualWalletEntity apply(IndividualWalletEntity walletEntity) throws Exception {
-                        return IndividualWalletTransactionManager.getInstance().getBalanceByAddress(walletEntity);
+                    public Wallet apply(Wallet walletEntity) throws Exception {
+                        return TransactionManager.getInstance().getBalanceByAddress(walletEntity);
                     }
                 })
                 .toList()
@@ -160,15 +156,15 @@ public class SelectWalletDialogFragment extends BaseDialogFragment {
                 .compose(bindToLifecycle())
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new BiConsumer<List<IndividualWalletEntity>, Throwable>() {
+                .subscribe(new BiConsumer<List<Wallet>, Throwable>() {
                     @Override
-                    public void accept(List<IndividualWalletEntity> objects, Throwable throwable) throws Exception {
+                    public void accept(List<Wallet> objects, Throwable throwable) throws Exception {
                         if (objects != null && !objects.isEmpty()) {
                             String uuid = getArguments().getString(Constants.Bundle.BUNDLE_UUID);
                             boolean needAmount = getArguments().getBoolean(Constants.Bundle.BUNDLE_FEE_AMOUNT);
-                            List<IndividualWalletEntity> newWalletEntityList = new ArrayList<>();
+                            List<Wallet> newWalletEntityList = new ArrayList<>();
                             if (needAmount) {
-                                for (IndividualWalletEntity walletEntity : objects) {
+                                for (Wallet walletEntity : objects) {
                                     if (walletEntity.getBalance() > 0) {
                                         newWalletEntityList.add(walletEntity);
                                     }
@@ -176,14 +172,8 @@ public class SelectWalletDialogFragment extends BaseDialogFragment {
                             } else {
                                 newWalletEntityList.addAll(objects);
                             }
-                            Collections.sort(newWalletEntityList, new Comparator<WalletEntity>() {
-                                @Override
-                                public int compare(WalletEntity o1, WalletEntity o2) {
-                                    return Long.compare(o1.getUpdateTime(), o2.getUpdateTime());
-                                }
-                            });
                             selectWalletListAdapter.notifyDataChanged(newWalletEntityList);
-                            listWallet.setItemChecked(newWalletEntityList.indexOf(new IndividualWalletEntity.Builder().uuid(uuid).build()), true);
+                            listWallet.setItemChecked(newWalletEntityList.indexOf(new Wallet.Builder().uuid(uuid).build()), true);
                         }
                     }
                 });
@@ -199,6 +189,6 @@ public class SelectWalletDialogFragment extends BaseDialogFragment {
 
     public interface OnItemClickListener {
 
-        void onItemClick(IndividualWalletEntity walletEntity);
+        void onItemClick(Wallet walletEntity);
     }
 }

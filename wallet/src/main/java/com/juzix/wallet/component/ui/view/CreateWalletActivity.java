@@ -19,6 +19,7 @@ import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.CreateIndividualWalletContract;
 import com.juzix.wallet.component.ui.presenter.CreateIndividualWalletPresenter;
 import com.juzix.wallet.component.widget.ShadowButton;
+import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.utils.CheckStrength;
 
 import butterknife.BindView;
@@ -173,7 +174,7 @@ public class CreateWalletActivity extends MVPBaseActivity<CreateIndividualWallet
                 showNameError(string(R.string.validWalletNameEmptyTips), true);
             } else if (name.length() > 12) {
                 showNameError(string(R.string.validWalletNameTips), true);
-            } else if (mPresenter.isExists(name)) {
+            } else if (WalletManager.getInstance().isWalletNameExists(name)) {
                 showNameError(string(R.string.wallet_name_exists), true);
             } else {
                 showNameError("", false);

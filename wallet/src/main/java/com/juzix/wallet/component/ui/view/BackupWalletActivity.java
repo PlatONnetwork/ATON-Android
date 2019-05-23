@@ -11,8 +11,7 @@ import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
-import com.juzix.wallet.component.widget.CommonTitleBar;
-import com.juzix.wallet.entity.IndividualWalletEntity;
+import com.juzix.wallet.entity.Wallet;
 
 import org.web3j.crypto.Credentials;
 
@@ -20,7 +19,7 @@ public class BackupWalletActivity extends BaseActivity implements View.OnClickLi
 
     private final static String TAG = BackupWalletActivity.class.getSimpleName();
 
-    public static void actionStart(Context context, IndividualWalletEntity walletEntity){
+    public static void actionStart(Context context, Wallet walletEntity){
         Intent intent = new Intent(context, BackupWalletActivity.class);
         intent.putExtra(Constants.Extra.EXTRA_WALLET, walletEntity);
         context.startActivity(intent);
@@ -51,7 +50,7 @@ public class BackupWalletActivity extends BaseActivity implements View.OnClickLi
         }
     }
 
-    public void showPasswordDialog(IndividualWalletEntity walletEntity) {
+    public void showPasswordDialog(Wallet walletEntity) {
         InputWalletPasswordDialogFragment.newInstance(walletEntity).setOnWalletCorrectListener(new InputWalletPasswordDialogFragment.OnWalletCorrectListener() {
             @Override
             public void onCorrect(Credentials credentials, String password) {

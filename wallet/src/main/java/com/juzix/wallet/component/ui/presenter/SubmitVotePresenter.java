@@ -13,9 +13,9 @@ import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.dialog.SelectWalletDialogFragment;
 import com.juzix.wallet.component.ui.dialog.SendTransactionDialogFragment;
 import com.juzix.wallet.db.entity.SingleVoteInfoEntity;
-import com.juzix.wallet.engine.IndividualWalletManager;
+import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.VoteManager;
-import com.juzix.wallet.entity.IndividualWalletEntity;
+import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.RxUtils;
 
@@ -34,7 +34,7 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
     private String mCandidateId;
     private String mCandidateName;
     private String mTicketPrice;
-    private IndividualWalletEntity mIndividualWalletEntity;
+    private Wallet mIndividualWalletEntity;
 
     public SubmitVotePresenter(SubmitVoteContract.View view) {
         super(view);
@@ -139,7 +139,7 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
         SelectWalletDialogFragment.newInstance(mIndividualWalletEntity != null ? mIndividualWalletEntity.getUuid() : "", true)
                 .setOnItemClickListener(new SelectWalletDialogFragment.OnItemClickListener() {
                     @Override
-                    public void onItemClick(IndividualWalletEntity walletEntity) {
+                    public void onItemClick(Wallet walletEntity) {
                         if (isViewAttached()) {
                             mIndividualWalletEntity = walletEntity;
                             getView().showSelectedWalletInfo(walletEntity);
@@ -193,7 +193,7 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
     }
 
     private void showSelectedWalletInfo() {
-        mIndividualWalletEntity = IndividualWalletManager.getInstance().getFirstValidIndividualWalletBalance();
+        mIndividualWalletEntity = WalletManager.getInstance().getFirstValidIndividualWalletBalance();
         if (isViewAttached() && mIndividualWalletEntity != null) {
             getView().showSelectedWalletInfo(mIndividualWalletEntity);
         }

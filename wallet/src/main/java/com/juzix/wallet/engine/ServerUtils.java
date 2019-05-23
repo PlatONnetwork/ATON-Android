@@ -1,25 +1,10 @@
 package com.juzix.wallet.engine;
 
-import android.content.Context;
-
 import com.facebook.stetho.okhttp3.StethoInterceptor;
-import com.juzhen.framework.network.ApiCallback;
-import com.juzhen.framework.network.ApiErrorCode;
 import com.juzhen.framework.network.ApiFastjsonConverterFactory;
-import com.juzhen.framework.network.ApiResponse;
-import com.juzhen.framework.network.LoggingInterceptor;
-import com.juzhen.framework.network.RequestInfo;
-import com.juzhen.framework.network.RequestInterceptor;
 import com.juzix.wallet.BuildConfig;
 import com.juzix.wallet.app.Constants;
-import com.juzix.wallet.config.AppConfig;
 
-import java.io.File;
-import java.io.IOException;
-import java.security.InvalidParameterException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,18 +15,10 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import okhttp3.Cache;
-import okhttp3.Headers;
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * @author ziv
@@ -86,7 +63,7 @@ public class ServerUtils {
             .readTimeout(25, TimeUnit.SECONDS)
             .retryOnConnectionFailure(true)
             .addInterceptor(new BaseUrlInterceptor())
-            .addInterceptor(new RequestInterceptor(buildHeadsMap()))
+            .addInterceptor(new RequestInterceptor())
             .addInterceptor(getLogInterceptor())
             .addInterceptor(new StethoInterceptor())
             .sslSocketFactory(getSSLSocketFactory());
@@ -99,12 +76,6 @@ public class ServerUtils {
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.NONE);
         }
         return loggingInterceptor;
-    }
-
-    private static Map<String, String> buildHeadsMap() {
-        Map<String, String> map = new HashMap<>();
-        map.put("x-aton-cid", NodeManager.getInstance().getChainId());
-        return map;
     }
 
     /**

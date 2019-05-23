@@ -1,47 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="10dp"
-    android:paddingTop="11dp">
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp">
 
     <TextView
         android:id="@+id/tv_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/Text.000000.14"
         android:layout_alignParentLeft="true"
-        android:textColor="@color/color_000000"
-        android:textSize="14sp"
-        android:text="接收"/>
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="接收" />
 
     <TextView
         android:id="@+id/tv_amount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:textColor="@color/color_000000"
-        android:textSize="14sp"
-        android:text="+0.00035 Energon"/>
+        style="@style/Text.000000.14"
+        android:layout_width="0dp"
+        android:layout_marginLeft="24dp"
+        android:autoSizeMaxTextSize="14sp"
+        android:autoSizeMinTextSize="12sp"
+        android:autoSizeTextType="uniform"
+        android:ellipsize="middle"
+        android:includeFontPadding="false"
+        android:singleLine="true"
+        android:gravity="right"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintLeft_toRightOf="@id/tv_name"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="+0.00035 " />
 
     <TextView
         android:id="@+id/tv_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_name"
+        style="@style/Text.61646e.11"
         android:layout_marginTop="5dp"
-        android:layout_alignParentLeft="true"
-        android:textColor="@color/color_61646e"
-        android:textSize="11sp"
-        android:text="2018-03-21  13:23"/>
+        app:layout_constraintLeft_toLeftOf="@id/tv_name"
+        app:layout_constraintTop_toBottomOf="@id/tv_name"
+        tools:text="2018-03-21  13:23" />
+
     <TextView
         android:id="@+id/tv_desc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/Text.61646e.11"
         android:layout_below="@id/tv_amount"
-        android:layout_alignParentRight="true"
         android:layout_marginTop="5dp"
-        android:textColor="@color/color_61646e"
-        android:textSize="11sp"
-        android:text="已完成"/>
+        app:layout_constraintRight_toRightOf="@id/tv_amount"
+        app:layout_constraintTop_toBottomOf="@id/tv_amount"
+        tools:text="已完成" />
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

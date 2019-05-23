@@ -5,7 +5,7 @@ import android.content.Context;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.adapter.base.ViewHolder;
-import com.juzix.wallet.entity.AddressEntity;
+import com.juzix.wallet.entity.Address;
 import com.juzix.wallet.utils.AddressFormatUtil;
 
 import java.util.List;
@@ -13,14 +13,14 @@ import java.util.List;
 /**
  * @author matrixelement
  */
-public class AddressBookListAdapter extends CommonAdapter<AddressEntity> {
+public class AddressBookListAdapter extends CommonAdapter<Address> {
 
-    public AddressBookListAdapter(int layoutId, List<AddressEntity> datas) {
+    public AddressBookListAdapter(int layoutId, List<Address> datas) {
         super(layoutId, datas);
     }
 
     @Override
-    protected void convert(Context context, ViewHolder viewHolder, AddressEntity item, int position) {
+    protected void convert(Context context, ViewHolder viewHolder, Address item, int position) {
         if (item != null) {
             viewHolder.setText(R.id.tv_wallet_name, item.getName());
             viewHolder.setText(R.id.tv_wallet_address, AddressFormatUtil.formatAddress(item.getAddress()));

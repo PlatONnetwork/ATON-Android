@@ -25,10 +25,8 @@ import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
 import com.juzix.wallet.component.ui.presenter.VerificationMnemonicPresenter;
 import com.juzix.wallet.component.widget.CommonTitleBar;
 import com.juzix.wallet.component.widget.ShadowButton;
-import com.juzix.wallet.entity.IndividualWalletEntity;
-
+import com.juzix.wallet.entity.Wallet;
 import java.util.ArrayList;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -67,7 +65,7 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
     @BindView(R.id.btn_empty)
     Button mBtnEmpty;
 
-    public static void actionStart(Context context, String password, IndividualWalletEntity walletEntity, int type) {
+    public static void actionStart(Context context, String password, Wallet walletEntity, int type) {
         Intent intent = new Intent(context, VerificationMnemonicActivity.class);
         intent.putExtra(Constants.Extra.EXTRA_PASSWORD, password);
         intent.putExtra(Constants.Extra.EXTRA_WALLET, walletEntity);
@@ -86,7 +84,7 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
     }
 
     @Override
-    public IndividualWalletEntity getWalletFromIntent() {
+    public Wallet getWalletFromIntent() {
         return getIntent().getParcelableExtra(Constants.Extra.EXTRA_WALLET);
     }
 

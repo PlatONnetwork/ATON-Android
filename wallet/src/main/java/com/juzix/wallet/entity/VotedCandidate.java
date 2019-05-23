@@ -5,9 +5,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.juzhen.framework.util.NumberParserUtils;
-import com.juzix.wallet.utils.DateUtil;
 
-public class VotedCandidateEntity implements Parcelable, Comparable<VotedCandidateEntity> {
+public class VotedCandidate implements Parcelable, Comparable<VotedCandidate> {
     private static final long EXPIRE_BLOCKNUMBER = 1536000000;
     /**
      * 节点ID
@@ -91,10 +90,10 @@ public class VotedCandidateEntity implements Parcelable, Comparable<VotedCandida
     private String isValid;
 
 
-    public VotedCandidateEntity() {
+    public VotedCandidate() {
     }
 
-    protected VotedCandidateEntity(Parcel in) {
+    protected VotedCandidate(Parcel in) {
         nodeId = in.readString();
         name = in.readString();
         countryCode = in.readString();
@@ -116,15 +115,15 @@ public class VotedCandidateEntity implements Parcelable, Comparable<VotedCandida
         isValid = in.readString();
     }
 
-    public static final Creator<VotedCandidateEntity> CREATOR = new Creator<VotedCandidateEntity>() {
+    public static final Creator<VotedCandidate> CREATOR = new Creator<VotedCandidate>() {
         @Override
-        public VotedCandidateEntity createFromParcel(Parcel in) {
-            return new VotedCandidateEntity(in);
+        public VotedCandidate createFromParcel(Parcel in) {
+            return new VotedCandidate(in);
         }
 
         @Override
-        public VotedCandidateEntity[] newArray(int size) {
-            return new VotedCandidateEntity[size];
+        public VotedCandidate[] newArray(int size) {
+            return new VotedCandidate[size];
         }
     };
 
@@ -310,7 +309,7 @@ public class VotedCandidateEntity implements Parcelable, Comparable<VotedCandida
     }
 
     @Override
-    public int compareTo(VotedCandidateEntity o) {
+    public int compareTo(VotedCandidate o) {
         //按时间排序
 //        return Long.compare(DateUtil.parse(o.transactionTime,DateUtil.DATETIME_FORMAT_PATTERN_WITH_SECOND),DateUtil.parse(transactionTime,DateUtil.DATETIME_FORMAT_PATTERN_WITH_SECOND));
         return Long.compare(NumberParserUtils.parseLong(o.transactionTime), NumberParserUtils.parseLong(transactionTime));

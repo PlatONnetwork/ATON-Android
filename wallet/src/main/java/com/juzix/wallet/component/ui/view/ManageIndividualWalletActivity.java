@@ -20,7 +20,7 @@ import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
 import com.juzix.wallet.component.ui.presenter.ManageIndividualWalletPresenter;
 import com.juzix.wallet.component.widget.CommonTitleBar;
-import com.juzix.wallet.entity.IndividualWalletEntity;
+import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.AddressFormatUtil;
 
 import org.web3j.crypto.Credentials;
@@ -140,7 +140,7 @@ public class ManageIndividualWalletActivity extends MVPBaseActivity<ManageIndivi
     }
 
     @Override
-    public void showErrorDialog(String title, String content, int type, IndividualWalletEntity walletEntity) {
+    public void showErrorDialog(String title, String content, int type, Wallet walletEntity) {
         CommonTipsDialogFragment.createDialogWithTitleAndOneButton(ContextCompat.getDrawable(this, R.drawable.icon_dialog_tips), title, content, string(R.string.understood), new OnDialogViewClickListener() {
             @Override
             public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
@@ -155,7 +155,7 @@ public class ManageIndividualWalletActivity extends MVPBaseActivity<ManageIndivi
     }
 
     @Override
-    public void showPasswordDialog(int type, IndividualWalletEntity walletEntity) {
+    public void showPasswordDialog(int type, Wallet walletEntity) {
         InputWalletPasswordDialogFragment.newInstance(walletEntity).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
             @Override
             public void onWalletPasswordCorrect(Credentials credentials) {
@@ -175,7 +175,7 @@ public class ManageIndividualWalletActivity extends MVPBaseActivity<ManageIndivi
     }
 
     @Override
-    public IndividualWalletEntity getWalletEntityFromIntent() {
+    public Wallet getWalletEntityFromIntent() {
         return getIntent().getParcelableExtra(Constants.Extra.EXTRA_WALLET);
     }
 
@@ -187,7 +187,7 @@ public class ManageIndividualWalletActivity extends MVPBaseActivity<ManageIndivi
         }
     }
 
-    public static void actionStart(Context context, IndividualWalletEntity walletEntity) {
+    public static void actionStart(Context context, Wallet walletEntity) {
         Intent intent = new Intent(context, ManageIndividualWalletActivity.class);
         intent.putExtra(Constants.Extra.EXTRA_WALLET, walletEntity);
         context.startActivity(intent);

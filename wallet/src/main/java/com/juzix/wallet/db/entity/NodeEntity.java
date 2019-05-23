@@ -2,7 +2,7 @@ package com.juzix.wallet.db.entity;
 
 import android.text.TextUtils;
 
-import com.juzix.wallet.entity.NodeEntity;
+import com.juzix.wallet.entity.Node;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -10,7 +10,7 @@ import io.realm.annotations.PrimaryKey;
 /**
  * @author matrixelement
  */
-public class NodeInfoEntity extends RealmObject {
+public class NodeEntity extends RealmObject {
 
     @PrimaryKey
     private long id;
@@ -29,8 +29,8 @@ public class NodeInfoEntity extends RealmObject {
 
     private boolean isChecked;
 
-    public NodeEntity createNode() {
-        return new NodeEntity.Builder()
+    public Node createNode() {
+        return new Node.Builder()
                 .id(id)
                 .nodeAddress(nodeAddress)
                 .isDefaultNode(isDefaultNode)
@@ -38,17 +38,17 @@ public class NodeInfoEntity extends RealmObject {
                 .build();
     }
 
-    public NodeInfoEntity() {
+    public NodeEntity() {
     }
 
-    public NodeInfoEntity(String nodeAddress, boolean isDefaultNode, boolean isChecked) {
+    public NodeEntity(String nodeAddress, boolean isDefaultNode, boolean isChecked) {
         this.id = System.currentTimeMillis();
         this.nodeAddress = nodeAddress;
         this.isDefaultNode = isDefaultNode;
         this.isChecked = isChecked;
     }
 
-    public NodeInfoEntity(long id, String nodeAddress, boolean isDefaultNode, boolean isChecked, boolean isMainNetworkNode) {
+    public NodeEntity(long id, String nodeAddress, boolean isDefaultNode, boolean isChecked, boolean isMainNetworkNode) {
         this.id = id;
         this.nodeAddress = nodeAddress;
         this.isDefaultNode = isDefaultNode;
@@ -56,8 +56,8 @@ public class NodeInfoEntity extends RealmObject {
         this.isMainNetworkNode = isMainNetworkNode;
     }
 
-    public NodeEntity buildNodeEntity() {
-        return TextUtils.isEmpty(nodeAddress) ? NodeEntity.createNullNode() : new NodeEntity.Builder()
+    public Node buildNodeEntity() {
+        return TextUtils.isEmpty(nodeAddress) ? Node.createNullNode() : new Node.Builder()
                 .id(id)
                 .nodeAddress(nodeAddress)
                 .isDefaultNode(isDefaultNode)

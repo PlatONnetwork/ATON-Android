@@ -19,7 +19,7 @@ import com.juzix.wallet.component.widget.swipeenulistview.SwipeMenu;
 import com.juzix.wallet.component.widget.swipeenulistview.SwipeMenuCreator;
 import com.juzix.wallet.component.widget.swipeenulistview.SwipeMenuItem;
 import com.juzix.wallet.component.widget.swipeenulistview.SwipeMenuListView;
-import com.juzix.wallet.entity.AddressEntity;
+import com.juzix.wallet.entity.Address;
 import com.juzix.wallet.utils.DensityUtil;
 
 import java.util.List;
@@ -153,12 +153,12 @@ public class AddressBookActivity extends MVPBaseActivity<AddressBookPresenter> i
     }
 
     @Override
-    public void notifyAddressListChanged(List<AddressEntity> addressEntityList) {
+    public void notifyAddressListChanged(List<Address> addressEntityList) {
         addressBookListAdapter.notifyDataChanged(addressEntityList);
     }
 
     @Override
-    public void setResult(AddressEntity addressEntity) {
+    public void setResult(Address addressEntity) {
         Intent intent = new Intent(this, AddressBookActivity.class);
         intent.putExtra(Constants.Extra.EXTRA_ADDRESS, addressEntity);
         setResult(RESULT_OK, intent);

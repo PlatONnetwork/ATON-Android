@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
-import com.juzix.wallet.entity.CandidateEntity;
+import com.juzix.wallet.entity.Candidate;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.RxUtils;
 
@@ -31,7 +30,7 @@ public class VoteListAdapter extends RecyclerView.Adapter<VoteListAdapter.ViewHo
     private final static String TAG = VoteListAdapter.class.getSimpleName();
 
     private Context mContext;
-    private List<CandidateEntity> mCandidateEntityList;
+    private List<Candidate> mCandidateEntityList;
     private OnItemClickListener mOnItemClickListener;
     private OnVoteTicketClickListener mOnVoteTicketClickListener;
 
@@ -53,7 +52,7 @@ public class VoteListAdapter extends RecyclerView.Adapter<VoteListAdapter.ViewHo
     @SuppressLint("CheckResult")
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        CandidateEntity candidateEntity = mCandidateEntityList.get(position);
+        Candidate candidateEntity = mCandidateEntityList.get(position);
 
         holder.tvRewardRatio.setText(mContext.getString(R.string.reward_radio_with_colon_and_value, String.format("%s%%", NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(NumberParserUtils.parseDouble(candidateEntity.getReward()), 100D), 0))));
 
@@ -93,7 +92,7 @@ public class VoteListAdapter extends RecyclerView.Adapter<VoteListAdapter.ViewHo
             onBindViewHolder(holder, position);
         } else {
             //更新局部控件
-            CandidateEntity candidateEntity = mCandidateEntityList.get(position);
+            Candidate candidateEntity = mCandidateEntityList.get(position);
             if (candidateEntity != null) {
 
             }
@@ -108,7 +107,7 @@ public class VoteListAdapter extends RecyclerView.Adapter<VoteListAdapter.ViewHo
         return 0;
     }
 
-    public void notifyDataChanged(List<CandidateEntity> candidateEntityList) {
+    public void notifyDataChanged(List<Candidate> candidateEntityList) {
         this.mCandidateEntityList = candidateEntityList;
         notifyDataSetChanged();
     }
@@ -134,12 +133,12 @@ public class VoteListAdapter extends RecyclerView.Adapter<VoteListAdapter.ViewHo
 
     public interface OnItemClickListener {
 
-        void onItemClick(CandidateEntity candidateEntity);
+        void onItemClick(Candidate candidateEntity);
     }
 
     public interface OnVoteTicketClickListener {
 
-        void onVoteTicketClick(CandidateEntity candidateEntity);
+        void onVoteTicketClick(Candidate candidateEntity);
     }
 
 }

@@ -21,7 +21,7 @@ import com.juzix.wallet.component.ui.contract.NodeSettingsContract;
 import com.juzix.wallet.component.ui.presenter.NodeSettingsPresenter;
 import com.juzix.wallet.component.widget.NodeListDecoration;
 import com.juzix.wallet.component.widget.WrapContentLinearLayoutManager;
-import com.juzix.wallet.entity.NodeEntity;
+import com.juzix.wallet.entity.Node;
 
 import java.util.List;
 
@@ -96,12 +96,12 @@ public class NodeSettingsActivity extends MVPBaseActivity<NodeSettingsPresenter>
     }
 
     @Override
-    public void updateNodeList(List<NodeEntity> nodeEntityList) {
+    public void updateNodeList(List<Node> nodeEntityList) {
         nodeListAdapter.updateNodeList(nodeEntityList);
     }
 
     @Override
-    public void notifyDataChanged(List<NodeEntity> nodeEntityList) {
+    public void notifyDataChanged(List<Node> nodeEntityList) {
         nodeListAdapter.notifyDataChanged(nodeEntityList);
     }
 
@@ -111,12 +111,12 @@ public class NodeSettingsActivity extends MVPBaseActivity<NodeSettingsPresenter>
     }
 
     @Override
-    public List<NodeEntity> getNodeList() {
+    public List<Node> getNodeList() {
         return nodeListAdapter.getNodeList();
     }
 
     @Override
-    public void removeNodeList(List<NodeEntity> nodeEntityList) {
+    public void removeNodeList(List<Node> nodeEntityList) {
         nodeListAdapter.removeNodeList(nodeEntityList);
     }
 

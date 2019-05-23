@@ -1,12 +1,12 @@
 package com.juzix.wallet.db.entity;
 
 
-import com.juzix.wallet.entity.IndividualWalletEntity;
+import com.juzix.wallet.entity.Wallet;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class IndividualWalletInfoEntity extends RealmObject {
+public class WalletEntity extends RealmObject {
 
     /**
      * 唯一识别码，与Keystore的id一致
@@ -50,11 +50,11 @@ public class IndividualWalletInfoEntity extends RealmObject {
      */
     private String nodeAddress;
 
-    public IndividualWalletInfoEntity() {
+    public WalletEntity() {
 
     }
 
-    private IndividualWalletInfoEntity(Builder builder) {
+    private WalletEntity(Builder builder) {
         setUuid(builder.uuid);
         setKeyJson(builder.keyJson);
         setName(builder.name);
@@ -212,24 +212,24 @@ public class IndividualWalletInfoEntity extends RealmObject {
             return this;
         }
 
-        public IndividualWalletInfoEntity build() {
-            return new IndividualWalletInfoEntity(this);
+        public WalletEntity build() {
+            return new WalletEntity(this);
         }
     }
 
-    public IndividualWalletEntity buildWalletEntity() {
-        IndividualWalletEntity.Builder builder = new IndividualWalletEntity.Builder();
-        builder.uuid(uuid);
-        builder.key(keyJson);
-        builder.name(name);
-        builder.address(address);
-        builder.keystorePath(keystorePath);
-        builder.createTime(createTime);
-        builder.updateTime(updateTime);
-        builder.avatar(avatar);
-        builder.mnemonic(mnemonic);
-        builder.nodeAddress(nodeAddress);
-        return builder.build();
+    public Wallet buildWalletEntity() {
+        return new Wallet.Builder()
+                .uuid(uuid)
+                .key(keyJson)
+                .name(name)
+                .address(address)
+                .keystorePath(keystorePath)
+                .createTime(createTime)
+                .updateTime(updateTime)
+                .avatar(avatar)
+                .mnemonic(mnemonic)
+                .nodeAddress(nodeAddress)
+                .build();
     }
 
     @Override

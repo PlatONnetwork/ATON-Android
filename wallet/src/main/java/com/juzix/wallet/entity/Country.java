@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import com.alibaba.fastjson.annotation.JSONField;
 
-public class CountryEntity implements Nullable, Parcelable {
+public class Country implements Nullable, Parcelable {
 
     /**
      * 中文名称
@@ -38,10 +38,10 @@ public class CountryEntity implements Nullable, Parcelable {
     @JSONField(name = "TelephoneCode")
     private String telephoneCode;
 
-    public CountryEntity() {
+    public Country() {
     }
 
-    protected CountryEntity(Parcel in) {
+    protected Country(Parcel in) {
         enName = in.readString();
         alpha3Code = in.readString();
         zhName = in.readString();
@@ -50,20 +50,20 @@ public class CountryEntity implements Nullable, Parcelable {
         telephoneCode = in.readString();
     }
 
-    public static final Creator<CountryEntity> CREATOR = new Creator<CountryEntity>() {
+    public static final Creator<Country> CREATOR = new Creator<Country>() {
         @Override
-        public CountryEntity createFromParcel(Parcel in) {
-            return new CountryEntity(in);
+        public Country createFromParcel(Parcel in) {
+            return new Country(in);
         }
 
         @Override
-        public CountryEntity[] newArray(int size) {
-            return new CountryEntity[size];
+        public Country[] newArray(int size) {
+            return new Country[size];
         }
     };
 
-    public static NullCountryEntity getNullInstance() {
-        return new NullCountryEntity();
+    public static NullCountry getNullInstance() {
+        return new NullCountry();
     }
 
     public String getEnName() {

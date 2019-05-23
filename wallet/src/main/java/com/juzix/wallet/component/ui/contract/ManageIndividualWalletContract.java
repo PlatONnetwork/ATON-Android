@@ -2,7 +2,7 @@ package com.juzix.wallet.component.ui.contract;
 
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
-import com.juzix.wallet.entity.IndividualWalletEntity;
+import com.juzix.wallet.entity.Wallet;
 
 import org.web3j.crypto.Credentials;
 
@@ -14,19 +14,19 @@ public class ManageIndividualWalletContract {
         int TYPE_EXPORT_PRIVATE_KEY = 2;
         int TYPE_EXPORT_KEYSTORE    = 3;
 
-        IndividualWalletEntity getWalletEntityFromIntent();
+        Wallet getWalletEntityFromIntent();
 
         void showWalletName(String name);
 
         void showWalletAddress(String address);
 
-        void showErrorDialog(String title, String content, int type, IndividualWalletEntity walletEntity);
+        void showErrorDialog(String title, String content, int type, Wallet walletEntity);
 
         void showWalletAvatar(String avatar);
 
         void showModifyNameDialog(String name);
 
-        void showPasswordDialog(int type, IndividualWalletEntity mWalletEntity);
+        void showPasswordDialog(int type, Wallet walletEntity);
 
         void enableBackup(boolean enabled);
 

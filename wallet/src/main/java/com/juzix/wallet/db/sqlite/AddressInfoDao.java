@@ -1,6 +1,6 @@
 package com.juzix.wallet.db.sqlite;
 
-import com.juzix.wallet.db.entity.AddressInfoEntity;
+import com.juzix.wallet.db.entity.AddressEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,12 +10,12 @@ import io.realm.RealmResults;
 
 public class AddressInfoDao {
 
-    public static List<AddressInfoEntity> getAddressInfoList() {
-        List<AddressInfoEntity> list = new ArrayList<>();
+    public static List<AddressEntity> getAddressInfoList() {
+        List<AddressEntity> list = new ArrayList<>();
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
-            RealmResults<AddressInfoEntity> results = realm.where(AddressInfoEntity.class)
+            RealmResults<AddressEntity> results = realm.where(AddressEntity.class)
                     .findAll();
             if (results != null) {
                 list = realm.copyFromRealm(results);
@@ -38,7 +38,7 @@ public class AddressInfoDao {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
-            AddressInfoEntity addressInfoEntity = realm.where(AddressInfoEntity.class)
+            AddressEntity addressInfoEntity = realm.where(AddressEntity.class)
                     .equalTo("address", address)
                     .findFirst();
             if (addressInfoEntity != null) {
@@ -57,7 +57,7 @@ public class AddressInfoDao {
         return addressName;
     }
 
-    public static boolean insertAddressInfo(AddressInfoEntity entity) {
+    public static boolean insertAddressInfo(AddressEntity entity) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
@@ -77,20 +77,20 @@ public class AddressInfoDao {
         return false;
     }
 
-    public static boolean updateAddressInfo(AddressInfoEntity oldAddressInfo, AddressInfoEntity newAddressInfo) {
+    public static boolean updateAddressInfo(AddressEntity oldAddressInfo, AddressEntity newAddressInfo) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
             if (oldAddressInfo.getAddress().equals(newAddressInfo.getAddress())) {
                 //update
-                realm.where(AddressInfoEntity.class)
+                realm.where(AddressEntity.class)
                         .equalTo("address", oldAddressInfo.getAddress())
                         .findFirst()
                         .setName(newAddressInfo.getName());
             } else {
                 //delete
-                realm.where(AddressInfoEntity.class)
+                realm.where(AddressEntity.class)
                         .equalTo("address", oldAddressInfo.getAddress())
                         .findAll()
                         .deleteFirstFromRealm();
@@ -118,7 +118,7 @@ public class AddressInfoDao {
         try {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
-            realm.where(AddressInfoEntity.class)
+            realm.where(AddressEntity.class)
                     .equalTo("address", address)
                     .findFirst()
                     .setName(name);
@@ -140,11 +140,11 @@ public class AddressInfoDao {
         return getEntityWithAddress(address) != null;
     }
 
-    public static AddressInfoEntity getEntityWithAddress(String address) {
+    public static AddressEntity getEntityWithAddress(String address) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
-            AddressInfoEntity entity = realm.where(AddressInfoEntity.class)
+            AddressEntity entity = realm.where(AddressEntity.class)
                     .equalTo("address", address)
                     .findFirst();
             return realm.copyFromRealm(entity);
@@ -163,7 +163,7 @@ public class AddressInfoDao {
         try {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
-            realm.where(AddressInfoEntity.class)
+            realm.where(AddressEntity.class)
                     .equalTo("address", address)
                     .findAll()
                     .deleteFirstFromRealm();

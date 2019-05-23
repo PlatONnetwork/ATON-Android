@@ -18,7 +18,7 @@ import com.juzix.wallet.component.ui.contract.UnlockWithPasswordContract;
 import com.juzix.wallet.component.ui.dialog.SelectWalletDialogFragment;
 import com.juzix.wallet.component.ui.presenter.UnlockWithPasswordPresenter;
 import com.juzix.wallet.component.widget.CommonTitleBar;
-import com.juzix.wallet.entity.IndividualWalletEntity;
+import com.juzix.wallet.entity.Wallet;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -98,11 +98,10 @@ public class UnlockWithPasswordActivity extends MVPBaseActivity<UnlockWithPasswo
             case R.id.layout_change_wallet:
                 SelectWalletDialogFragment.newInstance(mPresenter.getSelectedWallet().getUuid()).setOnItemClickListener(new SelectWalletDialogFragment.OnItemClickListener() {
                     @Override
-                    public void onItemClick(IndividualWalletEntity walletEntity) {
+                    public void onItemClick(Wallet walletEntity) {
                         mPresenter.setSelectWallet(walletEntity);
                     }
                 }).show(currentActivity().getSupportFragmentManager(), SelectWalletDialogFragment.SELECT_UNLOCK_WALLET);
-//                SelectWalletDialogFragment.newInstance(mPresenter.getSelectedPostion()).show(getSupportFragmentManager(), "selectWallet");
                 break;
             case R.id.btn_unlock:
                 mPresenter.unlock(etWalletPassword.getText().toString());
@@ -114,7 +113,7 @@ public class UnlockWithPasswordActivity extends MVPBaseActivity<UnlockWithPasswo
     }
 
     @Override
-    public void updateWalletInfo(IndividualWalletEntity walletEntity) {
+    public void updateWalletInfo(Wallet walletEntity) {
         tvWalletName.setText(walletEntity.getName());
         tvWalletAddress.setText(walletEntity.getPrefixAddress());
     }

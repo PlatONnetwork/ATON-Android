@@ -17,7 +17,7 @@ import com.juzix.wallet.component.ui.contract.NodeDetailContract;
 import com.juzix.wallet.component.ui.presenter.NodeDetailPresenter;
 import com.juzix.wallet.component.widget.RoundedTextView;
 import com.juzix.wallet.component.widget.ShadowButton;
-import com.juzix.wallet.entity.CandidateEntity;
+import com.juzix.wallet.entity.Candidate;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.DateUtil;
 import com.juzix.wallet.utils.RxUtils;
@@ -108,12 +108,12 @@ public class NodeDetailActivity extends MVPBaseActivity<NodeDetailPresenter> imp
     }
 
     @Override
-    public CandidateEntity getCandidateFromIntent() {
+    public Candidate getCandidateFromIntent() {
         return getIntent().getParcelableExtra(Constants.Extra.EXTRA_CANDIDATE);
     }
 
     @Override
-    public void showNodeDetailInfo(CandidateEntity candidateEntity) {
+    public void showNodeDetailInfo(Candidate candidateEntity) {
 
         layoutContent.setVisibility(View.VISIBLE);
         sbtnVote.setVisibility(View.VISIBLE);
@@ -141,7 +141,7 @@ public class NodeDetailActivity extends MVPBaseActivity<NodeDetailPresenter> imp
         }
     }
 
-    public static void actionStart(Context context, CandidateEntity candidateEntity) {
+    public static void actionStart(Context context, Candidate candidateEntity) {
         Intent intent = new Intent(context, NodeDetailActivity.class);
         intent.putExtra(Constants.Extra.EXTRA_CANDIDATE, candidateEntity);
         context.startActivity(intent);

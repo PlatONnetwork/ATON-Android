@@ -16,18 +16,18 @@ import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.dialog.CommonTipsDialogFragment;
 import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
 import com.juzix.wallet.component.widget.CommonTitleBar;
-import com.juzix.wallet.entity.IndividualWalletEntity;
+import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.JZWalletUtil;
 
 public class BackupMnemonicPhraseActivity extends BaseActivity implements View.OnClickListener {
 
     private final static String TAG = BackupMnemonicPhraseActivity.class.getSimpleName();
 
-    public static void actionStart(Context context, String password, IndividualWalletEntity walletEntity) {
+    public static void actionStart(Context context, String password, Wallet walletEntity) {
         actionStart(context, password, walletEntity, 0);
     }
 
-    public static void actionStart(Context context, String password, IndividualWalletEntity walletEntity, int type) {
+    public static void actionStart(Context context, String password, Wallet walletEntity, int type) {
         Intent intent = new Intent(context, BackupMnemonicPhraseActivity.class);
         intent.putExtra(Constants.Extra.EXTRA_PASSWORD, password);
         intent.putExtra(Constants.Extra.EXTRA_WALLET, walletEntity);
@@ -42,7 +42,7 @@ public class BackupMnemonicPhraseActivity extends BaseActivity implements View.O
         setContentView(R.layout.activity_backup_mnemonic_phrase);
         showTipsDialog();
         initView();
-        IndividualWalletEntity walletEntity = getIntent().getParcelableExtra(Constants.Extra.EXTRA_WALLET);
+        Wallet walletEntity = getIntent().getParcelableExtra(Constants.Extra.EXTRA_WALLET);
         setMnemonic(JZWalletUtil.decryptMnenonic(walletEntity.getKey(), walletEntity.getMnemonic(), getIntent().getStringExtra(Constants.Extra.EXTRA_PASSWORD)));
     }
 

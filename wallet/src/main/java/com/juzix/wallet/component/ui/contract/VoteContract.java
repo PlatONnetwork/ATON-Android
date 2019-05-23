@@ -3,8 +3,7 @@ package com.juzix.wallet.component.ui.contract;
 import com.juzix.wallet.component.ui.SortType;
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
-import com.juzix.wallet.entity.CandidateEntity;
-import com.juzix.wallet.entity.CandidateExtraEntity;
+import com.juzix.wallet.entity.Candidate;
 
 import java.util.List;
 
@@ -17,7 +16,7 @@ public class VoteContract {
 
         void setVotedInfo(long sumVoteNum, long votedNum, String ticketPrice);
 
-        void notifyDataSetChanged(List<CandidateEntity> candidateList);
+        void notifyDataSetChanged(List<Candidate> candidateList);
 
         void finishRefresh();
     }
@@ -30,7 +29,7 @@ public class VoteContract {
 
         void search(String keyword);
 
-        void voteTicket(CandidateEntity candidateEntity);
+        void voteTicket(Candidate candidateEntity);
 
         void clearCandidateList();
     }

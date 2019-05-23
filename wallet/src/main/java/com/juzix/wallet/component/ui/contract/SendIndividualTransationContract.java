@@ -2,7 +2,7 @@ package com.juzix.wallet.component.ui.contract;
 
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
-import com.juzix.wallet.entity.IndividualWalletEntity;
+import com.juzix.wallet.entity.Wallet;
 
 /**
  * @author matrixelement
@@ -11,7 +11,7 @@ public class SendIndividualTransationContract {
 
     public interface View extends IView {
 
-        void updateWalletInfo(IndividualWalletEntity walletEntity);
+        void updateWalletInfo(Wallet walletEntity);
 
         void setToAddress(String toAddress);
 
@@ -27,7 +27,7 @@ public class SendIndividualTransationContract {
 
         String getToAddress();
 
-        IndividualWalletEntity getWalletEntityFromIntent();
+        Wallet getWalletEntityFromIntent();
 
         String getToAddressFromIntent();
 
@@ -42,7 +42,7 @@ public class SendIndividualTransationContract {
 
         void init();
 
-        void updateSendWalletInfoAndFee(IndividualWalletEntity walletEntity);
+        void updateSendWalletInfoAndFee(Wallet walletEntity);
 
         void fetchDefaultWalletInfo();
 

@@ -9,7 +9,7 @@ import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.adapter.base.ViewHolder;
-import com.juzix.wallet.entity.VotedCandidateEntity;
+import com.juzix.wallet.entity.VotedCandidate;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.RxUtils;
 
@@ -20,7 +20,7 @@ import io.reactivex.functions.Consumer;
 /**
  * @author matrixelement
  */
-public class BatchVoteTransactionAdapter extends CommonAdapter<VotedCandidateEntity> {
+public class BatchVoteTransactionAdapter extends CommonAdapter<VotedCandidate> {
 
     private OnItemVoteClickListener mListener;
 
@@ -28,12 +28,12 @@ public class BatchVoteTransactionAdapter extends CommonAdapter<VotedCandidateEnt
         this.mListener = listener;
     }
 
-    public BatchVoteTransactionAdapter(int layoutId, List<VotedCandidateEntity> datas) {
+    public BatchVoteTransactionAdapter(int layoutId, List<VotedCandidate> datas) {
         super(layoutId, datas);
     }
 
     @Override
-    protected void convert(Context context, ViewHolder viewHolder, VotedCandidateEntity item, int position) {
+    protected void convert(Context context, ViewHolder viewHolder, VotedCandidate item, int position) {
 
         if (TextUtils.isEmpty(item.getCountryCode())) {
             viewHolder.setText(R.id.tv_location, context.getString(R.string.unknownRegion));

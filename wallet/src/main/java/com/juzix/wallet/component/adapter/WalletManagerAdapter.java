@@ -15,17 +15,16 @@ import android.widget.TextView;
 
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
-import com.juzix.wallet.entity.IndividualWalletEntity;
-import com.juzix.wallet.entity.WalletEntity;
+import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.AddressFormatUtil;
 
 import java.util.ArrayList;
 
 public class WalletManagerAdapter extends RecyclerView.Adapter<WalletManagerAdapter.ViewHolder> {
     private OnBackupClickListener       mClickListener;
-    private ArrayList<WalletEntity> mWalletList;
+    private ArrayList<Wallet> mWalletList;
 
-    public WalletManagerAdapter(ArrayList<WalletEntity> walletList) {
+    public WalletManagerAdapter(ArrayList<Wallet> walletList) {
         mWalletList = walletList;
     }
 
@@ -47,7 +46,7 @@ public class WalletManagerAdapter extends RecyclerView.Adapter<WalletManagerAdap
 
     @Override
     public void onBindViewHolder(final ViewHolder viewHolder, int position) {
-        final WalletEntity item = mWalletList.get(position);
+        final Wallet item = mWalletList.get(position);
         int resId = RUtils.drawable(item.getAvatar());
         if (resId < 0){
             resId = R.drawable.avatar_15;
@@ -55,8 +54,7 @@ public class WalletManagerAdapter extends RecyclerView.Adapter<WalletManagerAdap
         viewHolder.ivWalletAvatar.setImageResource(resId);
         viewHolder.tvwalletName.setText(item.getName());
         viewHolder.tvWalletAddress.setText(AddressFormatUtil.formatAddress(item.getPrefixAddress()));
-        viewHolder.ivWalletShared.setVisibility(item instanceof IndividualWalletEntity ? View.GONE : View.VISIBLE);
-        viewHolder.tvWalletBackup.setVisibility(backup(item) ? View.VISIBLE : View.GONE);
+        viewHolder.tvWalletBackup.setVisibility(!TextUtils.isEmpty(item.getMnemonic()) ? View.VISIBLE : View.GONE);
         viewHolder.tvWalletBackup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,16 +71,6 @@ public class WalletManagerAdapter extends RecyclerView.Adapter<WalletManagerAdap
                 }
             }
         });
-    }
-
-    private boolean backup(WalletEntity walletEntity){
-        if (walletEntity instanceof IndividualWalletEntity){
-            IndividualWalletEntity entity = (IndividualWalletEntity) walletEntity;
-            if (!TextUtils.isEmpty(entity.getMnemonic())){
-                 return true;
-            }
-        }
-        return false;
     }
 
     public abstract static class OnRecyclerItemClickListener implements RecyclerView.OnItemTouchListener {
@@ -145,7 +133,6 @@ public class WalletManagerAdapter extends RecyclerView.Adapter<WalletManagerAdap
         RelativeLayout rlItem;
         FrameLayout flAvatar;
         ImageView   ivWalletAvatar;
-        ImageView   ivWalletShared;
         TextView    tvwalletName;
         TextView    tvWalletBackup;
         TextView    tvWalletAddress;
@@ -155,7 +142,6 @@ public class WalletManagerAdapter extends RecyclerView.Adapter<WalletManagerAdap
             rlItem = itemView.findViewById(R.id.rl_item);
             flAvatar = itemView.findViewById(R.id.fl_avatar);
             ivWalletAvatar = itemView.findViewById(R.id.iv_wallet_avatar);
-            ivWalletShared = itemView.findViewById(R.id.iv_wallet_shared);
             tvwalletName = (TextView) itemView.findViewById(R.id.tv_wallet_name);
             tvWalletBackup = (TextView) itemView.findViewById(R.id.tv_wallet_backup);
             tvWalletAddress = (TextView) itemView.findViewById(R.id.tv_wallet_address);

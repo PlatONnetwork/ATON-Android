@@ -1,12 +1,8 @@
 package com.juzix.wallet.component.ui.presenter;
 
-import android.util.Log;
-
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.ApiSingleObserver;
-import com.juzhen.framework.network.FlowableSchedulersTransformer;
-import com.juzhen.framework.network.SchedulersTransformer;
 import com.juzhen.framework.util.MapUtils;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
@@ -15,14 +11,13 @@ import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.MyVoteContract;
 import com.juzix.wallet.component.ui.view.SubmitVoteActivity;
-import com.juzix.wallet.engine.IndividualWalletManager;
+import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
-import com.juzix.wallet.engine.VoteManager;
-import com.juzix.wallet.entity.CandidateEntity;
-import com.juzix.wallet.entity.IndividualWalletEntity;
-import com.juzix.wallet.entity.VoteSummaryEntity;
-import com.juzix.wallet.entity.VotedCandidateEntity;
+import com.juzix.wallet.entity.Candidate;
+import com.juzix.wallet.entity.VoteSummary;
+import com.juzix.wallet.entity.VotedCandidate;
+import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.RxUtils;
 
@@ -32,16 +27,13 @@ import org.reactivestreams.Subscriber;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.SingleSource;
-import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
@@ -64,7 +56,7 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
 
     @Override
     public void loadMyVoteData() {
-        List<String> walletAddressList = IndividualWalletManager.getInstance().getAddressList();
+        List<String> walletAddressList = WalletManager.getInstance().getAddressList();
         getBatchVoteTransaction(walletAddressList.toArray(new String[walletAddressList.size()]));
     }
 
@@ -73,28 +65,28 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
 
         if (isViewAttached()) {
 
-            Flowable.just(IndividualWalletManager.getInstance().getWalletList())
-                    .filter(new Predicate<ArrayList<IndividualWalletEntity>>() {
+            Flowable.just(WalletManager.getInstance().getWalletList())
+                    .filter(new Predicate<List<Wallet>>() {
                         @Override
-                        public boolean test(ArrayList<IndividualWalletEntity> individualWalletEntities) throws Exception {
+                        public boolean test(List<Wallet> individualWalletEntities) throws Exception {
                             return !individualWalletEntities.isEmpty();
                         }
                     })
-                    .switchIfEmpty(new Flowable<ArrayList<IndividualWalletEntity>>() {
+                    .switchIfEmpty(new Flowable<ArrayList<Wallet>>() {
                         @Override
-                        protected void subscribeActual(Subscriber<? super ArrayList<IndividualWalletEntity>> s) {
+                        protected void subscribeActual(Subscriber<? super ArrayList<Wallet>> s) {
                             s.onError(new CustomThrowable(CustomThrowable.CODE_ERROR_NOT_EXIST_VALID_WALLET));
                         }
                     })
-                    .flatMap(new Function<ArrayList<IndividualWalletEntity>, Publisher<IndividualWalletEntity>>() {
+                    .flatMap(new Function<List<Wallet>, Publisher<Wallet>>() {
                         @Override
-                        public Publisher<IndividualWalletEntity> apply(ArrayList<IndividualWalletEntity> individualWalletEntities) throws Exception {
+                        public Publisher<Wallet> apply(List<Wallet> individualWalletEntities) throws Exception {
                             return Flowable.fromIterable(individualWalletEntities);
                         }
                     })
-                    .map(new Function<IndividualWalletEntity, Double>() {
+                    .map(new Function<Wallet, Double>() {
                         @Override
-                        public Double apply(IndividualWalletEntity individualWalletEntity) throws Exception {
+                        public Double apply(Wallet individualWalletEntity) throws Exception {
                             return individualWalletEntity.getBalance();
                         }
                     })
@@ -116,18 +108,18 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
                             observer.onError(new CustomThrowable(CustomThrowable.CODE_ERROR_VOTE_TICKET_INSUFFICIENT_BALANCE));
                         }
                     })
-                    .flatMap(new Function<Double, SingleSource<CandidateEntity>>() {
+                    .flatMap(new Function<Double, SingleSource<Candidate>>() {
                         @Override
-                        public SingleSource<CandidateEntity> apply(Double aDouble) throws Exception {
+                        public SingleSource<Candidate> apply(Double aDouble) throws Exception {
                             return null;
                         }
                     })
                     .compose(RxUtils.getSingleSchedulerTransformer())
                     .compose(bindToLifecycle())
                     .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
-                    .subscribe(new Consumer<CandidateEntity>() {
+                    .subscribe(new Consumer<Candidate>() {
                         @Override
-                        public void accept(CandidateEntity candidateEntity) throws Exception {
+                        public void accept(Candidate candidateEntity) throws Exception {
                             if (isViewAttached()) {
                                 SubmitVoteActivity.actionStart(currentActivity(), nodeId,nodeName);
                             }
@@ -152,9 +144,9 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
                 .build())
                 .compose(bindToLifecycle())
                 .compose(RxUtils.getSingleSchedulerTransformer())
-                .subscribe(new ApiSingleObserver<List<VotedCandidateEntity>>() {
+                .subscribe(new ApiSingleObserver<List<VotedCandidate>>() {
                     @Override
-                    public void onApiSuccess(List<VotedCandidateEntity> entityList) {
+                    public void onApiSuccess(List<VotedCandidate> entityList) {
                         if (entityList != null && entityList.size() > 0) {
                             getView().showBatchVoteSummary(buildVoteTitleList(entityList));
 //                            getView().showMyVoteListData(entityList);
@@ -182,7 +174,7 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
 
     }
 
-    private List<VoteSummaryEntity> buildVoteTitleList(List<VotedCandidateEntity> entityList) {
+    private List<VoteSummary> buildVoteTitleList(List<VotedCandidate> entityList) {
         Map<String, Object> stringObjectMap = new HashMap<>();
         double totalTicketNum = 0;//总票数
         double lockedNum = 0;//投票锁定
@@ -191,7 +183,7 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
 
         stringObjectMap.clear();
 
-        for (VotedCandidateEntity entity : entityList) {
+        for (VotedCandidate entity : entityList) {
             totalTicketNum += NumberParserUtils.parseDouble(entity.getTotalTicketNum());
             lockedNum += NumberParserUtils.parseDouble(entity.getLocked());
             voteReward += NumberParserUtils.parseDouble(entity.getEarnings());
@@ -209,30 +201,30 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
 
     }
 
-    private List<VotedCandidateEntity> BuildSortList(List<VotedCandidateEntity> list) {
+    private List<VotedCandidate> BuildSortList(List<VotedCandidate> list) {
         Collections.sort(list, Collections.reverseOrder());
         return list;
     }
 
-    private List<VoteSummaryEntity> buildDefaultVoteSummaryList() {
-        List<VoteSummaryEntity> voteSummaryEntityList = new ArrayList<>();
-        voteSummaryEntityList.add(new VoteSummaryEntity(String.format("%s%s", string(R.string.lockVote), "(Energon)"), String.valueOf("-")));
-        voteSummaryEntityList.add(new VoteSummaryEntity(String.format("%s%s", string(R.string.votingIncome), "(Energon)"), String.valueOf("-")));
-        voteSummaryEntityList.add(new VoteSummaryEntity(String.format("%s", string(R.string.validInvalidTicket)), String.format("%s/%s", "-", "-")));
+    private List<VoteSummary> buildDefaultVoteSummaryList() {
+        List<VoteSummary> voteSummaryEntityList = new ArrayList<>();
+        voteSummaryEntityList.add(new VoteSummary(String.format("%s%s", string(R.string.lockVote), "(Energon)"), String.valueOf("-")));
+        voteSummaryEntityList.add(new VoteSummary(String.format("%s%s", string(R.string.votingIncome), "(Energon)"), String.valueOf("-")));
+        voteSummaryEntityList.add(new VoteSummary(String.format("%s", string(R.string.validInvalidTicket)), String.format("%s/%s", "-", "-")));
         return voteSummaryEntityList;
     }
 
-    private List<VoteSummaryEntity> buildVoteSummaryList(Map<String, Object> map) {
-        List<VoteSummaryEntity> voteSummaryEntityList = new ArrayList<>();
+    private List<VoteSummary> buildVoteSummaryList(Map<String, Object> map) {
+        List<VoteSummary> voteSummaryEntityList = new ArrayList<>();
         if (map != null && !map.isEmpty()) {
             double locked = MapUtils.getDouble(map, TAG_LOCKED);
             double earnings = MapUtils.getDouble(map, TAG_EARNINGS);
             double invalidNum = MapUtils.getDouble(map, TAG_INVALIDNUM);
             double validNum = MapUtils.getDouble(map, TAG_VALIDNUM);
 
-            voteSummaryEntityList.add(new VoteSummaryEntity(String.format("%s%s", string(R.string.lockVote), "(Energon)"), NumberParserUtils.getPrettyNumber(locked, 0)));
-            voteSummaryEntityList.add(new VoteSummaryEntity(String.format("%s%s", string(R.string.votingIncome), "(Energon)"), NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(earnings, 1E18), 4)));
-            voteSummaryEntityList.add(new VoteSummaryEntity(String.format("%s", string(R.string.validInvalidTicket)), String.format("%s/%s", NumberParserUtils.getPrettyNumber(validNum, 0), NumberParserUtils.getPrettyNumber(invalidNum, 0))));
+            voteSummaryEntityList.add(new VoteSummary(String.format("%s%s", string(R.string.lockVote), "(Energon)"), NumberParserUtils.getPrettyNumber(locked, 0)));
+            voteSummaryEntityList.add(new VoteSummary(String.format("%s%s", string(R.string.votingIncome), "(Energon)"), NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(earnings, 1E18), 4)));
+            voteSummaryEntityList.add(new VoteSummary(String.format("%s", string(R.string.validInvalidTicket)), String.format("%s/%s", NumberParserUtils.getPrettyNumber(validNum, 0), NumberParserUtils.getPrettyNumber(invalidNum, 0))));
         }
 
         return voteSummaryEntityList;

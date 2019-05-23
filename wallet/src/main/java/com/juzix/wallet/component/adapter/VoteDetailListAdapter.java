@@ -7,25 +7,23 @@ import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.adapter.base.ViewHolder;
 import com.juzix.wallet.component.widget.AutoTextView;
-import com.juzix.wallet.entity.VoteDetailItemEntity;
-import com.juzix.wallet.entity.VotedCandidateEntity;
+import com.juzix.wallet.entity.VotedCandidate;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.DateUtil;
-import com.juzix.wallet.utils.NumericUtil;
 
 import java.util.List;
 
 /**
  * @author matrixelement
  */
-public class VoteDetailListAdapter extends CommonAdapter<VotedCandidateEntity> {
+public class VoteDetailListAdapter extends CommonAdapter<VotedCandidate> {
 
-    public VoteDetailListAdapter(int layoutId, List<VotedCandidateEntity> datas) {
+    public VoteDetailListAdapter(int layoutId, List<VotedCandidate> datas) {
         super(layoutId, datas);
     }
 
     @Override
-    protected void convert(Context context, ViewHolder viewHolder, VotedCandidateEntity item, int position) {
+    protected void convert(Context context, ViewHolder viewHolder, VotedCandidate item, int position) {
 //        viewHolder.setText(R.id.tv_create_time, item.getSequence() + "--");
         viewHolder.setText(R.id.tv_create_time, DateUtil.format(NumberParserUtils.parseLong(item.getTransactionTime()), DateUtil.DATETIME_FORMAT_PATTERN_WITH_SECOND));
 

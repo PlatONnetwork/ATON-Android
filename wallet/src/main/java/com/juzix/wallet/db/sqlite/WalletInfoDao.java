@@ -1,6 +1,6 @@
 package com.juzix.wallet.db.sqlite;
 
-import com.juzix.wallet.db.entity.IndividualWalletInfoEntity;
+import com.juzix.wallet.db.entity.WalletEntity;
 import com.juzix.wallet.engine.NodeManager;
 
 import java.util.ArrayList;
@@ -8,17 +8,24 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
-public class IndividualWalletInfoDao {
+public class WalletInfoDao {
 
-    public static List<IndividualWalletInfoEntity> getWalletInfoList() {
+    /**
+     * 获取钱包列表，根据updateTime升序
+     * updateTime是指钱更新信息的时间
+     * @return
+     */
+    public static List<WalletEntity> getWalletInfoList() {
 
-        List<IndividualWalletInfoEntity> list = new ArrayList<>();
+        List<WalletEntity> list = new ArrayList<>();
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
-            RealmResults<IndividualWalletInfoEntity> results = realm.where(IndividualWalletInfoEntity.class)
+            RealmResults<WalletEntity> results = realm.where(WalletEntity.class)
                     .equalTo("nodeAddress", NodeManager.getInstance().getCurNodeAddress())
+                    .sort("updateTime", Sort.ASCENDING)
                     .findAll();
             if (results != null) {
                 list = realm.copyFromRealm(results);
@@ -33,7 +40,7 @@ public class IndividualWalletInfoDao {
         return list;
     }
 
-    public static boolean insertWalletInfo(IndividualWalletInfoEntity entity) {
+    public static boolean insertWalletInfo(WalletEntity entity) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
@@ -58,7 +65,7 @@ public class IndividualWalletInfoDao {
         try {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
-            realm.where(IndividualWalletInfoEntity.class)
+            realm.where(WalletEntity.class)
                     .beginGroup()
                     .equalTo("uuid", uuid)
                     .and()
@@ -85,7 +92,7 @@ public class IndividualWalletInfoDao {
         try {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
-            realm.where(IndividualWalletInfoEntity.class)
+            realm.where(WalletEntity.class)
                     .beginGroup()
                     .equalTo("uuid", uuid)
                     .and()
@@ -99,7 +106,7 @@ public class IndividualWalletInfoDao {
             if (realm != null) {
                 realm.cancelTransaction();
             }
-        }finally {
+        } finally {
             if (realm != null) {
                 realm.close();
             }
@@ -112,7 +119,7 @@ public class IndividualWalletInfoDao {
         try {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
-            realm.where(IndividualWalletInfoEntity.class)
+            realm.where(WalletEntity.class)
                     .beginGroup()
                     .equalTo("uuid", uuid)
                     .and()
@@ -126,7 +133,7 @@ public class IndividualWalletInfoDao {
             if (realm != null) {
                 realm.cancelTransaction();
             }
-        }finally {
+        } finally {
             if (realm != null) {
                 realm.close();
             }
@@ -139,7 +146,7 @@ public class IndividualWalletInfoDao {
         try {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
-            realm.where(IndividualWalletInfoEntity.class)
+            realm.where(WalletEntity.class)
                     .beginGroup()
                     .equalTo("uuid", uuid)
                     .and()
@@ -153,7 +160,7 @@ public class IndividualWalletInfoDao {
             if (realm != null) {
                 realm.cancelTransaction();
             }
-        }finally {
+        } finally {
             if (realm != null) {
                 realm.close();
             }

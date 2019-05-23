@@ -1,6 +1,6 @@
 package com.juzix.wallet.db.sqlite;
 
-import com.juzix.wallet.db.entity.IndividualTransactionInfoEntity;
+import com.juzix.wallet.db.entity.TransactionEntity;
 import com.juzix.wallet.engine.NodeManager;
 
 import java.util.ArrayList;
@@ -13,9 +13,9 @@ import io.realm.Sort;
 /**
  * @author matrixelement
  */
-public class IndividualTransactionInfoDao {
+public class TransactionInfoDao {
 
-    public static boolean insertTransaction(IndividualTransactionInfoEntity transactionEntity) {
+    public static boolean insertTransaction(TransactionEntity transactionEntity) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
@@ -35,13 +35,13 @@ public class IndividualTransactionInfoDao {
         return false;
     }
 
-    public static IndividualTransactionInfoEntity getTransactionByHash(String hash) {
+    public static TransactionEntity getTransactionByHash(String hash) {
         Realm realm = null;
-        IndividualTransactionInfoEntity transactionEntity = null;
+        TransactionEntity transactionEntity = null;
         try {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
-            transactionEntity = realm.where(IndividualTransactionInfoEntity.class)
+            transactionEntity = realm.where(TransactionEntity.class)
                     .beginGroup()
                     .equalTo("hash", hash)
                     .and()
@@ -63,13 +63,13 @@ public class IndividualTransactionInfoDao {
 
     }
 
-    public static List<IndividualTransactionInfoEntity> getTransactionList() {
+    public static List<TransactionEntity> getTransactionList() {
 
-        List<IndividualTransactionInfoEntity> list = new ArrayList<>();
+        List<TransactionEntity> list = new ArrayList<>();
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
-            RealmResults<IndividualTransactionInfoEntity> results = realm.where(IndividualTransactionInfoEntity.class)
+            RealmResults<TransactionEntity> results = realm.where(TransactionEntity.class)
                     .equalTo("nodeAddress", NodeManager.getInstance().getCurNodeAddress())
                     .sort("createTime", Sort.DESCENDING)
                     .findAll();
@@ -91,12 +91,12 @@ public class IndividualTransactionInfoDao {
      * @param size
      * @return
      */
-    public static List<IndividualTransactionInfoEntity> getTransactionListByWalletAddress(String walletAddress, long createTime,long size) {
-        List<IndividualTransactionInfoEntity> list = new ArrayList<>();
+    public static List<TransactionEntity> getTransactionListByWalletAddress(String walletAddress, long createTime, long size) {
+        List<TransactionEntity> list = new ArrayList<>();
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
-            RealmResults<IndividualTransactionInfoEntity> results = realm.where(IndividualTransactionInfoEntity.class)
+            RealmResults<TransactionEntity> results = realm.where(TransactionEntity.class)
                     .beginGroup()
                         .equalTo("from", walletAddress)
                         .or()
@@ -121,13 +121,13 @@ public class IndividualTransactionInfoDao {
         return list;
     }
 
-    public static List<IndividualTransactionInfoEntity> getTransactionList(String address) {
+    public static List<TransactionEntity> getTransactionList(String address) {
 
-        List<IndividualTransactionInfoEntity> list = new ArrayList<>();
+        List<TransactionEntity> list = new ArrayList<>();
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
-            RealmResults<IndividualTransactionInfoEntity> results = realm.where(IndividualTransactionInfoEntity.class)
+            RealmResults<TransactionEntity> results = realm.where(TransactionEntity.class)
                     .beginGroup()
                     .equalTo("from", address)
                     .or()

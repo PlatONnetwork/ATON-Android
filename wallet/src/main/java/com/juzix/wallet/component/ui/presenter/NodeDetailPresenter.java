@@ -1,22 +1,15 @@
 package com.juzix.wallet.component.ui.presenter;
 
-import com.juzhen.framework.network.ApiRequestBody;
-import com.juzhen.framework.network.ApiResponse;
-import com.juzhen.framework.network.ApiSingleObserver;
 import com.juzix.wallet.R;
-import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.NodeDetailContract;
 import com.juzix.wallet.component.ui.view.SubmitVoteActivity;
-import com.juzix.wallet.engine.IndividualWalletManager;
-import com.juzix.wallet.engine.NodeManager;
-import com.juzix.wallet.engine.ServerUtils;
-import com.juzix.wallet.entity.CandidateEntity;
-import com.juzix.wallet.entity.IndividualWalletEntity;
+import com.juzix.wallet.engine.WalletManager;
+import com.juzix.wallet.entity.Candidate;
+import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.BigDecimalUtil;
-import com.juzix.wallet.utils.RxUtils;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.Flowable;
 import io.reactivex.functions.BiFunction;
@@ -28,7 +21,7 @@ import io.reactivex.functions.Function;
  */
 public class NodeDetailPresenter extends BasePresenter<NodeDetailContract.View> implements NodeDetailContract.Presenter {
 
-    private CandidateEntity mCandidateEntity;
+    private Candidate mCandidateEntity;
 
     public NodeDetailPresenter(NodeDetailContract.View view) {
         super(view);
@@ -45,7 +38,7 @@ public class NodeDetailPresenter extends BasePresenter<NodeDetailContract.View> 
     @Override
     public void voteTicket() {
         if (isViewAttached()) {
-            ArrayList<IndividualWalletEntity> walletEntityList = IndividualWalletManager.getInstance().getWalletList();
+            List<Wallet> walletEntityList = WalletManager.getInstance().getWalletList();
             if (walletEntityList.isEmpty()) {
                 showLongToast(R.string.voteTicketCreateWalletTips);
                 return;
@@ -53,10 +46,10 @@ public class NodeDetailPresenter extends BasePresenter<NodeDetailContract.View> 
 
             Flowable
                     .fromIterable(walletEntityList)
-                    .map(new Function<IndividualWalletEntity, Double>() {
+                    .map(new Function<Wallet, Double>() {
 
                         @Override
-                        public Double apply(IndividualWalletEntity individualWalletEntity) throws Exception {
+                        public Double apply(Wallet individualWalletEntity) throws Exception {
                             return individualWalletEntity.getBalance();
                         }
                     })

@@ -2,7 +2,7 @@ package com.juzix.wallet.component.ui;
 
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.App;
-import com.juzix.wallet.entity.CandidateEntity;
+import com.juzix.wallet.entity.Candidate;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.LanguageUtil;
 
@@ -17,26 +17,26 @@ public enum SortType {
 
     SORTED_BY_DEFAULT {
         @Override
-        public Comparator<CandidateEntity> getComparator() {
+        public Comparator<Candidate> getComparator() {
             return new DefaultComparator();
         }
     }, SORTED_BY_REGION {
         @Override
-        public Comparator<CandidateEntity> getComparator() {
+        public Comparator<Candidate> getComparator() {
             return new RegionComparator();
         }
     }, SORTED_BY_REWARD {
         @Override
-        public Comparator<CandidateEntity> getComparator() {
+        public Comparator<Candidate> getComparator() {
             return new RewardComparator();
         }
     };
 
-    public abstract Comparator<CandidateEntity> getComparator();
+    public abstract Comparator<Candidate> getComparator();
 
-    static class RewardComparator implements Comparator<CandidateEntity> {
+    static class RewardComparator implements Comparator<Candidate> {
         @Override
-        public int compare(CandidateEntity o1, CandidateEntity o2) {
+        public int compare(Candidate o1, Candidate o2) {
             int compare = Long.compare(NumberParserUtils.parseLong(o2.getReward()), NumberParserUtils.parseLong(o1.getReward()));
             if (compare != 0) {
                 return compare;
@@ -57,9 +57,9 @@ public enum SortType {
         }
     }
 
-    static class RegionComparator implements Comparator<CandidateEntity> {
+    static class RegionComparator implements Comparator<Candidate> {
         @Override
-        public int compare(CandidateEntity o1, CandidateEntity o2) {
+        public int compare(Candidate o1, Candidate o2) {
             if (o1.getCountryEntity().isNull()) {
                 return 0;
             }
@@ -75,9 +75,9 @@ public enum SortType {
         }
     }
 
-    static class DefaultComparator implements Comparator<CandidateEntity> {
+    static class DefaultComparator implements Comparator<Candidate> {
         @Override
-        public int compare(CandidateEntity o1, CandidateEntity o2) {
+        public int compare(Candidate o1, Candidate o2) {
 
             double o1Amount = BigDecimalUtil.add(o1.getDeposit(), BigDecimalUtil.mul(String.valueOf(o1.getTicketCount()), o1.getTicketPrice()).toPlainString());
             double o2Amount = BigDecimalUtil.add(o2.getDeposit(), BigDecimalUtil.mul(String.valueOf(o2.getTicketCount()), o2.getTicketPrice()).toPlainString());

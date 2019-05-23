@@ -2,7 +2,7 @@ package com.juzix.wallet.component.ui.contract;
 
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
-import com.juzix.wallet.entity.IndividualWalletEntity;
+import com.juzix.wallet.entity.Wallet;
 
 /**
  * @author matrixelement
@@ -17,7 +17,7 @@ public class SubmitVoteContract {
 
         void showNodeInfo(String nodeName, String nodeId);
 
-        void showSelectedWalletInfo(IndividualWalletEntity individualWalletEntity);
+        void showSelectedWalletInfo(Wallet individualWalletEntity);
 
         void showVotePayInfo(double ticketPrice, double ticketPayAmount);
 

@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.config.AppSettings;
-import com.juzix.wallet.entity.NodeEntity;
+import com.juzix.wallet.entity.Node;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.RxUtils;
 
@@ -33,7 +33,7 @@ public class NodeManager {
     //测试环境
     private final static String CHAINID_TEST_NET_C = "203";
 
-    private NodeEntity curNode;
+    private Node curNode;
     private NodeService nodeService;
 
     private NodeManager() {
@@ -48,7 +48,7 @@ public class NodeManager {
         return InstanceHolder.INSTANCE;
     }
 
-    public NodeEntity getCurNode() {
+    public Node getCurNode() {
         return curNode;
     }
 
@@ -56,7 +56,7 @@ public class NodeManager {
         return curNode == null || TextUtils.isEmpty(curNode.getNodeAddress()) ? AppSettings.getInstance().getCurrentNodeAddress() : curNode.getNodeAddress();
     }
 
-    public void setCurNode(NodeEntity curNode) {
+    public void setCurNode(Node curNode) {
         this.curNode = curNode;
     }
 
@@ -66,42 +66,42 @@ public class NodeManager {
 
         Flowable
                 .fromIterable(buildDefaultNodeList())
-                .map(new Function<NodeEntity, NodeEntity>() {
+                .map(new Function<Node, Node>() {
                     @Override
-                    public NodeEntity apply(NodeEntity nodeEntity) throws Exception {
+                    public Node apply(Node nodeEntity) throws Exception {
                         return getInsertNode(nodeEntity).blockingGet();
                     }
                 })
-                .filter(new Predicate<NodeEntity>() {
+                .filter(new Predicate<Node>() {
                     @Override
-                    public boolean test(NodeEntity nodeEntity) throws Exception {
+                    public boolean test(Node nodeEntity) throws Exception {
                         return !nodeEntity.isNull();
                     }
                 })
                 .toList()
-                .map(new Function<List<NodeEntity>, Boolean>() {
+                .map(new Function<List<Node>, Boolean>() {
                     @Override
-                    public Boolean apply(List<NodeEntity> nodeEntities) throws Exception {
+                    public Boolean apply(List<Node> nodeEntities) throws Exception {
                         return nodeService.insertNode(nodeEntities).blockingGet();
                     }
                 })
-                .map(new Function<Boolean, NodeEntity>() {
+                .map(new Function<Boolean, Node>() {
                     @Override
-                    public NodeEntity apply(Boolean aBoolean) throws Exception {
+                    public Node apply(Boolean aBoolean) throws Exception {
                         return getCheckedNode().blockingGet();
                     }
                 })
-                .filter(new Predicate<NodeEntity>() {
+                .filter(new Predicate<Node>() {
                     @Override
-                    public boolean test(NodeEntity nodeEntity) throws Exception {
+                    public boolean test(Node nodeEntity) throws Exception {
                         return !nodeEntity.isNull();
                     }
                 })
                 .toSingle()
                 .compose(RxUtils.getSingleSchedulerTransformer())
-                .subscribe(new Consumer<NodeEntity>() {
+                .subscribe(new Consumer<Node>() {
                     @Override
-                    public void accept(NodeEntity nodeEntity) throws Exception {
+                    public void accept(Node nodeEntity) throws Exception {
                         switchNode(nodeEntity);
                         EventPublisher.getInstance().sendNodeChangedEvent(nodeEntity);
                     }
@@ -113,29 +113,29 @@ public class NodeManager {
                 });
     }
 
-    public void switchNode(NodeEntity nodeEntity) {
+    public void switchNode(Node nodeEntity) {
         setCurNode(nodeEntity);
         AppSettings.getInstance().setCurrentNodeAddress(nodeEntity.getNodeAddress());
         Web3jManager.getInstance().init(nodeEntity.getNodeAddress());
     }
 
-    public Single<List<NodeEntity>> getNodeList() {
+    public Single<List<Node>> getNodeList() {
         return nodeService.getNodeList();
     }
 
-    public Single<NodeEntity> getCheckedNode() {
+    public Single<Node> getCheckedNode() {
         return nodeService.getNode(true);
     }
 
-    public Single<Boolean> insertNodeList(List<NodeEntity> nodeEntityList) {
+    public Single<Boolean> insertNodeList(List<Node> nodeEntityList) {
         return nodeService.insertNode(nodeEntityList);
     }
 
-    public Single<Boolean> deleteNode(NodeEntity nodeEntity) {
+    public Single<Boolean> deleteNode(Node nodeEntity) {
         return nodeService.deleteNode(nodeEntity.getId());
     }
 
-    public Single<Boolean> updateNode(NodeEntity nodeEntity, boolean isChecked) {
+    public Single<Boolean> updateNode(Node nodeEntity, boolean isChecked) {
         return nodeService.updateNode(nodeEntity.getId(), isChecked);
     }
 
@@ -149,14 +149,14 @@ public class NodeManager {
         }
     }
 
-    private List<NodeEntity> buildDefaultNodeList() {
+    private List<Node> buildDefaultNodeList() {
 
-        List<NodeEntity> nodeInfoEntityList = new ArrayList<>();
+        List<Node> nodeInfoEntityList = new ArrayList<>();
 
-        NodeEntity nodeEntity = null;
+        Node nodeEntity = null;
 
         for (int i = 0; i < DEFAULT_NODE_URL_LIST.length; i++) {
-            nodeEntity = new NodeEntity.Builder()
+            nodeEntity = new Node.Builder()
                     .id(UUID.randomUUID().hashCode())
                     .nodeAddress(DEFAULT_NODE_URL_LIST[i])
                     .isDefaultNode(true)
@@ -168,15 +168,15 @@ public class NodeManager {
     }
 
 
-    private Single<NodeEntity> getInsertNode(NodeEntity nodeEntity) {
-        return Single.create(new SingleOnSubscribe<NodeEntity>() {
+    private Single<Node> getInsertNode(Node nodeEntity) {
+        return Single.create(new SingleOnSubscribe<Node>() {
             @Override
-            public void subscribe(SingleEmitter<NodeEntity> emitter) throws Exception {
-                List<NodeEntity> nodeEntityList = nodeService.getNode(nodeEntity.getNodeAddress()).blockingGet();
+            public void subscribe(SingleEmitter<Node> emitter) throws Exception {
+                List<Node> nodeEntityList = nodeService.getNode(nodeEntity.getNodeAddress()).blockingGet();
                 if (nodeEntityList == null || nodeEntityList.isEmpty()) {
                     emitter.onSuccess(nodeEntity);
                 } else {
-                    emitter.onSuccess(NodeEntity.createNullNode());
+                    emitter.onSuccess(Node.createNullNode());
                 }
             }
         });

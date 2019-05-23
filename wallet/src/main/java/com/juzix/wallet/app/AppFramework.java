@@ -10,18 +10,13 @@ import com.juzhen.framework.network.NetState;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.config.JZAppConfigure;
-import com.juzix.wallet.engine.IndividualWalletManager;
+import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.NodeManager;
-import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.w3c.dom.Node;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import io.realm.DynamicRealm;
 import io.realm.DynamicRealmObject;
@@ -74,6 +69,11 @@ public class AppFramework {
         AppSettings.getInstance().init(context);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onNodeChangedEvent(Event.NodeChangedEvent event) {
+        //初始化普通钱包
+        WalletManager.getInstance().init();
+    }
 
     private void initRealm(Context context) {
         Realm.init(context);
@@ -90,12 +90,6 @@ public class AppFramework {
     private void registerNetStateChangedBC() {
         IntentFilter intentFilter = new IntentFilter(NetConnectivity.ACITION_CONNECTIVITY_CHANGE);
         mContext.registerReceiver(new NetStateBroadcastReceiver(), intentFilter);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onNodeChangedEvent(Event.NodeChangedEvent event) {
-        //初始化普通钱包
-        IndividualWalletManager.getInstance().init();
     }
 
     static class NetStateBroadcastReceiver extends BroadcastReceiver {
@@ -256,11 +250,13 @@ public class AppFramework {
                         .addField("receiveType", String.class)
                         .addField("chainId", String.class)
                         .addField("actualTxCost", String.class);
+                //修改数据库名称
+                schema.rename("IndividualWalletInfoEntity","WalletEntity");
+                schema.rename("AddressInfoEntity","AddressEntity");
+                schema.rename("NodeInfoEntity","NodeEntity");
                 oldVersion++;
             }
         }
     }
-
-
 }
 

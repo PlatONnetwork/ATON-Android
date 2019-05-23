@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class AddressInfoEntity extends RealmObject {
+public class AddressEntity extends RealmObject {
 
     /**
      * 钱包地址
@@ -23,18 +23,18 @@ public class AddressInfoEntity extends RealmObject {
      */
     private String avatar;
 
-    public AddressInfoEntity() {
+    public AddressEntity() {
 
     }
 
-    public AddressInfoEntity(String uuid, String address, String name, String avatar) {
+    public AddressEntity(String uuid, String address, String name, String avatar) {
         setUuid(uuid);
         setAddress(address);
         setName(name);
         setAvatar(avatar);
     }
 
-    private AddressInfoEntity(Builder builder) {
+    private AddressEntity(Builder builder) {
         setUuid(builder.uuid);
         setAddress(builder.address);
         setName(builder.name);
@@ -99,7 +99,7 @@ public class AddressInfoEntity extends RealmObject {
 
     @Override
     public String toString() {
-        return "AddressInfoEntity{" +
+        return "AddressEntity{" +
                 "uuid='" + uuid + '\'' +
                 ", address='" + address + '\'' +
                 ", name='" + name + '\'' +
@@ -136,8 +136,8 @@ public class AddressInfoEntity extends RealmObject {
             return this;
         }
 
-        public AddressInfoEntity build() {
-            return new AddressInfoEntity(this);
+        public AddressEntity build() {
+            return new AddressEntity(this);
         }
     }
 }

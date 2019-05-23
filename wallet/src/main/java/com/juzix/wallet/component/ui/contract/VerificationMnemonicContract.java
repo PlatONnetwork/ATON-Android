@@ -2,7 +2,7 @@ package com.juzix.wallet.component.ui.contract;
 
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
-import com.juzix.wallet.entity.IndividualWalletEntity;
+import com.juzix.wallet.entity.Wallet;
 
 import java.util.ArrayList;
 
@@ -69,7 +69,7 @@ public class VerificationMnemonicContract {
 
         String getPasswordFromIntent();
 
-        IndividualWalletEntity getWalletFromIntent();
+        Wallet getWalletFromIntent();
 
         void setCompletedBtnEnable(boolean enable);
 

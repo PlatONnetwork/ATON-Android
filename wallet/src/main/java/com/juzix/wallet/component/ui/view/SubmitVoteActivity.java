@@ -20,7 +20,7 @@ import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.SubmitVoteContract;
 import com.juzix.wallet.component.ui.presenter.SubmitVotePresenter;
 import com.juzix.wallet.component.widget.ShadowButton;
-import com.juzix.wallet.entity.IndividualWalletEntity;
+import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.RxUtils;
 
@@ -182,7 +182,7 @@ public class SubmitVoteActivity extends MVPBaseActivity<SubmitVotePresenter> imp
     }
 
     @Override
-    public void showSelectedWalletInfo(IndividualWalletEntity individualWalletEntity) {
+    public void showSelectedWalletInfo(Wallet individualWalletEntity) {
         tvWalletName.setText(individualWalletEntity.getName());
         tvWalletAddress.setText(AddressFormatUtil.formatAddress(individualWalletEntity.getPrefixAddress()));
     }

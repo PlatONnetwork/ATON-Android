@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-public class AddressEntity implements Parcelable {
+public class Address implements Parcelable {
 
     private String uuid;
     /**
@@ -21,17 +21,17 @@ public class AddressEntity implements Parcelable {
      */
     private String avatar;
 
-    public AddressEntity() {
+    public Address() {
     }
 
-    public AddressEntity(String uuid, String name, String address, String avatar) {
+    public Address(String uuid, String name, String address, String avatar) {
         this.uuid = uuid;
         this.name = name;
         this.address = address;
         this.avatar = avatar;
     }
 
-    protected AddressEntity(Parcel in) {
+    protected Address(Parcel in) {
         uuid = in.readString();
         name = in.readString();
         address = in.readString();
@@ -51,15 +51,15 @@ public class AddressEntity implements Parcelable {
         dest.writeString(avatar);
     }
 
-    public static final Creator<AddressEntity> CREATOR = new Creator<AddressEntity>() {
+    public static final Creator<Address> CREATOR = new Creator<Address>() {
         @Override
-        public AddressEntity createFromParcel(Parcel in) {
-            return new AddressEntity(in);
+        public Address createFromParcel(Parcel in) {
+            return new Address(in);
         }
 
         @Override
-        public AddressEntity[] newArray(int size) {
-            return new AddressEntity[size];
+        public Address[] newArray(int size) {
+            return new Address[size];
         }
     };
 
@@ -75,8 +75,8 @@ public class AddressEntity implements Parcelable {
             return true;
         }
 
-        if (obj instanceof AddressEntity) {
-            AddressEntity entity = (AddressEntity) obj;
+        if (obj instanceof Address) {
+            Address entity = (Address) obj;
             return !TextUtils.isEmpty(address) && address.equals(entity.getAddress());
         }
 

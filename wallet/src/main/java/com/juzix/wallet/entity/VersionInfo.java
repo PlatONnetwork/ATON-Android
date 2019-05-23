@@ -7,34 +7,34 @@ import android.text.TextUtils;
 /**
  * @author matrixelement
  */
-public class VersionEntity implements Parcelable {
+public class VersionInfo implements Parcelable {
 
     private String version;
     private String downloadUrl;
 
-    public VersionEntity() {
+    public VersionInfo() {
         super();
     }
 
-    private VersionEntity(Builder builder) {
+    private VersionInfo(Builder builder) {
         setVersion(builder.version);
         setDownloadUrl(builder.downloadUrl);
     }
 
-    protected VersionEntity(Parcel in) {
+    protected VersionInfo(Parcel in) {
         version = in.readString();
         downloadUrl = in.readString();
     }
 
-    public static final Creator<VersionEntity> CREATOR = new Creator<VersionEntity>() {
+    public static final Creator<VersionInfo> CREATOR = new Creator<VersionInfo>() {
         @Override
-        public VersionEntity createFromParcel(Parcel in) {
-            return new VersionEntity(in);
+        public VersionInfo createFromParcel(Parcel in) {
+            return new VersionInfo(in);
         }
 
         @Override
-        public VersionEntity[] newArray(int size) {
-            return new VersionEntity[size];
+        public VersionInfo[] newArray(int size) {
+            return new VersionInfo[size];
         }
     };
 
@@ -91,8 +91,8 @@ public class VersionEntity implements Parcelable {
             return this;
         }
 
-        public VersionEntity build() {
-            return new VersionEntity(this);
+        public VersionInfo build() {
+            return new VersionInfo(this);
         }
     }
 }

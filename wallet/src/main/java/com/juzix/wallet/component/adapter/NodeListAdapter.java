@@ -21,7 +21,7 @@ import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.widget.CustomEditText;
 import com.juzix.wallet.component.widget.TextChangedListener;
-import com.juzix.wallet.entity.NodeEntity;
+import com.juzix.wallet.entity.Node;
 import com.juzix.wallet.utils.CommonUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.ToastUtil;
@@ -48,7 +48,7 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
     private BaseActivity activity;
 
     private Map<Long, String> map = new HashMap<>();
-    private List<NodeEntity> mNodeList;
+    private List<Node> mNodeList;
     private boolean mIsEdit;
     private OnItemRemovedListener mRemovedListener;
     private OnItemCheckedListener mCheckedListener;
@@ -61,16 +61,16 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
         this.mCheckedListener = mListener;
     }
 
-    public NodeListAdapter(BaseActivity activity, List<NodeEntity> nodeList) {
+    public NodeListAdapter(BaseActivity activity, List<Node> nodeList) {
         this.activity = activity;
         this.mNodeList = nodeList;
     }
 
-    public List<NodeEntity> getNodeList() {
+    public List<Node> getNodeList() {
         return mNodeList;
     }
 
-    public void notifyDataChanged(List<NodeEntity> nodeEntityList) {
+    public void notifyDataChanged(List<Node> nodeEntityList) {
         this.mNodeList = nodeEntityList;
         notifyDataSetChanged();
     }
@@ -89,18 +89,18 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
             mNodeList = new ArrayList<>();
         }
 
-        mNodeList.add(mNodeList.size(), NodeEntity.createNullNode());
+        mNodeList.add(mNodeList.size(), Node.createNullNode());
 
         notifyItemInserted(mNodeList.size() - 1);
     }
 
-    public void removeNodeList(List<NodeEntity> nodeEntityList) {
+    public void removeNodeList(List<Node> nodeEntityList) {
 
         if (mNodeList == null || mNodeList.isEmpty()) {
             return;
         }
 
-        for (NodeEntity nodeEntity : nodeEntityList) {
+        for (Node nodeEntity : nodeEntityList) {
             notifyItemRemoved(mNodeList.indexOf(nodeEntity));
             map.remove(nodeEntity.getId());
         }
@@ -114,7 +114,7 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
             return;
         }
 
-        NodeEntity tempNodeEntity = new NodeEntity.Builder()
+        Node tempNodeEntity = new Node.Builder()
                 .id(id)
                 .build();
 
@@ -131,13 +131,13 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
         }
     }
 
-    public void updateNodeList(List<NodeEntity> nodeEntityList) {
+    public void updateNodeList(List<Node> nodeEntityList) {
 
         if (mNodeList == null || mNodeList.isEmpty()) {
             return;
         }
 
-        for (NodeEntity entity : nodeEntityList) {
+        for (Node entity : nodeEntityList) {
             int position = mNodeList.indexOf(entity);
             if (position != -1) {
                 mNodeList.set(position, entity);
@@ -154,7 +154,7 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
         }
 
         for (int i = 0; i < mNodeList.size(); i++) {
-            NodeEntity node = mNodeList.get(i);
+            Node node = mNodeList.get(i);
             if (position == i) {
                 if (!node.isChecked()) {
                     node.setChecked(true);
@@ -187,7 +187,7 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
             holder.etNode.removeTextChangedListener((TextWatcher) holder.etNode.getTag());
         }
 
-        NodeEntity nodeEntity = mNodeList.get(position);
+        Node nodeEntity = mNodeList.get(position);
         holder.etNode.setEnabled(mIsEdit && !nodeEntity.isDefaultNode());
         if (holder.etNode.isEnabled() && position == mNodeList.size() - 1) {
             showSoftInput(holder.etNode, true);
@@ -336,10 +336,10 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
     }
 
     public interface OnItemRemovedListener {
-        void onItemRemoved(NodeEntity nodeEntity);
+        void onItemRemoved(Node nodeEntity);
     }
 
     public interface OnItemCheckedListener {
-        void onItemChecked(NodeEntity nodeEntity, boolean isChecked);
+        void onItemChecked(Node nodeEntity, boolean isChecked);
     }
 }

@@ -2,54 +2,41 @@ package com.juzix.wallet.component.ui.presenter;
 
 import android.annotation.SuppressLint;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.juzhen.framework.network.ApiErrorCode;
 import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.ApiSingleObserver;
-import com.juzhen.framework.network.SchedulersTransformer;
-import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.SortType;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.VoteContract;
 import com.juzix.wallet.component.ui.view.SubmitVoteActivity;
-import com.juzix.wallet.engine.IndividualWalletManager;
+import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
-import com.juzix.wallet.engine.VoteManager;
-import com.juzix.wallet.entity.CandidateEntity;
-import com.juzix.wallet.entity.CandidateExtraEntity;
-import com.juzix.wallet.entity.CandidateWrapEntity;
-import com.juzix.wallet.entity.CountryEntity;
-import com.juzix.wallet.entity.IndividualWalletEntity;
+import com.juzix.wallet.entity.Candidate;
+import com.juzix.wallet.entity.CandidateWrap;
+import com.juzix.wallet.entity.Country;
+import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.CountryUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.trello.rxlifecycle2.android.FragmentEvent;
 
-import org.reactivestreams.Publisher;
-
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.IllegalFormatCodePointException;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.SingleSource;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
-import io.reactivex.schedulers.Schedulers;
 import retrofit2.Response;
 
 /**
@@ -57,7 +44,7 @@ import retrofit2.Response;
  */
 public class VotePresenter extends BasePresenter<VoteContract.View> implements VoteContract.Presenter {
 
-    private List<CandidateEntity> mCandidateEntiyList = new ArrayList<>();
+    private List<Candidate> mCandidateEntiyList = new ArrayList<>();
     private String mKeyword;
     private SortType mSortType = SortType.SORTED_BY_DEFAULT;
 
@@ -71,27 +58,27 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
         ServerUtils
                 .getCommonApi()
                 .getCandidateList(NodeManager.getInstance().getChainId())
-                .flatMap(new Function<Response<ApiResponse<CandidateWrapEntity>>, SingleSource<Response<ApiResponse<CandidateWrapEntity>>>>() {
+                .flatMap(new Function<Response<ApiResponse<CandidateWrap>>, SingleSource<Response<ApiResponse<CandidateWrap>>>>() {
                     @Override
-                    public SingleSource<Response<ApiResponse<CandidateWrapEntity>>> apply(Response<ApiResponse<CandidateWrapEntity>> apiResponseResponse) throws Exception {
+                    public SingleSource<Response<ApiResponse<CandidateWrap>>> apply(Response<ApiResponse<CandidateWrap>> apiResponseResponse) throws Exception {
                         if (apiResponseResponse == null || !apiResponseResponse.isSuccessful()) {
                             return Single.just(Response.success(new ApiResponse(ApiErrorCode.NETWORK_ERROR)));
                         } else {
-                            CandidateWrapEntity candidateWrapEntity = apiResponseResponse.body().getData();
-                            List<CountryEntity> countryEntityList = CountryUtil.getCountryList(getContext());
+                            CandidateWrap candidateWrapEntity = apiResponseResponse.body().getData();
+                            List<Country> countryEntityList = CountryUtil.getCountryList(getContext());
                             return Flowable.fromIterable(candidateWrapEntity.getCandidateEntityList())
-                                    .map(new Function<CandidateEntity, CandidateEntity>() {
+                                    .map(new Function<Candidate, Candidate>() {
                                         @Override
-                                        public CandidateEntity apply(CandidateEntity candidateEntity) throws Exception {
+                                        public Candidate apply(Candidate candidateEntity) throws Exception {
                                             candidateEntity.setCountryEntity(getCountryEntityByCountryCode(countryEntityList, candidateEntity.getCountryCode()));
                                             candidateEntity.setTicketPrice(candidateWrapEntity.getTicketPrice());
                                             return candidateEntity;
                                         }
                                     })
                                     .toList()
-                                    .map(new Function<List<CandidateEntity>, Response<ApiResponse<CandidateWrapEntity>>>() {
+                                    .map(new Function<List<Candidate>, Response<ApiResponse<CandidateWrap>>>() {
                                         @Override
-                                        public Response<ApiResponse<CandidateWrapEntity>> apply(List<CandidateEntity> candidateEntityList) throws Exception {
+                                        public Response<ApiResponse<CandidateWrap>> apply(List<Candidate> candidateEntityList) throws Exception {
                                             candidateWrapEntity.setCandidateEntityList(candidateEntityList);
                                             return Response.success(new ApiResponse(ApiErrorCode.SUCCESS, candidateWrapEntity));
                                         }
@@ -120,9 +107,9 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
                         }
                     }
                 })
-                .subscribe(new ApiSingleObserver<CandidateWrapEntity>() {
+                .subscribe(new ApiSingleObserver<CandidateWrap>() {
                     @Override
-                    public void onApiSuccess(CandidateWrapEntity candidateWrapEntity) {
+                    public void onApiSuccess(CandidateWrap candidateWrapEntity) {
                         if (isViewAttached()) {
                             mCandidateEntiyList = candidateWrapEntity.getCandidateEntityList();
                             getView().setVotedInfo(candidateWrapEntity.getTotalCount(), candidateWrapEntity.getVoteCount(), candidateWrapEntity.getTicketPrice());
@@ -155,11 +142,11 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
 
     @SuppressLint("CheckResult")
     @Override
-    public void voteTicket(CandidateEntity candidateEntity) {
+    public void voteTicket(Candidate candidateEntity) {
 
         if (isViewAttached()) {
 
-            ArrayList<IndividualWalletEntity> walletEntityList = IndividualWalletManager.getInstance().getWalletList();
+            List<Wallet> walletEntityList = WalletManager.getInstance().getWalletList();
             if (walletEntityList.isEmpty()) {
                 showLongToast(R.string.voteTicketCreateWalletTips);
                 return;
@@ -167,10 +154,9 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
 
             Flowable
                     .fromIterable(walletEntityList)
-                    .map(new Function<IndividualWalletEntity, Double>() {
-
+                    .map(new Function<Wallet, Double>() {
                         @Override
-                        public Double apply(IndividualWalletEntity individualWalletEntity) throws Exception {
+                        public Double apply(Wallet individualWalletEntity) throws Exception {
                             return individualWalletEntity.getBalance();
                         }
                     })
@@ -203,7 +189,7 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
         if (mCandidateEntiyList == null || mCandidateEntiyList.isEmpty()) {
             return;
         }
-        List<CandidateEntity> resultList = getSearchResult(keyWord, mCandidateEntiyList);
+        List<Candidate> resultList = getSearchResult(keyWord, mCandidateEntiyList);
         //如果不是默认排序
         Collections.sort(resultList, sortType.getComparator());
 
@@ -215,12 +201,12 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
         }
     }
 
-    private List<CandidateEntity> getSearchResult(String keyWord, List<CandidateEntity> candidateEntityList) {
+    private List<Candidate> getSearchResult(String keyWord, List<Candidate> candidateEntityList) {
         if (TextUtils.isEmpty(keyWord)) {
             return candidateEntityList;
         } else {
-            List<CandidateEntity> result = new ArrayList<>();
-            for (CandidateEntity candidateEntity : candidateEntityList) {
+            List<Candidate> result = new ArrayList<>();
+            for (Candidate candidateEntity : candidateEntityList) {
                 String nodeName = candidateEntity.getName();
                 if ((!TextUtils.isEmpty(nodeName)) && nodeName.toLowerCase().contains(keyWord.toLowerCase())) {
                     result.add(candidateEntity);
@@ -230,26 +216,26 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
         }
     }
 
-    private CountryEntity getCountryEntityByCountryCode(List<CountryEntity> countryEntityList, String countryCode) {
+    private Country getCountryEntityByCountryCode(List<Country> countryEntityList, String countryCode) {
         if (countryEntityList == null || TextUtils.isEmpty(countryCode)) {
-            return CountryEntity.getNullInstance();
+            return Country.getNullInstance();
         }
         return Flowable
                 .fromIterable(countryEntityList)
-                .filter(new Predicate<CountryEntity>() {
+                .filter(new Predicate<Country>() {
                     @Override
-                    public boolean test(CountryEntity countryEntity) throws Exception {
+                    public boolean test(Country countryEntity) throws Exception {
                         return countryCode.equals(countryEntity.getCountryCode());
                     }
                 })
                 .firstElement()
-                .switchIfEmpty(new SingleSource<CountryEntity>() {
+                .switchIfEmpty(new SingleSource<Country>() {
                     @Override
-                    public void subscribe(SingleObserver<? super CountryEntity> observer) {
+                    public void subscribe(SingleObserver<? super Country> observer) {
                         observer.onError(new Throwable());
                     }
                 })
-                .onErrorReturnItem(CountryEntity.getNullInstance())
+                .onErrorReturnItem(Country.getNullInstance())
                 .blockingGet();
     }
 

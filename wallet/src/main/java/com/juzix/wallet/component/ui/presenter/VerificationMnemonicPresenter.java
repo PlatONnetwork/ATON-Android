@@ -3,8 +3,8 @@ package com.juzix.wallet.component.ui.presenter;
 
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.VerificationMnemonicContract;
-import com.juzix.wallet.engine.IndividualWalletManager;
-import com.juzix.wallet.entity.IndividualWalletEntity;
+import com.juzix.wallet.engine.WalletManager;
+import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.JZWalletUtil;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ public class VerificationMnemonicPresenter extends BasePresenter<VerificationMne
     private ArrayList<VerificationMnemonicContract.DataEntity> mAllList     = new ArrayList<>();
     private VerificationMnemonicContract.DataEntity[] mTopList;
     private String mPassword;
-    private IndividualWalletEntity mWalletEntity;
+    private Wallet mWalletEntity;
     private String mMnemonic;
 
     public VerificationMnemonicPresenter(VerificationMnemonicContract.View view) {
@@ -123,7 +123,7 @@ public class VerificationMnemonicPresenter extends BasePresenter<VerificationMne
             if (mMnemonic.equals(builder.toString())) {
                 //备份成功
                 view.showDisclaimerDialog();
-                IndividualWalletManager.getInstance().emptyMnemonic(mWalletEntity.getMnemonic());
+                WalletManager.getInstance().emptyMnemonic(mWalletEntity.getMnemonic());
             } else {
                 //备份失败
                 view.showBackupFailedDialog();

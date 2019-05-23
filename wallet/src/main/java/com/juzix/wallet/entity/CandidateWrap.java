@@ -4,7 +4,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 
 import java.util.List;
 
-public class CandidateWrapEntity {
+public class CandidateWrap {
 
     /**
      * 已投票数
@@ -20,12 +20,12 @@ public class CandidateWrapEntity {
     private String ticketPrice;
 
     @JSONField(name = "list")
-    private List<CandidateEntity> candidateEntityList;
+    private List<Candidate> candidateEntityList;
 
     /**
      * fastJson自动解析需要提供默认构造函数
      */
-    public CandidateWrapEntity() {
+    public CandidateWrap() {
     }
 
     public long getVoteCount() {
@@ -52,17 +52,17 @@ public class CandidateWrapEntity {
         this.ticketPrice = ticketPrice;
     }
 
-    public List<CandidateEntity> getCandidateEntityList() {
+    public List<Candidate> getCandidateEntityList() {
         return candidateEntityList;
     }
 
-    public void setCandidateEntityList(List<CandidateEntity> candidateEntityList) {
+    public void setCandidateEntityList(List<Candidate> candidateEntityList) {
         this.candidateEntityList = candidateEntityList;
     }
 
     @Override
     public String toString() {
-        return "CandidateWrapEntity{" +
+        return "CandidateWrap{" +
                 "voteCount=" + voteCount +
                 ", totalCount=" + totalCount +
                 ", ticketPrice='" + ticketPrice + '\'' +

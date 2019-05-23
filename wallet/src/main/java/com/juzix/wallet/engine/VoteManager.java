@@ -9,8 +9,8 @@ import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.db.entity.SingleVoteInfoEntity;
 import com.juzix.wallet.db.entity.TicketInfoEntity;
 import com.juzix.wallet.db.sqlite.SingleVoteInfoDao;
-import com.juzix.wallet.entity.IndividualWalletEntity;
 import com.juzix.wallet.entity.SingleVoteEntity;
+import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.AppUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
@@ -164,7 +164,7 @@ public class VoteManager {
                 .onErrorReturnItem(new HashMap<>());
     }
 
-    public Single<SingleVoteInfoEntity> submitVote(Credentials credentials, IndividualWalletEntity walletEntity, String nodeId, String nodeName, String ticketNum, String ticketPrice) {
+    public Single<SingleVoteInfoEntity> submitVote(Credentials credentials, Wallet walletEntity, String nodeId, String nodeName, String ticketNum, String ticketPrice) {
 
         String walletName = walletEntity.getName();
         String walletAddress = walletEntity.getPrefixAddress();

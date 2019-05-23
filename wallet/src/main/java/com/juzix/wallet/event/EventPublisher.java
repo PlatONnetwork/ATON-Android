@@ -5,9 +5,9 @@ import android.util.Log;
 
 import com.juzhen.framework.network.NetState;
 import com.juzix.wallet.entity.IndividualTransactionEntity;
-import com.juzix.wallet.entity.NodeEntity;
-import com.juzix.wallet.entity.VoteTransactionEntity;
-import com.juzix.wallet.entity.WalletEntity;
+import com.juzix.wallet.entity.Node;
+import com.juzix.wallet.entity.VoteTransaction;
+import com.juzix.wallet.entity.Wallet;
 
 public class EventPublisher {
 
@@ -50,7 +50,7 @@ public class EventPublisher {
         BusProvider.post(new Event.UpdateIndividualWalletTransactionEvent(individualTransactionEntity));
     }
 
-    public void sendUpdateSelectedWalletEvent(WalletEntity entity) {
+    public void sendUpdateSelectedWalletEvent(Wallet entity) {
         BusProvider.post(new Event.UpdateSelectedWalletEvent(entity));
     }
 
@@ -71,11 +71,11 @@ public class EventPublisher {
         BusProvider.post(new Event.UpdateAssetsTabEvent(tabIndex));
     }
 
-    public void sendUpdateVoteTransactionListEvent(VoteTransactionEntity voteTransactionEntity) {
+    public void sendUpdateVoteTransactionListEvent(VoteTransaction voteTransactionEntity) {
         BusProvider.post(new Event.UpdateVoteTransactionListEvent(voteTransactionEntity));
     }
 
-    public void sendNodeChangedEvent(NodeEntity nodeEntity) {
+    public void sendNodeChangedEvent(Node nodeEntity) {
         BusProvider.post(new Event.NodeChangedEvent(nodeEntity));
     }
 }

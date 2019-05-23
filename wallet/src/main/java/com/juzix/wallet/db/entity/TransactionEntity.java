@@ -6,7 +6,7 @@ import io.realm.annotations.PrimaryKey;
 /**
  * @author matrixelement
  */
-public class IndividualTransactionInfoEntity extends RealmObject implements Cloneable {
+public class TransactionEntity extends RealmObject implements Cloneable {
 
     /**
      * 交易hash
@@ -76,10 +76,10 @@ public class IndividualTransactionInfoEntity extends RealmObject implements Clon
      */
     private String actualTxCost;
 
-    public IndividualTransactionInfoEntity() {
+    public TransactionEntity() {
     }
 
-    public IndividualTransactionInfoEntity(Builder builder) {
+    public TransactionEntity(Builder builder) {
         this.hash = builder.hash;
         this.createTime = builder.createTime;
         this.walletName = builder.walletName;
@@ -277,8 +277,8 @@ public class IndividualTransactionInfoEntity extends RealmObject implements Clon
             return this;
         }
 
-        public IndividualTransactionInfoEntity build() {
-            return new IndividualTransactionInfoEntity(this);
+        public TransactionEntity build() {
+            return new TransactionEntity(this);
         }
     }
 }

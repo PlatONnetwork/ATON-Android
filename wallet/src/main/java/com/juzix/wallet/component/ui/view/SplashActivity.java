@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.config.AppSettings;
-import com.juzix.wallet.engine.IndividualWalletManager;
+import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.utils.CommonUtil;
 
 public class SplashActivity extends BaseActivity {
@@ -42,7 +42,7 @@ public class SplashActivity extends BaseActivity {
                     return;
                 }
                 if (AppSettings.getInstance().getFaceTouchIdFlag() &&
-                        !IndividualWalletManager.getInstance().getWalletList().isEmpty()) {
+                        !WalletManager.getInstance().getWalletList().isEmpty()) {
                     UnlockFigerprintActivity.actionStartMainActivity(SplashActivity.this);
                     SplashActivity.this.finish();
                     return;

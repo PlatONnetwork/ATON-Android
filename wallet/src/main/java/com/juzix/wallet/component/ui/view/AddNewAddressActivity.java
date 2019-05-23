@@ -20,7 +20,7 @@ import com.juzix.wallet.component.ui.contract.AddNewAddressContract;
 import com.juzix.wallet.component.ui.presenter.AddNewAddressPresenter;
 import com.juzix.wallet.component.widget.CommonTitleBar;
 import com.juzix.wallet.component.widget.ShadowButton;
-import com.juzix.wallet.entity.AddressEntity;
+import com.juzix.wallet.entity.Address;
 import com.juzix.wallet.utils.RxUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
@@ -30,7 +30,6 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.reactivex.Observable;
 import io.reactivex.functions.BiFunction;
-import io.reactivex.functions.Consumer;
 
 /**
  * @author matrixelement
@@ -137,7 +136,7 @@ public class AddNewAddressActivity extends MVPBaseActivity<AddNewAddressPresente
     }
 
     @Override
-    public AddressEntity getAddressFromIntent() {
+    public Address getAddressFromIntent() {
         return getIntent().getParcelableExtra(Constants.Extra.EXTRA_ADDRESS);
     }
 
@@ -174,7 +173,7 @@ public class AddNewAddressActivity extends MVPBaseActivity<AddNewAddressPresente
     }
 
     @Override
-    public void setAddressInfo(AddressEntity addressInfo) {
+    public void setAddressInfo(Address addressInfo) {
         commonTitleBar.setTitle(editAddress);
         etAddressName.setText(addressInfo.getName());
         etAddress.setText(addressInfo.getAddress());
@@ -190,7 +189,7 @@ public class AddNewAddressActivity extends MVPBaseActivity<AddNewAddressPresente
         etAddress.setText(address);
     }
 
-    public static void actionStartWithExtraForResult(Context context, AddressEntity addressEntity) {
+    public static void actionStartWithExtraForResult(Context context, Address addressEntity) {
         Intent intent = new Intent(context, AddNewAddressActivity.class);
         intent.putExtra(Constants.Extra.EXTRA_ADDRESS, addressEntity);
         ((Activity) context).startActivityForResult(intent, addressEntity == null ? Constants.RequestCode.REQUEST_CODE_ADD_ADDRESS : Constants.RequestCode.REQUEST_CODE_EDIT_ADDRESS);
@@ -203,7 +202,7 @@ public class AddNewAddressActivity extends MVPBaseActivity<AddNewAddressPresente
     }
 
     @Override
-    public void setResult(AddressEntity addressEntity) {
+    public void setResult(Address addressEntity) {
         Intent intent = new Intent(this, AddressBookActivity.class);
         intent.putExtra(Constants.Extra.EXTRA_ADDRESS, addressEntity);
         setResult(RESULT_OK, intent);

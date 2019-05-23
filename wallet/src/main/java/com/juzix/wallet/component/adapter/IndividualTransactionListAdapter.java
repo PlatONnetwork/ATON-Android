@@ -1,33 +1,27 @@
 package com.juzix.wallet.component.adapter;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
 
-import com.juzhen.framework.util.NumberParserUtils;
-import com.juzix.wallet.R;
 import com.juzix.wallet.component.adapter.base.ViewHolder;
-import com.juzix.wallet.entity.IndividualTransactionEntity;
-import com.juzix.wallet.entity.TransactionEntity;
-import com.juzix.wallet.entity.VoteTransactionEntity;
-import com.juzix.wallet.utils.DateUtil;
+import com.juzix.wallet.entity.Transaction;
 
 import java.util.List;
 
 /**
  * @author matrixelement
  */
-public class IndividualTransactionListAdapter extends CommonAdapter<TransactionEntity> {
+public class IndividualTransactionListAdapter extends CommonAdapter<Transaction> {
 
     private final static String TAG = IndividualTransactionListAdapter.class.getSimpleName();
 
     private String walletAddress;
 
-    public IndividualTransactionListAdapter(int layoutId, List<TransactionEntity> datas) {
+    public IndividualTransactionListAdapter(int layoutId, List<Transaction> datas) {
         super(layoutId, datas);
     }
 
     @Override
-    protected void convert(Context context, ViewHolder viewHolder, TransactionEntity item, int position) {
+    protected void convert(Context context, ViewHolder viewHolder, Transaction item, int position) {
         if (item != null) {
 //            if (item instanceof  IndividualTransactionEntity){
 //                IndividualTransactionEntity entity = (IndividualTransactionEntity) item;
@@ -39,9 +33,9 @@ public class IndividualTransactionListAdapter extends CommonAdapter<TransactionE
 //                viewHolder.setText(R.id.tv_transaction_status_desc, transactionStatus.getStatusDesc(context, entity.getSignedBlockNumber(), 1));
 //                viewHolder.setTextColor(R.id.tv_transaction_status_desc, ContextCompat.getColor(context, transactionStatus.getStatusDescTextColor()));
 //                viewHolder.setImageResource(R.id.iv_transaction_status, entity.isReceiver(walletAddress) ? R.drawable.icon_receive_transaction : R.drawable.icon_send_transation);
-//            }else if (item instanceof VoteTransactionEntity){
-//                VoteTransactionEntity entity = (VoteTransactionEntity) item;
-//                VoteTransactionEntity.TransactionStatus transactionStatus = entity.getTransactionStatus();
+//            }else if (item instanceof VoteTransaction){
+//                VoteTransaction entity = (VoteTransaction) item;
+//                VoteTransaction.TransactionStatus transactionStatus = entity.getTransactionStatus();
 //                boolean                                       isReceiver        = entity.isReceiver(walletAddress);
 //                viewHolder.setText(R.id.tv_transaction_status, context.getString(R.string.vote));
 //                viewHolder.setText(R.id.tv_transaction_time, DateUtil.format(entity.getCreateTime(), DateUtil.DATETIME_FORMAT_PATTERN));
@@ -55,7 +49,7 @@ public class IndividualTransactionListAdapter extends CommonAdapter<TransactionE
     }
 
 
-    public void notifyDataChanged(List<TransactionEntity> mDatas, String walletAddress) {
+    public void notifyDataChanged(List<Transaction> mDatas, String walletAddress) {
         this.mDatas = mDatas;
         this.walletAddress = walletAddress;
         notifyDataSetChanged();

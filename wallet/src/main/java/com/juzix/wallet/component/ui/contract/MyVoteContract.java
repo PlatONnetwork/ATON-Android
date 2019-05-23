@@ -2,8 +2,8 @@ package com.juzix.wallet.component.ui.contract;
 
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
-import com.juzix.wallet.entity.VoteSummaryEntity;
-import com.juzix.wallet.entity.VotedCandidateEntity;
+import com.juzix.wallet.entity.VoteSummary;
+import com.juzix.wallet.entity.VotedCandidate;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class MyVoteContract {
          *
          * @param entityList
          */
-        void showMyVoteListData(List<VotedCandidateEntity> entityList);
+        void showMyVoteListData(List<VotedCandidate> entityList);
 
         /**
          * 获取数据失败
@@ -32,7 +32,7 @@ public class MyVoteContract {
          *
          * @param voteSummaryEntityList
          */
-        void showBatchVoteSummary(List<VoteSummaryEntity> voteSummaryEntityList);
+        void showBatchVoteSummary(List<VoteSummary> voteSummaryEntityList);
     }
 
     public interface Presenter extends IPresenter<View> {

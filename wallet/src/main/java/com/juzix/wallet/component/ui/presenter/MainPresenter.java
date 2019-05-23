@@ -16,7 +16,7 @@ import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.engine.VersionManager;
 import com.juzix.wallet.engine.VersionUpdate;
-import com.juzix.wallet.entity.VersionEntity;
+import com.juzix.wallet.entity.VersionInfo;
 import com.juzix.wallet.utils.DateUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
@@ -40,9 +40,9 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
         VersionManager.getInstance().getVersion()
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
-                .subscribe(new Consumer<VersionEntity>() {
+                .subscribe(new Consumer<VersionInfo>() {
                     @Override
-                    public void accept(VersionEntity versionEntity) {
+                    public void accept(VersionInfo versionEntity) {
                         String oldVersion = AndroidUtil.getVersionName(getContext()).toLowerCase();
                         if (!oldVersion.startsWith("v")) {
                             oldVersion = "v" + oldVersion;

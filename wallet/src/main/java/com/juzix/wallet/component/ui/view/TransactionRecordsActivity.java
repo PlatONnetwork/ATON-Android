@@ -4,29 +4,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 
-import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
-import com.juzix.wallet.component.adapter.CommonAdapter;
 import com.juzix.wallet.component.adapter.base.RecycleHolder;
 import com.juzix.wallet.component.adapter.base.RecyclerAdapter;
-import com.juzix.wallet.component.adapter.base.ViewHolder;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.TransactionRecordsContract;
 import com.juzix.wallet.component.ui.presenter.TransactionRecordsPresenter;
-import com.juzix.wallet.component.ui.presenter.TransactionsPresenter;
 import com.juzix.wallet.component.widget.CommonVerticalItemDecoration;
-import com.juzix.wallet.entity.IndividualTransactionEntity;
 import com.juzix.wallet.entity.Transaction;
-import com.juzix.wallet.entity.TransactionEntity;
-import com.juzix.wallet.entity.VoteTransactionEntity;
 import com.juzix.wallet.utils.DateUtil;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -79,7 +69,7 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
                 ////                TransactionEntity item = (TransactionEntity) parent.getAdapter().getItem(position);
 ////                if (item instanceof IndividualTransactionEntity) {
 ////                    IndividualTransactionDetailActivity.actionStart(currentActivity(), (IndividualTransactionEntity) item, null);
-////                } else if (item instanceof VoteTransactionEntity) {
+////                } else if (item instanceof VoteTransaction) {
 ////                    IndividualVoteDetailActivity.actionStart(currentActivity(), item.getUuid());
 ////                }
             }
@@ -140,9 +130,11 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
 
         @Override
         public void convert(RecycleHolder holder, Transaction data, int position) {
-            holder.setText(R.id.tv_name, mContext.getString(R.string.action_send_transation));
-            holder.setText(R.id.tv_amount, mContext.getString(R.string.amount_with_unit, NumberParserUtils.getPrettyNumber(data.getValue(), 4)));
+            holder.setText(R.id.tv_name, data.getTxType().getTxTypeDesc());
+            holder.setText(R.id.tv_amount, mContext.getString(R.string.amount_with_unit, data.getShowValue()));
             holder.setText(R.id.tv_time, DateUtil.format(data.getCreateTime(), DateUtil.DATETIME_FORMAT_PATTERN));
+            holder.setText(R.id.tv_desc, data.isSuccess() ? mContext.getString(R.string.success) : mContext.getString(R.string.failed));
+            holder.setTextColor(R.id.tv_desc, data.isSuccess() ? R.color.color_19a201 : R.color.color_f5302c);
         }
     }
 }

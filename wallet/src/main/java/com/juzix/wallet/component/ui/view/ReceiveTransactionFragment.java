@@ -17,7 +17,7 @@ import com.juzix.wallet.component.ui.base.MVPBaseFragment;
 import com.juzix.wallet.component.ui.contract.ReceiveTransationContract;
 import com.juzix.wallet.component.ui.presenter.ReceiveTransationPresenter;
 import com.juzix.wallet.component.widget.ShadowButton;
-import com.juzix.wallet.entity.WalletEntity;
+import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.RxUtils;
@@ -25,14 +25,11 @@ import com.juzix.wallet.utils.RxUtils;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.concurrent.TimeUnit;
-
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import io.reactivex.functions.Consumer;
 
 /**
  * @author matrixelement
@@ -97,12 +94,12 @@ public class ReceiveTransactionFragment extends MVPBaseFragment<ReceiveTransatio
     }
 
     @Override
-    public WalletEntity getWalletFromIntent() {
+    public Wallet getWalletFromIntent() {
         return getArguments().getParcelable(Constants.Extra.EXTRA_WALLET);
     }
 
     @Override
-    public void setWalletInfo(WalletEntity entity) {
+    public void setWalletInfo(Wallet entity) {
         int resId = RUtils.drawable(entity.getExportAvatar());
         if (resId < 0){
             resId = R.drawable.icon_export_avatar_15;

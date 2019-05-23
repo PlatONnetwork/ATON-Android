@@ -35,8 +35,8 @@ import com.juzix.wallet.component.ui.presenter.SendTransationPresenter;
 import com.juzix.wallet.component.widget.PointLengthFilter;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.component.widget.bubbleSeekBar.BubbleSeekBar;
-import com.juzix.wallet.entity.AddressEntity;
-import com.juzix.wallet.entity.WalletEntity;
+import com.juzix.wallet.entity.Address;
+import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.BigDecimalUtil;
@@ -193,7 +193,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
         if (resultCode == Activity.RESULT_OK && data != null) {
             switch (requestCode) {
                 case MainActivity.REQ_ASSETS_SELECT_ADDRESS_BOOK:
-                    AddressEntity addressEntity = data.getParcelableExtra(Constants.Extra.EXTRA_ADDRESS);
+                    Address addressEntity = data.getParcelableExtra(Constants.Extra.EXTRA_ADDRESS);
                     if (addressEntity != null) {
                         setToAddress(addressEntity.getAddress());
                         if (mPresenter != null) {
@@ -228,7 +228,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
     }
 
     @Override
-    public void updateWalletInfo(WalletEntity walletEntity) {
+    public void updateWalletInfo(Wallet walletEntity) {
         tvWalletBalance.setText(string(R.string.balance_text, NumberParserUtils.getPrettyBalance(walletEntity.getBalance())));
     }
 
@@ -260,7 +260,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
     }
 
     @Override
-    public WalletEntity getWalletEntityFromIntent() {
+    public Wallet getWalletEntityFromIntent() {
         return getArguments().getParcelable(Constants.Extra.EXTRA_WALLET);
     }
 

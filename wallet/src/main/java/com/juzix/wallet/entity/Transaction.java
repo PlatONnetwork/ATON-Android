@@ -6,6 +6,8 @@ import com.alibaba.fastjson.parser.deserializer.ObjectDeserializer;
 import com.alibaba.fastjson.serializer.JSONSerializer;
 import com.alibaba.fastjson.serializer.ObjectSerializer;
 import com.alibaba.fastjson.util.TypeUtils;
+import com.juzhen.framework.util.NumberParserUtils;
+import com.juzix.wallet.utils.BigDecimalUtil;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -29,6 +31,7 @@ public class Transaction implements Comparable<Transaction> {
     /**
      * 交易创建时间
      */
+    @JSONField(name = "timestamp")
     private long createTime;
     /**
      * 交易实际花费值(手续费)，单位：wei
@@ -147,16 +150,16 @@ public class Transaction implements Comparable<Transaction> {
         this.sequence = sequence;
     }
 
-    public TxReceiptStatus getTxReceiptStatus() {
-        return TxReceiptStatus.getTxReceiptStatusByName(txReceiptStatus);
+    public String getTxReceiptStatus() {
+        return txReceiptStatus;
     }
 
     public void setTxReceiptStatus(String txReceiptStatus) {
         this.txReceiptStatus = txReceiptStatus;
     }
 
-    public String getTxType() {
-        return txType;
+    public TxType getTxType() {
+        return TxType.getTxTypeByName(txType);
     }
 
     public void setTxType(String txType) {
@@ -167,8 +170,16 @@ public class Transaction implements Comparable<Transaction> {
         return value;
     }
 
+    public String getShowValue() {
+        return NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(value, "1E18"), 4);
+    }
+
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public boolean isSuccess() {
+        return "1".equals(txReceiptStatus);
     }
 
     @Override
@@ -176,26 +187,34 @@ public class Transaction implements Comparable<Transaction> {
         return Long.compare(o.sequence, sequence);
     }
 
-    public enum TxReceiptStatus {
+    public enum TxType {
 
-        TRANSFER, MPCTRANSACTION, CONTRACTCREATE, VOTE, TRANSACTIONEXECUTE, AUTHORIZATION, CANDIDATEDEPOSIT, CANDIDATEAPPLYWITHDRAW, CANDIDATEWITHDRAW, UNKNOWN;
+        TRANSFER("transfer", "转账"), MPCTRANSACTION("MPCtransaction：MPC", "MPC交易"), CONTRACTCREATE("contractCreate", "合约创建"), VOTETICKET("voteTicket", "投票"), TRANSACTIONEXECUTE("transactionExecute", "合约执行"), CANDIDATEDEPOSIT("candidateDeposit", "质押"), CANDIDATEAPPLYWITHDRAW("candidateApplyWithdraw", "减持质押"), CANDIDATEWITHDRAW("candidateWithdraw", "提取质押"), UNKNOWN("unknown", "其他");
 
-        @Override
-        public String toString() {
-            return super.toString().toLowerCase();
+        private String name;
+        private String desc;
+
+        TxType(String name, String desc) {
+            this.name = name;
+            this.desc = desc;
         }
 
-        private static Map<String, TxReceiptStatus> map = new HashMap<>();
+        private static Map<String, TxType> map = new HashMap<>();
 
         static {
-            for (TxReceiptStatus status : values()) {
-                map.put(status.toString(), status);
+            for (TxType status : values()) {
+                map.put(status.name, status);
             }
         }
 
-        public static TxReceiptStatus getTxReceiptStatusByName(String name) {
+        public static TxType getTxTypeByName(String name) {
             return map.get(name);
         }
+
+        public String getTxTypeDesc() {
+            return desc;
+        }
+
     }
 
 }

@@ -15,7 +15,7 @@ import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.SelectAddressContract;
 import com.juzix.wallet.component.ui.presenter.SelectAddressPresenter;
 import com.juzix.wallet.component.widget.CommonTitleBar;
-import com.juzix.wallet.entity.AddressEntity;
+import com.juzix.wallet.entity.Address;
 
 import java.util.List;
 
@@ -95,12 +95,12 @@ public class SelectAddressActivity extends MVPBaseActivity<SelectAddressPresente
     }
 
     @Override
-    public void notifyAddressListChanged(List<AddressEntity> addressEntityList) {
+    public void notifyAddressListChanged(List<Address> addressEntityList) {
         addressBookListAdapter.notifyDataChanged(addressEntityList);
     }
 
     @Override
-    public void setResult(AddressEntity addressEntity) {
+    public void setResult(Address addressEntity) {
         Intent intent = new Intent(this, SelectAddressActivity.class);
         intent.putExtra(Constants.Extra.EXTRA_ADDRESS, addressEntity);
         setResult(RESULT_OK, intent);
