@@ -4,9 +4,9 @@ import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.SelectAddressContract;
-import com.juzix.wallet.db.entity.AddressInfoEntity;
+import com.juzix.wallet.db.entity.AddressEntity;
 import com.juzix.wallet.db.sqlite.AddressInfoDao;
-import com.juzix.wallet.entity.AddressEntity;
+import com.juzix.wallet.entity.Address;
 import com.juzix.wallet.utils.CommonUtil;
 
 import java.util.List;
@@ -27,23 +27,23 @@ public class SelectAddressPresenter extends BasePresenter<SelectAddressContract.
         super(view);
     }
 
-    private List<AddressEntity> addressEntityList;
+    private List<Address> addressEntityList;
 
     @Override
     public void fetchAddressList() {
-        Flowable.fromIterable(AddressInfoDao.getAddressInfoList()).filter(new Predicate<AddressInfoEntity>() {
+        Flowable.fromIterable(AddressInfoDao.getAddressInfoList()).filter(new Predicate<AddressEntity>() {
             @Override
-            public boolean test(AddressInfoEntity addressInfoEntity) throws Exception {
+            public boolean test(AddressEntity addressInfoEntity) throws Exception {
                 return addressInfoEntity != null;
             }
-        }).compose(((BaseActivity) getView()).bindToLifecycle()).map(new Function<AddressInfoEntity, AddressEntity>() {
+        }).compose(((BaseActivity) getView()).bindToLifecycle()).map(new Function<AddressEntity, Address>() {
             @Override
-            public AddressEntity apply(AddressInfoEntity addressInfoEntity) throws Exception {
-                return new AddressEntity(addressInfoEntity.getUuid(), addressInfoEntity.getName(),addressInfoEntity.getAddress(),addressInfoEntity.getAvatar());
+            public Address apply(AddressEntity addressInfoEntity) throws Exception {
+                return new Address(addressInfoEntity.getUuid(), addressInfoEntity.getName(),addressInfoEntity.getAddress(),addressInfoEntity.getAvatar());
             }
-        }).toList().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BiConsumer<List<AddressEntity>, Throwable>() {
+        }).toList().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BiConsumer<List<Address>, Throwable>() {
             @Override
-            public void accept(List<AddressEntity> addressEntities, Throwable throwable) throws Exception {
+            public void accept(List<Address> addressEntities, Throwable throwable) throws Exception {
                 addressEntityList = addressEntities;
                 if (isViewAttached()) {
                     getView().notifyAddressListChanged(addressEntities);
@@ -57,7 +57,7 @@ public class SelectAddressPresenter extends BasePresenter<SelectAddressContract.
         if (addressEntityList != null && addressEntityList.size() > position) {
             if (isViewAttached()) {
                 String action = getView().getAction();
-                AddressEntity addressEntity = addressEntityList.get(position);
+                Address addressEntity = addressEntityList.get(position);
                 if (Constants.Action.ACTION_GET_ADDRESS.equals(action)) {
                     getView().setResult(addressEntity);
                 } else {

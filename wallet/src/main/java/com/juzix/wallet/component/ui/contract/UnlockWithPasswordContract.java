@@ -2,7 +2,7 @@ package com.juzix.wallet.component.ui.contract;
 
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
-import com.juzix.wallet.entity.IndividualWalletEntity;
+import com.juzix.wallet.entity.Wallet;
 
 /**
  * @author matrixelement
@@ -11,14 +11,14 @@ public class UnlockWithPasswordContract {
 
     public interface View extends IView {
 
-        void updateWalletInfo(IndividualWalletEntity walletEntity);
+        void updateWalletInfo(Wallet walletEntity);
     }
 
     public interface Presenter extends IPresenter<View> {
 
-        IndividualWalletEntity getSelectedWallet();
+        Wallet getSelectedWallet();
 
-        void setSelectWallet(IndividualWalletEntity wallet);
+        void setSelectWallet(Wallet wallet);
 
         void init();
 

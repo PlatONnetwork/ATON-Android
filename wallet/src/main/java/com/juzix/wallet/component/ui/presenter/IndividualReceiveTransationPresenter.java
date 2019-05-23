@@ -12,9 +12,9 @@ import com.juzix.wallet.component.ui.dialog.ShareDialogFragment;
 import com.juzix.wallet.config.JZAppConfigure;
 import com.juzix.wallet.config.JZDirType;
 import com.juzix.wallet.engine.NodeManager;
-import com.juzix.wallet.entity.IndividualWalletEntity;
-import com.juzix.wallet.entity.NodeEntity;
+import com.juzix.wallet.entity.Node;
 import com.juzix.wallet.entity.ShareAppInfo;
+import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.AppUtil;
 import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.PhotoUtil;
@@ -39,7 +39,7 @@ import io.reactivex.schedulers.Schedulers;
  */
 public class IndividualReceiveTransationPresenter extends BasePresenter<IndividualReceiveTransationContract.View> implements IndividualReceiveTransationContract.Presenter {
 
-    private IndividualWalletEntity walletEntity;
+    private Wallet walletEntity;
     private Bitmap mQRCodeBitmap;
 
     public IndividualReceiveTransationPresenter(IndividualReceiveTransationContract.View view) {
@@ -82,15 +82,15 @@ public class IndividualReceiveTransationPresenter extends BasePresenter<Individu
             NodeManager.getInstance()
                     .getCheckedNode()
                     .observeOn(AndroidSchedulers.mainThread())
-                    .filter(new Predicate<NodeEntity>() {
+                    .filter(new Predicate<Node>() {
                         @Override
-                        public boolean test(NodeEntity nodeEntity) throws Exception {
+                        public boolean test(Node nodeEntity) throws Exception {
                             return !(nodeEntity.isDefaultNode() && nodeEntity.isMainNetworkNode());
                         }
                     })
-                    .subscribe(new Consumer<NodeEntity>() {
+                    .subscribe(new Consumer<Node>() {
                         @Override
-                        public void accept(NodeEntity nodeEntity) throws Exception {
+                        public void accept(Node nodeEntity) throws Exception {
                             if (isViewAttached()) {
 //                                getView().showWarnDialogFragment();
                             }

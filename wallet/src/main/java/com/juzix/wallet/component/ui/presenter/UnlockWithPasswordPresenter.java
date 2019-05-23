@@ -10,10 +10,8 @@ import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.UnlockWithPasswordContract;
 import com.juzix.wallet.config.AppSettings;
-import com.juzix.wallet.engine.IndividualWalletManager;
-import com.juzix.wallet.entity.IndividualWalletEntity;
-
-import java.util.ArrayList;
+import com.juzix.wallet.engine.WalletManager;
+import com.juzix.wallet.entity.Wallet;
 
 /**
  * @author matrixelement
@@ -21,26 +19,26 @@ import java.util.ArrayList;
 public class UnlockWithPasswordPresenter extends BasePresenter<UnlockWithPasswordContract.View> implements UnlockWithPasswordContract.Presenter{
 
     private final static String TAG = UnlockWithPasswordPresenter.class.getSimpleName();
-    private IndividualWalletEntity mWallet;
+    private Wallet mWallet;
 
     public UnlockWithPasswordPresenter(UnlockWithPasswordContract.View view) {
         super(view);
     }
 
     @Override
-    public void setSelectWallet(IndividualWalletEntity wallet) {
+    public void setSelectWallet(Wallet wallet) {
         mWallet = wallet;
         getView().updateWalletInfo(wallet);
     }
 
     @Override
-    public IndividualWalletEntity getSelectedWallet() {
+    public Wallet getSelectedWallet() {
         return mWallet;
     }
 
     @Override
     public void init() {
-        mWallet = IndividualWalletManager.getInstance().getWalletList().get(0);
+        mWallet = WalletManager.getInstance().getWalletList().get(0);
         setSelectWallet(mWallet);
     }
 
@@ -51,7 +49,7 @@ public class UnlockWithPasswordPresenter extends BasePresenter<UnlockWithPasswor
         new Thread(){
             @Override
             public void run() {
-                if (!IndividualWalletManager.getInstance().isValidWallet(mWallet, password)){
+                if (!WalletManager.getInstance().isValidWallet(mWallet, password)){
                     mHandler.sendEmptyMessage(MSG_PASSWORD_FAILED);
                     return;
                 } else {

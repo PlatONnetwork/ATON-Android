@@ -7,9 +7,9 @@ import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.AddNewAddressContract;
-import com.juzix.wallet.db.entity.AddressInfoEntity;
+import com.juzix.wallet.db.entity.AddressEntity;
 import com.juzix.wallet.db.sqlite.AddressInfoDao;
-import com.juzix.wallet.entity.AddressEntity;
+import com.juzix.wallet.entity.Address;
 import com.juzix.wallet.utils.JZWalletUtil;
 
 import java.util.Random;
@@ -26,7 +26,7 @@ import io.reactivex.schedulers.Schedulers;
  */
 public class AddNewAddressPresenter extends BasePresenter<AddNewAddressContract.View> implements AddNewAddressContract.Presenter {
 
-    private AddressEntity addressEntity;
+    private Address addressEntity;
 
     public AddNewAddressPresenter(AddNewAddressContract.View view) {
         super(view);
@@ -62,20 +62,20 @@ public class AddNewAddressPresenter extends BasePresenter<AddNewAddressContract.
             String[] avatarArray = getContext().getResources().getStringArray(R.array.wallet_avatar);
             String avatar = avatarArray[new Random().nextInt(avatarArray.length)];
 
-            AddressInfoEntity addressInfoEntity = new AddressInfoEntity(UUID.randomUUID().toString(), address, name, avatar);
+            AddressEntity addressInfoEntity = new AddressEntity(UUID.randomUUID().toString(), address, name, avatar);
 
             Single.fromCallable(new Callable<Boolean>() {
                 @Override
                 public Boolean call() throws Exception {
                     if (addressEntity == null) {
-                        AddressInfoEntity entity = AddressInfoDao.getEntityWithAddress(addressInfoEntity.getAddress());
+                        AddressEntity entity = AddressInfoDao.getEntityWithAddress(addressInfoEntity.getAddress());
                         if (entity != null){
                             return AddressInfoDao.updateNameWithAddress(addressInfoEntity.getAddress(), addressInfoEntity.getName());
                         }else {
                             return AddressInfoDao.insertAddressInfo(addressInfoEntity);
                         }
                     } else {
-                        AddressInfoEntity oldAddressInfo = new AddressInfoEntity();
+                        AddressEntity oldAddressInfo = new AddressEntity();
                         oldAddressInfo.setName(addressEntity.getName());
                         oldAddressInfo.setAddress(addressEntity.getAddress());
                         return AddressInfoDao.updateAddressInfo(oldAddressInfo, addressInfoEntity);
@@ -85,7 +85,7 @@ public class AddNewAddressPresenter extends BasePresenter<AddNewAddressContract.
                 @Override
                 public void accept(Boolean aBoolean, Throwable throwable) throws Exception {
                     if (aBoolean.booleanValue()) {
-                        getView().setResult(new AddressEntity(addressInfoEntity.getUuid(), addressInfoEntity.getName(), addressInfoEntity.getAddress(), addressInfoEntity.getAvatar()));
+                        getView().setResult(new Address(addressInfoEntity.getUuid(), addressInfoEntity.getName(), addressInfoEntity.getAddress(), addressInfoEntity.getAvatar()));
                     }
                 }
             });

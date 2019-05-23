@@ -20,8 +20,8 @@ import com.juzix.wallet.component.ui.contract.MyVoteContract;
 import com.juzix.wallet.component.ui.presenter.MyVotePresenter;
 import com.juzix.wallet.component.widget.CustomRefreshHeader;
 import com.juzix.wallet.component.widget.LineGridView;
-import com.juzix.wallet.entity.VoteSummaryEntity;
-import com.juzix.wallet.entity.VotedCandidateEntity;
+import com.juzix.wallet.entity.VoteSummary;
+import com.juzix.wallet.entity.VotedCandidate;
 import com.juzix.wallet.utils.CommonUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -96,7 +96,7 @@ public class MyVoteActivity extends MVPBaseActivity<MyVotePresenter> implements 
                 .subscribe(new CustomObserver<Integer>() {
                     @Override
                     public void accept(Integer position) throws Exception {
-                        VotedCandidateEntity entity = mBatchVoteTransactionAdapter.getItem(position);
+                        VotedCandidate entity = mBatchVoteTransactionAdapter.getItem(position);
                         VoteDetailActivity.actionStart(MyVoteActivity.this, entity.getNodeId(),entity.getName());
                     }
                 });
@@ -119,7 +119,7 @@ public class MyVoteActivity extends MVPBaseActivity<MyVotePresenter> implements 
     }
 
     @Override
-    public void showBatchVoteSummary(List<VoteSummaryEntity> voteSummaryEntityList) {
+    public void showBatchVoteSummary(List<VoteSummary> voteSummaryEntityList) {
         gridVoteInfo.setVisibility(voteSummaryEntityList.isEmpty() ? View.GONE : View.VISIBLE);
         gridVoteInfo.setNumColumns(isContainValueLengthExceedSpecificallyLength(voteSummaryEntityList) ? 2 : 3);
         mBatchVoteSummaryAdapter.notifyDataChanged(voteSummaryEntityList);
@@ -128,7 +128,7 @@ public class MyVoteActivity extends MVPBaseActivity<MyVotePresenter> implements 
 
 
     @Override
-    public void showMyVoteListData(List<VotedCandidateEntity> entityList) {
+    public void showMyVoteListData(List<VotedCandidate> entityList) {
         mBatchVoteTransactionAdapter.notifyDataChanged(entityList);
         refreshLayout.finishRefresh();
         dismissLoadingDialogImmediately();
@@ -151,12 +151,12 @@ public class MyVoteActivity extends MVPBaseActivity<MyVotePresenter> implements 
      * @param voteSummaryEntityList
      * @return
      */
-    private boolean isContainValueLengthExceedSpecificallyLength(List<VoteSummaryEntity> voteSummaryEntityList) {
+    private boolean isContainValueLengthExceedSpecificallyLength(List<VoteSummary> voteSummaryEntityList) {
         if (voteSummaryEntityList == null || voteSummaryEntityList.isEmpty()) {
             return false;
         }
         TextView tvValue = findTextView();
-        for (VoteSummaryEntity voteSummaryEntity : voteSummaryEntityList) {
+        for (VoteSummary voteSummaryEntity : voteSummaryEntityList) {
             float textWidth = tvValue.getPaint().measureText(voteSummaryEntity.getVoteSummaryValue());
             if (textWidth >= CommonUtil.getScreenWidth(this) / 3) {
                 return true;

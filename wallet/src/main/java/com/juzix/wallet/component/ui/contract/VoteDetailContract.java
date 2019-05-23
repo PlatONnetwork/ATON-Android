@@ -2,7 +2,7 @@ package com.juzix.wallet.component.ui.contract;
 
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
-import com.juzix.wallet.entity.VotedCandidateEntity;
+import com.juzix.wallet.entity.VotedCandidate;
 
 import java.util.List;
 
@@ -22,14 +22,13 @@ public class VoteDetailContract {
          *
          * @param list
          */
-        void getVoteDetailListDataSuccess(List<VotedCandidateEntity> list);
+        void getVoteDetailListDataSuccess(List<VotedCandidate> list);
 
 
         /**
          * 获取数据失败
          */
         void getVoteDetailListDataFailed();
-
 
         void showNodeInfo(String nodeName, String nodeId);
 

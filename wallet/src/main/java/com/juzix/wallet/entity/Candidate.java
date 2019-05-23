@@ -11,7 +11,7 @@ import java.util.Locale;
 /**
  * @author matrixelement
  */
-public class CandidateEntity implements Parcelable {
+public class Candidate implements Parcelable {
 
     /**
      * 节点ID
@@ -33,7 +33,7 @@ public class CandidateEntity implements Parcelable {
      * 国家区域信息
      */
     @JSONField(deserialize = false, serialize = false)
-    private CountryEntity countryEntity;
+    private Country countryEntity;
     /**
      * 质押金(单位:Energon)
      */
@@ -78,10 +78,10 @@ public class CandidateEntity implements Parcelable {
     /**
      * 默认构造函数fastJson自动解析
      */
-    public CandidateEntity() {
+    public Candidate() {
     }
 
-    protected CandidateEntity(Parcel in) {
+    protected Candidate(Parcel in) {
         nodeId = in.readString();
         name = in.readString();
         ranking = in.readInt();
@@ -89,7 +89,7 @@ public class CandidateEntity implements Parcelable {
         deposit = in.readString();
         reward = in.readString();
         ticketPrice = in.readString();
-        countryEntity = in.readParcelable(CountryEntity.class.getClassLoader());
+        countryEntity = in.readParcelable(Country.class.getClassLoader());
         orgName = in.readString();
         orgWebsite = in.readString();
         intro = in.readString();
@@ -121,15 +121,15 @@ public class CandidateEntity implements Parcelable {
         return 0;
     }
 
-    public static final Creator<CandidateEntity> CREATOR = new Creator<CandidateEntity>() {
+    public static final Creator<Candidate> CREATOR = new Creator<Candidate>() {
         @Override
-        public CandidateEntity createFromParcel(Parcel in) {
-            return new CandidateEntity(in);
+        public Candidate createFromParcel(Parcel in) {
+            return new Candidate(in);
         }
 
         @Override
-        public CandidateEntity[] newArray(int size) {
-            return new CandidateEntity[size];
+        public Candidate[] newArray(int size) {
+            return new Candidate[size];
         }
     };
 
@@ -213,11 +213,11 @@ public class CandidateEntity implements Parcelable {
         this.nodeUrl = nodeUrl;
     }
 
-    public CountryEntity getCountryEntity() {
+    public Country getCountryEntity() {
         return countryEntity;
     }
 
-    public void setCountryEntity(CountryEntity countryEntity) {
+    public void setCountryEntity(Country countryEntity) {
         this.countryEntity = countryEntity;
     }
 

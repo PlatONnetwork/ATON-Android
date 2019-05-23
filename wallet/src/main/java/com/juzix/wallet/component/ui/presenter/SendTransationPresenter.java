@@ -1,10 +1,6 @@
 package com.juzix.wallet.component.ui.presenter;
 
-import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.view.View;
 
 import com.juzhen.framework.network.NetConnectivity;
 import com.juzhen.framework.network.SchedulersTransformer;
@@ -14,21 +10,17 @@ import com.juzix.wallet.app.CustomThrowable;
 import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.SendTransationContract;
-import com.juzix.wallet.component.ui.dialog.CommonTipsDialogFragment;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
-import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
 import com.juzix.wallet.component.ui.dialog.SendTransactionDialogFragment;
 import com.juzix.wallet.component.ui.view.AssetsFragment;
 import com.juzix.wallet.component.ui.view.MainActivity;
-import com.juzix.wallet.db.entity.AddressInfoEntity;
+import com.juzix.wallet.db.entity.AddressEntity;
 import com.juzix.wallet.db.sqlite.AddressInfoDao;
-import com.juzix.wallet.engine.IndividualWalletManager;
-import com.juzix.wallet.engine.IndividualWalletTransactionManager;
 import com.juzix.wallet.engine.WalletManager;
+import com.juzix.wallet.engine.TransactionManager;
 import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.IndividualTransactionEntity;
-import com.juzix.wallet.entity.IndividualWalletEntity;
-import com.juzix.wallet.entity.WalletEntity;
+import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
@@ -53,7 +45,6 @@ import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
-import io.reactivex.SingleSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -75,8 +66,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
     private static final int REFRESH_TIME = 5000;
     private Disposable mDisposable;
 
-    private WalletEntity walletEntity;
-    private IndividualWalletEntity individualWalletEntity;
+    private Wallet walletEntity;
     private String toAddress;
 
     private double gasPrice = MIN_GAS_PRICE_WEI;
@@ -215,7 +205,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
             String fromWallet = walletEntity.getName();
             String fromAddress = address;
             String fee = NumberParserUtils.getPrettyBalance(feeAmount);
-            String walletName = IndividualWalletManager.getInstance().getWalletNameByWalletAddress(toAddress);
+            String walletName = WalletManager.getInstance().getWalletNameByWalletAddress(toAddress);
 
             if (TextUtils.isEmpty(walletName)) {
                 walletName = AddressFormatUtil.formatAddress(toAddress);
@@ -249,7 +239,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
     public void saveWallet(String name, String address) {
         String[] avatarArray = getContext().getResources().getStringArray(R.array.wallet_avatar);
         String avatar = avatarArray[new Random().nextInt(avatarArray.length)];
-        getView().setSaveAddressButtonEnable(!AddressInfoDao.insertAddressInfo(new AddressInfoEntity(UUID.randomUUID().toString(), address, name, avatar)));
+        getView().setSaveAddressButtonEnable(!AddressInfoDao.insertAddressInfo(new AddressEntity(UUID.randomUUID().toString(), address, name, avatar)));
     }
 
     @Override
@@ -276,7 +266,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
     }
 
     private void sendTransaction(Credentials credentials, String transferAmount, String toAddress) {
-        IndividualWalletTransactionManager
+        TransactionManager
                 .getInstance()
                 .sendTransaction(Numeric.toHexStringNoPrefix(credentials.getEcKeyPair().getPrivateKey()), walletEntity.getPrefixAddress(), toAddress, walletEntity.getName(), transferAmount, NumberParserUtils.parseLong(BigDecimalUtil.parseString(gasPrice)), gasLimit)
                 .compose(new SchedulersTransformer())
@@ -324,7 +314,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
                 });
     }
 
-    private Single<Credentials> checkBalance(IndividualWalletEntity walletEntity, Credentials credentials, BigInteger gasPrice) {
+    private Single<Credentials> checkBalance(Wallet walletEntity, Credentials credentials, BigInteger gasPrice) {
 
         return Single.create(new SingleOnSubscribe<Credentials>() {
             @Override
@@ -341,7 +331,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
 
 
     private void showInputWalletPasswordDialogFragment(String transferAmount, String toAddress) {
-        InputWalletPasswordDialogFragment.newInstance((IndividualWalletEntity) walletEntity).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
+        InputWalletPasswordDialogFragment.newInstance(walletEntity).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
             @Override
             public void onWalletPasswordCorrect(Credentials credentials) {
                 sendTransaction(credentials, transferAmount, toAddress);

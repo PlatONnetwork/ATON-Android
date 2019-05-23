@@ -5,7 +5,7 @@ import android.content.Context;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.juzix.wallet.entity.CountryEntity;
+import com.juzix.wallet.entity.Country;
 
 import java.util.List;
 
@@ -15,9 +15,9 @@ public class CountryUtil {
 
     }
 
-    public static List<CountryEntity> getCountryList(Context context) {
+    public static List<Country> getCountryList(Context context) {
         String json = FileUtil.getAssets(context, "country.json");
         JSONObject object = (JSONObject) JSON.parse(json);
-        return JSONObject.parseArray(((JSONArray) object.get("countrys")).toJSONString(), CountryEntity.class);
+        return JSONObject.parseArray(((JSONArray) object.get("countrys")).toJSONString(), Country.class);
     }
 }

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
@@ -39,10 +40,14 @@ import com.juzix.wallet.component.widget.ShadowContainer;
 import com.juzix.wallet.component.widget.ViewPagerSlide;
 import com.juzix.wallet.component.widget.table.SmartTabLayout;
 import com.juzix.wallet.config.AppSettings;
-import com.juzix.wallet.entity.WalletEntity;
+import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.JZWalletUtil;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -108,6 +113,8 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     ShadowContainer scImportWallet;
     @BindView(R.id.sc_create_wallet)
     ShadowContainer scCreateWallet;
+    @BindView(R.id.layout_refresh)
+    SmartRefreshLayout layoutRefresh;
 
     private WalletHorizontalRecycleViewAdapter mWalletAdapter;
     private Unbinder unbinder;
@@ -119,8 +126,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
     @Override
     protected void onFragmentPageStart() {
-        mPresenter.fetchWalletList();
-        mPresenter.start();
+        layoutRefresh.autoRefresh();
     }
 
     @Override
@@ -133,10 +139,29 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     }
 
     private void initViews() {
+        initRefreshLayout();
         initHeader();
         initTab();
         showAssets(AppSettings.getInstance().getShowAssetsFlag());
         showEmptyView(true);
+    }
+
+    private void initRefreshLayout() {
+
+        layoutRefresh.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                mPresenter.fetchWalletList();
+                mPresenter.fetchWalletsBalance();
+            }
+        });
+
+        layoutRefresh.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+
+            }
+        });
     }
 
 
@@ -287,7 +312,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     public void onNetWorkStateChangedEvent(Event.NetWorkStateChangedEvent event) {
         if (event.netState == NetState.CONNECTED) {
             mPresenter.fetchWalletList();
-            mPresenter.start();
+            mPresenter.fetchWalletsBalance();
         }
     }
 
@@ -307,7 +332,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         mWalletAdapter = new WalletHorizontalRecycleViewAdapter(getContext(), mPresenter.getRecycleViewDataSource());
         mWalletAdapter.setOnItemClickListener(new WalletHorizontalRecycleViewAdapter.OnRecycleViewItemClickListener() {
             @Override
-            public void onContentViewClick(WalletEntity walletEntity) {
+            public void onContentViewClick(Wallet walletEntity) {
                 mPresenter.clickRecycleViewItem(walletEntity);
             }
         });
@@ -364,7 +389,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         return titleList;
     }
 
-    private List<BaseFragment> getFragments(WalletEntity walletEntity) {
+    private List<BaseFragment> getFragments(Wallet walletEntity) {
         List<BaseFragment> list = new ArrayList<>();
         list.add(getFragment(TAB1, walletEntity));
         list.add(getFragment(TAB2, walletEntity));
@@ -372,7 +397,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         return list;
     }
 
-    private BaseFragment getFragment(int tab, WalletEntity walletEntity) {
+    private BaseFragment getFragment(int tab, Wallet walletEntity) {
         BaseFragment fragment = null;
         switch (tab) {
             case TAB1:
@@ -404,13 +429,13 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     }
 
     @Override
-    public void showWalletList(WalletEntity walletEntity) {
-//        mWalletAdapter.setSelectedWallet(walletEntity);
+    public void showWalletList(Wallet walletEntity) {
+        mWalletAdapter.setSelectedWallet(walletEntity);
         mWalletAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void showWalletInfo(WalletEntity walletEntity) {
+    public void showWalletInfo(Wallet walletEntity) {
         tvBackup.setVisibility(mPresenter.needBackup(walletEntity) ? View.VISIBLE : View.GONE);
         int resId = RUtils.drawable(walletEntity.getExportAvatar());
         if (resId < 0) {
@@ -439,7 +464,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     }
 
     @Override
-    public void setArgument(WalletEntity entity) {
+    public void setArgument(Wallet entity) {
         List<BaseFragment> fragments = ((TabAdapter) vpContent.getAdapter()).getFragments();
         for (BaseFragment fragment : fragments) {
             Bundle bundle = new Bundle();
@@ -456,6 +481,16 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     @Override
     public void notifyAllChanged() {
         mWalletAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void finishRefresh() {
+        layoutRefresh.finishRefresh();
+    }
+
+    @Override
+    public void finishLoadMore() {
+        layoutRefresh.finishLoadMore();
     }
 
     private View getTableView(int position, ViewGroup container) {

@@ -3,13 +3,13 @@ package com.juzix.wallet.entity;
 /**
  * @author matrixelement
  */
-public class VoteSummaryEntity {
+public class VoteSummary {
 
     private String voteSummaryDesc;
 
     private String voteSummaryValue;
 
-    public VoteSummaryEntity(String voteSummaryDesc, String voteSummaryValue) {
+    public VoteSummary(String voteSummaryDesc, String voteSummaryValue) {
         this.voteSummaryDesc = voteSummaryDesc;
         this.voteSummaryValue = voteSummaryValue;
     }

@@ -2,7 +2,7 @@ package com.juzix.wallet.component.ui.contract;
 
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
-import com.juzix.wallet.entity.IndividualWalletEntity;
+import com.juzix.wallet.entity.Wallet;
 
 import java.util.List;
 
@@ -13,9 +13,9 @@ public class IndividualWalletContract {
 
     public interface View extends IView {
 
-        void notifyWalletListChanged(List<IndividualWalletEntity> walletEntityList);
+        void notifyWalletListChanged(List<Wallet> walletEntityList);
 
-        void updateItem(IndividualWalletEntity walletEntity);
+        void updateItem(Wallet walletEntity);
 
         void updateWalletBalance(double balance);
     }

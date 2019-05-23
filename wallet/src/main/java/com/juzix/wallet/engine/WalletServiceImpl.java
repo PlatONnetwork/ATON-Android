@@ -2,7 +2,7 @@ package com.juzix.wallet.engine;
 
 import com.juzix.wallet.App;
 import com.juzix.wallet.R;
-import com.juzix.wallet.entity.IndividualWalletEntity;
+import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.JZMnemonicUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
 
@@ -12,21 +12,20 @@ import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.crypto.HDKeyDerivation;
 import org.bitcoinj.crypto.HDUtils;
 import org.web3j.crypto.ECKeyPair;
-import org.web3j.crypto.Wallet;
 import org.web3j.crypto.WalletFile;
 import org.web3j.utils.Numeric;
 
 import java.util.List;
 import java.util.Random;
 
-class IndividualWalletService implements IIndividualWalletService {
+class WalletServiceImpl implements WalletService {
 
     static final String PATH = "M/44H/206H/0H/0";
 
-    private IndividualWalletService() {
+    private WalletServiceImpl() {
     }
 
-    public static IndividualWalletService getInstance(){
+    public static WalletServiceImpl getInstance() {
         return InstanceHolder.INSTANCE;
     }
 
@@ -35,15 +34,15 @@ class IndividualWalletService implements IIndividualWalletService {
         return JZWalletUtil.generateMnemonic();
     }
 
-    private IndividualWalletEntity generateWallet(ECKeyPair ecKeyPair, String name, String password){
+    private Wallet generateWallet(ECKeyPair ecKeyPair, String name, String password) {
         try {
-            String     filename   = JZWalletUtil.getWalletFileName(Numeric.toHexStringNoPrefix(ecKeyPair.getPublicKey()));
-            WalletFile walletFile = Wallet.createLight(password, ecKeyPair);
+            String filename = JZWalletUtil.getWalletFileName(Numeric.toHexStringNoPrefix(ecKeyPair.getPublicKey()));
+            WalletFile walletFile = org.web3j.crypto.Wallet.createLight(password, ecKeyPair);
             if (walletFile == null) {
                 return null;
             }
             long time = System.currentTimeMillis();
-            IndividualWalletEntity.Builder builder = new IndividualWalletEntity.Builder()
+            return new Wallet.Builder()
                     .uuid(walletFile.getId())
                     .key(JZWalletUtil.writeWalletFileAsString(walletFile))
                     .name(name)
@@ -51,16 +50,16 @@ class IndividualWalletService implements IIndividualWalletService {
                     .keystorePath(filename)
                     .createTime(time)
                     .updateTime(time)
-                    .avatar(getWalletAvatar());
-            return builder.build();
-        }catch (Exception exp){
+                    .avatar(getWalletAvatar())
+                    .build();
+        } catch (Exception exp) {
             exp.printStackTrace();
             return null;
         }
     }
 
     @Override
-    public IndividualWalletEntity createWallet(String mnemonic, String name, String password) {
+    public Wallet createWallet(String mnemonic, String name, String password) {
         try {
             // 2.生成种子
             byte[] seed = JZMnemonicUtil.generateSeed(mnemonic, null);
@@ -74,7 +73,6 @@ class IndividualWalletService implements IIndividualWalletService {
             DeterministicKey child = dh.deriveChild(parentPath, true, true, new ChildNumber(0));
             //7.通过Keystore生成公Keystore对
             ECKeyPair ecKeyPair = ECKeyPair.create(child.getPrivKeyBytes());
-
             return generateWallet(ecKeyPair, name, password);
         } catch (Exception exp) {
             return null;
@@ -82,20 +80,20 @@ class IndividualWalletService implements IIndividualWalletService {
     }
 
     @Override
-    public IndividualWalletEntity importKeystore(String store, String name, String password) {
+    public Wallet importKeystore(String store, String name, String password) {
         try {
             ECKeyPair ecKeyPair = JZWalletUtil.decrypt(store, password);
             if (ecKeyPair == null) {
                 return null;
             }
-            return generateWallet(ecKeyPair, name ,password);
+            return generateWallet(ecKeyPair, name, password);
         } catch (Exception exp) {
             return null;
         }
     }
 
     @Override
-    public IndividualWalletEntity importPrivateKey(String privateKey, String name, String password) {
+    public Wallet importPrivateKey(String privateKey, String name, String password) {
         if (!JZWalletUtil.isValidPrivateKey(privateKey)) {
             return null;
         }
@@ -112,12 +110,12 @@ class IndividualWalletService implements IIndividualWalletService {
     }
 
     @Override
-    public IndividualWalletEntity importMnemonic(String mnemonic, String name, String password) {
+    public Wallet importMnemonic(String mnemonic, String name, String password) {
         return createWallet(mnemonic, name, password);
     }
 
     @Override
-    public String exportKeystore(IndividualWalletEntity wallet, String password) {
+    public String exportKeystore(Wallet wallet, String password) {
         try {
             ECKeyPair ecKeyPair = JZWalletUtil.decrypt(wallet.getKey(), password);
             if (ecKeyPair == null) {
@@ -131,7 +129,7 @@ class IndividualWalletService implements IIndividualWalletService {
     }
 
     @Override
-    public String exportPrivateKey(IndividualWalletEntity wallet, String password) {
+    public String exportPrivateKey(Wallet wallet, String password) {
         try {
             ECKeyPair ecKeyPair = JZWalletUtil.decrypt(wallet.getKey(), password);
             if (ecKeyPair == null) {
@@ -151,6 +149,6 @@ class IndividualWalletService implements IIndividualWalletService {
     }
 
     private static class InstanceHolder {
-        private static volatile IndividualWalletService INSTANCE = new IndividualWalletService();
+        private static volatile WalletServiceImpl INSTANCE = new WalletServiceImpl();
     }
 }

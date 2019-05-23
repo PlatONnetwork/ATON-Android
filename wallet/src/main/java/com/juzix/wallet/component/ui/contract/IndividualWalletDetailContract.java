@@ -2,10 +2,8 @@ package com.juzix.wallet.component.ui.contract;
 
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
-import com.juzix.wallet.entity.IndividualTransactionEntity;
-import com.juzix.wallet.entity.IndividualWalletEntity;
-import com.juzix.wallet.entity.TransactionEntity;
-import com.juzix.wallet.entity.WalletEntity;
+import com.juzix.wallet.entity.Transaction;
+import com.juzix.wallet.entity.Wallet;
 
 import java.util.List;
 
@@ -16,11 +14,11 @@ public class IndividualWalletDetailContract {
 
     public interface View extends IView {
 
-        IndividualWalletEntity getWalletEntityFromIntent();
+        Wallet getWalletEntityFromIntent();
 
-        void updateWalletInfo(IndividualWalletEntity walletEntity);
+        void updateWalletInfo(Wallet walletEntity);
 
-        void notifyTransactionListChanged(List<TransactionEntity> transactionEntityList, String walletAddress);
+        void notifyTransactionListChanged(List<Transaction> transactionEntityList, String walletAddress);
     }
 
     public interface Presenter extends IPresenter<View> {
@@ -29,7 +27,7 @@ public class IndividualWalletDetailContract {
 
         void fetchWalletTransactionList();
 
-        void enterTransactionDetailActivity(TransactionEntity transactionEntity);
+        void enterTransactionDetailActivity(Transaction transactionEntity);
 
         void enterReceiveTransactionActivity();
 

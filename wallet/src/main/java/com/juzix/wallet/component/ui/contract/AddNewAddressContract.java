@@ -2,7 +2,7 @@ package com.juzix.wallet.component.ui.contract;
 
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
-import com.juzix.wallet.entity.AddressEntity;
+import com.juzix.wallet.entity.Address;
 
 /**
  * @author matrixelement
@@ -11,7 +11,7 @@ public class AddNewAddressContract {
 
     public interface View extends IView {
 
-        AddressEntity getAddressFromIntent();
+        Address getAddressFromIntent();
 
         String getName();
 
@@ -25,9 +25,9 @@ public class AddNewAddressContract {
 
         void setAddressVisibility(int visibility);
 
-        void setAddressInfo(AddressEntity addressInfo);
+        void setAddressInfo(Address addressInfo);
 
-        void setResult(AddressEntity addressEntity);
+        void setResult(Address addressEntity);
 
         void setBottonBtnText(String text);
 

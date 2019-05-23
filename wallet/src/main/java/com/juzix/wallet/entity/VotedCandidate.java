@@ -7,13 +7,11 @@ import android.os.Parcelable;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.juzhen.framework.util.NumberParserUtils;
-import com.juzix.wallet.utils.DateUtil;
 import com.juzix.wallet.utils.LanguageUtil;
 
 import java.util.Locale;
 
-public class VotedCandidateEntity implements Parcelable, Comparable<VotedCandidateEntity> {
-    private static final long EXPIRE_BLOCKNUMBER = 1536000000;
+public class VotedCandidate implements Parcelable, Comparable<VotedCandidate> {
     /**
      * 节点ID
      */
@@ -31,7 +29,7 @@ public class VotedCandidateEntity implements Parcelable, Comparable<VotedCandida
      * 国家区域信息
      */
     @JSONField(deserialize = false, serialize = false)
-    private CountryEntity countryEntity;
+    private Country countryEntity;
 
     /**
      * 有效票数
@@ -91,10 +89,10 @@ public class VotedCandidateEntity implements Parcelable, Comparable<VotedCandida
     private String isValid;
 
 
-    public VotedCandidateEntity() {
+    public VotedCandidate() {
     }
 
-    protected VotedCandidateEntity(Parcel in) {
+    protected VotedCandidate(Parcel in) {
         nodeId = in.readString();
         name = in.readString();
         countryCode = in.readString();
@@ -114,23 +112,23 @@ public class VotedCandidateEntity implements Parcelable, Comparable<VotedCandida
         countryEntity = in.readParcelable(countryEntity.getClass().getClassLoader());
     }
 
-    public static final Creator<VotedCandidateEntity> CREATOR = new Creator<VotedCandidateEntity>() {
+    public static final Creator<VotedCandidate> CREATOR = new Creator<VotedCandidate>() {
         @Override
-        public VotedCandidateEntity createFromParcel(Parcel in) {
-            return new VotedCandidateEntity(in);
+        public VotedCandidate createFromParcel(Parcel in) {
+            return new VotedCandidate(in);
         }
 
         @Override
-        public VotedCandidateEntity[] newArray(int size) {
-            return new VotedCandidateEntity[size];
+        public VotedCandidate[] newArray(int size) {
+            return new VotedCandidate[size];
         }
     };
 
-    public CountryEntity getCountryEntity() {
+    public Country getCountryEntity() {
         return countryEntity;
     }
 
-    public void setCountryEntity(CountryEntity countryEntity) {
+    public void setCountryEntity(Country countryEntity) {
         this.countryEntity = countryEntity;
     }
 
@@ -290,7 +288,7 @@ public class VotedCandidateEntity implements Parcelable, Comparable<VotedCandida
     }
 
     @Override
-    public int compareTo(VotedCandidateEntity o) {
+    public int compareTo(VotedCandidate o) {
         //按时间排序
 //        return Long.compare(DateUtil.parse(o.transactionTime,DateUtil.DATETIME_FORMAT_PATTERN_WITH_SECOND),DateUtil.parse(transactionTime,DateUtil.DATETIME_FORMAT_PATTERN_WITH_SECOND));
         return Long.compare(NumberParserUtils.parseLong(o.transactionTime), NumberParserUtils.parseLong(transactionTime));

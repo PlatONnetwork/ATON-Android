@@ -1,12 +1,12 @@
 package com.juzix.wallet.entity;
 
 import com.juzix.wallet.app.Constants;
-import com.juzix.wallet.db.entity.NodeInfoEntity;
+import com.juzix.wallet.db.entity.NodeEntity;
 
 /**
  * @author matrixelement
  */
-public class NodeEntity implements Cloneable, Nullable {
+public class Node implements Cloneable, Nullable {
 
     private long id;
     /**
@@ -26,11 +26,11 @@ public class NodeEntity implements Cloneable, Nullable {
 
     private boolean isChecked = false;
 
-    protected NodeEntity() {
+    protected Node() {
 
     }
 
-    private NodeEntity(Builder builder) {
+    private Node(Builder builder) {
         setId(builder.id);
         setNodeAddress(builder.nodeAddress);
         setDefaultNode(builder.isDefaultNode);
@@ -39,12 +39,12 @@ public class NodeEntity implements Cloneable, Nullable {
         setMainNetworkNode(builder.isMainNetworkNode);
     }
 
-    public static NodeEntity createNullNode() {
-        return NullNodeEntity.getInstance();
+    public static Node createNullNode() {
+        return NullNode.getInstance();
     }
 
-    public NodeInfoEntity createNodeInfo() {
-        return new NodeInfoEntity(id, nodeAddress, isDefaultNode, isChecked, isMainNetworkNode);
+    public NodeEntity createNodeInfo() {
+        return new NodeEntity(id, nodeAddress, isDefaultNode, isChecked, isMainNetworkNode);
     }
 
     public String getNodeAddress() {
@@ -106,18 +106,18 @@ public class NodeEntity implements Cloneable, Nullable {
             return true;
         }
 
-        if (obj instanceof NodeEntity) {
-            NodeEntity node = (NodeEntity) obj;
+        if (obj instanceof Node) {
+            Node node = (Node) obj;
             return id == node.id;
         }
         return super.equals(obj);
     }
 
     @Override
-    public NodeEntity clone() {
-        NodeEntity nodeEntity = null;
+    public Node clone() {
+        Node nodeEntity = null;
         try {
-            nodeEntity = (NodeEntity) super.clone();
+            nodeEntity = (Node) super.clone();
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
@@ -172,8 +172,8 @@ public class NodeEntity implements Cloneable, Nullable {
             return this;
         }
 
-        public NodeEntity build() {
-            return new NodeEntity(this);
+        public Node build() {
+            return new Node(this);
         }
     }
 

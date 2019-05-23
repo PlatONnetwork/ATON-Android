@@ -1,6 +1,6 @@
 package com.juzix.wallet.entity;
 
-class NullCountryEntity extends CountryEntity {
+class NullCountry extends Country {
 
     @Override
     public boolean isNull() {

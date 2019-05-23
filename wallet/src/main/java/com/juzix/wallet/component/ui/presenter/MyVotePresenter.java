@@ -12,13 +12,13 @@ import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.MyVoteContract;
 import com.juzix.wallet.component.ui.view.SubmitVoteActivity;
-import com.juzix.wallet.engine.IndividualWalletManager;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
-import com.juzix.wallet.entity.CountryEntity;
-import com.juzix.wallet.entity.IndividualWalletEntity;
-import com.juzix.wallet.entity.VoteSummaryEntity;
-import com.juzix.wallet.entity.VotedCandidateEntity;
+import com.juzix.wallet.engine.WalletManager;
+import com.juzix.wallet.entity.Country;
+import com.juzix.wallet.entity.VoteSummary;
+import com.juzix.wallet.entity.VotedCandidate;
+import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.CountryUtil;
 import com.juzix.wallet.utils.RxUtils;
@@ -56,7 +56,7 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
 
     @Override
     public void loadMyVoteData() {
-        List<String> walletAddressList = IndividualWalletManager.getInstance().getAddressList();
+        List<String> walletAddressList = WalletManager.getInstance().getAddressList();
         getBatchVoteTransaction(walletAddressList.toArray(new String[walletAddressList.size()]));
     }
 
@@ -64,7 +64,7 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
     public void voteTicket(String nodeId, String nodeName) {
         if (isViewAttached()) {
 
-            ArrayList<IndividualWalletEntity> walletEntityList = IndividualWalletManager.getInstance().getWalletList();
+            List<Wallet> walletEntityList = WalletManager.getInstance().getWalletList();
             if (walletEntityList.isEmpty()) {
                 showLongToast(R.string.voteTicketCreateWalletTips);
                 return;
@@ -72,10 +72,10 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
 
             Flowable
                     .fromIterable(walletEntityList)
-                    .map(new Function<IndividualWalletEntity, Double>() {
+                    .map(new Function<Wallet, Double>() {
 
                         @Override
-                        public Double apply(IndividualWalletEntity individualWalletEntity) throws Exception {
+                        public Double apply(Wallet individualWalletEntity) throws Exception {
                             return individualWalletEntity.getBalance();
                         }
                     })
@@ -104,25 +104,25 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
         ServerUtils.getCommonApi().getVotedCandidateList(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
                 .put("walletAddrs", addressList)
                 .build())
-                .flatMap(new Function<Response<ApiResponse<List<VotedCandidateEntity>>>, SingleSource<Response<ApiResponse<List<VotedCandidateEntity>>>>>() {
+                .flatMap(new Function<Response<ApiResponse<List<VotedCandidate>>>, SingleSource<Response<ApiResponse<List<VotedCandidate>>>>>() {
                     @Override
-                    public SingleSource<Response<ApiResponse<List<VotedCandidateEntity>>>> apply(Response<ApiResponse<List<VotedCandidateEntity>>> apiResponseResponse) throws Exception {
+                    public SingleSource<Response<ApiResponse<List<VotedCandidate>>>> apply(Response<ApiResponse<List<VotedCandidate>>> apiResponseResponse) throws Exception {
                         if (apiResponseResponse == null || !apiResponseResponse.isSuccessful()) {
                             return Single.just(Response.success(new ApiResponse(ApiErrorCode.NETWORK_ERROR)));
                         } else {
-                            List<VotedCandidateEntity> list = apiResponseResponse.body().getData();
-                            List<CountryEntity> countryEntityList = CountryUtil.getCountryList(getContext());
+                            List<VotedCandidate> list = apiResponseResponse.body().getData();
+                            List<Country> countryEntityList = CountryUtil.getCountryList(getContext());
                             return Flowable.fromIterable(list)
-                                    .map(new Function<VotedCandidateEntity, VotedCandidateEntity>() {
+                                    .map(new Function<VotedCandidate, VotedCandidate>() {
                                         @Override
-                                        public VotedCandidateEntity apply(VotedCandidateEntity votedCandidateEntity) throws Exception {
+                                        public VotedCandidate apply(VotedCandidate votedCandidateEntity) throws Exception {
                                             votedCandidateEntity.setCountryEntity(getCountryEntityByCountryCode(countryEntityList, votedCandidateEntity.getCountryCode()));
                                             return votedCandidateEntity;
                                         }
                                     }).toList()
-                                    .map(new Function<List<VotedCandidateEntity>, Response<ApiResponse<List<VotedCandidateEntity>>>>() {
+                                    .map(new Function<List<VotedCandidate>, Response<ApiResponse<List<VotedCandidate>>>>() {
                                         @Override
-                                        public Response<ApiResponse<List<VotedCandidateEntity>>> apply(List<VotedCandidateEntity> entityList) throws Exception {
+                                        public Response<ApiResponse<List<VotedCandidate>>> apply(List<VotedCandidate> entityList) throws Exception {
                                             return Response.success(new ApiResponse<>(ApiErrorCode.SUCCESS, entityList));
                                         }
                                     });
@@ -132,9 +132,9 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
                 })
                 .compose(bindToLifecycle())
                 .compose(RxUtils.getSingleSchedulerTransformer())
-                .subscribe(new ApiSingleObserver<List<VotedCandidateEntity>>() {
+                .subscribe(new ApiSingleObserver<List<VotedCandidate>>() {
                     @Override
-                    public void onApiSuccess(List<VotedCandidateEntity> entityList) {
+                    public void onApiSuccess(List<VotedCandidate> entityList) {
                         if(isViewAttached()){
                             if (entityList != null && entityList.size() > 0) {
                                 getView().showBatchVoteSummary(buildVoteTitleList(entityList));
@@ -167,7 +167,7 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
 
     }
 
-    private List<VoteSummaryEntity> buildVoteTitleList(List<VotedCandidateEntity> entityList) {
+    private List<VoteSummary> buildVoteTitleList(List<VotedCandidate> entityList) {
         Map<String, Object> stringObjectMap = new HashMap<>();
         double totalTicketNum = 0;//总票数
         double lockedNum = 0;//投票锁定
@@ -176,7 +176,7 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
 
         stringObjectMap.clear();
 
-        for (VotedCandidateEntity entity : entityList) {
+        for (VotedCandidate entity : entityList) {
             totalTicketNum += NumberParserUtils.parseDouble(entity.getTotalTicketNum());
             lockedNum += NumberParserUtils.parseDouble(entity.getLocked());
             voteReward += NumberParserUtils.parseDouble(entity.getEarnings());
@@ -194,53 +194,53 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
 
     }
 
-    private CountryEntity getCountryEntityByCountryCode(List<CountryEntity> countryEntityList, String countryCode) {
+    private Country getCountryEntityByCountryCode(List<Country> countryEntityList, String countryCode) {
         if (countryEntityList == null || TextUtils.isEmpty(countryCode)) {
-            return CountryEntity.getNullInstance();
+            return Country.getNullInstance();
         }
         return Flowable
                 .fromIterable(countryEntityList)
-                .filter(new Predicate<CountryEntity>() {
+                .filter(new Predicate<Country>() {
                     @Override
-                    public boolean test(CountryEntity countryEntity) throws Exception {
+                    public boolean test(Country countryEntity) throws Exception {
                         return countryCode.equals(countryEntity.getCountryCode());
                     }
                 })
                 .firstElement()
-                .switchIfEmpty(new SingleSource<CountryEntity>() {
+                .switchIfEmpty(new SingleSource<Country>() {
                     @Override
-                    public void subscribe(SingleObserver<? super CountryEntity> observer) {
+                    public void subscribe(SingleObserver<? super Country> observer) {
                         observer.onError(new Throwable());
                     }
                 })
-                .onErrorReturnItem(CountryEntity.getNullInstance())
+                .onErrorReturnItem(Country.getNullInstance())
                 .blockingGet();
     }
 
-    private List<VotedCandidateEntity> BuildSortList(List<VotedCandidateEntity> list) {
+    private List<VotedCandidate> BuildSortList(List<VotedCandidate> list) {
         Collections.sort(list, Collections.reverseOrder());
         return list;
     }
 
-    private List<VoteSummaryEntity> buildDefaultVoteSummaryList() {
-        List<VoteSummaryEntity> voteSummaryEntityList = new ArrayList<>();
-        voteSummaryEntityList.add(new VoteSummaryEntity(String.format("%s%s", string(R.string.lockVote), "(Energon)"), String.valueOf("-")));
-        voteSummaryEntityList.add(new VoteSummaryEntity(String.format("%s%s", string(R.string.votingIncome), "(Energon)"), String.valueOf("-")));
-        voteSummaryEntityList.add(new VoteSummaryEntity(String.format("%s", string(R.string.validInvalidTicket)), String.format("%s/%s", "-", "-")));
+    private List<VoteSummary> buildDefaultVoteSummaryList() {
+        List<VoteSummary> voteSummaryEntityList = new ArrayList<>();
+        voteSummaryEntityList.add(new VoteSummary(String.format("%s%s", string(R.string.lockVote), "(Energon)"), String.valueOf("-")));
+        voteSummaryEntityList.add(new VoteSummary(String.format("%s%s", string(R.string.votingIncome), "(Energon)"), String.valueOf("-")));
+        voteSummaryEntityList.add(new VoteSummary(String.format("%s", string(R.string.validInvalidTicket)), String.format("%s/%s", "-", "-")));
         return voteSummaryEntityList;
     }
 
-    private List<VoteSummaryEntity> buildVoteSummaryList(Map<String, Object> map) {
-        List<VoteSummaryEntity> voteSummaryEntityList = new ArrayList<>();
+    private List<VoteSummary> buildVoteSummaryList(Map<String, Object> map) {
+        List<VoteSummary> voteSummaryEntityList = new ArrayList<>();
         if (map != null && !map.isEmpty()) {
             double locked = MapUtils.getDouble(map, TAG_LOCKED);
             double earnings = MapUtils.getDouble(map, TAG_EARNINGS);
             double invalidNum = MapUtils.getDouble(map, TAG_INVALIDNUM);
             double validNum = MapUtils.getDouble(map, TAG_VALIDNUM);
 
-            voteSummaryEntityList.add(new VoteSummaryEntity(String.format("%s%s", string(R.string.lockVote), "(Energon)"), NumberParserUtils.getPrettyNumber(locked, 0)));
-            voteSummaryEntityList.add(new VoteSummaryEntity(String.format("%s%s", string(R.string.votingIncome), "(Energon)"), NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(earnings, 1E18), 4)));
-            voteSummaryEntityList.add(new VoteSummaryEntity(String.format("%s", string(R.string.validInvalidTicket)), String.format("%s/%s", NumberParserUtils.getPrettyNumber(validNum, 0), NumberParserUtils.getPrettyNumber(invalidNum, 0))));
+            voteSummaryEntityList.add(new VoteSummary(String.format("%s%s", string(R.string.lockVote), "(Energon)"), NumberParserUtils.getPrettyNumber(locked, 0)));
+            voteSummaryEntityList.add(new VoteSummary(String.format("%s%s", string(R.string.votingIncome), "(Energon)"), NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(earnings, 1E18), 4)));
+            voteSummaryEntityList.add(new VoteSummary(String.format("%s", string(R.string.validInvalidTicket)), String.format("%s/%s", NumberParserUtils.getPrettyNumber(validNum, 0), NumberParserUtils.getPrettyNumber(invalidNum, 0))));
         }
 
         return voteSummaryEntityList;

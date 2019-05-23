@@ -15,7 +15,7 @@ import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.UserQRCodeContract;
 import com.juzix.wallet.config.JZAppConfigure;
 import com.juzix.wallet.config.JZDirType;
-import com.juzix.wallet.entity.WalletEntity;
+import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.PhotoUtil;
 
 import java.io.File;
@@ -32,7 +32,7 @@ public class UserQRCodePresenter extends BasePresenter<UserQRCodeContract.View> 
     @Override
     public void update() {
         UserQRCodeContract.View view = getView();
-        WalletEntity walletEntity = view.getWalletFromIntent();
+        Wallet walletEntity = view.getWalletFromIntent();
         view.showWalletName(walletEntity.getName());
         view.showWalletAddress(walletEntity.getPrefixAddress());
         Context context = getContext();

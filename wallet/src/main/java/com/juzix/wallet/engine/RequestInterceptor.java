@@ -1,17 +1,11 @@
-package com.juzhen.framework.network;
+package com.juzix.wallet.engine;
 
-
-import android.os.UserManager;
-
-import com.juzhen.framework.util.DeviceManager;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import okhttp3.Headers;
-import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -21,17 +15,12 @@ import okhttp3.Response;
  */
 public class RequestInterceptor implements Interceptor {
 
-    private Map<String, String> mHeaders = new HashMap<>();
-
-    public RequestInterceptor(Map<String, String> heads) {
-        this.mHeaders = heads;
-    }
-
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request original = chain.request();
+        //mHeaders为静态请求头，x-aton-cid为动态请求头
         Request.Builder requestBuilder = original.newBuilder()
-                .headers(Headers.of(mHeaders))
+                .addHeader("x-aton-cid", NodeManager.getInstance().getChainId())
                 .method(original.method(), original.body());
         return chain.proceed(requestBuilder.build());
     }

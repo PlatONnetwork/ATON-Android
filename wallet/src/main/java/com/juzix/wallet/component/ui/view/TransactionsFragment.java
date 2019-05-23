@@ -12,7 +12,7 @@ import com.juzix.wallet.component.adapter.TransactionListsAdapter;
 import com.juzix.wallet.component.ui.base.MVPBaseFragment;
 import com.juzix.wallet.component.ui.contract.TransactionsContract;
 import com.juzix.wallet.component.ui.presenter.TransactionsPresenter;
-import com.juzix.wallet.entity.TransactionEntity;
+import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 
@@ -87,7 +87,7 @@ public class TransactionsFragment extends MVPBaseFragment<TransactionsPresenter>
 
 
     @Override
-    public void notifyTransactionListChanged(List<TransactionEntity> transactionEntityList) {
+    public void notifyTransactionListChanged(List<Transaction> transactionEntityList) {
         transactionListAdapter.notifyDataChanged(transactionEntityList);
     }
 

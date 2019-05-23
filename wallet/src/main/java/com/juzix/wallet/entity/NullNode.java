@@ -5,14 +5,14 @@ import java.util.UUID;
 /**
  * @author matrixelement
  */
-public class NullNodeEntity extends NodeEntity {
+public class NullNode extends Node {
 
-    private NullNodeEntity() {
+    private NullNode() {
         this.setId(UUID.randomUUID().hashCode());
     }
     
-    public static NullNodeEntity getInstance() {
-        return new NullNodeEntity();
+    public static NullNode getInstance() {
+        return new NullNode();
     }
 
     @Override

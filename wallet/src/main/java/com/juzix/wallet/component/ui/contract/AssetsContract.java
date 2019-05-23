@@ -2,7 +2,7 @@ package com.juzix.wallet.component.ui.contract;
 
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
-import com.juzix.wallet.entity.WalletEntity;
+import com.juzix.wallet.entity.Wallet;
 
 import java.util.List;
 
@@ -12,11 +12,12 @@ import java.util.List;
 public class AssetsContract {
 
     public interface View extends IView {
+
         void showTotalBalance(double totalBalance);
 
-        void showWalletList(WalletEntity selectedWallet);
+        void showWalletList(Wallet selectedWallet);
 
-        void showWalletInfo(WalletEntity walletEntity);
+        void showWalletInfo(Wallet walletEntity);
 
         void showEmptyView(boolean isEmpty);
 
@@ -24,26 +25,30 @@ public class AssetsContract {
 
         void showBalance(double balance);
 
-        void setArgument(WalletEntity entity);
+        void setArgument(Wallet entity);
 
         void notifyItemChanged(int position);
 
         void notifyAllChanged();
+
+        void finishRefresh();
+
+        void finishLoadMore();
     }
 
     public interface Presenter extends IPresenter<View> {
 
-        void start();
-
-        List<WalletEntity> getRecycleViewDataSource();
+        List<Wallet> getRecycleViewDataSource();
 
         void fetchWalletList();
 
-        void clickRecycleViewItem(WalletEntity walletEntity);
+        void clickRecycleViewItem(Wallet walletEntity);
 
         void backupWallet();
 
-        boolean needBackup(WalletEntity walletEntity);
+        boolean needBackup(Wallet walletEntity);
+
+        void fetchWalletsBalance();
 
     }
 }

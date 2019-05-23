@@ -90,9 +90,8 @@ public class Constants {
     public interface URL {
         String UPDATE_URL = "https://download.platon.network/aton-update.json";
         String URL_TEST_A = "https://test-amigo.platon.network/test";
-        String URL_TEST_B = " https://test-beta.platon.network/test";
+        String URL_TEST_B = "https://test-beta.platon.network/test";
         String URL_HTTP_A = "https://aton.platon.network";
-        //        String URL_HTTP_A = "http://54.252.202.130:10000/";
         String URL_HTTP_B = "https://aton.platon.network";
         String URL_HTTP_C = "http://192.168.9.190:20060/";
     }

@@ -4,8 +4,7 @@ import android.graphics.Bitmap;
 
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
-import com.juzix.wallet.entity.IndividualWalletEntity;
-import com.juzix.wallet.entity.WalletEntity;
+import com.juzix.wallet.entity.Wallet;
 
 /**
  * @author matrixelement
@@ -14,9 +13,9 @@ public class ReceiveTransationContract {
 
     public interface View extends IView {
 
-        WalletEntity getWalletFromIntent();
+        Wallet getWalletFromIntent();
 
-        void setWalletInfo(WalletEntity walletEntity);
+        void setWalletInfo(Wallet walletEntity);
 
         void setWalletAddressQrCode(Bitmap bitmap);
 

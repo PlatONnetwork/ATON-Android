@@ -2,7 +2,7 @@ package com.juzix.wallet.db.entity;
 
 import com.juzix.wallet.entity.SingleVoteEntity;
 import com.juzix.wallet.entity.TicketEntity;
-import com.juzix.wallet.entity.VoteTransactionEntity;
+import com.juzix.wallet.entity.VoteTransaction;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.JSONUtil;
 
@@ -457,8 +457,8 @@ public class SingleVoteInfoEntity extends RealmObject implements Cloneable {
         return JSONUtil.parseObject(JSONUtil.toJSONString(this), SingleVoteEntity.class);
     }
 
-    public VoteTransactionEntity buildVoteTransactionEntity() {
-        return new VoteTransactionEntity.Builder(getUuid(), getCreateTime(), getWalletName())
+    public VoteTransaction buildVoteTransactionEntity() {
+        return new VoteTransaction.Builder(getUuid(), getCreateTime(), getWalletName())
                 .hash(getHash())
                 .fromAddress(getWalletAddress())
                 .toAddress(getContractAddress())

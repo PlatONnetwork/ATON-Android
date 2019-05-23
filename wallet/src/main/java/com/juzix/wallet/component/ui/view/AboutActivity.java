@@ -20,12 +20,10 @@ import com.juzix.wallet.component.ui.dialog.CommonTipsDialogFragment;
 import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
 import com.juzix.wallet.engine.VersionManager;
 import com.juzix.wallet.engine.VersionUpdate;
-import com.juzix.wallet.entity.VersionEntity;
+import com.juzix.wallet.entity.VersionInfo;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.ShareUtil;
 import com.tbruyelle.rxpermissions2.RxPermissions;
-
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -106,9 +104,9 @@ public class AboutActivity extends BaseActivity {
         VersionManager.getInstance().getVersion()
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(RxUtils.bindToLifecycle(this))
-                .subscribe(new Consumer<VersionEntity>() {
+                .subscribe(new Consumer<VersionInfo>() {
                     @Override
-                    public void accept(VersionEntity versionEntity) {
+                    public void accept(VersionInfo versionEntity) {
                         String oldVersion = AndroidUtil.getVersionName(getContext()).toLowerCase();
                         if (!oldVersion.startsWith("v")) {
                             oldVersion = "v" + oldVersion;
@@ -132,9 +130,9 @@ public class AboutActivity extends BaseActivity {
         VersionManager.getInstance().getVersion()
                 .compose(new SchedulersTransformer())
                 .compose(LoadingTransformer.bindToSingleLifecycle(this))
-                .subscribe(new Consumer<VersionEntity>() {
+                .subscribe(new Consumer<VersionInfo>() {
                     @Override
-                    public void accept(VersionEntity versionEntity) {
+                    public void accept(VersionInfo versionEntity) {
                         String oldVersion = AndroidUtil.getVersionName(getContext()).toLowerCase();
                         if (!oldVersion.startsWith("v")) {
                             oldVersion = "v" + oldVersion;

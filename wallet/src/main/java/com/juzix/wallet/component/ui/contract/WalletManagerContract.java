@@ -2,7 +2,7 @@ package com.juzix.wallet.component.ui.contract;
 
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
-import com.juzix.wallet.entity.WalletEntity;
+import com.juzix.wallet.entity.Wallet;
 
 import java.util.ArrayList;
 
@@ -22,7 +22,7 @@ public class WalletManagerContract {
 
     public interface Presenter extends IPresenter<View> {
 
-        ArrayList<WalletEntity> getDataSource();
+        ArrayList<Wallet> getDataSource();
 
         void fetchWalletList();
 

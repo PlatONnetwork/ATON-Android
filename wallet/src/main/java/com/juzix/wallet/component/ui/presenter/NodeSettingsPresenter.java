@@ -12,10 +12,10 @@ import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.NodeSettingsContract;
 import com.juzix.wallet.component.ui.view.OperateMenuActivity;
 import com.juzix.wallet.config.AppSettings;
-import com.juzix.wallet.db.entity.IndividualWalletInfoEntity;
-import com.juzix.wallet.db.sqlite.IndividualWalletInfoDao;
+import com.juzix.wallet.db.entity.WalletEntity;
+import com.juzix.wallet.db.sqlite.WalletInfoDao;
 import com.juzix.wallet.engine.NodeManager;
-import com.juzix.wallet.entity.NodeEntity;
+import com.juzix.wallet.entity.Node;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.RxUtils;
 
@@ -62,11 +62,11 @@ public class NodeSettingsPresenter extends BasePresenter<NodeSettingsContract.Vi
     public void cancel() {
         mEdited = false;
         if (isViewAttached()) {
-            List<NodeEntity> nodeList = getView().getNodeList();
-            List<NodeEntity> removeNodeList = new ArrayList<>();
+            List<Node> nodeList = getView().getNodeList();
+            List<Node> removeNodeList = new ArrayList<>();
             if (nodeList != null && !nodeList.isEmpty()) {
                 for (int i = 0; i < nodeList.size(); i++) {
-                    NodeEntity node = nodeList.get(i);
+                    Node node = nodeList.get(i);
                     if (node.isDefaultNode() || !TextUtils.isEmpty(node.getNodeAddress())) {
                         continue;
                     }
@@ -93,9 +93,9 @@ public class NodeSettingsPresenter extends BasePresenter<NodeSettingsContract.Vi
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(((BaseActivity) getView()).bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<List<NodeEntity>>() {
+                .subscribe(new Consumer<List<Node>>() {
                     @Override
-                    public void accept(List<NodeEntity> nodeEntityList) throws Exception {
+                    public void accept(List<Node> nodeEntityList) throws Exception {
                         if (isViewAttached()) {
                             getView().notifyDataChanged(nodeEntityList);
                         }
@@ -110,13 +110,13 @@ public class NodeSettingsPresenter extends BasePresenter<NodeSettingsContract.Vi
 
             ((BaseActivity) getView()).hideSoftInput();
 
-            List<NodeEntity> nodeList = getView().getNodeList();
-            List<NodeEntity> removeNodeList = new ArrayList<>();
-            List<NodeEntity> errorNodeList = new ArrayList<>();
-            List<NodeEntity> normalNodeList = new ArrayList<>();
+            List<Node> nodeList = getView().getNodeList();
+            List<Node> removeNodeList = new ArrayList<>();
+            List<Node> errorNodeList = new ArrayList<>();
+            List<Node> normalNodeList = new ArrayList<>();
             if (nodeList != null && !nodeList.isEmpty()) {
                 for (int i = 0; i < nodeList.size(); i++) {
-                    NodeEntity node = nodeList.get(i);
+                    Node node = nodeList.get(i);
                     if (node.isDefaultNode()) {
                         continue;
                     }
@@ -126,7 +126,7 @@ public class NodeSettingsPresenter extends BasePresenter<NodeSettingsContract.Vi
                     if (TextUtils.isEmpty(nodeAddress)) {
                         removeNodeList.add(node);
                     } else {
-                        NodeEntity nodeEntity = node.clone();
+                        Node nodeEntity = node.clone();
                         String address = nodeAddress.trim();
                         if (address.matches(IP_WITH_HTTP_PREFIX) || address.matches(IP_WITHOUT_HTTP_PREFIX)) {
                             if (address.matches(IP_WITHOUT_HTTP_PREFIX)) {
@@ -161,7 +161,7 @@ public class NodeSettingsPresenter extends BasePresenter<NodeSettingsContract.Vi
     }
 
     @Override
-    public void delete(NodeEntity nodeEntity) {
+    public void delete(Node nodeEntity) {
         NodeManager.getInstance()
                 .deleteNode(nodeEntity)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -176,7 +176,7 @@ public class NodeSettingsPresenter extends BasePresenter<NodeSettingsContract.Vi
     }
 
     @Override
-    public void updateNode(NodeEntity nodeEntity, boolean isChecked) {
+    public void updateNode(Node nodeEntity, boolean isChecked) {
         NodeManager
                 .getInstance()
                 .updateNode(nodeEntity, isChecked)
@@ -226,7 +226,7 @@ public class NodeSettingsPresenter extends BasePresenter<NodeSettingsContract.Vi
         return Single.create(new SingleOnSubscribe<Boolean>() {
             @Override
             public void subscribe(SingleEmitter<Boolean> emitter) throws Exception {
-                List<IndividualWalletInfoEntity> individualWalletInfoEntityList = IndividualWalletInfoDao.getWalletInfoList();
+                List<WalletEntity> individualWalletInfoEntityList = WalletInfoDao.getWalletInfoList();
                 if (individualWalletInfoEntityList.isEmpty()) {
                     emitter.onError(new CustomThrowable(CustomThrowable.CODE_ERROR_NOT_EXIST_VALID_WALLET));
                 } else {
@@ -236,7 +236,7 @@ public class NodeSettingsPresenter extends BasePresenter<NodeSettingsContract.Vi
         });
     }
 
-    private void insertNodeList(List<NodeEntity> nodeEntityList) {
+    private void insertNodeList(List<Node> nodeEntityList) {
 
         NodeManager.getInstance()
                 .insertNodeList(nodeEntityList)

@@ -3,17 +3,13 @@ package com.juzix.wallet.engine;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.juzhen.framework.network.ApiRequestBody;
-import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomThrowable;
-import com.juzix.wallet.db.sqlite.IndividualTransactionInfoDao;
 import com.juzix.wallet.entity.IndividualTransactionEntity;
-import com.juzix.wallet.entity.IndividualWalletEntity;
+import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.BigDecimalUtil;
-import com.juzix.wallet.utils.NumericUtil;
 
 import org.spongycastle.util.encoders.Hex;
 import org.web3j.abi.PlatOnTypeEncoder;
@@ -22,7 +18,6 @@ import org.web3j.crypto.Credentials;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionEncoder;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
-import org.web3j.protocol.core.methods.response.Transaction;
 import org.web3j.rlp.RlpEncoder;
 import org.web3j.rlp.RlpList;
 import org.web3j.rlp.RlpString;
@@ -46,28 +41,27 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.Response;
 
 /**
  * @author matrixelement
  */
-public class IndividualWalletTransactionManager {
+public class TransactionManager {
 
-    private final static String TAG = IndividualWalletTransactionManager.class.getSimpleName();
+    private final static String TAG = TransactionManager.class.getSimpleName();
 
-    private IndividualWalletTransactionManager() {
+    private TransactionManager() {
 
     }
 
     private static class InstanceHolder {
-        private static volatile IndividualWalletTransactionManager INSTANCE = new IndividualWalletTransactionManager();
+        private static volatile TransactionManager INSTANCE = new TransactionManager();
     }
 
-    public static IndividualWalletTransactionManager getInstance() {
+    public static TransactionManager getInstance() {
         return InstanceHolder.INSTANCE;
     }
 
-    public IndividualWalletEntity getBalanceByAddress(IndividualWalletEntity walletEntity) {
+    public Wallet getBalanceByAddress(Wallet walletEntity) {
         walletEntity.setBalance(Web3jManager.getInstance().getBalance(walletEntity.getPrefixAddress()));
         return walletEntity;
     }
@@ -155,7 +149,7 @@ public class IndividualWalletTransactionManager {
                 return Single.fromCallable(new Callable<Boolean>() {
                     @Override
                     public Boolean call() throws Exception {
-//                        return IndividualTransactionInfoDao.insertTransaction(individualTransactionEntity.buildIndividualTransactionInfoEntity());
+//                        return TransactionInfoDao.insertTransaction(individualTransactionEntity.buildIndividualTransactionInfoEntity());
                         return null;
                     }
                 }).filter(new Predicate<Boolean>() {
@@ -204,7 +198,7 @@ public class IndividualWalletTransactionManager {
                     @Override
                     public void accept(IndividualTransactionEntity individualTransactionEntity) throws Exception {
                         if (individualTransactionEntity.isCompleted()) {
-//                            boolean success = IndividualTransactionInfoDao.insertTransaction(individualTransactionEntity.buildIndividualTransactionInfoEntity());
+//                            boolean success = TransactionInfoDao.insertTransaction(individualTransactionEntity.buildIndividualTransactionInfoEntity());
                             boolean success = false;
                             if (success) {
                                 EventPublisher.getInstance().sendUpdateIndividualWalletTransactionEvent(individualTransactionEntity);

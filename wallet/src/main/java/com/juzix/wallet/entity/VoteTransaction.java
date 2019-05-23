@@ -6,29 +6,29 @@ import android.os.Parcelable;
 /**
  * @author matrixelement
  */
-public class VoteTransactionEntity extends TransactionEntity implements Cloneable, Parcelable {
+public class VoteTransaction extends Transaction implements Cloneable, Parcelable, Comparable<Transaction> {
 
     public static final int STATUS_PENDING = 0;
     public static final int STATUS_SUCCESS = 1;
     public static final int STATUS_FAILED = 2;
-    public static final Creator<VoteTransactionEntity> CREATOR = new Creator<VoteTransactionEntity>() {
+    public static final Creator<VoteTransaction> CREATOR = new Creator<VoteTransaction>() {
         @Override
-        public VoteTransactionEntity createFromParcel(Parcel in) {
-            return new VoteTransactionEntity(in);
+        public VoteTransaction createFromParcel(Parcel in) {
+            return new VoteTransaction(in);
         }
 
         @Override
-        public VoteTransactionEntity[] newArray(int size) {
-            return new VoteTransactionEntity[size];
+        public VoteTransaction[] newArray(int size) {
+            return new VoteTransaction[size];
         }
     };
 
     private int status;
 
-    public VoteTransactionEntity() {
+    public VoteTransaction() {
     }
 
-    private VoteTransactionEntity(Builder builder) {
+    private VoteTransaction(Builder builder) {
 //        setUuid(builder.uuid);
 //        setHash(builder.hash);
 //        setFromAddress(builder.fromAddress);
@@ -44,7 +44,7 @@ public class VoteTransactionEntity extends TransactionEntity implements Cloneabl
 //        setNodeAddress(builder.nodeAddress);
     }
 
-    protected VoteTransactionEntity(Parcel in) {
+    protected VoteTransaction(Parcel in) {
 //        uuid = in.readString();
 //        hash = in.readString();
 //        fromAddress = in.readString();
@@ -91,10 +91,10 @@ public class VoteTransactionEntity extends TransactionEntity implements Cloneabl
     }
 
     @Override
-    public VoteTransactionEntity clone() {
-        VoteTransactionEntity transactionEntity = null;
+    public VoteTransaction clone() {
+        VoteTransaction transactionEntity = null;
         try {
-            transactionEntity = (VoteTransactionEntity) super.clone();
+            transactionEntity = (VoteTransaction) super.clone();
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
@@ -103,7 +103,7 @@ public class VoteTransactionEntity extends TransactionEntity implements Cloneabl
     }
 
     @Override
-    public int compareTo(TransactionEntity o) {
+    public int compareTo(Transaction o) {
         return 0;
     }
 
@@ -193,8 +193,8 @@ public class VoteTransactionEntity extends TransactionEntity implements Cloneabl
             return this;
         }
 
-        public VoteTransactionEntity build() {
-            return new VoteTransactionEntity(this);
+        public VoteTransaction build() {
+            return new VoteTransaction(this);
         }
     }
 }

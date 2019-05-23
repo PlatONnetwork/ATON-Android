@@ -2,9 +2,9 @@ package com.juzix.wallet.event;
 
 import com.juzhen.framework.network.NetState;
 import com.juzix.wallet.entity.IndividualTransactionEntity;
-import com.juzix.wallet.entity.NodeEntity;
-import com.juzix.wallet.entity.VoteTransactionEntity;
-import com.juzix.wallet.entity.WalletEntity;
+import com.juzix.wallet.entity.Node;
+import com.juzix.wallet.entity.VoteTransaction;
+import com.juzix.wallet.entity.Wallet;
 
 public class Event {
 
@@ -32,9 +32,9 @@ public class Event {
 
     public static class UpdateSelectedWalletEvent {
 
-        public WalletEntity walletEntity;
+        public Wallet walletEntity;
 
-        public UpdateSelectedWalletEvent(WalletEntity walletEntity) {
+        public UpdateSelectedWalletEvent(Wallet walletEntity) {
             this.walletEntity = walletEntity;
         }
     }
@@ -80,18 +80,18 @@ public class Event {
 
     public static class UpdateVoteTransactionListEvent {
 
-        public VoteTransactionEntity voteTransactionEntity;
+        public VoteTransaction voteTransactionEntity;
 
-        public UpdateVoteTransactionListEvent(VoteTransactionEntity voteTransactionEntity) {
+        public UpdateVoteTransactionListEvent(VoteTransaction voteTransactionEntity) {
             this.voteTransactionEntity = voteTransactionEntity;
         }
     }
 
     public static class NodeChangedEvent {
 
-        public NodeEntity nodeEntity;
+        public Node nodeEntity;
 
-        public NodeChangedEvent(NodeEntity nodeEntity) {
+        public NodeChangedEvent(Node nodeEntity) {
             this.nodeEntity = nodeEntity;
         }
     }

@@ -2,7 +2,7 @@ package com.juzix.wallet.component.ui.contract;
 
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
-import com.juzix.wallet.entity.NodeEntity;
+import com.juzix.wallet.entity.Node;
 
 import java.util.List;
 
@@ -16,15 +16,15 @@ public class NodeSettingsContract {
 
         void showTitleView(boolean edited);
 
-        void updateNodeList(List<NodeEntity> nodeEntityList);
+        void updateNodeList(List<Node> nodeEntityList);
 
-        void notifyDataChanged(List<NodeEntity> nodeEntityList);
+        void notifyDataChanged(List<Node> nodeEntityList);
 
         String getNodeAddress(long id);
 
-        List<NodeEntity> getNodeList();
+        List<Node> getNodeList();
 
-        void removeNodeList(List<NodeEntity> nodeEntityList);
+        void removeNodeList(List<Node> nodeEntityList);
 
         void setChecked(int position);
     }
@@ -39,8 +39,8 @@ public class NodeSettingsContract {
 
         void save();
 
-        void delete(NodeEntity nodeEntity);
+        void delete(Node nodeEntity);
 
-        void updateNode(NodeEntity nodeEntity, boolean isChecked);
+        void updateNode(Node nodeEntity, boolean isChecked);
     }
 }

@@ -3,7 +3,7 @@ package com.juzix.wallet.component.ui.presenter;
 
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.TransactionsContract;
-import com.juzix.wallet.entity.WalletEntity;
+import com.juzix.wallet.entity.Wallet;
 import io.reactivex.disposables.Disposable;
 
 
@@ -13,7 +13,7 @@ import io.reactivex.disposables.Disposable;
 public class TransactionsPresenter extends BasePresenter<TransactionsContract.View> implements TransactionsContract.Presenter {
 
     private static final String TAG = TransactionsPresenter.class.getSimpleName();
-    private WalletEntity mWalletEntity;
+    private Wallet mWalletEntity;
     private Disposable mDisposable;
 
     public TransactionsPresenter(TransactionsContract.View view) {

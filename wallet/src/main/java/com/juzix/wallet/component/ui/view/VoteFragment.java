@@ -1,8 +1,6 @@
 package com.juzix.wallet.component.ui.view;
 
 import android.animation.Animator;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,8 +17,6 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -42,7 +38,7 @@ import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.base.MVPBaseFragment;
 import com.juzix.wallet.component.ui.contract.VoteContract;
 import com.juzix.wallet.component.ui.presenter.VotePresenter;
-import com.juzix.wallet.entity.CandidateEntity;
+import com.juzix.wallet.entity.Candidate;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.BigDecimalUtil;
@@ -56,13 +52,10 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
 
 /**
  * @author matrixelement
@@ -178,14 +171,14 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
 
         mVoteListAdapter.setOnItemClickListener(new VoteListAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(CandidateEntity candidateEntity) {
+            public void onItemClick(Candidate candidateEntity) {
                 NodeDetailActivity.actionStart(currentActivity(), candidateEntity);
             }
         });
 
         mVoteListAdapter.setOnVoteTicketClickListener(new VoteListAdapter.OnVoteTicketClickListener() {
             @Override
-            public void onVoteTicketClick(CandidateEntity candidateEntity) {
+            public void onVoteTicketClick(Candidate candidateEntity) {
                 mPresenter.voteTicket(candidateEntity);
             }
         });
@@ -339,7 +332,7 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
     }
 
     @Override
-    public void notifyDataSetChanged(List<CandidateEntity> candidateList) {
+    public void notifyDataSetChanged(List<Candidate> candidateList) {
         mVoteListAdapter.notifyDataChanged(candidateList);
     }
 

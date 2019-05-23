@@ -3,8 +3,6 @@ package com.juzix.wallet.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.juzix.wallet.db.entity.IndividualTransactionInfoEntity;
-
 /**
  * @author matrixelement
  */

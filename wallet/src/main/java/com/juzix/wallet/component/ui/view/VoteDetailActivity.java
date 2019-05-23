@@ -15,7 +15,7 @@ import com.juzix.wallet.component.ui.contract.VoteDetailContract;
 import com.juzix.wallet.component.ui.presenter.VoteDetailPresenter;
 import com.juzix.wallet.component.widget.CustomRefreshFooter;
 import com.juzix.wallet.component.widget.CustomRefreshHeader;
-import com.juzix.wallet.entity.VotedCandidateEntity;
+import com.juzix.wallet.entity.VotedCandidate;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
@@ -45,7 +45,7 @@ public class VoteDetailActivity extends MVPBaseActivity<VoteDetailPresenter> imp
     private Unbinder unbinder;
     private VoteDetailListAdapter mVoteDetailListAdapter;
     public int beginSequence = 0;//加载更多需要传入的值
-    private List<VotedCandidateEntity> list = new ArrayList<>();
+    private List<VotedCandidate> list = new ArrayList<>();
     private boolean isLoadMore = false;
 
     @Override
@@ -116,7 +116,7 @@ public class VoteDetailActivity extends MVPBaseActivity<VoteDetailPresenter> imp
     }
 
     @Override
-    public void getVoteDetailListDataSuccess(List<VotedCandidateEntity> entityList) {
+    public void getVoteDetailListDataSuccess(List<VotedCandidate> entityList) {
         if (entityList.size() > 0) {
             beginSequence = entityList.get(entityList.size() - 1).getSequence();
         }

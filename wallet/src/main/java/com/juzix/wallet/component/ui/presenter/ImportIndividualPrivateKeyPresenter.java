@@ -4,14 +4,11 @@ package com.juzix.wallet.component.ui.presenter;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
-
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.ImportIndividualPrivateKeyContract;
 import com.juzix.wallet.component.ui.view.MainActivity;
-import com.juzix.wallet.engine.IndividualWalletManager;
-import com.juzix.wallet.engine.NodeManager;
-import com.juzix.wallet.entity.IndividualWalletEntity;
+import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.utils.CommonUtil;
 
 public class ImportIndividualPrivateKeyPresenter extends BasePresenter<ImportIndividualPrivateKeyContract.View> implements ImportIndividualPrivateKeyContract.Presenter {
@@ -23,7 +20,7 @@ public class ImportIndividualPrivateKeyPresenter extends BasePresenter<ImportInd
     @Override
     public void init() {
         ImportIndividualPrivateKeyContract.View view = getView();
-        if (view != null){
+        if (view != null) {
             view.showQRCode(view.getKeystoreFromIntent());
         }
     }
@@ -43,11 +40,7 @@ public class ImportIndividualPrivateKeyPresenter extends BasePresenter<ImportInd
 
     @Override
     public void importPrivateKey(String privateKey, String name, String password, String repeatPassword) {
-//        if (!AppUtil.validWalletPwd(password)) {
-//            showShortToast(string(R.string.validTips, "6", "32"));
-//            return;
-//        }
-        if (isExists(name)){
+        if (isExists(name)) {
             return;
         }
         if (!password.equals(repeatPassword)) {
@@ -56,27 +49,26 @@ public class ImportIndividualPrivateKeyPresenter extends BasePresenter<ImportInd
         }
 
         showLoadingDialog();
-        new Thread(){
+        new Thread() {
             @Override
             public void run() {
-                IndividualWalletEntity walletEntity = new IndividualWalletEntity.Builder().nodeAddress(NodeManager.getInstance().getCurNodeAddress()).build();
-                int                    code         = IndividualWalletManager.getInstance().importPrivateKey(walletEntity, privateKey, name, password);
+                int code = WalletManager.getInstance().importPrivateKey(privateKey, name, password);
                 switch (code) {
-                    case IndividualWalletManager.CODE_OK:
+                    case WalletManager.CODE_OK:
                         mHandler.sendEmptyMessage(MSG_OK);
                         break;
-                    case IndividualWalletManager.CODE_ERROR_PRIVATEKEY:
+                    case WalletManager.CODE_ERROR_PRIVATEKEY:
                         mHandler.sendEmptyMessage(MSG_PRIVATEKEY_ERROR);
                         break;
-                    case IndividualWalletManager.CODE_ERROR_NAME:
+                    case WalletManager.CODE_ERROR_NAME:
                         break;
-                    case IndividualWalletManager.CODE_ERROR_PASSWORD:
+                    case WalletManager.CODE_ERROR_PASSWORD:
                         mHandler.sendEmptyMessage(MSG_PASSWORD_FAILED);
                         break;
-                    case IndividualWalletManager.CODE_ERROR_WALLET_EXISTS:
+                    case WalletManager.CODE_ERROR_WALLET_EXISTS:
                         mHandler.sendEmptyMessage(MSG_WALLET_EXISTS);
                         break;
-                    case IndividualWalletManager.CODE_ERROR_UNKNOW:
+                    case WalletManager.CODE_ERROR_UNKNOW:
                         mHandler.sendEmptyMessage(MSG_PASSWORD_FAILED);
                         break;
                 }
@@ -86,7 +78,7 @@ public class ImportIndividualPrivateKeyPresenter extends BasePresenter<ImportInd
 
     @Override
     public boolean isExists(String walletName) {
-        return IndividualWalletManager.getInstance().walletNameExists(walletName);
+        return WalletManager.getInstance().isWalletNameExists(walletName);
     }
 
     private static final int MSG_OK = 1;
@@ -94,11 +86,11 @@ public class ImportIndividualPrivateKeyPresenter extends BasePresenter<ImportInd
     private static final int MSG_PRIVATEKEY_ERROR = -2;
     private static final int MSG_WALLET_EXISTS = -3;
 
-    private Handler mHandler = new Handler(){
+    private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case MSG_OK:
                     dismissLoadingDialogImmediately();
                     MainActivity.actionStart(currentActivity());

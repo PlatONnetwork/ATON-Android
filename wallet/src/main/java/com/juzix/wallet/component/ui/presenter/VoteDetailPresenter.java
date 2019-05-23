@@ -6,10 +6,10 @@ import com.juzhen.framework.network.ApiSingleObserver;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.VoteDetailContract;
-import com.juzix.wallet.engine.IndividualWalletManager;
+import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
-import com.juzix.wallet.entity.VotedCandidateEntity;
+import com.juzix.wallet.entity.VotedCandidate;
 import com.juzix.wallet.utils.RxUtils;
 
 import java.util.Collections;
@@ -21,6 +21,7 @@ import java.util.List;
  * @author matrixelement
  */
 public class VoteDetailPresenter extends BasePresenter<VoteDetailContract.View> implements VoteDetailContract.Presenter {
+
     private String mNodeId;
     private String mNodeName;
 
@@ -33,7 +34,7 @@ public class VoteDetailPresenter extends BasePresenter<VoteDetailContract.View> 
     @Override
     public void loadVoteDetailData(int beginSequence) {
         getView().showNodeInfo(mNodeName,mNodeId);
-        List<String> walletAddressList = IndividualWalletManager.getInstance().getAddressList();
+        List<String> walletAddressList = WalletManager.getInstance().getAddressList();
         getVoteDetailListData(beginSequence, Constants.VoteConstants.LIST_SIZE, mNodeId, Constants.VoteConstants.REQUEST_DIRECTION, walletAddressList.toArray(new String[walletAddressList.size()]));
     }
 
@@ -55,15 +56,13 @@ public class VoteDetailPresenter extends BasePresenter<VoteDetailContract.View> 
                 .build())
                 .compose(bindToLifecycle())
                 .compose(RxUtils.getSingleSchedulerTransformer())
-                .subscribe(new ApiSingleObserver<List<VotedCandidateEntity>>() {
+                .subscribe(new ApiSingleObserver<List<VotedCandidate>>() {
                     @Override
-                    public void onApiSuccess(List<VotedCandidateEntity> entityList) {
-                        if(isViewAttached()){
-                            if (entityList != null && entityList.size() > 0) {
-                                getView().getVoteDetailListDataSuccess(buildSortVoteDetailList(entityList));
-                            } else {
-                                getView().getVoteDetailListDataSuccess(entityList);
-                            }
+                    public void onApiSuccess(List<VotedCandidate> entityList) {
+                        if (entityList != null && entityList.size() > 0) {
+                            getView().getVoteDetailListDataSuccess(buildSortVoteDetailList(entityList));
+                        }else {
+                             getView().getVoteDetailListDataSuccess(entityList);
                         }
                     }
 
@@ -84,10 +83,10 @@ public class VoteDetailPresenter extends BasePresenter<VoteDetailContract.View> 
      * @param entityList
      * @return
      */
-    private List<VotedCandidateEntity> buildSortVoteDetailList(List<VotedCandidateEntity> entityList) {
-        Collections.sort(entityList, new Comparator<VotedCandidateEntity>() {
+    private List<VotedCandidate> buildSortVoteDetailList(List<VotedCandidate> entityList) {
+        Collections.sort(entityList, new Comparator<VotedCandidate>() {
             @Override
-            public int compare(VotedCandidateEntity o1, VotedCandidateEntity o2) {
+            public int compare(VotedCandidate o1, VotedCandidate o2) {
                 return o2.getSequence() - o1.getSequence();
             }
         });

@@ -4,9 +4,9 @@ import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.AddressBookContract;
 import com.juzix.wallet.component.ui.view.AddNewAddressActivity;
-import com.juzix.wallet.db.entity.AddressInfoEntity;
+import com.juzix.wallet.db.entity.AddressEntity;
 import com.juzix.wallet.db.sqlite.AddressInfoDao;
-import com.juzix.wallet.entity.AddressEntity;
+import com.juzix.wallet.entity.Address;
 import com.juzix.wallet.utils.CommonUtil;
 
 import java.util.List;
@@ -26,7 +26,7 @@ import io.reactivex.schedulers.Schedulers;
  */
 public class AddressBookPresenter extends BasePresenter<AddressBookContract.View> implements AddressBookContract.Presenter {
 
-    private List<AddressEntity> addressEntityList;
+    private List<Address> addressEntityList;
 
     public AddressBookPresenter(AddressBookContract.View view) {
         super(view);
@@ -34,19 +34,19 @@ public class AddressBookPresenter extends BasePresenter<AddressBookContract.View
 
     @Override
     public void fetchAddressList() {
-        Flowable.fromIterable(AddressInfoDao.getAddressInfoList()).filter(new Predicate<AddressInfoEntity>() {
+        Flowable.fromIterable(AddressInfoDao.getAddressInfoList()).filter(new Predicate<AddressEntity>() {
             @Override
-            public boolean test(AddressInfoEntity addressInfoEntity) throws Exception {
+            public boolean test(AddressEntity addressInfoEntity) throws Exception {
                 return addressInfoEntity != null;
             }
-        }).compose(((BaseActivity) getView()).bindToLifecycle()).map(new Function<AddressInfoEntity, AddressEntity>() {
+        }).compose(((BaseActivity) getView()).bindToLifecycle()).map(new Function<AddressEntity, Address>() {
             @Override
-            public AddressEntity apply(AddressInfoEntity addressInfoEntity) throws Exception {
-                return new AddressEntity(addressInfoEntity.getUuid(), addressInfoEntity.getName(),addressInfoEntity.getAddress(),addressInfoEntity.getAvatar());
+            public Address apply(AddressEntity addressInfoEntity) throws Exception {
+                return new Address(addressInfoEntity.getUuid(), addressInfoEntity.getName(),addressInfoEntity.getAddress(),addressInfoEntity.getAvatar());
             }
-        }).toList().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BiConsumer<List<AddressEntity>, Throwable>() {
+        }).toList().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BiConsumer<List<Address>, Throwable>() {
             @Override
-            public void accept(List<AddressEntity> addressEntities, Throwable throwable) throws Exception {
+            public void accept(List<Address> addressEntities, Throwable throwable) throws Exception {
                 addressEntityList = addressEntities;
                 if (isViewAttached()) {
                     getView().notifyAddressListChanged(addressEntities);

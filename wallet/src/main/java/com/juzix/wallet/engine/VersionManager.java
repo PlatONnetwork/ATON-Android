@@ -1,7 +1,7 @@
 package com.juzix.wallet.engine;
 
 import com.juzix.wallet.app.Constants;
-import com.juzix.wallet.entity.VersionEntity;
+import com.juzix.wallet.entity.VersionInfo;
 import com.juzix.wallet.utils.JSONUtil;
 
 import java.util.HashSet;
@@ -32,13 +32,13 @@ public class VersionManager {
         return InstanceHolder.INSTANCE;
     }
 
-    public Single<VersionEntity> getVersion() {
+    public Single<VersionInfo> getVersion() {
         return ServerUtils.getCommonApi()
                 .getVersionInfo(Constants.URL.UPDATE_URL)
-                .flatMap(new Function<String, SingleSource<VersionEntity>>() {
+                .flatMap(new Function<String, SingleSource<VersionInfo>>() {
                     @Override
-                    public SingleSource<VersionEntity> apply(String body) throws Exception {
-                        return Single.just(JSONUtil.parseObject(body, VersionEntity.class));
+                    public SingleSource<VersionInfo> apply(String body) throws Exception {
+                        return Single.just(JSONUtil.parseObject(body, VersionInfo.class));
                     }
                 });
     }

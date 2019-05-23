@@ -2,9 +2,9 @@ package com.juzix.wallet.component.ui.presenter;
 
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.IndividualWalletContract;
-import com.juzix.wallet.engine.IndividualWalletManager;
+import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.Web3jManager;
-import com.juzix.wallet.entity.IndividualWalletEntity;
+import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.RxUtils;
 
 import org.reactivestreams.Publisher;
@@ -35,7 +35,7 @@ public class IndividualWalletPresenter extends BasePresenter<IndividualWalletCon
 
         if (isViewAttached()) {
 
-            List<IndividualWalletEntity> walletList = IndividualWalletManager.getInstance().getWalletList();
+            List<Wallet> walletList = WalletManager.getInstance().getWalletList();
 
             getView().notifyWalletListChanged(walletList);
 
@@ -46,7 +46,7 @@ public class IndividualWalletPresenter extends BasePresenter<IndividualWalletCon
 
     }
 
-    private double getTotalBalance(List<IndividualWalletEntity> walletEntityList) {
+    private double getTotalBalance(List<Wallet> walletEntityList) {
 
         double totalBalance = 0D;
 
@@ -54,28 +54,28 @@ public class IndividualWalletPresenter extends BasePresenter<IndividualWalletCon
             return totalBalance;
         }
 
-        for (IndividualWalletEntity walletEntity : walletEntityList) {
+        for (Wallet walletEntity : walletEntityList) {
             totalBalance += walletEntity.getBalance();
         }
 
         return totalBalance;
     }
 
-    private void fetchWalletBalance(List<IndividualWalletEntity> walletEntityList) {
+    private void fetchWalletBalance(List<Wallet> walletEntityList) {
 
         Flowable.fromIterable(walletEntityList)
-                .map(new Function<IndividualWalletEntity, IndividualWalletEntity>() {
+                .map(new Function<Wallet, Wallet>() {
                     @Override
-                    public IndividualWalletEntity apply(IndividualWalletEntity walletEntity) throws Exception {
+                    public Wallet apply(Wallet walletEntity) throws Exception {
                         double balance = Web3jManager.getInstance().getBalance(walletEntity.getPrefixAddress());
                         walletEntity.setBalance(balance);
                         return walletEntity;
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Consumer<IndividualWalletEntity>() {
+                .doOnNext(new Consumer<Wallet>() {
                     @Override
-                    public void accept(IndividualWalletEntity walletEntity) throws Exception {
+                    public void accept(Wallet walletEntity) throws Exception {
                         //更新balance
                         if (isViewAttached()) {
                             getView().updateItem(walletEntity);
@@ -83,9 +83,9 @@ public class IndividualWalletPresenter extends BasePresenter<IndividualWalletCon
                     }
                 })
                 .observeOn(Schedulers.io())
-                .map(new Function<IndividualWalletEntity, Double>() {
+                .map(new Function<Wallet, Double>() {
                     @Override
-                    public Double apply(IndividualWalletEntity walletEntity) throws Exception {
+                    public Double apply(Wallet walletEntity) throws Exception {
                         return walletEntity.getBalance();
                     }
                 })

@@ -1,7 +1,7 @@
 package com.juzix.wallet.engine;
 
-import com.juzix.wallet.db.entity.NodeInfoEntity;
-import com.juzix.wallet.entity.NodeEntity;
+import com.juzix.wallet.db.entity.NodeEntity;
+import com.juzix.wallet.entity.Node;
 
 import java.util.List;
 
@@ -12,11 +12,11 @@ import io.reactivex.Single;
  */
 public interface INodeService {
 
-    Single<List<NodeEntity>> getNodeList();
+    Single<List<Node>> getNodeList();
 
-    Single<Boolean> insertNode(NodeInfoEntity nodeEntity);
+    Single<Boolean> insertNode(NodeEntity nodeEntity);
 
-    Single<Boolean> insertNode(List<NodeEntity> nodeInfoEntityList);
+    Single<Boolean> insertNode(List<Node> nodeInfoEntityList);
 
     Single<Boolean> deleteNode(long id);
 
@@ -26,7 +26,7 @@ public interface INodeService {
 
     Single<Boolean> updateNode(long id, boolean isChecked);
 
-    Single<NodeEntity> getNode(boolean isChecked);
+    Single<Node> getNode(boolean isChecked);
 
-    Single<List<NodeEntity>> getNode(String nodeAddress);
+    Single<List<Node>> getNode(String nodeAddress);
 }

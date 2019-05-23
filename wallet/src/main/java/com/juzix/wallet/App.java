@@ -6,23 +6,15 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.multidex.MultiDex;
-import android.util.Log;
 
-import com.alibaba.fastjson.JSONObject;
 import com.juzhen.framework.app.CoreApp;
 import com.juzix.wallet.app.AppFramework;
 import com.juzix.wallet.component.ui.view.UnlockFigerprintActivity;
 import com.juzix.wallet.config.AppSettings;
-import com.juzix.wallet.engine.IndividualWalletManager;
-import com.juzix.wallet.entity.CountryEntity;
-import com.juzix.wallet.utils.CountryUtil;
-import com.juzix.wallet.utils.FileUtil;
-import com.juzix.wallet.utils.JSONUtil;
+import com.juzix.wallet.engine.WalletManager;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
-
-import java.util.List;
 
 import io.reactivex.functions.Consumer;
 import io.reactivex.plugins.RxJavaPlugins;
@@ -122,7 +114,7 @@ public class App extends CoreApp {
                 if (mBackgroundTimeInMills > 0 &&
                         timeInMills - mBackgroundTimeInMills > MAX_TIMEINMILLS &&
                         AppSettings.getInstance().getFaceTouchIdFlag() &&
-                        !IndividualWalletManager.getInstance().getWalletList().isEmpty()) {
+                        !WalletManager.getInstance().getWalletList().isEmpty()) {
                     UnlockFigerprintActivity.actionStart(activity);
                 }
                 mBackgroundTimeInMills = timeInMills;

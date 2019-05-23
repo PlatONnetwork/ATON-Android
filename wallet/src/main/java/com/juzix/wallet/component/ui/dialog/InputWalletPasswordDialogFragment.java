@@ -20,7 +20,7 @@ import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.widget.CustomUnderlineEditText;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.component.widget.ShadowDrawable;
-import com.juzix.wallet.entity.IndividualWalletEntity;
+import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
 import com.juzix.wallet.utils.RxUtils;
@@ -57,10 +57,10 @@ public class InputWalletPasswordDialogFragment extends BaseDialogFragment {
     private OnWalletCorrectListener mCorrectListener;
     private OnWalletPasswordCorrectListener mListener;
 
-    public static InputWalletPasswordDialogFragment newInstance(IndividualWalletEntity individualWalletEntity) {
+    public static InputWalletPasswordDialogFragment newInstance(Wallet walletEntity) {
         InputWalletPasswordDialogFragment dialogFragment = new InputWalletPasswordDialogFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable(Constants.Bundle.BUNDLE_WALLET, individualWalletEntity);
+        bundle.putParcelable(Constants.Bundle.BUNDLE_WALLET, walletEntity);
         dialogFragment.setArguments(bundle);
         return dialogFragment;
     }
@@ -88,7 +88,7 @@ public class InputWalletPasswordDialogFragment extends BaseDialogFragment {
 
     private void initViews() {
 
-        IndividualWalletEntity walletEntity = getArguments().getParcelable(Constants.Bundle.BUNDLE_WALLET);
+        Wallet walletEntity = getArguments().getParcelable(Constants.Bundle.BUNDLE_WALLET);
 
         ShadowDrawable.setShadowDrawable(layoutContent,
                 ContextCompat.getColor(context, R.color.color_ffffff),
