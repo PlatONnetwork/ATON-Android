@@ -291,7 +291,7 @@ public class VotedCandidate implements Parcelable, Comparable<VotedCandidate> {
     public int compareTo(VotedCandidate o) {
         //按时间排序
 //        return Long.compare(DateUtil.parse(o.transactionTime,DateUtil.DATETIME_FORMAT_PATTERN_WITH_SECOND),DateUtil.parse(transactionTime,DateUtil.DATETIME_FORMAT_PATTERN_WITH_SECOND));
-        return Long.compare(NumberParserUtils.parseLong(o.transactionTime), NumberParserUtils.parseLong(transactionTime));
+        return Long.compare(NumberParserUtils.parseLong(transactionTime), NumberParserUtils.parseLong(o.transactionTime));
 
     }
 
