@@ -177,9 +177,13 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
         stringObjectMap.clear();
 
         for (VotedCandidate entity : entityList) {
+
             totalTicketNum += NumberParserUtils.parseDouble(entity.getTotalTicketNum());
-            lockedNum += NumberParserUtils.parseDouble(entity.getLocked());
-            voteReward += NumberParserUtils.parseDouble(entity.getEarnings());
+//            lockedNum += NumberParserUtils.parseDouble(entity.getLocked());
+            lockedNum += NumberParserUtils.parseDouble(NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(entity.getLocked(), "1E18"), 4));
+//            voteReward += NumberParserUtils.parseDouble(entity.getEarnings());
+            voteReward += NumberParserUtils.parseDouble(NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(entity.getEarnings(), "1E18"), 4));
+
             validVoteNum += NumberParserUtils.parseDouble(entity.getValidNum());
         }
 
@@ -239,7 +243,7 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
             double validNum = MapUtils.getDouble(map, TAG_VALIDNUM);
 
             voteSummaryEntityList.add(new VoteSummary(String.format("%s%s", string(R.string.lockVote), "(Energon)"), NumberParserUtils.getPrettyNumber(locked, 0)));
-            voteSummaryEntityList.add(new VoteSummary(String.format("%s%s", string(R.string.votingIncome), "(Energon)"), NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(earnings, 1E18), 4)));
+            voteSummaryEntityList.add(new VoteSummary(String.format("%s%s", string(R.string.votingIncome), "(Energon)"), NumberParserUtils.getPrettyNumber(earnings, 4)));
             voteSummaryEntityList.add(new VoteSummary(String.format("%s", string(R.string.validInvalidTicket)), String.format("%s/%s", NumberParserUtils.getPrettyNumber(validNum, 0), NumberParserUtils.getPrettyNumber(invalidNum, 0))));
         }
 
