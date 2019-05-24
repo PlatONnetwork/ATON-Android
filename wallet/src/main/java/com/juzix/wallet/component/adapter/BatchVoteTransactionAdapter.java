@@ -35,11 +35,13 @@ public class BatchVoteTransactionAdapter extends CommonAdapter<VotedCandidate> {
     @Override
     protected void convert(Context context, ViewHolder viewHolder, VotedCandidate item, int position) {
 
-        if (TextUtils.isEmpty(item.getCountryCode())) {
-            viewHolder.setText(R.id.tv_location, context.getString(R.string.unknownRegion));
-        } else {
-            viewHolder.setText(R.id.tv_location, String.format("(%s)", item.getCountryName(context)));
-        }
+//        if (TextUtils.isEmpty(item.getCountryCode())) {
+//            viewHolder.setText(R.id.tv_location, context.getString(R.string.unknownRegion));
+//        } else {
+//            viewHolder.setText(R.id.tv_location, String.format("(%s)", item.getCountryName(context)));
+//        }
+        viewHolder.setText(R.id.tv_location,TextUtils.isEmpty(item.getCountryCode())?context.getString(R.string.unknownRegion):String.format("(%s)", item.getCountryName(context)));
+
         viewHolder.setText(R.id.tv_node_name, item.getName()); //节点名称
         viewHolder.setText(R.id.tv_valid_invalid_ticket, String.format("%s/%s", NumberParserUtils.getPrettyNumber(item.getValidNum(), 0), NumberParserUtils.getPrettyNumber(BigDecimalUtil.sub(NumberParserUtils.parseDouble(item.getTotalTicketNum()), NumberParserUtils.parseDouble(item.getValidNum())), 0)));
         viewHolder.setText(R.id.tv_vote_staked, NumberParserUtils.getPrettyNumber(item.getLocked(), 0));
