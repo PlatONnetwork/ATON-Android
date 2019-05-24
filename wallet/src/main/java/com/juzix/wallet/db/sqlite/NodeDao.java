@@ -11,7 +11,7 @@ import io.realm.RealmResults;
 /**
  * @author matrixelement
  */
-public class NodeInfoDao {
+public class NodeDao {
 
     public static boolean insertNode(NodeEntity nodeInfoEntity) {
 

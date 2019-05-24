@@ -19,7 +19,7 @@ public class AssetsContract {
 
         void showWalletInfo(Wallet walletEntity);
 
-        void showEmptyView(boolean isEmpty);
+        void showContent(boolean isContentEmpty);
 
         void showCurrentItem(int index);
 
@@ -45,8 +45,6 @@ public class AssetsContract {
         void clickRecycleViewItem(Wallet walletEntity);
 
         void backupWallet();
-
-        boolean needBackup(Wallet walletEntity);
 
         void fetchWalletsBalance();
 

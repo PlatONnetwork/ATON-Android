@@ -1,7 +1,7 @@
 package com.juzix.wallet.engine;
 
 import com.juzix.wallet.db.entity.NodeEntity;
-import com.juzix.wallet.db.sqlite.NodeInfoDao;
+import com.juzix.wallet.db.sqlite.NodeDao;
 import com.juzix.wallet.entity.Node;
 
 import org.reactivestreams.Publisher;
@@ -25,7 +25,7 @@ public class NodeService implements INodeService {
         return Single.fromCallable(new Callable<List<NodeEntity>>() {
             @Override
             public List<NodeEntity> call() throws Exception {
-                return NodeInfoDao.getNodeList();
+                return NodeDao.getNodeList();
             }
         }).toFlowable()
                 .flatMap(new Function<List<NodeEntity>, Publisher<NodeEntity>>() {
@@ -48,7 +48,7 @@ public class NodeService implements INodeService {
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return NodeInfoDao.insertNode(nodeInfoEntity);
+                return NodeDao.insertNode(nodeInfoEntity);
             }
         }).subscribeOn(Schedulers.io());
     }
@@ -67,7 +67,7 @@ public class NodeService implements INodeService {
                 .map(new Function<List<NodeEntity>, Boolean>() {
                     @Override
                     public Boolean apply(List<NodeEntity> nodeInfoEntityList) throws Exception {
-                        return NodeInfoDao.insertNodeList(nodeInfoEntityList);
+                        return NodeDao.insertNodeList(nodeInfoEntityList);
                     }
                 }).subscribeOn(Schedulers.io());
     }
@@ -77,7 +77,7 @@ public class NodeService implements INodeService {
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return NodeInfoDao.deleteNode(id);
+                return NodeDao.deleteNode(id);
             }
         }).subscribeOn(Schedulers.io());
     }
@@ -87,7 +87,7 @@ public class NodeService implements INodeService {
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return NodeInfoDao.deleteNode(idList);
+                return NodeDao.deleteNode(idList);
             }
         }).subscribeOn(Schedulers.io());
     }
@@ -97,7 +97,7 @@ public class NodeService implements INodeService {
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return NodeInfoDao.updateNode(id, nodeAddress);
+                return NodeDao.updateNode(id, nodeAddress);
             }
         }).subscribeOn(Schedulers.io());
     }
@@ -107,14 +107,14 @@ public class NodeService implements INodeService {
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return NodeInfoDao.updateNode(id, isChecked);
+                return NodeDao.updateNode(id, isChecked);
             }
         }).subscribeOn(Schedulers.io());
     }
 
     @Override
     public Single<Node> getNode(boolean isChecked) {
-        return Flowable.fromIterable(NodeInfoDao.getNode(isChecked))
+        return Flowable.fromIterable(NodeDao.getNode(isChecked))
                 .firstElement()
                 .map(new Function<NodeEntity, Node>() {
                     @Override
@@ -128,7 +128,7 @@ public class NodeService implements INodeService {
 
     @Override
     public Single<List<Node>> getNode(String nodeAddress) {
-        return Flowable.fromIterable(NodeInfoDao.getNode(nodeAddress))
+        return Flowable.fromIterable(NodeDao.getNode(nodeAddress))
                 .map(new Function<NodeEntity, Node>() {
                     @Override
                     public Node apply(NodeEntity nodeInfoEntity) throws Exception {

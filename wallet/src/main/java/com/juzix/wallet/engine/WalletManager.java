@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import com.juzix.wallet.app.CustomThrowable;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.db.entity.WalletEntity;
-import com.juzix.wallet.db.sqlite.WalletInfoDao;
+import com.juzix.wallet.db.sqlite.WalletDao;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.JZWalletUtil;
@@ -64,7 +64,7 @@ public class WalletManager {
             mWalletList.clear();
         }
 
-        List<WalletEntity> walletInfoList = WalletInfoDao.getWalletInfoList();
+        List<WalletEntity> walletInfoList = WalletDao.getWalletInfoList();
         for (WalletEntity walletInfoEntity : walletInfoList) {
             try {
                 mWalletList.add(walletInfoEntity.buildWalletEntity());
@@ -186,9 +186,9 @@ public class WalletManager {
                 }
             }
             entity.setMnemonic("");
-            entity.setNodeAddress(NodeManager.getInstance().getCurNodeAddress());
+            entity.setChainId(NodeManager.getInstance().getChainId());
             mWalletList.add(entity);
-            WalletInfoDao.insertWalletInfo(entity.buildWalletInfoEntity());
+            WalletDao.insertWalletInfo(entity.buildWalletInfoEntity());
             AppSettings.getInstance().setOperateMenuFlag(false);
             return CODE_OK;
         } catch (Exception exp) {
@@ -217,9 +217,9 @@ public class WalletManager {
                 }
             }
             entity.setMnemonic("");
-            entity.setNodeAddress(NodeManager.getInstance().getCurNodeAddress());
+            entity.setChainId(NodeManager.getInstance().getChainId());
             mWalletList.add(entity);
-            WalletInfoDao.insertWalletInfo(entity.buildWalletInfoEntity());
+            WalletDao.insertWalletInfo(entity.buildWalletInfoEntity());
             AppSettings.getInstance().setOperateMenuFlag(false);
             return CODE_OK;
         } catch (Exception exp) {
@@ -236,7 +236,7 @@ public class WalletManager {
                     emitter.onError(new CustomThrowable(CustomThrowable.CODE_ERROR_CREATE_WALLET_FAILED));
                 } else {
                     walletEntity.setMnemonic(JZWalletUtil.encryptMnemonic(walletEntity.getKey(), mnemonic, password));
-                    walletEntity.setNodeAddress(NodeManager.getInstance().getCurNodeAddress());
+                    walletEntity.setChainId(NodeManager.getInstance().getChainId());
                     emitter.onSuccess(walletEntity);
                 }
             }
@@ -264,9 +264,9 @@ public class WalletManager {
                 }
             }
             entity.setMnemonic("");
-            entity.setNodeAddress(NodeManager.getInstance().getCurNodeAddress());
+            entity.setChainId(NodeManager.getInstance().getChainId());
             mWalletList.add(entity);
-            WalletInfoDao.insertWalletInfo(entity.buildWalletInfoEntity());
+            WalletDao.insertWalletInfo(entity.buildWalletInfoEntity());
             AppSettings.getInstance().setOperateMenuFlag(false);
             return CODE_OK;
         } catch (Exception exp) {
@@ -294,7 +294,7 @@ public class WalletManager {
         if (TextUtils.isEmpty(uuid)) {
             return false;
         }
-        return WalletInfoDao.updateMnemonicWithUuid(uuid, "");
+        return WalletDao.updateMnemonicWithUuid(uuid, "");
     }
 
     public boolean updateWalletName(Wallet wallet, String newName) {
@@ -340,7 +340,7 @@ public class WalletManager {
                 break;
             }
         }
-        return WalletInfoDao.deleteWalletInfo(wallet.getUuid());
+        return WalletDao.deleteWalletInfo(wallet.getUuid());
     }
 
     public boolean isValidWallet(Wallet walletEntity, String password) {

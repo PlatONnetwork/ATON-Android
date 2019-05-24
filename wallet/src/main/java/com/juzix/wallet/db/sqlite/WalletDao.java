@@ -1,30 +1,38 @@
 package com.juzix.wallet.db.sqlite;
 
-import com.juzix.wallet.db.entity.AddressEntity;
+import com.juzix.wallet.db.entity.WalletEntity;
+import com.juzix.wallet.engine.NodeManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
-public class AddressInfoDao {
+public class WalletDao {
 
-    public static List<AddressEntity> getAddressInfoList() {
-        List<AddressEntity> list = new ArrayList<>();
+    /**
+     * 获取钱包列表，根据updateTime升序
+     * updateTime是指钱更新信息的时间
+     *
+     * @return
+     */
+    public static List<WalletEntity> getWalletInfoList() {
+
+        List<WalletEntity> list = new ArrayList<>();
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
-            RealmResults<AddressEntity> results = realm.where(AddressEntity.class)
+            RealmResults<WalletEntity> results = realm.where(WalletEntity.class)
+                    .equalTo("chainId", NodeManager.getInstance().getChainId())
+                    .sort("updateTime", Sort.ASCENDING)
                     .findAll();
             if (results != null) {
                 list = realm.copyFromRealm(results);
             }
         } catch (Exception exp) {
             exp.printStackTrace();
-            if (realm != null) {
-                realm.cancelTransaction();
-            }
         } finally {
             if (realm != null) {
                 realm.close();
@@ -33,36 +41,34 @@ public class AddressInfoDao {
         return list;
     }
 
-    public static String getAddressNameByAddress(String address) {
-        String addressName = null;
+    public static String getWalletNameByAddress(String prefixAddress) {
+        String walletName = null;
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
-            AddressEntity addressInfoEntity = realm.where(AddressEntity.class)
-                    .equalTo("address", address)
+            WalletEntity walletEntity = realm.where(WalletEntity.class)
+                    .equalTo("chainId", NodeManager.getInstance().getChainId())
+                    .equalTo("address", prefixAddress)
                     .findFirst();
-            if (addressInfoEntity != null) {
-                addressName = realm.copyFromRealm(addressInfoEntity).getName();
+            if (walletEntity != null) {
+                walletName = walletEntity.getName();
             }
         } catch (Exception exp) {
             exp.printStackTrace();
-            if (realm != null) {
-                realm.cancelTransaction();
-            }
         } finally {
             if (realm != null) {
                 realm.close();
             }
         }
-        return addressName;
+        return walletName;
     }
 
-    public static boolean insertAddressInfo(AddressEntity entity) {
+    public static boolean insertWalletInfo(WalletEntity entity) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
-            realm.copyToRealmOrUpdate(entity);
+            realm.copyToRealm(entity);
             realm.commitTransaction();
             return true;
         } catch (Exception exp) {
@@ -77,49 +83,17 @@ public class AddressInfoDao {
         return false;
     }
 
-    public static boolean updateAddressInfo(AddressEntity oldAddressInfo, AddressEntity newAddressInfo) {
+    public static boolean updateNameWithUuid(String uuid, String name) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
-            if (oldAddressInfo.getAddress().equals(newAddressInfo.getAddress())) {
-                //update
-                realm.where(AddressEntity.class)
-                        .equalTo("address", oldAddressInfo.getAddress())
-                        .findFirst()
-                        .setName(newAddressInfo.getName());
-            } else {
-                //delete
-                realm.where(AddressEntity.class)
-                        .equalTo("address", oldAddressInfo.getAddress())
-                        .findAll()
-                        .deleteFirstFromRealm();
-                //insert
-                realm.copyToRealmOrUpdate(newAddressInfo);
-
-            }
-            realm.commitTransaction();
-            return true;
-        } catch (Exception e) {
-            if (realm != null) {
-                realm.cancelTransaction();
-            }
-        } finally {
-            if (realm != null) {
-                realm.close();
-            }
-        }
-        return false;
-
-    }
-
-    public static boolean updateNameWithAddress(String address, String name) {
-        Realm realm = null;
-        try {
-            realm = Realm.getDefaultInstance();
-            realm.beginTransaction();
-            realm.where(AddressEntity.class)
-                    .equalTo("address", address)
+            realm.where(WalletEntity.class)
+                    .beginGroup()
+                    .equalTo("uuid", uuid)
+                    .and()
+                    .equalTo("chainId", NodeManager.getInstance().getChainId())
+                    .endGroup()
                     .findFirst()
                     .setName(name);
             realm.commitTransaction();
@@ -136,35 +110,71 @@ public class AddressInfoDao {
         return false;
     }
 
-    public static boolean isExist(String address) {
-        return getEntityWithAddress(address) != null;
-    }
-
-    public static AddressEntity getEntityWithAddress(String address) {
+    public static boolean updateMnemonicWithUuid(String uuid, String mnemonic) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
-            AddressEntity entity = realm.where(AddressEntity.class)
-                    .equalTo("address", address)
-                    .findFirst();
-            return realm.copyFromRealm(entity);
+            realm.beginTransaction();
+            realm.where(WalletEntity.class)
+                    .beginGroup()
+                    .equalTo("uuid", uuid)
+                    .and()
+                    .equalTo("chainId", NodeManager.getInstance().getChainId())
+                    .endGroup()
+                    .findFirst()
+                    .setMnemonic(mnemonic);
+            realm.commitTransaction();
+            return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
         } finally {
             if (realm != null) {
                 realm.close();
             }
         }
-        return null;
+        return false;
     }
 
-    public static boolean deleteAddressInfo(String address) {
+    public static boolean updateUpdateTimeWithUuid(String uuid, long updateTime) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
-            realm.where(AddressEntity.class)
-                    .equalTo("address", address)
+            realm.where(WalletEntity.class)
+                    .beginGroup()
+                    .equalTo("uuid", uuid)
+                    .and()
+                    .equalTo("chainId", NodeManager.getInstance().getChainId())
+                    .endGroup()
+                    .findFirst()
+                    .setUpdateTime(updateTime);
+            realm.commitTransaction();
+            return true;
+        } catch (Exception e) {
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return false;
+    }
+
+    public static boolean deleteWalletInfo(String uuid) {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            realm.where(WalletEntity.class)
+                    .beginGroup()
+                    .equalTo("uuid", uuid)
+                    .and()
+                    .equalTo("chainId", NodeManager.getInstance().getChainId())
+                    .endGroup()
                     .findAll()
                     .deleteFirstFromRealm();
             realm.commitTransaction();
@@ -173,12 +183,11 @@ public class AddressInfoDao {
             if (realm != null) {
                 realm.cancelTransaction();
             }
-        }finally {
-            if (realm != null){
+        } finally {
+            if (realm != null) {
                 realm.close();
             }
         }
-
         return false;
     }
 

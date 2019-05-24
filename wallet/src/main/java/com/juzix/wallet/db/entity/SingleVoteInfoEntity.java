@@ -457,17 +457,17 @@ public class SingleVoteInfoEntity extends RealmObject implements Cloneable {
         return JSONUtil.parseObject(JSONUtil.toJSONString(this), SingleVoteEntity.class);
     }
 
-    public VoteTransaction buildVoteTransactionEntity() {
-        return new VoteTransaction.Builder(getUuid(), getCreateTime(), getWalletName())
-                .hash(getHash())
-                .fromAddress(getWalletAddress())
-                .toAddress(getContractAddress())
-                .value(getValue())
-                .blockNumber(getBlockNumber())
-                .latestBlockNumber(getLatestBlockNumber())
-                .energonPrice(getEnergonPrice())
-                .status(getStatus())
-                .nodeAddress(getNodeAddress())
-                .build();
-    }
+//    public VoteTransaction buildVoteTransactionEntity() {
+//        return new VoteTransaction.Builder(getUuid(), getCreateTime(), getWalletName())
+//                .hash(getHash())
+//                .fromAddress(getWalletAddress())
+//                .toAddress(getContractAddress())
+//                .value(getValue())
+//                .blockNumber(getBlockNumber())
+//                .latestBlockNumber(getLatestBlockNumber())
+//                .energonPrice(getEnergonPrice())
+//                .status(getStatus())
+//                .nodeAddress(getNodeAddress())
+//                .build();
+//    }
 }

@@ -36,10 +36,9 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
 
     @Override
     public void fetchWalletList() {
-        if (!isViewAttached()) {
-            return;
+        if (isViewAttached()) {
+            show();
         }
-        show();
     }
 
     @Override
@@ -64,17 +63,6 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
                 BackupMnemonicPhraseActivity.actionStart(getContext(), password, walletEntity, 1);
             }
         }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
-    }
-
-    @Override
-    public boolean needBackup(Wallet walletEntity) {
-        if (walletEntity == null) {
-            return false;
-        }
-        if (!TextUtils.isEmpty(walletEntity.getMnemonic())) {
-            return true;
-        }
-        return false;
     }
 
     @Override
@@ -143,45 +131,21 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
     }
 
     private void show() {
-        if (!isViewAttached()) {
-            return;
-        }
         if (mWalletList.isEmpty()) {
             getView().showTotalBalance(0);
-            getView().showEmptyView(true);
+            getView().showContent(true);
             return;
         }
-        getView().showEmptyView(false);
+        Collections.sort(mWalletList);
         Wallet walletEntity = WalletManager.getInstance().getSelectedWallet();
-        if (isSelected(walletEntity)) {
-            getView().showWalletList(walletEntity);
-            getView().showWalletInfo(walletEntity);
-        } else {
+        if (!isSelected(walletEntity)) {
             //挑选一个当前选中的钱包
             walletEntity = getSelectedWallet();
             WalletManager.getInstance().setSelectedWallet(walletEntity);
-            getView().showWalletList(walletEntity);
-            getView().showWalletInfo(walletEntity);
             getView().setArgument(walletEntity);
         }
-    }
-
-    private void refreshWalletList() {//联名钱包相关的先屏蔽掉
-        List<Wallet> walletList = WalletManager.getInstance().getWalletList();
-        if (!mWalletList.isEmpty()) {
-            mWalletList.clear();
-        }
-        if (!walletList.isEmpty()) {
-            mWalletList.addAll(walletList);
-        }
-        if (mWalletList.isEmpty()) {
-            return;
-        }
-        Collections.sort(mWalletList, new Comparator<Wallet>() {
-            @Override
-            public int compare(Wallet o1, Wallet o2) {
-                return Long.compare(o1.getUpdateTime(), o2.getUpdateTime());
-            }
-        });
+        getView().showWalletList(walletEntity);
+        getView().showWalletInfo(walletEntity);
+        getView().showContent(false);
     }
 }

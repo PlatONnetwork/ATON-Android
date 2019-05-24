@@ -61,6 +61,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import retrofit2.http.PUT;
 
 /**
  * @author matrixelement
@@ -143,7 +144,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         initHeader();
         initTab();
         showAssets(AppSettings.getInstance().getShowAssetsFlag());
-        showEmptyView(true);
+        showContent(true);
     }
 
     private void initRefreshLayout() {
@@ -164,6 +165,9 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         });
     }
 
+    public void fetchWalletsBalance() {
+        mPresenter.fetchWalletsBalance();
+    }
 
     public void initTab() {
         List<BaseFragment> fragments = getFragments(null);
@@ -309,11 +313,8 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onNetWorkStateChangedEvent(Event.NetWorkStateChangedEvent event) {
-        if (event.netState == NetState.CONNECTED) {
-            mPresenter.fetchWalletList();
-            mPresenter.fetchWalletsBalance();
-        }
+    public void onWalletListOrderChangedEvent(Event.WalletListOrderChangedEvent event) {
+        mWalletAdapter.notify();
     }
 
     @Override
@@ -430,32 +431,32 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
     @Override
     public void showWalletList(Wallet walletEntity) {
-        mWalletAdapter.setSelectedWallet(walletEntity);
-        mWalletAdapter.notifyDataSetChanged();
+        mWalletAdapter.notifyDataSetChanged(walletEntity);
     }
 
     @Override
-    public void showWalletInfo(Wallet walletEntity) {
-        tvBackup.setVisibility(mPresenter.needBackup(walletEntity) ? View.VISIBLE : View.GONE);
-        int resId = RUtils.drawable(walletEntity.getExportAvatar());
+    public void showWalletInfo(Wallet wallet) {
+        tvBackup.setVisibility(wallet.isNeedBackup() ? View.VISIBLE : View.GONE);
+        int resId = RUtils.drawable(wallet.getExportAvatar());
         if (resId < 0) {
             resId = R.drawable.icon_export_avatar_15;
         }
         ivWalletAvatar.setImageResource(resId);
-        tvWalletName.setText(walletEntity.getName());
-        showBalance(walletEntity.getBalance());
+        tvWalletName.setText(wallet.getName());
+        showBalance(wallet.getBalance());
     }
 
     @Override
-    public void showEmptyView(boolean isEmpty) {
+    public void showContent(boolean isEmpty) {
         rlWalletDetail.setVisibility(!isEmpty ? View.VISIBLE : View.GONE);
         stbBar.setVisibility(!isEmpty ? View.VISIBLE : View.GONE);
         vpContent.setVisibility(!isEmpty ? View.VISIBLE : View.GONE);
         layoutEmpty.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
         scCreateWallet.setVisibility(View.GONE);
         scImportWallet.setVisibility(View.GONE);
+        AppBarLayout.LayoutParams layoutParams = ((AppBarLayout.LayoutParams) llAssetsTitle.getLayoutParams());
+        layoutParams.setScrollFlags(isEmpty ? 0 : AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED | AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
         mWalletAdapter.notifyDataSetChanged();
-        ((AppBarLayout.LayoutParams) llAssetsTitle.getLayoutParams()).setScrollFlags(isEmpty ? 0 : AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED | AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
     }
 
     @Override

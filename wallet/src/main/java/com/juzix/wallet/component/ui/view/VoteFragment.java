@@ -1,6 +1,8 @@
 package com.juzix.wallet.component.ui.view;
 
 import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -403,11 +405,10 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
                 targetView.setLayoutParams(layoutParams);
             }
         });
-        animator.setDuration(5000);
-//        AnimatorSet set = new AnimatorSet();
-//        ObjectAnimator alphaAnimator = ObjectAnimator.ofFloat(targetView, View.ALPHA, 0.0f, 1.0f);
-//        set.playTogether(animator, alphaAnimator);
-//        set.setDuration(5000);
+        AnimatorSet set = new AnimatorSet();
+        ObjectAnimator alphaAnimator = ObjectAnimator.ofFloat(targetView, View.ALPHA, 0.0f, 1.0f);
+        set.playTogether(animator, alphaAnimator);
+        set.setDuration(300);
         return animator;
     }
 

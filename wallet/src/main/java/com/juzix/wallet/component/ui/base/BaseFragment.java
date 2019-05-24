@@ -43,7 +43,7 @@ public class BaseFragment extends CoreFragment implements IContext, LifecyclePro
     private boolean mResumedForFirstTime;
     private CompositeDisposable mCompositeDisposable;
 
-    private final BehaviorSubject<FragmentEvent> lifecycleSubject = BehaviorSubject.create();
+    protected final BehaviorSubject<FragmentEvent> lifecycleSubject = BehaviorSubject.create();
 
     @Override
     @NonNull
@@ -148,6 +148,7 @@ public class BaseFragment extends CoreFragment implements IContext, LifecyclePro
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
+        Log.debug(TAG, "[" + getClass().getSimpleName() + "]: setUserVisibleHint " + isVisibleToUser);
     }
 
     /**

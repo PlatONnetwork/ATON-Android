@@ -6,7 +6,11 @@ package com.juzix.wallet.app;
 public class Constants {
 
     public interface Common {
-        int REFRESH_TIME = 5000;
+        //交易状态轮询时间
+        int TRANSACTION_STATUS_LOOP_TIME = 2000;
+        //交易列表轮询时间
+        int TRANSCTION_LIST_LOOP_TIME = 10000;
+
     }
 
     public interface Extra {
@@ -93,7 +97,7 @@ public class Constants {
         String URL_TEST_B = "https://test-beta.platon.network/test";
         String URL_HTTP_A = "https://aton.platon.network";
         String URL_HTTP_B = "https://aton.platon.network";
-        String URL_HTTP_C = "http://192.168.9.190:20060/";
+        String URL_HTTP_C = "http://192.168.9.190:10061";
     }
 
     public interface VoteConstants {

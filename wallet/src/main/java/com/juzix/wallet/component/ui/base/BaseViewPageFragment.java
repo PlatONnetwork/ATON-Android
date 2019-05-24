@@ -9,22 +9,30 @@ import android.view.ViewParent;
 
 import com.juzhen.framework.app.activity.CoreFragment;
 import com.juzhen.framework.app.log.Log;
+import com.trello.rxlifecycle2.android.FragmentEvent;
 
 /**
  * viewPager+Fragment使用
  *
  * @author matrixelement
  */
-public abstract class BaseViewPageFragment extends BaseFragment {
+public abstract class BaseViewPageFragment<T extends BasePresenter> extends BaseFragment {
 
     private static final String TAG = BaseViewPageFragment.class.getSimpleName();
     private View mRootView;
     private boolean mVisibleToUser;
 
+    /**
+     * presenter对象
+     */
+    protected T mPresenter;
+
+    protected abstract T createPresenter();
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        mPresenter = createPresenter();
         if (mRootView == null) {
             Log.debug(TAG, "onCreateView root is null !! [" + getClass().getSimpleName() + "]");
             mRootView = onCreatePage(inflater, container, savedInstanceState);

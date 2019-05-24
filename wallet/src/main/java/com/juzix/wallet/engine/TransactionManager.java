@@ -1,15 +1,20 @@
 package com.juzix.wallet.engine;
 
+import android.annotation.SuppressLint;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomThrowable;
-import com.juzix.wallet.entity.IndividualTransactionEntity;
+import com.juzix.wallet.db.sqlite.TransactionDao;
+import com.juzix.wallet.entity.Transaction;
+import com.juzix.wallet.entity.TransactionStatus;
+import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.NumericUtil;
 
 import org.spongycastle.util.encoders.Hex;
 import org.web3j.abi.PlatOnTypeEncoder;
@@ -22,21 +27,18 @@ import org.web3j.rlp.RlpEncoder;
 import org.web3j.rlp.RlpList;
 import org.web3j.rlp.RlpString;
 import org.web3j.rlp.RlpType;
-import org.web3j.utils.Convert;
 import org.web3j.utils.Numeric;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
-import io.reactivex.SingleSource;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
@@ -66,50 +68,20 @@ public class TransactionManager {
         return walletEntity;
     }
 
-    public IndividualTransactionEntity getTransactionByHash(IndividualTransactionEntity individualTransactionEntity) {
-//        try {
-//            Transaction transaction = Web3jManager.getInstance().getTransactionByHash(individualTransactionEntity.getHash());
-//            long latestBlockNumber = Web3jManager.getInstance().getLatestBlockNumber();
-//            if (transaction != null) {
-//                long blockNumber = NumericUtil.decodeQuantity(transaction.getBlockNumberRaw(), BigInteger.ZERO).longValue();
-//                double energonPrice = BigDecimalUtil.div(BigDecimalUtil.mul(transaction.getGas().doubleValue(), transaction.getGasPrice().doubleValue()), 1E18);
-//                double value = BigDecimalUtil.div(transaction.getValue().toString(), "1E18");
-//                boolean completed = blockNumber > 0 && latestBlockNumber - blockNumber >= 1;
-//                IndividualTransactionEntity entity = new IndividualTransactionEntity.Builder(individualTransactionEntity.getUuid(), individualTransactionEntity.getCreateTime(), individualTransactionEntity.getWalletName())
-////                        .hash(individualTransactionEntity.getHash())
-//                        .fromAddress(transaction.getFrom())
-//                        .toAddress(transaction.getTo())
-//                        .value(value)
-//                        .blockNumber(blockNumber)
-//                        .energonPrice(energonPrice)
-//                        .latestBlockNumber(latestBlockNumber)
-//                        .completed(completed)
-////                        .memo(individualTransactionEntity.getMemo())
-////                        .value(individualTransactionEntity.getValue())
-//                        .nodeAddress(NodeManager.getInstance().getCurNodeAddress())
-//                        .build();
-//                return entity;
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-        return null;
-    }
-
-    public String sendIndividualTransaction(String privateKey, String from, String toAddress, String amount, long gasPrice, long gasLimit) {
+    public String sendTransaction(String privateKey, String from, String toAddress, BigDecimal amount, long gasPrice, long gasLimit) {
 
         BigInteger GAS_PRICE = BigInteger.valueOf(gasPrice);
         BigInteger GAS_LIMIT = BigInteger.valueOf(gasLimit);
 
         Credentials credentials = Credentials.create(privateKey);
+
         try {
-            BigInteger value = Convert.toWei(amount, Convert.Unit.ETHER).toBigInteger();
 
             List<RlpType> result = new ArrayList<>();
             result.add(RlpString.create(Numeric.hexStringToByteArray(PlatOnTypeEncoder.encode(new Int64(0)))));
             String txType = Hex.toHexString(RlpEncoder.encode(new RlpList(result)));
 
-            RawTransaction rawTransaction = RawTransaction.createTransaction(Web3jManager.getInstance().getNonce(from), GAS_PRICE, GAS_LIMIT, toAddress, value,
+            RawTransaction rawTransaction = RawTransaction.createTransaction(Web3jManager.getInstance().getNonce(from), GAS_PRICE, GAS_LIMIT, toAddress, amount.toBigInteger(),
                     txType);
 
             byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
@@ -124,94 +96,118 @@ public class TransactionManager {
         return null;
     }
 
-    public Single<IndividualTransactionEntity> sendTransaction(String privateKey, String fromAddress, String toAddress, String walletName, String transferAmount, long gasPrice, long gasLimit) {
+    public Single<Transaction> sendTransaction(String privateKey, String fromAddress, String toAddress, String walletName, BigDecimal transferAmount, BigDecimal feeAmount, long gasPrice, long gasLimit) {
 
         return Single.create(new SingleOnSubscribe<String>() {
             @Override
             public void subscribe(SingleEmitter<String> emitter) throws Exception {
-                String transactionHash = sendIndividualTransaction(privateKey, fromAddress, toAddress, transferAmount, NumberParserUtils.parseLong(BigDecimalUtil.parseString(gasPrice)), gasLimit);
+                String transactionHash = sendTransaction(privateKey, fromAddress, toAddress, transferAmount, NumberParserUtils.parseLong(BigDecimalUtil.parseString(gasPrice)), gasLimit);
                 if (TextUtils.isEmpty(transactionHash)) {
                     emitter.onError(new CustomThrowable(CustomThrowable.CODE_ERROR_TRANSFER_FAILED));
                 } else {
                     emitter.onSuccess(transactionHash);
                 }
             }
-        }).flatMap(new Function<String, SingleSource<IndividualTransactionEntity>>() {
+        }).map(new Function<String, Transaction>() {
             @Override
-            public SingleSource<IndividualTransactionEntity> apply(String hash) throws Exception {
-                IndividualTransactionEntity individualTransactionEntity = new IndividualTransactionEntity.Builder(UUID.randomUUID().toString(), System.currentTimeMillis(), walletName)
+            public Transaction apply(String hash) throws Exception {
+                return new Transaction.Builder()
                         .hash(hash)
-                        .fromAddress(fromAddress)
-                        .toAddress(toAddress)
-                        .value(NumberParserUtils.parseDouble(transferAmount))
-                        .nodeAddress(NodeManager.getInstance().getCurNodeAddress())
+                        .from(fromAddress)
+                        .to(toAddress)
+                        .senderWalletName(walletName)
+                        .value(transferAmount.toPlainString())
+                        .chainId(NodeManager.getInstance().getChainId())
+                        .txType(TransactionType.TRANSFER.getTxTypeName())
+                        .createTime(System.currentTimeMillis())
+                        .txReceiptStatus(String.valueOf(TransactionStatus.PENDING.ordinal()))
+                        .actualTxCost(feeAmount.toPlainString())
                         .build();
-                return Single.fromCallable(new Callable<Boolean>() {
-                    @Override
-                    public Boolean call() throws Exception {
-//                        return TransactionInfoDao.insertTransaction(individualTransactionEntity.buildIndividualTransactionInfoEntity());
-                        return null;
-                    }
-                }).filter(new Predicate<Boolean>() {
-                    @Override
-                    public boolean test(Boolean aBoolean) throws Exception {
-                        return aBoolean;
-                    }
-                }).map(new Function<Boolean, IndividualTransactionEntity>() {
-                    @Override
-                    public IndividualTransactionEntity apply(Boolean aBoolean) throws Exception {
-                        return individualTransactionEntity;
-                    }
-                }).doOnSuccess(new Consumer<IndividualTransactionEntity>() {
-                    @Override
-                    public void accept(IndividualTransactionEntity individualTransactionEntity) throws Exception {
-                        EventPublisher.getInstance().sendUpdateIndividualWalletTransactionEvent(individualTransactionEntity);
-                    }
-                }).toSingle();
             }
-        }).doOnSuccess(new Consumer<IndividualTransactionEntity>() {
+        }).filter(new Predicate<Transaction>() {
             @Override
-            public void accept(IndividualTransactionEntity individualTransactionEntity) throws Exception {
-                getIndividualTransactionByLoop(individualTransactionEntity);
+            public boolean test(Transaction transaction) throws Exception {
+                return TransactionDao.insertTransaction(transaction.toTransactionEntity());
             }
-        });
+        })
+                .toSingle()
+                .doOnSuccess(new Consumer<Transaction>() {
+                    @Override
+                    public void accept(Transaction transaction) throws Exception {
+                        EventPublisher.getInstance().sendUpdateTransactionEvent(transaction);
+                        getTransactionByLoop(transaction);
+                    }
+                });
     }
+
 
     /**
      * 通过轮询获取普通钱包的交易
      */
-    public void getIndividualTransactionByLoop(IndividualTransactionEntity transactionEntity) {
-        Flowable.interval(Constants.Common.REFRESH_TIME, TimeUnit.MILLISECONDS)
-                .map(new Function<Long, IndividualTransactionEntity>() {
+    @SuppressLint("CheckResult")
+    public void getTransactionByLoop(Transaction trans) {
+        Flowable.interval(Constants.Common.TRANSACTION_STATUS_LOOP_TIME, TimeUnit.MILLISECONDS)
+                .map(new Function<Long, Optional<org.web3j.protocol.core.methods.response.Transaction>>() {
                     @Override
-                    public IndividualTransactionEntity apply(Long aLong) throws Exception {
-                        return getTransactionByHash(transactionEntity);
+                    public Optional<org.web3j.protocol.core.methods.response.Transaction> apply(Long aLong) throws Exception {
+                        org.web3j.protocol.core.methods.response.Transaction transaction = Web3jManager.getInstance().getTransactionByHash(trans.getHash());
+                        return new Optional<org.web3j.protocol.core.methods.response.Transaction>(transaction);
                     }
                 })
-                .takeUntil(new Predicate<IndividualTransactionEntity>() {
+                .takeUntil(new Predicate<Optional<org.web3j.protocol.core.methods.response.Transaction>>() {
                     @Override
-                    public boolean test(IndividualTransactionEntity individualTransactionEntity) throws Exception {
-                        return individualTransactionEntity.isCompleted();
+                    public boolean test(Optional<org.web3j.protocol.core.methods.response.Transaction> optional) throws Exception {
+                        return getTransactionStatus(optional) == TransactionStatus.SUCCESSED;
                     }
                 })
-                .doOnNext(new Consumer<IndividualTransactionEntity>() {
+                .map(new Function<Optional<org.web3j.protocol.core.methods.response.Transaction>, Transaction>() {
                     @Override
-                    public void accept(IndividualTransactionEntity individualTransactionEntity) throws Exception {
-                        if (individualTransactionEntity.isCompleted()) {
-//                            boolean success = TransactionInfoDao.insertTransaction(individualTransactionEntity.buildIndividualTransactionInfoEntity());
-                            boolean success = false;
-                            if (success) {
-                                EventPublisher.getInstance().sendUpdateIndividualWalletTransactionEvent(individualTransactionEntity);
-                            }
-                        }
+                    public Transaction apply(Optional<org.web3j.protocol.core.methods.response.Transaction> optional) throws Exception {
+                        org.web3j.protocol.core.methods.response.Transaction transaction = optional.get();
+                        double actualTxCost = BigDecimalUtil.mul(transaction.getGas().doubleValue(), transaction.getGasPrice().doubleValue());
+                        Transaction t = trans.clone();
+                        t.setTxReceiptStatus(String.valueOf(TransactionStatus.SUCCESSED.ordinal()));
+                        t.setActualTxCost(String.valueOf(actualTxCost));
+                        return t;
+                    }
+                })
+                .filter(new Predicate<Transaction>() {
+                    @Override
+                    public boolean test(Transaction transaction) throws Exception {
+                        return transaction.getTxReceiptStatus() == TransactionStatus.SUCCESSED;
+                    }
+                })
+                .filter(new Predicate<Transaction>() {
+                    @Override
+                    public boolean test(Transaction transaction) throws Exception {
+                        //删除数据里的数据
+                        return TransactionDao.deleteTransaction(transaction.getHash());
+                    }
+                })
+                .doOnNext(new Consumer<Transaction>() {
+                    @Override
+                    public void accept(Transaction transaction) throws Exception {
+                        EventPublisher.getInstance().sendUpdateTransactionEvent(transaction);
                     }
                 })
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Consumer<IndividualTransactionEntity>() {
+                .subscribe(new Consumer<Transaction>() {
                     @Override
-                    public void accept(IndividualTransactionEntity individualTransactionEntity) throws Exception {
+                    public void accept(Transaction transaction) throws Exception {
                         Log.e(TAG, "getIndividualTransactionByLoop 轮询交易成功" + Thread.currentThread().getName());
                     }
                 });
+    }
+
+    private TransactionStatus getTransactionStatus(Optional<org.web3j.protocol.core.methods.response.Transaction> optional) {
+        if (optional.isEmpty()) {
+            return TransactionStatus.FAILED;
+        } else {
+            Log.e(TAG, "getTransactionStatus 轮询交易");
+            org.web3j.protocol.core.methods.response.Transaction transaction = optional.get();
+            long latestBlockNumber = Web3jManager.getInstance().getLatestBlockNumber();
+            long blockNumber = NumericUtil.decodeQuantity(transaction.getBlockNumberRaw(), BigInteger.ZERO).longValue();
+            return blockNumber > 0 && latestBlockNumber - blockNumber >= 1 ? TransactionStatus.SUCCESSED : TransactionStatus.PENDING;
+        }
     }
 }

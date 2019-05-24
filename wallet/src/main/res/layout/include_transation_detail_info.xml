@@ -116,6 +116,7 @@
         app:layout_constraintLeft_toRightOf="@id/barrier"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_transaction_energon"
-        tools:text="@string/wallet_name" />
+        tools:text="@string/wallet_name"
+        tools:visibility="visible" />
 
 </android.support.constraint.ConstraintLayout>

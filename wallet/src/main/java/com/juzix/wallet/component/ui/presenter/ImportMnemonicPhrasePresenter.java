@@ -16,9 +16,9 @@ import com.juzix.wallet.entity.Wallet;
 import java.util.Arrays;
 import java.util.List;
 
-public class ImportIndividualMnemonicPhrasePresenter extends BasePresenter<ImportIndividualMnemonicPhraseContract.View> implements ImportIndividualMnemonicPhraseContract.Presenter {
+public class ImportMnemonicPhrasePresenter extends BasePresenter<ImportIndividualMnemonicPhraseContract.View> implements ImportIndividualMnemonicPhraseContract.Presenter {
 
-    public ImportIndividualMnemonicPhrasePresenter(ImportIndividualMnemonicPhraseContract.View view) {
+    public ImportMnemonicPhrasePresenter(ImportIndividualMnemonicPhraseContract.View view) {
         super(view);
     }
 
@@ -64,7 +64,7 @@ public class ImportIndividualMnemonicPhrasePresenter extends BasePresenter<Impor
         new Thread() {
             @Override
             public void run() {
-                Wallet walletEntity = new Wallet.Builder().nodeAddress(NodeManager.getInstance().getCurNodeAddress()).build();
+                Wallet walletEntity = new Wallet.Builder().chainId(NodeManager.getInstance().getChainId()).build();
                 int code = WalletManager.getInstance().importMnemonic(walletEntity, phrase, name, password);
                 switch (code) {
                     case WalletManager.CODE_OK:

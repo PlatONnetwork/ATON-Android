@@ -58,7 +58,7 @@ public class BasePresenter<T extends IView> implements IPresenter<T> {
 
     public final <T> LifecycleTransformer<T> bindUntilEvent(@NonNull FragmentEvent event) {
         if (getView() instanceof BaseFragment) {
-            return ((BaseFragment) getView()).bindUntilEvent(FragmentEvent.STOP);
+            return ((BaseFragment) getView()).bindUntilEvent(event);
         } else {
             return bindToLifecycle();
         }

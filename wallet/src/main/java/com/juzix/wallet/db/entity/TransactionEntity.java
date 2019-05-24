@@ -1,5 +1,7 @@
 package com.juzix.wallet.db.entity;
 
+import com.juzix.wallet.entity.Transaction;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -38,10 +40,6 @@ public class TransactionEntity extends RealmObject implements Cloneable {
      */
     protected double value;
     /**
-     * 节点地址
-     */
-    private String nodeAddress;
-    /**
      * 交易类型 transfer ：转账
      * MPCtransaction ： MPC交易
      * contractCreate ： 合约创建
@@ -53,19 +51,11 @@ public class TransactionEntity extends RealmObject implements Cloneable {
      * candidateWithdraw：提取质押
      * unknown：未知
      */
-    private int txType;
+    private String txType;
     /**
      * 交易状态 1 成功 0 失败
      */
-    private int txReceiptStatus;
-    /**
-     * // 排列序号：由区块号和交易索引拼接而成
-     */
-    private long sequence;
-    /**
-     * 交易接收者类型（to是合约还是账户）contract合约、 account账户
-     */
-    private String receiveType;
+    private String txReceiptStatus;
     /**
      * 链id
      */
@@ -75,6 +65,10 @@ public class TransactionEntity extends RealmObject implements Cloneable {
      * "21168000000000"
      */
     private String actualTxCost;
+    /**
+     * {json}交易详细信息
+     */
+    private String txInfo;
 
     public TransactionEntity() {
     }
@@ -87,13 +81,11 @@ public class TransactionEntity extends RealmObject implements Cloneable {
         this.to = builder.to;
         this.blockNumber = builder.blockNumber;
         this.value = builder.value;
-        this.nodeAddress = builder.nodeAddress;
         this.txType = builder.txType;
         this.txReceiptStatus = builder.txReceiptStatus;
-        this.sequence = builder.sequence;
-        this.receiveType = builder.receiveType;
         this.chainId = builder.chainId;
         this.actualTxCost = builder.actualTxCost;
+        this.txInfo = builder.txInfo;
     }
 
     public String getHash() {
@@ -152,44 +144,20 @@ public class TransactionEntity extends RealmObject implements Cloneable {
         this.value = value;
     }
 
-    public String getNodeAddress() {
-        return nodeAddress;
-    }
-
-    public void setNodeAddress(String nodeAddress) {
-        this.nodeAddress = nodeAddress;
-    }
-
-    public int getTxType() {
+    public String getTxType() {
         return txType;
     }
 
-    public void setTxType(int txType) {
+    public void setTxType(String txType) {
         this.txType = txType;
     }
 
-    public int getTxReceiptStatus() {
+    public String getTxReceiptStatus() {
         return txReceiptStatus;
     }
 
-    public void setTxReceiptStatus(int txReceiptStatus) {
+    public void setTxReceiptStatus(String txReceiptStatus) {
         this.txReceiptStatus = txReceiptStatus;
-    }
-
-    public long getSequence() {
-        return sequence;
-    }
-
-    public void setSequence(long sequence) {
-        this.sequence = sequence;
-    }
-
-    public String getReceiveType() {
-        return receiveType;
-    }
-
-    public void setReceiveType(String receiveType) {
-        this.receiveType = receiveType;
     }
 
     public String getChainId() {
@@ -208,7 +176,15 @@ public class TransactionEntity extends RealmObject implements Cloneable {
         this.actualTxCost = actualTxCost;
     }
 
-    static final class Builder {
+    public String getTxInfo() {
+        return txInfo;
+    }
+
+    public void setTxInfo(String txInfo) {
+        this.txInfo = txInfo;
+    }
+
+    public static final class Builder {
         private String hash;
         private long createTime;
         private String walletName;
@@ -216,13 +192,11 @@ public class TransactionEntity extends RealmObject implements Cloneable {
         private String to;
         private long blockNumber;
         private double value;
-        private String nodeAddress;
-        private int txType;
-        private int txReceiptStatus;
-        private long sequence;
-        private String receiveType;
+        private String txType;
+        private String txReceiptStatus;
         private String chainId;
         private String actualTxCost;
+        private String txInfo;
 
         public Builder(String hash, String walletName, String from, String to, long createTime) {
             this.hash = hash;
@@ -242,28 +216,13 @@ public class TransactionEntity extends RealmObject implements Cloneable {
             return this;
         }
 
-        public Builder setNodeAddress(String nodeAddress) {
-            this.nodeAddress = nodeAddress;
-            return this;
-        }
-
-        public Builder setTxType(int txType) {
+        public Builder setTxType(String txType) {
             this.txType = txType;
             return this;
         }
 
-        public Builder setTxReceiptStatus(int txReceiptStatus) {
+        public Builder setTxReceiptStatus(String txReceiptStatus) {
             this.txReceiptStatus = txReceiptStatus;
-            return this;
-        }
-
-        public Builder setSequence(long sequence) {
-            this.sequence = sequence;
-            return this;
-        }
-
-        public Builder setReceiveType(String receiveType) {
-            this.receiveType = receiveType;
             return this;
         }
 
@@ -277,8 +236,30 @@ public class TransactionEntity extends RealmObject implements Cloneable {
             return this;
         }
 
+        public Builder setTxInfo(String txInfo) {
+            this.txInfo = txInfo;
+            return this;
+        }
+
         public TransactionEntity build() {
             return new TransactionEntity(this);
         }
+    }
+
+    public Transaction toTransaction() {
+        return new Transaction.Builder()
+                .hash(hash)
+                .createTime(createTime)
+                .txType(txType)
+                .txReceiptStatus(txReceiptStatus)
+                .blockNumber(blockNumber)
+                .senderWalletName(walletName)
+                .chainId(chainId)
+                .from(from)
+                .to(to)
+                .value(String.valueOf(value))
+                .actualTxCost(actualTxCost)
+                .txInfo(txInfo)
+                .build();
     }
 }

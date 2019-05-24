@@ -6,16 +6,16 @@ import android.os.Message;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.IndividualVoteDetailContract;
 import com.juzix.wallet.db.entity.SingleVoteInfoEntity;
-import com.juzix.wallet.db.sqlite.SingleVoteInfoDao;
+import com.juzix.wallet.db.sqlite.SingleVoteDao;
 import com.juzix.wallet.entity.SingleVoteEntity;
 
 /**
  * @author matrixelement
  */
-public class IndividualVoteDetailPresenter extends BasePresenter<IndividualVoteDetailContract.View> implements IndividualVoteDetailContract.Presenter {
+public class VoteTransactionDetailPresenter extends BasePresenter<IndividualVoteDetailContract.View> implements IndividualVoteDetailContract.Presenter {
 
 
-    public IndividualVoteDetailPresenter(IndividualVoteDetailContract.View view) {
+    public VoteTransactionDetailPresenter(IndividualVoteDetailContract.View view) {
         super(view);
     }
 
@@ -28,7 +28,7 @@ public class IndividualVoteDetailPresenter extends BasePresenter<IndividualVoteD
                 public void run() {
                     Message msg = mHandler.obtainMessage();
                     msg.what = MSG_UPDATE_TRANSACTIONS;
-                    SingleVoteInfoEntity voteInfoEntity = SingleVoteInfoDao.getTransactionByUuid(getView().getTransactionUuidFromIntent());
+                    SingleVoteInfoEntity voteInfoEntity = SingleVoteDao.getTransactionByUuid(getView().getTransactionUuidFromIntent());
                     if (voteInfoEntity != null) {
                         String candidateId = voteInfoEntity.getCandidateId();
                         if (!candidateId.startsWith("0x")) {
@@ -61,8 +61,8 @@ public class IndividualVoteDetailPresenter extends BasePresenter<IndividualVoteD
         }
     }
 
-    private static final int     MSG_UPDATE_TRANSACTIONS = 100;
-    private              Handler mHandler                = new Handler() {
+    private static final int MSG_UPDATE_TRANSACTIONS = 100;
+    private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -70,8 +70,8 @@ public class IndividualVoteDetailPresenter extends BasePresenter<IndividualVoteD
                 case MSG_UPDATE_TRANSACTIONS:
                     dismissLoadingDialogImmediately();
                     if (isViewAttached()) {
-                        if (msg.obj != null){
-                            getView().setTransactionDetailInfo((SingleVoteEntity)msg.obj);
+                        if (msg.obj != null) {
+                            getView().setTransactionDetailInfo((SingleVoteEntity) msg.obj);
                         }
                     }
                     break;

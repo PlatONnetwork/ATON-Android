@@ -15,7 +15,7 @@ import io.realm.RealmResults;
 /**
  * @author matrixelement
  */
-public class SingleVoteInfoDao {
+public class SingleVoteDao {
 
     public static boolean insertTransaction(SingleVoteInfoEntity entity) {
         Realm realm = null;

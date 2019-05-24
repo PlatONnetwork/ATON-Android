@@ -13,7 +13,7 @@ import io.realm.Sort;
 /**
  * @author matrixelement
  */
-public class TransactionInfoDao {
+public class TransactionDao {
 
     public static boolean insertTransaction(TransactionEntity transactionEntity) {
         Realm realm = null;
@@ -35,6 +35,30 @@ public class TransactionInfoDao {
         return false;
     }
 
+    public static boolean deleteTransaction(String hash) {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            realm.where(TransactionEntity.class)
+                    .equalTo("hash", hash)
+                    .equalTo("chainId", NodeManager.getInstance().getChainId())
+                    .findAll()
+                    .deleteAllFromRealm();
+            realm.commitTransaction();
+            return true;
+        } catch (Exception exp) {
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return false;
+    }
+
     public static TransactionEntity getTransactionByHash(String hash) {
         Realm realm = null;
         TransactionEntity transactionEntity = null;
@@ -42,11 +66,8 @@ public class TransactionInfoDao {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
             transactionEntity = realm.where(TransactionEntity.class)
-                    .beginGroup()
                     .equalTo("hash", hash)
-                    .and()
-                    .equalTo("nodeAddress", NodeManager.getInstance().getCurNodeAddress())
-                    .endGroup()
+                    .equalTo("chainId", NodeManager.getInstance().getChainId())
                     .findFirst();
             realm.commitTransaction();
         } catch (Exception exp) {
@@ -70,47 +91,10 @@ public class TransactionInfoDao {
         try {
             realm = Realm.getDefaultInstance();
             RealmResults<TransactionEntity> results = realm.where(TransactionEntity.class)
-                    .equalTo("nodeAddress", NodeManager.getInstance().getCurNodeAddress())
+                    .equalTo("chainId", NodeManager.getInstance().getChainId())
                     .sort("createTime", Sort.DESCENDING)
                     .findAll();
             list.addAll(realm.copyFromRealm(results));
-        } catch (Exception exp) {
-            exp.printStackTrace();
-        } finally {
-            if (realm != null) {
-                realm.close();
-            }
-        }
-        return list;
-    }
-
-    /**
-     * 分页加载获取交易记录
-     * @param walletAddress
-     * @param createTime
-     * @param size
-     * @return
-     */
-    public static List<TransactionEntity> getTransactionListByWalletAddress(String walletAddress, long createTime, long size) {
-        List<TransactionEntity> list = new ArrayList<>();
-        Realm realm = null;
-        try {
-            realm = Realm.getDefaultInstance();
-            RealmResults<TransactionEntity> results = realm.where(TransactionEntity.class)
-                    .beginGroup()
-                        .equalTo("from", walletAddress)
-                        .or()
-                        .equalTo("to", walletAddress)
-                    .endGroup()
-                    .and()
-                    .equalTo("nodeAddress", NodeManager.getInstance().getCurNodeAddress())
-                    .lessThan("createTime",createTime)
-                    .sort("createTime", Sort.DESCENDING)
-                    .limit(size)
-                    .findAll();
-            if (results != null) {
-                list = realm.copyFromRealm(results);
-            }
         } catch (Exception exp) {
             exp.printStackTrace();
         } finally {
@@ -133,9 +117,7 @@ public class TransactionInfoDao {
                     .or()
                     .equalTo("to", address)
                     .endGroup()
-                    .beginGroup()
-                    .equalTo("nodeAddress", NodeManager.getInstance().getCurNodeAddress())
-                    .endGroup()
+                    .equalTo("chanId", NodeManager.getInstance().getChainId())
                     .sort("createTime", Sort.DESCENDING)
                     .findAll();
             if (results != null) {

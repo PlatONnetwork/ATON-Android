@@ -51,7 +51,7 @@ public class Wallet implements Parcelable, Comparable<Wallet> {
     /**
      * 节点地址
      */
-    protected String nodeAddress;
+    protected String chainId;
 
     public Wallet() {
     }
@@ -67,7 +67,7 @@ public class Wallet implements Parcelable, Comparable<Wallet> {
         key = in.readString();
         keystorePath = in.readString();
         mnemonic = in.readString();
-        nodeAddress = in.readString();
+        chainId = in.readString();
     }
 
     public Wallet(Builder builder) {
@@ -81,7 +81,7 @@ public class Wallet implements Parcelable, Comparable<Wallet> {
         this.key = builder.key;
         this.keystorePath = builder.keystorePath;
         this.mnemonic = builder.mnemonic;
-        this.nodeAddress = builder.nodeAddress;
+        this.chainId = builder.chainId;
     }
 
     @Override
@@ -96,7 +96,7 @@ public class Wallet implements Parcelable, Comparable<Wallet> {
         dest.writeString(key);
         dest.writeString(keystorePath);
         dest.writeString(mnemonic);
-        dest.writeString(nodeAddress);
+        dest.writeString(chainId);
     }
 
     @Override
@@ -198,12 +198,12 @@ public class Wallet implements Parcelable, Comparable<Wallet> {
         this.balance = balance;
     }
 
-    public String getNodeAddress() {
-        return nodeAddress;
+    public String getChainId() {
+        return chainId;
     }
 
-    public void setNodeAddress(String nodeAddress) {
-        this.nodeAddress = nodeAddress;
+    public void setChainId(String chainId) {
+        this.chainId = chainId;
     }
 
     public String getKey() {
@@ -262,6 +262,14 @@ public class Wallet implements Parcelable, Comparable<Wallet> {
         }
     }
 
+    /**
+     * 是否需要备份，判断提交是，助记词是否为空，为空说明已经备份过了
+     * @return
+     */
+    public boolean isNeedBackup() {
+        return !TextUtils.isEmpty(mnemonic);
+    }
+
     @Override
     public String toString() {
         return "Wallet{" +
@@ -272,7 +280,7 @@ public class Wallet implements Parcelable, Comparable<Wallet> {
                 ", updateTime=" + updateTime +
                 ", balance=" + balance +
                 ", avatar='" + avatar + '\'' +
-                ", nodeAddress='" + nodeAddress + '\'' +
+                ", chainId='" + chainId + '\'' +
                 '}';
     }
 
@@ -298,7 +306,7 @@ public class Wallet implements Parcelable, Comparable<Wallet> {
                 .updateTime(getUpdateTime())
                 .avatar(getAvatar())
                 .mnemonic(getMnemonic())
-                .nodeAddress(getNodeAddress()).build();
+                .chainId(getChainId()).build();
     }
 
     public static final class Builder {
@@ -312,7 +320,7 @@ public class Wallet implements Parcelable, Comparable<Wallet> {
         private String key;
         private String keystorePath;
         private String mnemonic;
-        private String nodeAddress;
+        private String chainId;
 
         public Builder uuid(String uuid) {
             this.uuid = uuid;
@@ -364,8 +372,8 @@ public class Wallet implements Parcelable, Comparable<Wallet> {
             return this;
         }
 
-        public Builder nodeAddress(String nodeAddress) {
-            this.nodeAddress = nodeAddress;
+        public Builder chainId(String chainId) {
+            this.chainId = chainId;
             return this;
         }
 

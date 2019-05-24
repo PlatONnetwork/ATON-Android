@@ -8,10 +8,9 @@ import com.juzhen.framework.util.MapUtils;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.db.entity.SingleVoteInfoEntity;
 import com.juzix.wallet.db.entity.TicketInfoEntity;
-import com.juzix.wallet.db.sqlite.SingleVoteInfoDao;
+import com.juzix.wallet.db.sqlite.SingleVoteDao;
 import com.juzix.wallet.entity.SingleVoteEntity;
 import com.juzix.wallet.entity.Wallet;
-import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.AppUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.JSONUtil;
@@ -223,9 +222,9 @@ public class VoteManager {
                 .doOnSuccess(new Consumer<SingleVoteInfoEntity>() {
                     @Override
                     public void accept(SingleVoteInfoEntity voteInfoEntity) throws Exception {
-                        boolean success = SingleVoteInfoDao.insertTransaction(voteInfoEntity);
+                        boolean success = SingleVoteDao.insertTransaction(voteInfoEntity);
                         if (success) {
-                            EventPublisher.getInstance().sendUpdateVoteTransactionListEvent(voteInfoEntity.buildVoteTransactionEntity());
+//                            EventPublisher.getInstance().sendUpdateVoteTransactionListEvent(voteInfoEntity.buildVoteTransactionEntity());
                             updateVoteTicket(voteInfoEntity);
                         }
                     }
@@ -239,7 +238,7 @@ public class VoteManager {
         Flowable.fromCallable(new Callable<List<SingleVoteInfoEntity>>() {
             @Override
             public List<SingleVoteInfoEntity> call() throws Exception {
-                return SingleVoteInfoDao.getTransactionListByStatus(SingleVoteEntity.STATUS_PENDING);
+                return SingleVoteDao.getTransactionListByStatus(SingleVoteEntity.STATUS_PENDING);
             }
         }).flatMap(new Function<List<SingleVoteInfoEntity>, Publisher<SingleVoteInfoEntity>>() {
             @Override
@@ -432,7 +431,7 @@ public class VoteManager {
                         if (!ret) {
                             SingleVoteInfoEntity tempVoteInfoEntity = singleVoteInfoEntity.clone();
                             tempVoteInfoEntity.setStatus(SingleVoteEntity.STATUS_FAILED);
-                            SingleVoteInfoDao.insertTransaction(tempVoteInfoEntity);
+                            SingleVoteDao.insertTransaction(tempVoteInfoEntity);
                         }
                         return ret;
                     }
@@ -469,9 +468,9 @@ public class VoteManager {
                 .doOnSuccess(new Consumer<SingleVoteInfoEntity>() {
                     @Override
                     public void accept(SingleVoteInfoEntity voteInfoEntity) throws Exception {
-                        boolean success = SingleVoteInfoDao.insertTransaction(voteInfoEntity);
+                        boolean success = SingleVoteDao.insertTransaction(voteInfoEntity);
                         if (success) {
-                            EventPublisher.getInstance().sendUpdateVoteTransactionListEvent(voteInfoEntity.buildVoteTransactionEntity());
+//                            EventPublisher.getInstance().sendUpdateVoteTransactionListEvent(voteInfoEntity.buildVoteTransactionEntity());
                         }
                     }
                 })

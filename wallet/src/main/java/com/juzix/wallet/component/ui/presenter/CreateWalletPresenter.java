@@ -10,16 +10,16 @@ import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.CreateIndividualWalletContract;
 import com.juzix.wallet.component.ui.view.BackupWalletActivity;
 import com.juzix.wallet.config.AppSettings;
-import com.juzix.wallet.db.sqlite.WalletInfoDao;
+import com.juzix.wallet.db.sqlite.WalletDao;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.RxUtils;
 
 import io.reactivex.functions.Consumer;
 
-public class CreateIndividualWalletPresenter extends BasePresenter<CreateIndividualWalletContract.View> implements CreateIndividualWalletContract.Presenter {
+public class CreateWalletPresenter extends BasePresenter<CreateIndividualWalletContract.View> implements CreateIndividualWalletContract.Presenter {
 
-    public CreateIndividualWalletPresenter(CreateIndividualWalletContract.View view) {
+    public CreateWalletPresenter(CreateIndividualWalletContract.View view) {
         super(view);
     }
 
@@ -55,7 +55,7 @@ public class CreateIndividualWalletPresenter extends BasePresenter<CreateIndivid
                     @Override
                     public void accept(Wallet walletEntity) throws Exception {
                         WalletManager.getInstance().addWallet(walletEntity);
-                        WalletInfoDao.insertWalletInfo(walletEntity.buildWalletInfoEntity());
+                        WalletDao.insertWalletInfo(walletEntity.buildWalletInfoEntity());
                         AppSettings.getInstance().setOperateMenuFlag(false);
                     }
                 })

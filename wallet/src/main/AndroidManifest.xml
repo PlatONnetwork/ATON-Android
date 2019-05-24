@@ -121,7 +121,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".component.ui.view.IndividualTransactionDetailActivity"
+            android:name=".component.ui.view.TransactionDetailActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
@@ -171,7 +171,7 @@
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".component.ui.view.IndividualVoteDetailActivity"
+            android:name=".component.ui.view.VoteTransactionDetailActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity

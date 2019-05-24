@@ -10,7 +10,7 @@ import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.view.BackupMnemonicPhraseActivity;
 import com.juzix.wallet.component.ui.view.ExportIndividualKeystoreActivity;
 import com.juzix.wallet.component.ui.view.ExportIndividualPrivateKeyActivity;
-import com.juzix.wallet.db.sqlite.WalletInfoDao;
+import com.juzix.wallet.db.sqlite.WalletDao;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.event.EventPublisher;
@@ -97,7 +97,7 @@ public class ManageIndividualWalletPresenter extends BasePresenter<ManageIndivid
                 .fromCallable(new Callable<Boolean>() {
                     @Override
                     public Boolean call() throws Exception {
-                        return WalletInfoDao.updateNameWithUuid(mWalletEntity.getUuid(), name);
+                        return WalletDao.updateNameWithUuid(mWalletEntity.getUuid(), name);
                     }
                 })
                 .filter(new Predicate<Boolean>() {

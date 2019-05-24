@@ -48,7 +48,7 @@ public class WalletEntity extends RealmObject {
     /**
      * 节点地址
      */
-    private String nodeAddress;
+    private String chainId;
 
     public WalletEntity() {
 
@@ -64,7 +64,7 @@ public class WalletEntity extends RealmObject {
         setUpdateTime(builder.updateTime);
         setAvatar(builder.avatar);
         setMnemonic(builder.mnemonic);
-        setNodeAddress(builder.nodeAddress);
+        setChainId(builder.chainId);
     }
 
     public String getAvatar() {
@@ -139,12 +139,12 @@ public class WalletEntity extends RealmObject {
         this.mnemonic = mnemonic;
     }
 
-    public void setNodeAddress(String nodeAddress) {
-        this.nodeAddress = nodeAddress;
+    public String getChainId() {
+        return chainId;
     }
 
-    public String getNodeAddress() {
-        return nodeAddress;
+    public void setChainId(String chainId) {
+        this.chainId = chainId;
     }
 
     public static final class Builder {
@@ -157,7 +157,7 @@ public class WalletEntity extends RealmObject {
         private long updateTime;
         private String avatar;
         private String mnemonic;
-        private String nodeAddress;
+        private String chainId;
 
         public Builder() {
         }
@@ -207,8 +207,8 @@ public class WalletEntity extends RealmObject {
             return this;
         }
 
-        public Builder nodeAddress(String val) {
-            nodeAddress = val;
+        public Builder chainId(String val) {
+            chainId = val;
             return this;
         }
 
@@ -228,7 +228,7 @@ public class WalletEntity extends RealmObject {
                 .updateTime(updateTime)
                 .avatar(avatar)
                 .mnemonic(mnemonic)
-                .nodeAddress(nodeAddress)
+                .chainId(chainId)
                 .build();
     }
 
@@ -244,7 +244,7 @@ public class WalletEntity extends RealmObject {
                 ", updateTime=" + updateTime +
                 ", avatar='" + avatar + '\'' +
                 ", mnemonic='" + mnemonic + '\'' +
-                ", nodeAddress='" + nodeAddress + '\'' +
+                ", chainId='" + chainId + '\'' +
                 '}';
     }
 }

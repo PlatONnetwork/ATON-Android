@@ -1,9 +1,9 @@
 package com.juzix.wallet.component.ui.presenter;
 
+import android.annotation.SuppressLint;
 import android.text.TextUtils;
 
 import com.juzhen.framework.network.NetConnectivity;
-import com.juzhen.framework.network.SchedulersTransformer;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomThrowable;
@@ -15,11 +15,11 @@ import com.juzix.wallet.component.ui.dialog.SendTransactionDialogFragment;
 import com.juzix.wallet.component.ui.view.AssetsFragment;
 import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.db.entity.AddressEntity;
-import com.juzix.wallet.db.sqlite.AddressInfoDao;
+import com.juzix.wallet.db.sqlite.AddressDao;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.TransactionManager;
 import com.juzix.wallet.engine.Web3jManager;
-import com.juzix.wallet.entity.IndividualTransactionEntity;
+import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
@@ -30,8 +30,10 @@ import com.trello.rxlifecycle2.android.FragmentEvent;
 import org.reactivestreams.Publisher;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
+import org.web3j.utils.Convert;
 import org.web3j.utils.Numeric;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.LinkedHashMap;
@@ -215,7 +217,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
                     .setOnConfirmBtnClickListener(new SendTransactionDialogFragment.OnConfirmBtnClickListener() {
                         @Override
                         public void onConfirmBtnClick() {
-                            showInputWalletPasswordDialogFragment(transferAmount, toAddress);
+                            showInputWalletPasswordDialogFragment(transferAmount, fee, toAddress);
                         }
                     })
                     .show(currentActivity().getSupportFragmentManager(), "sendTransaction");
@@ -239,7 +241,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
     public void saveWallet(String name, String address) {
         String[] avatarArray = getContext().getResources().getStringArray(R.array.wallet_avatar);
         String avatar = avatarArray[new Random().nextInt(avatarArray.length)];
-        getView().setSaveAddressButtonEnable(!AddressInfoDao.insertAddressInfo(new AddressEntity(UUID.randomUUID().toString(), address, name, avatar)));
+        getView().setSaveAddressButtonEnable(!AddressDao.insertAddressInfo(new AddressEntity(UUID.randomUUID().toString(), address, name, avatar)));
     }
 
     @Override
@@ -259,22 +261,23 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
             return;
         }
         if (JZWalletUtil.isValidAddress(address)) {
-            getView().setSaveAddressButtonEnable(!AddressInfoDao.isExist(address));
+            getView().setSaveAddressButtonEnable(!AddressDao.isExist(address));
         } else {
             getView().setSaveAddressButtonEnable(false);
         }
     }
 
-    private void sendTransaction(Credentials credentials, String transferAmount, String toAddress) {
+    @SuppressLint("CheckResult")
+    private void sendTransaction(String privateKey, BigDecimal transferAmount, BigDecimal feeAmount, String toAddress) {
         TransactionManager
                 .getInstance()
-                .sendTransaction(Numeric.toHexStringNoPrefix(credentials.getEcKeyPair().getPrivateKey()), walletEntity.getPrefixAddress(), toAddress, walletEntity.getName(), transferAmount, NumberParserUtils.parseLong(BigDecimalUtil.parseString(gasPrice)), gasLimit)
-                .compose(new SchedulersTransformer())
+                .sendTransaction(privateKey, walletEntity.getPrefixAddress(), toAddress, walletEntity.getName(), transferAmount, feeAmount, NumberParserUtils.parseLong(BigDecimalUtil.parseString(gasPrice)), gasLimit)
+                .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
                 .compose(bindToLifecycle())
-                .subscribe(new Consumer<IndividualTransactionEntity>() {
+                .subscribe(new Consumer<Transaction>() {
                     @Override
-                    public void accept(IndividualTransactionEntity transactionEntity) {
+                    public void accept(Transaction transaction) {
                         if (isViewAttached()) {
                             showLongToast(string(R.string.transfer_succeed));
                             backToTransactionListWithDelay();
@@ -330,11 +333,11 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
     }
 
 
-    private void showInputWalletPasswordDialogFragment(String transferAmount, String toAddress) {
+    private void showInputWalletPasswordDialogFragment(String transferAmount, String feeAmount, String toAddress) {
         InputWalletPasswordDialogFragment.newInstance(walletEntity).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
             @Override
             public void onWalletPasswordCorrect(Credentials credentials) {
-                sendTransaction(credentials, transferAmount, toAddress);
+                sendTransaction(Numeric.toHexStringNoPrefix(credentials.getEcKeyPair().getPrivateKey()), Convert.toWei(transferAmount, Convert.Unit.ETHER), Convert.toWei(feeAmount, Convert.Unit.ETHER), toAddress);
             }
         }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
     }

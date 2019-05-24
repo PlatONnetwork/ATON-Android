@@ -37,12 +37,12 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * @author matrixelement
  */
-public class IndividualReceiveTransationPresenter extends BasePresenter<IndividualReceiveTransationContract.View> implements IndividualReceiveTransationContract.Presenter {
+public class ReceiveTransactionPresenter extends BasePresenter<IndividualReceiveTransationContract.View> implements IndividualReceiveTransationContract.Presenter {
 
     private Wallet walletEntity;
     private Bitmap mQRCodeBitmap;
 
-    public IndividualReceiveTransationPresenter(IndividualReceiveTransationContract.View view) {
+    public ReceiveTransactionPresenter(IndividualReceiveTransationContract.View view) {
         super(view);
         walletEntity = view.getWalletFromIntent();
     }

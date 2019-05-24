@@ -1,20 +1,16 @@
 package com.juzix.wallet.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.text.TextUtils;
+
 import com.alibaba.fastjson.annotation.JSONField;
-import com.alibaba.fastjson.parser.DefaultJSONParser;
-import com.alibaba.fastjson.parser.deserializer.ObjectDeserializer;
-import com.alibaba.fastjson.serializer.JSONSerializer;
-import com.alibaba.fastjson.serializer.ObjectSerializer;
-import com.alibaba.fastjson.util.TypeUtils;
 import com.juzhen.framework.util.NumberParserUtils;
+import com.juzix.wallet.db.entity.TransactionEntity;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.DateUtil;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
-
-public class Transaction implements Comparable<Transaction> {
+public class Transaction implements Comparable<Transaction>, Parcelable, Cloneable {
 
     /**
      * 交易hash
@@ -47,16 +43,11 @@ public class Transaction implements Comparable<Transaction> {
      */
     private String to;
     /**
-     * 交易接收者类型（to是合约还是账户）contract合约、 account账户
-     * "account"
-     */
-    private String receiveType;
-    /**
      * 交易序列号
      */
     private long sequence;
     /**
-     * 交易状态
+     * 交易状态2 pending 1 成功 0 失败
      */
     private String txReceiptStatus;
     /**
@@ -77,6 +68,61 @@ public class Transaction implements Comparable<Transaction> {
      * 交易金额
      */
     private String value;
+    /**
+     * 发送者钱包名称
+     */
+    private String senderWalletName;
+    /**
+     * {json}交易详细信息
+     */
+    private String txInfo;
+
+    public Transaction() {
+    }
+
+    protected Transaction(Parcel in) {
+        hash = in.readString();
+        blockNumber = in.readLong();
+        chainId = in.readString();
+        createTime = in.readLong();
+        actualTxCost = in.readString();
+        from = in.readString();
+        to = in.readString();
+        sequence = in.readLong();
+        txReceiptStatus = in.readString();
+        txType = in.readString();
+        value = in.readString();
+        senderWalletName = in.readString();
+        txInfo = in.readString();
+    }
+
+    public static final Creator<Transaction> CREATOR = new Creator<Transaction>() {
+        @Override
+        public Transaction createFromParcel(Parcel in) {
+            return new Transaction(in);
+        }
+
+        @Override
+        public Transaction[] newArray(int size) {
+            return new Transaction[size];
+        }
+    };
+
+    public Transaction(Builder builder) {
+        this.hash = builder.hash;
+        this.blockNumber = builder.blockNumber;
+        this.chainId = builder.chainId;
+        this.createTime = builder.createTime;
+        this.actualTxCost = builder.actualTxCost;
+        this.from = builder.from;
+        this.to = builder.to;
+        this.sequence = builder.sequence;
+        this.txReceiptStatus = builder.txReceiptStatus;
+        this.txType = builder.txType;
+        this.value = builder.value;
+        this.senderWalletName = builder.senderWalletName;
+        this.txInfo = builder.txInfo;
+    }
 
     public String getHash() {
         return hash;
@@ -106,12 +152,20 @@ public class Transaction implements Comparable<Transaction> {
         return createTime;
     }
 
+    public String getShowCreateTime(){
+        return DateUtil.format(createTime, DateUtil.DATETIME_FORMAT_PATTERN);
+    }
+
     public void setCreateTime(long createTime) {
         this.createTime = createTime;
     }
 
     public String getActualTxCost() {
         return actualTxCost;
+    }
+
+    public String getShowActualTxCost(){
+        return NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(actualTxCost, "1E18"));
     }
 
     public void setActualTxCost(String actualTxCost) {
@@ -134,14 +188,6 @@ public class Transaction implements Comparable<Transaction> {
         this.to = to;
     }
 
-    public String getReceiveType() {
-        return receiveType;
-    }
-
-    public void setReceiveType(String receiveType) {
-        this.receiveType = receiveType;
-    }
-
     public long getSequence() {
         return sequence;
     }
@@ -150,16 +196,16 @@ public class Transaction implements Comparable<Transaction> {
         this.sequence = sequence;
     }
 
-    public String getTxReceiptStatus() {
-        return txReceiptStatus;
+    public TransactionStatus getTxReceiptStatus() {
+        return TransactionStatus.getTransactionStatusByIndex(NumberParserUtils.parseInt(txReceiptStatus));
     }
 
     public void setTxReceiptStatus(String txReceiptStatus) {
         this.txReceiptStatus = txReceiptStatus;
     }
 
-    public TxType getTxType() {
-        return TxType.getTxTypeByName(txType);
+    public TransactionType getTxType() {
+        return TransactionType.getTxTypeByName(txType);
     }
 
     public void setTxType(String txType) {
@@ -171,15 +217,44 @@ public class Transaction implements Comparable<Transaction> {
     }
 
     public String getShowValue() {
-        return NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(value, "1E18"), 4);
+       return NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(value, "1E18"));
     }
 
     public void setValue(String value) {
         this.value = value;
     }
 
-    public boolean isSuccess() {
-        return "1".equals(txReceiptStatus);
+    public String getSenderWalletName() {
+        return senderWalletName;
+    }
+
+    public void setSenderWalletName(String senderWalletName) {
+        this.senderWalletName = senderWalletName;
+    }
+
+    public String getTxInfo() {
+        return txInfo;
+    }
+
+    public void setTxInfo(String txInfo) {
+        this.txInfo = txInfo;
+    }
+
+    @Override
+    public int hashCode() {
+        return TextUtils.isEmpty(hash) ? 0 : hash.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof Transaction) {
+            Transaction transaction = (Transaction) obj;
+            return !TextUtils.isEmpty(hash) && hash.equals(transaction.getHash());
+        }
+        return super.equals(obj);
     }
 
     @Override
@@ -187,34 +262,151 @@ public class Transaction implements Comparable<Transaction> {
         return Long.compare(o.sequence, sequence);
     }
 
-    public enum TxType {
-
-        TRANSFER("transfer", "转账"), MPCTRANSACTION("MPCtransaction：MPC", "MPC交易"), CONTRACTCREATE("contractCreate", "合约创建"), VOTETICKET("voteTicket", "投票"), TRANSACTIONEXECUTE("transactionExecute", "合约执行"), CANDIDATEDEPOSIT("candidateDeposit", "质押"), CANDIDATEAPPLYWITHDRAW("candidateApplyWithdraw", "减持质押"), CANDIDATEWITHDRAW("candidateWithdraw", "提取质押"), UNKNOWN("unknown", "其他");
-
-        private String name;
-        private String desc;
-
-        TxType(String name, String desc) {
-            this.name = name;
-            this.desc = desc;
-        }
-
-        private static Map<String, TxType> map = new HashMap<>();
-
-        static {
-            for (TxType status : values()) {
-                map.put(status.name, status);
-            }
-        }
-
-        public static TxType getTxTypeByName(String name) {
-            return map.get(name);
-        }
-
-        public String getTxTypeDesc() {
-            return desc;
-        }
-
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(hash);
+        dest.writeLong(blockNumber);
+        dest.writeString(chainId);
+        dest.writeLong(createTime);
+        dest.writeString(actualTxCost);
+        dest.writeString(from);
+        dest.writeString(to);
+        dest.writeLong(sequence);
+        dest.writeString(txReceiptStatus);
+        dest.writeString(txType);
+        dest.writeString(value);
+        dest.writeString(senderWalletName);
+        dest.writeString(txInfo);
+    }
+
+    @Override
+    public Transaction clone() {
+        Transaction transaction = null;
+        try {
+            transaction = (Transaction) super.clone();
+        } catch (CloneNotSupportedException exception) {
+            exception.printStackTrace();
+        }
+        return transaction;
+    }
+
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "hash='" + hash + '\'' +
+                ", blockNumber=" + blockNumber +
+                ", chainId='" + chainId + '\'' +
+                ", createTime=" + createTime +
+                ", actualTxCost='" + actualTxCost + '\'' +
+                ", from='" + from + '\'' +
+                ", to='" + to + '\'' +
+                ", sequence=" + sequence +
+                ", txReceiptStatus='" + txReceiptStatus + '\'' +
+                ", txType='" + txType + '\'' +
+                ", value='" + value + '\'' +
+                ", senderWalletName='" + senderWalletName + '\'' +
+                ", txInfo='" + txInfo + '\'' +
+                '}';
+    }
+
+    public static final class Builder {
+        private String hash;
+        private long blockNumber;
+        private String chainId;
+        private long createTime;
+        private String actualTxCost;
+        private String from;
+        private String to;
+        private long sequence;
+        private String txReceiptStatus;
+        private String txType;
+        private String value;
+        private String senderWalletName;
+        private String txInfo;
+
+        public Builder hash(String hash) {
+            this.hash = hash;
+            return this;
+        }
+
+        public Builder blockNumber(long blockNumber) {
+            this.blockNumber = blockNumber;
+            return this;
+        }
+
+        public Builder chainId(String chainId) {
+            this.chainId = chainId;
+            return this;
+        }
+
+        public Builder createTime(long createTime) {
+            this.createTime = createTime;
+            return this;
+        }
+
+        public Builder actualTxCost(String actualTxCost) {
+            this.actualTxCost = actualTxCost;
+            return this;
+        }
+
+        public Builder from(String from) {
+            this.from = from;
+            return this;
+        }
+
+        public Builder to(String to) {
+            this.to = to;
+            return this;
+        }
+
+        public Builder sequence(long sequence) {
+            this.sequence = sequence;
+            return this;
+        }
+
+        public Builder txReceiptStatus(String txReceiptStatus) {
+            this.txReceiptStatus = txReceiptStatus;
+            return this;
+        }
+
+        public Builder txType(String txType) {
+            this.txType = txType;
+            return this;
+        }
+
+        public Builder value(String value) {
+            this.value = value;
+            return this;
+        }
+
+        public Builder senderWalletName(String senderWalletName) {
+            this.senderWalletName = senderWalletName;
+            return this;
+        }
+
+        public Builder txInfo(String txtInfo) {
+            this.txInfo = txtInfo;
+            return this;
+        }
+
+        public Transaction build() {
+            return new Transaction(this);
+        }
+    }
+
+    public TransactionEntity toTransactionEntity() {
+        return new TransactionEntity.Builder(hash, senderWalletName, from, to, createTime)
+                .setTxType(TransactionType.TRANSFER.getTxTypeName())
+                .setBlockNumber(blockNumber)
+                .setChainId(chainId)
+                .setTxReceiptStatus(String.valueOf(TransactionStatus.PENDING.ordinal()))
+                .setActualTxCost(actualTxCost)
+                .setValue(NumberParserUtils.parseDouble(value))
+                .build();
+    }
 }

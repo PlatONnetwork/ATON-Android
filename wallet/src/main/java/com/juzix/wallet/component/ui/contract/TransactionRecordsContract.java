@@ -17,6 +17,8 @@ public class TransactionRecordsContract {
 
         void finishRefresh();
 
+        void notifyItemRangeInserted(List<Transaction> transactionList, int positionStart, int itemCount);
+
         void showTransactions(List<Transaction> transactionList);
     }
 

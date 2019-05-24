@@ -252,6 +252,7 @@ public class AppFramework {
                         .addField("actualTxCost", String.class);
                 //修改数据库名称
                 schema.rename("IndividualWalletInfoEntity","WalletEntity");
+                //todo数据库字段修改
                 schema.rename("AddressInfoEntity","AddressEntity");
                 schema.rename("NodeInfoEntity","NodeEntity");
                 oldVersion++;
