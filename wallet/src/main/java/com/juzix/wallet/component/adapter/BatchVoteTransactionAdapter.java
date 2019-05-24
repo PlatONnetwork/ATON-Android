@@ -44,8 +44,11 @@ public class BatchVoteTransactionAdapter extends CommonAdapter<VotedCandidate> {
 
         viewHolder.setText(R.id.tv_node_name, item.getName()); //节点名称
         viewHolder.setText(R.id.tv_valid_invalid_ticket, String.format("%s/%s", NumberParserUtils.getPrettyNumber(item.getValidNum(), 0), NumberParserUtils.getPrettyNumber(BigDecimalUtil.sub(NumberParserUtils.parseDouble(item.getTotalTicketNum()), NumberParserUtils.parseDouble(item.getValidNum())), 0)));
-        viewHolder.setText(R.id.tv_vote_staked, NumberParserUtils.getPrettyNumber(item.getLocked(), 0));
+
+//        viewHolder.setText(R.id.tv_vote_staked, NumberParserUtils.getPrettyNumber(item.getLocked(), 0));
+        viewHolder.setText(R.id.tv_vote_staked, NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(NumberParserUtils.parseDouble(item.getLocked()), 1E18), 4));
         viewHolder.setText(R.id.tv_vote_staked_desc, String.format("%s(Energon)", context.getString(R.string.lockVote)));
+
         viewHolder.setText(R.id.tv_vote_profit, NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(item.getEarnings(), "1E18"), 4));
         viewHolder.setText(R.id.tv_vote_profit_desc, String.format("%s(Energon)", context.getString(R.string.votingIncome)));
 

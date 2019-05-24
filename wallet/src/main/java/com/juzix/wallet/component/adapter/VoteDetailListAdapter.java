@@ -30,8 +30,8 @@ public class VoteDetailListAdapter extends CommonAdapter<VotedCandidate> {
         double invalidVoteNum = BigDecimalUtil.sub(NumberParserUtils.parseDouble(item.getTotalTicketNum()), NumberParserUtils.parseDouble(item.getValidNum()));
         viewHolder.setText(R.id.tv_valid_and_invalid_ticket, String.format("%s/%s", NumberParserUtils.getPrettyNumber(item.getValidNum(), 0), NumberParserUtils.getPrettyNumber(invalidVoteNum, 0)));
 
-        viewHolder.setText(R.id.tv_ticket_price, context.getString(R.string.amount_with_unit, NumberParserUtils.getPrettyNumber(item.getPrice(), 0)));
-        viewHolder.setText(R.id.tv_vote_staked_and_unstaked, String.format("%s/%s", NumberParserUtils.getPrettyNumber(item.getLocked(), 0), BigDecimalUtil.div(BigDecimalUtil.mul(item.getValidNum(), item.getPrice()).doubleValue(), 1E18)));
+        viewHolder.setText(R.id.tv_ticket_price, context.getString(R.string.amount_with_unit, NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(item.getPrice(), "1E18"), 4)));
+        viewHolder.setText(R.id.tv_vote_staked_and_unstaked, String.format("%s/%s", NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(item.getLocked(), "1E18"), 4), BigDecimalUtil.div(BigDecimalUtil.mul(item.getValidNum(), item.getPrice()).doubleValue(), 1E18)));
         viewHolder.setText(R.id.tv_vote_profit, context.getString(R.string.amount_with_unit, NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(item.getEarnings(), "1E18"), 4)));
         TextView tv = (AutoTextView) viewHolder.getView(R.id.tv_wallet_address_and_name);
         tv.setText(String.format("%s(%s)", item.getWalletAddress(), WalletManager.getInstance().getWalletNameByWalletAddress(item.getWalletAddress()))); //表示钱包名称
