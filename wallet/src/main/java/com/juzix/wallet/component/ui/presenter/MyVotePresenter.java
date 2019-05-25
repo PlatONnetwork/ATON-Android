@@ -61,7 +61,7 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
     }
 
 
-    public void voteTicket(String nodeId, String nodeName) {
+    public void voteTicket(String nodeId, String nodeName,String deposit) {
         if (isViewAttached()) {
 
             List<Wallet> walletEntityList = WalletManager.getInstance().getWalletList();
@@ -91,7 +91,7 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
                             if (totalBalance <= 0) {
                                 showLongToast(R.string.voteTicketInsufficientBalanceTips);
                             } else {
-                                SubmitVoteActivity.actionStart(currentActivity(), nodeId, nodeName);
+                                SubmitVoteActivity.actionStart(currentActivity(), nodeId, nodeName,deposit);
                             }
                         }
                     });

@@ -14,6 +14,10 @@ import com.juzix.wallet.utils.RxUtils;
 import java.util.Collections;
 import java.util.List;
 
+import io.reactivex.Flowable;
+import io.reactivex.functions.BiConsumer;
+import io.reactivex.functions.Predicate;
+
 /**
  * @author matrixelement
  */
@@ -49,12 +53,14 @@ public class TransactionRecordsPresenter extends BasePresenter<TransactionRecord
                             Collections.sort(transactions);
                             if (DIRECTION_OLD.equals(direction)) {
                                 //累加,mTransactionList不可能为null,放在最后面
-                                mTransactionList.addAll(mTransactionList.size(),transactions);
+                                int oldSize = mTransactionList.size();
+                                mTransactionList = addAll(transactions);
+                                int newSize = mTransactionList.size();
+                                getView().notifyItemRangeInserted(mTransactionList, oldSize, newSize - oldSize);
                             } else {
                                 mTransactionList = transactions;
+                                getView().showTransactions(mTransactionList);
                             }
-
-                            getView().showTransactions(mTransactionList);
 
                             if (DIRECTION_OLD.equals(direction)) {
                                 getView().finishLoadMore();
@@ -78,6 +84,25 @@ public class TransactionRecordsPresenter extends BasePresenter<TransactionRecord
 
     }
 
+
+    private List<Transaction> addAll(List<Transaction> transactionList) {
+        return Flowable
+                .fromIterable(transactionList)
+                .filter(new Predicate<Transaction>() {
+                    @Override
+                    public boolean test(Transaction transaction) throws Exception {
+                        return !mTransactionList.contains(transaction);
+                    }
+                })
+                .collectInto(mTransactionList, new BiConsumer<List<Transaction>, Transaction>() {
+                    @Override
+                    public void accept(List<Transaction> transactionList, Transaction transaction) throws Exception {
+                        transactionList.add(transactionList.size(), transaction);
+                    }
+                })
+                .blockingGet();
+    }
+
     private long getBeginSequenceByDirection(String direction) {
         //拉最新的
         if (mTransactionList == null || mTransactionList.isEmpty() || DIRECTION_NEW.equals(direction)) {
@@ -86,7 +111,6 @@ public class TransactionRecordsPresenter extends BasePresenter<TransactionRecord
         //分页加载取最后一个
         int size = mTransactionList.size();
         return mTransactionList.get(size - 1).getSequence();
-
     }
 
 

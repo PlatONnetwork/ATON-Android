@@ -1,8 +1,8 @@
 package com.juzix.wallet.event;
 
 import com.juzhen.framework.network.NetState;
-import com.juzix.wallet.entity.IndividualTransactionEntity;
 import com.juzix.wallet.entity.Node;
+import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.VoteTransaction;
 import com.juzix.wallet.entity.Wallet;
 
@@ -21,12 +21,12 @@ public class Event {
         }
     }
 
-    public static class UpdateIndividualWalletTransactionEvent {
+    public static class UpdateTransactionEvent {
 
-        public IndividualTransactionEntity individualTransactionEntity;
+        public Transaction transaction;
 
-        public UpdateIndividualWalletTransactionEvent(IndividualTransactionEntity individualTransactionEntity) {
-            this.individualTransactionEntity = individualTransactionEntity;
+        public UpdateTransactionEvent(Transaction transaction) {
+            this.transaction = transaction;
         }
     }
 
@@ -93,6 +93,16 @@ public class Event {
 
         public NodeChangedEvent(Node nodeEntity) {
             this.nodeEntity = nodeEntity;
+        }
+    }
+
+    /**
+     * 钱包列表顺序改变
+     */
+    public static class WalletListOrderChangedEvent{
+
+        public WalletListOrderChangedEvent() {
+
         }
     }
 }

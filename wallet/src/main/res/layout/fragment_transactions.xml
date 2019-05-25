@@ -1,7 +1,6 @@
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
@@ -9,28 +8,33 @@
     android:focusableInTouchMode="true"
     android:overScrollMode="never">
 
-    <android.support.constraint.ConstraintLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <com.juzix.wallet.component.widget.ListViewForScrollView
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/list_transaction"
-            style="@style/List_common_style"
-            android:divider="@drawable/bg_transation_list_divider"
-            android:dividerHeight="1dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fadeScrollbars="true"
             android:paddingLeft="16dp"
             android:paddingTop="16dp"
             android:paddingRight="16dp"
             android:paddingBottom="16dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            android:scrollbarStyle="outsideOverlay"
+            android:scrollbars="vertical"
             tools:listitem="@layout/item_transaction_list" />
 
         <include layout="@layout/include_no_transaction" />
 
-    </android.support.constraint.ConstraintLayout>
-
+    </FrameLayout>
 
 </android.support.v4.widget.NestedScrollView>
+
+
+
+
+
+
+
+

@@ -39,19 +39,6 @@ public abstract class ApiSingleObserver<T> extends AtomicReference<Disposable> i
         };
     }
 
-    public interface OnKickedCallback {
-        /**
-         * 用户被踢
-         */
-        void doKick();
-    }
-
-    private static OnKickedCallback mKCallback;
-
-    public static void setKickCallback(OnKickedCallback callback) {
-        mKCallback = callback;
-    }
-
     @Override
     public void onError(Throwable e) {
         try {

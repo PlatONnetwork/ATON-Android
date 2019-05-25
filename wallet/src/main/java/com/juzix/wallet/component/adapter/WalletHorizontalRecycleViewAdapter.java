@@ -1,6 +1,7 @@
 package com.juzix.wallet.component.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -50,10 +51,6 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
         return mList.size();
     }
 
-    public void setSelectedWallet(Wallet selectedWallet) {
-        mSelectedWallet = selectedWallet;
-    }
-
     public void setOnItemClickListener(OnRecycleViewItemClickListener listener) {
         this.mOnItemClickListener = listener;
     }
@@ -76,6 +73,17 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
 
     public List<Wallet> getWalletList() {
         return mList;
+    }
+
+    public void notifyDataSetChanged(List<Wallet> walletList, Wallet selectedWallet) {
+        this.mList = walletList;
+        this.mSelectedWallet = selectedWallet;
+        notifyDataSetChanged();
+    }
+
+    public void notifyDataSetChanged(Wallet selectedWallet) {
+        this.mSelectedWallet = selectedWallet;
+        notifyDataSetChanged();
     }
 
     private void setIndividualWalletView(final int position, final Wallet walletEntity, ViewHolder holder) {
@@ -107,7 +115,7 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
             @Override
             public void onClick(View v) {
                 if (mSelectedWallet != walletEntity) {
-                    setSelectedWallet(walletEntity);
+                    mSelectedWallet = walletEntity;
                     if (mOnItemClickListener != null) {
                         mOnItemClickListener.onContentViewClick(walletEntity);
                     }

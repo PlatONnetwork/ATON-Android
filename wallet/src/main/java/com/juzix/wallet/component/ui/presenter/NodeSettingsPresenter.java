@@ -13,7 +13,7 @@ import com.juzix.wallet.component.ui.contract.NodeSettingsContract;
 import com.juzix.wallet.component.ui.view.OperateMenuActivity;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.db.entity.WalletEntity;
-import com.juzix.wallet.db.sqlite.WalletInfoDao;
+import com.juzix.wallet.db.sqlite.WalletDao;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.entity.Node;
 import com.juzix.wallet.event.EventPublisher;
@@ -226,7 +226,7 @@ public class NodeSettingsPresenter extends BasePresenter<NodeSettingsContract.Vi
         return Single.create(new SingleOnSubscribe<Boolean>() {
             @Override
             public void subscribe(SingleEmitter<Boolean> emitter) throws Exception {
-                List<WalletEntity> individualWalletInfoEntityList = WalletInfoDao.getWalletInfoList();
+                List<WalletEntity> individualWalletInfoEntityList = WalletDao.getWalletInfoList();
                 if (individualWalletInfoEntityList.isEmpty()) {
                     emitter.onError(new CustomThrowable(CustomThrowable.CODE_ERROR_NOT_EXIST_VALID_WALLET));
                 } else {

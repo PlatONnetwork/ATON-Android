@@ -176,6 +176,11 @@ public class SubmitVoteActivity extends MVPBaseActivity<SubmitVotePresenter> imp
     }
 
     @Override
+    public String getCandidateDepositFromIntent() {
+        return getIntent().getStringExtra(Constants.Extra.EXTRA_CANDIDATE_DEPOSIT);
+    }
+
+    @Override
     public void showNodeInfo(String nodeName, String nodeId) {
         tvNodeName.setText(nodeName);
         tvNodeId.setText(nodeId);
@@ -212,10 +217,11 @@ public class SubmitVoteActivity extends MVPBaseActivity<SubmitVotePresenter> imp
         }
     }
 
-    public static void actionStart(Context context, String nodeId, String nodeName) {
+    public static void actionStart(Context context, String nodeId, String nodeName,String deposit) {
         Intent intent = new Intent(context, SubmitVoteActivity.class);
         intent.putExtra(Constants.Extra.EXTRA_CANDIDATE_ID, nodeId);
         intent.putExtra(Constants.Extra.EXTRA_CANDIDATE_NAME, nodeName);
+        intent.putExtra(Constants.Extra.EXTRA_CANDIDATE_DEPOSIT, deposit);
         context.startActivity(intent);
     }
 }

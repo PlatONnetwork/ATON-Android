@@ -15,6 +15,8 @@ public class SubmitVoteContract {
 
         String getCandidateNameFromIntent();
 
+        String getCandidateDepositFromIntent();
+
         void showNodeInfo(String nodeName, String nodeId);
 
         void showSelectedWalletInfo(Wallet individualWalletEntity);

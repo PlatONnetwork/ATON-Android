@@ -17,7 +17,7 @@ import android.widget.TextView;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.CreateIndividualWalletContract;
-import com.juzix.wallet.component.ui.presenter.CreateIndividualWalletPresenter;
+import com.juzix.wallet.component.ui.presenter.CreateWalletPresenter;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.utils.CheckStrength;
@@ -26,7 +26,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class CreateWalletActivity extends MVPBaseActivity<CreateIndividualWalletPresenter> implements CreateIndividualWalletContract.View, View.OnClickListener, TextWatcher, View.OnFocusChangeListener {
+public class CreateWalletActivity extends MVPBaseActivity<CreateWalletPresenter> implements CreateIndividualWalletContract.View, View.OnClickListener, TextWatcher, View.OnFocusChangeListener {
 
     private final static String TAG = CreateWalletActivity.class.getSimpleName();
 
@@ -67,8 +67,8 @@ public class CreateWalletActivity extends MVPBaseActivity<CreateIndividualWallet
     }
 
     @Override
-    protected CreateIndividualWalletPresenter createPresenter() {
-        return new CreateIndividualWalletPresenter(this);
+    protected CreateWalletPresenter createPresenter() {
+        return new CreateWalletPresenter(this);
     }
 
     @Override

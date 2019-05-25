@@ -15,7 +15,7 @@ import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.adapter.SelectWalletListAdapter;
 import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.db.entity.WalletEntity;
-import com.juzix.wallet.db.sqlite.WalletInfoDao;
+import com.juzix.wallet.db.sqlite.WalletDao;
 import com.juzix.wallet.engine.TransactionManager;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.DensityUtil;
@@ -130,7 +130,7 @@ public class SelectWalletDialogFragment extends BaseDialogFragment {
         Flowable.fromCallable(new Callable<List<WalletEntity>>() {
             @Override
             public List<WalletEntity> call() throws Exception {
-                return WalletInfoDao.getWalletInfoList();
+                return WalletDao.getWalletInfoList();
             }
         })
                 .flatMap(new Function<List<WalletEntity>, Publisher<WalletEntity>>() {

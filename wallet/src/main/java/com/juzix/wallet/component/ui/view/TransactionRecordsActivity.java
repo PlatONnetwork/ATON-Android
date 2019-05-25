@@ -10,13 +10,17 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.juzix.wallet.R;
+import com.juzix.wallet.component.adapter.TransactionAdapter;
 import com.juzix.wallet.component.adapter.base.RecycleHolder;
 import com.juzix.wallet.component.adapter.base.RecyclerAdapter;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.TransactionRecordsContract;
 import com.juzix.wallet.component.ui.presenter.TransactionRecordsPresenter;
 import com.juzix.wallet.component.widget.CommonVerticalItemDecoration;
+import com.juzix.wallet.db.entity.TransactionEntity;
+import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.Transaction;
+import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.utils.DateUtil;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -40,7 +44,7 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
     SmartRefreshLayout layoutRefresh;
 
     private Unbinder unbinder;
-    private RecyclerAdapter<Transaction> mTransactionAdapter;
+    private TransactionAdapter mTransactionAdapter;
 
     @Override
     protected TransactionRecordsPresenter createPresenter() {
@@ -66,12 +70,12 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
         mTransactionAdapter.setOnItemClickListener(new RecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                ////                TransactionEntity item = (TransactionEntity) parent.getAdapter().getItem(position);
-////                if (item instanceof IndividualTransactionEntity) {
-////                    IndividualTransactionDetailActivity.actionStart(currentActivity(), (IndividualTransactionEntity) item, null);
-////                } else if (item instanceof VoteTransaction) {
-////                    IndividualVoteDetailActivity.actionStart(currentActivity(), item.getUuid());
-////                }
+                Transaction transaction = mTransactionAdapter.getDatas().get(position);
+                if (transaction.getTxType() == TransactionType.TRANSFER) {
+                    TransactionDetailActivity.actionStart(TransactionRecordsActivity.this, transaction, WalletManager.getInstance().getSelectedWalletAddress());
+                } else if (transaction.getTxType() == TransactionType.VOTETICKET) {
+                    VoteTransactionDetailActivity.actionStart(TransactionRecordsActivity.this, transaction);
+                }
             }
         });
 
@@ -103,6 +107,12 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
     }
 
     @Override
+    public void notifyItemRangeInserted(List<Transaction> transactionList, int positionStart, int itemCount) {
+        layoutNoData.setVisibility(transactionList != null && !transactionList.isEmpty() ? View.GONE : View.VISIBLE);
+        mTransactionAdapter.notifyItemRangeInserted(transactionList,null, positionStart, itemCount);
+    }
+
+    @Override
     public void showTransactions(List<Transaction> transactionList) {
         layoutNoData.setVisibility(transactionList != null && !transactionList.isEmpty() ? View.GONE : View.VISIBLE);
         listTransactions.setVisibility(transactionList != null && !transactionList.isEmpty() ? View.VISIBLE : View.GONE);
@@ -120,21 +130,5 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
     public static void actionStart(Context context) {
         Intent intent = new Intent(context, TransactionRecordsActivity.class);
         context.startActivity(intent);
-    }
-
-    static class TransactionAdapter extends RecyclerAdapter<Transaction> {
-
-        public TransactionAdapter(Context mContext, List<Transaction> mDatas, int mLayoutId) {
-            super(mContext, mDatas, mLayoutId);
-        }
-
-        @Override
-        public void convert(RecycleHolder holder, Transaction data, int position) {
-            holder.setText(R.id.tv_name, data.getTxType().getTxTypeDesc());
-            holder.setText(R.id.tv_amount, mContext.getString(R.string.amount_with_unit, data.getShowValue()));
-            holder.setText(R.id.tv_time, DateUtil.format(data.getCreateTime(), DateUtil.DATETIME_FORMAT_PATTERN));
-            holder.setText(R.id.tv_desc, data.isSuccess() ? mContext.getString(R.string.success) : mContext.getString(R.string.failed));
-            holder.setTextColor(R.id.tv_desc, data.isSuccess() ? R.color.color_19a201 : R.color.color_f5302c);
-        }
     }
 }

@@ -23,7 +23,7 @@ import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.MVPBaseFragment;
 import com.juzix.wallet.component.ui.contract.ImportIndividualMnemonicPhraseContract;
-import com.juzix.wallet.component.ui.presenter.ImportIndividualMnemonicPhrasePresenter;
+import com.juzix.wallet.component.ui.presenter.ImportMnemonicPhrasePresenter;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.utils.CheckStrength;
 
@@ -37,7 +37,7 @@ import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 
-public class ImportIndividualMnemonicPhraseFragment extends MVPBaseFragment<ImportIndividualMnemonicPhrasePresenter> implements ImportIndividualMnemonicPhraseContract.View {
+public class ImportIndividualMnemonicPhraseFragment extends MVPBaseFragment<ImportMnemonicPhrasePresenter> implements ImportIndividualMnemonicPhraseContract.View {
     Unbinder unbinder;
     @BindView(R.id.et_mnemonic1)
     EditText mEtMnemonicPhrase1;
@@ -98,8 +98,8 @@ public class ImportIndividualMnemonicPhraseFragment extends MVPBaseFragment<Impo
     private boolean mShowRepeatPassword;
 
     @Override
-    protected ImportIndividualMnemonicPhrasePresenter createPresenter() {
-        return new ImportIndividualMnemonicPhrasePresenter(this);
+    protected ImportMnemonicPhrasePresenter createPresenter() {
+        return new ImportMnemonicPhrasePresenter(this);
     }
 
     @Override

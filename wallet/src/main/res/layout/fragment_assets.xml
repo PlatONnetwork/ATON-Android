@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.scwang.smartrefresh.layout.SmartRefreshLayout
-    android:id="@+id/layout_refresh"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.scwang.smartrefresh.layout.SmartRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_refresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    app:srlEnableLoadMoreWhenContentNotFull="false">
+    app:srlEnableLoadMore="false">
 
     <com.juzix.wallet.component.widget.CustomRefreshHeader
         android:layout_width="match_parent"
@@ -92,7 +91,7 @@
 
             </RelativeLayout>
 
-            <include layout="@layout/layout_app_tab1" />
+            <include layout="@layout/layout_app_tab" />
 
             <View
                 android:id="@+id/v_tab_line"
@@ -112,20 +111,18 @@
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent">
 
                 <com.juzix.wallet.component.widget.ViewPagerSlide
                     android:id="@+id/vp_content"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="match_parent" />
 
                 <include layout="@layout/layout_wallet_list_empty" />
             </FrameLayout>
-        </android.support.v4.widget.NestedScrollView>
-    </android.support.design.widget.CoordinatorLayout>
 
-    <com.scwang.smartrefresh.layout.footer.ClassicsFooter
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        </android.support.v4.widget.NestedScrollView>
+
+    </android.support.design.widget.CoordinatorLayout>
 
 </com.scwang.smartrefresh.layout.SmartRefreshLayout>

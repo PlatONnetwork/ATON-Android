@@ -172,7 +172,7 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
                             if (totalBalance <= 0) {
                                 showLongToast(R.string.voteTicketInsufficientBalanceTips);
                             } else {
-                                SubmitVoteActivity.actionStart(currentActivity(), candidateEntity.getNodeId(), candidateEntity.getName());
+                                SubmitVoteActivity.actionStart(currentActivity(), candidateEntity.getNodeId(), candidateEntity.getName(),candidateEntity.getDeposit());
                             }
                         }
                     });

@@ -4,22 +4,23 @@ package com.juzix.wallet.component.ui.presenter;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.base.BasePresenter;
-import com.juzix.wallet.component.ui.contract.ImportIndividualPrivateKeyContract;
+import com.juzix.wallet.component.ui.contract.ImportIndividualKeystoreContract;
 import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.utils.CommonUtil;
 
-public class ImportIndividualPrivateKeyPresenter extends BasePresenter<ImportIndividualPrivateKeyContract.View> implements ImportIndividualPrivateKeyContract.Presenter {
+public class ImportKeystorePresenter extends BasePresenter<ImportIndividualKeystoreContract.View> implements ImportIndividualKeystoreContract.Presenter {
 
-    public ImportIndividualPrivateKeyPresenter(ImportIndividualPrivateKeyContract.View view) {
+    public ImportKeystorePresenter(ImportIndividualKeystoreContract.View view) {
         super(view);
     }
 
     @Override
     public void init() {
-        ImportIndividualPrivateKeyContract.View view = getView();
+        ImportIndividualKeystoreContract.View view = getView();
         if (view != null) {
             view.showQRCode(view.getKeystoreFromIntent());
         }
@@ -35,16 +36,15 @@ public class ImportIndividualPrivateKeyPresenter extends BasePresenter<ImportInd
 
     @Override
     public void parseQRCode(String QRCode) {
-        getView().showQRCode(QRCode);
+        if (!TextUtils.isEmpty(QRCode)) {
+            getView().showQRCode(QRCode);
+        }
     }
 
     @Override
-    public void importPrivateKey(String privateKey, String name, String password, String repeatPassword) {
+    public void importKeystore(String keystore, String name, String password) {
+
         if (isExists(name)) {
-            return;
-        }
-        if (!password.equals(repeatPassword)) {
-            showShortToast(string(R.string.passwordTips));
             return;
         }
 
@@ -52,13 +52,13 @@ public class ImportIndividualPrivateKeyPresenter extends BasePresenter<ImportInd
         new Thread() {
             @Override
             public void run() {
-                int code = WalletManager.getInstance().importPrivateKey(privateKey, name, password);
+                int code = WalletManager.getInstance().importKeystore(keystore, name, password);
                 switch (code) {
                     case WalletManager.CODE_OK:
                         mHandler.sendEmptyMessage(MSG_OK);
                         break;
-                    case WalletManager.CODE_ERROR_PRIVATEKEY:
-                        mHandler.sendEmptyMessage(MSG_PRIVATEKEY_ERROR);
+                    case WalletManager.CODE_ERROR_KEYSTORE:
+                        mHandler.sendEmptyMessage(MSG_KEYSTORE_ERROR);
                         break;
                     case WalletManager.CODE_ERROR_NAME:
                         break;
@@ -83,7 +83,7 @@ public class ImportIndividualPrivateKeyPresenter extends BasePresenter<ImportInd
 
     private static final int MSG_OK = 1;
     private static final int MSG_PASSWORD_FAILED = -1;
-    private static final int MSG_PRIVATEKEY_ERROR = -2;
+    private static final int MSG_KEYSTORE_ERROR = -2;
     private static final int MSG_WALLET_EXISTS = -3;
 
     private Handler mHandler = new Handler() {
@@ -100,9 +100,9 @@ public class ImportIndividualPrivateKeyPresenter extends BasePresenter<ImportInd
                     dismissLoadingDialogImmediately();
                     showLongToast(string(R.string.validPasswordError));
                     break;
-                case MSG_PRIVATEKEY_ERROR:
+                case MSG_KEYSTORE_ERROR:
                     dismissLoadingDialogImmediately();
-                    showLongToast(string(R.string.parsedError, string(R.string.privateKey)));
+                    showLongToast(string(R.string.parsedError, string(R.string.keystore)));
                     break;
                 case MSG_WALLET_EXISTS:
                     dismissLoadingDialogImmediately();
@@ -111,4 +111,5 @@ public class ImportIndividualPrivateKeyPresenter extends BasePresenter<ImportInd
             }
         }
     };
+
 }

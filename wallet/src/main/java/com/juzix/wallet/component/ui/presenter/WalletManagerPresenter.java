@@ -6,7 +6,7 @@ import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.view.BackupMnemonicPhraseActivity;
 import com.juzix.wallet.component.ui.view.ManageIndividualWalletActivity;
 import com.juzix.wallet.config.AppSettings;
-import com.juzix.wallet.db.sqlite.WalletInfoDao;
+import com.juzix.wallet.db.sqlite.WalletDao;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.Wallet;
 
@@ -67,7 +67,7 @@ public class WalletManagerPresenter extends BasePresenter<WalletManagerContract.
                         Wallet walletEntity = mWalletList.get(i);
                         updateTime += 10;
                         walletEntity.setUpdateTime(updateTime);
-                        WalletInfoDao.updateUpdateTimeWithUuid(walletEntity.getUuid(), updateTime);
+                        WalletDao.updateUpdateTimeWithUuid(walletEntity.getUuid(), updateTime);
                     }
                     return null;
                 }

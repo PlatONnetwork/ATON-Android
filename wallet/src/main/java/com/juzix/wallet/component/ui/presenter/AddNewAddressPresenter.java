@@ -8,7 +8,7 @@ import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.AddNewAddressContract;
 import com.juzix.wallet.db.entity.AddressEntity;
-import com.juzix.wallet.db.sqlite.AddressInfoDao;
+import com.juzix.wallet.db.sqlite.AddressDao;
 import com.juzix.wallet.entity.Address;
 import com.juzix.wallet.utils.JZWalletUtil;
 
@@ -68,17 +68,17 @@ public class AddNewAddressPresenter extends BasePresenter<AddNewAddressContract.
                 @Override
                 public Boolean call() throws Exception {
                     if (addressEntity == null) {
-                        AddressEntity entity = AddressInfoDao.getEntityWithAddress(addressInfoEntity.getAddress());
+                        AddressEntity entity = AddressDao.getEntityWithAddress(addressInfoEntity.getAddress());
                         if (entity != null){
-                            return AddressInfoDao.updateNameWithAddress(addressInfoEntity.getAddress(), addressInfoEntity.getName());
+                            return AddressDao.updateNameWithAddress(addressInfoEntity.getAddress(), addressInfoEntity.getName());
                         }else {
-                            return AddressInfoDao.insertAddressInfo(addressInfoEntity);
+                            return AddressDao.insertAddressInfo(addressInfoEntity);
                         }
                     } else {
                         AddressEntity oldAddressInfo = new AddressEntity();
                         oldAddressInfo.setName(addressEntity.getName());
                         oldAddressInfo.setAddress(addressEntity.getAddress());
-                        return AddressInfoDao.updateAddressInfo(oldAddressInfo, addressInfoEntity);
+                        return AddressDao.updateAddressInfo(oldAddressInfo, addressInfoEntity);
                     }
                 }
             }).compose(((BaseActivity) getView()).bindToLifecycle()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new BiConsumer<Boolean, Throwable>() {

@@ -5,7 +5,7 @@ import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.SelectAddressContract;
 import com.juzix.wallet.db.entity.AddressEntity;
-import com.juzix.wallet.db.sqlite.AddressInfoDao;
+import com.juzix.wallet.db.sqlite.AddressDao;
 import com.juzix.wallet.entity.Address;
 import com.juzix.wallet.utils.CommonUtil;
 
@@ -31,7 +31,7 @@ public class SelectAddressPresenter extends BasePresenter<SelectAddressContract.
 
     @Override
     public void fetchAddressList() {
-        Flowable.fromIterable(AddressInfoDao.getAddressInfoList()).filter(new Predicate<AddressEntity>() {
+        Flowable.fromIterable(AddressDao.getAddressInfoList()).filter(new Predicate<AddressEntity>() {
             @Override
             public boolean test(AddressEntity addressInfoEntity) throws Exception {
                 return addressInfoEntity != null;

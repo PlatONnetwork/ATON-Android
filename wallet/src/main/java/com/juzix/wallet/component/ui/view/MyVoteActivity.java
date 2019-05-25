@@ -103,8 +103,8 @@ public class MyVoteActivity extends MVPBaseActivity<MyVotePresenter> implements 
 
         mBatchVoteTransactionAdapter.setOnItemVoteClickListener(new BatchVoteTransactionAdapter.OnItemVoteClickListener() {
             @Override
-            public void onItemVoteClick(String nodeId,String nodeName) {
-                mPresenter.voteTicket(nodeId,nodeName);
+            public void onItemVoteClick(String nodeId,String nodeName,String deposit) {
+                mPresenter.voteTicket(nodeId,nodeName,deposit);
             }
         });
 

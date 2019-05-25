@@ -12,9 +12,11 @@ import com.juzix.wallet.component.ui.contract.SubmitVoteContract;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.dialog.SelectWalletDialogFragment;
 import com.juzix.wallet.component.ui.dialog.SendTransactionDialogFragment;
-import com.juzix.wallet.db.entity.SingleVoteInfoEntity;
+import com.juzix.wallet.component.ui.view.AssetsFragment;
+import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.VoteManager;
+import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.RxUtils;
@@ -33,13 +35,15 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
 
     private String mCandidateId;
     private String mCandidateName;
+    private String mCandidateDeposit;
     private String mTicketPrice;
-    private Wallet mIndividualWalletEntity;
+    private Wallet mWallet;
 
     public SubmitVotePresenter(SubmitVoteContract.View view) {
         super(view);
         mCandidateId = view.getCandidateIdFromIntent();
         mCandidateName = view.getCandidateNameFromIntent();
+        mCandidateDeposit = view.getCandidateDepositFromIntent();
     }
 
     @Override
@@ -87,7 +91,7 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
                         if (isViewAttached()) {
                             String ticketNum = getView().getTicketNum();
                             double ticketAmount = BigDecimalUtil.div(BigDecimalUtil.mul(Double.parseDouble(mTicketPrice), NumberParserUtils.parseInt(ticketNum)), 1E18);
-                            if (ticketAmount >= mIndividualWalletEntity.getBalance()) {
+                            if (ticketAmount >= mWallet.getBalance()) {
                                 showLongToast(R.string.voteTicketInsufficientBalanceTips);
                                 return;
                             }
@@ -100,16 +104,16 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
                             double feeAmount = BigDecimalUtil.div(BigDecimalUtil.mul(VoteManager.GAS_PRICE.doubleValue(), VoteManager.GAS_LIMIT.doubleValue()), 1E18);
 
                             SendTransactionDialogFragment
-                                    .newInstance(NumberParserUtils.getPrettyNumber(ticketAmount, 0), buildTransactionInfo(mIndividualWalletEntity.getName(), feeAmount))
+                                    .newInstance(NumberParserUtils.getPrettyNumber(ticketAmount, 0), buildTransactionInfo(mWallet.getName(), feeAmount))
                                     .setOnConfirmBtnClickListener(new SendTransactionDialogFragment.OnConfirmBtnClickListener() {
                                         @Override
                                         public void onConfirmBtnClick() {
                                             InputWalletPasswordDialogFragment
-                                                    .newInstance(mIndividualWalletEntity)
+                                                    .newInstance(mWallet)
                                                     .setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
                                                         @Override
                                                         public void onWalletPasswordCorrect(Credentials credentials) {
-                                                            submitVote(credentials, ticketNum, mTicketPrice);
+                                                            submitVote(credentials, ticketNum, mTicketPrice,mCandidateDeposit);
                                                         }
                                                     })
                                                     .show(currentActivity().getSupportFragmentManager(), "inputWalletPasssword");
@@ -136,12 +140,12 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
 
     @Override
     public void showSelectWalletDialogFragment() {
-        SelectWalletDialogFragment.newInstance(mIndividualWalletEntity != null ? mIndividualWalletEntity.getUuid() : "", true)
+        SelectWalletDialogFragment.newInstance(mWallet != null ? mWallet.getUuid() : "", true)
                 .setOnItemClickListener(new SelectWalletDialogFragment.OnItemClickListener() {
                     @Override
                     public void onItemClick(Wallet walletEntity) {
                         if (isViewAttached()) {
-                            mIndividualWalletEntity = walletEntity;
+                            mWallet = walletEntity;
                             getView().showSelectedWalletInfo(walletEntity);
                         }
                     }
@@ -159,19 +163,20 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
         }
     }
 
-    private void submitVote(Credentials credentials, String ticketNum, String ticketPrice) {
+    @SuppressLint("CheckResult")
+    private void submitVote(Credentials credentials, String ticketNum, String ticketPrice,String deposit) {
         VoteManager
                 .getInstance()
-                .submitVote(credentials, mIndividualWalletEntity, mCandidateId, mCandidateName, ticketNum, ticketPrice)
+                .submitVote(credentials, mWallet, mCandidateId, mCandidateName, ticketNum, ticketPrice,deposit)
                 .compose(bindToLifecycle())
                 .compose(new SchedulersTransformer())
                 .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
-                .subscribe(new Consumer<SingleVoteInfoEntity>() {
+                .subscribe(new Consumer<Transaction>() {
                     @Override
-                    public void accept(SingleVoteInfoEntity voteInfoEntity) throws Exception {
+                    public void accept(Transaction transaction) throws Exception {
                         if (isViewAttached()) {
                             showLongToast(R.string.vote_success);
-                            currentActivity().finish();
+                            MainActivity.actionStart(getContext(), MainActivity.TAB_PROPERTY, AssetsFragment.TAB1);
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -193,9 +198,9 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
     }
 
     private void showSelectedWalletInfo() {
-        mIndividualWalletEntity = WalletManager.getInstance().getFirstValidIndividualWalletBalance();
-        if (isViewAttached() && mIndividualWalletEntity != null) {
-            getView().showSelectedWalletInfo(mIndividualWalletEntity);
+        mWallet = WalletManager.getInstance().getFirstValidIndividualWalletBalance();
+        if (isViewAttached() && mWallet != null) {
+            getView().showSelectedWalletInfo(mWallet);
         }
     }
 }

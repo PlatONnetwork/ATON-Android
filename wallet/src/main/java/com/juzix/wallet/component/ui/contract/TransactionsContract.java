@@ -13,10 +13,21 @@ public class TransactionsContract {
 
     public interface View extends IView {
 
-        void notifyTransactionListChanged(List<Transaction> transactionEntityList);
+        void notifyItemRangeInserted(List<Transaction> transactionList, String queryAddress, int positionStart, int itemCount);
+
+        void notifyItemChanged(List<Transaction> transactionList, String queryAddress, int position);
+
+        void finishLoadMore();
     }
 
     public interface Presenter extends IPresenter<View> {
 
+        void autoRefresh();
+
+        void loadMore();
+
+        void addNewTransaction(Transaction transaction);
+
     }
+
 }

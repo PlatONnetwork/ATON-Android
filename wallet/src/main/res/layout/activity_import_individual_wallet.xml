@@ -21,7 +21,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <include layout="@layout/layout_app_tab1" />
+        <include layout="@layout/layout_app_tab" />
 
         <View
             android:layout_width="match_parent"

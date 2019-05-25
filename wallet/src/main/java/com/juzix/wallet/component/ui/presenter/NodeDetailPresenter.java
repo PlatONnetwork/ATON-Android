@@ -66,7 +66,7 @@ public class NodeDetailPresenter extends BasePresenter<NodeDetailContract.View> 
                                 showLongToast(R.string.voteTicketInsufficientBalanceTips);
                             } else {
                                 if (mCandidateEntity != null){
-                                    SubmitVoteActivity.actionStart(currentActivity(), mCandidateEntity.getNodeId(),mCandidateEntity.getName());
+                                    SubmitVoteActivity.actionStart(currentActivity(), mCandidateEntity.getNodeId(),mCandidateEntity.getName(),mCandidateEntity.getDeposit());
                                 }
                             }
                         }
