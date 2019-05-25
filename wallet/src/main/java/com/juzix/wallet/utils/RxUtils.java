@@ -6,6 +6,8 @@ import com.juzix.wallet.component.ui.IContext;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.base.BaseFragment;
 import com.trello.rxlifecycle2.LifecycleTransformer;
+import com.trello.rxlifecycle2.android.ActivityEvent;
+import com.trello.rxlifecycle2.android.FragmentEvent;
 
 import org.reactivestreams.Publisher;
 
@@ -33,6 +35,36 @@ public class RxUtils {
             return ((BaseFragment) context).bindToLifecycle();
         } else if (context instanceof BaseActivity) {
             return ((BaseActivity) context).bindToLifecycle();
+        } else {
+            throw new IllegalArgumentException("context isn't activity or fragment");
+        }
+    }
+
+    public static <T> LifecycleTransformer<T> bindToFragmentLifecycleUtilEvent(IContext context, FragmentEvent event) {
+        if (context instanceof BaseFragment) {
+            return ((BaseFragment) context).bindUntilEvent(event);
+        } else {
+            throw new IllegalArgumentException("context isn't activity or fragment");
+        }
+    }
+
+    public static <T> LifecycleTransformer<T> bindToActivityLifecycleUtilEvent(IContext context, ActivityEvent event) {
+        if (context instanceof BaseActivity) {
+            return ((BaseActivity) context).bindUntilEvent(event);
+        } else {
+            throw new IllegalArgumentException("context isn't activity or fragment");
+        }
+    }
+
+    /**
+     * 绑定到父fragment的生命周期
+     *
+     * @param <T>
+     * @return
+     */
+    public static <T> LifecycleTransformer<T> bindToParentLifecycleUtilEvent(IContext context, FragmentEvent event) {
+        if (context instanceof BaseFragment && ((BaseFragment) context).getParentFragment() instanceof BaseFragment) {
+            return ((BaseFragment) ((BaseFragment) context).getParentFragment()).bindUntilEvent(event);
         } else {
             throw new IllegalArgumentException("context isn't activity or fragment");
         }

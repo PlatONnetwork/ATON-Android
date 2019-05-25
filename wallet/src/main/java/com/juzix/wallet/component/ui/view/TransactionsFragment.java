@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +24,7 @@ import com.juzix.wallet.event.EventPublisher;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 
 import butterknife.BindView;
@@ -59,8 +59,10 @@ public class TransactionsFragment extends BaseViewPageFragment<TransactionsPrese
     }
 
     @Override
-    protected void onPageStart() {
-        mPresenter.autoRefresh();
+    public void onPageStart() {
+        if (mPresenter != null){
+            mPresenter.loadNew(TransactionsPresenter.DIRECTION_NEW);
+        }
     }
 
     private void initViews() {
@@ -84,15 +86,20 @@ public class TransactionsFragment extends BaseViewPageFragment<TransactionsPrese
     }
 
     @Override
-    public void notifyItemRangeInserted(List<Transaction> transactionList,String queryAddress, int positionStart, int itemCount) {
+    public void notifyItemRangeInserted(List<Transaction> transactionList, String queryAddress, int positionStart, int itemCount) {
         emptyView.setVisibility(transactionList.isEmpty() ? View.VISIBLE : View.GONE);
-        mTransactionAdapter.notifyItemRangeInserted(transactionList,queryAddress,positionStart, itemCount);
+        mTransactionAdapter.notifyItemRangeInserted(transactionList, queryAddress, positionStart, itemCount);
         listTransaction.scrollToPosition(positionStart == 0 ? positionStart : transactionList.size() - 1);
     }
 
     @Override
-    public void notifyItemChanged(List<Transaction> transactionList,String queryAddress, int position) {
-        mTransactionAdapter.notifyItemChanged(transactionList,queryAddress, position);
+    public void notifyItemChanged(List<Transaction> transactionList, String queryAddress, int position) {
+        mTransactionAdapter.notifyItemChanged(transactionList, queryAddress, position);
+    }
+
+    @Override
+    public void notifyDataSetChanged(List<Transaction> transactionList, String queryAddress) {
+        mTransactionAdapter.notifyDataSetChanged(transactionList, queryAddress);
     }
 
     @Override
@@ -103,6 +110,11 @@ public class TransactionsFragment extends BaseViewPageFragment<TransactionsPrese
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateTransactionEvent(Event.UpdateTransactionEvent event) {
         mPresenter.addNewTransaction(event.transaction);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdateSelectedWalletEvent(Event.UpdateSelectedWalletEvent event) {
+        mPresenter.loadLatestData();
     }
 
     @Override

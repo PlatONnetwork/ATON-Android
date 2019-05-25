@@ -53,6 +53,12 @@ public class TransactionAdapter extends RecyclerAdapter<Transaction> {
         notifyItemChanged(position, "notifyItem");
     }
 
+    public void notifyDataSetChanged(List<Transaction> transactionList, String queryAddress) {
+        this.mDatas = transactionList;
+        this.mQueryAddress = queryAddress;
+        notifyDataSetChanged();
+    }
+
     public void notifyItemInserted(List<Transaction> transactionList, int positionStart) {
         this.mDatas = transactionList;
         notifyItemInserted(positionStart);

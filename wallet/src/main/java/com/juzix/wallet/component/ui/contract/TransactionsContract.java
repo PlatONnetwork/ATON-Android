@@ -17,12 +17,16 @@ public class TransactionsContract {
 
         void notifyItemChanged(List<Transaction> transactionList, String queryAddress, int position);
 
+        void notifyDataSetChanged(List<Transaction> transactionList,String queryAddress);
+
         void finishLoadMore();
     }
 
     public interface Presenter extends IPresenter<View> {
 
-        void autoRefresh();
+        void loadLatestData();
+
+        void loadNew(String direction);
 
         void loadMore();
 

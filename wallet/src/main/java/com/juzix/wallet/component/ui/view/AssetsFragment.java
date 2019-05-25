@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -32,10 +33,12 @@ import com.juzix.wallet.component.adapter.RecycleViewProxyAdapter;
 import com.juzix.wallet.component.adapter.TabAdapter;
 import com.juzix.wallet.component.adapter.WalletHorizontalRecycleViewAdapter;
 import com.juzix.wallet.component.ui.base.BaseFragment;
+import com.juzix.wallet.component.ui.base.BaseViewPageFragment;
 import com.juzix.wallet.component.ui.base.MVPBaseFragment;
 import com.juzix.wallet.component.ui.contract.AssetsContract;
 import com.juzix.wallet.component.ui.dialog.AssetsMoreDialogFragment;
 import com.juzix.wallet.component.ui.presenter.AssetsPresenter;
+import com.juzix.wallet.component.ui.presenter.TransactionsPresenter;
 import com.juzix.wallet.component.widget.ShadowContainer;
 import com.juzix.wallet.component.widget.ViewPagerSlide;
 import com.juzix.wallet.component.widget.table.SmartTabLayout;
@@ -119,6 +122,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
     private WalletHorizontalRecycleViewAdapter mWalletAdapter;
     private Unbinder unbinder;
+    private TabAdapter mTabAdapter;
 
     @Override
     protected AssetsPresenter createPresenter() {
@@ -129,6 +133,13 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     protected void onFragmentPageStart() {
         mPresenter.fetchWalletList();
         mPresenter.fetchWalletsBalance();
+        //如果切回来是在交易列表页面，则重新轮询交易列表，因为轮询绑定了父Fragment的stop事件
+        if (vpContent.getCurrentItem() == TAB1) {
+            BaseViewPageFragment viewPageFragment = (BaseViewPageFragment) mTabAdapter.getItem(TAB1);
+            if (viewPageFragment != null) {
+                viewPageFragment.onPageStart();
+            }
+        }
     }
 
     @Override
@@ -157,13 +168,6 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
                 mPresenter.fetchWalletsBalance();
             }
         });
-
-        layoutRefresh.setOnLoadMoreListener(new OnLoadMoreListener() {
-            @Override
-            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-
-            }
-        });
     }
 
     public void fetchWalletsBalance() {
@@ -171,6 +175,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     }
 
     public void initTab() {
+
         List<BaseFragment> fragments = getFragments(null);
         stbBar.setCustomTabView(new SmartTabLayout.TabProvider() {
             @Override
@@ -188,12 +193,15 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
                 switch (position) {
                     case 0:
                         EventPublisher.getInstance().sendUpdateAssetsTabEvent(TAB1);
+//                        layoutRefreshTransaction.setEnableLoadMore(true);
                         break;
                     case 1:
                         EventPublisher.getInstance().sendUpdateAssetsTabEvent(TAB2);
+//                        layoutRefreshTransaction.setEnableLoadMore(false);
                         break;
                     case 2:
                         EventPublisher.getInstance().sendUpdateAssetsTabEvent(TAB3);
+//                        layoutRefreshTransaction.setEnableLoadMore(false);
                         break;
                     default:
                         break;
@@ -221,7 +229,8 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
             }
         });
         vpContent.setOffscreenPageLimit(fragments.size());
-        vpContent.setAdapter(new TabAdapter(getChildFragmentManager(), getTitles(), fragments));
+        mTabAdapter = new TabAdapter(getChildFragmentManager(), getTitles(), fragments);
+        vpContent.setAdapter(mTabAdapter);
         vpContent.setSlide(true);
         stbBar.setViewPager(vpContent);
     }
@@ -325,6 +334,10 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
             unbinder.unbind();
         }
         EventPublisher.getInstance().unRegister(this);
+    }
+
+    private String makeFragmentName(long id) {
+        return "android:switcher:" + vpContent.getId() + ":" + id;
     }
 
     private void initHeader() {
