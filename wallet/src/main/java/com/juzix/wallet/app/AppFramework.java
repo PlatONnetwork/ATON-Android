@@ -238,6 +238,9 @@ public class AppFramework {
                 schema.remove("CandidateInfoEntity");
                 //删除区域信息数据
                 schema.remove("RegionInfoEntity");
+                //删除投票信息数据
+                schema.remove("SingleVoteInfoEntity");
+                schema.remove("TicketInfoEntity");
                 //增加普通钱包数据库字段
                 schema.get("IndividualTransactionInfoEntity")
                         .removeField("uuid")
@@ -251,10 +254,10 @@ public class AppFramework {
                         .addField("chainId", String.class)
                         .addField("actualTxCost", String.class);
                 //修改数据库名称
-                schema.rename("IndividualWalletInfoEntity","WalletEntity");
+                schema.rename("IndividualWalletInfoEntity", "WalletEntity");
                 //todo数据库字段修改
-                schema.rename("AddressInfoEntity","AddressEntity");
-                schema.rename("NodeInfoEntity","NodeEntity");
+                schema.rename("AddressInfoEntity", "AddressEntity");
+                schema.rename("NodeInfoEntity", "NodeEntity");
                 oldVersion++;
             }
         }

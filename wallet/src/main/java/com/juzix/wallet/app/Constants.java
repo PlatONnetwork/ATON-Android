@@ -37,6 +37,7 @@ public class Constants {
         String EXTRA_ID = "extra_id";
         String EXTRA_CANDIDATE_ID = "extra_candidate_id";
         String EXTRA_CANDIDATE_NAME = "extra_candidate_name";
+        String EXTRA_CANDIDATE_DEPOSIT = "extra_candidate_deposit";
         String EXTRA_TICKET_PRICE = "extra_ticket_price";
         String EXTRA_VOTE_ACTION = "extra_vote_action";
     }

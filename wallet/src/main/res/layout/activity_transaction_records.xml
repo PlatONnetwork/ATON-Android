@@ -39,6 +39,9 @@
                 android:clipToPadding="false"
                 android:paddingLeft="16dp"
                 android:paddingTop="10dp"
+                android:scrollbars="vertical"
+                android:fadeScrollbars="true"
+                android:scrollbarStyle="outsideOverlay"
                 android:paddingRight="16dp"
                 android:visibility="gone"
                 tools:listitem="@layout/item_transaction_record" />

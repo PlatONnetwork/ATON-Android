@@ -56,7 +56,7 @@ public class BatchVoteTransactionAdapter extends CommonAdapter<VotedCandidate> {
                     @Override
                     public void accept(Object o) throws Exception {
                         if (mListener != null) {
-                            mListener.onItemVoteClick(item.getNodeId(), item.getName());
+                            mListener.onItemVoteClick(item.getNodeId(), item.getName(),item.getDeposit());
                         }
                     }
                 });
@@ -69,6 +69,6 @@ public class BatchVoteTransactionAdapter extends CommonAdapter<VotedCandidate> {
 
     public interface OnItemVoteClickListener {
 
-        void onItemVoteClick(String candidateId, String nodeName);
+        void onItemVoteClick(String candidateId, String nodeName,String deposit);
     }
 }

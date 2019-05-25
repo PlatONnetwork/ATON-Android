@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.juzhen.framework.network.NetState;
-import com.juzix.wallet.entity.IndividualTransactionEntity;
 import com.juzix.wallet.entity.Node;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.VoteTransaction;

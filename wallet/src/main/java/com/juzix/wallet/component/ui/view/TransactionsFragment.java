@@ -77,22 +77,22 @@ public class TransactionsFragment extends BaseViewPageFragment<TransactionsPrese
                 if (transaction.getTxType() == TransactionType.TRANSFER) {
                     TransactionDetailActivity.actionStart(getActivity(), transaction, WalletManager.getInstance().getSelectedWalletAddress());
                 } else if (transaction.getTxType() == TransactionType.VOTETICKET) {
-
+                    VoteTransactionDetailActivity.actionStart(getActivity(), transaction);
                 }
             }
         });
     }
 
     @Override
-    public void notifyItemRangeInserted(List<Transaction> transactionList, int positionStart, int itemCount) {
+    public void notifyItemRangeInserted(List<Transaction> transactionList,String queryAddress, int positionStart, int itemCount) {
         emptyView.setVisibility(transactionList.isEmpty() ? View.VISIBLE : View.GONE);
-        mTransactionAdapter.notifyItemRangeInserted(transactionList, positionStart, itemCount);
+        mTransactionAdapter.notifyItemRangeInserted(transactionList,queryAddress,positionStart, itemCount);
         listTransaction.scrollToPosition(positionStart == 0 ? positionStart : transactionList.size() - 1);
     }
 
     @Override
-    public void notifyItemChanged(List<Transaction> transactionList, int position) {
-        mTransactionAdapter.notifyItemChanged(transactionList, position);
+    public void notifyItemChanged(List<Transaction> transactionList,String queryAddress, int position) {
+        mTransactionAdapter.notifyItemChanged(transactionList,queryAddress, position);
     }
 
     @Override

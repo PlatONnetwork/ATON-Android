@@ -2,23 +2,31 @@ package com.juzix.wallet.component.ui.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
+import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
-import com.juzix.wallet.component.ui.contract.IndividualVoteDetailContract;
+import com.juzix.wallet.component.ui.contract.VoteTransactionDetailContract;
 import com.juzix.wallet.component.ui.presenter.VoteTransactionDetailPresenter;
-import com.juzix.wallet.entity.SingleVoteEntity;
+import com.juzix.wallet.entity.Transaction;
+import com.juzix.wallet.entity.TransactionExtra;
 import com.juzix.wallet.entity.TransactionStatus;
-import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.entity.VoteTrasactionExtra;
+import com.juzix.wallet.event.Event;
+import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.CommonUtil;
-import com.juzix.wallet.utils.DateUtil;
+import com.juzix.wallet.utils.JSONUtil;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,7 +36,7 @@ import butterknife.Unbinder;
 /**
  * @author matrixelement
  */
-public class VoteTransactionDetailActivity extends MVPBaseActivity<VoteTransactionDetailPresenter> implements IndividualVoteDetailContract.View {
+public class VoteTransactionDetailActivity extends BaseActivity {
 
     @BindView(R.id.iv_copy_from_address)
     ImageView ivCopyFromAddress;
@@ -58,8 +66,8 @@ public class VoteTransactionDetailActivity extends MVPBaseActivity<VoteTransacti
     TextView tvTransactionVotes;
     @BindView(R.id.tv_transaction_ticket_price)
     TextView tvTransactionTicketPrice;
-    @BindView(R.id.tv_transaction_staked)
-    TextView tvTransactionStaked;
+    @BindView(R.id.tv_transaction_deposit)
+    TextView tvTransactionDeposit;
     @BindView(R.id.tv_transaction_energon)
     TextView tvTransactionEnergon;
     @BindView(R.id.iv_failed)
@@ -76,21 +84,24 @@ public class VoteTransactionDetailActivity extends MVPBaseActivity<VoteTransacti
     TextView tvTransactionVotesTitle;
     @BindView(R.id.tv_transaction_ticket_price_title)
     TextView tvTransactionTicketPriceTitle;
-    @BindView(R.id.tv_transaction_staked_title)
-    TextView tvTransactionStakedTitle;
-    private Unbinder unbinder;
+    @BindView(R.id.tv_transaction_deposit_title)
+    TextView tvTransactionDepositTitle;
 
-    @Override
-    protected VoteTransactionDetailPresenter createPresenter() {
-        return new VoteTransactionDetailPresenter(this);
-    }
+    private Unbinder unbinder;
+    private Transaction mTransaction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_individual_vote_detail);
         unbinder = ButterKnife.bind(this);
-        mPresenter.fetchTransactionDetail();
+        EventPublisher.getInstance().register(this);
+        initViews();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdateTransactionEvent(Event.UpdateTransactionEvent event) {
+        showVotedTransactionDetail(event.transaction);
     }
 
     @OnClick({R.id.iv_copy_from_address, R.id.iv_copy_to_address})
@@ -107,40 +118,35 @@ public class VoteTransactionDetailActivity extends MVPBaseActivity<VoteTransacti
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (unbinder != null) {
-            unbinder.unbind();
+    private void initViews() {
+        mTransaction = getIntent().getParcelableExtra(Constants.Extra.EXTRA_TRANSACTION);
+        if (mTransaction != null) {
+            showVotedTransactionDetail(mTransaction);
         }
     }
 
-    public static void actionStart(Context context, String uuid) {
-        Intent intent = new Intent(context, VoteTransactionDetailActivity.class);
-        intent.putExtra(Constants.Extra.EXTRA_ID, uuid);
-        context.startActivity(intent);
-    }
 
-    @Override
-    public String getTransactionUuidFromIntent() {
-        return getIntent().getStringExtra(Constants.Extra.EXTRA_ID);
-    }
+    private void showVotedTransactionDetail(Transaction transaction) {
 
-    @Override
-    public void setTransactionDetailInfo(SingleVoteEntity voteEntity) {
+        showTransactionStatus(transaction.getTxReceiptStatus());
 
-//        showTransactionStatus(voteEntity.getStatus());
+        tvFromAddress.setText(transaction.getFrom());
+        tvToAddress.setText(transaction.getTo());
+        tvTransactionType.setText(transaction.getTxType().getTxTypeDesc());
+        tvTransactionTime.setText(transaction.getShowCreateTime());
+        tvTransactionEnergon.setText(string(R.string.amount_with_unit, transaction.getShowActualTxCost()));
 
-        tvFromAddress.setText(voteEntity.getPrefixWalletAddress());
-        tvToAddress.setText(voteEntity.getPrefixContractAddress());
-        tvTransactionType.setText(R.string.vote);
-        tvTransactionTime.setText(DateUtil.format(voteEntity.getCreateTime(), DateUtil.DATETIME_FORMAT_PATTERN));
-        tvTransactionNodeName.setText(voteEntity.getCandidateName());
-        tvTransactionNodeId.setText(voteEntity.getCandidateId());
-        tvTransactionVotes.setText(String.valueOf(voteEntity.getTicketNumber()));
-        tvTransactionTicketPrice.setText(string(R.string.amount_with_unit, NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(Double.parseDouble(voteEntity.getTicketPrice()), 1E18))));
-        tvTransactionStaked.setText(string(R.string.amount_with_unit, NumberParserUtils.getPrettyBalance(voteEntity.getValue())));
-        tvTransactionEnergon.setText(string(R.string.amount_with_unit, NumberParserUtils.getPrettyBalance(voteEntity.getEnergonPrice())));
+        TransactionExtra transactionExtra = transaction.getTransactionExtra();
+        if (transactionExtra != null) {
+            VoteTrasactionExtra voteTrasactionExtra = JSONUtil.parseObject(transactionExtra.getParameters(), VoteTrasactionExtra.class);
+            if (voteTrasactionExtra != null) {
+                tvTransactionNodeName.setText(voteTrasactionExtra.getNodeName());
+                tvTransactionNodeId.setText(voteTrasactionExtra.getNodeId());
+                tvTransactionVotes.setText(voteTrasactionExtra.getVotedNum());
+                tvTransactionTicketPrice.setText(voteTrasactionExtra.getShowTicketPrice());
+                tvTransactionDeposit.setText(string(R.string.amount_with_unit, voteTrasactionExtra.getShowDeposit()));
+            }
+        }
     }
 
     private void showTransactionStatus(TransactionStatus status) {
@@ -166,5 +172,20 @@ public class VoteTransactionDetailActivity extends MVPBaseActivity<VoteTransacti
             default:
                 break;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (unbinder != null) {
+            unbinder.unbind();
+        }
+        EventPublisher.getInstance().unRegister(this);
+    }
+
+    public static void actionStart(Context context, Transaction transaction) {
+        Intent intent = new Intent(context, VoteTransactionDetailActivity.class);
+        intent.putExtra(Constants.Extra.EXTRA_TRANSACTION, transaction);
+        context.startActivity(intent);
     }
 }

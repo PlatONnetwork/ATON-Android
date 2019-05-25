@@ -117,7 +117,7 @@ public class TransactionDao {
                     .or()
                     .equalTo("to", address)
                     .endGroup()
-                    .equalTo("chanId", NodeManager.getInstance().getChainId())
+                    .equalTo("chainId", NodeManager.getInstance().getChainId())
                     .sort("createTime", Sort.DESCENDING)
                     .findAll();
             if (results != null) {

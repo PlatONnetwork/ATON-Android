@@ -13,9 +13,9 @@ public class TransactionsContract {
 
     public interface View extends IView {
 
-        void notifyItemRangeInserted(List<Transaction> transactionList, int positionStart, int itemCount);
+        void notifyItemRangeInserted(List<Transaction> transactionList, String queryAddress, int positionStart, int itemCount);
 
-        void notifyItemChanged(List<Transaction> transactionList,int position);
+        void notifyItemChanged(List<Transaction> transactionList, String queryAddress, int position);
 
         void finishLoadMore();
     }

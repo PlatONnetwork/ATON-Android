@@ -127,7 +127,8 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
     @Override
     protected void onFragmentPageStart() {
-        layoutRefresh.autoRefresh();
+        mPresenter.fetchWalletList();
+        mPresenter.fetchWalletsBalance();
     }
 
     @Override

@@ -1,28 +1,29 @@
 package com.juzix.wallet.engine;
 
+import android.annotation.SuppressLint;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
 import com.juzhen.framework.util.MapUtils;
 import com.juzhen.framework.util.NumberParserUtils;
-import com.juzix.wallet.db.entity.SingleVoteInfoEntity;
-import com.juzix.wallet.db.entity.TicketInfoEntity;
-import com.juzix.wallet.db.sqlite.SingleVoteDao;
-import com.juzix.wallet.entity.SingleVoteEntity;
+import com.juzix.wallet.db.sqlite.TransactionDao;
+import com.juzix.wallet.entity.Transaction;
+import com.juzix.wallet.entity.TransactionExtra;
+import com.juzix.wallet.entity.TransactionStatus;
+import com.juzix.wallet.entity.TransactionType;
+import com.juzix.wallet.entity.VoteTrasactionExtra;
 import com.juzix.wallet.entity.Wallet;
+import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.AppUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.JSONUtil;
 
-import org.reactivestreams.Publisher;
 import org.web3j.crypto.Credentials;
 import org.web3j.platon.contracts.TicketContract;
 import org.web3j.protocol.Web3j;
-import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.exceptions.TransactionException;
-import org.web3j.tx.RawTransactionManager;
 import org.web3j.tx.ReadonlyTransactionManager;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.DefaultGasProvider;
@@ -32,18 +33,14 @@ import org.web3j.utils.Numeric;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.Callable;
 
-import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
-import io.reactivex.functions.BiConsumer;
-import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
@@ -107,154 +104,47 @@ public class VoteManager {
         });
     }
 
-    public Single<Long> getCandidateEpoch(String nodeId) {
-        return Single.fromCallable(new Callable<Long>() {
-            @Override
-            public Long call() {
-                try {
-                    Web3j web3j = Web3jManager.getInstance().getWeb3j();
-                    TicketContract ticketContract = TicketContract.load(
-                            web3j,
-                            new ReadonlyTransactionManager(web3j, TicketContract.CONTRACT_ADDRESS),
-                            new DefaultWasmGasProvider());
-                    return NumberParserUtils.parseLong(ticketContract.GetCandidateEpoch(nodeId).send());
-                } catch (Exception exp) {
-                    return 0L;
-                }
-            }
-        });
-    }
+    public Single<Transaction> submitVote(Credentials credentials, Wallet walletEntity, String nodeId, String nodeName, String ticketNum, String ticketPrice,String deposit) {
 
-    public Single<Integer> getCandidateTicketCount(String nodeId) {
-
-        return Single.fromCallable(new Callable<Integer>() {
-            @Override
-            public Integer call() throws Exception {
-                Web3j web3j = Web3jManager.getInstance().getWeb3j();
-                TicketContract ticketContract = TicketContract.load(
-                        web3j,
-                        new ReadonlyTransactionManager(web3j, TicketContract.CONTRACT_ADDRESS),
-                        new DefaultWasmGasProvider());
-                String ticketIds = ticketContract.GetCandidateTicketCount(nodeId).send();
-                return MapUtils.getInt(JSONUtil.parseObject(ticketIds, Map.class), nodeId);
-            }
-        }).onErrorReturnItem(0);
-    }
-
-    public Single<Map<String, Integer>> getCandidateTicketCountList(List<String> nodeIds) {
-
-        return Single.fromCallable(new Callable<String>() {
-            @Override
-            public String call() throws Exception {
-                Web3j web3j = Web3jManager.getInstance().getWeb3j();
-                TicketContract ticketContract = TicketContract.load(
-                        web3j,
-                        new ReadonlyTransactionManager(web3j, TicketContract.CONTRACT_ADDRESS),
-                        new DefaultWasmGasProvider());
-                String ticketCounts = ticketContract.GetCandidateTicketCount(TextUtils.join(":", nodeIds)).send();
-                return ticketCounts;
-            }
-        }).map(new Function<String, Map<String, Integer>>() {
-            @Override
-            public Map<String, Integer> apply(String s) throws Exception {
-                return JSONUtil.parseObject(s, Map.class);
-            }
-        })
-                .onErrorReturnItem(new HashMap<>());
-    }
-
-    public Single<SingleVoteInfoEntity> submitVote(Credentials credentials, Wallet walletEntity, String nodeId, String nodeName, String ticketNum, String ticketPrice) {
-
-        String walletName = walletEntity.getName();
-        String walletAddress = walletEntity.getPrefixAddress();
         BigInteger value = BigDecimalUtil.mul(ticketPrice, ticketNum).toBigInteger();
-        double energonPrice = BigDecimalUtil.div(BigDecimalUtil.mul(GAS_PRICE.doubleValue(), GAS_LIMIT.doubleValue()), 1E18);
+        double actualTxCost = BigDecimalUtil.mul(GAS_PRICE.doubleValue(), GAS_LIMIT.doubleValue());
 
         return voteTicket(credentials, ticketPrice, ticketNum, nodeId)
                 .filter(new Predicate<TransactionReceipt>() {
                     @Override
                     public boolean test(TransactionReceipt transactionReceipt) throws Exception {
-                        return transactionReceipt != null;
+                        return transactionReceipt != null && !TextUtils.isEmpty(transactionReceipt.getTransactionHash());
                     }
                 })
-                .map(new Function<TransactionReceipt, String>() {
+                .map(new Function<TransactionReceipt, Transaction>() {
                     @Override
-                    public String apply(TransactionReceipt transactionReceipt) throws Exception {
-                        return transactionReceipt.getTransactionHash();
+                    public Transaction apply(TransactionReceipt transactionReceipt) throws Exception {
+                        VoteTrasactionExtra voteTransactionExtra = new VoteTrasactionExtra(ticketPrice, ticketNum, nodeId, nodeName, deposit);
+                        TransactionExtra transactionExtra = new TransactionExtra(TransactionType.VOTETICKET.getTxTypeName(), JSONUtil.toJSONString(voteTransactionExtra), "");
+                        return new Transaction.Builder()
+                                .hash(transactionReceipt.getTransactionHash())
+                                .from(walletEntity.getPrefixAddress())
+                                .to(TicketContract.CONTRACT_ADDRESS)
+                                .senderWalletName(walletEntity.getName())
+                                .createTime(System.currentTimeMillis())
+                                .actualTxCost(String.valueOf(actualTxCost))
+                                .txInfo(JSONUtil.toJSONString(transactionExtra))
+                                .txType(TransactionType.VOTETICKET.getTxTypeName())
+                                .value(String.valueOf(value.doubleValue()))
+                                .txReceiptStatus(String.valueOf(TransactionStatus.PENDING.ordinal()))
+                                .chainId(NodeManager.getInstance().getChainId())
+                                .build();
                     }
                 })
                 .toSingle()
-                .flatMap(new Function<String, SingleSource<SingleVoteInfoEntity>>() {
+                .doOnSuccess(new Consumer<Transaction>() {
                     @Override
-                    public SingleSource<SingleVoteInfoEntity> apply(String transactionHash) throws Exception {
-                        return Single.zip(getTransactionUuid(ticketNum, transactionHash), getTicketIdList(ticketNum, transactionHash), new BiFunction<String, List<String>, List<TicketInfoEntity>>() {
-                            @Override
-                            public List<TicketInfoEntity> apply(String transactionUuid, List<String> ticketIdList) throws Exception {
-                                return getTicketInfoList(ticketIdList, transactionUuid, nodeId, ticketPrice).blockingGet();
-                            }
-                        }).map(new Function<List<TicketInfoEntity>, SingleVoteInfoEntity>() {
-                            @Override
-                            public SingleVoteInfoEntity apply(List<TicketInfoEntity> ticketInfoEntityList) throws Exception {
-                                return new SingleVoteInfoEntity.Builder()
-                                        .uuid(UUID.randomUUID().toString())
-                                        .hash(transactionHash)
-                                        .transactionId(ticketInfoEntityList.get(0).getTicketId())
-                                        .candidateId(nodeId)
-                                        .candidateName(nodeName)
-                                        //todo
-//                                        .host(candidateEntity.getHost())
-                                        .contractAddress(TicketContract.CONTRACT_ADDRESS)
-                                        .walletName(walletName)
-                                        .walletAddress(walletAddress)
-                                        .createTime(System.currentTimeMillis())
-                                        .value(BigDecimalUtil.div(value.doubleValue(), 1E18))
-                                        .ticketNumber(NumberParserUtils.parseLong(ticketNum))
-                                        .ticketPrice(ticketPrice)
-                                        .energonPrice(energonPrice)
-                                        .status(SingleVoteEntity.STATUS_PENDING)
-                                        .tickets(ticketInfoEntityList)
-                                        .nodeAddress(NodeManager.getInstance().getCurNodeAddress())
-                                        .build();
-                            }
-                        });
-                    }
-                })
-                .doOnSuccess(new Consumer<SingleVoteInfoEntity>() {
-                    @Override
-                    public void accept(SingleVoteInfoEntity voteInfoEntity) throws Exception {
-                        boolean success = SingleVoteDao.insertTransaction(voteInfoEntity);
+                    public void accept(Transaction transaction) throws Exception {
+                        boolean success = TransactionDao.insertTransaction(transaction.toTransactionEntity());
                         if (success) {
-//                            EventPublisher.getInstance().sendUpdateVoteTransactionListEvent(voteInfoEntity.buildVoteTransactionEntity());
-                            updateVoteTicket(voteInfoEntity);
+                            EventPublisher.getInstance().sendUpdateTransactionEvent(transaction);
                         }
-                    }
-                });
-    }
-
-    /**
-     * 更新投票数
-     */
-    public void updateVoteTickets() {
-        Flowable.fromCallable(new Callable<List<SingleVoteInfoEntity>>() {
-            @Override
-            public List<SingleVoteInfoEntity> call() throws Exception {
-                return SingleVoteDao.getTransactionListByStatus(SingleVoteEntity.STATUS_PENDING);
-            }
-        }).flatMap(new Function<List<SingleVoteInfoEntity>, Publisher<SingleVoteInfoEntity>>() {
-            @Override
-            public Publisher<SingleVoteInfoEntity> apply(List<SingleVoteInfoEntity> singleVoteInfoEntities) throws Exception {
-                return Flowable.fromIterable(singleVoteInfoEntities);
-            }
-        }).subscribeOn(Schedulers.io())
-                .subscribe(new Consumer<SingleVoteInfoEntity>() {
-                    @Override
-                    public void accept(SingleVoteInfoEntity voteInfoEntity) throws Exception {
-                        updateVoteTicket(voteInfoEntity);
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        Log.e(TAG, "updateVoteTickets " + throwable.getMessage());
+                        getVotedTransactionByLoop(transaction);
                     }
                 });
     }
@@ -267,99 +157,6 @@ public class VoteManager {
                         Web3j web3j = Web3jManager.getInstance().getWeb3j();
                         TicketContract ticketContract = TicketContract.load(web3j, credentials, new DefaultWasmGasProvider());
                         return ticketContract.VoteTicket(new BigInteger(ticketNum), new BigInteger(ticketPrice), candidateId).send();
-                    }
-                });
-    }
-
-    private String getTransactionHash(Credentials credentials, BigInteger value, String voteTicketData) {
-        Web3j web3j = Web3jManager.getInstance().getWeb3j();
-        TransactionManager transactionManager = new RawTransactionManager(web3j, credentials);
-        String transactionHash = null;
-        try {
-            EthSendTransaction transaction = transactionManager.sendTransaction(GAS_PRICE, GAS_LIMIT, TicketContract.CONTRACT_ADDRESS, voteTicketData, value);
-            if (transaction != null) {
-                transactionHash = transaction.getTransactionHash();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return transactionHash;
-    }
-
-    private Single<String> getTransactionUuid(String ticketNum, String transactionHash) {
-        return Flowable
-                .range(0, NumberParserUtils.parseInt(ticketNum))
-                .map(new Function<Integer, String>() {
-                    @Override
-                    public String apply(Integer index) throws Exception {
-                        String ticketId = genTicketId(index, transactionHash);
-                        if (index == 0) {
-                            return ticketId;
-                        } else {
-                            return TextUtils.concat(":", ticketId).toString();
-                        }
-                    }
-                })
-                .collectInto(new StringBuilder(), new BiConsumer<StringBuilder, String>() {
-                    @Override
-                    public void accept(StringBuilder stringBuilder, String s) throws Exception {
-                        stringBuilder.append(s);
-                    }
-                })
-                .map(new Function<StringBuilder, String>() {
-                    @Override
-                    public String apply(StringBuilder stringBuilder) throws Exception {
-                        return stringBuilder.toString();
-                    }
-                });
-    }
-
-    private Single<List<String>> getTicketIdList(String ticketNum, String transactionHash) {
-        return Flowable
-                .range(0, NumberParserUtils.parseInt(ticketNum))
-                .map(new Function<Integer, String>() {
-                    @Override
-                    public String apply(Integer index) throws Exception {
-                        return genTicketId(index, transactionHash);
-                    }
-                })
-                .collect(new Callable<List<String>>() {
-                    @Override
-                    public List<String> call() throws Exception {
-                        return new ArrayList<>();
-                    }
-                }, new BiConsumer<List<String>, String>() {
-                    @Override
-                    public void accept(List<String> ticketIdList, String ticketId) throws Exception {
-                        ticketIdList.add(ticketId);
-                    }
-                });
-    }
-
-    private Single<List<TicketInfoEntity>> getTicketInfoList(List<String> ticketIdList, String transactionUuid, String candidateId, String ticketPrice) {
-        return Flowable
-                .fromIterable(ticketIdList)
-                .map(new Function<String, TicketInfoEntity>() {
-                    @Override
-                    public TicketInfoEntity apply(String ticketId) throws Exception {
-                        return new TicketInfoEntity.Builder()
-                                .uuid(ticketId)
-                                .candidateId(candidateId)
-                                .deposit(ticketPrice)
-                                .ticketId(ticketId)
-                                .transactionUuid(transactionUuid)
-                                .build();
-                    }
-                })
-                .collect(new Callable<List<TicketInfoEntity>>() {
-                    @Override
-                    public List<TicketInfoEntity> call() throws Exception {
-                        return new ArrayList<>();
-                    }
-                }, new BiConsumer<List<TicketInfoEntity>, TicketInfoEntity>() {
-                    @Override
-                    public void accept(List<TicketInfoEntity> ticketInfoEntityList, TicketInfoEntity ticketInfoEntity) throws Exception {
-                        ticketInfoEntityList.add(ticketInfoEntity);
                     }
                 });
     }
@@ -406,12 +203,9 @@ public class VoteManager {
         });
     }
 
-    private void updateVoteTicket(SingleVoteInfoEntity singleVoteInfoEntity) {
-
-        String transactionHash = singleVoteInfoEntity.getHash();
-        String candidateId = singleVoteInfoEntity.getCandidateId();
-
-        sendTransaction(transactionHash)
+    @SuppressLint("CheckResult")
+    private void getVotedTransactionByLoop(Transaction transaction) {
+        sendTransaction(transaction.getHash())
                 .flatMap(new Function<TransactionReceipt, SingleSource<String>>() {
                     @Override
                     public SingleSource<String> apply(TransactionReceipt transactionReceipt) throws Exception {
@@ -424,77 +218,46 @@ public class VoteManager {
                         return JSONObject.parseObject(resp);
                     }
                 })
-                .filter(new Predicate<JSONObject>() {
+                .map(new Function<JSONObject, Transaction>() {
                     @Override
-                    public boolean test(JSONObject jsonObject) throws Exception {
-                        boolean ret = jsonObject.getBoolean("Ret");
-                        if (!ret) {
-                            SingleVoteInfoEntity tempVoteInfoEntity = singleVoteInfoEntity.clone();
-                            tempVoteInfoEntity.setStatus(SingleVoteEntity.STATUS_FAILED);
-                            SingleVoteDao.insertTransaction(tempVoteInfoEntity);
+                    public Transaction apply(JSONObject jsonObject) throws Exception {
+                        boolean success = jsonObject.getBoolean("Ret");
+                        TransactionStatus transactionStatus = success ? TransactionStatus.SUCCESSED : TransactionStatus.FAILED;
+                        Transaction trans = transaction.clone();
+                        trans.setTxReceiptStatus(String.valueOf(transactionStatus.ordinal()));
+                        return trans;
+                    }
+                })
+                .onErrorResumeNext(new Function<Throwable, SingleSource<Transaction>>() {
+                    @Override
+                    public SingleSource<Transaction> apply(Throwable throwable) throws Exception {
+                        Transaction trans = transaction.clone();
+                        trans.setTxReceiptStatus(String.valueOf(TransactionStatus.FAILED.ordinal()));
+                        return Single.just(trans);
+                    }
+                })
+                .doOnSuccess(new Consumer<Transaction>() {
+                    @Override
+                    public void accept(Transaction t) throws Exception {
+                        if (t.getTxReceiptStatus() == TransactionStatus.FAILED) {
+                            TransactionDao.insertTransaction(t.toTransactionEntity());
+                        }else{
+                            TransactionDao.deleteTransaction(t.getHash());
                         }
-                        return ret;
+                        EventPublisher.getInstance().sendUpdateTransactionEvent(t);
                     }
                 })
-                .toSingle()
-                .flatMap(new Function<JSONObject, SingleSource<SingleVoteInfoEntity>>() {
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Consumer<Transaction>() {
                     @Override
-                    public SingleSource<SingleVoteInfoEntity> apply(JSONObject jsonObject) throws Exception {
-
-                        String data = MapUtils.getString(jsonObject, "Data");
-                        String[] array = data.split(":", 2);
-                        String validTicketNum = array[0];
-                        String ticketPrice = array[1];
-
-                        return Single.zip(getTransactionUuid(validTicketNum, transactionHash), getTicketIdList(validTicketNum, transactionHash), new BiFunction<String, List<String>, List<TicketInfoEntity>>() {
-                            @Override
-                            public List<TicketInfoEntity> apply(String transactionUuid, List<String> ticketIdList) throws Exception {
-                                return getTicketInfoList(ticketIdList, transactionUuid, candidateId, ticketPrice).blockingGet();
-                            }
-                        }).map(new Function<List<TicketInfoEntity>, SingleVoteInfoEntity>() {
-                            @Override
-                            public SingleVoteInfoEntity apply(List<TicketInfoEntity> ticketInfoEntityList) throws Exception {
-
-                                SingleVoteInfoEntity tempVoteInfoEntity = singleVoteInfoEntity.clone();
-                                tempVoteInfoEntity.setTransactionId(ticketInfoEntityList.get(0).getTransactionId());
-                                tempVoteInfoEntity.setTicketInfoEntityArrayList(ticketInfoEntityList);
-                                tempVoteInfoEntity.setStatus(SingleVoteEntity.STATUS_SUCCESS);
-
-                                return tempVoteInfoEntity;
-                            }
-                        });
-                    }
-                })
-                .doOnSuccess(new Consumer<SingleVoteInfoEntity>() {
-                    @Override
-                    public void accept(SingleVoteInfoEntity voteInfoEntity) throws Exception {
-                        boolean success = SingleVoteDao.insertTransaction(voteInfoEntity);
-                        if (success) {
-//                            EventPublisher.getInstance().sendUpdateVoteTransactionListEvent(voteInfoEntity.buildVoteTransactionEntity());
-                        }
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Consumer<SingleVoteInfoEntity>() {
-                    @Override
-                    public void accept(SingleVoteInfoEntity singleVoteInfoEntity) throws Exception {
-
+                    public void accept(Transaction tran) throws Exception {
+                        Log.e(TAG, "投票完成" + tran.toString());
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        Log.e(TAG, "updateVoteTicket " + throwable.getMessage());
+
                     }
                 });
     }
-
-    private String genTicketId(int index, String hash) {
-        byte[] data1 = Numeric.hexStringToByteArray(hash);
-        byte[] data2 = String.valueOf(index).getBytes();
-        byte[] data3 = new byte[data1.length + data2.length];
-        System.arraycopy(data1, 0, data3, 0, data1.length);
-        System.arraycopy(data2, 0, data3, data1.length, data2.length);
-        return "0x" + AppUtil.sha3256(data3);
-    }
-
 }

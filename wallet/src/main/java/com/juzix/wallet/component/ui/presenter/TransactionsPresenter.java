@@ -85,6 +85,9 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                 .flatMap(new Function<List<Transaction>, Publisher<List<Transaction>>>() {
                     @Override
                     public Publisher<List<Transaction>> apply(List<Transaction> transactionList) throws Exception {
+                        if (mTransactionList.isEmpty()){
+                            mTransactionList = transactionList;
+                        }
                         return Flowable
                                 .interval(0, Constants.Common.TRANSCTION_LIST_LOOP_TIME, TimeUnit.MILLISECONDS)
                                 .flatMap(new Function<Long, Publisher<List<Transaction>>>() {
@@ -127,7 +130,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                             mTransactionList = addAll(transactionList, DIRECTION_NEW);
                             int newSize = mTransactionList.size();
                             Collections.sort(mTransactionList);
-                            getView().notifyItemRangeInserted(mTransactionList, 0, newSize - oldSize);
+                            getView().notifyItemRangeInserted(mTransactionList, mWalletAddress, 0, newSize - oldSize);
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -157,7 +160,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                             Collections.sort(transactions);
                             //累加,mTransactionList不可能为null,放在最后面
                             mTransactionList.addAll(mTransactionList.size(), transactions);
-                            getView().notifyItemRangeInserted(mTransactionList, mTransactionList.size(), transactions.size());
+                            getView().notifyItemRangeInserted(mTransactionList, mWalletAddress, mTransactionList.size(), transactions.size());
                             getView().finishLoadMore();
                         }
                     }
@@ -175,11 +178,11 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
             //更新
             int index = mTransactionList.indexOf(transaction);
             mTransactionList.set(index, transaction);
-            getView().notifyItemChanged(mTransactionList, index);
+            getView().notifyItemChanged(mTransactionList, mWalletAddress, index);
         } else {
             //添加
             mTransactionList.add(0, transaction);
-            getView().notifyItemRangeInserted(mTransactionList, 0, 1);
+            getView().notifyItemRangeInserted(mTransactionList, mWalletAddress, 0, 1);
         }
     }
 

@@ -1,12 +1,21 @@
 package com.juzix.wallet.entity;
 
-public class TransactionExtraInfo {
+public class TransactionExtra {
 
     private String functionName;
 
     private String parameters;
 
     private String type;
+
+    public TransactionExtra() {
+    }
+
+    public TransactionExtra(String functionName, String parameters, String type) {
+        this.functionName = functionName;
+        this.parameters = parameters;
+        this.type = type;
+    }
 
     public String getFunctionName() {
         return functionName;

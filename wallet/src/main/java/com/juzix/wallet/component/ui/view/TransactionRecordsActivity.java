@@ -74,7 +74,7 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
                 if (transaction.getTxType() == TransactionType.TRANSFER) {
                     TransactionDetailActivity.actionStart(TransactionRecordsActivity.this, transaction, WalletManager.getInstance().getSelectedWalletAddress());
                 } else if (transaction.getTxType() == TransactionType.VOTETICKET) {
-
+                    VoteTransactionDetailActivity.actionStart(TransactionRecordsActivity.this, transaction);
                 }
             }
         });
@@ -109,8 +109,7 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
     @Override
     public void notifyItemRangeInserted(List<Transaction> transactionList, int positionStart, int itemCount) {
         layoutNoData.setVisibility(transactionList != null && !transactionList.isEmpty() ? View.GONE : View.VISIBLE);
-        mTransactionAdapter.notifyItemRangeInserted(transactionList, positionStart, itemCount);
-        listTransactions.scrollToPosition(positionStart == 0 ? positionStart : transactionList.size() - 1);
+        mTransactionAdapter.notifyItemRangeInserted(transactionList,null, positionStart, itemCount);
     }
 
     @Override

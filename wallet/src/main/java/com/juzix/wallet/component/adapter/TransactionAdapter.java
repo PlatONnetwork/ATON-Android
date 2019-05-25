@@ -8,11 +8,14 @@ import com.juzix.wallet.component.adapter.base.RecycleHolder;
 import com.juzix.wallet.component.adapter.base.RecyclerAdapter;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionStatus;
+import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.utils.DateUtil;
 
 import java.util.List;
 
 public class TransactionAdapter extends RecyclerAdapter<Transaction> {
+
+    private String mQueryAddress;
 
     public TransactionAdapter(Context mContext, List<Transaction> mDatas, int mLayoutId) {
         super(mContext, mDatas, mLayoutId);
@@ -21,8 +24,10 @@ public class TransactionAdapter extends RecyclerAdapter<Transaction> {
     @Override
     public void convert(RecycleHolder holder, Transaction data, int position) {
         TransactionStatus status = data.getTxReceiptStatus();
-        holder.setText(R.id.tv_name, data.getTxType().getTxTypeDesc());
-        holder.setText(R.id.tv_amount, mContext.getString(R.string.amount_with_unit, data.getShowValue()));
+        boolean isReceiver = data.getTo().equals(mQueryAddress);
+        String transferDesc = isReceiver ? mContext.getString(R.string.receive) : mContext.getString(R.string.send);
+        holder.setText(R.id.tv_name, data.getTxType() == TransactionType.TRANSFER ? transferDesc : data.getTxType().getTxTypeDesc());
+        holder.setText(R.id.tv_amount, String.format("%s%s", isReceiver ? "+" : "-", mContext.getString(R.string.amount_with_unit, data.getShowValue())));
         holder.setText(R.id.tv_time, data.getShowCreateTime());
         holder.setText(R.id.tv_desc, mContext.getString(status.getTransactionStatusDescRes()));
         holder.setTextColor(R.id.tv_desc, status.getTransactionStatusDescColorRes());
@@ -35,18 +40,20 @@ public class TransactionAdapter extends RecyclerAdapter<Transaction> {
         holder.setTextColor(R.id.tv_desc, status.getTransactionStatusDescColorRes());
     }
 
-    public void notifyItemRangeInserted(List<Transaction> transactionList, int positionStart, int itemCount) {
+    public void notifyItemRangeInserted(List<Transaction> transactionList, String queryAddress, int positionStart, int itemCount) {
         this.mDatas = transactionList;
+        this.mQueryAddress = queryAddress;
         notifyItemRangeInserted(positionStart, itemCount);
         notifyItemRangeChanged(positionStart, itemCount);
     }
 
-    public void notifyItemChanged(List<Transaction> transactionList, int position){
+    public void notifyItemChanged(List<Transaction> transactionList, String queryAddress, int position) {
         this.mDatas = transactionList;
-        notifyItemChanged(position,"notifyItem");
+        this.mQueryAddress = queryAddress;
+        notifyItemChanged(position, "notifyItem");
     }
 
-    public void notifyItemInserted(List<Transaction> transactionList, int positionStart){
+    public void notifyItemInserted(List<Transaction> transactionList, int positionStart) {
         this.mDatas = transactionList;
         notifyItemInserted(positionStart);
         notifyItemChanged(positionStart);

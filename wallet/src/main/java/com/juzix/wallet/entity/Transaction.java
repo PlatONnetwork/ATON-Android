@@ -9,6 +9,9 @@ import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.db.entity.TransactionEntity;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.DateUtil;
+import com.juzix.wallet.utils.JSONUtil;
+
+import retrofit2.http.PUT;
 
 public class Transaction implements Comparable<Transaction>, Parcelable, Cloneable {
 
@@ -236,6 +239,10 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         return txInfo;
     }
 
+    public TransactionExtra getTransactionExtra(){
+        return JSONUtil.parseObject(txInfo,TransactionExtra.class);
+    }
+
     public void setTxInfo(String txInfo) {
         this.txInfo = txInfo;
     }
@@ -401,10 +408,11 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
 
     public TransactionEntity toTransactionEntity() {
         return new TransactionEntity.Builder(hash, senderWalletName, from, to, createTime)
-                .setTxType(TransactionType.TRANSFER.getTxTypeName())
+                .setTxType(txType)
+                .setTxInfo(txInfo)
                 .setBlockNumber(blockNumber)
                 .setChainId(chainId)
-                .setTxReceiptStatus(String.valueOf(TransactionStatus.PENDING.ordinal()))
+                .setTxReceiptStatus(txReceiptStatus)
                 .setActualTxCost(actualTxCost)
                 .setValue(NumberParserUtils.parseDouble(value))
                 .build();

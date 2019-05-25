@@ -53,12 +53,14 @@ public class TransactionRecordsPresenter extends BasePresenter<TransactionRecord
                             Collections.sort(transactions);
                             if (DIRECTION_OLD.equals(direction)) {
                                 //累加,mTransactionList不可能为null,放在最后面
-                                mTransactionList = addAll(mTransactionList);
+                                int oldSize = mTransactionList.size();
+                                mTransactionList = addAll(transactions);
+                                int newSize = mTransactionList.size();
+                                getView().notifyItemRangeInserted(mTransactionList, oldSize, newSize - oldSize);
                             } else {
                                 mTransactionList = transactions;
+                                getView().showTransactions(mTransactionList);
                             }
-
-                            getView().showTransactions(mTransactionList);
 
                             if (DIRECTION_OLD.equals(direction)) {
                                 getView().finishLoadMore();
