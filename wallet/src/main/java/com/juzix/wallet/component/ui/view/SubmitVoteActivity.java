@@ -16,6 +16,7 @@ import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
+import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.SubmitVoteContract;
 import com.juzix.wallet.component.ui.presenter.SubmitVotePresenter;
@@ -100,7 +101,7 @@ public class SubmitVoteActivity extends MVPBaseActivity<SubmitVotePresenter> imp
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<CharSequence>() {
                     @Override
-                    public void accept(CharSequence charSequence) throws Exception {
+                    public void accept(CharSequence charSequence) {
                         mTicketNum = NumberParserUtils.parseInt(charSequence);
                         mPresenter.updateVotePayInfo();
                         sbtnVote.setEnabled(mTicketNum >= 1);
@@ -112,7 +113,7 @@ public class SubmitVoteActivity extends MVPBaseActivity<SubmitVotePresenter> imp
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object object) throws Exception {
+                    public void accept(Object object) {
                         mPresenter.submitVote();
                     }
                 });
@@ -122,7 +123,7 @@ public class SubmitVoteActivity extends MVPBaseActivity<SubmitVotePresenter> imp
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object object) throws Exception {
+                    public void accept(Object object) {
                         mPresenter.showSelectWalletDialogFragment();
                     }
                 });
@@ -139,7 +140,7 @@ public class SubmitVoteActivity extends MVPBaseActivity<SubmitVotePresenter> imp
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Boolean>() {
                     @Override
-                    public void accept(Boolean aBoolean) throws Exception {
+                    public void accept(Boolean aBoolean) {
                         sbtnVote.setEnabled(aBoolean);
                     }
                 });
@@ -217,7 +218,7 @@ public class SubmitVoteActivity extends MVPBaseActivity<SubmitVotePresenter> imp
         }
     }
 
-    public static void actionStart(Context context, String nodeId, String nodeName,String deposit) {
+    public static void actionStart(Context context, String nodeId, String nodeName, String deposit) {
         Intent intent = new Intent(context, SubmitVoteActivity.class);
         intent.putExtra(Constants.Extra.EXTRA_CANDIDATE_ID, nodeId);
         intent.putExtra(Constants.Extra.EXTRA_CANDIDATE_NAME, nodeName);

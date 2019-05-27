@@ -25,8 +25,8 @@ public class TransactionAdapter extends RecyclerAdapter<Transaction> {
     public void convert(RecycleHolder holder, Transaction data, int position) {
         TransactionStatus status = data.getTxReceiptStatus();
         boolean isReceiver = data.getTo().equals(mQueryAddress);
-        String transferDesc = isReceiver ? mContext.getString(R.string.receive) : mContext.getString(R.string.send);
-        holder.setText(R.id.tv_name, data.getTxType() == TransactionType.TRANSFER ? transferDesc : data.getTxType().getTxTypeDesc());
+        int transferDescRes = isReceiver ? R.string.receive : R.string.send;
+        holder.setText(R.id.tv_name, data.getTxType() == TransactionType.TRANSFER ? transferDescRes : data.getTxType().getTxTypeDescRes());
         holder.setText(R.id.tv_amount, String.format("%s%s", isReceiver ? "+" : "-", mContext.getString(R.string.amount_with_unit, data.getShowValue())));
         holder.setText(R.id.tv_time, data.getShowCreateTime());
         holder.setText(R.id.tv_desc, mContext.getString(status.getTransactionStatusDescRes()));

@@ -132,7 +132,7 @@ public class VoteTransactionDetailActivity extends BaseActivity {
 
         tvFromAddress.setText(transaction.getFrom());
         tvToAddress.setText(transaction.getTo());
-        tvTransactionType.setText(transaction.getTxType().getTxTypeDesc());
+        tvTransactionType.setText(transaction.getTxType().getTxTypeDescRes());
         tvTransactionTime.setText(transaction.getShowCreateTime());
         tvTransactionEnergon.setText(string(R.string.amount_with_unit, transaction.getShowActualTxCost()));
 

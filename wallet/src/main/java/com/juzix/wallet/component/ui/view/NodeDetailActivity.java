@@ -12,6 +12,7 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
+import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.NodeDetailContract;
 import com.juzix.wallet.component.ui.presenter.NodeDetailPresenter;
@@ -87,7 +88,7 @@ public class NodeDetailActivity extends MVPBaseActivity<NodeDetailPresenter> imp
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object object) throws Exception {
+                    public void accept(Object object) {
                         String text = tvInstitutionalWebsite.getText().toString();
                         if (!TextUtils.isEmpty(text)) {
                             ShareUtil.shareUrl(getContext(), text);
@@ -101,7 +102,7 @@ public class NodeDetailActivity extends MVPBaseActivity<NodeDetailPresenter> imp
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object object) throws Exception {
+                    public void accept(Object object) {
                         mPresenter.voteTicket();
                     }
                 });
