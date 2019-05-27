@@ -176,7 +176,7 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
                     public void accept(Transaction transaction) throws Exception {
                         if (isViewAttached()) {
                             showLongToast(R.string.vote_success);
-                            MainActivity.actionStart(getContext(), MainActivity.TAB_PROPERTY, AssetsFragment.TAB1);
+                            currentActivity().finish();
                         }
                     }
                 }, new Consumer<Throwable>() {
