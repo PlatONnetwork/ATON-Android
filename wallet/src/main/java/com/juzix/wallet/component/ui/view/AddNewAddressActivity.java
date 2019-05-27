@@ -15,6 +15,7 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
+import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.AddNewAddressContract;
 import com.juzix.wallet.component.ui.presenter.AddNewAddressPresenter;
@@ -82,7 +83,7 @@ public class AddNewAddressActivity extends MVPBaseActivity<AddNewAddressPresente
         }).compose(bindToLifecycle())
                 .subscribe(new CustomObserver<Boolean>() {
                     @Override
-                    public void accept(Boolean enabled) throws Exception {
+                    public void accept(Boolean enabled) {
                         sbtnAddAddress.setEnabled(enabled);
                     }
                 });
@@ -92,7 +93,7 @@ public class AddNewAddressActivity extends MVPBaseActivity<AddNewAddressPresente
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object o) throws Exception {
+                    public void accept(Object o) {
                         hideSoftInput();
                         mPresenter.addAddress();
                     }
@@ -104,7 +105,7 @@ public class AddNewAddressActivity extends MVPBaseActivity<AddNewAddressPresente
                 .compose(new RxPermissions(AddNewAddressActivity.this).ensure(Manifest.permission.CAMERA))
                 .subscribe(new CustomObserver<Boolean>() {
                     @Override
-                    public void accept(Boolean success) throws Exception {
+                    public void accept(Boolean success) {
                         if (success) {
                             ScanQRCodeActivity.startActivityForResult(AddNewAddressActivity.this, Constants.RequestCode.REQUEST_CODE_SCAN_QRCODE);
                         }

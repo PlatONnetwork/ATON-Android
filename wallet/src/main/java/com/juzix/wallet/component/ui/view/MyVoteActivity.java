@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.adapter.BatchVoteSummaryAdapter;
 import com.juzix.wallet.component.adapter.BatchVoteTransactionAdapter;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
@@ -95,7 +96,7 @@ public class MyVoteActivity extends MVPBaseActivity<MyVotePresenter> implements 
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Integer>() {
                     @Override
-                    public void accept(Integer position) throws Exception {
+                    public void accept(Integer position)  {
                         VotedCandidate entity = mBatchVoteTransactionAdapter.getItem(position);
                         VoteDetailActivity.actionStart(MyVoteActivity.this, entity.getNodeId(),entity.getName());
                     }

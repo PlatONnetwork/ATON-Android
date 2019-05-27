@@ -14,6 +14,7 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.juzhen.framework.network.SchedulersTransformer;
 import com.juzhen.framework.util.AndroidUtil;
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.dialog.CommonTipsDialogFragment;
@@ -71,7 +72,7 @@ public class AboutActivity extends BaseActivity {
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object object) throws Exception {
+                    public void accept(Object o) {
                         ShareUtil.shareUrl(getContext(), "https://www.platon.network");
                     }
                 });
@@ -81,7 +82,7 @@ public class AboutActivity extends BaseActivity {
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object object) throws Exception {
+                    public void accept(Object object) {
                         update();
                     }
                 });
@@ -171,7 +172,7 @@ public class AboutActivity extends BaseActivity {
                                                 .subscribe(new Consumer<Boolean>() {
                                                     @Override
                                                     public void accept(Boolean success) throws Exception {
-                                                        if (success){
+                                                        if (success) {
                                                             mVersionUpdate.execute();
                                                         }
                                                     }

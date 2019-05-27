@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.app.Constants;
+import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.app.CustomThrowable;
 import com.juzix.wallet.db.sqlite.TransactionDao;
 import com.juzix.wallet.entity.Transaction;
@@ -16,6 +17,7 @@ import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.NumericUtil;
 
+import org.reactivestreams.Subscription;
 import org.spongycastle.util.encoders.Hex;
 import org.web3j.abi.PlatOnTypeEncoder;
 import org.web3j.abi.datatypes.generated.Int64;
@@ -144,7 +146,6 @@ public class TransactionManager {
     /**
      * 通过轮询获取普通钱包的交易
      */
-    @SuppressLint("CheckResult")
     public void getTransactionByLoop(Transaction trans) {
         Flowable.interval(Constants.Common.TRANSACTION_STATUS_LOOP_TIME, TimeUnit.MILLISECONDS)
                 .map(new Function<Long, Optional<org.web3j.protocol.core.methods.response.Transaction>>() {

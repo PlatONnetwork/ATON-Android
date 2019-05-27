@@ -5,7 +5,7 @@ import java.util.Map;
 
 public enum TransactionType {
 
-    TRANSFER("transfer", "转账"), MPCTRANSACTION("MPCtransaction：MPC", "MPC交易"), CONTRACTCREATE("contractCreate", "合约创建"), VOTETICKET("voteTicket", "投票"), TRANSACTIONEXECUTE("transactionExecute", "合约执行"), CANDIDATEDEPOSIT("candidateDeposit", "质押"), CANDIDATEAPPLYWITHDRAW("candidateApplyWithdraw", "减持质押"), CANDIDATEWITHDRAW("candidateWithdraw", "提取质押"), UNKNOWN("unknown", "其他");
+    TRANSFER("transfer", "转账"), MPCTRANSACTION("MPCtransaction", "MPC交易"), CONTRACTCREATE("contractCreate", "合约创建"), VOTETICKET("voteTicket", "投票"), TRANSACTIONEXECUTE("transactionExecute", "合约执行"), CANDIDATEDEPOSIT("candidateDeposit", "质押"), CANDIDATEAPPLYWITHDRAW("candidateApplyWithdraw", "减持质押"), CANDIDATEWITHDRAW("candidateWithdraw", "提取质押"), UNKNOWN("unknown", "其他");
 
     private String name;
     private String desc;

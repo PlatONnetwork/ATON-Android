@@ -34,6 +34,7 @@ import com.google.zxing.decoding.InactivityTimer;
 import com.google.zxing.view.ViewfinderView;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
+import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.utils.PhotoUtil;
 import com.juzix.wallet.utils.QRCodeDecoder;
@@ -163,7 +164,7 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Boolean>() {
                     @Override
-                    public void accept(Boolean success) throws Exception {
+                    public void accept(Boolean success){
                         if (success){
                             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                             startActivityForResult(intent, REQUEST_CODE_SCAN_GALLERY);
