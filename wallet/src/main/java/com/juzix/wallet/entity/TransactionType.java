@@ -1,18 +1,20 @@
 package com.juzix.wallet.entity;
 
+import com.juzix.wallet.R;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public enum TransactionType {
 
-    TRANSFER("transfer", "转账"), MPCTRANSACTION("MPCtransaction", "MPC交易"), CONTRACTCREATE("contractCreate", "合约创建"), VOTETICKET("voteTicket", "投票"), TRANSACTIONEXECUTE("transactionExecute", "合约执行"), CANDIDATEDEPOSIT("candidateDeposit", "质押"), CANDIDATEAPPLYWITHDRAW("candidateApplyWithdraw", "减持质押"), CANDIDATEWITHDRAW("candidateWithdraw", "提取质押"), UNKNOWN("unknown", "其他");
+    TRANSFER("transfer", R.string.transfer), MPCTRANSACTION("MPCtransaction", R.string.mpc_transaction), CONTRACTCREATE("contractCreate", R.string.contract_create), VOTETICKET("voteTicket", R.string.vote_ticket), TRANSACTIONEXECUTE("transactionExecute", R.string.transaction_execute), CANDIDATEDEPOSIT("candidateDeposit", R.string.candidate_deposit), CANDIDATEAPPLYWITHDRAW("candidateApplyWithdraw", R.string.candidate_apply_withdraw), CANDIDATEWITHDRAW("candidateWithdraw", R.string.candidate_withdraw), UNKNOWN("unknown", R.string.unknown);
 
     private String name;
-    private String desc;
+    private int descRes;
 
-    TransactionType(String name, String desc) {
+    TransactionType(String name, int descRes) {
         this.name = name;
-        this.desc = desc;
+        this.descRes = descRes;
     }
 
     private static Map<String, TransactionType> map = new HashMap<>();
@@ -27,8 +29,8 @@ public enum TransactionType {
         return map.get(name);
     }
 
-    public String getTxTypeDesc() {
-        return desc;
+    public int getTxTypeDescRes() {
+        return descRes;
     }
 
     public String getTxTypeName(){
