@@ -20,6 +20,7 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
+import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.MVPBaseFragment;
 import com.juzix.wallet.component.ui.contract.ImportIndividualKeystoreContract;
 import com.juzix.wallet.component.ui.presenter.ImportKeystorePresenter;
@@ -109,7 +110,7 @@ public class ImportIndividualKeystoreFragment extends MVPBaseFragment<ImportKeys
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object unit) throws Exception {
+                    public void accept(Object unit){
                         mPresenter.importKeystore(mEtKeystore.getText().toString(),
                                 mEtWalletName.getText().toString(),
                                 mEtPassword.getText().toString());
@@ -122,7 +123,7 @@ public class ImportIndividualKeystoreFragment extends MVPBaseFragment<ImportKeys
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object unit) throws Exception {
+                    public void accept(Object unit) {
                         mEtKeystore.setText(CommonUtil.getTextFromClipboard(getContext()));
                         mEtKeystore.setSelection(mEtKeystore.getText().toString().length());
                     }
@@ -143,7 +144,7 @@ public class ImportIndividualKeystoreFragment extends MVPBaseFragment<ImportKeys
                     }
                 }).compose(RxUtils.bindToLifecycle(this)).subscribe(new CustomObserver<Boolean>() {
             @Override
-            public void accept(Boolean aBoolean) throws Exception {
+            public void accept(Boolean aBoolean) {
                 enableImport(aBoolean);
             }
         });
@@ -154,7 +155,7 @@ public class ImportIndividualKeystoreFragment extends MVPBaseFragment<ImportKeys
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Boolean>() {
                     @Override
-                    public void accept(Boolean hasFocus) throws Exception {
+                    public void accept(Boolean hasFocus){
                         String keystore = mEtKeystore.getText().toString().trim();
                         if (!hasFocus) {
                             if (TextUtils.isEmpty(keystore)) {
@@ -190,7 +191,7 @@ public class ImportIndividualKeystoreFragment extends MVPBaseFragment<ImportKeys
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Boolean>() {
                     @Override
-                    public void accept(Boolean hasFocus) throws Exception {
+                    public void accept(Boolean hasFocus) {
                         String password = mEtPassword.getText().toString().trim();
                         if (!hasFocus) {
                             if (TextUtils.isEmpty(password)) {

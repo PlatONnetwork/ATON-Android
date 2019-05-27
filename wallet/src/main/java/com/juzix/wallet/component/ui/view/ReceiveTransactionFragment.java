@@ -13,6 +13,7 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
+import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.MVPBaseFragment;
 import com.juzix.wallet.component.ui.contract.ReceiveTransationContract;
 import com.juzix.wallet.component.ui.presenter.ReceiveTransationPresenter;
@@ -78,7 +79,7 @@ public class ReceiveTransactionFragment extends MVPBaseFragment<ReceiveTransatio
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object object) throws Exception {
+                    public void accept(Object object)  {
                         mPresenter.shareView();
                     }
                 });
