@@ -34,6 +34,7 @@ import com.jakewharton.rxbinding2.widget.RxRadioGroup;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.adapter.VoteListAdapter;
 import com.juzix.wallet.component.ui.SortType;
 import com.juzix.wallet.component.ui.base.BaseActivity;
@@ -250,7 +251,7 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Integer>() {
                     @Override
-                    public void accept(Integer checkedId) throws Exception {
+                    public void accept(Integer checkedId) {
                         tabLayout.getTabAt(getTabIndexByCheckedId(checkedId)).select();
                     }
                 });
@@ -260,7 +261,7 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object o) throws Exception {
+                    public void accept(Object o)  {
                         mSearchEditOpened = false;
                         etSearchVote.setText("");
                         ((BaseActivity) getActivity()).hideSoftInput();
@@ -273,7 +274,7 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object o) throws Exception {
+                    public void accept(Object o) {
                         MyVoteActivity.actionStart(currentActivity());
                     }
                 });
@@ -283,7 +284,7 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object o) throws Exception {
+                    public void accept(Object o)  {
                         MyVoteActivity.actionStart(currentActivity());
                     }
                 });
@@ -293,7 +294,7 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object o) throws Exception {
+                    public void accept(Object o) {
                         mSearchEditOpened = !mSearchEditOpened;
                         toggleSearchEditText(mSearchEditOpened);
                     }
@@ -306,7 +307,7 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
                 .compose(bindToLifecycle())
                 .subscribe(new CustomObserver<CharSequence>() {
                     @Override
-                    public void accept(CharSequence charSequence) throws Exception {
+                    public void accept(CharSequence charSequence){
                         mPresenter.search(charSequence.toString().trim());
                     }
                 });
