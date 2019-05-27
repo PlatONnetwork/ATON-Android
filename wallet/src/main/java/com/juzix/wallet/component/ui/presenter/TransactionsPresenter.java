@@ -37,6 +37,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
+import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.Single;
@@ -157,7 +158,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                     }
                 })
                 .compose(RxUtils.getSchedulerTransformer())
-                .compose(RxUtils.bindToParentLifecycleUtilEvent(getView(),FragmentEvent.STOP))
+                .compose(RxUtils.bindToParentLifecycleUtilEvent(getView(), FragmentEvent.STOP))
                 .subscribe(new Consumer<List<Transaction>>() {
                     @Override
                     public void accept(List<Transaction> transactionList) throws Exception {
@@ -185,6 +186,10 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
             return;
         }
 
+        if (!mAutoRefreshDisposable.isDisposed()) {
+            mAutoRefreshDisposable.dispose();
+        }
+
         getTransactionList(mWalletAddress, DIRECTION_OLD, getBeginSequenceByDirection(DIRECTION_OLD))
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(bindUntilEvent(FragmentEvent.STOP))
@@ -199,12 +204,16 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                             mTransactionList.addAll(mTransactionList.size(), transactions);
                             getView().notifyItemRangeInserted(mTransactionList, mWalletAddress, mTransactionList.size(), transactions.size());
                             getView().finishLoadMore();
+
+                            loadNew(DIRECTION_NEW);
                         }
                     }
 
                     @Override
                     public void onApiFailure(ApiResponse response) {
-
+                        if (isViewAttached()) {
+                            getView().finishLoadMore();
+                        }
                     }
                 });
     }
@@ -381,20 +390,20 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
     private long getValidSmallerSequence(List<Transaction> transactionList) {
 
         return Flowable
-                .range(transactionList.size() - 1, transactionList.size())
+                .range(0, transactionList.size())
                 .filter(new Predicate<Integer>() {
                     @Override
                     public boolean test(Integer integer) throws Exception {
                         return transactionList.get(integer).getSequence() != 0;
                     }
                 })
+                .lastElement()
                 .map(new Function<Integer, Long>() {
                     @Override
                     public Long apply(Integer integer) throws Exception {
                         return transactionList.get(integer).getSequence();
                     }
                 })
-                .lastElement()
                 .blockingGet();
     }
 }

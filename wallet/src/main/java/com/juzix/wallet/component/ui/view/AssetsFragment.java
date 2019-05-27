@@ -16,6 +16,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,6 +72,8 @@ import retrofit2.http.PUT;
  */
 public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements AssetsContract.View {
 
+    private final static String TAG = AssetsFragment.class.getSimpleName();
+
     public static final int TAB1 = 0;
     public static final int TAB2 = 1;
     public static final int TAB3 = 2;
@@ -119,6 +122,8 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     ShadowContainer scCreateWallet;
     @BindView(R.id.layout_refresh)
     SmartRefreshLayout layoutRefresh;
+    @BindView(R.id.layout_refresh_transaction)
+    SmartRefreshLayout layoutRefreshTransaction;
 
     private WalletHorizontalRecycleViewAdapter mWalletAdapter;
     private Unbinder unbinder;
@@ -166,6 +171,18 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 mPresenter.fetchWalletList();
                 mPresenter.fetchWalletsBalance();
+            }
+        });
+
+        layoutRefreshTransaction.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+                if (vpContent.getCurrentItem() == TAB1) {
+                    TransactionsFragment viewPageFragment = (TransactionsFragment) mTabAdapter.getItem(TAB1);
+                    if (viewPageFragment != null) {
+                        viewPageFragment.loadMoreTransaction();
+                    }
+                }
             }
         });
     }
@@ -505,7 +522,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
     @Override
     public void finishLoadMore() {
-        layoutRefresh.finishLoadMore();
+        layoutRefreshTransaction.finishLoadMore();
     }
 
     private View getTableView(int position, ViewGroup container) {

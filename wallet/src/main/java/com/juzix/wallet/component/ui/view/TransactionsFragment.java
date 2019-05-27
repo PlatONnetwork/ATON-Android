@@ -1,6 +1,7 @@
 package com.juzix.wallet.component.ui.view;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -60,15 +61,16 @@ public class TransactionsFragment extends BaseViewPageFragment<TransactionsPrese
 
     @Override
     public void onPageStart() {
-        if (mPresenter != null){
+        if (mPresenter != null) {
             mPresenter.loadNew(TransactionsPresenter.DIRECTION_NEW);
         }
     }
 
     private void initViews() {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         mTransactionAdapter = new TransactionAdapter(getContext(), null, R.layout.item_transaction_record);
         listTransaction.addItemDecoration(new CommonVerticalItemDecoration(getContext(), R.drawable.bg_transation_list_divider));
-        listTransaction.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
+        listTransaction.setLayoutManager(linearLayoutManager);
         //解决数据加载完成后, 没有停留在顶部的问题
         listTransaction.setFocusable(false);
         listTransaction.setAdapter(mTransactionAdapter);
@@ -83,6 +85,10 @@ public class TransactionsFragment extends BaseViewPageFragment<TransactionsPrese
                 }
             }
         });
+    }
+
+    public void loadMoreTransaction() {
+        mPresenter.loadMore();
     }
 
     @Override
@@ -104,7 +110,7 @@ public class TransactionsFragment extends BaseViewPageFragment<TransactionsPrese
 
     @Override
     public void finishLoadMore() {
-
+        ((AssetsFragment)getParentFragment()).finishLoadMore();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
