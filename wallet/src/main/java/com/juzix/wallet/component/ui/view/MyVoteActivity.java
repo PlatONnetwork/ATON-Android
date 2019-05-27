@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.juzix.wallet.R;
+import com.juzix.wallet.component.adapter.BatchNoVoteSummaryAdapter;
 import com.juzix.wallet.component.adapter.BatchVoteSummaryAdapter;
 import com.juzix.wallet.component.adapter.BatchVoteTransactionAdapter;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
@@ -48,9 +49,14 @@ public class MyVoteActivity extends MVPBaseActivity<MyVotePresenter> implements 
     @BindView(R.id.layout_no_voted)
     LinearLayout layoutNoVoted;
 
+    @BindView(R.id.grid_vote_no_data)
+    LineGridView gridNoDataInfo;
+
+
     private Unbinder unbinder;
     private BatchVoteSummaryAdapter mBatchVoteSummaryAdapter;
     private BatchVoteTransactionAdapter mBatchVoteTransactionAdapter;
+    private BatchNoVoteSummaryAdapter mNoVoteSummaryAdapter;
     private static final String TAG = "MyVoteActivity";
 
     @Override
@@ -85,7 +91,10 @@ public class MyVoteActivity extends MVPBaseActivity<MyVotePresenter> implements 
         showLoadingDialog();
         refreshLayout.setEnableLoadMore(false);//禁止上拉加载更多
         mBatchVoteSummaryAdapter = new BatchVoteSummaryAdapter(R.layout.item_vote_info, null);
+        mNoVoteSummaryAdapter = new BatchNoVoteSummaryAdapter(R.layout.item_vote_info, null);
         mBatchVoteTransactionAdapter = new BatchVoteTransactionAdapter(R.layout.item_my_vote_list, null);
+
+        gridNoDataInfo.setAdapter(mNoVoteSummaryAdapter);
         gridVoteInfo.setAdapter(mBatchVoteSummaryAdapter);
         listVoteInfo.setAdapter(mBatchVoteTransactionAdapter);
         listVoteInfo.setEmptyView(layoutNoVoted);
@@ -123,7 +132,15 @@ public class MyVoteActivity extends MVPBaseActivity<MyVotePresenter> implements 
         gridVoteInfo.setVisibility(voteSummaryEntityList.isEmpty() ? View.GONE : View.VISIBLE);
         gridVoteInfo.setNumColumns(isContainValueLengthExceedSpecificallyLength(voteSummaryEntityList) ? 2 : 3);
         mBatchVoteSummaryAdapter.notifyDataChanged(voteSummaryEntityList);
+
         dismissLoadingDialogImmediately();
+    }
+
+    @Override
+    public void showNoVoteSummary(List<VoteSummary> voteSummaryEntityList) {
+         gridNoDataInfo.setNumColumns(isContainValueLengthExceedSpecificallyLength(voteSummaryEntityList) ? 2 : 3);
+         mNoVoteSummaryAdapter.notifyDataChanged(voteSummaryEntityList);
+         dismissLoadingDialogImmediately();
     }
 
 
@@ -131,6 +148,7 @@ public class MyVoteActivity extends MVPBaseActivity<MyVotePresenter> implements 
     public void showMyVoteListData(List<VotedCandidate> entityList) {
         mBatchVoteTransactionAdapter.notifyDataChanged(entityList);
         refreshLayout.finishRefresh();
+
         dismissLoadingDialogImmediately();
     }
 
@@ -139,7 +157,7 @@ public class MyVoteActivity extends MVPBaseActivity<MyVotePresenter> implements 
         mBatchVoteTransactionAdapter.notifyDataSetChanged();
         refreshLayout.finishRefresh();
         dismissLoadingDialogImmediately();
-        showShortToast(R.string.network_error);
+//        showShortToast(R.string.network_error);
     }
 
     /**

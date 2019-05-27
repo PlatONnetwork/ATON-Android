@@ -138,11 +138,11 @@ public class MyVotePresenter extends BasePresenter<MyVoteContract.View> implemen
                         if(isViewAttached()){
                             if (entityList != null && entityList.size() > 0) {
                                 getView().showBatchVoteSummary(buildVoteTitleList(entityList));
-//                            getView().showMyVoteListData(entityList);
                                 getView().showMyVoteListData(BuildSortList(entityList));
 
                             } else {
-                                getView().showBatchVoteSummary(buildDefaultVoteSummaryList());
+//                              getView().showBatchVoteSummary(buildDefaultVoteSummaryList());
+                                getView().showNoVoteSummary(buildDefaultVoteSummaryList());
                                 getView().showMyVoteListData(entityList);
                             }
                         }
