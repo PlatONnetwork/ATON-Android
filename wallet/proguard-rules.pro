@@ -81,7 +81,7 @@
 -keepclassmembers class * {
    public <init> (org.json.JSONObject);
 }
--keep public class com.pagoda.buy.R$*{
+-keep public class com.juzix.wallet.R$*{
    public static final int *;
 }
 #5.0以上sdk使用
@@ -207,7 +207,7 @@
 -keepattributes Signature
 -keepattributes *Annotation*
 #所有使用fastJson的实体类
--keep class * implements com.pagoda.buy.portal.BaseEntity{
+-keep class com.juzix.wallet.entity.**{
     *;
 }
 
