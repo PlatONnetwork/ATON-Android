@@ -40,7 +40,7 @@ android {
 
     signingConfigs {
 
-        if("false".equals(IS_JENKINS)){
+        if("true".equals(IS_JENKINS)){
 
             debug{
                 storeFile file('/Users/jenkins/extras/debug.keystore')
