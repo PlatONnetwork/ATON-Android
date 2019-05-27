@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    app:srlEnableLoadMore="false">
+    app:srlEnableAutoLoadMore="false">
 
     <com.juzix.wallet.component.widget.CustomRefreshHeader
         android:layout_width="match_parent"
@@ -101,13 +101,14 @@
                 android:visibility="gone" />
         </android.support.design.widget.AppBarLayout>
 
-        <android.support.v4.widget.NestedScrollView
+        <com.scwang.smartrefresh.layout.SmartRefreshLayout
+            android:id="@+id/layout_refresh_transaction"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/color_f9fbff"
-            android:fillViewport="true"
-            android:scrollbars="none"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:srlEnableLoadMoreWhenContentNotFull="false"
+            app:srlEnableRefresh="false">
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -121,7 +122,11 @@
                 <include layout="@layout/layout_wallet_list_empty" />
             </FrameLayout>
 
-        </android.support.v4.widget.NestedScrollView>
+            <com.scwang.smartrefresh.layout.footer.ClassicsFooter
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
     </android.support.design.widget.CoordinatorLayout>
 

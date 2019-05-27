@@ -31,19 +31,27 @@ import org.reactivestreams.Publisher;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.Observer;
 import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
 import io.reactivex.SingleSource;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Response;
 
 
@@ -60,17 +68,75 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
     private List<Transaction> mTransactionList = new ArrayList<>();
     private String mWalletAddress;
     private Disposable mAutoRefreshDisposable;
+    private Disposable mLoadLatestDisposable;
 
     public TransactionsPresenter(TransactionsContract.View view) {
         super(view);
         mAutoRefreshDisposable = new CompositeDisposable();
-        mWalletAddress = WalletManager.getInstance().getSelectedWalletAddress();
+        mLoadLatestDisposable = new CompositeDisposable();
     }
 
 
+    /**
+     * 加载最新的数据，切换钱包时
+     */
     @SuppressLint("CheckResult")
     @Override
-    public void autoRefresh() {
+    public void loadLatestData() {
+
+        mWalletAddress = WalletManager.getInstance().getSelectedWalletAddress();
+
+        if (TextUtils.isEmpty(mWalletAddress)) {
+            return;
+        }
+
+        if (!mLoadLatestDisposable.isDisposed()) {
+            mLoadLatestDisposable.dispose();
+        }
+
+        if (!mAutoRefreshDisposable.isDisposed()) {
+            mAutoRefreshDisposable.dispose();
+        }
+
+        mLoadLatestDisposable = getTransactionList(mWalletAddress)
+                .toObservable()
+                .observeOn(Schedulers.newThread())
+                .doOnNext(new Consumer<List<Transaction>>() {
+                    @Override
+                    public void accept(List<Transaction> transactionList) throws Exception {
+                        //存在数据就刷新余额
+                        if (isViewAttached()) {
+                            ((AssetsFragment) (((TransactionsFragment) getView()).getParentFragment())).fetchWalletsBalance();
+                            //开始轮询
+                            loadNew(DIRECTION_NEW);
+                        }
+                    }
+                })
+                .compose(RxUtils.getSchedulerTransformer())
+                .compose(bindUntilEvent(FragmentEvent.STOP))
+                .subscribe(new Consumer<List<Transaction>>() {
+                    @Override
+                    public void accept(List<Transaction> transactionList) throws Exception {
+                        if (isViewAttached()) {
+                            //先进行排序
+                            mTransactionList = transactionList;
+                            Collections.sort(mTransactionList);
+                            getView().notifyDataSetChanged(mTransactionList, mWalletAddress);
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Log.e(TAG, "onApiFailure");
+                    }
+                });
+    }
+
+    @SuppressLint("CheckResult")
+    @Override
+    public void loadNew(String direction) {
+
+        mWalletAddress = WalletManager.getInstance().getSelectedWalletAddress();
 
         if (TextUtils.isEmpty(mWalletAddress)) {
             return;
@@ -80,35 +146,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
             mAutoRefreshDisposable.dispose();
         }
 
-        getTransactionListFromDB(mWalletAddress)
-                .toFlowable()
-                .flatMap(new Function<List<Transaction>, Publisher<List<Transaction>>>() {
-                    @Override
-                    public Publisher<List<Transaction>> apply(List<Transaction> transactionList) throws Exception {
-                        if (mTransactionList.isEmpty()){
-                            mTransactionList = transactionList;
-                        }
-                        return Flowable
-                                .interval(0, Constants.Common.TRANSCTION_LIST_LOOP_TIME, TimeUnit.MILLISECONDS)
-                                .flatMap(new Function<Long, Publisher<List<Transaction>>>() {
-                                    @Override
-                                    public Publisher<List<Transaction>> apply(Long aLong) throws Exception {
-                                        return getTransactionList(mWalletAddress, DIRECTION_NEW, getBeginSequenceByDirection(DIRECTION_NEW))
-                                                .flatMap(new Function<Response<ApiResponse<List<Transaction>>>, SingleSource<List<Transaction>>>() {
-                                                    @Override
-                                                    public SingleSource<List<Transaction>> apply(Response<ApiResponse<List<Transaction>>> apiResponseResponse) throws Exception {
-                                                        if (apiResponseResponse.isSuccessful() && apiResponseResponse.body().getResult() == ApiErrorCode.SUCCESS) {
-                                                            return Single.just(apiResponseResponse.body().getData());
-                                                        } else {
-                                                            return Single.error(new Throwable());
-                                                        }
-                                                    }
-                                                })
-                                                .toFlowable();
-                                    }
-                                });
-                    }
-                })
+        mAutoRefreshDisposable = getTransactionListWithTime(mWalletAddress, direction)
                 .toObservable()
                 .doOnNext(new Consumer<List<Transaction>>() {
                     @Override
@@ -120,7 +158,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                     }
                 })
                 .compose(RxUtils.getSchedulerTransformer())
-                .compose(bindUntilEvent(FragmentEvent.STOP))
+                .compose(RxUtils.bindToParentLifecycleUtilEvent(getView(), FragmentEvent.STOP))
                 .subscribe(new Consumer<List<Transaction>>() {
                     @Override
                     public void accept(List<Transaction> transactionList) throws Exception {
@@ -148,6 +186,10 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
             return;
         }
 
+        if (!mAutoRefreshDisposable.isDisposed()) {
+            mAutoRefreshDisposable.dispose();
+        }
+
         getTransactionList(mWalletAddress, DIRECTION_OLD, getBeginSequenceByDirection(DIRECTION_OLD))
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(bindUntilEvent(FragmentEvent.STOP))
@@ -162,12 +204,16 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                             mTransactionList.addAll(mTransactionList.size(), transactions);
                             getView().notifyItemRangeInserted(mTransactionList, mWalletAddress, mTransactionList.size(), transactions.size());
                             getView().finishLoadMore();
+
+                            loadNew(DIRECTION_NEW);
                         }
                     }
 
                     @Override
                     public void onApiFailure(ApiResponse response) {
-
+                        if (isViewAttached()) {
+                            getView().finishLoadMore();
+                        }
                     }
                 });
     }
@@ -186,6 +232,66 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
         }
     }
 
+    /**
+     * 定时刷新交易记录
+     *
+     * @param walletAddress
+     * @param direction
+     * @return
+     */
+    private Flowable<List<Transaction>> getTransactionListWithTime(String walletAddress, String direction) {
+        return Flowable
+                .interval(0, Constants.Common.TRANSCTION_LIST_LOOP_TIME, TimeUnit.MILLISECONDS)
+                .flatMap(new Function<Long, Publisher<List<Transaction>>>() {
+                    @Override
+                    public Publisher<List<Transaction>> apply(Long aLong) throws Exception {
+                        return getTransactionList(walletAddress, DIRECTION_NEW, getBeginSequenceByDirection(direction))
+                                .flatMap(new Function<Response<ApiResponse<List<Transaction>>>, SingleSource<List<Transaction>>>() {
+                                    @Override
+                                    public SingleSource<List<Transaction>> apply(Response<ApiResponse<List<Transaction>>> apiResponseResponse) throws Exception {
+                                        if (apiResponseResponse.isSuccessful() && apiResponseResponse.body().getResult() == ApiErrorCode.SUCCESS) {
+                                            return Single.just(apiResponseResponse.body().getData());
+                                        } else {
+                                            return Single.error(new Throwable());
+                                        }
+                                    }
+                                })
+                                .toFlowable();
+                    }
+                });
+    }
+
+    /**
+     * 切换钱包，每次都是获取最新的数据
+     *
+     * @param walletAddress
+     * @return
+     */
+    private Single<List<Transaction>> getTransactionList(String walletAddress) {
+
+        return getTransactionListFromDB(walletAddress).flatMap(new Function<List<Transaction>, SingleSource<List<Transaction>>>() {
+            @Override
+            public SingleSource<List<Transaction>> apply(List<Transaction> transactionList) throws Exception {
+                return getTransactionList(walletAddress, DIRECTION_NEW, -1)
+                        .flatMap(new Function<Response<ApiResponse<List<Transaction>>>, SingleSource<List<Transaction>>>() {
+                            @Override
+                            public SingleSource<List<Transaction>> apply(Response<ApiResponse<List<Transaction>>> apiResponseResponse) throws Exception {
+                                if (apiResponseResponse.isSuccessful() && apiResponseResponse.body().getResult() == ApiErrorCode.SUCCESS) {
+                                    transactionList.addAll(apiResponseResponse.body().getData());
+                                }
+                                return Single.just(transactionList);
+                            }
+                        });
+            }
+        });
+    }
+
+    /**
+     * 从数据中获取未完成的交易记录
+     *
+     * @param walletAddress
+     * @return
+     */
     private Single<List<Transaction>> getTransactionListFromDB(String walletAddress) {
 
         return Flowable.fromCallable(new Callable<List<TransactionEntity>>() {
@@ -284,20 +390,20 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
     private long getValidSmallerSequence(List<Transaction> transactionList) {
 
         return Flowable
-                .range(transactionList.size() - 1, transactionList.size())
+                .range(0, transactionList.size())
                 .filter(new Predicate<Integer>() {
                     @Override
                     public boolean test(Integer integer) throws Exception {
                         return transactionList.get(integer).getSequence() != 0;
                     }
                 })
+                .lastElement()
                 .map(new Function<Integer, Long>() {
                     @Override
                     public Long apply(Integer integer) throws Exception {
                         return transactionList.get(integer).getSequence();
                     }
                 })
-                .lastElement()
                 .blockingGet();
     }
 }

@@ -52,7 +52,7 @@ public abstract class BaseViewPageFragment<T extends BasePresenter> extends Base
      * 1.切换到对应当前页签时
      * 2.从其他Activity返回到当前Activity时
      */
-    protected abstract void onPageStart();
+    public abstract void onPageStart();
 
     /**
      * 创建视图
