@@ -33,6 +33,13 @@ public class MyVoteContract {
          * @param voteSummaryEntityList
          */
         void showBatchVoteSummary(List<VoteSummary> voteSummaryEntityList);
+
+        /**
+         * 显示我的投票页面头部数据（没投票的时候）
+         */
+
+        void  showNoVoteSummary(List<VoteSummary> voteSummaryEntityList);
+
     }
 
     public interface Presenter extends IPresenter<View> {
