@@ -14,10 +14,6 @@
         app:ctb_left_drawable="@drawable/icon_back_black"
         app:ctb_title="@string/myVote" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
 
         <com.scwang.smartrefresh.layout.SmartRefreshLayout
             android:id="@+id/refreshLayout"
@@ -29,55 +25,66 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <com.juzix.wallet.component.widget.LineGridView
-                    android:id="@+id/grid_vote_info"
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <com.juzix.wallet.component.widget.LineGridView
+                        android:id="@+id/grid_vote_info"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:listSelector="@android:color/transparent"
+                        android:numColumns="2"
+                        app:line_padding_horizontal="50dp"
+                        app:line_padding_vertical="24dp"
+                        app:line_size="1dp"
+                        tools:listitem="@layout/item_vote_info" />
+
+                    <ListView
+                        android:id="@+id/list_vote_info"
+                        style="@style/List_common_style"
+                        android:layout_height="match_parent"
+                        android:layout_below="@id/grid_vote_info"
+                        android:background="@color/color_f9fbff"
+                        android:divider="@drawable/divider_vote_list"
+                        android:dividerHeight="1dp"
+                        tools:listitem="@layout/item_my_vote_list" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_no_data"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:listSelector="@android:color/transparent"
-                    android:numColumns="2"
-                    app:line_padding_horizontal="50dp"
-                    app:line_padding_vertical="24dp"
-                    app:line_size="1dp"
-                    tools:listitem="@layout/item_vote_info" />
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    >
 
-                <ListView
-                    android:id="@+id/list_vote_info"
-                    style="@style/List_common_style"
-                    android:layout_height="match_parent"
-                    android:layout_below="@id/grid_vote_info"
-                    android:background="@color/color_f9fbff"
-                    android:divider="@drawable/divider_vote_list"
-                    android:dividerHeight="1dp"
-                    tools:listitem="@layout/item_my_vote_list" />
+                    <com.juzix.wallet.component.widget.LineGridView
+                        android:id="@+id/grid_vote_no_data"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:listSelector="@android:color/transparent"
+                        android:numColumns="2"
+                        app:line_padding_horizontal="50dp"
+                        app:line_padding_vertical="24dp"
+                        app:line_size="1dp"
+                        tools:listitem="@layout/item_vote_info" />
+
+                    <include
+                        android:id="@+id/layout_no_voted"
+                        layout="@layout/include_no_voted" />
+                </LinearLayout>
+
             </RelativeLayout>
+
+
 
 
         </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <com.juzix.wallet.component.widget.LineGridView
-                android:id="@+id/grid_vote_no_data"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:listSelector="@android:color/transparent"
-                android:numColumns="2"
-                app:line_padding_horizontal="50dp"
-                app:line_padding_vertical="24dp"
-                app:line_size="1dp"
-                tools:listitem="@layout/item_vote_info" />
-
-            <include
-                android:id="@+id/layout_no_voted"
-                layout="@layout/include_no_voted" />
-        </LinearLayout>
 
 
-    </RelativeLayout>
 
 </LinearLayout>

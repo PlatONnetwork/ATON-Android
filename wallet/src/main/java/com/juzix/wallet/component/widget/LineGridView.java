@@ -61,6 +61,9 @@ public class LineGridView extends GridView {
 
         //列数
         int column = mWidth / localView.getWidth();
+        if (column == 0) {
+            return;
+        }
         //行数
         int row = getChildCount() % column == 0 ? getChildCount() / column : getChildCount() / column + 1;
         int childCount = getChildCount();
