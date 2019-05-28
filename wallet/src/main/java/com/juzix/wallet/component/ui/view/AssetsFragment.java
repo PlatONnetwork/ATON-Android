@@ -25,11 +25,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.juzhen.framework.network.NetState;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
+import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.adapter.RecycleViewProxyAdapter;
 import com.juzix.wallet.component.adapter.TabAdapter;
 import com.juzix.wallet.component.adapter.WalletHorizontalRecycleViewAdapter;
@@ -307,7 +307,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
                         .request(Manifest.permission.CAMERA)
                         .subscribe(new CustomObserver<Boolean>() {
                             @Override
-                            public void accept(Boolean success) throws Exception {
+                            public void accept(Boolean success) {
                                 if (success) {
                                     ScanQRCodeActivity.startActivityForResult(currentActivity(), MainActivity.REQ_ASSETS_TAB_QR_CODE);
                                 }

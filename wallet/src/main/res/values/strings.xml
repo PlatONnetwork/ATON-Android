@@ -330,6 +330,7 @@
     <string name="reward_radio_with_colon">投票激励:</string>
     <string name="staked_with_colon">质押金:%1$sEnergon</string>
     <string name="staked">质押金</string>
+    <string name="vote_staked">投票质押金</string>
     <string name="staked_with_unit">质押金(Energon)</string>
     <string name="validNodeName">输入节点账户名称查询</string>
     <string name="lockVote">投票锁定</string>
@@ -415,6 +416,15 @@
     <string name="user_with_serial_number">用户%1$d</string>
     <string name="recipient_wallet">接收钱包</string>
     <string name="node_exit_consensus">节点已退出共识，投票失败！</string>
+    <string name="transfer">转账</string>
+    <string name="mpc_transaction">MPC交易</string>
+    <string name="contract_create">合约创建</string>
+    <string name="vote_ticket">投票</string>
+    <string name="transaction_execute">合约执行</string>
+    <string name="candidate_deposit">质押</string>
+    <string name="candidate_apply_withdraw">减持质押</string>
+    <string name="candidate_withdraw">提取质押</string>
+    <string name="unknown">其他</string>
 
     <!--刷新header和footer-->
     <string name="pulldown_to_refresh">下拉开始刷新</string>

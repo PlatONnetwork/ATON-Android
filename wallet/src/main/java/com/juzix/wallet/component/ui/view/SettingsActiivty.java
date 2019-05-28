@@ -18,6 +18,7 @@ import com.bigkoo.pickerview.lib.WheelView;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.juzix.biometric.BiometricPromptCompat;
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.widget.togglebutton.ToggleButton;
 import com.juzix.wallet.config.AppSettings;
@@ -107,7 +108,7 @@ public class SettingsActiivty extends BaseActivity {
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object object) throws Exception {
+                    public void accept(Object object){
                         NodeSettingsActivity.actionStart(getContext());
                     }
                 });
@@ -117,7 +118,7 @@ public class SettingsActiivty extends BaseActivity {
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object object) throws Exception {
+                    public void accept(Object object) {
                         SwitchLanguageActivity.actionStart(getContext());
                     }
                 });

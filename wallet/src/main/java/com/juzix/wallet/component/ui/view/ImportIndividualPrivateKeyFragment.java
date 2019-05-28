@@ -20,6 +20,7 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
+import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.MVPBaseFragment;
 import com.juzix.wallet.component.ui.contract.ImportIndividualPrivateKeyContract;
 import com.juzix.wallet.component.ui.presenter.ImportPrivateKeyPresenter;
@@ -101,7 +102,7 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportPr
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object object) throws Exception {
+                    public void accept(Object object) {
                         showPassword();
                     }
                 });
@@ -111,7 +112,7 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportPr
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object object) throws Exception {
+                    public void accept(Object object)  {
                         showRepeatPassword();
                     }
                 });
@@ -121,7 +122,7 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportPr
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object unit) throws Exception {
+                    public void accept(Object unit) {
                         mPresenter.importPrivateKey(mEtPrivateKey.getText().toString(),
                                 mEtWalletName.getText().toString(),
                                 mEtPassword.getText().toString(),
@@ -134,7 +135,7 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportPr
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object unit) throws Exception {
+                    public void accept(Object unit) {
                         mEtPrivateKey.setText(CommonUtil.getTextFromClipboard(getContext()));
                         mEtPrivateKey.setSelection(mEtPrivateKey.getText().toString().length());
                     }
@@ -167,7 +168,7 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportPr
                 })
                 .compose(RxUtils.bindToLifecycle(this)).subscribe(new CustomObserver<Boolean>() {
             @Override
-            public void accept(Boolean aBoolean) throws Exception {
+            public void accept(Boolean aBoolean) {
                 enableImport(aBoolean);
             }
         });
@@ -178,7 +179,7 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportPr
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Boolean>() {
                     @Override
-                    public void accept(Boolean hasFocus) throws Exception {
+                    public void accept(Boolean hasFocus) {
                         String privateKey = mEtPrivateKey.getText().toString().trim();
                         if (!hasFocus) {
                             if (TextUtils.isEmpty(privateKey)) {
@@ -195,7 +196,7 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportPr
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Boolean>() {
                     @Override
-                    public void accept(Boolean hasFocus) throws Exception {
+                    public void accept(Boolean hasFocus) {
                         String name = mEtWalletName.getText().toString().trim();
                         if (!hasFocus) {
                             if (TextUtils.isEmpty(name)) {
@@ -216,7 +217,7 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportPr
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Boolean>() {
                     @Override
-                    public void accept(Boolean hasFocus) throws Exception {
+                    public void accept(Boolean hasFocus){
                         String password = mEtPassword.getText().toString().trim();
                         String repeatPassword = mEtRepeatPassword.getText().toString().trim();
                         if (!hasFocus) {
@@ -239,7 +240,7 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportPr
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Boolean>() {
             @Override
-            public void accept(Boolean hasFocus) throws Exception {
+            public void accept(Boolean hasFocus) {
                 String password = mEtPassword.getText().toString().trim();
                 String repeatPassword = mEtRepeatPassword.getText().toString().trim();
                 if (!hasFocus) {

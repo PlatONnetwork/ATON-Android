@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.text.TextUtils;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -16,12 +17,14 @@ import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
+import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.SubmitVoteContract;
 import com.juzix.wallet.component.ui.presenter.SubmitVotePresenter;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.AddressFormatUtil;
+import com.juzix.wallet.utils.CommonUtil;
 import com.juzix.wallet.utils.RxUtils;
 
 import butterknife.BindView;
@@ -100,7 +103,7 @@ public class SubmitVoteActivity extends MVPBaseActivity<SubmitVotePresenter> imp
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<CharSequence>() {
                     @Override
-                    public void accept(CharSequence charSequence) throws Exception {
+                    public void accept(CharSequence charSequence) {
                         mTicketNum = NumberParserUtils.parseInt(charSequence);
                         mPresenter.updateVotePayInfo();
                         sbtnVote.setEnabled(mTicketNum >= 1);
@@ -112,7 +115,7 @@ public class SubmitVoteActivity extends MVPBaseActivity<SubmitVotePresenter> imp
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object object) throws Exception {
+                    public void accept(Object object) {
                         mPresenter.submitVote();
                     }
                 });
@@ -122,7 +125,7 @@ public class SubmitVoteActivity extends MVPBaseActivity<SubmitVotePresenter> imp
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object object) throws Exception {
+                    public void accept(Object object) {
                         mPresenter.showSelectWalletDialogFragment();
                     }
                 });
@@ -139,7 +142,7 @@ public class SubmitVoteActivity extends MVPBaseActivity<SubmitVotePresenter> imp
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Boolean>() {
                     @Override
-                    public void accept(Boolean aBoolean) throws Exception {
+                    public void accept(Boolean aBoolean) {
                         sbtnVote.setEnabled(aBoolean);
                     }
                 });
@@ -209,6 +212,23 @@ public class SubmitVoteActivity extends MVPBaseActivity<SubmitVotePresenter> imp
         etTicketNum.setSelection(String.valueOf(ticketNum).length());
     }
 
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            View v = getCurrentFocus();
+            if (CommonUtil.isOutSizeView(v, ev)) {
+                hideSoftInput();
+            }
+            return super.dispatchTouchEvent(ev);
+        }
+        // 必不可少，否则所有的组件都不会有TouchEvent了
+        if (getWindow().superDispatchTouchEvent(ev)) {
+            return true;
+        }
+        return onTouchEvent(ev);
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -217,7 +237,7 @@ public class SubmitVoteActivity extends MVPBaseActivity<SubmitVotePresenter> imp
         }
     }
 
-    public static void actionStart(Context context, String nodeId, String nodeName,String deposit) {
+    public static void actionStart(Context context, String nodeId, String nodeName, String deposit) {
         Intent intent = new Intent(context, SubmitVoteActivity.class);
         intent.putExtra(Constants.Extra.EXTRA_CANDIDATE_ID, nodeId);
         intent.putExtra(Constants.Extra.EXTRA_CANDIDATE_NAME, nodeName);

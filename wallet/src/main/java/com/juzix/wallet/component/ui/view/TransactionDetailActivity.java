@@ -17,6 +17,7 @@ import com.juzix.wallet.component.ui.contract.IndividualTransactionDetailContrac
 import com.juzix.wallet.component.ui.presenter.TransactionDetailPresenter;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionStatus;
+import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.BigDecimalUtil;
@@ -127,7 +128,11 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
         tvFromAddress.setText(transaction.getFrom());
         tvToAddress.setText(transaction.getTo());
 
-        tvTransactionType.setText(queryAddress.equals(transaction.getTo()) ? R.string.receive : R.string.send);
+
+        boolean isReceiver = transaction.getTo().equals(queryAddress);
+        int transferDescRes = isReceiver ? R.string.receive : R.string.send;
+        
+        tvTransactionType.setText(transaction.getTxType() == TransactionType.TRANSFER ? transferDescRes : transaction.getTxType().getTxTypeDescRes());
         tvTransactionTime.setText(transaction.getShowCreateTime());
 
         tvTransactionAmount.setText(string(R.string.amount_with_unit, transaction.getShowValue()));

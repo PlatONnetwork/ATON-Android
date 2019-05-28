@@ -9,7 +9,7 @@
     <TextView
         android:id="@+id/tv_node_name"
         style="@style/Text.000000.14"
-        android:text="Node name 1"
+        tools:text="Node name 1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

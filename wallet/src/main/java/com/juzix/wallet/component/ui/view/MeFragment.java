@@ -13,6 +13,7 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.juzix.wallet.BuildConfig;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
+import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.BaseFragment;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.ShareUtil;
@@ -76,7 +77,7 @@ public class MeFragment extends BaseFragment {
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object object) throws Exception {
+                    public void accept(Object object) {
                         WalletManagerActivity.actionStart(getActivity());
                     }
                 });
@@ -85,7 +86,7 @@ public class MeFragment extends BaseFragment {
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object object) throws Exception {
+                    public void accept(Object object)  {
                         TransactionRecordsActivity.actionStart(getActivity());
                     }
                 });
@@ -94,7 +95,7 @@ public class MeFragment extends BaseFragment {
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object object) throws Exception {
+                    public void accept(Object object) {
                         AddressBookActivity.actionStart(getActivity(), Constants.Action.ACTION_NONE);
                     }
                 });
@@ -103,7 +104,7 @@ public class MeFragment extends BaseFragment {
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object object) throws Exception {
+                    public void accept(Object object)  {
                         SettingsActiivty.actionStart(getActivity());
                     }
                 });
@@ -112,7 +113,7 @@ public class MeFragment extends BaseFragment {
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object object) throws Exception {
+                    public void accept(Object object) {
                         AboutActivity.actionStart(getActivity());
                     }
                 });
@@ -121,7 +122,7 @@ public class MeFragment extends BaseFragment {
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object object) throws Exception {
+                    public void accept(Object object) {
                         ShareUtil.shareUrl(getActivity(), "https://t.me/PlatONHK");
                     }
                 });
@@ -130,7 +131,7 @@ public class MeFragment extends BaseFragment {
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object object) throws Exception {
+                    public void accept(Object object) {
                         ShareUtil.shareUrl(getActivity(), "https://github.com/PlatONnetwork");
                     }
                 });
@@ -139,7 +140,7 @@ public class MeFragment extends BaseFragment {
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object object) throws Exception {
+                    public void accept(Object object){
                         ShareUtil.shareUrl(getActivity(), "https://twitter.com/PlatON_Network");
                     }
                 });
@@ -148,7 +149,7 @@ public class MeFragment extends BaseFragment {
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object object) throws Exception {
+                    public void accept(Object object) {
                         ShareUtil.shareUrl(getActivity(), "https://www.facebook.com/PlatONNetwork/");
                     }
                 });
@@ -157,7 +158,7 @@ public class MeFragment extends BaseFragment {
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object object) throws Exception {
+                    public void accept(Object object) {
                         ShareUtil.shareUrl(getActivity(), "https://www.reddit.com/user/PlatON_Network");
                     }
                 });
@@ -166,7 +167,7 @@ public class MeFragment extends BaseFragment {
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object object) throws Exception {
+                    public void accept(Object object) {
                         ShareUtil.shareUrl(getActivity(), "https://medium.com/@PlatON_Network");
                     }
                 });
@@ -176,7 +177,7 @@ public class MeFragment extends BaseFragment {
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object o) throws Exception {
+                    public void accept(Object o) {
                         ToastUtil.showLongToast(getContext(), BuildConfig.VERSION_NAME);
                     }
                 });

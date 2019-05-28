@@ -31,8 +31,6 @@ public class SplashActivity extends BaseActivity {
 
         setContentView(R.layout.activity_splash);
 
-        initViews();
-
         mDecorView.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -61,18 +59,5 @@ public class SplashActivity extends BaseActivity {
             return true;
         }
         return super.dispatchKeyEvent(event);
-    }
-
-    private void initViews() {
-
-        ImageView iconIv = findViewById(R.id.iv_icon);
-
-        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) iconIv.getLayoutParams();
-
-        int marginBottom = CommonUtil.getStatusBarHeight(this);
-
-        layoutParams.bottomMargin = marginBottom;
-
-        iconIv.setLayoutParams(layoutParams);
     }
 }

@@ -54,6 +54,8 @@ public class VoteListAdapter extends RecyclerView.Adapter<VoteListAdapter.ViewHo
     public void onBindViewHolder(ViewHolder holder, int position) {
         Candidate candidateEntity = mCandidateEntityList.get(position);
 
+        holder.tvNodeName.setText(candidateEntity.getName());
+
         holder.tvRewardRatio.setText(mContext.getString(R.string.reward_radio_with_colon_and_value, String.format("%s%%", NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(NumberParserUtils.parseDouble(candidateEntity.getReward()), 100D), 0))));
 
         holder.tvStaked.setText(mContext.getString(R.string.staked_with_colon, NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(candidateEntity.getDeposit(), "1E18"), 0)));

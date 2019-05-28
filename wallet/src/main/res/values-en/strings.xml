@@ -329,6 +329,7 @@
     <string name="reward_radio_with_colon">Reward Ratio:</string>
     <string name="staked_with_colon">Staked:%1$sEnergon</string>
     <string name="staked">Staked</string>
+    <string name="vote_staked">Voted Staked</string>
     <string name="staked_with_unit">Staked(Energon)</string>
     <string name="validNodeName">Validator Node Name</string>
     <string name="lockVote">Vote Staked</string>
@@ -414,5 +415,14 @@
     <string name="user_with_serial_number">User%1$d</string>
     <string name="node_exit_consensus">Node has exited consensus,voting failed</string>
     <string name="recipient_wallet">To</string>
+    <string name="transfer">transfer</string>
+    <string name="mpc_transaction">MPCtransaction</string>
+    <string name="contract_create">contractCreate</string>
+    <string name="vote_ticket">voteTicket</string>
+    <string name="transaction_execute">transactionExecute</string>
+    <string name="candidate_deposit">candidateDeposit</string>
+    <string name="candidate_apply_withdraw">candidateApplyWithdraw</string>
+    <string name="candidate_withdraw">candidateWithdraw</string>
+    <string name="unknown">unknown</string>
 </resources>
 

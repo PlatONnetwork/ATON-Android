@@ -10,9 +10,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.BaseActivity;
+
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.VoteTransactionDetailContract;
 import com.juzix.wallet.component.ui.presenter.VoteTransactionDetailPresenter;
@@ -22,6 +24,7 @@ import com.juzix.wallet.entity.TransactionStatus;
 import com.juzix.wallet.entity.VoteTrasactionExtra;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
+import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.CommonUtil;
 import com.juzix.wallet.utils.JSONUtil;
 
@@ -36,7 +39,7 @@ import butterknife.Unbinder;
 /**
  * @author matrixelement
  */
-public class VoteTransactionDetailActivity extends BaseActivity {
+public class VoteTransactionDetailActivity extends MVPBaseActivity<VoteTransactionDetailPresenter> implements VoteTransactionDetailContract.View {
 
     @BindView(R.id.iv_copy_from_address)
     ImageView ivCopyFromAddress;
@@ -66,8 +69,8 @@ public class VoteTransactionDetailActivity extends BaseActivity {
     TextView tvTransactionVotes;
     @BindView(R.id.tv_transaction_ticket_price)
     TextView tvTransactionTicketPrice;
-    @BindView(R.id.tv_transaction_deposit)
-    TextView tvTransactionDeposit;
+    @BindView(R.id.tv_vote_staked)
+    TextView tvVoteStaked;
     @BindView(R.id.tv_transaction_energon)
     TextView tvTransactionEnergon;
     @BindView(R.id.iv_failed)
@@ -86,9 +89,16 @@ public class VoteTransactionDetailActivity extends BaseActivity {
     TextView tvTransactionTicketPriceTitle;
     @BindView(R.id.tv_transaction_deposit_title)
     TextView tvTransactionDepositTitle;
+    @BindView(R.id.tv_copy_from_name)
+    TextView tvCopyFromName;
 
     private Unbinder unbinder;
     private Transaction mTransaction;
+
+    @Override
+    protected VoteTransactionDetailPresenter createPresenter() {
+        return new VoteTransactionDetailPresenter(this);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,12 +106,12 @@ public class VoteTransactionDetailActivity extends BaseActivity {
         setContentView(R.layout.activity_individual_vote_detail);
         unbinder = ButterKnife.bind(this);
         EventPublisher.getInstance().register(this);
-        initViews();
+        mPresenter.loadData();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateTransactionEvent(Event.UpdateTransactionEvent event) {
-        showVotedTransactionDetail(event.transaction);
+        mPresenter.updateTransactionDetailInfo(event.transaction);
     }
 
     @OnClick({R.id.iv_copy_from_address, R.id.iv_copy_to_address})
@@ -118,23 +128,35 @@ public class VoteTransactionDetailActivity extends BaseActivity {
         }
     }
 
-    private void initViews() {
-        mTransaction = getIntent().getParcelableExtra(Constants.Extra.EXTRA_TRANSACTION);
-        if (mTransaction != null) {
-            showVotedTransactionDetail(mTransaction);
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (unbinder != null) {
+            unbinder.unbind();
         }
+        EventPublisher.getInstance().unRegister(this);
     }
 
+    @Override
+    public Transaction getTransactionFromIntent() {
+        return getIntent().getParcelableExtra(Constants.Extra.EXTRA_TRANSACTION);
+    }
 
-    private void showVotedTransactionDetail(Transaction transaction) {
+    @Override
+    public String getAddressFromIntent() {
+        return getIntent().getParcelableExtra(Constants.Extra.EXTRA_ADDRESS);
+    }
 
+    @Override
+    public void setTransactionDetailInfo(Transaction transaction, String queryAddress, String senderWalletName) {
         showTransactionStatus(transaction.getTxReceiptStatus());
 
         tvFromAddress.setText(transaction.getFrom());
         tvToAddress.setText(transaction.getTo());
-        tvTransactionType.setText(transaction.getTxType().getTxTypeDesc());
+        tvTransactionType.setText(transaction.getTxType().getTxTypeDescRes());
         tvTransactionTime.setText(transaction.getShowCreateTime());
         tvTransactionEnergon.setText(string(R.string.amount_with_unit, transaction.getShowActualTxCost()));
+        tvCopyFromName.setText(senderWalletName);
 
         TransactionExtra transactionExtra = transaction.getTransactionExtra();
         if (transactionExtra != null) {
@@ -143,8 +165,8 @@ public class VoteTransactionDetailActivity extends BaseActivity {
                 tvTransactionNodeName.setText(voteTrasactionExtra.getNodeName());
                 tvTransactionNodeId.setText(voteTrasactionExtra.getNodeId());
                 tvTransactionVotes.setText(voteTrasactionExtra.getVotedNum());
-                tvTransactionTicketPrice.setText(voteTrasactionExtra.getShowTicketPrice());
-                tvTransactionDeposit.setText(string(R.string.amount_with_unit, voteTrasactionExtra.getShowDeposit()));
+                tvTransactionTicketPrice.setText(string(R.string.amount_with_unit, voteTrasactionExtra.getShowTicketPrice()));
+                tvVoteStaked.setText(string(R.string.amount_with_unit, voteTrasactionExtra.getShowVotedStaked()));
             }
         }
     }
@@ -174,18 +196,10 @@ public class VoteTransactionDetailActivity extends BaseActivity {
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (unbinder != null) {
-            unbinder.unbind();
-        }
-        EventPublisher.getInstance().unRegister(this);
-    }
-
-    public static void actionStart(Context context, Transaction transaction) {
+    public static void actionStart(Context context, Transaction transaction, String queryAddress) {
         Intent intent = new Intent(context, VoteTransactionDetailActivity.class);
         intent.putExtra(Constants.Extra.EXTRA_TRANSACTION, transaction);
+        intent.putExtra(Constants.Extra.EXTRA_ADDRESS, queryAddress);
         context.startActivity(intent);
     }
 }

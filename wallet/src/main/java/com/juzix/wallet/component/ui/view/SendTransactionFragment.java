@@ -26,6 +26,7 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
+import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.MVPBaseFragment;
 import com.juzix.wallet.component.ui.contract.SendTransationContract;
 import com.juzix.wallet.component.ui.dialog.CommonEditDialogFragment;
@@ -150,7 +151,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object object) throws Exception {
+                    public void accept(Object object)  {
                         mPresenter.submit();
                     }
                 });
