@@ -17,61 +17,70 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-     <LinearLayout
-         android:id="@+id/ll_title"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:orientation="vertical"
-         android:layout_marginLeft="6dp"
-         android:layout_marginRight="6dp"
-         android:background="@drawable/bg_submit_vote"
-         android:paddingLeft="26dp"
-         android:paddingRight="26dp"
-         android:layout_below="@id/commonTitleBar"
-         app:layout_constraintDimensionRatio="3:1"
-         app:layout_constraintLeft_toLeftOf="parent"
-         app:layout_constraintRight_toRightOf="parent"
-         >
-
-         <TextView
-             android:id="@+id/tv_node_name"
-             style="@style/Text.000000.18"
-             android:layout_marginTop="8dp"
-             android:text="@string/node_name"
-             app:layout_constraintLeft_toLeftOf="parent"
-             app:layout_constraintTop_toTopOf="parent" />
-
-         <TextView
-             android:id="@+id/tv_node_id"
-             style="@style/Text.898c9e.12"
-             android:layout_marginTop="8dp"
-             android:gravity="left"
-             app:layout_constraintLeft_toLeftOf="parent"
-             app:layout_constraintTop_toBottomOf="@id/tv_node_name"
-             android:text="0xdE41ad9010ED7ae4a7bBc42b55665151dcc8DEf4dE41ad9010ED7ae4a7bBc42b55665151dcc8DEf4dE41ad9010ED7ae4a7bBc42b55665151dcc8DEf4dcc8DEf4" />
-
-     </LinearLayout>
-
-
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/ll_title">
+        android:layout_below="@id/commonTitleBar"
+        >
 
-        <ListView
-            android:id="@+id/list_vote_detail"
-            style="@style/List_common_style"
-            android:layout_height="match_parent"
-            android:divider="@drawable/divider_vote_list"
-            android:dividerHeight="1dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            tools:listitem="@layout/item_vote_detail_list"
-            />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/ll_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp"
+                android:background="@drawable/bg_submit_vote"
+                android:paddingLeft="26dp"
+                android:paddingRight="26dp"
+                app:layout_constraintDimensionRatio="3:1"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                >
+
+                <TextView
+                    android:id="@+id/tv_node_name"
+                    style="@style/Text.000000.18"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/node_name"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_node_id"
+                    style="@style/Text.898c9e.12"
+                    android:layout_marginTop="8dp"
+                    android:gravity="left"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_node_name"
+                    android:text="0xdE41ad9010ED7ae4a7bBc42b55665151dcc8DEf4dE41ad9010ED7ae4a7bBc42b55665151dcc8DEf4dE41ad9010ED7ae4a7bBc42b55665151dcc8DEf4dcc8DEf4" />
+
+            </LinearLayout>
+
+
+            <ListView
+                android:id="@+id/list_vote_detail"
+                style="@style/List_common_style"
+                android:layout_height="match_parent"
+                android:divider="@drawable/divider_vote_list"
+                android:dividerHeight="1dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                tools:listitem="@layout/item_vote_detail_list"
+                android:layout_below="@id/ll_title"
+                />
+
+        </RelativeLayout>
+
+
 
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 

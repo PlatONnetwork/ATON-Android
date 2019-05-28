@@ -52,6 +52,9 @@ public class MyVoteActivity extends MVPBaseActivity<MyVotePresenter> implements 
     @BindView(R.id.grid_vote_no_data)
     LineGridView gridNoDataInfo;
 
+    @BindView(R.id.ll_no_data)
+    LinearLayout ll_no_data;
+
 
     private Unbinder unbinder;
     private BatchVoteSummaryAdapter mBatchVoteSummaryAdapter;
@@ -134,13 +137,16 @@ public class MyVoteActivity extends MVPBaseActivity<MyVotePresenter> implements 
         mBatchVoteSummaryAdapter.notifyDataChanged(voteSummaryEntityList);
 
         dismissLoadingDialogImmediately();
+        ll_no_data.setVisibility(View.GONE);
     }
 
     @Override
     public void showNoVoteSummary(List<VoteSummary> voteSummaryEntityList) {
-         gridNoDataInfo.setNumColumns(isContainValueLengthExceedSpecificallyLength(voteSummaryEntityList) ? 2 : 3);
-         mNoVoteSummaryAdapter.notifyDataChanged(voteSummaryEntityList);
-         dismissLoadingDialogImmediately();
+        ll_no_data.setVisibility(View.VISIBLE);
+
+        gridNoDataInfo.setNumColumns(isContainValueLengthExceedSpecificallyLength(voteSummaryEntityList) ? 2 : 3);
+        mNoVoteSummaryAdapter.notifyDataChanged(voteSummaryEntityList);
+        dismissLoadingDialogImmediately();
     }
 
 
