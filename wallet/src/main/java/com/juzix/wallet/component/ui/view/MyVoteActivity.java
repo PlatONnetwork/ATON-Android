@@ -56,7 +56,6 @@ public class MyVoteActivity extends MVPBaseActivity<MyVotePresenter> implements 
     @BindView(R.id.grid_vote_no_data)
     LineGridView gridNoDataInfo;
 
-
     private Unbinder unbinder;
     private BatchVoteSummaryAdapter mBatchVoteSummaryAdapter;
     private BatchVoteTransactionAdapter mBatchVoteTransactionAdapter;

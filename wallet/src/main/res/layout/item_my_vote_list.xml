@@ -83,8 +83,8 @@
         app:layout_constraintTop_toTopOf="@id/tv_valid_invalid_ticket"
         tools:text="1,235" />
 
-    <com.juzix.wallet.component.widget.RoundedTextView
-        android:id="@+id/rtv_vote"
+    <TextView
+        android:id="@+id/tv_vote"
         style="@style/Text.105cfe.11"
         android:layout_width="49dp"
         android:layout_height="24dp"
@@ -93,9 +93,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginRight="16dp"
         android:textColor="@color/color_secondary_rtv_text"
-        app:rtv_border_color="@color/color_secondary_rtv_border"
-        app:rtv_border_width="1dp"
-        app:rtv_corner_radius="13dp" />
+        android:background="@drawable/bg_vote_item" />
 
 
 </android.support.constraint.ConstraintLayout>

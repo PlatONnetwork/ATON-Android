@@ -2,7 +2,6 @@
 <level-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:maxLevel="1">
         <selector>
-
             <item android:state_pressed="true">
                 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
                     <item>
@@ -82,7 +81,6 @@
 
     <item android:maxLevel="2">
         <selector>
-
             <item android:state_pressed="true">
                 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
                     <item>
