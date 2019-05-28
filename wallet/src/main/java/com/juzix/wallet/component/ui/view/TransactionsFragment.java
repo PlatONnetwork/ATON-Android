@@ -100,11 +100,13 @@ public class TransactionsFragment extends BaseViewPageFragment<TransactionsPrese
 
     @Override
     public void notifyItemChanged(List<Transaction> transactionList, String queryAddress, int position) {
+        emptyView.setVisibility(transactionList.isEmpty() ? View.VISIBLE : View.GONE);
         mTransactionAdapter.notifyItemChanged(transactionList, queryAddress, position);
     }
 
     @Override
     public void notifyDataSetChanged(List<Transaction> transactionList, String queryAddress) {
+        emptyView.setVisibility(transactionList.isEmpty() ? View.VISIBLE : View.GONE);
         mTransactionAdapter.notifyDataSetChanged(transactionList, queryAddress);
     }
 

@@ -6,7 +6,8 @@
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:background="@color/color_ffffff"
-    android:paddingTop="66dp">
+    android:paddingTop="66dp"
+    android:visibility="gone">
 
     <ImageView
         android:id="@+id/iv_no_data"

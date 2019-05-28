@@ -25,7 +25,9 @@
             android:scrollbars="vertical"
             tools:listitem="@layout/item_transaction_list" />
 
-        <include layout="@layout/include_no_transaction" />
+        <include
+            layout="@layout/include_no_transaction"
+            android:visibility="visible" />
 
     </FrameLayout>
 

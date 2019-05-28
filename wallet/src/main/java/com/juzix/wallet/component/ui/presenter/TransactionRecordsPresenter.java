@@ -78,6 +78,9 @@ public class TransactionRecordsPresenter extends BasePresenter<TransactionRecord
                             } else {
                                 getView().finishRefresh();
                             }
+                            if (mTransactionList == null || mTransactionList.isEmpty()) {
+                                getView().showTransactions(mTransactionList);
+                            }
                         }
                     }
                 });

@@ -241,22 +241,6 @@ public abstract class BaseActivity extends CoreFragmentActivity implements ICont
         mContextImpl.showLoadingDialog(text, cancelable);
     }
 
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            View v = getCurrentFocus();
-            if (CommonUtil.isOutSizeView(v, ev)) {
-                hideSoftInput();
-            }
-            return super.dispatchTouchEvent(ev);
-        }
-        // 必不可少，否则所有的组件都不会有TouchEvent了
-        if (getWindow().superDispatchTouchEvent(ev)) {
-            return true;
-        }
-        return onTouchEvent(ev);
-    }
-
     private BaseContextImpl mContextImpl = new BaseContextImpl() {
         @Override
         public Context getContext() {
