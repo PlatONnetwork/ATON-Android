@@ -15,6 +15,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -41,6 +42,7 @@ import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.CommonUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.ToastUtil;
@@ -112,17 +114,6 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        EventPublisher.getInstance().unRegister(this);
-        etWalletAddress.removeTextChangedListener(mEtWalletAddressWatcher);
-        etWalletAmount.removeTextChangedListener(mEtWalletAmountWatcher);
-        if (unbinder != null) {
-            unbinder.unbind();
-        }
-    }
-
-    @Override
     protected SendTransationPresenter createPresenter() {
         return new SendTransationPresenter(this);
     }
@@ -151,7 +142,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object object)  {
+                    public void accept(Object object) {
                         mPresenter.submit();
                     }
                 });
@@ -229,8 +220,8 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
     }
 
     @Override
-    public void updateWalletInfo(Wallet walletEntity) {
-        tvWalletBalance.setText(string(R.string.balance_text, NumberParserUtils.getPrettyBalance(walletEntity.getBalance())));
+    public void updateWalletBalance(double balance) {
+        tvWalletBalance.setText(string(R.string.balance_text, NumberParserUtils.getPrettyBalance(balance)));
     }
 
     @Override
@@ -342,6 +333,17 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
             }
         }).show(getChildFragmentManager(), "showTips");
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        EventPublisher.getInstance().unRegister(this);
+        etWalletAddress.removeTextChangedListener(mEtWalletAddressWatcher);
+        etWalletAmount.removeTextChangedListener(mEtWalletAmountWatcher);
+        if (unbinder != null) {
+            unbinder.unbind();
+        }
     }
 
     private View.OnFocusChangeListener mEtWalletAddressFocusChangeListener = new View.OnFocusChangeListener() {

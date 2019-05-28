@@ -11,7 +11,7 @@ public class SendTransationContract {
 
     public interface View extends IView {
 
-        void updateWalletInfo(Wallet walletEntity);
+        void updateWalletBalance(double balance);
 
         void setToAddress(String toAddress);
 

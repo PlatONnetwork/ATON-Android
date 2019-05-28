@@ -108,18 +108,12 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
         })
                 .compose(bindUntilEvent(FragmentEvent.STOP))
                 .compose(RxUtils.getSingleSchedulerTransformer())
-                .repeatWhen(new Function<Flowable<Object>, Publisher<?>>() {
-                    @Override
-                    public Publisher<?> apply(Flowable<Object> objectFlowable) throws Exception {
-                        return objectFlowable.delay(REFRESH_TIME, TimeUnit.MILLISECONDS);
-                    }
-                })
                 .subscribe(new Consumer<Double>() {
                     @Override
                     public void accept(Double balance) throws Exception {
                         if (isViewAttached()) {
                             walletEntity.setBalance(balance);
-                            getView().updateWalletInfo(walletEntity);
+                            getView().updateWalletBalance(balance);
                             calculateFeeAndTime(percent);
                         }
                     }
@@ -213,7 +207,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
                 walletName = AddressFormatUtil.formatAddress(toAddress);
             }
             SendTransactionDialogFragment
-                    .newInstance(string(R.string.send_transation), NumberParserUtils.getPrettyBalance(transferAmount), buildSendTransactionInfo(fromWallet, fromAddress, walletName, fee))
+                    .newInstance(string(R.string.send_transaction), NumberParserUtils.getPrettyBalance(transferAmount), buildSendTransactionInfo(fromWallet, fromAddress, walletName, fee))
                     .setOnConfirmBtnClickListener(new SendTransactionDialogFragment.OnConfirmBtnClickListener() {
                         @Override
                         public void onConfirmBtnClick() {
