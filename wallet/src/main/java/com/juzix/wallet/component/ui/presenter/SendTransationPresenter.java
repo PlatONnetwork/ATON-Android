@@ -213,7 +213,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
                 walletName = AddressFormatUtil.formatAddress(toAddress);
             }
             SendTransactionDialogFragment
-                    .newInstance(string(R.string.send_transation), NumberParserUtils.getPrettyBalance(transferAmount), buildSendTransactionInfo(fromWallet, fromAddress, walletName, fee))
+                    .newInstance(string(R.string.send_transaction), NumberParserUtils.getPrettyBalance(transferAmount), buildSendTransactionInfo(fromWallet, fromAddress, walletName, fee))
                     .setOnConfirmBtnClickListener(new SendTransactionDialogFragment.OnConfirmBtnClickListener() {
                         @Override
                         public void onConfirmBtnClick() {

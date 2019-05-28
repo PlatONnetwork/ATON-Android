@@ -16,7 +16,7 @@
     <TextView
         android:id="@+id/tv_title"
         style="@style/Text.000000.16"
-        android:text="@string/send_transation"
+        android:text="@string/send_transaction"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
