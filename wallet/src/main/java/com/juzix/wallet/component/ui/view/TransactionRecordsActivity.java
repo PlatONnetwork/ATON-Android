@@ -57,7 +57,6 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
         setContentView(R.layout.activity_transaction_records);
         unbinder = ButterKnife.bind(this);
         initViews();
-
     }
 
     private void initViews() {
@@ -93,7 +92,7 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
             }
         });
 
-        layoutRefresh.autoRefresh();
+        mPresenter.fetchTransactions(TransactionRecordsPresenter.DIRECTION_NEW);
     }
 
     @Override
