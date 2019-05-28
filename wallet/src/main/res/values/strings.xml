@@ -330,6 +330,7 @@
     <string name="reward_radio_with_colon">投票激励:</string>
     <string name="staked_with_colon">质押金:%1$sEnergon</string>
     <string name="staked">质押金</string>
+    <string name="vote_staked">投票质押金</string>
     <string name="staked_with_unit">质押金(Energon)</string>
     <string name="validNodeName">输入节点账户名称查询</string>
     <string name="lockVote">投票锁定</string>

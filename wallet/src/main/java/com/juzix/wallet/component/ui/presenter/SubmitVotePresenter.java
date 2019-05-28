@@ -1,6 +1,7 @@
 package com.juzix.wallet.component.ui.presenter;
 
 import android.annotation.SuppressLint;
+import android.text.TextUtils;
 
 import com.juzhen.framework.network.SchedulersTransformer;
 import com.juzhen.framework.util.NumberParserUtils;
@@ -16,6 +17,7 @@ import com.juzix.wallet.component.ui.view.AssetsFragment;
 import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.VoteManager;
+import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.BigDecimalUtil;
@@ -26,6 +28,7 @@ import org.web3j.crypto.Credentials;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 
 /**
@@ -82,13 +85,21 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
         VoteManager
                 .getInstance()
                 .getPoolRemainder()
+                .zipWith(Web3jManager.getInstance().getGasPrice(), new BiFunction<Long, Long, String>() {
+                    @Override
+                    public String apply(Long poolRemainder, Long gasPrice) throws Exception {
+                        return poolRemainder + "&" + gasPrice;
+                    }
+                })
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(bindToLifecycle())
                 .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
-                .subscribe(new Consumer<Long>() {
+                .subscribe(new Consumer<String>() {
                     @Override
-                    public void accept(Long poolRemainder) throws Exception {
+                    public void accept(String result) throws Exception {
                         if (isViewAttached()) {
+                            long poolRemainder = NumberParserUtils.parseLong(result.split("&", 2)[0]);
+                            long gasPrice = NumberParserUtils.parseLong(result.split("&", 2)[1]);
                             String ticketNum = getView().getTicketNum();
                             double ticketAmount = BigDecimalUtil.div(BigDecimalUtil.mul(Double.parseDouble(mTicketPrice), NumberParserUtils.parseInt(ticketNum)), 1E18);
                             if (ticketAmount >= mWallet.getBalance()) {
@@ -101,7 +112,7 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
                                 return;
                             }
 
-                            double feeAmount = BigDecimalUtil.div(BigDecimalUtil.mul(VoteManager.GAS_PRICE.doubleValue(), VoteManager.GAS_LIMIT.doubleValue()), 1E18);
+                            double feeAmount = BigDecimalUtil.mul(VoteManager.GAS_DEPLOY_CONTRACT.doubleValue(), gasPrice);
 
                             SendTransactionDialogFragment
                                     .newInstance(NumberParserUtils.getPrettyNumber(ticketAmount, 0), buildTransactionInfo(mWallet.getName(), feeAmount))
@@ -113,7 +124,7 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
                                                     .setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
                                                         @Override
                                                         public void onWalletPasswordCorrect(Credentials credentials) {
-                                                            submitVote(credentials, ticketNum, mTicketPrice,mCandidateDeposit);
+                                                            submitVote(credentials, ticketNum, mTicketPrice, mCandidateDeposit, String.valueOf(feeAmount));
                                                         }
                                                     })
                                                     .show(currentActivity().getSupportFragmentManager(), "inputWalletPasssword");
@@ -164,10 +175,10 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
     }
 
     @SuppressLint("CheckResult")
-    private void submitVote(Credentials credentials, String ticketNum, String ticketPrice,String deposit) {
+    private void submitVote(Credentials credentials, String ticketNum, String ticketPrice, String deposit, String feeAmount) {
         VoteManager
                 .getInstance()
-                .submitVote(credentials, mWallet, mCandidateId, mCandidateName, ticketNum, ticketPrice,deposit)
+                .submitVote(credentials, mWallet, mCandidateId, mCandidateName, ticketNum, ticketPrice, deposit, feeAmount)
                 .compose(bindToLifecycle())
                 .compose(new SchedulersTransformer())
                 .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
@@ -193,7 +204,7 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
         Map<String, String> map = new LinkedHashMap<>();
         map.put(string(R.string.type), string(R.string.voting));
         map.put(string(R.string.pay_wallet), walletName);
-        map.put(string(R.string.fee), string(R.string.amount_with_unit, NumberParserUtils.getPrettyNumber(fee, 8)));
+        map.put(string(R.string.fee), string(R.string.amount_with_unit, NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(fee, 1E18), 8)));
         return map;
     }
 

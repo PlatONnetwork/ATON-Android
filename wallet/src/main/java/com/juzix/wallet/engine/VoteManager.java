@@ -54,7 +54,7 @@ public class VoteManager {
 
     private static final String TAG = VoteManager.class.getSimpleName();
     public static final BigInteger GAS_PRICE = DefaultGasProvider.GAS_PRICE;
-    public static final BigInteger GAS_LIMIT = DefaultGasProvider.GAS_LIMIT;
+    public static final BigInteger GAS_DEPLOY_CONTRACT = BigInteger.valueOf(240_943_980);
 
     private VoteManager() {
 
@@ -104,10 +104,9 @@ public class VoteManager {
         });
     }
 
-    public Single<Transaction> submitVote(Credentials credentials, Wallet walletEntity, String nodeId, String nodeName, String ticketNum, String ticketPrice,String deposit) {
+    public Single<Transaction> submitVote(Credentials credentials, Wallet walletEntity, String nodeId, String nodeName, String ticketNum, String ticketPrice, String deposit,String feeAmount) {
 
         BigInteger value = BigDecimalUtil.mul(ticketPrice, ticketNum).toBigInteger();
-        double actualTxCost = BigDecimalUtil.mul(GAS_PRICE.doubleValue(), GAS_LIMIT.doubleValue());
 
         return voteTicket(credentials, ticketPrice, ticketNum, nodeId)
                 .filter(new Predicate<TransactionReceipt>() {
@@ -127,7 +126,7 @@ public class VoteManager {
                                 .to(TicketContract.CONTRACT_ADDRESS)
                                 .senderWalletName(walletEntity.getName())
                                 .createTime(System.currentTimeMillis())
-                                .actualTxCost(String.valueOf(actualTxCost))
+                                .actualTxCost(feeAmount)
                                 .txInfo(JSONUtil.toJSONString(transactionExtra))
                                 .txType(TransactionType.VOTETICKET.getTxTypeName())
                                 .value(String.valueOf(value.doubleValue()))
@@ -241,7 +240,7 @@ public class VoteManager {
                     public void accept(Transaction t) throws Exception {
                         if (t.getTxReceiptStatus() == TransactionStatus.FAILED) {
                             TransactionDao.insertTransaction(t.toTransactionEntity());
-                        }else{
+                        } else {
                             TransactionDao.deleteTransaction(t.getHash());
                         }
                         EventPublisher.getInstance().sendUpdateTransactionEvent(t);

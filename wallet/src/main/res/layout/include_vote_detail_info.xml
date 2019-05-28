@@ -162,10 +162,10 @@
             style="@style/Text.61646e.14"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/staked" />
+            android:text="@string/vote_staked" />
 
         <TextView
-            android:id="@+id/tv_transaction_deposit"
+            android:id="@+id/tv_vote_staked"
             style="@style/Text.000.14"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

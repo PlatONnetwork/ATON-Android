@@ -71,10 +71,10 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
             @Override
             public void onItemClick(View view, int position) {
                 Transaction transaction = mTransactionAdapter.getDatas().get(position);
-                if (transaction.getTxType() == TransactionType.TRANSFER) {
+                 if (transaction.getTxType() == TransactionType.VOTETICKET) {
+                    VoteTransactionDetailActivity.actionStart(TransactionRecordsActivity.this, transaction,WalletManager.getInstance().getSelectedWalletAddress());
+                }else{
                     TransactionDetailActivity.actionStart(TransactionRecordsActivity.this, transaction, WalletManager.getInstance().getSelectedWalletAddress());
-                } else if (transaction.getTxType() == TransactionType.VOTETICKET) {
-                    VoteTransactionDetailActivity.actionStart(TransactionRecordsActivity.this, transaction);
                 }
             }
         });

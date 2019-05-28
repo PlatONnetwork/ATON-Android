@@ -329,6 +329,7 @@
     <string name="reward_radio_with_colon">Reward Ratio:</string>
     <string name="staked_with_colon">Staked:%1$sEnergon</string>
     <string name="staked">Staked</string>
+    <string name="vote_staked">Voted Staked</string>
     <string name="staked_with_unit">Staked(Energon)</string>
     <string name="validNodeName">Validator Node Name</string>
     <string name="lockVote">Vote Staked</string>

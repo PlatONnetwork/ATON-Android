@@ -5,8 +5,10 @@ import com.juzix.wallet.app.Constants;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.Web3jFactory;
+import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthBlock;
+import org.web3j.protocol.core.methods.response.EthGasPrice;
 import org.web3j.protocol.core.methods.response.EthGetBalance;
 import org.web3j.protocol.core.methods.response.EthGetCode;
 import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt;
@@ -17,11 +19,15 @@ import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.RawTransactionManager;
 import org.web3j.tx.TransactionManager;
+import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.utils.Convert;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.concurrent.Callable;
+
+import io.reactivex.Single;
 
 public class Web3jManager {
 
@@ -121,6 +127,17 @@ public class Web3jManager {
             return "0x";
         }
     }
+
+    public Single<Long> getGasPrice() {
+        return Single.fromCallable(new Callable<Long>() {
+            @Override
+            public Long call() throws Exception {
+                EthGasPrice gasPrice = Web3jManager.getInstance().getWeb3j().ethGasPrice().send();
+                return gasPrice.getGasPrice().longValue();
+            }
+        }).onErrorReturnItem(DefaultGasProvider.GAS_PRICE.longValue());
+    }
+
 
     public boolean isValidSharedWallet(String contractAddress) {
         return !"0x".equals(getCode(contractAddress));
