@@ -2,6 +2,8 @@ package com.juzix.wallet.component.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.LevelListDrawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -33,7 +35,8 @@ public class VoteListAdapter extends RecyclerView.Adapter<VoteListAdapter.ViewHo
     private List<Candidate> mCandidateEntityList;
     private OnItemClickListener mOnItemClickListener;
     private OnVoteTicketClickListener mOnVoteTicketClickListener;
-
+    //投票列表是否展开
+    private boolean mVoteListSpread = false;
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.mOnItemClickListener = onItemClickListener;
@@ -41,6 +44,11 @@ public class VoteListAdapter extends RecyclerView.Adapter<VoteListAdapter.ViewHo
 
     public void setOnVoteTicketClickListener(OnVoteTicketClickListener onVoteTicketClickListener) {
         this.mOnVoteTicketClickListener = onVoteTicketClickListener;
+    }
+
+    public void setVoteListSpread(boolean voteListSpread) {
+        this.mVoteListSpread = voteListSpread;
+        notifyItemRangeChanged(0,getItemCount());
     }
 
     @Override
@@ -52,6 +60,7 @@ public class VoteListAdapter extends RecyclerView.Adapter<VoteListAdapter.ViewHo
     @SuppressLint("CheckResult")
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+
         Candidate candidateEntity = mCandidateEntityList.get(position);
 
         holder.tvNodeName.setText(candidateEntity.getName());
@@ -61,6 +70,9 @@ public class VoteListAdapter extends RecyclerView.Adapter<VoteListAdapter.ViewHo
         holder.tvStaked.setText(mContext.getString(R.string.staked_with_colon, NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(candidateEntity.getDeposit(), "1E18"), 0)));
 
         holder.tvLocation.setText(String.format("(%s)", candidateEntity.getCountryName(mContext)));
+
+        LevelListDrawable levelListDrawable = (LevelListDrawable) holder.tvVote.getBackground();
+        levelListDrawable.setLevel(mVoteListSpread ? 2:1);
 
         RxView
                 .clicks(holder.itemView)
@@ -94,10 +106,8 @@ public class VoteListAdapter extends RecyclerView.Adapter<VoteListAdapter.ViewHo
             onBindViewHolder(holder, position);
         } else {
             //更新局部控件
-            Candidate candidateEntity = mCandidateEntityList.get(position);
-            if (candidateEntity != null) {
-
-            }
+            LevelListDrawable levelListDrawable = (LevelListDrawable) holder.tvVote.getBackground();
+            levelListDrawable.setLevel(mVoteListSpread ? 2:1);
         }
     }
 
