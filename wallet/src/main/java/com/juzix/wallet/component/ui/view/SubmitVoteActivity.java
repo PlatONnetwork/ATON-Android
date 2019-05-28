@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.text.TextUtils;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -23,6 +24,7 @@ import com.juzix.wallet.component.ui.presenter.SubmitVotePresenter;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.AddressFormatUtil;
+import com.juzix.wallet.utils.CommonUtil;
 import com.juzix.wallet.utils.RxUtils;
 
 import butterknife.BindView;
@@ -208,6 +210,23 @@ public class SubmitVoteActivity extends MVPBaseActivity<SubmitVotePresenter> imp
     public void setTicketNum(int ticketNum) {
         etTicketNum.setText(String.valueOf(ticketNum));
         etTicketNum.setSelection(String.valueOf(ticketNum).length());
+    }
+
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            View v = getCurrentFocus();
+            if (CommonUtil.isOutSizeView(v, ev)) {
+                hideSoftInput();
+            }
+            return super.dispatchTouchEvent(ev);
+        }
+        // 必不可少，否则所有的组件都不会有TouchEvent了
+        if (getWindow().superDispatchTouchEvent(ev)) {
+            return true;
+        }
+        return onTouchEvent(ev);
     }
 
     @Override

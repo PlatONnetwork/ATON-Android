@@ -191,10 +191,11 @@ public class TransactionManager {
                         EventPublisher.getInstance().sendUpdateTransactionEvent(transaction);
                     }
                 })
+                .toObservable()
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Consumer<Transaction>() {
+                .subscribe(new CustomObserver<Transaction>() {
                     @Override
-                    public void accept(Transaction transaction) throws Exception {
+                    public void accept(Transaction transaction) {
                         Log.e(TAG, "getIndividualTransactionByLoop 轮询交易成功" + Thread.currentThread().getName());
                     }
                 });

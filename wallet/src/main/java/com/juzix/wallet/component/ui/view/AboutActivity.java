@@ -129,7 +129,7 @@ public class AboutActivity extends BaseActivity {
 
     private void update() {
         VersionManager.getInstance().getVersion()
-                .compose(new SchedulersTransformer())
+                .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(LoadingTransformer.bindToSingleLifecycle(this))
                 .subscribe(new Consumer<VersionInfo>() {
                     @Override

@@ -2,7 +2,6 @@ package com.juzix.wallet.component.ui.contract;
 
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
-import com.juzix.wallet.entity.SingleVoteEntity;
 import com.juzix.wallet.entity.Transaction;
 
 /**
@@ -12,12 +11,19 @@ public class VoteTransactionDetailContract {
 
     public interface View extends IView {
 
-        void setTransactionDetailInfo(Transaction transaction);
+        Transaction getTransactionFromIntent();
+
+        String getAddressFromIntent();
+
+        void setTransactionDetailInfo(Transaction transaction, String queryAddress, String senderWalletName);
+
     }
 
     public interface Presenter extends IPresenter<View> {
 
-        void showVotedTransactionDetail();
+        void loadData();
+
+        void updateTransactionDetailInfo(Transaction transaction);
 
     }
 }

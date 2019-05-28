@@ -47,7 +47,7 @@ public class VoteTrasactionExtra {
         return ticketPrice;
     }
 
-    @JSONField(deserialize = false,serialize = false)
+    @JSONField(deserialize = false, serialize = false)
     public String getShowTicketPrice() {
         return NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(ticketPrice, "1E18"));
     }
@@ -84,9 +84,9 @@ public class VoteTrasactionExtra {
         return deposit;
     }
 
-    @JSONField(deserialize = false,serialize = false)
-    public String getShowDeposit() {
-        return NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(deposit, "1E18"));
+    @JSONField(deserialize = false, serialize = false)
+    public String getShowVotedStaked() {
+        return NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(BigDecimalUtil.mul(ticketPrice, votedNum).doubleValue(), 1E18));
     }
 
     public void setDeposit(String deposit) {
