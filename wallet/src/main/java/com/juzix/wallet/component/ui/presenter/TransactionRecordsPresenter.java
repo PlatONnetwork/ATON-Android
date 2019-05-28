@@ -40,7 +40,7 @@ public class TransactionRecordsPresenter extends BasePresenter<TransactionRecord
                 .getTransactionList(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
                         .put("walletAddrs", WalletManager.getInstance().getAddressList())
                         .put("beginSequence", getBeginSequenceByDirection(direction))
-                        .put("listSize", 10)
+                        .put("listSize", 20)
                         .put("direction", direction)
                         .build())
                 .compose(RxUtils.getSingleSchedulerTransformer())
