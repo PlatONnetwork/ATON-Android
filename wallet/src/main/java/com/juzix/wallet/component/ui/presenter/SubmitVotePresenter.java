@@ -115,7 +115,7 @@ public class SubmitVotePresenter extends BasePresenter<SubmitVoteContract.View> 
                             double feeAmount = BigDecimalUtil.mul(VoteManager.GAS_DEPLOY_CONTRACT.doubleValue(), gasPrice);
 
                             SendTransactionDialogFragment
-                                    .newInstance(NumberParserUtils.getPrettyNumber(ticketAmount, 0), buildTransactionInfo(mWallet.getName(), feeAmount))
+                                    .newInstance(string(R.string.vote_transaction),NumberParserUtils.getPrettyNumber(ticketAmount, 0), buildTransactionInfo(mWallet.getName(), feeAmount))
                                     .setOnConfirmBtnClickListener(new SendTransactionDialogFragment.OnConfirmBtnClickListener() {
                                         @Override
                                         public void onConfirmBtnClick() {

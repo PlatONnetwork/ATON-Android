@@ -204,6 +204,7 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
                     bgToolbarOpen.setAlpha(alpha2);
                     bgTabbarOpen.setAlpha(alpha2);
                     recyclerView.setBackgroundResource(R.color.color_ffffff);
+                    mVoteListAdapter.setVoteListSpread(false);
                 } else {//当滑动超过一半，收缩状态下toolbar显示内容，根据收缩位置，改变透明值
                     layoutToolbarClose.setVisibility(View.VISIBLE);
                     layoutToolbarOpen.setVisibility(View.GONE);
@@ -214,6 +215,7 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
                     bgToolbarClose.setAlpha(alpha3);
                     bgTabbarClose.setAlpha(alpha3);
                     recyclerView.setBackgroundResource(R.color.color_f9fbff);
+                    mVoteListAdapter.setVoteListSpread(true);
                 }
             }
         });
@@ -261,7 +263,7 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object o)  {
+                    public void accept(Object o) {
                         mSearchEditOpened = false;
                         etSearchVote.setText("");
                         ((BaseActivity) getActivity()).hideSoftInput();
@@ -284,7 +286,7 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object o)  {
+                    public void accept(Object o) {
                         MyVoteActivity.actionStart(currentActivity());
                     }
                 });
@@ -307,7 +309,7 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
                 .compose(bindToLifecycle())
                 .subscribe(new CustomObserver<CharSequence>() {
                     @Override
-                    public void accept(CharSequence charSequence){
+                    public void accept(CharSequence charSequence) {
                         mPresenter.search(charSequence.toString().trim());
                     }
                 });

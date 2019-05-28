@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -15,6 +16,7 @@ import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
 
+import com.juzhen.framework.util.AndroidUtil;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.service.LoopService;
@@ -23,6 +25,7 @@ import com.juzix.wallet.component.ui.contract.MainContract;
 import com.juzix.wallet.component.ui.presenter.MainPresenter;
 import com.juzix.wallet.component.widget.FragmentTabHost;
 import com.juzix.wallet.event.EventPublisher;
+import com.juzix.wallet.utils.CommonUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -126,6 +129,22 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
             AssetsFragment fragment = (AssetsFragment) fragmentManager.findFragmentByTag(TAG_PROPERTY);
             fragment.showCurrentItem(subIndex);
         }
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            View v = getCurrentFocus();
+            if (AndroidUtil.isOutSizeView(v, ev)) {
+                hideSoftInput();
+            }
+            return super.dispatchTouchEvent(ev);
+        }
+        // 必不可少，否则所有的组件都不会有TouchEvent了
+        if (getWindow().superDispatchTouchEvent(ev)) {
+            return true;
+        }
+        return onTouchEvent(ev);
     }
 
     private View getIndicatorView(int drawableResId, int labelResId) {

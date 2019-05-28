@@ -210,15 +210,12 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
                 switch (position) {
                     case 0:
                         EventPublisher.getInstance().sendUpdateAssetsTabEvent(TAB1);
-//                        layoutRefreshTransaction.setEnableLoadMore(true);
                         break;
                     case 1:
                         EventPublisher.getInstance().sendUpdateAssetsTabEvent(TAB2);
-//                        layoutRefreshTransaction.setEnableLoadMore(false);
                         break;
                     case 2:
                         EventPublisher.getInstance().sendUpdateAssetsTabEvent(TAB3);
-//                        layoutRefreshTransaction.setEnableLoadMore(false);
                         break;
                     default:
                         break;
@@ -458,6 +455,12 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     @Override
     public void showBalance(double balance) {//当前钱包的资产
         tvWalletAmount.setText(balance > 0 ? NumberParserUtils.getPrettyBalance(balance) : "0.00");
+        if (vpContent.getCurrentItem() == TAB2) {
+            SendTransactionFragment sendTransactionFragment = (SendTransactionFragment) mTabAdapter.getItem(TAB2);
+            if (sendTransactionFragment != null) {
+                sendTransactionFragment.updateWalletBalance(balance);
+            }
+        }
     }
 
     @Override

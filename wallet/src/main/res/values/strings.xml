@@ -150,7 +150,8 @@
     <string name="select_fee">交易费用</string>
     <string name="cheaper">更便宜</string>
     <string name="faster">更快速</string>
-    <string name="send_transation">发送确认</string>
+    <string name="send_transaction">发送确认</string>
+    <string name="vote_transaction">投票确认</string>
     <string name="wallet_name">钱包名称</string>
     <string name="wallet_name_with_colon">钱包名称：</string>
     <string name="public_key">公钥</string>

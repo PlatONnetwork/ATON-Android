@@ -2,6 +2,7 @@ package com.juzix.wallet.component.ui.presenter;
 
 import android.text.TextUtils;
 
+import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.AssetsContract;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
@@ -84,12 +85,12 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
                         return aDouble + aDouble2;
                     }
                 })
-                .toSingle()
+                .toObservable()
                 .compose(bindUntilEvent(FragmentEvent.STOP))
-                .compose(RxUtils.getSingleSchedulerTransformer())
-                .subscribe(new Consumer<Double>() {
+                .compose(RxUtils.getSchedulerTransformer())
+                .subscribe(new CustomObserver<Double>() {
                     @Override
-                    public void accept(Double balance) throws Exception {
+                    public void accept(Double balance) {
                         if (isViewAttached()) {
                             getView().showTotalBalance(balance);
                             Wallet walletEntity = WalletManager.getInstance().getSelectedWallet();
@@ -99,9 +100,10 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
                             getView().finishRefresh();
                         }
                     }
-                }, new Consumer<Throwable>() {
+
                     @Override
-                    public void accept(Throwable throwable) throws Exception {
+                    public void accept(Throwable throwable) {
+                        super.accept(throwable);
                         if (isViewAttached()) {
                             getView().finishRefresh();
                         }

@@ -59,7 +59,6 @@ public class MyVoteActivity extends MVPBaseActivity<MyVotePresenter> implements 
     @BindView(R.id.ll_no_data)
     LinearLayout ll_no_data;
 
-
     private Unbinder unbinder;
     private BatchVoteSummaryAdapter mBatchVoteSummaryAdapter;
     private BatchVoteTransactionAdapter mBatchVoteTransactionAdapter;

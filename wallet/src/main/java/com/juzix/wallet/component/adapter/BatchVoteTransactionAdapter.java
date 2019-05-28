@@ -1,6 +1,7 @@
 package com.juzix.wallet.component.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.LevelListDrawable;
 import android.text.TextUtils;
 import android.widget.TextView;
 
@@ -52,10 +53,12 @@ public class BatchVoteTransactionAdapter extends CommonAdapter<VotedCandidate> {
         viewHolder.setText(R.id.tv_vote_profit, NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(item.getEarnings(), "1E18"), 4));
         viewHolder.setText(R.id.tv_vote_profit_desc, String.format("%s(Energon)", context.getString(R.string.votingIncome)));
 
-        TextView textView = viewHolder.getView(R.id.rtv_vote);//投票按钮
+        TextView textView = viewHolder.getView(R.id.tv_vote);//投票按钮
+        LevelListDrawable levelListDrawable = (LevelListDrawable) textView.getBackground();
+        levelListDrawable.setLevel(2);
         textView.setEnabled(item.getIsValid().equals(Constants.VoteConstants.IS_VALID) ? false : true);//设置按钮是否可点击
 
-        RxView.clicks(viewHolder.getView(R.id.rtv_vote))
+        RxView.clicks(textView)
                 .compose(RxUtils.getClickTransformer())
                 .subscribe(new Consumer() {
                     @Override

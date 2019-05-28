@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -16,6 +17,7 @@ import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.BaseContextImpl;
 import com.juzix.wallet.component.ui.CustomContextWrapper;
 import com.juzix.wallet.component.ui.IContext;
+import com.juzix.wallet.utils.CommonUtil;
 import com.juzix.wallet.utils.LanguageUtil;
 import com.trello.rxlifecycle2.LifecycleProvider;
 import com.trello.rxlifecycle2.LifecycleTransformer;
@@ -237,6 +239,22 @@ public abstract class BaseActivity extends CoreFragmentActivity implements ICont
     @Override
     public void showLoadingDialog(String text, boolean cancelable) {
         mContextImpl.showLoadingDialog(text, cancelable);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            View v = getCurrentFocus();
+            if (CommonUtil.isOutSizeView(v, ev)) {
+                hideSoftInput();
+            }
+            return super.dispatchTouchEvent(ev);
+        }
+        // 必不可少，否则所有的组件都不会有TouchEvent了
+        if (getWindow().superDispatchTouchEvent(ev)) {
+            return true;
+        }
+        return onTouchEvent(ev);
     }
 
     private BaseContextImpl mContextImpl = new BaseContextImpl() {

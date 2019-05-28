@@ -22,5 +22,7 @@ captures/
 # svn temp directory
 tmp_commit/
 wallet/src/test/
+wallet/releaseC/
+wallet/releaseX/
 framework/src/test/
 
