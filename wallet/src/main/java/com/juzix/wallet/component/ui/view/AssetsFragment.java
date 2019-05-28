@@ -455,6 +455,12 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     @Override
     public void showBalance(double balance) {//当前钱包的资产
         tvWalletAmount.setText(balance > 0 ? NumberParserUtils.getPrettyBalance(balance) : "0.00");
+        if (vpContent.getCurrentItem() == TAB2) {
+            SendTransactionFragment sendTransactionFragment = (SendTransactionFragment) mTabAdapter.getItem(TAB2);
+            if (sendTransactionFragment != null) {
+                sendTransactionFragment.updateWalletBalance(balance);
+            }
+        }
     }
 
     @Override

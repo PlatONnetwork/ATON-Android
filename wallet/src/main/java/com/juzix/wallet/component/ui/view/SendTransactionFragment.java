@@ -142,7 +142,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object object)  {
+                    public void accept(Object object) {
                         mPresenter.submit();
                     }
                 });
@@ -220,8 +220,8 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
     }
 
     @Override
-    public void updateWalletInfo(Wallet walletEntity) {
-        tvWalletBalance.setText(string(R.string.balance_text, NumberParserUtils.getPrettyBalance(walletEntity.getBalance())));
+    public void updateWalletBalance(double balance) {
+        tvWalletBalance.setText(string(R.string.balance_text, NumberParserUtils.getPrettyBalance(balance)));
     }
 
     @Override

@@ -16,6 +16,7 @@ import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
 
+import com.juzhen.framework.util.AndroidUtil;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.service.LoopService;
@@ -134,7 +135,7 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             View v = getCurrentFocus();
-            if (CommonUtil.isOutSizeView(v, ev)) {
+            if (AndroidUtil.isOutSizeView(v, ev)) {
                 hideSoftInput();
             }
             return super.dispatchTouchEvent(ev);

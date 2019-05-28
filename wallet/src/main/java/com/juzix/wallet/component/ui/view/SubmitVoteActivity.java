@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
+import com.juzhen.framework.util.AndroidUtil;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
@@ -217,7 +218,7 @@ public class SubmitVoteActivity extends MVPBaseActivity<SubmitVotePresenter> imp
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             View v = getCurrentFocus();
-            if (CommonUtil.isOutSizeView(v, ev)) {
+            if (AndroidUtil.isOutSizeView(v, ev)) {
                 hideSoftInput();
             }
             return super.dispatchTouchEvent(ev);

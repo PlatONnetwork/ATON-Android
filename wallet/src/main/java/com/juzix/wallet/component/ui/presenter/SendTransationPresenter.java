@@ -108,18 +108,12 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
         })
                 .compose(bindUntilEvent(FragmentEvent.STOP))
                 .compose(RxUtils.getSingleSchedulerTransformer())
-                .repeatWhen(new Function<Flowable<Object>, Publisher<?>>() {
-                    @Override
-                    public Publisher<?> apply(Flowable<Object> objectFlowable) throws Exception {
-                        return objectFlowable.delay(REFRESH_TIME, TimeUnit.MILLISECONDS);
-                    }
-                })
                 .subscribe(new Consumer<Double>() {
                     @Override
                     public void accept(Double balance) throws Exception {
                         if (isViewAttached()) {
                             walletEntity.setBalance(balance);
-                            getView().updateWalletInfo(walletEntity);
+                            getView().updateWalletBalance(balance);
                             calculateFeeAndTime(percent);
                         }
                     }
