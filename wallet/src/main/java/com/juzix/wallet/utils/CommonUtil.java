@@ -291,27 +291,6 @@ public class CommonUtil {
         return dest;
     }
 
-    /**
-     * 判断是否在v之外区域(目前适用EditText之外点击隐藏键盘)
-     *
-     * @param v
-     * @param event
-     * @return
-     */
-    public static boolean isOutSizeView(View v, MotionEvent event) {
-        if (v != null && event != null) {
-            int[] leftTop = {0, 0};
-            v.getLocationInWindow(leftTop);
-            int left = leftTop[0];
-            int top = leftTop[1];
-            int bottom = top + v.getHeight();
-            int right = left + v.getWidth();
-            return !(event.getX() > left && event.getX() < right
-                    && event.getY() > top && event.getY() < bottom);
-        }
-        return false;
-    }
-
     public static void copyTextToClipboard(Context context, String text) {
         ClipboardManager cm = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
         cm.setPrimaryClip(ClipData.newPlainText("plain text", text));

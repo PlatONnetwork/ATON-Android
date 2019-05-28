@@ -121,7 +121,8 @@
     <string name="select_fee">Select Fee</string>
     <string name="cheaper">Cheaper</string>
     <string name="faster">Faster</string>
-    <string name="send_transation">Send Transation</string>
+    <string name="send_transaction">Send Transaction</string>
+    <string name="vote_transaction">Vote Transaction</string>
     <string name="wallet_name">Wallet name</string>
     <string name="wallet_name_with_colon">Wallet Name：</string>
     <string name="public_key">Public Key</string>
