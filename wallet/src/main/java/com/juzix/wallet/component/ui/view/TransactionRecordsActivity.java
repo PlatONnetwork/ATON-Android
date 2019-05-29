@@ -70,9 +70,9 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
             @Override
             public void onItemClick(View view, int position) {
                 Transaction transaction = mTransactionAdapter.getDatas().get(position);
-                 if (transaction.getTxType() == TransactionType.VOTETICKET) {
-                    VoteTransactionDetailActivity.actionStart(TransactionRecordsActivity.this, transaction,WalletManager.getInstance().getSelectedWalletAddress());
-                }else{
+                if (transaction.getTxType() == TransactionType.VOTETICKET) {
+                    VoteTransactionDetailActivity.actionStart(TransactionRecordsActivity.this, transaction, WalletManager.getInstance().getSelectedWalletAddress());
+                } else {
                     TransactionDetailActivity.actionStart(TransactionRecordsActivity.this, transaction, WalletManager.getInstance().getSelectedWalletAddress());
                 }
             }
@@ -92,7 +92,7 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
             }
         });
 
-        mPresenter.fetchTransactions(TransactionRecordsPresenter.DIRECTION_NEW);
+        layoutRefresh.autoRefresh();
     }
 
     @Override
@@ -108,14 +108,14 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
     @Override
     public void notifyItemRangeInserted(List<Transaction> transactionList, int positionStart, int itemCount) {
         layoutNoData.setVisibility(transactionList != null && !transactionList.isEmpty() ? View.GONE : View.VISIBLE);
-        mTransactionAdapter.notifyItemRangeInserted(transactionList,null, positionStart, itemCount);
+        mTransactionAdapter.notifyItemRangeInserted(transactionList, WalletManager.getInstance().getAddressList(), positionStart, itemCount);
     }
 
     @Override
     public void showTransactions(List<Transaction> transactionList) {
         layoutNoData.setVisibility(transactionList != null && !transactionList.isEmpty() ? View.GONE : View.VISIBLE);
         listTransactions.setVisibility(transactionList != null && !transactionList.isEmpty() ? View.VISIBLE : View.GONE);
-        mTransactionAdapter.notifyDataSetChanged(transactionList);
+        mTransactionAdapter.notifyDataSetChanged(transactionList, WalletManager.getInstance().getAddressList());
     }
 
     @Override

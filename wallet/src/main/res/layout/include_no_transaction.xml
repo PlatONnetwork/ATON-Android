@@ -3,9 +3,9 @@
     android:id="@+id/layout_no_data"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/color_ffffff"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:background="@color/color_ffffff"
     android:paddingTop="66dp"
     android:visibility="gone">
 

@@ -49,6 +49,7 @@ public abstract class ApiSingleObserver<T> extends AtomicReference<Disposable> i
             }
             e.printStackTrace();
         } catch (Throwable ex) {
+            callback.onFailure(new ApiResponse(ApiErrorCode.SYSTEM_ERROR, e));
             Exceptions.throwIfFatal(ex);
             RxJavaPlugins.onError(new CompositeException(e, ex));
         }

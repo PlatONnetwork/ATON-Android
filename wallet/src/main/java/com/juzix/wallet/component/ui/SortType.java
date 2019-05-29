@@ -78,11 +78,7 @@ public enum SortType {
     static class DefaultComparator implements Comparator<Candidate> {
         @Override
         public int compare(Candidate o1, Candidate o2) {
-
-            double o1Amount = BigDecimalUtil.add(o1.getDeposit(), BigDecimalUtil.mul(String.valueOf(o1.getTicketCount()), o1.getTicketPrice()).toPlainString());
-            double o2Amount = BigDecimalUtil.add(o2.getDeposit(), BigDecimalUtil.mul(String.valueOf(o2.getTicketCount()), o2.getTicketPrice()).toPlainString());
-
-            return Double.compare(o2Amount, o1Amount);
+            return Integer.compare(o1.getRanking(), o2.getRanking());
         }
     }
 }

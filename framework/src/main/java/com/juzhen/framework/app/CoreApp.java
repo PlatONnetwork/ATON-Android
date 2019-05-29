@@ -8,6 +8,7 @@ import com.juzhen.framework.app.config.Config;
 import com.juzhen.framework.app.config.ConfigModule;
 import com.juzhen.framework.app.exception.CustomerException;
 import com.juzhen.framework.app.log.LogManager;
+import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.NetConnectivity;
 import com.juzhen.framework.util.AndroidUtil;
 
@@ -36,6 +37,8 @@ public abstract class CoreApp extends Application {
         CustomerException.getExceptionControl().init(context);
         // 初始化网络组件
         NetConnectivity.getConnectivityManager().init(this);
+        //初始化请求响应类
+        ApiResponse.init(context);
     }
 
     private String getLogPath() {
