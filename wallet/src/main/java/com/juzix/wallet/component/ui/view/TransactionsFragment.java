@@ -25,6 +25,7 @@ import com.juzix.wallet.event.EventPublisher;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.Arrays;
 import java.util.IllegalFormatCodePointException;
 import java.util.List;
 
@@ -94,20 +95,20 @@ public class TransactionsFragment extends BaseViewPageFragment<TransactionsPrese
     @Override
     public void notifyItemRangeInserted(List<Transaction> transactionList, String queryAddress, int positionStart, int itemCount) {
         emptyView.setVisibility(transactionList.isEmpty() ? View.VISIBLE : View.GONE);
-        mTransactionAdapter.notifyItemRangeInserted(transactionList, queryAddress, positionStart, itemCount);
+        mTransactionAdapter.notifyItemRangeInserted(transactionList, Arrays.asList(queryAddress), positionStart, itemCount);
         listTransaction.scrollToPosition(positionStart == 0 ? positionStart : transactionList.size() - 1);
     }
 
     @Override
     public void notifyItemChanged(List<Transaction> transactionList, String queryAddress, int position) {
         emptyView.setVisibility(transactionList.isEmpty() ? View.VISIBLE : View.GONE);
-        mTransactionAdapter.notifyItemChanged(transactionList, queryAddress, position);
+        mTransactionAdapter.notifyItemChanged(transactionList, Arrays.asList(queryAddress), position);
     }
 
     @Override
     public void notifyDataSetChanged(List<Transaction> transactionList, String queryAddress) {
         emptyView.setVisibility(transactionList.isEmpty() ? View.VISIBLE : View.GONE);
-        mTransactionAdapter.notifyDataSetChanged(transactionList, queryAddress);
+        mTransactionAdapter.notifyDataSetChanged(transactionList, Arrays.asList(queryAddress));
     }
 
     @Override

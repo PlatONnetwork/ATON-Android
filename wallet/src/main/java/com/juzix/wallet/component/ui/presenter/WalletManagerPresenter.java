@@ -94,7 +94,6 @@ public class WalletManagerPresenter extends BasePresenter<WalletManagerContract.
 
     @Override
     public void startAction(int position) {
-        Wallet entity = mWalletList.get(position);
         ManageIndividualWalletActivity.actionStart(currentActivity(), mWalletList.get(position));
     }
 

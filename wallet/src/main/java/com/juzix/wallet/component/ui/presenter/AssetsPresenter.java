@@ -126,7 +126,6 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
 
     private Wallet getSelectedWallet() {
         for (int i = 0; i < mWalletList.size(); i++) {
-            Wallet walletEntity = mWalletList.get(i);
             return mWalletList.get(i);
         }
         return null;

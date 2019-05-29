@@ -108,14 +108,14 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
     @Override
     public void notifyItemRangeInserted(List<Transaction> transactionList, int positionStart, int itemCount) {
         layoutNoData.setVisibility(transactionList != null && !transactionList.isEmpty() ? View.GONE : View.VISIBLE);
-        mTransactionAdapter.notifyItemRangeInserted(transactionList, null, positionStart, itemCount);
+        mTransactionAdapter.notifyItemRangeInserted(transactionList, WalletManager.getInstance().getAddressList(), positionStart, itemCount);
     }
 
     @Override
     public void showTransactions(List<Transaction> transactionList) {
         layoutNoData.setVisibility(transactionList != null && !transactionList.isEmpty() ? View.GONE : View.VISIBLE);
         listTransactions.setVisibility(transactionList != null && !transactionList.isEmpty() ? View.VISIBLE : View.GONE);
-        mTransactionAdapter.notifyDataSetChanged(transactionList);
+        mTransactionAdapter.notifyDataSetChanged(transactionList, WalletManager.getInstance().getAddressList());
     }
 
     @Override
