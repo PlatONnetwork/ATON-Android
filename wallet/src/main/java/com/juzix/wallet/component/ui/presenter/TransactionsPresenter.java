@@ -116,7 +116,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                 .compose(bindUntilEvent(FragmentEvent.STOP))
                 .subscribe(new Consumer<List<Transaction>>() {
                     @Override
-                    public void accept(List<Transaction> transactionList) throws Exception {
+                    public void accept(List<Transaction> transactionList) {
                         if (isViewAttached()) {
                             //先进行排序
                             mTransactionList = transactionList;
@@ -127,7 +127,10 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        Log.e(TAG, "onApiFailure");
+                        Log.e(TAG, "loadLatestData onApiFailure");
+                        if (isViewAttached()) {
+                            getView().notifyDataSetChanged(null, mWalletAddress);
+                        }
                     }
                 });
     }

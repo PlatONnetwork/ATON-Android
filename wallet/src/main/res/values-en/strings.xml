@@ -351,7 +351,7 @@
     <string name="nominees">Nominees</string>
     <string name="candidates">Candidates</string>
     <string name="validator">Validator</string>
-    <string name="stakedRanking">Staked Ranking</string>
+    <string name="ranking">Ranking</string>
     <string name="tickets">Tickets</string>
     <string name="voteNum">Tickets</string>
     <string name="ticketAge">Ticket Age</string>

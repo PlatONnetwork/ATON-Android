@@ -95,7 +95,7 @@
                     android:id="@+id/tv_staked_ranking_desc"
                     style="@style/Text.898c9e.12"
                     android:layout_marginTop="16dp"
-                    android:text="@string/stakedRanking"
+                    android:text="@string/ranking"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_join_time" />
 

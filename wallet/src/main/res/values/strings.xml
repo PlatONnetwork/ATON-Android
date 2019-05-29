@@ -352,7 +352,7 @@
     <string name="nominees">提名节点</string>
     <string name="candidates">候选节点</string>
     <string name="validator">验证节点</string>
-    <string name="stakedRanking">质押排名</string>
+    <string name="ranking">排名</string>
     <string name="tickets">得票数</string>
     <string name="voteNum">投票数</string>
     <string name="ticketAge">实时票龄</string>

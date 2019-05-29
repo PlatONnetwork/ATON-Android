@@ -125,6 +125,12 @@ public class TransactionsFragment extends BaseViewPageFragment<TransactionsPrese
         mPresenter.loadLatestData();
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onNodeChangedEvent(Event.NodeChangedEvent event) {
+        //清空当前交易列表数据
+        mTransactionAdapter.notifyDataSetChanged(null);
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
