@@ -17,10 +17,15 @@ public class BaseUrlInterceptor implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
-        String pathSegments = TextUtils.join("/", request.url().pathSegments());
-        HttpUrl newHttpUrl = HttpUrl.parse(NodeManager.getInstance().getCurNode().getHttpUrl()).newBuilder().addPathSegments(pathSegments).build();
-        return chain.proceed(request.newBuilder()
-                .url(newHttpUrl)
-                .build());
+        String header = request.header("name");
+        if (ServerUtils.HEADER_UPDATE_VERSION.equals(header)) {
+            return chain.proceed(request);
+        } else {
+            String pathSegments = TextUtils.join("/", request.url().pathSegments());
+            HttpUrl newHttpUrl = HttpUrl.parse(NodeManager.getInstance().getCurNode().getHttpUrl()).newBuilder().addPathSegments(pathSegments).build();
+            return chain.proceed(request.newBuilder()
+                    .url(newHttpUrl)
+                    .build());
+        }
     }
 }
