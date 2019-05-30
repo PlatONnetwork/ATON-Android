@@ -25,6 +25,8 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
  */
 public class ServerUtils {
 
+    public final static String HEADER_UPDATE_VERSION = "updateVersion";
+
     private volatile static BaseApi mBaseApi;
 
     private ServerUtils() {

@@ -12,7 +12,9 @@ import io.reactivex.Single;
 import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.HEAD;
 import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Url;
@@ -25,7 +27,8 @@ public interface BaseApi {
      * @param url
      * @return
      */
-    @GET()
+    @Headers("name: " + ServerUtils.HEADER_UPDATE_VERSION)
+    @GET
     Single<String> getVersionInfo(@Url String url);
 
     /**
@@ -35,7 +38,7 @@ public interface BaseApi {
      * @return
      */
     @POST("app-{cid}/v060/transaction/list")
-    Single<Response<ApiResponse<List<Transaction>>>> getTransactionList(@Path("cid") String cid,@Body ApiRequestBody body);
+    Single<Response<ApiResponse<List<Transaction>>>> getTransactionList(@Path("cid") String cid, @Body ApiRequestBody body);
 
     /**
      * 获取节点列表
@@ -44,6 +47,7 @@ public interface BaseApi {
      */
     @POST("app-{cid}/v060/node/list")
     Single<Response<ApiResponse<CandidateWrap>>> getCandidateList(@Path("cid") String cid);
+
     /**
      * 获得用户有投票的节点列表
      *
