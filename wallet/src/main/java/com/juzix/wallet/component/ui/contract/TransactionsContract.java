@@ -31,7 +31,6 @@ public class TransactionsContract {
         void loadMore();
 
         void addNewTransaction(Transaction transaction);
-
     }
 
 }
