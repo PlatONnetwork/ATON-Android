@@ -10,6 +10,7 @@ import com.juzhen.framework.network.ApiErrorCode;
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.ApiSingleObserver;
+import com.juzhen.framework.util.LogUtils;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.TransactionsContract;
@@ -66,9 +67,10 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
     public final static String DIRECTION_NEW = "new";
 
     private List<Transaction> mTransactionList = new ArrayList<>();
-    private String mWalletAddress;
     private Disposable mAutoRefreshDisposable;
     private Disposable mLoadLatestDisposable;
+    private String mWalletAddress;
+    private int mBeginSequence = -1;
 
     public TransactionsPresenter(TransactionsContract.View view) {
         super(view);
@@ -107,13 +109,10 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                         //存在数据就刷新余额
                         if (isViewAttached()) {
                             ((AssetsFragment) (((TransactionsFragment) getView()).getParentFragment())).fetchWalletsBalance();
-                            //开始轮询
-                            loadNew(DIRECTION_NEW);
                         }
                     }
                 })
                 .compose(RxUtils.getSchedulerTransformer())
-                .compose(bindUntilEvent(FragmentEvent.STOP))
                 .subscribe(new Consumer<List<Transaction>>() {
                     @Override
                     public void accept(List<Transaction> transactionList) {
@@ -122,6 +121,9 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                             mTransactionList = transactionList;
                             Collections.sort(mTransactionList);
                             getView().notifyDataSetChanged(mTransactionList, mWalletAddress);
+
+                            //开始轮询
+                            loadNew(DIRECTION_NEW);
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -275,10 +277,12 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
         return getTransactionListFromDB(walletAddress).flatMap(new Function<List<Transaction>, SingleSource<List<Transaction>>>() {
             @Override
             public SingleSource<List<Transaction>> apply(List<Transaction> transactionList) throws Exception {
+                LogUtils.d("getTransactionListFromDB success" + transactionList);
                 return getTransactionList(walletAddress, DIRECTION_NEW, -1)
                         .flatMap(new Function<Response<ApiResponse<List<Transaction>>>, SingleSource<List<Transaction>>>() {
                             @Override
                             public SingleSource<List<Transaction>> apply(Response<ApiResponse<List<Transaction>>> apiResponseResponse) throws Exception {
+                                LogUtils.d("getTransactionList success" + apiResponseResponse.toString());
                                 if (apiResponseResponse.isSuccessful() && apiResponseResponse.body().getResult() == ApiErrorCode.SUCCESS) {
                                     transactionList.addAll(apiResponseResponse.body().getData());
                                 }
@@ -296,6 +300,8 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
      * @return
      */
     private Single<List<Transaction>> getTransactionListFromDB(String walletAddress) {
+
+        LogUtils.d("getTransactionListFromDB" + walletAddress);
 
         return Flowable.fromCallable(new Callable<List<TransactionEntity>>() {
             @Override
@@ -321,7 +327,8 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                 return transaction;
             }
         })
-                .toList();
+                .toList()
+                .onErrorReturnItem(new ArrayList<>());
     }
 
     private List<Transaction> addAll(List<Transaction> transactionList, String direction) {

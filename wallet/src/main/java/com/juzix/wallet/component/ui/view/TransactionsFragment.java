@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.juzhen.framework.util.LogUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.adapter.TransactionAdapter;
 import com.juzix.wallet.component.adapter.base.RecyclerAdapter;
@@ -63,6 +64,7 @@ public class TransactionsFragment extends BaseViewPageFragment<TransactionsPrese
     @Override
     public void onPageStart() {
         if (mPresenter != null) {
+            LogUtils.e("onPageStart");
             mPresenter.loadNew(TransactionsPresenter.DIRECTION_NEW);
         }
     }
@@ -128,8 +130,8 @@ public class TransactionsFragment extends BaseViewPageFragment<TransactionsPrese
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNodeChangedEvent(Event.NodeChangedEvent event) {
-        //清空当前交易列表数据
-        mTransactionAdapter.notifyDataSetChanged(null);
+        //获取最新
+        mPresenter.loadLatestData();
     }
 
     @Override
