@@ -140,9 +140,13 @@ public class NodeManager {
     }
 
     public String getChainId() {
-        if (Constants.URL.URL_TEST_A.equals(NodeManager.getInstance().getCurNodeAddress())) {
+        return getChainId(getCurNodeAddress());
+    }
+
+    public String getChainId(String curNodeAddress) {
+        if (Constants.URL.URL_TEST_A.equals(curNodeAddress)) {
             return CHAINID_TEST_NET_A;
-        } else if (Constants.URL.URL_TEST_B.equals(NodeManager.getInstance().getCurNodeAddress())) {
+        } else if (Constants.URL.URL_TEST_B.equals(curNodeAddress)) {
             return CHAINID_TEST_NET_B;
         } else {
             return CHAINID_TEST_NET_C;

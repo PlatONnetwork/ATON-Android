@@ -224,36 +224,53 @@ public class AppFramework {
                         .addField("candidateName", String.class);
                 oldVersion++;
             } else if (oldVersion == 105) {
-                //删除联名钱包OwnerInfoEntity
-                schema.remove("OwnerInfoEntity");
                 //删除联名钱包交易记录
                 schema.remove("SharedTransactionInfoEntity");
                 //删除联名钱包记录
                 schema.remove("SharedWalletInfoEntity");
                 //删除联名钱包SharedWalletOwnerInfoEntity
                 schema.remove("SharedWalletOwnerInfoEntity");
-                //删除联名钱包交易结果TransactionInfoResult
-                schema.remove("TransactionInfoResult");
                 //删除节点数据
                 schema.remove("CandidateInfoEntity");
                 //删除区域信息数据
                 schema.remove("RegionInfoEntity");
                 //删除投票信息数据
                 schema.remove("SingleVoteInfoEntity");
+                //刪除票数据库
                 schema.remove("TicketInfoEntity");
+                //删除联名钱包OwnerInfoEntity
+                schema.remove("OwnerInfoEntity");
                 //增加普通钱包数据库字段
                 schema.get("IndividualTransactionInfoEntity")
                         .removeField("uuid")
                         .addPrimaryKey("hash")
                         .removeField("completed")
                         .removeField("memo")
-                        .addField("txType", int.class)
-                        .addField("txReceiptStatus", int.class)
-                        .addField("sequence", long.class)
-                        .addField("receiveType", String.class)
+                        .addField("txType", String.class)
+                        .addField("txReceiptStatus", String.class)
                         .addField("chainId", String.class)
-                        .addField("actualTxCost", String.class);
+                        .addField("actualTxCost", String.class)
+                        .addField("txInfo", String.class)
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.set("chainId", NodeManager.getInstance().getChainId(obj.get("nodeAddress")));
+                            }
+                        })
+                        .removeField("nodeAddress");
+
+                schema.get("IndividualWalletInfoEntity")
+                        .addField("chainId", String.class)
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.set("chainId", NodeManager.getInstance().getChainId(obj.get("nodeAddress")));
+                            }
+                        })
+                        .removeField("nodeAddress");
+
                 //修改数据库名称
+                schema.rename("IndividualTransactionInfoEntity", "TransactionEntity");
                 schema.rename("IndividualWalletInfoEntity", "WalletEntity");
                 //todo数据库字段修改
                 schema.rename("AddressInfoEntity", "AddressEntity");
