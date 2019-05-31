@@ -244,7 +244,7 @@ public class NumberParserUtils {
         try {//当number==NaN，会throw "Infinity or NaN",所以要catch
             // TODO: 2018/11/6 判断是否为0
             BigDecimal bigDecimal = new BigDecimal(String.valueOf(value));
-            bigDecimal = bigDecimal.setScale(maxDigit, BigDecimal.ROUND_DOWN);
+            bigDecimal = bigDecimal.setScale(maxDigit, BigDecimal.ROUND_HALF_UP);
             if (bigDecimal.doubleValue() != 0) {
                 bigDecimalStr = bigDecimal.stripTrailingZeros().toPlainString();
             }
