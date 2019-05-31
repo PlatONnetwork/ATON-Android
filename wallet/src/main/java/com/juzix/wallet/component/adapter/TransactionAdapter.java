@@ -1,16 +1,16 @@
 package com.juzix.wallet.component.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.adapter.base.RecycleHolder;
 import com.juzix.wallet.component.adapter.base.RecyclerAdapter;
-import com.juzix.wallet.engine.WalletManager;
+import com.juzix.wallet.component.ui.view.TransactionRecordsActivity;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionStatus;
 import com.juzix.wallet.entity.TransactionType;
-import com.juzix.wallet.utils.DateUtil;
 
 import java.util.List;
 
@@ -33,6 +33,17 @@ public class TransactionAdapter extends RecyclerAdapter<Transaction> {
         holder.setText(R.id.tv_time, data.getShowCreateTime());
         holder.setText(R.id.tv_desc, mContext.getString(status.getTransactionStatusDescRes()));
         holder.setTextColor(R.id.tv_desc, status.getTransactionStatusDescColorRes());
+        ImageView transactionTag = holder.itemView.findViewById(R.id.iv_transaction_tag);
+        transactionTag.setVisibility(mContext instanceof TransactionRecordsActivity ? View.GONE : View.VISIBLE);
+        if (data.getTxType() == TransactionType.TRANSFER) {
+            transactionTag.setImageResource(isSender ? R.drawable.icon_send_transation : R.drawable.icon_receive_transaction);
+        } else if (data.getTxType() == TransactionType.VOTETICKET) {
+            transactionTag.setImageResource(R.drawable.icon_valid_ticket);
+        } else if (data.getTxType() == TransactionType.CONTRACTCREATE) {
+            transactionTag.setImageResource(R.drawable.icon_create_contract_transaction);
+        } else {
+            transactionTag.setImageResource(R.drawable.icon_send_transation);
+        }
     }
 
     @Override

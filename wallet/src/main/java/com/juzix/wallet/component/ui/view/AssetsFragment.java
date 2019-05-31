@@ -72,8 +72,6 @@ import retrofit2.http.PUT;
  */
 public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements AssetsContract.View {
 
-    private final static String TAG = AssetsFragment.class.getSimpleName();
-
     public static final int TAB1 = 0;
     public static final int TAB2 = 1;
     public static final int TAB3 = 2;
@@ -454,7 +452,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
     @Override
     public void showBalance(double balance) {//当前钱包的资产
-        tvWalletAmount.setText(balance > 0 ? NumberParserUtils.getPrettyBalance(balance) : "0.00");
+        tvWalletAmount.setText(string(R.string.amount_with_unit, balance > 0 ? NumberParserUtils.getPrettyBalance(balance) : "0.00"));
         if (vpContent.getCurrentItem() == TAB2) {
             SendTransactionFragment sendTransactionFragment = (SendTransactionFragment) mTabAdapter.getItem(TAB2);
             if (sendTransactionFragment != null) {
