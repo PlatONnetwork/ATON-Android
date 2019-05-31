@@ -171,6 +171,7 @@
     <string name="back">Back</string>
     <string name="qrCode">QR Code</string>
     <string name="exportPrivateKeyTips">Note: Do not screenshots, please check around to prevent others from peeping or videotaping, Please keep the Keystore properly.</string>
+    <string name="exportKeyStoreTips">Note: Do not screenshots, please check around to prevent others from peeping or videotaping, Please keep the Keystore properly.</string>
     <string name="copy">Copy</string>
     <string name="msg_balance">Balance</string>
     <string name="delete_wallet">Delete</string>

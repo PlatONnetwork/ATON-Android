@@ -134,6 +134,7 @@
     <string name="back">返回</string>
     <string name="qrCode">二维码</string>
     <string name="exportPrivateKeyTips">注意：不要截图，请检查周围，以防他人偷看或拍摄，请妥善保管私钥，切勿存储在网盘中</string>
+    <string name="exportKeyStoreTips">注意：不要截图，请检查周围，以防他人偷看或拍摄，请妥善保管钱包文件，切勿存储在网盘中</string>
     <string name="copy">复制</string>
     <string name="msg_balance">余额</string>
     <string name="transactions">交易记录</string>
