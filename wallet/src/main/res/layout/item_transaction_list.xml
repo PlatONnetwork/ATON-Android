@@ -29,35 +29,20 @@
         android:textColor="@color/color_105cfe"
         tools:text="Failed" />
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/tv_transaction_status"
+        style="@style/Text.000.13"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="14dp"
         android:layout_toLeftOf="@id/tv_transaction_amount"
         android:layout_toRightOf="@id/iv_transaction_status"
+        android:ellipsize="middle"
         android:gravity="center_vertical|left"
-        android:orientation="horizontal">
+        android:maxLength="23"
+        android:singleLine="true"
+        tools:text="0x2ce27898192883198893893hjdjdjka0x20x2c" />
 
-        <TextView
-            android:id="@+id/tv_transaction_status"
-            style="@style/Text.000.13"
-            android:layout_width="wrap_content"
-            android:ellipsize="middle"
-            android:maxLength="23"
-            android:singleLine="true"
-            tools:text="0x2ce27898192883198893893hjdjdjka0x20x2c" />
-
-        <View
-            android:id="@+id/v_new_msg"
-            android:layout_width="6dp"
-            android:layout_height="6dp"
-            android:layout_alignRight="@id/tv_transaction_status"
-            android:layout_marginLeft="3.5dp"
-            android:background="@drawable/bg_red_point"
-            android:visibility="invisible" />
-
-    </LinearLayout>
 
     <TextView
         android:id="@+id/tv_transaction_time"
