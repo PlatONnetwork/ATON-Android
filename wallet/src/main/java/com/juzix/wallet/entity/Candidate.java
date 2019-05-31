@@ -96,6 +96,7 @@ public class Candidate implements Parcelable {
         nodeUrl = in.readString();
         nodeType = in.readString();
         ticketCount = in.readString();
+        joinTime = in.readLong();
     }
 
     @Override
@@ -114,6 +115,7 @@ public class Candidate implements Parcelable {
         dest.writeString(nodeUrl);
         dest.writeString(nodeType);
         dest.writeString(ticketCount);
+        dest.writeLong(joinTime);
     }
 
     @Override
