@@ -54,6 +54,8 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import butterknife.BindView;
@@ -320,7 +322,7 @@ public class VoteFragment extends MVPBaseFragment<VotePresenter> implements Vote
         pbVoteRate.setMax(NumberParserUtils.parseInt(sumVoteNum));
         pbVoteRate.setProgress(NumberParserUtils.parseInt(votedNum));
 
-        String voteRate = String.format("%s%%", NumberParserUtils.getPrettyNumber(BigDecimalUtil.mul(BigDecimalUtil.div(votedNum, sumVoteNum), 100D), 2));
+        String voteRate = String.format("%s%%", NumberParserUtils.getPrettyNumber(BigDecimalUtil.mul(BigDecimalUtil.div(votedNum, sumVoteNum), 100D), 2), BigDecimal.ROUND_HALF_UP);
 
         tvVoteRate.setText(string(R.string.vote_rate_with_colon_and_value, voteRate));
         tvVoted.setText(string(R.string.voted_num_with_colon, votedNum));
