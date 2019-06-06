@@ -182,7 +182,10 @@ public class VotePresenter extends BasePresenter<VoteContract.View> implements V
 
     @Override
     public void clearCandidateList() {
-
+        if (isViewAttached()){
+            mCandidateEntiyList = null;
+            getView().notifyDataSetChanged(mCandidateEntiyList);
+        }
     }
 
     private void showCandidateList(String keyWord, SortType sortType) {
