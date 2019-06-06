@@ -126,7 +126,7 @@ public class NodeSettingsActivity extends MVPBaseActivity<NodeSettingsPresenter>
     }
 
     private void initView() {
-        tvRight.setVisibility(View.VISIBLE);
+        tvRight.setVisibility(View.GONE);
         rlTitleBar.setBackgroundColor(ContextCompat.getColor(this, R.color.color_ffffff));
         tvRight.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
         tvLeft.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
