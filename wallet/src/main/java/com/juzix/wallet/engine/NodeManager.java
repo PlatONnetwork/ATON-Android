@@ -146,10 +146,8 @@ public class NodeManager {
     public String getChainId(String curNodeAddress) {
         if (Constants.URL.URL_TEST_A.equals(curNodeAddress)) {
             return CHAINID_TEST_NET_A;
-        } else if (Constants.URL.URL_TEST_B.equals(curNodeAddress)) {
-            return CHAINID_TEST_NET_B;
         } else {
-            return CHAINID_TEST_NET_C;
+            return CHAINID_TEST_NET_B;
         }
     }
 

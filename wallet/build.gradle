@@ -53,7 +53,8 @@ android {
             v2SigningEnabled false
         }
         releaseX {
-            storeFile file("/Users/jenkins/extras/wallet.keystore")
+//            storeFile file("/Users/jenkins/extras/wallet.keystore")
+            storeFile file("../extras/wallet.keystore")
             storePassword "123456"
             keyAlias "wallet"
             keyPassword "123456"

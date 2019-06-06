@@ -26,14 +26,14 @@ public enum TransactionType {
     }
 
     public static TransactionType getTxTypeByName(String name) {
-        return map.get(name);
+        return map.get(name) == null ? TransactionType.UNKNOWN : map.get(name);
     }
 
     public int getTxTypeDescRes() {
         return descRes;
     }
 
-    public String getTxTypeName(){
+    public String getTxTypeName() {
         return name;
     }
 
