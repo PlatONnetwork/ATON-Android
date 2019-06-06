@@ -275,6 +275,14 @@ public class AppFramework {
                 //todo数据库字段修改
                 schema.rename("AddressInfoEntity", "AddressEntity");
                 schema.rename("NodeInfoEntity", "NodeEntity");
+
+                schema.get("NodeEntity")
+                .transform(new RealmObjectSchema.Function() {
+                    @Override
+                    public void apply(DynamicRealmObject obj) {
+                        obj.getDynamicRealm().where("NodeEntity").findAll().deleteAllFromRealm();
+                    }
+                });
                 oldVersion++;
             }
         }
