@@ -104,7 +104,7 @@ public class VoteManager {
         });
     }
 
-    public Single<Transaction> submitVote(Credentials credentials, Wallet walletEntity, String nodeId, String nodeName, String ticketNum, String ticketPrice, String deposit,String feeAmount) {
+    public Single<Transaction> submitVote(Credentials credentials, Wallet walletEntity, String nodeId, String nodeName, String ticketNum, String ticketPrice, String deposit, String feeAmount) {
 
         BigInteger value = BigDecimalUtil.mul(ticketPrice, ticketNum).toBigInteger();
 
@@ -154,7 +154,7 @@ public class VoteManager {
                     @Override
                     public TransactionReceipt call() throws Exception {
                         Web3j web3j = Web3jManager.getInstance().getWeb3j();
-                        TicketContract ticketContract = TicketContract.load(web3j, credentials, new DefaultWasmGasProvider());
+                        TicketContract ticketContract = TicketContract.load(web3j, credentials, 106, new DefaultWasmGasProvider());
                         return ticketContract.VoteTicket(new BigInteger(ticketNum), new BigInteger(ticketPrice), candidateId).send();
                     }
                 });

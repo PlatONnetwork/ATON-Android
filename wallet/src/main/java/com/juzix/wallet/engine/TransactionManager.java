@@ -86,7 +86,7 @@ public class TransactionManager {
             RawTransaction rawTransaction = RawTransaction.createTransaction(Web3jManager.getInstance().getNonce(from), GAS_PRICE, GAS_LIMIT, toAddress, amount.toBigInteger(),
                     txType);
 
-            byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
+            byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, new Byte("103"), credentials);
             String hexValue = Numeric.toHexString(signedMessage);
 
             EthSendTransaction transaction = Web3jManager.getInstance().getWeb3j().ethSendRawTransaction(hexValue).send();

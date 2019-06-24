@@ -76,7 +76,7 @@
     <string name="nameOfWallet">输入钱包名称</string>
     <string name="nameOfAddress">输入地址名称</string>
     <string name="addressOfWallet">输入钱包地址</string>
-    <string name="importMnemonicPhraseResume">请将记下的助记词按顺序填入以下表格中，在每个助记词输入完成后按“空格”键可以跳转到下个单词，使用助记词导入的同时需要设定钱包密码，未来需要通过密码验证才能够进行能量发送、备份等操作。</string>
+    <string name="importMnemonicPhraseResume">请将记下的助记词按顺序填入以下表格中，在每个助记词输入完成后按“下一步”键可以跳转到下个单词，使用助记词导入的同时需要设定钱包密码，未来需要通过密码验证才能够进行能量发送、备份等操作。</string>
     <string name="inputMnemonicPhraseTips">请输入助记词，用空格分割</string>
     <string name="importPrivateKeyResume">使用私钥导入的同时需要设置钱包密码，未来需要通过密码验证才能够进行能量发送、备份等操作。</string>
     <string name="inputPrivateKeyTips">请输入私钥</string>
