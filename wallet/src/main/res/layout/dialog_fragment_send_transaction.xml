@@ -45,7 +45,7 @@
         android:id="@+id/tv_amount_unit"
         style="@style/Text.105cfe.16"
         android:layout_marginLeft="6dp"
-        android:text="Energon"
+        android:text="LAT"
         app:layout_constraintBaseline_toBaselineOf="@id/tv_amount"
         app:layout_constraintLeft_toRightOf="@id/tv_amount"
         app:layout_constraintRight_toRightOf="parent"

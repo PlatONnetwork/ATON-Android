@@ -371,7 +371,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
         map.put(string(R.string.type), string(R.string.send_energon));
         map.put(string(R.string.from_wallet), fromWallet);
         map.put(string(R.string.recipient_wallet), recipient);
-        map.put(string(R.string.fee), fee);
+        map.put(string(R.string.fee), string(R.string.amount_with_unit, fee));
         return map;
     }
 

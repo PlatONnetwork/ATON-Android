@@ -45,8 +45,8 @@
     <string name="platONSlogan">Let Us Compute</string>
     <string name="btnCreatewallet">Create Wallet</string>
     <string name="btnImportwallet">Import Wallet</string>
-    <string name="createIndividualWallet">Create Classic Wallet</string>
-    <string name="importIndividualWallet">Import Classic Wallet</string>
+    <string name="createIndividualWallet">Create Wallet</string>
+    <string name="importIndividualWallet">Import Wallet</string>
     <string name="name">Name</string>
     <string name="password">Password</string>
     <string name="password_with_colon">Password：</string>
@@ -109,7 +109,7 @@
     <string name="msg_no_individual_wallet">There is no any Classic Wallet yet</string>
     <string name="transactions">Txn</string>
     <string name="sendATP">Send</string>
-    <string name="actionSendATP">Send</string>
+    <string name="actionSendATP">NEXT</string>
     <string name="action_send_transation">Send</string>
     <string name="action_receive_transation">Receive</string>
     <string name="vote">Vote</string>
@@ -220,7 +220,7 @@
     <string name="slowest_transfer_time">15mins</string>
     <string name="moderate_transfer_time">5mins</string>
     <string name="save">Save</string>
-    <string name="amount_with_unit">%1$s&#160;Energon</string>
+    <string name="amount_with_unit">%1$s&#160;LAT</string>
     <string name="transfer_amount_cannot_be_empty">Amount cannot be empty</string>
     <string name="transfer_amount_exceed_balance">Amount exceed balance</string>
     <string name="insufficient_balance">Insufficient balance</string>
@@ -256,7 +256,7 @@
     <string name="no_transaction_record">No transaction yet</string>
     <string name="figerprintUnlockTips">Touch ID won\'t start, please Unlock with Wallet Password</string>
     <string name="openFigerprintError">Touch ID was disallowed,please check system settings and try again</string>
-    <string name="total_assets">Total Energon</string>
+    <string name="total_assets">Total LAT</string>
     <string name="transfer_succeed">Transfer succeed</string>
     <string name="transfer_failed">Transfer failed</string>
     <string name="input_again">Input again</string>
@@ -272,7 +272,7 @@
     <string name="changeMemberName">Change Member Name</string>
     <string name="transactionConfirmation">Transaction Confirmation</string>
     <string name="totalValue">Value</string>
-    <string name="type">Type</string>
+    <string name="type">Txn info</string>
     <string name="executeContractFee">Execute Contract Fee</string>
     <string name="addSharedWalletSuccess">Joint wallet added successfully</string>Refuse
     <string name="signingConfirmationFailed">Signing confirmation failed</string>
@@ -306,13 +306,13 @@
     <string name="weibo">Weibo</string>
     <string name="qq">QQ</string>
     <string name="all">ALL</string>
-    <string name="balance_text">Balance:&#160;%1$s&#160;Energon</string>
+    <string name="balance_text">Balance:&#160;%1$s&#160;LAT</string>
     <string name="fee">Fee</string>
     <string name="joint_wallet_execution">Joint Wallet Execution</string>
     <string name="create_joint_wallet">Create Joint Wallet</string>
     <string name="fee_of_contract_creation">Fee of Contract Creation</string>
     <string name="fee_of_create_joint_wallet">Fee of Create Joint Wallet</string>
-    <string name="send_energon">Send&#160;Energon</string>
+    <string name="send_energon">Send&#160;LAT</string>
     <string name="can_not_send_to_itself">Do not send to the same address</string>
     <string name="default_main_network">Default main network</string>
     <string name="default_test_network">Default test network</string>
@@ -426,5 +426,8 @@
     <string name="candidate_apply_withdraw">candidateApplyWithdraw</string>
     <string name="candidate_withdraw">candidateWithdraw</string>
     <string name="unknown">unknown</string>
+    <!--Aton0.7.0 -->
+    <string name="guide_tips">Have a wallet? Import using keystore(json), mnemonic phrase, private key.</string>
+
 </resources>
 

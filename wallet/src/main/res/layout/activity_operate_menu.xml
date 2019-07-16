@@ -12,15 +12,28 @@
         android:layout_marginTop="126dp"
         android:src="@drawable/icon_logo_splash" />
 
+    <TextView
+        android:id="@+id/tv_guide_tips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:text="@string/guide_tips"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginBottom="30dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        />
+
     <com.juzix.wallet.component.widget.ShadowContainer
         android:id="@+id/sc_import_wallet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_above="@id/tv_guide_tips"
         android:layout_marginLeft="50dp"
         android:layout_marginTop="12dp"
         android:layout_marginRight="50dp"
-        android:layout_marginBottom="57dp"
         android:orientation="horizontal"
         app:enableShadowColor="@color/color_66969696"
         app:yOffset="1dp">
