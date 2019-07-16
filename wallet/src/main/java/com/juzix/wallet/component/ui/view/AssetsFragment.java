@@ -48,6 +48,7 @@ import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.JZWalletUtil;
+import com.juzix.wallet.utils.StringUtil;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
@@ -447,12 +448,15 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
     @Override
     public void showTotalBalance(double totalBalance) {//显示总资产
-        tvTotalAssetsAmount.setText(totalBalance > 0 ? NumberParserUtils.getPrettyBalance(totalBalance) : "0.00");
+//        tvTotalAssetsAmount.setText(totalBalance > 0 ? NumberParserUtils.getPrettyBalance(totalBalance) : "0.00");
+        tvTotalAssetsAmount.setText(totalBalance > 0 ? StringUtil.formatBalance(totalBalance,false) : "0.00");
     }
 
     @Override
     public void showBalance(double balance) {//当前钱包的资产
-        tvWalletAmount.setText(string(R.string.amount_with_unit, balance > 0 ? NumberParserUtils.getPrettyBalance(balance) : "0.00"));
+//        tvWalletAmount.setText(string(R.string.amount_with_unit, balance > 0 ? NumberParserUtils.getPrettyBalance(balance) : "0.00"));
+        tvWalletAmount.setText(string(R.string.amount_with_unit, balance > 0 ? StringUtil.formatBalance(balance,false) : "0.00"));
+
         if (vpContent.getCurrentItem() == TAB2) {
             SendTransactionFragment sendTransactionFragment = (SendTransactionFragment) mTabAdapter.getItem(TAB2);
             if (sendTransactionFragment != null) {
