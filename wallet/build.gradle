@@ -179,5 +179,8 @@ dependencies {
     implementation rootProject.ext.dependencies["bugly"]
     implementation rootProject.ext.dependencies["SmartRefreshLayout"]
     implementation rootProject.ext.dependencies["SmartRefreshHeader"]
+    //引入glide
+    implementation rootProject.ext.dependencies["glide"]
+    annotationProcessor rootProject.ext.dependencies["glide"]
 
 }
