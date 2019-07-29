@@ -71,6 +71,15 @@
 -keep class vi.com.** {*;}    
 -dontwarn com.baidu.**
 
+#glide
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public class * extends com.bumptech.glide.module.AppGlideModule
+-keep public enum com.bumptech.glide.load.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}
+
+
 #XINGGE
 -keep public class * extends android.app.Service
 -keep public class * extends android.content.BroadcastReceiver

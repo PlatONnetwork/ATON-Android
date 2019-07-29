@@ -38,11 +38,13 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
 
     private final static String TAG = MainActivity.class.getSimpleName();
     private final static String TAG_PROPERTY = "property";
-    private final static String TAG_VOTE = "vote";
+//    private final static String TAG_VOTE = "vote";
+    private final  static  String TAG_DELEGATE="delegate";
     private final static String TAG_ME = "me";
     private final static String TAG_ASSET = "asset";
     public final static int TAB_PROPERTY = 0;
-    public final static int TAB_VOTE = 1;
+//    public final static int TAB_VOTE = 1;
+    public final  static  int TAB_DELEGATE =1;
     public final static int TAB_ME = 2;
     public static final int REQ_ASSETS_TAB_QR_CODE = 0x101;
     public static final int REQ_ASSETS_ADDRESS_QR_CODE = 0x102;
@@ -93,7 +95,8 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
         tabWidget.setDividerDrawable(null);
 
         tabhost.addTab(tabhost.newTabSpec(TAG_PROPERTY).setIndicator(getIndicatorView(R.drawable.bg_nav_property, R.string.nav_property)), AssetsFragment.class, null);
-        tabhost.addTab(tabhost.newTabSpec(TAG_VOTE).setIndicator(getIndicatorView(R.drawable.bg_nav_vote, R.string.nav_vote)), VoteFragment.class, null);
+//        tabhost.addTab(tabhost.newTabSpec(TAG_VOTE).setIndicator(getIndicatorView(R.drawable.bg_nav_vote, R.string.nav_vote)), VoteFragment.class, null);
+        tabhost.addTab(tabhost.newTabSpec(TAG_DELEGATE).setIndicator(getIndicatorView(R.drawable.bg_nav_delegate, R.string.nav_delegate)), DelegateFragment.class, null);
         tabhost.addTab(tabhost.newTabSpec(TAG_ME).setIndicator(getIndicatorView(R.drawable.bg_nav_me, R.string.nav_me)), MeFragment.class, null);
         tabhost.setCurrentTab(mCurIndex);
         tabhost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
@@ -107,8 +110,8 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
     private int getCurIndexByTabId(String tabId) {
         if (TAG_PROPERTY.equals(tabId)) {
             return TAB_PROPERTY;
-        } else if (TAG_VOTE.equals(tabId)) {
-            return TAB_VOTE;
+        } else if (TAG_DELEGATE.equals(tabId)) {
+            return TAB_DELEGATE;
         }
         return TAB_ME;
     }

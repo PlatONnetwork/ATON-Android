@@ -178,6 +178,28 @@
             android:name=".component.ui.view.NodeDetailActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
+        
+        <!--Aton v0.7.0-->
+        <activity
+            android:name=".component.ui.view.DelegateRecordActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".component.ui.view.DelegateDetailActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".component.ui.view.ValidatorsDetailActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".component.ui.view.WithDrawActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".component.ui.view.DelegateActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".component.service.LoopService"

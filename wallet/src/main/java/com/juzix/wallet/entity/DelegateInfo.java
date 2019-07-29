@@ -30,6 +30,12 @@ public class DelegateInfo implements Parcelable {
      */
     private double balance;
 
+    /**
+     * 钱包头像
+     */
+
+    private String walletIcon;
+
 
     public DelegateInfo() {
 
@@ -42,6 +48,7 @@ public class DelegateInfo implements Parcelable {
         delegate = in.readDouble();
         redeem = in.readDouble();
         balance = in.readDouble();
+        walletIcon = in.readString();
     }
 
     @Override
@@ -51,6 +58,7 @@ public class DelegateInfo implements Parcelable {
         dest.writeDouble(delegate);
         dest.writeDouble(redeem);
         dest.writeDouble(balance);
+        dest.writeString(walletIcon);
     }
 
     @Override
@@ -108,5 +116,13 @@ public class DelegateInfo implements Parcelable {
 
     public void setBalance(double balance) {
         this.balance = balance;
+    }
+
+    public String getWalletIcon() {
+        return walletIcon;
+    }
+
+    public void setWalletIcon(String walletIcon) {
+        this.walletIcon = walletIcon;
     }
 }

@@ -40,6 +40,7 @@ public class Constants {
         String EXTRA_CANDIDATE_DEPOSIT = "extra_candidate_deposit";
         String EXTRA_TICKET_PRICE = "extra_ticket_price";
         String EXTRA_VOTE_ACTION = "extra_vote_action";
+        String EXTRA_WALLET_ADDRESS = "extra_wallet_address";
     }
 
     public interface Bundle {

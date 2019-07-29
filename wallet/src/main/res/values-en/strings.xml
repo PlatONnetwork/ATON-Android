@@ -428,6 +428,53 @@
     <string name="unknown">unknown</string>
     <!--Aton0.7.0 -->
     <string name="guide_tips">Have a wallet? Import using keystore(json), mnemonic phrase, private key.</string>
-
+    <string name="nav_delegate">Delegate</string>
+    <string name="total_delegate_title">Total Delegated</string>
+    <string name="total_delegate">%1$s&#160;LAT</string>
+    <string name="delegate_record">Record</string>
+    <string name="tab_my_delegate">My Delegations</string>
+    <string name="tab_validators">Validators</string>
+    <string name="frequently_asked_questions">FAQ</string>
+    <string name="tutorial">Tutorial</string>
+    <string name="delegate_no_data">View all validators, Delegate</string>
+    <string name="record_delegate">Delegation Record</string>
+    <string name="all_record">All</string>
+    <string name="delegate">Delegate</string>
+    <string name="undelegate">Undelegate</string>
+    <string name="no_record">No record</string>
+    <string name="delegate_node_detail">Delegate node details</string>
+    <string name="locked_delegate">Locked delegate</string>
+    <string name="locked_delegate_des">Only locked delegates are rewarded.Un-delegation (i.e. withdrawal) takes immediate effect.but,the delegated LAT takes 6.1 hours to unlock and return to the account.</string>
+    <string name="unlocked_delegate">Unlocked delegate</string>
+    <string name="unlocked_delegate_des">Locked in about 6.1 hours, the unlocked delegate has no reward.Un-delegation (i.e. withdrawal) takes immediate effect.and,the delegated LAT immediately returns to the account.</string>
+    <string name="released_delegate">Released delegate</string>
+    <string name="released_delegate_des">Validator exits, the delegations is automatically released,and need user to withdraw the delegations</string>
+    <string name="validators_rank">RANK</string>
+    <string name="validators_all">All</string>
+    <string name="validators_active">Active</string>
+    <string name="validators_candidate">Candidate</string>
+    <string name="validators_detail">Validator Details</string>
+    <string name="total_staked">Total Staked(LAT)</string>
+    <string name="delegations">Delegations(LAT)</string>
+    <string name="delegators">Delegators</string>
+    <string name="slash">Slash</string>
+    <string name="blocks">Blocks</string>
+    <string name="block_rate">Block rate</string>
+    <string name="introduction">Introduction</string>
+    <string name="website">Website</string>
+    <string name="validators_withdraw">Withdraw</string>
+    <string name="validators_delegate">Delegate</string>
+    <string name="validators_detail_yield">Yield</string>
+    <string name="expected_annualized_rate">Expected annualized rate</string>
+    <string name="expected_annualized_rate_des">The expected annualized rate of the current validator, the Delegation rewards is distributed by the validator</string>
+    <string name="withdraw_tip">The Amount cannot be less than 10 LAT</string>
+    <string name="delegate_node">Note</string>
+    <string name="delegate_node_des">Un-delegation (i.e. withdrawal) LAT, the unlocked \ndelegate LAT and released delegate LAT can\n immediately returns to the account. However,the\n locked delegate LAT takes 6.1 hours to unlock and\n return to the account.\nThe released delegate has to be withdrawal all at once;\nIf the remaining delegations has been less than\n 10LAT, it will be automatically returned all.</string>
+    <string name="delegations_title">Delegations</string>
+    <string name="delegations_title_explain">Delegated LAT can be un-delegated (i.e withdrawal)\n at any time.Locked in about 6.1 hours.Only locked\n delegates are rewarded.Un-delegation takes\n immediate effect.but,the delegated LAT takes 6.1\n hours to unlock and return to the account.</string>
+    <string name="rewards_title">Rewards</string>
+    <string name="rewards_title_explain">Delegation rewards come from validation block\n reward,staking reward and transaction fees.Reward\n assigned by validator.For details on how to assign,\n please see the official website description of each validator.</string>
+    <string name="risk_title">Risk</string>
+    <string name="risk_title_explain">No risk.</string>
 </resources>
 

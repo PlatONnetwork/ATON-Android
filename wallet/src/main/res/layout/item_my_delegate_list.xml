@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center">
+
+
+    <LinearLayout
+        android:id="@+id/ll_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/icon_my_delegate_item_bg">
+
+            <com.scwang.smartrefresh.header.material.CircleImageView
+                android:id="@+id/iv_total_delegate"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginTop="11dp"
+                android:layout_marginBottom="7dp"
+                android:src="@drawable/icon_total_delegate" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/iv_total_delegate"
+                android:layout_toRightOf="@id/iv_total_delegate"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_item_wallet_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="钱包名称"
+                    android:textColor="@color/color_000000"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/tv_item_wallet_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="7dp"
+                    android:layout_marginBottom="12dp"
+                    android:text="oxdfaskdfasdfasd"
+                    android:textColor="@color/color_61646e"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_item_wallet_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
+                android:layout_marginRight="10dp"
+                android:drawablePadding="3dp"
+                android:text="5235.505"
+                android:textColor="@color/color_000000"
+                android:textSize="16sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_mydelegate_item">
+
+            <LinearLayout
+                android:id="@+id/ll_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginBottom="9dp"
+                    android:text="委托"
+                    android:textColor="@color/color_898c9e"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tv_item_delegate_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
+                    android:text="16545455.645"
+                    android:textColor="@color/color_000000"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="12dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginBottom="9dp"
+                    android:text="赎回中"
+                    android:textColor="@color/color_898c9e"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tv_item_withdrawing"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
+                    android:text="16545455.645"
+                    android:textColor="@color/color_000000"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
+                android:layout_marginRight="10dp"
+                android:drawableRight="@drawable/icon_right"
+                android:drawablePadding="3dp"
+                android:gravity="center"
+                android:text="详情" />
+
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+
+</LinearLayout>
