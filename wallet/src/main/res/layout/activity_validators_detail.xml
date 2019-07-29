@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_f9fbff"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <com.juzix.wallet.component.widget.CommonTitleBar
+        android:id="@+id/commonTitleBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:ctb_left_drawable="@drawable/icon_back_black"
+        app:ctb_title="@string/validators_detail" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/commonTitleBar"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="10dp"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/icon_my_delegate_item_bg">
+
+            <com.juzix.wallet.component.widget.CircleImageView
+                android:id="@+id/iv_url"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="3dp"
+                android:layout_marginBottom="18dp"
+                android:src="@drawable/icon_validators_default" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_toRightOf="@id/iv_url"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    >
+
+                    <TextView
+                        android:id="@+id/tv_detail_node_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="6dp"
+                        android:text="jiang"
+                        android:textColor="@color/color_000000"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/tv_detail_node_state"
+                        android:layout_width="51dp"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_validators_state"
+                        android:paddingLeft="8dp"
+                        android:text="active"
+                        android:textColor="@color/color_4a90e2"
+                        android:textSize="11sp" />
+
+                    <ImageView
+                        android:id="@+id/iv_detail_node_link"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/icon_link"
+                        android:layout_gravity="center_vertical"
+                        android:paddingRight="20dp"
+                        android:layout_marginLeft="7dp"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="9dp"
+                    android:orientation="horizontal">
+
+                    <!--<TextView-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginRight="6dp"-->
+                        <!--android:text="staked"-->
+                        <!--android:textColor="@color/color_61646e"-->
+                        <!--android:textSize="12sp" />-->
+
+                    <TextView
+                        android:id="@+id/tv_detail_node_address"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="1644848.10552"
+                        android:textColor="@color/color_000000"
+                        android:textSize="13sp" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="21dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="21dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_detail_rate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="2dp"
+                    android:text="12.30%"
+                    android:textColor="@color/color_105cfe"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/validators_detail_yield"
+                    android:textColor="@color/color_898c9e"
+                    android:textSize="11sp" />
+
+            </LinearLayout>
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_mydelegate_item"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="14dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/total_staked"
+                    android:textColor="@color/color_898c9e"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tv_total_staked"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="9dp"
+                    android:text="12"
+                    android:textColor="@color/color_000000"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:text="@string/delegators"
+                    android:textColor="@color/color_898c9e"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tv_delegators"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="9dp"
+                    android:text="xxxx"
+                    android:textColor="@color/color_000000"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:text="@string/blocks"
+                    android:textColor="@color/color_898c9e"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tv_blocks"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="9dp"
+                    android:layout_marginBottom="15dp"
+                    android:text="18"
+                    android:textColor="@color/color_000000"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/delegations"
+                    android:textColor="@color/color_898c9e"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tv_delegations"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="9dp"
+                    android:text="12"
+                    android:textColor="@color/color_000000"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:text="@string/slash"
+                    android:textColor="@color/color_898c9e"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tv_slash"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="9dp"
+                    android:text="12"
+                    android:textColor="@color/color_000000"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:text="@string/block_rate"
+                    android:textColor="@color/color_898c9e"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tv_block_rate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="9dp"
+                    android:layout_marginBottom="15dp"
+                    android:text="90%"
+                    android:textColor="@color/color_000000"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/introduction"
+            android:textColor="@color/color_61646e"
+            android:layout_marginLeft="6dp"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tv_detail_introduction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="fasdfasdfasdfa"
+            android:textColor="@color/color_000000"
+            android:layout_marginLeft="6dp"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/website"
+            android:textColor="@color/color_61646e"
+            android:layout_marginLeft="6dp"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tv_detail_website"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="fasdfasdfasdfa"
+            android:layout_marginLeft="6dp"
+            android:textColor="@color/color_105cfe"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/ll_guide"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginBottom="30dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/ll_validators_withdraw"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="15dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_main_button"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/icon_validators_detail_withdraw" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/validators_withdraw"
+                android:textColor="@color/color_ffffff"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_validators_delegate"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="15dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_main_button"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/icon_validators_detail_delegate" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/validators_delegate"
+                android:textColor="@color/color_ffffff"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</RelativeLayout>

@@ -113,6 +113,21 @@ public class WalletManager {
     }
 
     /**
+     * 获取钱包头像
+     */
+    public String getWalletIconByWalletAddress(String walletAddress) {
+        if (!mWalletList.isEmpty()) {
+            for (Wallet walletEntity : mWalletList) {
+                if (!TextUtils.isEmpty(walletAddress) && walletAddress.equals(walletEntity.getPrefixAddress())) {
+                    return walletEntity.getAvatar();
+                }
+
+            }
+        }
+        return null;
+    }
+
+    /**
      * 获取第一个有效的(余额大于0)个人钱包，
      *
      * @return

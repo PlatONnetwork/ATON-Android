@@ -437,8 +437,54 @@
     <string name="release_to_load">释放立即加载</string>
     <string name="refreshing_footer">正在刷新...</string>
 
-   <!--ATON0.7.0-->
+    <!--ATON0.7.0-->
     <string name="guide_tips">已有钱包？使用钱包文件(json)、助记词、私钥导入</string>
-    
-    
+    <string name="nav_delegate">委托</string>
+    <string name="total_delegate_title">总计委托</string>
+    <string name="total_delegate">%1$s&#160;LAT</string>
+    <string name="delegate_record">委托记录</string>
+    <string name="tab_my_delegate">我的委托</string>
+    <string name="tab_validators">验证节点</string>
+    <string name="frequently_asked_questions">常见问题</string>
+    <string name="tutorial">使用教程</string>
+    <string name="delegate_no_data">查看验证节点，参与委托</string>
+    <string name="record_delegate">委托记录</string>
+    <string name="all_record">全部</string>
+    <string name="delegate">委托</string>
+    <string name="undelegate">赎回委托</string>
+    <string name="no_record">暂无记录</string>
+    <string name="delegate_node_detail">委托节点详情</string>
+    <string name="locked_delegate">已锁定委托</string>
+    <string name="locked_delegate_des">锁定的委托才有收益，赎回锁定的委托大约在6.1小时内到账。</string>
+    <string name="unlocked_delegate">未锁定委托</string>
+    <string name="unlocked_delegate_des">委托大约在6.1小时内完成锁定，未锁定的委托没有收益，赎回的委托立即到账。</string>
+    <string name="released_delegate">已解除委托</string>
+    <string name="released_delegate_des">验证节点退出，委托自动解除，需要主动赎回委托。</string>
+    <string name="validators_rank">排名</string>
+    <string name="validators_all">所有</string>
+    <string name="validators_active">活跃中</string>
+    <string name="validators_candidate">候选中</string>
+    <string name="validators_detail">节点详情</string>
+    <string name="total_staked">总质押(LAT)</string>
+    <string name="delegations">接受委托</string>
+    <string name="delegators">委托者</string>
+    <string name="slash">处罚次数</string>
+    <string name="blocks">已出块数</string>
+    <string name="block_rate">出块率</string>
+    <string name="introduction">简介</string>
+    <string name="website">官网</string>
+    <string name="validators_withdraw">赎回</string>
+    <string name="validators_delegate">委托</string>
+    <string name="validators_detail_yield">预计年化率</string>
+    <string name="expected_annualized_rate">预计年化率</string>
+    <string name="expected_annualized_rate_des">当前节点的预计年化率，具体委托收益由节点分配</string>
+    <string name="withdraw_tip">委托数量不能少于10LAT</string>
+    <string name="delegate_node">说明</string>
+    <string name="delegate_node_des">赎回委托的Token，未锁定的委托和已解除委托可立即到账，\n已锁定的委托大约等待6.1小时才能到账;\n已解除委托必须一次性全部赎回；\n赎回数量扣除后，已委托剩余数量少于10LAT时，自动赎回全部。</string>
+    <string name="delegations_title">委托</string>
+    <string name="delegations_title_explain">委托的Token可以随时赎回，委托后大约在6.1小时内完成锁定，锁定后可以参与节点收益分配，但是赎回锁定的委托大约等待6.1小时才能到账;</string>
+    <string name="rewards_title">收益</string>
+    <string name="rewards_title_explain">委托收益来自节点的收益分配，节点收益主要有出块奖励、质押奖励和区块手续费奖励。具体如何分配请查看各节点官网说明。</string>
+    <string name="risk_title">风险</string>
+    <string name="risk_title_explain">委托没有任何风险。</string>
 </resources>
