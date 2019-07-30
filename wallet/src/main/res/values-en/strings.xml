@@ -476,5 +476,11 @@
     <string name="rewards_title_explain">Delegation rewards come from validation block\n reward,staking reward and transaction fees.Reward\n assigned by validator.For details on how to assign,\n please see the official website description of each validator.</string>
     <string name="risk_title">Risk</string>
     <string name="risk_title_explain">No risk.</string>
+    <string name="node_locked_delegate">Locked delegate</string>
+    <string name="node_unlocked_delegate">Unlocked delegate</string>
+    <string name="node_released_delegate">Released delegate</string>
+    <string name="node_undelegating">Undelegating</string>
+    <string name="node_move_out">Move out</string>
+    <string name="node_withdraw_delegate">Withdraw</string>
 </resources>
 

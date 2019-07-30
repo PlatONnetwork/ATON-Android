@@ -49,6 +49,17 @@ public class DelegateRecord implements Parcelable, Comparable<DelegateRecord> {
      */
     private String delegateStatus;
 
+    /**
+     * 钱包头像
+     */
+
+    private String walletIcon;
+
+    /**
+     * 钱包名称
+     */
+
+    private String walletName;
 
     public DelegateRecord() {
 
@@ -118,6 +129,22 @@ public class DelegateRecord implements Parcelable, Comparable<DelegateRecord> {
         this.delegateStatus = delegateStatus;
     }
 
+    public String getWalletIcon() {
+        return walletIcon;
+    }
+
+    public void setWalletIcon(String walletIcon) {
+        this.walletIcon = walletIcon;
+    }
+
+    public String getWalletName() {
+        return walletName;
+    }
+
+    public void setWalletName(String walletName) {
+        this.walletName = walletName;
+    }
+
     protected DelegateRecord(Parcel in) {
         delegateTime = in.readString();
         url = in.readString();
@@ -127,6 +154,8 @@ public class DelegateRecord implements Parcelable, Comparable<DelegateRecord> {
         number = in.readDouble();
         sequence = in.readInt();
         delegateStatus = in.readString();
+        walletAddress = in.readString();
+        walletName = in.readString();
     }
 
     @Override
@@ -139,6 +168,8 @@ public class DelegateRecord implements Parcelable, Comparable<DelegateRecord> {
         dest.writeDouble(number);
         dest.writeInt(sequence);
         dest.writeString(delegateStatus);
+        dest.writeString(walletIcon);
+        dest.writeString(walletAddress);
     }
 
     @Override

@@ -101,7 +101,7 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        DelegateDetailActivity.actionStart(getContext(), "");
+                        DelegateDetailActivity.actionStart(getContext(), "", "", "");
                     }
                 });
 
@@ -116,9 +116,9 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
         list_delegate.setEnabled(true);
         mMyDelegateAdapter.setOnItemClickListener(new MyDelegateAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(String walletAddress) {
+            public void onItemClick(String walletAddress, String walletName, String walletIcon) {
                 //跳转到委托详情页
-                DelegateDetailActivity.actionStart(getContext(), walletAddress);
+                DelegateDetailActivity.actionStart(getContext(), walletAddress, walletName, walletIcon);
             }
         });
 
@@ -140,6 +140,9 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
     public void showMyDelegateData(List<DelegateInfo> list) {
         if (list != null && list.size() > 0) {
             mMyDelegateAdapter.notifyDataChanged(list);
+            ll_no_data.setVisibility(View.GONE);
+        } else {
+            ll_no_data.setVisibility(View.VISIBLE);
         }
 
         refreshLayout.finishRefresh();
@@ -157,6 +160,7 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
     @Override
     public void showMyDelegateDataFailed() {
         refreshLayout.finishRefresh();
+        mMyDelegateAdapter.notifyDataSetChanged();
     }
 
     @Override

@@ -487,4 +487,10 @@
     <string name="rewards_title_explain">委托收益来自节点的收益分配，节点收益主要有出块奖励、质押奖励和区块手续费奖励。具体如何分配请查看各节点官网说明。</string>
     <string name="risk_title">风险</string>
     <string name="risk_title_explain">委托没有任何风险。</string>
+    <string name="node_locked_delegate">已锁定委托</string>
+    <string name="node_unlocked_delegate">未锁定委托</string>
+    <string name="node_released_delegate">已解除委托</string>
+    <string name="node_undelegating">赎回中委托</string>
+    <string name="node_move_out">移除列表</string>
+    <string name="node_withdraw_delegate">赎回委托</string>
 </resources>
