@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.DelegateContract;
@@ -91,8 +92,11 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     }
 
 
-    public static void actionStart(Context context) {
+    public static void actionStart(Context context, String nodeAddress, String nodeName, String nodeIcon) {
         Intent intent = new Intent(context, DelegateActivity.class);
+        intent.putExtra(Constants.Extra.EXTRA_NODE_ADDRESS,nodeAddress);
+        intent.putExtra(Constants.Extra.EXTRA_NODE_NAME,nodeName);
+        intent.putExtra(Constants.Extra.EXTRA_NODE_ICON,nodeIcon);
         context.startActivity(intent);
     }
 

@@ -92,7 +92,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        WithDrawActivity.actionStart(getContext());
+                        WithDrawActivity.actionStart(getContext(),"","","");
                     }
                 });
 
@@ -102,7 +102,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
 
                     @Override
                     public void accept(Object o) {
-                        DelegateActivity.actionStart(getContext());
+                        DelegateActivity.actionStart(getContext(),"","","");
                     }
                 });
 

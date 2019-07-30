@@ -16,6 +16,7 @@ import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.adapter.base.ViewHolder;
 import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.entity.DelegateInfo;
+import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
 
@@ -24,6 +25,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.functions.Consumer;
 
 /**
  * 我的委托adapter
@@ -51,18 +53,18 @@ public class MyDelegateAdapter extends RecyclerView.Adapter<MyDelegateAdapter.Vi
         DelegateInfo info = infoList.get(position);
         holder.walletIcon.setImageResource(RUtils.drawable(info.getWalletIcon()));
         holder.walletName.setText(info.getWalletName());
-        holder.walletAddress.setText(info.getWalletAddress());
+        holder.walletAddress.setText(AddressFormatUtil.formatAddress(info.getWalletAddress()));
         holder.delegateNumber.setText(info.getDelegate() > 0 ? StringUtil.formatBalance(info.getDelegate(), false) : "0.00");
         holder.withdrawNumber.setText(info.getRedeem() > 0 ? StringUtil.formatBalance(info.getRedeem(), false) : "0.00");
         holder.walletAmount.setText(info.getBalance() > 0 ? StringUtil.formatBalance(info.getBalance(), false) : "0.00");
 
         RxView.clicks(holder.itemView)
                 .compose(RxUtils.getSchedulerTransformer())
-                .subscribe(new CustomObserver<Object>() {
+                .subscribe(new Consumer<Object>() {
                     @Override
                     public void accept(Object o) {
                         if (mOnItemClickListener != null) {
-                            mOnItemClickListener.onItemClick(info.getWalletAddress());
+                            mOnItemClickListener.onItemClick(info.getWalletAddress(), info.getWalletName(), info.getWalletIcon());
                         }
                     }
                 });
@@ -113,7 +115,7 @@ public class MyDelegateAdapter extends RecyclerView.Adapter<MyDelegateAdapter.Vi
     }
 
     public interface OnItemClickListener {
-        void onItemClick(String walletAddress);
+        void onItemClick(String walletAddress, String walletName, String walletIcon);
 
     }
 }

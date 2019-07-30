@@ -36,6 +36,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tv_name_node"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="3dp"
@@ -44,6 +45,7 @@
                     android:textSize="15sp" />
 
                 <TextView
+                    android:id="@+id/tv_address_node"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="委托节点地址"
@@ -63,6 +65,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tv_number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
@@ -72,6 +75,7 @@
                     android:textSize="16sp" />
 
                 <TextView
+                    android:id="@+id/tv_state"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
@@ -90,6 +94,7 @@
             android:background="@drawable/bg_mydelegate_item">
 
             <TextView
+                android:id="@+id/tv_delegate_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -105,7 +110,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="10dp">
 
-                <ImageView
+                <com.juzix.wallet.component.widget.CircleImageView
                     android:id="@+id/iv_wallet"
                     android:layout_width="20dp"
                     android:layout_height="20dp"

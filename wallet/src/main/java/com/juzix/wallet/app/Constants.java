@@ -41,6 +41,10 @@ public class Constants {
         String EXTRA_TICKET_PRICE = "extra_ticket_price";
         String EXTRA_VOTE_ACTION = "extra_vote_action";
         String EXTRA_WALLET_ADDRESS = "extra_wallet_address";
+        String EXTRA_WALLET_ICON = "extra_wallet_icon";
+        String EXTRA_NODE_ADDRESS = "extra_node_address";
+        String EXTRA_NODE_ICON = "extra_node_icon";
+        String EXTRA_NODE_NAME = "extra_node_name";
     }
 
     public interface Bundle {
@@ -107,7 +111,7 @@ public class Constants {
         String REQUEST_DIRECTION = "old";//请求参数传递的方向
         int LIST_SIZE = 10; //请求列表大小
         int NEWEST_DATA = -1; //请求最新的数据
-
+        String REFRESH_DIRECTION = "new";//最新数据的方法
     }
 
     public interface DBName {
@@ -115,5 +119,13 @@ public class Constants {
         String PORTAL = "portal";
         //2019/5/15
         int VERSION = 106;
+    }
+
+    public interface DelegateRecordType {
+        String All = "all";
+        String REDEEM = "redeem";
+        String DELEGATE = "delegate";
+
+
     }
 }

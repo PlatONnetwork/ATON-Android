@@ -3,6 +3,11 @@ package com.juzix.wallet.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.juzix.wallet.db.entity.DelegateAddressEntity;
+import com.juzix.wallet.db.entity.WalletEntity;
+
+import java.util.Objects;
+
 public class DelegateDetail implements Parcelable {
     /**
      * 投票节点Id（节点地址 ）
@@ -152,16 +157,16 @@ public class DelegateDetail implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-         dest.writeString(noadeId);
-         dest.writeString(nodeName);
-         dest.writeString(nodeStatus);
-         dest.writeString(website);
-         dest.writeString(url);
-         dest.writeDouble(redeem);
-         dest.writeDouble(locked);
-         dest.writeDouble(released);
-         dest.writeDouble(unLocked);
-         dest.writeInt(sequence);
+        dest.writeString(noadeId);
+        dest.writeString(nodeName);
+        dest.writeString(nodeStatus);
+        dest.writeString(website);
+        dest.writeString(url);
+        dest.writeDouble(redeem);
+        dest.writeDouble(locked);
+        dest.writeDouble(released);
+        dest.writeDouble(unLocked);
+        dest.writeInt(sequence);
     }
 
     @Override
@@ -180,4 +185,18 @@ public class DelegateDetail implements Parcelable {
             return new DelegateDetail[size];
         }
     };
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DelegateDetail that = (DelegateDetail) o;
+        return Objects.equals(noadeId, that.noadeId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(noadeId);
+    }
+
 }
