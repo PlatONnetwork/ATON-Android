@@ -176,7 +176,9 @@
     <string name="msg_balance">Balance</string>
     <string name="delete_wallet">Delete</string>
     <string name="scan_qr_code">Scan</string>
-    <string name="scan_qr_code_tips">Auto-scan in the frame</string>
+    <string name="scan_qr_code_tips">Align the QR Code within the frame to scan</string>
+    <string name="open_flash_tips">Tap to turn light on</string>
+    <string name="close_flash_tips">Tap to turn light off</string>
     <string name="scan_qr_code_open_lights_failed">No flash for the time being</string>
     <string name="scan_qr_code_failed_tips">Failed to scan</string>
     <string name="scan_qr_code_failed_tips1">Unable to identify qr code</string>
@@ -418,8 +420,22 @@
     <string name="node_exit_consensus">Node has exited consensus,voting failed</string>
     <string name="recipient_wallet">To</string>
     <string name="transfer">transfer</string>
-    <string name="mpc_transaction">MPCtransaction</string>
-    <string name="contract_create">contractCreate</string>
+    <string name="mpc_transaction">MPCTx</string>
+    <string name="create_validator">CreateValidator</string>
+    <string name="edit_validator">EditValidator</string>
+    <string name="increase_staking">IncreaseStaking</string>
+    <string name="exit_validator">ExitValidator</string>
+    <string name="delegate">Delegate</string>
+    <string name="undelegate">Undelegate</string>
+    <string name="create_proposal">CreateProposal</string>
+    <string name="voting_proposal">VotingProposal</string>
+    <string name="declare_version">DeclareVersion</string>
+    <string name="report_validator">ReportValidator</string>
+    <string name="create_restricting">CreateRestricting</string>
+    <string name="contract_creation">ContractCreation</string>
+    <string name="contract_execution">ContractExecution</string>
+    <string name="other_income">OtherIncome</string>
+    <string name="other_expenses">OtherExpenses</string>
     <string name="vote_ticket">voteTicket</string>
     <string name="transaction_execute">transactionExecute</string>
     <string name="candidate_deposit">candidateDeposit</string>
@@ -428,6 +444,22 @@
     <string name="unknown">unknown</string>
     <!--Aton0.7.0 -->
     <string name="guide_tips">Have a wallet? Import using keystore(json), mnemonic phrase, private key.</string>
+    <string name="restricted_amount_with_unit">(&#160;&#160;Restricted:&#160;%1$s&#160;LAT)</string>
+    <string name="restricted_amount_tips">Non tradable LAT，but can be delegated</string>
+
+
+    <string name="msg_hundred">hundred</string>
+    <string name="msg_thousand">thousand</string>
+    <string name="msg_ten_thousand">ten thousand</string>
+    <string name="msg_hundred_thousand">hundred thousand</string>
+    <string name="msg_million">million</string>
+    <string name="msg_ten_million">ten million</string>
+    <string name="msg_hundred_million">hundred million</string>
+    <string name="msg_billion">billion</string>
+    <string name="msg_ten_billion">ten  billion</string>
+    <string name="msg_hundred_billion">hundred billion</string>
+    <string name="msg_trillion">trillion</string>
+
 
 </resources>
 

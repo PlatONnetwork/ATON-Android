@@ -41,7 +41,7 @@
             android:layout_toRightOf="@id/iv_item2_icon"
             android:lines="1"
             android:textColor="@color/color_b6bbd0"
-            android:textSize="12sp"
+            android:textSize="13sp"
             tools:text="walletName" />
 
         <View

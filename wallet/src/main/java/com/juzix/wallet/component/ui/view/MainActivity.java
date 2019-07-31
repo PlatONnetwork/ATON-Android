@@ -182,7 +182,7 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
         Intent intent = new Intent(context, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);
-        ((Activity)context).finish();
+        ((Activity) context).finish();
     }
 
     public static void actionStart(Context context) {

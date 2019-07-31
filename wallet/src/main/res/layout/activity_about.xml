@@ -12,8 +12,8 @@
     <com.juzix.wallet.component.widget.CommonTitleBar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:ctb_left_drawable="@drawable/icon_back_black"
-        app:ctb_title="@string/about" />
+        app:ctb_title="@string/about"
+        tools:ctb_left_drawable="@drawable/icon_back_black" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -44,6 +44,7 @@
             android:divider="@drawable/bg_transation_list_divider"
             android:orientation="vertical"
             android:showDividers="middle">
+
             <TextView
                 android:id="@+id/tv_about_us"
                 style="@style/Text.000.14"
@@ -59,24 +60,27 @@
                 android:layout_height="60dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
+
                 <TextView
+                    style="@style/Text.000.14"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="left"
                     android:layout_weight="1"
-                    style="@style/Text.000.14"
-                    android:text="@string/versionUpdate"/>
+                    android:gravity="left"
+                    android:text="@string/versionUpdate" />
+
                 <View
                     android:id="@+id/v_new_msg"
                     android:layout_width="6dp"
                     android:layout_height="6dp"
-                    android:background="@drawable/bg_red_point"/>
+                    android:background="@drawable/bg_red_point" />
+
                 <TextView
                     android:id="@+id/tv_update"
                     style="@style/Text.61646e.14"
-                    android:layout_marginLeft="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
                     android:drawableRight="@drawable/icon_right_arrow"
                     android:text="@string/versionUpdate" />
             </LinearLayout>

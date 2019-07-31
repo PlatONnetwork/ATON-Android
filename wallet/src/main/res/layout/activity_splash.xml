@@ -13,13 +13,15 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:src="@drawable/icon_logo_splash"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"/>
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <TextView
+        android:id="@+id/tv_logo"
         style="@style/Text.000.12"
         android:layout_marginBottom="23dp"
         android:text="@string/copyright_resume"

@@ -19,6 +19,8 @@ package com.google.zxing.view;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapRegionDecoder;
 import android.graphics.Canvas;
 import android.graphics.ComposeShader;
 import android.graphics.LinearGradient;
@@ -29,6 +31,8 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.SweepGradient;
+import android.graphics.drawable.BitmapDrawable;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -47,36 +51,42 @@ import java.util.concurrent.CopyOnWriteArraySet;
  */
 public final class ViewfinderView extends View {
 
-    private static final int[] SCANNER_ALPHA              = {0, 64, 128, 192, 255, 192, 128, 64};
-    private static final long  ANIMATION_DELAY            = 10L;
-    private static final int   OPAQUE                     = 0xFF;
-    private static final int   CORNER_RECT_WIDTH          = 12;  //扫描区边角的宽
-    private static final int   CORNER_RECT_HEIGHT         = 80; //扫描区边角的高
-    private static final int   SCANNER_LINE_MOVE_DISTANCE = 5;  //扫描线移动距离
-    private static final int   SCANNER_LINE_HEIGHT        = 10;  //扫描线宽度
+    private static final int[] SCANNER_ALPHA = {0, 64, 128, 192, 255, 192, 128, 64};
+    private static final long ANIMATION_DELAY = 10L;
+    private static final int OPAQUE = 0xFF;
+    private static final int CORNER_RECT_WIDTH = 12;  //扫描区边角的宽
+    private static final int CORNER_RECT_HEIGHT = 80; //扫描区边角的高
+    private static final int SCANNER_LINE_MOVE_DISTANCE = 5;  //扫描线移动距离
+    private static final int SCANNER_LINE_HEIGHT = 10;  //扫描线宽度
 
-    private final Paint  paint;
-    private       Bitmap resultBitmap;
+    private final Paint paint;
+    private Bitmap resultBitmap;
     //模糊区域颜色
-    private final int    maskColor;
-    private final int    resultColor;
+    private final int maskColor;
+    private final int resultColor;
     //扫描区域边框颜色
-    private final int    frameColor;
+    private final int frameColor;
     //扫描线颜色
-    private final int    laserColor;
+    private final int laserColor;
     //四角颜色
-    private final int    cornerColor;
+    private final int cornerColor;
     //扫描点的颜色
-    private final int    resultPointColor;
-    private       int    scannerAlpha;
+    private final int resultPointColor;
+    private int scannerAlpha;
     //扫描区域提示文本
     private final String labelText;
     //扫描区域提示文本颜色
-    private final int    labelTextColor;
-    private final float  labelTextSize;
+    private final int labelTextColor;
+    private final float labelTextSize;
+
+    //扫描区域提示文本
+    private final String flashLabelText;
+    //扫描区域提示文本颜色
+    private final int flashLabelTextColor;
+    private final float flashLabelTextSize;
 
     public static int scannerStart = 0;
-    public static int scannerEnd   = 0;
+    public static int scannerEnd = 0;
 
     private CopyOnWriteArraySet<ResultPoint> possibleResultPoints;
     private CopyOnWriteArraySet<ResultPoint> lastPossibleResultPoints;
@@ -93,9 +103,14 @@ public final class ViewfinderView extends View {
         resultPointColor = array.getColor(R.styleable.ViewfinderView_result_point_color, 0xC0FFFF00);
         maskColor = array.getColor(R.styleable.ViewfinderView_mask_color, 0x60000000);
         resultColor = array.getColor(R.styleable.ViewfinderView_result_color, 0xB0000000);
+
         labelTextColor = array.getColor(R.styleable.ViewfinderView_label_text_color, 0x90FFFFFF);
         labelText = array.getString(R.styleable.ViewfinderView_label_text);
         labelTextSize = array.getFloat(R.styleable.ViewfinderView_label_text_size, 36f);
+
+        flashLabelTextColor = array.getColor(R.styleable.ViewfinderView_flash_label_text_color, 0x90FFFFFF);
+        flashLabelText = array.getString(R.styleable.ViewfinderView_flash_label_text);
+        flashLabelTextSize = array.getFloat(R.styleable.ViewfinderView_flash_label_text_size, 36f);
 
         // Initialize these once for performance rather than calling them every time in onDraw().
         paint = new Paint();
@@ -117,11 +132,10 @@ public final class ViewfinderView extends View {
             scannerEnd = frame.bottom;
         }
 
-        int width  = canvas.getWidth();
+        int width = canvas.getWidth();
         int height = canvas.getHeight();
         // Draw the exterior (i.e. outside the framing rect) darkened
         drawExterior(canvas, frame, width, height);
-
 
         if (resultBitmap != null) {
             // Draw the opaque result bitmap over the scanning rectangle
@@ -132,10 +146,14 @@ public final class ViewfinderView extends View {
             drawFrame(canvas, frame);
             // 绘制边角
             drawCorner(canvas, frame);
-            //绘制提示信息
-            drawTextInfo(canvas, frame);
             // Draw a red "laser scanner" line through the middle to show decoding is active
             drawLaserScanner(canvas, frame);
+            //绘制提示信息
+            drawTextInfo(canvas, frame);
+            //绘制点亮信息
+            drawFlashText(canvas, frame);
+            //绘制手电筒
+            drawFlashLight(canvas,frame);
 
 
             CopyOnWriteArraySet<ResultPoint> currentPossible = possibleResultPoints;
@@ -171,7 +189,23 @@ public final class ViewfinderView extends View {
         paint.setColor(labelTextColor);
         paint.setTextSize(labelTextSize);
         paint.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText(labelText, frame.left + frame.width() / 2, frame.top - CORNER_RECT_HEIGHT * 0.9f, paint);
+        canvas.drawText(labelText, frame.left + frame.width() / 2, frame.bottom + dp2px(getContext(), 18f), paint);
+    }
+
+    //绘制手电筒文本
+    private void drawFlashText(Canvas canvas, Rect frame) {
+        paint.setColor(flashLabelTextColor);
+        paint.setTextSize(flashLabelTextSize);
+        paint.setTextAlign(Paint.Align.CENTER);
+        canvas.drawText(flashLabelText, frame.left + frame.width() / 2, frame.bottom - dp2px(getContext(), 6f), paint);
+    }
+
+    //绘制手电筒
+    private void drawFlashLight(Canvas canvas, Rect frame) {
+//        paint.setTextAlign(Paint.Align.CENTER);
+//        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.icon_flash_on);
+//        Rect rect = new Rect(frame.left + frame.width() / 2, frame.bottom - dp2px(getContext(), 26f) - bitmap.getHeight(), frame.left + frame.width() / 2 + bitmap.getWidth(), frame.bottom - dp2px(getContext(), 26f));
+//        canvas.drawBitmap(bitmap, null, rect, paint);
     }
 
 
@@ -240,7 +274,7 @@ public final class ViewfinderView extends View {
 
     //处理颜色模糊
     public int shadeColor(int color) {
-        String hax    = Integer.toHexString(color);
+        String hax = Integer.toHexString(color);
         String result = "20" + hax.substring(2);
         return Integer.valueOf(result, 16);
     }
@@ -285,6 +319,14 @@ public final class ViewfinderView extends View {
 
     public void addPossibleResultPoint(ResultPoint point) {
         possibleResultPoints.add(point);
+    }
+
+    /**
+     * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
+     */
+    public static int dp2px(Context context, float dpValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
     }
 
 }

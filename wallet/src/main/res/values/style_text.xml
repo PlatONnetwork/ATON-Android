@@ -51,6 +51,10 @@
         <item name="android:textSize">14sp</item>
     </style>
 
+    <style name="Text.000.15">
+        <item name="android:textSize">15sp</item>
+    </style>
+
     <style name="Text.000.16">
         <item name="android:textSize">16sp</item>
     </style>

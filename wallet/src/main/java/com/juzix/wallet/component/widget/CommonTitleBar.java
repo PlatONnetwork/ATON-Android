@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -267,7 +268,7 @@ public class CommonTitleBar extends LinearLayout {
         if (leftDrawable == null) {
             ivLeft.setVisibility(GONE);
         } else {
-            ivLeft.setBackgroundDrawable(leftDrawable);
+            ivLeft.setImageDrawable(leftDrawable);
             ivLeft.setVisibility(VISIBLE);
         }
     }
@@ -289,6 +290,12 @@ public class CommonTitleBar extends LinearLayout {
         } else {
             ivRight.setImageResource(rightImage);
             ivRight.setVisibility(VISIBLE);
+            ivRight.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
         }
     }
 
@@ -316,6 +323,21 @@ public class CommonTitleBar extends LinearLayout {
                         public void accept(Object object) throws Exception {
                             if (listener != null) {
                                 listener.onClick(ivRight);
+                            }
+                        }
+                    });
+        }
+    }
+
+    public void setRightTextClickListener(OnClickListener listener) {
+        if (tvRight.getVisibility() == VISIBLE) {
+            RxView.clicks(tvRight)
+                    .throttleFirst(500, TimeUnit.MILLISECONDS)
+                    .subscribe(new Consumer<Object>() {
+                        @Override
+                        public void accept(Object object) throws Exception {
+                            if (listener != null) {
+                                listener.onClick(tvRight);
                             }
                         }
                     });

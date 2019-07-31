@@ -15,7 +15,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -37,12 +36,12 @@ import com.juzix.wallet.component.ui.presenter.SendTransationPresenter;
 import com.juzix.wallet.component.widget.PointLengthFilter;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.component.widget.bubbleSeekBar.BubbleSeekBar;
+import com.juzix.wallet.db.sqlite.WalletDao;
 import com.juzix.wallet.entity.Address;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.BigDecimalUtil;
-import com.juzix.wallet.utils.CommonUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.ToastUtil;
@@ -62,6 +61,18 @@ import io.reactivex.functions.Consumer;
  * @author matrixelement
  */
 public class SendTransactionFragment extends MVPBaseFragment<SendTransationPresenter> implements SendTransationContract.View {
+
+    private final static double TRILLION = 1E12;
+    private final static double HUNDRED_BILLION = 1E11;
+    private final static double TEN_BILLION = 1E10;
+    private final static double BILLION = 1E9;
+    private final static double HUNDRED_MILLION = 1E8;
+    private final static double TEN_MILLION = 1E7;
+    private final static double MILLION = 1E6;
+    private final static double HUNDRED_THOUSAND = 1E5;
+    private final static double TEN_THOUSAND = 1E4;
+    private final static double THOUSAND = 1E3;
+    private final static double HUNDRED = 1E2;
 
     @BindView(R.id.iv_address_book)
     ImageView ivAddressBook;
@@ -89,6 +100,8 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
     TextView tvAmountError;
     @BindView(R.id.tv_save_address)
     TextView tvSaveAddress;
+    @BindView(R.id.tv_amount_magnitudes)
+    TextView tvAmountMagnitudes;
     @BindString(R.string.cheaper)
     String cheaper;
     @BindString(R.string.faster)
@@ -168,7 +181,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
                         });
                 break;
             case R.id.tv_save_address:
-                showSaveAddressDialog();
+                saveToAddressBook();
                 break;
             case R.id.tv_all_amount:
                 mPresenter.transferAllBalance();
@@ -177,6 +190,16 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
                 break;
         }
 
+    }
+
+    private void saveToAddressBook() {
+        String walletAddress = etWalletAddress.getText().toString().trim();
+        String walletName = WalletDao.getWalletNameByAddress(walletAddress);
+        if (TextUtils.isEmpty(walletName)) {
+            showSaveAddressDialog();
+        } else {
+            mPresenter.saveWallet(walletName, walletAddress);
+        }
     }
 
     @Override
@@ -234,6 +257,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
     @Override
     public void setTransferAmount(double amount) {
         etWalletAmount.setText(NumberParserUtils.getPrettyBalance(amount));
+        etWalletAmount.setSelection(NumberParserUtils.getPrettyBalance(amount).length());
     }
 
     @Override
@@ -398,6 +422,9 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             mPresenter.updateSendTransactionButtonStatus();
+            String amountMagnitudes = getAmountMagnitudes(s.toString().trim());
+            tvAmountMagnitudes.setText(amountMagnitudes);
+            tvAmountMagnitudes.setVisibility(TextUtils.isEmpty(amountMagnitudes) ? View.GONE : View.VISIBLE);
         }
 
         @Override
@@ -405,6 +432,42 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
 
         }
     };
+
+    /**
+     * 获取转账金额的数量级描述
+     *
+     * @param transferAmount
+     * @return
+     */
+    private String getAmountMagnitudes(String transferAmount) {
+        double amount = NumberParserUtils.parseDouble(transferAmount);
+        //万亿
+        if (amount >= TRILLION) {
+            return getString(R.string.msg_trillion);
+        } else if (amount >= HUNDRED_BILLION) {
+            return getString(R.string.msg_hundred_billion);
+        } else if (amount >= TEN_BILLION) {
+            return getString(R.string.msg_ten_billion);
+        } else if (amount >= BILLION) {
+            return getString(R.string.msg_billion);
+        } else if (amount >= HUNDRED_MILLION) {
+            return getString(R.string.msg_hundred_million);
+        } else if (amount >= TEN_MILLION) {
+            return getString(R.string.msg_ten_thousand);
+        } else if (amount >= MILLION) {
+            return getString(R.string.msg_million);
+        } else if (amount >= HUNDRED_THOUSAND) {
+            return getString(R.string.msg_hundred_thousand);
+        } else if (amount >= TEN_THOUSAND) {
+            return getString(R.string.msg_ten_thousand);
+        } else if (amount >= THOUSAND) {
+            return getString(R.string.msg_thousand);
+        } else if (amount >= HUNDRED) {
+            return getString(R.string.msg_hundred);
+        } else {
+            return "";
+        }
+    }
 
     private BubbleSeekBar.OnProgressChangedListener mProgressListener = new BubbleSeekBar.OnProgressChangedListener() {
         @Override

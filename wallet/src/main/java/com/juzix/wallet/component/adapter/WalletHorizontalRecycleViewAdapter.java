@@ -18,6 +18,8 @@ import com.juzix.wallet.entity.Wallet;
 
 import java.util.List;
 
+import retrofit2.http.PUT;
+
 public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<WalletHorizontalRecycleViewAdapter.ViewHolder> {
 
     private Context mContext;
@@ -33,6 +35,10 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
         mSelectedWallet = null;
         mShapeRadius = (int) context.getResources().getDimension(R.dimen.assetsWalletSelectedShapeRadius);
         mShadowRadius = (int) context.getResources().getDimension(R.dimen.assetsWalletSelectedShadowRadius);
+    }
+
+    public Wallet getSelectedWallet() {
+        return mSelectedWallet;
     }
 
     @Override

@@ -120,7 +120,7 @@ public class TransactionManager {
                         .senderWalletName(walletName)
                         .value(transferAmount.toPlainString())
                         .chainId(NodeManager.getInstance().getChainId())
-                        .txType(TransactionType.TRANSFER.getTxTypeName())
+//                        .txType(TransactionType.TRANSFER.getTxTypeValue())
                         .createTime(System.currentTimeMillis())
                         .txReceiptStatus(String.valueOf(TransactionStatus.PENDING.ordinal()))
                         .actualTxCost(feeAmount.toPlainString())

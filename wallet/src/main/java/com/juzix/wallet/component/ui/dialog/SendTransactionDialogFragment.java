@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
+import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.utils.AddressFormatUtil;
@@ -120,9 +121,9 @@ public class SendTransactionDialogFragment extends BaseDialogFragment {
         RxView.clicks(sbtnConfirm)
                 .compose(RxUtils.getClickTransformer())
                 .compose(bindToLifecycle())
-                .subscribe(new Consumer() {
+                .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object o) throws Exception {
+                    public void accept(Object o) {
                         if (mListener != null) {
                             dismiss();
                             mListener.onConfirmBtnClick();
@@ -132,9 +133,9 @@ public class SendTransactionDialogFragment extends BaseDialogFragment {
         RxView.clicks(tvCancel)
                 .compose(RxUtils.getClickTransformer())
                 .compose(bindToLifecycle())
-                .subscribe(new Consumer() {
+                .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object o) throws Exception {
+                    public void accept(Object o) {
                         dismiss();
                     }
                 });

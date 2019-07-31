@@ -179,6 +179,8 @@
     <string name="delete_wallet">删除钱包</string>
     <string name="scan_qr_code">扫描</string>
     <string name="scan_qr_code_tips">放入框内 自动扫描</string>
+    <string name="open_flash_tips">轻点照亮</string>
+    <string name="close_flash_tips">轻点关闭</string>
     <string name="scan_qr_code_open_lights_failed">暂时无法开启闪光灯</string>
     <string name="scan_qr_code_failed_tips">识别失败</string>
     <string name="scan_qr_code_failed_tips1">无法识别二维码</string>
@@ -420,7 +422,21 @@
     <string name="node_exit_consensus">节点已退出共识，投票失败！</string>
     <string name="transfer">转账</string>
     <string name="mpc_transaction">MPC交易</string>
-    <string name="contract_create">合约创建</string>
+    <string name="create_validator">创建验证人</string>
+    <string name="edit_validator">编辑验证人</string>
+    <string name="increase_staking">增加自有质押</string>
+    <string name="exit_validator">退出验证人</string>
+    <string name="delegate">委托</string>
+    <string name="undelegate">赎回委托</string>
+    <string name="create_proposal">创建提案</string>
+    <string name="voting_proposal">提案投票</string>
+    <string name="declare_version">版本声明</string>
+    <string name="report_validator">举报验证人</string>
+    <string name="create_restricting">创建锁仓</string>
+    <string name="contract_creation">合约创建</string>
+    <string name="contract_execution">合约执行</string>
+    <string name="other_income">其他收入</string>
+    <string name="other_expenses">其他支出</string>
     <string name="vote_ticket">投票</string>
     <string name="transaction_execute">合约执行</string>
     <string name="candidate_deposit">质押</string>
@@ -437,8 +453,22 @@
     <string name="release_to_load">释放立即加载</string>
     <string name="refreshing_footer">正在刷新...</string>
 
-   <!--ATON0.7.0-->
+    <!--ATON0.7.0-->
     <string name="guide_tips">已有钱包？使用钱包文件(json)、助记词、私钥导入</string>
-    
-    
+    <string name="restricted_amount_with_unit">(&#160;&#160;Restricted:&#160;%1$s&#160;LAT)</string>
+    <string name="restricted_amount_tips">锁仓的LAT支持委托</string>
+
+    <string name="msg_hundred">百</string>
+    <string name="msg_thousand">千</string>
+    <string name="msg_ten_thousand">万</string>
+    <string name="msg_hundred_thousand">十万</string>
+    <string name="msg_million">百万</string>
+    <string name="msg_ten_million">千万</string>
+    <string name="msg_hundred_million">亿</string>
+    <string name="msg_billion">十亿</string>
+    <string name="msg_ten_billion">百亿</string>
+    <string name="msg_hundred_billion">千亿</string>
+    <string name="msg_trillion">万亿</string>
+
+
 </resources>

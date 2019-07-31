@@ -1,64 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp">
+    android:layout_height="70dp"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp">
 
-
-    <ImageView
-        android:id="@+id/iv_transaction_tag"
+    <LinearLayout
+        android:id="@+id/layout_transaction_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/icon_send_transation" />
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:orientation="horizontal">
+
+        <com.juzix.wallet.component.widget.PendingAnimationLayout
+            android:id="@+id/layout_pending"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:id="@+id/iv_transaction_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:src="@drawable/icon_send_transation" />
+    </LinearLayout>
+
 
     <TextView
-        android:id="@+id/tv_name"
-        style="@style/Text.000000.14"
-        android:layout_marginLeft="14dp"
-        app:layout_constraintLeft_toRightOf="@id/iv_transaction_tag"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_goneMarginLeft="0dp"
-        tools:text="接收" />
+        android:id="@+id/tv_transaction_amount"
+        style="@style/Text.000.14"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:textStyle="bold"
+        tools:text="-10.00" />
 
     <TextView
-        android:id="@+id/tv_amount"
-        style="@style/Text.000000.14"
-        android:layout_width="0dp"
-        android:layout_marginLeft="24dp"
-        android:autoSizeMaxTextSize="14sp"
-        android:autoSizeMinTextSize="12sp"
-        android:autoSizeTextType="uniform"
+        android:id="@+id/tv_transaction_status"
+        style="@style/Text.000.14"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+        android:layout_toLeftOf="@id/tv_transaction_amount"
+        android:layout_toRightOf="@id/layout_transaction_status"
         android:ellipsize="middle"
-        android:gravity="right"
-        android:includeFontPadding="false"
+        android:gravity="center_vertical|left"
+        android:maxLength="23"
         android:singleLine="true"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintLeft_toRightOf="@id/tv_name"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="+0.00035 " />
+        android:textStyle="bold"
+        tools:text="Send" />
+
 
     <TextView
-        android:id="@+id/tv_time"
-        style="@style/Text.61646e.11"
-        android:layout_marginTop="5dp"
-        app:layout_constraintLeft_toLeftOf="@id/tv_name"
-        app:layout_constraintTop_toBottomOf="@id/tv_name"
-        tools:text="2018-03-21  13:23" />
+        android:id="@+id/tv_transaction_time"
+        style="@style/Text.61646e.12"
+        android:layout_alignLeft="@id/tv_transaction_status"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="95dp"
+        android:ellipsize="middle"
+        android:gravity="center_vertical|left"
+        android:singleLine="true"
+        tools:text="2018-03-21 13:23" />
 
-    <TextView
-        android:id="@+id/tv_desc"
-        style="@style/Text.61646e.11"
-        android:layout_below="@id/tv_amount"
-        android:layout_marginTop="5dp"
-        app:layout_constraintRight_toRightOf="@id/tv_amount"
-        app:layout_constraintTop_toBottomOf="@id/tv_amount"
-        tools:text="已完成" />
-
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>
