@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="15dp">
+
+    <TextView
+        android:id="@+id/tv_amount"
+        style="@style/Text.ff3b3b.24"
+        android:includeFontPadding="false"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="-10.345.21"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/tv_from"
+        style="@style/Text.000.15"
+        android:layout_marginTop="15dp"
+        app:layout_goneMarginTop="0dp"
+        android:drawableLeft="@drawable/avatar_1"
+        android:drawablePadding="4dp"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/iv_arrow_right"
+        app:layout_constraintTop_toBottomOf="@id/tv_amount"
+        tools:text="J-wallet564" />
+
+    <ImageView
+        android:id="@+id/iv_arrow_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="6dp"
+        android:paddingRight="6dp"
+        android:src="@drawable/icon_right"
+        app:layout_constraintBottom_toBottomOf="@id/tv_from"
+        app:layout_constraintLeft_toRightOf="@id/tv_from"
+        app:layout_constraintRight_toLeftOf="@+id/tv_to"
+        app:layout_constraintTop_toTopOf="@id/tv_from" />
+
+    <TextView
+        android:id="@+id/tv_to"
+        style="@style/Text.000.15"
+        android:drawableLeft="@drawable/avatar_1"
+        android:drawablePadding="4dp"
+        app:layout_constraintBottom_toBottomOf="@id/tv_from"
+        app:layout_constraintLeft_toRightOf="@id/iv_arrow_right"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_from"
+        tools:text="0xDs....de9d" />
+
+</android.support.constraint.ConstraintLayout>

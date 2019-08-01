@@ -22,8 +22,7 @@
             android:paddingRight="16dp"
             android:paddingBottom="16dp"
             android:scrollbarStyle="outsideOverlay"
-            android:scrollbars="vertical"
-            tools:listitem="@layout/item_transaction_list" />
+            android:scrollbars="vertical" />
 
         <include
             layout="@layout/include_no_transaction"

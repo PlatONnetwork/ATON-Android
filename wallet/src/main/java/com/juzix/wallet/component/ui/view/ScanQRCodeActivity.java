@@ -32,10 +32,13 @@ import com.google.zxing.decoding.CaptureProviderHandler;
 import com.google.zxing.decoding.ICaptureProvider;
 import com.google.zxing.decoding.InactivityTimer;
 import com.google.zxing.view.ViewfinderView;
+import com.gyf.immersionbar.ImmersionBar;
+import com.jakewharton.rxbinding2.view.RxView;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.BaseActivity;
+import com.juzix.wallet.component.widget.CommonTitleBar;
 import com.juzix.wallet.utils.PhotoUtil;
 import com.juzix.wallet.utils.QRCodeDecoder;
 import com.juzix.wallet.utils.RxUtils;
@@ -48,7 +51,7 @@ import java.util.Vector;
 import io.reactivex.functions.Consumer;
 
 
-public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider, View.OnClickListener, SurfaceHolder.Callback {
+public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider, SurfaceHolder.Callback {
 
     private static final int REQUEST_CODE_SCAN_GALLERY = 100;
     private static final float BEEP_VOLUME = 0.10f;
@@ -64,9 +67,6 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
 
     private CaptureProviderHandler handler;
     private ViewfinderView viewfinderView;
-    private ImageButton back;
-    private ImageButton btnFlash;
-    private Button btnAlbum; // 相册
     private boolean isFlashOn = false;
     private boolean hasSurface;
     private Vector<BarcodeFormat> decodeFormats;
@@ -79,27 +79,8 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
     //	private Button cancelScanButton;
     private Uri photoUri;
     private Bitmap scanBitmap;
-
-    public static void actionStart(Activity activity, int requestCode) {
-        activity.startActivityForResult(new Intent(activity, ScanQRCodeActivity.class), requestCode);
-    }
-
-    private View.OnClickListener flashListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            try {
-                boolean isSuccess = CameraManager.get().setFlashLight(!isFlashOn);
-                if (!isSuccess) {
-                    showLongToast(R.string.scan_qr_code_open_lights_failed);
-                    return;
-                }
-                btnFlash.setImageResource(isFlashOn ? R.drawable.flash_off : R.drawable.flash_on);
-                isFlashOn = !isFlashOn;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    };
+    private CommonTitleBar mCtb;
+    private ImageView mFlashIv;
 
     /**
      * Called when the activity is first created.
@@ -112,37 +93,46 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
         initView();
     }
 
+
     private void initView() {
-        findViewById(R.id.ll_left).setOnClickListener(this);
-//        ((TextView) findViewById(R.id.tv_middle)).setText(R.string.scan_qr_code);
-        ((ImageView) findViewById(R.id.iv_left)).setImageResource(R.drawable.icon_back_white);
-        TextView tvRight = findViewById(R.id.tv_right);
-        tvRight.setVisibility(View.VISIBLE);
-        tvRight.setText(R.string.photo_album);
 
-        findViewById(R.id.ll_left).setOnClickListener(this);
-        findViewById(R.id.ll_right).setOnClickListener(this);
         CameraManager.init(getApplication());
-        viewfinderView = findViewById(R.id.viewfinder_content);
 
-        btnFlash = findViewById(R.id.btn_flash);
-        btnFlash.setOnClickListener(flashListener);
+//        mFlashIv = findViewById(R.id.iv_flash);
+        viewfinderView = findViewById(R.id.viewfinder_content);
+        mCtb = findViewById(R.id.ctb);
+
         hasSurface = false;
         inactivityTimer = new InactivityTimer(this);
-    }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.ll_left:
-                ScanQRCodeActivity.this.finish();
-                break;
-            case R.id.ll_right:
+        mCtb.setRightTextClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 openAlbum();
-                break;
-            default:
-                break;
-        }
+            }
+        });
+
+//        RxView
+//                .clicks(mFlashIv)
+//                .compose(RxUtils.getClickTransformer())
+//                .compose(bindToLifecycle())
+//                .subscribe(new CustomObserver<Object>() {
+//
+//                    @Override
+//                    public void accept(Object object) {
+//                        try {
+//                            boolean isSuccess = CameraManager.get().setFlashLight(!isFlashOn);
+//                            if (!isSuccess) {
+//                                showLongToast(R.string.scan_qr_code_open_lights_failed);
+//                                return;
+//                            }
+//                            mFlashIv.setImageResource(isFlashOn ? R.drawable.icon_flash_on : R.drawable.icon_flash_off);
+//                            isFlashOn = !isFlashOn;
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                });
     }
 
     @Override
@@ -157,6 +147,16 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    @Override
+    protected boolean immersiveBarViewEnabled() {
+        return true;
+    }
+
+    @Override
+    protected void setStatusBarView() {
+        ImmersionBar.with(this).keyboardEnable(false).statusBarDarkFont(false).fitsSystemWindows(false).init();
+    }
+
     private void openAlbum() {
 
         new RxPermissions(currentActivity())
@@ -164,8 +164,8 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Boolean>() {
                     @Override
-                    public void accept(Boolean success){
-                        if (success){
+                    public void accept(Boolean success) {
+                        if (success) {
                             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                             startActivityForResult(intent, REQUEST_CODE_SCAN_GALLERY);
                         }
@@ -364,6 +364,10 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
             Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
             vibrator.vibrate(VIBRATE_DURATION);
         }
+    }
+
+    public static void actionStart(Activity activity, int requestCode) {
+        activity.startActivityForResult(new Intent(activity, ScanQRCodeActivity.class), requestCode);
     }
 
     public static void startActivityForResult(Context context, int requestCode) {

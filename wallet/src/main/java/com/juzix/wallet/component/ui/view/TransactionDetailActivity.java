@@ -3,13 +3,12 @@ package com.juzix.wallet.component.ui.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.constraint.Barrier;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
@@ -20,14 +19,10 @@ import com.juzix.wallet.entity.TransactionStatus;
 import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
-import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.CommonUtil;
-import com.juzix.wallet.utils.DateUtil;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.math.BigDecimal;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,26 +44,6 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
     ImageView ivCopyToAddress;
     @BindView(R.id.tv_to_address)
     TextView tvToAddress;
-    @BindView(R.id.tv_transaction_type_title)
-    TextView tvTransactionTypeTitle;
-    @BindView(R.id.tv_transaction_time_title)
-    TextView tvTransactionTimeTitle;
-    @BindView(R.id.tv_transaction_amount_title)
-    TextView tvTransactionAmountTitle;
-    @BindView(R.id.tv_transaction_energon_title)
-    TextView tvTransactionEnergonTitle;
-    @BindView(R.id.tv_transaction_wallet_name_title)
-    TextView tvTransactionWalletNameTitle;
-    @BindView(R.id.barrier)
-    Barrier barrier;
-    @BindView(R.id.tv_transaction_type)
-    TextView tvTransactionType;
-    @BindView(R.id.tv_transaction_time)
-    TextView tvTransactionTime;
-    @BindView(R.id.tv_transaction_amount)
-    TextView tvTransactionAmount;
-    @BindView(R.id.tv_transaction_energon)
-    TextView tvTransactionEnergon;
     @BindView(R.id.iv_failed)
     ImageView ivFailed;
     @BindView(R.id.iv_succeed)
@@ -77,6 +52,10 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
     RelativeLayout layoutPending;
     @BindView(R.id.tv_transaction_status_desc)
     TextView tvTransactionStatusDesc;
+    @BindView(R.id.tv_amount)
+    TextView tvAmount;
+    @BindView(R.id.view_transaction_detai_info)
+    TransactionDetailInfoView viewTransactionDetailInfo;
 
     private Unbinder unbinder;
 
@@ -88,7 +67,7 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_individual_transation_detail);
+        setContentView(R.layout.activity_transation_detail);
         EventPublisher.getInstance().register(this);
         unbinder = ButterKnife.bind(this);
         mPresenter.loadData();
@@ -122,26 +101,29 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
     @Override
     public void setTransactionDetailInfo(Transaction transaction, String queryAddress, String walletName) {
 
-        showTransactionStatus(transaction.getTxReceiptStatus());
+        TransactionStatus transactionStatus = transaction.getTxReceiptStatus();
 
+        showTransactionStatus(transactionStatus);
+
+        tvAmount.setVisibility(transactionStatus == TransactionStatus.SUCCESSED ? View.VISIBLE : View.GONE);
+        tvAmount.setText(String.format("%s%s", transaction.isSender() ? "-" : "+", transaction.getShowValue()));
+        tvAmount.setTextColor(transaction.isSender() ? ContextCompat.getColor(this, R.color.color_ff3b3b) : ContextCompat.getColor(this, R.color.color_19a20e));
         tvCopyFromName.setText(walletName);
         tvFromAddress.setText(transaction.getFrom());
         tvToAddress.setText(transaction.getTo());
 
+        viewTransactionDetailInfo.setData(transaction);
 
-        boolean isReceiver = transaction.getTo().equals(queryAddress);
-        int transferDescRes = isReceiver ? R.string.receive : R.string.send;
-        
-        tvTransactionType.setText(transaction.getTxType() == TransactionType.TRANSFER ? transferDescRes : transaction.getTxType().getTxTypeDescRes());
-        tvTransactionTime.setText(transaction.getShowCreateTime());
-
-        tvTransactionAmount.setText(string(R.string.amount_with_unit, transaction.getShowValue()));
-        tvTransactionEnergon.setText(string(R.string.amount_with_unit, transaction.getShowActualTxCost()));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateIndividualWalletTransactionEvent(Event.UpdateTransactionEvent event) {
         mPresenter.updateTransactionDetailInfo(event.transaction);
+    }
+
+    @Override
+    protected boolean immersiveBarViewEnabled() {
+        return true;
     }
 
     private void showTransactionStatus(TransactionStatus status) {

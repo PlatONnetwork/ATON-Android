@@ -137,6 +137,11 @@ public class AddNewAddressActivity extends MVPBaseActivity<AddNewAddressPresente
     }
 
     @Override
+    protected boolean immersiveBarViewEnabled() {
+        return true;
+    }
+
+    @Override
     public Address getAddressFromIntent() {
         return getIntent().getParcelableExtra(Constants.Extra.EXTRA_ADDRESS);
     }

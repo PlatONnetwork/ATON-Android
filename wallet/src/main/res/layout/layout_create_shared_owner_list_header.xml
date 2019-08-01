@@ -16,7 +16,7 @@
         android:layout_height="55dp"
         android:layout_below="@id/tv_select_wallet"
         android:layout_marginTop="10dp"
-        android:background="@drawable/bg_select_wallet"
+        android:background="@drawable/bg_select_wallet_list"
         android:paddingLeft="12dp">
 
         <ImageView

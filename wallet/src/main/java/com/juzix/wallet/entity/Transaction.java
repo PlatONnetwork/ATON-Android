@@ -11,7 +11,7 @@ import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.DateUtil;
 import com.juzix.wallet.utils.JSONUtil;
 
-import retrofit2.http.PUT;
+import jnr.constants.platform.PRIO;
 
 public class Transaction implements Comparable<Transaction>, Parcelable, Cloneable {
 
@@ -54,17 +54,25 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
      */
     private String txReceiptStatus;
     /**
-     * 交易类型
-     * transfer ：转账
-     * MPCtransaction ： MPC交易
-     * contractCreate ： 合约创建
-     * vote ： 投票
-     * transactionExecute ： 合约执行
-     * authorization ： 权限
-     * candidateDeposit：竞选质押
-     * candidateApplyWithdraw：减持质押
-     * candidateWithdraw：提取质押
-     * unknown：未知
+     * 0: 转账
+     * 1: 合约发布(合约创建)
+     * 2: 合约调用(合约执行)
+     * 3: 其他收入
+     * 4: 其他支出
+     * 5: MPC交易
+     * 1000: 发起质押(创建验证人)
+     * 1001: 修改质押信息(编辑验证人)
+     * 1002: 增持质押(增加自有质押)
+     * 1003: 撤销质押(退出验证人)
+     * 1004: 发起委托(委托)
+     * 1005: 减持/撤销委托(赎回委托)
+     * 2000: 提交文本提案(创建提案)
+     * 2001: 提交升级提案(创建提案)
+     * 2002: 提交参数提案(创建提案)
+     * 2003: 给提案投票(提案投票)
+     * 2004: 版本声明
+     * 3000: 举报多签(举报验证人)
+     * 4000: 创建锁仓计划(创建锁仓)
      */
     private String txType;
     /**
@@ -79,6 +87,35 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
      * {json}交易详细信息
      */
     private String txInfo;
+    /**
+     * 提交时间（单位：毫秒）
+     */
+    private long timestamp;
+    /**
+     * to类型
+     * contract —— 合约
+     * address —— 地址
+     */
+    private String toType;
+    /**
+     * Sent发送/Receive接收
+     */
+    private String direction;
+    /**
+     * 节点名称/委托给/验证人
+     * //txType = 1004,1005,1000,1001,1002,1003,3000,2000,2001,2002,2003,2004,nodeName不为空
+     * 详细描述：txType =  2000,2001,2002,2003(验证人)
+     * 详细描述：txType =  1004,1005(委托给，同时也是节点名称)
+     */
+    private String nodeName;
+    /**
+     * txType =  1004,1005,1000,1001,1002,1003,3000,2004,nodeId不为空
+     */
+    private String nodeId;
+    /**
+     * txType =  4000,lockAddress不为空
+     */
+    private String lockAddress;
 
     public Transaction() {
     }
@@ -97,19 +134,13 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         value = in.readString();
         senderWalletName = in.readString();
         txInfo = in.readString();
+        timestamp = in.readLong();
+        toType = in.readString();
+        direction = in.readString();
+        nodeName = in.readString();
+        nodeId = in.readString();
+        lockAddress = in.readString();
     }
-
-    public static final Creator<Transaction> CREATOR = new Creator<Transaction>() {
-        @Override
-        public Transaction createFromParcel(Parcel in) {
-            return new Transaction(in);
-        }
-
-        @Override
-        public Transaction[] newArray(int size) {
-            return new Transaction[size];
-        }
-    };
 
     public Transaction(Builder builder) {
         this.hash = builder.hash;
@@ -125,6 +156,60 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         this.value = builder.value;
         this.senderWalletName = builder.senderWalletName;
         this.txInfo = builder.txInfo;
+        this.timestamp = builder.timestamp;
+        this.toType = builder.toType;
+        this.direction = builder.direction;
+        this.nodeName = builder.nodeName;
+        this.nodeId = builder.nodeId;
+        this.lockAddress = builder.lockAddress;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(hash);
+        dest.writeLong(blockNumber);
+        dest.writeString(chainId);
+        dest.writeLong(createTime);
+        dest.writeString(actualTxCost);
+        dest.writeString(from);
+        dest.writeString(to);
+        dest.writeLong(sequence);
+        dest.writeString(txReceiptStatus);
+        dest.writeString(txType);
+        dest.writeString(value);
+        dest.writeString(senderWalletName);
+        dest.writeString(txInfo);
+        dest.writeLong(timestamp);
+        dest.writeString(toType);
+        dest.writeString(direction);
+        dest.writeString(nodeName);
+        dest.writeString(nodeId);
+        dest.writeString(lockAddress);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Transaction> CREATOR = new Creator<Transaction>() {
+        @Override
+        public Transaction createFromParcel(Parcel in) {
+            return new Transaction(in);
+        }
+
+        @Override
+        public Transaction[] newArray(int size) {
+            return new Transaction[size];
+        }
+    };
+
+    /**
+     * 是否是发送者
+     * @return
+     */
+    public boolean isSender() {
+        return "Send".equals(direction);
     }
 
     public String getHash() {
@@ -155,7 +240,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         return createTime;
     }
 
-    public String getShowCreateTime(){
+    public String getShowCreateTime() {
         return DateUtil.format(createTime, DateUtil.DATETIME_FORMAT_PATTERN);
     }
 
@@ -167,7 +252,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         return actualTxCost;
     }
 
-    public String getShowActualTxCost(){
+    public String getShowActualTxCost() {
         return NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(actualTxCost, "1E18"));
     }
 
@@ -208,7 +293,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
     }
 
     public TransactionType getTxType() {
-        return TransactionType.getTxTypeByName(txType);
+        return TransactionType.getTxTypeByValue(NumberParserUtils.parseInt(txType));
     }
 
     public void setTxType(String txType) {
@@ -220,7 +305,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
     }
 
     public String getShowValue() {
-       return NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(value, "1E18"));
+        return NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(value, "1E18"));
     }
 
     public void setValue(String value) {
@@ -239,12 +324,36 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         return txInfo;
     }
 
-    public TransactionExtra getTransactionExtra(){
-        return JSONUtil.parseObject(txInfo,TransactionExtra.class);
+    public TransactionExtra getTransactionExtra() {
+        return JSONUtil.parseObject(txInfo, TransactionExtra.class);
     }
 
     public void setTxInfo(String txInfo) {
         this.txInfo = txInfo;
+    }
+
+    public String getNodeName() {
+        return nodeName;
+    }
+
+    public void setNodeName(String nodeName) {
+        this.nodeName = nodeName;
+    }
+
+    public String getNodeId() {
+        return nodeId;
+    }
+
+    public void setNodeId(String nodeId) {
+        this.nodeId = nodeId;
+    }
+
+    public String getLockAddress() {
+        return lockAddress;
+    }
+
+    public void setLockAddress(String lockAddress) {
+        this.lockAddress = lockAddress;
     }
 
     @Override
@@ -270,28 +379,6 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
     }
 
     @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(hash);
-        dest.writeLong(blockNumber);
-        dest.writeString(chainId);
-        dest.writeLong(createTime);
-        dest.writeString(actualTxCost);
-        dest.writeString(from);
-        dest.writeString(to);
-        dest.writeLong(sequence);
-        dest.writeString(txReceiptStatus);
-        dest.writeString(txType);
-        dest.writeString(value);
-        dest.writeString(senderWalletName);
-        dest.writeString(txInfo);
-    }
-
-    @Override
     public Transaction clone() {
         Transaction transaction = null;
         try {
@@ -302,24 +389,18 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         return transaction;
     }
 
-    @Override
-    public String toString() {
-        return "Transaction{" +
-                "hash='" + hash + '\'' +
-                ", blockNumber=" + blockNumber +
-                ", chainId='" + chainId + '\'' +
-                ", createTime=" + createTime +
-                ", actualTxCost='" + actualTxCost + '\'' +
-                ", from='" + from + '\'' +
-                ", to='" + to + '\'' +
-                ", sequence=" + sequence +
-                ", txReceiptStatus='" + txReceiptStatus + '\'' +
-                ", txType='" + txType + '\'' +
-                ", value='" + value + '\'' +
-                ", senderWalletName='" + senderWalletName + '\'' +
-                ", txInfo='" + txInfo + '\'' +
-                '}';
+    public TransactionEntity toTransactionEntity() {
+        return new TransactionEntity.Builder(hash, senderWalletName, from, to, createTime)
+                .setTxType(txType)
+                .setTxInfo(txInfo)
+                .setBlockNumber(blockNumber)
+                .setChainId(chainId)
+                .setTxReceiptStatus(txReceiptStatus)
+                .setActualTxCost(actualTxCost)
+                .setValue(NumberParserUtils.parseDouble(value))
+                .build();
     }
+
 
     public static final class Builder {
         private String hash;
@@ -335,6 +416,12 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         private String value;
         private String senderWalletName;
         private String txInfo;
+        private long timestamp;
+        private String toType;
+        private String direction;
+        private String nodeName;
+        private String nodeId;
+        private String lockAddress;
 
         public Builder hash(String hash) {
             this.hash = hash;
@@ -396,25 +483,43 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
             return this;
         }
 
-        public Builder txInfo(String txtInfo) {
-            this.txInfo = txtInfo;
+        public Builder txInfo(String txInfo) {
+            this.txInfo = txInfo;
+            return this;
+        }
+
+        public Builder timestamp(long timestamp) {
+            this.timestamp = timestamp;
+            return this;
+        }
+
+        public Builder toType(String toType) {
+            this.toType = toType;
+            return this;
+        }
+
+        public Builder direction(String direction) {
+            this.direction = direction;
+            return this;
+        }
+
+        public Builder nodeName(String nodeName) {
+            this.nodeName = nodeName;
+            return this;
+        }
+
+        public Builder nodeId(String nodeId) {
+            this.nodeId = nodeId;
+            return this;
+        }
+
+        public Builder lockAddress(String lockAddress) {
+            this.lockAddress = lockAddress;
             return this;
         }
 
         public Transaction build() {
             return new Transaction(this);
         }
-    }
-
-    public TransactionEntity toTransactionEntity() {
-        return new TransactionEntity.Builder(hash, senderWalletName, from, to, createTime)
-                .setTxType(txType)
-                .setTxInfo(txInfo)
-                .setBlockNumber(blockNumber)
-                .setChainId(chainId)
-                .setTxReceiptStatus(txReceiptStatus)
-                .setActualTxCost(actualTxCost)
-                .setValue(NumberParserUtils.parseDouble(value))
-                .build();
     }
 }

@@ -16,6 +16,7 @@ import com.juzix.wallet.component.ui.view.AssetsFragment;
 import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.db.entity.AddressEntity;
 import com.juzix.wallet.db.sqlite.AddressDao;
+import com.juzix.wallet.db.sqlite.WalletDao;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.TransactionManager;
 import com.juzix.wallet.engine.Web3jManager;
@@ -25,6 +26,7 @@ import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
 import com.juzix.wallet.utils.RxUtils;
+import com.juzix.wallet.utils.ToastUtil;
 import com.trello.rxlifecycle2.android.FragmentEvent;
 
 import org.reactivestreams.Publisher;
@@ -87,6 +89,10 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
                 getView().setToAddress(toAddress);
             }
         }
+    }
+
+    public String getSenderAddress() {
+        return walletEntity != null ? walletEntity.getPrefixAddress() : "";
     }
 
     @Override
@@ -235,7 +241,11 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
     public void saveWallet(String name, String address) {
         String[] avatarArray = getContext().getResources().getStringArray(R.array.wallet_avatar);
         String avatar = avatarArray[new Random().nextInt(avatarArray.length)];
-        getView().setSaveAddressButtonEnable(!AddressDao.insertAddressInfo(new AddressEntity(UUID.randomUUID().toString(), address, name, avatar)));
+        boolean success = AddressDao.insertAddressInfo(new AddressEntity(UUID.randomUUID().toString(), address, name, avatar));
+        getView().setSaveAddressButtonEnable(!success);
+        if (success) {
+            showLongToast("保存成功");
+        }
     }
 
     @Override

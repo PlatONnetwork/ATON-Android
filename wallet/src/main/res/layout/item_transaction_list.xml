@@ -2,9 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="55dp"
-    android:paddingTop="14dp"
-    android:paddingBottom="9dp">
+    android:layout_height="70dp"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp">
 
     <ImageView
         android:id="@+id/iv_transaction_status"
@@ -16,42 +16,33 @@
 
     <TextView
         android:id="@+id/tv_transaction_amount"
-        style="@style/Text.000.13"
-        android:layout_alignParentTop="true"
+        style="@style/Text.000.14"
         android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:textStyle="bold"
         tools:text="-10.00" />
 
     <TextView
-        android:id="@+id/tv_transaction_status_desc"
-        style="@style/Text.ffed54.10"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:textColor="@color/color_105cfe"
-        tools:text="Failed" />
-
-    <TextView
         android:id="@+id/tv_transaction_status"
-        style="@style/Text.000.13"
-        android:layout_width="wrap_content"
+        style="@style/Text.000.14"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="14dp"
+        android:layout_marginLeft="10dp"
         android:layout_toLeftOf="@id/tv_transaction_amount"
         android:layout_toRightOf="@id/iv_transaction_status"
         android:ellipsize="middle"
         android:gravity="center_vertical|left"
         android:maxLength="23"
         android:singleLine="true"
-        tools:text="0x2ce27898192883198893893hjdjdjka0x20x2c" />
+        android:textStyle="bold"
+        tools:text="Send" />
 
 
     <TextView
         android:id="@+id/tv_transaction_time"
-        style="@style/Text.61646e.10"
+        style="@style/Text.61646e.12"
+        android:layout_alignLeft="@id/tv_transaction_status"
         android:layout_alignParentBottom="true"
-        android:layout_marginLeft="14dp"
         android:layout_marginRight="95dp"
-        android:layout_toLeftOf="@id/tv_transaction_status_desc"
-        android:layout_toRightOf="@id/iv_transaction_status"
         android:ellipsize="middle"
         android:gravity="center_vertical|left"
         android:singleLine="true"

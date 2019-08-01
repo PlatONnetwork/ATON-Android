@@ -112,7 +112,6 @@ public class MyVoteActivity extends MVPBaseActivity<MyVotePresenter> implements 
                     @Override
                     public void accept(Integer position)  {
                         VotedCandidate entity = mBatchVoteTransactionAdapter.getItem(position);
-                        VoteDetailActivity.actionStart(MyVoteActivity.this, entity.getNodeId(),entity.getName());
                     }
                 });
 

@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 
-import com.gyf.barlibrary.ImmersionBar;
+import com.gyf.immersionbar.ImmersionBar;
 import com.juzhen.framework.app.activity.CoreFragmentActivity;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.BaseContextImpl;
@@ -91,7 +91,7 @@ public abstract class BaseActivity extends CoreFragmentActivity implements ICont
         }
     }
 
-    private View getStatusBarView() {
+    protected View getStatusBarView() {
         View view = new View(this);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0);
         view.setLayoutParams(layoutParams);
@@ -158,9 +158,6 @@ public abstract class BaseActivity extends CoreFragmentActivity implements ICont
     @Override
     protected void onDestroy() {
         lifecycleSubject.onNext(ActivityEvent.DESTROY);
-        if (immersiveBarInitEnabled()) {
-            ImmersionBar.with(this).destroy();
-        }
         if (mCompositeDisposable != null) {
             mCompositeDisposable.dispose();
         }

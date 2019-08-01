@@ -3,8 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="12dp"
-    android:paddingTop="12dp">
+    android:paddingLeft="24dp"
+    android:paddingTop="12dp"
+    android:paddingRight="12dp">
 
     <com.juzix.wallet.component.widget.CircleImageView
         android:id="@+id/iv_wallet_avatar"
@@ -25,34 +26,34 @@
 
     <ImageView
         android:id="@+id/iv_wallet_selected"
-        android:layout_below="@id/tv_wallet_name"
-        android:layout_marginRight="12dp"
-        android:layout_alignParentRight="true"
-        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/icon_hook_s"/>
+        android:layout_below="@id/tv_wallet_name"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="12dp"
+        android:src="@drawable/icon_hook_s"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/tv_wallet_address"
         style="@style/Text.898c9e.12"
         android:layout_width="wrap_content"
+        android:layout_below="@id/tv_wallet_name"
         android:layout_alignLeft="@id/tv_wallet_name"
         android:layout_alignRight="@id/iv_wallet_selected"
-        android:layout_below="@id/tv_wallet_name"
         android:layout_marginTop="7dp"
         android:layout_marginRight="12dp"
         android:ellipsize="middle"
-        android:singleLine="true"
         android:gravity="center_vertical|left"
+        android:singleLine="true"
         tools:text="ox2ce48152fF49B2b3d3fF49B2b3d3fFF" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/bg_address_book_list_divider"
         android:layout_below="@+id/tv_wallet_address"
-        android:layout_alignLeft="@id/tv_wallet_name"/>
+        android:layout_alignLeft="@id/tv_wallet_name"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/bg_address_book_list_divider" />
 
 </RelativeLayout>

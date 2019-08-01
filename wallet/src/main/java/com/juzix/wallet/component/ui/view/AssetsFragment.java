@@ -8,15 +8,16 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +26,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.juzhen.framework.util.NumberParserUtils;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
@@ -39,7 +39,7 @@ import com.juzix.wallet.component.ui.base.MVPBaseFragment;
 import com.juzix.wallet.component.ui.contract.AssetsContract;
 import com.juzix.wallet.component.ui.dialog.AssetsMoreDialogFragment;
 import com.juzix.wallet.component.ui.presenter.AssetsPresenter;
-import com.juzix.wallet.component.ui.presenter.TransactionsPresenter;
+import com.juzix.wallet.component.widget.CustomImageSpan;
 import com.juzix.wallet.component.widget.ShadowContainer;
 import com.juzix.wallet.component.widget.ViewPagerSlide;
 import com.juzix.wallet.component.widget.table.SmartTabLayout;
@@ -66,7 +66,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import retrofit2.http.PUT;
 
 /**
  * @author matrixelement
@@ -123,6 +122,8 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     SmartRefreshLayout layoutRefresh;
     @BindView(R.id.layout_refresh_transaction)
     SmartRefreshLayout layoutRefreshTransaction;
+    @BindView(R.id.tv_restricted_amount)
+    TextView tvRestrictedAmount;
 
     private WalletHorizontalRecycleViewAdapter mWalletAdapter;
     private Unbinder unbinder;
@@ -295,7 +296,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         }
     }
 
-    @OnClick({R.id.iv_scan, R.id.tv_total_assets_title, R.id.tv_backup, R.id.iv_add})
+    @OnClick({R.id.iv_scan, R.id.tv_total_assets_title, R.id.tv_backup, R.id.iv_add, R.id.tv_restricted_amount, R.id.rl_wallet_detail})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_scan:
@@ -329,6 +330,12 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
                 break;
             case R.id.tv_backup:
                 mPresenter.backupWallet();
+                break;
+            case R.id.tv_restricted_amount:
+                showLongToast(R.string.restricted_amount_tips);
+                break;
+            case R.id.rl_wallet_detail:
+                ManageIndividualWalletActivity.actionStart(currentActivity(), mWalletAdapter.getSelectedWallet());
                 break;
             default:
                 break;
@@ -449,13 +456,14 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     @Override
     public void showTotalBalance(double totalBalance) {//显示总资产
 //        tvTotalAssetsAmount.setText(totalBalance > 0 ? NumberParserUtils.getPrettyBalance(totalBalance) : "0.00");
-        tvTotalAssetsAmount.setText(totalBalance > 0 ? StringUtil.formatBalance(totalBalance,false) : "0.00");
+        tvTotalAssetsAmount.setText(totalBalance > 0 ? StringUtil.formatBalance(totalBalance, false) : "0.00");
     }
 
     @Override
     public void showBalance(double balance) {//当前钱包的资产
 //        tvWalletAmount.setText(string(R.string.amount_with_unit, balance > 0 ? NumberParserUtils.getPrettyBalance(balance) : "0.00"));
-        tvWalletAmount.setText(string(R.string.amount_with_unit, balance > 0 ? StringUtil.formatBalance(balance,false) : "0.00"));
+        tvWalletAmount.setText(string(R.string.amount_with_unit, balance > 0 ? StringUtil.formatBalance(balance, false) : "0.00"));
+        tvRestrictedAmount.setText(getRestrictedAmount(string(R.string.restricted_amount_with_unit, "0.00")));
 
         if (vpContent.getCurrentItem() == TAB2) {
             SendTransactionFragment sendTransactionFragment = (SendTransactionFragment) mTabAdapter.getItem(TAB2);
@@ -528,6 +536,18 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     @Override
     public void finishLoadMore() {
         layoutRefreshTransaction.finishLoadMore();
+    }
+
+    private SpannableString getRestrictedAmount(String text) {
+        SpannableString spannableString = new SpannableString(text);
+        CustomImageSpan imageSpan = new CustomImageSpan(getActivity(), R.drawable.icon_restricted_amount);
+//        Drawable drawable = getResources().getDrawable(R.drawable.icon_restricted_amount);
+//        drawable.setBounds(0, 0, DensityUtil.dp2px(getActivity(),10), DensityUtil.dp2px(getActivity(),10));
+        int index = TextUtils.indexOf(text, "(");
+        if (index != -1) {
+            spannableString.setSpan(imageSpan, index + 1, index + 2, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        }
+        return spannableString;
     }
 
     private View getTableView(int position, ViewGroup container) {

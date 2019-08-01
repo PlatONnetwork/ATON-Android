@@ -119,20 +119,21 @@ public class VoteManager {
                     @Override
                     public Transaction apply(TransactionReceipt transactionReceipt) throws Exception {
                         VoteTrasactionExtra voteTransactionExtra = new VoteTrasactionExtra(ticketPrice, ticketNum, nodeId, nodeName, deposit);
-                        TransactionExtra transactionExtra = new TransactionExtra(TransactionType.VOTETICKET.getTxTypeName(), JSONUtil.toJSONString(voteTransactionExtra), "");
-                        return new Transaction.Builder()
-                                .hash(transactionReceipt.getTransactionHash())
-                                .from(walletEntity.getPrefixAddress())
-                                .to(TicketContract.CONTRACT_ADDRESS)
-                                .senderWalletName(walletEntity.getName())
-                                .createTime(System.currentTimeMillis())
-                                .actualTxCost(feeAmount)
-                                .txInfo(JSONUtil.toJSONString(transactionExtra))
-                                .txType(TransactionType.VOTETICKET.getTxTypeName())
-                                .value(String.valueOf(value.doubleValue()))
-                                .txReceiptStatus(String.valueOf(TransactionStatus.PENDING.ordinal()))
-                                .chainId(NodeManager.getInstance().getChainId())
-                                .build();
+//                        TransactionExtra transactionExtra = new TransactionExtra(TransactionType.VOTETICKET.getTxTypeName(), JSONUtil.toJSONString(voteTransactionExtra), "");
+//                        return new Transaction.Builder()
+//                                .hash(transactionReceipt.getTransactionHash())
+//                                .from(walletEntity.getPrefixAddress())
+//                                .to(TicketContract.CONTRACT_ADDRESS)
+//                                .senderWalletName(walletEntity.getName())
+//                                .createTime(System.currentTimeMillis())
+//                                .actualTxCost(feeAmount)
+//                                .txInfo(JSONUtil.toJSONString(transactionExtra))
+//                                .txType(TransactionType.VOTETICKET.getTxTypeName())
+//                                .value(String.valueOf(value.doubleValue()))
+//                                .txReceiptStatus(String.valueOf(TransactionStatus.PENDING.ordinal()))
+//                                .chainId(NodeManager.getInstance().getChainId())
+//                                .build();
+                        return null;
                     }
                 })
                 .toSingle()

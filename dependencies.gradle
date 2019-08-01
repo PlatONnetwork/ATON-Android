@@ -86,7 +86,7 @@ project.ext {
             "htextview-base"                  : "com.hanks:htextview-base:${htextviewVersion}",
             "htextview-fall"                  : "com.hanks:htextview-fall:${htextviewVersion}",
             //自定义
-            "immersionbar"                    : 'com.gyf.immersionbar:immersionbar:2.3.3',
+            "immersionbar"                    : 'com.gyf.immersionbar:immersionbar:3.0.0-beta05',
             "smarttablayout"                  : 'com.ogaclejapan.smarttablayout:utils-v4:1.7.0@aar',
             //下拉刷新
             "SmartRefreshLayout"              : 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-25',

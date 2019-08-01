@@ -25,4 +25,21 @@ public class AddressFormatUtil {
         }
         return text;
     }
+
+    public static String formatTransactionAddress(String address){
+
+        String text = "";
+
+        if (address != null) {
+
+            String regex = "(\\w{2})(\\w*)(\\w{4})";
+
+            try {
+                text = address.replaceAll(regex, "$1...$3");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return text;
+    }
 }

@@ -67,6 +67,11 @@ public class SettingsActiivty extends BaseActivity {
         iniViews();
     }
 
+    @Override
+    protected boolean immersiveBarViewEnabled() {
+        return true;
+    }
+
     private void iniViews() {
 
         Locale locale = LanguageUtil.getLocale(this);

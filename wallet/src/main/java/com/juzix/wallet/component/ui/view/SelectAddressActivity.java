@@ -16,6 +16,7 @@ import com.juzix.wallet.component.ui.contract.SelectAddressContract;
 import com.juzix.wallet.component.ui.presenter.SelectAddressPresenter;
 import com.juzix.wallet.component.widget.CommonTitleBar;
 import com.juzix.wallet.entity.Address;
+import com.juzix.wallet.utils.ToastUtil;
 
 import java.util.List;
 
@@ -55,7 +56,9 @@ public class SelectAddressActivity extends MVPBaseActivity<SelectAddressPresente
 
     private void initViews() {
 
-        addressBookListAdapter = new SelectAddressListAdapter(R.layout.item_wallet_address_list, null);
+        String senderAddress = getIntent().getStringExtra(Constants.Extra.EXTRA_ADDRESS);
+
+        addressBookListAdapter = new SelectAddressListAdapter(R.layout.item_wallet_address_list, null, senderAddress);
 
         listWalletAddress.setAdapter(addressBookListAdapter);
 
@@ -64,11 +67,18 @@ public class SelectAddressActivity extends MVPBaseActivity<SelectAddressPresente
         listWalletAddress.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mPresenter.selectAddress(position);
+                if (((Address) parent.getAdapter().getItem(position)).getPrefixAddress().equals(senderAddress)) {
+                    return;
+                } else {
+                    mPresenter.selectAddress(position);
+                }
             }
         });
+    }
 
-
+    @Override
+    protected boolean immersiveBarViewEnabled() {
+        return true;
     }
 
     @Override
@@ -112,9 +122,10 @@ public class SelectAddressActivity extends MVPBaseActivity<SelectAddressPresente
         return getIntent().getAction();
     }
 
-    public static void actionStartForResult(Context context, String action, int requestCode) {
+    public static void actionStartForResult(Context context, String action, int requestCode, String senderAddress) {
         Intent intent = new Intent(context, SelectAddressActivity.class);
         intent.setAction(action);
+        intent.putExtra(Constants.Extra.EXTRA_ADDRESS, senderAddress);
         ((Activity) context).startActivityForResult(intent, requestCode);
     }
 }

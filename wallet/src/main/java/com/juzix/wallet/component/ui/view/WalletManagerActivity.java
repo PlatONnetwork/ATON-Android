@@ -92,6 +92,11 @@ public class WalletManagerActivity extends MVPBaseActivity<WalletManagerPresente
         }
     }
 
+    @Override
+    protected boolean immersiveBarViewEnabled() {
+        return true;
+    }
+
     private void initView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
