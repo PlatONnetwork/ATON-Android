@@ -101,7 +101,17 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        DelegateDetailActivity.actionStart(getContext(), "", "", "");
+//                        DelegateDetailActivity.actionStart(getContext(), "", "", "");
+                        ValidatorsDetailActivity.actionStart(getContext(),"");
+                    }
+                });
+
+        RxView.clicks(ll_tutorial).compose(RxUtils.bindToLifecycle(this))
+                .compose(RxUtils.getClickTransformer())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        DelegateActivity.actionStart(getContext(), "", "", "");
                     }
                 });
 

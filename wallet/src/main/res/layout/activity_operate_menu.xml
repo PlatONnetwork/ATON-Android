@@ -24,6 +24,8 @@
         android:layout_marginBottom="30dp"
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
+        android:gravity="center"
+        android:lineSpacingExtra="2dp"
         />
 
     <com.juzix.wallet.component.widget.ShadowContainer
