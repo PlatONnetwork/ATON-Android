@@ -1,6 +1,7 @@
 package com.juzix.wallet.component.adapter;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
@@ -15,8 +16,11 @@ import java.util.List;
  */
 public class SelectAddressListAdapter extends CommonAdapter<Address> {
 
-    public SelectAddressListAdapter(int layoutId, List<Address> datas) {
+    private String mSenderAddress;
+
+    public SelectAddressListAdapter(int layoutId, List<Address> datas, String senderAddress) {
         super(layoutId, datas);
+        this.mSenderAddress = senderAddress;
     }
 
     @Override
@@ -29,6 +33,7 @@ public class SelectAddressListAdapter extends CommonAdapter<Address> {
             if (avatar != -1) {
                 viewHolder.setImageResource(R.id.iv_wallet_avatar, avatar);
             }
+            viewHolder.getConvertView().setBackgroundColor(item.getPrefixAddress().equals(mSenderAddress) ? ContextCompat.getColor(context, R.color.color_33dcdfe8) : ContextCompat.getColor(context, R.color.color_ffffff));
         }
     }
 

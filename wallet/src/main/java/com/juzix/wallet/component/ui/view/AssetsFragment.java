@@ -296,7 +296,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         }
     }
 
-    @OnClick({R.id.iv_scan, R.id.tv_total_assets_title, R.id.tv_backup, R.id.iv_add, R.id.tv_restricted_amount, R.id.iv_wallet_avatar})
+    @OnClick({R.id.iv_scan, R.id.tv_total_assets_title, R.id.tv_backup, R.id.iv_add, R.id.tv_restricted_amount, R.id.rl_wallet_detail})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_scan:
@@ -334,7 +334,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
             case R.id.tv_restricted_amount:
                 showLongToast(R.string.restricted_amount_tips);
                 break;
-            case R.id.iv_wallet_avatar:
+            case R.id.rl_wallet_detail:
                 ManageIndividualWalletActivity.actionStart(currentActivity(), mWalletAdapter.getSelectedWallet());
                 break;
             default:

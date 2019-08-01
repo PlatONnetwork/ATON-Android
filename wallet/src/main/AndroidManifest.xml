@@ -159,19 +159,11 @@
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".component.ui.view.VoteDetailActivity"
-            android:launchMode="standard"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".component.ui.view.SubmitVoteActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
             android:name=".component.ui.view.MyVoteActivity"
-            android:launchMode="standard"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".component.ui.view.VoteTransactionDetailActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity

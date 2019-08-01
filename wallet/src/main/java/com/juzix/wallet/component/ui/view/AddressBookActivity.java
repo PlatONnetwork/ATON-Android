@@ -130,6 +130,11 @@ public class AddressBookActivity extends MVPBaseActivity<AddressBookPresenter> i
     }
 
     @Override
+    protected boolean immersiveBarViewEnabled() {
+        return true;
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         if (unbinder != null) {

@@ -166,7 +166,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_address_book:
-                SelectAddressActivity.actionStartForResult(getContext(), Constants.Action.ACTION_GET_ADDRESS, MainActivity.REQ_ASSETS_SELECT_ADDRESS_BOOK);
+                SelectAddressActivity.actionStartForResult(getContext(), Constants.Action.ACTION_GET_ADDRESS, MainActivity.REQ_ASSETS_SELECT_ADDRESS_BOOK, mPresenter.getSenderAddress());
                 break;
             case R.id.iv_address_scan:
                 new RxPermissions(currentActivity())

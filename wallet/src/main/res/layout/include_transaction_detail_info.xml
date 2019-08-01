@@ -20,7 +20,7 @@
         style="@style/Text.61646e.14"
         android:layout_height="18dp"
         android:layout_marginTop="8dp"
-        android:text="@string/time"
+        android:text="@string/submissionTime"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_transaction_type_title" />
 
@@ -29,7 +29,7 @@
         style="@style/Text.61646e.14"
         android:layout_height="18dp"
         android:layout_marginTop="8dp"
-        android:text="@string/amount"
+        android:text="@string/submissionAmount"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_transaction_time_title" />
 
@@ -91,7 +91,7 @@
         app:layout_constraintLeft_toRightOf="@id/barrier"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_transaction_time"
-        tools:text="-10.00 Energon" />
+        tools:text="-10.00 Lat" />
 
     <TextView
         android:id="@+id/tv_transaction_energon"
@@ -103,7 +103,7 @@
         app:layout_constraintLeft_toRightOf="@id/barrier"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_transaction_amount"
-        tools:text="0.00035 Energon" />
+        tools:text="0.00035 Lat" />
 
     <TextView
         android:id="@+id/tv_transaction_wallet_name"

@@ -332,6 +332,30 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         this.txInfo = txInfo;
     }
 
+    public String getNodeName() {
+        return nodeName;
+    }
+
+    public void setNodeName(String nodeName) {
+        this.nodeName = nodeName;
+    }
+
+    public String getNodeId() {
+        return nodeId;
+    }
+
+    public void setNodeId(String nodeId) {
+        this.nodeId = nodeId;
+    }
+
+    public String getLockAddress() {
+        return lockAddress;
+    }
+
+    public void setLockAddress(String lockAddress) {
+        this.lockAddress = lockAddress;
+    }
+
     @Override
     public int hashCode() {
         return TextUtils.isEmpty(hash) ? 0 : hash.hashCode();

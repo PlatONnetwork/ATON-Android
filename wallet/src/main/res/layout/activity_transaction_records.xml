@@ -5,14 +5,56 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipToPadding="true"
-    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <com.juzix.wallet.component.widget.CommonTitleBar
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:ctb_left_drawable="@drawable/icon_back_black"
-        app:ctb_title="@string/transactions" />
+        android:background="@drawable/bg_status_bar"
+        android:orientation="vertical"
+        android:paddingTop="20dp">
+
+        <com.juzix.wallet.component.widget.CommonTitleBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:ctb_left_drawable="@drawable/icon_back_black"
+            app:ctb_title="@string/transactions" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_select_wallets"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/bg_select_wallet_list"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="20dp"
+        android:paddingTop="8dp"
+        android:paddingRight="30dp"
+        android:paddingBottom="12dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_all_wallets" />
+
+        <TextView
+            style="@style/Text.000.16"
+            android:layout_marginLeft="15dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical|left"
+            android:text="AII wallets" />
+
+        <ImageView
+            android:id="@+id/iv_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_arrow_down" />
+
+    </LinearLayout>
+
 
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/layout_refresh"
@@ -34,15 +76,13 @@
                 android:id="@+id/list_transactions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/color_ffffff"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
                 android:clipChildren="false"
                 android:clipToPadding="false"
-                android:paddingLeft="16dp"
-                android:paddingTop="10dp"
-                android:scrollbars="vertical"
                 android:fadeScrollbars="true"
                 android:scrollbarStyle="outsideOverlay"
-                android:paddingRight="16dp"
+                android:scrollbars="vertical"
                 android:visibility="gone"
                 tools:listitem="@layout/item_transaction_record" />
 

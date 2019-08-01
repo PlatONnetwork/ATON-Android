@@ -116,6 +116,7 @@
     <string name="voting">Voting</string>
     <string name="wallet_address">Wallet Address</string>
     <string name="amount">Amount</string>
+    <string name="submissionAmount">Amount</string>
     <string name="pay_wallet">From</string>
     <string name="change">Change</string>
     <string name="select_fee">Select Fee</string>
@@ -274,12 +275,13 @@
     <string name="changeMemberName">Change Member Name</string>
     <string name="transactionConfirmation">Transaction Confirmation</string>
     <string name="totalValue">Value</string>
-    <string name="type">Txn info</string>
+    <string name="type">Type</string>
     <string name="executeContractFee">Execute Contract Fee</string>
     <string name="addSharedWalletSuccess">Joint wallet added successfully</string>Refuse
     <string name="signingConfirmationFailed">Signing confirmation failed</string>
     <string name="signingRefuseFailed">Signing refuse failed</string>
     <string name="time">Time</string>
+    <string name="submissionTime">Submission Time</string>
     <string name="memo">Memo</string>
     <string name="hash">Hash</string>
     <string name="executeContractConfirm">Execute Contract-Confirm</string>
@@ -459,6 +461,20 @@
     <string name="msg_ten_billion">ten  billion</string>
     <string name="msg_hundred_billion">hundred billion</string>
     <string name="msg_trillion">trillion</string>
+
+    <string name="delegated_to">Delegated To</string>
+    <string name="delegation_amount">Delegation Amount</string>
+    <string name="withdrawal_amount">Withdrawal Amount</string>
+    <string name="version">Version</string>
+    <string name="stake_amount">Stake Amount</string>
+    <string name="return_amount">Return Amount</string>
+    <string name="report_type">Report Type</string>
+    <string name="reported">Reported</string>
+    <string name="proposal_id">Proposal ID</string>
+    <string name="proposal_type">Proposal Type</string>
+    <string name="restricted_account">Restricted Account</string>
+    <string name="restricted_amount">Restricted Amount</string>
+    <string name="double_signing">Double Signing</string>
 
 
 </resources>

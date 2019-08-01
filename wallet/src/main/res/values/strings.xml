@@ -146,6 +146,7 @@
     <string name="voting">投票</string>
     <string name="wallet_address">钱包地址</string>
     <string name="amount">数量</string>
+    <string name="submissionAmount">交易数量</string>
     <string name="pay_wallet">支付钱包</string>
     <string name="change">切换钱包</string>
     <string name="select_fee">交易费用</string>
@@ -158,7 +159,7 @@
     <string name="public_key">公钥</string>
     <string name="sharing">分享给朋友</string>
     <string name="fromAddress">From</string>
-    <string name="toAddress">接收地址</string>
+    <string name="toAddress">To</string>
     <string name="wallet_balance">%1$s&#160;Energon</string>
     <string name="transaction_detail">交易详情</string>
     <string name="select_wallet">选择钱包</string>
@@ -275,12 +276,13 @@
     <string name="changeMemberName">修改备注</string>
     <string name="transactionConfirmation">联名钱包转账确认</string>
     <string name="totalValue">总数量</string>
-    <string name="type">交易信息</string>
+    <string name="type">交易类别</string>
     <string name="executeContractFee">执行合约手续费</string>
     <string name="addSharedWalletSuccess">联名钱包添加成功</string>
     <string name="signingConfirmationFailed">签名确认失败</string>
     <string name="signingRefuseFailed">签名拒绝失败</string>
     <string name="time">时间</string>
+    <string name="submissionTime">交易时间</string>
     <string name="memo">备注</string>
     <string name="hash">交易Hash</string>
     <string name="executeContractConfirm">交易确认</string>
@@ -470,5 +472,18 @@
     <string name="msg_hundred_billion">千亿</string>
     <string name="msg_trillion">万亿</string>
 
+    <string name="delegated_to">委托给</string>
+    <string name="delegation_amount">委托数量</string>
+    <string name="withdrawal_amount">赎回数量</string>
+    <string name="version">版本</string>
+    <string name="stake_amount">质押数量</string>
+    <string name="return_amount">退回数量</string>
+    <string name="report_type">举报类型</string>
+    <string name="reported">被举报人</string>
+    <string name="proposal_id">提案ID</string>
+    <string name="proposal_type">提案类型</string>
+    <string name="restricted_account">锁仓地址</string>
+    <string name="restricted_amount">锁仓数量</string>
+    <string name="double_signing">多签</string>
 
 </resources>

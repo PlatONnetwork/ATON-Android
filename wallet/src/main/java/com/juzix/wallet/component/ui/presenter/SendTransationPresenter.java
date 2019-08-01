@@ -91,6 +91,10 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
         }
     }
 
+    public String getSenderAddress() {
+        return walletEntity != null ? walletEntity.getPrefixAddress() : "";
+    }
+
     @Override
     public void fetchDefaultWalletInfo() {
         walletEntity = WalletManager.getInstance().getSelectedWallet();
@@ -239,7 +243,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
         String avatar = avatarArray[new Random().nextInt(avatarArray.length)];
         boolean success = AddressDao.insertAddressInfo(new AddressEntity(UUID.randomUUID().toString(), address, name, avatar));
         getView().setSaveAddressButtonEnable(!success);
-        if (success){
+        if (success) {
             showLongToast("保存成功");
         }
     }
