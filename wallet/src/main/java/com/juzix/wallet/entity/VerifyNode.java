@@ -3,6 +3,8 @@ package com.juzix.wallet.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.juzix.wallet.db.entity.VerifyNodeEntity;
+
 public class VerifyNode implements Parcelable {
 
 
@@ -27,23 +29,15 @@ public class VerifyNode implements Parcelable {
     private String deposit;
 
     /**
-     * 机构官网
-     */
-    private String website;
-
-    /**
-     * 节点简介
-     */
-    private String intro;
-    /**
      * 节点头像
      */
     private String url;
 
     /**
-     * 节点地址
+     * 预计年化率
      */
-    private String nodeUrl;
+    private String ratePA;
+
 
     /**
      * 竞选状态
@@ -54,44 +48,30 @@ public class VerifyNode implements Parcelable {
      */
     private String nodeStatus;
 
-    /**
-     * 预计年化率
-     */
-    private String ratePA;
-
-    /**
-     * 处罚次数
-     */
-    private int punishNumber;
-    /**
-     * 委托次数
-     */
-    private int delegateNumber;
-    /**
-     * 委托者
-     */
-    private String delegate;
-
-    /**
-     * 出块数
-     */
-    private int blockOutNumber;
-
-    /**
-     * 出块率
-     */
-    private String blockRate;
-
-    /**
-     * 排列序号：由区块号和交易索引拼接而成
-     */
-    private int sequence;
-
 
     public VerifyNode() {
 
     }
 
+    public VerifyNode(String nodeId, int ranking, String name, String deposit, String url, String ratePA, String nodeStatus) {
+        this.nodeId = nodeId;
+        this.ranking = ranking;
+        this.name = name;
+        this.deposit = deposit;
+        this.url = url;
+        this.ratePA = ratePA;
+        this.nodeStatus = nodeStatus;
+    }
+
+    public VerifyNode(Builder builder) {
+        this.nodeId = builder.nodeId;
+        this.url = builder.url;
+        this.deposit = builder.deposit;
+        this.nodeStatus = builder.nodeStatus;
+        this.ranking = builder.ranking;
+        this.name = builder.name;
+        this.ratePA = builder.ratePA;
+    }
 
     public String getNodeId() {
         return nodeId;
@@ -125,22 +105,6 @@ public class VerifyNode implements Parcelable {
         this.deposit = deposit;
     }
 
-    public String getWebsite() {
-        return website;
-    }
-
-    public void setWebsite(String website) {
-        this.website = website;
-    }
-
-    public String getIntro() {
-        return intro;
-    }
-
-    public void setIntro(String intro) {
-        this.intro = intro;
-    }
-
     public String getUrl() {
         return url;
     }
@@ -149,13 +113,6 @@ public class VerifyNode implements Parcelable {
         this.url = url;
     }
 
-    public String getNodeUrl() {
-        return nodeUrl;
-    }
-
-    public void setNodeUrl(String nodeUrl) {
-        this.nodeUrl = nodeUrl;
-    }
 
     public String getNodeStatus() {
         return nodeStatus;
@@ -173,71 +130,15 @@ public class VerifyNode implements Parcelable {
         this.ratePA = ratePA;
     }
 
-    public int getPunishNumber() {
-        return punishNumber;
-    }
-
-    public void setPunishNumber(int punishNumber) {
-        this.punishNumber = punishNumber;
-    }
-
-    public int getDelegateNumber() {
-        return delegateNumber;
-    }
-
-    public void setDelegateNumber(int delegateNumber) {
-        this.delegateNumber = delegateNumber;
-    }
-
-    public String getDelegate() {
-        return delegate;
-    }
-
-    public void setDelegate(String delegate) {
-        this.delegate = delegate;
-    }
-
-    public int getBlockOutNumber() {
-        return blockOutNumber;
-    }
-
-    public void setBlockOutNumber(int blockOutNumber) {
-        this.blockOutNumber = blockOutNumber;
-    }
-
-    public String getBlockRate() {
-        return blockRate;
-    }
-
-    public void setBlockRate(String blockRate) {
-        this.blockRate = blockRate;
-    }
-
-    public int getSequence() {
-        return sequence;
-    }
-
-    public void setSequence(int sequence) {
-        this.sequence = sequence;
-    }
 
     protected VerifyNode(Parcel in) {
         nodeId = in.readString();
         ranking = in.readInt();
         name = in.readString();
         deposit = in.readString();
-        website = in.readString();
-        intro = in.readString();
         url = in.readString();
-        nodeUrl = in.readString();
         nodeStatus = in.readString();
         ratePA = in.readString();
-        punishNumber = in.readInt();
-        delegateNumber = in.readInt();
-        delegate = in.readString();
-        blockOutNumber = in.readInt();
-        blockRate = in.readString();
-        sequence = in.readInt();
     }
 
 
@@ -259,24 +160,77 @@ public class VerifyNode implements Parcelable {
         dest.writeInt(ranking);
         dest.writeString(name);
         dest.writeString(deposit);
-        dest.writeString(website);
-        dest.writeString(intro);
         dest.writeString(url);
-        dest.writeString(nodeUrl);
         dest.writeString(nodeStatus);
         dest.writeString(ratePA);
-        dest.writeInt(punishNumber);
-        dest.writeInt(delegateNumber);
-        dest.writeString(delegate);
-        dest.writeInt(blockOutNumber);
-        dest.writeString(blockRate);
-        dest.writeInt(sequence);
-
     }
 
     @Override
     public int describeContents() {
         return 0;
+    }
+
+
+    public static final class Builder {
+        private String nodeId;
+        private int ranking;
+        private String name;
+        private String deposit;
+        private String url;
+        private String ratePA;
+        private String nodeStatus;
+
+        public Builder nodeId(String nodeId) {
+            this.nodeId = nodeId;
+            return this;
+        }
+
+        public Builder ranking(int ranking) {
+            this.ranking = ranking;
+            return this;
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder deposit(String deposit) {
+            this.deposit = deposit;
+            return this;
+        }
+
+        public Builder url(String url) {
+            this.url = url;
+            return this;
+        }
+
+        public Builder ratePA(String ratePA) {
+            this.ratePA = ratePA;
+            return this;
+        }
+
+        public Builder nodeStatus(String nodeStatus) {
+            this.nodeStatus = nodeStatus;
+            return this;
+        }
+
+        public VerifyNode build() {
+            return new VerifyNode(this);
+        }
+
+    }
+
+    public VerifyNodeEntity toVerifyNodeEntity() {
+        return new VerifyNodeEntity.Builder()
+                .deposit(deposit)
+                .name(name)
+                .nodeId(nodeId)
+                .ranking(ranking)
+                .ratePA(ratePA)
+                .url(url)
+                .nodeStatus(nodeStatus)
+                .build();
     }
 
 

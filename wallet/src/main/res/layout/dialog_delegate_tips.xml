@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="54dp"
+        android:background="@drawable/bg_common_dialog_fragment"
+        android:orientation="vertical"
+        android:paddingTop="56dp"
+        android:paddingBottom="12dp">
+
+        <TextView
+            android:id="@+id/text_title_one"
+            style="@style/Text.f5302c.16"
+            android:layout_marginLeft="13dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="10dp"
+            android:text="@string/locked_delegate"
+            android:textColor="@color/color_2a5ffe" />
+
+        <TextView
+            android:id="@+id/tv_content_one"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:lineSpacingExtra="2dp"
+            android:text="@string/locked_delegate_des"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/tv_title_two"
+            style="@style/Text.f5302c.16"
+            android:layout_marginLeft="13dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="10dp"
+            android:text="@string/unlocked_delegate"
+            android:textColor="@color/color_2a5ffe" />
+
+        <TextView
+            android:id="@+id/tv_content_two"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:lineSpacingExtra="2dp"
+            android:text="@string/unlocked_delegate_des"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/tv_title_three"
+            style="@style/Text.f5302c.16"
+            android:layout_marginLeft="13dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="10dp"
+            android:text="@string/released_delegate"
+            android:textColor="@color/color_2a5ffe" />
+
+        <TextView
+            android:id="@+id/tv_content_three"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginBottom="29dp"
+            android:lineSpacingExtra="2dp"
+            android:text="@string/released_delegate_des"
+            android:textSize="13sp" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/icon_delegate_dialog_tips" />
+
+
+</FrameLayout>

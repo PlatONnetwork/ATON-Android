@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/bg_validators_item">
+
+        <com.juzix.wallet.component.widget.CircleImageView
+            android:id="@+id/iv_url"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="3dp"
+            android:layout_marginBottom="18dp"
+            android:src="@drawable/icon_validators_default" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_toRightOf="@id/iv_url"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_validators_node_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="6dp"
+                    android:text="jiang"
+                    android:textColor="@color/color_000000"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/tv_validators_node_state"
+                    android:layout_width="51dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_validators_state"
+                    android:paddingLeft="8dp"
+                    android:text="active"
+                    android:textColor="@color/color_4a90e2"
+                    android:textSize="11sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="9dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="6dp"
+                    android:text="@string/validators_staked"
+                    android:textColor="@color/color_61646e"
+                    android:textSize="12sp" />
+
+
+                <TextView
+                    android:id="@+id/tv_staked_money"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1644848.10552"
+                    android:textColor="@color/color_000000"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="21dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="21dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_yield"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:text="12.30%"
+                android:textColor="@color/color_105cfe"
+                android:textSize="17sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/validators_yield"
+                android:textColor="@color/color_898c9e"
+                android:textSize="11sp" />
+
+        </LinearLayout>
+
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/iv_rank_bg"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/icon_rank1" />
+
+            <TextView
+                android:id="@+id/tv_validators_rank"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:text="5"
+                android:textColor="@color/color_ffffff"
+                android:textSize="11sp" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

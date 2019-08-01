@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="10dp"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/icon_my_delegate_item_bg">
+
+            <com.juzix.wallet.component.widget.CircleImageView
+                android:id="@+id/iv_total_delegate"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="8dp"
+                android:src="@drawable/icon_total_delegate" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/iv_total_delegate"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
+                android:layout_toRightOf="@id/iv_total_delegate"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_name_node"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="3dp"
+                    android:text="委托节点名称"
+                    android:textColor="@color/color_000000"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/tv_address_node"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="委托节点地址"
+                    android:textColor="@color/color_61646e"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="12dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginBottom="12dp"
+                android:gravity="right"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="6dp"
+                    android:text="5235.505"
+                    android:textColor="@color/color_000000"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tv_state"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:drawablePadding="3dp"
+                    android:text="success"
+                    android:textColor="@color/color_19a20e"
+                    android:textSize="11sp" />
+
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/bg_mydelegate_item">
+
+            <TextView
+                android:id="@+id/tv_delegate_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:text="2019-06-17"
+                android:textColor="@color/color_898c9e"
+                android:textSize="13sp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp">
+
+                <com.juzix.wallet.component.widget.CircleImageView
+                    android:id="@+id/iv_wallet"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/icon_total_delegate" />
+
+                <TextView
+                    android:id="@+id/tv_wallet_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_toRightOf="@id/iv_wallet"
+                    android:text="钱包地址dafsdfas"
+                    android:textColor="@color/color_898c9e"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+
+</LinearLayout>
