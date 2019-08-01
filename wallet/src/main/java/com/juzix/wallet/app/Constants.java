@@ -80,6 +80,7 @@ public class Constants {
         String KEY_SHOW_ASSETS_FLAG = "showAssetsFlag";
         String KEY_UPDATE_VERSION_TIME = "updateVersionTime";
         String KEY_CURRENT_NODE_ADDRESS = "currentNodeAddress";
+        String KEY_VALIDATORS_RANK = "validatorsRank";
     }
 
     public interface Permission {
@@ -125,7 +126,15 @@ public class Constants {
         String All = "all";
         String REDEEM = "redeem";
         String DELEGATE = "delegate";
-
-
     }
+
+    public interface ValidatorsType {
+        String ALL_VALIDATORS = "all";
+        String ACTIVE_VALIDATORS = "active";
+        String CANDIDATE_VALIDATORS = "candidate";
+        String VALIDATORS_RANK = "rangking";
+        String VALIDATORS_YIELD = "PA";
+        String  VALIDATORS_NODEID ="Validators_nodeId";
+    }
+
 }

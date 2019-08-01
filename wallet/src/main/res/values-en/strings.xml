@@ -482,5 +482,7 @@
     <string name="node_undelegating">Undelegating</string>
     <string name="node_move_out">Move out</string>
     <string name="node_withdraw_delegate">Withdraw</string>
+    <string name="validators_yield">Yield</string>
+    <string name="validators_staked">Staked</string>
 </resources>
 

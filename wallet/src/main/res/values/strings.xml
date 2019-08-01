@@ -493,4 +493,8 @@
     <string name="node_undelegating">赎回中委托</string>
     <string name="node_move_out">移除列表</string>
     <string name="node_withdraw_delegate">赎回委托</string>
+    <string name="validators_yield">预计年化率</string>
+    <string name="validators_staked">总质押</string>
+
+
 </resources>
