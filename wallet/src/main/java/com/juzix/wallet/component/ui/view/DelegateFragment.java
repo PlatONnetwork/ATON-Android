@@ -21,7 +21,6 @@ import com.juzix.wallet.component.widget.table.PagerItem;
 import com.juzix.wallet.component.widget.table.PagerItemAdapter;
 import com.juzix.wallet.component.widget.table.PagerItems;
 import com.juzix.wallet.component.widget.table.SmartTabLayout;
-import com.juzix.wallet.lyz.SlidingTabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +30,7 @@ import java.util.List;
  * 委托模块
  */
 public class DelegateFragment extends BaseFragment {
-    private SlidingTabLayout sliding_tab_layout;
+//    private SlidingTabLayout sliding_tab_layout;
     private ViewPager view_page;
     ArrayList<String> mTitleList = null;
     @Nullable

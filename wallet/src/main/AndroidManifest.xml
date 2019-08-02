@@ -170,7 +170,7 @@
             android:name=".component.ui.view.NodeDetailActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
-        
+
         <!--Aton v0.7.0-->
         <activity
             android:name=".component.ui.view.DelegateRecordActivity"
@@ -190,6 +190,10 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".component.ui.view.DelegateActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".component.ui.view.OfficialCommunityActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
 

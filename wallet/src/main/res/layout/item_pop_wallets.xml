@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="65dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingLeft="5dp"
+    android:paddingRight="16dp">
+
+    <ImageView
+        android:id="@+id/iv_wallet_avatar"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:src="@drawable/avatar_2" />
+
+    <TextView
+        android:id="@+id/tv_wallet_name"
+        style="@style/Text.898c9e.16"
+        android:layout_marginLeft="8dp"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:gravity="center_vertical|left"
+        android:singleLine="true"
+        tools:text="AII walletswalletswalletswalletswalletswalletswalletswalletswalletswalletswallets" />
+
+    <ImageView
+        android:id="@+id/iv_selected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_hook_m" />
+
+</LinearLayout>

@@ -179,6 +179,7 @@ public class MeFragment extends BaseFragment {
                     @Override
                     public void accept(Object o) {
                         ToastUtil.showLongToast(getContext(), BuildConfig.VERSION_NAME);
+                        OfficialCommunityActivity.actionStart(getActivity());
                     }
                 });
     }

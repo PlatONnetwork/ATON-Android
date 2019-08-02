@@ -135,6 +135,9 @@ public class ShadowDrawable extends StateListDrawable {
         } else if (mShadowsMode == SHADOW_BOTTOM) {
             mRect = new RectF(left - mOffsetX, top - mOffsetY, right - mOffsetX,
                     bottom - mShadowRadius - mOffsetY);
+        } else if (mShadowsMode == (SHADOW_BOTTOM | SHADOW_LEFT | SHADOW_RIGHT)) {
+            mRect = new RectF(left + mShadowRadius - mOffsetX, top - mOffsetY, right - mShadowRadius - mOffsetX,
+                    bottom - mShadowRadius - mOffsetY);
         }
     }
 
