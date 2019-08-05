@@ -1,5 +1,9 @@
 package com.juzix.wallet.component.ui.presenter;
 
+import android.text.TextUtils;
+
+import com.juzhen.framework.util.NumberParserUtils;
+import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.WithDrawContract;
 import com.juzix.wallet.component.ui.dialog.SelectWalletDialogFragment;
@@ -17,6 +21,37 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     @Override
     public void showWalletInfo() {
         showSelectedWalletInfo();
+    }
+
+    @Override
+    public void updateWithDrawButtonState() {
+        if (isViewAttached()) {
+            String withdrawAmount = getView().getWithDrawAmount();
+//              boolean isAmountValid =!TextUtils.isEmpty(withdrawAmount) && NumberParserUtils.parseDouble(withdrawAmount) > 0 && isBalanceEnough(transferAmount);
+            boolean isAmountValid = !TextUtils.isEmpty(withdrawAmount) && NumberParserUtils.parseDouble(withdrawAmount) > 0;
+            getView().setWithDrawButtonState(isAmountValid);
+        }
+
+    }
+
+    @Override
+    public boolean checkWithDrawAmount(String withdrawAmount) {
+        //检查赎回的数量
+        String errMsg = null;
+        //todo 判断语句没写完整
+        if (TextUtils.isEmpty(withdrawAmount)) {
+            errMsg = string(R.string.transfer_amount_cannot_be_empty);
+        } else {
+            //            if (!isBalanceEnough(transferAmount)) { //是否超出可赎回数量，超出也无法提交
+//                errMsg = string(R.string.insufficient_balance);
+//            }
+        }
+
+        getView().showAmountError(errMsg);
+
+        return TextUtils.isEmpty(errMsg);
+
+
     }
 
 

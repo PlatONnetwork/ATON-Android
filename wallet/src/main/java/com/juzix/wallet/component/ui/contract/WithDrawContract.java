@@ -8,6 +8,12 @@ public class WithDrawContract {
     public interface View extends IView {
 
         void showSelectedWalletInfo(Wallet individualWalletEntity);
+
+        void setWithDrawButtonState(boolean isClickable);
+
+        String getWithDrawAmount();
+
+        void showAmountError(String errMsg);
     }
 
     public interface Presenter extends IPresenter<View> {
@@ -17,6 +23,10 @@ public class WithDrawContract {
 
         void showWalletInfo();
 
+
+        void updateWithDrawButtonState();
+
+        boolean checkWithDrawAmount(String withdrawAmount);
     }
 
 }

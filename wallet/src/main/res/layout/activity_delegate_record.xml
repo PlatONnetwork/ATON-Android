@@ -20,7 +20,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <include layout="@layout/layout_app_tab" />
+        <include layout="@layout/layout_app_tab_delegate_record" />
 
         <View
             android:layout_width="match_parent"

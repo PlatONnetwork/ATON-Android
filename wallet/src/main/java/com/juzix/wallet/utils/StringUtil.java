@@ -16,6 +16,12 @@
 
 package com.juzix.wallet.utils;
 
+import android.content.Context;
+
+import com.juzhen.framework.util.NumberParserUtils;
+import com.juzix.wallet.R;
+import com.juzix.wallet.app.Constants;
+
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
@@ -96,6 +102,43 @@ public class StringUtil {
         decimalFormat.setGroupingSize(3);//设置分组大小，也就是显示逗号的位置
         decimalFormat.setRoundingMode(halfUp ? RoundingMode.HALF_UP : RoundingMode.FLOOR);
         return decimalFormat.format(price);
+    }
+
+
+    /**
+     * 获取转账金额的数量级描述
+     *
+     * @param transferAmount
+     * @return
+     */
+    public static String getAmountMagnitudes(Context context, String transferAmount) {
+        double amount = NumberParserUtils.parseDouble(transferAmount);
+        //万亿
+        if (amount >= Constants.Magnitudes.TRILLION) {
+            return context.getString(R.string.msg_trillion);
+        } else if (amount >= Constants.Magnitudes.HUNDRED_BILLION) {
+            return context.getString(R.string.msg_hundred_billion);
+        } else if (amount >= Constants.Magnitudes.TEN_BILLION) {
+            return context.getString(R.string.msg_ten_billion);
+        } else if (amount >= Constants.Magnitudes.BILLION) {
+            return context.getString(R.string.msg_billion);
+        } else if (amount >= Constants.Magnitudes.HUNDRED_MILLION) {
+            return context.getString(R.string.msg_hundred_million);
+        } else if (amount >= Constants.Magnitudes.TEN_MILLION) {
+            return context.getString(R.string.msg_ten_thousand);
+        } else if (amount >= Constants.Magnitudes.MILLION) {
+            return context.getString(R.string.msg_million);
+        } else if (amount >= Constants.Magnitudes.HUNDRED_THOUSAND) {
+            return context.getString(R.string.msg_hundred_thousand);
+        } else if (amount >= Constants.Magnitudes.TEN_THOUSAND) {
+            return context.getString(R.string.msg_ten_thousand);
+        } else if (amount >= Constants.Magnitudes.THOUSAND) {
+            return context.getString(R.string.msg_thousand);
+        } else if (amount >= Constants.Magnitudes.HUNDRED) {
+            return context.getString(R.string.msg_hundred);
+        } else {
+            return "";
+        }
     }
 
 
