@@ -134,7 +134,23 @@ public class Constants {
         String CANDIDATE_VALIDATORS = "candidate";
         String VALIDATORS_RANK = "rangking";
         String VALIDATORS_YIELD = "PA";
-        String  VALIDATORS_NODEID ="Validators_nodeId";
+        String VALIDATORS_NODEID = "Validators_nodeId";
     }
+
+    public interface Magnitudes {
+        double TRILLION = 1E12;
+        double HUNDRED_BILLION = 1E11;
+        double TEN_BILLION = 1E10;
+        double BILLION = 1E9;
+        double HUNDRED_MILLION = 1E8;
+        double TEN_MILLION = 1E7;
+        double MILLION = 1E6;
+        double HUNDRED_THOUSAND = 1E5;
+        double TEN_THOUSAND = 1E4;
+        double THOUSAND = 1E3;
+        double HUNDRED = 1E2;
+
+    }
+
 
 }

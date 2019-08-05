@@ -6,8 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/color_f9fbff"
     android:fitsSystemWindows="true"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
     <com.juzix.wallet.component.widget.CommonTitleBar
         android:id="@+id/commonTitleBar"
@@ -203,6 +202,17 @@
                     android:textColor="@color/color_61646e"
                     android:textSize="16sp" />
 
+                <TextView
+                    android:id="@+id/tv_amount_magnitudes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:gravity="center"
+                    android:text="百"
+                    android:textColor="@color/color_000000"
+                    android:textSize="12sp"
+                    android:visibility="gone" />
+
                 <FrameLayout
                     android:id="@+id/layout_delegate_amount"
                     android:layout_width="match_parent"
@@ -267,7 +277,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginRight="16dp"
-                app:enabled="false"
+                app:enabled="true"
                 app:text="@string/validators_withdraw"
                 app:textAppearance="@style/MainButtonStyle"
                 app:textBackground="@drawable/bg_main_button" />

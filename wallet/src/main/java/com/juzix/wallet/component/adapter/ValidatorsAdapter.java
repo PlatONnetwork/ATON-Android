@@ -5,6 +5,7 @@ import android.support.v4.content.ContextCompat;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.adapter.base.ViewHolder;
 import com.juzix.wallet.component.widget.CircleImageView;
@@ -30,7 +31,7 @@ public class ValidatorsAdapter extends CommonAdapter<VerifyNode> {
         viewHolder.setText(R.id.tv_validators_node_name, item.getName());
         viewHolder.setText(R.id.tv_validators_node_state, item.getNodeStatus());
         viewHolder.setText(R.id.tv_yield, item.getRatePA() + "%");
-        viewHolder.setText(R.id.tv_staked_money, context.getString(R.string.amount_with_unit, StringUtil.formatBalance(Double.parseDouble(item.getDeposit()), false)));
+        viewHolder.setText(R.id.tv_staked_money, context.getString(R.string.amount_with_unit, StringUtil.formatBalance(NumberParserUtils.parseDouble(item.getDeposit()), false)));
         viewHolder.setText(R.id.tv_validators_rank, item.getRanking() + "");
         ImageView iv = viewHolder.getView(R.id.iv_rank_bg);
         changeImageViewBg(context, iv, item.getRanking());
