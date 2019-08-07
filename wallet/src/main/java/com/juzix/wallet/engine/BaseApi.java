@@ -7,6 +7,7 @@ import com.juzix.wallet.entity.CandidateWrap;
 import com.juzix.wallet.entity.DelegateDetail;
 import com.juzix.wallet.entity.DelegateRecord;
 import com.juzix.wallet.entity.MyDelegate;
+import com.juzix.wallet.entity.NodeStates;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.VerifyNode;
 import com.juzix.wallet.entity.VerifyNodeDetail;
@@ -99,9 +100,16 @@ public interface BaseApi {
      */
 
     @POST("app-{cid}/v060/node/nodeDetails")
-    Single<Response<ApiResponse<VerifyNodeDetail>>> getVotedCandidateDetail(@Path("cid") String cid, @Body ApiRequestBody body);
+    Single<Response<ApiResponse<VerifyNodeDetail>>> getNodeCandidateDetail(@Path("cid") String cid, @Body ApiRequestBody body);
 
 
+    /**
+     * 获取节点状态
+     */
+
+    @POST("app-{cid}/v060/node/getNodeStatus")
+    Single<Response<ApiResponse<NodeStates>>> getNodeStatus(@Path("cid") String cid, @Body ApiRequestBody body);
+    
     /**
      * 获取我的委托列表
      *

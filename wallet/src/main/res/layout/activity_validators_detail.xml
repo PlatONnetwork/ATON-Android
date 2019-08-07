@@ -4,8 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_f9fbff"
-    android:fitsSystemWindows="true"
     android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/ll_title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_status_bar"
+        android:orientation="vertical"
+        android:paddingTop="20dp">
 
     <com.juzix.wallet.component.widget.CommonTitleBar
         android:id="@+id/commonTitleBar"
@@ -13,11 +20,12 @@
         android:layout_height="wrap_content"
         app:ctb_left_drawable="@drawable/icon_back_black"
         app:ctb_title="@string/validators_detail" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/commonTitleBar"
+        android:layout_below="@id/ll_title_bar"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="16dp"
         android:layout_marginRight="10dp"
@@ -314,60 +322,69 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:layout_marginBottom="30dp"
-        android:orientation="horizontal">
+        >
 
-        <LinearLayout
-            android:id="@+id/ll_validators_withdraw"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginRight="15dp"
-            android:layout_weight="1"
-            android:background="@drawable/bg_main_button"
-            android:gravity="center"
-            android:orientation="horizontal">
+        <com.juzix.wallet.component.widget.ShadowButton
+            android:id="@+id/sbtn_delegate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:enabled="true"
+            app:text="@string/validators_delegate"
+            app:textAppearance="@style/MainButtonStyle"
+            app:textBackground="@drawable/bg_main_button" />
 
-            <ImageView
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:layout_marginRight="5dp"
-                android:src="@drawable/icon_validators_detail_withdraw" />
+        <!--<LinearLayout-->
+            <!--android:id="@+id/ll_validators_withdraw"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="40dp"-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--android:layout_marginRight="15dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:background="@drawable/bg_main_button"-->
+            <!--android:gravity="center"-->
+            <!--android:orientation="horizontal">-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/validators_withdraw"
-                android:textColor="@color/color_ffffff"
-                android:textSize="15sp" />
-        </LinearLayout>
+            <!--<ImageView-->
+                <!--android:layout_width="22dp"-->
+                <!--android:layout_height="22dp"-->
+                <!--android:layout_marginRight="5dp"-->
+                <!--android:src="@drawable/icon_validators_detail_withdraw" />-->
 
-        <LinearLayout
-            android:id="@+id/ll_validators_delegate"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="15dp"
-            android:layout_weight="1"
-            android:background="@drawable/bg_main_button"
-            android:gravity="center"
-            android:orientation="horizontal">
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/validators_withdraw"-->
+                <!--android:textColor="@color/color_ffffff"-->
+                <!--android:textSize="15sp" />-->
+        <!--</LinearLayout>-->
 
-            <ImageView
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:layout_marginRight="5dp"
-                android:src="@drawable/icon_validators_detail_delegate" />
+        <!--<LinearLayout-->
+            <!--android:id="@+id/ll_validators_delegate"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="40dp"-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--android:layout_marginLeft="15dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:background="@drawable/bg_main_button"-->
+            <!--android:gravity="center"-->
+            <!--android:orientation="horizontal">-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/validators_delegate"
-                android:textColor="@color/color_ffffff"
-                android:textSize="15sp" />
-        </LinearLayout>
+            <!--<ImageView-->
+                <!--android:layout_width="22dp"-->
+                <!--android:layout_height="22dp"-->
+                <!--android:layout_marginRight="5dp"-->
+                <!--android:src="@drawable/icon_validators_detail_delegate" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/validators_delegate"-->
+                <!--android:textColor="@color/color_ffffff"-->
+                <!--android:textSize="15sp" />-->
+        <!--</LinearLayout>-->
 
 
     </LinearLayout>

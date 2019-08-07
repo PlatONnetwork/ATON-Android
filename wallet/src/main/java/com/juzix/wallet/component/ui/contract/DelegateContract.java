@@ -2,6 +2,8 @@ package com.juzix.wallet.component.ui.contract;
 
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
+import com.juzix.wallet.component.ui.popwindow.DelegatePopWindow;
+import com.juzix.wallet.entity.DelegateType;
 import com.juzix.wallet.entity.Wallet;
 
 public class DelegateContract {
@@ -16,7 +18,21 @@ public class DelegateContract {
 
         void showAmountError(String errMsg);
 
+        void showTips(boolean isShowTips);
 
+        void showWalletType(DelegateType delegateType);
+
+        String getNodeAddressFromIntent();
+
+        String getNodeNameFromIntent();
+
+        String getNodeIconFromIntent();
+
+        int getJumpTagFromIntent();
+
+        void showNodeInfo(String nodeAddress, String nodeName, String nodeIcon);
+
+        String getChooseBalance();
     }
 
     public interface Presenter extends IPresenter<View> {
@@ -24,11 +40,14 @@ public class DelegateContract {
 
         void showWalletInfo();
 
-
         void updateDelegateButtonState();
 
-        boolean checkDelegateAmount(String delegateAmount);
+        String checkDelegateAmount(String delegateAmount);
 
+
+        void getAmountType(DelegatePopWindow view);
+
+        void submitDelegate(String type);
 
     }
 }

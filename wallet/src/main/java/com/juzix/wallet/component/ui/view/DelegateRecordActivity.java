@@ -100,4 +100,8 @@ public class DelegateRecordActivity extends BaseActivity {
         context.startActivity(intent);
     }
 
+    @Override
+    protected boolean immersiveBarViewEnabled() {
+        return true;
+    }
 }

@@ -19,10 +19,12 @@ import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.WithDrawContract;
+import com.juzix.wallet.component.ui.popwindow.DelegatePopWindow;
 import com.juzix.wallet.component.ui.presenter.WithDrawPresenter;
 import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.component.widget.PointLengthFilter;
 import com.juzix.wallet.component.widget.ShadowButton;
+import com.juzix.wallet.entity.DelegateType;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.RxUtils;
@@ -95,6 +97,27 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
                         mPresenter.showSelectWalletDialogFragment();
                     }
                 });
+
+        RxView.clicks(chooseDelegate)
+                .compose(RxUtils.bindToLifecycle(this))
+                .compose(RxUtils.getClickTransformer())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        //弹窗选择类型
+                        DelegatePopWindow delegatePopWindow = new DelegatePopWindow(getContext(), chooseDelegate,null);
+//                        delegatePopWindow.showAsDropDown(chooseDelegate);
+
+                        delegatePopWindow.setListener(new DelegatePopWindow.OnPopItemClickListener() {
+                            @Override
+                            public void onPopItemClick(View view, int positon, DelegateType bean) {
+                                showLongToast("position" + "=============>" + positon);
+                            }
+                        });
+                    }
+                });
+
+
     }
 
     public static void actionStart(Context context, String nodeAddress, String nodeName, String nodeIcon) {
@@ -151,5 +174,10 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     public void showAmountError(String errMsg) {
         tips.setVisibility(TextUtils.isEmpty(errMsg) ? View.GONE : View.VISIBLE);
         tips.setText(errMsg);
+    }
+
+    @Override
+    protected boolean immersiveBarViewEnabled() {
+        return true;
     }
 }

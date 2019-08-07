@@ -26,7 +26,7 @@ public class ValidatorsDetailPresenter extends BasePresenter<ValidatorsDetailCon
     }
 
     private void getValidatorsDetailData(String nodeId) {
-        ServerUtils.getCommonApi().getVotedCandidateDetail(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
+        ServerUtils.getCommonApi().getNodeCandidateDetail(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
                 .put("nodeId", nodeId)
                 .build())
                 .compose(bindToLifecycle())

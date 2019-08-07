@@ -341,7 +341,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
         InputWalletPasswordDialogFragment.newInstance(walletEntity).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
             @Override
             public void onWalletPasswordCorrect(Credentials credentials) {
-                sendTransaction(Numeric.toHexStringNoPrefix(credentials.getEcKeyPair().getPrivateKey()), Convert.toWei(transferAmount, Convert.Unit.ETHER), Convert.toWei(feeAmount, Convert.Unit.ETHER), toAddress);
+                sendTransaction(Numeric.toHexStringNoPrefix(credentials.getEcKeyPair().getPrivateKey()), Convert.toVon(transferAmount, Convert.Unit.LAT), Convert.toVon(feeAmount, Convert.Unit.LAT), toAddress);
             }
         }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
     }
