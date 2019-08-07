@@ -1,23 +1,26 @@
 package com.juzix.wallet.engine;
 
-import com.juzix.wallet.app.Constants;
 
 import org.web3j.crypto.Credentials;
+
+import org.web3j.platon.BaseResponse;
+import org.web3j.platon.bean.RestrictingItem;
+import org.web3j.platon.contracts.RestrictingPlanContract;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.Web3jFactory;
-import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.methods.response.EthBlock;
-import org.web3j.protocol.core.methods.response.EthGasPrice;
-import org.web3j.protocol.core.methods.response.EthGetBalance;
-import org.web3j.protocol.core.methods.response.EthGetCode;
-import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt;
-import org.web3j.protocol.core.methods.response.EthSendTransaction;
-import org.web3j.protocol.core.methods.response.EthTransaction;
+import org.web3j.protocol.core.methods.response.PlatonBlock;
+import org.web3j.protocol.core.methods.response.PlatonGasPrice;
+import org.web3j.protocol.core.methods.response.PlatonGetBalance;
+import org.web3j.protocol.core.methods.response.PlatonGetCode;
+import org.web3j.protocol.core.methods.response.PlatonGetTransactionReceipt;
+import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
+import org.web3j.protocol.core.methods.response.PlatonTransaction;
 import org.web3j.protocol.core.methods.response.Transaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.RawTransactionManager;
+import org.web3j.tx.ReadonlyTransactionManager;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.utils.Convert;
@@ -57,7 +60,7 @@ public class Web3jManager {
                                      String data, BigInteger value) {
         String transactionHash = null;
         try {
-            EthSendTransaction ethSendTransaction = getTransactionManager(credentials).sendTransaction(gasPrice, gasLimit, to, data, value);
+            PlatonSendTransaction ethSendTransaction = getTransactionManager(credentials).sendTransaction(gasPrice, gasLimit, to, data, value);
             transactionHash = ethSendTransaction.getTransactionHash();
         } catch (Exception e) {
             e.printStackTrace();
@@ -68,9 +71,9 @@ public class Web3jManager {
 
     public double getBalance(String address) {
         try {
-            EthGetBalance ethGetBalance = Web3jManager.getInstance().getWeb3j().ethGetBalance(address, DefaultBlockParameterName.LATEST).send();
+            PlatonGetBalance ethGetBalance = Web3jManager.getInstance().getWeb3j().platonGetBalance(address, DefaultBlockParameterName.LATEST).send();
             if (ethGetBalance != null && !ethGetBalance.hasError()) {
-                return Convert.fromWei(new BigDecimal(ethGetBalance.getBalance()), Convert.Unit.ETHER).doubleValue();
+                return Convert.fromVon(new BigDecimal(ethGetBalance.getBalance()), Convert.Unit.LAT).doubleValue();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -80,7 +83,7 @@ public class Web3jManager {
 
     public Transaction getTransactionByHash(String transactionHash) {
         try {
-            EthTransaction ethTransaction = Web3jManager.getInstance().getWeb3j().ethGetTransactionByHash(transactionHash).send();
+            PlatonTransaction ethTransaction = Web3jManager.getInstance().getWeb3j().platonGetTransactionByHash(transactionHash).send();
             Transaction transaction = ethTransaction.getTransaction();
             return transaction;
         } catch (Exception exp) {
@@ -91,7 +94,7 @@ public class Web3jManager {
 
     public BigInteger getEstimateGas(String from, String to, String data) {
         try {
-            return Web3jManager.getInstance().getWeb3j().ethEstimateGas(org.web3j.protocol.core.methods.request.Transaction.createEthCallTransaction(from, to, data)).send().getAmountUsed();
+            return Web3jManager.getInstance().getWeb3j().platonEstimateGas(org.web3j.protocol.core.methods.request.Transaction.createEthCallTransaction(from, to, data)).send().getAmountUsed();
         } catch (Exception e) {
             e.printStackTrace();
             return BigInteger.ZERO;
@@ -100,7 +103,7 @@ public class Web3jManager {
 
     public BigInteger getNonce(String from) {
         try {
-            BigInteger nonce = Web3jManager.getInstance().getWeb3j().ethGetTransactionCount(from, DefaultBlockParameterName.LATEST).send().getTransactionCount();
+            BigInteger nonce = Web3jManager.getInstance().getWeb3j().platonGetTransactionCount(from, DefaultBlockParameterName.LATEST).send().getTransactionCount();
             return nonce;
         } catch (IOException e) {
             e.printStackTrace();
@@ -110,7 +113,7 @@ public class Web3jManager {
 
     public long getLatestBlockNumber() {
         try {
-            EthBlock ethBlock = Web3jManager.getInstance().getWeb3j().ethGetBlockByNumber(DefaultBlockParameterName.LATEST, false).send();
+            PlatonBlock ethBlock = Web3jManager.getInstance().getWeb3j().platonGetBlockByNumber(DefaultBlockParameterName.LATEST, false).send();
             return ethBlock.getBlock().getNumber().longValue();
         } catch (Exception e) {
             e.printStackTrace();
@@ -120,7 +123,7 @@ public class Web3jManager {
 
     public String getCode(String address) {
         try {
-            EthGetCode code = Web3jManager.getInstance().getWeb3j().ethGetCode(address, DefaultBlockParameterName.LATEST).send();
+            PlatonGetCode code = Web3jManager.getInstance().getWeb3j().platonGetCode(address, DefaultBlockParameterName.LATEST).send();
             return code.getCode();
         } catch (Exception e) {
             e.printStackTrace();
@@ -132,7 +135,7 @@ public class Web3jManager {
         return Single.fromCallable(new Callable<Long>() {
             @Override
             public Long call() throws Exception {
-                EthGasPrice gasPrice = Web3jManager.getInstance().getWeb3j().ethGasPrice().send();
+                PlatonGasPrice gasPrice = Web3jManager.getInstance().getWeb3j().platonGasPrice().send();
                 return gasPrice.getGasPrice().longValue();
             }
         }).onErrorReturnItem(DefaultGasProvider.GAS_PRICE.longValue());
@@ -146,8 +149,8 @@ public class Web3jManager {
     public TransactionReceipt getTransactionReceipt(String transactionHash) {
         TransactionReceipt transactionReceipt = null;
         try {
-            EthGetTransactionReceipt ethGetTransactionReceipt =
-                    mWeb3j.ethGetTransactionReceipt(transactionHash).send();
+            PlatonGetTransactionReceipt ethGetTransactionReceipt =
+                    mWeb3j.platonGetTransactionReceipt(transactionHash).send();
             if (!ethGetTransactionReceipt.hasError() && ethGetTransactionReceipt != null) {
                 transactionReceipt = ethGetTransactionReceipt.getTransactionReceipt();
             }
@@ -165,4 +168,5 @@ public class Web3jManager {
     private static class InstanceHolder {
         private static volatile Web3jManager INSTANCE = new Web3jManager();
     }
+
 }

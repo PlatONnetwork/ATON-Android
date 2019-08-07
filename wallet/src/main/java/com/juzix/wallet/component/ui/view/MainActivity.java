@@ -107,6 +107,34 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
         });
     }
 
+    private static final long DOUBLE_TIME = 500;
+    private static long lastClickTime = 0;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        tabhost.getTabWidget().getChildTabViewAt(1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                long currentTimeMillis = System.currentTimeMillis();
+                if (currentTimeMillis - lastClickTime > DOUBLE_TIME) {
+                    if (tabhost.getCurrentTab() != 1) {
+                        tabhost.setCurrentTab(1);
+                    }
+
+                } else {
+                    //发送一个eventbus
+                    EventPublisher.getInstance().sendUpdateDelegateTabEvent();
+                    EventPublisher.getInstance().sendUpdateValidatorsTabEvent();
+
+                }
+
+                lastClickTime = currentTimeMillis;
+            }
+        });
+
+    }
+
     private int getCurIndexByTabId(String tabId) {
         if (TAG_PROPERTY.equals(tabId)) {
             return TAB_PROPERTY;

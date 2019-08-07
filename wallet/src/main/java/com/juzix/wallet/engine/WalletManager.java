@@ -10,6 +10,11 @@ import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.JZWalletUtil;
 
+import org.web3j.platon.BaseResponse;
+import org.web3j.platon.bean.RestrictingItem;
+import org.web3j.platon.contracts.RestrictingPlanContract;
+import org.web3j.tx.gas.DefaultGasProvider;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -128,6 +133,21 @@ public class WalletManager {
     }
 
     /**
+     * 获取钱包余额根据钱包地址
+     */
+    public double getWalletAmountByAddress(String walletAddress) {
+        if (!mWalletList.isEmpty()) {
+            for (Wallet walletEntity : mWalletList) {
+                if (!TextUtils.isEmpty(walletAddress) && walletAddress.equals(walletEntity.getPrefixAddress())) {
+                    return walletEntity.getBalance();
+                }
+
+            }
+        }
+        return 0;
+    }
+
+    /**
      * 获取第一个有效的(余额大于0)个人钱包，
      *
      * @return
@@ -145,6 +165,23 @@ public class WalletManager {
 
         return null;
 
+    }
+
+    /**
+     * 获取锁仓余额信息
+     */
+    public Single<RestrictingItem> getRestrictingInfo(String walletAddess) {
+        return Single.fromCallable(new Callable<RestrictingItem>() {
+            @Override
+            public RestrictingItem call() throws Exception {
+                RestrictingPlanContract planContract = RestrictingPlanContract.load(Web3jManager.getInstance().getWeb3j(), new DefaultGasProvider());
+                BaseResponse<RestrictingItem> baseResponse = planContract.getRestrictingInfo(walletAddess).send();
+                if (baseResponse.status) {
+                    return baseResponse.data;
+                }
+                return null;
+            }
+        });
     }
 
     public List<Wallet> getWalletList() {

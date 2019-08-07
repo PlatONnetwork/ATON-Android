@@ -82,4 +82,21 @@ public class EventPublisher {
     public void sendWalletListOrderChangedEvent() {
         BusProvider.post(new Event.WalletListOrderChangedEvent());
     }
+
+    public void sendUpdateDelegateEvent() {
+        BusProvider.post(new Event.UpdateDelegateDetailEvent());
+    }
+
+    public void sendUpdateValidatorsDetailEvent() {
+        BusProvider.post(new Event.UpdateValidatorsDetailEvent());
+    }
+
+    public void sendUpdateDelegateTabEvent() {
+        BusProvider.post(new Event.UpdateDelegateTabEvent());
+    }
+
+    public void sendUpdateValidatorsTabEvent() {
+        BusProvider.post(new Event.UpdateValidatorsTabEvent());
+    }
+
 }

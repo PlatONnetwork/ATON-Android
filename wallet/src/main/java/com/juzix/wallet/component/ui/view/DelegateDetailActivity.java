@@ -24,11 +24,16 @@ import com.juzix.wallet.component.widget.CustomRefreshFooter;
 import com.juzix.wallet.component.widget.CustomRefreshHeader;
 import com.juzix.wallet.entity.DelegateDetail;
 import com.juzix.wallet.entity.VotedCandidate;
+import com.juzix.wallet.event.Event;
+import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +76,7 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_delegate_detail);
         unbinder = ButterKnife.bind(this);
+        EventPublisher.getInstance().register(this);
         initView();
 
         mPresenter.loadDelegateDetailData(-1, Constants.VoteConstants.REFRESH_DIRECTION);
@@ -100,7 +106,7 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
             @Override
             public void onDelegateClick(String nodeAddress, String nodeName, String nodeIcon) {
                 //操作委托
-                DelegateActivity.actionStart(getContext(), nodeAddress, nodeName, nodeIcon);
+                DelegateActivity.actionStart(getContext(), nodeAddress, nodeName, nodeIcon, 0);
             }
 
             @Override
@@ -128,6 +134,7 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
     private void initView() {
         linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mDetailAdapter = new DelegateDetailAdapter();
         rlv_list.setAdapter(mDetailAdapter);
 
 
@@ -206,4 +213,22 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
         intent.putExtra(Constants.Extra.EXTRA_WALLET_ICON, walletIcon);
         context.startActivity(intent);
     }
+
+    @Override
+    protected boolean immersiveBarViewEnabled() {
+        return true;
+    }
+
+
+    /**
+     * event事件，刷新的操作
+     *
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdateTransactionEvent(Event.UpdateDelegateDetailEvent event) {
+        //刷新页面
+        mPresenter.loadDelegateDetailData(-1, Constants.VoteConstants.REFRESH_DIRECTION);
+    }
+
 }

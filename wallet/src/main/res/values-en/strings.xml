@@ -530,5 +530,12 @@
     <string name="node_withdraw_delegate">Withdraw</string>
     <string name="validators_yield">Yield</string>
     <string name="validators_staked">Staked</string>
+    <string name="available_balance">Balance</string>
+    <string name="locked_balance">Locked position</string>
+    <string name="delegate_amount_tips">10LAT The Amount cannot be less than 10 LAT</string>
+    <string name="insufficient_balance_unable_to_delegate">Insufficient balance, unable to delegate</string>
+    <string name="the_Validator_has_exited_and_cannot_be_delegated">The Validator has Exited and cannot be delegated</string>
+    <string name="delegate_failed">Delegated Failed</string>
+    <string name="delegate_success">Delegated Success</string>
 </resources>
 

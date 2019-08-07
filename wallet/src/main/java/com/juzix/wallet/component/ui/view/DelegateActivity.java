@@ -19,12 +19,15 @@ import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.DelegateContract;
+import com.juzix.wallet.component.ui.popwindow.DelegatePopWindow;
 import com.juzix.wallet.component.ui.presenter.DelegatePresenter;
 import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.component.widget.PointLengthFilter;
 import com.juzix.wallet.component.widget.ShadowButton;
+import com.juzix.wallet.entity.DelegateType;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.AddressFormatUtil;
+import com.juzix.wallet.utils.GlideUtils;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
 
@@ -71,6 +74,9 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     @BindView(R.id.sbtn_delegate)
     ShadowButton btnDelegate;
 
+    private String address;//钱包地址
+    private String chooseType;//选择的钱包类型（可用余额/锁仓余额）
+
     @Override
     protected DelegatePresenter createPresenter() {
         return new DelegatePresenter(this);
@@ -99,6 +105,39 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                     }
                 });
 
+        RxView.clicks(amounChoose).compose(RxUtils.bindToLifecycle(this))
+                .compose(RxUtils.getClickTransformer())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        //选择余额类型
+                        DelegatePopWindow delegatePopWindow = new DelegatePopWindow(getContext(), amounChoose, address);
+                        mPresenter.getAmountType(delegatePopWindow);
+                    }
+                });
+
+
+        RxView.clicks(all)
+                .compose(RxUtils.bindToLifecycle(this))
+                .compose(RxUtils.getClickTransformer())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        //点击全部
+
+                    }
+                });
+
+
+        RxView.clicks(btnDelegate).compose(RxUtils.bindToLifecycle(this))
+                .compose(RxUtils.getClickTransformer())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        //点击委托操作 todo 是否在点击的时候去查询该节点是否已退出
+                        mPresenter.submitDelegate(chooseType);
+                    }
+                });
     }
 
 
@@ -118,7 +157,6 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
             inputTips.setText(amountMagnitudes);
             inputTips.setVisibility(TextUtils.isEmpty(amountMagnitudes) ? View.GONE : View.VISIBLE);
 
-
         }
 
         @Override
@@ -127,20 +165,28 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         }
     };
 
-    public static void actionStart(Context context, String nodeAddress, String nodeName, String nodeIcon) {
+    public static void actionStart(Context context, String nodeAddress, String nodeName, String nodeIcon, int tag) {
         Intent intent = new Intent(context, DelegateActivity.class);
         intent.putExtra(Constants.Extra.EXTRA_NODE_ADDRESS, nodeAddress);
         intent.putExtra(Constants.Extra.EXTRA_NODE_NAME, nodeName);
         intent.putExtra(Constants.Extra.EXTRA_NODE_ICON, nodeIcon);
+        intent.putExtra("tag", tag);
         context.startActivity(intent);
     }
 
+    //显示钱包信息
     @Override
     public void showSelectedWalletInfo(Wallet individualWalletEntity) {
+        chooseType = "balance";
+        address = individualWalletEntity.getAddress();
+        //显示钱包基本信息
         walletName.setText(individualWalletEntity.getName());
         walletAddress.setText(AddressFormatUtil.formatAddress(individualWalletEntity.getPrefixAddress()));
         walletIcon.setImageResource(RUtils.drawable(individualWalletEntity.getAvatar()));
 
+        //显示余额类型和余额
+        amountType.setText(getString(R.string.available_balance));
+        amount.setText(StringUtil.formatBalance(individualWalletEntity.getBalance(), false));
     }
 
     @Override
@@ -148,14 +194,68 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         btnDelegate.setEnabled(isClickable);
     }
 
+    //获取输入的数量
     @Override
     public String getDelegateAmount() {
         return et_amount.getText().toString().trim();
     }
 
     @Override
+    public String getChooseBalance() {
+        return amount.getText().toString();
+    }
+
+    @Override
     public void showAmountError(String errMsg) {
         inputTips.setVisibility(TextUtils.isEmpty(errMsg) ? View.GONE : View.VISIBLE);
         inputTips.setText(errMsg);
+    }
+
+    @Override
+    public void showTips(boolean isShow) {
+        inputError.setText(getString(R.string.delegate_amount_tips));
+        inputError.setVisibility(isShow ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void showWalletType(DelegateType delegateType) {
+        chooseType = delegateType.getType();
+        amountType.setText(TextUtils.equals(delegateType.getType(), "balance") ? getString(R.string.available_balance) : getString(R.string.locked_balance));
+        amount.setText(StringUtil.formatBalance(delegateType.getAmount(), false));
+
+    }
+
+    @Override
+    public String getNodeAddressFromIntent() {
+        return getIntent().getStringExtra(Constants.Extra.EXTRA_NODE_ADDRESS);
+    }
+
+    @Override
+    public String getNodeNameFromIntent() {
+        return getIntent().getStringExtra(Constants.Extra.EXTRA_NODE_NAME);
+    }
+
+    @Override
+    public String getNodeIconFromIntent() {
+        return getIntent().getStringExtra(Constants.Extra.EXTRA_NODE_ICON);
+    }
+
+    @Override
+    public int getJumpTagFromIntent() {
+        return getIntent().getIntExtra("tag", 0);
+    }
+
+    @Override
+    public void showNodeInfo(String address, String name, String UrlIcon) {
+        //显示节点基本信息
+        GlideUtils.loadRound(getContext(), UrlIcon, nodeIcon);
+        nodeName.setText(name);
+        nodeAddress.setText(address);
+    }
+
+
+    @Override
+    protected boolean immersiveBarViewEnabled() {
+        return true;
     }
 }

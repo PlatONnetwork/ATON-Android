@@ -96,10 +96,31 @@ public class Event {
         }
     }
 
+    public static class UpdateDelegateDetailEvent {
+
+        public UpdateDelegateDetailEvent() {
+        }
+    }
+
+    public static class UpdateValidatorsDetailEvent {
+        public UpdateValidatorsDetailEvent() {
+        }
+    }
+
+    public static class UpdateDelegateTabEvent {
+        public UpdateDelegateTabEvent() {
+        }
+    }
+
+    public static class UpdateValidatorsTabEvent {
+        public UpdateValidatorsTabEvent() {
+        }
+    }
+
     /**
      * 钱包列表顺序改变
      */
-    public static class WalletListOrderChangedEvent{
+    public static class WalletListOrderChangedEvent {
 
         public WalletListOrderChangedEvent() {
 

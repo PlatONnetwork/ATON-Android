@@ -26,10 +26,16 @@ import com.juzix.wallet.component.ui.dialog.DelegateTipsDialog;
 import com.juzix.wallet.component.ui.presenter.ValidatorsDetailPresenter;
 import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.component.widget.CommonTitleBar;
+import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.entity.VerifyNodeDetail;
+import com.juzix.wallet.event.Event;
+import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.GlideUtils;
 import com.juzix.wallet.utils.RxUtils;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -68,10 +74,13 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
     TextView introduction;
     @BindView(R.id.tv_detail_website)
     TextView webSite;
-    @BindView(R.id.ll_validators_withdraw)
-    LinearLayout withdraw;
-    @BindView(R.id.ll_validators_delegate)
-    LinearLayout delegate;
+    @BindView(R.id.sbtn_delegate)
+    ShadowButton delegate;
+
+//    @BindView(R.id.ll_validators_withdraw)
+//    LinearLayout withdraw;
+//    @BindView(R.id.ll_validators_delegate)
+//    LinearLayout delegate;
 
 
     @Override
@@ -85,6 +94,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_validators_detail);
         unbinder = ButterKnife.bind(this);
+        EventPublisher.getInstance().register(this);
         initView();
     }
 
@@ -120,16 +130,16 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
 
     public void clickViewListener(VerifyNodeDetail nodeDetail) {
 
-        RxView.clicks(withdraw).compose(RxUtils.bindToLifecycle(this))
-                .compose(RxUtils.getClickTransformer())
-                .subscribe(new CustomObserver<Object>() {
-                    @Override
-                    public void accept(Object o) {
-                        //todo
-//                        WithDrawActivity.actionStart(getContext(), nodeDetail.getNodeUrl(), nodeDetail.getName(), nodeDetail.getUrl());
-                        WithDrawActivity.actionStart(getContext(), "", "", "");
-                    }
-                });
+//        RxView.clicks(withdraw).compose(RxUtils.bindToLifecycle(this))
+//                .compose(RxUtils.getClickTransformer())
+//                .subscribe(new CustomObserver<Object>() {
+//                    @Override
+//                    public void accept(Object o) {
+//                        //todo
+////                        WithDrawActivity.actionStart(getContext(), nodeDetail.getNodeUrl(), nodeDetail.getName(), nodeDetail.getUrl());
+//                        WithDrawActivity.actionStart(getContext(), "", "", "");
+//                    }
+//                });
 
         RxView.clicks(delegate).compose(RxUtils.bindToLifecycle(this))
                 .compose(RxUtils.getClickTransformer())
@@ -139,7 +149,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
                     public void accept(Object o) {
                         // todo
 //                        DelegateActivity.actionStart(getContext(), nodeDetail.getNodeUrl(), nodeDetail.getName(), nodeDetail.getUrl());
-                        DelegateActivity.actionStart(getContext(), "", "", "");
+                        DelegateActivity.actionStart(getContext(), "", "", "", 1);
                     }
                 });
 
@@ -192,4 +202,23 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
     public void showValidatorsDetailFailed() {
 
     }
+
+    @Override
+    protected boolean immersiveBarViewEnabled() {
+        return true;
+    }
+
+
+    /**
+     * event事件，刷新的操作
+     *
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdateTransactionEvent(Event.UpdateValidatorsDetailEvent event) {
+        //刷新页面
+        mPresenter.loadValidatorsDetailData();
+    }
+
+
 }

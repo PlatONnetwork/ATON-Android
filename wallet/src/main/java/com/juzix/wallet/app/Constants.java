@@ -81,6 +81,9 @@ public class Constants {
         String KEY_UPDATE_VERSION_TIME = "updateVersionTime";
         String KEY_CURRENT_NODE_ADDRESS = "currentNodeAddress";
         String KEY_VALIDATORS_RANK = "validatorsRank";
+        String KEY_MYDELEGATETAB = "mydelegatetab";
+        String KEY_VALIDATORSTAB = "validatorstab";
+
     }
 
     public interface Permission {
