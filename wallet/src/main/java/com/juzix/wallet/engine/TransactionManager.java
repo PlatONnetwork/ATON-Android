@@ -24,7 +24,7 @@ import org.web3j.abi.datatypes.generated.Int64;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionEncoder;
-import org.web3j.protocol.core.methods.response.EthSendTransaction;
+import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 import org.web3j.rlp.RlpEncoder;
 import org.web3j.rlp.RlpList;
 import org.web3j.rlp.RlpString;
@@ -89,7 +89,7 @@ public class TransactionManager {
             byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, new Byte("103"), credentials);
             String hexValue = Numeric.toHexString(signedMessage);
 
-            EthSendTransaction transaction = Web3jManager.getInstance().getWeb3j().ethSendRawTransaction(hexValue).send();
+            PlatonSendTransaction transaction = Web3jManager.getInstance().getWeb3j().platonSendRawTransaction(hexValue).send();
 
             return transaction.getTransactionHash();
         } catch (Exception e) {
