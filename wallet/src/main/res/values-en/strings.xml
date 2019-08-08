@@ -307,6 +307,8 @@
     <string name="more">More</string>
     <string name="twitter">Twitter</string>
     <string name="facebook">Facebook</string>
+    <string name="github">Github</string>
+    <string name="telegram">Telegram </string>
     <string name="weibo">Weibo</string>
     <string name="qq">QQ</string>
     <string name="all">ALL</string>
@@ -530,6 +532,8 @@
     <string name="node_withdraw_delegate">Withdraw</string>
     <string name="validators_yield">Yield</string>
     <string name="validators_staked">Staked</string>
+
+    <string name="title_official_community">Official community</string>
     <string name="available_balance">Balance</string>
     <string name="locked_balance">Locked position</string>
     <string name="delegate_amount_tips">10LAT The Amount cannot be less than 10 LAT</string>
@@ -537,5 +541,6 @@
     <string name="the_Validator_has_exited_and_cannot_be_delegated">The Validator has Exited and cannot be delegated</string>
     <string name="delegate_failed">Delegated Failed</string>
     <string name="delegate_success">Delegated Success</string>
+>>>>>>> master
 </resources>
 

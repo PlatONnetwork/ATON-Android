@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import com.juzix.wallet.component.widget.ViewPagerSlide;
 import com.juzix.wallet.component.widget.table.PagerItem;
 import com.juzix.wallet.component.widget.table.PagerItemAdapter;
 import com.juzix.wallet.component.widget.table.PagerItems;
+import com.juzix.wallet.component.widget.table.SmartTabLayout;
 import com.juzix.wallet.component.widget.table.CustomTabLayout;
 
 import java.util.ArrayList;
@@ -26,6 +28,10 @@ import java.util.ArrayList;
  * 委托模块
  */
 public class DelegateFragment extends BaseFragment {
+//    private SlidingTabLayout sliding_tab_layout;
+    private ViewPager view_page;
+    ArrayList<String> mTitleList = null;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

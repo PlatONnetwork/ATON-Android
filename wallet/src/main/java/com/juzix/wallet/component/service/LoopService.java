@@ -7,8 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 
-import com.juzix.wallet.engine.VoteManager;
-
 import java.util.Timer;
 import java.util.TimerTask;
 

@@ -7,11 +7,10 @@
             <solid android:color="@color/color_ffffff" />
         </shape>
     </item>
-
-    <item>
+    <item android:top="220dp">
         <bitmap
-            android:gravity="center"
-            android:src="@drawable/icon_logo_splash" />
+            android:gravity="center|top"
+            android:src="@drawable/icon_splash_logo" />
     </item>
 
 </layer-list>

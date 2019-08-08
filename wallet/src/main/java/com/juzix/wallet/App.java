@@ -16,6 +16,9 @@ import com.tencent.bugly.crashreport.CrashReport;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
 
+import org.web3j.platon.contracts.NodeContract;
+import org.web3j.platon.contracts.RestrictingPlanContract;
+
 import io.reactivex.functions.Consumer;
 import io.reactivex.plugins.RxJavaPlugins;
 

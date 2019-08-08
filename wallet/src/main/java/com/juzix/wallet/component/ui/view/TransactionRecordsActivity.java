@@ -32,10 +32,12 @@ import com.juzix.wallet.component.ui.contract.TransactionRecordsContract;
 import com.juzix.wallet.component.ui.presenter.TransactionRecordsPresenter;
 import com.juzix.wallet.component.widget.CommonVerticalItemDecoration;
 import com.juzix.wallet.component.widget.ShadowDrawable;
+import com.juzix.wallet.component.widget.WalletListPop;
 import com.juzix.wallet.db.entity.TransactionEntity;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionType;
+import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.DateUtil;
 import com.juzix.wallet.utils.DensityUtil;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -48,6 +50,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import jnr.constants.platform.PRIO;
 
 public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecordsPresenter> implements TransactionRecordsContract.View {
 
@@ -64,8 +67,7 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
 
     private Unbinder unbinder;
     private TransactionAdapter mTransactionAdapter;
-    private RotateAnimation mShowRotateAnimation;
-    private RotateAnimation mHideRotateAnimation;
+    private WalletListPop mWalletListPop;
 
     @Override
     protected TransactionRecordsPresenter createPresenter() {
@@ -125,13 +127,17 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
         layoutSelectWallets.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (mWalletListPop == null) {
+                    mWalletListPop = new WalletListPop(TransactionRecordsActivity.this, WalletManager.getInstance().getWalletList());
+                }
+                if (mWalletListPop.isShowing()) {
+                    mWalletListPop.dismiss();
+                } else {
+                    mWalletListPop.showAsDropDown(layoutSelectWallets, 0, -DensityUtil.dp2px(TransactionRecordsActivity.this, 12));
+                }
             }
         });
-
         layoutRefresh.autoRefresh();
-
-        initAnimation();
     }
 
     @Override
@@ -155,20 +161,6 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
         layoutNoData.setVisibility(transactionList != null && !transactionList.isEmpty() ? View.GONE : View.VISIBLE);
         listTransactions.setVisibility(transactionList != null && !transactionList.isEmpty() ? View.VISIBLE : View.GONE);
         mTransactionAdapter.notifyDataSetChanged(transactionList, WalletManager.getInstance().getAddressList());
-    }
-
-    private void initAnimation() {
-
-        mShowRotateAnimation = new RotateAnimation(0f, 180f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        mShowRotateAnimation.setDuration(500);
-        mShowRotateAnimation.setFillAfter(true);
-        mShowRotateAnimation.setInterpolator(new LinearInterpolator());
-
-        mHideRotateAnimation = new RotateAnimation(180f, 360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        mHideRotateAnimation.setDuration(500);
-        mHideRotateAnimation.setFillAfter(true);
-        mHideRotateAnimation.setInterpolator(new LinearInterpolator());
-
     }
 
     @Override

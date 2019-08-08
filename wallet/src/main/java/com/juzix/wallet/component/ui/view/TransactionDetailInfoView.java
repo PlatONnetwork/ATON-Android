@@ -20,8 +20,6 @@ import java.util.List;
 
 public class TransactionDetailInfoView extends LinearLayout {
 
-    private Transaction mTransaction;
-
     public TransactionDetailInfoView(Context context) {
         this(context, null, 0);
     }
@@ -39,8 +37,6 @@ public class TransactionDetailInfoView extends LinearLayout {
     }
 
     public void setData(Transaction transaction) {
-
-        this.mTransaction = transaction;
 
         removeAllViews();
 
@@ -105,9 +101,9 @@ public class TransactionDetailInfoView extends LinearLayout {
                 addView(getItemView(getStringWithColon(R.string.validator), transaction.getNodeName()));
                 addView(getItemView(getStringWithColon(R.string.nodeId), transaction.getNodeId()));
                 addView(getItemView(getStringWithColon(R.string.proposal_id), transaction.getNodeId()));
-                addView(getItemView(getStringWithColon(R.string.proposal_type), transaction.getNodeId()));
+                addView(getItemView(getStringWithColon(R.string.proposal_type), transaction.getProposalType()));
                 if (transaction.getTxType() == TransactionType.VOTING_PROPOSAL) {
-                    addView(getItemView(getStringWithColon(R.string.vote), transaction.getNodeId()));
+                    addView(getItemView(getStringWithColon(R.string.vote), transaction.getVote()));
                 }
                 addView(getItemView(getStringWithColon(R.string.fee), getString(R.string.amount_with_unit, transaction.getShowActualTxCost())));
                 break;
@@ -116,7 +112,7 @@ public class TransactionDetailInfoView extends LinearLayout {
                 addView(getItemView(getStringWithColon(R.string.submissionTime), transaction.getShowCreateTime()));
                 addView(getItemView(getStringWithColon(R.string.validator), transaction.getNodeName()));
                 addView(getItemView(getStringWithColon(R.string.nodeId), transaction.getNodeId()));
-                addView(getItemView(getStringWithColon(R.string.version), "版本号"));
+                addView(getItemView(getStringWithColon(R.string.version), transaction.getVersion()));
                 addView(getItemView(getStringWithColon(R.string.fee), getString(R.string.amount_with_unit, transaction.getShowActualTxCost())));
                 break;
             case REPORT_VALIDATOR:
@@ -124,7 +120,7 @@ public class TransactionDetailInfoView extends LinearLayout {
                 addView(getItemView(getStringWithColon(R.string.submissionTime), transaction.getShowCreateTime()));
                 addView(getItemView(getStringWithColon(R.string.reported), transaction.getNodeName()));
                 addView(getItemView(getStringWithColon(R.string.nodeId), transaction.getNodeId()));
-                addView(getItemView(getStringWithColon(R.string.report_type), getString(R.string.double_signing)));
+                addView(getItemView(getStringWithColon(R.string.report_type), transaction.getReportType()));
                 addView(getItemView(getStringWithColon(R.string.fee), getString(R.string.amount_with_unit, transaction.getShowActualTxCost())));
                 break;
             case CREATE_RESTRICTING:

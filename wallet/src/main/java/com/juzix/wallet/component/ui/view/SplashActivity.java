@@ -1,10 +1,17 @@
 package com.juzix.wallet.component.ui.view;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
 import android.view.KeyEvent;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowInsets;
 import android.widget.ImageView;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.base.BaseActivity;
@@ -30,6 +37,27 @@ public class SplashActivity extends BaseActivity {
         }
 
         setContentView(R.layout.activity_splash);
+
+        //适配刘海屏
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            View decorView = window.getDecorView();
+            decorView.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+                @TargetApi(Build.VERSION_CODES.KITKAT_WATCH)
+                @Override
+                public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
+                    WindowInsets defaultInsets = v.onApplyWindowInsets(insets);
+                    return defaultInsets.replaceSystemWindowInsets(
+                            defaultInsets.getSystemWindowInsetLeft(),
+                            0,
+                            defaultInsets.getSystemWindowInsetRight(),
+                            defaultInsets.getSystemWindowInsetBottom());
+                }
+            });
+            ViewCompat.requestApplyInsets(decorView);
+            //将状态栏设成透明，如不想透明可设置其他颜色
+            window.setStatusBarColor(ContextCompat.getColor(this, android.R.color.transparent));
+        }
 
         mDecorView.postDelayed(new Runnable() {
             @Override

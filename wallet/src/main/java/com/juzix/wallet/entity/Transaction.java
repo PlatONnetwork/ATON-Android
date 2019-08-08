@@ -116,6 +116,26 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
      * txType =  4000,lockAddress不为空
      */
     private String lockAddress;
+    /**
+     * 举报类型
+     */
+    private String reportType;
+    /**
+     * 版本
+     */
+    private String version;
+    /**
+     * 提案id(截取最后一个破折号)
+     */
+    private String url;
+    /**
+     * 提案类型
+     */
+    private String proposalType;
+    /**
+     * 投票
+     */
+    private String vote;
 
     public Transaction() {
     }
@@ -140,6 +160,11 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         nodeName = in.readString();
         nodeId = in.readString();
         lockAddress = in.readString();
+        reportType = in.readString();
+        version = in.readString();
+        url = in.readString();
+        proposalType = in.readString();
+        vote = in.readString();
     }
 
     public Transaction(Builder builder) {
@@ -162,6 +187,11 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         this.nodeName = builder.nodeName;
         this.nodeId = builder.nodeId;
         this.lockAddress = builder.lockAddress;
+        reportType = builder.reportType;
+        version = builder.version;
+        url = builder.url;
+        proposalType = builder.proposalType;
+        vote = builder.vote;
     }
 
     @Override
@@ -185,6 +215,11 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         dest.writeString(nodeName);
         dest.writeString(nodeId);
         dest.writeString(lockAddress);
+        dest.writeString(reportType);
+        dest.writeString(version);
+        dest.writeString(url);
+        dest.writeString(proposalType);
+        dest.writeString(vote);
     }
 
     @Override
@@ -206,6 +241,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
 
     /**
      * 是否是发送者
+     *
      * @return
      */
     public boolean isSender() {
@@ -356,6 +392,46 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         this.lockAddress = lockAddress;
     }
 
+    public String getReportType() {
+        return reportType;
+    }
+
+    public void setReportType(String reportType) {
+        this.reportType = reportType;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getProposalType() {
+        return proposalType;
+    }
+
+    public void setProposalType(String proposalType) {
+        this.proposalType = proposalType;
+    }
+
+    public String getVote() {
+        return vote;
+    }
+
+    public void setVote(String vote) {
+        this.vote = vote;
+    }
+
     @Override
     public int hashCode() {
         return TextUtils.isEmpty(hash) ? 0 : hash.hashCode();
@@ -422,6 +498,11 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         private String nodeName;
         private String nodeId;
         private String lockAddress;
+        private String reportType;
+        private String version;
+        private String url;
+        private String proposalType;
+        private String vote;
 
         public Builder hash(String hash) {
             this.hash = hash;
@@ -515,6 +596,31 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
 
         public Builder lockAddress(String lockAddress) {
             this.lockAddress = lockAddress;
+            return this;
+        }
+
+        public Builder reportType(String reportType) {
+            this.reportType = reportType;
+            return this;
+        }
+
+        public Builder version(String version) {
+            this.version = version;
+            return this;
+        }
+
+        public Builder url(String url) {
+            this.url = url;
+            return this;
+        }
+
+        public Builder proposalType(String proposalType) {
+            this.proposalType = proposalType;
+            return this;
+        }
+
+        public Builder vote(String vote) {
+            this.vote = vote;
             return this;
         }
 

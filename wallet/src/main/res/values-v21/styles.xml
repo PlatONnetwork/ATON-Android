@@ -1,0 +1,10 @@
+<resources>
+
+    <style name="SplashTheme" parent="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+        <item name="android:windowBackground">@drawable/bg_splash</item>
+        <!--不让windowBackground延申到navigation bar区域-->
+        <item name="android:windowDrawsSystemBarBackgrounds">false</item>
+        <item name="android:windowAnimationStyle">@style/EnterNullAnimationStyle</item>
+    </style>
+
+</resources>

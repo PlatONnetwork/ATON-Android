@@ -308,6 +308,8 @@
     <string name="more">更多</string>
     <string name="twitter">Twitter</string>
     <string name="facebook">Facebook</string>
+    <string name="github">Github</string>
+    <string name="telegram">Telegram </string>
     <string name="weibo">微博</string>
     <string name="qq">QQ</string>
     <string name="all">全部</string>
@@ -539,6 +541,8 @@
     <string name="node_withdraw_delegate">赎回委托</string>
     <string name="validators_yield">预计年化率</string>
     <string name="validators_staked">总质押</string>
+
+    <string name="title_official_community">官方社区</string>
     <string name="available_balance">可用余额</string>
     <string name="locked_balance">锁仓余额</string>
     <string name="delegate_amount_tips">委托数量不能少于10LAT</string>
@@ -546,5 +550,6 @@
     <string name="the_Validator_has_exited_and_cannot_be_delegated">委托节点已退出，无法委托</string>
     <string name="delegate_failed">委托失败</string>
     <string name="delegate_success">委托成功</string>
+>>>>>>> master
 
 </resources>
