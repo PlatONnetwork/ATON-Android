@@ -1,11 +1,13 @@
 package com.juzix.wallet.engine;
 
-import com.juzix.wallet.app.Constants;
 
 import org.web3j.crypto.Credentials;
+
+import org.web3j.platon.BaseResponse;
+import org.web3j.platon.bean.RestrictingItem;
+import org.web3j.platon.contracts.RestrictingPlanContract;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.Web3jFactory;
-import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.PlatonBlock;
 import org.web3j.protocol.core.methods.response.PlatonGasPrice;
@@ -18,6 +20,7 @@ import org.web3j.protocol.core.methods.response.Transaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.RawTransactionManager;
+import org.web3j.tx.ReadonlyTransactionManager;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.utils.Convert;
@@ -70,7 +73,7 @@ public class Web3jManager {
         try {
             PlatonGetBalance ethGetBalance = Web3jManager.getInstance().getWeb3j().platonGetBalance(address, DefaultBlockParameterName.LATEST).send();
             if (ethGetBalance != null && !ethGetBalance.hasError()) {
-                return Convert.fromVon(new BigDecimal(ethGetBalance.getBalance()), Convert.Unit.VON).doubleValue();
+                return Convert.fromVon(new BigDecimal(ethGetBalance.getBalance()), Convert.Unit.LAT).doubleValue();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -165,4 +168,5 @@ public class Web3jManager {
     private static class InstanceHolder {
         private static volatile Web3jManager INSTANCE = new Web3jManager();
     }
+
 }

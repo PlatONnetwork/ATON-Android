@@ -24,13 +24,19 @@ import com.juzix.wallet.component.ui.contract.ValidatorsContract;
 import com.juzix.wallet.component.ui.presenter.ValidatorsPresenter;
 import com.juzix.wallet.component.widget.CustomRefreshFooter;
 import com.juzix.wallet.component.widget.CustomRefreshHeader;
+import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.db.entity.VerifyNodeEntity;
 import com.juzix.wallet.entity.VerifyNode;
+import com.juzix.wallet.event.Event;
+import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.RxUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,6 +98,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
     protected View onCreateFragmentPage(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_validators, container, false);
         unbinder = ButterKnife.bind(this, view);
+        EventPublisher.getInstance().register(this);
         initView(view);
         return view;
     }
@@ -327,4 +334,21 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
         refreshLayout.finishLoadMore();
     }
 
+    //接收event事件然后刷新
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void refreshValidators(Event.UpdateValidatorsTabEvent tabEvent) {
+        if (AppSettings.getInstance().getValidatorsTab()) {
+            refreshLayout.autoRefresh();
+        }
+
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        if (isVisibleToUser) {
+            AppSettings.getInstance().setValidatorsTab(true);
+        } else {
+            AppSettings.getInstance().setValidatorsTab(false);
+        }
+    }
 }

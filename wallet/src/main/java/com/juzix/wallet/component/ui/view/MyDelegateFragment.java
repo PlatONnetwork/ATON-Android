@@ -14,6 +14,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
+import com.juzhen.framework.app.log.Log;
+import com.juzix.wallet.App;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.adapter.MyDelegateAdapter;
@@ -21,14 +23,20 @@ import com.juzix.wallet.component.ui.base.MVPBaseFragment;
 import com.juzix.wallet.component.ui.contract.MyDelegateContract;
 import com.juzix.wallet.component.ui.presenter.MyDelegatePresenter;
 import com.juzix.wallet.component.widget.CustomRefreshHeader;
+import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.entity.DelegateInfo;
 import com.juzix.wallet.entity.MyDelegate;
+import com.juzix.wallet.event.Event;
+import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.GlideUtils;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -76,6 +84,7 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
     protected View onCreateFragmentPage(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_my_delegate, container, false);
         unbinder = ButterKnife.bind(this, view);
+        EventPublisher.getInstance().register(this);
         initViews();
         return view;
     }
@@ -102,7 +111,7 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
                     @Override
                     public void accept(Object o) {
 //                        DelegateDetailActivity.actionStart(getContext(), "", "", "");
-                        ValidatorsDetailActivity.actionStart(getContext(),"");
+                        ValidatorsDetailActivity.actionStart(getContext(), "");
                     }
                 });
 
@@ -111,7 +120,7 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        DelegateActivity.actionStart(getContext(), "", "", "");
+                        DelegateDetailActivity.actionStart(getContext(), "", "", "");
                     }
                 });
 
@@ -128,7 +137,7 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
             @Override
             public void onItemClick(String walletAddress, String walletName, String walletIcon) {
                 //跳转到委托详情页
-                DelegateDetailActivity.actionStart(getContext(), walletAddress, walletName, walletIcon);
+//                DelegateDetailActivity.actionStart(getContext(), walletAddress, walletName, walletIcon);
             }
         });
 
@@ -176,5 +185,25 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
     @Override
     public void showTotalDelegate(MyDelegate delegate) {
         tv_total_delegate.setText(delegate.getDelegateTotal() > 0 ? StringUtil.formatBalance(delegate.getDelegateTotal(), false) : "0.00");
+    }
+
+    //接收event事件然后刷新
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void refreshMyDelegate(Event.UpdateDelegateTabEvent tabEvent) {
+        if (AppSettings.getInstance().getMydelegateTab()) {
+            refreshLayout.autoRefresh();
+        }
+
+    }
+
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        if (isVisibleToUser) {
+            AppSettings.getInstance().setMydelegateTab(true);
+        } else {
+            AppSettings.getInstance().setMydelegateTab(false);
+        }
+
     }
 }

@@ -3,6 +3,11 @@ package com.juzix.wallet.component.ui.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -14,12 +19,16 @@ import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.WithDrawContract;
+import com.juzix.wallet.component.ui.popwindow.DelegatePopWindow;
 import com.juzix.wallet.component.ui.presenter.WithDrawPresenter;
 import com.juzix.wallet.component.widget.CircleImageView;
+import com.juzix.wallet.component.widget.PointLengthFilter;
 import com.juzix.wallet.component.widget.ShadowButton;
+import com.juzix.wallet.entity.DelegateType;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.RxUtils;
+import com.juzix.wallet.utils.StringUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,7 +67,8 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     TextView fee;
     @BindView(R.id.btn_withdraw)
     ShadowButton btnWithdraw;
-
+    @BindView(R.id.tv_amount_magnitudes)
+    TextView etWalletAmount;//显示量级
 
     @Override
     protected WithDrawPresenter createPresenter() {
@@ -75,6 +85,10 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     }
 
     private void initView() {
+        setWithDrawButtonState(false);
+        withdrawAmount.setFilters(new InputFilter[]{new PointLengthFilter()});
+        withdrawAmount.addTextChangedListener(mAmountTextWatcher);
+
         RxView.clicks(chooseWallet).compose(RxUtils.bindToLifecycle(this))
                 .compose(RxUtils.getClickTransformer())
                 .subscribe(new CustomObserver<Object>() {
@@ -83,6 +97,27 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
                         mPresenter.showSelectWalletDialogFragment();
                     }
                 });
+
+        RxView.clicks(chooseDelegate)
+                .compose(RxUtils.bindToLifecycle(this))
+                .compose(RxUtils.getClickTransformer())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        //弹窗选择类型
+                        DelegatePopWindow delegatePopWindow = new DelegatePopWindow(getContext(), chooseDelegate,null);
+//                        delegatePopWindow.showAsDropDown(chooseDelegate);
+
+                        delegatePopWindow.setListener(new DelegatePopWindow.OnPopItemClickListener() {
+                            @Override
+                            public void onPopItemClick(View view, int positon, DelegateType bean) {
+                                showLongToast("position" + "=============>" + positon);
+                            }
+                        });
+                    }
+                });
+
+
     }
 
     public static void actionStart(Context context, String nodeAddress, String nodeName, String nodeIcon) {
@@ -93,10 +128,56 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         context.startActivity(intent);
     }
 
+
+    private TextWatcher mAmountTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {//改变后
+            mPresenter.checkWithDrawAmount(s.toString().trim());
+            mPresenter.updateWithDrawButtonState();
+
+            String amountMagnitudes = StringUtil.getAmountMagnitudes(getContext(), s.toString().trim());
+            etWalletAmount.setText(amountMagnitudes);
+            etWalletAmount.setVisibility(TextUtils.isEmpty(amountMagnitudes) ? View.GONE : View.VISIBLE);
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {//修改后
+
+        }
+    };
+
+
     @Override
     public void showSelectedWalletInfo(Wallet individualWalletEntity) {
         walletName.setText(individualWalletEntity.getName());
         walletAddress.setText(AddressFormatUtil.formatAddress(individualWalletEntity.getPrefixAddress()));
         wallet_icon.setImageResource(RUtils.drawable(individualWalletEntity.getAvatar()));
+    }
+
+    @Override
+    public void setWithDrawButtonState(boolean isClickable) {
+        btnWithdraw.setEnabled(isClickable);//设置按钮是否可点击
+    }
+
+    @Override
+    public String getWithDrawAmount() {
+        return withdrawAmount.getText().toString().trim();
+    }
+
+    @Override
+    public void showAmountError(String errMsg) {
+        tips.setVisibility(TextUtils.isEmpty(errMsg) ? View.GONE : View.VISIBLE);
+        tips.setText(errMsg);
+    }
+
+    @Override
+    protected boolean immersiveBarViewEnabled() {
+        return true;
     }
 }

@@ -188,11 +188,4 @@
         <attr name="cet_clear_button_always_show" format="boolean" />
     </declare-styleable>
 
-    <declare-styleable name="SlidingTabLayout">
-        <attr name="highlightTextColor" format="color|reference" />
-        <attr name="normalTextColor" format="color|reference" />
-        <attr name="dividerLineColor" format="color|reference" />
-        <attr name="shadowLineColor" format="color|reference" />
-        <attr name="shadowLineWrapperOffset" format="dimension" />
-    </declare-styleable>
 </resources>

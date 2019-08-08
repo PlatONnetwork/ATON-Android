@@ -102,6 +102,7 @@ project.ext {
             "umeng_common"                    : 'com.umeng.umsdk:common:2.0.2',
             "umeng_analytics"                 : 'com.umeng.umsdk:analytics:8.0.2',
             "bugly"                           : 'com.tencent.bugly:crashreport:latest.release',
-            "glide"                           : 'com.github.bumptech.glide:glide:4.9.0'
+            "glide"                           : 'com.github.bumptech.glide:glide:4.9.0',
+            "svgaPlayer"                      : 'com.github.yyued:SVGAPlayer-Android:2.3.0'
     ]
 }

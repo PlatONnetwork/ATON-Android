@@ -1,0 +1,8 @@
+<resources>
+
+    <style name="SplashTheme" parent="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+        <item name="android:windowSplashscreenContent">@drawable/bg_splash</item>
+        <item name="android:windowAnimationStyle">@style/EnterNullAnimationStyle</item>
+    </style>
+
+</resources>

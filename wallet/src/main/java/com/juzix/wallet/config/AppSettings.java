@@ -52,6 +52,21 @@ public class AppSettings {
         setBooleanItem(Constants.Preference.KEY_OPERATE_MENU_FLAG, operateMenuFlag);
     }
 
+    public boolean getMydelegateTab() {
+        return getBooleanItem(Constants.Preference.KEY_MYDELEGATETAB, true);
+    }
+
+    public void setMydelegateTab(boolean isChoosedTab) {
+        setBooleanItem(Constants.Preference.KEY_MYDELEGATETAB, isChoosedTab);
+    }
+
+    public boolean getValidatorsTab() {
+        return getBooleanItem(Constants.Preference.KEY_VALIDATORSTAB, false);
+    }
+
+    public void setValidatorsTab(boolean isChoosedTab) {
+        setBooleanItem(Constants.Preference.KEY_VALIDATORSTAB, isChoosedTab);
+    }
     public boolean getFaceTouchIdFlag() {
         return getBooleanItem(Constants.Preference.KEY_FACE_TOUCH_ID_FLAG, false);
     }

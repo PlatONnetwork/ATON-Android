@@ -15,16 +15,9 @@
         <item name="android:textCursorDrawable">@drawable/bg_edittext_cursor</item>
     </style>
 
-    <!-- Application theme. -->
-    <style name="SplashTheme" parent="AppBaseTheme">
-        <!-- All customizations that are NOT specific toAddress a particular API-level can go here. -->
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="android:windowContentOverlay">@null</item>
+    <style name="SplashTheme" parent="@android:style/Theme.Black.NoTitleBar.Fullscreen">
         <item name="android:windowBackground">@drawable/bg_splash</item>
-        <item name="android:windowFullscreen">true</item>
-        <item name="android:textAllCaps">false</item>
-        <item name="android:textCursorDrawable">@drawable/bg_edittext_cursor</item>
+        <item name="android:windowAnimationStyle">@style/EnterNullAnimationStyle</item>
     </style>
 
     <style name="MainTheme" parent="AppTheme">
@@ -220,6 +213,36 @@
         <item name="android:textColor">@color/color_main_button_text</item>
         <item name="android:textSize">16sp</item>
         <item name="android:gravity">center</item>
+    </style>
+
+    <style name="EnterNullAnimationStyle">
+        <item name="android:activityOpenEnterAnimation">@null</item>
+        <item name="android:activityOpenExitAnimation">@anim/exit_left</item>
+        <item name="android:activityCloseEnterAnimation">@null</item>
+        <item name="android:activityCloseExitAnimation">@anim/exit_right</item>
+        <item name="android:taskOpenEnterAnimation">@null</item>
+        <item name="android:taskOpenExitAnimation">@anim/exit_left</item>
+        <item name="android:taskCloseEnterAnimation">@null</item>
+        <item name="android:taskCloseExitAnimation">@anim/exit_right</item>
+        <item name="android:taskToFrontEnterAnimation">@null</item>
+        <item name="android:taskToFrontExitAnimation">@anim/exit_left</item>
+        <item name="android:taskToBackEnterAnimation">@null</item>
+        <item name="android:taskToBackExitAnimation">@anim/exit_right</item>
+    </style>
+
+    <style name="ExitNullAnimationStyle">
+        <item name="android:activityOpenEnterAnimation">@anim/enter_right</item>
+        <item name="android:activityOpenExitAnimation">@null</item>
+        <item name="android:activityCloseEnterAnimation">@anim/enter_left</item>
+        <item name="android:activityCloseExitAnimation">@null</item>
+        <item name="android:taskOpenEnterAnimation">@anim/enter_right</item>
+        <item name="android:taskOpenExitAnimation">@null</item>
+        <item name="android:taskCloseEnterAnimation">@anim/enter_left</item>
+        <item name="android:taskCloseExitAnimation">@null</item>
+        <item name="android:taskToFrontEnterAnimation">@anim/enter_right</item>
+        <item name="android:taskToFrontExitAnimation">@null</item>
+        <item name="android:taskToBackEnterAnimation">@anim/enter_left</item>
+        <item name="android:taskToBackExitAnimation">@null</item>
     </style>
 
 
