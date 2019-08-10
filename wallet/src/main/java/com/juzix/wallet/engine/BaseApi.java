@@ -3,8 +3,10 @@ package com.juzix.wallet.engine;
 import com.google.common.base.Verify;
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
+import com.juzix.wallet.entity.AccountBalance;
 import com.juzix.wallet.entity.CandidateWrap;
 import com.juzix.wallet.entity.DelegateDetail;
+import com.juzix.wallet.entity.DelegateInfo;
 import com.juzix.wallet.entity.DelegateRecord;
 import com.juzix.wallet.entity.MyDelegate;
 import com.juzix.wallet.entity.NodeStates;
@@ -109,7 +111,7 @@ public interface BaseApi {
 
     @POST("app-{cid}/v060/node/getNodeStatus")
     Single<Response<ApiResponse<NodeStates>>> getNodeStatus(@Path("cid") String cid, @Body ApiRequestBody body);
-    
+
     /**
      * 获取我的委托列表
      *
@@ -119,8 +121,8 @@ public interface BaseApi {
      *            ]
      * @return
      */
-    @POST("app-{cid}/v060/transaction/myDelegate")
-    Single<Response<ApiResponse<MyDelegate>>> getMyDelegateList(@Path("cid") String cid, @Body ApiRequestBody body);
+    @POST("app-{cid}/v060/node/listDelegateGroupByAddr")
+    Single<Response<ApiResponse<List<DelegateInfo>>>> getMyDelegateList(@Path("cid") String cid, @Body ApiRequestBody body);
 
 
     /**
@@ -134,7 +136,7 @@ public interface BaseApi {
      *               客户端首次进入页面时或者上拉时传old。客户端自动获取最新记录时传new。
      */
 
-    @POST("app-{cid}/v060/transaction/delegateDetails")
+    @POST("app-{cid}/v060/node/delegateDetails")
     Single<Response<ApiResponse<List<DelegateDetail>>>> getDelegateDetailList(@Path("cid") String cid, @Body ApiRequestBody body);
 
 
@@ -158,6 +160,16 @@ public interface BaseApi {
 
     @POST("app-{cid}/v060/transaction/delegateRecord")
     Single<Response<ApiResponse<List<DelegateRecord>>>> getDelegateRecordList(@Path("cid") String cid, @Body ApiRequestBody body);
+
+
+    /**
+     * 批量获取账户余额
+     * "addrs":[   //地址列表
+     * "address1",
+     * "address2"]
+     */
+    @POST("app-{cid}/v060/account/getBalance")
+    Single<Response<ApiResponse<List<AccountBalance>>>> getAccountBalance(@Path("cid") String cid, @Body ApiRequestBody body);
 
 
 }
