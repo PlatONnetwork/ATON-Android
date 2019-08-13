@@ -42,24 +42,10 @@ public class MeFragment extends BaseFragment {
     LinearLayout layoutWalletAddressBook;
     @BindView(R.id.layout_settings)
     LinearLayout layoutSettings;
-    @BindView(R.id.layout_help)
-    LinearLayout layoutHelp;
+    @BindView(R.id.layout_official_community)
+    LinearLayout layoutOfficialCommunity;
     @BindView(R.id.layout_about)
     LinearLayout layoutAbout;
-    @BindView(R.id.iv_telegram)
-    ImageView ivTelegram;
-    @BindView(R.id.iv_wechat)
-    ImageView ivWechat;
-    @BindView(R.id.iv_github)
-    ImageView ivGithub;
-    @BindView(R.id.iv_twitter)
-    ImageView ivTwitter;
-    @BindView(R.id.iv_facebook)
-    ImageView ivFacebook;
-    @BindView(R.id.iv_rabbit)
-    ImageView ivRabbit;
-    @BindView(R.id.iv_medium)
-    ImageView ivMedium;
     Unbinder unbinder;
 
     @Nullable
@@ -86,7 +72,7 @@ public class MeFragment extends BaseFragment {
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object object)  {
+                    public void accept(Object object) {
                         TransactionRecordsActivity.actionStart(getActivity());
                     }
                 });
@@ -104,7 +90,7 @@ public class MeFragment extends BaseFragment {
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object object)  {
+                    public void accept(Object object) {
                         SettingsActiivty.actionStart(getActivity());
                     }
                 });
@@ -117,68 +103,14 @@ public class MeFragment extends BaseFragment {
                         AboutActivity.actionStart(getActivity());
                     }
                 });
-        RxView.clicks(ivTelegram)
-                .compose(RxUtils.getClickTransformer())
-                .compose(RxUtils.bindToLifecycle(this))
-                .subscribe(new CustomObserver<Object>() {
-                    @Override
-                    public void accept(Object object) {
-                        ShareUtil.shareUrl(getActivity(), "https://t.me/PlatONHK");
-                    }
-                });
-        RxView.clicks(ivGithub)
-                .compose(RxUtils.getClickTransformer())
-                .compose(RxUtils.bindToLifecycle(this))
-                .subscribe(new CustomObserver<Object>() {
-                    @Override
-                    public void accept(Object object) {
-                        ShareUtil.shareUrl(getActivity(), "https://github.com/PlatONnetwork");
-                    }
-                });
-        RxView.clicks(ivTwitter)
-                .compose(RxUtils.getClickTransformer())
-                .compose(RxUtils.bindToLifecycle(this))
-                .subscribe(new CustomObserver<Object>() {
-                    @Override
-                    public void accept(Object object){
-                        ShareUtil.shareUrl(getActivity(), "https://twitter.com/PlatON_Network");
-                    }
-                });
-        RxView.clicks(ivFacebook)
-                .compose(RxUtils.getClickTransformer())
-                .compose(RxUtils.bindToLifecycle(this))
-                .subscribe(new CustomObserver<Object>() {
-                    @Override
-                    public void accept(Object object) {
-                        ShareUtil.shareUrl(getActivity(), "https://www.facebook.com/PlatONNetwork/");
-                    }
-                });
-        RxView.clicks(ivRabbit)
-                .compose(RxUtils.getClickTransformer())
-                .compose(RxUtils.bindToLifecycle(this))
-                .subscribe(new CustomObserver<Object>() {
-                    @Override
-                    public void accept(Object object) {
-                        ShareUtil.shareUrl(getActivity(), "https://www.reddit.com/user/PlatON_Network");
-                    }
-                });
-        RxView.clicks(ivMedium)
-                .compose(RxUtils.getClickTransformer())
-                .compose(RxUtils.bindToLifecycle(this))
-                .subscribe(new CustomObserver<Object>() {
-                    @Override
-                    public void accept(Object object) {
-                        ShareUtil.shareUrl(getActivity(), "https://medium.com/@PlatON_Network");
-                    }
-                });
+
         RxView
-                .longClicks(tvTitle)
+                .clicks(layoutOfficialCommunity)
                 .compose(RxUtils.getClickTransformer())
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object o) {
-                        ToastUtil.showLongToast(getContext(), BuildConfig.VERSION_NAME);
+                    public void accept(Object object) {
                         OfficialCommunityActivity.actionStart(getActivity());
                     }
                 });
