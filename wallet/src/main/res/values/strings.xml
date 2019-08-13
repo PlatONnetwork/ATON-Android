@@ -174,7 +174,7 @@
     <string name="help">帮助</string>
     <string name="about">关于</string>
     <string name="aboutUs">关于我们</string>
-    <string name="community">社区</string>
+    <string name="official_community">官方社区</string>
     <string name="add_shared_wallet">添加联名钱包</string>
     <string name="add">添加</string>
     <string name="delete_wallet">删除钱包</string>
@@ -550,6 +550,7 @@
     <string name="the_Validator_has_exited_and_cannot_be_delegated">委托节点已退出，无法委托</string>
     <string name="delegate_failed">委托失败</string>
     <string name="delegate_success">委托成功</string>
->>>>>>> master
+    <string name="msg_support_feedback">帮助和反馈</string>
+    <string name="msg_all_wallets">所有钱包</string>
 
 </resources>

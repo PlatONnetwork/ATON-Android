@@ -50,6 +50,11 @@ public class ExportIndividualKeystoreActivity extends BaseActivity{
         initView();
     }
 
+    @Override
+    protected boolean immersiveBarViewEnabled() {
+        return true;
+    }
+
     private void initView() {
         int            indicatorThickness = AndroidUtil.dip2px(getContext(), 2.0f);
         SmartTabLayout stbBar             = mRootView.findViewById(R.id.stb_bar);

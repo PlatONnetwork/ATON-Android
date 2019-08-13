@@ -42,7 +42,7 @@
 
         <TextView
             style="@style/Text.000.16"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="8dp"
             android:layout_weight="1"
             android:gravity="center_vertical|left"
             android:text="AII wallets" />

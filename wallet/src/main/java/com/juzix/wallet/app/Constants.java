@@ -155,5 +155,24 @@ public class Constants {
 
     }
 
+    public interface UMPages {
+        String MY_DELEGATION = "我的委托";
+        String DELEGATE_NODE_RECORD = "委托节点记录";
+        String VERIFY_NODE = "验证节点";
+        String NODE_DETAIL = "节点详情";
+        String SUPPORT_FEEDBACK = "帮助与反馈";
+        String OFFICIAL_COMMUNITY = "官方社区";
+        String TRANSACTION_RECORD = "交易记录";
+        String WALLET_MANAGER = "钱包管理";
+        String ADDRESS_BOOK = "地址簿";
+    }
+
+    public interface UMEventID {
+
+    }
+
+    public interface UMEventKey {
+
+    }
 
 }

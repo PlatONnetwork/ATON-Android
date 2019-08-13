@@ -143,7 +143,7 @@
     <string name="help">Help</string>
     <string name="about">About</string>
     <string name="aboutUs">About Us</string>
-    <string name="community">Community</string>
+    <string name="official_community">Official Community</string>
     <string name="add_shared_wallet">Add Joint Wallet</string>
     <string name="add">Add</string>
     <string name="action_create_wallet">Create</string>
@@ -541,6 +541,8 @@
     <string name="the_Validator_has_exited_and_cannot_be_delegated">The Validator has Exited and cannot be delegated</string>
     <string name="delegate_failed">Delegated Failed</string>
     <string name="delegate_success">Delegated Success</string>
->>>>>>> master
+
+    <string name="msg_support_feedback">Support and feedback</string>
+    <string name="msg_all_wallets">All Wallets</string>
 </resources>
 

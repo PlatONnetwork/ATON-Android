@@ -6,7 +6,7 @@ import android.text.TextUtils;
 
 import com.juzix.wallet.db.entity.WalletEntity;
 
-public class Wallet implements Parcelable, Comparable<Wallet> {
+public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
 
     /**
      * 唯一识别码，与Keystore的id一致
@@ -264,6 +264,7 @@ public class Wallet implements Parcelable, Comparable<Wallet> {
 
     /**
      * 是否需要备份，判断提交是，助记词是否为空，为空说明已经备份过了
+     *
      * @return
      */
     public boolean isNeedBackup() {
@@ -307,6 +308,15 @@ public class Wallet implements Parcelable, Comparable<Wallet> {
                 .avatar(getAvatar())
                 .mnemonic(getMnemonic())
                 .chainId(getChainId()).build();
+    }
+
+    @Override
+    public boolean isNull() {
+        return false;
+    }
+
+    public static Wallet getNullInstance() {
+        return NullWallet.getInstance();
     }
 
     public static final class Builder {
