@@ -524,7 +524,7 @@
     <string name="validators_detail_yield">预计年化率</string>
     <string name="expected_annualized_rate">预计年化率</string>
     <string name="expected_annualized_rate_des">当前节点的预计年化率，具体委托收益由节点分配</string>
-    <string name="withdraw_tip">委托数量不能少于10LAT</string>
+    <string name="withdraw_tip">输入数量不能少于10LAT</string>
     <string name="delegate_node">说明</string>
     <string name="delegate_node_des">赎回委托的Token，未锁定的委托和已解除委托可立即到账，\n已锁定的委托大约等待6.1小时才能到账;\n已解除委托必须一次性全部赎回；\n赎回数量扣除后，已委托剩余数量少于10LAT时，自动赎回全部。</string>
     <string name="delegations_title">委托</string>
@@ -550,6 +550,32 @@
     <string name="the_Validator_has_exited_and_cannot_be_delegated">委托节点已退出，无法委托</string>
     <string name="delegate_failed">委托失败</string>
     <string name="delegate_success">委托成功</string>
->>>>>>> master
 
+    <!--委托的状态-->
+    <string name="delegate_state_failed">委托失败</string>
+    <string name="delegate_state_success">委托成功</string>
+    <string name="delegate_pending">确认中</string>
+
+    <!--赎回的状态-->
+    <string name="withdraw_undelegating">赎回中</string>
+    <string name="withdraw_pending">确认中</string>
+    <string name="withdraw_success">赎回成功</string>
+    <string name="withdraw_failed">赎回失败</string>
+
+    <!--验证节点状态-->
+    <string name="validators_state_active">活跃中</string>
+    <string name="validators_state_candidate">候选中</string>
+    <string name="validators_state_exiting">退出中</string>
+    <string name="validators_state_exited">已退出</string>
+
+    <string name="validators_details_tips">PlatON初始内置验证人，不接收委托</string>
+
+    <!--赎回类型-->
+    <string name="withdraw_type_delegated">已委托</string>
+    <string name="withdraw_type_unlocked">未锁定委托</string>
+    <string name="withdraw_type_released">已解除委托</string>
+
+    <!--赎回提示语-->
+    <string name="withdraw_operation_tips">超出可赎回数量，无法提交</string>
+    
 </resources>

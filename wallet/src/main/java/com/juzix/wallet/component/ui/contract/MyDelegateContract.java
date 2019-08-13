@@ -12,11 +12,11 @@ public class MyDelegateContract {
     public interface View extends IView {
         void showMyDelegateData(List<DelegateInfo> list);
 
-        void showMyDelegateDataByPosition(int positon, DelegateInfo delegateInfo);
+        void showMyDelegateDataByPosition(int position, DelegateInfo delegateInfo);
 
         void showMyDelegateDataFailed();
 
-        void showTotalDelegate(MyDelegate delegate);
+        void showTotalDelegate(double total);
 
     }
 

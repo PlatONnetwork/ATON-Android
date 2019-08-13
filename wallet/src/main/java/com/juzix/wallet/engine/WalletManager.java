@@ -1,6 +1,7 @@
 package com.juzix.wallet.engine;
 
 import android.text.TextUtils;
+import android.widget.TextView;
 
 import com.juzix.wallet.app.CustomThrowable;
 import com.juzix.wallet.config.AppSettings;
@@ -131,6 +132,23 @@ public class WalletManager {
         }
         return null;
     }
+
+    /**
+     * 根据钱包地址获取钱包
+     */
+    public Wallet getWalletEntityByWalletAddress(String walletAddress) {
+
+        if (!mWalletList.isEmpty()) {
+            for (Wallet walletEntity : mWalletList) {
+                if (!TextUtils.isEmpty(walletAddress) && walletAddress.equals(walletEntity.getPrefixAddress())) {
+                    return walletEntity;
+                }
+            }
+        }
+
+        return null;
+    }
+
 
     /**
      * 获取钱包余额根据钱包地址

@@ -124,11 +124,9 @@ public class VerifyNodeDao {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
-            RealmResults<VerifyNodeEntity> all = realm.where(VerifyNodeEntity.class)
-                    .findAll();
-            if (all != null) {
-                realm.deleteAll();
-            }
+            realm.beginTransaction();
+            realm.where(VerifyNodeEntity.class)
+                    .findAll().deleteAllFromRealm();
             return true;
 
         } catch (Exception e) {

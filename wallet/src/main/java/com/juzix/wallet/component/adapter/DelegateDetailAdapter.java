@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,11 +12,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
+import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.entity.DelegateDetail;
 import com.juzix.wallet.utils.AddressFormatUtil;
+import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.GlideUtils;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
@@ -52,22 +55,23 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
         holder.nodeAddress.setText(AddressFormatUtil.formatAddress(detail.getNoadeId()));
         GlideUtils.loadRound(mContext, detail.getUrl(), holder.nodeIcon);
         holder.nodeState.setText(detail.getNodeStatus());
-        changeTextViewColorByState(holder.nodeState, detail.getNodeStatus());
-        holder.tv_node_locked_delegate.setText(detail.getLocked() > 0 ? StringUtil.formatBalance(detail.getLocked(), false) : "0.00");
-        holder.tv_node_unlocked_delegate.setText(detail.getUnLocked() > 0 ? StringUtil.formatBalance(detail.getUnLocked(), false) : "0.00");
-        holder.tv_node_released_delegate.setText(detail.getReleased() > 0 ? StringUtil.formatBalance(detail.getReleased(), false) : "0.00");
-        holder.tv_node_undelegating.setText(detail.getRedeem() > 0 ? StringUtil.formatBalance(detail.getRedeem(), false) : "0.00");
-        if (detail.getLocked() == 0 && detail.getUnLocked() == 0 && detail.getReleased() == 0 && detail.getRedeem() == 0) {
+        changeTextViewColorByState(holder.nodeState, detail.getNodeStatus()); //NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(value, "1E18")
+        holder.tv_node_locked_delegate.setText((TextUtils.isEmpty(detail.getLocked())) ? "--" : StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getLocked(), "1E18"))), false));
+        holder.tv_node_unlocked_delegate.setText((TextUtils.isEmpty(detail.getUnLocked())) ? "--" : StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getUnLocked(), "1E18"))), false));
+        holder.tv_node_released_delegate.setText((TextUtils.isEmpty(detail.getReleased())) ? "--" : StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getReleased(), "1E18"))), false));
+        holder.tv_node_undelegating.setText((TextUtils.isEmpty(detail.getRedeem())) ? "--" : StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getRedeem(), "1E18"))), false));
+
+        if (TextUtils.isEmpty(detail.getLocked()) && TextUtils.isEmpty(detail.getUnLocked()) && TextUtils.isEmpty(detail.getReleased()) && TextUtils.isEmpty(detail.getRedeem())) {
             holder.tv_show_delegate.setText(R.string.nav_delegate);
             holder.tv_show_withdraw.setText(R.string.node_move_out);
 
-        } else if (detail.getLocked() == 0 || detail.getUnLocked() == 0 || detail.getReleased() == 0 || detail.getRedeem() == 0) {
+        } else if (TextUtils.isEmpty(detail.getLocked()) || TextUtils.isEmpty(detail.getUnLocked()) || TextUtils.isEmpty(detail.getReleased()) || TextUtils.isEmpty(detail.getRedeem())) {
             holder.tv_show_delegate.setText(R.string.nav_delegate);
             holder.tv_show_withdraw.setText(R.string.node_withdraw_delegate);
 
         }
 
-        if (detail.getLocked() == 0 && detail.getUnLocked() == 0 && detail.getReleased() == 0 && detail.getRedeem() == 0) {
+        if (TextUtils.isEmpty(detail.getLocked()) && TextUtils.isEmpty(detail.getUnLocked()) && TextUtils.isEmpty(detail.getReleased()) && TextUtils.isEmpty(detail.getRedeem())) {
             //操作移除列表
             RxView.clicks(holder.ll_withdraw)
                     .compose(RxUtils.getSchedulerTransformer())
@@ -82,18 +86,18 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
                         }
                     });
 
-        } else if (detail.getLocked() == 0 && detail.getUnLocked() == 0 && detail.getReleased() == 0) {
+        } else if (TextUtils.isEmpty(detail.getLocked()) && TextUtils.isEmpty(detail.getUnLocked()) && TextUtils.isEmpty(detail.getReleased())) {
             //按钮置灰并不可点击
             holder.ll_withdraw.setOnClickListener(null);
         } else {
             //操作赎回委托
             RxView.clicks(holder.ll_withdraw)
-                    .compose(RxUtils.getSchedulerTransformer())
+                    .compose(RxUtils.getClickTransformer())
                     .subscribe(new Consumer<Object>() {
                         @Override
                         public void accept(Object o) throws Exception {
                             if (null != mOnDelegateClickListener) {
-                                mOnDelegateClickListener.onWithDrawClick(detail.getNoadeId(), detail.getNodeName(), detail.getUrl());
+                                mOnDelegateClickListener.onWithDrawClick(detail.getNoadeId(), detail.getNodeName(), detail.getUrl(), detail.getStakingBlockNum());
                             }
 
                         }
@@ -102,7 +106,7 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
 
 
         RxView.clicks(holder.ll_delegate)
-                .compose(RxUtils.getSchedulerTransformer())
+                .compose(RxUtils.getClickTransformer())
                 .subscribe(new Consumer<Object>() {
                     @Override
                     public void accept(Object o) throws Exception {
@@ -114,7 +118,7 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
 
 
         RxView.clicks(holder.nodeName)
-                .compose(RxUtils.getSchedulerTransformer())
+                .compose(RxUtils.getClickTransformer())
                 .subscribe(new Consumer<Object>() {
                     @Override
                     public void accept(Object o) throws Exception {
@@ -208,7 +212,7 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
     public interface OnDelegateClickListener {
         void onDelegateClick(String nodeAddress, String nodeName, String nodeIcon);
 
-        void onWithDrawClick(String nodeAddress, String nodeName, String nodeIcon);
+        void onWithDrawClick(String nodeAddress, String nodeName, String nodeIcon, String stakingBlockNum);
 
         void onMoveOutClick(DelegateDetail detail);
 

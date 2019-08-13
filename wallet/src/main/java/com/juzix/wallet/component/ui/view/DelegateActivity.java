@@ -111,7 +111,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                     @Override
                     public void accept(Object o) {
                         //选择余额类型
-                        DelegatePopWindow delegatePopWindow = new DelegatePopWindow(getContext(), amounChoose, address);
+                        DelegatePopWindow delegatePopWindow = new DelegatePopWindow(getContext(), amounChoose, address,chooseType);
                         mPresenter.getAmountType(delegatePopWindow);
                     }
                 });
@@ -190,6 +190,13 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     }
 
     @Override
+    public void showWalletType(DelegateType delegateType) {
+        chooseType = delegateType.getType();
+        amountType.setText(TextUtils.equals(delegateType.getType(), "balance") ? getString(R.string.available_balance) : getString(R.string.locked_balance));
+        amount.setText(StringUtil.formatBalance(delegateType.getAmount(), false));
+    }
+
+    @Override
     public void setDelegateButtonState(boolean isClickable) {
         btnDelegate.setEnabled(isClickable);
     }
@@ -218,14 +225,6 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     }
 
     @Override
-    public void showWalletType(DelegateType delegateType) {
-        chooseType = delegateType.getType();
-        amountType.setText(TextUtils.equals(delegateType.getType(), "balance") ? getString(R.string.available_balance) : getString(R.string.locked_balance));
-        amount.setText(StringUtil.formatBalance(delegateType.getAmount(), false));
-
-    }
-
-    @Override
     public String getNodeAddressFromIntent() {
         return getIntent().getStringExtra(Constants.Extra.EXTRA_NODE_ADDRESS);
     }
@@ -250,7 +249,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         //显示节点基本信息
         GlideUtils.loadRound(getContext(), UrlIcon, nodeIcon);
         nodeName.setText(name);
-        nodeAddress.setText(address);
+        nodeAddress.setText(AddressFormatUtil.formatAddress(address));
     }
 
 

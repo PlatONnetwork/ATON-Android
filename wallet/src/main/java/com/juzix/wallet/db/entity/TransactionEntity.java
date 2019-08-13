@@ -55,7 +55,7 @@ public class TransactionEntity extends RealmObject implements Cloneable {
     /**
      * 交易状态 1 成功 0 失败
      */
-    private String txReceiptStatus;
+    private int txReceiptStatus;
     /**
      * 链id
      */
@@ -152,11 +152,11 @@ public class TransactionEntity extends RealmObject implements Cloneable {
         this.txType = txType;
     }
 
-    public String getTxReceiptStatus() {
+    public int getTxReceiptStatus() {
         return txReceiptStatus;
     }
 
-    public void setTxReceiptStatus(String txReceiptStatus) {
+    public void setTxReceiptStatus(int txReceiptStatus) {
         this.txReceiptStatus = txReceiptStatus;
     }
 
@@ -193,7 +193,7 @@ public class TransactionEntity extends RealmObject implements Cloneable {
         private long blockNumber;
         private double value;
         private String txType;
-        private String txReceiptStatus;
+        private int txReceiptStatus;
         private String chainId;
         private String actualTxCost;
         private String txInfo;
@@ -221,7 +221,7 @@ public class TransactionEntity extends RealmObject implements Cloneable {
             return this;
         }
 
-        public Builder setTxReceiptStatus(String txReceiptStatus) {
+        public Builder setTxReceiptStatus(int txReceiptStatus) {
             this.txReceiptStatus = txReceiptStatus;
             return this;
         }

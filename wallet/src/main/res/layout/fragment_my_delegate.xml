@@ -100,13 +100,12 @@
                         android:textSize="16sp" />
                 </LinearLayout>
 
-                <android.support.v7.widget.RecyclerView
+                <com.juzix.wallet.component.widget.headerandfooter.HeaderAndFooterRecyclerView
                     android:id="@+id/list_delegate"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    tools:listitem="@layout/item_my_delegate_list" />
-
-
+                    tools:listitem="@layout/item_my_delegate_list"
+                    />
             </RelativeLayout>
 
 
@@ -124,6 +123,7 @@
         android:layout_marginLeft="32dp"
         android:layout_marginRight="32dp"
         android:layout_marginBottom="21dp"
+        android:visibility="gone"
         android:orientation="horizontal">
 
         <LinearLayout

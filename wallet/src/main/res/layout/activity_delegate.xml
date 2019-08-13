@@ -345,6 +345,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="16dp"
+                android:layout_marginBottom="20dp"
                 android:lineSpacingExtra="2dp"
                 android:text="@string/risk_title_explain"
                 android:textColor="@color/color_898c9e"

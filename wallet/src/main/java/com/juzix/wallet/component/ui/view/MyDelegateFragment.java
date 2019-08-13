@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
-import com.juzhen.framework.app.log.Log;
 import com.juzix.wallet.App;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomObserver;
@@ -23,6 +23,8 @@ import com.juzix.wallet.component.ui.base.MVPBaseFragment;
 import com.juzix.wallet.component.ui.contract.MyDelegateContract;
 import com.juzix.wallet.component.ui.presenter.MyDelegatePresenter;
 import com.juzix.wallet.component.widget.CustomRefreshHeader;
+import com.juzix.wallet.component.widget.headerandfooter.HeaderAndFooterAdapter;
+import com.juzix.wallet.component.widget.headerandfooter.HeaderAndFooterRecyclerView;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.entity.DelegateInfo;
 import com.juzix.wallet.entity.MyDelegate;
@@ -38,6 +40,7 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -61,14 +64,17 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
     @BindView(R.id.ll_no_data)
     LinearLayout ll_no_data;
     @BindView(R.id.list_delegate)
-    RecyclerView list_delegate;
+    HeaderAndFooterRecyclerView list_delegate;
     @BindView(R.id.ll_problem)
     LinearLayout ll_problem;
     @BindView(R.id.ll_tutorial)
     LinearLayout ll_tutorial;
+    @BindView(R.id.ll_guide)
+    LinearLayout ll_guide;
 
     private MyDelegateAdapter mMyDelegateAdapter;
     private LinearLayoutManager layoutManager;
+    List<DelegateInfo> datalist;
 
     @Override
     protected MyDelegatePresenter createPresenter() {
@@ -96,13 +102,16 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
     }
 
     private void initClickListener() {
+
+
         RxView.clicks(tv_delegate_record)
                 .compose(RxUtils.bindToLifecycle(this))
                 .compose(RxUtils.getClickTransformer())
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        DelegateRecordActivity.actionStart(getContext());
+//                        DelegateRecordActivity.actionStart(getContext());
+                        ValidatorsDetailActivity.actionStart(getContext(), "");
                     }
                 });
         RxView.clicks(ll_problem).compose(RxUtils.bindToLifecycle(this))
@@ -120,26 +129,74 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        DelegateDetailActivity.actionStart(getContext(), "", "", "");
+                        WithDrawActivity.actionStart(getContext(), "", "", "", "", "");
                     }
                 });
 
+
+    }
+
+
+    private void initFruits() {
+        datalist = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            datalist.add(new DelegateInfo("Apple" + i, "fasda", "12.000", "158.0", 1538.00, "afdfasdfa"));
+        }
     }
 
     private void initViews() {
+//        initFruits();
         initRefreshView();
         layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mMyDelegateAdapter = new MyDelegateAdapter();
+        mMyDelegateAdapter = new MyDelegateAdapter(datalist);
+        list_delegate.setLayoutManager(layoutManager);
+        View footerView = LayoutInflater.from(getContext()).inflate(R.layout.include_my_delegate_footer, list_delegate, false);
+//        list_delegate.addFooterView(footerView);
         list_delegate.setAdapter(mMyDelegateAdapter);
+
+
         list_delegate.setEnabled(true);
         mMyDelegateAdapter.setOnItemClickListener(new MyDelegateAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(String walletAddress, String walletName, String walletIcon) {
                 //跳转到委托详情页
-//                DelegateDetailActivity.actionStart(getContext(), walletAddress, walletName, walletIcon);
+                DelegateDetailActivity.actionStart(getContext(), walletAddress, walletName, walletIcon);
             }
         });
+
+        Log.d("MyDelegateFragment", "======获取recyclerview的滚动状态===================" + list_delegate.getScrollState());
+
+        if (list_delegate.getScrollY() == 0) {
+            ll_guide.setVisibility(View.VISIBLE);
+            list_delegate.removeFooterView(footerView);
+        }
+
+        list_delegate.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                Log.d("MyDelegateFragment", "======获取recyclerview的滚动状态=======onScrollStateChanged============" + newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                Log.d("MyDelegateFragment", "======获取recyclerview的滚动状态=======onScrollxxxxxxxxxxxxxxx============" + list_delegate.getScrollState());
+
+//                Log.d("MyDelegateFragment", "滚动的距离" + "==========================" + dy + "=====================" + dx);
+                list_delegate.removeFooterView(footerView);
+                if (dy > 0 || dy < 0) { //表示有滚动的状态此时
+                    list_delegate.addFooterView(footerView);
+                    ll_guide.setVisibility(View.GONE);
+
+                } else {
+                    list_delegate.removeFooterView(footerView);
+                    ll_guide.setVisibility(View.VISIBLE);
+                }
+
+            }
+        });
+
 
     }
 
@@ -160,9 +217,13 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
         if (list != null && list.size() > 0) {
             mMyDelegateAdapter.notifyDataChanged(list);
             ll_no_data.setVisibility(View.GONE);
+
+
         } else {
             ll_no_data.setVisibility(View.VISIBLE);
         }
+
+        //todo 有数据的时候可以在这里处理看看 footer
 
         refreshLayout.finishRefresh();
 
@@ -183,9 +244,10 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
     }
 
     @Override
-    public void showTotalDelegate(MyDelegate delegate) {
-        tv_total_delegate.setText(delegate.getDelegateTotal() > 0 ? StringUtil.formatBalance(delegate.getDelegateTotal(), false) : "0.00");
+    public void showTotalDelegate(double total) {
+        tv_total_delegate.setText(total > 0 ? StringUtil.formatBalance(total, false) : "0.00");
     }
+
 
     //接收event事件然后刷新
     @Subscribe(threadMode = ThreadMode.MAIN)

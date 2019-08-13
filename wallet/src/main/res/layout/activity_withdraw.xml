@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/color_f9fbff"
     android:orientation="vertical">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -13,12 +14,12 @@
         android:orientation="vertical"
         android:paddingTop="20dp">
 
-    <com.juzix.wallet.component.widget.CommonTitleBar
-        android:id="@+id/commonTitleBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:ctb_left_drawable="@drawable/icon_back_black"
-        app:ctb_title="@string/validators_withdraw" />
+        <com.juzix.wallet.component.widget.CommonTitleBar
+            android:id="@+id/commonTitleBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:ctb_left_drawable="@drawable/icon_back_black"
+            app:ctb_title="@string/validators_withdraw" />
 
     </LinearLayout>
 
@@ -129,7 +130,8 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerInParent="true"
                     android:layout_marginRight="20dp"
-                    android:src="@drawable/icon_drop_down" />
+                    android:src="@drawable/icon_drop_down"
+                    android:visibility="gone" />
 
             </RelativeLayout>
 
@@ -256,7 +258,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:gravity="center"
-                        android:text="金额不能为空"
                         android:textColor="@color/color_ff4747"
                         android:textSize="12sp" />
 
@@ -304,12 +305,11 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="16dp"
+                android:layout_marginBottom="20dp"
                 android:lineSpacingExtra="2dp"
                 android:text="@string/delegate_node_des"
                 android:textColor="@color/color_898c9e"
                 android:textSize="14sp" />
-
-
         </LinearLayout>
 
 

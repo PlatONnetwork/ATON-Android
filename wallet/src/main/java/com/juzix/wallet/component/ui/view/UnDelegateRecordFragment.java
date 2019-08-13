@@ -19,6 +19,7 @@ import com.juzix.wallet.component.ui.presenter.DelegateRecordPresenter;
 import com.juzix.wallet.component.widget.CustomRefreshFooter;
 import com.juzix.wallet.component.widget.CustomRefreshHeader;
 import com.juzix.wallet.entity.DelegateRecord;
+import com.juzix.wallet.entity.Transaction;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItem;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -45,8 +46,8 @@ public class UnDelegateRecordFragment extends MVPBaseFragment<DelegateRecordPres
     @BindView(R.id.layout_no_record)
     LinearLayout ll_no_data;
     private DelegateRecordAdapter mAdapter;
-    public int beginSequence = 0;//加载更多需要传入的值
-    private List<DelegateRecord> list = new ArrayList<>();
+    public long beginSequence = 0;//加载更多需要传入的值
+    private List<Transaction> list = new ArrayList<>();
     private boolean isLoadMore = false;
 
     @Override
@@ -83,7 +84,7 @@ public class UnDelegateRecordFragment extends MVPBaseFragment<DelegateRecordPres
         rlv_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                DelegateRecord delegateRecord = mAdapter.getItem(position);
+                Transaction transactionRecord = mAdapter.getItem(position);
                 //todo  跳转
 
             }
@@ -112,7 +113,7 @@ public class UnDelegateRecordFragment extends MVPBaseFragment<DelegateRecordPres
     }
 
     @Override
-    public void showDelegateRecordData(List<DelegateRecord> recordList) {
+    public void showDelegateRecordData(List<Transaction> recordList) {
         ll_no_data.setVisibility(View.GONE);
         if (recordList.size() > 0) {
             beginSequence = recordList.get(recordList.size() - 1).getSequence();

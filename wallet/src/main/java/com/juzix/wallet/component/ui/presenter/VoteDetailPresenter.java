@@ -6,10 +6,13 @@ import com.juzhen.framework.network.ApiSingleObserver;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.VoteDetailContract;
-import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.NodeManager;
+import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.entity.VotedCandidate;
+import com.juzix.wallet.schedulers.BaseSchedulerProvider;
+import com.juzix.wallet.schedulers.SchedulerProvider;
+import com.juzix.wallet.schedulers.SchedulerTestProvider;
 import com.juzix.wallet.utils.RxUtils;
 
 import java.util.Collections;
@@ -24,12 +27,20 @@ public class VoteDetailPresenter extends BasePresenter<VoteDetailContract.View> 
 
     private String mNodeId;
     private String mNodeName;
+    private BaseSchedulerProvider schedulerProvider;
 
     public VoteDetailPresenter(VoteDetailContract.View view) {
         super(view);
+        schedulerProvider = SchedulerProvider.getInstance();
         mNodeId = getView().getCandidateIdFromIntent();
         mNodeName = getView().getCandidateNameFromIntent();
     }
+
+    public VoteDetailPresenter(VoteDetailContract.View view, SchedulerTestProvider schedulerProvider) {
+        super(view);
+        this.schedulerProvider = schedulerProvider;
+    }
+
 
     @Override
     public void loadVoteDetailData(int beginSequence) {

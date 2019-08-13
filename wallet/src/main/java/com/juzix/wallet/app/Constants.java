@@ -45,6 +45,7 @@ public class Constants {
         String EXTRA_NODE_ADDRESS = "extra_node_address";
         String EXTRA_NODE_ICON = "extra_node_icon";
         String EXTRA_NODE_NAME = "extra_node_name";
+        String EXTRA_NODE_BLOCK_NUM = "extra_node_block_num";
     }
 
     public interface Bundle {
@@ -107,7 +108,7 @@ public class Constants {
         String URL_TEST_B = "https://test-beta.platon.network/test";
         String URL_HTTP_A = "https://aton.platon.network";
         String URL_HTTP_B = "https://aton.platon.network";
-        String URL_HTTP_C = "http://192.168.9.190:10061";
+        String URL_HTTP_C = "http://192.168.9.190:20060";
     }
 
     public interface VoteConstants {
@@ -133,8 +134,8 @@ public class Constants {
 
     public interface ValidatorsType {
         String ALL_VALIDATORS = "all";
-        String ACTIVE_VALIDATORS = "active";
-        String CANDIDATE_VALIDATORS = "candidate";
+        String ACTIVE_VALIDATORS = "Active";
+        String CANDIDATE_VALIDATORS = "Candidate";
         String VALIDATORS_RANK = "rangking";
         String VALIDATORS_YIELD = "PA";
         String VALIDATORS_NODEID = "Validators_nodeId";

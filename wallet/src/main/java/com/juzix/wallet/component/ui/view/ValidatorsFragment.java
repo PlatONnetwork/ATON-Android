@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -25,7 +24,6 @@ import com.juzix.wallet.component.ui.presenter.ValidatorsPresenter;
 import com.juzix.wallet.component.widget.CustomRefreshFooter;
 import com.juzix.wallet.component.widget.CustomRefreshHeader;
 import com.juzix.wallet.config.AppSettings;
-import com.juzix.wallet.db.entity.VerifyNodeEntity;
 import com.juzix.wallet.entity.VerifyNode;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
@@ -69,7 +67,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
     ListView rlv_list;
 
     private String rankType;
-    private String nodeState;
+    private String nodeState;//tab类型
 
     private List<VerifyNode> allList = new ArrayList<>();
     private List<VerifyNode> activeList = new ArrayList<>();
@@ -163,7 +161,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
                         if (allList.size() == 0) {
                             mPresenter.loadDataFromDB(nodeState, -1);
                         }
-
+                         mValidatorsAdapter.notifyDataSetChanged();
 //                        showLongToast("所有");
                         break;
                     case R.id.btn_active:
@@ -172,7 +170,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
                         if (activeList.size() == 0) {
                             mPresenter.loadDataFromDB(nodeState, -1);
                         }
-
+                        mValidatorsAdapter.notifyDataSetChanged();
 //                        showLongToast("活跃中");
                         break;
                     case R.id.btn_candidate:
@@ -181,7 +179,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
                         if (candidateList.size() == 0) {
                             mPresenter.loadDataFromDB(nodeState, -1);
                         }
-
+                        mValidatorsAdapter.notifyDataSetChanged();
 //                        showLongToast("候选中");
                         break;
 

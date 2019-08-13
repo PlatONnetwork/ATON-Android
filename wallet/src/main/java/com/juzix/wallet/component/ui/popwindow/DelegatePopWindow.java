@@ -2,6 +2,7 @@ package com.juzix.wallet.component.ui.popwindow;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -39,6 +40,7 @@ public class DelegatePopWindow extends PopupWindow {
     private DelegatePopWindowAdapter mAdapter;//适配器
     private OnPopItemClickListener listener;
     private String walletAddress;
+    private String balanceType;//余额类型
     private Map<String, Double> map = new HashMap<>();
 
     public void setListener(OnPopItemClickListener listener) {
@@ -50,11 +52,12 @@ public class DelegatePopWindow extends PopupWindow {
 
     }
 
-    public DelegatePopWindow(Context context, View view, String walletAddress) {
+
+    public DelegatePopWindow(Context context, View view, String walletAddress, String balanceType) {
         this.mContext = context;
         this.walletAddress = walletAddress;
+        this.balanceType = balanceType;
         initViews(view);
-
     }
 
     private void initViews(View view) {
@@ -64,18 +67,9 @@ public class DelegatePopWindow extends PopupWindow {
         lv = parentView.findViewById(R.id.listview_popwindow);
         //设置弹出窗体的宽和高
         this.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
-        this.setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
+        this.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         //设置弹出窗体可点击
         this.setFocusable(true);
-
-//        ShadowDrawable.setShadowDrawable(parentView,
-//                ContextCompat.getColor(mContext, R.color.color_ffffff),
-//                DensityUtil.dp2px(mContext, 6f),
-//                ContextCompat.getColor(mContext, R.color.color_33616161)
-//                , DensityUtil.dp2px(mContext, 10f),
-//                0,
-//                DensityUtil.dp2px(mContext, 2f));
-
 
         //view添加OnTouchListener监听判断获取触屏位置如果在布局外面则销毁弹出框
         parentView.setOnTouchListener(new View.OnTouchListener() {
@@ -92,25 +86,23 @@ public class DelegatePopWindow extends PopupWindow {
         });
 
         update();
-        mAdapter = new DelegatePopWindowAdapter(R.layout.popwindow_delegate_item, null,lv);
+        mAdapter = new DelegatePopWindowAdapter(R.layout.popwindow_delegate_item, null, lv);
         lv.setAdapter(mAdapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 DelegateType bean = mAdapter.getItem(position);
+                mAdapter.notifyDataSetChanged();
                 dismiss();
                 if (null != listener) {
                     listener.onPopItemClick(view, position, bean);
                 }
-
             }
         });
 
         showAsDropDown(view);
 
-
         loadWalletAmountType(walletAddress);
-
     }
 
     private void loadWalletAmountType(String walletAddress) {
@@ -136,12 +128,11 @@ public class DelegatePopWindow extends PopupWindow {
         Iterator<Map.Entry<String, Double>> it = entries.iterator();
         while (it.hasNext()) {
             Map.Entry<String, Double> entry = it.next();
-            typeList.add(new DelegateType(entry.getKey(), entry.getValue(), walletAddress));
+            typeList.add(new DelegateType(entry.getKey(), entry.getValue()));
         }
 
         mAdapter.notifyDataChanged(typeList);
-        lv.setItemChecked(typeList.indexOf(new DelegateType("", 0, walletAddress)), true); // todo 这里可能有问题 ：设置选中的位置
-
+        lv.setItemChecked((TextUtils.equals(balanceType, "balance") ? 0 : 1), true);
 
     }
 

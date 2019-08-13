@@ -2,6 +2,7 @@ package com.juzix.wallet.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.juzix.wallet.db.entity.DelegateAddressEntity;
 import com.juzix.wallet.db.entity.WalletEntity;
@@ -13,6 +14,11 @@ public class DelegateDetail implements Parcelable {
      * 投票节点Id（节点地址 ）
      */
     private String noadeId;
+
+    /**
+     * 最新的质押交易块高
+     */
+    private String stakingBlockNum;
     /**
      * 节点名称
      */
@@ -37,25 +43,25 @@ public class DelegateDetail implements Parcelable {
     /**
      * 赎回中委托
      */
-    private double redeem;
+    private String redeem;
     /**
      * 已锁定委托
      */
-    private double locked;
+    private String locked;
 
     /**
      * 未锁定委托
      */
-    private double unLocked;
+    private String unLocked;
 
     /**
      * 已解除委托
      */
-    private double released;
+    private String released;
     /**
-     * 排列序号：由区块号和交易索引拼接而成
+     * 排列序号 ,记录的创建时间，小的排在最前面
      */
-    private int sequence;
+    private String sequence;
 
 
     public DelegateDetail() {
@@ -102,44 +108,52 @@ public class DelegateDetail implements Parcelable {
         this.nodeStatus = nodeStatus;
     }
 
-    public double getRedeem() {
+    public String getRedeem() {
         return redeem;
     }
 
-    public void setRedeem(double redeem) {
+    public void setRedeem(String redeem) {
         this.redeem = redeem;
     }
 
-    public double getLocked() {
+    public String getLocked() {
         return locked;
     }
 
-    public void setLocked(double locked) {
+    public void setLocked(String locked) {
         this.locked = locked;
     }
 
-    public double getUnLocked() {
+    public String getUnLocked() {
         return unLocked;
     }
 
-    public void setUnLocked(double unLocked) {
+    public void setUnLocked(String unLocked) {
         this.unLocked = unLocked;
     }
 
-    public double getReleased() {
+    public String getReleased() {
         return released;
     }
 
-    public void setReleased(double released) {
+    public void setReleased(String released) {
         this.released = released;
     }
 
-    public int getSequence() {
+    public String getSequence() {
         return sequence;
     }
 
-    public void setSequence(int sequence) {
+    public void setSequence(String sequence) {
         this.sequence = sequence;
+    }
+
+    public String getStakingBlockNum() {
+        return stakingBlockNum;
+    }
+
+    public void setStakingBlockNum(String stakingBlockNum) {
+        this.stakingBlockNum = stakingBlockNum;
     }
 
     protected DelegateDetail(Parcel in) {
@@ -148,11 +162,12 @@ public class DelegateDetail implements Parcelable {
         website = in.readString();
         nodeStatus = in.readString();
         url = in.readString();
-        redeem = in.readDouble();
-        locked = in.readDouble();
-        released = in.readDouble();
-        unLocked = in.readDouble();
-        sequence = in.readInt();
+        redeem = in.readString();
+        locked = in.readString();
+        released = in.readString();
+        unLocked = in.readString();
+        sequence = in.readString();
+        stakingBlockNum = in.readString();
     }
 
     @Override
@@ -162,11 +177,12 @@ public class DelegateDetail implements Parcelable {
         dest.writeString(nodeStatus);
         dest.writeString(website);
         dest.writeString(url);
-        dest.writeDouble(redeem);
-        dest.writeDouble(locked);
-        dest.writeDouble(released);
-        dest.writeDouble(unLocked);
-        dest.writeInt(sequence);
+        dest.writeString(redeem);
+        dest.writeString(locked);
+        dest.writeString(released);
+        dest.writeString(unLocked);
+        dest.writeString(sequence);
+        dest.writeString(stakingBlockNum);
     }
 
     @Override
@@ -199,4 +215,8 @@ public class DelegateDetail implements Parcelable {
         return Objects.hash(noadeId);
     }
 
+//    @Override
+//    public int compareTo(@NonNull DelegateDetail o) {//按时间排序
+//        return Long.compare(o.getSequence(), sequence);
+//    }
 }
