@@ -515,7 +515,7 @@
     <string name="validators_detail_yield">Yield</string>
     <string name="expected_annualized_rate">Expected annualized rate</string>
     <string name="expected_annualized_rate_des">The expected annualized rate of the current validator, the Delegation rewards is distributed by the validator</string>
-    <string name="withdraw_tip">The Amount cannot be less than 10 LAT</string>
+    <string name="withdraw_tip">Input Amount (not less than 10 LAT)</string>
     <string name="delegate_node">Note</string>
     <string name="delegate_node_des">Un-delegation (i.e. withdrawal) LAT, the unlocked \ndelegate LAT and released delegate LAT can\n immediately returns to the account. However,the\n locked delegate LAT takes 6.1 hours to unlock and\n return to the account.\nThe released delegate has to be withdrawal all at once;\nIf the remaining delegations has been less than\n 10LAT, it will be automatically returned all.</string>
     <string name="delegations_title">Delegations</string>
@@ -542,7 +542,37 @@
     <string name="delegate_failed">Delegated Failed</string>
     <string name="delegate_success">Delegated Success</string>
 
+
+    <!--委托的状态-->
+    <string name="delegate_state_failed">Failed</string>
+    <string name="delegate_state_success">Success</string>
+    <string name="delegate_pending">Pending</string>
+    <!--赎回的状态-->
+    <string name="withdraw_undelegating">Undelegating</string>
+    <string name="withdraw_pending">Pending</string>
+    <string name="withdraw_success">Success</string>
+    <string name="withdraw_failed">Failed</string>
+
+    <!--验证节点状态-->
+    <string name="validators_state_active">Active</string>
+    <string name="validators_state_candidate">Candidate</string>
+    <string name="validators_state_exiting">Exiting</string>
+    <string name="validators_state_exited">Exited</string>
+
+
+    <string name="validators_details_tips">PlatON blockchain initial built-in validator, does not accept Delegation</string>
+
+    <!--赎回类型-->
+    <string name="withdraw_type_delegated">Delegated</string>
+    <string name="withdraw_type_unlocked">Unlocked delegate</string>
+    <string name="withdraw_type_released">Released delegate</string>
+
+    <!--赎回提示语-->
+    <string name="withdraw_operation_tips">Exceeded the available amount and cannot be submitted</string>
+
+
     <string name="msg_support_feedback">Support and feedback</string>
     <string name="msg_all_wallets">All Wallets</string>
+
 </resources>
 

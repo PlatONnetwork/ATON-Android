@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/icon_my_delegate_item_bg">
 
-            <com.scwang.smartrefresh.header.material.CircleImageView
+            <com.juzix.wallet.component.widget.CircleImageView
                 android:id="@+id/iv_total_delegate"
                 android:layout_width="42dp"
                 android:layout_height="42dp"

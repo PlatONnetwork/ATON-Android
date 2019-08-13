@@ -17,12 +17,12 @@ public class DelegateInfo implements Parcelable {
     /**
      * 委托金额
      */
-    private double delegate;
+    private String delegate;
 
     /**
      * 赎回中
      */
-    private double redeem;
+    private String redeem;
 
 
     /**
@@ -41,12 +41,20 @@ public class DelegateInfo implements Parcelable {
 
     }
 
+    public DelegateInfo(String walletName, String walletAddress, String delegate, String redeem, double balance, String walletIcon) {
+        this.walletName = walletName;
+        this.walletAddress = walletAddress;
+        this.delegate = delegate;
+        this.redeem = redeem;
+        this.balance = balance;
+        this.walletIcon = walletIcon;
+    }
 
     protected DelegateInfo(Parcel in) {
         walletName = in.readString();
         walletAddress = in.readString();
-        delegate = in.readDouble();
-        redeem = in.readDouble();
+        delegate = in.readString();
+        redeem = in.readString();
         balance = in.readDouble();
         walletIcon = in.readString();
     }
@@ -55,8 +63,8 @@ public class DelegateInfo implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(walletName);
         dest.writeString(walletAddress);
-        dest.writeDouble(delegate);
-        dest.writeDouble(redeem);
+        dest.writeString(delegate);
+        dest.writeString(redeem);
         dest.writeDouble(balance);
         dest.writeString(walletIcon);
     }
@@ -94,19 +102,19 @@ public class DelegateInfo implements Parcelable {
         this.walletAddress = walletAddress;
     }
 
-    public double getDelegate() {
+    public String getDelegate() {
         return delegate;
     }
 
-    public void setDelegate(double delegate) {
+    public void setDelegate(String delegate) {
         this.delegate = delegate;
     }
 
-    public double getRedeem() {
+    public String getRedeem() {
         return redeem;
     }
 
-    public void setRedeem(double redeem) {
+    public void setRedeem(String redeem) {
         this.redeem = redeem;
     }
 

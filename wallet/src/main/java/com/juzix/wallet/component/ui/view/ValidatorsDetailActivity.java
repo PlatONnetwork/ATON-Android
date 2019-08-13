@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.URLSpan;
@@ -17,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
+import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
@@ -27,12 +29,15 @@ import com.juzix.wallet.component.ui.presenter.ValidatorsDetailPresenter;
 import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.component.widget.CommonTitleBar;
 import com.juzix.wallet.component.widget.ShadowButton;
+import com.juzix.wallet.component.widget.TextViewDrawable;
 import com.juzix.wallet.entity.VerifyNodeDetail;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.AddressFormatUtil;
+import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.GlideUtils;
 import com.juzix.wallet.utils.RxUtils;
+import com.juzix.wallet.utils.StringUtil;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -76,12 +81,18 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
     TextView webSite;
     @BindView(R.id.sbtn_delegate)
     ShadowButton delegate;
+    @BindView(R.id.tv_no_delegate_tips)
+    TextViewDrawable tips;
 
 //    @BindView(R.id.ll_validators_withdraw)
 //    LinearLayout withdraw;
 //    @BindView(R.id.ll_validators_delegate)
 //    LinearLayout delegate;
 
+    public static final String STATE_ACTIVE = "Active";
+    public static final String STATE_CANDIDATE = "Candidate";
+    public static final String STATE_EXITING = "Exiting";
+    public static final String STATE_EXITED = "Exited";
 
     @Override
     protected ValidatorsDetailPresenter createPresenter() {
@@ -109,12 +120,10 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
             }
         });
 
-
         //todo 测试暂时写这里
         clickViewListener(null);
 
         mPresenter.loadValidatorsDetailData();
-
     }
 
     public static void actionStart(Context context, String nodeId) {
@@ -181,20 +190,63 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
 
     @Override
     public void showValidatorsDetailData(VerifyNodeDetail nodeDetail) {
+        //todo 点击链接的url
+
         GlideUtils.loadRound(this, nodeDetail.getUrl(), iv_url);
         nodeName.setText(nodeDetail.getName());
         nodeAddress.setText(AddressFormatUtil.formatAddress(nodeDetail.getNodeUrl()));
-        nodeState.setText(nodeDetail.getNodeStatus());
-        rate.setText(nodeDetail.getRatePA() + "%");
-        totalStaked.setText(nodeDetail.getDeposit());
-        delegation.setText(nodeDetail.getDelegateSum() + "");
+        if (TextUtils.equals(nodeDetail.getNodeStatus(), STATE_ACTIVE)) {
+            nodeState.setText(getString(R.string.validators_state_active));
+        } else if (TextUtils.equals(nodeDetail.getNodeStatus(), STATE_CANDIDATE)) {
+            nodeState.setText(getString(R.string.validators_state_candidate));
+        } else if (TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITED)) {
+            nodeState.setText(getString(R.string.validators_state_exited));
+        } else {
+            nodeState.setText(getString(R.string.validators_state_exiting));
+        }
+
+        rate.setText(NumberParserUtils.parseInt(nodeDetail.getRatePA()) * 100 + "%");
+
+        if (TextUtils.isEmpty(nodeDetail.getDeposit())) {
+            totalStaked.setText("--");
+        } else {
+            totalStaked.setText(StringUtil.formatBalance(NumberParserUtils.parseDouble
+                    (NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(nodeDetail.getDeposit(), "1E18"))), false)); //总质押
+        }
+
+        if (TextUtils.isEmpty(nodeDetail.getDelegateSum())) {
+            delegation.setText("--");
+        } else {
+            delegation.setText(StringUtil.formatBalance(NumberParserUtils.parseDouble
+                    (NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(nodeDetail.getDelegateSum(), "1E18"))), false)); // //接受委托
+        }
+
         delegators.setText(nodeDetail.getDelegate());
-        slash.setText(nodeDetail.getPunishNumber() + "");
-        blocks.setText(nodeDetail.getBlockOutNumber() + "");
-        blockRate.setText(nodeDetail.getBlockRate());
+        slash.setText(nodeDetail.getPunishNumber() + "");  //处罚次数
+        blocks.setText(nodeDetail.getBlockOutNumber() == 0 ? "--" : nodeDetail.getBlockOutNumber() + "");
+        blockRate.setText(NumberParserUtils.parseInt(nodeDetail.getBlockRate()) * 100 + "%");
+
         introduction.setText(nodeDetail.getIntro());
         webSite.setText(nodeDetail.getWebsite());//官网
         clickViewListener(nodeDetail);
+
+        //判断按钮是否可点击
+        if ((TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITING) || TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITED)) && nodeDetail.isInit()) {
+            tips.setVisibility(View.VISIBLE);
+            delegate.setEnabled(false);
+
+        } else if ((TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITING) || TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITED)) && !nodeDetail.isInit()) {
+            tips.setVisibility(View.GONE);
+            delegate.setEnabled(false);
+
+        } else if (!(TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITING) || TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITED)) && nodeDetail.isInit()) {
+            tips.setVisibility(View.VISIBLE);
+            delegate.setEnabled(false);
+        } else {
+            tips.setVisibility(View.GONE);
+            delegate.setEnabled(true);
+        }
+
 
     }
 

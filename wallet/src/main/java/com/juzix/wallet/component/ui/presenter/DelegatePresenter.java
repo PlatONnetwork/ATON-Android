@@ -213,7 +213,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                     @Override
                     public void accept(BaseResponse baseResponse) throws Exception {
                         if (isViewAttached()) {
-                            if (baseResponse != null && baseResponse.status) {
+                            if (baseResponse != null && baseResponse.isStatusOk()) {
                                 //委托成功
                                 showLongToast(R.string.delegate_success);
                                 //发送一个eventbus

@@ -1,6 +1,7 @@
 package com.juzix.wallet.component.ui.presenter;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
@@ -46,9 +47,8 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
 
     //刷新调用的方法
     private void getValidatorsData(String sortType, String nodeState, int rank) {
-        ServerUtils.getCommonApi().getVerifyNodeList(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
-                .put("sortType", sortType)
-                .build())
+        Log.d("ValidatorsPresenter", "=========nodeState========" + nodeState +"==============rank==========" +rank +"===============sortType" +sortType);
+        ServerUtils.getCommonApi().getVerifyNodeList(NodeManager.getInstance().getChainId())
                 .compose(bindUntilEvent(FragmentEvent.STOP))
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .subscribe(new ApiSingleObserver<List<VerifyNode>>() {
@@ -99,7 +99,6 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
 
     public boolean deleteVerifyNodeList() {
         return Single.fromCallable(new Callable<Boolean>() {
-
             @Override
             public Boolean call() throws Exception {
                 return VerifyNodeDao.deleteVerifyNode();
@@ -109,7 +108,6 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
     }
 
     public boolean insertVerifyNodeIntoDB(List<VerifyNode> nodeList) {
-
         return ValidatorsService.insertVerifyNodeList(nodeList).blockingGet();
     }
 

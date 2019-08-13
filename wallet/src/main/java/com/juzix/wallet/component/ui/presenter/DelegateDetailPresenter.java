@@ -39,8 +39,8 @@ public class DelegateDetailPresenter extends BasePresenter<DelegateDetailContrac
 
 
     @Override
-    public void loadDelegateDetailData(int beginSequence, String direction) {
-        getDelegateDetailData(beginSequence, walletAddress, Constants.VoteConstants.LIST_SIZE, direction);
+    public void loadDelegateDetailData(String beginSequence) {
+        getDelegateDetailData(beginSequence, walletAddress, Constants.VoteConstants.LIST_SIZE);
     }
 
     @Override
@@ -62,14 +62,14 @@ public class DelegateDetailPresenter extends BasePresenter<DelegateDetailContrac
 
     }
 
-    private void getDelegateDetailData(int beginSequence, String walletAddress, int listSize, String direction) {
+    private void getDelegateDetailData(String beginSequence, String walletAddress, int listSize) {
         getView().showWalletInfo(walletAddress, walletName, walletIcon);
 
         ServerUtils.getCommonApi().getDelegateDetailList(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
-                .put("walletAddrs", walletAddress)
+                .put("addr", walletAddress)
                 .put("beginSequence", beginSequence)
                 .put("listSize", listSize)
-                .put("direction", direction).build())
+                .build())
                 .zipWith(Single.fromCallable(new Callable<List<DelegateAddressEntity>>() {
                     @Override
                     public List<DelegateAddressEntity> call() throws Exception {
@@ -121,10 +121,8 @@ public class DelegateDetailPresenter extends BasePresenter<DelegateDetailContrac
     public List<DelegateDetail> getDelegateList(List<DelegateAddressEntity> entityList) {
         DelegateDetail detail = new DelegateDetail();
         return Flowable.fromIterable(entityList).map(new Function<DelegateAddressEntity, DelegateDetail>() {
-
             @Override
             public DelegateDetail apply(DelegateAddressEntity entity) throws Exception {
-
                 detail.setNoadeId(entity.getAddress());
                 return detail;
             }

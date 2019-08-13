@@ -52,7 +52,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
     /**
      * 交易状态2 pending 1 成功 0 失败
      */
-    private String txReceiptStatus;
+    private int txReceiptStatus;
     /**
      * 0: 转账
      * 1: 合约发布(合约创建)
@@ -137,6 +137,32 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
      */
     private String vote;
 
+
+    //=======================下面是新加的三个字段=================================
+    /**
+     * //赎回状态， 1： 退回中   2：退回成功     赎回失败查看交易txReceiptStatus
+     */
+    private String redeemStatus;
+
+    /**
+     * 钱包头像
+     */
+
+    private String walletIcon;
+
+    /**
+     * 钱包名称
+     */
+
+    private String walletName;
+
+    /**
+     * "unDelegation":"10000",       //赎回金额 txType = 1005(赎回数量)
+     */
+
+    private String unDelegation;
+
+
     public Transaction() {
     }
 
@@ -149,7 +175,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         from = in.readString();
         to = in.readString();
         sequence = in.readLong();
-        txReceiptStatus = in.readString();
+        txReceiptStatus = in.readInt();
         txType = in.readString();
         value = in.readString();
         senderWalletName = in.readString();
@@ -165,6 +191,10 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         url = in.readString();
         proposalType = in.readString();
         vote = in.readString();
+        redeemStatus = in.readString();
+        walletIcon = in.readString();
+        walletName = in.readString();
+        unDelegation = in.readString();
     }
 
     public Transaction(Builder builder) {
@@ -192,6 +222,10 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         url = builder.url;
         proposalType = builder.proposalType;
         vote = builder.vote;
+        redeemStatus = builder.redeemStatus;
+        walletIcon = builder.walletIcon;
+        walletName = builder.walletName;
+        unDelegation = builder.unDelegation;
     }
 
     @Override
@@ -204,7 +238,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         dest.writeString(from);
         dest.writeString(to);
         dest.writeLong(sequence);
-        dest.writeString(txReceiptStatus);
+        dest.writeInt(txReceiptStatus);
         dest.writeString(txType);
         dest.writeString(value);
         dest.writeString(senderWalletName);
@@ -220,6 +254,10 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         dest.writeString(url);
         dest.writeString(proposalType);
         dest.writeString(vote);
+        dest.writeString(redeemStatus);
+        dest.writeString(walletIcon);
+        dest.writeString(walletName);
+        dest.writeString(unDelegation);
     }
 
     @Override
@@ -256,6 +294,14 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         this.hash = hash;
     }
 
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
     public long getBlockNumber() {
         return blockNumber;
     }
@@ -270,6 +316,30 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
 
     public void setChainId(String chainId) {
         this.chainId = chainId;
+    }
+
+    public String getRedeemStatus() {
+        return redeemStatus;
+    }
+
+    public void setRedeemStatus(String redeemStatus) {
+        this.redeemStatus = redeemStatus;
+    }
+
+    public String getWalletIcon() {
+        return walletIcon;
+    }
+
+    public void setWalletIcon(String walletIcon) {
+        this.walletIcon = walletIcon;
+    }
+
+    public String getWalletName() {
+        return walletName;
+    }
+
+    public void setWalletName(String walletName) {
+        this.walletName = walletName;
     }
 
     public long getCreateTime() {
@@ -320,11 +390,19 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         this.sequence = sequence;
     }
 
-    public TransactionStatus getTxReceiptStatus() {
-        return TransactionStatus.getTransactionStatusByIndex(NumberParserUtils.parseInt(txReceiptStatus));
+    public String getUnDelegation() {
+        return unDelegation;
     }
 
-    public void setTxReceiptStatus(String txReceiptStatus) {
+    public void setUnDelegation(String unDelegation) {
+        this.unDelegation = unDelegation;
+    }
+
+    public TransactionStatus getTxReceiptStatus() {
+        return TransactionStatus.getTransactionStatusByIndex(txReceiptStatus);
+    }
+
+    public void setTxReceiptStatus(int txReceiptStatus) {
         this.txReceiptStatus = txReceiptStatus;
     }
 
@@ -487,7 +565,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         private String from;
         private String to;
         private long sequence;
-        private String txReceiptStatus;
+        private int txReceiptStatus;
         private String txType;
         private String value;
         private String senderWalletName;
@@ -503,6 +581,10 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         private String url;
         private String proposalType;
         private String vote;
+        private String redeemStatus;
+        private String walletIcon;
+        private String walletName;
+        private String unDelegation;
 
         public Builder hash(String hash) {
             this.hash = hash;
@@ -544,7 +626,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
             return this;
         }
 
-        public Builder txReceiptStatus(String txReceiptStatus) {
+        public Builder txReceiptStatus(int txReceiptStatus) {
             this.txReceiptStatus = txReceiptStatus;
             return this;
         }
@@ -621,6 +703,26 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
 
         public Builder vote(String vote) {
             this.vote = vote;
+            return this;
+        }
+
+        public Builder redeemStatus(String redeemStatus) {
+            this.redeemStatus = redeemStatus;
+            return this;
+        }
+
+        public Builder walletIcon(String walletIcon) {
+            this.walletIcon = walletIcon;
+            return this;
+        }
+
+        public Builder walletName(String walletName) {
+            this.walletName = walletName;
+            return this;
+        }
+
+        public Builder unDelegation(String unDelegation) {
+            this.unDelegation = unDelegation;
             return this;
         }
 

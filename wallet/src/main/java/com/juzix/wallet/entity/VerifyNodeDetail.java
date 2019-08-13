@@ -54,15 +54,11 @@ public class VerifyNodeDetail implements Parcelable {
      * 处罚次数
      */
     private int punishNumber;
-    /**
-     * 委托次数
-     */
-    private int delegateNumber;
 
     /**
      * 接受委托
      */
-    private int delegateSum;
+    private String delegateSum;
 
     /**
      * 委托者
@@ -84,6 +80,11 @@ public class VerifyNodeDetail implements Parcelable {
      */
     private String ratePA;
 
+    /**
+     * 是否为链初始化时内置的候选人
+     */
+    private boolean isInit;
+
 
     protected VerifyNodeDetail(Parcel in) {
         deposit = in.readString();
@@ -94,8 +95,7 @@ public class VerifyNodeDetail implements Parcelable {
         nodeUrl = in.readString();
         nodeStatus = in.readString();
         punishNumber = in.readInt();
-        delegateNumber = in.readInt();
-        delegateSum = in.readInt();
+        delegateSum = in.readString();
         delegate = in.readString();
         blockOutNumber = in.readInt();
         blockRate = in.readString();
@@ -112,8 +112,7 @@ public class VerifyNodeDetail implements Parcelable {
         dest.writeString(nodeUrl);
         dest.writeString(nodeStatus);
         dest.writeInt(punishNumber);
-        dest.writeInt(delegateNumber);
-        dest.writeInt(delegateSum);
+        dest.writeString(delegateSum);
         dest.writeString(delegate);
         dest.writeInt(blockOutNumber);
         dest.writeString(blockRate);
@@ -201,14 +200,6 @@ public class VerifyNodeDetail implements Parcelable {
         this.punishNumber = punishNumber;
     }
 
-    public int getDelegateNumber() {
-        return delegateNumber;
-    }
-
-    public void setDelegateNumber(int delegateNumber) {
-        this.delegateNumber = delegateNumber;
-    }
-
     public String getDelegate() {
         return delegate;
     }
@@ -233,11 +224,11 @@ public class VerifyNodeDetail implements Parcelable {
         this.blockRate = blockRate;
     }
 
-    public int getDelegateSum() {
+    public String getDelegateSum() {
         return delegateSum;
     }
 
-    public void setDelegateSum(int delegateSum) {
+    public void setDelegateSum(String delegateSum) {
         this.delegateSum = delegateSum;
     }
 
@@ -247,6 +238,14 @@ public class VerifyNodeDetail implements Parcelable {
 
     public void setRatePA(String ratePA) {
         this.ratePA = ratePA;
+    }
+
+    public boolean isInit() {
+        return isInit;
+    }
+
+    public void setInit(boolean init) {
+        isInit = init;
     }
 }
 

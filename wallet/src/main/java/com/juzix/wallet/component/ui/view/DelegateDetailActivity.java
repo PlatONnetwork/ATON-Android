@@ -61,10 +61,11 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
     @BindView(R.id.rlv_list)
     RecyclerView rlv_list;
     public boolean isLoadMore = false;
-    public int beginSequence = 0;//加载更多需要传入的值
+    public String beginSequence = "-1";//加载更多需要传入的值
     private List<DelegateDetail> list = new ArrayList<>();
     private DelegateDetailAdapter mDetailAdapter;
     private LinearLayoutManager linearLayoutManager;
+    private String walletAddress;
 
     @Override
     protected DelegateDetailPresenter createPresenter() {
@@ -79,25 +80,25 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
         EventPublisher.getInstance().register(this);
         initView();
 
-        mPresenter.loadDelegateDetailData(-1, Constants.VoteConstants.REFRESH_DIRECTION);
+        mPresenter.loadDelegateDetailData("-1");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
-            @Override
-            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                isLoadMore = false;
-                mPresenter.loadDelegateDetailData(-1, Constants.VoteConstants.REFRESH_DIRECTION);
-            }
-        });
+//        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+//            @Override
+//            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+//                isLoadMore = false;
+//                mPresenter.loadDelegateDetailData(-1, Constants.VoteConstants.REFRESH_DIRECTION);
+//            }
+//        });
 
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
                 isLoadMore = true;
-                mPresenter.loadDelegateDetailData(beginSequence, Constants.VoteConstants.REQUEST_DIRECTION);
+                mPresenter.loadDelegateDetailData(beginSequence);
 
             }
         });
@@ -110,9 +111,9 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
             }
 
             @Override
-            public void onWithDrawClick(String nodeAddress, String nodeName, String nodeIcon) {
-                //操作赎回委托
-                WithDrawActivity.actionStart(getContext(), nodeAddress, nodeName, nodeIcon);
+            public void onWithDrawClick(String nodeAddress, String nodeName, String nodeIcon, String blockNum) {
+                //跳转赎回委托页面
+                WithDrawActivity.actionStart(getContext(), nodeAddress, nodeName, nodeIcon, blockNum, walletAddress);
             }
 
             @Override
@@ -124,8 +125,6 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
             @Override
             public void onLinkClick(String webSiteUrl) {
                 //todo 操作链接跳转(暂时没链接)
-
-
             }
         });
 
@@ -134,6 +133,7 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
     private void initView() {
         linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        rlv_list.setLayoutManager(linearLayoutManager);
         mDetailAdapter = new DelegateDetailAdapter();
         rlv_list.setAdapter(mDetailAdapter);
 
@@ -151,7 +151,8 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
         });
 
         //添加下拉刷新的header和加载更多的footer
-        refreshLayout.setRefreshHeader(new CustomRefreshHeader(getContext()));
+//        refreshLayout.setRefreshHeader(new CustomRefreshHeader(getContext()));
+        refreshLayout.setEnableRefresh(false);
         refreshLayout.setRefreshFooter(new CustomRefreshFooter(getContext()));
         refreshLayout.setEnableLoadMore(true);//启用上拉加载功能
         refreshLayout.setEnableAutoLoadMore(false);//这个功能是本刷新库的特色功能：在列表滚动到底部时自动加载更多。 如果不想要这个功能，是可以关闭的
@@ -166,7 +167,8 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
 
     @Override
     public String getWalletAddressFromIntent() {
-        return getIntent().getStringExtra(Constants.Extra.EXTRA_WALLET_ADDRESS);
+        walletAddress = getIntent().getStringExtra(Constants.Extra.EXTRA_WALLET_ADDRESS);
+        return walletAddress;
     }
 
     @Override
@@ -228,7 +230,7 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateTransactionEvent(Event.UpdateDelegateDetailEvent event) {
         //刷新页面
-        mPresenter.loadDelegateDetailData(-1, Constants.VoteConstants.REFRESH_DIRECTION);
+        mPresenter.loadDelegateDetailData("-1");
     }
 
 }

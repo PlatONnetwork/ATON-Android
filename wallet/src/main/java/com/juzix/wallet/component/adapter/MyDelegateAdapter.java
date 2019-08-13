@@ -3,6 +3,7 @@ package com.juzix.wallet.component.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
+import com.juzhen.framework.util.NumberParserUtils;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomObserver;
@@ -17,6 +19,7 @@ import com.juzix.wallet.component.adapter.base.ViewHolder;
 import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.entity.DelegateInfo;
 import com.juzix.wallet.utils.AddressFormatUtil;
+import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
 
@@ -36,13 +39,16 @@ public class MyDelegateAdapter extends RecyclerView.Adapter<MyDelegateAdapter.Vi
 
     private OnItemClickListener mOnItemClickListener;
 
+    public MyDelegateAdapter(List<DelegateInfo> infoList) {
+        this.infoList = infoList;
+    }
+
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.mOnItemClickListener = onItemClickListener;
     }
 
     @NonNull
     @Override
-
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         this.mContext = parent.getContext();
         return new ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_my_delegate_list, parent, false));
@@ -54,12 +60,13 @@ public class MyDelegateAdapter extends RecyclerView.Adapter<MyDelegateAdapter.Vi
         holder.walletIcon.setImageResource(RUtils.drawable(info.getWalletIcon()));
         holder.walletName.setText(info.getWalletName());
         holder.walletAddress.setText(AddressFormatUtil.formatAddress(info.getWalletAddress()));
-        holder.delegateNumber.setText(info.getDelegate() > 0 ? StringUtil.formatBalance(info.getDelegate(), false) : "0.00");
-        holder.withdrawNumber.setText(info.getRedeem() > 0 ? StringUtil.formatBalance(info.getRedeem(), false) : "0.00");
+        //转换的数据
+        holder.delegateNumber.setText((TextUtils.isEmpty(info.getDelegate())) ? "--" : StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(info.getDelegate(), "1E18"))), false));
+        holder.withdrawNumber.setText(TextUtils.isEmpty(info.getRedeem()) ? "--" : StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(info.getRedeem(), "1E18"))), false));
         holder.walletAmount.setText(info.getBalance() > 0 ? StringUtil.formatBalance(info.getBalance(), false) : "0.00");
 
         RxView.clicks(holder.itemView)
-                .compose(RxUtils.getSchedulerTransformer())
+                .compose(RxUtils.getClickTransformer())
                 .subscribe(new Consumer<Object>() {
                     @Override
                     public void accept(Object o) {
@@ -90,6 +97,7 @@ public class MyDelegateAdapter extends RecyclerView.Adapter<MyDelegateAdapter.Vi
             return infoList.size();
         }
         return 0;
+//        return infoList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

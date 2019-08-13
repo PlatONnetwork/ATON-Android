@@ -18,17 +18,16 @@ import java.util.List;
 
 public class DelegatePopWindowAdapter extends CommonAdapter<DelegateType> {
     private ListView listView;
-    private String action;
 
-    public DelegatePopWindowAdapter(int layoutId, List<DelegateType> datas, ListView listView ) {
+    public DelegatePopWindowAdapter(int layoutId, List<DelegateType> datas, ListView listView) {
         super(layoutId, datas);
         this.listView = listView;
-        this.action = action;
     }
 
     @Override
     protected void convert(Context context, ViewHolder viewHolder, DelegateType item, int position) {
         if (item != null) {
+            viewHolder.getConvertView().setEnabled(item.getAmount() > 0);
             viewHolder.setText(R.id.tv_delegate_type, TextUtils.equals(item.getType(), "balance") ? context.getString(R.string.available_balance) : context.getString(R.string.locked_balance));
             viewHolder.setText(R.id.tv_delegate_amount, StringUtil.formatBalance(item.getAmount(), false));
             viewHolder.setVisible(R.id.iv_drop_down, listView != null && listView.getCheckedItemPosition() == position);

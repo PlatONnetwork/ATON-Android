@@ -122,7 +122,7 @@ public class TransactionManager {
                         .chainId(NodeManager.getInstance().getChainId())
 //                        .txType(TransactionType.TRANSFER.getTxTypeValue())
                         .createTime(System.currentTimeMillis())
-                        .txReceiptStatus(String.valueOf(TransactionStatus.PENDING.ordinal()))
+                        .txReceiptStatus( TransactionStatus.PENDING.ordinal())
                         .actualTxCost(feeAmount.toPlainString())
                         .build();
             }
@@ -167,7 +167,7 @@ public class TransactionManager {
                         org.web3j.protocol.core.methods.response.Transaction transaction = optional.get();
                         double actualTxCost = BigDecimalUtil.mul(transaction.getGas().doubleValue(), transaction.getGasPrice().doubleValue());
                         Transaction t = trans.clone();
-                        t.setTxReceiptStatus(String.valueOf(TransactionStatus.SUCCESSED.ordinal()));
+                        t.setTxReceiptStatus(TransactionStatus.SUCCESSED.ordinal());
                         t.setActualTxCost(String.valueOf(actualTxCost));
                         return t;
                     }
