@@ -55,6 +55,11 @@ public class ImportWalletActivity extends BaseActivity {
         initView();
     }
 
+    @Override
+    protected boolean immersiveBarViewEnabled() {
+        return true;
+    }
+
     private void initView() {
         CommonTitleBar commonTitleBar = findViewById(R.id.commonTitleBar);
         commonTitleBar.setLeftDrawableClickListener(new View.OnClickListener() {

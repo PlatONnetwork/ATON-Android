@@ -12,9 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
@@ -46,7 +49,7 @@ public class WalletListPop extends PopupWindow {
         super(context);
         this.mWalletList = walletList;
         this.mContext = context;
-        this.mContentHeight = walletList.size() > 5 ? DensityUtil.dp2px(context, 390) : DensityUtil.dp2px(context, 65) * (walletList.size() + 1);
+        this.mContentHeight = walletList.size() > 5 ? DensityUtil.dp2px(context, 390) : DensityUtil.dp2px(context, 65) * walletList.size();
 
         View rootView = LayoutInflater.from(context).inflate(R.layout.pop_select_wallets, null);
 
@@ -97,14 +100,14 @@ public class WalletListPop extends PopupWindow {
                 0,
                 0, ShadowDrawable.SHADOW_BOTTOM | ShadowDrawable.SHADOW_LEFT | ShadowDrawable.SHADOW_RIGHT);
 
-        mWalletListAdapter = new SelectWalletListAdapter(R.layout.item_pop_wallets, mWalletList, mWalletListView);
+        mWalletListAdapter = new SelectWalletListAdapter(mWalletList, mWalletListView);
 
         mWalletListView.setAdapter(mWalletListAdapter);
-
+        mWalletListView.setItemChecked(0, true);
         mWalletListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                mWalletListAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -152,49 +155,84 @@ public class WalletListPop extends PopupWindow {
         return set;
     }
 
-    static class SelectWalletListAdapter extends CommonAdapter<Wallet> {
+    static class SelectWalletListAdapter extends BaseAdapter {
 
         private final int VIEW_TYPE_ALL_WALLET = 0;
         private final int VIEW_TYPE_SINGLE_WALLET = 1;
 
         private ListView mListView;
+        private List<Wallet> mWalletList;
 
-        public SelectWalletListAdapter(int layoutId, List<Wallet> datas, ListView listView) {
-            super(layoutId, datas);
-            this.mListView = listView;
-        }
-
-        @Override
-        protected void convert(Context context, ViewHolder viewHolder, Wallet item, int position) {
-            int viewType = getItemViewType(position);
-            if (viewType == VIEW_TYPE_ALL_WALLET){
-                viewHolder.setText(R.id.tv_wallet_name, "");
-                int avatar = RUtils.id(item.getAvatar());
-                if (avatar != -1) {
-                    viewHolder.setImageResource(R.id.iv_wallet_avatar, avatar);
-                }
-                viewHolder.setVisible(R.id.iv_selected, mListView != null && mListView.getCheckedItemPosition() == position);
-            }else{
-                viewHolder.setText(R.id.tv_wallet_name, item.getName());
-                int avatar = RUtils.id(item.getAvatar());
-                if (avatar != -1) {
-                    viewHolder.setImageResource(R.id.iv_wallet_avatar, avatar);
-                }
-                viewHolder.setVisible(R.id.iv_selected, mListView != null && mListView.getCheckedItemPosition() == position);
-            }
+        public SelectWalletListAdapter(List<Wallet> walletList, ListView mListView) {
+            this.mWalletList = walletList;
+            this.mListView = mListView;
         }
 
         @Override
         public int getCount() {
-            return getList().size() + 1;
+            if (mWalletList != null) {
+                return mWalletList.size();
+            }
+            return 0;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            if (mWalletList != null) {
+                return mWalletList.get(position);
+            }
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ViewHolder viewHolder = null;
+            if (convertView == null) {
+                convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_pop_wallets, parent, false);
+                viewHolder = new ViewHolder(convertView);
+                convertView.setTag(viewHolder);
+            } else {
+                viewHolder = (ViewHolder) convertView.getTag();
+            }
+
+            Wallet wallet = mWalletList.get(position);
+            int viewType = getItemViewType(position);
+
+            viewHolder.walletNameTv.setText(viewType == VIEW_TYPE_ALL_WALLET ? parent.getContext().getString(R.string.msg_all_wallets) : wallet.getName());
+
+            int avatar = viewType == VIEW_TYPE_ALL_WALLET ? R.drawable.icon_all_wallets : RUtils.id(wallet.getAvatar());
+            if (avatar != -1) {
+                viewHolder.walletAvatarIv.setImageResource(avatar);
+            }
+            viewHolder.selectedIv.setVisibility(mListView != null && mListView.getCheckedItemPosition() == position ? View.VISIBLE : View.GONE);
+
+            return convertView;
         }
 
         @Override
         public int getItemViewType(int position) {
-            if (position == 0){
+            if (position == 0) {
                 return VIEW_TYPE_ALL_WALLET;
-            }else{
+            } else {
                 return VIEW_TYPE_SINGLE_WALLET;
+            }
+        }
+
+        static class ViewHolder {
+
+            private TextView walletNameTv;
+            private ImageView walletAvatarIv;
+            private ImageView selectedIv;
+
+            public ViewHolder(View convertView) {
+                walletNameTv = convertView.findViewById(R.id.tv_wallet_name);
+                walletAvatarIv = convertView.findViewById(R.id.iv_wallet_avatar);
+                selectedIv = convertView.findViewById(R.id.iv_selected);
             }
         }
     }

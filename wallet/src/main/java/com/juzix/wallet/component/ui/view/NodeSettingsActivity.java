@@ -72,6 +72,11 @@ public class NodeSettingsActivity extends MVPBaseActivity<NodeSettingsPresenter>
     }
 
     @Override
+    protected boolean immersiveBarViewEnabled() {
+        return true;
+    }
+
+    @Override
     public void showTitleView(boolean isEdit) {
         if (isEdit) {
             tvLeft.setText(R.string.cancel);

@@ -45,6 +45,7 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -128,7 +129,10 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
             @Override
             public void onClick(View v) {
                 if (mWalletListPop == null) {
-                    mWalletListPop = new WalletListPop(TransactionRecordsActivity.this, WalletManager.getInstance().getWalletList());
+                    List<Wallet> walletList = new ArrayList<>();
+                    walletList.add(Wallet.getNullInstance());
+                    walletList.addAll(WalletManager.getInstance().getWalletList());
+                    mWalletListPop = new WalletListPop(TransactionRecordsActivity.this, walletList);
                 }
                 if (mWalletListPop.isShowing()) {
                     mWalletListPop.dismiss();
