@@ -2,17 +2,25 @@ package com.juzix.wallet.component.ui.presenter;
 
 import android.text.TextUtils;
 
+import com.juzhen.framework.network.ApiErrorCode;
+import com.juzhen.framework.network.ApiRequestBody;
+import com.juzhen.framework.network.ApiResponse;
+import com.juzhen.framework.network.ApiSingleObserver;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.AssetsContract;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.view.BackupMnemonicPhraseActivity;
+import com.juzix.wallet.engine.NodeManager;
+import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.Web3jManager;
+import com.juzix.wallet.entity.AccountBalance;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.RxUtils;
 import com.trello.rxlifecycle2.android.FragmentEvent;
 
+import org.reactivestreams.Publisher;
 import org.web3j.crypto.Credentials;
 
 import java.util.Collections;
@@ -20,9 +28,12 @@ import java.util.Comparator;
 import java.util.List;
 
 import io.reactivex.Flowable;
+import io.reactivex.Single;
+import io.reactivex.SingleSource;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
+import retrofit2.Response;
 
 public class AssetsPresenter extends BasePresenter<AssetsContract.View> implements AssetsContract.Presenter {
 
@@ -68,6 +79,38 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
 
     @Override
     public void fetchWalletsBalance() {
+
+//
+//        ServerUtils
+//                .getCommonApi()
+//                .getAccountBalance(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
+//                        .put("addrs", WalletManager.getInstance().getAddressList())
+//                        .build())
+//                .toFlowable()
+//                .flatMap(new Function<Response<ApiResponse<List<AccountBalance>>>, Publisher<AccountBalance>>() {
+//                    @Override
+//                    public Publisher<AccountBalance> apply(Response<ApiResponse<List<AccountBalance>>> apiResponseResponse) throws Exception {
+//                        if (apiResponseResponse != null && apiResponseResponse.isSuccessful() && apiResponseResponse.body().getResult() == ApiErrorCode.SUCCESS) {
+//                            return Flowable.fromIterable(apiResponseResponse.body().getData());
+//                        }
+//                        return Flowable.error(new Throwable());
+//                    }
+//                })
+//                .map(new Function<AccountBalance, AccountBalance>() {
+//
+//                    @Override
+//                    public AccountBalance apply(AccountBalance accountBalance) throws Exception {
+//                        double balance = WalletManager.getInstance().getWalletAmountByAddress(accountBalance.getAddr());
+//                        return accountBalance.get;
+//                    }
+//                })
+//                .doOnNext(new Consumer<AccountBalance>() {
+//                    @Override
+//                    public void accept(AccountBalance accountBalance) throws Exception {
+//
+//                    }
+//                });
+
 
         Flowable
                 .fromIterable(mWalletList)
@@ -148,5 +191,12 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
         getView().showWalletList(walletEntity);
         getView().showWalletInfo(walletEntity);
         getView().showContent(false);
+    }
+
+    private Single<Response<ApiResponse<List<AccountBalance>>>> getAccountBalanceList() {
+
+        return ServerUtils.getCommonApi().getAccountBalance(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
+                .put("addrs", WalletManager.getInstance().getAddressList())
+                .build());
     }
 }

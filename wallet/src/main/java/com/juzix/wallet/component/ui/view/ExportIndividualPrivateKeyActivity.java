@@ -46,6 +46,11 @@ public class ExportIndividualPrivateKeyActivity extends BaseActivity {
         initView();
     }
 
+    @Override
+    protected boolean immersiveBarViewEnabled() {
+        return true;
+    }
+
     private void initView() {
         int indicatorThickness = AndroidUtil.dip2px(getContext(), 2.0f);
         SmartTabLayout stbBar = mRootView.findViewById(R.id.stb_bar);
@@ -58,8 +63,8 @@ public class ExportIndividualPrivateKeyActivity extends BaseActivity {
                 return getTableView(position, container);
             }
         });
-        PagerItems pages  = new PagerItems(getContext());
-        int        tabNum = fragments.size();
+        PagerItems pages = new PagerItems(getContext());
+        int tabNum = fragments.size();
         for (int i = 0; i < tabNum; i++) {
             pages.add(PagerItem.of(getTitles().get(i), fragments.get(i)));
         }

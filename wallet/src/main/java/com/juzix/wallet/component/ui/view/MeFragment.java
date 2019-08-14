@@ -5,27 +5,19 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
-import com.juzix.wallet.BuildConfig;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.BaseFragment;
 import com.juzix.wallet.utils.RxUtils;
-import com.juzix.wallet.utils.ShareUtil;
-import com.juzix.wallet.utils.ToastUtil;
-
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
-import io.reactivex.functions.Consumer;
 
 /**
  * @author matrixelement
@@ -46,6 +38,8 @@ public class MeFragment extends BaseFragment {
     LinearLayout layoutOfficialCommunity;
     @BindView(R.id.layout_about)
     LinearLayout layoutAbout;
+    @BindView(R.id.layout_support_feedback)
+    LinearLayout layoutSupportFeedback;
     Unbinder unbinder;
 
     @Nullable
@@ -112,6 +106,17 @@ public class MeFragment extends BaseFragment {
                     @Override
                     public void accept(Object object) {
                         OfficialCommunityActivity.actionStart(getActivity());
+                    }
+                });
+
+        RxView
+                .clicks(layoutSupportFeedback)
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object object) {
+                        CommonHybridActivity.actionStart(getActivity(), "https://juzix.zendesk.com/hc/zh-cn");
                     }
                 });
     }

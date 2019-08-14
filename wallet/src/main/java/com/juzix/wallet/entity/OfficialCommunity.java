@@ -55,6 +55,16 @@ public class OfficialCommunity {
                 return R.drawable.icon_twitter_community;
             case OfficialCommunityType.FACEBOOK:
                 return R.drawable.icon_facebook_community;
+            case OfficialCommunityType.BABIT:
+                return R.drawable.icon_babit;
+            case OfficialCommunityType.BI_HU:
+                return R.drawable.icon_bihu;
+            case OfficialCommunityType.LINKEDIN:
+                return R.drawable.icon_linked_in;
+            case OfficialCommunityType.MEDIUM:
+                return R.drawable.icon_medium;
+            case OfficialCommunityType.REDDIT:
+                return R.drawable.icon_rabbit;
             default:
                 return -1;
         }

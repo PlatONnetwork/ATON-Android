@@ -4,16 +4,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_ffffff"
-    android:clipToPadding="true"
-    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <com.juzix.wallet.component.widget.CommonTitleBar
-        android:id="@+id/commonTitleBar"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:ctb_left_drawable="@drawable/icon_back_black"
-        app:ctb_title="@string/createIndividualWallet"/>
+        android:background="@drawable/bg_status_bar"
+        android:orientation="vertical"
+        android:paddingTop="20dp">
+
+        <com.juzix.wallet.component.widget.CommonTitleBar
+            android:id="@+id/commonTitleBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:ctb_left_drawable="@drawable/icon_back_black"
+            app:ctb_title="@string/createIndividualWallet" />
+    </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -32,97 +38,102 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:text="@string/name"/>
+                android:text="@string/name" />
 
             <EditText
                 android:id="@+id/et_name"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_marginTop="12dp"
                 android:layout_marginLeft="16dp"
+                android:layout_marginTop="12dp"
                 android:layout_marginRight="16dp"
                 android:background="@drawable/bg_edittext_underline"
                 android:hint="@string/nameOfWallet"
                 android:textColor="@color/color_000000"
                 android:textColorHint="@color/color_b6bbd0"
-                android:textSize="13sp"/>
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/tv_name_error"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginRight="16dp"
                 android:text="Name can't be empty !"
                 android:textColor="@color/color_f5302c"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
 
             <TextView
                 style="@style/Text.61646e.16"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginRight="16dp"
-                android:text="@string/password"/>
+                android:text="@string/password" />
 
             <FrameLayout
-                android:layout_marginTop="12dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
                 android:layout_width="match_parent"
-                android:layout_height="40dp">
+                android:layout_height="40dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginRight="16dp">
+
                 <EditText
                     android:id="@+id/et_password"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/bg_edittext_underline"
                     android:digits="@string/inputDigits"
-                    android:paddingRight="25dp"
                     android:hint="@string/setPassword"
+                    android:paddingRight="25dp"
                     android:textColor="@color/color_000000"
                     android:textColorHint="@color/color_b6bbd0"
-                    android:textSize="13sp"/>
+                    android:textSize="13sp" />
+
                 <ImageView
                     android:id="@+id/iv_password_eyes"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/icon_close_eyes"
-                    android:layout_gravity="center_vertical|right"/>
+                    android:layout_gravity="center_vertical|right"
+                    android:src="@drawable/icon_close_eyes" />
 
             </FrameLayout>
 
             <FrameLayout
-                android:layout_marginTop="12dp"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_width="match_parent"
-                android:layout_height="40dp">
-            <EditText
-                android:id="@+id/et_repeat_password"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/bg_edittext_underline"
-                android:digits="@string/inputDigits"
-                android:hint="@string/repeatPassword"
-                android:textColor="@color/color_000000"
-                android:textColorHint="@color/color_b6bbd0"
-                android:textSize="13sp"/>
+                android:layout_marginTop="12dp"
+                android:layout_marginRight="16dp">
+
+                <EditText
+                    android:id="@+id/et_repeat_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_edittext_underline"
+                    android:digits="@string/inputDigits"
+                    android:hint="@string/repeatPassword"
+                    android:textColor="@color/color_000000"
+                    android:textColorHint="@color/color_b6bbd0"
+                    android:textSize="13sp" />
+
                 <ImageView
                     android:id="@+id/iv_repeat_password_eyes"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/icon_close_eyes"
-                    android:layout_gravity="center_vertical|right"/>
+                    android:layout_gravity="center_vertical|right"
+                    android:src="@drawable/icon_close_eyes" />
             </FrameLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:layout_marginTop="1dp"
-                android:gravity="center_vertical"
                 android:layout_marginLeft="16dp"
+                android:layout_marginTop="1dp"
                 android:layout_marginRight="16dp"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -138,7 +149,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginRight="2dp"
-                        android:background="@color/color_00000000"/>
+                        android:background="@color/color_00000000" />
 
                     <View
                         android:id="@+id/v_line2"
@@ -146,7 +157,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginRight="2dp"
-                        android:background="@color/color_00000000"/>
+                        android:background="@color/color_00000000" />
 
                     <View
                         android:id="@+id/v_line3"
@@ -154,14 +165,14 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginRight="2dp"
-                        android:background="@color/color_00000000"/>
+                        android:background="@color/color_00000000" />
 
                     <View
                         android:id="@+id/v_line4"
                         android:layout_width="23dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:background="@color/color_00000000"/>
+                        android:background="@color/color_00000000" />
 
                 </LinearLayout>
 
@@ -172,40 +183,40 @@
                     android:layout_gravity="center_vertical"
                     android:text="@string/strength"
                     android:textColor="@color/color_ff9000"
-                    android:textSize="12sp"/>
+                    android:textSize="12sp" />
             </LinearLayout>
 
             <TextView
                 android:id="@+id/tv_password_error"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/passwordTips"
                 android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginRight="16dp"
+                android:text="@string/passwordTips"
                 android:textColor="@color/color_f5302c"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/tv_password_desc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginRight="16dp"
                 android:text="@string/passwordLimit"
                 android:textColor="@color/color_b6bbd0"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:textSize="11sp"/>
+                android:textSize="11sp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginRight="16dp"
                 android:text="@string/createIndividualWalletTips"
                 android:textColor="@color/color_ff6b00"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
 
             <com.juzix.wallet.component.widget.ShadowButton
                 android:id="@+id/sbtn_create"
@@ -214,8 +225,8 @@
                 android:layout_marginLeft="12dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginRight="12dp"
-                app:text="@string/create"
                 app:enabled="false"
+                app:text="@string/create"
                 app:textAppearance="@style/MainButtonStyle"
                 app:textBackground="@drawable/bg_main_button" />
 
