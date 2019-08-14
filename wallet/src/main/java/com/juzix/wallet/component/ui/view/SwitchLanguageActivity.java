@@ -48,6 +48,11 @@ public class SwitchLanguageActivity extends BaseActivity {
         initViews();
     }
 
+    @Override
+    protected boolean immersiveBarViewEnabled() {
+        return true;
+    }
+
     private void initViews() {
         TextView tvRignt = commonTitleBar.findViewById(R.id.tv_right);
         tvRignt.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);

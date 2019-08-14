@@ -32,23 +32,6 @@ import butterknife.Unbinder;
 
 public class NodeSettingsActivity extends MVPBaseActivity<NodeSettingsPresenter> implements NodeSettingsContract.View {
 
-    private final static String TAG = NodeSettingsActivity.class.getSimpleName();
-    @BindView(R.id.iv_left)
-    ImageView ivLeft;
-    @BindView(R.id.tv_left)
-    TextView tvLeft;
-    @BindView(R.id.ll_left)
-    LinearLayout llLeft;
-    @BindView(R.id.tv_middle)
-    TextView tvMiddle;
-    @BindView(R.id.tv_right)
-    TextView tvRight;
-    @BindView(R.id.iv_right)
-    ImageView ivRight;
-    @BindView(R.id.ll_right)
-    LinearLayout llRight;
-    @BindView(R.id.rl_title_bar)
-    RelativeLayout rlTitleBar;
     @BindView(R.id.list_nodes)
     RecyclerView listNodes;
     @BindView(R.id.tv_add_node)
@@ -78,23 +61,6 @@ public class NodeSettingsActivity extends MVPBaseActivity<NodeSettingsPresenter>
 
     @Override
     public void showTitleView(boolean isEdit) {
-        if (isEdit) {
-            tvLeft.setText(R.string.cancel);
-            tvLeft.setTextColor(ContextCompat.getColor(this, R.color.color_000000));
-            tvLeft.setVisibility(View.VISIBLE);
-            tvMiddle.setText(R.string.editNode);
-            tvMiddle.setTextColor(ContextCompat.getColor(this, R.color.color_000000));
-            tvRight.setText(R.string.save);
-            tvRight.setTextColor(ContextCompat.getColor(this, R.color.color_105cfe));
-            tvAddNode.setVisibility(View.VISIBLE);
-        } else {
-            tvLeft.setVisibility(View.GONE);
-            tvMiddle.setText(R.string.node_settings);
-            tvMiddle.setTextColor(ContextCompat.getColor(this, R.color.color_000000));
-            tvRight.setText(R.string.edit);
-            tvRight.setTextColor(ContextCompat.getColor(this, R.color.color_105cfe));
-            tvAddNode.setVisibility(View.GONE);
-        }
         hideSoftInput();
         nodeListAdapter.setEditable(isEdit);
 
@@ -131,13 +97,8 @@ public class NodeSettingsActivity extends MVPBaseActivity<NodeSettingsPresenter>
     }
 
     private void initView() {
-        tvRight.setVisibility(View.GONE);
-        rlTitleBar.setBackgroundColor(ContextCompat.getColor(this, R.color.color_ffffff));
-        tvRight.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-        tvLeft.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-
         int padding = AndroidUtil.dip2px(this, 16);
-        nodeListAdapter = new NodeListAdapter(this,null);
+        nodeListAdapter = new NodeListAdapter(this, null);
         WrapContentLinearLayoutManager layoutManager = new WrapContentLinearLayoutManager(this);
         layoutManager.setOrientation(OrientationHelper.VERTICAL);
         listNodes.setLayoutManager(layoutManager);
@@ -152,18 +113,9 @@ public class NodeSettingsActivity extends MVPBaseActivity<NodeSettingsPresenter>
 
     }
 
-    @OnClick({R.id.iv_left, R.id.tv_left, R.id.iv_right, R.id.tv_right, R.id.tv_add_node})
+    @OnClick({R.id.tv_add_node})
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.iv_left:
-                finish();
-                break;
-            case R.id.tv_left:
-                mPresenter.cancel();
-                break;
-            case R.id.tv_right:
-                mPresenter.edit();
-                break;
             case R.id.tv_add_node:
                 nodeListAdapter.addNode();
                 break;

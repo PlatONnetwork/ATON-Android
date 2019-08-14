@@ -1,5 +1,7 @@
 package com.juzix.wallet.entity;
 
+import android.text.TextUtils;
+
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.utils.BigDecimalUtil;
 
@@ -45,13 +47,32 @@ public class AccountBalance {
         this.lock = lock;
     }
 
-
     public String getShowFreeBalace() {
         return NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(free, "1E18"));
     }
 
     public String getShowLockBalance() {
         return NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(lock, "1E18"));
+    }
+
+    /**
+     * 获取钱包地址
+     *
+     * @return
+     */
+    public String getPrefixAddress() {
+        try {
+            if (TextUtils.isEmpty(addr)) {
+                return "";
+            }
+            if (addr.toLowerCase().startsWith("0x")) {
+                return addr;
+            }
+            return "0x" + addr;
+        } catch (Exception exp) {
+            exp.printStackTrace();
+            return "";
+        }
     }
 
 }

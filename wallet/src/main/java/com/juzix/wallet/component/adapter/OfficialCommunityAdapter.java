@@ -9,9 +9,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.adapter.base.RecycleHolder;
 import com.juzix.wallet.component.adapter.base.RecyclerAdapter;
+import com.juzix.wallet.component.ui.view.CommonHybridActivity;
 import com.juzix.wallet.component.ui.view.ScanQRCodeActivity;
 import com.juzix.wallet.entity.OfficialCommunity;
 import com.juzix.wallet.entity.OfficialCommunityItem;
@@ -61,7 +63,7 @@ public class OfficialCommunityAdapter extends RecyclerAdapter<OfficialCommunity>
         ImageView qrCodeIv = view.findViewById(R.id.iv_qr_code);
         if (officialCommunityType == OfficialCommunityType.WECHAT) {
             jumpIv.setImageResource(R.drawable.icon_scan_qr_code);
-            qrCodeIv.setImageResource(R.drawable.avatar_12);
+            qrCodeIv.setImageResource(item.getQrCodeImageRes());
         } else {
             jumpIv.setImageResource(R.drawable.icon_jump);
         }
@@ -71,8 +73,8 @@ public class OfficialCommunityAdapter extends RecyclerAdapter<OfficialCommunity>
             public void onClick(View v) {
                 if (officialCommunityType == OfficialCommunityType.WECHAT) {
                     ScanQRCodeActivity.actionStart(mContext);
-                }else{
-                    ShareUtil.shareUrl(mContext, item.getWebPortalUrl());
+                } else {
+                    CommonHybridActivity.actionStart(mContext, item.getWebPortalUrl());
                 }
             }
         });
@@ -81,7 +83,7 @@ public class OfficialCommunityAdapter extends RecyclerAdapter<OfficialCommunity>
             @Override
             public void onClick(View v) {
                 if (officialCommunityType == OfficialCommunityType.WECHAT) {
-                    qrCodeIv.setVisibility(qrCodeIv.getVisibility() == View.VISIBLE ? View.GONE:View.VISIBLE);
+                    qrCodeIv.setVisibility(qrCodeIv.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
                 }
             }
         });

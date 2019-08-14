@@ -183,6 +183,5 @@ dependencies {
     implementation rootProject.ext.dependencies["glide"]
     annotationProcessor rootProject.ext.dependencies["glide"]
 
-    implementation rootProject.ext.dependencies["svgaPlayer"]
-
+    implementation rootProject.ext.dependencies["webview-agentweb"]
 }

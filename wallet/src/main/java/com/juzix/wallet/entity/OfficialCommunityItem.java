@@ -1,14 +1,17 @@
 package com.juzix.wallet.entity;
 
+import android.support.annotation.DrawableRes;
+
 public class OfficialCommunityItem {
 
     private String webPortalUrl;
 
-    private String qrCodeUrl;
+    private @DrawableRes
+    int qrCodeImageRes;
 
-    public OfficialCommunityItem(String webPortalUrl, String qrCodeUrl) {
+    public OfficialCommunityItem(String webPortalUrl, int qrCodeImageRes) {
         this.webPortalUrl = webPortalUrl;
-        this.qrCodeUrl = qrCodeUrl;
+        this.qrCodeImageRes = qrCodeImageRes;
     }
 
     public OfficialCommunityItem(String webPortalUrl) {
@@ -23,11 +26,11 @@ public class OfficialCommunityItem {
         this.webPortalUrl = webPortalUrl;
     }
 
-    public String getQrCodeUrl() {
-        return qrCodeUrl;
+    public int getQrCodeImageRes() {
+        return qrCodeImageRes;
     }
 
-    public void setQrCodeUrl(String qrCodeUrl) {
-        this.qrCodeUrl = qrCodeUrl;
+    public void setQrCodeImageRes(int qrCodeImageRes) {
+        this.qrCodeImageRes = qrCodeImageRes;
     }
 }

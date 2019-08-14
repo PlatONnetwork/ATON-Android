@@ -46,6 +46,7 @@ public class Constants {
         String EXTRA_NODE_ICON = "extra_node_icon";
         String EXTRA_NODE_NAME = "extra_node_name";
         String EXTRA_NODE_BLOCK_NUM = "extra_node_block_num";
+        String EXTRA_URL = "extra_url";
     }
 
     public interface Bundle {

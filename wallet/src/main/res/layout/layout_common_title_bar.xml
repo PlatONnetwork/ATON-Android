@@ -14,29 +14,44 @@
         android:layout_centerVertical="true"
         android:src="@drawable/icon_back_black" />
 
-    <TextView
-        android:id="@+id/tv_title"
-        style="@style/Text.000000.16"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="8dp"
-        android:layout_toRightOf="@id/iv_left"
-        android:textStyle="bold"
-        tools:text="Receive" />
 
-    <ImageView
-        android:id="@+id/iv_right"
+    <LinearLayout
+        android:id="@+id/layout_right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:visibility="gone" />
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/iv_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tv_right"
+            style="@style/Text.000000.16"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:visibility="gone"
+            tools:text="Receive" />
+    </LinearLayout>
 
     <TextView
-        android:id="@+id/tv_right"
+        android:id="@+id/tv_title"
         style="@style/Text.000000.16"
-        android:layout_alignParentRight="true"
+        android:layout_width="match_parent"
         android:layout_centerVertical="true"
-        android:visibility="gone"
+        android:layout_marginLeft="8dp"
+        android:layout_toLeftOf="@+id/layout_right"
+        android:layout_toRightOf="@id/iv_left"
+        android:ellipsize="end"
+        android:gravity="left|center_vertical"
+        android:singleLine="true"
+        android:textStyle="bold"
         tools:text="Receive" />
 
 </RelativeLayout>

@@ -64,18 +64,10 @@ public class OfficialCommunityActivity extends BaseActivity {
 
         List<OfficialCommunity> officialCommunityList = new ArrayList<>();
 
-        List<OfficialCommunityItem> wxOfficialCommunityItemList = Arrays.asList(new OfficialCommunityItem("官方微信群秘：CatherinePlatON", "www.baidu.com"),
-                new OfficialCommunityItem("官方微信公众号：PlatON_network", "www.baidu.com"));
+        List<OfficialCommunityItem> wxOfficialCommunityItemList = Arrays.asList(new OfficialCommunityItem("官方微信群秘：PlatON-Alita", R.drawable.icon_platon_alita),
+                new OfficialCommunityItem("官方微信公众号：PlatON_network", R.drawable.icon_platon_network));
         OfficialCommunity wxOfficialCommunity = new OfficialCommunity(OfficialCommunityType.WECHAT, getResources().getString(R.string.wechat), wxOfficialCommunityItemList);
         officialCommunityList.add(wxOfficialCommunity);
-
-        List<OfficialCommunityItem> tgOfficialCommunityItemList = Arrays.asList(new OfficialCommunityItem("https://t.me/PlatONHK"));
-        OfficialCommunity tgOfficialCommunity = new OfficialCommunity(OfficialCommunityType.TELEGRAM, getResources().getString(R.string.telegram), tgOfficialCommunityItemList);
-        officialCommunityList.add(tgOfficialCommunity);
-
-        List<OfficialCommunityItem> ghOfficialCommunityItemList = Arrays.asList(new OfficialCommunityItem("https://github.com/PlatONnetwork"));
-        OfficialCommunity ghOfficialCommunity = new OfficialCommunity(OfficialCommunityType.GITHUB, getResources().getString(R.string.github), ghOfficialCommunityItemList);
-        officialCommunityList.add(ghOfficialCommunity);
 
         List<OfficialCommunityItem> twOfficialCommunityItemList = Arrays.asList(new OfficialCommunityItem("https://twitter.com/PlatON_Network"));
         OfficialCommunity twOfficialCommunity = new OfficialCommunity(OfficialCommunityType.TWITTER, getResources().getString(R.string.twitter), twOfficialCommunityItemList);
@@ -84,6 +76,34 @@ public class OfficialCommunityActivity extends BaseActivity {
         List<OfficialCommunityItem> fbOfficialCommunityItemList = Arrays.asList(new OfficialCommunityItem("https://facebook.com/PlatONNetwork/"));
         OfficialCommunity fbOfficialCommunity = new OfficialCommunity(OfficialCommunityType.FACEBOOK, getResources().getString(R.string.facebook), fbOfficialCommunityItemList);
         officialCommunityList.add(fbOfficialCommunity);
+
+        List<OfficialCommunityItem> ghOfficialCommunityItemList = Arrays.asList(new OfficialCommunityItem("https://github.com/PlatONnetwork"));
+        OfficialCommunity ghOfficialCommunity = new OfficialCommunity(OfficialCommunityType.GITHUB, getResources().getString(R.string.github), ghOfficialCommunityItemList);
+        officialCommunityList.add(ghOfficialCommunity);
+
+        List<OfficialCommunityItem> rdOfficialCommunityItemList = Arrays.asList(new OfficialCommunityItem("https://www.reddit.com/user/PlatON_Network"));
+        OfficialCommunity rdOfficialCommunity = new OfficialCommunity(OfficialCommunityType.REDDIT, getResources().getString(R.string.reddit), rdOfficialCommunityItemList);
+        officialCommunityList.add(rdOfficialCommunity);
+
+        List<OfficialCommunityItem> meOfficialCommunityItemList = Arrays.asList(new OfficialCommunityItem("https://medium.com/@PlatON_Network"));
+        OfficialCommunity meOfficialCommunity = new OfficialCommunity(OfficialCommunityType.MEDIUM, getResources().getString(R.string.medium), meOfficialCommunityItemList);
+        officialCommunityList.add(meOfficialCommunity);
+
+        List<OfficialCommunityItem> liOfficialCommunityItemList = Arrays.asList(new OfficialCommunityItem("https://www.linkedin.com/company/platonnetwork/"));
+        OfficialCommunity liOfficialCommunity = new OfficialCommunity(OfficialCommunityType.LINKEDIN, getResources().getString(R.string.linked_in), liOfficialCommunityItemList);
+        officialCommunityList.add(liOfficialCommunity);
+
+        List<OfficialCommunityItem> tgOfficialCommunityItemList = Arrays.asList(new OfficialCommunityItem("https://t.me/PlatONHK"));
+        OfficialCommunity tgOfficialCommunity = new OfficialCommunity(OfficialCommunityType.TELEGRAM, getResources().getString(R.string.telegram), tgOfficialCommunityItemList);
+        officialCommunityList.add(tgOfficialCommunity);
+
+        List<OfficialCommunityItem> bhOfficialCommunityItemList = Arrays.asList(new OfficialCommunityItem("https://bihu.com/people/1215832888"));
+        OfficialCommunity bhOfficialCommunity = new OfficialCommunity(OfficialCommunityType.BI_HU, getResources().getString(R.string.bi_hu), bhOfficialCommunityItemList);
+        officialCommunityList.add(bhOfficialCommunity);
+
+        List<OfficialCommunityItem> baOfficialCommunityItemList = Arrays.asList(new OfficialCommunityItem("https://www.chainnode.com/forum/267"));
+        OfficialCommunity baOfficialCommunity = new OfficialCommunity(OfficialCommunityType.BABIT, getResources().getString(R.string.babit), baOfficialCommunityItemList);
+        officialCommunityList.add(baOfficialCommunity);
 
         return officialCommunityList;
     }

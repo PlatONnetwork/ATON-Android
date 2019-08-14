@@ -4,16 +4,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_ffffff"
-    android:clipToPadding="true"
-    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <com.juzix.wallet.component.widget.CommonTitleBar
-        android:id="@+id/commonTitleBar"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:ctb_left_drawable="@drawable/icon_back_black"
-        app:ctb_title="@string/backupWallet" />
+        android:background="@drawable/bg_status_bar"
+        android:orientation="vertical"
+        android:paddingTop="20dp">
+
+        <com.juzix.wallet.component.widget.CommonTitleBar
+            android:id="@+id/commonTitleBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:ctb_left_drawable="@drawable/icon_back_black"
+            app:ctb_title="@string/backupWallet" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -28,7 +34,7 @@
             android:layout_marginRight="16dp"
             android:text="@string/backupMnemonicTitle"
             android:textColor="@color/color_000000"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
         <TextView
             android:layout_width="match_parent"
@@ -38,7 +44,7 @@
             android:layout_marginRight="16dp"
             android:text="@string/backupMnemonicDescrition"
             android:textColor="@color/color_61646e"
-            android:textSize="13sp"/>
+            android:textSize="13sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -62,7 +68,7 @@
                     android:background="@color/color_f0f1f5"
                     android:gravity="center"
                     android:textColor="@color/color_000000"
-                    android:textSize="13sp"/>
+                    android:textSize="13sp" />
 
                 <TextView
                     android:id="@+id/tv_mnemonic2"
@@ -74,7 +80,7 @@
                     android:gravity="center"
                     android:maxLength="12"
                     android:textColor="@color/color_000000"
-                    android:textSize="13sp"/>
+                    android:textSize="13sp" />
 
                 <TextView
                     android:id="@+id/tv_mnemonic3"
@@ -84,7 +90,7 @@
                     android:background="@color/color_f0f1f5"
                     android:gravity="center"
                     android:textColor="@color/color_000000"
-                    android:textSize="13sp"/>
+                    android:textSize="13sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -103,7 +109,7 @@
                     android:gravity="center"
                     android:maxLength="12"
                     android:textColor="@color/color_000000"
-                    android:textSize="13sp"/>
+                    android:textSize="13sp" />
 
                 <TextView
                     android:id="@+id/tv_mnemonic5"
@@ -115,7 +121,7 @@
                     android:gravity="center"
                     android:maxLength="12"
                     android:textColor="@color/color_000000"
-                    android:textSize="13sp"/>
+                    android:textSize="13sp" />
 
                 <TextView
                     android:id="@+id/tv_mnemonic6"
@@ -126,7 +132,7 @@
                     android:gravity="center"
                     android:maxLength="12"
                     android:textColor="@color/color_000000"
-                    android:textSize="13sp"/>
+                    android:textSize="13sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -145,7 +151,7 @@
                     android:gravity="center"
                     android:maxLength="12"
                     android:textColor="@color/color_000000"
-                    android:textSize="13sp"/>
+                    android:textSize="13sp" />
 
                 <TextView
                     android:id="@+id/tv_mnemonic8"
@@ -157,7 +163,7 @@
                     android:gravity="center"
                     android:maxLength="12"
                     android:textColor="@color/color_000000"
-                    android:textSize="13sp"/>
+                    android:textSize="13sp" />
 
                 <TextView
                     android:id="@+id/tv_mnemonic9"
@@ -168,7 +174,7 @@
                     android:gravity="center"
                     android:maxLength="12"
                     android:textColor="@color/color_000000"
-                    android:textSize="13sp"/>
+                    android:textSize="13sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -187,7 +193,7 @@
                     android:gravity="center"
                     android:maxLength="12"
                     android:textColor="@color/color_000000"
-                    android:textSize="13sp"/>
+                    android:textSize="13sp" />
 
                 <TextView
                     android:id="@+id/tv_mnemonic11"
@@ -199,7 +205,7 @@
                     android:gravity="center"
                     android:maxLength="12"
                     android:textColor="@color/color_000000"
-                    android:textSize="13sp"/>
+                    android:textSize="13sp" />
 
                 <TextView
                     android:id="@+id/tv_mnemonic12"
@@ -210,7 +216,7 @@
                     android:gravity="center"
                     android:maxLength="12"
                     android:textColor="@color/color_000000"
-                    android:textSize="13sp"/>
+                    android:textSize="13sp" />
             </LinearLayout>
         </LinearLayout>
 
@@ -218,10 +224,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="24dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
             android:gravity="bottom"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
 
             <com.juzix.wallet.component.widget.ShadowContainer
                 android:id="@+id/sc_next"
@@ -249,25 +255,25 @@
             </com.juzix.wallet.component.widget.ShadowContainer>
 
             <!--<LinearLayout-->
-                <!--android:id="@+id/ll_next"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:paddingTop="12dp"-->
-                <!--android:paddingBottom="12dp"-->
-                <!--android:gravity="center"-->
-                <!--android:orientation="horizontal"-->
-                <!--android:background="@drawable/bg_shape_button2"-->
-                <!--android:visibility="gone">-->
-                <!--<TextView-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:drawableRight="@drawable/icon_next_enable"-->
-                    <!--android:drawablePadding="8dp"-->
-                    <!--android:textColor="@color/color_ffffff"-->
-                    <!--android:textSize="16sp"-->
-                    <!--android:text="@string/next"-->
-                    <!--android:textAllCaps="false"-->
-                    <!--android:fontFamily="normal"/>-->
+            <!--android:id="@+id/ll_next"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:paddingTop="12dp"-->
+            <!--android:paddingBottom="12dp"-->
+            <!--android:gravity="center"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:background="@drawable/bg_shape_button2"-->
+            <!--android:visibility="gone">-->
+            <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:drawableRight="@drawable/icon_next_enable"-->
+            <!--android:drawablePadding="8dp"-->
+            <!--android:textColor="@color/color_ffffff"-->
+            <!--android:textSize="16sp"-->
+            <!--android:text="@string/next"-->
+            <!--android:textAllCaps="false"-->
+            <!--android:fontFamily="normal"/>-->
             <!--</LinearLayout>-->
         </LinearLayout>
     </LinearLayout>

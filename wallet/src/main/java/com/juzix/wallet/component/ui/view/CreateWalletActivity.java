@@ -81,6 +81,11 @@ public class CreateWalletActivity extends MVPBaseActivity<CreateWalletPresenter>
         showRepeatPassword();
     }
 
+    @Override
+    protected boolean immersiveBarViewEnabled() {
+        return true;
+    }
+
     private void initView() {
 
         mSbtnCreate.setOnClickListener(this);
