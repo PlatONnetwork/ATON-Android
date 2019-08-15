@@ -226,6 +226,7 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
 
 
     public interface OnDelegateClickListener {
+
         void onDelegateClick(String nodeAddress, String nodeName, String nodeIcon);
 
         void onWithDrawClick(String nodeAddress, String nodeName, String nodeIcon, String stakingBlockNum);
