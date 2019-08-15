@@ -85,7 +85,9 @@ public class VerifyNodeDetail implements Parcelable {
      */
     private boolean isInit;
 
+    public  VerifyNodeDetail(){
 
+    }
     protected VerifyNodeDetail(Parcel in) {
         deposit = in.readString();
         name = in.readString();

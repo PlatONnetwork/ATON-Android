@@ -45,10 +45,12 @@
 
                 <TextView
                     android:id="@+id/tv_validators_node_state"
-                    android:layout_width="51dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_validators_state"
+                    android:gravity="center"
                     android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
                     android:text="active"
                     android:textColor="@color/color_4a90e2"
                     android:textSize="11sp" />

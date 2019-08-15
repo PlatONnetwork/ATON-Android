@@ -1,5 +1,6 @@
 package com.juzix.wallet.component.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.widget.ImageView;
@@ -10,6 +11,7 @@ import com.juzix.wallet.R;
 import com.juzix.wallet.component.adapter.base.ViewHolder;
 import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.entity.VerifyNode;
+import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.GlideUtils;
 import com.juzix.wallet.utils.StringUtil;
 
@@ -24,14 +26,15 @@ public class ValidatorsAdapter extends CommonAdapter<VerifyNode> {
         super(layoutId, datas);
     }
 
+    @SuppressLint("StringFormatInvalid")
     @Override
     protected void convert(Context context, ViewHolder viewHolder, VerifyNode item, int position) {
         CircleImageView imageView = viewHolder.getView(R.id.iv_url);
         GlideUtils.loadRound(context, item.getUrl(), imageView);
         viewHolder.setText(R.id.tv_validators_node_name, item.getName());
         viewHolder.setText(R.id.tv_validators_node_state, item.getNodeStatus());
-        viewHolder.setText(R.id.tv_yield, item.getRatePA() + "%");
-        viewHolder.setText(R.id.tv_staked_money, context.getString(R.string.amount_with_unit, StringUtil.formatBalance(NumberParserUtils.parseDouble(item.getDeposit()), false)));
+        viewHolder.setText(R.id.tv_yield,  ((NumberParserUtils.parseDouble(item.getRatePA()))/100) + "%");
+        viewHolder.setText(R.id.tv_staked_money, context.getString(R.string.amount_with_unit, StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(item.getDeposit(), "1E18"))), false)));
         viewHolder.setText(R.id.tv_validators_rank, item.getRanking() + "");
         ImageView iv = viewHolder.getView(R.id.iv_rank_bg);
         changeImageViewBg(context, iv, item.getRanking());

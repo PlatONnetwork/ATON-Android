@@ -22,6 +22,7 @@ import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.GlideUtils;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
+import com.juzix.wallet.utils.ToastUtil;
 
 
 import java.util.List;
@@ -61,11 +62,18 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
         holder.tv_node_released_delegate.setText((TextUtils.isEmpty(detail.getReleased())) ? "--" : StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getReleased(), "1E18"))), false));
         holder.tv_node_undelegating.setText((TextUtils.isEmpty(detail.getRedeem())) ? "--" : StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getRedeem(), "1E18"))), false));
 
+
+        if (!TextUtils.isEmpty(detail.getReleased())) {
+            holder.ll_delegate.setBackgroundColor(ContextCompat.getColor(mContext, R.color.color_66DCDFE8));
+        }
+
+
         if (TextUtils.isEmpty(detail.getLocked()) && TextUtils.isEmpty(detail.getUnLocked()) && TextUtils.isEmpty(detail.getReleased()) && TextUtils.isEmpty(detail.getRedeem())) {
             holder.tv_show_delegate.setText(R.string.nav_delegate);
             holder.tv_show_withdraw.setText(R.string.node_move_out);
 
-        } else if (TextUtils.isEmpty(detail.getLocked()) || TextUtils.isEmpty(detail.getUnLocked()) || TextUtils.isEmpty(detail.getReleased()) || TextUtils.isEmpty(detail.getRedeem())) {
+        } else if (!TextUtils.isEmpty(detail.getLocked()) || !TextUtils.isEmpty(detail.getUnLocked()) || !TextUtils.isEmpty(detail.getReleased()) || !TextUtils.isEmpty(detail.getRedeem())) {
+            //只要一个不为空
             holder.tv_show_delegate.setText(R.string.nav_delegate);
             holder.tv_show_withdraw.setText(R.string.node_withdraw_delegate);
 
@@ -89,6 +97,8 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
         } else if (TextUtils.isEmpty(detail.getLocked()) && TextUtils.isEmpty(detail.getUnLocked()) && TextUtils.isEmpty(detail.getReleased())) {
             //按钮置灰并不可点击
             holder.ll_withdraw.setOnClickListener(null);
+            holder.ll_withdraw.setBackgroundColor(ContextCompat.getColor(mContext, R.color.color_66DCDFE8));
+
         } else {
             //操作赎回委托
             RxView.clicks(holder.ll_withdraw)
@@ -111,7 +121,13 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
                     @Override
                     public void accept(Object o) throws Exception {
                         if (null != mOnDelegateClickListener) {
-                            mOnDelegateClickListener.onDelegateClick(detail.getNoadeId(), detail.getNodeName(), detail.getUrl());
+                            if (!TextUtils.isEmpty(detail.getReleased())) {
+                                //提示，不可点击
+                                ToastUtil.showLongToast(mContext, R.string.delegate_no_click);
+
+                            } else {
+                                mOnDelegateClickListener.onDelegateClick(detail.getNoadeId(), detail.getNodeName(), detail.getUrl());
+                            }
                         }
                     }
                 });

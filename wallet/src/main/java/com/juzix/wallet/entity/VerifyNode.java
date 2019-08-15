@@ -3,6 +3,7 @@ package com.juzix.wallet.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.db.entity.VerifyNodeEntity;
 
 public class VerifyNode implements Parcelable {
@@ -43,17 +44,20 @@ public class VerifyNode implements Parcelable {
      * 竞选状态
      * Active —— 活跃中
      * Candidate —— 候选中
-     * Exiting —— 退出中
-     * Exited —— 已退出
      */
     private String nodeStatus;
+
+    /**
+     * 是否为链初始化时内置的候选人
+     */
+    private boolean isInit;
 
 
     public VerifyNode() {
 
     }
 
-    public VerifyNode(String nodeId, int ranking, String name, String deposit, String url, String ratePA, String nodeStatus) {
+    public VerifyNode(String nodeId, int ranking, String name, String deposit, String url, String ratePA, String nodeStatus, boolean isInit) {
         this.nodeId = nodeId;
         this.ranking = ranking;
         this.name = name;
@@ -61,6 +65,7 @@ public class VerifyNode implements Parcelable {
         this.url = url;
         this.ratePA = ratePA;
         this.nodeStatus = nodeStatus;
+        this.isInit = isInit;
     }
 
     public VerifyNode(Builder builder) {
@@ -71,6 +76,16 @@ public class VerifyNode implements Parcelable {
         this.ranking = builder.ranking;
         this.name = builder.name;
         this.ratePA = builder.ratePA;
+        this.isInit = builder.isInit;
+    }
+
+
+    public boolean isInit() {
+        return isInit;
+    }
+
+    public void setInit(boolean init) {
+        isInit = init;
     }
 
     public String getNodeId() {
@@ -126,6 +141,10 @@ public class VerifyNode implements Parcelable {
         return ratePA;
     }
 
+    public int showRate() {
+        return NumberParserUtils.parseInt(ratePA);
+    }
+
     public void setRatePA(String ratePA) {
         this.ratePA = ratePA;
     }
@@ -179,6 +198,7 @@ public class VerifyNode implements Parcelable {
         private String url;
         private String ratePA;
         private String nodeStatus;
+        private boolean isInit;
 
         public Builder nodeId(String nodeId) {
             this.nodeId = nodeId;
@@ -215,6 +235,11 @@ public class VerifyNode implements Parcelable {
             return this;
         }
 
+        public Builder isInit(boolean isInit) {
+            this.isInit = isInit;
+            return this;
+        }
+
         public VerifyNode build() {
             return new VerifyNode(this);
         }
@@ -227,9 +252,10 @@ public class VerifyNode implements Parcelable {
                 .name(name)
                 .nodeId(nodeId)
                 .ranking(ranking)
-                .ratePA(ratePA)
+                .ratePA(NumberParserUtils.parseInt(ratePA))
                 .url(url)
                 .nodeStatus(nodeStatus)
+                .isInit(isInit)
                 .build();
     }
 
