@@ -24,6 +24,6 @@ public class TransactionRecordsContract {
 
     public interface Presenter extends IPresenter<View> {
 
-        void fetchTransactions(String direction);
+        void fetchTransactions(String direction,List<String> addressList);
     }
 }

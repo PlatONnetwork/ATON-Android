@@ -25,6 +25,8 @@ android {
         buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
         buildConfigField("String", "UM_APPKEY", "${UM_APPKEY}")
         buildConfigField("String", "BUGLY_APPID", "${BUGLY_APPID}")
+        buildConfigField("String", "URL_SERVICE_AGREEMENT", "${URL_SERVICE_AGREEMENT}")
+        buildConfigField("String", "URL_SUPPORT_FEEDBACK", "${URL_SUPPORT_FEEDBACK}")
         renderscriptTargetApi 19
         renderscriptSupportModeEnabled true
 

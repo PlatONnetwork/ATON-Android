@@ -36,11 +36,13 @@
         android:paddingBottom="12dp">
 
         <ImageView
+            android:id="@+id/iv_selected_wallet_avatar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/icon_all_wallets" />
 
         <TextView
+            android:id="@+id/iv_selected_wallet_name"
             style="@style/Text.000.16"
             android:layout_marginLeft="8dp"
             android:layout_weight="1"

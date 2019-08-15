@@ -3,6 +3,8 @@ package com.juzhen.framework.util;
 import android.text.TextUtils;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 
 /**
  * 数字转化
@@ -262,7 +264,7 @@ public class NumberParserUtils {
         return bigDecimalStr;
     }
 
-    public static String getPrettyNumber(double value, int maxDigit,int roundingMode) {
+    public static String getPrettyNumber(double value, int maxDigit, int roundingMode) {
 
         String bigDecimalStr = null;
         try {//当number==NaN，会throw "Infinity or NaN",所以要catch
@@ -309,5 +311,4 @@ public class NumberParserUtils {
 
         return bigDecimalStr;
     }
-
 }

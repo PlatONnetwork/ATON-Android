@@ -31,7 +31,7 @@ public class SelectWalletListAdapter extends CommonAdapter<Wallet> {
         if (item != null) {
             viewHolder.getConvertView().setEnabled(isEnabled(item));
             viewHolder.setText(R.id.tv_wallet_name, item.getName());
-            viewHolder.setText(R.id.tv_wallet_balance, String.format("%s %s", "Balance", context.getString(R.string.amount_with_unit, NumberParserUtils.getPrettyNumber(item.getBalance(), 8))));
+            viewHolder.setText(R.id.tv_wallet_balance, String.format("%s %s", "Balance", context.getString(R.string.amount_with_unit, NumberParserUtils.getPrettyNumber(item.getFreeBalance(), 8))));
             viewHolder.setImageResource(R.id.iv_wallet_pic, RUtils.drawable(item.getAvatar()));
             viewHolder.setVisible(R.id.iv_selected, listView != null && listView.getCheckedItemPosition() == position);
         }
@@ -48,6 +48,6 @@ public class SelectWalletListAdapter extends CommonAdapter<Wallet> {
     }
 
     private boolean isEnabled(Wallet item) {
-        return !((SelectWalletDialogFragment.CREATE_SHARED_WALLET.equals(action) || SelectWalletDialogFragment.SELECT_TRANSACTION_WALLET.equals(action)) && item.getBalance() == 0);
+        return !((SelectWalletDialogFragment.CREATE_SHARED_WALLET.equals(action) || SelectWalletDialogFragment.SELECT_TRANSACTION_WALLET.equals(action)) && item.getFreeBalance() == 0);
     }
 }

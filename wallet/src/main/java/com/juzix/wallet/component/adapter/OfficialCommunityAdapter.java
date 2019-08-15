@@ -18,6 +18,7 @@ import com.juzix.wallet.component.ui.view.ScanQRCodeActivity;
 import com.juzix.wallet.entity.OfficialCommunity;
 import com.juzix.wallet.entity.OfficialCommunityItem;
 import com.juzix.wallet.entity.OfficialCommunityType;
+import com.juzix.wallet.entity.WebType;
 import com.juzix.wallet.utils.CommonUtil;
 import com.juzix.wallet.utils.ShareUtil;
 
@@ -74,7 +75,7 @@ public class OfficialCommunityAdapter extends RecyclerAdapter<OfficialCommunity>
                 if (officialCommunityType == OfficialCommunityType.WECHAT) {
                     ScanQRCodeActivity.actionStart(mContext);
                 } else {
-                    CommonHybridActivity.actionStart(mContext, item.getWebPortalUrl());
+                    CommonHybridActivity.actionStart(mContext, item.getWebPortalUrl(), WebType.WEB_TYPE_COMMON);
                 }
             }
         });

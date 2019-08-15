@@ -9,11 +9,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
+import com.juzix.wallet.App;
+import com.juzix.wallet.BuildConfig;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.BaseFragment;
+import com.juzix.wallet.entity.WebType;
+import com.juzix.wallet.utils.LanguageUtil;
 import com.juzix.wallet.utils.RxUtils;
+
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -116,7 +122,9 @@ public class MeFragment extends BaseFragment {
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) {
-                        CommonHybridActivity.actionStart(getActivity(), "https://juzix.zendesk.com/hc/zh-cn");
+                        boolean isChinese = Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage());
+                        String supportFeedBackUrl = BuildConfig.URL_SUPPORT_FEEDBACK + (isChinese ? "zh:cn" : "en-001");
+                        CommonHybridActivity.actionStart(getActivity(), supportFeedBackUrl, WebType.WEB_TYPE_COMMON);
                     }
                 });
     }

@@ -186,7 +186,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
 
         //显示余额类型和余额
         amountType.setText(getString(R.string.available_balance));
-        amount.setText(StringUtil.formatBalance(individualWalletEntity.getBalance(), false));
+        amount.setText(StringUtil.formatBalance(individualWalletEntity.getFreeBalance(), false));
     }
 
     @Override

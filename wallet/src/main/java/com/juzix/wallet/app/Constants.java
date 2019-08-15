@@ -47,6 +47,7 @@ public class Constants {
         String EXTRA_NODE_NAME = "extra_node_name";
         String EXTRA_NODE_BLOCK_NUM = "extra_node_block_num";
         String EXTRA_URL = "extra_url";
+        String EXTRA_WEB_TYPE = "extra_web_type";
     }
 
     public interface Bundle {
@@ -107,7 +108,7 @@ public class Constants {
         String UPDATE_URL = "https://download.platon.network/aton-update.json";
         String URL_TEST_A = "https://test-amigo.platon.network/test";
         String URL_TEST_B = "https://test-beta.platon.network/test";
-        String URL_HTTP_A = "https://aton.platon.network";
+        String URL_HTTP_A = "http://192.168.9.190:20060";
         String URL_HTTP_B = "https://aton.platon.network";
         String URL_HTTP_C = "http://192.168.9.190:20060";
     }

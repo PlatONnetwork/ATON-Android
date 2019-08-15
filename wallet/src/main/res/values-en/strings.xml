@@ -578,6 +578,8 @@
 
     <string name="msg_support_feedback">Support and feedback</string>
     <string name="msg_all_wallets">All Wallets</string>
+    <string name="action_continue">Next</string>
+    <string name="msg_agree_agreement">I have read and agree to the above agreement</string>
 
 </resources>
 
