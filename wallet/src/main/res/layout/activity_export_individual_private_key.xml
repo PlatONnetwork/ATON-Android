@@ -1,32 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/color_ffffff"
-              android:clipToPadding="true"
-              android:fitsSystemWindows="true"
-              android:orientation="vertical">
-
-    <com.juzix.wallet.component.widget.CommonTitleBar
-        android:id="@+id/commonTitleBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:ctb_left_drawable="@drawable/icon_back_black"
-        app:ctb_title="@string/exportPrivateKey"/>
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical" >
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_status_bar"
+        android:orientation="vertical"
+        android:paddingTop="20dp">
+
+        <com.juzix.wallet.component.widget.CommonTitleBar
+            android:id="@+id/commonTitleBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:ctb_left_drawable="@drawable/icon_back_black"
+            app:ctb_title="@string/exportPrivateKey" />
+    </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <include layout="@layout/layout_app_tab" />
-        <!--<android.support.design.widget.TabLayout-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <include layout="@layout/layout_app_tab" />
+            <!--<android.support.design.widget.TabLayout-->
             <!--android:id="@+id/tl_indicator"-->
             <!--android:layout_width="match_parent"-->
             <!--android:layout_height="wrap_content"-->
@@ -40,16 +46,17 @@
             <!--app:tabSelectedTextColor="@color/color_105cfe"-->
             <!--app:tabTextAppearance="@style/TabLayoutTextStyle"-->
             <!--app:tabTextColor="@color/color_000000"/>-->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/color_ebeef4"/>
-        <com.juzix.wallet.component.widget.ViewPagerSlide
-            android:id="@+id/vp_content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/color_ebeef4" />
 
-    </LinearLayout>
+            <com.juzix.wallet.component.widget.ViewPagerSlide
+                android:id="@+id/vp_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
     </LinearLayout>
 
 

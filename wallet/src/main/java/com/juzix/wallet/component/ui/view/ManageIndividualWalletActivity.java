@@ -65,6 +65,11 @@ public class ManageIndividualWalletActivity extends MVPBaseActivity<ManageIndivi
     }
 
     @Override
+    protected boolean immersiveBarViewEnabled() {
+        return true;
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         mPresenter.showIndividualWalletInfo();

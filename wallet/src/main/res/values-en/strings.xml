@@ -143,7 +143,7 @@
     <string name="help">Help</string>
     <string name="about">About</string>
     <string name="aboutUs">About Us</string>
-    <string name="community">Community</string>
+    <string name="official_community">Official Community</string>
     <string name="add_shared_wallet">Add Joint Wallet</string>
     <string name="add">Add</string>
     <string name="action_create_wallet">Create</string>
@@ -569,7 +569,5 @@
     <!--赎回提示语-->
     <string name="withdraw_operation_tips">Exceeded the available amount and cannot be submitted</string>
 
-    <!--委托不可操作提示-->
-    <string name="delegate_no_click">Please withdraw first "Released delegate"</string>
 </resources>
 
