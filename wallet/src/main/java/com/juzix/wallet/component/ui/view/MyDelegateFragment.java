@@ -102,16 +102,13 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
     }
 
     private void initClickListener() {
-
-
         RxView.clicks(tv_delegate_record)
                 .compose(RxUtils.bindToLifecycle(this))
                 .compose(RxUtils.getClickTransformer())
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-//                        DelegateRecordActivity.actionStart(getContext());
-                        ValidatorsDetailActivity.actionStart(getContext(), "");
+                        DelegateRecordActivity.actionStart(getContext());
                     }
                 });
         RxView.clicks(ll_problem).compose(RxUtils.bindToLifecycle(this))
@@ -120,7 +117,7 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
                     @Override
                     public void accept(Object o) {
 //                        DelegateDetailActivity.actionStart(getContext(), "", "", "");
-                        ValidatorsDetailActivity.actionStart(getContext(), "");
+//                        ValidatorsDetailActivity.actionStart(getContext(), "");
                     }
                 });
 
@@ -129,7 +126,7 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        WithDrawActivity.actionStart(getContext(), "", "", "", "", "");
+//                        WithDrawActivity.actionStart(getContext(), "", "", "", "", "");
                     }
                 });
 
@@ -137,15 +134,7 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
     }
 
 
-    private void initFruits() {
-        datalist = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-            datalist.add(new DelegateInfo("Apple" + i, "fasda", "12.000", "158.0", 1538.00, "afdfasdfa"));
-        }
-    }
-
     private void initViews() {
-//        initFruits();
         initRefreshView();
         layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -154,7 +143,6 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
         View footerView = LayoutInflater.from(getContext()).inflate(R.layout.include_my_delegate_footer, list_delegate, false);
 //        list_delegate.addFooterView(footerView);
         list_delegate.setAdapter(mMyDelegateAdapter);
-
 
         list_delegate.setEnabled(true);
         mMyDelegateAdapter.setOnItemClickListener(new MyDelegateAdapter.OnItemClickListener() {

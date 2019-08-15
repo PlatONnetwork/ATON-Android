@@ -31,7 +31,7 @@ public class VerifyNodeDao {
                         .equalTo("nodeStatus", state)
                         .and()
                         .greaterThan("ranking", ranking)
-                        .sort("ranking", Sort.DESCENDING)
+                        .sort("ranking", Sort.ASCENDING)
                         .limit(10)
                         .findAll();
             }
@@ -54,6 +54,58 @@ public class VerifyNodeDao {
         return list;
     }
 
+
+    //获取数据通过年化率和状态
+    public static List<VerifyNodeEntity> getVerifyNodeByStateAndRate(String state, int ratePA) {
+        List<VerifyNodeEntity> list = new ArrayList<>();
+        Realm realm = null;
+
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            RealmResults<VerifyNodeEntity> result = null;
+
+            if (ratePA < 0) {
+                result = realm.where(VerifyNodeEntity.class)
+                        .equalTo("nodeStatus", state)
+                        .sort("ratePA", Sort.DESCENDING)
+                        .limit(10)
+                        .findAll();
+            } else {
+                result = realm.where(VerifyNodeEntity.class)
+                        .equalTo("nodeStatus", state)
+                        .and()
+                        .lessThan("ratePA", ratePA)
+                        .sort("ratePA", Sort.DESCENDING)
+                        .limit(10)
+                        .findAll();
+            }
+
+            if (null != result) {
+                list = realm.copyFromRealm(result);
+            }
+
+        } catch (Exception e) {
+
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+
+        return list;
+
+    }
+
+    /**
+     * 获取所有通过rank
+     *
+     * @param rank
+     * @return
+     */
     public static List<VerifyNodeEntity> getVerifyNodeByAll(int rank) {
         List<VerifyNodeEntity> list = new ArrayList<>();
         Realm realm = null;
@@ -91,6 +143,46 @@ public class VerifyNodeDao {
         return list;
     }
 
+
+    //获取(所有)按年化率查询
+    public static List<VerifyNodeEntity> getVerifyNodeAllByRate(int ratePAing) {
+        List<VerifyNodeEntity> list = new ArrayList<>();
+        Realm realm = null;
+
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            RealmResults<VerifyNodeEntity> result = null;
+            if (ratePAing < 0) {
+                result = realm.where(VerifyNodeEntity.class)
+                        .sort("ratePA", Sort.DESCENDING)
+                        .limit(10)
+                        .findAll();
+            } else {
+                result = realm.where(VerifyNodeEntity.class)
+                            .lessThan("ratePA", ratePAing)
+                        .sort("ratePA", Sort.DESCENDING)
+                        .limit(10)
+                        .findAll();
+            }
+            if (null != result) {
+                list = realm.copyFromRealm(result);
+            }
+
+        } catch (Exception e) {
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
+
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+
+        return list;
+
+    }
 
     //查询所有数据
     public static List<VerifyNodeEntity> getVerifyNodeList() {

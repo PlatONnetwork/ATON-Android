@@ -14,6 +14,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
+import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
@@ -67,7 +68,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
     ListView rlv_list;
 
     private String rankType;
-    private String nodeState;//tab类型
+    private String nodeState;//tab类型（所有/活跃中/候选中）
 
     private List<VerifyNode> allList = new ArrayList<>();
     private List<VerifyNode> activeList = new ArrayList<>();
@@ -112,7 +113,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
         mValidatorsAdapter = new ValidatorsAdapter(R.layout.item_validators_list, null);
         rlv_list.setAdapter(mValidatorsAdapter);
 
-
+        //默认初始化值
         tv_rank.setText(getString(R.string.validators_rank));
         rankType = Constants.ValidatorsType.VALIDATORS_RANK;
         nodeState = Constants.ValidatorsType.ALL_VALIDATORS;
@@ -145,7 +146,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
                 } else {
                     rank = candidateLastRank;
                 }
-                mPresenter.loadDataFromDB(nodeState, rank);
+                mPresenter.loadDataFromDB(rankType, nodeState, rank);
 
             }
         });
@@ -159,27 +160,27 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
                         changeBtnState(id);
                         nodeState = Constants.ValidatorsType.ALL_VALIDATORS;
                         if (allList.size() == 0) {
-                            mPresenter.loadDataFromDB(nodeState, -1);
+                            mPresenter.loadDataFromDB(rankType, nodeState, -1);
                         }
-                         mValidatorsAdapter.notifyDataSetChanged();
+                        mValidatorsAdapter.notifyDataChanged(allList);
 //                        showLongToast("所有");
                         break;
                     case R.id.btn_active:
                         changeBtnState(id);
                         nodeState = Constants.ValidatorsType.ACTIVE_VALIDATORS;
                         if (activeList.size() == 0) {
-                            mPresenter.loadDataFromDB(nodeState, -1);
+                            mPresenter.loadDataFromDB(rankType, nodeState, -1);
                         }
-                        mValidatorsAdapter.notifyDataSetChanged();
+                        mValidatorsAdapter.notifyDataChanged(activeList);
 //                        showLongToast("活跃中");
                         break;
                     case R.id.btn_candidate:
                         changeBtnState(id);
                         nodeState = Constants.ValidatorsType.CANDIDATE_VALIDATORS;
                         if (candidateList.size() == 0) {
-                            mPresenter.loadDataFromDB(nodeState, -1);
+                            mPresenter.loadDataFromDB(rankType, nodeState, -1);
                         }
-                        mValidatorsAdapter.notifyDataSetChanged();
+                        mValidatorsAdapter.notifyDataChanged(candidateList);
 //                        showLongToast("候选中");
                         break;
 
@@ -196,7 +197,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
     public void onResume() {
         super.onResume();
         RxAdapterView.itemClicks(rlv_list)
-                .compose(RxUtils.getSchedulerTransformer())
+                .compose(RxUtils.getClickTransformer())
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Integer>() {
                     @Override
@@ -220,7 +221,12 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
                     activeList.clear();
                     candidateList.clear();
                     //按年化操作
-                    mPresenter.loadValidatorsData(rankType, nodeState, -1);
+//                    mPresenter.loadValidatorsData(rankType, nodeState, -1);
+
+                    //这里不再调用接口，直接从数据库去拿数据
+                    mPresenter.loadDataFromDB(rankType, nodeState, -1);
+
+
                 } else {
                     tv_rank.setText(getString(R.string.validators_rank));
                     rankType = Constants.ValidatorsType.VALIDATORS_RANK;
@@ -229,7 +235,11 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
                     activeList.clear();
                     candidateList.clear();
                     //按排名操作
-                    mPresenter.loadValidatorsData(rankType, nodeState, -1);
+//                    mPresenter.loadValidatorsData(rankType, nodeState, -1);
+
+                    //这里不再调用接口，直接从数据库去拿数据
+                    mPresenter.loadDataFromDB(rankType, nodeState, -1);
+
                 }
 
                 break;
@@ -274,7 +284,13 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
     @Override
     public void showValidatorsDataOnAll(List<VerifyNode> nodeList) {
         if (nodeList.size() > 0) {
-            allLastRank = nodeList.get(nodeList.size() - 1).getRanking();
+            //加一个判断
+            if (TextUtils.equals(rankType, Constants.ValidatorsType.VALIDATORS_RANK)) {
+                allLastRank = nodeList.get(nodeList.size() - 1).getRanking();
+            } else {
+                allLastRank = NumberParserUtils.parseInt(nodeList.get(nodeList.size() - 1).getRatePA());
+            }
+
         }
 
         if (isLoadMore) {
@@ -292,7 +308,14 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
     @Override
     public void showValidatorsDataOnActive(List<VerifyNode> nodeList) {
         if (nodeList.size() > 0) {
-            activeLastRank = nodeList.get(nodeList.size() - 1).getRanking();
+            //加一个判断
+            if (TextUtils.equals(rankType, Constants.ValidatorsType.VALIDATORS_RANK)) {
+                activeLastRank = nodeList.get(nodeList.size() - 1).getRanking();
+            } else {
+
+                activeLastRank = NumberParserUtils.parseInt(nodeList.get(nodeList.size() - 1).getRatePA());
+            }
+
 
         }
         if (isLoadMore) {
@@ -311,8 +334,13 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
     @Override
     public void showValidatorsDataOnCadidate(List<VerifyNode> nodeList) {
         if (nodeList.size() > 0) {
-            candidateLastRank = nodeList.get(nodeList.size() - 1).getRanking();
-
+            //加一个判断
+            if (TextUtils.equals(rankType, Constants.ValidatorsType.VALIDATORS_RANK)) {
+                candidateLastRank = nodeList.get(nodeList.size() - 1).getRanking();
+            } else {
+                candidateLastRank = NumberParserUtils.parseInt(nodeList.get(nodeList.size() - 1).getRatePA());
+            }
+//            candidateLastRank = nodeList.get(nodeList.size() - 1).getRanking();
         }
         if (isLoadMore) {
             candidateList.addAll(nodeList);
@@ -323,7 +351,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
 
         refreshLayout.finishRefresh();
         refreshLayout.finishLoadMore();
-        mValidatorsAdapter.notifyDataChanged(activeList);
+        mValidatorsAdapter.notifyDataChanged(candidateList);
     }
 
     @Override

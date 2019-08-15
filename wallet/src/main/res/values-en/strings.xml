@@ -547,7 +547,6 @@
     <string name="delegate_failed">Delegated Failed</string>
     <string name="delegate_success">Delegated Success</string>
 
-
     <!--委托的状态-->
     <string name="delegate_state_failed">Failed</string>
     <string name="delegate_state_success">Success</string>
@@ -574,10 +573,6 @@
 
     <!--赎回提示语-->
     <string name="withdraw_operation_tips">Exceeded the available amount and cannot be submitted</string>
-
-
-    <string name="msg_support_feedback">Support and feedback</string>
-    <string name="msg_all_wallets">All Wallets</string>
 
 </resources>
 

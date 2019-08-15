@@ -33,9 +33,9 @@ public class VerifyNodeEntity extends RealmObject {
     private String url;
 
     /**
-     * 预计年化率
+     * 预计年化率(存入数据库为int类型)
      */
-    private String ratePA;
+    private int ratePA;
 
 
     /**
@@ -46,6 +46,11 @@ public class VerifyNodeEntity extends RealmObject {
      * Exited —— 已退出
      */
     private String nodeStatus;
+
+    /**
+     * 是否为链初始化时内置的候选人
+     */
+    private boolean isInit;
 
     public VerifyNodeEntity() {
 
@@ -59,6 +64,15 @@ public class VerifyNodeEntity extends RealmObject {
         this.ranking = builder.ranking;
         this.ratePA = builder.ratePA;
         this.url = builder.url;
+        this.isInit = builder.isInit;
+    }
+
+    public boolean isInit() {
+        return isInit;
+    }
+
+    public void setInit(boolean init) {
+        isInit = init;
     }
 
     public String getNodeId() {
@@ -101,11 +115,11 @@ public class VerifyNodeEntity extends RealmObject {
         this.url = url;
     }
 
-    public String getRatePA() {
+    public int getRatePA() {
         return ratePA;
     }
 
-    public void setRatePA(String ratePA) {
+    public void setRatePA(int ratePA) {
         this.ratePA = ratePA;
     }
 
@@ -123,46 +137,52 @@ public class VerifyNodeEntity extends RealmObject {
         private String name;
         private String deposit;
         private String url;
-        private String ratePA;
+        private int ratePA;
         private String nodeStatus;
+        private boolean isInit;
 
         public Builder() {
 
         }
 
         public Builder nodeId(String val) {
-            nodeId = val;
+            this.nodeId = val;
             return this;
         }
 
         public Builder ranking(int val) {
-            ranking = val;
+            this.ranking = val;
             return this;
 
         }
 
         public Builder name(String val) {
-            name = val;
+            this.name = val;
             return this;
         }
 
         public Builder deposit(String val) {
-            deposit = val;
+            this.deposit = val;
             return this;
         }
 
         public Builder url(String val) {
-            url = val;
+            this.url = val;
             return this;
         }
 
-        public Builder ratePA(String val) {
-            ratePA = val;
+        public Builder ratePA(int val) {
+            this.ratePA = val;
             return this;
         }
 
         public Builder nodeStatus(String val) {
-            nodeStatus = val;
+            this.nodeStatus = val;
+            return this;
+        }
+
+        public Builder isInit(boolean isInit) {
+            this.isInit = isInit;
             return this;
         }
 
@@ -180,8 +200,9 @@ public class VerifyNodeEntity extends RealmObject {
                 .nodeId(nodeId)
                 .nodeStatus(nodeStatus)
                 .ranking(ranking)
-                .ratePA(ratePA)
+                .ratePA(String.valueOf(ratePA))
                 .url(url)
+                .isInit(isInit)
                 .build();
     }
 

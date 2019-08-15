@@ -23,7 +23,7 @@ public class ValidatorsContract {
 
         void loadValidatorsData(String sortType, String nodeState, int ranking);
 
-        void loadDataFromDB(String state, int ranking);
+        void loadDataFromDB(String sortType,String state, int ranking);
 
     }
 
