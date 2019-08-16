@@ -24,30 +24,20 @@ public class DelegateInfo implements Parcelable {
      */
     private String redeem;
 
-
-    /**
-     * 钱包余额
-     */
-    private double balance;
-
     /**
      * 钱包头像
      */
 
     private String walletIcon;
 
+    /**
+     * 可委托金额  单位von   1LAT(ETH)=1000000000000000000von(wei)
+     */
+    private String availableDelegationBalance;
+
 
     public DelegateInfo() {
 
-    }
-
-    public DelegateInfo(String walletName, String walletAddress, String delegate, String redeem, double balance, String walletIcon) {
-        this.walletName = walletName;
-        this.walletAddress = walletAddress;
-        this.delegate = delegate;
-        this.redeem = redeem;
-        this.balance = balance;
-        this.walletIcon = walletIcon;
     }
 
     protected DelegateInfo(Parcel in) {
@@ -55,8 +45,8 @@ public class DelegateInfo implements Parcelable {
         walletAddress = in.readString();
         delegate = in.readString();
         redeem = in.readString();
-        balance = in.readDouble();
         walletIcon = in.readString();
+        availableDelegationBalance =in.readString();
     }
 
     @Override
@@ -65,8 +55,8 @@ public class DelegateInfo implements Parcelable {
         dest.writeString(walletAddress);
         dest.writeString(delegate);
         dest.writeString(redeem);
-        dest.writeDouble(balance);
         dest.writeString(walletIcon);
+        dest.writeString(availableDelegationBalance);
     }
 
     @Override
@@ -118,19 +108,19 @@ public class DelegateInfo implements Parcelable {
         this.redeem = redeem;
     }
 
-    public double getBalance() {
-        return balance;
-    }
-
-    public void setBalance(double balance) {
-        this.balance = balance;
-    }
-
     public String getWalletIcon() {
         return walletIcon;
     }
 
     public void setWalletIcon(String walletIcon) {
         this.walletIcon = walletIcon;
+    }
+
+    public String getAvailableDelegationBalance() {
+        return availableDelegationBalance;
+    }
+
+    public void setAvailableDelegationBalance(String availableDelegationBalance) {
+        this.availableDelegationBalance = availableDelegationBalance;
     }
 }

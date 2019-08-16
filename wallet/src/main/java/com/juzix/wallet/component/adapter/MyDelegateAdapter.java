@@ -61,9 +61,10 @@ public class MyDelegateAdapter extends RecyclerView.Adapter<MyDelegateAdapter.Vi
         holder.walletName.setText(info.getWalletName());
         holder.walletAddress.setText(AddressFormatUtil.formatAddress(info.getWalletAddress()));
         //转换的数据
-        holder.delegateNumber.setText((TextUtils.isEmpty(info.getDelegate())) ? "--" : StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(info.getDelegate(), "1E18"))), false));
-        holder.withdrawNumber.setText(TextUtils.isEmpty(info.getRedeem()) ? "--" : StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(info.getRedeem(), "1E18"))), false));
-        holder.walletAmount.setText(info.getBalance() > 0 ? StringUtil.formatBalance(info.getBalance(), false) : "0.00");
+        holder.delegateNumber.setText((TextUtils.isEmpty(info.getDelegate())) ? "— —" : StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(info.getDelegate(), "1E18"))), false));
+        holder.withdrawNumber.setText(TextUtils.isEmpty(info.getRedeem()) ? "— —" : StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(info.getRedeem(), "1E18"))), false));
+        holder.walletAmount.setText(TextUtils.isEmpty(info.getAvailableDelegationBalance()) ? "— —" :StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(info.getAvailableDelegationBalance(), "1E18"))), false));
+
 
         RxView.clicks(holder.itemView)
                 .compose(RxUtils.getClickTransformer())
@@ -97,7 +98,6 @@ public class MyDelegateAdapter extends RecyclerView.Adapter<MyDelegateAdapter.Vi
             return infoList.size();
         }
         return 0;
-//        return infoList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

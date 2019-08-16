@@ -86,8 +86,7 @@ public class AllDelegateRecordFragment extends MVPBaseFragment<DelegateRecordPre
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Transaction transactionRecord = mAdapter.getItem(position);
-                //todo  跳转(最后一个字段没传，不知道传什么)
-                TransactionDetailActivity.actionStart(getContext(), transactionRecord, "");
+                TransactionDetailActivity.actionStart(getContext(), transactionRecord, transactionRecord.getFrom());
             }
         });
 

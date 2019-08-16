@@ -59,7 +59,7 @@ public class DelegateRecordAdapter extends CommonAdapter<Transaction> {
 
         CircleImageView walletIcon = viewHolder.getView(R.id.iv_wallet);
         walletIcon.setImageResource(RUtils.drawable(item.getWalletIcon()));
-        viewHolder.setText(R.id.tv_wallet_address, item.getWalletName() + (AddressFormatUtil.formatAddress(item.getFrom())));//钱包名称+钱包地址
+        viewHolder.setText(R.id.tv_wallet_address, item.getWalletName() + ((AddressFormatUtil.formatAddress(item.getFrom()))));//钱包名称+钱包地址
     }
 
 //    private void changeTextColor(Context context, TextView tv, String delegateStatus) {
