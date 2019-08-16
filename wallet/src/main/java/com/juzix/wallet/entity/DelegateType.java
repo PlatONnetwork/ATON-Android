@@ -3,10 +3,10 @@ package com.juzix.wallet.entity;
 
 public class DelegateType {
     private String type;
-    private double amount;
+    private String amount;
 
 
-    public DelegateType(String type, double amount) {
+    public DelegateType(String type, String amount) {
         this.type = type;
         this.amount = amount;
     }
@@ -20,11 +20,11 @@ public class DelegateType {
         this.type = type;
     }
 
-    public double getAmount() {
+    public String getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(String amount) {
         this.amount = amount;
     }
 

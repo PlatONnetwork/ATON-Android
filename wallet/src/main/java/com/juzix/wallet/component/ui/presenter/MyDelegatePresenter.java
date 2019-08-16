@@ -52,12 +52,13 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
     public void loadMyDelegateData() {
         List<String> walletAddressList = WalletManager.getInstance().getAddressList();
         getMyDelegateData(walletAddressList.toArray(new String[walletAddressList.size()]));
+
     }
 
     private void getMyDelegateData(String[] addressList) {
         ServerUtils.getCommonApi().getMyDelegateList(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder().
                 put("walletAddrs", addressList).build())
-                .compose(bindUntilEvent(FragmentEvent.STOP))
+                .compose(RxUtils.bindToParentLifecycleUtilEvent(getView(), FragmentEvent.STOP))
                 .compose(RxUtils.getSingleSchedulerTransformer())
 //                .doOnSubscribe(new Consumer<Disposable>() {
 //                    @Override
@@ -86,8 +87,7 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                                 //获取钱包余额
 //                                getWalletBalance(infoList);
                                 //获取钱包地址的数组
-                                getwalletAddressGroup(infoList);
-//                                getShowAccountAmount(getAccountBalance(getwalletAddressGroup(infoList).toArray(new String[getwalletAddressGroup(infoList).size()])), infoList);
+//                                getwalletAddressGroup(infoList);
                             }
                         }
                     }
@@ -99,95 +99,7 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                     }
                 });
 
-
     }
-
-    /**
-     * @param accountBalance
-     * @param infoList
-     */
-    private void getShowAccountAmount(List<AccountBalance> accountBalance, List<DelegateInfo> infoList) {
-        for (int i = 0; i < accountBalance.size(); i++) {
-            for (int j = 0; j < infoList.size(); j++) {
-                if (infoList.get(j).getWalletAddress() == accountBalance.get(i).getAddr()) {
-                    String free = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(accountBalance.get(j).getFree(), "1E18"));
-                    String lock = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(accountBalance.get(j).getLock(), "1E18"));
-                    double totalAccount = NumberParserUtils.parseDouble(free) + NumberParserUtils.parseDouble(lock);
-                    infoList.get(j).setBalance(totalAccount);
-                    getView().showMyDelegateDataByPosition(j, infoList.get(j));//刷新某个position的数据
-                }
-            }
-        }
-
-
-    }
-
-    /**
-     * 获取钱包地址数组
-     *
-     * @param infoList
-     * @return
-     */
-    private List<String> getwalletAddressGroup(List<DelegateInfo> infoList) {
-
-        return Flowable.fromIterable(infoList)
-                .map(new Function<DelegateInfo, String>() {
-                    @Override
-                    public String apply(DelegateInfo delegateInfo) throws Exception {
-                        return delegateInfo.getWalletAddress();
-                    }
-                })
-                .compose(bindUntilEvent(FragmentEvent.STOP))
-                .toList()
-                .blockingGet();
-    }
-
-    /**
-     * 批量获取余额列表
-     *
-     * @param address
-     * @return
-     */
-    public List<AccountBalance> getAccountBalance(String[] address) {
-
-        return ServerUtils.getCommonApi().getAccountBalance(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
-                .put("walletAddrs", address)
-                .build()).
-                flatMap(new Function<Response<ApiResponse<List<AccountBalance>>>, SingleSource<Response<ApiResponse<List<AccountBalance>>>>>() {
-                    @Override
-                    public SingleSource<Response<ApiResponse<List<AccountBalance>>>> apply(Response<ApiResponse<List<AccountBalance>>> apiResponseResponse) throws Exception {
-                        if (apiResponseResponse == null || !apiResponseResponse.isSuccessful()) {
-                            return Single.just(Response.success(new ApiResponse(ApiErrorCode.NETWORK_ERROR)));
-                        } else {
-                            List<AccountBalance> list = apiResponseResponse.body().getData();
-                            return Flowable.fromIterable(list)
-                                    .map(new Function<AccountBalance, AccountBalance>() {
-                                        @Override
-                                        public AccountBalance apply(AccountBalance accountBalance) throws Exception {
-                                            return accountBalance;
-                                        }
-                                    }).toList()
-                                    .map(new Function<List<AccountBalance>, Response<ApiResponse<List<AccountBalance>>>>() {
-                                        @Override
-                                        public Response<ApiResponse<List<AccountBalance>>> apply(List<AccountBalance> entityList) throws Exception {
-                                            return Response.success(new ApiResponse<>(ApiErrorCode.SUCCESS, entityList));
-                                        }
-                                    });
-                        }
-                    }
-                })
-                .compose(RxUtils.getSingleSchedulerTransformer())
-                .map(new Function<Response<ApiResponse<List<AccountBalance>>>, List<AccountBalance>>() {
-                    @Override
-                    public List<AccountBalance> apply(Response<ApiResponse<List<AccountBalance>>> apiResponseResponse) throws Exception {
-                        return apiResponseResponse.body().getData();
-                    }
-                })
-                .blockingGet();
-
-    }
-
-
     private void getTotalDelegateAmount(List<DelegateInfo> infoList) {
         Flowable.fromIterable(infoList)
                 .map(new Function<DelegateInfo, Double>() {
@@ -250,7 +162,7 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
 
                         double balance = Web3jManager.getInstance().getBalance(delegateInfo.getWalletAddress());
 
-                        delegateInfo.setBalance(balance);
+//                        delegateInfo.setBalance(balance);
 
                         return delegateInfo;
                     }
@@ -265,7 +177,26 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                         }
                     }
                 });
+    }
 
+    /**
+     * 获取钱包地址数组
+     *
+     * @param infoList
+     * @return
+     */
+    private List<String> getwalletAddressGroup(List<DelegateInfo> infoList) {
+
+        return Flowable.fromIterable(infoList)
+                .map(new Function<DelegateInfo, String>() {
+                    @Override
+                    public String apply(DelegateInfo delegateInfo) throws Exception {
+                        return delegateInfo.getWalletAddress();
+                    }
+                })
+                .compose(bindUntilEvent(FragmentEvent.STOP))
+                .toList()
+                .blockingGet();
     }
 
 

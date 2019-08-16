@@ -93,6 +93,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
     public static final String STATE_CANDIDATE = "Candidate";
     public static final String STATE_EXITING = "Exiting";
     public static final String STATE_EXITED = "Exited";
+    private String websiteUrl;
 
     @Override
     protected ValidatorsDetailPresenter createPresenter() {
@@ -120,9 +121,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
             }
         });
 
-        //todo 测试暂时写这里
-        clickViewListener(null);
-
+        clickViewListener();
         mPresenter.loadValidatorsDetailData();
     }
 
@@ -137,7 +136,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
         return getIntent().getStringExtra(Constants.ValidatorsType.VALIDATORS_NODEID);
     }
 
-    public void clickViewListener(VerifyNodeDetail nodeDetail) {
+    public void clickViewListener() {
 
 //        RxView.clicks(withdraw).compose(RxUtils.bindToLifecycle(this))
 //                .compose(RxUtils.getClickTransformer())
@@ -167,10 +166,10 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        //todo  暂时写的百度链接
-                        Uri uri = Uri.parse("https://www.baidu.com");
-                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                        startActivity(intent);
+                        CommonHybridActivity.actionStart(getContext(), webSite.getText().toString());
+//                        Uri uri = Uri.parse("https://www.baidu.com");
+//                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+//                        startActivity(intent);
                     }
                 });
 
@@ -179,10 +178,10 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        //todo  暂时写的百度链接
-                        Uri uri = Uri.parse("https://www.baidu.com");
-                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                        startActivity(intent);
+//                        Uri uri = Uri.parse("https://www.baidu.com");
+//                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+//                        startActivity(intent);
+                        CommonHybridActivity.actionStart(getContext(), websiteUrl);
                     }
                 });
 
@@ -190,7 +189,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
 
     @Override
     public void showValidatorsDetailData(VerifyNodeDetail nodeDetail) {
-        //todo 点击链接的url
+        websiteUrl = nodeDetail.getWebsite();
 
         GlideUtils.loadRound(this, nodeDetail.getUrl(), iv_url);
         nodeName.setText(nodeDetail.getName());
@@ -228,7 +227,6 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
 
         introduction.setText(nodeDetail.getIntro());
         webSite.setText(nodeDetail.getWebsite());//官网
-        clickViewListener(nodeDetail);
 
         //判断按钮是否可点击
         if ((TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITING) || TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITED)) && nodeDetail.isInit()) {

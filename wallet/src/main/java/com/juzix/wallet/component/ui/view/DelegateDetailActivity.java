@@ -60,12 +60,14 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
     TextView tv_wallet_address;
     @BindView(R.id.rlv_list)
     RecyclerView rlv_list;
-//    public boolean isLoadMore = false;
+    //    public boolean isLoadMore = false;
 //    public String beginSequence = "-1";//加载更多需要传入的值
 //    private List<DelegateDetail> list = new ArrayList<>();
     private DelegateDetailAdapter mDetailAdapter;
     private LinearLayoutManager linearLayoutManager;
     private String walletAddress;
+    private String walletName;
+    private String walletIcon;
 
     @Override
     protected DelegateDetailPresenter createPresenter() {
@@ -113,7 +115,7 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
             @Override
             public void onWithDrawClick(String nodeAddress, String nodeName, String nodeIcon, String blockNum) {
                 //跳转赎回委托页面
-                WithDrawActivity.actionStart(getContext(), nodeAddress, nodeName, nodeIcon, blockNum, walletAddress);
+                WithDrawActivity.actionStart(getContext(), nodeAddress, nodeName, nodeIcon, blockNum, walletAddress, walletName, walletIcon);
             }
 
             @Override
@@ -124,7 +126,7 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
 
             @Override
             public void onLinkClick(String webSiteUrl) {
-                //todo 操作链接跳转(暂时没链接)
+                CommonHybridActivity.actionStart(getContext(), webSiteUrl);
             }
         });
 
@@ -162,7 +164,8 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
 
     @Override
     public String getWalletNameFromIntent() {
-        return getIntent().getStringExtra(Constants.Extra.EXTRA_WALLET_NAME);
+        walletName = getIntent().getStringExtra(Constants.Extra.EXTRA_WALLET_NAME);
+        return walletName;
     }
 
     @Override
@@ -173,7 +176,8 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
 
     @Override
     public String getWalletIconFromIntent() {
-        return getIntent().getStringExtra(Constants.Extra.EXTRA_WALLET_ICON);
+        walletIcon = getIntent().getStringExtra(Constants.Extra.EXTRA_WALLET_ICON);
+        return walletIcon;
     }
 
     @Override

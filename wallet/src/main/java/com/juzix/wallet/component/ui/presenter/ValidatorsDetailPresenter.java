@@ -38,7 +38,6 @@ public class ValidatorsDetailPresenter extends BasePresenter<ValidatorsDetailCon
                             if (verifyNodeDetail != null) {
                                 getView().showValidatorsDetailData(verifyNodeDetail);
                             }
-
                         }
                     }
 

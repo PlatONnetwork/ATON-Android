@@ -116,8 +116,9 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-//                        DelegateDetailActivity.actionStart(getContext(), "", "", "");
-//                        ValidatorsDetailActivity.actionStart(getContext(), "");
+                        //todo 暂时写的一个假的链接
+//                        CommonHybridActivity.actionStart(getContext(), "https://www.baidu.com");
+                        DelegateActivity.actionStart(getContext(),"","","",0);
                     }
                 });
 
@@ -126,7 +127,8 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-//                        WithDrawActivity.actionStart(getContext(), "", "", "", "", "");
+                        //todo 暂时写的一个假链接
+                        CommonHybridActivity.actionStart(getContext(), "https://www.baidu.com");
                     }
                 });
 

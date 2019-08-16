@@ -6,6 +6,7 @@ import com.juzhen.framework.network.ApiResponse;
 import com.juzix.wallet.entity.AccountBalance;
 import com.juzix.wallet.entity.CandidateWrap;
 import com.juzix.wallet.entity.DelegateDetail;
+import com.juzix.wallet.entity.DelegateHandle;
 import com.juzix.wallet.entity.DelegateInfo;
 import com.juzix.wallet.entity.DelegateRecord;
 import com.juzix.wallet.entity.MyDelegate;
@@ -178,8 +179,12 @@ public interface BaseApi {
      * "addr":"",                             //委托的地址
      * "stakingBlockNum":"",                  //最新的质押交易块高
      */
-    @POST("app-{cid}/v0700/node/getDelegationValue")
-    Single<Response<ApiResponse<WithDrawBalance>>> getWithDrawBalance(@Path("cid") String id, @Body ApiRequestBody body);
+    @POST("app-{cid}/v0700/v1/node/getDelegationValue")
+    Single<Response<ApiResponse<List<WithDrawBalance>>>> getWithDrawBalance(@Path("cid") String id, @Body ApiRequestBody body);
+
+
+    @POST("app-{cid}/v0700/node/canDelegation")
+    Single<Response<ApiResponse<DelegateHandle>>> getIsDelegateInfo(@Path("cid") String id, @Body ApiRequestBody body);
 
 
 }

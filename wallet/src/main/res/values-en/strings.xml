@@ -574,5 +574,8 @@
     <!--赎回提示语-->
     <string name="withdraw_operation_tips">Exceeded the available amount and cannot be submitted</string>
 
+    <!--委托不可操作提示-->
+    <string name="delegate_no_click">Please withdraw first "Released delegate</string>
+
 </resources>
 

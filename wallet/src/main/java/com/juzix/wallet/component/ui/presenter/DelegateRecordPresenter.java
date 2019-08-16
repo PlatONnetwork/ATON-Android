@@ -37,7 +37,7 @@ public class DelegateRecordPresenter extends BasePresenter<DelegateRecordContrac
                 .put("type", type)
                 .put("walletAddrs", walletAddress)
                 .build())
-                .compose(bindUntilEvent(FragmentEvent.STOP))
+                .compose(RxUtils.bindToLifecycle(getView()))
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .subscribe(new ApiSingleObserver<List<Transaction>>() {
                     @Override

@@ -7,6 +7,7 @@ import org.web3j.platon.BaseResponse;
 import org.web3j.platon.StakingAmountType;
 import org.web3j.platon.contracts.DelegateContract;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 import org.web3j.tx.gas.DefaultGasProvider;
 
 import java.math.BigInteger;
@@ -38,6 +39,20 @@ public class DelegateManager {
                 return delegateContract.delegate(nodeId, stakingAmountType, new BigInteger(amount)).send();
             }
         });
+    }
+
+    public Single<PlatonSendTransaction> withdraw(Credentials credentials, String nodeId, String stakingBlockNum, String amount) {
+
+        return Single.fromCallable(new Callable<PlatonSendTransaction>() {
+            @Override
+            public PlatonSendTransaction call() throws Exception {
+                Web3j web3j = Web3jManager.getInstance().getWeb3j();
+                String chainId = NodeManager.getInstance().getChainId();
+                DelegateContract delegateContract = DelegateContract.load(web3j, credentials, new DefaultGasProvider(), chainId);
+                return delegateContract.unDelegateReturnTransaction(nodeId, new BigInteger(stakingBlockNum), new BigInteger(amount)).send();
+            }
+        });
+
     }
 
 }
