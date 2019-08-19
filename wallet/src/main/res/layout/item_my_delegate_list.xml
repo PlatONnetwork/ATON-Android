@@ -63,7 +63,6 @@
                 android:layout_centerInParent="true"
                 android:layout_marginRight="10dp"
                 android:drawablePadding="3dp"
-                android:text="5235.505"
                 android:textColor="@color/color_000000"
                 android:textSize="16sp" />
 

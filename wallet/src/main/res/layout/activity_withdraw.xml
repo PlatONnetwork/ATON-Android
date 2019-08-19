@@ -152,7 +152,6 @@
                     android:layout_marginLeft="15dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="16dp"
-                    android:text="delegated"
                     android:textColor="@color/color_000000"
                     android:textSize="15sp" />
 
@@ -169,7 +168,6 @@
                         android:id="@+id/tv_delegate_amount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="5230.25 "
                         android:textColor="@color/color_000000"
                         android:textSize="15sp" />
 

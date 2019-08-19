@@ -26,7 +26,7 @@ public class DelegateDetailContract {
 
     public interface Presenter extends IPresenter<View> {
 
-        void loadDelegateDetailData(String beginSequence);
+        void loadDelegateDetailData();
 
         void MoveOut(DelegateDetail detail);
 

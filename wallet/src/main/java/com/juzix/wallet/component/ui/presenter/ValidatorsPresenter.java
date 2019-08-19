@@ -45,9 +45,15 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
     }
 
 
-    //刷新调用的方法
-    private void getValidatorsData(String sortType, String nodeState, int rank) {
-        Log.d("ValidatorsPresenter", "=========nodeState========" + nodeState +"==============rank==========" +rank +"===============sortType" +sortType);
+    /**
+     * 刷新调用的方法
+     *
+     * @param sortType  排序类型 (年化率/排名)
+     * @param nodeState
+     * @param sequence  加载更多序号
+     */
+    private void getValidatorsData(String sortType, String nodeState, int sequence) {
+        Log.d("ValidatorsPresenter", "=========nodeState=" + nodeState + "==============rank=" + sequence + "===============sortType=" + sortType);
         ServerUtils.getCommonApi().getVerifyNodeList(NodeManager.getInstance().getChainId())
                 .compose(bindUntilEvent(FragmentEvent.STOP))
                 .compose(RxUtils.getSingleSchedulerTransformer())
@@ -62,14 +68,16 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
                                         //插入数据库
                                         if (insertVerifyNodeIntoDB(nodeList)) {
                                             //读取数据
-                                            loadDataFromDB(nodeState, rank);
+//                                            loadDataFromDB(nodeState, rank);
+                                            loadDataFromDB(sortType, nodeState, sequence);
                                         }
                                     }
 
                                 } else {
                                     if (insertVerifyNodeIntoDB(nodeList)) {
                                         //读取数据
-                                        loadDataFromDB(nodeState, rank);
+//                                        loadDataFromDB(nodeState, sequnce);
+                                        loadDataFromDB(sortType, nodeState, sequence);
                                     }
                                 }
                             }
@@ -87,6 +95,170 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
     }
 
 
+    @Override
+    public void loadDataFromDB(String sortType, String state, int ranking) {
+        loadVerifyNodeDataFromDB(sortType, state, ranking);
+
+    }
+
+    private void loadVerifyNodeDataFromDB(String soryType, String state, int ranking) {
+        //从数据库读取数据，并更新UI
+        if (TextUtils.equals(state, Constants.ValidatorsType.ALL_VALIDATORS)) {
+            //在加一个判断
+            if (TextUtils.equals(soryType, Constants.ValidatorsType.VALIDATORS_RANK)) {   //（在所有tab）按排序操作
+
+                //(在所有页签)
+                Flowable
+                        .fromIterable(VerifyNodeDao.getVerifyNodeByAll(ranking))
+                        .filter(new Predicate<VerifyNodeEntity>() {
+                            @Override
+                            public boolean test(VerifyNodeEntity entity) throws Exception {
+                                return entity != null;
+                            }
+                        })
+                        .compose(((BaseFragment) getView()).bindToLifecycle()).map(new Function<VerifyNodeEntity, VerifyNode>() {
+
+                    @Override
+                    public VerifyNode apply(VerifyNodeEntity entity) throws Exception {
+                        //转换对象并赋值
+                        return new VerifyNode(entity.getNodeId(), entity.getRanking(), entity.getName(), entity.getDeposit(), entity.getUrl(), String.valueOf(entity.getRatePA()), entity.getNodeStatus(), entity.isInit());
+                    }
+                })
+                        .toList()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new BiConsumer<List<VerifyNode>, Throwable>() {
+                            @Override
+                            public void accept(List<VerifyNode> nodeList, Throwable throwable) throws Exception {
+                                if (isViewAttached()) {
+                                    getView().showValidatorsDataOnAll(nodeList);
+                                }
+                            }
+                        });
+
+            }else {
+                //(在所有页签)(按年化率操作)
+                Flowable
+                        .fromIterable(VerifyNodeDao.getVerifyNodeAllByRate(ranking))
+                        .filter(new Predicate<VerifyNodeEntity>() {
+                            @Override
+                            public boolean test(VerifyNodeEntity entity) throws Exception {
+                                return entity != null;
+                            }
+                        })
+                        .compose(((BaseFragment) getView()).bindToLifecycle()).map(new Function<VerifyNodeEntity, VerifyNode>() {
+
+                    @Override
+                    public VerifyNode apply(VerifyNodeEntity entity) throws Exception {
+                        //转换对象并赋值
+                        return new VerifyNode(entity.getNodeId(), entity.getRanking(), entity.getName(), entity.getDeposit(), entity.getUrl(), String.valueOf(entity.getRatePA()), entity.getNodeStatus(), entity.isInit());
+                    }
+                })
+                        .toList()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new BiConsumer<List<VerifyNode>, Throwable>() {
+                            @Override
+                            public void accept(List<VerifyNode> nodeList, Throwable throwable) throws Exception {
+                                if (isViewAttached()) {
+                                    getView().showValidatorsDataOnAll(nodeList);
+                                }
+                            }
+                        });
+
+            }
+
+
+        } else {
+            //在活跃或者候选中状态
+            //在加一个判断
+            if (TextUtils.equals(soryType, Constants.ValidatorsType.VALIDATORS_RANK)) {   //按排序操作
+                Flowable
+                        .fromIterable(VerifyNodeDao.getVerifyNodeDataByState(state, ranking))
+                        .filter(new Predicate<VerifyNodeEntity>() {
+                            @Override
+                            public boolean test(VerifyNodeEntity entity) throws Exception {
+                                return entity != null;
+                            }
+                        })
+                        .compose(((BaseFragment) getView()).bindToLifecycle()).map(new Function<VerifyNodeEntity, VerifyNode>() {
+
+                    @Override
+                    public VerifyNode apply(VerifyNodeEntity entity) throws Exception {
+                        //转换对象并赋值
+                        return new VerifyNode(entity.getNodeId(), entity.getRanking(), entity.getName(), entity.getDeposit(), entity.getUrl(), String.valueOf(entity.getRatePA()), entity.getNodeStatus(), entity.isInit());
+                    }
+                })
+                        .toList()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new BiConsumer<List<VerifyNode>, Throwable>() {
+                            @Override
+                            public void accept(List<VerifyNode> nodeList, Throwable throwable) throws Exception {
+                                if (isViewAttached()) {
+                                    if (TextUtils.equals(state, Constants.ValidatorsType.ACTIVE_VALIDATORS)) {
+                                        getView().showValidatorsDataOnActive(nodeList);
+
+                                    } else {
+                                        getView().showValidatorsDataOnCadidate(nodeList);
+                                    }
+
+                                }
+                            }
+                        });
+
+            }else { //按年化率操作
+
+                Flowable
+                        .fromIterable(VerifyNodeDao.getVerifyNodeByStateAndRate(state, ranking))
+                        .filter(new Predicate<VerifyNodeEntity>() {
+                            @Override
+                            public boolean test(VerifyNodeEntity entity) throws Exception {
+                                return entity != null;
+                            }
+                        })
+                        .compose(((BaseFragment) getView()).bindToLifecycle()).map(new Function<VerifyNodeEntity, VerifyNode>() {
+
+                    @Override
+                    public VerifyNode apply(VerifyNodeEntity entity) throws Exception {
+                        //转换对象并赋值
+                        return new VerifyNode(entity.getNodeId(), entity.getRanking(), entity.getName(), entity.getDeposit(), entity.getUrl(), String.valueOf(entity.getRatePA()), entity.getNodeStatus(), entity.isInit());
+                    }
+                })
+                        .toList()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new BiConsumer<List<VerifyNode>, Throwable>() {
+                            @Override
+                            public void accept(List<VerifyNode> nodeList, Throwable throwable) throws Exception {
+                                if (isViewAttached()) {
+                                    if (TextUtils.equals(state, Constants.ValidatorsType.ACTIVE_VALIDATORS)) {
+                                        getView().showValidatorsDataOnActive(nodeList);
+
+                                    } else {
+                                        getView().showValidatorsDataOnCadidate(nodeList);
+                                    }
+
+                                }
+                            }
+                        });
+
+
+
+
+            }
+
+
+
+        }
+    }
+
+
+    /**
+     * 下面三个方法是增删查
+     *
+     * @return
+     */
     public List<VerifyNodeEntity> getNodeList() {
         return Single.fromCallable(new Callable<List<VerifyNodeEntity>>() {
             @Override
@@ -109,87 +281,6 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
 
     public boolean insertVerifyNodeIntoDB(List<VerifyNode> nodeList) {
         return ValidatorsService.insertVerifyNodeList(nodeList).blockingGet();
-    }
-
-
-    @Override
-    public void loadDataFromDB(String state, int ranking) {
-        loadVerifyNodeDataFromDB(state, ranking);
-
-    }
-
-    public void loadVerifyNodeDataFromDB(String state, int ranking) {
-        //从数据库读取数据，并更新UI
-        if (TextUtils.equals(state, Constants.ValidatorsType.ALL_VALIDATORS)) {
-            //(在所有页签)
-            Flowable
-                    .fromIterable(VerifyNodeDao.getVerifyNodeByAll(ranking))
-                    .filter(new Predicate<VerifyNodeEntity>() {
-                        @Override
-                        public boolean test(VerifyNodeEntity entity) throws Exception {
-                            return entity != null;
-                        }
-                    })
-                    .compose(((BaseFragment) getView()).bindToLifecycle()).map(new Function<VerifyNodeEntity, VerifyNode>() {
-
-                @Override
-                public VerifyNode apply(VerifyNodeEntity entity) throws Exception {
-                    //转换对象并赋值
-                    return new VerifyNode(entity.getNodeId(), entity.getRanking(), entity.getName(), entity.getDeposit(), entity.getUrl(), entity.getRatePA(), entity.getNodeStatus());
-                }
-            })
-                    .toList()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new BiConsumer<List<VerifyNode>, Throwable>() {
-                        @Override
-                        public void accept(List<VerifyNode> nodeList, Throwable throwable) throws Exception {
-                            if (isViewAttached()) {
-                                getView().showValidatorsDataOnAll(nodeList);
-                            }
-                        }
-                    });
-
-
-        } else {
-            //在活跃或者候选中状态
-            Flowable
-                    .fromIterable(VerifyNodeDao.getVerifyNodeDataByState(state, ranking))
-                    .filter(new Predicate<VerifyNodeEntity>() {
-                        @Override
-                        public boolean test(VerifyNodeEntity entity) throws Exception {
-                            return entity != null;
-                        }
-                    })
-                    .compose(((BaseFragment) getView()).bindToLifecycle()).map(new Function<VerifyNodeEntity, VerifyNode>() {
-
-                @Override
-                public VerifyNode apply(VerifyNodeEntity entity) throws Exception {
-                    //转换对象并赋值
-                    return new VerifyNode(entity.getNodeId(), entity.getRanking(), entity.getName(), entity.getDeposit(), entity.getUrl(), entity.getRatePA(), entity.getNodeStatus());
-                }
-            })
-                    .toList()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new BiConsumer<List<VerifyNode>, Throwable>() {
-                        @Override
-                        public void accept(List<VerifyNode> nodeList, Throwable throwable) throws Exception {
-                            if (isViewAttached()) {
-                                if (TextUtils.equals(state, Constants.ValidatorsType.ACTIVE_VALIDATORS)) {
-                                    getView().showValidatorsDataOnActive(nodeList);
-
-                                } else {
-                                    getView().showValidatorsDataOnCadidate(nodeList);
-                                }
-
-                            }
-                        }
-                    });
-
-        }
-
-
     }
 
 

@@ -2,10 +2,6 @@ package com.juzix.wallet.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
-
-import com.juzix.wallet.db.entity.DelegateAddressEntity;
-import com.juzix.wallet.db.entity.WalletEntity;
 
 import java.util.Objects;
 
@@ -58,10 +54,10 @@ public class DelegateDetail implements Parcelable {
      * 已解除委托
      */
     private String released;
-    /**
-     * 排列序号 ,记录的创建时间，小的排在最前面
-     */
-    private String sequence;
+//    /**
+//     * 排列序号 ,记录的创建时间，小的排在最前面
+//     */
+//    private String sequence;
 
 
     public DelegateDetail() {
@@ -140,14 +136,6 @@ public class DelegateDetail implements Parcelable {
         this.released = released;
     }
 
-    public String getSequence() {
-        return sequence;
-    }
-
-    public void setSequence(String sequence) {
-        this.sequence = sequence;
-    }
-
     public String getStakingBlockNum() {
         return stakingBlockNum;
     }
@@ -166,7 +154,6 @@ public class DelegateDetail implements Parcelable {
         locked = in.readString();
         released = in.readString();
         unLocked = in.readString();
-        sequence = in.readString();
         stakingBlockNum = in.readString();
     }
 
@@ -181,7 +168,6 @@ public class DelegateDetail implements Parcelable {
         dest.writeString(locked);
         dest.writeString(released);
         dest.writeString(unLocked);
-        dest.writeString(sequence);
         dest.writeString(stakingBlockNum);
     }
 

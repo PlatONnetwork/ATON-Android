@@ -24,15 +24,14 @@ import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
-import com.juzix.wallet.component.adapter.base.WithDrawPopWindowAdapter;
+import com.juzix.wallet.component.adapter.WithDrawPopWindowAdapter;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.WithDrawContract;
-import com.juzix.wallet.component.ui.popwindow.DelegatePopWindow;
 import com.juzix.wallet.component.ui.presenter.WithDrawPresenter;
 import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.component.widget.PointLengthFilter;
 import com.juzix.wallet.component.widget.ShadowButton;
-import com.juzix.wallet.entity.DelegateType;
+import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.entity.WithDrawBalance;
 import com.juzix.wallet.entity.WithDrawType;
@@ -93,6 +92,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     private ListView mPopListview;
     private List<WithDrawType> list = new ArrayList<>();
     private WithDrawPopWindowAdapter mPopWindowAdapter;
+    private long transactionTime;
 
     @Override
     protected WithDrawPresenter createPresenter() {
@@ -136,17 +136,6 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
                     }
                 });
 
-        RxView.clicks(btnWithdraw)
-                .compose(RxUtils.bindToLifecycle(this))
-                .compose(RxUtils.getClickTransformer())
-                .subscribe(new CustomObserver<Object>() {
-                    @Override
-                    public void accept(Object o) {
-                        //点击赎回按钮操作
-                        mPresenter.submitWithDraw();
-                    }
-                });
-
 
         RxView.clicks(allAmount)
                 .compose(RxUtils.bindToLifecycle(this))
@@ -159,6 +148,28 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
                         Log.d("WithDrawActivity11111111", " ======================" + delegateAmount.getText().toString());
                     }
                 });
+
+        RxView.clicks(btnWithdraw)
+                .compose(RxUtils.bindToLifecycle(this))
+                .compose(RxUtils.getClickTransformer())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        //点击赎回按钮操作
+                        transactionTime = System.currentTimeMillis();
+                        String chooseType = WithDrawPopWindowAdapter.TAG_DELEGATED;
+
+                        if (TextUtils.equals(delegateType.getText().toString(), getString(R.string.withdraw_type_delegated))) {
+                            chooseType = WithDrawPopWindowAdapter.TAG_DELEGATED; //已委托
+                        } else if (TextUtils.equals(delegateType.getText().toString(), getString(R.string.withdraw_type_unlocked))) {
+                            chooseType = WithDrawPopWindowAdapter.TAG_UNLOCKED; //未锁定
+                        } else {
+                            chooseType = WithDrawPopWindowAdapter.TAG_RELEASED; //已解除
+                        }
+                        mPresenter.submitWithDraw(chooseType);
+                    }
+                });
+
 
     }
 
@@ -295,7 +306,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     }
 
     @Override
-    public String getWalletAddress() {
+    public String getWalletAddressFromIntent() {
         return getIntent().getStringExtra(Constants.Extra.EXTRA_WALLET_ADDRESS);
     }
 
@@ -307,23 +318,14 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         nodeAddress.setText(AddressFormatUtil.formatAddress(address));
     }
 
-    //显示余额类型
     @Override
-    public void showBalanceType(WithDrawBalance drawBalance, Map<String, String> map) {
-        double locked = NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(drawBalance.getLocked(), "1E18"))); //已锁定
-        double unLocked = NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(drawBalance.getUnLocked(), "1E18")));//未锁定
-        double delegated = locked + unLocked; //已委托 = 已锁定+未锁定
+    public void showBalanceType(double delegated, double unlocked, double released) {
         delegateType.setText(getString(R.string.withdraw_type_delegated));
         delegateAmount.setText(StringUtil.formatBalance(delegated, false));
-
-        //遍历map集合
-        Set<Map.Entry<String, String>> entries = map.entrySet();
-        Iterator<Map.Entry<String, String>> it = entries.iterator();
-        while (it.hasNext()) {
-            Map.Entry<String, String> entry = it.next();
-            list.add(new WithDrawType(entry.getKey(), entry.getValue()));
-        }
-
+        list.clear();
+        list.add(new WithDrawType(WithDrawPopWindowAdapter.TAG_DELEGATED, StringUtil.formatBalance(delegated, false)));
+        list.add(new WithDrawType(WithDrawPopWindowAdapter.TAG_UNLOCKED, StringUtil.formatBalance(unlocked, false)));
+        list.add(new WithDrawType(WithDrawPopWindowAdapter.TAG_RELEASED, StringUtil.formatBalance(released, false)));
         mPopWindowAdapter.notifyDataSetChanged();
     }
 
@@ -340,17 +342,60 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     }
 
     @Override
+    public void withDrawSuccessInfo(String from, String to, long time, String txType, String value, String actualTxCost, String nodeName, String nodeId, int txReceiptStatus) {
+        finish();
+        Transaction transaction = new Transaction.Builder()
+                .from(from)
+                .to(to)
+                .timestamp(transactionTime)
+                .txType(txType)
+                .value(value)
+                .actualTxCost(actualTxCost)
+                .nodeName(nodeName)
+                .nodeId(nodeId)
+                .txReceiptStatus(txReceiptStatus)
+                .build();
+
+        TransactionDetailActivity.actionStart(getContext(), transaction, from);
+
+    }
+
+    @Override
     protected boolean immersiveBarViewEnabled() {
         return true;
     }
 
-    public static void actionStart(Context context, String nodeAddress, String nodeName, String nodeIcon, String stakingBlockNum, String walletAddress) {
+    public static void actionStart(Context context, String nodeAddress, String nodeName, String nodeIcon, String stakingBlockNum, String walletAddress, String walletName, String walletIcon) {
         Intent intent = new Intent(context, WithDrawActivity.class);
         intent.putExtra(Constants.Extra.EXTRA_NODE_ADDRESS, nodeAddress);
         intent.putExtra(Constants.Extra.EXTRA_NODE_NAME, nodeName);
         intent.putExtra(Constants.Extra.EXTRA_NODE_ICON, nodeIcon);
         intent.putExtra(Constants.Extra.EXTRA_NODE_BLOCK_NUM, stakingBlockNum);//块高
         intent.putExtra(Constants.Extra.EXTRA_WALLET_ADDRESS, walletAddress);//钱包地址
+        intent.putExtra(Constants.Extra.EXTRA_WALLET_NAME, walletName);
+        intent.putExtra(Constants.Extra.EXTRA_WALLET_ICON, walletIcon);
         context.startActivity(intent);
     }
+
+
+
+    //显示余额类型
+//    @Override
+//    public void showBalanceType(WithDrawBalance drawBalance, Map<String, String> map) {
+//        double locked = NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(drawBalance.getLocked(), "1E18"))); //已锁定
+//        double unLocked = NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(drawBalance.getUnLocked(), "1E18")));//未锁定
+//        double delegated = locked + unLocked; //已委托 = 已锁定+未锁定
+//        delegateType.setText(getString(R.string.withdraw_type_delegated));
+//        delegateAmount.setText(StringUtil.formatBalance(delegated, false));
+//
+//        //遍历map集合
+//        Set<Map.Entry<String, String>> entries = map.entrySet();
+//        Iterator<Map.Entry<String, String>> it = entries.iterator();
+//        while (it.hasNext()) {
+//            Map.Entry<String, String> entry = it.next();
+//            list.add(new WithDrawType(entry.getKey(), entry.getValue()));
+//        }
+//
+//        mPopWindowAdapter.notifyDataSetChanged();
+//    }
 }

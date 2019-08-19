@@ -277,13 +277,43 @@ public class AppFramework {
                 schema.rename("NodeInfoEntity", "NodeEntity");
 
                 schema.get("NodeEntity")
-                .transform(new RealmObjectSchema.Function() {
-                    @Override
-                    public void apply(DynamicRealmObject obj) {
-                        obj.getDynamicRealm().where("NodeEntity").findAll().deleteAllFromRealm();
-                    }
-                });
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.getDynamicRealm().where("NodeEntity").findAll().deleteAllFromRealm();
+                            }
+                        });
                 oldVersion++;
+            } else if (oldVersion == 106) {
+
+                schema.create("VerifyNodeEntity")
+                        .addField("nodeId", String.class, FieldAttribute.PRIMARY_KEY)
+                        .addField("ranking", Integer.class)
+                        .addField("name", String.class)
+                        .addField("deposit", String.class)
+                        .addField("url", String.class)
+                        .addField("ratePA", String.class)
+                        .addField("nodeStatus", String.class);
+
+                schema.create("DelegateDetailEntity")
+                        .addField("id", long.class, FieldAttribute.PRIMARY_KEY)
+                        .addField("address", String.class);
+                oldVersion++;
+
+//                personSchema
+//                        .addField("fullName", String.class, FieldAttribute.REQUIRED)
+//                        .transform(new RealmObjectSchema.Function() {
+//                            @Override
+//                            public void apply(DynamicRealmObject obj) {
+//                                obj.set("fullName", obj.getString("firstName") + " " + obj.getString("lastName"));
+//                            }
+//                        })
+//                        .removeField("firstName")
+//                        .removeField("lastName");
+//                oldVersion++;
+
+
+
             }
         }
     }

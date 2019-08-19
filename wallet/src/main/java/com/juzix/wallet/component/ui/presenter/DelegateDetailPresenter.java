@@ -4,15 +4,13 @@ import com.juzhen.framework.network.ApiErrorCode;
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.ApiSingleObserver;
-import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.DelegateDetailContract;
-import com.juzix.wallet.db.entity.DelegateAddressEntity;
-import com.juzix.wallet.db.sqlite.DelegateDao;
+import com.juzix.wallet.db.entity.DelegateDetailEntity;
+import com.juzix.wallet.db.sqlite.DelegateDetailDao;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.entity.DelegateDetail;
-import com.juzix.wallet.entity.DelegateInfo;
 import com.juzix.wallet.utils.RxUtils;
 
 import java.util.List;
@@ -39,61 +37,53 @@ public class DelegateDetailPresenter extends BasePresenter<DelegateDetailContrac
 
 
     @Override
-    public void loadDelegateDetailData(String beginSequence) {
-        getDelegateDetailData(beginSequence, walletAddress, Constants.VoteConstants.LIST_SIZE);
+    public void loadDelegateDetailData() {
+        getDelegateDetailData(walletAddress);
     }
 
     @Override
     public void MoveOut(DelegateDetail detail) {
         //移除操作，需要保存到数据库
-        Single.fromCallable(new Callable<DelegateAddressEntity>() {
+        Single.fromCallable(new Callable<DelegateDetailEntity>() {
             @Override
-            public DelegateAddressEntity call() throws Exception {
-                DelegateAddressEntity entity = new DelegateAddressEntity();
+            public DelegateDetailEntity call() throws Exception {
+                DelegateDetailEntity entity = new DelegateDetailEntity();
                 entity.setAddress(detail.getNoadeId());
+                entity.setNodeId(detail.getNoadeId());
+                entity.setStakingBlockNum(detail.getStakingBlockNum());
                 return entity;
             }
-        }).map(new Function<DelegateAddressEntity, Boolean>() {
+        }).map(new Function<DelegateDetailEntity, Boolean>() {
             @Override
-            public Boolean apply(DelegateAddressEntity entity) throws Exception {
-                return DelegateDao.insertDelegateNodeAddressInfo(entity);
+            public Boolean apply(DelegateDetailEntity entity) throws Exception {
+
+                return DelegateDetailDao.insertDelegateNodeAddressInfo(entity);
             }
         }).subscribeOn(Schedulers.io());
 
     }
 
-    private void getDelegateDetailData(String beginSequence, String walletAddress, int listSize) {
+    private void getDelegateDetailData(String walletAddress) {
         getView().showWalletInfo(walletAddress, walletName, walletIcon);
 
         ServerUtils.getCommonApi().getDelegateDetailList(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
                 .put("addr", walletAddress)
-                .put("beginSequence", beginSequence)
-                .put("listSize", listSize)
                 .build())
-                .zipWith(Single.fromCallable(new Callable<List<DelegateAddressEntity>>() {
+                .zipWith(Single.fromCallable(new Callable<List<DelegateDetailEntity>>() {
                     @Override
-                    public List<DelegateAddressEntity> call() throws Exception {
-                        return DelegateDao.getDelegateAddressInfoList();
+                    public List<DelegateDetailEntity> call() throws Exception {
+                        return DelegateDetailDao.getDelegateAddressInfoList();
                     }
-                }), new BiFunction<Response<ApiResponse<List<DelegateDetail>>>, List<DelegateAddressEntity>, Response<ApiResponse<List<DelegateDetail>>>>() {
+                }), new BiFunction<Response<ApiResponse<List<DelegateDetail>>>, List<DelegateDetailEntity>, Response<ApiResponse<List<DelegateDetail>>>>() {
                     @Override
-                    public Response<ApiResponse<List<DelegateDetail>>> apply(Response<ApiResponse<List<DelegateDetail>>> apiResponseResponse, List<DelegateAddressEntity> delegateAddressEntities) throws Exception {
+                    public Response<ApiResponse<List<DelegateDetail>>> apply(Response<ApiResponse<List<DelegateDetail>>> apiResponseResponse, List<DelegateDetailEntity> delegateAddressEntities) throws Exception {
                         DelegateDetail detail = new DelegateDetail();
                         List<DelegateDetail> delegateDetails = apiResponseResponse.body().getData();
                         if (apiResponseResponse == null || !apiResponseResponse.isSuccessful()) {
                             return Response.success(new ApiResponse(ApiErrorCode.NETWORK_ERROR));
                         } else {
-                            delegateDetails.removeAll(getDelegateList(delegateAddressEntities));
-//                        Flowable.fromIterable(delegateAddressEntities).map(new Function<DelegateAddressEntity, DelegateDetail>() {
-//
-//                            @Override
-//                            public DelegateDetail apply(DelegateAddressEntity entity) throws Exception {
-//                                detail.setNoadeId(entity.getAddress());
-//                                return detail;
-//                            }
-//                        }).toList()
-//                                .blockingGet()
 
+                            delegateDetails.removeAll(getDelegateList(delegateAddressEntities));
                             return Response.success(new ApiResponse(ApiErrorCode.SUCCESS, delegateDetails));
                         }
 
@@ -118,15 +108,16 @@ public class DelegateDetailPresenter extends BasePresenter<DelegateDetailContrac
 
     }
 
-    public List<DelegateDetail> getDelegateList(List<DelegateAddressEntity> entityList) {
+    public List<DelegateDetail> getDelegateList(List<DelegateDetailEntity> entityList) {
         DelegateDetail detail = new DelegateDetail();
-        return Flowable.fromIterable(entityList).map(new Function<DelegateAddressEntity, DelegateDetail>() {
-            @Override
-            public DelegateDetail apply(DelegateAddressEntity entity) throws Exception {
-                detail.setNoadeId(entity.getAddress());
-                return detail;
-            }
-        }).toList().blockingGet();
+        return Flowable.fromIterable(entityList)
+                .map(new Function<DelegateDetailEntity, DelegateDetail>() {
+                    @Override
+                    public DelegateDetail apply(DelegateDetailEntity entity) throws Exception {
+                        detail.setNoadeId(entity.getAddress());
+                        return detail;
+                    }
+                }).toList().blockingGet();
 
     }
 }

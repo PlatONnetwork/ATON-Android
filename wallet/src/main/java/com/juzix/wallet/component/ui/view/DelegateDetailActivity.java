@@ -60,12 +60,14 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
     TextView tv_wallet_address;
     @BindView(R.id.rlv_list)
     RecyclerView rlv_list;
-    public boolean isLoadMore = false;
-    public String beginSequence = "-1";//加载更多需要传入的值
-    private List<DelegateDetail> list = new ArrayList<>();
+    //    public boolean isLoadMore = false;
+//    public String beginSequence = "-1";//加载更多需要传入的值
+//    private List<DelegateDetail> list = new ArrayList<>();
     private DelegateDetailAdapter mDetailAdapter;
     private LinearLayoutManager linearLayoutManager;
     private String walletAddress;
+    private String walletName;
+    private String walletIcon;
 
     @Override
     protected DelegateDetailPresenter createPresenter() {
@@ -80,28 +82,28 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
         EventPublisher.getInstance().register(this);
         initView();
 
-        mPresenter.loadDelegateDetailData("-1");
+        mPresenter.loadDelegateDetailData();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-//        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
-//            @Override
-//            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-//                isLoadMore = false;
-//                mPresenter.loadDelegateDetailData(-1, Constants.VoteConstants.REFRESH_DIRECTION);
-//            }
-//        });
-
-        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
-            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-                isLoadMore = true;
-                mPresenter.loadDelegateDetailData(beginSequence);
-
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+//                isLoadMore = false;
+                mPresenter.loadDelegateDetailData();
             }
         });
+
+//        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+//            @Override
+//            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+//                isLoadMore = true;
+//                mPresenter.loadDelegateDetailData(beginSequence);
+//
+//            }
+//        });
 
         mDetailAdapter.setmOnDelegateClickListener(new DelegateDetailAdapter.OnDelegateClickListener() {
             @Override
@@ -113,7 +115,7 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
             @Override
             public void onWithDrawClick(String nodeAddress, String nodeName, String nodeIcon, String blockNum) {
                 //跳转赎回委托页面
-                WithDrawActivity.actionStart(getContext(), nodeAddress, nodeName, nodeIcon, blockNum, walletAddress);
+                WithDrawActivity.actionStart(getContext(), nodeAddress, nodeName, nodeIcon, blockNum, walletAddress, walletName, walletIcon);
             }
 
             @Override
@@ -124,7 +126,7 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
 
             @Override
             public void onLinkClick(String webSiteUrl) {
-                //todo 操作链接跳转(暂时没链接)
+                CommonHybridActivity.actionStart(getContext(), webSiteUrl);
             }
         });
 
@@ -151,10 +153,10 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
         });
 
         //添加下拉刷新的header和加载更多的footer
-//        refreshLayout.setRefreshHeader(new CustomRefreshHeader(getContext()));
-        refreshLayout.setEnableRefresh(false);
-        refreshLayout.setRefreshFooter(new CustomRefreshFooter(getContext()));
-        refreshLayout.setEnableLoadMore(true);//启用上拉加载功能
+        refreshLayout.setRefreshHeader(new CustomRefreshHeader(getContext()));
+        refreshLayout.setEnableRefresh(true);
+//        refreshLayout.setRefreshFooter(new CustomRefreshFooter(getContext()));
+        refreshLayout.setEnableLoadMore(false);//启用上拉加载功能
         refreshLayout.setEnableAutoLoadMore(false);//这个功能是本刷新库的特色功能：在列表滚动到底部时自动加载更多。 如果不想要这个功能，是可以关闭的
 
     }
@@ -162,7 +164,8 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
 
     @Override
     public String getWalletNameFromIntent() {
-        return getIntent().getStringExtra(Constants.Extra.EXTRA_WALLET_NAME);
+        walletName = getIntent().getStringExtra(Constants.Extra.EXTRA_WALLET_NAME);
+        return walletName;
     }
 
     @Override
@@ -173,7 +176,8 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
 
     @Override
     public String getWalletIconFromIntent() {
-        return getIntent().getStringExtra(Constants.Extra.EXTRA_WALLET_ICON);
+        walletIcon = getIntent().getStringExtra(Constants.Extra.EXTRA_WALLET_ICON);
+        return walletIcon;
     }
 
     @Override
@@ -185,18 +189,18 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
 
     @Override
     public void showDelegateDetailData(List<DelegateDetail> detailList) {
-        if (detailList.size() > 0) {
-            beginSequence = detailList.get(detailList.size() - 1).getSequence();
-        }
+//        if (detailList.size() > 0) {
+//            beginSequence = detailList.get(detailList.size() - 1).getSequence();
+//        }
+//
+//        if (isLoadMore) {
+//            list.addAll(detailList);
+//        } else {
+//            list.clear();
+//            list.addAll(detailList);
+//        }
 
-        if (isLoadMore) {
-            list.addAll(detailList);
-        } else {
-            list.clear();
-            list.addAll(detailList);
-        }
-
-        mDetailAdapter.notifyDataChanged(list);
+        mDetailAdapter.notifyDataChanged(detailList);
         refreshLayout.finishRefresh();
         refreshLayout.finishLoadMore();
 
@@ -230,7 +234,7 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateTransactionEvent(Event.UpdateDelegateDetailEvent event) {
         //刷新页面
-        mPresenter.loadDelegateDetailData("-1");
+        mPresenter.loadDelegateDetailData();
     }
 
 }
