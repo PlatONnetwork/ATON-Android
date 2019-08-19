@@ -67,7 +67,8 @@ public class DelegateDetailPresenter extends BasePresenter<DelegateDetailContrac
         getView().showWalletInfo(walletAddress, walletName, walletIcon);
 
         ServerUtils.getCommonApi().getDelegateDetailList(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
-                .put("addr", walletAddress)
+//                .put("addr", walletAddress)
+                .put("addr", walletAddress) //暂时是假数据
                 .build())
                 .zipWith(Single.fromCallable(new Callable<List<DelegateDetailEntity>>() {
                     @Override

@@ -24,6 +24,7 @@ import com.juzix.wallet.component.widget.CustomRefreshFooter;
 import com.juzix.wallet.component.widget.CustomRefreshHeader;
 import com.juzix.wallet.entity.DelegateDetail;
 import com.juzix.wallet.entity.VotedCandidate;
+import com.juzix.wallet.entity.WebType;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.AddressFormatUtil;
@@ -126,7 +127,7 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
 
             @Override
             public void onLinkClick(String webSiteUrl) {
-                CommonHybridActivity.actionStart(getContext(), webSiteUrl);
+                CommonHybridActivity.actionStart(getContext(), webSiteUrl, WebType.WEB_TYPE_COMMON);
             }
         });
 

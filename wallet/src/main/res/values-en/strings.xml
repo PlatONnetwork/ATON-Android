@@ -583,6 +583,6 @@
 
 
     <!--委托和赎回手续费显示-->
-
+    <string name="delegate_and_withdraw_fee">Fee:</string>
 </resources>
 
