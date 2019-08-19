@@ -118,7 +118,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
                     @Override
                     public void accept(Double balance) throws Exception {
                         if (isViewAttached()) {
-                            walletEntity.setBalance(balance);
+//                            walletEntity.setBalance(balance);
                             getView().updateWalletBalance(balance);
                             calculateFeeAndTime(percent);
                         }
@@ -130,7 +130,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
     @Override
     public void transferAllBalance() {
         if (isViewAttached() && walletEntity != null) {
-            getView().setTransferAmount(BigDecimalUtil.sub(walletEntity.getBalance(), feeAmount));
+            getView().setTransferAmount(BigDecimalUtil.sub(walletEntity.getFreeBalance(), feeAmount));
         }
     }
 
@@ -363,7 +363,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
     private boolean isBalanceEnough(String transferAmount) {
         double usedAmount = BigDecimalUtil.add(NumberParserUtils.parseDouble(transferAmount), feeAmount);
         if (walletEntity != null) {
-            return walletEntity.getBalance() >= usedAmount;
+            return walletEntity.getFreeBalance() >= usedAmount;
         }
         return false;
     }

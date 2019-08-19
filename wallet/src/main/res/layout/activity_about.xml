@@ -5,15 +5,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_ffffff"
-    android:clipToPadding="true"
-    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <com.juzix.wallet.component.widget.CommonTitleBar
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:ctb_title="@string/about"
-        tools:ctb_left_drawable="@drawable/icon_back_black" />
+        android:background="@drawable/bg_status_bar"
+        android:orientation="vertical"
+        android:paddingTop="20dp">
+
+        <com.juzix.wallet.component.widget.CommonTitleBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:ctb_left_drawable="@drawable/icon_back_black"
+            app:ctb_title="@string/about" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -47,7 +53,7 @@
 
             <TextView
                 android:id="@+id/tv_about_us"
-                style="@style/Text.000.14"
+                style="@style/Text.000.16"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:drawableRight="@drawable/icon_right_arrow"
@@ -62,7 +68,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    style="@style/Text.000.14"
+                    style="@style/Text.000.16"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -77,7 +83,7 @@
 
                 <TextView
                     android:id="@+id/tv_update"
-                    style="@style/Text.61646e.14"
+                    style="@style/Text.61646e.15"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"

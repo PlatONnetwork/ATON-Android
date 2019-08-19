@@ -1,11 +1,9 @@
 package com.juzix.wallet.component.ui.presenter;
 
-import android.text.TextUtils;
-
 import com.juzhen.framework.network.ApiErrorCode;
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
-import com.juzhen.framework.network.ApiSingleObserver;
+import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.AssetsContract;
@@ -14,9 +12,9 @@ import com.juzix.wallet.component.ui.view.BackupMnemonicPhraseActivity;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.WalletManager;
-import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.AccountBalance;
 import com.juzix.wallet.entity.Wallet;
+import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.trello.rxlifecycle2.android.FragmentEvent;
 
@@ -24,12 +22,10 @@ import org.reactivestreams.Publisher;
 import org.web3j.crypto.Credentials;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import io.reactivex.Flowable;
 import io.reactivex.Single;
-import io.reactivex.SingleSource;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
@@ -80,52 +76,37 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
     @Override
     public void fetchWalletsBalance() {
 
-//
-//        ServerUtils
-//                .getCommonApi()
-//                .getAccountBalance(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
-//                        .put("addrs", WalletManager.getInstance().getAddressList())
-//                        .build())
-//                .toFlowable()
-//                .flatMap(new Function<Response<ApiResponse<List<AccountBalance>>>, Publisher<AccountBalance>>() {
-//                    @Override
-//                    public Publisher<AccountBalance> apply(Response<ApiResponse<List<AccountBalance>>> apiResponseResponse) throws Exception {
-//                        if (apiResponseResponse != null && apiResponseResponse.isSuccessful() && apiResponseResponse.body().getResult() == ApiErrorCode.SUCCESS) {
-//                            return Flowable.fromIterable(apiResponseResponse.body().getData());
-//                        }
-//                        return Flowable.error(new Throwable());
-//                    }
-//                })
-//                .map(new Function<AccountBalance, AccountBalance>() {
-//
-//                    @Override
-//                    public AccountBalance apply(AccountBalance accountBalance) throws Exception {
-//                        double balance = WalletManager.getInstance().getWalletAmountByAddress(accountBalance.getAddr());
-//                        return accountBalance.get;
-//                    }
-//                })
-//                .doOnNext(new Consumer<AccountBalance>() {
-//                    @Override
-//                    public void accept(AccountBalance accountBalance) throws Exception {
-//
-//                    }
-//                });
-
-
-        Flowable
-                .fromIterable(mWalletList)
-                .map(new Function<Wallet, Double>() {
+        ServerUtils
+                .getCommonApi()
+                .getAccountBalance(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
+                        .put("addrs", WalletManager.getInstance().getAddressList())
+                        .build())
+                .toFlowable()
+                .flatMap(new Function<Response<ApiResponse<List<AccountBalance>>>, Publisher<AccountBalance>>() {
                     @Override
-                    public Double apply(Wallet walletEntity) throws Exception {
-                        double balance = Web3jManager.getInstance().getBalance(walletEntity.getPrefixAddress());
-                        walletEntity.setBalance(balance == 0 ? walletEntity.getBalance() : balance);
-                        return balance == 0 ? walletEntity.getBalance() : balance;
+                    public Publisher<AccountBalance> apply(Response<ApiResponse<List<AccountBalance>>> apiResponseResponse) throws Exception {
+                        if (apiResponseResponse != null && apiResponseResponse.isSuccessful() && apiResponseResponse.body().getResult() == ApiErrorCode.SUCCESS) {
+                            return Flowable.fromIterable(apiResponseResponse.body().getData());
+                        }
+                        return Flowable.error(new Throwable());
+                    }
+                })
+                .doOnNext(new Consumer<AccountBalance>() {
+                    @Override
+                    public void accept(AccountBalance accountBalance) throws Exception {
+                        WalletManager.getInstance().updateAccountBalance(accountBalance);
+                    }
+                })
+                .map(new Function<AccountBalance, Double>() {
+                    @Override
+                    public Double apply(AccountBalance accountBalance) throws Exception {
+                        return NumberParserUtils.parseDouble(accountBalance.getFree());
                     }
                 })
                 .reduce(new BiFunction<Double, Double, Double>() {
                     @Override
-                    public Double apply(Double aDouble, Double aDouble2) throws Exception {
-                        return aDouble + aDouble2;
+                    public Double apply(Double balance1, Double banalce2) throws Exception {
+                        return BigDecimalUtil.add(balance1, banalce2);
                     }
                 })
                 .toObservable()
@@ -136,9 +117,10 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
                     public void accept(Double balance) {
                         if (isViewAttached()) {
                             getView().showTotalBalance(balance);
-                            Wallet walletEntity = WalletManager.getInstance().getSelectedWallet();
-                            if (walletEntity != null) {
-                                getView().showBalance(walletEntity.getBalance());
+                            Wallet wallet = WalletManager.getInstance().getSelectedWallet();
+                            if (wallet != null) {
+                                getView().showFreeBalance(wallet.getFreeBalance());
+                                getView().showLockBalance(wallet.getLockBalance());
                             }
                             getView().finishRefresh();
                         }

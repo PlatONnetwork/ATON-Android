@@ -26,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.juzhen.framework.util.NumberParserUtils;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
@@ -47,6 +48,7 @@ import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
+import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
 import com.juzix.wallet.utils.StringUtil;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -455,15 +457,13 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
     @Override
     public void showTotalBalance(double totalBalance) {//显示总资产
-//        tvTotalAssetsAmount.setText(totalBalance > 0 ? NumberParserUtils.getPrettyBalance(totalBalance) : "0.00");
-        tvTotalAssetsAmount.setText(totalBalance > 0 ? StringUtil.formatBalance(totalBalance, false) : "0.00");
+        tvTotalAssetsAmount.setText(StringUtil.formatBalance(BigDecimalUtil.div(totalBalance, 1E18)));
     }
 
     @Override
-    public void showBalance(double balance) {//当前钱包的资产
-//        tvWalletAmount.setText(string(R.string.amount_with_unit, balance > 0 ? NumberParserUtils.getPrettyBalance(balance) : "0.00"));
-        tvWalletAmount.setText(string(R.string.amount_with_unit, balance > 0 ? StringUtil.formatBalance(balance, false) : "0.00"));
-        tvRestrictedAmount.setText(getRestrictedAmount(string(R.string.restricted_amount_with_unit, "0.00")));
+    public void showFreeBalance(double balance) {//当前钱包的资产
+
+        tvWalletAmount.setText(string(R.string.amount_with_unit, StringUtil.formatBalance(BigDecimalUtil.div(balance, 1E18))));
 
         if (vpContent.getCurrentItem() == TAB2) {
             SendTransactionFragment sendTransactionFragment = (SendTransactionFragment) mTabAdapter.getItem(TAB2);
@@ -471,6 +471,11 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
                 sendTransactionFragment.updateWalletBalance(balance);
             }
         }
+    }
+
+    @Override
+    public void showLockBalance(double balance) {
+        tvRestrictedAmount.setText(getRestrictedAmount(string(R.string.restricted_amount_with_unit, "0.00")));
     }
 
     @Override
@@ -487,7 +492,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         }
         ivWalletAvatar.setImageResource(resId);
         tvWalletName.setText(wallet.getName());
-        showBalance(wallet.getBalance());
+        showFreeBalance(wallet.getFreeBalance());
     }
 
     @Override
