@@ -31,6 +31,7 @@ import com.juzix.wallet.component.widget.CommonTitleBar;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.component.widget.TextViewDrawable;
 import com.juzix.wallet.entity.VerifyNodeDetail;
+import com.juzix.wallet.entity.WebType;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.AddressFormatUtil;
@@ -166,7 +167,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        CommonHybridActivity.actionStart(getContext(), webSite.getText().toString());
+                        CommonHybridActivity.actionStart(getContext(), webSite.getText().toString(), WebType.WEB_TYPE_COMMON);
 //                        Uri uri = Uri.parse("https://www.baidu.com");
 //                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 //                        startActivity(intent);
@@ -181,7 +182,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
 //                        Uri uri = Uri.parse("https://www.baidu.com");
 //                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 //                        startActivity(intent);
-                        CommonHybridActivity.actionStart(getContext(), websiteUrl);
+                        CommonHybridActivity.actionStart(getContext(), websiteUrl,WebType.WEB_TYPE_COMMON);
                     }
                 });
 
