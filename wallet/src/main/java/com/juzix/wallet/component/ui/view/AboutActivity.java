@@ -22,6 +22,7 @@ import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
 import com.juzix.wallet.engine.VersionManager;
 import com.juzix.wallet.engine.VersionUpdate;
 import com.juzix.wallet.entity.VersionInfo;
+import com.juzix.wallet.entity.WebType;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.ShareUtil;
 import com.tbruyelle.rxpermissions2.RxPermissions;
@@ -59,6 +60,11 @@ public class AboutActivity extends BaseActivity {
         checkVersion();
     }
 
+    @Override
+    protected boolean immersiveBarViewEnabled() {
+        return true;
+    }
+
     private void initViews() {
 
         String versionName = AndroidUtil.getVersionName(this);
@@ -73,7 +79,7 @@ public class AboutActivity extends BaseActivity {
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        ShareUtil.shareUrl(getContext(), "https://www.platon.network");
+                        CommonHybridActivity.actionStart(getContext(), "https://www.platon.network", WebType.WEB_TYPE_COMMON);
                     }
                 });
 
