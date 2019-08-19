@@ -44,12 +44,14 @@ public class WalletListPop extends PopupWindow {
     private int mDuration = 100;
     private int mContentHeight;
     private View mContentView;
+    private OnWalletItemClickListener mWalletItemClickListener;
 
-    public WalletListPop(Context context, List<Wallet> walletList) {
+    public WalletListPop(Context context, List<Wallet> walletList, OnWalletItemClickListener walletItemClickListener) {
         super(context);
         this.mWalletList = walletList;
         this.mContext = context;
-        this.mContentHeight = walletList.size() > 5 ? DensityUtil.dp2px(context, 390) : DensityUtil.dp2px(context, 65) * walletList.size();
+        this.mWalletItemClickListener = walletItemClickListener;
+        this.mContentHeight = walletList.size() > 5 ? DensityUtil.dp2px(context, 390) + DensityUtil.dp2px(context, 20) : DensityUtil.dp2px(context, 65) * walletList.size() + DensityUtil.dp2px(context, 20);
 
         View rootView = LayoutInflater.from(context).inflate(R.layout.pop_select_wallets, null);
 
@@ -108,6 +110,10 @@ public class WalletListPop extends PopupWindow {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mWalletListAdapter.notifyDataSetChanged();
+                if (mWalletItemClickListener != null) {
+                    mWalletItemClickListener.onWalletItemClick(position);
+                    dismiss();
+                }
             }
         });
     }
@@ -205,7 +211,7 @@ public class WalletListPop extends PopupWindow {
 
             viewHolder.walletNameTv.setText(viewType == VIEW_TYPE_ALL_WALLET ? parent.getContext().getString(R.string.msg_all_wallets) : wallet.getName());
 
-            int avatar = viewType == VIEW_TYPE_ALL_WALLET ? R.drawable.icon_all_wallets : RUtils.id(wallet.getAvatar());
+            int avatar = viewType == VIEW_TYPE_ALL_WALLET ? R.drawable.icon_all_wallets : RUtils.drawable(wallet.getAvatar());
             if (avatar != -1) {
                 viewHolder.walletAvatarIv.setImageResource(avatar);
             }
@@ -235,5 +241,9 @@ public class WalletListPop extends PopupWindow {
                 selectedIv = convertView.findViewById(R.id.iv_selected);
             }
         }
+    }
+
+    public interface OnWalletItemClickListener {
+        void onWalletItemClick(int position);
     }
 }

@@ -33,12 +33,12 @@ public class TransactionRecordsPresenter extends BasePresenter<TransactionRecord
     }
 
     @Override
-    public void fetchTransactions(String direction) {
+    public void fetchTransactions(String direction,List<String> addressList) {
 
         ServerUtils
                 .getCommonApi()
                 .getTransactionList(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
-                        .put("walletAddrs", WalletManager.getInstance().getAddressList())
+                        .put("walletAddrs", addressList)
                         .put("beginSequence", getBeginSequenceByDirection(direction))
                         .put("listSize", 20)
                         .put("direction", direction)

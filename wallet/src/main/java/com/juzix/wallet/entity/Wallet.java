@@ -4,7 +4,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.db.entity.WalletEntity;
+
+import retrofit2.http.PUT;
 
 public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
 
@@ -28,10 +31,7 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
      * 更新时间(更新钱包信息)
      */
     protected long updateTime;
-    /**
-     * 钱包余额
-     */
-    protected double balance;
+
     /**
      * 钱包头图
      */
@@ -53,6 +53,8 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
      */
     protected String chainId;
 
+    protected AccountBalance accountBalance;
+
     public Wallet() {
     }
 
@@ -62,12 +64,12 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
         address = in.readString();
         createTime = in.readLong();
         updateTime = in.readLong();
-        balance = in.readDouble();
         avatar = in.readString();
         key = in.readString();
         keystorePath = in.readString();
         mnemonic = in.readString();
         chainId = in.readString();
+        accountBalance = in.readParcelable(AccountBalance.class.getClassLoader());
     }
 
     public Wallet(Builder builder) {
@@ -76,12 +78,12 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
         this.address = builder.address;
         this.createTime = builder.createTime;
         this.updateTime = builder.updateTime;
-        this.balance = builder.balance;
         this.avatar = builder.avatar;
         this.key = builder.key;
         this.keystorePath = builder.keystorePath;
         this.mnemonic = builder.mnemonic;
         this.chainId = builder.chainId;
+        accountBalance = builder.accountBalance;
     }
 
     @Override
@@ -91,12 +93,12 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
         dest.writeString(address);
         dest.writeLong(createTime);
         dest.writeLong(updateTime);
-        dest.writeDouble(balance);
         dest.writeString(avatar);
         dest.writeString(key);
         dest.writeString(keystorePath);
         dest.writeString(mnemonic);
         dest.writeString(chainId);
+        dest.writeParcelable(accountBalance, flags);
     }
 
     @Override
@@ -145,11 +147,6 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
         this.avatar = avatar;
     }
 
-    public Wallet updateBalance(double balance) {
-        this.balance = balance;
-        return this;
-    }
-
     public void setUuid(String uuid) {
         this.uuid = uuid;
     }
@@ -190,14 +187,6 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
         this.updateTime = updateTime;
     }
 
-    public double getBalance() {
-        return balance;
-    }
-
-    public void setBalance(double balance) {
-        this.balance = balance;
-    }
-
     public String getChainId() {
         return chainId;
     }
@@ -228,6 +217,22 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
 
     public void setMnemonic(String mnemonic) {
         this.mnemonic = mnemonic;
+    }
+
+    public AccountBalance getAccountBalance() {
+        return accountBalance;
+    }
+
+    public void setAccountBalance(AccountBalance accountBalance) {
+        this.accountBalance = accountBalance;
+    }
+
+    public double getFreeBalance() {
+        return accountBalance == null ? 0D : NumberParserUtils.parseDouble(accountBalance.getFree());
+    }
+
+    public double getLockBalance() {
+        return accountBalance == null ? 0D : NumberParserUtils.parseDouble(accountBalance.getLock());
     }
 
     public String getAddressWithoutPrefix() {
@@ -279,7 +284,6 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
                 ", address='" + address + '\'' +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
-                ", balance=" + balance +
                 ", avatar='" + avatar + '\'' +
                 ", chainId='" + chainId + '\'' +
                 '}';
@@ -325,12 +329,12 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
         private String address;
         private long createTime;
         private long updateTime;
-        private double balance;
         private String avatar;
         private String key;
         private String keystorePath;
         private String mnemonic;
         private String chainId;
+        private AccountBalance accountBalance;
 
         public Builder uuid(String uuid) {
             this.uuid = uuid;
@@ -357,11 +361,6 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
             return this;
         }
 
-        public Builder balance(double balance) {
-            this.balance = balance;
-            return this;
-        }
-
         public Builder avatar(String avatar) {
             this.avatar = avatar;
             return this;
@@ -384,6 +383,11 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
 
         public Builder chainId(String chainId) {
             this.chainId = chainId;
+            return this;
+        }
+
+        public Builder accountBalance(AccountBalance accountBalance) {
+            this.accountBalance = accountBalance;
             return this;
         }
 

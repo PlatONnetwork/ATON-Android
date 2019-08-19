@@ -574,10 +574,15 @@
     <!--赎回提示语-->
     <string name="withdraw_operation_tips">Exceeded the available amount and cannot be submitted</string>
 
-    <!--委托不可操作提示-->
+    <string name="msg_support_feedback">Support and feedback</string>
+    <string name="msg_all_wallets">All Wallets</string>
+    <string name="action_continue">Next</string>
+    <string name="msg_agree_agreement">I have read and agree to the above agreement</string>
+
     <string name="delegate_no_click">Please withdraw first "Released delegate</string>
 
+
     <!--委托和赎回手续费显示-->
-    <string name="delegate_and_withdraw_fee">Fee:</string>
+
 </resources>
 

@@ -1,11 +1,13 @@
 package com.juzix.wallet.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.utils.BigDecimalUtil;
 
-public class AccountBalance {
+public class AccountBalance implements Parcelable {
     /**
      * 钱包地址
      */
@@ -22,6 +24,26 @@ public class AccountBalance {
      */
     private String lock;
 
+    public AccountBalance() {
+    }
+
+    protected AccountBalance(Parcel in) {
+        addr = in.readString();
+        free = in.readString();
+        lock = in.readString();
+    }
+
+    public static final Creator<AccountBalance> CREATOR = new Creator<AccountBalance>() {
+        @Override
+        public AccountBalance createFromParcel(Parcel in) {
+            return new AccountBalance(in);
+        }
+
+        @Override
+        public AccountBalance[] newArray(int size) {
+            return new AccountBalance[size];
+        }
+    };
 
     public String getAddr() {
         return addr;
@@ -75,4 +97,15 @@ public class AccountBalance {
         }
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(addr);
+        dest.writeString(free);
+        dest.writeString(lock);
+    }
 }

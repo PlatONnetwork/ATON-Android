@@ -588,9 +588,13 @@
     <!--赎回提示语-->
     <string name="withdraw_operation_tips">超出可赎回数量，无法提交</string>
 
+    <string name="action_continue">继续</string>
+    <string name="msg_agree_agreement">I have read and agree to the above agreement</string>
+
     <!--委托不可操作提示-->
     <string name="delegate_no_click">请先赎回"已解除委托"</string>
 
     <!--委托和赎回手续费显示-->
     <string name="delegate_and_withdraw_fee">手续费:</string>
+
 </resources>

@@ -7,6 +7,7 @@ import com.juzix.wallet.app.CustomThrowable;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.db.entity.WalletEntity;
 import com.juzix.wallet.db.sqlite.WalletDao;
+import com.juzix.wallet.entity.AccountBalance;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.JZWalletUtil;
@@ -28,6 +29,7 @@ import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import io.reactivex.Single;
+import retrofit2.http.POST;
 
 
 public class WalletManager {
@@ -84,6 +86,21 @@ public class WalletManager {
         if (!mWalletList.contains(walletEntity)) {
             mWalletList.add(walletEntity);
         }
+    }
+
+    public void updateAccountBalance(AccountBalance accountBalance) {
+        if (mWalletList.isEmpty() || accountBalance == null) {
+            return;
+        }
+
+        int position = getPositionByAddress(accountBalance.getPrefixAddress());
+
+        if (position == -1) {
+            return;
+        }
+
+        Wallet wallet = mWalletList.get(position);
+        wallet.setAccountBalance(accountBalance);
     }
 
     public List<String> getAddressList() {
@@ -157,7 +174,7 @@ public class WalletManager {
         if (!mWalletList.isEmpty()) {
             for (Wallet walletEntity : mWalletList) {
                 if (!TextUtils.isEmpty(walletAddress) && walletAddress.equals(walletEntity.getPrefixAddress())) {
-                    return walletEntity.getBalance();
+                    return walletEntity.getFreeBalance();
                 }
 
             }
@@ -175,7 +192,7 @@ public class WalletManager {
         if (!mWalletList.isEmpty()) {
             for (int i = 0; i < mWalletList.size(); i++) {
                 Wallet walletEntity = mWalletList.get(i);
-                if (walletEntity.getBalance() > 0) {
+                if (walletEntity.getFreeBalance() > 0) {
                     return walletEntity;
                 }
             }
@@ -371,7 +388,7 @@ public class WalletManager {
             }
         }
         if (position != -1) {
-            mWalletList.get(position).setBalance(balance);
+//            mWalletList.get(position).setBalance(balance);
         }
     }
 
@@ -443,6 +460,21 @@ public class WalletManager {
                 })
                 .firstElement()
                 .defaultIfEmpty(false)
+                .blockingGet();
+    }
+
+    private int getPositionByAddress(String address) {
+        return Flowable
+                .range(0, mWalletList.size())
+                .filter(new Predicate<Integer>() {
+                    @Override
+                    public boolean test(Integer integer) throws Exception {
+                        return mWalletList.get(integer).getPrefixAddress().equals(address);
+                    }
+                })
+                .firstElement()
+                .defaultIfEmpty(-1)
+                .onErrorReturnItem(-1)
                 .blockingGet();
     }
 

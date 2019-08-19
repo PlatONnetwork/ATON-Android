@@ -23,9 +23,9 @@
     </FrameLayout>
 
     <TextView
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="2dp"
         android:id="@+id/tv_navigation"
-        style="@style/Text.cdcdcd.9"
+        style="@style/Text.cdcdcd.12"
         android:textColor="@color/color_nav_text"
         android:text="dfddd"/>
 

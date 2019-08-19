@@ -22,7 +22,9 @@ import android.widget.LinearLayout;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
+import android.widget.TextView;
 
+import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.adapter.TransactionAdapter;
 import com.juzix.wallet.component.adapter.base.RecycleHolder;
@@ -46,6 +48,8 @@ import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -65,6 +69,10 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
     LinearLayout layoutSelectWallets;
     @BindView(R.id.iv_arrow)
     ImageView ivArrow;
+    @BindView(R.id.iv_selected_wallet_avatar)
+    ImageView ivSelectedWalletAvatar;
+    @BindView(R.id.iv_selected_wallet_name)
+    TextView tvSelectedWalletName;
 
     private Unbinder unbinder;
     private TransactionAdapter mTransactionAdapter;
@@ -114,14 +122,14 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
         layoutRefresh.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                mPresenter.fetchTransactions(TransactionRecordsPresenter.DIRECTION_NEW);
+                mPresenter.fetchTransactions(TransactionRecordsPresenter.DIRECTION_NEW, WalletManager.getInstance().getAddressList());
             }
         });
 
         layoutRefresh.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-                mPresenter.fetchTransactions(TransactionRecordsPresenter.DIRECTION_OLD);
+                mPresenter.fetchTransactions(TransactionRecordsPresenter.DIRECTION_OLD, WalletManager.getInstance().getAddressList());
             }
         });
 
@@ -132,7 +140,15 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
                     List<Wallet> walletList = new ArrayList<>();
                     walletList.add(Wallet.getNullInstance());
                     walletList.addAll(WalletManager.getInstance().getWalletList());
-                    mWalletListPop = new WalletListPop(TransactionRecordsActivity.this, walletList);
+                    mWalletListPop = new WalletListPop(TransactionRecordsActivity.this, walletList, new WalletListPop.OnWalletItemClickListener() {
+                        @Override
+                        public void onWalletItemClick(int position) {
+                            Wallet wallet = walletList.get(position);
+                            ivSelectedWalletAvatar.setImageResource(wallet.isNull() ? R.drawable.icon_all_wallets : RUtils.drawable(wallet.getAvatar()));
+                            tvSelectedWalletName.setText(wallet.isNull() ? getString(R.string.msg_all_wallets) : wallet.getName());
+                            mPresenter.fetchTransactions(TransactionRecordsPresenter.DIRECTION_NEW, position == 0 ? WalletManager.getInstance().getAddressList() : Arrays.asList(wallet.getPrefixAddress()));
+                        }
+                    });
                 }
                 if (mWalletListPop.isShowing()) {
                     mWalletListPop.dismiss();

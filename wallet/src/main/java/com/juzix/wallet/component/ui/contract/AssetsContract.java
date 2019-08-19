@@ -23,7 +23,9 @@ public class AssetsContract {
 
         void showCurrentItem(int index);
 
-        void showBalance(double balance);
+        void showFreeBalance(double balance);
+
+        void showLockBalance(double balance);
 
         void setArgument(Wallet entity);
 

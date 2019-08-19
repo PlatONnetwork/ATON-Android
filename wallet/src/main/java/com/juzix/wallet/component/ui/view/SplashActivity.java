@@ -13,10 +13,13 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowInsets;
 import android.widget.ImageView;
+
+import com.juzix.wallet.BuildConfig;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.engine.WalletManager;
+import com.juzix.wallet.entity.WebType;
 import com.juzix.wallet.utils.CommonUtil;
 
 public class SplashActivity extends BaseActivity {
@@ -62,6 +65,12 @@ public class SplashActivity extends BaseActivity {
         mDecorView.postDelayed(new Runnable() {
             @Override
             public void run() {
+                if (AppSettings.getInstance().isFirstEnter()) {
+                    CommonHybridActivity.actionStart(SplashActivity.this, BuildConfig.URL_SERVICE_AGREEMENT, WebType.WEB_TYPE_AGREEMENT);
+                    SplashActivity.this.finish();
+                    return;
+                }
+
                 if (AppSettings.getInstance().getOperateMenuFlag()) {
                     OperateMenuActivity.actionStart(SplashActivity.this);
                     SplashActivity.this.finish();

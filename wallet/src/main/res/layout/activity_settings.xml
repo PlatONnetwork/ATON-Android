@@ -33,7 +33,7 @@
 
         <TextView
             android:id="@+id/tv_node_setting"
-            style="@style/Text.000.14"
+            style="@style/Text.000.16"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:drawableRight="@drawable/icon_right_arrow"
@@ -48,7 +48,7 @@
             android:orientation="horizontal">
 
             <TextView
-                style="@style/Text.000.14"
+                style="@style/Text.000.16"
                 android:text="@string/face_touch_id" />
 
             <android.support.v4.widget.Space
@@ -74,7 +74,7 @@
             android:orientation="horizontal">
 
             <TextView
-                style="@style/Text.000.14"
+                style="@style/Text.000.16"
                 android:text="@string/language" />
 
             <android.support.v4.widget.Space
@@ -84,7 +84,7 @@
 
             <TextView
                 android:id="@+id/tv_language"
-                style="@style/Text.61646e.14"
+                style="@style/Text.61646e.15"
                 android:drawableRight="@drawable/icon_right_arrow"
                 android:drawablePadding="4dp"
                 tools:text="中文" />
