@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -65,6 +66,7 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
 
         if (!TextUtils.isEmpty(detail.getReleased())) {
             holder.ll_delegate.setBackgroundColor(ContextCompat.getColor(mContext, R.color.color_66DCDFE8));
+            holder.iv_detail_delegate.setImageResource(R.drawable.icon_delegate);
         }
 
 
@@ -78,6 +80,7 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
             holder.tv_show_withdraw.setText(R.string.node_withdraw_delegate);
 
         }
+
 
         if (TextUtils.isEmpty(detail.getLocked()) && TextUtils.isEmpty(detail.getUnLocked()) && TextUtils.isEmpty(detail.getReleased()) && TextUtils.isEmpty(detail.getRedeem())) {
             //操作移除列表
@@ -98,6 +101,8 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
             //按钮置灰并不可点击
             holder.ll_withdraw.setOnClickListener(null);
             holder.ll_withdraw.setBackgroundColor(ContextCompat.getColor(mContext, R.color.color_66DCDFE8));
+            holder.iv_detail_un_delegate.setImageResource(R.drawable.icon_undelegate);
+
 
         } else {
             //操作赎回委托
@@ -124,6 +129,8 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
                             if (!TextUtils.isEmpty(detail.getReleased())) {
                                 //提示，不可点击
                                 ToastUtil.showLongToast(mContext, R.string.delegate_no_click);
+
+
 
                             } else {
                                 mOnDelegateClickListener.onDelegateClick(detail.getNoadeId(), detail.getNodeName(), detail.getUrl());
@@ -197,7 +204,10 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
         TextView tv_show_delegate;
         @BindView(R.id.tv_show_withdraw)
         TextView tv_show_withdraw;
-
+        @BindView(R.id.iv_detail_un_delegate)
+        ImageView iv_detail_un_delegate;
+        @BindView(R.id.iv_detail_delegate)
+        ImageView iv_detail_delegate;
 
         public ViewHolder(View view) {
             super(view);

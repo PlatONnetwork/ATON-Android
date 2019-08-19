@@ -3,6 +3,7 @@ package com.juzix.wallet.component.adapter;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.juzhen.framework.util.NumberParserUtils;
@@ -17,6 +18,7 @@ import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.DateUtil;
 import com.juzix.wallet.utils.GlideUtils;
+import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
 
 import org.w3c.dom.Text;
@@ -41,7 +43,8 @@ public class DelegateRecordAdapter extends CommonAdapter<Transaction> {
     @Override
     protected void convert(Context context, ViewHolder viewHolder, Transaction item, int position) {
         CircleImageView imageView = viewHolder.getView(R.id.iv_total_delegate);
-        GlideUtils.loadRound(context, item.getUrl(), imageView);
+        changeImageViewIcon(context, imageView, item);
+
         viewHolder.setText(R.id.tv_name_node, item.getNodeName());//委托节点名称
         viewHolder.setText(R.id.tv_address_node, AddressFormatUtil.formatAddress(item.getNodeId())); //节点地址
         TextView tv_number = viewHolder.getView(R.id.tv_number);
@@ -51,7 +54,7 @@ public class DelegateRecordAdapter extends CommonAdapter<Transaction> {
 
 //        viewHolder.setText(R.id.tv_state, item.getDelegateStatus()); //状态
         TextView tv = viewHolder.getView(R.id.tv_state);
-//        changeTextColor(context, tv, item.getDelegateStatus());
+//        changeTextColor(context, tv, item.getDelegateSt  atus());
         changeTextStateAndColor(context, tv, item);
 
 //        viewHolder.setText(R.id.tv_delegate_time, DateUtil.format(NumberParserUtils.parseLong(item.getDelegateTime()), DateUtil.DATETIME_FORMAT_PATTERN_WITH_SECOND)); //委托时间
@@ -62,24 +65,19 @@ public class DelegateRecordAdapter extends CommonAdapter<Transaction> {
         viewHolder.setText(R.id.tv_wallet_address, item.getWalletName() + ((AddressFormatUtil.formatAddress(item.getFrom()))));//钱包名称+钱包地址
     }
 
-//    private void changeTextColor(Context context, TextView tv, String delegateStatus) {
-//        switch (delegateStatus) {
-//            case CONFIRM:
-//            case REDEEM:
-//                tv.setTextColor(ContextCompat.getColorStateList(context, R.color.color_4a90e2));
-//                break;
-//            case DELEGATESUCC:
-//            case REDEEMSUCC:
-//                tv.setTextColor(ContextCompat.getColorStateList(context, R.color.color_19a20e));
-//                break;
-//            case DELEGATEFAIL:
-//            case REDEEMFAIL:
-//                tv.setTextColor(ContextCompat.getColorStateList(context, R.color.color_f5302c));
-//                break;
-//            default:
-//                break;
-//        }
-//    }
+    private void changeImageViewIcon(Context context, ImageView iv, Transaction model) {
+        switch (model.getTxType()) {
+            case DELEGATE:
+                iv.setImageResource(R.drawable.icon_delegate);
+                break;
+            case UNDELEGATE:
+                iv.setImageResource(R.drawable.icon_undelegate);
+                break;
+            default:
+                break;
+        }
+
+    }
 
     private void changeTextStateAndColor(Context context, TextView tv, Transaction model) {
         switch (model.getTxType()) {

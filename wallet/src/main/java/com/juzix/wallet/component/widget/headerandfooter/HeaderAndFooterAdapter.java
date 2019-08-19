@@ -106,7 +106,7 @@ public class HeaderAndFooterAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             return mHeaderViewInfos.get(position).itemViewType;
         }
 
-        //如果当前item是HeaderView，则返回HeaderView对应的itemViewType。
+        //如果当前item是footView，则返回footView对应的itemViewType。
         if (isFooter(position)) {
             return mFooterViewInfos.get(position - mHeaderViewInfos.size() - mAdapter.getItemCount()).itemViewType;
         }
@@ -227,6 +227,7 @@ public class HeaderAndFooterAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     private void addFooterView(View view, int viewType) {
+        mFooterViewInfos.clear();
         // 包装FooterView数据并添加到列表
         FixedViewInfo info = new FixedViewInfo();
         info.view = view;

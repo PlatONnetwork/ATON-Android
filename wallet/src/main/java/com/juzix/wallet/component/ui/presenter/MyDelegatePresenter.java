@@ -57,7 +57,9 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
 
     private void getMyDelegateData(String[] addressList) {
         ServerUtils.getCommonApi().getMyDelegateList(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder().
-                put("walletAddrs", addressList).build())
+                put("walletAddrs", new String[]{"0x493301712671ada506ba6ca7891f436d29185822",
+                        "0x493301712671ada506ba6ca7891f436d29185823"})
+                .build())
                 .compose(RxUtils.bindToParentLifecycleUtilEvent(getView(), FragmentEvent.STOP))
                 .compose(RxUtils.getSingleSchedulerTransformer())
 //                .doOnSubscribe(new Consumer<Disposable>() {
@@ -82,8 +84,6 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                         if (isViewAttached()) {
                             if (infoList != null) {
                                 getView().showMyDelegateData(getWalletIconByAddress(infoList));
-                                //获取总计委托金额
-                                getTotalDelegateAmount(infoList);
                                 //获取钱包余额
 //                                getWalletBalance(infoList);
                                 //获取钱包地址的数组
@@ -100,31 +100,7 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                 });
 
     }
-    private void getTotalDelegateAmount(List<DelegateInfo> infoList) {
-        Flowable.fromIterable(infoList)
-                .map(new Function<DelegateInfo, Double>() {
-                    @Override
-                    public Double apply(DelegateInfo delegateInfo) throws Exception {
-                        return NumberParserUtils.parseDouble(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(delegateInfo.getDelegate(), "1E18"))));
-                    }
-                })
-                .reduce(new BiFunction<Double, Double, Double>() {
-                    @Override
-                    public Double apply(Double aDouble, Double aDouble2) throws Exception {
-                        return aDouble + aDouble2;
-                    }
-                })
-                .toObservable()
-                .compose(bindUntilEvent(FragmentEvent.STOP))
-                .subscribe(new Consumer<Double>() {
-                    @Override
-                    public void accept(Double aDouble) throws Exception {
-                        if (isViewAttached()) {
-                            getView().showTotalDelegate(aDouble);
-                        }
-                    }
-                });
-    }
+
 
 
     //根据钱包地址获取钱包的头像和名称并赋值

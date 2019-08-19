@@ -591,5 +591,6 @@
     <!--委托不可操作提示-->
     <string name="delegate_no_click">请先赎回"已解除委托"</string>
 
-
+    <!--委托和赎回手续费显示-->
+    <string name="delegate_and_withdraw_fee">手续费:</string>
 </resources>

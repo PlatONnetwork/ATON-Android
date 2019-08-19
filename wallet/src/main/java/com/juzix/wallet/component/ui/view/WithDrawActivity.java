@@ -107,7 +107,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         initView();
         //初始化请求数据
         mPresenter.showWalletInfo();
-        mPresenter.getBalanceType("", "");
+        mPresenter.getBalanceType();
     }
 
     private void initView() {
@@ -215,6 +215,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
             withdrawAmount.setText(item.getValue());
             withdrawAmount.setFocusableInTouchMode(false);
             withdrawAmount.setFocusable(false);
+            mPresenter.getWithDrawGasPrice();//已解除不能操作，所以需要在获取一次手续费
         }
         delegateAmount.setText(StringUtil.formatBalance(NumberParserUtils.parseDouble(item.getValue()), false));
 
@@ -241,6 +242,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         public void onTextChanged(CharSequence s, int start, int before, int count) {//改变后
             mPresenter.checkWithDrawAmount(s.toString().trim());
             mPresenter.updateWithDrawButtonState();
+            mPresenter.getWithDrawGasPrice();
 
             String amountMagnitudes = StringUtil.getAmountMagnitudes(getContext(), s.toString().trim());
             etWalletAmount.setText(amountMagnitudes);
@@ -335,7 +337,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         return withdrawAmount.getText().toString().trim();
     }
 
-    //获取选中的类型
+    //获取选中的类型数量
     @Override
     public String getChooseType() {
         return delegateAmount.getText().toString().replaceAll(",", ""); //这里要把逗号去掉，不然返回是0
@@ -360,6 +362,18 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
 
     }
 
+    //显示手续费
+    @Override
+    public void showWithDrawGasPrice(String gas) {
+        fee.setText(string(R.string.amount_with_unit, gas));
+    }
+
+    //获取手续费
+    @Override
+    public String getGas() {
+        return fee.getText().toString();
+    }
+
     @Override
     protected boolean immersiveBarViewEnabled() {
         return true;
@@ -376,7 +390,6 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         intent.putExtra(Constants.Extra.EXTRA_WALLET_ICON, walletIcon);
         context.startActivity(intent);
     }
-
 
 
     //显示余额类型

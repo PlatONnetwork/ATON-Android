@@ -185,22 +185,6 @@ public class WalletManager {
 
     }
 
-    /**
-     * 获取锁仓余额信息
-     */
-    public Single<RestrictingItem> getRestrictingInfo(String walletAddess) {
-        return Single.fromCallable(new Callable<RestrictingItem>() {
-            @Override
-            public RestrictingItem call() throws Exception {
-                RestrictingPlanContract planContract = RestrictingPlanContract.load(Web3jManager.getInstance().getWeb3j(), new DefaultGasProvider());
-                BaseResponse<RestrictingItem> baseResponse = planContract.getRestrictingInfo(walletAddess).send();
-                if (baseResponse.status) {
-                    return baseResponse.data;
-                }
-                return null;
-            }
-        });
-    }
 
     public List<Wallet> getWalletList() {
         return mWalletList;

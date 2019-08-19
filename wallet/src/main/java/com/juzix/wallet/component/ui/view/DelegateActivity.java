@@ -151,7 +151,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                     public void accept(Object o) {
                         //点击全部
                         et_amount.setText(amount.getText().toString().replace(",", ""));
-                        Log.d("DelegateActivity11111111", " ======================" + amount.getText().toString());
+                        Log.d("DelegateActivity1111", " ======================" + amount.getText().toString());
                     }
                 });
 
@@ -218,8 +218,11 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
 
+            Log.d("DelegateActivity1111", " ==========textwatcher============" + s.toString().trim());
+
             mPresenter.checkDelegateAmount(s.toString().trim());
             mPresenter.updateDelegateButtonState();
+            mPresenter.getGasPrice(chooseType); //获取手续费
 
             String amountMagnitudes = StringUtil.getAmountMagnitudes(getContext(), s.toString().trim());
             inputTips.setText(amountMagnitudes);
@@ -283,7 +286,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
 
     @Override
     public String getChooseBalance() {
-        return amount.getText().toString().replaceAll(",","");
+        return amount.getText().toString().replaceAll(",", "");
     }
 
     /**
@@ -383,6 +386,21 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                 .build();
 
         TransactionDetailActivity.actionStart(getContext(), transaction, from);
+    }
+
+    /**
+     * 显示手续费
+     *
+     * @param gas
+     */
+    @Override
+    public void showGasPrice(String gas) {
+        fee.setText(string(R.string.amount_with_unit, gas));
+    }
+
+    @Override
+    public String getGas() {
+        return fee.getText().toString();
     }
 
     /**
