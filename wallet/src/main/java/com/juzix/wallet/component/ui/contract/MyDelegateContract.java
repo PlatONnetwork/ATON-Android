@@ -16,7 +16,6 @@ public class MyDelegateContract {
 
         void showMyDelegateDataFailed();
 
-        void showTotalDelegate(double total);
 
     }
 

@@ -259,16 +259,36 @@
                         android:textColor="@color/color_ff4747"
                         android:textSize="12sp" />
 
-                    <TextView
-                        android:id="@+id/tv_wallet_fee"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:layout_marginTop="5dp"
-                        android:gravity="right"
-                        android:text="Fee:0.00LAT"
-                        android:textColor="@color/color_b6bbd0"
-                        android:textSize="13sp" />
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginTop="5dp"
+                            android:gravity="right"
+                            android:text="@string/delegate_and_withdraw_fee"
+                            android:textColor="@color/color_b6bbd0"
+                            android:textSize="13sp" />
+
+
+                        <TextView
+                            android:id="@+id/tv_wallet_fee"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginTop="5dp"
+                            android:gravity="right"
+                            android:text="0.00LAT"
+                            android:textColor="@color/color_b6bbd0"
+                            android:textSize="13sp" />
+
+                    </LinearLayout>
+
 
                 </RelativeLayout>
 

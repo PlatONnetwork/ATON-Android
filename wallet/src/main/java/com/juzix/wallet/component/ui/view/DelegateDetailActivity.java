@@ -133,6 +133,7 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
     }
 
     private void initView() {
+        showLoadingDialog();
         linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rlv_list.setLayoutManager(linearLayoutManager);
@@ -203,6 +204,7 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
         mDetailAdapter.notifyDataChanged(detailList);
         refreshLayout.finishRefresh();
         refreshLayout.finishLoadMore();
+        dismissLoadingDialogImmediately();
 
     }
 
@@ -210,6 +212,7 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
     public void showDelegateDetailFailed() {
         refreshLayout.finishRefresh();
         refreshLayout.finishLoadMore();
+        dismissLoadingDialogImmediately();
     }
 
     public static void actionStart(Context context, String walletAddress, String walletName, String walletIcon) {

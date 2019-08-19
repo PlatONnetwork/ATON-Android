@@ -9,6 +9,7 @@ import org.web3j.platon.contracts.DelegateContract;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 import org.web3j.tx.gas.DefaultGasProvider;
+import org.web3j.tx.gas.GasProvider;
 
 import java.math.BigInteger;
 import java.util.concurrent.Callable;
@@ -54,5 +55,38 @@ public class DelegateManager {
         });
 
     }
+
+    /**
+     * 获取发起委托的手续费
+     */
+    public Single<GasProvider> getDelegateGasPrice(String nodeId, String chooseType, String amount) {
+        Web3j web3j = Web3jManager.getInstance().getWeb3j();
+        DelegateContract delegateContract = DelegateContract.load(web3j);
+        StakingAmountType stakingAmountType = TextUtils.equals(chooseType, "balance") ? StakingAmountType.FREE_AMOUNT_TYPE : StakingAmountType.RESTRICTING_AMOUNT_TYPE;
+        return Single.fromCallable(new Callable<GasProvider>() {
+            @Override
+            public GasProvider call() throws Exception {
+                return (GasProvider) delegateContract.getDelegateGasProvider(nodeId, stakingAmountType, new BigInteger(amount));
+            }
+        });
+
+    }
+
+    /**
+     * 获取赎回操作的手续费
+     */
+
+    public Single<GasProvider> getWithDrawGasPrice(String nodeId, String stakingBlockNum, String amount) {
+        Web3j web3j = Web3jManager.getInstance().getWeb3j();
+        DelegateContract delegateContract = DelegateContract.load(web3j);
+
+        return Single.fromCallable(new Callable<GasProvider>() {
+            @Override
+            public GasProvider call() throws Exception {
+                return (GasProvider) delegateContract.getUnDelegateGasProvider(nodeId, new BigInteger(stakingBlockNum), new BigInteger(amount));
+            }
+        });
+    }
+
 
 }

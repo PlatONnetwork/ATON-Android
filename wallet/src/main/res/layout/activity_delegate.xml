@@ -252,16 +252,34 @@
                         android:textSize="12sp"
                         android:visibility="gone" />
 
-                    <TextView
-                        android:id="@+id/tv_delegate_fee"
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:layout_marginTop="5dp"
-                        android:gravity="right"
-                        android:text="Fee:0.00LAT"
-                        android:textColor="@color/color_b6bbd0"
-                        android:textSize="13sp" />
+                        android:orientation="horizontal">
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginTop="5dp"
+                            android:text="Fee:"
+                            android:textColor="@color/color_b6bbd0"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/tv_delegate_fee"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text=""
+                            android:textColor="@color/color_b6bbd0"
+                            android:textSize="13sp" />
+
+                    </LinearLayout>
+
 
                 </RelativeLayout>
 

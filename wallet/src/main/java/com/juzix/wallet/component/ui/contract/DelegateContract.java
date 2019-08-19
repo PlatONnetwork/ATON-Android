@@ -18,6 +18,8 @@ public class DelegateContract {
 
         String getDelegateAmount();
 
+        String getChooseBalance();
+
         void showAmountError(String errMsg);
 
         void showTips(boolean isShowTips);
@@ -31,8 +33,6 @@ public class DelegateContract {
         int getJumpTagFromIntent();
 
         void showNodeInfo(String nodeAddress, String nodeName, String nodeIcon);
-
-        String getChooseBalance();
 
         void getWalletBalanceList(List<AccountBalance> accountBalances);
 
@@ -50,6 +50,19 @@ public class DelegateContract {
          * @param txReceiptStatus "2" 表示确认中
          */
         void transactionSuccessInfo(String from, String to, long time, String txType, String value, String actualTxCost, String nodeName, String nodeId, int txReceiptStatus);
+
+
+        /**
+         * 显示手续费
+         */
+        void showGasPrice(String gas);
+
+        /**
+         * 拿到手续费
+         * @return
+         */
+        String getGas();
+
     }
 
     public interface Presenter extends IPresenter<View> {
@@ -65,5 +78,8 @@ public class DelegateContract {
         void submitDelegate(String type);
 
         void checkIsCanDelegate();
+
+
+        void getGasPrice(String chooseType);
     }
 }

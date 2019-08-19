@@ -77,6 +77,7 @@ public class MyDelegateAdapter extends RecyclerView.Adapter<MyDelegateAdapter.Vi
                     }
                 });
 
+
     }
 
     public void notifyDataChanged(List<DelegateInfo> list) {

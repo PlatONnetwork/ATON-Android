@@ -55,6 +55,16 @@ public class WithDrawContract {
         void withDrawSuccessInfo(String from, String to, long time, String txType, String value, String actualTxCost, String nodeName, String nodeId, int txReceiptStatus);
 
 
+        /**
+         * 显示手续费
+         */
+
+        void showWithDrawGasPrice(String gas);
+
+        //拿到手续费
+
+        String getGas();
+
     }
 
     public interface Presenter extends IPresenter<View> {
@@ -69,10 +79,13 @@ public class WithDrawContract {
 
         boolean checkWithDrawAmount(String withdrawAmount);
 
-        void getBalanceType(String addr, String stakingBlockNum);
+        void getBalanceType();
 
 
         void submitWithDraw(String chooseType);
+
+
+        void getWithDrawGasPrice();
 
     }
 

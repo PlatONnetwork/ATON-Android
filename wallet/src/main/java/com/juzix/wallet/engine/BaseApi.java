@@ -123,7 +123,7 @@ public interface BaseApi {
      *            ]
      * @return
      */
-    @POST("app-{cid}/v0700/node/listDelegateGroupByAddr")
+    @POST("app-{cid}/v0700/v1/node/listDelegateGroupByAddr")
     Single<Response<ApiResponse<List<DelegateInfo>>>> getMyDelegateList(@Path("cid") String cid, @Body ApiRequestBody body);
 
 

@@ -12,32 +12,24 @@ import com.juzix.wallet.component.adapter.WithDrawPopWindowAdapter;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.WithDrawContract;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
-import com.juzix.wallet.component.ui.dialog.SelectWalletDialogFragment;
 import com.juzix.wallet.engine.DelegateManager;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.WalletManager;
-import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.entity.WithDrawBalance;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.RxUtils;
 
 import org.web3j.crypto.Credentials;
-import org.web3j.platon.BaseResponse;
-import org.web3j.platon.TransactionCallback;
-import org.web3j.platon.contracts.DelegateContract;
-import org.web3j.protocol.Web3j;
+import org.web3j.platon.ContractAddress;
 import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 import org.web3j.tx.PlatOnContract;
-import org.web3j.tx.gas.DefaultGasProvider;
+import org.web3j.tx.gas.GasProvider;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Single;
@@ -124,11 +116,12 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     }
 
     @Override
-    public void getBalanceType(String addr, String stakingBlockNum) {
+    public void getBalanceType() {
         ServerUtils.getCommonApi().getWithDrawBalance(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
                 .put("addr", "0x493301712671ada506ba6ca7891f436d29185821") //todo 暂时写假的数据
                 .put("nodeId", "0xa188edb6776931b5f18e228028aaab0d57217772753ac8d5bdaae585a4440cc94520c3b6f617c5cf60725893bc04326c87b5211d4b1d6c100dfc09f2c70917d8")
-                .build()).compose(RxUtils.getSingleSchedulerTransformer())
+                .build())
+                .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(bindToLifecycle())
                 .subscribe(new ApiSingleObserver<List<WithDrawBalance>>() {
                     @Override
@@ -151,16 +144,6 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                                 delegatedSum = lockedSum + unLockedSum;
                                 getView().showBalanceType(delegatedSum, unLockedSum, releasedSum);
 
-//                                double locked = NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(withDrawBalance.getLocked(), "1E18"))); //已锁定
-//                                double unLocked = NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(withDrawBalance.getUnLocked(), "1E18")));//未锁定
-//                                double released = NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(withDrawBalance.getReleased(), "1E18")));//已解除
-//                                double delegated = locked + unLocked; //已委托 = 已锁定+未锁定
-//
-//                                stringMap.put("tag_delegated", String.valueOf(delegated));
-//                                stringMap.put("tag_unlocked", String.valueOf(unLocked));
-//                                stringMap.put("tag_released", String.valueOf(released));
-//                                getView().showBalanceType(withDrawBalance, stringMap);
-
                             }
                         }
 
@@ -173,14 +156,37 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                 });
     }
 
+    /**
+     * 获取手续费
+     */
+    @Override
+    public void getWithDrawGasPrice() {
+        String input = getView().getInputAmount();
+        DelegateManager.getInstance().getWithDrawGasPrice(mNodeAddress, list.get(0).getStakingBlockNum(), input) //这里块高是list中第一个
+                .compose(bindToLifecycle())
+                .compose(RxUtils.getSingleSchedulerTransformer())
+                .subscribe(new Consumer<GasProvider>() {
+                    @Override
+                    public void accept(GasProvider gasProvider) throws Exception {
+                        if (isViewAttached()) {
+                            BigDecimal gas = BigDecimalUtil.mul(gasProvider.getGasLimit().toString(), gasProvider.getGasPrice().toString());
+                            getView().showWithDrawGasPrice(String.valueOf(gas.intValue()));
+                        }
+
+                    }
+                });
+
+
+    }
+
     @SuppressLint("CheckResult")
     @Override
     public void submitWithDraw(String type) {
         Single.fromCallable(new Callable<Double>() {
             @Override
             public Double call() throws Exception {
-//                return null; //获取输入数量
-                return 100.00;
+                String input = getView().getInputAmount();
+                return Double.valueOf(input); //获取输入数量
             }
         }).map(new Function<Double, Double>() {
             @Override
@@ -217,9 +223,8 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
 
     }
 
+
     /**
-     * 输入的数量
-     *
      * @param credentials
      * @param nodeId
      * @param withdrawAmount 输入数量
@@ -267,13 +272,13 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
 
                             if (TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_DELEGATED) || TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_UNLOCKED)) {
                                 //交易手续费还没拿
-                                getView().withDrawSuccessInfo(PlatOnContract.DELEGATE_CONTRACT_ADDRESS, mWalletAddress, 0, "1005", list.get(0).getReleased(),
+                                getView().withDrawSuccessInfo(ContractAddress.DELEGATE_CONTRACT_ADDRESS, mWalletAddress, 0, "1005", list.get(0).getReleased(),
                                         "", mNodeName, mNodeAddress, 2);
 
                             } else {
                                 if (tag == list.size()) {
                                     //交易手续费还没拿
-                                    getView().withDrawSuccessInfo(PlatOnContract.DELEGATE_CONTRACT_ADDRESS, mWalletAddress, 0, "1005", list.get(0).getReleased(),
+                                    getView().withDrawSuccessInfo(ContractAddress.DELEGATE_CONTRACT_ADDRESS, mWalletAddress, 0, "1005", list.get(0).getReleased(),
                                             "", mNodeName, mNodeAddress, 2);
                                 }
 

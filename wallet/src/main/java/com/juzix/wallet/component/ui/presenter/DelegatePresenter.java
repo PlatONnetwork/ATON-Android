@@ -13,6 +13,7 @@ import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.DelegateContract;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.dialog.SelectWalletDialogFragment;
+import com.juzix.wallet.engine.DelegateManager;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.WalletManager;
@@ -20,17 +21,20 @@ import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.AccountBalance;
 import com.juzix.wallet.entity.DelegateHandle;
 import com.juzix.wallet.entity.Wallet;
+import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.RxUtils;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.platon.BaseResponse;
+import org.web3j.platon.ContractAddress;
 import org.web3j.platon.StakingAmountType;
 import org.web3j.platon.TransactionCallback;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
-import org.web3j.tx.PlatOnContract;
 import org.web3j.tx.gas.DefaultGasProvider;
+import org.web3j.tx.gas.GasProvider;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -171,6 +175,26 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                 });
     }
 
+    //获取手续费
+    @SuppressLint("CheckResult")
+    @Override
+    public void getGasPrice(String chooseType) {
+        String inputAmount = getView().getDelegateAmount();//输入的数量
+        DelegateManager.getInstance().getDelegateGasPrice(mNodeAddress, chooseType, inputAmount)
+                .compose(RxUtils.bindToLifecycle(getView()))
+                .compose(RxUtils.getSingleSchedulerTransformer())
+                .subscribe(new Consumer<GasProvider>() {
+                    @Override
+                    public void accept(GasProvider gasProvider) throws Exception {
+                        if (isViewAttached()) {
+                            BigDecimal gas = BigDecimalUtil.mul(gasProvider.getGasLimit().toString(), gasProvider.getGasPrice().toString());
+                            getView().showGasPrice(String.valueOf(gas.intValue()));
+                        }
+                    }
+                });
+
+    }
+
 
     @SuppressLint("CheckResult")
     @Override
@@ -179,8 +203,10 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
         Single.fromCallable(new Callable<Double>() {
             @Override
             public Double call() throws Exception {
-                //输入数量+手续费  (todo 因为手续费还没定)
-                return 0.0;
+                //输入数量+手续费
+                String inputNumber = getView().getDelegateAmount();
+                String gasNumber = getView().getGas();
+                return BigDecimalUtil.add(inputNumber, gasNumber);
             }
         }).zipWith(ServerUtils.getCommonApi().getIsDelegateInfo(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
                         .put("addr", mWallet.getPrefixAddress())
@@ -293,8 +319,8 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                     //交易成功，关闭当前页面，并返回到交易详情
                     if (isViewAttached()) {
                         //todo 交易手续费暂时还没拿
-                        getView().transactionSuccessInfo(mWallet.getPrefixAddress(), PlatOnContract.DELEGATE_CONTRACT_ADDRESS, 0, "1004", inputAmount, "",mNodeName,mNodeAddress
-                        ,2);
+                        getView().transactionSuccessInfo(mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, 0, "1004", inputAmount, "", mNodeName, mNodeAddress
+                                , 2);
                     }
 
                 }

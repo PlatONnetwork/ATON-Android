@@ -74,6 +74,7 @@ public class UnDelegateRecordFragment extends MVPBaseFragment<DelegateRecordPres
     }
 
     private void initView() {
+        showLoadingDialog();
         //添加下拉刷新的header和加载更多的footer
         refreshLayout.setRefreshHeader(new CustomRefreshHeader(getContext()));
         refreshLayout.setRefreshFooter(new CustomRefreshFooter(getContext()));
@@ -128,6 +129,7 @@ public class UnDelegateRecordFragment extends MVPBaseFragment<DelegateRecordPres
         mAdapter.notifyDataChanged(list);
         refreshLayout.finishRefresh();
         refreshLayout.finishLoadMore();
+        dismissLoadingDialogImmediately();
     }
 
     @Override
@@ -135,11 +137,13 @@ public class UnDelegateRecordFragment extends MVPBaseFragment<DelegateRecordPres
         ll_no_data.setVisibility(View.VISIBLE);
         refreshLayout.finishRefresh();
         refreshLayout.finishLoadMore();
+        dismissLoadingDialogImmediately();
     }
 
     @Override
     public void showDelegateRecordFailed() {
         refreshLayout.finishLoadMore();
         refreshLayout.finishRefresh();
+        dismissLoadingDialogImmediately();
     }
 }
