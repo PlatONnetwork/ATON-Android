@@ -57,7 +57,8 @@ public class UnDelegateRecordFragment extends MVPBaseFragment<DelegateRecordPres
 
     @Override
     protected void onFragmentPageStart() {
-        mPresenter.loadDelegateRecordData(-1, Constants.VoteConstants.REFRESH_DIRECTION, Constants.DelegateRecordType.REDEEM);
+//        mPresenter.loadDelegateRecordData(-1, Constants.VoteConstants.REFRESH_DIRECTION, Constants.DelegateRecordType.REDEEM);
+        refreshLayout.autoRefresh();
     }
 
     @Override
@@ -114,7 +115,7 @@ public class UnDelegateRecordFragment extends MVPBaseFragment<DelegateRecordPres
 
     @Override
     public void showDelegateRecordData(List<Transaction> recordList) {
-        ll_no_data.setVisibility(View.GONE);
+
         if (recordList.size() > 0) {
             beginSequence = recordList.get(recordList.size() - 1).getSequence();
         }
@@ -122,6 +123,11 @@ public class UnDelegateRecordFragment extends MVPBaseFragment<DelegateRecordPres
         if (isLoadMore) {
             list.addAll(recordList);
         } else {
+            if (recordList != null && recordList.size() == 0) {
+                ll_no_data.setVisibility(View.VISIBLE);
+            } else {
+                ll_no_data.setVisibility(View.GONE);
+            }
             list.clear();
             list.addAll(recordList);
         }
@@ -132,18 +138,18 @@ public class UnDelegateRecordFragment extends MVPBaseFragment<DelegateRecordPres
         dismissLoadingDialogImmediately();
     }
 
-    @Override
-    public void showDelegateReCordNoData() {
-        ll_no_data.setVisibility(View.VISIBLE);
-        refreshLayout.finishRefresh();
-        refreshLayout.finishLoadMore();
-        dismissLoadingDialogImmediately();
-    }
 
     @Override
     public void showDelegateRecordFailed() {
         refreshLayout.finishLoadMore();
         refreshLayout.finishRefresh();
         dismissLoadingDialogImmediately();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        if (!isVisibleToUser) {
+            isLoadMore = false;
+        }
     }
 }

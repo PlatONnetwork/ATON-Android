@@ -1,6 +1,5 @@
 package com.juzix.wallet.engine;
 
-import com.google.common.base.Verify;
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
 import com.juzix.wallet.entity.AccountBalance;
@@ -8,8 +7,6 @@ import com.juzix.wallet.entity.CandidateWrap;
 import com.juzix.wallet.entity.DelegateDetail;
 import com.juzix.wallet.entity.DelegateHandle;
 import com.juzix.wallet.entity.DelegateInfo;
-import com.juzix.wallet.entity.DelegateRecord;
-import com.juzix.wallet.entity.MyDelegate;
 import com.juzix.wallet.entity.NodeStates;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.VerifyNode;
@@ -23,8 +20,6 @@ import io.reactivex.Single;
 import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
-import retrofit2.http.HEAD;
-import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -94,7 +89,7 @@ public interface BaseApi {
      * "sortType" //rangking —— 排名  PA —— 年化率
      */
 
-    @POST("app-{cid}/v0700/node/nodelist")
+    @POST("app-{cid}/v0700/v1/node/nodelist")
     Single<Response<ApiResponse<List<VerifyNode>>>> getVerifyNodeList(@Path("cid") String cid);
 
 
@@ -103,7 +98,7 @@ public interface BaseApi {
      * nodeId   //节点id
      */
 
-    @POST("app-{cid}/v0700/node/nodeDetails")
+    @POST("app-{cid}/v0700/v1/node/nodeDetails")
     Single<Response<ApiResponse<VerifyNodeDetail>>> getNodeCandidateDetail(@Path("cid") String cid, @Body ApiRequestBody body);
 
 
@@ -111,7 +106,7 @@ public interface BaseApi {
      * 获取节点状态
      */
 
-    @POST("app-{cid}/v0700/node/getNodeStatus")
+    @POST("app-{cid}/v0700/v1/node/getNodeStatus")
     Single<Response<ApiResponse<NodeStates>>> getNodeStatus(@Path("cid") String cid, @Body ApiRequestBody body);
 
     /**
@@ -138,7 +133,7 @@ public interface BaseApi {
      *               客户端首次进入页面时或者上拉时传old。客户端自动获取最新记录时传new。
      */
 
-    @POST("app-{cid}/v0700/node/delegateDetails")
+    @POST("app-{cid}/v0700/v1/node/delegateDetails")
     Single<Response<ApiResponse<List<DelegateDetail>>>> getDelegateDetailList(@Path("cid") String cid, @Body ApiRequestBody body);
 
 
@@ -160,7 +155,7 @@ public interface BaseApi {
      *               ]
      */
 
-    @POST("app-{cid}/v0700/transaction/delegateRecord")
+    @POST("app-{cid}/v0700/v1/transaction/delegateRecord")
     Single<Response<ApiResponse<List<Transaction>>>> getDelegateRecordList(@Path("cid") String cid, @Body ApiRequestBody body);
 
 
@@ -170,20 +165,26 @@ public interface BaseApi {
      * "address1",
      * "address2"]
      */
-    @POST("app-{cid}/v0700/account/getBalance")
+    @POST("app-{cid}/v0700/v1/account/getBalance")
     Single<Response<ApiResponse<List<AccountBalance>>>> getAccountBalance(@Path("cid") String cid, @Body ApiRequestBody body);
 
 
     /**
      * 获取委托金额
      * "addr":"",                             //委托的地址
-     * "stakingBlockNum":"",                  //最新的质押交易块高
+     * "nodeId":"",                          //节点id
      */
     @POST("app-{cid}/v0700/v1/node/getDelegationValue")
     Single<Response<ApiResponse<List<WithDrawBalance>>>> getWithDrawBalance(@Path("cid") String id, @Body ApiRequestBody body);
 
 
-    @POST("app-{cid}/v0700/node/canDelegation")
+    /**
+     * 是否允许委托及原因
+     * @param id
+     * @param body
+     * @return
+     */
+    @POST("app-{cid}/v0700/v1/node/canDelegation")
     Single<Response<ApiResponse<DelegateHandle>>> getIsDelegateInfo(@Path("cid") String id, @Body ApiRequestBody body);
 
 

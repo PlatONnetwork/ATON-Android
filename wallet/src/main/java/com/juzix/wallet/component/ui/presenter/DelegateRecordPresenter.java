@@ -35,7 +35,8 @@ public class DelegateRecordPresenter extends BasePresenter<DelegateRecordContrac
                 .put("listSize", listSize)
                 .put("direction", direction)
                 .put("type", type)
-                .put("walletAddrs", walletAddress)
+//                .put("walletAddrs", walletAddress)
+                .put("walletAddrs", new String[]{"0x493301712671ada506ba6ca7891f436d29185821"}) //暂时弄个假数据
                 .build())
                 .compose(RxUtils.bindToLifecycle(getView()))
                 .compose(RxUtils.getSingleSchedulerTransformer())
@@ -46,7 +47,7 @@ public class DelegateRecordPresenter extends BasePresenter<DelegateRecordContrac
                             if (recordList != null && recordList.size() > 0) {
                                 getView().showDelegateRecordData(getWalletNameAndIconByaddress(recordList));
                             } else {
-                                getView().showDelegateReCordNoData();
+                                getView().showDelegateRecordData(recordList);
                             }
                         }
                     }

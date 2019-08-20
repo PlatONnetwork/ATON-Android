@@ -119,7 +119,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     public void getBalanceType() {
         ServerUtils.getCommonApi().getWithDrawBalance(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
                 .put("addr", "0x493301712671ada506ba6ca7891f436d29185821") //todo 暂时写假的数据
-                .put("nodeId", "0xa188edb6776931b5f18e228028aaab0d57217772753ac8d5bdaae585a4440cc94520c3b6f617c5cf60725893bc04326c87b5211d4b1d6c100dfc09f2c70917d8")
+                .put("nodeId", "0x0001512fde9068094d4be1ea6eee0346c0e2eae2ca52d2e7b789bdc0498dfe4d")
                 .build())
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(bindToLifecycle())

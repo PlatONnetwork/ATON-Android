@@ -303,7 +303,8 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         String walletAddress = address;
         for (AccountBalance bean : accountBalances) {
             // todo 这里先写的一个假的钱包地址
-            if (TextUtils.equals(walletAddress, bean.getAddr())) {
+//            if (TextUtils.equals(walletAddress, bean.getAddr())) {
+            if (TextUtils.equals("0x493301712671ada506ba6ca7891f436d29185821", bean.getAddr())) { //先写个假的钱包地址
                 //获取当前选中钱包的余额信息
                 typeList.add(new DelegateType("0", bean.getFree()));
                 typeList.add(new DelegateType("1", bean.getLock()));

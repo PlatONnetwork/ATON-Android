@@ -4,9 +4,11 @@ import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 public class DelegateDetailEntity extends RealmObject {
+    /**
+     * 投票节点Id  (节点地址)
+     */
     @PrimaryKey
-    private long id;
-
+    private String nodeId;
     /**
      * 钱包地址
      */
@@ -15,10 +17,7 @@ public class DelegateDetailEntity extends RealmObject {
      * 最新的质押交易块高
      */
     private String stakingBlockNum;
-    /**
-     * 投票节点Id  (节点地址)
-     */
-    private String nodeId;
+
 
 
     public DelegateDetailEntity() {
@@ -26,7 +25,6 @@ public class DelegateDetailEntity extends RealmObject {
     }
 
     public DelegateDetailEntity(Builder builder) {
-        setId(builder.id);
         setAddress(builder.address);
         setStakingBlockNum(builder.stakingBlockNum);
         setNodeId(builder.nodeId);
@@ -57,16 +55,8 @@ public class DelegateDetailEntity extends RealmObject {
         this.address = address;
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public static final class Builder {
-        private long id;
         private String address;
         private String stakingBlockNum;
         private String nodeId;
@@ -74,11 +64,6 @@ public class DelegateDetailEntity extends RealmObject {
 
         public Builder() {
 
-        }
-
-        public Builder id(long index) {
-            id = index;
-            return this;
         }
 
         public Builder address(String address) {

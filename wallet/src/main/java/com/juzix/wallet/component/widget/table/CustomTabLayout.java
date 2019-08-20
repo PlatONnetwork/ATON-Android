@@ -370,11 +370,11 @@ public class CustomTabLayout  extends HorizontalScrollView {
                 throw new IllegalStateException("tabView is null.");
             }
 
-            if (distributeEvenly) {
-                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) tabView.getLayoutParams();
-                lp.width = 0;
-                lp.weight = 1;
-            }
+//            if (distributeEvenly) {
+//                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) tabView.getLayoutParams();
+//                lp.width = 0;
+//                lp.weight = 1;
+//            }
 
             if (internalTabClickListener != null) {
                 tabView.setOnClickListener(internalTabClickListener);

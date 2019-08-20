@@ -160,7 +160,7 @@ public class VerifyNodeDao {
                         .findAll();
             } else {
                 result = realm.where(VerifyNodeEntity.class)
-                            .lessThan("ratePA", ratePAing)
+                        .lessThan("ratePA", ratePAing)
                         .sort("ratePA", Sort.DESCENDING)
                         .limit(10)
                         .findAll();
@@ -219,6 +219,7 @@ public class VerifyNodeDao {
             realm.beginTransaction();
             realm.where(VerifyNodeEntity.class)
                     .findAll().deleteAllFromRealm();
+            realm.commitTransaction();
             return true;
 
         } catch (Exception e) {
