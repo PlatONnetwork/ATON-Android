@@ -48,7 +48,7 @@ public class DelegateDetailPresenter extends BasePresenter<DelegateDetailContrac
             @Override
             public DelegateDetailEntity call() throws Exception {
                 DelegateDetailEntity entity = new DelegateDetailEntity();
-                entity.setAddress(detail.getNoadeId());
+                entity.setAddress(walletAddress);
                 entity.setNodeId(detail.getNoadeId());
                 entity.setStakingBlockNum(detail.getStakingBlockNum());
                 return entity;
@@ -68,7 +68,7 @@ public class DelegateDetailPresenter extends BasePresenter<DelegateDetailContrac
 
         ServerUtils.getCommonApi().getDelegateDetailList(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
 //                .put("addr", walletAddress)
-                .put("addr", walletAddress) //暂时是假数据
+                .put("addr", "0x493301712671ada506ba6ca7891f436d29185821") //暂时是假数据
                 .build())
                 .zipWith(Single.fromCallable(new Callable<List<DelegateDetailEntity>>() {
                     @Override
@@ -77,14 +77,14 @@ public class DelegateDetailPresenter extends BasePresenter<DelegateDetailContrac
                     }
                 }), new BiFunction<Response<ApiResponse<List<DelegateDetail>>>, List<DelegateDetailEntity>, Response<ApiResponse<List<DelegateDetail>>>>() {
                     @Override
-                    public Response<ApiResponse<List<DelegateDetail>>> apply(Response<ApiResponse<List<DelegateDetail>>> apiResponseResponse, List<DelegateDetailEntity> delegateAddressEntities) throws Exception {
+                    public Response<ApiResponse<List<DelegateDetail>>> apply(Response<ApiResponse<List<DelegateDetail>>> apiResponseResponse, List<DelegateDetailEntity> EntityList) throws Exception {
                         DelegateDetail detail = new DelegateDetail();
                         List<DelegateDetail> delegateDetails = apiResponseResponse.body().getData();
                         if (apiResponseResponse == null || !apiResponseResponse.isSuccessful()) {
                             return Response.success(new ApiResponse(ApiErrorCode.NETWORK_ERROR));
                         } else {
 
-                            delegateDetails.removeAll(getDelegateList(delegateAddressEntities));
+                            delegateDetails.removeAll(getDelegateList(EntityList));
                             return Response.success(new ApiResponse(ApiErrorCode.SUCCESS, delegateDetails));
                         }
 

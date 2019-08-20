@@ -125,7 +125,8 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     private void getWalletBalance() {
         List<String> walletAddressList = WalletManager.getInstance().getAddressList();
         ServerUtils.getCommonApi().getAccountBalance(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
-                .put("addrs", walletAddressList.toArray(new String[walletAddressList.size()]))
+//                .put("addrs", walletAddressList.toArray(new String[walletAddressList.size()]))
+                .put("addrs", new String[]{"0x493301712671ada506ba6ca7891f436d29185821"}) //先弄假数据
                 .build())
                 .compose(RxUtils.bindToLifecycle(getView()))
                 .compose(RxUtils.getSingleSchedulerTransformer())
@@ -151,8 +152,9 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     @Override
     public void checkIsCanDelegate() {
         ServerUtils.getCommonApi().getIsDelegateInfo(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
-                .put("addr", "") // mWallet.getPrefixAddress() todo  暂时写个空
-                .put("nodeId", mNodeAddress)
+                .put("addr", "0x493301712671ada506ba6ca7891f436d29185821") // mWallet.getPrefixAddress() todo  暂时写个空
+//                .put("nodeId", mNodeAddress)
+                .put("nodeId", "0x0001512fde9068094d4be1ea6eee0346c0e2eae2ca52d2e7b789bdc0498dfe4d")
                 .build())
                 .compose(RxUtils.bindToLifecycle(getView()))
                 .compose(RxUtils.getSingleSchedulerTransformer())

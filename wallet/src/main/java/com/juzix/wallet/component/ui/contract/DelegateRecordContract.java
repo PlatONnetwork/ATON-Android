@@ -12,8 +12,6 @@ public class DelegateRecordContract {
     public interface View extends IView {
         void showDelegateRecordData(List<Transaction> recordList);
 
-        void showDelegateReCordNoData();
-
         void showDelegateRecordFailed();
 
     }

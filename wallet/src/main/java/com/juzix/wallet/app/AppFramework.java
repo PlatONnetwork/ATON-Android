@@ -296,8 +296,9 @@ public class AppFramework {
                         .addField("nodeStatus", String.class);
 
                 schema.create("DelegateDetailEntity")
-                        .addField("id", long.class, FieldAttribute.PRIMARY_KEY)
-                        .addField("address", String.class);
+                        .addField("nodeId", String.class, FieldAttribute.PRIMARY_KEY)
+                        .addField("address", String.class)
+                        .addField("stakingBlockNum", String.class);
                 oldVersion++;
 
 //                personSchema
@@ -311,7 +312,6 @@ public class AppFramework {
 //                        .removeField("firstName")
 //                        .removeField("lastName");
 //                oldVersion++;
-
 
 
             }

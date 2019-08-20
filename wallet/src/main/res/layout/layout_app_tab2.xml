@@ -6,7 +6,7 @@
     android:layout_width="wrap_content"
     android:layout_height="@dimen/assetsTabLayoutHeight"
     android:background="@color/color_ffffff"
-    android:fillViewport="false"
+    android:fillViewport="true"
     android:layout_marginLeft="16dp"
     app:stl_defaultTabTextColor="@color/color_00000000"
     app:stl_distributeEvenly="true"

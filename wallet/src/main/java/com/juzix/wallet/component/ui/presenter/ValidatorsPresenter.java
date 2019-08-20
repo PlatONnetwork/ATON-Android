@@ -3,11 +3,10 @@ package com.juzix.wallet.component.ui.presenter;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.ApiSingleObserver;
+import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.app.Constants;
-import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.base.BaseFragment;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.ValidatorsContract;
@@ -20,9 +19,9 @@ import com.juzix.wallet.entity.VerifyNode;
 import com.juzix.wallet.utils.RxUtils;
 import com.trello.rxlifecycle2.android.FragmentEvent;
 
-import org.reactivestreams.Publisher;
-import org.web3j.tuples.Tuple;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -161,7 +160,8 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
                             @Override
                             public void accept(List<VerifyNode> nodeList, Throwable throwable) throws Exception {
                                 if (isViewAttached()) {
-                                    getView().showValidatorsDataOnAll(nodeList);
+
+                                    getView().showValidatorsDataOnAll(sort(nodeList));
                                 }
                             }
                         });
@@ -233,10 +233,10 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
                             public void accept(List<VerifyNode> nodeList, Throwable throwable) throws Exception {
                                 if (isViewAttached()) {
                                     if (TextUtils.equals(state, Constants.ValidatorsType.ACTIVE_VALIDATORS)) {
-                                        getView().showValidatorsDataOnActive(nodeList);
+                                        getView().showValidatorsDataOnActive(sort(nodeList));
 
                                     } else {
-                                        getView().showValidatorsDataOnCadidate(nodeList);
+                                        getView().showValidatorsDataOnCadidate(sort(nodeList));
                                     }
 
                                 }
@@ -244,10 +244,7 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
                         });
 
 
-
-
             }
-
 
 
         }
@@ -283,6 +280,26 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
         return ValidatorsService.insertVerifyNodeList(nodeList).blockingGet();
     }
 
+
+    private List<VerifyNode> sort(List<VerifyNode> verifyNodeList) {
+
+        Collections.sort(verifyNodeList, new Comparator<VerifyNode>() {
+            @Override
+            public int compare(VerifyNode o1, VerifyNode o2) {
+                int compare = Integer.compare(NumberParserUtils.parseInt(o2.getRatePA()), NumberParserUtils.parseInt(o1.getRatePA()));
+                if (compare != 0) {
+                    return compare;
+                }
+                compare = Integer.compare(o1.getRanking(), o2.getRanking());
+                if (compare != 0) {
+                    return compare;
+                }
+                return 0;
+            }
+        });
+
+        return verifyNodeList;
+    }
 
 }
 

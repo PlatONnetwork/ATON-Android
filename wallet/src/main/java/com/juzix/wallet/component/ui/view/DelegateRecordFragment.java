@@ -57,7 +57,8 @@ public class DelegateRecordFragment extends MVPBaseFragment<DelegateRecordPresen
 
     @Override
     protected void onFragmentPageStart() {
-        mPresenter.loadDelegateRecordData(-1, Constants.VoteConstants.REFRESH_DIRECTION, Constants.DelegateRecordType.DELEGATE);
+//        mPresenter.loadDelegateRecordData(-1, Constants.VoteConstants.REFRESH_DIRECTION, Constants.DelegateRecordType.DELEGATE);
+        refreshLayout.autoRefresh();
     }
 
     @Override
@@ -115,14 +116,17 @@ public class DelegateRecordFragment extends MVPBaseFragment<DelegateRecordPresen
 
     @Override
     public void showDelegateRecordData(List<Transaction> recordList) {
-        ll_no_data.setVisibility(View.GONE);
         if (recordList.size() > 0) {
             beginSequence = recordList.get(recordList.size() - 1).getSequence();
         }
-
         if (isLoadMore) {
             list.addAll(recordList);
         } else {
+            if (null != recordList && recordList.size() == 0) {
+                ll_no_data.setVisibility(View.VISIBLE);
+            } else {
+                ll_no_data.setVisibility(View.GONE);
+            }
             list.clear();
             list.addAll(recordList);
         }
@@ -133,18 +137,18 @@ public class DelegateRecordFragment extends MVPBaseFragment<DelegateRecordPresen
         dismissLoadingDialogImmediately();
     }
 
-    @Override
-    public void showDelegateReCordNoData() {
-        ll_no_data.setVisibility(View.VISIBLE);
-        refreshLayout.finishRefresh();
-        refreshLayout.finishLoadMore();
-        dismissLoadingDialogImmediately();
-    }
 
     @Override
     public void showDelegateRecordFailed() {
         refreshLayout.finishLoadMore();
         refreshLayout.finishRefresh();
         dismissLoadingDialogImmediately();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        if (!isVisibleToUser) {
+            isLoadMore = false;
+        }
     }
 }
