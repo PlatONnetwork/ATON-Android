@@ -20,12 +20,51 @@
         app:flash_label_text_size="48"
         app:frame_color="@color/viewfinder_frame"
         app:label_text="@string/scan_qr_code_tips"
-        app:label_text_color="#FFFFFF"
-        app:label_text_size="48"
+        app:label_text_color="#ffffff"
+        app:label_text_size="42"
         app:laser_color="@color/laser_color"
         app:mask_color="@color/viewfinder_mask"
         app:result_color="@color/result_color"
         app:result_point_color="@color/result_point_color" />
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.7">
+
+            <TextView
+                android:id="@+id/tv_light"
+                style="@style/Text.fff.14"
+                android:layout_marginBottom="6dp"
+                android:text="@string/msg_turn_light_on"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
+            <ImageView
+                android:id="@+id/iv_light"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:src="@drawable/icon_flash_on"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@id/tv_light"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.constraint.ConstraintLayout>
 
     <com.juzix.wallet.component.widget.CommonTitleBar
         android:id="@+id/ctb"

@@ -106,7 +106,7 @@ public final class ViewfinderView extends View {
 
         labelTextColor = array.getColor(R.styleable.ViewfinderView_label_text_color, 0x90FFFFFF);
         labelText = array.getString(R.styleable.ViewfinderView_label_text);
-        labelTextSize = array.getFloat(R.styleable.ViewfinderView_label_text_size, 36f);
+        labelTextSize = array.getFloat(R.styleable.ViewfinderView_label_text_size, 42f);
 
         flashLabelTextColor = array.getColor(R.styleable.ViewfinderView_flash_label_text_color, 0x90FFFFFF);
         flashLabelText = array.getString(R.styleable.ViewfinderView_flash_label_text);
@@ -150,11 +150,6 @@ public final class ViewfinderView extends View {
             drawLaserScanner(canvas, frame);
             //绘制提示信息
             drawTextInfo(canvas, frame);
-            //绘制点亮信息
-            drawFlashText(canvas, frame);
-            //绘制手电筒
-            drawFlashLight(canvas,frame);
-
 
             CopyOnWriteArraySet<ResultPoint> currentPossible = possibleResultPoints;
             CopyOnWriteArraySet<ResultPoint> currentLast = lastPossibleResultPoints;
@@ -189,7 +184,7 @@ public final class ViewfinderView extends View {
         paint.setColor(labelTextColor);
         paint.setTextSize(labelTextSize);
         paint.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText(labelText, frame.left + frame.width() / 2, frame.bottom + dp2px(getContext(), 18f), paint);
+        canvas.drawText(labelText, frame.left + frame.width() / 2, frame.bottom + dp2px(getContext(), 24f), paint);
     }
 
     //绘制手电筒文本

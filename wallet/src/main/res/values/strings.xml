@@ -596,5 +596,7 @@
 
     <!--委托和赎回手续费显示-->
     <string name="delegate_and_withdraw_fee">手续费:</string>
+    <string name="msg_turn_light_on">轻点照亮</string>
+    <string name="msg_turn_light_off">轻点关闭</string>
 
 </resources>
