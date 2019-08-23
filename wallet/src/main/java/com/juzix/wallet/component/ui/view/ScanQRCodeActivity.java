@@ -68,7 +68,7 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
     private CaptureProviderHandler handler;
     private ViewfinderView viewfinderView;
     private boolean isFlashOn = false;
-    private boolean hasSurface;
+    private boolean hasSurface = false;
     private Vector<BarcodeFormat> decodeFormats;
     private String characterSet;
     private InactivityTimer inactivityTimer;
@@ -80,7 +80,8 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
     private Uri photoUri;
     private Bitmap scanBitmap;
     private CommonTitleBar mCtb;
-    private ImageView mFlashIv;
+    private ImageView lightIv;
+    private TextView lightTv;
 
     /**
      * Called when the activity is first created.
@@ -98,12 +99,11 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
 
         CameraManager.init(getApplication());
 
-//        mFlashIv = findViewById(R.id.iv_flash);
         viewfinderView = findViewById(R.id.viewfinder_content);
         mCtb = findViewById(R.id.ctb);
-
-        hasSurface = false;
         inactivityTimer = new InactivityTimer(this);
+        lightIv = findViewById(R.id.iv_light);
+        lightTv = findViewById(R.id.tv_light);
 
         mCtb.setRightTextClickListener(new View.OnClickListener() {
             @Override
@@ -112,27 +112,37 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
             }
         });
 
-//        RxView
-//                .clicks(mFlashIv)
-//                .compose(RxUtils.getClickTransformer())
-//                .compose(bindToLifecycle())
-//                .subscribe(new CustomObserver<Object>() {
-//
-//                    @Override
-//                    public void accept(Object object) {
-//                        try {
-//                            boolean isSuccess = CameraManager.get().setFlashLight(!isFlashOn);
-//                            if (!isSuccess) {
-//                                showLongToast(R.string.scan_qr_code_open_lights_failed);
-//                                return;
-//                            }
-//                            mFlashIv.setImageResource(isFlashOn ? R.drawable.icon_flash_on : R.drawable.icon_flash_off);
-//                            isFlashOn = !isFlashOn;
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                });
+        RxView
+                .clicks(lightIv)
+                .compose(RxUtils.getClickTransformer())
+                .compose(bindToLifecycle())
+                .subscribe(new CustomObserver<Object>() {
+
+                    @Override
+                    public void accept(Object object) {
+                        switchLight();
+                    }
+                });
+
+        RxView
+                .clicks(lightTv)
+                .compose(RxUtils.getClickTransformer())
+                .compose(bindToLifecycle())
+                .subscribe(new CustomObserver<Object>() {
+
+                    @Override
+                    public void accept(Object object) {
+                        switchLight();
+                    }
+                });
+
+        viewfinderView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                lightTv.setVisibility(View.VISIBLE);
+                lightIv.setVisibility(View.VISIBLE);
+            }
+        }, 5000);
     }
 
     @Override
@@ -155,6 +165,21 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
     @Override
     protected void setStatusBarView() {
         ImmersionBar.with(this).keyboardEnable(false).statusBarDarkFont(false).fitsSystemWindows(false).init();
+    }
+
+    private void switchLight() {
+        try {
+            boolean isSuccess = CameraManager.get().setFlashLight(!isFlashOn);
+            if (!isSuccess) {
+                showLongToast(R.string.scan_qr_code_open_lights_failed);
+                return;
+            }
+            lightIv.setImageResource(isFlashOn ? R.drawable.icon_flash_on : R.drawable.icon_flash_off);
+            lightTv.setText(getResources().getString(isFlashOn ? R.string.msg_turn_light_on : R.string.msg_turn_light_off));
+            isFlashOn = !isFlashOn;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void openAlbum() {

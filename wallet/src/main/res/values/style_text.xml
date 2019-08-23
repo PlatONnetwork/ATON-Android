@@ -441,6 +441,10 @@
         <item name="android:textSize">13sp</item>
     </style>
 
+    <style name="Text.b6bbd0.14">
+        <item name="android:textSize">14sp</item>
+    </style>
+
     <style name="Text.dee1ec">
         <item name="android:textColor">@color/color_dee1ec</item>
     </style>
