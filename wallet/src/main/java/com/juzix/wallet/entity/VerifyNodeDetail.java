@@ -37,7 +37,7 @@ public class VerifyNodeDetail implements Parcelable {
     /**
      * 节点地址
      */
-    private String nodeUrl;
+    private String nodeId;
 
 
     /**
@@ -94,7 +94,7 @@ public class VerifyNodeDetail implements Parcelable {
         website = in.readString();
         intro = in.readString();
         url = in.readString();
-        nodeUrl = in.readString();
+        nodeId = in.readString();
         nodeStatus = in.readString();
         punishNumber = in.readInt();
         delegateSum = in.readString();
@@ -111,7 +111,7 @@ public class VerifyNodeDetail implements Parcelable {
         dest.writeString(website);
         dest.writeString(intro);
         dest.writeString(url);
-        dest.writeString(nodeUrl);
+        dest.writeString(nodeId);
         dest.writeString(nodeStatus);
         dest.writeInt(punishNumber);
         dest.writeString(delegateSum);
@@ -162,12 +162,12 @@ public class VerifyNodeDetail implements Parcelable {
         this.intro = intro;
     }
 
-    public String getNodeUrl() {
-        return nodeUrl;
+    public String getNodeId() {
+        return nodeId;
     }
 
-    public void setNodeUrl(String nodeUrl) {
-        this.nodeUrl = nodeUrl;
+    public void setNodeId(String nodeId) {
+        this.nodeId = nodeId;
     }
 
     public String getUrl() {

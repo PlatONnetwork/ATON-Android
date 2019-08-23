@@ -29,6 +29,7 @@
                 android:src="@drawable/icon_total_delegate" />
 
             <LinearLayout
+                android:id="@+id/ll_wallet_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@id/iv_total_delegate"
@@ -49,7 +50,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="7dp"
                     android:layout_marginBottom="12dp"
-                    android:text="oxdfaskdfasdfasd"
                     android:textColor="@color/color_61646e"
                     android:textSize="13sp" />
 
@@ -64,6 +64,10 @@
                 android:layout_marginRight="10dp"
                 android:drawablePadding="3dp"
                 android:textColor="@color/color_000000"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:gravity="right"
+                android:layout_toRightOf="@id/ll_wallet_info"
                 android:textSize="16sp" />
 
         </RelativeLayout>

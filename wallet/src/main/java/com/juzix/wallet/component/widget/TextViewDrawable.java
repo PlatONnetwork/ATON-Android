@@ -59,7 +59,7 @@ public class TextViewDrawable extends AppCompatTextView {
         mWidth = w;
         mHeight = h;
         Drawable[] drawables = getCompoundDrawables();
-        Drawable drawableLeft = drawables[0];
+        Drawable drawableLeft = drawables[0];//图标放在左边
         Drawable drawableTop = drawables[1];
         Drawable drawableRight = drawables[2];
         Drawable drawableBottom = drawables[3];

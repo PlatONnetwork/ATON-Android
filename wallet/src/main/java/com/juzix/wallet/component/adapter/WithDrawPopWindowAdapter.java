@@ -76,7 +76,7 @@ public class WithDrawPopWindowAdapter extends BaseAdapter {
             holder.tv_delegate_type.setText(mContext.getString(R.string.withdraw_type_released));
         }
 
-        holder.tv_delegate_amount.setText(typeList.get(position).getValue());
+        holder.tv_delegate_amount.setText(mContext.getString(R.string.amount_with_unit,typeList.get(position).getValue()));
 
 
         return view;

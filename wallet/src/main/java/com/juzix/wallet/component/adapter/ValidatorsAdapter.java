@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.util.TypedValue;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -35,7 +36,11 @@ public class ValidatorsAdapter extends CommonAdapter<VerifyNode> {
         GlideUtils.loadRound(context, item.getUrl(), imageView);
         viewHolder.setText(R.id.tv_validators_node_name, item.getName());
         viewHolder.setText(R.id.tv_validators_node_state, item.getNodeStatus());
-        viewHolder.setText(R.id.tv_yield, ((NumberParserUtils.parseDouble(item.getRatePA())) / 100) + "%");
+
+//        viewHolder.setText(R.id.tv_yield, ((NumberParserUtils.parseDouble(item.getRatePA())) / 100) + "%");
+        TextView tv_yield = viewHolder.getView(R.id.tv_yield);
+        isShowRA(context, item, tv_yield);
+
         viewHolder.setText(R.id.tv_staked_money, context.getString(R.string.amount_with_unit, StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(item.getDeposit(), "1E18"))), false)));
 //        viewHolder.setText(R.id.tv_validators_rank, item.getRanking() + "");
         TextView tv = viewHolder.getView(R.id.tv_validators_rank);
@@ -48,10 +53,19 @@ public class ValidatorsAdapter extends CommonAdapter<VerifyNode> {
 
     }
 
+    private void isShowRA(Context context, VerifyNode item, TextView tv_yield) {
+        if (!item.isInit()) {
+            tv_yield.setText(((NumberParserUtils.parseDouble(item.getRatePA())) / 100) + "%");
+        } else {
+            tv_yield.setText("— —");
+        }
+
+    }
+
     private void changeTextFontSize(Context context, TextView tv, VerifyNode item) {
         if (item.getRanking() >= Constants.Magnitudes.THOUSAND) {
             tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
-            tv.setPadding(0,0,0,0);
+            tv.setPadding(0, 0, 0, 0);
         } else {
             tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11);
         }

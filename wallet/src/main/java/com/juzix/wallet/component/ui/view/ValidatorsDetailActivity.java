@@ -95,6 +95,9 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
     public static final String STATE_EXITING = "Exiting";
     public static final String STATE_EXITED = "Exited";
     private String websiteUrl;
+    private String mNodeAddress;
+    private String mNodeName;
+    private String mNodeIcon;
 
     @Override
     protected ValidatorsDetailPresenter createPresenter() {
@@ -139,26 +142,13 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
 
     public void clickViewListener() {
 
-//        RxView.clicks(withdraw).compose(RxUtils.bindToLifecycle(this))
-//                .compose(RxUtils.getClickTransformer())
-//                .subscribe(new CustomObserver<Object>() {
-//                    @Override
-//                    public void accept(Object o) {
-//                        //todo
-////                        WithDrawActivity.actionStart(getContext(), nodeDetail.getNodeUrl(), nodeDetail.getName(), nodeDetail.getUrl());
-//                        WithDrawActivity.actionStart(getContext(), "", "", "");
-//                    }
-//                });
-
         RxView.clicks(delegate).compose(RxUtils.bindToLifecycle(this))
                 .compose(RxUtils.getClickTransformer())
                 .subscribe(new CustomObserver<Object>() {
 
                     @Override
                     public void accept(Object o) {
-                        // todo
-//                        DelegateActivity.actionStart(getContext(), nodeDetail.getNodeUrl(), nodeDetail.getName(), nodeDetail.getUrl());
-                        DelegateActivity.actionStart(getContext(), "", "", "", 1);
+                        DelegateActivity.actionStart(getContext(), mNodeAddress, mNodeName, mNodeIcon, 1);
                     }
                 });
 
@@ -168,9 +158,6 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
                     @Override
                     public void accept(Object o) {
                         CommonHybridActivity.actionStart(getContext(), webSite.getText().toString(), WebType.WEB_TYPE_COMMON);
-//                        Uri uri = Uri.parse("https://www.baidu.com");
-//                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-//                        startActivity(intent);
                     }
                 });
 
@@ -179,10 +166,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-//                        Uri uri = Uri.parse("https://www.baidu.com");
-//                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-//                        startActivity(intent);
-                        CommonHybridActivity.actionStart(getContext(), websiteUrl,WebType.WEB_TYPE_COMMON);
+                        CommonHybridActivity.actionStart(getContext(), websiteUrl, WebType.WEB_TYPE_COMMON);
                     }
                 });
 
@@ -191,10 +175,14 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
     @Override
     public void showValidatorsDetailData(VerifyNodeDetail nodeDetail) {
         websiteUrl = nodeDetail.getWebsite();
+        mNodeAddress = nodeDetail.getNodeId();
+        mNodeName = nodeDetail.getName();
+        mNodeIcon = nodeDetail.getUrl();
 
         GlideUtils.loadRound(this, nodeDetail.getUrl(), iv_url);
         nodeName.setText(nodeDetail.getName());
-        nodeAddress.setText(AddressFormatUtil.formatAddress(nodeDetail.getNodeUrl()));
+        nodeAddress.setText(AddressFormatUtil.formatAddress(nodeDetail.getNodeId()));
+
         if (TextUtils.equals(nodeDetail.getNodeStatus(), STATE_ACTIVE)) {
             nodeState.setText(getString(R.string.validators_state_active));
         } else if (TextUtils.equals(nodeDetail.getNodeStatus(), STATE_CANDIDATE)) {
@@ -223,8 +211,8 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
 
         delegators.setText(nodeDetail.getDelegate());
         slash.setText(nodeDetail.getPunishNumber() + "");  //处罚次数
-        blocks.setText(nodeDetail.getBlockOutNumber() == 0 ? "--" : nodeDetail.getBlockOutNumber() + "");
-        blockRate.setText(NumberParserUtils.parseInt(nodeDetail.getBlockRate()) * 100 + "%");
+        blocks.setText(nodeDetail.getBlockOutNumber() == 0 ? "— —" : nodeDetail.getBlockOutNumber() + "");
+        blockRate.setText(NumberParserUtils.parseDouble(nodeDetail.getBlockRate()) / 100 + "%");
 
         introduction.setText(nodeDetail.getIntro());
         webSite.setText(nodeDetail.getWebsite());//官网

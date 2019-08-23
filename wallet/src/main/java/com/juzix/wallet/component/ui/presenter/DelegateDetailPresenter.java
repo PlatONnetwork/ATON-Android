@@ -49,7 +49,7 @@ public class DelegateDetailPresenter extends BasePresenter<DelegateDetailContrac
             public DelegateDetailEntity call() throws Exception {
                 DelegateDetailEntity entity = new DelegateDetailEntity();
                 entity.setAddress(walletAddress);
-                entity.setNodeId(detail.getNoadeId());
+                entity.setNodeId(detail.getNodeId());
                 entity.setStakingBlockNum(detail.getStakingBlockNum());
                 return entity;
             }
@@ -67,8 +67,7 @@ public class DelegateDetailPresenter extends BasePresenter<DelegateDetailContrac
         getView().showWalletInfo(walletAddress, walletName, walletIcon);
 
         ServerUtils.getCommonApi().getDelegateDetailList(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
-//                .put("addr", walletAddress)
-                .put("addr", "0x493301712671ada506ba6ca7891f436d29185821") //暂时是假数据
+                .put("addr", walletAddress)
                 .build())
                 .zipWith(Single.fromCallable(new Callable<List<DelegateDetailEntity>>() {
                     @Override
@@ -115,7 +114,7 @@ public class DelegateDetailPresenter extends BasePresenter<DelegateDetailContrac
                 .map(new Function<DelegateDetailEntity, DelegateDetail>() {
                     @Override
                     public DelegateDetail apply(DelegateDetailEntity entity) throws Exception {
-                        detail.setNoadeId(entity.getAddress());
+                        detail.setNodeId(entity.getAddress());
                         return detail;
                     }
                 }).toList().blockingGet();

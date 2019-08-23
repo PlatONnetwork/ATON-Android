@@ -3,9 +3,9 @@ package com.juzix.wallet.component.ui.view;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +22,6 @@ import com.juzix.wallet.component.ui.base.MVPBaseFragment;
 import com.juzix.wallet.component.ui.contract.MyDelegateContract;
 import com.juzix.wallet.component.ui.presenter.MyDelegatePresenter;
 import com.juzix.wallet.component.widget.CustomRefreshHeader;
-import com.juzix.wallet.component.widget.headerandfooter.HeaderAndFooterRecyclerView;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.entity.DelegateInfo;
 import com.juzix.wallet.entity.WebType;
@@ -62,7 +61,7 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
     @BindView(R.id.ll_no_data)
     LinearLayout ll_no_data;
     @BindView(R.id.list_delegate)
-    HeaderAndFooterRecyclerView list_delegate;
+    RecyclerView list_delegate;
     @BindView(R.id.ll_problem)
     LinearLayout ll_problem;
     @BindView(R.id.ll_tutorial)
@@ -101,6 +100,7 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
     }
 
     private void initClickListener() {
+
         RxView.clicks(tv_delegate_record)
                 .compose(RxUtils.bindToLifecycle(this))
                 .compose(RxUtils.getClickTransformer())
@@ -116,8 +116,7 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
                     @Override
                     public void accept(Object o) {
                         //todo 暂时写的一个假的链接
-//                        CommonHybridActivity.actionStart(getContext(), "https://www.baidu.com");
-                        DelegateActivity.actionStart(getContext(), "", "", "", 0);
+                        CommonHybridActivity.actionStart(getContext(), "https://www.baidu.com", WebType.WEB_TYPE_COMMON);
                     }
                 });
 
@@ -131,6 +130,22 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
                     }
                 });
 
+        RxView.clicks(ll_no_data).compose(RxUtils.bindToLifecycle(this))
+                .compose(RxUtils.getClickTransformer())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        //没数据，跳转到验证节点页面
+                        DelegateFragment delegateFragment = (DelegateFragment) MyDelegateFragment.this.getParentFragment();
+                        delegateFragment.setFragment2Fragment(new DelegateFragment.Fragment2Fragment() {
+                            @Override
+                            public void gotoFragment(ViewPager viewPager) {
+                                viewPager.setCurrentItem(1);
+                            }
+                        });
+                        delegateFragment.forSkip();
+                    }
+                });
 
     }
 
@@ -142,7 +157,6 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mMyDelegateAdapter = new MyDelegateAdapter(datalist);
         list_delegate.setLayoutManager(layoutManager);
-//        View footerView = LayoutInflater.from(getContext()).inflate(R.layout.include_my_delegate_footer, list_delegate, false);
         list_delegate.setAdapter(mMyDelegateAdapter);
 
         list_delegate.setEnabled(true);
@@ -168,53 +182,16 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
         });
     }
 
-    public void addFooterViewForRecyclerView(List<DelegateInfo> list) {
-        View footerView = LayoutInflater.from(getContext()).inflate(R.layout.include_my_delegate_footer, list_delegate, false);
-        LinearLayout ll_common_problem = footerView.findViewById(R.id.ll_common_problem);
-        LinearLayout ll_use_guide = footerView.findViewById(R.id.ll_use_guide);
-        list_delegate.removeFooterView(footerView);
-
-        if(list.size()<=2){
-            ll_guide.setVisibility(View.VISIBLE);
-            list_delegate.removeFooterView(footerView);
-        }else {
-            ll_guide.setVisibility(View.GONE);
-            list_delegate.addFooterView(footerView);
-        }
-
-        RxView.clicks(ll_common_problem).compose(RxUtils.bindToLifecycle(this))
-                .compose(RxUtils.getClickTransformer())
-                .subscribe(new CustomObserver<Object>() {
-                    @Override
-                    public void accept(Object o) {
-                        //todo 暂时写的一个假链接
-                        CommonHybridActivity.actionStart(getContext(), "https://www.baidu.com",WebType.WEB_TYPE_COMMON);
-                    }
-                });
-
-
-        RxView.clicks(ll_use_guide).compose(RxUtils.bindToLifecycle(this))
-                .compose(RxUtils.getClickTransformer())
-                .subscribe(new CustomObserver<Object>() {
-                    @Override
-                    public void accept(Object o) {
-                        //todo 暂时写的一个假链接
-                        CommonHybridActivity.actionStart(getContext(), "https://www.jd.com",WebType.WEB_TYPE_COMMON);
-                    }
-                });
-
-    }
 
     @Override
     public void showMyDelegateData(List<DelegateInfo> list) {
         if (list != null && list.size() > 0) {
             mMyDelegateAdapter.notifyDataChanged(list);
             ll_no_data.setVisibility(View.GONE);
-            showTotal(list);
-            addFooterViewForRecyclerView(list);
         } else {
             ll_no_data.setVisibility(View.VISIBLE);
         }
+        showTotal(list);
         refreshLayout.finishRefresh();
         dismissLoadingDialogImmediately();
     }
@@ -225,17 +202,9 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
             total += NumberParserUtils.parseDouble(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(info.getDelegate(), "1E18"))));
         }
 
-        tv_total_delegate.setText(total > 0 ? StringUtil.formatBalance(total, false) : "— —");
+        tv_total_delegate.setText(total > 0 ? getString(R.string.amount_with_unit, StringUtil.formatBalance(total, false)) : "— —");
     }
 
-
-    @Override
-    public void showMyDelegateDataByPosition(int positon, DelegateInfo delegateInfo) {
-        //刷新某个item
-        mMyDelegateAdapter.notifyItemDataChanged(positon, delegateInfo);
-        refreshLayout.finishRefresh();
-
-    }
 
     @Override
     public void showMyDelegateDataFailed() {

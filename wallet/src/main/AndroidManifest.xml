@@ -174,11 +174,15 @@
         <activity
             android:name=".component.ui.view.WithDrawActivity"
             android:launchMode="standard"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
+            />
         <activity
             android:name=".component.ui.view.DelegateActivity"
             android:launchMode="standard"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
+            />
         <activity
             android:name=".component.ui.view.OfficialCommunityActivity"
             android:launchMode="standard"

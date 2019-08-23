@@ -1,46 +1,23 @@
 package com.juzix.wallet.component.ui.presenter;
 
-import com.juzhen.framework.network.ApiErrorCode;
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.ApiSingleObserver;
-import com.juzhen.framework.util.NumberParserUtils;
-import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.MyDelegateContract;
-import com.juzix.wallet.engine.BaseApi;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.Web3jManager;
-import com.juzix.wallet.entity.AccountBalance;
 import com.juzix.wallet.entity.DelegateInfo;
-import com.juzix.wallet.entity.MyDelegate;
-import com.juzix.wallet.entity.VotedCandidate;
-import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.RxUtils;
-import com.juzix.wallet.utils.StringUtil;
 import com.trello.rxlifecycle2.android.FragmentEvent;
-
-import org.reactivestreams.Publisher;
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
-
-import java.util.Arrays;
 import java.util.List;
-
 import io.reactivex.Flowable;
-import io.reactivex.Scheduler;
-import io.reactivex.Single;
-import io.reactivex.SingleSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.Response;
 
 public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> implements MyDelegateContract.Presenter {
     public MyDelegatePresenter(MyDelegateContract.View view) {
@@ -57,36 +34,16 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
 
     private void getMyDelegateData(String[] addressList) {
         ServerUtils.getCommonApi().getMyDelegateList(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder().
-                put("walletAddrs", new String[]{"0x493301712671ada506ba6ca7891f436d29185821","0x493301712671ada506ba6ca7891f436d29185823","0x493301712671ada506ba6ca7891f436d29185822"})
+                put("walletAddrs", addressList)
                 .build())
                 .compose(RxUtils.bindToParentLifecycleUtilEvent(getView(), FragmentEvent.STOP))
                 .compose(RxUtils.getSingleSchedulerTransformer())
-//                .doOnSubscribe(new Consumer<Disposable>() {
-//                    @Override
-//                    public void accept(Disposable disposable) throws Exception {
-//                        if (isViewAttached()) {
-//                            showLoadingDialog();
-//                        }
-//                    }
-//                })
-//                .doFinally(new Action() {
-//                    @Override
-//                    public void run() throws Exception {
-//                        if (isViewAttached()) {
-//                            dismissLoadingDialogImmediately();
-//                        }
-//                    }
-//                })
                 .subscribe(new ApiSingleObserver<List<DelegateInfo>>() {
                     @Override
                     public void onApiSuccess(List<DelegateInfo> infoList) {
                         if (isViewAttached()) {
                             if (infoList != null) {
                                 getView().showMyDelegateData(getWalletIconByAddress(infoList));
-                                //获取钱包余额
-//                                getWalletBalance(infoList);
-                                //获取钱包地址的数组
-//                                getwalletAddressGroup(infoList);
                             }
                         }
                     }
@@ -135,8 +92,7 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                     @Override
                     public DelegateInfo apply(DelegateInfo delegateInfo) throws Exception {
 
-                        double balance = Web3jManager.getInstance().getBalance(delegateInfo.getWalletAddress());
-
+//                        double balance = Web3jManager.getInstance().getBalance(delegateInfo.getWalletAddress());
 //                        delegateInfo.setBalance(balance);
 
                         return delegateInfo;
@@ -144,11 +100,11 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Consumer<DelegateInfo>() {
+                .subscribe(new Consumer<DelegateInfo>() {
                     @Override
                     public void accept(DelegateInfo delegateInfo) throws Exception {
                         if (isViewAttached()) {
-                            getView().showMyDelegateDataByPosition(delegateInfoList.indexOf(delegateInfo), delegateInfo);
+//                            getView().showMyDelegateDataByPosition(delegateInfoList.indexOf(delegateInfo), delegateInfo);
                         }
                     }
                 });

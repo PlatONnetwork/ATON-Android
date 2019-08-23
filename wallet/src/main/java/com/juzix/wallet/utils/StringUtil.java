@@ -137,7 +137,7 @@ public class StringUtil {
         } else if (amount >= Constants.Magnitudes.HUNDRED_MILLION) {
             return context.getString(R.string.msg_hundred_million);
         } else if (amount >= Constants.Magnitudes.TEN_MILLION) {
-            return context.getString(R.string.msg_ten_thousand);
+            return context.getString(R.string.msg_ten_million);
         } else if (amount >= Constants.Magnitudes.MILLION) {
             return context.getString(R.string.msg_million);
         } else if (amount >= Constants.Magnitudes.HUNDRED_THOUSAND) {
