@@ -33,24 +33,18 @@ import com.juzix.wallet.component.widget.PointLengthFilter;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.Wallet;
-import com.juzix.wallet.entity.WithDrawBalance;
 import com.juzix.wallet.entity.WithDrawType;
 import com.juzix.wallet.utils.AddressFormatUtil;
-import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.GlideUtils;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import io.reactivex.functions.Consumer;
 
 public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> implements WithDrawContract.View {
     private Unbinder unbinder;
@@ -116,15 +110,6 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         withdrawAmount.setFilters(new InputFilter[]{new PointLengthFilter()});
         withdrawAmount.addTextChangedListener(mAmountTextWatcher);
 
-//        RxView.clicks(chooseWallet).compose(RxUtils.bindToLifecycle(this))
-//                .compose(RxUtils.getClickTransformer())
-//                .subscribe(new CustomObserver<Object>() {
-//                    @Override
-//                    public void accept(Object o) {
-//                        mPresenter.showSelectWalletDialogFragment();
-//                    }
-//                });
-
         RxView.clicks(chooseDelegate)
                 .compose(RxUtils.bindToLifecycle(this))
                 .compose(RxUtils.getClickTransformer())
@@ -140,9 +125,9 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         RxView.clicks(allAmount)
                 .compose(RxUtils.bindToLifecycle(this))
                 .compose(RxUtils.getClickTransformer())
-                .subscribe(new Consumer<Object>() {
+                .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object o) throws Exception {
+                    public void accept(Object o) {
                         //点击全部
                         withdrawAmount.setText(delegateAmount.getText().toString().replaceAll(",", ""));
                         Log.d("WithDrawActivity11111111", " ======================" + delegateAmount.getText().toString());
@@ -215,7 +200,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
             withdrawAmount.setText(item.getValue());
             withdrawAmount.setFocusableInTouchMode(false);
             withdrawAmount.setFocusable(false);
-            mPresenter.getWithDrawGasPrice();//已解除不能操作，所以需要在获取一次手续费
+            mPresenter.getWithDrawGasPrice();//已解除不能操作，所以需要再获取一次手续费
         }
         delegateAmount.setText(StringUtil.formatBalance(NumberParserUtils.parseDouble(item.getValue()), false));
 
@@ -235,7 +220,6 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     private TextWatcher mAmountTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
         }
 
         @Override
@@ -247,12 +231,10 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
             String amountMagnitudes = StringUtil.getAmountMagnitudes(getContext(), s.toString().trim());
             etWalletAmount.setText(amountMagnitudes);
             etWalletAmount.setVisibility(TextUtils.isEmpty(amountMagnitudes) ? View.GONE : View.VISIBLE);
-
         }
 
         @Override
-        public void afterTextChanged(Editable s) {//修改后
-
+        public void afterTextChanged(Editable s) {
         }
     };
 
@@ -352,7 +334,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
                 .timestamp(transactionTime)
                 .txType(txType)
                 .value(value)
-                .actualTxCost(actualTxCost)
+                .actualTxCost(fee.getText().toString())
                 .nodeName(nodeName)
                 .nodeId(nodeId)
                 .txReceiptStatus(txReceiptStatus)
@@ -391,24 +373,4 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         context.startActivity(intent);
     }
 
-
-    //显示余额类型
-//    @Override
-//    public void showBalanceType(WithDrawBalance drawBalance, Map<String, String> map) {
-//        double locked = NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(drawBalance.getLocked(), "1E18"))); //已锁定
-//        double unLocked = NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(drawBalance.getUnLocked(), "1E18")));//未锁定
-//        double delegated = locked + unLocked; //已委托 = 已锁定+未锁定
-//        delegateType.setText(getString(R.string.withdraw_type_delegated));
-//        delegateAmount.setText(StringUtil.formatBalance(delegated, false));
-//
-//        //遍历map集合
-//        Set<Map.Entry<String, String>> entries = map.entrySet();
-//        Iterator<Map.Entry<String, String>> it = entries.iterator();
-//        while (it.hasNext()) {
-//            Map.Entry<String, String> entry = it.next();
-//            list.add(new WithDrawType(entry.getKey(), entry.getValue()));
-//        }
-//
-//        mPopWindowAdapter.notifyDataSetChanged();
-//    }
 }

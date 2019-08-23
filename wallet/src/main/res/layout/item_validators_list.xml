@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center">
@@ -39,7 +40,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="6dp"
-                    android:text="jiang"
+                    tools:text="jiang"
                     android:textColor="@color/color_000000"
                     android:textSize="15sp" />
 
@@ -51,7 +52,9 @@
                     android:gravity="center"
                     android:paddingLeft="8dp"
                     android:paddingRight="8dp"
-                    android:text="active"
+                    android:paddingTop="1dp"
+                    android:paddingBottom="1dp"
+                    tools:text="active"
                     android:textColor="@color/color_4a90e2"
                     android:textSize="11sp" />
 
@@ -76,7 +79,7 @@
                     android:id="@+id/tv_staked_money"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="1644848.10552"
+                    tools:text="1644848.10552"
                     android:textColor="@color/color_000000"
                     android:textSize="13sp" />
 
@@ -99,7 +102,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
-                android:text="12.30%"
+                tools:text="12.30%"
                 android:textColor="@color/color_105cfe"
                 android:textSize="17sp" />
 
@@ -135,7 +138,7 @@
                 android:gravity="center"
                 android:paddingLeft="4dp"
                 android:paddingBottom="2dp"
-                android:text="55"
+                tools:text="55"
                 android:textColor="@color/color_ffffff"
                 android:textSize="11sp" />
 

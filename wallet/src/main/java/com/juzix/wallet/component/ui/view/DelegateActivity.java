@@ -99,7 +99,6 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     private PopupWindow mPopupWindow;
     private ListView mPopListview;
     private DelegatePopAdapter mAdapter;
-
     private long transactionTime;
 
     @Override
@@ -132,7 +131,8 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                     }
                 });
 
-        RxView.clicks(amounChoose).compose(RxUtils.bindToLifecycle(this))
+        RxView.clicks(amounChoose)
+                .compose(RxUtils.bindToLifecycle(this))
                 .compose(RxUtils.getClickTransformer())
                 .subscribe(new CustomObserver<Object>() {
                     @Override
@@ -156,7 +156,8 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                 });
 
 
-        RxView.clicks(btnDelegate).compose(RxUtils.bindToLifecycle(this))
+        RxView.clicks(btnDelegate)
+                .compose(RxUtils.bindToLifecycle(this))
                 .compose(RxUtils.getClickTransformer())
                 .subscribe(new CustomObserver<Object>() {
                     @Override
@@ -222,12 +223,12 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
 
             mPresenter.checkDelegateAmount(s.toString().trim());
             mPresenter.updateDelegateButtonState();
-            mPresenter.getGasPrice(chooseType); //获取手续费
 
             String amountMagnitudes = StringUtil.getAmountMagnitudes(getContext(), s.toString().trim());
             inputTips.setText(amountMagnitudes);
             inputTips.setVisibility(TextUtils.isEmpty(amountMagnitudes) ? View.GONE : View.VISIBLE);
 
+            mPresenter.getGasPrice(chooseType); //获取手续费
         }
 
         @Override
@@ -302,9 +303,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         //选中钱包
         String walletAddress = address;
         for (AccountBalance bean : accountBalances) {
-            // todo 这里先写的一个假的钱包地址
-//            if (TextUtils.equals(walletAddress, bean.getAddr())) {
-            if (TextUtils.equals("0x493301712671ada506ba6ca7891f436d29185821", bean.getAddr())) { //先写个假的钱包地址
+            if (TextUtils.equals(walletAddress, bean.getAddr())) {
                 //获取当前选中钱包的余额信息
                 typeList.add(new DelegateType("0", bean.getFree()));
                 typeList.add(new DelegateType("1", bean.getLock()));
@@ -344,11 +343,11 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     }
 
     @Override
-    public void showNodeInfo(String address, String name, String UrlIcon) {
+    public void showNodeInfo(String nodeAddr, String name, String UrlIcon) {
         //显示节点基本信息
         GlideUtils.loadRound(getContext(), UrlIcon, nodeIcon);
         nodeName.setText(name);
-        nodeAddress.setText(AddressFormatUtil.formatAddress(address));
+        nodeAddress.setText(AddressFormatUtil.formatAddress(nodeAddr));
     }
 
     @Override
@@ -406,7 +405,6 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
 
     /**
      * 下面四个方法是获取intent传递的值
-     *
      * @return
      */
     @Override

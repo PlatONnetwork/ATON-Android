@@ -10,12 +10,14 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.tx.gas.GasProvider;
+import org.web3j.utils.Convert;
 
 import java.math.BigInteger;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Single;
-import io.reactivex.functions.Consumer;
+import rx.Observable;
+
 
 public class DelegateManager {
     private static class InstanceHolder {
@@ -26,18 +28,18 @@ public class DelegateManager {
         return InstanceHolder.INSTANCE;
     }
 
-    public Single<BaseResponse> delegate(Credentials credentials, String amount, String nodeId, String type) {
+    public Single<PlatonSendTransaction> delegate(Credentials credentials, String amount, String nodeId, String type) {
 
-        return Single.fromCallable(new Callable<BaseResponse>() {
+        return Single.fromCallable(new Callable<PlatonSendTransaction>() {
             @Override
-            public BaseResponse call() throws Exception {
+            public PlatonSendTransaction call() throws Exception {
                 Web3j web3j = Web3jManager.getInstance().getWeb3j();
                 String chainId = NodeManager.getInstance().getChainId();
-                DelegateContract delegateContract = DelegateContract.load(web3j, credentials, new DefaultGasProvider(), chainId);
+                DelegateContract delegateContract = DelegateContract.load(web3j, credentials, "100"); //todo 暂时写100做链id
 
                 StakingAmountType stakingAmountType = TextUtils.equals(type, "balance") ? StakingAmountType.FREE_AMOUNT_TYPE : StakingAmountType.RESTRICTING_AMOUNT_TYPE;
 
-                return delegateContract.delegate(nodeId, stakingAmountType, new BigInteger(amount)).send();
+                return delegateContract.delegateReturnTransaction(nodeId, stakingAmountType, Convert.toVon(amount, Convert.Unit.LAT).toBigInteger()).send();
             }
         });
     }
@@ -50,43 +52,10 @@ public class DelegateManager {
                 Web3j web3j = Web3jManager.getInstance().getWeb3j();
                 String chainId = NodeManager.getInstance().getChainId();
                 DelegateContract delegateContract = DelegateContract.load(web3j, credentials, new DefaultGasProvider(), chainId);
-                return delegateContract.unDelegateReturnTransaction(nodeId, new BigInteger(stakingBlockNum), new BigInteger(amount)).send();
+                return delegateContract.unDelegateReturnTransaction(nodeId, new BigInteger(stakingBlockNum), Convert.toVon(amount, Convert.Unit.LAT).toBigInteger()).send();
             }
         });
 
     }
-
-    /**
-     * 获取发起委托的手续费
-     */
-    public Single<GasProvider> getDelegateGasPrice(String nodeId, String chooseType, String amount) {
-        Web3j web3j = Web3jManager.getInstance().getWeb3j();
-        DelegateContract delegateContract = DelegateContract.load(web3j);
-        StakingAmountType stakingAmountType = TextUtils.equals(chooseType, "balance") ? StakingAmountType.FREE_AMOUNT_TYPE : StakingAmountType.RESTRICTING_AMOUNT_TYPE;
-        return Single.fromCallable(new Callable<GasProvider>() {
-            @Override
-            public GasProvider call() throws Exception {
-                return (GasProvider) delegateContract.getDelegateGasProvider(nodeId, stakingAmountType, new BigInteger(amount));
-            }
-        });
-
-    }
-
-    /**
-     * 获取赎回操作的手续费
-     */
-
-    public Single<GasProvider> getWithDrawGasPrice(String nodeId, String stakingBlockNum, String amount) {
-        Web3j web3j = Web3jManager.getInstance().getWeb3j();
-        DelegateContract delegateContract = DelegateContract.load(web3j);
-
-        return Single.fromCallable(new Callable<GasProvider>() {
-            @Override
-            public GasProvider call() throws Exception {
-                return (GasProvider) delegateContract.getUnDelegateGasProvider(nodeId, new BigInteger(stakingBlockNum), new BigInteger(amount));
-            }
-        });
-    }
-
 
 }

@@ -9,7 +9,7 @@ public class DelegateDetail implements Parcelable {
     /**
      * 投票节点Id（节点地址 ）
      */
-    private String noadeId;
+    private String nodeId;
 
     /**
      * 最新的质押交易块高
@@ -64,12 +64,12 @@ public class DelegateDetail implements Parcelable {
 
     }
 
-    public String getNoadeId() {
-        return noadeId;
+    public String getNodeId() {
+        return nodeId;
     }
 
-    public void setNoadeId(String noadeId) {
-        this.noadeId = noadeId;
+    public void setNodeId(String nodeId) {
+        this.nodeId = nodeId;
     }
 
     public String getNodeName() {
@@ -145,7 +145,7 @@ public class DelegateDetail implements Parcelable {
     }
 
     protected DelegateDetail(Parcel in) {
-        noadeId = in.readString();
+        nodeId = in.readString();
         nodeName = in.readString();
         website = in.readString();
         nodeStatus = in.readString();
@@ -159,7 +159,7 @@ public class DelegateDetail implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(noadeId);
+        dest.writeString(nodeId);
         dest.writeString(nodeName);
         dest.writeString(nodeStatus);
         dest.writeString(website);
@@ -193,12 +193,12 @@ public class DelegateDetail implements Parcelable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DelegateDetail that = (DelegateDetail) o;
-        return Objects.equals(noadeId, that.noadeId);
+        return Objects.equals(nodeId, that.nodeId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(noadeId);
+        return Objects.hash(nodeId);
     }
 
 //    @Override

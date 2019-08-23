@@ -12,8 +12,6 @@ public class MyDelegateContract {
     public interface View extends IView {
         void showMyDelegateData(List<DelegateInfo> list);
 
-        void showMyDelegateDataByPosition(int position, DelegateInfo delegateInfo);
-
         void showMyDelegateDataFailed();
 
 

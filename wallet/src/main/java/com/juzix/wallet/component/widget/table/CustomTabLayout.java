@@ -386,7 +386,7 @@ public class CustomTabLayout  extends HorizontalScrollView {
                 tabView.setSelected(true);
                 TextView textView= tabView.findViewById(R.id.tv_title);
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-
+                textView.setTypeface(Typeface.DEFAULT_BOLD);
             }
 
         }
@@ -611,12 +611,14 @@ public class CustomTabLayout  extends HorizontalScrollView {
                     //表示被选中的页面
                     TextView tv = tabStrip.getChildAt(position).findViewById(R.id.tv_title);
                     tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+                    tv.setTypeface(Typeface.DEFAULT_BOLD);
 
                 } else {
                     //未选中的页面
                     for (int j = 0; j < tabStrip.getChildCount(); j++) {
                         TextView textView =tabStrip.getChildAt(i).findViewById(R.id.tv_title);
                         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+                        textView.setTypeface(Typeface.DEFAULT);
                     }
 
                 }

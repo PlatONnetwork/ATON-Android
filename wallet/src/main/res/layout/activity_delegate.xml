@@ -152,10 +152,13 @@
 
                 <LinearLayout
                     android:id="@+id/ll_delegate_amount"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:layout_toLeftOf="@id/iv_drop_down"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginLeft="5dp"
+                    android:gravity="center_vertical|right"
+                    android:layout_toRightOf="@id/tv_amount_type"
                     android:orientation="horizontal">
 
                     <TextView
@@ -163,6 +166,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/color_000000"
+                        android:gravity="right"
+                        android:maxLines="1"
+                        android:ellipsize="end"
                         android:textSize="15sp" />
 
 
@@ -172,18 +178,19 @@
                         android:text="LAT"
                         android:textColor="@color/color_000000"
                         android:textSize="12sp" />
+
+                    <ImageView
+                        android:id="@+id/iv_drop_down"
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:layout_centerInParent="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="20dp"
+                        android:src="@drawable/icon_drop_down" />
                 </LinearLayout>
 
 
-                <ImageView
-                    android:id="@+id/iv_drop_down"
-                    android:layout_width="14dp"
-                    android:layout_height="14dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerInParent="true"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="20dp"
-                    android:src="@drawable/icon_drop_down" />
+
             </RelativeLayout>
 
             <LinearLayout

@@ -29,7 +29,7 @@ public class ValidatorsDetailPresenter extends BasePresenter<ValidatorsDetailCon
         ServerUtils.getCommonApi().getNodeCandidateDetail(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
                 .put("nodeId", nodeId)
                 .build())
-//                .compose(bindToLifecycle())
+                .compose(bindToLifecycle())
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .subscribe(new ApiSingleObserver<VerifyNodeDetail>() {
                     @Override

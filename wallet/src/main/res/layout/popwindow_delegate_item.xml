@@ -14,7 +14,6 @@
             android:id="@+id/rl_choose_delegate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
             android:layout_marginTop="14dp"
             android:layout_marginRight="10dp"
             android:background="@drawable/bg_validators_item">
@@ -26,47 +25,44 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
-                android:text="delegated"
                 android:textColor="@color/color_000000"
                 android:textSize="15sp" />
 
 
             <LinearLayout
                 android:id="@+id/ll_delegate_amount"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:layout_toLeftOf="@id/iv_drop_down"
+                android:gravity="center_vertical|right"
+                android:layout_toRightOf="@id/tv_delegate_type"
+                android:layout_marginLeft="5dp"
+                android:layout_alignParentRight="true"
                 android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/tv_delegate_amount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="5230.25 "
+                    android:gravity="right"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     android:textColor="@color/color_000000"
                     android:textSize="15sp" />
 
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="LAT"
-                    android:textColor="@color/color_000000"
-                    android:textSize="12sp" />
+                <ImageView
+                    android:id="@+id/iv_drop_down"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:visibility="visible"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="20dp"
+                    android:src="@drawable/icon_drop_down" />
             </LinearLayout>
 
 
-            <ImageView
-                android:id="@+id/iv_drop_down"
-                android:layout_width="14dp"
-                android:layout_height="14dp"
-                android:visibility="invisible"
-                android:layout_alignParentRight="true"
-                android:layout_centerInParent="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="20dp"
-                android:src="@drawable/icon_drop_down" />
+
         </RelativeLayout>
 
         <View

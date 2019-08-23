@@ -54,7 +54,7 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         DelegateDetail detail = detailList.get(position);
         holder.nodeName.setText(detail.getNodeName());
-        holder.nodeAddress.setText(AddressFormatUtil.formatAddress(detail.getNoadeId()));
+        holder.nodeAddress.setText(AddressFormatUtil.formatAddress(detail.getNodeId()));
         GlideUtils.loadRound(mContext, detail.getUrl(), holder.nodeIcon);
         holder.nodeState.setText(detail.getNodeStatus());
         changeTextViewColorByState(holder.nodeState, detail.getNodeStatus()); //NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(value, "1E18")
@@ -105,14 +105,14 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
 
 
         } else {
-            //操作赎回委托
+            //操作赎回
             RxView.clicks(holder.ll_withdraw)
                     .compose(RxUtils.getClickTransformer())
                     .subscribe(new Consumer<Object>() {
                         @Override
                         public void accept(Object o) throws Exception {
                             if (null != mOnDelegateClickListener) {
-                                mOnDelegateClickListener.onWithDrawClick(detail.getNoadeId(), detail.getNodeName(), detail.getUrl(), detail.getStakingBlockNum());
+                                mOnDelegateClickListener.onWithDrawClick(detail.getNodeId(), detail.getNodeName(), detail.getUrl(), detail.getStakingBlockNum());
                             }
 
                         }
@@ -133,7 +133,7 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
 
 
                             } else {
-                                mOnDelegateClickListener.onDelegateClick(detail.getNoadeId(), detail.getNodeName(), detail.getUrl());
+                                mOnDelegateClickListener.onDelegateClick(detail.getNodeId(), detail.getNodeName(), detail.getUrl());
                             }
                         }
                     }

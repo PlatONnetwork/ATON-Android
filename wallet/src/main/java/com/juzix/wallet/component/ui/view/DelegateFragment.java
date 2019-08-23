@@ -2,6 +2,7 @@ package com.juzix.wallet.component.ui.view;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -28,9 +29,7 @@ import java.util.ArrayList;
  * 委托模块
  */
 public class DelegateFragment extends BaseFragment {
-//    private SlidingTabLayout sliding_tab_layout;
-    private ViewPager view_page;
-    ArrayList<String> mTitleList = null;
+    private ViewPagerSlide vpContent;
 
     @Nullable
     @Override
@@ -62,7 +61,7 @@ public class DelegateFragment extends BaseFragment {
         for (int i = 0; i < tabNum; i++) {
             pages.add(PagerItem.of(getTitles().get(i), fragments.get(i)));
         }
-        ViewPagerSlide vpContent = view.findViewById(R.id.vp_content);
+        vpContent = view.findViewById(R.id.vp_content);
         vpContent.setSlide(true);
         vpContent.setOffscreenPageLimit(fragments.size());
         vpContent.setAdapter(new PagerItemAdapter(getChildFragmentManager(), pages));
@@ -96,6 +95,23 @@ public class DelegateFragment extends BaseFragment {
         titleList.add(getString(R.string.tab_my_delegate));
         titleList.add(getString(R.string.tab_validators));
         return titleList;
+    }
+
+
+    private Fragment2Fragment fragment2Fragment;
+
+    public void setFragment2Fragment(Fragment2Fragment fragment2Fragment) {
+        this.fragment2Fragment = fragment2Fragment;
+    }
+
+    public void forSkip() {
+        if (fragment2Fragment != null) {
+            fragment2Fragment.gotoFragment(vpContent);
+        }
+    }
+
+    public interface Fragment2Fragment {
+        public void gotoFragment(ViewPager viewPager);
     }
 
 }
