@@ -21,8 +21,10 @@ import com.trello.rxlifecycle2.android.FragmentEvent;
 import org.reactivestreams.Publisher;
 import org.web3j.crypto.Credentials;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
 import io.reactivex.Single;
@@ -97,26 +99,32 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
                         WalletManager.getInstance().updateAccountBalance(accountBalance);
                     }
                 })
-                .map(new Function<AccountBalance, Double>() {
+                .map(new Function<AccountBalance, BigDecimal>() {
                     @Override
-                    public Double apply(AccountBalance accountBalance) throws Exception {
-                        return NumberParserUtils.parseDouble(accountBalance.getFree());
+                    public BigDecimal apply(AccountBalance accountBalance) throws Exception {
+                        return new BigDecimal(accountBalance.getFree());
                     }
                 })
-                .reduce(new BiFunction<Double, Double, Double>() {
+                .reduce(new BiFunction<BigDecimal, BigDecimal, BigDecimal>() {
                     @Override
-                    public Double apply(Double balance1, Double banalce2) throws Exception {
-                        return BigDecimalUtil.add(balance1, banalce2);
+                    public BigDecimal apply(BigDecimal balance1, BigDecimal banalce2) throws Exception {
+                        return balance1.add(banalce2);
+                    }
+                })
+                .repeatWhen(new Function<Flowable<Object>, Publisher<?>>() {
+                    @Override
+                    public Publisher<?> apply(Flowable<Object> objectFlowable) throws Exception {
+                        return objectFlowable.delay(5, TimeUnit.SECONDS);
                     }
                 })
                 .toObservable()
                 .compose(bindUntilEvent(FragmentEvent.STOP))
                 .compose(RxUtils.getSchedulerTransformer())
-                .subscribe(new CustomObserver<Double>() {
+                .subscribe(new CustomObserver<BigDecimal>() {
                     @Override
-                    public void accept(Double balance) {
+                    public void accept(BigDecimal balance) {
                         if (isViewAttached()) {
-                            getView().showTotalBalance(balance);
+                            getView().showTotalBalance(balance.toPlainString());
                             Wallet wallet = WalletManager.getInstance().getSelectedWallet();
                             if (wallet != null) {
                                 getView().showFreeBalance(wallet.getFreeBalance());
@@ -130,6 +138,7 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
                     public void accept(Throwable throwable) {
                         super.accept(throwable);
                         if (isViewAttached()) {
+                            getView().showTotalBalance("0");
                             getView().finishRefresh();
                         }
                     }
@@ -158,7 +167,7 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
 
     private void show() {
         if (mWalletList.isEmpty()) {
-            getView().showTotalBalance(0);
+            getView().showTotalBalance("0");
             getView().showContent(true);
             return;
         }

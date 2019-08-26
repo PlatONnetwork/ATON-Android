@@ -3,6 +3,9 @@ package com.juzix.wallet.component.ui.presenter;
 import android.annotation.SuppressLint;
 import android.text.TextUtils;
 
+import com.juzhen.framework.network.ApiRequestBody;
+import com.juzhen.framework.network.ApiResponse;
+import com.juzhen.framework.network.ApiSingleObserver;
 import com.juzhen.framework.network.NetConnectivity;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
@@ -17,9 +20,12 @@ import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.db.entity.AddressEntity;
 import com.juzix.wallet.db.sqlite.AddressDao;
 import com.juzix.wallet.db.sqlite.WalletDao;
+import com.juzix.wallet.engine.NodeManager;
+import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.TransactionManager;
 import com.juzix.wallet.engine.Web3jManager;
+import com.juzix.wallet.entity.AccountBalance;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.AddressFormatUtil;
@@ -38,7 +44,9 @@ import org.web3j.utils.Numeric;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
@@ -64,8 +72,8 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
 
     private final static double DEFAULT_PERCENT = 0;
     private final static long DEAULT_GAS_LIMIT = 210000;
-    private final static double MIN_GAS_PRICE_WEI = 1E9;
-    private final static double MAX_GAS_PRICE_WEI = 1E10;
+    private final static double MIN_GAS_PRICE_WEI = 5E11;
+    private final static double MAX_GAS_PRICE_WEI = 5E12;
     private final static double D_GAS_PRICE_WEI = MAX_GAS_PRICE_WEI - MIN_GAS_PRICE_WEI;
     private static final int REFRESH_TIME = 5000;
     private Disposable mDisposable;
@@ -106,22 +114,27 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
         if (mDisposable != null && !mDisposable.isDisposed()) {
             mDisposable.dispose();
         }
-        mDisposable = Single.fromCallable(new Callable<Double>() {
-            @Override
-            public Double call() throws Exception {
-                return Web3jManager.getInstance().getBalance(address);
-            }
-        })
+
+        ServerUtils
+                .getCommonApi()
+                .getAccountBalance(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
+                        .put("addrs", Arrays.asList(walletEntity.getPrefixAddress()))
+                        .build())
                 .compose(bindUntilEvent(FragmentEvent.STOP))
                 .compose(RxUtils.getSingleSchedulerTransformer())
-                .subscribe(new Consumer<Double>() {
+                .subscribe(new ApiSingleObserver<List<AccountBalance>>() {
+
                     @Override
-                    public void accept(Double balance) throws Exception {
-                        if (isViewAttached()) {
-//                            walletEntity.setBalance(balance);
-                            getView().updateWalletBalance(balance);
+                    public void onApiSuccess(List<AccountBalance> accountBalances) {
+                        if (isViewAttached() && accountBalances != null && !accountBalances.isEmpty()){
+                            getView().updateWalletBalance(accountBalances.get(0).getShowFreeBalace());
                             calculateFeeAndTime(percent);
                         }
+                    }
+
+                    @Override
+                    public void onApiFailure(ApiResponse response) {
+
                     }
                 });
     }
@@ -130,7 +143,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
     @Override
     public void transferAllBalance() {
         if (isViewAttached() && walletEntity != null) {
-            getView().setTransferAmount(BigDecimalUtil.sub(walletEntity.getFreeBalance(), feeAmount));
+            getView().setTransferAmount(BigDecimalUtil.sub(walletEntity.getFreeBalance(), String.valueOf(feeAmount)));
         }
     }
 
@@ -363,7 +376,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
     private boolean isBalanceEnough(String transferAmount) {
         double usedAmount = BigDecimalUtil.add(NumberParserUtils.parseDouble(transferAmount), feeAmount);
         if (walletEntity != null) {
-            return walletEntity.getFreeBalance() >= usedAmount;
+            return BigDecimalUtil.isBigger(walletEntity.getFreeBalance(), String.valueOf(usedAmount));
         }
         return false;
     }

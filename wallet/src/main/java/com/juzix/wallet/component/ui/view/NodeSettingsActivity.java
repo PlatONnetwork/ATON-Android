@@ -14,11 +14,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.juzhen.framework.util.AndroidUtil;
+import com.juzix.wallet.BuildConfig;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.adapter.NodeListAdapter;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.NodeSettingsContract;
 import com.juzix.wallet.component.ui.presenter.NodeSettingsPresenter;
+import com.juzix.wallet.component.widget.CommonTitleBar;
 import com.juzix.wallet.component.widget.NodeListDecoration;
 import com.juzix.wallet.component.widget.WrapContentLinearLayoutManager;
 import com.juzix.wallet.entity.Node;
@@ -36,6 +38,8 @@ public class NodeSettingsActivity extends MVPBaseActivity<NodeSettingsPresenter>
     RecyclerView listNodes;
     @BindView(R.id.tv_add_node)
     TextView tvAddNode;
+    @BindView(R.id.ctb)
+    CommonTitleBar ctb;
 
     private Unbinder unbinder;
     private NodeListAdapter nodeListAdapter;
@@ -62,8 +66,9 @@ public class NodeSettingsActivity extends MVPBaseActivity<NodeSettingsPresenter>
     @Override
     public void showTitleView(boolean isEdit) {
         hideSoftInput();
+        ctb.setRightText(string(isEdit ? R.string.save : R.string.edit));
+        tvAddNode.setVisibility(isEdit ? View.VISIBLE : View.GONE);
         nodeListAdapter.setEditable(isEdit);
-
     }
 
     @Override
@@ -97,6 +102,9 @@ public class NodeSettingsActivity extends MVPBaseActivity<NodeSettingsPresenter>
     }
 
     private void initView() {
+
+        ctb.setRightTextVisibility(BuildConfig.DEBUG ? View.VISIBLE : View.GONE);
+
         int padding = AndroidUtil.dip2px(this, 16);
         nodeListAdapter = new NodeListAdapter(this, null);
         WrapContentLinearLayoutManager layoutManager = new WrapContentLinearLayoutManager(this);
@@ -108,6 +116,24 @@ public class NodeSettingsActivity extends MVPBaseActivity<NodeSettingsPresenter>
         nodeListAdapter.setOnItemRemovedListener(nodeEntity -> mPresenter.delete(nodeEntity));
 
         nodeListAdapter.setOnItemCheckedListener((nodeEntity, isChecked) -> mPresenter.updateNode(nodeEntity, isChecked));
+
+        ctb.setRightTextClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.edit();
+            }
+        });
+
+        ctb.setLeftDrawableClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mPresenter.isEdit()) {
+                    mPresenter.cancel();
+                } else {
+                    finish();
+                }
+            }
+        });
 
         showTitleView(false);
 

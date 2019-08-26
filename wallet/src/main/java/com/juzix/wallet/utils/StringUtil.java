@@ -108,7 +108,7 @@ public class StringUtil {
     /**
      * 字符串数字显示按千分位显示
      */
-    public static String formatBalance(double price) {
+    public static String formatBalance(String price) {
         DecimalFormat decimalFormat = new DecimalFormat();
         decimalFormat.setMaximumFractionDigits(8);//设置最大的小数位数
         decimalFormat.setMinimumFractionDigits(2);

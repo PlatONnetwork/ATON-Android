@@ -10,6 +10,7 @@ import com.juzix.wallet.db.sqlite.WalletDao;
 import com.juzix.wallet.entity.AccountBalance;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.event.EventPublisher;
+import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
 
 import org.web3j.platon.BaseResponse;
@@ -166,22 +167,6 @@ public class WalletManager {
         return null;
     }
 
-
-    /**
-     * 获取钱包余额根据钱包地址
-     */
-    public double getWalletAmountByAddress(String walletAddress) {
-        if (!mWalletList.isEmpty()) {
-            for (Wallet walletEntity : mWalletList) {
-                if (!TextUtils.isEmpty(walletAddress) && walletAddress.equals(walletEntity.getPrefixAddress())) {
-                    return walletEntity.getFreeBalance();
-                }
-
-            }
-        }
-        return 0;
-    }
-
     /**
      * 获取第一个有效的(余额大于0)个人钱包，
      *
@@ -192,7 +177,7 @@ public class WalletManager {
         if (!mWalletList.isEmpty()) {
             for (int i = 0; i < mWalletList.size(); i++) {
                 Wallet walletEntity = mWalletList.get(i);
-                if (walletEntity.getFreeBalance() > 0) {
+                if (BigDecimalUtil.isBiggerThanZero(walletEntity.getFreeBalance())) {
                     return walletEntity;
                 }
             }

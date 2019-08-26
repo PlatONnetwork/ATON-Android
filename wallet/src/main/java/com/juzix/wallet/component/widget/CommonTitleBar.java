@@ -344,6 +344,10 @@ public class CommonTitleBar extends LinearLayout {
         }
     }
 
+    public void setRightTextVisibility(int visibility){
+        tvRight.setVisibility(visibility);
+    }
+
     public void build() {
         if (mContext instanceof BaseActivity) {
             ((BaseActivity) mContext).getContentView().addView(this, 0);

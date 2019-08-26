@@ -7,6 +7,8 @@ import android.text.TextUtils;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.db.entity.WalletEntity;
 
+import java.math.BigDecimal;
+
 import retrofit2.http.PUT;
 
 public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
@@ -227,12 +229,12 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
         this.accountBalance = accountBalance;
     }
 
-    public double getFreeBalance() {
-        return accountBalance == null ? 0D : NumberParserUtils.parseDouble(accountBalance.getFree());
+    public String getFreeBalance() {
+        return accountBalance == null ? "0" : accountBalance.getFree();
     }
 
-    public double getLockBalance() {
-        return accountBalance == null ? 0D : NumberParserUtils.parseDouble(accountBalance.getLock());
+    public String getLockBalance() {
+        return accountBalance == null ? "0" : accountBalance.getLock();
     }
 
     public String getAddressWithoutPrefix() {

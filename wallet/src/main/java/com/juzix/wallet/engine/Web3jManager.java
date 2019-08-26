@@ -13,6 +13,7 @@ import org.web3j.protocol.core.methods.response.PlatonBlock;
 import org.web3j.protocol.core.methods.response.PlatonGasPrice;
 import org.web3j.protocol.core.methods.response.PlatonGetBalance;
 import org.web3j.protocol.core.methods.response.PlatonGetCode;
+import org.web3j.protocol.core.methods.response.PlatonGetTransactionCount;
 import org.web3j.protocol.core.methods.response.PlatonGetTransactionReceipt;
 import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 import org.web3j.protocol.core.methods.response.PlatonTransaction;
@@ -102,9 +103,16 @@ public class Web3jManager {
     }
 
     public BigInteger getNonce(String from) {
+
+        PlatonGetTransactionCount ethGetTransactionCount = null;
         try {
-            BigInteger nonce = Web3jManager.getInstance().getWeb3j().platonGetTransactionCount(from, DefaultBlockParameterName.LATEST).send().getTransactionCount();
-            return nonce;
+            ethGetTransactionCount = Web3jManager.getInstance().getWeb3j().platonGetTransactionCount(
+                    from, DefaultBlockParameterName.PENDING).send();
+            if (ethGetTransactionCount.getTransactionCount().intValue() == 0) {
+                ethGetTransactionCount = Web3jManager.getInstance().getWeb3j().platonGetTransactionCount(
+                        from, DefaultBlockParameterName.LATEST).send();
+            }
+            return ethGetTransactionCount.getTransactionCount();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -226,6 +226,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
             @Override
             public void onPageScrollStateChanged(int state) {
+
             }
         });
 
@@ -456,14 +457,14 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     }
 
     @Override
-    public void showTotalBalance(double totalBalance) {//显示总资产
-        tvTotalAssetsAmount.setText(StringUtil.formatBalance(BigDecimalUtil.div(totalBalance, 1E18)));
+    public void showTotalBalance(String totalBalance) {//显示总资产
+        tvTotalAssetsAmount.setText(StringUtil.formatBalance(BigDecimalUtil.div(totalBalance, "1E18")));
     }
 
     @Override
-    public void showFreeBalance(double balance) {//当前钱包的资产
+    public void showFreeBalance(String balance) {//当前钱包的资产
 
-        tvWalletAmount.setText(string(R.string.amount_with_unit, StringUtil.formatBalance(BigDecimalUtil.div(balance, 1E18))));
+        tvWalletAmount.setText(string(R.string.amount_with_unit,StringUtil.formatBalance(BigDecimalUtil.div(balance, "1E18"))));
 
         if (vpContent.getCurrentItem() == TAB2) {
             SendTransactionFragment sendTransactionFragment = (SendTransactionFragment) mTabAdapter.getItem(TAB2);
@@ -474,7 +475,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     }
 
     @Override
-    public void showLockBalance(double balance) {
+    public void showLockBalance(String balance) {
         tvRestrictedAmount.setText(getRestrictedAmount(string(R.string.restricted_amount_with_unit, "0.00")));
     }
 

@@ -52,11 +52,11 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     private String mNodeName;
     private String mNodeIcon;
     private int tag;//获取是从哪个页面跳转到委托页
+    private String feeAmount;
 
     public DelegatePresenter(DelegateContract.View view) {
         super(view);
         mNodeAddress = view.getNodeAddressFromIntent();
-//        mNodeAddress = "411a6c3640b6cd13799e7d4ed286c95104e3a31fbb05d7ae0004463db648f26e93f7f5848ee9795fb4bbb5f83985afd63f750dc4cf48f53b0e84d26d6834c20c";
         mNodeName = view.getNodeNameFromIntent();
         mNodeIcon = view.getNodeIconFromIntent();
         tag = view.getJumpTagFromIntent();
@@ -116,7 +116,6 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
     private void showDefaultWalletInfo() {
         mWallet = WalletManager.getInstance().getFirstValidIndividualWalletBalance();
-//        mWallet = WalletManager.getInstance().getWalletEntityByWalletAddress("0xfF63f3ED2978F5eD59DD1567A204416765D300D6"); //todo  先写个假的钱包地址
         if (isViewAttached() && mWallet != null) {
             getView().showSelectedWalletInfo(mWallet);
         }
@@ -129,7 +128,6 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
         List<String> walletAddressList = WalletManager.getInstance().getAddressList();
         ServerUtils.getCommonApi().getAccountBalance(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
                 .put("addrs", walletAddressList.toArray(new String[walletAddressList.size()]))
-//                .put("addrs", new String[]{"0x493301712671ada506ba6ca7891f436d29185821"}) //先弄假数据
                 .build())
                 .compose(RxUtils.bindToLifecycle(getView()))
                 .compose(RxUtils.getSingleSchedulerTransformer())
@@ -157,7 +155,6 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
         ServerUtils.getCommonApi().getIsDelegateInfo(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
                 .put("addr", mWallet.getPrefixAddress())
                 .put("nodeId", mNodeAddress)
-//                .put("nodeId", "0x0001512fde9068094d4be1ea6eee0346c0e2eae2ca52d2e7b789bdc0498dfe4d")
                 .build())
                 .compose(RxUtils.bindToLifecycle(getView()))
                 .compose(RxUtils.getSingleSchedulerTransformer())
@@ -201,7 +198,8 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                         Log.d("DelegatePresenter", Thread.currentThread().getName());
                         if (isViewAttached()) {
                             BigDecimal gas = BigDecimalUtil.mul(gasProvider.getGasLimit().toString(), gasProvider.getGasPrice().toString());
-                            getView().showGasPrice(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(String.valueOf(gas.doubleValue()), "1E18")));
+                            feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(String.valueOf(gas.doubleValue()), "1E18"));
+                            getView().showGasPrice(feeAmount);
                         }
                     }
 
@@ -227,9 +225,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
             @Override
             public Double call() throws Exception {
                 //输入数量+手续费
-                String inputNumber = getView().getDelegateAmount();
-                String gasNumber = getView().getGas();
-                return BigDecimalUtil.add(inputNumber, gasNumber);
+                return BigDecimalUtil.add(getView().getDelegateAmount(), feeAmount);
             }
         }).zipWith(ServerUtils.getCommonApi().getIsDelegateInfo(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
                         .put("addr", mWallet.getPrefixAddress())

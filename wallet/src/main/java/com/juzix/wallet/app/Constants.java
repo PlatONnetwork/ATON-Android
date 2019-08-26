@@ -108,9 +108,9 @@ public class Constants {
         String UPDATE_URL = "https://download.platon.network/aton-update.json";
         String URL_TEST_A = "https://test-amigo.platon.network/test";
         String URL_TEST_B = "https://test-beta.platon.network/test";
-        String URL_HTTP_A = "http://192.168.9.190:20060";
+        String URL_HTTP_A = "http://192.168.9.190:443";
         String URL_HTTP_B = "https://aton.platon.network";
-        String URL_HTTP_C = "http://192.168.9.190:20060";
+        String URL_HTTP_C = "http://192.168.9.190:443";
     }
 
     public interface VoteConstants {

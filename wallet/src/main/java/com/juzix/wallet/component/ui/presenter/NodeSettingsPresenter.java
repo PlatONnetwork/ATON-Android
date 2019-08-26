@@ -222,6 +222,11 @@ public class NodeSettingsPresenter extends BasePresenter<NodeSettingsContract.Vi
                 });
     }
 
+    @Override
+    public boolean isEdit() {
+        return mEdited;
+    }
+
     private Single<Boolean> checkIndividualWalletList() {
         return Single.create(new SingleOnSubscribe<Boolean>() {
             @Override

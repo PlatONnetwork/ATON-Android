@@ -55,7 +55,7 @@ import butterknife.Unbinder;
  */
 
 public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> implements DelegateContract.View {
-    private Unbinder unbinder;
+
     @BindView(R.id.iv_delegate_node_icon)
     CircleImageView nodeIcon;
     @BindView(R.id.tv_delegate_node_name)
@@ -90,6 +90,8 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     ShadowButton btnDelegate;
     @BindView(R.id.iv_drop_down)
     ImageView iv_drop_down;
+
+    private Unbinder unbinder;
 
     private String address;//钱包地址
     private String chooseType;//选择的钱包类型（可用余额/锁仓余额）
@@ -258,7 +260,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
 
         //显示余额类型和余额
         amountType.setText(getString(R.string.available_balance));
-        amount.setText(StringUtil.formatBalance(individualWalletEntity.getFreeBalance(), false));
+        amount.setText(StringUtil.formatBalance(individualWalletEntity.getFreeBalance()));
 
         typeList.clear();
         for (AccountBalance bean : balanceList) {

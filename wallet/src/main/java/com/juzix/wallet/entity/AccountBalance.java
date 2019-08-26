@@ -7,6 +7,8 @@ import android.text.TextUtils;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.utils.BigDecimalUtil;
 
+import java.math.BigDecimal;
+
 public class AccountBalance implements Parcelable {
     /**
      * 钱包地址

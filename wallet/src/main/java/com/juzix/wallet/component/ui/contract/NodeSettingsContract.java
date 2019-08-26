@@ -42,5 +42,7 @@ public class NodeSettingsContract {
         void delete(Node nodeEntity);
 
         void updateNode(Node nodeEntity, boolean isChecked);
+
+        boolean isEdit();
     }
 }

@@ -87,7 +87,9 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
 
                     @Override
                     public void onApiFailure(ApiResponse response) {
-                        getView().showValidatorsFailed();
+                        if (isViewAttached()){
+                            getView().showValidatorsFailed();
+                        }
                     }
                 });
 

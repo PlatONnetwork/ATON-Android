@@ -48,9 +48,11 @@ public class TransactionAdapter extends RecyclerAdapter<Transaction> {
 
     @Override
     public void updateItem(RecycleHolder holder, Transaction data, int position) {
+        ImageView transactionStatusIv = holder.itemView.findViewById(R.id.iv_transaction_status);
+        PendingAnimationLayout pendingAnimationLayout = holder.itemView.findViewById(R.id.layout_pending);
         TransactionStatus status = data.getTxReceiptStatus();
-        holder.setText(R.id.tv_desc, mContext.getString(status.getTransactionStatusDescRes()));
-        holder.setTextColor(R.id.tv_desc, status.getTransactionStatusDescColorRes());
+        transactionStatusIv.setVisibility(status == TransactionStatus.PENDING || mContext instanceof TransactionRecordsActivity ? View.GONE : View.VISIBLE);
+        pendingAnimationLayout.setVisibility(status != TransactionStatus.PENDING || mContext instanceof TransactionRecordsActivity ? View.GONE : View.VISIBLE);
     }
 
     public void notifyItemRangeInserted(List<Transaction> transactionList, List<String> queryAddressList, int positionStart, int itemCount) {
