@@ -13,7 +13,7 @@ public class AssetsContract {
 
     public interface View extends IView {
 
-        void showTotalBalance(double totalBalance);
+        void showTotalBalance(String totalBalance);
 
         void showWalletList(Wallet selectedWallet);
 
@@ -23,9 +23,9 @@ public class AssetsContract {
 
         void showCurrentItem(int index);
 
-        void showFreeBalance(double balance);
+        void showFreeBalance(String balance);
 
-        void showLockBalance(double balance);
+        void showLockBalance(String balance);
 
         void setArgument(Wallet entity);
 

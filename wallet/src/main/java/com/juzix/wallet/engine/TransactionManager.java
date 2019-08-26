@@ -78,7 +78,6 @@ public class TransactionManager {
         Credentials credentials = Credentials.create(privateKey);
 
         try {
-
             List<RlpType> result = new ArrayList<>();
             result.add(RlpString.create(Numeric.hexStringToByteArray(PlatOnTypeEncoder.encode(new Int64(0)))));
             String txType = Hex.toHexString(RlpEncoder.encode(new RlpList(result)));
@@ -86,7 +85,7 @@ public class TransactionManager {
             RawTransaction rawTransaction = RawTransaction.createTransaction(Web3jManager.getInstance().getNonce(from), GAS_PRICE, GAS_LIMIT, toAddress, amount.toBigInteger(),
                     txType);
 
-            byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, new Byte("103"), credentials);
+            byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, new Byte("100"), credentials);
             String hexValue = Numeric.toHexString(signedMessage);
 
             PlatonSendTransaction transaction = Web3jManager.getInstance().getWeb3j().platonSendRawTransaction(hexValue).send();

@@ -14,9 +14,11 @@
         android:paddingTop="20dp">
 
         <com.juzix.wallet.component.widget.CommonTitleBar
+            android:id="@+id/ctb"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:ctb_left_drawable="@drawable/icon_back_black"
+            app:ctb_right_text="@string/edit"
             app:ctb_title="@string/node_settings" />
     </LinearLayout>
 

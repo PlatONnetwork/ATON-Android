@@ -9,6 +9,7 @@ import com.juzix.wallet.R;
 import com.juzix.wallet.component.adapter.base.ViewHolder;
 import com.juzix.wallet.component.ui.dialog.SelectWalletDialogFragment;
 import com.juzix.wallet.entity.Wallet;
+import com.juzix.wallet.utils.BigDecimalUtil;
 
 import java.util.List;
 
@@ -48,6 +49,6 @@ public class SelectWalletListAdapter extends CommonAdapter<Wallet> {
     }
 
     private boolean isEnabled(Wallet item) {
-        return !((SelectWalletDialogFragment.CREATE_SHARED_WALLET.equals(action) || SelectWalletDialogFragment.SELECT_TRANSACTION_WALLET.equals(action)) && item.getFreeBalance() == 0);
+        return !((SelectWalletDialogFragment.CREATE_SHARED_WALLET.equals(action) || SelectWalletDialogFragment.SELECT_TRANSACTION_WALLET.equals(action)) && BigDecimalUtil.isBigger(item.getFreeBalance(),"0"));
     }
 }
