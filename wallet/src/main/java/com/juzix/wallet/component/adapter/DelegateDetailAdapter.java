@@ -58,31 +58,39 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
         GlideUtils.loadRound(mContext, detail.getUrl(), holder.nodeIcon);
         holder.nodeState.setText(detail.getNodeStatus());
         changeTextViewColorByState(holder.nodeState, detail.getNodeStatus()); //NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(value, "1E18")
-        holder.tv_node_locked_delegate.setText((TextUtils.isEmpty(detail.getLocked())) ? "--" : StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getLocked(), "1E18"))), false));
-        holder.tv_node_unlocked_delegate.setText((TextUtils.isEmpty(detail.getUnLocked())) ? "--" : StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getUnLocked(), "1E18"))), false));
-        holder.tv_node_released_delegate.setText((TextUtils.isEmpty(detail.getReleased())) ? "--" : StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getReleased(), "1E18"))), false));
-        holder.tv_node_undelegating.setText((TextUtils.isEmpty(detail.getRedeem())) ? "--" : StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getRedeem(), "1E18"))), false));
+        holder.tv_node_locked_delegate.setText(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getLocked(), "1E18"))) == 0 ? "— —" : StringUtil.formatBalance(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getLocked(), "1E18"))));
+        holder.tv_node_unlocked_delegate.setText(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getUnLocked(), "1E18"))) == 0 ? "— —" : StringUtil.formatBalance(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getUnLocked(), "1E18"))));
+        holder.tv_node_released_delegate.setText(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getReleased(), "1E18"))) == 0 ? "— —" : StringUtil.formatBalance(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getReleased(), "1E18"))));
+        holder.tv_node_undelegating.setText(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getRedeem(), "1E18"))) == 0 ? "— —" : StringUtil.formatBalance(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getRedeem(), "1E18"))));
 
 
-        if (!TextUtils.isEmpty(detail.getReleased())) {
+        if (NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getReleased(), "1E18"))) > 0) {
             holder.ll_delegate.setBackgroundColor(ContextCompat.getColor(mContext, R.color.color_66DCDFE8));
             holder.iv_detail_delegate.setImageResource(R.drawable.icon_delegate);
         }
 
 
-        if (TextUtils.isEmpty(detail.getLocked()) && TextUtils.isEmpty(detail.getUnLocked()) && TextUtils.isEmpty(detail.getReleased()) && TextUtils.isEmpty(detail.getRedeem())) {
+        if (NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getLocked(), "1E18"))) == 0
+                && NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getUnLocked(), "1E18"))) == 0
+                && NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getReleased(), "1E18"))) == 0
+                && NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getRedeem(), "1E18"))) == 0) {
             holder.tv_show_delegate.setText(R.string.nav_delegate);
             holder.tv_show_withdraw.setText(R.string.node_move_out);
 
-        } else if (!TextUtils.isEmpty(detail.getLocked()) || !TextUtils.isEmpty(detail.getUnLocked()) || !TextUtils.isEmpty(detail.getReleased()) || !TextUtils.isEmpty(detail.getRedeem())) {
+        } else if (NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getLocked(), "1E18"))) > 0
+                || NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getUnLocked(), "1E18"))) > 0
+                || NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getReleased(), "1E18"))) > 0
+                || NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getRedeem(), "1E18"))) > 0) {
             //只要一个不为空
             holder.tv_show_delegate.setText(R.string.nav_delegate);
             holder.tv_show_withdraw.setText(R.string.node_withdraw_delegate);
-
         }
 
 
-        if (TextUtils.isEmpty(detail.getLocked()) && TextUtils.isEmpty(detail.getUnLocked()) && TextUtils.isEmpty(detail.getReleased()) && TextUtils.isEmpty(detail.getRedeem())) {
+        if (NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getLocked(), "1E18"))) == 0
+                && NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getUnLocked(), "1E18"))) == 0
+                && NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getReleased(), "1E18"))) == 0
+                && NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getRedeem(), "1E18"))) == 0){
             //操作移除列表
             RxView.clicks(holder.ll_withdraw)
                     .compose(RxUtils.getSchedulerTransformer())
@@ -97,12 +105,13 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
                         }
                     });
 
-        } else if (TextUtils.isEmpty(detail.getLocked()) && TextUtils.isEmpty(detail.getUnLocked()) && TextUtils.isEmpty(detail.getReleased())) {
+        } else if (NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getLocked(), "1E18"))) ==0
+                && NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getUnLocked(), "1E18"))) ==0
+                && NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getReleased(), "1E18"))) ==0) {
             //按钮置灰并不可点击
             holder.ll_withdraw.setOnClickListener(null);
             holder.ll_withdraw.setBackgroundColor(ContextCompat.getColor(mContext, R.color.color_66DCDFE8));
             holder.iv_detail_un_delegate.setImageResource(R.drawable.icon_undelegate);
-
 
         } else {
             //操作赎回
@@ -126,12 +135,9 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
                     @Override
                     public void accept(Object o) throws Exception {
                         if (null != mOnDelegateClickListener) {
-                            if (!TextUtils.isEmpty(detail.getReleased())) {
+                            if (NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getReleased(), "1E18"))) > 0) {
                                 //提示，不可点击
                                 ToastUtil.showLongToast(mContext, R.string.delegate_no_click);
-
-
-
                             } else {
                                 mOnDelegateClickListener.onDelegateClick(detail.getNodeId(), detail.getNodeName(), detail.getUrl());
                             }

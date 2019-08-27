@@ -17,6 +17,7 @@ import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.db.entity.WalletEntity;
 import com.juzix.wallet.db.sqlite.WalletDao;
 import com.juzix.wallet.engine.TransactionManager;
+import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.DensityUtil;
@@ -149,7 +150,9 @@ public class SelectWalletDialogFragment extends BaseDialogFragment {
                 .map(new Function<Wallet, Wallet>() {
                     @Override
                     public Wallet apply(Wallet walletEntity) throws Exception {
-                        return TransactionManager.getInstance().getBalanceByAddress(walletEntity);
+                        Wallet mWallet = TransactionManager.getInstance().getBalanceByAddress(walletEntity);
+                        mWallet.setAccountBalance(WalletManager.getInstance().getAccountBalance(mWallet.getPrefixAddress()));
+                        return mWallet;
                     }
                 })
                 .toList()
@@ -166,7 +169,7 @@ public class SelectWalletDialogFragment extends BaseDialogFragment {
                             List<Wallet> newWalletEntityList = new ArrayList<>();
                             if (needAmount) {
                                 for (Wallet walletEntity : objects) {
-                                    if (BigDecimalUtil.isBiggerThanZero(walletEntity.getFreeBalance())){
+                                    if (BigDecimalUtil.isBiggerThanZero(walletEntity.getFreeBalance())) {
                                         newWalletEntityList.add(walletEntity);
                                     }
                                 }

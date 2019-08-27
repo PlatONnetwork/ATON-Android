@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,9 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.juzhen.framework.util.NumberParserUtils;
+import com.juzix.wallet.App;
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.adapter.MyDelegateAdapter;
 import com.juzix.wallet.component.ui.base.MVPBaseFragment;
@@ -28,6 +31,7 @@ import com.juzix.wallet.entity.WebType;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.LanguageUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -38,6 +42,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -115,8 +120,14 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        //todo 暂时写的一个假的链接
-                        CommonHybridActivity.actionStart(getContext(), "https://www.baidu.com", WebType.WEB_TYPE_COMMON);
+                        String  url ="";
+                        if(Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage())){
+                            url = Constants.WEBURL.WEB_URL_FAQ_ZH;
+                        }else {
+                            url =Constants.WEBURL.WEB_URL_FAQ_EN;
+                        }
+
+                        CommonHybridActivity.actionStart(getContext(), url, WebType.WEB_TYPE_COMMON);
                     }
                 });
 
@@ -125,8 +136,14 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        //todo 暂时写的一个假链接
-                        CommonHybridActivity.actionStart(getContext(), "https://www.baidu.com", WebType.WEB_TYPE_COMMON);
+                        String url ="";
+                        if(Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage())){
+                            url = Constants.WEBURL.WEB_URL_TUTORIAL_ZH;
+                        }else {
+                            url = Constants.WEBURL.WEB_URL_TUTORIAL_EN;
+                        }
+
+                        CommonHybridActivity.actionStart(getContext(), url, WebType.WEB_TYPE_COMMON);
                     }
                 });
 

@@ -104,6 +104,20 @@ public class WalletManager {
         wallet.setAccountBalance(accountBalance);
     }
 
+    /**
+     * 根据钱包地址获取钱包账户信息
+     * @param address
+     * @return
+     */
+    public AccountBalance getAccountBalance(String address) {
+        int position = getPositionByAddress(address);
+        if (position == -1) {
+            return null;
+        }
+
+        return mWalletList.get(position).getAccountBalance();
+    }
+
     public List<String> getAddressList() {
         return Flowable.fromIterable(mWalletList)
                 .map(new Function<Wallet, String>() {
