@@ -28,11 +28,6 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
      */
     private String chainId;
     /**
-     * 交易创建时间
-     */
-    @JSONField(name = "timestamp")
-    private long createTime;
-    /**
      * 交易实际花费值(手续费)，单位：wei
      * “21168000000000”
      */
@@ -170,7 +165,6 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         hash = in.readString();
         blockNumber = in.readLong();
         chainId = in.readString();
-        createTime = in.readLong();
         actualTxCost = in.readString();
         from = in.readString();
         to = in.readString();
@@ -201,7 +195,6 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         this.hash = builder.hash;
         this.blockNumber = builder.blockNumber;
         this.chainId = builder.chainId;
-        this.createTime = builder.createTime;
         this.actualTxCost = builder.actualTxCost;
         this.from = builder.from;
         this.to = builder.to;
@@ -233,7 +226,6 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         dest.writeString(hash);
         dest.writeLong(blockNumber);
         dest.writeString(chainId);
-        dest.writeLong(createTime);
         dest.writeString(actualTxCost);
         dest.writeString(from);
         dest.writeString(to);
@@ -342,16 +334,8 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         this.walletName = walletName;
     }
 
-    public long getCreateTime() {
-        return createTime;
-    }
-
     public String getShowCreateTime() {
-        return DateUtil.format(createTime, DateUtil.DATETIME_FORMAT_PATTERN);
-    }
-
-    public void setCreateTime(long createTime) {
-        this.createTime = createTime;
+        return DateUtil.format(timestamp, DateUtil.DATETIME_FORMAT_PATTERN);
     }
 
     public String getActualTxCost() {
@@ -544,7 +528,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
     }
 
     public TransactionEntity toTransactionEntity() {
-        return new TransactionEntity.Builder(hash, senderWalletName, from, to, createTime)
+        return new TransactionEntity.Builder(hash, senderWalletName, from, to, timestamp)
                 .setTxType(txType)
                 .setTxInfo(txInfo)
                 .setBlockNumber(blockNumber)

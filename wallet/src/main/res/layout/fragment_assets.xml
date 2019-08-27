@@ -65,15 +65,19 @@
                     android:textStyle="bold"
                     tools:text="236.45639292992" />
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/tv_restricted_amount"
                     style="@style/Text.898c9e.12"
                     android:layout_alignBaseline="@id/tv_wallet_amount"
                     android:layout_marginLeft="2dp"
                     android:layout_toRightOf="@id/tv_wallet_amount"
+                    android:autoSizeMaxTextSize="12sp"
+                    android:autoSizeMinTextSize="6sp"
+                    android:autoSizeTextType="uniform"
                     android:drawablePadding="2dp"
                     android:includeFontPadding="false"
-                    tools:text="@string/restricted_amount_with_unit" />
+                    android:lines="1"
+                    tools:text="(&#160;&#160;Restricted:&#160;%1$s&#160;LAT)(&#160;&#160;Restricted:&#160;%1$s&#160;LAT)(&#160;&#160;Restricted:&#160;%1$s&#160;LAT)" />
 
                 <TextView
                     android:id="@+id/tv_backup"
