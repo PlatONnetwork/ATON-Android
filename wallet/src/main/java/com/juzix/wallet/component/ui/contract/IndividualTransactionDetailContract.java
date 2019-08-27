@@ -4,6 +4,8 @@ import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
 import com.juzix.wallet.entity.Transaction;
 
+import org.web3j.platon.BaseResponse;
+
 /**
  * @author matrixelement
  */
@@ -15,7 +17,15 @@ public class IndividualTransactionDetailContract {
 
         String getAddressFromIntent();
 
+        String getDelegateHash();
+
+        String getWithDrawHash();
+
         void setTransactionDetailInfo(Transaction transaction, String queryAddress, String senderWalletName);
+
+        void showDelegateResponse(BaseResponse response);
+
+        void showWithDrawResponse(BaseResponse response);
 
     }
 
@@ -24,6 +34,10 @@ public class IndividualTransactionDetailContract {
         void loadData();
 
         void updateTransactionDetailInfo(Transaction transaction);
+
+        void getDelegateResult();
+
+        void getWithDrawResult();
 
     }
 }

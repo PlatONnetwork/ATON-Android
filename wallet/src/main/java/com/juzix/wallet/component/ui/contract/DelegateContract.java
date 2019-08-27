@@ -49,7 +49,7 @@ public class DelegateContract {
          * @param nodeId
          * @param txReceiptStatus "2" 表示确认中
          */
-        void transactionSuccessInfo(String from, String to, long time, String txType, String value, String actualTxCost, String nodeName, String nodeId, int txReceiptStatus);
+        void transactionSuccessInfo(String platonSendTransaction, String from, String to, long time, String txType, String value, String actualTxCost, String nodeName, String nodeId, int txReceiptStatus);
 
 
         /**

@@ -16,13 +16,13 @@ import com.juzix.wallet.component.ui.contract.IndividualTransactionDetailContrac
 import com.juzix.wallet.component.ui.presenter.TransactionDetailPresenter;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionStatus;
-import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.CommonUtil;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.web3j.platon.BaseResponse;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -71,6 +71,8 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
         EventPublisher.getInstance().register(this);
         unbinder = ButterKnife.bind(this);
         mPresenter.loadData();
+        mPresenter.getDelegateResult();
+        mPresenter.getWithDrawResult();
     }
 
 
@@ -98,6 +100,24 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
         return getIntent().getStringExtra(Constants.Extra.EXTRA_ADDRESS);
     }
 
+    /**
+     * 获取委托的交易hash
+     * @return
+     */
+    @Override
+    public String getDelegateHash() {
+        return getIntent().getStringExtra(Constants.Extra.EXTRA_DELEGATE_TRANSACTION_HASH);
+    }
+
+    /**
+     * 获取赎回交易hash
+     * @return
+     */
+    @Override
+    public String getWithDrawHash() {
+        return getIntent().getStringExtra(Constants.Extra.EXTRA_WITHDRAW_TRANSACTION_HASH);
+    }
+
     @Override
     public void setTransactionDetailInfo(Transaction transaction, String queryAddress, String walletName) {
 
@@ -113,6 +133,29 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
         tvToAddress.setText(transaction.getTo());
 
         viewTransactionDetailInfo.setData(transaction);
+
+    }
+
+    @Override
+    public void showDelegateResponse(BaseResponse response) {
+        if (null != response) {
+            if (response.isStatusOk()) {
+                //更新UI
+                TransactionStatus transactionStatus = TransactionStatus.SUCCESSED;
+                showTransactionStatus(transactionStatus);
+            }
+        }
+
+
+    }
+
+    @Override
+    public void showWithDrawResponse(BaseResponse response) {
+        if(null != response && response.isStatusOk()){
+              //更新UI
+            TransactionStatus status =TransactionStatus.SUCCESSED;
+            showTransactionStatus(status);
+        }
 
     }
 
@@ -160,10 +203,12 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
         EventPublisher.getInstance().unRegister(this);
     }
 
-    public static void actionStart(Context context, Transaction transaction, String queryAddress) {
+    public static void actionStart(Context context, Transaction transaction, String queryAddress, String platonSendTransaction, String withdrawTransaction) {
         Intent intent = new Intent(context, TransactionDetailActivity.class);
         intent.putExtra(Constants.Extra.EXTRA_TRANSACTION, transaction);
         intent.putExtra(Constants.Extra.EXTRA_ADDRESS, queryAddress);
+        intent.putExtra(Constants.Extra.EXTRA_DELEGATE_TRANSACTION_HASH, platonSendTransaction);
+        intent.putExtra(Constants.Extra.EXTRA_WITHDRAW_TRANSACTION_HASH, withdrawTransaction);
         context.startActivity(intent);
     }
 }

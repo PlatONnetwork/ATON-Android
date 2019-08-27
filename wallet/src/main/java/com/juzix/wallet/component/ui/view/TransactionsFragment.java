@@ -81,7 +81,7 @@ public class TransactionsFragment extends BaseViewPageFragment<TransactionsPrese
             @Override
             public void onItemClick(View view, int position) {
                 Transaction transaction = mTransactionAdapter.getDatas().get(position);
-                TransactionDetailActivity.actionStart(getActivity(), transaction, WalletManager.getInstance().getSelectedWalletAddress());
+                TransactionDetailActivity.actionStart(getActivity(), transaction, WalletManager.getInstance().getSelectedWalletAddress(),"","");
             }
         });
     }

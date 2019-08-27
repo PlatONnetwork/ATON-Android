@@ -24,6 +24,7 @@ import com.juzix.wallet.entity.DelegateHandle;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.RxUtils;
+import com.juzix.wallet.utils.ToastUtil;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.platon.ContractAddress;
@@ -150,6 +151,9 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
     }
 
+    /**
+     * 检测是否可以委托
+     */
     @Override
     public void checkIsCanDelegate() {
         ServerUtils.getCommonApi().getIsDelegateInfo(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
@@ -318,42 +322,6 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
     @SuppressLint("CheckResult")
     private void delegate(Credentials credentials, String inputAmount, String address, String type) {
-//        Web3j web3j = Web3jManager.getInstance().getWeb3j();
-//        String chainId = NodeManager.getInstance().getChainId();
-//        org.web3j.platon.contracts.DelegateContract delegateContract = org.web3j.platon.contracts.DelegateContract.load(web3j, credentials, "100");
-//        StakingAmountType stakingAmountType = TextUtils.equals(type, "balance") ? StakingAmountType.FREE_AMOUNT_TYPE : StakingAmountType.RESTRICTING_AMOUNT_TYPE;
-//        delegateContract.asyncDelegate(address, stakingAmountType, new BigInteger(inputAmount), new TransactionCallback<BaseResponse>() {
-//            @Override
-//            public void onTransactionStart() {
-//
-//            }
-//
-//            @Override
-//            public void onTransaction(PlatonSendTransaction sendTransaction) {
-//
-//            }
-//
-//            @Override
-//            public void onTransactionSucceed(BaseResponse response) {
-//                if (response != null && response.isStatusOk()) {
-//                    //交易成功，关闭当前页面，并返回到交易详情
-//                    if (isViewAttached()) {
-//                        getView().transactionSuccessInfo(mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, 0, "1004", inputAmount, "", mNodeName, mNodeAddress
-//                                , 2);
-//                    }
-//
-//                }
-//
-//
-//            }
-//
-//            @Override
-//            public void onTransactionFailed(BaseResponse baseResponse) {
-//
-//            }
-//        });
-
-
         DelegateManager.getInstance().delegate(credentials, inputAmount, address, type)
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .subscribe(new Consumer<PlatonSendTransaction>() {
@@ -361,19 +329,11 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                     public void accept(PlatonSendTransaction platonSendTransaction) throws Exception {
                         if (isViewAttached()) {
                             if (!TextUtils.isEmpty(platonSendTransaction.getTransactionHash())) {
-//                                //委托成功
-//                                showLongToast(R.string.delegate_success);
-//                                //发送一个eventbus
-//                                if (tag == 0) {
-//                                    EventPublisher.getInstance().sendUpdateDelegateEvent();
-//                                } else {
-//                                    EventPublisher.getInstance().sendUpdateValidatorsDetailEvent();
-//                                }
-//                                currentActivity().finish();
-
-                                getView().transactionSuccessInfo(mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, 0, "1004", inputAmount, "", mNodeName, mNodeAddress
+                                getView().transactionSuccessInfo(platonSendTransaction.getResult(), mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, 0, "1004", inputAmount,feeAmount, mNodeName, mNodeAddress
                                         , 2);
 
+                            } else {
+                                ToastUtil.showLongToast(getContext(), platonSendTransaction.getError().getMessage());
                             }
 
                         }
