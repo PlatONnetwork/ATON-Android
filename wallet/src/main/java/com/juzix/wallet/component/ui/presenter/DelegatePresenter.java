@@ -156,6 +156,9 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
      */
     @Override
     public void checkIsCanDelegate() {
+        if (mWallet == null) {
+            return;
+        }
         ServerUtils.getCommonApi().getIsDelegateInfo(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
                 .put("addr", mWallet.getPrefixAddress())
                 .put("nodeId", mNodeAddress)
@@ -329,7 +332,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                     public void accept(PlatonSendTransaction platonSendTransaction) throws Exception {
                         if (isViewAttached()) {
                             if (!TextUtils.isEmpty(platonSendTransaction.getTransactionHash())) {
-                                getView().transactionSuccessInfo(platonSendTransaction.getResult(), mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, 0, "1004", inputAmount,feeAmount, mNodeName, mNodeAddress
+                                getView().transactionSuccessInfo(platonSendTransaction.getResult(), mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, 0, "1004", inputAmount, feeAmount, mNodeName, mNodeAddress
                                         , 2);
 
                             } else {

@@ -9,6 +9,7 @@ import com.juzix.wallet.R;
 import com.juzix.wallet.component.adapter.base.ViewHolder;
 import com.juzix.wallet.component.ui.dialog.SelectWalletDialogFragment;
 import com.juzix.wallet.entity.Wallet;
+import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 
 import java.util.List;
@@ -32,7 +33,8 @@ public class SelectWalletListAdapter extends CommonAdapter<Wallet> {
         if (item != null) {
             viewHolder.getConvertView().setEnabled(isEnabled(item));
             viewHolder.setText(R.id.tv_wallet_name, item.getName());
-            viewHolder.setText(R.id.tv_wallet_balance, String.format("%s %s", "Balance", context.getString(R.string.amount_with_unit, NumberParserUtils.getPrettyNumber(item.getFreeBalance(), 8))));
+//            viewHolder.setText(R.id.tv_wallet_balance, String.format("%s %s", "Balance", context.getString(R.string.amount_with_unit, NumberParserUtils.getPrettyNumber(item.getFreeBalance(), 8))));
+            viewHolder.setText(R.id.tv_wallet_balance, AddressFormatUtil.formatAddress(item.getPrefixAddress()));
             viewHolder.setImageResource(R.id.iv_wallet_pic, RUtils.drawable(item.getAvatar()));
             viewHolder.setVisible(R.id.iv_selected, listView != null && listView.getCheckedItemPosition() == position);
         }

@@ -103,7 +103,8 @@ public class NodeSettingsActivity extends MVPBaseActivity<NodeSettingsPresenter>
 
     private void initView() {
 
-        ctb.setRightTextVisibility(BuildConfig.DEBUG ? View.VISIBLE : View.GONE);
+//        ctb.setRightTextVisibility(BuildConfig.DEBUG ? View.VISIBLE : View.GONE);
+        ctb.setRightTextVisibility(View.VISIBLE);
 
         int padding = AndroidUtil.dip2px(this, 16);
         nodeListAdapter = new NodeListAdapter(this, null);

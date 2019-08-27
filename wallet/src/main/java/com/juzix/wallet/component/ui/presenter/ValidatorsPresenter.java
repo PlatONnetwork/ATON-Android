@@ -60,7 +60,7 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
                     @Override
                     public void onApiSuccess(List<VerifyNode> nodeList) {
                         if (isViewAttached()) {
-                            if (nodeList != null && nodeList.size() > 0) {
+//                            if (nodeList != null && nodeList.size() > 0) {
                                 if (getNodeList().size() > 0) { //读取数据库数据
                                     //删除数据库
                                     if (deleteVerifyNodeList()) {
@@ -79,7 +79,7 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
                                         loadDataFromDB(sortType, nodeState, sequence);
                                     }
                                 }
-                            }
+//                            }
 
                         }
 

@@ -123,7 +123,13 @@ public class MeFragment extends BaseFragment {
                     @Override
                     public void accept(Object object) {
                         boolean isChinese = Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage());
-                        String supportFeedBackUrl = BuildConfig.URL_SUPPORT_FEEDBACK + (isChinese ? "zh-cn" : "en-001");
+//                        String supportFeedBackUrl = BuildConfig.URL_SUPPORT_FEEDBACK + (isChinese ? "zh-cn" : "en-001");
+                        String supportFeedBackUrl = null;
+                        if (isChinese) {
+                            supportFeedBackUrl = Constants.WEBURL.WEB_URL_SUPPORT_FEEDBACK_ZH;
+                        } else {
+                            supportFeedBackUrl = Constants.WEBURL.WEB_URL_SUPPORT_FEEDBACK_EN;
+                        }
                         CommonHybridActivity.actionStart(getActivity(), supportFeedBackUrl, WebType.WEB_TYPE_COMMON);
                     }
                 });

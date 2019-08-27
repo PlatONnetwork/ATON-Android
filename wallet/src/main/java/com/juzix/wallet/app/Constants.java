@@ -115,6 +115,16 @@ public class Constants {
         String URL_HTTP_C = "http://192.168.9.190:443";
     }
 
+    public  interface  WEBURL{
+        String WEB_URL_FAQ_ZH ="https://platon.zendesk.com/hc/zh-cn/categories/360002174434";
+        String WEB_URL_FAQ_EN ="https://platon.zendesk.com/hc/en-us/categories/360002174434";
+        String WEB_URL_TUTORIAL_ZH ="https://platon.zendesk.com/hc/zh-cn/categories/360002193633";
+        String WEB_URL_TUTORIAL_EN ="https://platon.zendesk.com/hc/en-us/categories/360002193633";
+        String WEB_URL_AGREEMENT_ZH ="http://192.168.9.190:443/aton-agreement/zh-cn/agreement.html";
+        String WEB_URL_AGREEMENT_EN ="http://192.168.9.190:443/aton-agreement/en-us/agreement.html";
+        String WEB_URL_SUPPORT_FEEDBACK_ZH ="https://platon.zendesk.com/hc/zh-cn";
+        String WEB_URL_SUPPORT_FEEDBACK_EN ="https://platon.zendesk.com/hc/en-us";
+    }
     public interface VoteConstants {
         String IS_VALID = "0";// 0 表示无效
         String REQUEST_DIRECTION = "old";//请求参数传递的方向
