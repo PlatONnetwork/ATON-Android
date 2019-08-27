@@ -447,6 +447,8 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
             case TAB3:
                 fragment = new ReceiveTransactionFragment();
                 break;
+            default:
+                break;
         }
         if (walletEntity != null) {
             Bundle bundle = new Bundle();
@@ -464,7 +466,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     @Override
     public void showFreeBalance(String balance) {//当前钱包的资产
 
-        tvWalletAmount.setText(string(R.string.amount_with_unit,StringUtil.formatBalance(BigDecimalUtil.div(balance, "1E18"))));
+        tvWalletAmount.setText(string(R.string.amount_with_unit, StringUtil.formatBalance(BigDecimalUtil.div(balance, "1E18"))));
 
         if (vpContent.getCurrentItem() == TAB2) {
             SendTransactionFragment sendTransactionFragment = (SendTransactionFragment) mTabAdapter.getItem(TAB2);
@@ -476,7 +478,8 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
     @Override
     public void showLockBalance(String balance) {
-        tvRestrictedAmount.setText(getRestrictedAmount(string(R.string.restricted_amount_with_unit, "0.00")));
+        tvRestrictedAmount.setVisibility(BigDecimalUtil.isBiggerThanZero(balance) ? View.VISIBLE : View.GONE);
+        tvRestrictedAmount.setText(getRestrictedAmount(string(R.string.restricted_amount_with_unit, StringUtil.formatBalance(BigDecimalUtil.div(balance, "1E18")))));
     }
 
     @Override

@@ -4,20 +4,25 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.IndividualTransactionDetailContract;
 import com.juzix.wallet.component.ui.presenter.TransactionDetailPresenter;
+import com.juzix.wallet.db.sqlite.AddressDao;
+import com.juzix.wallet.db.sqlite.WalletDao;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionStatus;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
+import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.CommonUtil;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -56,6 +61,10 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
     TextView tvAmount;
     @BindView(R.id.view_transaction_detai_info)
     TransactionDetailInfoView viewTransactionDetailInfo;
+    @BindView(R.id.tv_from)
+    TextView tvFrom;
+    @BindView(R.id.tv_to)
+    TextView tvTo;
 
     private Unbinder unbinder;
 
@@ -193,6 +202,35 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
                 break;
         }
     }
+
+    private String getSenderName(String prefixAddress) {
+        String walletName = WalletDao.getWalletNameByAddress(prefixAddress);
+        if (!TextUtils.isEmpty(walletName)) {
+            return walletName;
+        }
+        String remark = AddressDao.getAddressNameByAddress(prefixAddress);
+        if (!TextUtils.isEmpty(remark)) {
+            return remark;
+        }
+        return AddressFormatUtil.formatAddress(prefixAddress);
+    }
+
+    private int getSenderAvatar(String prefixAddress) {
+        String avatar = WalletDao.getWalletAvatarByAddress(prefixAddress);
+        if (!TextUtils.isEmpty(avatar) && RUtils.drawable(avatar) != -1) {
+            return RUtils.drawable(avatar);
+        }
+        return R.drawable.avatar_1;
+    }
+
+//    private String getReceiverName() {
+//
+//    }
+//
+//    private String getReceiverAvatar() {
+//
+//    }
+
 
     @Override
     protected void onDestroy() {

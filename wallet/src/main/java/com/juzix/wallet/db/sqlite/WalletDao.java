@@ -63,6 +63,28 @@ public class WalletDao {
         return walletName;
     }
 
+    public static String getWalletAvatarByAddress(String prefixAddress) {
+        String walletAvatar = null;
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            WalletEntity walletEntity = realm.where(WalletEntity.class)
+                    .equalTo("chainId", NodeManager.getInstance().getChainId())
+                    .equalTo("address", prefixAddress)
+                    .findFirst();
+            if (walletEntity != null) {
+                walletAvatar = walletEntity.getAvatar();
+            }
+        } catch (Exception exp) {
+            exp.printStackTrace();
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return walletAvatar;
+    }
+
     public static boolean insertWalletInfo(WalletEntity entity) {
         Realm realm = null;
         try {
