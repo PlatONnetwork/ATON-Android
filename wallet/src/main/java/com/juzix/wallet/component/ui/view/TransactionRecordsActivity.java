@@ -115,7 +115,7 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
             @Override
             public void onItemClick(View view, int position) {
                 Transaction transaction = mTransactionAdapter.getDatas().get(position);
-                TransactionDetailActivity.actionStart(TransactionRecordsActivity.this, transaction, WalletManager.getInstance().getSelectedWalletAddress());
+                TransactionDetailActivity.actionStart(TransactionRecordsActivity.this, transaction, WalletManager.getInstance().getSelectedWalletAddress(),"","");
             }
         });
 

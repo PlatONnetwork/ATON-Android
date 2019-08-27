@@ -22,6 +22,7 @@ import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.entity.WithDrawBalance;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.RxUtils;
+import com.juzix.wallet.utils.ToastUtil;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.platon.ContractAddress;
@@ -274,16 +275,17 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                         if (!TextUtils.isEmpty(platonSendTransaction.getTransactionHash())) {
                             //操作成功，跳转到交易详情，当前页面关闭
                             if (TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_DELEGATED) || TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_UNLOCKED)) {
-                                getView().withDrawSuccessInfo(ContractAddress.DELEGATE_CONTRACT_ADDRESS, mWalletAddress, 0, "1005", list.get(0).getReleased(),
+                                getView().withDrawSuccessInfo(platonSendTransaction.getResult(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, mWalletAddress, 0, "1005", list.get(0).getReleased(),
                                         "", mNodeName, mNodeAddress, 2);
                             } else {
                                 if (tag == list.size()) {
-                                    getView().withDrawSuccessInfo(ContractAddress.DELEGATE_CONTRACT_ADDRESS, mWalletAddress, 0, "1005", list.get(0).getReleased(),
+                                    getView().withDrawSuccessInfo(platonSendTransaction.getResult(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, mWalletAddress, 0, "1005", list.get(0).getReleased(),
                                             "", mNodeName, mNodeAddress, 2);
                                 }
-
                             }
 
+                        } else {
+                            ToastUtil.showLongToast(getContext(), platonSendTransaction.getError().getMessage());
                         }
 
                     }
@@ -296,35 +298,6 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                     }
                 });
 
-
-//        Web3j web3j = Web3jManager.getInstance().getWeb3j();
-//        String chainId = NodeManager.getInstance().getChainId();
-//        DelegateContract delegateContract = DelegateContract.load(web3j, credentials, new DefaultGasProvider(), chainId);
-//        delegateContract.asyncUnDelegate(nodeId, new BigInteger(blockNum), new BigInteger(withdrawAmount), new TransactionCallback<BaseResponse>() {
-//
-//            @Override
-//            public void onTransactionStart() {
-//
-//            }
-//
-//            @Override
-//            public void onTransaction(PlatonSendTransaction sendTransaction) {
-//
-//            }
-//
-//            @Override
-//            public void onTransactionSucceed(BaseResponse baseResponse) {
-//                if (baseResponse != null && baseResponse.isStatusOk()) {
-//
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onTransactionFailed(BaseResponse baseResponse) {
-//
-//            }
-//        });
     }
 
 

@@ -41,7 +41,7 @@ public class ValidatorsAdapter extends CommonAdapter<VerifyNode> {
         TextView tv_yield = viewHolder.getView(R.id.tv_yield);
         isShowRA(context, item, tv_yield);
 
-        viewHolder.setText(R.id.tv_staked_money, context.getString(R.string.amount_with_unit, StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(item.getDeposit(), "1E18"))), false)));
+        viewHolder.setText(R.id.tv_staked_money, context.getString(R.string.amount_with_unit, StringUtil.formatBalance(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(item.getDeposit(), "1E18")))));
 //        viewHolder.setText(R.id.tv_validators_rank, item.getRanking() + "");
         TextView tv = viewHolder.getView(R.id.tv_validators_rank);
         tv.setText(item.getRanking() + "");

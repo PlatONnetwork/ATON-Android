@@ -130,7 +130,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
                     public void accept(Object o) {
                         //点击全部
                         withdrawAmount.setText(delegateAmount.getText().toString().replaceAll(",", ""));
-                        Log.d("WithDrawActivity11111111", " ======================" + delegateAmount.getText().toString());
+                        Log.d("WithDrawActivity1111", " ======================" + delegateAmount.getText().toString());
                     }
                 });
 
@@ -202,8 +202,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
             withdrawAmount.setFocusable(false);
             mPresenter.getWithDrawGasPrice();//已解除不能操作，所以需要再获取一次手续费
         }
-        delegateAmount.setText(StringUtil.formatBalance(NumberParserUtils.parseDouble(item.getValue()), false));
-
+        delegateAmount.setText(item.getValue());
 
     }
 
@@ -326,7 +325,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     }
 
     @Override
-    public void withDrawSuccessInfo(String from, String to, long time, String txType, String value, String actualTxCost, String nodeName, String nodeId, int txReceiptStatus) {
+    public void withDrawSuccessInfo(String platonSendTransaction,String from, String to, long time, String txType, String value, String actualTxCost, String nodeName, String nodeId, int txReceiptStatus) {
         finish();
         Transaction transaction = new Transaction.Builder()
                 .from(from)
@@ -340,7 +339,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
                 .txReceiptStatus(txReceiptStatus)
                 .build();
 
-        TransactionDetailActivity.actionStart(getContext(), transaction, from);
+        TransactionDetailActivity.actionStart(getContext(), transaction, from,"",platonSendTransaction);
 
     }
 

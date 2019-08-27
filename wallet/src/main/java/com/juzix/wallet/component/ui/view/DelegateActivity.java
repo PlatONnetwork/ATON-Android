@@ -166,6 +166,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                     public void accept(Object o) {
                         //点击委托操作
                         transactionTime = System.currentTimeMillis();
+                        Log.d("DelegateActivity", " =============" + transactionTime);
                         mPresenter.submitDelegate(chooseType);
                     }
                 });
@@ -260,7 +261,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
 
         //显示余额类型和余额
         amountType.setText(getString(R.string.available_balance));
-        amount.setText(StringUtil.formatBalance(individualWalletEntity.getFreeBalance()));
+        amount.setText(StringUtil.formatBalance(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(individualWalletEntity.getFreeBalance(), "1E18"))));
 
         typeList.clear();
         for (AccountBalance bean : balanceList) {
@@ -365,15 +366,20 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                 showLongToast(getString(R.string.the_Validator_has_exited_and_cannot_be_delegated));
             }
         } else {
-            //可以委托
-            btnDelegate.setEnabled(true);
+            //可以委托,判断数量是否大于10
+            if (NumberParserUtils.parseDouble(et_amount.getText().toString()) > 10) {
+                btnDelegate.setEnabled(true);
+            } else {
+                btnDelegate.setEnabled(false);
+            }
+
         }
 
 
     }
 
     @Override
-    public void transactionSuccessInfo(String from, String to, long time, String txType, String value, String actualTxCost, String nodeName, String nodeId, int txReceiptStatus) {
+    public void transactionSuccessInfo(String platonSendTransaction, String from, String to, long time, String txType, String value, String actualTxCost, String nodeName, String nodeId, int txReceiptStatus) {
         finish();
         Transaction transaction = new Transaction.Builder()
                 .from(from)
@@ -387,7 +393,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                 .txReceiptStatus(txReceiptStatus)
                 .build();
 
-        TransactionDetailActivity.actionStart(getContext(), transaction, from);
+        TransactionDetailActivity.actionStart(getContext(), transaction, from, platonSendTransaction,"");
     }
 
     /**
@@ -407,6 +413,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
 
     /**
      * 下面四个方法是获取intent传递的值
+     *
      * @return
      */
     @Override

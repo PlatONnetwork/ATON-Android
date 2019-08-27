@@ -9,14 +9,12 @@ import org.web3j.platon.contracts.DelegateContract;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 import org.web3j.tx.gas.DefaultGasProvider;
-import org.web3j.tx.gas.GasProvider;
 import org.web3j.utils.Convert;
 
 import java.math.BigInteger;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Single;
-import rx.Observable;
 
 
 public class DelegateManager {
@@ -44,6 +42,25 @@ public class DelegateManager {
         });
     }
 
+
+    /**
+     * 获取委托结果，是否交易成功
+     * @param platonSendTransaction
+     * @return
+     */
+    public Single<BaseResponse> getDelegateReSult(PlatonSendTransaction platonSendTransaction) {
+        return Single.fromCallable(new Callable<BaseResponse>() {
+            @Override
+            public BaseResponse call() throws Exception {
+                Web3j web3j = Web3jManager.getInstance().getWeb3j();
+                DelegateContract delegateContract = DelegateContract.load(web3j);
+                return delegateContract.getDelegateResult(platonSendTransaction).send();
+            }
+        });
+
+
+    }
+
     public Single<PlatonSendTransaction> withdraw(Credentials credentials, String nodeId, String stakingBlockNum, String amount) {
 
         return Single.fromCallable(new Callable<PlatonSendTransaction>() {
@@ -51,11 +68,27 @@ public class DelegateManager {
             public PlatonSendTransaction call() throws Exception {
                 Web3j web3j = Web3jManager.getInstance().getWeb3j();
                 String chainId = NodeManager.getInstance().getChainId();
-                DelegateContract delegateContract = DelegateContract.load(web3j, credentials, new DefaultGasProvider(), chainId);
+                DelegateContract delegateContract = DelegateContract.load(web3j, credentials, new DefaultGasProvider(), "100");//todo 暂时写100
                 return delegateContract.unDelegateReturnTransaction(nodeId, new BigInteger(stakingBlockNum), Convert.toVon(amount, Convert.Unit.LAT).toBigInteger()).send();
             }
         });
 
     }
 
+    /**
+     * 获取赎回结果，是否交易成功
+     * @param platonSendTransaction
+     * @return
+     */
+    public Single<BaseResponse> getWithDrawResult(PlatonSendTransaction platonSendTransaction) {
+        return Single.fromCallable(new Callable<BaseResponse>() {
+            @Override
+            public BaseResponse call() throws Exception {
+                Web3j web3j = Web3jManager.getInstance().getWeb3j();
+                DelegateContract delegateContract = DelegateContract.load(web3j);
+                return delegateContract.getUnDelegateResult(platonSendTransaction).send();
+            }
+        });
+
+    }
 }

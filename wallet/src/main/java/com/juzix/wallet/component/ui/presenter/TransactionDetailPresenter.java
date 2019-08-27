@@ -8,8 +8,12 @@ import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.IndividualTransactionDetailContract;
 import com.juzix.wallet.db.sqlite.AddressDao;
 import com.juzix.wallet.db.sqlite.WalletDao;
+import com.juzix.wallet.engine.DelegateManager;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.utils.RxUtils;
+
+import org.web3j.platon.BaseResponse;
+import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 
 import java.util.concurrent.Callable;
 
@@ -26,11 +30,15 @@ public class TransactionDetailPresenter extends BasePresenter<IndividualTransact
 
     private Transaction mTransaction;
     private String mQueryAddress;
+    private String delegateHash;
+    private String mWithDrawHash;
 
     public TransactionDetailPresenter(IndividualTransactionDetailContract.View view) {
         super(view);
         mTransaction = view.getTransactionFromIntent();
         mQueryAddress = view.getAddressFromIntent();
+        delegateHash = view.getDelegateHash();
+        mWithDrawHash = view.getWithDrawHash();
     }
 
 
@@ -95,6 +103,53 @@ public class TransactionDetailPresenter extends BasePresenter<IndividualTransact
                         }
                     });
         }
+    }
+
+    @Override
+    public void getDelegateResult() {
+        loadDelegateResult(delegateHash);
+    }
+
+    private void loadDelegateResult(String delegateHash) {
+        if (TextUtils.isEmpty(delegateHash)) {
+            return;
+        }
+        PlatonSendTransaction sendTransaction = new PlatonSendTransaction();
+        sendTransaction.setResult(delegateHash);
+        DelegateManager.getInstance().getDelegateReSult(sendTransaction)
+                .compose(RxUtils.getSingleSchedulerTransformer())
+                .compose(RxUtils.bindToLifecycle(getView()))
+                .subscribe(new Consumer<BaseResponse>() {
+                    @Override
+                    public void accept(BaseResponse response) throws Exception {
+                        if (isViewAttached()) {
+                            getView().showDelegateResponse(response);
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void getWithDrawResult() {
+        loadWithDrawResult(mWithDrawHash);
+    }
+
+    private void loadWithDrawResult(String mWithDrawHash) {
+        if (TextUtils.isEmpty(mWithDrawHash)) {
+            return;
+        }
+
+        PlatonSendTransaction transaction = new PlatonSendTransaction();
+        transaction.setResult(mWithDrawHash);
+        DelegateManager.getInstance().getWithDrawResult(transaction)
+                .compose(RxUtils.getSingleSchedulerTransformer())
+                .compose(RxUtils.bindToLifecycle(getView()))
+                .subscribe(new Consumer<BaseResponse>() {
+                    @Override
+                    public void accept(BaseResponse response) throws Exception {
+                        getView().showWithDrawResponse(response);
+                    }
+                });
     }
 
     private Single<String> getWalletNameByAddressFromWalletDB(String address) {

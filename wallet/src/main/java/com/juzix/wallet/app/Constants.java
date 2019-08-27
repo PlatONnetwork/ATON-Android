@@ -48,6 +48,8 @@ public class Constants {
         String EXTRA_NODE_BLOCK_NUM = "extra_node_block_num";
         String EXTRA_URL = "extra_url";
         String EXTRA_WEB_TYPE = "extra_web_type";
+        String EXTRA_DELEGATE_TRANSACTION_HASH = "extra_delegate_transaction_hash";//委托的交易hash
+        String EXTRA_WITHDRAW_TRANSACTION_HASH = "extra_withdraw_transaction_hash";//赎回的交易hash
     }
 
     public interface Bundle {

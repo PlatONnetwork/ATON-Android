@@ -99,11 +99,10 @@ public class DelegateRecordAdapter extends CommonAdapter<Transaction> {
                 if (TextUtils.equals(model.getRedeemStatus(), "1")) { //1： 赎回中
                     tv.setTextColor(ContextCompat.getColorStateList(context, R.color.color_4a90e2));
                     tv.setText(context.getString(R.string.withdraw_undelegating));
-                } else if (TextUtils.equals(model.getRedeemStatus(), "0")) {//2：赎回成功
+                } else if (TextUtils.equals(model.getRedeemStatus(), "2")) {//2：赎回成功
                     tv.setTextColor(ContextCompat.getColorStateList(context, R.color.color_19a20e));
                     tv.setText(context.getString(R.string.withdraw_success));
                 } else {
-
                     if (model.getTxReceiptStatus() == TransactionStatus.PENDING) {
                         tv.setTextColor(ContextCompat.getColorStateList(context, R.color.color_4a90e2));
                         tv.setText(context.getString(R.string.withdraw_pending));
