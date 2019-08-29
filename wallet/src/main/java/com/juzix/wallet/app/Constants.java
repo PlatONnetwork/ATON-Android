@@ -110,9 +110,9 @@ public class Constants {
         String UPDATE_URL = "https://download.platon.network/aton-update.json";
         String URL_TEST_A = "https://test-amigo.platon.network/test";
         String URL_TEST_B = "https://test-beta.platon.network/test";
-        String URL_HTTP_A = "http://192.168.9.190:443";
+        String URL_HTTP_A = "http://192.168.9.190:1000";
         String URL_HTTP_B = "https://aton.platon.network";
-        String URL_HTTP_C = "http://192.168.9.190:443";
+        String URL_HTTP_C = "http://192.168.9.190:1000";
     }
 
     public  interface  WEBURL{
@@ -120,8 +120,8 @@ public class Constants {
         String WEB_URL_FAQ_EN ="https://platon.zendesk.com/hc/en-us/categories/360002174434";
         String WEB_URL_TUTORIAL_ZH ="https://platon.zendesk.com/hc/zh-cn/categories/360002193633";
         String WEB_URL_TUTORIAL_EN ="https://platon.zendesk.com/hc/en-us/categories/360002193633";
-        String WEB_URL_AGREEMENT_ZH ="http://192.168.9.190:443/aton-agreement/zh-cn/agreement.html";
-        String WEB_URL_AGREEMENT_EN ="http://192.168.9.190:443/aton-agreement/en-us/agreement.html";
+        String WEB_URL_AGREEMENT_ZH ="http://192.168.9.190:1000/aton-agreement/zh-cn/agreement.html";
+        String WEB_URL_AGREEMENT_EN ="http://192.168.9.190:1000/aton-agreement/en-us/agreement.html";
         String WEB_URL_SUPPORT_FEEDBACK_ZH ="https://platon.zendesk.com/hc/zh-cn";
         String WEB_URL_SUPPORT_FEEDBACK_EN ="https://platon.zendesk.com/hc/en-us";
     }

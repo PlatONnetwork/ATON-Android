@@ -99,4 +99,8 @@ public class EventPublisher {
         BusProvider.post(new Event.UpdateValidatorsTabEvent());
     }
 
+    public void sendTabChangeUpdateValidatorsEvent() {
+        BusProvider.post(new Event.UpdateTabChangeEvent());
+    }
+
 }
