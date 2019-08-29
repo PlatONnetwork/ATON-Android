@@ -186,7 +186,7 @@
                 app:bsb_hide_bubble="true"
                 app:bsb_second_track_color="@color/color_105cfe"
                 app:bsb_second_track_size="2dp"
-                app:bsb_section_count="3"
+                app:bsb_section_count="1"
                 app:bsb_section_text_color="@color/color_b6bbd0"
                 app:bsb_section_text_position="below_section_mark"
                 app:bsb_section_text_size="10sp"
