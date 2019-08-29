@@ -202,7 +202,6 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                 .subscribe(new Subscriber<GasProvider>() {
                     @Override
                     public void onNext(GasProvider gasProvider) {
-                        Log.d("DelegatePresenter", Thread.currentThread().getName());
                         if (isViewAttached()) {
                             BigDecimal gas = BigDecimalUtil.mul(gasProvider.getGasLimit().toString(), gasProvider.getGasPrice().toString());
                             feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(String.valueOf(gas.doubleValue()), "1E18"));

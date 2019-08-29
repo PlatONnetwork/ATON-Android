@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -73,6 +74,8 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
     LinearLayout ll_tutorial;
     @BindView(R.id.ll_guide)
     LinearLayout ll_guide;
+    @BindView(R.id.tv_no_data_tips)
+    TextView tv_no_data_tips;
 
     private MyDelegateAdapter mMyDelegateAdapter;
     private LinearLayoutManager layoutManager;
@@ -168,6 +171,7 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
 
 
     private void initViews() {
+        initColor();
         showLoadingDialog();
         initRefreshView();
         layoutManager = new LinearLayoutManager(getContext());
@@ -186,6 +190,19 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
         });
 
 
+    }
+
+    private void initColor() {
+        String str = null;
+        if (Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage())) {
+             str = "<font color='#61646E'>查看验证节点，</font>"
+                    + "<font color= '#105CFE'>参与委托</font>";
+        }else {
+            str = "<font color='#61646E'>View all validators,</font>"
+                    + "<font color= '#105CFE'>Delegate</font>";
+        }
+
+        tv_no_data_tips.setText(Html.fromHtml(str));
     }
 
     private void initRefreshView() {

@@ -191,17 +191,6 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
 
     @Override
     public void showDelegateDetailData(List<DelegateDetail> detailList) {
-//        if (detailList.size() > 0) {
-//            beginSequence = detailList.get(detailList.size() - 1).getSequence();
-//        }
-//
-//        if (isLoadMore) {
-//            list.addAll(detailList);
-//        } else {
-//            list.clear();
-//            list.addAll(detailList);
-//        }
-
         mDetailAdapter.notifyDataChanged(detailList);
         refreshLayout.finishRefresh();
         refreshLayout.finishLoadMore();

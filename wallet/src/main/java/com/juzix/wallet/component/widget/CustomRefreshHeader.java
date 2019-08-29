@@ -83,20 +83,17 @@ public class CustomRefreshHeader extends LinearLayout implements RefreshHeader {
         switch (newState) {
             //1,下拉刷新的开始状态：下拉可以刷新
             case PullDownToRefresh:
-                Log.d(TAG, "状态显示----------->" + "PullDownToRefresh");
                 textView.setText(R.string.pulldown_to_refresh);
                 imageView.setImageResource(R.drawable.icon_loading_16);
                 break;
             //2,下拉到最底部的状态：释放立即刷新
             case ReleaseToRefresh:
-                Log.d(TAG, "状态显示----------->" + "ReleaseToRefresh");
 
                 textView.setText(R.string.release_to_refresh);
                 imageView.setImageResource(R.drawable.icon_loading_16);
                 break;
             //3,下拉到最底部后松手的状态：正在刷新
             case Refreshing:
-                Log.d(TAG, "状态显示----------->" + "Refreshing");
 
                 imageView.setImageResource(R.drawable.bg_loading);
                 textView.setText(R.string.refreshing);
