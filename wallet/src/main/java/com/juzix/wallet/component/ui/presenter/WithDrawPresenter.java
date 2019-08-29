@@ -275,11 +275,11 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                         if (!TextUtils.isEmpty(platonSendTransaction.getTransactionHash())) {
                             //操作成功，跳转到交易详情，当前页面关闭
                             if (TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_DELEGATED) || TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_UNLOCKED)) {
-                                getView().withDrawSuccessInfo(platonSendTransaction.getResult(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, mWalletAddress, 0, "1005", list.get(0).getReleased(),
+                                getView().withDrawSuccessInfo(platonSendTransaction.getResult(),  mWalletAddress, ContractAddress.DELEGATE_CONTRACT_ADDRESS,0, "1005", list.get(0).getReleased(),
                                         "", mNodeName, mNodeAddress, 2);
                             } else {
                                 if (tag == list.size()) {
-                                    getView().withDrawSuccessInfo(platonSendTransaction.getResult(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, mWalletAddress, 0, "1005", list.get(0).getReleased(),
+                                    getView().withDrawSuccessInfo(platonSendTransaction.getResult(),  mWalletAddress,ContractAddress.DELEGATE_CONTRACT_ADDRESS, 0, "1005", list.get(0).getReleased(),
                                             "", mNodeName, mNodeAddress, 2);
                                 }
                             }

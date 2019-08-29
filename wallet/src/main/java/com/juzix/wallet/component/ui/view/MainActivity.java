@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -102,6 +104,11 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
             @Override
             public void onTabChanged(String tabId) {
                 mCurIndex = getCurIndexByTabId(tabId);
+                Log.d("==================", "ontahchanged" + tabId);
+                if (TextUtils.equals(tabId, "delegate")) {
+                    //发送一个eventbus
+                    EventPublisher.getInstance().sendTabChangeUpdateValidatorsEvent();
+                }
             }
         });
     }

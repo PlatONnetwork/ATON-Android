@@ -71,17 +71,18 @@ public class SplashActivity extends BaseActivity {
         mDecorView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (AppSettings.getInstance().isFirstEnter()) {
-                    String  url = null;
-                    if(Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage())){
-                        url = Constants.WEBURL.WEB_URL_AGREEMENT_ZH;
-                    }else {
-                        url = Constants.WEBURL.WEB_URL_AGREEMENT_EN;
-                    }
-                    CommonHybridActivity.actionStart(SplashActivity.this, url, WebType.WEB_TYPE_AGREEMENT);
-                    SplashActivity.this.finish();
-                    return;
-                }
+                //todo 暂时注释掉
+//                if (AppSettings.getInstance().isFirstEnter()) {
+//                    String  url = null;
+//                    if(Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage())){
+//                        url = Constants.WEBURL.WEB_URL_AGREEMENT_ZH;
+//                    }else {
+//                        url = Constants.WEBURL.WEB_URL_AGREEMENT_EN;
+//                    }
+//                    CommonHybridActivity.actionStart(SplashActivity.this, url, WebType.WEB_TYPE_AGREEMENT);
+//                    SplashActivity.this.finish();
+//                    return;
+//                }
 
                 if (AppSettings.getInstance().getOperateMenuFlag()) {
                     OperateMenuActivity.actionStart(SplashActivity.this);

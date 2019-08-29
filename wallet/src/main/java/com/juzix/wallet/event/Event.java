@@ -117,6 +117,12 @@ public class Event {
         }
     }
 
+    public static class UpdateTabChangeEvent {
+        public UpdateTabChangeEvent() {
+
+        }
+    }
+
     /**
      * 钱包列表顺序改变
      */

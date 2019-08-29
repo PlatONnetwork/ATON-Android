@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -206,6 +207,8 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
                         ValidatorsDetailActivity.actionStart(getContext(), verifyNode.getNodeId());
                     }
                 });
+        Log.d("ValidatorsFragment", "=============" + "onresume");
+        refreshLayout.autoRefresh();
     }
 
     @Override
@@ -366,6 +369,13 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
         if (AppSettings.getInstance().getValidatorsTab()) {
             refreshLayout.autoRefresh();
         }
+
+    }
+
+    //接收tab切换到当前页面的时候，刷新
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void refreshTabChange(Event.UpdateTabChangeEvent event) {
+            refreshLayout.autoRefresh();
 
     }
 
