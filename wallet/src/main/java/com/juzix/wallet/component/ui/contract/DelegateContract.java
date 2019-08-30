@@ -6,6 +6,7 @@ import com.juzix.wallet.entity.AccountBalance;
 import com.juzix.wallet.entity.DelegateHandle;
 import com.juzix.wallet.entity.Wallet;
 
+import java.math.BigInteger;
 import java.util.List;
 
 public class DelegateContract {
@@ -59,9 +60,14 @@ public class DelegateContract {
 
         /**
          * 拿到手续费
+         *
          * @return
          */
         String getGas();
+
+
+        void showGas(BigInteger integer);
+
 
     }
 
@@ -80,6 +86,8 @@ public class DelegateContract {
         void checkIsCanDelegate();
 
 
-        void getGasPrice(String chooseType);
+        void getGasPrice(String gasPrice,String chooseType);
+
+        void getGas();
     }
 }

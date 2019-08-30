@@ -46,7 +46,7 @@ public class DelegateRecordAdapter extends CommonAdapter<Transaction> {
         changeImageViewIcon(context, imageView, item);
 
         viewHolder.setText(R.id.tv_name_node, item.getNodeName());//委托节点名称
-        viewHolder.setText(R.id.tv_address_node, AddressFormatUtil.formatAddress(item.getNodeId())); //节点地址
+        viewHolder.setText(R.id.tv_address_node, AddressFormatUtil.formatTransactionAddress(item.getNodeId())); //节点地址
         TextView tv_number = viewHolder.getView(R.id.tv_number);
         showDelegateNumber(context, item, tv_number);
 //        viewHolder.setText(R.id.tv_number, context.getString(R.string.amount_with_unit, StringUtil.formatBalance(item.getNumber(), false))); //显示数量
@@ -62,7 +62,7 @@ public class DelegateRecordAdapter extends CommonAdapter<Transaction> {
 
         CircleImageView walletIcon = viewHolder.getView(R.id.iv_wallet);
         walletIcon.setImageResource(RUtils.drawable(item.getWalletIcon()));
-        viewHolder.setText(R.id.tv_wallet_address, item.getWalletName() + ((AddressFormatUtil.formatAddress(item.getFrom()))));//钱包名称+钱包地址
+        viewHolder.setText(R.id.tv_wallet_address, item.getWalletName() + ((AddressFormatUtil.formatTransactionAddress(item.getFrom()))));//钱包名称+钱包地址
     }
 
     private void changeImageViewIcon(Context context, ImageView iv, Transaction model) {

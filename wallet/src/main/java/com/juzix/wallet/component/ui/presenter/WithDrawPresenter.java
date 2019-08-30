@@ -145,10 +145,30 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     }
 
     /**
+     * 获取
+     */
+    @Override
+    public void getGas() {
+        DelegateManager.getInstance().getGasPrice()
+                .compose(RxUtils.bindToLifecycle(getView()))
+                .compose(RxUtils.getSingleSchedulerTransformer())
+                .subscribe(new Consumer<BigInteger>() {
+                    @Override
+                    public void accept(BigInteger integer) throws Exception {
+                        if (isViewAttached()) {
+                            getView().showGas(integer);
+                        }
+
+                    }
+                });
+
+    }
+
+    /**
      * 获取手续费
      */
     @Override
-    public void getWithDrawGasPrice() {
+    public void getWithDrawGasPrice(String gasPrice) {
         String input = getView().getInputAmount();
         if (TextUtils.isEmpty(input)) {
             getView().showWithDrawGasPrice("0.00");
@@ -159,20 +179,14 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
 
         Web3j web3j = Web3jManager.getInstance().getWeb3j();
         org.web3j.platon.contracts.DelegateContract delegateContract = org.web3j.platon.contracts.DelegateContract.load(web3j);
-
-        delegateContract.getUnDelegateGasProvider(mNodeAddress, new BigInteger(list.get(0).getStakingBlockNum()), Convert.toVon(input, Convert.Unit.LAT).toBigInteger()) //这里块高是list中第一个
-                .subscribe(new Subscriber<GasProvider>() {
+        delegateContract.getUnDelegateFeeAmount(new BigInteger(gasPrice),mNodeAddress,new BigInteger(list.get(0).getStakingBlockNum()),Convert.toVon(input, Convert.Unit.LAT).toBigInteger())
+                .subscribe(new Subscriber<BigInteger>() {
                     @Override
-                    public void onNext(GasProvider gasProvider) {
-                        if (isViewAttached()) {
-                            BigDecimal gas = BigDecimalUtil.mul(gasProvider.getGasLimit().toString(), gasProvider.getGasPrice().toString());
-                            getView().showWithDrawGasPrice(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(String.valueOf(gas.doubleValue()), "1E18")));
-                        }
+                    public void onNext(BigInteger bigInteger) {
+                        getView().showWithDrawGasPrice(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(bigInteger.toString(), "1E18")));
                     }
-
                     @Override
                     public void onCompleted() {
-
                     }
 
                     @Override
@@ -182,7 +196,30 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
 
                 });
 
+//        delegateContract.getUnDelegateGasProvider(mNodeAddress, new BigInteger(list.get(0).getStakingBlockNum()), Convert.toVon(input, Convert.Unit.LAT).toBigInteger()) //这里块高是list中第一个
+//                .subscribe(new Subscriber<GasProvider>() {
+//                    @Override
+//                    public void onNext(GasProvider gasProvider) {
+//                        if (isViewAttached()) {
+//                            BigDecimal gas = BigDecimalUtil.mul(gasProvider.getGasLimit().toString(), gasProvider.getGasPrice().toString());
+//                            getView().showWithDrawGasPrice(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(String.valueOf(gas.doubleValue()), "1E18")));
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//
+//                    }
+//
+//                });
+
     }
+
 
     @SuppressLint("CheckResult")
     @Override

@@ -272,7 +272,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
                             android:layout_marginTop="5dp"
-                            android:text="Fee:"
+                            android:text="@string/delegate_and_withdraw_fee"
                             android:textColor="@color/color_b6bbd0"
                             android:textSize="13sp" />
 
