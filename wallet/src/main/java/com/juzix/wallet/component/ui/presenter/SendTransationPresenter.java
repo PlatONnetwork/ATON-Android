@@ -9,6 +9,7 @@ import com.juzhen.framework.network.ApiSingleObserver;
 import com.juzhen.framework.network.NetConnectivity;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.app.CustomThrowable;
 import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
@@ -38,6 +39,7 @@ import com.trello.rxlifecycle2.android.FragmentEvent;
 import org.reactivestreams.Publisher;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
+import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.utils.Convert;
 import org.web3j.utils.Numeric;
 
@@ -56,11 +58,14 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
+import io.reactivex.SingleObserver;
 import io.reactivex.SingleOnSubscribe;
+import io.reactivex.SingleSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 
 
 /**
@@ -68,23 +73,31 @@ import io.reactivex.functions.Function;
  */
 public class SendTransationPresenter extends BasePresenter<SendTransationContract.View> implements SendTransationContract.Presenter {
 
-    private final static String TAG = SendTransationPresenter.class.getSimpleName();
-
     private final static double DEFAULT_PERCENT = 0;
-    private final static long DEAULT_GAS_LIMIT = 210000;
-    private final static double MIN_GAS_PRICE_WEI = 5E11;
-    private final static double MAX_GAS_PRICE_WEI = 5E12;
-    private final static double D_GAS_PRICE_WEI = MAX_GAS_PRICE_WEI - MIN_GAS_PRICE_WEI;
-    private static final int REFRESH_TIME = 5000;
-    private Disposable mDisposable;
+    //默认gasLimit
+    private final static double DEAULT_GAS_LIMIT = DefaultGasProvider.GAS_LIMIT.doubleValue();
+    //默认最小gasPrice
+    private final static double DEFAULT_MIN_GASPRICE = DefaultGasProvider.GAS_PRICE.doubleValue();
+    //默认最大gasPrice
+    private final static double DEFAULT_MAX_GASPRICE = BigInteger.valueOf(5).multiply(DefaultGasProvider.GAS_PRICE).doubleValue();
+    //当前gasLimit
+    private double gasLimit = DEAULT_GAS_LIMIT;
+    //最低gasPrice
+    private double minGasPrice = DEFAULT_MIN_GASPRICE;
+    //最高gasPrice
+    private double maxGasPrice = DEFAULT_MAX_GASPRICE;
+    //最高与最低差值
+    private double dGasPrice = BigDecimalUtil.sub(maxGasPrice, minGasPrice);
+    //当前gasPrice
+    private double gasPrice = minGasPrice;
+    //当前滑动百分比
+    private double percent = DEFAULT_PERCENT;
 
+    private double feeAmount;
+    //刷新时间
+    private Disposable mDisposable;
     private Wallet walletEntity;
     private String toAddress;
-
-    private double gasPrice = MIN_GAS_PRICE_WEI;
-    private long gasLimit = DEAULT_GAS_LIMIT;
-    private double feeAmount;
-    private double percent = DEFAULT_PERCENT;
 
     public SendTransationPresenter(SendTransationContract.View view) {
         super(view);
@@ -109,7 +122,6 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
         if (walletEntity == null) {
             return;
         }
-        String address = walletEntity.getPrefixAddress();
 
         if (mDisposable != null && !mDisposable.isDisposed()) {
             mDisposable.dispose();
@@ -126,9 +138,8 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
 
                     @Override
                     public void onApiSuccess(List<AccountBalance> accountBalances) {
-                        if (isViewAttached() && accountBalances != null && !accountBalances.isEmpty()){
+                        if (isViewAttached() && accountBalances != null && !accountBalances.isEmpty()) {
                             getView().updateWalletBalance(accountBalances.get(0).getShowFreeBalace());
-                            calculateFeeAndTime(percent);
                         }
                     }
 
@@ -137,13 +148,32 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
 
                     }
                 });
+
+        mDisposable = Web3jManager
+                .getInstance()
+                .getGasPrice()
+                .compose(RxUtils.getSingleSchedulerTransformer())
+                .subscribe(new Consumer<BigInteger>() {
+                    @Override
+                    public void accept(BigInteger bigInteger) throws Exception {
+                        if (isViewAttached()) {
+                            minGasPrice = bigInteger.divide(BigInteger.valueOf(2)).doubleValue();
+                            maxGasPrice = bigInteger.multiply(BigInteger.valueOf(5)).doubleValue();
+                            calculateFeeAndTime(percent);
+                        }
+                    }
+                });
     }
 
 
     @Override
     public void transferAllBalance() {
         if (isViewAttached() && walletEntity != null) {
-            getView().setTransferAmount(BigDecimalUtil.sub(walletEntity.getFreeBalance(), String.valueOf(feeAmount)));
+            if (BigDecimalUtil.isBigger(String.valueOf(feeAmount), walletEntity.getFreeBalance())) {
+                getView().setTransferAmount(0D);
+            } else {
+                getView().setTransferAmount(BigDecimalUtil.sub(walletEntity.getFreeBalance(), String.valueOf(feeAmount)));
+            }
         }
     }
 
@@ -218,23 +248,26 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
             }
 
             String fromWallet = walletEntity.getName();
-            String fromAddress = address;
             String fee = NumberParserUtils.getPrettyBalance(feeAmount);
-            String walletName = WalletManager.getInstance().getWalletNameByWalletAddress(toAddress);
 
-            if (TextUtils.isEmpty(walletName)) {
-                walletName = AddressFormatUtil.formatAddress(toAddress);
-            }
-            SendTransactionDialogFragment
-                    .newInstance(string(R.string.send_transaction), NumberParserUtils.getPrettyBalance(transferAmount), buildSendTransactionInfo(fromWallet, fromAddress, walletName, fee))
-                    .setOnConfirmBtnClickListener(new SendTransactionDialogFragment.OnConfirmBtnClickListener() {
+            getWalletNameFromAddress(toAddress)
+                    .compose(RxUtils.getSingleSchedulerTransformer())
+                    .subscribe(new Consumer<String>() {
                         @Override
-                        public void onConfirmBtnClick() {
-                            showInputWalletPasswordDialogFragment(transferAmount, fee, toAddress);
+                        public void accept(String s) throws Exception {
+                            if (isViewAttached()) {
+                                SendTransactionDialogFragment
+                                        .newInstance(string(R.string.send_transaction), NumberParserUtils.getPrettyBalance(transferAmount), buildSendTransactionInfo(fromWallet, s, fee))
+                                        .setOnConfirmBtnClickListener(new SendTransactionDialogFragment.OnConfirmBtnClickListener() {
+                                            @Override
+                                            public void onConfirmBtnClick() {
+                                                showInputWalletPasswordDialogFragment(transferAmount, fee, toAddress);
+                                            }
+                                        })
+                                        .show(currentActivity().getSupportFragmentManager(), "sendTransaction");
+                            }
                         }
-                    })
-                    .show(currentActivity().getSupportFragmentManager(), "sendTransaction");
-
+                    });
         }
     }
 
@@ -370,7 +403,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
     }
 
     private void updateGasPrice(double percent) {
-        gasPrice = BigDecimalUtil.add(MIN_GAS_PRICE_WEI, BigDecimalUtil.mul(percent, D_GAS_PRICE_WEI));
+        gasPrice = BigDecimalUtil.add(minGasPrice, BigDecimalUtil.mul(percent, dGasPrice));
     }
 
     private boolean isBalanceEnough(String transferAmount) {
@@ -382,14 +415,14 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
     }
 
     private double getMinFee() {
-        return BigDecimalUtil.div(BigDecimalUtil.mul(gasLimit, MIN_GAS_PRICE_WEI), 1E18);
+        return BigDecimalUtil.div(BigDecimalUtil.mul(gasLimit, minGasPrice), 1E18);
     }
 
     private double getMaxFee() {
-        return BigDecimalUtil.div(BigDecimalUtil.mul(gasLimit, MAX_GAS_PRICE_WEI), 1E18);
+        return BigDecimalUtil.div(BigDecimalUtil.mul(gasLimit, maxGasPrice), 1E18);
     }
 
-    private Map<String, String> buildSendTransactionInfo(String fromWallet, String fromAddress, String recipient, String fee) {
+    private Map<String, String> buildSendTransactionInfo(String fromWallet, String recipient, String fee) {
         Map<String, String> map = new LinkedHashMap<>();
         map.put(string(R.string.type), string(R.string.send_energon));
         map.put(string(R.string.from_wallet), fromWallet);
@@ -400,10 +433,35 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
 
     private void resetData() {
         toAddress = "";
-        gasPrice = MIN_GAS_PRICE_WEI;
+        gasPrice = minGasPrice;
         gasLimit = DEAULT_GAS_LIMIT;
         percent = DEFAULT_PERCENT;
         feeAmount = getMinFee();
+    }
+
+    private Single<String> getWalletNameFromAddress(String address) {
+        return Single.fromCallable(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                return WalletManager.getInstance().getWalletNameByWalletAddress(address);
+            }
+        }).filter(new Predicate<String>() {
+            @Override
+            public boolean test(String s) throws Exception {
+                return !TextUtils.isEmpty(s);
+            }
+        }).switchIfEmpty(new SingleSource<String>() {
+            @Override
+            public void subscribe(SingleObserver<? super String> observer) {
+                observer.onSuccess(AddressDao.getAddressNameByAddress(address));
+            }
+        }).filter(new Predicate<String>() {
+            @Override
+            public boolean test(String s) throws Exception {
+                return !TextUtils.isEmpty(s);
+            }
+        }).defaultIfEmpty(AddressFormatUtil.formatAddress(address))
+                .toSingle();
     }
 
 }

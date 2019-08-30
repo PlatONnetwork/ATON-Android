@@ -73,7 +73,7 @@ public class OfficialCommunityAdapter extends RecyclerAdapter<OfficialCommunity>
             @Override
             public void onClick(View v) {
                 if (officialCommunityType == OfficialCommunityType.WECHAT) {
-                    ScanQRCodeActivity.actionStart(mContext);
+                    qrCodeIv.setVisibility(qrCodeIv.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
                 } else {
                     CommonHybridActivity.actionStart(mContext, item.getWebPortalUrl(), WebType.WEB_TYPE_COMMON);
                 }

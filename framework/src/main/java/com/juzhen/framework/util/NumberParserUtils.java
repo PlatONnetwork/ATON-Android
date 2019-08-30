@@ -23,6 +23,16 @@ public class NumberParserUtils {
      * @param value String
      * @return long
      */
+    public static long parseLong(double value) {
+        return parseLong(String.valueOf(value), 0L);
+    }
+
+    /**
+     * 字符串 ==>> long
+     *
+     * @param value String
+     * @return long
+     */
     public static long parseLong(String value) {
         return parseLong(value, 0L);
     }
