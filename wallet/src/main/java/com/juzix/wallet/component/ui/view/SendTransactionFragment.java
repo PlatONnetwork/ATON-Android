@@ -233,7 +233,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
 
     @Override
     public void updateWalletBalance(String balance) {
-        tvWalletBalance.setText(string(R.string.balance_text, NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(balance, "1E18"))));
+        tvWalletBalance.setText(getString(R.string.balance_text, NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(balance, "1E18"))));
     }
 
     @Override

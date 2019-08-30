@@ -139,14 +139,14 @@ public class Web3jManager {
         }
     }
 
-    public Single<Long> getGasPrice() {
-        return Single.fromCallable(new Callable<Long>() {
+    public Single<BigInteger> getGasPrice() {
+        return Single.fromCallable(new Callable<BigInteger>() {
             @Override
-            public Long call() throws Exception {
+            public BigInteger call() throws Exception {
                 PlatonGasPrice gasPrice = Web3jManager.getInstance().getWeb3j().platonGasPrice().send();
-                return gasPrice.getGasPrice().longValue();
+                return gasPrice.getGasPrice();
             }
-        }).onErrorReturnItem(DefaultGasProvider.GAS_PRICE.longValue());
+        }).onErrorReturnItem(DefaultGasProvider.GAS_PRICE);
     }
 
 

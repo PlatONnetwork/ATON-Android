@@ -147,7 +147,7 @@ public class WalletManager {
             }
         }
 
-        return null;
+        return "";
     }
 
     /**

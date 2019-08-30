@@ -85,7 +85,7 @@ public class TransactionManager {
             RawTransaction rawTransaction = RawTransaction.createTransaction(Web3jManager.getInstance().getNonce(from), GAS_PRICE, GAS_LIMIT, toAddress, amount.toBigInteger(),
                     txType);
 
-            byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, new Byte("100"), credentials);
+            byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, new Byte(NodeManager.getInstance().getChainId()), credentials);
             String hexValue = Numeric.toHexString(signedMessage);
 
             PlatonSendTransaction transaction = Web3jManager.getInstance().getWeb3j().platonSendRawTransaction(hexValue).send();
@@ -97,12 +97,12 @@ public class TransactionManager {
         return null;
     }
 
-    public Single<Transaction> sendTransaction(String privateKey, String fromAddress, String toAddress, String walletName, BigDecimal transferAmount, BigDecimal feeAmount, long gasPrice, long gasLimit) {
+    public Single<Transaction> sendTransaction(String privateKey, String fromAddress, String toAddress, String walletName, BigDecimal transferAmount, BigDecimal feeAmount, double gasPrice, double gasLimit) {
 
         return Single.create(new SingleOnSubscribe<String>() {
             @Override
             public void subscribe(SingleEmitter<String> emitter) throws Exception {
-                String transactionHash = sendTransaction(privateKey, fromAddress, toAddress, transferAmount, NumberParserUtils.parseLong(BigDecimalUtil.parseString(gasPrice)), gasLimit);
+                String transactionHash = sendTransaction(privateKey, fromAddress, toAddress, transferAmount, NumberParserUtils.parseLong(BigDecimalUtil.parseString(gasPrice)), NumberParserUtils.parseLong(gasLimit));
                 if (TextUtils.isEmpty(transactionHash)) {
                     emitter.onError(new CustomThrowable(CustomThrowable.CODE_ERROR_TRANSFER_FAILED));
                 } else {
@@ -121,7 +121,7 @@ public class TransactionManager {
                         .chainId(NodeManager.getInstance().getChainId())
 //                        .txType(TransactionType.TRANSFER.getTxTypeValue())
                         .createTime(System.currentTimeMillis())
-                        .txReceiptStatus( TransactionStatus.PENDING.ordinal())
+                        .txReceiptStatus(TransactionStatus.PENDING.ordinal())
                         .actualTxCost(feeAmount.toPlainString())
                         .build();
             }
