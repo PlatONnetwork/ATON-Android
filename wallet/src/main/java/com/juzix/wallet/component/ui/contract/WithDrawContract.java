@@ -5,6 +5,7 @@ import com.juzix.wallet.component.ui.base.IView;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.entity.WithDrawBalance;
 
+import java.math.BigInteger;
 import java.util.Map;
 
 public class WithDrawContract {
@@ -65,6 +66,8 @@ public class WithDrawContract {
 
         String getGas();
 
+
+        void showGas(BigInteger bigInteger);
     }
 
     public interface Presenter extends IPresenter<View> {
@@ -85,8 +88,9 @@ public class WithDrawContract {
         void submitWithDraw(String chooseType);
 
 
-        void getWithDrawGasPrice();
+        void getWithDrawGasPrice(String gasPrice);
 
+        void getGas();
     }
 
 }

@@ -77,6 +77,7 @@ public class DelegateManager {
 
     /**
      * 获取赎回结果，是否交易成功
+     *
      * @param platonSendTransaction
      * @return
      */
@@ -91,4 +92,18 @@ public class DelegateManager {
         });
 
     }
+
+    /**
+     * 获取gasprice
+     */
+    public Single<BigInteger> getGasPrice() {
+        return Single.fromCallable(new Callable<BigInteger>() {
+            @Override
+            public BigInteger call() throws Exception {
+                return Web3jManager.getInstance().getWeb3j().platonGasPrice().send().getGasPrice();
+            }
+        }).onErrorReturnItem(new BigInteger("0"));
+    }
+
+
 }

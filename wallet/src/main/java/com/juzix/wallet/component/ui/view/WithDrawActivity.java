@@ -39,6 +39,7 @@ import com.juzix.wallet.utils.GlideUtils;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,6 +88,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     private List<WithDrawType> list = new ArrayList<>();
     private WithDrawPopWindowAdapter mPopWindowAdapter;
     private long transactionTime;
+    private String gasPrice;
 
     @Override
     protected WithDrawPresenter createPresenter() {
@@ -102,6 +104,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         //初始化请求数据
         mPresenter.showWalletInfo();
         mPresenter.getBalanceType();
+        mPresenter.getGas();
     }
 
     private void initView() {
@@ -200,7 +203,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
             withdrawAmount.setText(item.getValue());
             withdrawAmount.setFocusableInTouchMode(false);
             withdrawAmount.setFocusable(false);
-            mPresenter.getWithDrawGasPrice();//已解除不能操作，所以需要再获取一次手续费
+            mPresenter.getWithDrawGasPrice(gasPrice);//已解除不能操作，所以需要再获取一次手续费
         }
         delegateAmount.setText(item.getValue());
 
@@ -225,7 +228,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         public void onTextChanged(CharSequence s, int start, int before, int count) {//改变后
             mPresenter.checkWithDrawAmount(s.toString().trim());
             mPresenter.updateWithDrawButtonState();
-            mPresenter.getWithDrawGasPrice();
+            mPresenter.getWithDrawGasPrice(gasPrice);
 
             String amountMagnitudes = StringUtil.getAmountMagnitudes(getContext(), s.toString().trim());
             etWalletAmount.setText(amountMagnitudes);
@@ -325,7 +328,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     }
 
     @Override
-    public void withDrawSuccessInfo(String platonSendTransaction,String from, String to, long time, String txType, String value, String actualTxCost, String nodeName, String nodeId, int txReceiptStatus) {
+    public void withDrawSuccessInfo(String platonSendTransaction, String from, String to, long time, String txType, String value, String actualTxCost, String nodeName, String nodeId, int txReceiptStatus) {
         finish();
         Transaction transaction = new Transaction.Builder()
                 .from(from)
@@ -339,7 +342,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
                 .txReceiptStatus(txReceiptStatus)
                 .build();
 
-        TransactionDetailActivity.actionStart(getContext(), transaction, from,"",platonSendTransaction);
+        TransactionDetailActivity.actionStart(getContext(), transaction, from, "", platonSendTransaction);
 
     }
 
@@ -353,6 +356,11 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     @Override
     public String getGas() {
         return fee.getText().toString();
+    }
+
+    @Override
+    public void showGas(BigInteger bigInteger) {
+        gasPrice = bigInteger.toString();
     }
 
     @Override

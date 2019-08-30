@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import retrofit2.Response;
@@ -184,10 +185,26 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                 });
     }
 
+    @Override
+    public void getGas() {
+        DelegateManager.getInstance().getGasPrice()
+                .compose(RxUtils.bindToLifecycle(getView()))
+                .compose(RxUtils.getSingleSchedulerTransformer())
+                .subscribe(new Consumer<BigInteger>() {
+                    @Override
+                    public void accept(BigInteger integer) throws Exception {
+                        if (isViewAttached()) {
+                            getView().showGas(integer);
+                        }
+
+                    }
+                });
+    }
+
     //获取手续费
     @SuppressLint("CheckResult")
     @Override
-    public void getGasPrice(String chooseType) {
+    public void getGasPrice(String gasPrice, String chooseType) {
         String inputAmount = getView().getDelegateAmount();//输入的数量
         if (TextUtils.isEmpty(inputAmount)) {
             getView().showGasPrice("0.00");
@@ -197,28 +214,46 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
         Web3j web3j = Web3jManager.getInstance().getWeb3j();
         org.web3j.platon.contracts.DelegateContract delegateContract = org.web3j.platon.contracts.DelegateContract.load(web3j);
         StakingAmountType stakingAmountType = TextUtils.equals(chooseType, "balance") ? StakingAmountType.FREE_AMOUNT_TYPE : StakingAmountType.RESTRICTING_AMOUNT_TYPE;
-        delegateContract.getDelegateGasProvider(mNodeAddress, stakingAmountType, Convert.toVon(inputAmount, Convert.Unit.LAT).toBigInteger())
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<GasProvider>() {
+        delegateContract.getDelegateFeeAmount(new BigInteger(gasPrice), mNodeAddress, stakingAmountType, Convert.toVon(inputAmount, Convert.Unit.LAT).toBigInteger())
+                .subscribe(new Subscriber<BigInteger>() {
                     @Override
-                    public void onNext(GasProvider gasProvider) {
+                    public void onNext(BigInteger integer) {
                         if (isViewAttached()) {
-                            BigDecimal gas = BigDecimalUtil.mul(gasProvider.getGasLimit().toString(), gasProvider.getGasPrice().toString());
-                            feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(String.valueOf(gas.doubleValue()), "1E18"));
-                            getView().showGasPrice(feeAmount);
+                            getView().showGasPrice(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(integer.toString(), "1E18")));
                         }
                     }
 
                     @Override
                     public void onCompleted() {
-
                     }
-
                     @Override
                     public void onError(Throwable e) {
-
                     }
+
                 });
+
+//        delegateContract.getDelegateGasProvider(mNodeAddress, stakingAmountType, Convert.toVon(inputAmount, Convert.Unit.LAT).toBigInteger())
+//                .subscribeOn(Schedulers.io())
+//                .subscribe(new Subscriber<GasProvider>() {
+//                    @Override
+//                    public void onNext(GasProvider gasProvider) {
+//                        if (isViewAttached()) {
+//                            BigDecimal gas = BigDecimalUtil.mul(gasProvider.getGasLimit().toString(), gasProvider.getGasPrice().toString());
+//                            feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(String.valueOf(gas.doubleValue()), "1E18"));
+//                            getView().showGasPrice(feeAmount);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//
+//                    }
+//                });
 
     }
 

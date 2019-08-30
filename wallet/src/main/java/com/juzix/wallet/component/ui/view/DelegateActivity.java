@@ -43,6 +43,7 @@ import com.juzix.wallet.utils.GlideUtils;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -102,6 +103,8 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     private ListView mPopListview;
     private DelegatePopAdapter mAdapter;
     private long transactionTime;
+    private String gasPrice;
+
 
     @Override
     protected DelegatePresenter createPresenter() {
@@ -116,6 +119,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         initView();
         mPresenter.showWalletInfo();
         mPresenter.checkIsCanDelegate();
+        mPresenter.getGas();
     }
 
     private void initView() {
@@ -231,7 +235,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
             inputTips.setText(amountMagnitudes);
             inputTips.setVisibility(TextUtils.isEmpty(amountMagnitudes) ? View.GONE : View.VISIBLE);
 
-            mPresenter.getGasPrice(chooseType); //获取手续费
+            mPresenter.getGasPrice(gasPrice, chooseType); //获取手续费
         }
 
         @Override
@@ -393,7 +397,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                 .txReceiptStatus(txReceiptStatus)
                 .build();
 
-        TransactionDetailActivity.actionStart(getContext(), transaction, from, platonSendTransaction,"");
+        TransactionDetailActivity.actionStart(getContext(), transaction, from, platonSendTransaction, "");
     }
 
     /**
@@ -409,6 +413,18 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     @Override
     public String getGas() {
         return fee.getText().toString();
+    }
+
+    /**
+     * 获取到Gasprice
+     *
+     * @param integer
+     */
+    @Override
+    public void showGas(BigInteger integer) {
+        if (integer != null) {
+            gasPrice = integer.toString();
+        }
     }
 
     /**
