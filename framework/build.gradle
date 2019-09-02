@@ -35,5 +35,4 @@ dependencies {
     api rootProject.ext.dependencies["stetho-okhttp3"]
     api rootProject.ext.dependencies["rxjava"]
     api rootProject.ext.dependencies["rxandroid"]
-    implementation rootProject.ext.dependencies["junit"]
 }
