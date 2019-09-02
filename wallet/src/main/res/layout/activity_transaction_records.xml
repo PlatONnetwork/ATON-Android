@@ -47,7 +47,7 @@
             android:layout_marginLeft="8dp"
             android:layout_weight="1"
             android:gravity="center_vertical|left"
-            android:text="AII wallets" />
+            android:text="@string/msg_all_wallets" />
 
         <ImageView
             android:id="@+id/iv_arrow"
