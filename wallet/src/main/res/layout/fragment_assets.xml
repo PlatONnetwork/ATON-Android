@@ -8,7 +8,7 @@
     android:fitsSystemWindows="true"
     app:srlEnableAutoLoadMore="false">
 
-    <com.juzix.wallet.component.widget.CustomRefreshHeader
+    <com.scwang.smartrefresh.layout.header.ClassicsHeader
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
