@@ -31,6 +31,8 @@ public class DelegateContract {
 
         String getNodeIconFromIntent();
 
+        String getWalletAddressFromIntent();
+
         int getJumpTagFromIntent();
 
         void showNodeInfo(String nodeAddress, String nodeName, String nodeIcon);

@@ -3,12 +3,14 @@ package com.juzix.wallet.component.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.juzhen.framework.util.NumberParserUtils;
+import com.juzix.wallet.App;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.adapter.base.ViewHolder;
@@ -16,9 +18,11 @@ import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.entity.VerifyNode;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.GlideUtils;
+import com.juzix.wallet.utils.LanguageUtil;
 import com.juzix.wallet.utils.StringUtil;
 
 import java.util.List;
+import java.util.Locale;
 
 public class ValidatorsAdapter extends CommonAdapter<VerifyNode> {
     private static final String ACTIVE = "Active";
@@ -35,7 +39,9 @@ public class ValidatorsAdapter extends CommonAdapter<VerifyNode> {
         CircleImageView imageView = viewHolder.getView(R.id.iv_url);
         GlideUtils.loadRound(context, item.getUrl(), imageView);
         viewHolder.setText(R.id.tv_validators_node_name, item.getName());
-        viewHolder.setText(R.id.tv_validators_node_state, item.getNodeStatus());
+//        viewHolder.setText(R.id.tv_validators_node_state, item.getNodeStatus());
+        TextView tv_status  =viewHolder.getView(R.id.tv_validators_node_state);
+        showState(context,item,tv_status);
 
 //        viewHolder.setText(R.id.tv_yield, ((NumberParserUtils.parseDouble(item.getRatePA())) / 100) + "%");
         TextView tv_yield = viewHolder.getView(R.id.tv_yield);
@@ -50,6 +56,20 @@ public class ValidatorsAdapter extends CommonAdapter<VerifyNode> {
         changeImageViewBg(context, iv, item.getRanking());
         TextView tv_state = viewHolder.getView(R.id.tv_validators_node_state);
         changeTextBgAndTextColor(context, tv_state, item.getNodeStatus());
+
+    }
+
+    private void showState(Context context, VerifyNode item, TextView tv_status) {
+          if(Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage())){ //中文环境下
+                 if(TextUtils.equals(item.getNodeStatus(),ACTIVE)){
+                  tv_status.setText(R.string.validators_active);
+                 }else {
+                     tv_status.setText(R.string.validators_candidate);
+                 }
+
+          }else {
+              tv_status.setText(item.getNodeStatus());
+          }
 
     }
 

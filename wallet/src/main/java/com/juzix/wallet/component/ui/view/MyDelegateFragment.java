@@ -220,11 +220,11 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
     @Override
     public void showMyDelegateData(List<DelegateInfo> list) {
         if (list != null && list.size() > 0) {
-            mMyDelegateAdapter.notifyDataChanged(list);
             ll_no_data.setVisibility(View.GONE);
         } else {
             ll_no_data.setVisibility(View.VISIBLE);
         }
+        mMyDelegateAdapter.notifyDataChanged(list);
         showTotal(list);
         refreshLayout.finishRefresh();
         dismissLoadingDialogImmediately();

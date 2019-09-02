@@ -13,6 +13,7 @@ public class ValidatorsDetailContract {
 
         void showValidatorsDetailFailed();
 
+        void showIsCanDelegate(boolean isCanDelegate);
 
     }
 
@@ -20,6 +21,7 @@ public class ValidatorsDetailContract {
 
         void loadValidatorsDetailData();
 
+        void getWalletBalance();
     }
 
 }

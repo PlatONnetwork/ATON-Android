@@ -1,0 +1,4 @@
+file=D:\jzy_project\ATON-Android\wallet\build\outputs\mapping\releaseX\mapping.txt
+sha1=723f4c84ae6783285d36d263e46568ffe4cf213b
+appId=0970ddc6bd
+

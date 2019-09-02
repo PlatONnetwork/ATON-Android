@@ -30,6 +30,7 @@ import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.GlideUtils;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
+import com.juzix.wallet.utils.ToastUtil;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -139,7 +140,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
 
                     @Override
                     public void accept(Object o) {
-                        DelegateActivity.actionStart(getContext(), mNodeAddress, mNodeName, mNodeIcon, 1);
+                        mPresenter.getWalletBalance();
                     }
                 });
 
@@ -231,6 +232,15 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
     @Override
     public void showValidatorsDetailFailed() {
 
+    }
+
+    @Override
+    public void showIsCanDelegate(boolean isCanDelegate) {
+        if (!isCanDelegate) {//表示不能委托
+            ToastUtil.showLongToast(getContext(), R.string.tips_no_wallet);
+        } else {
+            DelegateActivity.actionStart(getContext(), mNodeAddress, mNodeName, mNodeIcon, 1,"");
+        }
     }
 
     @Override

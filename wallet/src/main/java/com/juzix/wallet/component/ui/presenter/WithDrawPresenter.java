@@ -170,7 +170,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     @Override
     public void getWithDrawGasPrice(String gasPrice) {
         String input = getView().getInputAmount();
-        if (TextUtils.isEmpty(input)) {
+        if (TextUtils.isEmpty(input) || TextUtils.equals(input,".")) {
             getView().showWithDrawGasPrice("0.00");
             return;
         }

@@ -25,6 +25,7 @@ import com.juzix.wallet.entity.WebType;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.AddressFormatUtil;
+import com.juzix.wallet.utils.ToastUtil;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -105,12 +106,14 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
             @Override
             public void onDelegateClick(String nodeAddress, String nodeName, String nodeIcon) {
                 //操作委托
-                DelegateActivity.actionStart(getContext(), nodeAddress, nodeName, nodeIcon, 0);
+//                DelegateActivity.actionStart(getContext(), nodeAddress, nodeName, nodeIcon, 0,walletAddress);
+                mPresenter.getWalletBalance(nodeAddress, nodeName, nodeIcon);
+
             }
 
             @Override
             public void onWithDrawClick(String nodeAddress, String nodeName, String nodeIcon, String blockNum) {
-                //跳转赎回委托页面
+                //操作赎回
                 WithDrawActivity.actionStart(getContext(), nodeAddress, nodeName, nodeIcon, blockNum, walletAddress, walletName, walletIcon);
             }
 
@@ -198,6 +201,16 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
         refreshLayout.finishRefresh();
         refreshLayout.finishLoadMore();
         dismissLoadingDialogImmediately();
+    }
+
+    //是否可以进入委托页面进行委托
+    @Override
+    public void showIsCanDelegate(String nodeAddress, String nodeName, String nodeIcon, boolean isCanDelegate) {
+        if (!isCanDelegate) {//表示不能委托
+            ToastUtil.showLongToast(getContext(), R.string.tips_no_wallet);
+        } else {
+            DelegateActivity.actionStart(getContext(), nodeAddress, nodeName, nodeIcon, 0, walletAddress);
+        }
     }
 
     public static void actionStart(Context context, String walletAddress, String walletName, String walletIcon) {

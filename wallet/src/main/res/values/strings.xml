@@ -230,7 +230,7 @@
     <string name="insufficient_balance">钱包余额不足</string>
     <string name="send">发送</string>
     <string name="receive">接收</string>
-    <string name="receive_atp">转入&#160;Energon</string>
+    <string name="receive_atp">接收&#160;LAT</string>
     <string name="editNode">编辑节点</string>
     <string name="node_settings">节点设置</string>
     <string name="face_touch_id">指纹/面纹解锁</string>
@@ -598,5 +598,5 @@
     <string name="delegate_and_withdraw_fee">手续费:</string>
     <string name="msg_turn_light_on">轻点照亮</string>
     <string name="msg_turn_light_off">轻点关闭</string>
-
+    <string name="tips_no_wallet">无可用钱包，或钱包余额不足</string>
 </resources>

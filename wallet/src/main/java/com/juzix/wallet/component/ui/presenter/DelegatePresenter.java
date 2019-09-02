@@ -36,6 +36,7 @@ import org.web3j.utils.Convert;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -55,12 +56,15 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     private String mNodeIcon;
     private int tag;//获取是从哪个页面跳转到委托页
     private String feeAmount;
+    private String mWalletAddress;
+    private List<String> walletAddressList = new ArrayList<>();
 
     public DelegatePresenter(DelegateContract.View view) {
         super(view);
         mNodeAddress = view.getNodeAddressFromIntent();
         mNodeName = view.getNodeNameFromIntent();
         mNodeIcon = view.getNodeIconFromIntent();
+        mWalletAddress = view.getWalletAddressFromIntent();
         tag = view.getJumpTagFromIntent();
     }
 
@@ -73,6 +77,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                         if (isViewAttached()) {
                             mWallet = walletEntity;
                             getView().showSelectedWalletInfo(walletEntity);
+                            getBalanceByWalletAddress(walletEntity.getPrefixAddress());//获取钱包余额信息
                         }
                     }
                 })
@@ -116,18 +121,32 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
     }
 
-    private void showDefaultWalletInfo() {
-        mWallet = WalletManager.getInstance().getFirstValidIndividualWalletBalance();
+    private void showDefaultWalletInfo() { //这里如果从验证列表进来显示第一大于0的钱包，从委托详情进来，是哪个钱包就显示哪个钱包的信息
+        if (!TextUtils.isEmpty(mWalletAddress)) {
+            mWallet = WalletManager.getInstance().getWalletEntityByWalletAddress(mWalletAddress);
+        } else {
+            mWallet = WalletManager.getInstance().getFirstValidIndividualWalletBalance();
+        }
+
+//        mWallet = WalletManager.getInstance().getFirstValidIndividualWalletBalance();
         if (isViewAttached() && mWallet != null) {
             getView().showSelectedWalletInfo(mWallet);
         }
     }
 
+
     /**
      * 获取所有钱包的余额(可用余额+锁仓余额)
      */
     private void getWalletBalance() {
-        List<String> walletAddressList = WalletManager.getInstance().getAddressList();
+        walletAddressList.clear();
+        if (!TextUtils.isEmpty(mWalletAddress)) {
+            walletAddressList.add(mWalletAddress);
+        } else {
+            walletAddressList.addAll(WalletManager.getInstance().getAddressList());
+        }
+
+//        List<String> walletAddressList = WalletManager.getInstance().getAddressList();
         ServerUtils.getCommonApi().getAccountBalance(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
                 .put("addrs", walletAddressList.toArray(new String[walletAddressList.size()]))
                 .build())
@@ -149,6 +168,31 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
                     }
                 });
+
+    }
+
+
+    //获取钱包余额信息根据选择的钱包地址
+    private void getBalanceByWalletAddress(String address) {
+        ServerUtils.getCommonApi().getAccountBalance(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
+                .put("addrs", new String[]{address})
+                .build())
+                .compose(RxUtils.bindToLifecycle(getView()))
+                .compose(RxUtils.getSingleSchedulerTransformer())
+                .subscribe(new ApiSingleObserver<List<AccountBalance>>() {
+                    @Override
+                    public void onApiSuccess(List<AccountBalance> accountBalances) {
+                        if (isViewAttached()) {
+                            getView().getWalletBalanceList(accountBalances);
+                        }
+                    }
+
+                    @Override
+                    public void onApiFailure(ApiResponse response) {
+
+                    }
+                });
+
 
     }
 
@@ -206,9 +250,14 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     @Override
     public void getGasPrice(String gasPrice, String chooseType) {
         String inputAmount = getView().getDelegateAmount();//输入的数量
-        if (TextUtils.isEmpty(inputAmount)) {
+        if (TextUtils.isEmpty(inputAmount) ||TextUtils.equals(inputAmount,".")) {
             getView().showGasPrice("0.00");
             return;
+        } else {
+            if (NumberParserUtils.parseDouble(inputAmount) < 0) {
+                getView().showGasPrice("0.00");
+                return;
+            }
         }
 
         Web3j web3j = Web3jManager.getInstance().getWeb3j();
@@ -219,13 +268,15 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                     @Override
                     public void onNext(BigInteger integer) {
                         if (isViewAttached()) {
-                            getView().showGasPrice(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(integer.toString(), "1E18")));
+                            feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(integer.toString(), "1E18"));
+                            getView().showGasPrice(feeAmount);
                         }
                     }
 
                     @Override
                     public void onCompleted() {
                     }
+
                     @Override
                     public void onError(Throwable e) {
                     }

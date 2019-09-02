@@ -286,19 +286,33 @@ public class AppFramework {
                 oldVersion++;
             } else if (oldVersion == 106) {
 
+                schema.get("TransactionEntity")
+                        .addField("txReceiptStatus_temp", Integer.class).setRequired("txReceiptStatus_temp", true)
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.setInt("txReceiptStatus_temp", Integer.valueOf(obj.getString("txReceiptStatus")));
+                            }
+                        })
+                        .removeField("txReceiptStatus")
+                        .renameField("txReceiptStatus_temp", "txReceiptStatus");
+
+
                 schema.create("VerifyNodeEntity")
                         .addField("nodeId", String.class, FieldAttribute.PRIMARY_KEY)
-                        .addField("ranking", Integer.class)
+                        .addField("ranking", Integer.class).setRequired("ranking", true)
                         .addField("name", String.class)
                         .addField("deposit", String.class)
                         .addField("url", String.class)
-                        .addField("ratePA", String.class)
-                        .addField("nodeStatus", String.class);
+                        .addField("ratePA", Integer.class).setRequired("ratePA", true) //这里以前写成string类型啦，现在改成int类型
+                        .addField("nodeStatus", String.class)
+                        .addField("isInit", boolean.class);
 
                 schema.create("DelegateDetailEntity")
                         .addField("nodeId", String.class, FieldAttribute.PRIMARY_KEY)
                         .addField("address", String.class)
                         .addField("stakingBlockNum", String.class);
+
                 oldVersion++;
 
 //                personSchema
