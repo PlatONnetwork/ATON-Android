@@ -22,6 +22,7 @@ public class DelegateDetailContract {
 
         void showDelegateDetailFailed();
 
+        void showIsCanDelegate(String nodeAddress, String nodeName, String nodeIcon,boolean isCanDelegate);
     }
 
     public interface Presenter extends IPresenter<View> {
@@ -30,5 +31,6 @@ public class DelegateDetailContract {
 
         void MoveOut(DelegateDetail detail);
 
+        void getWalletBalance(String nodeAddress, String nodeName, String nodeIcon);
     }
 }

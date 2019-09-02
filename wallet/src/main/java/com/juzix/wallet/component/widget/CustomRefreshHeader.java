@@ -74,7 +74,6 @@ public class CustomRefreshHeader extends LinearLayout implements RefreshHeader {
 
     @Override
     public void onMoving(boolean isDragging, float percent, int offset, int height, int maxDragHeight) {
-        Log.d(TAG, "移动距离----------->" + "percent" + percent);
 
     }
 
@@ -116,7 +115,6 @@ public class CustomRefreshHeader extends LinearLayout implements RefreshHeader {
 
     @Override
     public int onFinish(@NonNull RefreshLayout refreshLayout, boolean success) {
-        Log.d(TAG,"完成了调用----------->" +"" +success);
         if (mAnimRefresh != null && mAnimRefresh.isRunning()) {
             mAnimRefresh.stop();
         }

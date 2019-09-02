@@ -76,6 +76,7 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
                 && NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getRedeem(), "1E18"))) == 0) {
             holder.tv_show_delegate.setText(R.string.nav_delegate);
             holder.tv_show_withdraw.setText(R.string.node_move_out);
+            holder.iv_detail_un_delegate.setImageResource(R.drawable.icon_detatil_move_out);
 
         } else if (NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getLocked(), "1E18"))) > 0
                 || NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getUnLocked(), "1E18"))) > 0

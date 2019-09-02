@@ -1,5 +1,7 @@
 package com.juzix.wallet.component.ui.presenter;
 
+import android.text.TextUtils;
+
 import com.juzhen.framework.network.ApiErrorCode;
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
@@ -10,6 +12,8 @@ import com.juzix.wallet.db.entity.DelegateDetailEntity;
 import com.juzix.wallet.db.sqlite.DelegateDetailDao;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
+import com.juzix.wallet.engine.WalletManager;
+import com.juzix.wallet.entity.AccountBalance;
 import com.juzix.wallet.entity.DelegateDetail;
 import com.juzix.wallet.utils.RxUtils;
 
@@ -63,6 +67,37 @@ public class DelegateDetailPresenter extends BasePresenter<DelegateDetailContrac
 
     }
 
+    @Override
+    public void getWalletBalance(String nodeAddress, String nodeName, String nodeIcon) {
+        List<String> walletAddressList = WalletManager.getInstance().getAddressList();
+        ServerUtils.getCommonApi().getAccountBalance(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
+                .put("addrs", walletAddressList.toArray(new String[walletAddressList.size()]))
+                .build())
+                .compose(RxUtils.bindToLifecycle(getView()))
+                .compose(RxUtils.getSingleSchedulerTransformer())
+                .subscribe(new ApiSingleObserver<List<AccountBalance>>() {
+                    @Override
+                    public void onApiSuccess(List<AccountBalance> accountBalances) {
+                        if (isViewAttached()) {
+                            for (AccountBalance balance : accountBalances) {
+                                if (!TextUtils.equals(balance.getLock(), "0") || !TextUtils.equals(balance.getFree(), "0")) {
+                                    getView().showIsCanDelegate(nodeAddress,nodeName,nodeIcon,true);
+                                    return;
+                                }
+                            }
+
+                            getView().showIsCanDelegate(nodeAddress,nodeName,nodeIcon,false);
+                        }
+
+                    }
+
+                    @Override
+                    public void onApiFailure(ApiResponse response) {
+
+                    }
+                });
+    }
+
     private void getDelegateDetailData(String walletAddress) {
         getView().showWalletInfo(walletAddress, walletName, walletIcon);
 
@@ -82,7 +117,6 @@ public class DelegateDetailPresenter extends BasePresenter<DelegateDetailContrac
                         if (apiResponseResponse == null || !apiResponseResponse.isSuccessful()) {
                             return Response.success(new ApiResponse(ApiErrorCode.NETWORK_ERROR));
                         } else {
-
                             delegateDetails.removeAll(getDelegateList(EntityList));
                             return Response.success(new ApiResponse(ApiErrorCode.SUCCESS, delegateDetails));
                         }

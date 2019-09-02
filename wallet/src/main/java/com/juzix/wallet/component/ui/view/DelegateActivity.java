@@ -105,8 +105,8 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     private long transactionTime;
     private String gasPrice;
 
-
     @Override
+
     protected DelegatePresenter createPresenter() {
         return new DelegatePresenter(this);
     }
@@ -244,13 +244,25 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         }
     };
 
-    public static void actionStart(Context context, String nodeAddress, String nodeName, String nodeIcon, int tag) {
+    public static void actionStart(Context context, String nodeAddress, String nodeName, String nodeIcon, int tag, String walletAddress) {
         Intent intent = new Intent(context, DelegateActivity.class);
         intent.putExtra(Constants.Extra.EXTRA_NODE_ADDRESS, nodeAddress);
         intent.putExtra(Constants.Extra.EXTRA_NODE_NAME, nodeName);
         intent.putExtra(Constants.Extra.EXTRA_NODE_ICON, nodeIcon);
         intent.putExtra("tag", tag);
+        intent.putExtra(Constants.Extra.EXTRA_WALLET_ADDRESS, walletAddress);
         context.startActivity(intent);
+    }
+
+    /**
+     * 显示节点基本信息
+     */
+    @Override
+    public void showNodeInfo(String nodeAddr, String name, String UrlIcon) {
+        //显示节点基本信息
+        GlideUtils.loadRound(getContext(), UrlIcon, nodeIcon);
+        nodeName.setText(name);
+        nodeAddress.setText(AddressFormatUtil.formatAddress(nodeAddr));
     }
 
     //显示钱包信息
@@ -267,34 +279,20 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         amountType.setText(getString(R.string.available_balance));
         amount.setText(StringUtil.formatBalance(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(individualWalletEntity.getFreeBalance(), "1E18"))));
 
-        typeList.clear();
-        for (AccountBalance bean : balanceList) {
-            if (TextUtils.equals(address, bean.getAddr())) {
-                //获取当前选中钱包的余额信息
-                typeList.add(new DelegateType("0", bean.getFree()));
-                typeList.add(new DelegateType("1", bean.getLock()));
-                checkIsClick(bean);
-                return;
-            }
-        }
-        mAdapter.notifyDataSetChanged();
+        checkIsClick(individualWalletEntity.getAccountBalance());
 
-    }
+//        typeList.clear();
+//        for (AccountBalance bean : balanceList) {
+//            if (TextUtils.equals(address, bean.getAddr())) {
+//                //获取当前选中钱包的余额信息
+//                typeList.add(new DelegateType("0", bean.getFree()));
+//                typeList.add(new DelegateType("1", bean.getLock()));
+//                checkIsClick(bean);
+//                return;
+//            }
+//        }
+//        mAdapter.notifyDataSetChanged();
 
-    @Override
-    public void setDelegateButtonState(boolean isClickable) {
-        btnDelegate.setEnabled(isClickable);
-    }
-
-    //获取输入的数量
-    @Override
-    public String getDelegateAmount() {
-        return et_amount.getText().toString().trim();
-    }
-
-    @Override
-    public String getChooseBalance() {
-        return amount.getText().toString().replaceAll(",", "");
     }
 
     /**
@@ -323,18 +321,31 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
 
 
     private void checkIsClick(AccountBalance bean) {
-        if (TextUtils.isEmpty(bean.getLock())) {
-            //不可选择余额类型
-//            amounChoose.setOnClickListener(null);
-            amounChoose.setClickable(false);
-            amounChoose.setEnabled(false);
+        if (TextUtils.equals(bean.getLock(),"0")) {
+            //锁仓金额为0，不可点击
+            amounChoose.setOnClickListener(null);
             iv_drop_down.setVisibility(View.INVISIBLE);
         } else {
             iv_drop_down.setVisibility(View.VISIBLE);
             amounChoose.setClickable(true);
         }
 
+    }
 
+    @Override
+    public void setDelegateButtonState(boolean isClickable) {
+        btnDelegate.setEnabled(isClickable);
+    }
+
+    //获取输入的数量
+    @Override
+    public String getDelegateAmount() {
+        return et_amount.getText().toString().trim();
+    }
+
+    @Override
+    public String getChooseBalance() {
+        return amount.getText().toString().replaceAll(",", "");
     }
 
     @Override
@@ -349,13 +360,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         inputError.setVisibility(isShow ? View.VISIBLE : View.GONE);
     }
 
-    @Override
-    public void showNodeInfo(String nodeAddr, String name, String UrlIcon) {
-        //显示节点基本信息
-        GlideUtils.loadRound(getContext(), UrlIcon, nodeIcon);
-        nodeName.setText(name);
-        nodeAddress.setText(AddressFormatUtil.formatAddress(nodeAddr));
-    }
+
 
     @Override
     public void showIsCanDelegate(DelegateHandle bean) {
@@ -445,6 +450,11 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     @Override
     public String getNodeIconFromIntent() {
         return getIntent().getStringExtra(Constants.Extra.EXTRA_NODE_ICON);
+    }
+
+    @Override
+    public String getWalletAddressFromIntent() {
+        return getIntent().getStringExtra(Constants.Extra.EXTRA_WALLET_ADDRESS);
     }
 
     @Override
