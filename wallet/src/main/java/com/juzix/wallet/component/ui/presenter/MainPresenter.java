@@ -52,7 +52,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
                             newVersion = "v" + newVersion;
                         }
                         if (oldVersion.compareTo(newVersion) < 0) {
-                            mVersionUpdate = new VersionUpdate(currentActivity(), versionEntity.getDownloadUrl(), versionEntity.getVersionWithoutPrefix(), false);
+                            mVersionUpdate = new VersionUpdate(currentActivity(), versionEntity.getDownloadUrl(), versionEntity.getVersion(), false);
                             AppSettings.getInstance().setUpdateVersionTime(System.currentTimeMillis());
                             CommonTipsDialogFragment.createDialogWithTitleAndTwoButton(ContextCompat.getDrawable(getContext(), R.drawable.icon_dialog_tips),
                                     string(R.string.version_update),

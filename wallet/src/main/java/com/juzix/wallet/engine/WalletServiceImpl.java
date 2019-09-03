@@ -20,7 +20,7 @@ import java.util.Random;
 
 class WalletServiceImpl implements WalletService {
 
-    static final String PATH = "M/44H/266H/0H/0";
+    static final String PATH = "M/44H/206H/0H/0";
 
     private WalletServiceImpl() {
     }

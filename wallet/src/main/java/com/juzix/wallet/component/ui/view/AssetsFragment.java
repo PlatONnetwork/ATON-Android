@@ -548,8 +548,6 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     private SpannableString getRestrictedAmount(String text) {
         SpannableString spannableString = new SpannableString(text);
         CustomImageSpan imageSpan = new CustomImageSpan(getActivity(), R.drawable.icon_restricted_amount);
-//        Drawable drawable = getResources().getDrawable(R.drawable.icon_restricted_amount);
-//        drawable.setBounds(0, 0, DensityUtil.dp2px(getActivity(),10), DensityUtil.dp2px(getActivity(),10));
         int index = TextUtils.indexOf(text, "(");
         if (index != -1) {
             spannableString.setSpan(imageSpan, index + 1, index + 2, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
