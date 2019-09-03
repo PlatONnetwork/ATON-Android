@@ -250,7 +250,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     @Override
     public void getGasPrice(String gasPrice, String chooseType) {
         String inputAmount = getView().getDelegateAmount();//输入的数量
-        if (TextUtils.isEmpty(inputAmount) ||TextUtils.equals(inputAmount,".")) {
+        if (TextUtils.isEmpty(inputAmount) || TextUtils.equals(inputAmount, ".")) {
             getView().showGasPrice("0.00");
             return;
         } else {
@@ -305,9 +305,38 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 //
 //                    }
 //                });
-
     }
 
+
+    //点击全部的时候，需要获取一次手续费
+    public void getAllPrice(String gasPrice, String amount, String chooseType) {
+        Web3j web3j = Web3jManager.getInstance().getWeb3j();
+        org.web3j.platon.contracts.DelegateContract delegateContract = org.web3j.platon.contracts.DelegateContract.load(web3j);
+        StakingAmountType stakingAmountType = TextUtils.equals(chooseType, "balance") ? StakingAmountType.FREE_AMOUNT_TYPE : StakingAmountType.RESTRICTING_AMOUNT_TYPE;
+        delegateContract.getDelegateFeeAmount(new BigInteger(gasPrice), mNodeAddress, stakingAmountType, Convert.toVon(amount, Convert.Unit.LAT).toBigInteger())
+                .subscribe(new Subscriber<BigInteger>() {
+                    @Override
+                    public void onNext(BigInteger bigInteger) {
+                        if (isViewAttached()) {
+                            feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(bigInteger.toString(), "1E18"));
+                            getView().showAllGasPrice(feeAmount);
+                        }
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+
+                });
+
+    }
 
     @SuppressLint("CheckResult")
     @Override

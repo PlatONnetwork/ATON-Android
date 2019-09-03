@@ -94,7 +94,7 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
                 && NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getRedeem(), "1E18"))) == 0){
             //操作移除列表
             RxView.clicks(holder.ll_withdraw)
-                    .compose(RxUtils.getSchedulerTransformer())
+                    .compose(RxUtils.getClickTransformer())
                     .subscribe(new Consumer<Object>() {
                         @Override
                         public void accept(Object o) throws Exception {
