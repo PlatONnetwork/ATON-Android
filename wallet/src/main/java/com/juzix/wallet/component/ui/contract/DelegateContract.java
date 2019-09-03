@@ -70,6 +70,10 @@ public class DelegateContract {
 
         void showGas(BigInteger integer);
 
+        /**
+         * 显示全部的手续费
+         */
+        void showAllGasPrice(String allPrice);
 
     }
 
@@ -88,8 +92,9 @@ public class DelegateContract {
         void checkIsCanDelegate();
 
 
-        void getGasPrice(String gasPrice,String chooseType);
+        void getGasPrice(String gasPrice, String chooseType);
 
         void getGas();
+
     }
 }

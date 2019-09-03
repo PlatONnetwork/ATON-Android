@@ -7,7 +7,6 @@ public class DelegateDetailEntity extends RealmObject {
     /**
      * 投票节点Id  (节点地址)
      */
-    @PrimaryKey
     private String nodeId;
     /**
      * 钱包地址

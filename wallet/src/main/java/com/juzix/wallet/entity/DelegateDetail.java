@@ -2,6 +2,7 @@ package com.juzix.wallet.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import java.util.Objects;
 
@@ -54,11 +55,8 @@ public class DelegateDetail implements Parcelable {
      * 已解除委托
      */
     private String released;
-//    /**
-//     * 排列序号 ,记录的创建时间，小的排在最前面
-//     */
-//    private String sequence;
 
+    private String walletAddress;
 
     public DelegateDetail() {
 
@@ -144,6 +142,14 @@ public class DelegateDetail implements Parcelable {
         this.stakingBlockNum = stakingBlockNum;
     }
 
+    public String getWalletAddress() {
+        return walletAddress;
+    }
+
+    public void setWalletAddress(String walletAddress) {
+        this.walletAddress = walletAddress;
+    }
+
     protected DelegateDetail(Parcel in) {
         nodeId = in.readString();
         nodeName = in.readString();
@@ -155,6 +161,7 @@ public class DelegateDetail implements Parcelable {
         released = in.readString();
         unLocked = in.readString();
         stakingBlockNum = in.readString();
+        walletAddress =in.readString();
     }
 
     @Override
@@ -169,6 +176,7 @@ public class DelegateDetail implements Parcelable {
         dest.writeString(released);
         dest.writeString(unLocked);
         dest.writeString(stakingBlockNum);
+        dest.writeString(walletAddress);
     }
 
     @Override
@@ -193,16 +201,12 @@ public class DelegateDetail implements Parcelable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DelegateDetail that = (DelegateDetail) o;
-        return Objects.equals(nodeId, that.nodeId);
+        return this.stakingBlockNum == that.stakingBlockNum;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nodeId);
+        return TextUtils.isEmpty(stakingBlockNum) ? 0 : stakingBlockNum.hashCode();
     }
 
-//    @Override
-//    public int compareTo(@NonNull DelegateDetail o) {//按时间排序
-//        return Long.compare(o.getSequence(), sequence);
-//    }
 }
