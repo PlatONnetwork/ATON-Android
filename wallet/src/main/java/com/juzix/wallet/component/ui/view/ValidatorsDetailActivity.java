@@ -185,7 +185,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
             nodeState.setText(getString(R.string.validators_state_exiting));
         }
 
-        rate.setText((NumberParserUtils.parseDouble(nodeDetail.getRatePA())) / 100 + "%");
+        rate.setText(nodeDetail.isInit()?"— —":(NumberParserUtils.parseDouble(nodeDetail.getRatePA())) / 100 + "%");
 
         if (TextUtils.isEmpty(nodeDetail.getDeposit())) {
             totalStaked.setText("--");

@@ -25,7 +25,8 @@ import io.reactivex.functions.Predicate;
  */
 public class NodeManager {
 
-    private final static String[] DEFAULT_NODE_URL_LIST = new String[]{Constants.URL.URL_TEST_A, Constants.URL.URL_TEST_B};
+//    private final static String[] DEFAULT_NODE_URL_LIST = new String[]{Constants.URL.URL_HTTP_A, Constants.URL.URL_TEST_B};
+    private final static String[] DEFAULT_NODE_URL_LIST = new String[]{"http://192.168.9.190:1000/rpc"};
     //线上A网
     private final static String CHAINID_TEST_NET_A = "103";
     //线上B网

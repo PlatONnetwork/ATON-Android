@@ -387,4 +387,10 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
             AppSettings.getInstance().setValidatorsTab(false);
         }
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventPublisher.getInstance().unRegister(this);
+    }
 }
