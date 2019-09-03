@@ -24,6 +24,8 @@ import org.web3j.abi.datatypes.generated.Int64;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionEncoder;
+import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.methods.response.PlatonGetBalance;
 import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 import org.web3j.rlp.RlpEncoder;
 import org.web3j.rlp.RlpList;
@@ -70,10 +72,7 @@ public class TransactionManager {
         return walletEntity;
     }
 
-    public String sendTransaction(String privateKey, String from, String toAddress, BigDecimal amount, long gasPrice, long gasLimit) {
-
-        BigInteger GAS_PRICE = BigInteger.valueOf(gasPrice);
-        BigInteger GAS_LIMIT = BigInteger.valueOf(gasLimit);
+    public String sendTransaction(String privateKey, String from, String toAddress, BigDecimal amount, BigInteger gasPrice, BigInteger gasLimit) {
 
         Credentials credentials = Credentials.create(privateKey);
 
@@ -82,7 +81,7 @@ public class TransactionManager {
             result.add(RlpString.create(Numeric.hexStringToByteArray(PlatOnTypeEncoder.encode(new Int64(0)))));
             String txType = Hex.toHexString(RlpEncoder.encode(new RlpList(result)));
 
-            RawTransaction rawTransaction = RawTransaction.createTransaction(Web3jManager.getInstance().getNonce(from), GAS_PRICE, GAS_LIMIT, toAddress, amount.toBigInteger(),
+            RawTransaction rawTransaction = RawTransaction.createTransaction(Web3jManager.getInstance().getNonce(from), gasPrice, gasLimit, toAddress, amount.toBigInteger(),
                     txType);
 
             byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, new Byte(NodeManager.getInstance().getChainId()), credentials);
@@ -97,12 +96,12 @@ public class TransactionManager {
         return null;
     }
 
-    public Single<Transaction> sendTransaction(String privateKey, String fromAddress, String toAddress, String walletName, BigDecimal transferAmount, BigDecimal feeAmount, double gasPrice, double gasLimit) {
+    public Single<Transaction> sendTransaction(String privateKey, String fromAddress, String toAddress, String walletName, BigDecimal transferAmount, BigDecimal feeAmount, BigInteger gasPrice, BigInteger gasLimit) {
 
         return Single.create(new SingleOnSubscribe<String>() {
             @Override
             public void subscribe(SingleEmitter<String> emitter) throws Exception {
-                String transactionHash = sendTransaction(privateKey, fromAddress, toAddress, transferAmount, NumberParserUtils.parseLong(BigDecimalUtil.parseString(gasPrice)), NumberParserUtils.parseLong(gasLimit));
+                String transactionHash = sendTransaction(privateKey, fromAddress, toAddress, transferAmount, gasPrice, gasLimit);
                 if (TextUtils.isEmpty(transactionHash)) {
                     emitter.onError(new CustomThrowable(CustomThrowable.CODE_ERROR_TRANSFER_FAILED));
                 } else {
@@ -119,8 +118,8 @@ public class TransactionManager {
                         .senderWalletName(walletName)
                         .value(transferAmount.toPlainString())
                         .chainId(NodeManager.getInstance().getChainId())
-//                        .txType(TransactionType.TRANSFER.getTxTypeValue())
-                        .createTime(System.currentTimeMillis())
+                        .txType(String.valueOf(TransactionType.TRANSFER.getTxTypeValue()))
+                        .timestamp(System.currentTimeMillis())
                         .txReceiptStatus(TransactionStatus.PENDING.ordinal())
                         .actualTxCost(feeAmount.toPlainString())
                         .build();
@@ -146,7 +145,8 @@ public class TransactionManager {
      * 通过轮询获取普通钱包的交易
      */
     public void getTransactionByLoop(Transaction trans) {
-        Flowable.interval(Constants.Common.TRANSACTION_STATUS_LOOP_TIME, TimeUnit.MILLISECONDS)
+        Flowable
+                .interval(Constants.Common.TRANSACTION_STATUS_LOOP_TIME, TimeUnit.MILLISECONDS)
                 .map(new Function<Long, Optional<org.web3j.protocol.core.methods.response.Transaction>>() {
                     @Override
                     public Optional<org.web3j.protocol.core.methods.response.Transaction> apply(Long aLong) throws Exception {

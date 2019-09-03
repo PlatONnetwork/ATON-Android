@@ -111,12 +111,12 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
                         return balance1.add(banalce2);
                     }
                 })
-                .repeatWhen(new Function<Flowable<Object>, Publisher<?>>() {
-                    @Override
-                    public Publisher<?> apply(Flowable<Object> objectFlowable) throws Exception {
-                        return objectFlowable.delay(5, TimeUnit.SECONDS);
-                    }
-                })
+//                .repeatWhen(new Function<Flowable<Object>, Publisher<?>>() {
+//                    @Override
+//                    public Publisher<?> apply(Flowable<Object> objectFlowable) throws Exception {
+//                        return objectFlowable.delay(5, TimeUnit.SECONDS);
+//                    }
+//                })
                 .toObservable()
                 .compose(bindUntilEvent(FragmentEvent.STOP))
                 .compose(RxUtils.getSchedulerTransformer())

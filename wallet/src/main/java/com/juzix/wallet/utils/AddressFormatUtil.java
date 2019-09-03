@@ -32,7 +32,7 @@ public class AddressFormatUtil {
 
         if (address != null) {
 
-            String regex = "(\\w{2})(\\w*)(\\w{4})";
+            String regex = "(\\w{4})(\\w*)(\\w{4})";
 
             try {
                 text = address.replaceAll(regex, "$1...$3");

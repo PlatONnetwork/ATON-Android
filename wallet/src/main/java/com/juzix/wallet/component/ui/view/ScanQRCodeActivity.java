@@ -191,8 +191,15 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
                     @Override
                     public void accept(Boolean success) {
                         if (success) {
-                            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                            startActivityForResult(intent, REQUEST_CODE_SCAN_GALLERY);
+                            Intent innerIntent = new Intent();
+                            if (Build.VERSION.SDK_INT < 19) {
+                                innerIntent.setAction(Intent.ACTION_GET_CONTENT);
+                            } else {
+                                innerIntent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+                            }
+                            innerIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+                            Intent wrapperIntent = Intent.createChooser(innerIntent, "选择二维码图片");
+                            startActivityForResult(wrapperIntent, REQUEST_CODE_SCAN_GALLERY);
                         }
                     }
                 });
@@ -231,7 +238,7 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
             return null;
         }
 
-        return QRCodeDecoder.syncDecodeQRCode(PhotoUtil.getDecodeAbleBitmap(this, uri));
+        return QRCodeDecoder.syncDecodeQRCode(PhotoUtil.decodeUri(this, uri, 1080, 1920));
     }
 
     @Override

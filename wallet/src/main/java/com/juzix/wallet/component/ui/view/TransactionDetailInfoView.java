@@ -36,18 +36,18 @@ public class TransactionDetailInfoView extends LinearLayout {
         setDividerDrawable(ContextCompat.getDrawable(context, R.drawable.divider_transaction_info_item));
     }
 
-    public void setData(Transaction transaction) {
+    public void setData(Transaction transaction,String queryAddress) {
 
         removeAllViews();
 
-        addView(transaction);
+        addView(transaction,queryAddress);
     }
 
-    private void addView(Transaction transaction) {
+    private void addView(Transaction transaction,String queryAddress) {
 
         switch (transaction.getTxType()) {
             case TRANSFER:
-                addView(getItemView(getStringWithColon(R.string.type), transaction.isSender() ? getString(R.string.send) : getString(R.string.receive)));
+                addView(getItemView(getStringWithColon(R.string.type), transaction.isSender(queryAddress) ? getString(R.string.send) : getString(R.string.receive)));
                 addView(getItemView(getStringWithColon(R.string.submissionTime), transaction.getShowCreateTime()));
                 addView(getItemView(getStringWithColon(R.string.submissionAmount), getString(R.string.amount_with_unit, transaction.getShowValue())));
                 addView(getItemView(getStringWithColon(R.string.fee), getString(R.string.amount_with_unit, transaction.getShowActualTxCost())));
@@ -62,7 +62,7 @@ public class TransactionDetailInfoView extends LinearLayout {
                 break;
             case OTHER_INCOME:
             case OTHER_EXPENSES:
-                addView(getItemView(getStringWithColon(R.string.type), transaction.isSender() ? getString(R.string.other_expenses) : getString(R.string.other_income)));
+                addView(getItemView(getStringWithColon(R.string.type), transaction.isSender(queryAddress) ? getString(R.string.other_expenses) : getString(R.string.other_income)));
                 addView(getItemView(getStringWithColon(R.string.submissionTime), transaction.getShowCreateTime()));
                 addView(getItemView(getStringWithColon(R.string.submissionAmount), getString(R.string.amount_with_unit, transaction.getShowValue())));
                 addView(getItemView(getStringWithColon(R.string.fee), getString(R.string.amount_with_unit, transaction.getShowActualTxCost())));

@@ -114,6 +114,11 @@ public class TransactionsFragment extends BaseViewPageFragment<TransactionsPrese
         ((AssetsFragment) getParentFragment()).finishLoadMore();
     }
 
+    @Override
+    public List<Transaction> getTransactionList() {
+        return mTransactionAdapter.getDatas();
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateTransactionEvent(Event.UpdateTransactionEvent event) {
         mPresenter.addNewTransaction(event.transaction);

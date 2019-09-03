@@ -119,6 +119,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                         if (isViewAttached()) {
                             //先进行排序
                             mTransactionList = transactionList;
+                            LogUtils.d("loadLatestData  排序" + mTransactionList.get(0).toString());
                             Collections.sort(mTransactionList);
                             getView().notifyDataSetChanged(mTransactionList, mWalletAddress);
 
@@ -171,6 +172,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                             //先进行排序
                             int oldSize = mTransactionList.size();
                             mTransactionList = addAll(transactionList, DIRECTION_NEW);
+                            LogUtils.d("loadNew  排序" + mTransactionList.get(0).toString());
                             int newSize = mTransactionList.size();
                             Collections.sort(mTransactionList);
                             getView().notifyItemRangeInserted(mTransactionList, mWalletAddress, 0, newSize - oldSize);
@@ -225,15 +227,19 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
 
     @Override
     public void addNewTransaction(Transaction transaction) {
-        if (mTransactionList.contains(transaction)) {
-            //更新
-            int index = mTransactionList.indexOf(transaction);
-            mTransactionList.set(index, transaction);
-            getView().notifyItemChanged(mTransactionList, mWalletAddress, index);
-        } else {
-            //添加
-            mTransactionList.add(0, transaction);
-            getView().notifyItemRangeInserted(mTransactionList, mWalletAddress, 0, 1);
+        if (isViewAttached()) {
+            LogUtils.d(transaction.toString() + ":" + mTransactionList.contains(transaction) + mTransactionList.indexOf(transaction));
+            if (mTransactionList.contains(transaction)) {
+                LogUtils.d("更新第一个：" + mTransactionList.get(0).toString());
+                //更新
+                int index = mTransactionList.indexOf(transaction);
+                mTransactionList.set(index, transaction);
+                getView().notifyItemChanged(mTransactionList, mWalletAddress, index);
+            } else {
+                //添加
+                mTransactionList.add(0, transaction);
+                getView().notifyItemRangeInserted(mTransactionList, mWalletAddress, 0, 1);
+            }
         }
     }
 
@@ -287,6 +293,12 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                                     transactionList.addAll(apiResponseResponse.body().getData());
                                 }
                                 return Single.just(transactionList);
+                            }
+                        })
+                        .doOnError(new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Exception {
+                                LogUtils.d(throwable.getMessage());
                             }
                         });
             }

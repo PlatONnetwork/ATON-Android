@@ -274,8 +274,8 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
      *
      * @return
      */
-    public boolean isSender() {
-        return "Send".equals(direction);
+    public boolean isSender(String queryAddress) {
+        return !TextUtils.isEmpty(queryAddress) && queryAddress.equals(from);
     }
 
     public String getHash() {
@@ -713,5 +713,38 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         public Transaction build() {
             return new Transaction(this);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "hash='" + hash + '\'' +
+                ", blockNumber=" + blockNumber +
+                ", chainId='" + chainId + '\'' +
+                ", actualTxCost='" + actualTxCost + '\'' +
+                ", from='" + from + '\'' +
+                ", to='" + to + '\'' +
+                ", sequence=" + sequence +
+                ", txReceiptStatus=" + txReceiptStatus +
+                ", txType='" + txType + '\'' +
+                ", value='" + value + '\'' +
+                ", senderWalletName='" + senderWalletName + '\'' +
+                ", txInfo='" + txInfo + '\'' +
+                ", timestamp=" + timestamp +
+                ", toType='" + toType + '\'' +
+                ", direction='" + direction + '\'' +
+                ", nodeName='" + nodeName + '\'' +
+                ", nodeId='" + nodeId + '\'' +
+                ", lockAddress='" + lockAddress + '\'' +
+                ", reportType='" + reportType + '\'' +
+                ", version='" + version + '\'' +
+                ", url='" + url + '\'' +
+                ", proposalType='" + proposalType + '\'' +
+                ", vote='" + vote + '\'' +
+                ", redeemStatus='" + redeemStatus + '\'' +
+                ", walletIcon='" + walletIcon + '\'' +
+                ", walletName='" + walletName + '\'' +
+                ", unDelegation='" + unDelegation + '\'' +
+                '}';
     }
 }

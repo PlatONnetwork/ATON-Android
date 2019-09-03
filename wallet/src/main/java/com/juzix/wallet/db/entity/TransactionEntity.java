@@ -249,7 +249,7 @@ public class TransactionEntity extends RealmObject implements Cloneable {
     public Transaction toTransaction() {
         return new Transaction.Builder()
                 .hash(hash)
-                .createTime(createTime)
+                .createTime(getCreateTime())
                 .txType(txType)
                 .txReceiptStatus(txReceiptStatus)
                 .blockNumber(blockNumber)
