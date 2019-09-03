@@ -84,7 +84,7 @@ public class TransactionManager {
             RawTransaction rawTransaction = RawTransaction.createTransaction(Web3jManager.getInstance().getNonce(from), gasPrice, gasLimit, toAddress, amount.toBigInteger(),
                     txType);
 
-            byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, new Byte(NodeManager.getInstance().getChainId()), credentials);
+            byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, NumberParserUtils.parseLong(NodeManager.getInstance().getChainId()), credentials);
             String hexValue = Numeric.toHexString(signedMessage);
 
             PlatonSendTransaction transaction = Web3jManager.getInstance().getWeb3j().platonSendRawTransaction(hexValue).send();

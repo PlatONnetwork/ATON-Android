@@ -119,7 +119,6 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                         if (isViewAttached()) {
                             //先进行排序
                             mTransactionList = transactionList;
-                            LogUtils.d("loadLatestData  排序" + mTransactionList.get(0).toString());
                             Collections.sort(mTransactionList);
                             getView().notifyDataSetChanged(mTransactionList, mWalletAddress);
 
@@ -172,7 +171,6 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                             //先进行排序
                             int oldSize = mTransactionList.size();
                             mTransactionList = addAll(transactionList, DIRECTION_NEW);
-                            LogUtils.d("loadNew  排序" + mTransactionList.get(0).toString());
                             int newSize = mTransactionList.size();
                             Collections.sort(mTransactionList);
                             getView().notifyItemRangeInserted(mTransactionList, mWalletAddress, 0, newSize - oldSize);
@@ -230,7 +228,6 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
         if (isViewAttached()) {
             LogUtils.d(transaction.toString() + ":" + mTransactionList.contains(transaction) + mTransactionList.indexOf(transaction));
             if (mTransactionList.contains(transaction)) {
-                LogUtils.d("更新第一个：" + mTransactionList.get(0).toString());
                 //更新
                 int index = mTransactionList.indexOf(transaction);
                 mTransactionList.set(index, transaction);
