@@ -31,7 +31,7 @@ public class NodeManager {
     //线上B网
     private final static String CHAINID_TEST_NET_B = "104";
     //测试环境
-    private final static String CHAINID_TEST_NET_C = "100";
+    private final static String CHAINID_TEST_NET_C = "203";
     //
 
     private Node curNode;

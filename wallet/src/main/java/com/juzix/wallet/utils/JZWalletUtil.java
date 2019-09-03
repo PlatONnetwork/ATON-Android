@@ -136,6 +136,9 @@ public class JZWalletUtil {
     }
 
     public static boolean isValidAddress(String input) {
+        if (TextUtils.isEmpty(input)) {
+            return false;
+        }
         String cleanInput = Numeric.cleanHexPrefix(input);
         try {
             Numeric.toBigIntNoPrefix(cleanInput);
