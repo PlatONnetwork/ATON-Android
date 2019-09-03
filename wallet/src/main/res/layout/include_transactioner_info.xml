@@ -33,13 +33,24 @@
         android:paddingLeft="8dp"
         android:paddingRight="8dp">
 
-        <TextView
+
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/tv_from_address"
             style="@style/Text.898c9e.12"
+            android:layout_width="0dp"
+            android:ellipsize="end"
+            app:autoSizeTextType="uniform"
+            app:autoSizeStepGranularity="1sp"
+            app:autoSizeMaxTextSize="12sp"
+            app:autoSizeMinTextSize="10sp"
+            android:gravity="left|center_vertical"
+            android:lines="1"
+            app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/iv_copy_from_address"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="ox2ce481566f3a19c04A206A72fF49B2b3d3976" />
+            tools:text="ox2ce481566f3a19c04A206A72fox2ce481566f3a19c04A20" />
 
         <ImageView
             android:id="@+id/iv_copy_from_address"
@@ -65,13 +76,6 @@
         android:paddingLeft="8dp"
         android:paddingRight="8dp">
 
-        <TextView
-            android:id="@+id/tv_to_address"
-            style="@style/Text.898c9e.12"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="ox2ce481566f3a19c04A206A72fF49B2b3d3976" />
 
         <ImageView
             android:id="@+id/iv_copy_to_address"
@@ -81,6 +85,25 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_to_address"
+            style="@style/Text.898c9e.12"
+            android:layout_width="0dp"
+            android:ellipsize="end"
+            app:autoSizeTextType="uniform"
+            app:autoSizeStepGranularity="1sp"
+            app:autoSizeMaxTextSize="12sp"
+            app:autoSizeMinTextSize="10sp"
+            android:gravity="left|center_vertical"
+            android:lines="1"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/iv_copy_to_address"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="ox2ce481566f3a19c04A206A72fF4" />
+
 
     </android.support.constraint.ConstraintLayout>
 

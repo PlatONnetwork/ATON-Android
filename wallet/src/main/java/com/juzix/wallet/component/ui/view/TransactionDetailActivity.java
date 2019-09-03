@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatTextView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -20,6 +21,7 @@ import com.juzix.wallet.db.sqlite.AddressDao;
 import com.juzix.wallet.db.sqlite.WalletDao;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionStatus;
+import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.AddressFormatUtil;
@@ -28,6 +30,7 @@ import com.juzix.wallet.utils.CommonUtil;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.web3j.platon.BaseResponse;
+import org.web3j.utils.TXTypeEnum;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -111,6 +114,7 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
 
     /**
      * 获取委托的交易hash
+     *
      * @return
      */
     @Override
@@ -120,6 +124,7 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
 
     /**
      * 获取赎回交易hash
+     *
      * @return
      */
     @Override
@@ -135,13 +140,19 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
         showTransactionStatus(transactionStatus);
 
         tvAmount.setVisibility(transactionStatus == TransactionStatus.SUCCESSED ? View.VISIBLE : View.GONE);
-        tvAmount.setText(String.format("%s%s", transaction.isSender() ? "-" : "+", transaction.getShowValue()));
-        tvAmount.setTextColor(transaction.isSender() ? ContextCompat.getColor(this, R.color.color_ff3b3b) : ContextCompat.getColor(this, R.color.color_19a20e));
+        tvAmount.setText(String.format("%s%s", transaction.isSender(queryAddress) ? "-" : "+", transaction.getShowValue()));
+        tvAmount.setTextColor(transaction.isSender(queryAddress) ? ContextCompat.getColor(this, R.color.color_ff3b3b) : ContextCompat.getColor(this, R.color.color_19a20e));
         tvCopyFromName.setText(walletName);
         tvFromAddress.setText(transaction.getFrom());
         tvToAddress.setText(transaction.getTo());
 
-        viewTransactionDetailInfo.setData(transaction);
+        tvFrom.setText(getSenderName(transaction.getFrom()));
+        tvFrom.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, getSenderAvatar(transaction.getFrom())), null, null, null);
+
+        tvTo.setText(getReceiverName(transaction.getTo()));
+        tvTo.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, getReceiverAvatar(transaction.getTxType(), transaction.getTo())), null, null, null);
+
+        viewTransactionDetailInfo.setData(transaction,queryAddress);
 
     }
 
@@ -160,9 +171,9 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
 
     @Override
     public void showWithDrawResponse(BaseResponse response) {
-        if(null != response && response.isStatusOk()){
-              //更新UI
-            TransactionStatus status =TransactionStatus.SUCCESSED;
+        if (null != response && response.isStatusOk()) {
+            //更新UI
+            TransactionStatus status = TransactionStatus.SUCCESSED;
             showTransactionStatus(status);
         }
 
@@ -212,7 +223,7 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
         if (!TextUtils.isEmpty(remark)) {
             return remark;
         }
-        return AddressFormatUtil.formatAddress(prefixAddress);
+        return AddressFormatUtil.formatTransactionAddress(prefixAddress);
     }
 
     private int getSenderAvatar(String prefixAddress) {
@@ -223,13 +234,29 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
         return R.drawable.avatar_1;
     }
 
-//    private String getReceiverName() {
-//
-//    }
-//
-//    private String getReceiverAvatar() {
-//
-//    }
+    private String getReceiverName(String prefixAddress) {
+        String walletName = WalletDao.getWalletNameByAddress(prefixAddress);
+        if (!TextUtils.isEmpty(walletName)) {
+            return walletName;
+        }
+        String remark = AddressDao.getAddressNameByAddress(prefixAddress);
+        if (!TextUtils.isEmpty(remark)) {
+            return remark;
+        }
+        return AddressFormatUtil.formatTransactionAddress(prefixAddress);
+    }
+
+    private int getReceiverAvatar(TransactionType txType, String prefixAddress) {
+        if (txType == TransactionType.TRANSFER) {
+            String avatar = WalletDao.getWalletAvatarByAddress(prefixAddress);
+            if (!TextUtils.isEmpty(avatar) && RUtils.drawable(avatar) != -1) {
+                return RUtils.drawable(avatar);
+            }
+            return R.drawable.avatar_1;
+        } else {
+            return R.drawable.icon_contract;
+        }
+    }
 
 
     @Override

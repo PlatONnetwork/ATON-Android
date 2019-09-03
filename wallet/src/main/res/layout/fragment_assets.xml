@@ -10,7 +10,8 @@
 
     <com.scwang.smartrefresh.layout.header.ClassicsHeader
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        app:srlTextUpdate="yyyy-MM-dd HH:mm"/>
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -77,7 +78,7 @@
                     android:drawablePadding="2dp"
                     android:includeFontPadding="false"
                     android:lines="1"
-                    tools:text="(&#160;&#160;Restricted:&#160;%1$s&#160;LAT)(&#160;&#160;Restricted:&#160;%1$s&#160;LAT)(&#160;&#160;Restricted:&#160;%1$s&#160;LAT)" />
+                    tools:text="(&#160;&#160;Restricted:&#160;%1$s&#160;LAT)" />
 
                 <TextView
                     android:id="@+id/tv_backup"

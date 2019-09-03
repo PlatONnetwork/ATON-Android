@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
+import com.juzhen.framework.util.LogUtils;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
@@ -426,6 +427,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
     private BubbleSeekBar.OnProgressChangedListener mProgressListener = new BubbleSeekBar.OnProgressChangedListener() {
         @Override
         public void onProgressChanged(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat, boolean fromUser) {
+            LogUtils.d(progress + ":" + progressFloat + ":" + bubbleSeekBar.getMax());
             if (fromUser) {
                 mPresenter.calculateFeeAndTime(BigDecimalUtil.div(progress, bubbleSeekBar.getMax()));
                 mPresenter.updateSendTransactionButtonStatus();

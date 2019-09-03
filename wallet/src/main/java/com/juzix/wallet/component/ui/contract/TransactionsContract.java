@@ -20,6 +20,8 @@ public class TransactionsContract {
         void notifyDataSetChanged(List<Transaction> transactionList,String queryAddress);
 
         void finishLoadMore();
+
+        List<Transaction> getTransactionList();
     }
 
     public interface Presenter extends IPresenter<View> {

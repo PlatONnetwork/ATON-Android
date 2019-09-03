@@ -15,6 +15,7 @@ import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionStatus;
 import com.juzix.wallet.entity.TransactionType;
 
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 
 public class TransactionAdapter extends RecyclerAdapter<Transaction> {
@@ -27,12 +28,16 @@ public class TransactionAdapter extends RecyclerAdapter<Transaction> {
 
     @Override
     public void convert(RecycleHolder holder, Transaction data, int position) {
+        if (data == null) {
+            return;
+        }
         TransactionStatus status = data.getTxReceiptStatus();
+        boolean isSender = mQueryAddressList != null && mQueryAddressList.contains(data.getFrom());
         //默认是发送，当发送和接收的钱包
-        int transferDescRes = data.isSender() ? R.string.send : R.string.receive;
+        int transferDescRes = isSender ? R.string.send : R.string.receive;
         holder.setText(R.id.tv_transaction_status, data.getTxType() == TransactionType.TRANSFER ? transferDescRes : data.getTxType().getTxTypeDescRes());
-        holder.setText(R.id.tv_transaction_amount, String.format("%s%s", data.isSender() ? "-" : "+", data.getShowValue()));
-        holder.setTextColor(R.id.tv_transaction_amount, data.isSender() ? R.color.color_ff3b3b : R.color.color_19a20e);
+        holder.setText(R.id.tv_transaction_amount, String.format("%s%s", isSender ? "-" : "+", data.getShowValue()));
+        holder.setTextColor(R.id.tv_transaction_amount, isSender ? R.color.color_ff3b3b : R.color.color_19a20e);
         holder.setText(R.id.tv_transaction_time, data.getShowCreateTime());
         PendingAnimationLayout pendingAnimationLayout = holder.itemView.findViewById(R.id.layout_pending);
         ImageView transactionStatusIv = holder.itemView.findViewById(R.id.iv_transaction_status);
@@ -40,9 +45,9 @@ public class TransactionAdapter extends RecyclerAdapter<Transaction> {
         pendingAnimationLayout.setVisibility(status != TransactionStatus.PENDING || mContext instanceof TransactionRecordsActivity ? View.GONE : View.VISIBLE);
 
         if (data.getTxType() == TransactionType.TRANSFER) {
-            transactionStatusIv.setImageResource(data.isSender() ? R.drawable.icon_send_transation : R.drawable.icon_receive_transaction);
+            transactionStatusIv.setImageResource(isSender ? R.drawable.icon_send_transation : R.drawable.icon_receive_transaction);
         } else {
-            transactionStatusIv.setImageResource(data.isSender() ? R.drawable.icon_delegate : R.drawable.icon_undelegate);
+            transactionStatusIv.setImageResource(isSender ? R.drawable.icon_delegate : R.drawable.icon_undelegate);
         }
     }
 

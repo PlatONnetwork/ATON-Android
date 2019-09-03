@@ -147,7 +147,9 @@ public class AddressDao {
             AddressEntity entity = realm.where(AddressEntity.class)
                     .equalTo("address", address)
                     .findFirst();
-            return realm.copyFromRealm(entity);
+            if (entity != null){
+                return realm.copyFromRealm(entity);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
