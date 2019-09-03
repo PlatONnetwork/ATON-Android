@@ -156,8 +156,9 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                     @Override
                     public void accept(Object o) {
                         //点击全部
-                        et_amount.setText(amount.getText().toString().replace(",", ""));
-                        Log.d("DelegateActivity1111", " ======================" + amount.getText().toString());
+//                        et_amount.setText(amount.getText().toString().replace(",", ""));
+                        mPresenter.getAllPrice(gasPrice, amount.getText().toString().replace(",", ""), chooseType);
+
                     }
                 });
 
@@ -321,10 +322,10 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
 
 
     private void checkIsClick(AccountBalance bean) {
-        if (TextUtils.equals(bean.getLock(),"0")) {
+        if (TextUtils.equals(bean.getLock(), "0")) {
             //锁仓金额为0，不可点击
-            amounChoose.setOnClickListener(null);
-            iv_drop_down.setVisibility(View.INVISIBLE);
+            amounChoose.setClickable(false);
+            iv_drop_down.setVisibility(View.GONE);
         } else {
             iv_drop_down.setVisibility(View.VISIBLE);
             amounChoose.setClickable(true);
@@ -343,6 +344,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         return et_amount.getText().toString().trim();
     }
 
+    //获取选择的余额
     @Override
     public String getChooseBalance() {
         return amount.getText().toString().replaceAll(",", "");
@@ -359,7 +361,6 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         inputError.setText(getString(R.string.delegate_amount_tips));
         inputError.setVisibility(isShow ? View.VISIBLE : View.GONE);
     }
-
 
 
     @Override
@@ -413,6 +414,16 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     @Override
     public void showGasPrice(String gas) {
         fee.setText(string(R.string.amount_with_unit, gas));
+    }
+
+    /**
+     * 点击所有获取到的手续费
+     */
+    @Override
+    public void showAllGasPrice(String allPrice) {
+        fee.setText(string(R.string.amount_with_unit, allPrice));
+        double diff = BigDecimalUtil.sub(amount.getText().toString().replace(",", ""), allPrice);
+        et_amount.setText(BigDecimalUtil.parseString(diff));
     }
 
     @Override
