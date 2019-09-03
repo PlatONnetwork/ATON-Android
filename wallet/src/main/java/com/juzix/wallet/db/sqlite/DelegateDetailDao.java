@@ -37,24 +37,22 @@ public class DelegateDetailDao {
     }
 
 
-
     /**
-     * 获取数据通过(钱包地址和节点地址,块高)
+     * 获取数据通过(钱包地址+节点id)
      */
-    public static DelegateDetailEntity getEntityWithAddressAndNodeId(String walletAddress, String nodeId, String stakingBlockNum) {
+    public static DelegateDetailEntity getEntityWithAddressAndNodeId(String walletAddress, String nodeId) {
         Realm realm = null;
+        DelegateDetailEntity entity = null;
         try {
             realm = Realm.getDefaultInstance();
-            DelegateDetailEntity entity = realm.where(DelegateDetailEntity.class)
-                    .beginGroup()
+            realm.beginTransaction();
+            entity = realm.where(DelegateDetailEntity.class)
                     .equalTo("address", walletAddress)
                     .and()
                     .equalTo("nodeId", nodeId)
-                    .and()
-                    .equalTo("stakingBlockNum", stakingBlockNum)
-                    .endGroup()
                     .findFirst();
-            return realm.copyFromRealm(entity);
+            realm.commitTransaction();
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -62,7 +60,7 @@ public class DelegateDetailDao {
                 realm.close();
             }
         }
-        return null;
+        return entity;
 
     }
 
@@ -72,7 +70,7 @@ public class DelegateDetailDao {
         try {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
-            realm.copyToRealmOrUpdate(entity);
+            realm.copyToRealm(entity);
             realm.commitTransaction();
             return true;
         } catch (Exception exp) {
@@ -87,6 +85,60 @@ public class DelegateDetailDao {
         return false;
 
     }
+
+    //删除数据
+    public static boolean deleteDelegateDetailEntity() {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            realm.where(DelegateDetailEntity.class)
+                    .findAll().deleteAllFromRealm();
+            realm.commitTransaction();
+            return true;
+        } catch (Exception e) {
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
+
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+
+        }
+        return false;
+    }
+
+    //删除数据(根据条件删除)
+    public static boolean deleteDelegateDetailEntityByAddressAndNodeId(String nodeId, String walletAddress) {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            realm.where(DelegateDetailEntity.class)
+                    .equalTo("nodeId", nodeId)
+                    .and()
+                    .equalTo("address", walletAddress)
+                    .findAll()
+                    .deleteAllFromRealm();
+            realm.commitTransaction();
+            return true;
+
+        } catch (Exception e) {
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
+
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+
+        }
+        return false;
+    }
+
 
     //根据字段更新对象
     public static boolean updateNodeIdAndBlockHeight(String walletAddress, String stakingBlockNum, String nodeId) {
