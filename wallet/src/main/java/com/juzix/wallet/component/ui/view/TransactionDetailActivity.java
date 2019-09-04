@@ -178,7 +178,7 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
             TransactionStatus status = TransactionStatus.SUCCESSED;
             showTransactionStatus(status);
         }
-
+        EventPublisher.getInstance().sendRefreshPageEvent();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
