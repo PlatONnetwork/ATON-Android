@@ -336,7 +336,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
                 .to(to)
                 .timestamp(transactionTime)
                 .txType(txType)
-                .value(Convert.toVon(value, Convert.Unit.LAT).toBigInteger().toString())
+                .value(Convert.toVon(withdrawAmount.getText().toString(), Convert.Unit.LAT).toBigInteger().toString())
                 .actualTxCost(Convert.toVon(actualTxCost, Convert.Unit.LAT).toBigInteger().toString())
                 .nodeName(nodeName)
                 .nodeId(nodeId)

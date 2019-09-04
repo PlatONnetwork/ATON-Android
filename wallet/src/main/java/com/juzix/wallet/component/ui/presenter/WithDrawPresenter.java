@@ -100,8 +100,6 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
         getView().showAmountError(errMsg);
 
         return TextUtils.isEmpty(errMsg);
-
-
     }
 
     @Override
@@ -176,8 +174,6 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
             return;
         }
 
-        Log.d("WithDrawPresenter", "=================" + Convert.toVon(input, Convert.Unit.LAT).toBigInteger());
-
         Web3j web3j = Web3jManager.getInstance().getWeb3j();
         org.web3j.platon.contracts.DelegateContract delegateContract = org.web3j.platon.contracts.DelegateContract.load(web3j);
         delegateContract.getUnDelegateFeeAmount(new BigInteger(gasPrice), mNodeAddress, new BigInteger(list.get(0).getStakingBlockNum()), Convert.toVon(input, Convert.Unit.LAT).toBigInteger())
@@ -199,30 +195,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
 
                 });
 
-//        delegateContract.getUnDelegateGasProvider(mNodeAddress, new BigInteger(list.get(0).getStakingBlockNum()), Convert.toVon(input, Convert.Unit.LAT).toBigInteger()) //这里块高是list中第一个
-//                .subscribe(new Subscriber<GasProvider>() {
-//                    @Override
-//                    public void onNext(GasProvider gasProvider) {
-//                        if (isViewAttached()) {
-//                            BigDecimal gas = BigDecimalUtil.mul(gasProvider.getGasLimit().toString(), gasProvider.getGasPrice().toString());
-//                            getView().showWithDrawGasPrice(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(String.valueOf(gas.doubleValue()), "1E18")));
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//
-//                    }
-//
-//                });
-
     }
-
 
     @SuppressLint("CheckResult")
     @Override
@@ -277,8 +250,6 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
      *                       从  已解除委托 提取：  查看记录中所有 已解锁余额非0的记录。  会存在调用多次底层的情况。
      */
     public void withDrawIterate(Credentials credentials, String nodeId, String withdrawAmount, String type) {
-        Log.e("WithDrawPresenter","==============1111111111");
-
         String stakingBlockNum = "0";
         if (TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_DELEGATED) || TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_UNLOCKED)) { //已委托 || 未锁定
             for (int i = 0; i < list.size(); i++) {
@@ -314,17 +285,11 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                     public void accept(PlatonSendTransaction platonSendTransaction) throws Exception {
                         if(isViewAttached()){
                             if (!TextUtils.isEmpty(platonSendTransaction.getTransactionHash())) {
-
-                                Log.e("WithDrawPresenter","==============33333333");
-                                Log.e("WithDrawPresenter","==============44444444444" +"----------->" +platonSendTransaction.getTransactionHash());
-
                                 //操作成功，跳转到交易详情，当前页面关闭
                                 if (TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_DELEGATED) || TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_UNLOCKED)) {
-                                    Log.e("WithDrawPresenter","====================5555555555555" +"-------------->" +type);
                                     getView().withDrawSuccessInfo(platonSendTransaction.getResult(), mWalletAddress, ContractAddress.DELEGATE_CONTRACT_ADDRESS, 0, "1005", list.get(0).getReleased(),
-                                            "", mNodeName, mNodeAddress, 2);
+                                            feeAmount, mNodeName, mNodeAddress, 2);
                                 } else {
-                                    Log.e("WithDrawPresenter","====================6666666666" +"------------->" +type);
                                     if (tag == list.size()) {
                                         getView().withDrawSuccessInfo(platonSendTransaction.getResult(), mWalletAddress, ContractAddress.DELEGATE_CONTRACT_ADDRESS, 0, "1005", list.get(0).getReleased(),
                                                 feeAmount, mNodeName, mNodeAddress, 2);
@@ -345,7 +310,6 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                         if (isViewAttached()) {
                             showLongToast(R.string.withdraw_failed);
                         }
-                        Log.e("WithDrawPresenter","77777777777777" +throwable.getMessage());
                     }
                 });
 
@@ -356,7 +320,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     public void updateWithDrawButtonState() {
         if (isViewAttached()) {
             String withdrawAmount = getView().getWithDrawAmount();
-            boolean isAmountValid = !TextUtils.isEmpty(withdrawAmount) && NumberParserUtils.parseDouble(withdrawAmount) > 10;
+            boolean isAmountValid = !TextUtils.isEmpty(withdrawAmount) && NumberParserUtils.parseDouble(withdrawAmount) >= 10;
             getView().setWithDrawButtonState(isAmountValid);
         }
     }
