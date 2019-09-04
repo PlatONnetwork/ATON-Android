@@ -1,16 +1,13 @@
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:focusable="true"
-    android:focusableInTouchMode="true"
-    android:overScrollMode="never">
+    android:layout_height="match_parent">
 
-    <FrameLayout
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/layout_refresh_transaction"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:srlEnableRefresh="false">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/list_transaction"
@@ -24,13 +21,17 @@
             android:scrollbarStyle="outsideOverlay"
             android:scrollbars="vertical" />
 
-        <include
-            layout="@layout/include_no_transaction"
-            android:visibility="visible" />
+        <com.scwang.smartrefresh.layout.footer.ClassicsFooter
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
-    </FrameLayout>
+    <include
+        layout="@layout/include_no_transaction"
+        android:visibility="visible" />
 
-</android.support.v4.widget.NestedScrollView>
+</FrameLayout>
+
 
 
 

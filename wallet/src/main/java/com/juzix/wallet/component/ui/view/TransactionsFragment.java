@@ -22,6 +22,9 @@ import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -43,6 +46,8 @@ public class TransactionsFragment extends BaseViewPageFragment<TransactionsPrese
     RecyclerView listTransaction;
     @BindView(R.id.layout_no_data)
     View emptyView;
+    @BindView(R.id.layout_refresh_transaction)
+    SmartRefreshLayout refreshTransactionLayout;
 
     private Unbinder unbinder;
     private TransactionAdapter mTransactionAdapter;
@@ -70,6 +75,7 @@ public class TransactionsFragment extends BaseViewPageFragment<TransactionsPrese
     }
 
     private void initViews() {
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         mTransactionAdapter = new TransactionAdapter(getContext(), null, R.layout.item_transaction_record);
         listTransaction.addItemDecoration(new CommonVerticalItemDecoration(getContext(), R.drawable.bg_transation_list_divider));
@@ -81,13 +87,16 @@ public class TransactionsFragment extends BaseViewPageFragment<TransactionsPrese
             @Override
             public void onItemClick(View view, int position) {
                 Transaction transaction = mTransactionAdapter.getDatas().get(position);
-                TransactionDetailActivity.actionStart(getActivity(), transaction, WalletManager.getInstance().getSelectedWalletAddress(),"","");
+                TransactionDetailActivity.actionStart(getActivity(), transaction, WalletManager.getInstance().getSelectedWalletAddress(), "", "");
             }
         });
-    }
 
-    public void loadMoreTransaction() {
-        mPresenter.loadMore();
+        refreshTransactionLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+                mPresenter.loadMore();
+            }
+        });
     }
 
     @Override
@@ -111,7 +120,7 @@ public class TransactionsFragment extends BaseViewPageFragment<TransactionsPrese
 
     @Override
     public void finishLoadMore() {
-        ((AssetsFragment) getParentFragment()).finishLoadMore();
+        refreshTransactionLayout.finishLoadMore();
     }
 
     @Override
