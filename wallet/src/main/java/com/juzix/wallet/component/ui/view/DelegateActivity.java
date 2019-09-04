@@ -43,6 +43,8 @@ import com.juzix.wallet.utils.GlideUtils;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
 
+import org.web3j.utils.Convert;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -396,8 +398,8 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                 .to(to)
                 .timestamp(transactionTime)
                 .txType(txType)
-                .value(value)
-                .actualTxCost(actualTxCost)
+                .value(Convert.toVon(value, Convert.Unit.LAT).toBigInteger().toString())
+                .actualTxCost(Convert.toVon(actualTxCost, Convert.Unit.LAT).toBigInteger().toString())
                 .nodeName(nodeName)
                 .nodeId(nodeId)
                 .txReceiptStatus(txReceiptStatus)

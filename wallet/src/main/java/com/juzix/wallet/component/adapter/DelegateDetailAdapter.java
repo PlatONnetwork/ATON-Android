@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.juzhen.framework.util.NumberParserUtils;
+import com.juzix.wallet.App;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.widget.CircleImageView;
@@ -21,12 +22,14 @@ import com.juzix.wallet.entity.DelegateDetail;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.GlideUtils;
+import com.juzix.wallet.utils.LanguageUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
 import com.juzix.wallet.utils.ToastUtil;
 
 
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,7 +41,9 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
 
     private OnDelegateClickListener mOnDelegateClickListener;
 
-
+    private static final String ACTIVE = "Active";
+    private static final String CANDIDATE = "Candidate";
+    private static final String EXITED= "Exited";
     public void setmOnDelegateClickListener(OnDelegateClickListener mOnDelegateClickListener) {
         this.mOnDelegateClickListener = mOnDelegateClickListener;
     }
@@ -56,7 +61,11 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
         holder.nodeName.setText(detail.getNodeName());
         holder.nodeAddress.setText(AddressFormatUtil.formatAddress(detail.getNodeId()));
         GlideUtils.loadRound(mContext, detail.getUrl(), holder.nodeIcon);
-        holder.nodeState.setText(detail.getNodeStatus());
+
+        TextView nodeState = holder.nodeState;
+        showTextSpan(mContext,detail,nodeState);
+//        holder.nodeState.setText(detail.getNodeStatus());
+
         changeTextViewColorByState(holder.nodeState, detail.getNodeStatus()); //NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(value, "1E18")
         holder.tv_node_locked_delegate.setText(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getLocked(), "1E18"))) == 0 ? "— —" : StringUtil.formatBalance(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getLocked(), "1E18"))));
         holder.tv_node_unlocked_delegate.setText(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getUnLocked(), "1E18"))) == 0 ? "— —" : StringUtil.formatBalance(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getUnLocked(), "1E18"))));
@@ -160,6 +169,23 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
                     }
                 });
 
+    }
+
+    private void showTextSpan(Context mContext, DelegateDetail detail, TextView nodeState) {
+        if(Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage())){ //中文环境下
+            if(TextUtils.equals(detail.getNodeStatus(),ACTIVE)){
+                nodeState.setText(R.string.validators_active);
+            }else if(TextUtils.equals(detail.getNodeStatus(),CANDIDATE)){
+                nodeState.setText(R.string.validators_candidate);
+            }else if(TextUtils.equals(detail.getNodeStatus(),EXITED)){
+                nodeState.setText(R.string.validators_state_exited);
+            }else {
+                nodeState.setText(R.string.validators_state_exiting);
+            }
+
+        }else {
+            nodeState.setText(detail.getNodeStatus());
+        }
     }
 
     /**

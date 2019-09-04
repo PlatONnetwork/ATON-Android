@@ -122,6 +122,11 @@ public class Event {
 
         }
     }
+    public static class UpdateRefreshPageEvent {
+        public UpdateRefreshPageEvent() {
+
+        }
+    }
 
     /**
      * 钱包列表顺序改变

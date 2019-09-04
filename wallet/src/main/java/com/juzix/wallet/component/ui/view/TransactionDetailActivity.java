@@ -166,6 +166,8 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
             }
         }
 
+        //发送一个eventbus
+        EventPublisher.getInstance().sendRefreshPageEvent();
 
     }
 

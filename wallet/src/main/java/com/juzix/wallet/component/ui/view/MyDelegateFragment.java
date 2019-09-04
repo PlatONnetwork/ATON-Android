@@ -265,7 +265,11 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
         } else {
             AppSettings.getInstance().setMydelegateTab(false);
         }
-
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventPublisher.getInstance().unRegister(this);
+    }
 }

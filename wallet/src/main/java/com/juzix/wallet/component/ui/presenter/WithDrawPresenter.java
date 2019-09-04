@@ -53,6 +53,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     private List<WithDrawBalance> list = new ArrayList<>();
     //    private double delegatedSum = 0; //已委托 (已锁定+未锁定)
     private int tag = 0;
+    private String feeAmount;
 
     public WithDrawPresenter(WithDrawContract.View view) {
         super(view);
@@ -179,12 +180,14 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
 
         Web3j web3j = Web3jManager.getInstance().getWeb3j();
         org.web3j.platon.contracts.DelegateContract delegateContract = org.web3j.platon.contracts.DelegateContract.load(web3j);
-        delegateContract.getUnDelegateFeeAmount(new BigInteger(gasPrice),mNodeAddress,new BigInteger(list.get(0).getStakingBlockNum()),Convert.toVon(input, Convert.Unit.LAT).toBigInteger())
+        delegateContract.getUnDelegateFeeAmount(new BigInteger(gasPrice), mNodeAddress, new BigInteger(list.get(0).getStakingBlockNum()), Convert.toVon(input, Convert.Unit.LAT).toBigInteger())
                 .subscribe(new Subscriber<BigInteger>() {
                     @Override
                     public void onNext(BigInteger bigInteger) {
-                        getView().showWithDrawGasPrice(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(bigInteger.toString(), "1E18")));
+                        feeAmount =NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(bigInteger.toString(), "1E18"));
+                        getView().showWithDrawGasPrice(feeAmount);
                     }
+
                     @Override
                     public void onCompleted() {
                     }
@@ -274,10 +277,10 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
      *                       从  已解除委托 提取：  查看记录中所有 已解锁余额非0的记录。  会存在调用多次底层的情况。
      */
     public void withDrawIterate(Credentials credentials, String nodeId, String withdrawAmount, String type) {
+        Log.e("WithDrawPresenter","==============1111111111");
 
         String stakingBlockNum = "0";
         if (TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_DELEGATED) || TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_UNLOCKED)) { //已委托 || 未锁定
-
             for (int i = 0; i < list.size(); i++) {
                 if (!TextUtils.isEmpty(list.get(i).getLocked()) && !TextUtils.isEmpty(list.get(i).getUnLocked())) {
                     stakingBlockNum = list.get(i).getStakingBlockNum(); //这里其实就是第一条，因为最新的块高排在前面
@@ -303,26 +306,36 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     //操作赎回
     @SuppressLint("CheckResult")
     public void withdraw(Credentials credentials, String nodeId, String blockNum, String withdrawAmount, String type) {
+        Log.e("WithDrawPresenter","==============22222222");
         DelegateManager.getInstance().withdraw(credentials, nodeId, blockNum, withdrawAmount)
-                .compose(RxUtils.bindToLifecycle(getView()))
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .subscribe(new Consumer<PlatonSendTransaction>() {
                     @Override
                     public void accept(PlatonSendTransaction platonSendTransaction) throws Exception {
-                        if (!TextUtils.isEmpty(platonSendTransaction.getTransactionHash())) {
-                            //操作成功，跳转到交易详情，当前页面关闭
-                            if (TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_DELEGATED) || TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_UNLOCKED)) {
-                                getView().withDrawSuccessInfo(platonSendTransaction.getResult(),  mWalletAddress, ContractAddress.DELEGATE_CONTRACT_ADDRESS,0, "1005", list.get(0).getReleased(),
-                                        "", mNodeName, mNodeAddress, 2);
-                            } else {
-                                if (tag == list.size()) {
-                                    getView().withDrawSuccessInfo(platonSendTransaction.getResult(),  mWalletAddress,ContractAddress.DELEGATE_CONTRACT_ADDRESS, 0, "1005", list.get(0).getReleased(),
+                        if(isViewAttached()){
+                            if (!TextUtils.isEmpty(platonSendTransaction.getTransactionHash())) {
+
+                                Log.e("WithDrawPresenter","==============33333333");
+                                Log.e("WithDrawPresenter","==============44444444444" +"----------->" +platonSendTransaction.getTransactionHash());
+
+                                //操作成功，跳转到交易详情，当前页面关闭
+                                if (TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_DELEGATED) || TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_UNLOCKED)) {
+                                    Log.e("WithDrawPresenter","====================5555555555555" +"-------------->" +type);
+                                    getView().withDrawSuccessInfo(platonSendTransaction.getResult(), mWalletAddress, ContractAddress.DELEGATE_CONTRACT_ADDRESS, 0, "1005", list.get(0).getReleased(),
                                             "", mNodeName, mNodeAddress, 2);
+                                } else {
+                                    Log.e("WithDrawPresenter","====================6666666666" +"------------->" +type);
+                                    if (tag == list.size()) {
+                                        getView().withDrawSuccessInfo(platonSendTransaction.getResult(), mWalletAddress, ContractAddress.DELEGATE_CONTRACT_ADDRESS, 0, "1005", list.get(0).getReleased(),
+                                                feeAmount, mNodeName, mNodeAddress, 2);
+                                    }
                                 }
+
+                            } else {
+                                ToastUtil.showLongToast(getContext(), platonSendTransaction.getError().getMessage());
                             }
 
-                        } else {
-                            ToastUtil.showLongToast(getContext(), platonSendTransaction.getError().getMessage());
+
                         }
 
                     }
@@ -330,8 +343,9 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         if (isViewAttached()) {
-                            showLongToast(R.string.delegate_failed);
+                            showLongToast(R.string.withdraw_failed);
                         }
+                        Log.e("WithDrawPresenter","77777777777777" +throwable.getMessage());
                     }
                 });
 
