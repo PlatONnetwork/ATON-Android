@@ -11,6 +11,8 @@ import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.DateUtil;
 import com.juzix.wallet.utils.JSONUtil;
 
+import java.util.List;
+
 import jnr.constants.platform.PRIO;
 
 public class Transaction implements Comparable<Transaction>, Parcelable, Cloneable {
@@ -275,7 +277,34 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
      * @return
      */
     public boolean isSender(String queryAddress) {
-        return !TextUtils.isEmpty(queryAddress) && queryAddress.equals(from);
+        TransactionType transactionType = getTxType();
+        switch (transactionType) {
+            case TRANSFER:
+                return !TextUtils.isEmpty(queryAddress) && queryAddress.equals(from);
+            case UNDELEGATE:
+            case EXIT_VALIDATOR:
+                return false;
+            default:
+                return true;
+        }
+    }
+
+    /**
+     * 是否是发送者
+     *
+     * @return
+     */
+    public boolean isSender(List<String> queryAddressList) {
+        TransactionType transactionType = getTxType();
+        switch (transactionType) {
+            case TRANSFER:
+                return queryAddressList != null && queryAddressList.contains(from);
+            case UNDELEGATE:
+            case EXIT_VALIDATOR:
+                return false;
+            default:
+                return true;
+        }
     }
 
     public String getHash() {

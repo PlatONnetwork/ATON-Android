@@ -109,18 +109,19 @@
                 android:visibility="gone" />
         </android.support.design.widget.AppBarLayout>
 
-        <com.scwang.smartrefresh.layout.SmartRefreshLayout
-            android:id="@+id/layout_refresh_transaction"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/color_f9fbff"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            app:srlEnableLoadMoreWhenContentNotFull="false"
-            app:srlEnableRefresh="false">
+<!--        <com.scwang.smartrefresh.layout.SmartRefreshLayout-->
+<!--            android:id="@+id/layout_refresh_transaction"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:background="@color/color_f9fbff"-->
+<!--            app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
+<!--            app:srlEnableLoadMoreWhenContentNotFull="false"-->
+<!--            app:srlEnableRefresh="false">-->
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
                 <com.juzix.wallet.component.widget.ViewPagerSlide
                     android:id="@+id/vp_content"
@@ -130,11 +131,11 @@
                 <include layout="@layout/layout_wallet_list_empty" />
             </FrameLayout>
 
-            <com.scwang.smartrefresh.layout.footer.ClassicsFooter
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+<!--            <com.scwang.smartrefresh.layout.footer.ClassicsFooter-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content" />-->
 
-        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+<!--        </com.scwang.smartrefresh.layout.SmartRefreshLayout>-->
 
     </android.support.design.widget.CoordinatorLayout>
 

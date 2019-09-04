@@ -46,7 +46,7 @@ public enum TransactionType {
      */
     INCREASE_STAKING(1002, R.string.increase_staking),
     /**
-     * 退出验证人(包括撤销验证人创建)
+     * 退出验证人(包括撤销验证人创建,撤销质押)
      */
     EXIT_VALIDATOR(1003, R.string.exit_validator),
     /**

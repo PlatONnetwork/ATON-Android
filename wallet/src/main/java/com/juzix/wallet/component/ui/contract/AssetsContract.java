@@ -34,8 +34,6 @@ public class AssetsContract {
         void notifyAllChanged();
 
         void finishRefresh();
-
-        void finishLoadMore();
     }
 
     public interface Presenter extends IPresenter<View> {

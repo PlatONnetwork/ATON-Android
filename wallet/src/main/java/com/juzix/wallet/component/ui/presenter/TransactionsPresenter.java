@@ -207,7 +207,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                             Collections.sort(transactions);
                             //累加,mTransactionList不可能为null,放在最后面
                             mTransactionList.addAll(mTransactionList.size(), transactions);
-                            getView().notifyItemRangeInserted(mTransactionList, mWalletAddress, mTransactionList.size(), transactions.size());
+                            getView().notifyDataSetChanged(mTransactionList, mWalletAddress);
                             getView().finishLoadMore();
 
                             loadNew(DIRECTION_NEW);

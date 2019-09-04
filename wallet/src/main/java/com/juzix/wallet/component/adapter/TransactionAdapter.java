@@ -32,7 +32,7 @@ public class TransactionAdapter extends RecyclerAdapter<Transaction> {
             return;
         }
         TransactionStatus status = data.getTxReceiptStatus();
-        boolean isSender = mQueryAddressList != null && mQueryAddressList.contains(data.getFrom());
+        boolean isSender = data.isSender(mQueryAddressList);
         //默认是发送，当发送和接收的钱包
         int transferDescRes = isSender ? R.string.send : R.string.receive;
         holder.setText(R.id.tv_transaction_status, data.getTxType() == TransactionType.TRANSFER ? transferDescRes : data.getTxType().getTxTypeDescRes());

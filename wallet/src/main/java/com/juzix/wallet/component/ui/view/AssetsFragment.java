@@ -120,8 +120,6 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     ShadowContainer scCreateWallet;
     @BindView(R.id.layout_refresh)
     SmartRefreshLayout layoutRefresh;
-    @BindView(R.id.layout_refresh_transaction)
-    SmartRefreshLayout layoutRefreshTransaction;
     @BindView(R.id.tv_restricted_amount)
     TextView tvRestrictedAmount;
 
@@ -173,18 +171,18 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
                 mPresenter.fetchWalletsBalance();
             }
         });
-
-        layoutRefreshTransaction.setOnLoadMoreListener(new OnLoadMoreListener() {
-            @Override
-            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-                if (vpContent.getCurrentItem() == TAB1) {
-                    TransactionsFragment viewPageFragment = (TransactionsFragment) mTabAdapter.getItem(TAB1);
-                    if (viewPageFragment != null) {
-                        viewPageFragment.loadMoreTransaction();
-                    }
-                }
-            }
-        });
+//
+//        layoutRefreshTransaction.setOnLoadMoreListener(new OnLoadMoreListener() {
+//            @Override
+//            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+//                if (vpContent.getCurrentItem() == TAB1) {
+//                    TransactionsFragment viewPageFragment = (TransactionsFragment) mTabAdapter.getItem(TAB1);
+//                    if (viewPageFragment != null) {
+//                        viewPageFragment.loadMoreTransaction();
+//                    }
+//                }
+//            }
+//        });
     }
 
     public void fetchWalletsBalance() {
@@ -538,11 +536,6 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     @Override
     public void finishRefresh() {
         layoutRefresh.finishRefresh();
-    }
-
-    @Override
-    public void finishLoadMore() {
-        layoutRefreshTransaction.finishLoadMore();
     }
 
     private SpannableString getRestrictedAmount(String text) {
