@@ -103,4 +103,8 @@ public class EventPublisher {
         BusProvider.post(new Event.UpdateTabChangeEvent());
     }
 
+    public void sendRefreshPageEvent() {
+        BusProvider.post(new Event.UpdateRefreshPageEvent());
+    }
+
 }

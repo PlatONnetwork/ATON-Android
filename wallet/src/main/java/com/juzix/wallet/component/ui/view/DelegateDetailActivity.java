@@ -238,4 +238,9 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
         mPresenter.loadDelegateDetailData();
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void refreshPageEvent(Event.UpdateRefreshPageEvent event) {
+        mPresenter.loadDelegateDetailData();
+    }
+
 }

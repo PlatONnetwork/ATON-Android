@@ -39,6 +39,8 @@ import com.juzix.wallet.utils.GlideUtils;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
 
+import org.web3j.utils.Convert;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -200,7 +202,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
             withdrawAmount.setText("");
         } else {
             delegateType.setText(getString(R.string.withdraw_type_released)); //已解除
-            withdrawAmount.setText(item.getValue());
+            withdrawAmount.setText(item.getValue().replace(",",""));
             withdrawAmount.setFocusableInTouchMode(false);
             withdrawAmount.setFocusable(false);
             mPresenter.getWithDrawGasPrice(gasPrice);//已解除不能操作，所以需要再获取一次手续费
@@ -329,21 +331,20 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
 
     @Override
     public void withDrawSuccessInfo(String platonSendTransaction, String from, String to, long time, String txType, String value, String actualTxCost, String nodeName, String nodeId, int txReceiptStatus) {
-        finish();
         Transaction transaction = new Transaction.Builder()
                 .from(from)
                 .to(to)
                 .timestamp(transactionTime)
                 .txType(txType)
-                .value(value)
-                .actualTxCost(fee.getText().toString())
+                .value(Convert.toVon(value, Convert.Unit.LAT).toBigInteger().toString())
+                .actualTxCost(Convert.toVon(actualTxCost, Convert.Unit.LAT).toBigInteger().toString())
                 .nodeName(nodeName)
                 .nodeId(nodeId)
                 .txReceiptStatus(txReceiptStatus)
                 .build();
 
         TransactionDetailActivity.actionStart(getContext(), transaction, from, "", platonSendTransaction);
-
+        finish();
     }
 
     //显示手续费

@@ -2,6 +2,8 @@ package com.juzix.wallet.engine;
 
 import android.text.TextUtils;
 
+import com.juzhen.framework.util.NumberParserUtils;
+
 import org.web3j.crypto.Credentials;
 import org.web3j.platon.BaseResponse;
 import org.web3j.platon.StakingAmountType;
@@ -34,7 +36,7 @@ public class DelegateManager {
                 Web3j web3j = Web3jManager.getInstance().getWeb3j();
                 String chainId = NodeManager.getInstance().getChainId();
 
-                DelegateContract delegateContract = DelegateContract.load(web3j, credentials, 203);
+                DelegateContract delegateContract = DelegateContract.load(web3j, credentials, NumberParserUtils.parseLong(chainId));
 
                 StakingAmountType stakingAmountType = TextUtils.equals(type, "balance") ? StakingAmountType.FREE_AMOUNT_TYPE : StakingAmountType.RESTRICTING_AMOUNT_TYPE;
 
@@ -69,7 +71,7 @@ public class DelegateManager {
             public PlatonSendTransaction call() throws Exception {
                 Web3j web3j = Web3jManager.getInstance().getWeb3j();
                 String chainId = NodeManager.getInstance().getChainId();
-                DelegateContract delegateContract = DelegateContract.load(web3j, credentials, 203);
+                DelegateContract delegateContract = DelegateContract.load(web3j, credentials, NumberParserUtils.parseLong(chainId));
                 return delegateContract.unDelegateReturnTransaction(nodeId, new BigInteger(stakingBlockNum), Convert.toVon(amount, Convert.Unit.LAT).toBigInteger()).send();
             }
         });

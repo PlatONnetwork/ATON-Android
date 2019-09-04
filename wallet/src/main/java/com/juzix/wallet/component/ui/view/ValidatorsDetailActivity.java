@@ -185,7 +185,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
             nodeState.setText(getString(R.string.validators_state_exiting));
         }
 
-        rate.setText(nodeDetail.isInit()?"— —":(NumberParserUtils.parseDouble(nodeDetail.getRatePA())) / 100 + "%");
+        rate.setText(nodeDetail.isInit() ? "— —" : (NumberParserUtils.parseDouble(nodeDetail.getRatePA())) / 100 + "%");
 
         if (TextUtils.isEmpty(nodeDetail.getDeposit())) {
             totalStaked.setText("--");
@@ -261,4 +261,14 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
     }
 
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void updatePageEvent(Event.UpdateRefreshPageEvent event) {
+        mPresenter.loadValidatorsDetailData();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventPublisher.getInstance().unRegister(this);
+    }
 }
