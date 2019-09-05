@@ -42,17 +42,33 @@ public class DelegateDetailDao {
      */
     public static DelegateDetailEntity getEntityWithAddressAndNodeId(String walletAddress, String nodeId) {
         Realm realm = null;
-        DelegateDetailEntity entity = null;
+//        DelegateDetailEntity entity = null;
+//        try {
+//            realm = Realm.getDefaultInstance();
+//            realm.beginTransaction();
+//            entity = realm.where(DelegateDetailEntity.class)
+//                    .equalTo("address", walletAddress)
+//                    .equalTo("nodeId", nodeId)
+//                    .findFirst();
+//            realm.commitTransaction();
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        } finally {
+//            if (realm != null) {
+//                realm.close();
+//            }
+//        }
+//        return entity;
         try {
             realm = Realm.getDefaultInstance();
-            realm.beginTransaction();
-            entity = realm.where(DelegateDetailEntity.class)
+            DelegateDetailEntity entity = realm.where(DelegateDetailEntity.class)
                     .equalTo("address", walletAddress)
-                    .and()
-                    .equalTo("nodeId", nodeId)
+                    .equalTo("nodeId",nodeId)
                     .findFirst();
-            realm.commitTransaction();
-
+            if (entity != null){
+                return realm.copyFromRealm(entity);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -60,7 +76,7 @@ public class DelegateDetailDao {
                 realm.close();
             }
         }
-        return entity;
+        return null;
 
     }
 

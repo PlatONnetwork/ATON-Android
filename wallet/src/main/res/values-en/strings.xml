@@ -591,5 +591,6 @@
     <string name="msg_turn_light_off">Tap to turn light off</string>
     <string name="tips_no_wallet">No wallet available, or insufficient wallet balance</string>
     <string name="msg_view_more_transactions">View more transactions</string>
+    <string name="delegate_record_wallet_address">(%1$s)</string>
 </resources>
 
