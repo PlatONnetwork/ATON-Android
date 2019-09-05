@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.juzix.wallet.R;
@@ -56,6 +57,7 @@ public class WithDrawPopWindowAdapter extends BaseAdapter {
             holder.tv_delegate_type = view.findViewById(R.id.tv_delegate_type);
             holder.tv_delegate_amount = view.findViewById(R.id.tv_delegate_amount);
             holder.iv_drop_down = view.findViewById(R.id.iv_drop_down);
+            holder.rl_choose_delegate = view.findViewById(R.id.rl_choose_delegate);
             view.setTag(holder);
         } else {
             view = convertView;
@@ -76,24 +78,36 @@ public class WithDrawPopWindowAdapter extends BaseAdapter {
             holder.tv_delegate_type.setText(mContext.getString(R.string.withdraw_type_released));
         }
 
-        holder.tv_delegate_amount.setText(mContext.getString(R.string.amount_with_unit,typeList.get(position).getValue()));
-
+        holder.tv_delegate_amount.setText(mContext.getString(R.string.amount_with_unit, typeList.get(position).getValue()));
+//        view.setClickable(TextUtils.equals(typeList.get(position).getValue(), "0") ? false : true);//为"0"的选项不可点击
 
         return view;
     }
 
 
+    @Override
+    public boolean isEnabled(int position) {
+        if (TextUtils.equals(typeList.get(position).getValue(), "0.00")) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean areAllItemsEnabled() {
+        return false;
+    }
+
     public void setDefSelect(int position) {
         this.defItem = position;
         notifyDataSetChanged();
-
     }
 
     class ViewHolder {
         TextView tv_delegate_type;
         TextView tv_delegate_amount;
         ImageView iv_drop_down;
-
+        RelativeLayout rl_choose_delegate;
 
     }
 }
