@@ -277,6 +277,7 @@
     <string name="transactionConfirmation">联名钱包转账确认</string>
     <string name="totalValue">总数量</string>
     <string name="type">交易类别</string>
+    <string name="txt_info">交易信息</string>
     <string name="executeContractFee">执行合约手续费</string>
     <string name="addSharedWalletSuccess">联名钱包添加成功</string>
     <string name="signingConfirmationFailed">签名确认失败</string>
@@ -428,6 +429,7 @@
     <string name="switch_node_failed">节点切换失败</string>
     <string name="user_with_serial_number">用户%1$d</string>
     <string name="recipient_wallet">接收钱包</string>
+    <string name="recipient_address">接收地址</string>
     <string name="node_exit_consensus">节点已退出共识，投票失败！</string>
     <string name="transfer">转账</string>
     <string name="mpc_transaction">MPC交易</string>

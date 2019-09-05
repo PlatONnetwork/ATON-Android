@@ -19,6 +19,7 @@ public class Constants {
         String EXTRA_KEYSTORE = "extra_keystore";
         String EXTRA_WALLET = "extra_walletEntity";
         String EXTRA_ADDRESS = "extra_address";
+        String EXTRA_ADDRESS_LIST = "extra_address_list";
         String EXTRA_TO_ADDRESS = "extra_to_address";
         String EXTRA_TRANSACTION = "extra_transaction";
         String EXTRA_HASH = "extra_hash";

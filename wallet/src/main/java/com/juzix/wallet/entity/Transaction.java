@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.juzhen.framework.util.NumberParserUtils;
+import com.juzix.wallet.R;
 import com.juzix.wallet.db.entity.TransactionEntity;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.DateUtil;
@@ -311,6 +312,82 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
                 return false;
             default:
                 return true;
+        }
+    }
+
+    /**
+     * 是否是接收者
+     *
+     * @param queryAddressList
+     * @return
+     */
+    public boolean isReceiver(List<String> queryAddressList) {
+        TransactionType transactionType = getTxType();
+        switch (transactionType) {
+            case TRANSFER:
+                return queryAddressList != null && queryAddressList.contains(to);
+            case UNDELEGATE:
+            case EXIT_VALIDATOR:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * 是否是转账
+     *
+     * @param queryAddressList
+     * @return
+     */
+    public boolean isTransfer(List<String> queryAddressList) {
+
+        return getTxType() == TransactionType.TRANSFER && isSender(queryAddressList) && isReceiver(queryAddressList);
+    }
+
+    public @TransferType
+    int getTransferType(List<String> queryAddressList) {
+        if (isTransfer(queryAddressList)) {
+            return TransferType.TRANSFER;
+        } else if (isSender(queryAddressList)) {
+            return TransferType.SEND;
+        } else {
+            return TransferType.RECEIVE;
+        }
+    }
+
+    /**
+     * 获取转账描述
+     *
+     * @param queryAddressList
+     * @return
+     */
+    public int getTransferDescRes(List<String> queryAddressList) {
+        if (isSender(queryAddressList)) {
+            if (isReceiver(queryAddressList)) {
+                return R.string.transfer;
+            } else {
+                return R.string.send;
+            }
+        } else {
+            return R.string.receive;
+        }
+    }
+
+    /**
+     * 获取转账描述
+     *
+     * @param transferType
+     * @return
+     */
+    public int getTransferDescRes(@TransferType int transferType) {
+        switch (transferType) {
+            case TransferType.TRANSFER:
+                return R.string.transfer;
+            case TransferType.RECEIVE:
+                return R.string.receive;
+            default:
+                return R.string.send;
         }
     }
 

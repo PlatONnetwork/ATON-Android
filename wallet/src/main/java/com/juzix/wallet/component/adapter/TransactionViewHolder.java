@@ -57,10 +57,8 @@ public class TransactionViewHolder extends BaseViewHolder<Transaction> {
         TransactionStatus transactionStatus = transaction.getTxReceiptStatus();
         TransactionType transactionType = transaction.getTxType();
         boolean isSender = transaction.isSender(mQueryAddressList);
-        //默认是发送，当发送和接收的钱包
-        int transferDescRes = isSender ? R.string.send : R.string.receive;
 
-        mTransactionStatusTv.setText(transactionType == TransactionType.TRANSFER ? transferDescRes : transactionType.getTxTypeDescRes());
+        mTransactionStatusTv.setText(transactionType == TransactionType.TRANSFER ? transaction.getTransferDescRes(mQueryAddressList) : transactionType.getTxTypeDescRes());
         mTransactionAmountTv.setText(String.format("%s%s", isSender ? "-" : "+", transaction.getShowValue()));
         mTransactionAmountTv.setTextColor(isSender ? ContextCompat.getColor(mContext, R.color.color_ff3b3b) : ContextCompat.getColor(mContext, R.color.color_19a20e));
         mTransactionTimeTv.setText(transaction.getShowCreateTime());

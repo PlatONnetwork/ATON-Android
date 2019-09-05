@@ -15,6 +15,7 @@ import com.juzix.wallet.utils.RxUtils;
 import org.web3j.platon.BaseResponse;
 import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Single;
@@ -29,14 +30,14 @@ import io.reactivex.functions.Function;
 public class TransactionDetailPresenter extends BasePresenter<IndividualTransactionDetailContract.View> implements IndividualTransactionDetailContract.Presenter {
 
     private Transaction mTransaction;
-    private String mQueryAddress;
+    private List<String> mQueryAddressList;
     private String delegateHash;
     private String mWithDrawHash;
 
     public TransactionDetailPresenter(IndividualTransactionDetailContract.View view) {
         super(view);
         mTransaction = view.getTransactionFromIntent();
-        mQueryAddress = view.getAddressFromIntent();
+        mQueryAddressList = view.getAddressListFromIntent();
         delegateHash = view.getDelegateHash();
         mWithDrawHash = view.getWithDrawHash();
     }
@@ -66,7 +67,7 @@ public class TransactionDetailPresenter extends BasePresenter<IndividualTransact
                         @Override
                         public void accept(String walletName) throws Exception {
                             if (isViewAttached()) {
-                                getView().setTransactionDetailInfo(mTransaction, mQueryAddress, walletName);
+                                getView().setTransactionDetailInfo(mTransaction, mQueryAddressList, walletName);
                             }
                         }
                     });
@@ -98,7 +99,7 @@ public class TransactionDetailPresenter extends BasePresenter<IndividualTransact
                         @Override
                         public void accept(String walletName) throws Exception {
                             if (isViewAttached()) {
-                                getView().setTransactionDetailInfo(transaction, mQueryAddress, walletName);
+                                getView().setTransactionDetailInfo(transaction, mQueryAddressList, walletName);
                             }
                         }
                     });

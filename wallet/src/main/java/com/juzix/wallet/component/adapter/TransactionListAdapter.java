@@ -60,7 +60,7 @@ public class TransactionListAdapter extends RecyclerView.Adapter<BaseViewHolder>
                 @Override
                 public void onItemClick(Object o) {
                     if (mTransactionList != null && !mTransactionList.isEmpty()) {
-                        TransactionDetailActivity.actionStart(mContext, mTransactionList.get(position), WalletManager.getInstance().getSelectedWalletAddress());
+                        TransactionDetailActivity.actionStart(mContext, mTransactionList.get(position), mQueryAddressList);
                     }
                 }
             });
@@ -92,7 +92,7 @@ public class TransactionListAdapter extends RecyclerView.Adapter<BaseViewHolder>
     @Override
     public int getItemViewType(int position) {
         int size = getItemCount();
-        if (!mTransactionRecordPage){
+        if (!mTransactionRecordPage) {
             if (size > 20) {
                 if (position == size - 1) {
                     return FOOTER_ITEM_VIEW;

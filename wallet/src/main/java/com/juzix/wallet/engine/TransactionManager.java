@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.juzhen.framework.util.LogUtils;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
@@ -145,12 +146,14 @@ public class TransactionManager {
      * 通过轮询获取普通钱包的交易
      */
     public void getTransactionByLoop(Transaction trans) {
+        LogUtils.e("getTransactionByLoop" + trans.toString());
         Flowable
                 .interval(Constants.Common.TRANSACTION_STATUS_LOOP_TIME, TimeUnit.MILLISECONDS)
                 .map(new Function<Long, Optional<org.web3j.protocol.core.methods.response.Transaction>>() {
                     @Override
                     public Optional<org.web3j.protocol.core.methods.response.Transaction> apply(Long aLong) throws Exception {
                         org.web3j.protocol.core.methods.response.Transaction transaction = Web3jManager.getInstance().getTransactionByHash(trans.getHash());
+                        LogUtils.e("getTransactionByHash" + transaction.toString());
                         return new Optional<org.web3j.protocol.core.methods.response.Transaction>(transaction);
                     }
                 })
@@ -168,12 +171,14 @@ public class TransactionManager {
                         Transaction t = trans.clone();
                         t.setTxReceiptStatus(TransactionStatus.SUCCESSED.ordinal());
                         t.setActualTxCost(String.valueOf(actualTxCost));
+                        LogUtils.e("setTxReceiptStatus" + t.toString());
                         return t;
                     }
                 })
                 .filter(new Predicate<Transaction>() {
                     @Override
                     public boolean test(Transaction transaction) throws Exception {
+                        LogUtils.e("filter" + transaction.toString());
                         return transaction.getTxReceiptStatus() == TransactionStatus.SUCCESSED;
                     }
                 })
@@ -195,7 +200,13 @@ public class TransactionManager {
                 .subscribe(new CustomObserver<Transaction>() {
                     @Override
                     public void accept(Transaction transaction) {
-                        Log.e(TAG, "getIndividualTransactionByLoop 轮询交易成功" + Thread.currentThread().getName());
+                        LogUtils.e("getIndividualTransactionByLoop 轮询交易成功" + Thread.currentThread().getName());
+                    }
+
+                    @Override
+                    public void accept(Throwable throwable) {
+                        super.accept(throwable);
+                        LogUtils.e("getIndividualTransactionByLoop 轮询交易失败" + throwable.getMessage());
                     }
                 });
     }

@@ -247,7 +247,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
                 return;
             }
 
-            String fromWallet = walletEntity.getName();
+            String fromWallet = String.format("%s(%s)", walletEntity.getName(), AddressFormatUtil.formatTransactionAddress(walletEntity.getPrefixAddress()));
             String fee = NumberParserUtils.getPrettyBalance(feeAmount);
 
             getWalletNameFromAddress(toAddress)
@@ -424,9 +424,9 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
 
     private Map<String, String> buildSendTransactionInfo(String fromWallet, String recipient, String fee) {
         Map<String, String> map = new LinkedHashMap<>();
-        map.put(string(R.string.type), string(R.string.send_energon));
+        map.put(string(R.string.txt_info), string(R.string.send_energon));
         map.put(string(R.string.from_wallet), fromWallet);
-        map.put(string(R.string.recipient_wallet), recipient);
+        map.put(string(R.string.recipient_address), recipient);
         map.put(string(R.string.fee), string(R.string.amount_with_unit, fee));
         return map;
     }
@@ -443,7 +443,8 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
         return Single.fromCallable(new Callable<String>() {
             @Override
             public String call() throws Exception {
-                return WalletManager.getInstance().getWalletNameByWalletAddress(address);
+                String walletName = WalletManager.getInstance().getWalletNameByWalletAddress(address);
+                return TextUtils.isEmpty(walletName) ? walletName : String.format("%s(%s)", walletName, AddressFormatUtil.formatTransactionAddress(address));
             }
         }).filter(new Predicate<String>() {
             @Override
@@ -453,7 +454,8 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
         }).switchIfEmpty(new SingleSource<String>() {
             @Override
             public void subscribe(SingleObserver<? super String> observer) {
-                observer.onSuccess(AddressDao.getAddressNameByAddress(address));
+                String addressName = AddressDao.getAddressNameByAddress(address);
+                observer.onSuccess(TextUtils.isEmpty(addressName) ? addressName : String.format("%s(%s)", addressName, AddressFormatUtil.formatTransactionAddress(address)));
             }
         }).filter(new Predicate<String>() {
             @Override

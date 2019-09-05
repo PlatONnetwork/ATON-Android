@@ -350,6 +350,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
         }).map(new Function<Transaction, Transaction>() {
             @Override
             public Transaction apply(Transaction transaction) throws Exception {
+                LogUtils.e("发送交易完成开始轮询。。"+transaction.toString());
                 if (transaction.getTxReceiptStatus() == TransactionStatus.PENDING) {
                     TransactionManager.getInstance().getTransactionByLoop(transaction);
                 }
