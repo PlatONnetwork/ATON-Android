@@ -1,5 +1,8 @@
 package com.juzix.wallet;
 
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.SingleObserver;
 import io.reactivex.SingleSource;
@@ -10,7 +13,40 @@ public class Test {
 
     public static void main(String[] args) {
 
-        System.out.println(getValue());
+        Flowable
+                .interval(1, TimeUnit.SECONDS)
+                .doOnNext(new Consumer<Long>() {
+                    @Override
+                    public void accept(Long aLong) throws Exception {
+//                        System.out.println(aLong);
+                    }
+                })
+                .takeUntil(new Predicate<Long>() {
+                    @Override
+                    public boolean test(Long aLong) throws Exception {
+                        return aLong == 5;
+                    }
+                })
+                .filter(new Predicate<Long>() {
+                    @Override
+                    public boolean test(Long aLong) throws Exception {
+                        return aLong == 5;
+                    }
+                })
+                .subscribe(new Consumer<Long>() {
+                    @Override
+                    public void accept(Long aLong) throws Exception {
+                        System.out.println(aLong);
+                    }
+                });
+
+
+        try {
+            Thread.sleep(1000000000000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private static int getValue() {

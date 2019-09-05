@@ -26,6 +26,7 @@ public class CustomThrowable extends Throwable {
     public static final int CODE_NODE_EXIT_CONSENSUS = -208;
     public static final int CODE_ERROR_MNEMONIC = -209;
     public static final int CODE_ERROR_CREATE_WALLET_FAILED = -210;
+    public static final int CODE_TRANSFER_FAILED = -211;
 
     private int errCode;
 
@@ -88,6 +89,9 @@ public class CustomThrowable extends Throwable {
                 break;
             case CODE_ERROR_CREATE_WALLET_FAILED:
                 detailMsgRes = R.string.createWalletFailed;
+                break;
+            case CODE_TRANSFER_FAILED:
+                detailMsgRes = R.string.transfer_failed;
                 break;
             default:
                 break;

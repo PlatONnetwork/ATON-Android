@@ -57,10 +57,19 @@ public class TransactionViewHolder extends BaseViewHolder<Transaction> {
         TransactionStatus transactionStatus = transaction.getTxReceiptStatus();
         TransactionType transactionType = transaction.getTxType();
         boolean isSender = transaction.isSender(mQueryAddressList);
+        boolean isTransfer = transaction.isTransfer(mQueryAddressList);
 
+        if (isTransfer) {
+            mTransactionAmountTv.setText(transaction.getShowValue());
+            mTransactionAmountTv.setTextColor(ContextCompat.getColor(mContext, R.color.color_000000));
+        } else if (isSender) {
+            mTransactionAmountTv.setText(String.format("%s%s", "-", transaction.getShowValue()));
+            mTransactionAmountTv.setTextColor(ContextCompat.getColor(mContext, R.color.color_ff3b3b));
+        } else {
+            mTransactionAmountTv.setText(String.format("%s%s", "+", transaction.getShowValue()));
+            mTransactionAmountTv.setTextColor(ContextCompat.getColor(mContext, R.color.color_19a20e));
+        }
         mTransactionStatusTv.setText(transactionType == TransactionType.TRANSFER ? transaction.getTransferDescRes(mQueryAddressList) : transactionType.getTxTypeDescRes());
-        mTransactionAmountTv.setText(String.format("%s%s", isSender ? "-" : "+", transaction.getShowValue()));
-        mTransactionAmountTv.setTextColor(isSender ? ContextCompat.getColor(mContext, R.color.color_ff3b3b) : ContextCompat.getColor(mContext, R.color.color_19a20e));
         mTransactionTimeTv.setText(transaction.getShowCreateTime());
         mPendingLayout.setVisibility(transactionStatus != TransactionStatus.PENDING || mContext instanceof TransactionRecordsActivity ? View.GONE : View.VISIBLE);
         mTransactionStatusIv.setVisibility(transactionStatus == TransactionStatus.PENDING || mContext instanceof TransactionRecordsActivity ? View.GONE : View.VISIBLE);

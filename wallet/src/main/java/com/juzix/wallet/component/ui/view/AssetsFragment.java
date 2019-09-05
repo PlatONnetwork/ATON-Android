@@ -170,18 +170,6 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
                 mPresenter.fetchWalletsBalance();
             }
         });
-//
-//        layoutRefreshTransaction.setOnLoadMoreListener(new OnLoadMoreListener() {
-//            @Override
-//            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-//                if (vpContent.getCurrentItem() == TAB1) {
-//                    TransactionsFragment viewPageFragment = (TransactionsFragment) mTabAdapter.getItem(TAB1);
-//                    if (viewPageFragment != null) {
-//                        viewPageFragment.loadMoreTransaction();
-//                    }
-//                }
-//            }
-//        });
     }
 
     public void fetchWalletsBalance() {

@@ -125,7 +125,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                             mTransactionList = newTransactionList;
 
                             //开始轮询
-//                            loadNew(DIRECTION_NEW);
+                            loadNew(DIRECTION_NEW);
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -171,7 +171,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                     public void accept(List<Transaction> transactionList) throws Exception {
                         if (isViewAttached() && !transactionList.isEmpty()) {
                             //先进行排序
-                            List<Transaction> newTransactionList = getNewTransactionList(mTransactionList, transactionList, false);
+                            List<Transaction> newTransactionList = getNewTransactionList(mTransactionList, transactionList, true);
                             Collections.sort(newTransactionList);
                             getView().notifyDataSetChanged(mTransactionList, newTransactionList, mWalletAddress, false);
                             mTransactionList = newTransactionList;
@@ -213,7 +213,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
 
                             mTransactionList = newTransactionList;
 
-//                            loadNew(DIRECTION_NEW);
+                            loadNew(DIRECTION_NEW);
                         }
                     }
 
