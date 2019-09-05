@@ -68,7 +68,7 @@ public class TransactionsFragment extends BaseViewPageFragment<TransactionsPrese
     @Override
     public void onPageStart() {
         if (mPresenter != null) {
-//            mPresenter.loadNew(TransactionsPresenter.DIRECTION_NEW);
+            mPresenter.loadNew(TransactionsPresenter.DIRECTION_NEW);
         }
     }
 
