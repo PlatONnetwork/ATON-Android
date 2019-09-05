@@ -22,6 +22,7 @@ import com.juzix.wallet.db.sqlite.WalletDao;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionStatus;
 import com.juzix.wallet.entity.TransactionType;
+import com.juzix.wallet.entity.TransferType;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.AddressFormatUtil;
@@ -31,6 +32,9 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.web3j.platon.BaseResponse;
 import org.web3j.utils.TXTypeEnum;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -108,8 +112,8 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
     }
 
     @Override
-    public String getAddressFromIntent() {
-        return getIntent().getStringExtra(Constants.Extra.EXTRA_ADDRESS);
+    public List<String> getAddressListFromIntent() {
+        return getIntent().getStringArrayListExtra(Constants.Extra.EXTRA_ADDRESS_LIST);
     }
 
     /**
@@ -133,7 +137,7 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
     }
 
     @Override
-    public void setTransactionDetailInfo(Transaction transaction, String queryAddress, String walletName) {
+    public void setTransactionDetailInfo(Transaction transaction, List<String> queryAddressList, String walletName) {
 
         TransactionStatus transactionStatus = transaction.getTxReceiptStatus();
 
@@ -141,9 +145,21 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
 
         showTransactionStatus(transactionStatus);
 
+
+        @TransferType int transferType = transaction.getTransferType(queryAddressList);
+
+        if (transferType == TransferType.SEND) {
+            tvAmount.setText(String.format("%s%s", "-", transaction.getShowValue()));
+            tvAmount.setTextColor(ContextCompat.getColor(this, R.color.color_ff3b3b));
+        } else if (transferType == TransferType.RECEIVE) {
+            tvAmount.setText(String.format("%s%s", "+", transaction.getShowValue()));
+            tvAmount.setTextColor(ContextCompat.getColor(this, R.color.color_19a20e));
+        } else {
+            tvAmount.setText(transaction.getShowValue());
+            tvAmount.setTextColor(ContextCompat.getColor(this, R.color.color_000000));
+        }
+
         tvAmount.setVisibility(transactionStatus == TransactionStatus.SUCCESSED && transactionType == TransactionType.TRANSFER ? View.VISIBLE : View.GONE);
-        tvAmount.setText(String.format("%s%s", transaction.isSender(queryAddress) ? "-" : "+", transaction.getShowValue()));
-        tvAmount.setTextColor(transaction.isSender(queryAddress) ? ContextCompat.getColor(this, R.color.color_ff3b3b) : ContextCompat.getColor(this, R.color.color_19a20e));
         tvCopyFromName.setText(walletName);
         tvFromAddress.setText(transaction.getFrom());
         tvToAddress.setText(transaction.getTo());
@@ -154,7 +170,7 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
         tvTo.setText(getReceiverName(transaction.getTo(), transaction.getNodeName()));
         tvTo.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, getReceiverAvatar(transactionType, transaction.getTo())), null, null, null);
 
-        viewTransactionDetailInfo.setData(transaction, queryAddress);
+        viewTransactionDetailInfo.setData(transaction, transferType);
 
     }
 
@@ -283,10 +299,10 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
         context.startActivity(intent);
     }
 
-    public static void actionStart(Context context, Transaction transaction, String queryAddress) {
+    public static void actionStart(Context context, Transaction transaction, List<String> queryAddress) {
         Intent intent = new Intent(context, TransactionDetailActivity.class);
         intent.putExtra(Constants.Extra.EXTRA_TRANSACTION, transaction);
-        intent.putExtra(Constants.Extra.EXTRA_ADDRESS, queryAddress);
+        intent.putStringArrayListExtra(Constants.Extra.EXTRA_ADDRESS_LIST, new ArrayList<>(queryAddress));
         context.startActivity(intent);
     }
 }

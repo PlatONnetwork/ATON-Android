@@ -276,6 +276,7 @@
     <string name="transactionConfirmation">Transaction Confirmation</string>
     <string name="totalValue">Value</string>
     <string name="type">Type</string>
+    <string name="txt_info">Txn info</string>
     <string name="executeContractFee">Execute Contract Fee</string>
     <string name="addSharedWalletSuccess">Joint wallet added successfully</string>Refuse
     <string name="signingConfirmationFailed">Signing confirmation failed</string>
@@ -428,6 +429,7 @@
     <string name="user_with_serial_number">User%1$d</string>
     <string name="node_exit_consensus">Node has exited consensus,voting failed</string>
     <string name="recipient_wallet">To</string>
+    <string name="recipient_address">Recipient</string>
     <string name="transfer">transfer</string>
     <string name="mpc_transaction">MPCTx</string>
     <string name="create_validator">CreateValidator</string>

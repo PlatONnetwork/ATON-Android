@@ -6,6 +6,8 @@ import com.juzix.wallet.entity.Transaction;
 
 import org.web3j.platon.BaseResponse;
 
+import java.util.List;
+
 /**
  * @author matrixelement
  */
@@ -15,13 +17,13 @@ public class IndividualTransactionDetailContract {
 
         Transaction getTransactionFromIntent();
 
-        String getAddressFromIntent();
+        List<String> getAddressListFromIntent();
 
         String getDelegateHash();
 
         String getWithDrawHash();
 
-        void setTransactionDetailInfo(Transaction transaction, String queryAddress, String senderWalletName);
+        void setTransactionDetailInfo(Transaction transaction, List<String> queryAddressList, String senderWalletName);
 
         void showDelegateResponse(BaseResponse response);
 
