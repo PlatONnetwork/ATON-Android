@@ -1,5 +1,7 @@
 package com.juzix.wallet.component.ui.presenter;
 
+import android.app.Activity;
+
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.ApiSingleObserver;
@@ -11,6 +13,7 @@ import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.utils.RxUtils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -33,7 +36,7 @@ public class TransactionRecordsPresenter extends BasePresenter<TransactionRecord
     }
 
     @Override
-    public void fetchTransactions(String direction,List<String> addressList) {
+    public void fetchTransactions(String direction, List<String> addressList,boolean isWalletChanged) {
 
         ServerUtils
                 .getCommonApi()
@@ -50,17 +53,11 @@ public class TransactionRecordsPresenter extends BasePresenter<TransactionRecord
                     public void onApiSuccess(List<Transaction> transactions) {
                         if (isViewAttached()) {
                             //先进行排序
-                            Collections.sort(transactions);
-                            if (DIRECTION_OLD.equals(direction)) {
-                                //累加,mTransactionList不可能为null,放在最后面
-                                int oldSize = mTransactionList.size();
-                                mTransactionList = addAll(transactions);
-                                int newSize = mTransactionList.size();
-                                getView().notifyItemRangeInserted(mTransactionList, oldSize, newSize - oldSize);
-                            } else {
-                                mTransactionList = transactions;
-                                getView().showTransactions(mTransactionList);
-                            }
+                            List<Transaction> newTransactionList = getNewList(mTransactionList, transactions, DIRECTION_OLD.equals(direction));
+                            Collections.sort(newTransactionList);
+                            getView().notifyDataSetChanged(mTransactionList, newTransactionList,isWalletChanged);
+
+                            mTransactionList = newTransactionList;
 
                             if (DIRECTION_OLD.equals(direction)) {
                                 getView().finishLoadMore();
@@ -82,6 +79,20 @@ public class TransactionRecordsPresenter extends BasePresenter<TransactionRecord
                     }
                 });
 
+    }
+
+    private List<Transaction> getNewList(List<Transaction> oldTransactionList, List<Transaction> curTransactionList, boolean isLoadMore) {
+        List<Transaction> oldList = oldTransactionList == null ? new ArrayList<Transaction>() : oldTransactionList;
+        List<Transaction> curList = curTransactionList;
+        List<Transaction> newList = new ArrayList<>();
+        if (isLoadMore) {
+            newList.addAll(oldList);
+            newList.addAll(curList);
+        } else {
+            newList = curList;
+        }
+
+        return newList;
     }
 
 

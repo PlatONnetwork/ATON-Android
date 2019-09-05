@@ -137,9 +137,11 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
 
         TransactionStatus transactionStatus = transaction.getTxReceiptStatus();
 
+        TransactionType transactionType = transaction.getTxType();
+
         showTransactionStatus(transactionStatus);
 
-        tvAmount.setVisibility(transactionStatus == TransactionStatus.SUCCESSED ? View.VISIBLE : View.GONE);
+        tvAmount.setVisibility(transactionStatus == TransactionStatus.SUCCESSED && transactionType == TransactionType.TRANSFER ? View.VISIBLE : View.GONE);
         tvAmount.setText(String.format("%s%s", transaction.isSender(queryAddress) ? "-" : "+", transaction.getShowValue()));
         tvAmount.setTextColor(transaction.isSender(queryAddress) ? ContextCompat.getColor(this, R.color.color_ff3b3b) : ContextCompat.getColor(this, R.color.color_19a20e));
         tvCopyFromName.setText(walletName);
@@ -149,10 +151,10 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
         tvFrom.setText(getSenderName(transaction.getFrom()));
         tvFrom.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, getSenderAvatar(transaction.getFrom())), null, null, null);
 
-        tvTo.setText(getReceiverName(transaction.getTo()));
-        tvTo.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, getReceiverAvatar(transaction.getTxType(), transaction.getTo())), null, null, null);
+        tvTo.setText(getReceiverName(transaction.getTo(), transaction.getNodeName()));
+        tvTo.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, getReceiverAvatar(transactionType, transaction.getTo())), null, null, null);
 
-        viewTransactionDetailInfo.setData(transaction,queryAddress);
+        viewTransactionDetailInfo.setData(transaction, queryAddress);
 
     }
 
@@ -165,7 +167,6 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
                 showTransactionStatus(transactionStatus);
             }
         }
-
         //发送一个eventbus
         EventPublisher.getInstance().sendRefreshPageEvent();
 
@@ -236,7 +237,10 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
         return R.drawable.avatar_1;
     }
 
-    private String getReceiverName(String prefixAddress) {
+    private String getReceiverName(String prefixAddress, String nodeName) {
+        if (!TextUtils.isEmpty(nodeName)) {
+            return nodeName;
+        }
         String walletName = WalletDao.getWalletNameByAddress(prefixAddress);
         if (!TextUtils.isEmpty(walletName)) {
             return walletName;
@@ -276,6 +280,13 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
         intent.putExtra(Constants.Extra.EXTRA_ADDRESS, queryAddress);
         intent.putExtra(Constants.Extra.EXTRA_DELEGATE_TRANSACTION_HASH, platonSendTransaction);
         intent.putExtra(Constants.Extra.EXTRA_WITHDRAW_TRANSACTION_HASH, withdrawTransaction);
+        context.startActivity(intent);
+    }
+
+    public static void actionStart(Context context, Transaction transaction, String queryAddress) {
+        Intent intent = new Intent(context, TransactionDetailActivity.class);
+        intent.putExtra(Constants.Extra.EXTRA_TRANSACTION, transaction);
+        intent.putExtra(Constants.Extra.EXTRA_ADDRESS, queryAddress);
         context.startActivity(intent);
     }
 }

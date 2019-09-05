@@ -2,32 +2,22 @@ package com.juzix.wallet.component.ui.view;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.DataSetObserver;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.AppCompatSpinner;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.SimpleAdapter;
-import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.adapter.TransactionAdapter;
-import com.juzix.wallet.component.adapter.base.RecycleHolder;
+import com.juzix.wallet.component.adapter.TransactionDiffCallback;
+import com.juzix.wallet.component.adapter.TransactionListAdapter;
 import com.juzix.wallet.component.adapter.base.RecyclerAdapter;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.TransactionRecordsContract;
@@ -35,12 +25,9 @@ import com.juzix.wallet.component.ui.presenter.TransactionRecordsPresenter;
 import com.juzix.wallet.component.widget.CommonVerticalItemDecoration;
 import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.component.widget.WalletListPop;
-import com.juzix.wallet.db.entity.TransactionEntity;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.Transaction;
-import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.entity.Wallet;
-import com.juzix.wallet.utils.DateUtil;
 import com.juzix.wallet.utils.DensityUtil;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -49,13 +36,11 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import jnr.constants.platform.PRIO;
 
 public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecordsPresenter> implements TransactionRecordsContract.View {
 
@@ -75,8 +60,9 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
     TextView tvSelectedWalletName;
 
     private Unbinder unbinder;
-    private TransactionAdapter mTransactionAdapter;
+    private TransactionListAdapter mTransactionListAdapter;
     private WalletListPop mWalletListPop;
+    private List<String> mAddressList;
 
     @Override
     protected TransactionRecordsPresenter createPresenter() {
@@ -98,6 +84,9 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
 
     private void initViews() {
 
+
+        mAddressList = WalletManager.getInstance().getAddressList();
+
         ShadowDrawable.setShadowDrawable(layoutSelectWallets,
                 ContextCompat.getColor(this, R.color.color_ffffff),
                 DensityUtil.dp2px(this, 4),
@@ -106,30 +95,23 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
                 0,
                 DensityUtil.dp2px(this, 2));
 
-        mTransactionAdapter = new TransactionAdapter(this, null, R.layout.item_transaction_record);
+        mTransactionListAdapter = new TransactionListAdapter(this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         listTransactions.addItemDecoration(new CommonVerticalItemDecoration(this, R.drawable.bg_transation_list_divider));
         listTransactions.setLayoutManager(linearLayoutManager);
-        listTransactions.setAdapter(mTransactionAdapter);
-        mTransactionAdapter.setOnItemClickListener(new RecyclerAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                Transaction transaction = mTransactionAdapter.getDatas().get(position);
-                TransactionDetailActivity.actionStart(TransactionRecordsActivity.this, transaction, WalletManager.getInstance().getSelectedWalletAddress(),"","");
-            }
-        });
+        listTransactions.setAdapter(mTransactionListAdapter);
 
         layoutRefresh.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                mPresenter.fetchTransactions(TransactionRecordsPresenter.DIRECTION_NEW, WalletManager.getInstance().getAddressList());
+                mPresenter.fetchTransactions(TransactionRecordsPresenter.DIRECTION_NEW, mAddressList, false);
             }
         });
 
         layoutRefresh.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-                mPresenter.fetchTransactions(TransactionRecordsPresenter.DIRECTION_OLD, WalletManager.getInstance().getAddressList());
+                mPresenter.fetchTransactions(TransactionRecordsPresenter.DIRECTION_OLD, mAddressList, false);
             }
         });
 
@@ -146,7 +128,8 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
                             Wallet wallet = walletList.get(position);
                             ivSelectedWalletAvatar.setImageResource(wallet.isNull() ? R.drawable.icon_all_wallets : RUtils.drawable(wallet.getAvatar()));
                             tvSelectedWalletName.setText(wallet.isNull() ? getString(R.string.msg_all_wallets) : wallet.getName());
-                            mPresenter.fetchTransactions(TransactionRecordsPresenter.DIRECTION_NEW, position == 0 ? WalletManager.getInstance().getAddressList() : Arrays.asList(wallet.getPrefixAddress()));
+                            mAddressList = position == 0 ? WalletManager.getInstance().getAddressList() : Arrays.asList(wallet.getPrefixAddress());
+                            mPresenter.fetchTransactions(TransactionRecordsPresenter.DIRECTION_NEW, mAddressList, true);
                         }
                     });
                 }
@@ -171,16 +154,16 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
     }
 
     @Override
-    public void notifyItemRangeInserted(List<Transaction> transactionList, int positionStart, int itemCount) {
-        layoutNoData.setVisibility(transactionList != null && !transactionList.isEmpty() ? View.GONE : View.VISIBLE);
-        mTransactionAdapter.notifyItemRangeInserted(transactionList, WalletManager.getInstance().getAddressList(), positionStart, itemCount);
-    }
-
-    @Override
-    public void showTransactions(List<Transaction> transactionList) {
-        layoutNoData.setVisibility(transactionList != null && !transactionList.isEmpty() ? View.GONE : View.VISIBLE);
-        listTransactions.setVisibility(transactionList != null && !transactionList.isEmpty() ? View.VISIBLE : View.GONE);
-        mTransactionAdapter.notifyDataSetChanged(transactionList, WalletManager.getInstance().getAddressList());
+    public void notifyDataSetChanged(List<Transaction> oldTransactionList, List<Transaction> newTransactionList, boolean isWalletChanged) {
+        layoutNoData.setVisibility(newTransactionList != null && !newTransactionList.isEmpty() ? View.GONE : View.VISIBLE);
+        mTransactionListAdapter.setQueryAddressList(mAddressList);
+        if (oldTransactionList == null || oldTransactionList.isEmpty() || isWalletChanged) {
+            mTransactionListAdapter.notifyDataSetChanged(newTransactionList);
+        } else {
+            TransactionDiffCallback transactionDiffCallback = new TransactionDiffCallback(oldTransactionList, newTransactionList);
+            mTransactionListAdapter.setTransactionList(newTransactionList);
+            DiffUtil.calculateDiff(transactionDiffCallback, true).dispatchUpdatesTo(mTransactionListAdapter);
+        }
     }
 
     @Override
