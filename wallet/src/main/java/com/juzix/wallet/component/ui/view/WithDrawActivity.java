@@ -202,7 +202,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
             withdrawAmount.setText("");
         } else {
             delegateType.setText(getString(R.string.withdraw_type_released)); //已解除
-            withdrawAmount.setText(item.getValue().replace(",",""));
+            withdrawAmount.setText(item.getValue().replace(",", ""));
             withdrawAmount.setFocusableInTouchMode(false);
             withdrawAmount.setFocusable(false);
             mPresenter.getWithDrawGasPrice(gasPrice);//已解除不能操作，所以需要再获取一次手续费
@@ -232,6 +232,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
             mPresenter.updateWithDrawButtonState();
             mPresenter.getWithDrawGasPrice(gasPrice);
 
+
             String amountMagnitudes = StringUtil.getAmountMagnitudes(getContext(), s.toString().trim());
             etWalletAmount.setText(amountMagnitudes);
             etWalletAmount.setVisibility(TextUtils.isEmpty(amountMagnitudes) ? View.GONE : View.VISIBLE);
@@ -239,9 +240,14 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
 
         @Override
         public void afterTextChanged(Editable s) {
+            if (!TextUtils.isEmpty(s.toString()) && !TextUtils.equals(s.toString(), ".")) {
+                withdrawAmount.removeTextChangedListener(this);
+                mPresenter.checkIsAllWithdraw(s.toString().trim()); //判断输入的数量和选择的数量的差值
+                withdrawAmount.addTextChangedListener(this);
+            }
+
         }
     };
-
 
     @Override
     public void showSelectedWalletInfo(Wallet individualWalletEntity) {
@@ -317,7 +323,19 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         mPopWindowAdapter.notifyDataSetChanged();
     }
 
-    //获取输入的数量
+    /**
+     * 显示选择类型的全部数量
+     */
+    @Override
+    public void showAllWithDrawAmount(String allAmount) {
+        withdrawAmount.setText(allAmount);
+        withdrawAmount.setSelection(0,allAmount.length());
+        withdrawAmount.setFocusableInTouchMode(true);
+        withdrawAmount.setFocusable(true);
+        withdrawAmount.requestFocus();
+    }
+
+    //获取输入的数量(edittext)
     @Override
     public String getInputAmount() {
         return withdrawAmount.getText().toString().trim();

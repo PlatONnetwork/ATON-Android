@@ -103,6 +103,23 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     }
 
     @Override
+    public void updateWithDrawButtonState() {
+        if (isViewAttached()) {
+            String withdrawAmount = getView().getWithDrawAmount();
+            boolean isAmountValid = !TextUtils.isEmpty(withdrawAmount) && NumberParserUtils.parseDouble(withdrawAmount) >= 10;
+            getView().setWithDrawButtonState(isAmountValid);
+        }
+    }
+
+    @Override
+    public void checkIsAllWithdraw(String inputAmount) {
+        String choose = getView().getChooseType();
+        if (BigDecimalUtil.sub(choose, inputAmount) < 10) {
+            getView().showAllWithDrawAmount(choose);
+        }
+    }
+
+    @Override
     public void getBalanceType() {
         ServerUtils.getCommonApi().getWithDrawBalance(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
                 .put("addr", mWalletAddress)
@@ -163,13 +180,14 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
 
     }
 
+
     /**
      * 获取手续费
      */
     @Override
     public void getWithDrawGasPrice(String gasPrice) {
         String input = getView().getInputAmount();
-        if (TextUtils.isEmpty(input) || TextUtils.equals(input,".")) {
+        if (TextUtils.isEmpty(input) || TextUtils.equals(input, ".")) {
             getView().showWithDrawGasPrice("0.00");
             return;
         }
@@ -180,7 +198,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                 .subscribe(new Subscriber<BigInteger>() {
                     @Override
                     public void onNext(BigInteger bigInteger) {
-                        feeAmount =NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(bigInteger.toString(), "1E18"));
+                        feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(bigInteger.toString(), "1E18"));
                         getView().showWithDrawGasPrice(feeAmount);
                     }
 
@@ -277,13 +295,13 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     //操作赎回
     @SuppressLint("CheckResult")
     public void withdraw(Credentials credentials, String nodeId, String blockNum, String withdrawAmount, String type) {
-        Log.e("WithDrawPresenter","==============22222222");
+        Log.e("WithDrawPresenter", "==============22222222");
         DelegateManager.getInstance().withdraw(credentials, nodeId, blockNum, withdrawAmount)
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .subscribe(new Consumer<PlatonSendTransaction>() {
                     @Override
                     public void accept(PlatonSendTransaction platonSendTransaction) throws Exception {
-                        if(isViewAttached()){
+                        if (isViewAttached()) {
                             if (!TextUtils.isEmpty(platonSendTransaction.getTransactionHash())) {
                                 //操作成功，跳转到交易详情，当前页面关闭
                                 if (TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_DELEGATED) || TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_UNLOCKED)) {
@@ -314,16 +332,5 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                 });
 
     }
-
-
-    @Override
-    public void updateWithDrawButtonState() {
-        if (isViewAttached()) {
-            String withdrawAmount = getView().getWithDrawAmount();
-            boolean isAmountValid = !TextUtils.isEmpty(withdrawAmount) && NumberParserUtils.parseDouble(withdrawAmount) >= 10;
-            getView().setWithDrawButtonState(isAmountValid);
-        }
-    }
-
 
 }
