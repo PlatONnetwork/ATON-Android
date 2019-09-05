@@ -11,17 +11,13 @@ import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.adapter.base.ViewHolder;
 import com.juzix.wallet.component.widget.CircleImageView;
-import com.juzix.wallet.entity.DelegateRecord;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionStatus;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.DateUtil;
-import com.juzix.wallet.utils.GlideUtils;
-import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
 
-import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -58,11 +54,12 @@ public class DelegateRecordAdapter extends CommonAdapter<Transaction> {
         changeTextStateAndColor(context, tv, item);
 
 //        viewHolder.setText(R.id.tv_delegate_time, DateUtil.format(NumberParserUtils.parseLong(item.getDelegateTime()), DateUtil.DATETIME_FORMAT_PATTERN_WITH_SECOND)); //委托时间
-        viewHolder.setText(R.id.tv_delegate_time, DateUtil.format(item.getTimestamp(), DateUtil.DATETIME_FORMAT_PATTERN));
+        viewHolder.setText(R.id.tv_delegate_time, DateUtil.format(item.getTimestamp(), DateUtil.DATETIME_FORMAT_PATTERN2));
 
         CircleImageView walletIcon = viewHolder.getView(R.id.iv_wallet);
         walletIcon.setImageResource(RUtils.drawable(item.getWalletIcon()));
-        viewHolder.setText(R.id.tv_wallet_address, item.getWalletName() + ((AddressFormatUtil.formatTransactionAddress(item.getFrom()))));//钱包名称+钱包地址
+        viewHolder.setText(R.id.tv_wallet_name, item.getWalletName());
+        viewHolder.setText(R.id.tv_wallet_address, context.getString(R.string.delegate_record_wallet_address,AddressFormatUtil.formatTransactionAddress(item.getFrom())));//钱包名称+钱包地址
     }
 
     private void changeImageViewIcon(Context context, ImageView iv, Transaction model) {

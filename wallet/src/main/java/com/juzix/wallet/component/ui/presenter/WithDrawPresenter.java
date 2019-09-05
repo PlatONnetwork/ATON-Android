@@ -295,7 +295,6 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     //操作赎回
     @SuppressLint("CheckResult")
     public void withdraw(Credentials credentials, String nodeId, String blockNum, String withdrawAmount, String type) {
-        Log.e("WithDrawPresenter", "==============22222222");
         DelegateManager.getInstance().withdraw(credentials, nodeId, blockNum, withdrawAmount)
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .subscribe(new Consumer<PlatonSendTransaction>() {
