@@ -193,6 +193,7 @@
     <string name="save_image_failed_tips">保存失败</string>
     <string name="gauge_scanning_qr_code">正在扫描...</string>
     <string name="createWalletFailed">创建钱包失败</string>
+    <string name="transferFailed">转账失败</string>
     <string name="addWalletFailed">添加钱包失败</string>
     <string name="validPasswordError">密码错误</string>
     <string name="parsedError">%1$s无法解析</string>

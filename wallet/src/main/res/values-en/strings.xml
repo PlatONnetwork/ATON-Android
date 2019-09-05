@@ -191,6 +191,7 @@
     <string name="save_image_failed_tips">Failed to save image</string>
     <string name="gauge_scanning_qr_code">Scanning ...</string>
     <string name="createWalletFailed">Create Wallet failed</string>
+    <string name="transferFailed">Transfer Failed</string>
     <string name="addWalletFailed">Add Wallet failed</string>
     <string name="validPasswordError">Incorrect password</string>
     <string name="parsedError">%1$s cannot be parsed</string>

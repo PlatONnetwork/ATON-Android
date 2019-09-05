@@ -18,6 +18,7 @@ import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.NumericUtil;
 
+import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscription;
 import org.spongycastle.util.encoders.Hex;
 import org.web3j.abi.PlatOnTypeEncoder;
@@ -38,9 +39,13 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
+import io.reactivex.FlowableEmitter;
+import io.reactivex.FlowableOnSubscribe;
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
@@ -145,48 +150,37 @@ public class TransactionManager {
     /**
      * 通过轮询获取普通钱包的交易
      */
-    public void getTransactionByLoop(Transaction trans) {
-        LogUtils.e("getTransactionByLoop" + trans.toString());
+    public void getTransactionByLoop(Transaction transaction) {
+
         Flowable
                 .interval(Constants.Common.TRANSACTION_STATUS_LOOP_TIME, TimeUnit.MILLISECONDS)
-                .map(new Function<Long, Optional<org.web3j.protocol.core.methods.response.Transaction>>() {
+                .map(new Function<Long, Transaction>() {
                     @Override
-                    public Optional<org.web3j.protocol.core.methods.response.Transaction> apply(Long aLong) throws Exception {
-                        org.web3j.protocol.core.methods.response.Transaction transaction = Web3jManager.getInstance().getTransactionByHash(trans.getHash());
-                        LogUtils.e("getTransactionByHash" + transaction.toString());
-                        return new Optional<org.web3j.protocol.core.methods.response.Transaction>(transaction);
+                    public Transaction apply(Long aLong) throws Exception {
+                        Transaction trans = getTransactionByHash(transaction);
+                        long latestBlockNumber = Web3jManager.getInstance().getLatestBlockNumber();
+                        long blockNumber = trans.getBlockNumber();
+                        TransactionStatus transactionStatus = blockNumber > 0 && latestBlockNumber - blockNumber >= 1 ? TransactionStatus.SUCCESSED : TransactionStatus.PENDING;
+                        trans.setTxReceiptStatus(transactionStatus.ordinal());
+                        return trans;
                     }
                 })
-                .takeUntil(new Predicate<Optional<org.web3j.protocol.core.methods.response.Transaction>>() {
-                    @Override
-                    public boolean test(Optional<org.web3j.protocol.core.methods.response.Transaction> optional) throws Exception {
-                        return getTransactionStatus(optional) == TransactionStatus.SUCCESSED;
-                    }
-                })
-                .map(new Function<Optional<org.web3j.protocol.core.methods.response.Transaction>, Transaction>() {
-                    @Override
-                    public Transaction apply(Optional<org.web3j.protocol.core.methods.response.Transaction> optional) throws Exception {
-                        org.web3j.protocol.core.methods.response.Transaction transaction = optional.get();
-                        double actualTxCost = BigDecimalUtil.mul(transaction.getGas().doubleValue(), transaction.getGasPrice().doubleValue());
-                        Transaction t = trans.clone();
-                        t.setTxReceiptStatus(TransactionStatus.SUCCESSED.ordinal());
-                        t.setActualTxCost(String.valueOf(actualTxCost));
-                        LogUtils.e("setTxReceiptStatus" + t.toString());
-                        return t;
-                    }
-                })
-                .filter(new Predicate<Transaction>() {
+                .takeUntil(new Predicate<Transaction>() {
                     @Override
                     public boolean test(Transaction transaction) throws Exception {
-                        LogUtils.e("filter" + transaction.toString());
                         return transaction.getTxReceiptStatus() == TransactionStatus.SUCCESSED;
                     }
                 })
                 .filter(new Predicate<Transaction>() {
                     @Override
                     public boolean test(Transaction transaction) throws Exception {
-                        //删除数据里的数据
-                        return TransactionDao.deleteTransaction(transaction.getHash());
+                        return transaction.getTxReceiptStatus() == TransactionStatus.SUCCESSED;
+                    }
+                })
+                .doOnNext(new Consumer<Transaction>() {
+                    @Override
+                    public void accept(Transaction transaction) throws Exception {
+                        TransactionDao.deleteTransaction(transaction.getHash());
                     }
                 })
                 .doOnNext(new Consumer<Transaction>() {
@@ -196,7 +190,7 @@ public class TransactionManager {
                     }
                 })
                 .toObservable()
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .subscribe(new CustomObserver<Transaction>() {
                     @Override
                     public void accept(Transaction transaction) {
@@ -209,17 +203,24 @@ public class TransactionManager {
                         LogUtils.e("getIndividualTransactionByLoop 轮询交易失败" + throwable.getMessage());
                     }
                 });
+
     }
 
-    private TransactionStatus getTransactionStatus(Optional<org.web3j.protocol.core.methods.response.Transaction> optional) {
-        if (optional.isEmpty()) {
-            return TransactionStatus.FAILED;
-        } else {
-            Log.e(TAG, "getTransactionStatus 轮询交易");
-            org.web3j.protocol.core.methods.response.Transaction transaction = optional.get();
-            long latestBlockNumber = Web3jManager.getInstance().getLatestBlockNumber();
-            long blockNumber = NumericUtil.decodeQuantity(transaction.getBlockNumberRaw(), BigInteger.ZERO).longValue();
-            return blockNumber > 0 && latestBlockNumber - blockNumber >= 1 ? TransactionStatus.SUCCESSED : TransactionStatus.PENDING;
-        }
+    private Transaction getTransactionByHash(final Transaction transaction) {
+        final Transaction tempTransaction = transaction.clone();
+        return Flowable.create(new FlowableOnSubscribe<Transaction>() {
+            @Override
+            public void subscribe(FlowableEmitter<Transaction> emitter) throws Exception {
+                org.web3j.protocol.core.methods.response.Transaction transaction = Web3jManager.getInstance().getTransactionByHash(tempTransaction.getHash());
+                if (transaction == null) {
+                    emitter.onError(new CustomThrowable(CustomThrowable.CODE_TRANSFER_FAILED));
+                } else {
+                    double actualTxCost = BigDecimalUtil.mul(transaction.getGas().doubleValue(), transaction.getGasPrice().doubleValue());
+                    tempTransaction.setActualTxCost(String.valueOf(actualTxCost));
+                    tempTransaction.setBlockNumber(transaction.getBlockNumber().longValue());
+                    emitter.onNext(tempTransaction);
+                }
+            }
+        }, BackpressureStrategy.BUFFER).blockingFirst();
     }
 }
