@@ -42,6 +42,7 @@ import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.GlideUtils;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
+import com.juzix.wallet.utils.UMEventUtil;
 
 import org.web3j.utils.Convert;
 
@@ -171,6 +172,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
+                        UMEventUtil.onEventCount(DelegateActivity.this, Constants.UMEventID.DELEGATE);
                         //点击委托操作
                         transactionTime = System.currentTimeMillis();
                         Log.d("DelegateActivity", " =============" + transactionTime);

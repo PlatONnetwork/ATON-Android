@@ -34,6 +34,7 @@ import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
+import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -197,6 +198,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
     @Override
     public void onResume() {
         super.onResume();
+        MobclickAgent.onPageStart(Constants.UMPages.VERIFY_NODE);
         RxAdapterView.itemClicks(rlv_list)
                 .compose(RxUtils.getClickTransformer())
                 .compose(RxUtils.bindToLifecycle(this))
@@ -209,6 +211,12 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
                 });
         Log.d("ValidatorsFragment", "=============" + "onresume");
         refreshLayout.autoRefresh();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd(Constants.UMPages.VERIFY_NODE);
     }
 
     @Override
@@ -375,7 +383,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
     //接收tab切换到当前页面的时候，刷新
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void refreshTabChange(Event.UpdateTabChangeEvent event) {
-            refreshLayout.autoRefresh();
+        refreshLayout.autoRefresh();
 
     }
 

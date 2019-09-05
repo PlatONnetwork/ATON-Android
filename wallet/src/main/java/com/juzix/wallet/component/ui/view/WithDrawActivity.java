@@ -38,6 +38,7 @@ import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.GlideUtils;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
+import com.juzix.wallet.utils.UMEventUtil;
 
 import org.web3j.utils.Convert;
 
@@ -145,6 +146,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
+                        UMEventUtil.onEventCount(WithDrawActivity.this, Constants.UMEventID.WITHDRAW_DELEGATE);
                         //点击赎回按钮操作
                         transactionTime = System.currentTimeMillis();
                         String chooseType = WithDrawPopWindowAdapter.TAG_DELEGATED;
@@ -202,7 +204,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
             withdrawAmount.setText("");
         } else {
             delegateType.setText(getString(R.string.withdraw_type_released)); //已解除
-            withdrawAmount.setText(item.getValue().replace(",",""));
+            withdrawAmount.setText(item.getValue().replace(",", ""));
             withdrawAmount.setFocusableInTouchMode(false);
             withdrawAmount.setFocusable(false);
             mPresenter.getWithDrawGasPrice(gasPrice);//已解除不能操作，所以需要再获取一次手续费

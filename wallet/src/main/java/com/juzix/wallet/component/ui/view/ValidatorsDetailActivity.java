@@ -31,6 +31,7 @@ import com.juzix.wallet.utils.GlideUtils;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
 import com.juzix.wallet.utils.ToastUtil;
+import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -104,6 +105,18 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
         unbinder = ButterKnife.bind(this);
         EventPublisher.getInstance().register(this);
         initView();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart(Constants.UMPages.NODE_DETAIL);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd(Constants.UMPages.NODE_DETAIL);
     }
 
     private void initView() {
@@ -239,7 +252,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
         if (!isCanDelegate) {//表示不能委托
             ToastUtil.showLongToast(getContext(), R.string.tips_no_wallet);
         } else {
-            DelegateActivity.actionStart(getContext(), mNodeAddress, mNodeName, mNodeIcon, 1,"");
+            DelegateActivity.actionStart(getContext(), mNodeAddress, mNodeName, mNodeIcon, 1, "");
         }
     }
 

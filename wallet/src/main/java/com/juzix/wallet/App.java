@@ -102,6 +102,8 @@ public class App extends CoreApp {
         if (BuildConfig.DEBUG) {
             UMConfigure.setLogEnabled(true);
         }
+        // 选用LEGACY_AUTO页面采集模式
+        MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.LEGACY_MANUAL);
     }
 
     private ActivityLifecycleCallbacks mActivityLifecycleCallbacks = new ActivityLifecycleCallbacks() {
