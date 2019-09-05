@@ -80,13 +80,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:clipChildren="false"
-                android:clipToPadding="false"
                 android:fadeScrollbars="true"
                 android:scrollbarStyle="outsideOverlay"
                 android:scrollbars="vertical"
-                android:visibility="gone"
-                tools:listitem="@layout/item_transaction_record" />
+                tools:listitem="@layout/item_transaction_list" />
 
             <include layout="@layout/include_no_transaction" />
 

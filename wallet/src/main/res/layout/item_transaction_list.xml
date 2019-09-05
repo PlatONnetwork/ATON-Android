@@ -6,13 +6,27 @@
     android:paddingTop="16dp"
     android:paddingBottom="16dp">
 
-    <ImageView
-        android:id="@+id/iv_transaction_status"
+    <LinearLayout
+        android:id="@+id/layout_transaction_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        tools:src="@drawable/icon_send_transation" />
+        android:orientation="horizontal">
+
+        <com.juzix.wallet.component.widget.PendingAnimationLayout
+            android:id="@+id/layout_pending"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:id="@+id/iv_transaction_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:src="@drawable/icon_send_transation" />
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/tv_transaction_amount"
@@ -28,7 +42,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginLeft="10dp"
         android:layout_toLeftOf="@id/tv_transaction_amount"
-        android:layout_toRightOf="@id/iv_transaction_status"
+        android:layout_toRightOf="@id/layout_transaction_status"
         android:ellipsize="middle"
         android:gravity="center_vertical|left"
         android:maxLength="23"

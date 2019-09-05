@@ -158,6 +158,10 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
      */
 
     private String unDelegation;
+    /**
+     * 质押金额 txType = 1003(退回数量)
+     */
+    private String stakingValue;
 
 
     public Transaction() {
@@ -191,6 +195,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         walletIcon = in.readString();
         walletName = in.readString();
         unDelegation = in.readString();
+        stakingValue = in.readString();
     }
 
     public Transaction(Builder builder) {
@@ -221,6 +226,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         walletIcon = builder.walletIcon;
         walletName = builder.walletName;
         unDelegation = builder.unDelegation;
+        stakingValue = builder.stakingValue;
     }
 
     @Override
@@ -252,6 +258,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         dest.writeString(walletIcon);
         dest.writeString(walletName);
         dest.writeString(unDelegation);
+        dest.writeString(stakingValue);
     }
 
     @Override
@@ -432,7 +439,22 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
     }
 
     public String getShowValue() {
-        return NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(value, "1E18"));
+        switch (getTxType()) {
+            case TRANSFER:
+            case DELEGATE:
+            case CREATE_VALIDATOR:
+            case EDIT_VALIDATOR:
+            case INCREASE_STAKING:
+                return NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(value, "1E18"));
+            case EXIT_VALIDATOR:
+                return NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(stakingValue, "1E18"));
+            case UNDELEGATE:
+                return NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(unDelegation, "1E18"));
+            default:
+                return NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(value, "1E18"));
+
+        }
+
     }
 
     public void setValue(String value) {
@@ -523,6 +545,14 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         this.vote = vote;
     }
 
+    public String getStakingValue() {
+        return stakingValue;
+    }
+
+    public void setStakingValue(String stakingValue) {
+        this.stakingValue = stakingValue;
+    }
+
     @Override
     public int hashCode() {
         return TextUtils.isEmpty(hash) ? 0 : hash.hashCode();
@@ -542,6 +572,9 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
 
     @Override
     public int compareTo(Transaction o) {
+        if (o.sequence == 0 || sequence == 0) {
+            return Long.compare(o.timestamp, timestamp);
+        }
         return Long.compare(o.sequence, sequence);
     }
 
@@ -598,6 +631,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         private String walletIcon;
         private String walletName;
         private String unDelegation;
+        private String stakingValue;
 
         public Builder hash(String hash) {
             this.hash = hash;
@@ -736,6 +770,11 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
 
         public Builder unDelegation(String unDelegation) {
             this.unDelegation = unDelegation;
+            return this;
+        }
+
+        public Builder stakingValue(String stakingValue) {
+            this.stakingValue = stakingValue;
             return this;
         }
 

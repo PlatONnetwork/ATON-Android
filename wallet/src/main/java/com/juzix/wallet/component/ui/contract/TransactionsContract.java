@@ -13,15 +13,7 @@ public class TransactionsContract {
 
     public interface View extends IView {
 
-        void notifyItemRangeInserted(List<Transaction> transactionList, String queryAddress, int positionStart, int itemCount);
-
-        void notifyItemChanged(List<Transaction> transactionList, String queryAddress, int position);
-
-        void notifyDataSetChanged(List<Transaction> transactionList,String queryAddress);
-
-        void finishLoadMore();
-
-        List<Transaction> getTransactionList();
+        void notifyDataSetChanged(List<Transaction> oldTransactionList, List<Transaction> newTransactionList, String queryAddress, boolean loadLatestData);
     }
 
     public interface Presenter extends IPresenter<View> {

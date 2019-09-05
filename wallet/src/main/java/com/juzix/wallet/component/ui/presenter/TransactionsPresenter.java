@@ -2,6 +2,7 @@ package com.juzix.wallet.component.ui.presenter;
 
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -31,6 +32,7 @@ import com.trello.rxlifecycle2.android.FragmentEvent;
 import org.reactivestreams.Publisher;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.IllegalFormatCodePointException;
 import java.util.List;
@@ -70,7 +72,6 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
     private Disposable mAutoRefreshDisposable;
     private Disposable mLoadLatestDisposable;
     private String mWalletAddress;
-    private int mBeginSequence = -1;
 
     public TransactionsPresenter(TransactionsContract.View view) {
         super(view);
@@ -118,12 +119,13 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                     public void accept(List<Transaction> transactionList) {
                         if (isViewAttached()) {
                             //先进行排序
-                            mTransactionList = transactionList;
-                            Collections.sort(mTransactionList);
-                            getView().notifyDataSetChanged(mTransactionList, mWalletAddress);
+                            List<Transaction> newTransactionList = getNewTransactionList(mTransactionList, transactionList, false);
+                            Collections.sort(newTransactionList);
+                            getView().notifyDataSetChanged(mTransactionList, newTransactionList, mWalletAddress, true);
+                            mTransactionList = newTransactionList;
 
                             //开始轮询
-                            loadNew(DIRECTION_NEW);
+//                            loadNew(DIRECTION_NEW);
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -131,7 +133,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                     public void accept(Throwable throwable) throws Exception {
                         Log.e(TAG, "loadLatestData onApiFailure");
                         if (isViewAttached()) {
-                            getView().notifyDataSetChanged(null, mWalletAddress);
+                            getView().notifyDataSetChanged(mTransactionList, null, mWalletAddress, true);
                         }
                     }
                 });
@@ -169,11 +171,10 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                     public void accept(List<Transaction> transactionList) throws Exception {
                         if (isViewAttached() && !transactionList.isEmpty()) {
                             //先进行排序
-                            int oldSize = mTransactionList.size();
-                            mTransactionList = addAll(transactionList, DIRECTION_NEW);
-                            int newSize = mTransactionList.size();
-                            Collections.sort(mTransactionList);
-                            getView().notifyItemRangeInserted(mTransactionList, mWalletAddress, 0, newSize - oldSize);
+                            List<Transaction> newTransactionList = getNewTransactionList(mTransactionList, transactionList, false);
+                            Collections.sort(newTransactionList);
+                            getView().notifyDataSetChanged(mTransactionList, newTransactionList, mWalletAddress, false);
+                            mTransactionList = newTransactionList;
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -205,39 +206,58 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                         if (isViewAttached()) {
                             //先进行排序
                             Collections.sort(transactions);
+                            List<Transaction> newTransactionList = getNewTransactionList(mTransactionList, transactions, true);
+                            Collections.sort(newTransactionList);
                             //累加,mTransactionList不可能为null,放在最后面
-                            mTransactionList.addAll(mTransactionList.size(), transactions);
-                            getView().notifyDataSetChanged(mTransactionList, mWalletAddress);
-                            getView().finishLoadMore();
+                            getView().notifyDataSetChanged(mTransactionList, newTransactionList, mWalletAddress, false);
 
-                            loadNew(DIRECTION_NEW);
+                            mTransactionList = newTransactionList;
+
+//                            loadNew(DIRECTION_NEW);
                         }
                     }
 
                     @Override
                     public void onApiFailure(ApiResponse response) {
                         if (isViewAttached()) {
-                            getView().finishLoadMore();
+//                            getView().finishLoadMore();
                         }
                     }
                 });
     }
 
     @Override
-    public void addNewTransaction(Transaction transaction) {
+    public synchronized void addNewTransaction(Transaction transaction) {
         if (isViewAttached()) {
-            LogUtils.d(transaction.toString() + ":" + mTransactionList.contains(transaction) + mTransactionList.indexOf(transaction));
             if (mTransactionList.contains(transaction)) {
                 //更新
-                int index = mTransactionList.indexOf(transaction);
-                mTransactionList.set(index, transaction);
-                getView().notifyItemChanged(mTransactionList, mWalletAddress, index);
+                List<Transaction> newTransactionList = new ArrayList<>(mTransactionList);
+                int index = newTransactionList.indexOf(transaction);
+                newTransactionList.set(index, transaction);
+                Collections.sort(newTransactionList);
+                getView().notifyDataSetChanged(mTransactionList, newTransactionList, mWalletAddress, false);
+                mTransactionList = newTransactionList;
             } else {
                 //添加
-                mTransactionList.add(0, transaction);
-                getView().notifyItemRangeInserted(mTransactionList, mWalletAddress, 0, 1);
+                List<Transaction> newTransactionList = getNewTransactionList(mTransactionList, Arrays.asList(transaction), true);
+                Collections.sort(newTransactionList);
+                getView().notifyDataSetChanged(mTransactionList, newTransactionList, mWalletAddress, false);
+                mTransactionList = newTransactionList;
             }
         }
+    }
+
+    private List<Transaction> getNewTransactionList(List<Transaction> oldTransactionList, List<Transaction> curTransactionList, boolean isLoadMore) {
+        List<Transaction> oldList = oldTransactionList == null ? new ArrayList<Transaction>() : oldTransactionList;
+        List<Transaction> curList = curTransactionList;
+        List<Transaction> newList = new ArrayList<>();
+        if (isLoadMore) {
+            newList.addAll(oldList);
+            newList.addAll(curList);
+        } else {
+            newList = curList;
+        }
+        return newList;
     }
 
     /**
@@ -368,7 +388,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                 .getTransactionList(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
                         .put("walletAddrs", new String[]{walletAddress})
                         .put("beginSequence", beginSequence)
-                        .put("listSize", 10)
+                        .put("listSize", 20)
                         .put("direction", direction)
                         .build());
     }
