@@ -93,15 +93,6 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
             }
         });
 
-//        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
-//            @Override
-//            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-//                isLoadMore = true;
-//                mPresenter.loadDelegateDetailData(beginSequence);
-//
-//            }
-//        });
-
         mDetailAdapter.setmOnDelegateClickListener(new DelegateDetailAdapter.OnDelegateClickListener() {
             @Override
             public void onDelegateClick(String nodeAddress, String nodeName, String nodeIcon) {
@@ -233,11 +224,12 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
      * @param event
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUpdateTransactionEvent(Event.UpdateDelegateDetailEvent event) {
+    public void onUpdateDelegateDetailPageEvent(Event.UpdateDelegateDetailEvent event) {
         //刷新页面
         mPresenter.loadDelegateDetailData();
     }
 
+    //赎回成功，返回，刷新页面
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void refreshPageEvent(Event.UpdateRefreshPageEvent event) {
         mPresenter.loadDelegateDetailData();

@@ -52,6 +52,13 @@ public class AppSettings {
         setBooleanItem(Constants.Preference.KEY_OPERATE_MENU_FLAG, operateMenuFlag);
     }
 
+    public void setFromDelegateOrValidators(String tag) {
+        setStringItem(Constants.Preference.KEY_DELEGATE_OR_VALIDATORS_TAG, tag);
+    }
+
+    public String getTagFromDelegateOrValidators() {
+      return  getStringItem(Constants.Preference.KEY_DELEGATE_OR_VALIDATORS_TAG, null);
+    }
     public boolean getMydelegateTab() {
         return getBooleanItem(Constants.Preference.KEY_MYDELEGATETAB, true);
     }
