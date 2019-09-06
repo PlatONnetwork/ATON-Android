@@ -13,12 +13,14 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.adapter.WalletManagerAdapter;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.WalletManagerContract;
 import com.juzix.wallet.component.ui.presenter.WalletManagerPresenter;
 import com.juzix.wallet.component.widget.CommonTitleBar;
 import com.juzix.wallet.component.widget.ShadowContainer;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.Collections;
 
@@ -68,6 +70,13 @@ public class WalletManagerActivity extends MVPBaseActivity<WalletManagerPresente
     protected void onResume() {
         mPresenter.fetchWalletList();
         super.onResume();
+        MobclickAgent.onPageStart(Constants.UMPages.WALLET_MANAGER);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd(Constants.UMPages.WALLET_MANAGER);
     }
 
     @Override

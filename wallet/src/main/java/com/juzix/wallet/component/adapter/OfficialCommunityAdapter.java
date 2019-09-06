@@ -75,7 +75,7 @@ public class OfficialCommunityAdapter extends RecyclerAdapter<OfficialCommunity>
                 if (officialCommunityType == OfficialCommunityType.WECHAT) {
                     qrCodeIv.setVisibility(qrCodeIv.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
                 } else {
-                    CommonHybridActivity.actionStart(mContext, item.getWebPortalUrl(), WebType.WEB_TYPE_COMMON);
+                    CommonHybridActivity.actionStart(mContext, item.getWebPortalUrl(), WebType.WEB_TYPE_OFFICIAL_COMMUNITY);
                 }
             }
         });

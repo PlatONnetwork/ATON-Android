@@ -130,7 +130,7 @@ public class MeFragment extends BaseFragment {
                         } else {
                             supportFeedBackUrl = Constants.WEBURL.WEB_URL_SUPPORT_FEEDBACK_EN;
                         }
-                        CommonHybridActivity.actionStart(getActivity(), supportFeedBackUrl, WebType.WEB_TYPE_COMMON);
+                        CommonHybridActivity.actionStart(getActivity(), supportFeedBackUrl, WebType.WEB_TYPE_SUPPORT_FEEDBACK);
                     }
                 });
     }

@@ -89,7 +89,11 @@ public class Constants {
         String KEY_VALIDATORS_RANK = "validatorsRank";
         String KEY_MYDELEGATETAB = "mydelegatetab";
         String KEY_VALIDATORSTAB = "validatorstab";
+
         String KEY_DELEGATE_OR_VALIDATORS_TAG ="tag";
+
+        String DEVICE_ID = "device_id";
+
 
     }
 
@@ -117,16 +121,17 @@ public class Constants {
         String URL_HTTP_C = "http://192.168.9.190:1000";
     }
 
-    public  interface  WEBURL{
-        String WEB_URL_FAQ_ZH ="https://platon.zendesk.com/hc/zh-cn/categories/360002174434";
-        String WEB_URL_FAQ_EN ="https://platon.zendesk.com/hc/en-us/categories/360002174434";
-        String WEB_URL_TUTORIAL_ZH ="https://platon.zendesk.com/hc/zh-cn/categories/360002193633";
-        String WEB_URL_TUTORIAL_EN ="https://platon.zendesk.com/hc/en-us/categories/360002193633";
-        String WEB_URL_AGREEMENT_ZH ="http://192.168.9.190:1000/aton-agreement/zh-cn/agreement.html";
-        String WEB_URL_AGREEMENT_EN ="http://192.168.9.190:1000/aton-agreement/en-us/agreement.html";
-        String WEB_URL_SUPPORT_FEEDBACK_ZH ="https://platon.zendesk.com/hc/zh-cn";
-        String WEB_URL_SUPPORT_FEEDBACK_EN ="https://platon.zendesk.com/hc/en-us";
+    public interface WEBURL {
+        String WEB_URL_FAQ_ZH = "https://platon.zendesk.com/hc/zh-cn/categories/360002174434";
+        String WEB_URL_FAQ_EN = "https://platon.zendesk.com/hc/en-us/categories/360002174434";
+        String WEB_URL_TUTORIAL_ZH = "https://platon.zendesk.com/hc/zh-cn/categories/360002193633";
+        String WEB_URL_TUTORIAL_EN = "https://platon.zendesk.com/hc/en-us/categories/360002193633";
+        String WEB_URL_AGREEMENT_ZH = "http://192.168.9.190:1000/aton-agreement/zh-cn/agreement.html";
+        String WEB_URL_AGREEMENT_EN = "http://192.168.9.190:1000/aton-agreement/en-us/agreement.html";
+        String WEB_URL_SUPPORT_FEEDBACK_ZH = "https://platon.zendesk.com/hc/zh-cn";
+        String WEB_URL_SUPPORT_FEEDBACK_EN = "https://platon.zendesk.com/hc/en-us";
     }
+
     public interface VoteConstants {
         String IS_VALID = "0";// 0 表示无效
         String REQUEST_DIRECTION = "old";//请求参数传递的方向
@@ -186,6 +191,11 @@ public class Constants {
 
     public interface UMEventID {
 
+        String SEND_TRANSACTION = "send_transaction";
+
+        String DELEGATE = "delegate";
+
+        String WITHDRAW_DELEGATE = "withdraw_delegate";
     }
 
     public interface UMEventKey {

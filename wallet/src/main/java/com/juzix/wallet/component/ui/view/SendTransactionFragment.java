@@ -47,6 +47,7 @@ import com.juzix.wallet.utils.JZWalletUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
 import com.juzix.wallet.utils.ToastUtil;
+import com.juzix.wallet.utils.UMEventUtil;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -146,6 +147,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) {
+                        UMEventUtil.onEventCount(getActivity(), Constants.UMEventID.SEND_TRANSACTION);
                         mPresenter.submit();
                     }
                 });

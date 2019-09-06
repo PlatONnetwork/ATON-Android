@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.adapter.TransactionAdapter;
 import com.juzix.wallet.component.adapter.TransactionDiffCallback;
 import com.juzix.wallet.component.adapter.TransactionListAdapter;
@@ -28,11 +29,13 @@ import com.juzix.wallet.component.widget.WalletListPop;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.Wallet;
+import com.juzix.wallet.entity.WebType;
 import com.juzix.wallet.utils.DensityUtil;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -75,6 +78,18 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
         setContentView(R.layout.activity_transaction_records);
         unbinder = ButterKnife.bind(this);
         initViews();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart(Constants.UMPages.TRANSACTION_RECORD);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd(Constants.UMPages.TRANSACTION_RECORD);
     }
 
     @Override
