@@ -116,12 +116,21 @@
                     android:src="@drawable/icon_total_delegate" />
 
                 <TextView
+                android:id="@+id/tv_wallet_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
+                android:layout_toRightOf="@id/iv_wallet"
+                android:text="123"
+                android:textColor="@color/color_898c9e"
+                android:textSize="13sp" />
+                <TextView
                     android:id="@+id/tv_wallet_address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="2dp"
                     android:layout_toRightOf="@id/iv_wallet"
-                    android:text="钱包地址dafsdfas"
+                    android:text="dafsdfas"
                     android:textColor="@color/color_898c9e"
                     android:textSize="13sp" />
             </LinearLayout>

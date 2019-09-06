@@ -19,7 +19,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
-import com.juzhen.framework.util.NumberParserUtils;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
@@ -241,9 +240,14 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
 
         @Override
         public void afterTextChanged(Editable s) {
+            if (!TextUtils.isEmpty(s.toString()) && !TextUtils.equals(s.toString(), ".")) {
+                withdrawAmount.removeTextChangedListener(this);
+                mPresenter.checkIsAllWithdraw(s.toString().trim()); //判断输入的数量和选择的数量的差值
+                withdrawAmount.addTextChangedListener(this);
+            }
+
         }
     };
-
 
     @Override
     public void showSelectedWalletInfo(Wallet individualWalletEntity) {
@@ -319,7 +323,20 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         mPopWindowAdapter.notifyDataSetChanged();
     }
 
-    //获取输入的数量
+    /**
+     * 显示选择类型的全部数量
+     */
+    @Override
+    public void showAllWithDrawAmount(String allAmount) {
+        withdrawAmount.setText(allAmount);
+        withdrawAmount.setSelection(0,allAmount.length());
+        withdrawAmount.setFocusableInTouchMode(true);
+        withdrawAmount.setFocusable(true);
+        withdrawAmount.setEnabled(true);
+        withdrawAmount.requestFocus();
+    }
+
+    //获取输入的数量(edittext)
     @Override
     public String getInputAmount() {
         return withdrawAmount.getText().toString().trim();
@@ -338,7 +355,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
                 .to(to)
                 .timestamp(transactionTime)
                 .txType(txType)
-                .value(Convert.toVon(withdrawAmount.getText().toString(), Convert.Unit.LAT).toBigInteger().toString())
+                .unDelegation(Convert.toVon(withdrawAmount.getText().toString(), Convert.Unit.LAT).toBigInteger().toString())
                 .actualTxCost(Convert.toVon(actualTxCost, Convert.Unit.LAT).toBigInteger().toString())
                 .nodeName(nodeName)
                 .nodeId(nodeId)
