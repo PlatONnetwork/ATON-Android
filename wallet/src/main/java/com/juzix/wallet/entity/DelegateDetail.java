@@ -58,6 +58,11 @@ public class DelegateDetail implements Parcelable {
 
     private String walletAddress;
 
+    /**
+     * 最新委托交易块高 后面新加的
+     */
+    private String delegationBlockNum;
+
     public DelegateDetail() {
 
     }
@@ -150,6 +155,14 @@ public class DelegateDetail implements Parcelable {
         this.walletAddress = walletAddress;
     }
 
+    public String getDelegationBlockNum() {
+        return delegationBlockNum;
+    }
+
+    public void setDelegationBlockNum(String delegationBlockNum) {
+        this.delegationBlockNum = delegationBlockNum;
+    }
+
     protected DelegateDetail(Parcel in) {
         nodeId = in.readString();
         nodeName = in.readString();
@@ -162,6 +175,7 @@ public class DelegateDetail implements Parcelable {
         unLocked = in.readString();
         stakingBlockNum = in.readString();
         walletAddress =in.readString();
+        delegationBlockNum =in.readString();
     }
 
     @Override
@@ -177,6 +191,7 @@ public class DelegateDetail implements Parcelable {
         dest.writeString(unLocked);
         dest.writeString(stakingBlockNum);
         dest.writeString(walletAddress);
+        dest.writeString(delegationBlockNum);
     }
 
     @Override

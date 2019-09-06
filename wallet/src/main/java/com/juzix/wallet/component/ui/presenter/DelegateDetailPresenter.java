@@ -23,8 +23,6 @@ import java.util.concurrent.Callable;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
-import io.reactivex.functions.BiFunction;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
@@ -57,7 +55,7 @@ public class DelegateDetailPresenter extends BasePresenter<DelegateDetailContrac
                 DelegateDetailEntity entity = new DelegateDetailEntity();
                 entity.setAddress(mWalletAddress);
                 entity.setNodeId(detail.getNodeId());
-                entity.setStakingBlockNum(detail.getStakingBlockNum());
+                entity.setDelegationBlockNum(detail.getDelegationBlockNum());
                 return entity;
             }
         }).map(new Function<DelegateDetailEntity, Boolean>() {
@@ -108,7 +106,7 @@ public class DelegateDetailPresenter extends BasePresenter<DelegateDetailContrac
                             public boolean test(DelegateDetail delegateDetail) throws Exception {
                                 DelegateDetailEntity entity = DelegateDetailDao.getEntityWithAddressAndNodeId(delegateDetail.getWalletAddress(), delegateDetail.getNodeId());
                                 if (entity != null) {
-                                    if (TextUtils.equals(entity.getStakingBlockNum(), delegateDetail.getStakingBlockNum())) { //数据库中拿到的对象的块高和列表中的块高做比较
+                                    if (TextUtils.equals(entity.getDelegationBlockNum(), delegateDetail.getDelegationBlockNum())) { //数据库中拿到的对象的块高和列表中的块高做比较
                                         return false;
                                     } else {
                                         DelegateDetailDao.deleteDelegateDetailEntityByAddressAndNodeId(delegateDetail.getNodeId(), delegateDetail.getWalletAddress());
@@ -255,19 +253,6 @@ public class DelegateDetailPresenter extends BasePresenter<DelegateDetailContrac
                 return DelegateDetailDao.deleteDelegateDetailEntity();
             }
         }).subscribeOn(Schedulers.io()).blockingGet();
-    }
-
-    public List<DelegateDetail> getDelegateList(List<DelegateDetailEntity> entityList) {
-        DelegateDetail detail = new DelegateDetail();
-        return Flowable.fromIterable(entityList)
-                .map(new Function<DelegateDetailEntity, DelegateDetail>() {
-                    @Override
-                    public DelegateDetail apply(DelegateDetailEntity entity) throws Exception {
-                        detail.setStakingBlockNum(entity.getStakingBlockNum());//设置块高
-                        return detail;
-                    }
-                }).toList().blockingGet();
-
     }
 
     @Override
