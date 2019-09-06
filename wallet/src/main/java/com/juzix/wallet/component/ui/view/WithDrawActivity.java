@@ -34,6 +34,7 @@ import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.entity.WithDrawType;
 import com.juzix.wallet.utils.AddressFormatUtil;
+import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.GlideUtils;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
@@ -240,14 +241,30 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
 
         @Override
         public void afterTextChanged(Editable s) {
+            //方法一
             if (!TextUtils.isEmpty(s.toString()) && !TextUtils.equals(s.toString(), ".")) {
                 withdrawAmount.removeTextChangedListener(this);
                 mPresenter.checkIsAllWithdraw(s.toString().trim()); //判断输入的数量和选择的数量的差值
                 withdrawAmount.addTextChangedListener(this);
             }
 
+            //方法二
+//            if (!TextUtils.isEmpty(s.toString()) && !TextUtils.equals(s.toString(), ".")) {
+//                if (BigDecimalUtil.sub(delegateAmount.getText().toString().replaceAll(",", ""), s.toString()) < 10) {
+//                    withdrawAmount.removeTextChangedListener(this);
+//                    setText();
+//                }
+//            }
+
         }
     };
+
+    private void setText() {
+        withdrawAmount.setText(delegateAmount.getText().toString().replace(",", ""));
+        withdrawAmount.invalidate();//这句话是不是需要添加
+        withdrawAmount.addTextChangedListener(mAmountTextWatcher);
+    }
+
 
     @Override
     public void showSelectedWalletInfo(Wallet individualWalletEntity) {
@@ -329,7 +346,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     @Override
     public void showAllWithDrawAmount(String allAmount) {
         withdrawAmount.setText(allAmount);
-        withdrawAmount.setSelection(0,allAmount.length());
+        withdrawAmount.setSelection(0, allAmount.length());
         withdrawAmount.setFocusableInTouchMode(true);
         withdrawAmount.setFocusable(true);
         withdrawAmount.setEnabled(true);

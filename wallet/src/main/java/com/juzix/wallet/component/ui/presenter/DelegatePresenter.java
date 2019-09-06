@@ -14,6 +14,7 @@ import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.DelegateContract;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.dialog.SelectWalletDialogFragment;
+import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.engine.DelegateManager;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
@@ -66,6 +67,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
         mNodeIcon = view.getNodeIconFromIntent();
         mWalletAddress = view.getWalletAddressFromIntent();
         tag = view.getJumpTagFromIntent();
+        AppSettings.getInstance().setFromDelegateOrValidators(String.valueOf(tag));
     }
 
     @Override

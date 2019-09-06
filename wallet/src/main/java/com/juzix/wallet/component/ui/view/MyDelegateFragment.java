@@ -185,7 +185,6 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
 
     private void initViews() {
         initColor();
-        showLoadingDialog();
         initRefreshView();
         layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -240,7 +239,6 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
         mMyDelegateAdapter.notifyDataChanged(list);
         showTotal(list);
         refreshLayout.finishRefresh();
-        dismissLoadingDialogImmediately();
     }
 
     private void showTotal(List<DelegateInfo> list) {
@@ -257,7 +255,6 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
     public void showMyDelegateDataFailed() {
         refreshLayout.finishRefresh();
         mMyDelegateAdapter.notifyDataSetChanged();
-        dismissLoadingDialogImmediately();
     }
 
 

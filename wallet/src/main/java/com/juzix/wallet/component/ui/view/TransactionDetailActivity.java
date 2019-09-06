@@ -17,6 +17,7 @@ import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.IndividualTransactionDetailContract;
 import com.juzix.wallet.component.ui.presenter.TransactionDetailPresenter;
+import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.db.sqlite.AddressDao;
 import com.juzix.wallet.db.sqlite.WalletDao;
 import com.juzix.wallet.entity.Transaction;
@@ -184,7 +185,13 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
             }
         }
         //发送一个eventbus
-        EventPublisher.getInstance().sendRefreshPageEvent();
+        if(TextUtils.equals(AppSettings.getInstance().getTagFromDelegateOrValidators(),"0")){
+            EventPublisher.getInstance().sendUpdateDelegateEvent();
+        }else {
+            EventPublisher.getInstance().sendUpdateValidatorsDetailEvent();
+        }
+
+//        EventPublisher.getInstance().sendRefreshPageEvent();
 
     }
 

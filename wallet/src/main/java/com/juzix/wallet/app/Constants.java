@@ -89,7 +89,11 @@ public class Constants {
         String KEY_VALIDATORS_RANK = "validatorsRank";
         String KEY_MYDELEGATETAB = "mydelegatetab";
         String KEY_VALIDATORSTAB = "validatorstab";
+
+        String KEY_DELEGATE_OR_VALIDATORS_TAG ="tag";
+
         String DEVICE_ID = "device_id";
+
 
     }
 

@@ -268,16 +268,16 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
      * @param event
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUpdateTransactionEvent(Event.UpdateValidatorsDetailEvent event) {
+    public void onUpdateValidatorsPageEvent(Event.UpdateValidatorsDetailEvent event) {
         //刷新页面
         mPresenter.loadValidatorsDetailData();
     }
 
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void updatePageEvent(Event.UpdateRefreshPageEvent event) {
-        mPresenter.loadValidatorsDetailData();
-    }
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void updatePageEvent(Event.UpdateRefreshPageEvent event) {
+//        mPresenter.loadValidatorsDetailData();
+//    }
 
     @Override
     protected void onDestroy() {
