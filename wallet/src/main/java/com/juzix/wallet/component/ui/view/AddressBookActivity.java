@@ -21,6 +21,7 @@ import com.juzix.wallet.component.widget.swipeenulistview.SwipeMenuItem;
 import com.juzix.wallet.component.widget.swipeenulistview.SwipeMenuListView;
 import com.juzix.wallet.entity.Address;
 import com.juzix.wallet.utils.DensityUtil;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.List;
 
@@ -63,6 +64,18 @@ public class AddressBookActivity extends MVPBaseActivity<AddressBookPresenter> i
         unbinder = ButterKnife.bind(this);
         initViews();
         mPresenter.fetchAddressList();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart(Constants.UMPages.ADDRESS_BOOK);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd(Constants.UMPages.ADDRESS_BOOK);
     }
 
     private void initViews() {

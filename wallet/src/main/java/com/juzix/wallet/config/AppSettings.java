@@ -67,6 +67,7 @@ public class AppSettings {
     public void setValidatorsTab(boolean isChoosedTab) {
         setBooleanItem(Constants.Preference.KEY_VALIDATORSTAB, isChoosedTab);
     }
+
     public boolean getFaceTouchIdFlag() {
         return getBooleanItem(Constants.Preference.KEY_FACE_TOUCH_ID_FLAG, false);
     }
@@ -148,8 +149,8 @@ public class AppSettings {
         setStringItem(Constants.Preference.KEY_CURRENT_NODE_ADDRESS, nodeAddress);
     }
 
-    public String getCurrentNodeAddress(){
-        return getStringItem(Constants.Preference.KEY_CURRENT_NODE_ADDRESS,null);
+    public String getCurrentNodeAddress() {
+        return getStringItem(Constants.Preference.KEY_CURRENT_NODE_ADDRESS, null);
     }
 
     public void setDownloadManagerId(long downloadManagerId) {
@@ -158,5 +159,13 @@ public class AppSettings {
 
     public long getDownloadManagerId() {
         return getLongItem("downloadManagerId", -1);
+    }
+
+    public void setDeviceId(String deviceId) {
+        setStringItem(Constants.Preference.DEVICE_ID, deviceId);
+    }
+
+    public String getDeviceId() {
+        return getStringItem(Constants.Preference.DEVICE_ID, "");
     }
 }

@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.juzhen.framework.util.AndroidUtil;
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.base.BaseFragment;
 import com.juzix.wallet.component.widget.ViewPagerSlide;
@@ -19,6 +20,7 @@ import com.juzix.wallet.component.widget.table.PagerItem;
 import com.juzix.wallet.component.widget.table.PagerItemAdapter;
 import com.juzix.wallet.component.widget.table.PagerItems;
 import com.juzix.wallet.component.widget.table.SmartTabLayout;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 
@@ -34,6 +36,18 @@ public class DelegateRecordActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_delegate_record);
         initView();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart(Constants.UMPages.DELEGATE_NODE_RECORD);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd(Constants.UMPages.DELEGATE_NODE_RECORD);
     }
 
     private void initView() {

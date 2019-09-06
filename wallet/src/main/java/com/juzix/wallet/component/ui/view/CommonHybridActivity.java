@@ -28,6 +28,7 @@ import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.WebType;
 import com.juzix.wallet.utils.RxUtils;
+import com.umeng.analytics.MobclickAgent;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,6 +62,22 @@ public class CommonHybridActivity extends BaseAgentWebActivity {
         ButterKnife.bind(this);
         init();
         buildAgentWeb();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mWebType == WebType.WEB_TYPE_OFFICIAL_COMMUNITY || mWebType == WebType.WEB_TYPE_SUPPORT_FEEDBACK) {
+            MobclickAgent.onPageStart(mWebType == WebType.WEB_TYPE_OFFICIAL_COMMUNITY ? Constants.UMPages.OFFICIAL_COMMUNITY : Constants.UMPages.SUPPORT_FEEDBACK);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mWebType == WebType.WEB_TYPE_OFFICIAL_COMMUNITY || mWebType == WebType.WEB_TYPE_SUPPORT_FEEDBACK) {
+            MobclickAgent.onPageEnd(mWebType == WebType.WEB_TYPE_OFFICIAL_COMMUNITY ? Constants.UMPages.OFFICIAL_COMMUNITY : Constants.UMPages.SUPPORT_FEEDBACK);
+        }
     }
 
     private void init() {
