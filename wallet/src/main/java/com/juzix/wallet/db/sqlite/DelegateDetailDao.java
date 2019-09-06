@@ -157,7 +157,7 @@ public class DelegateDetailDao {
 
 
     //根据字段更新对象
-    public static boolean updateNodeIdAndBlockHeight(String walletAddress, String stakingBlockNum, String nodeId) {
+    public static boolean updateNodeIdAndBlockHeight(String walletAddress, String delegationBlockNum, String nodeId) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
@@ -165,7 +165,7 @@ public class DelegateDetailDao {
             realm.where(DelegateDetailEntity.class)
                     .equalTo("address", walletAddress)
                     .findFirst()
-                    .setStakingBlockNum(stakingBlockNum);
+                    .setDelegationBlockNum(delegationBlockNum);
 
             realm.where(DelegateDetailEntity.class)
                     .equalTo("address", walletAddress)

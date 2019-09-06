@@ -13,9 +13,9 @@ public class DelegateDetailEntity extends RealmObject {
      */
     private String address;
     /**
-     * 最新的质押交易块高
+     * 最新委托交易块高
      */
-    private String stakingBlockNum;
+    private String delegationBlockNum;
 
 
 
@@ -25,17 +25,17 @@ public class DelegateDetailEntity extends RealmObject {
 
     public DelegateDetailEntity(Builder builder) {
         setAddress(builder.address);
-        setStakingBlockNum(builder.stakingBlockNum);
+        setDelegationBlockNum(builder.delegationBlockNum);
         setNodeId(builder.nodeId);
     }
 
 
-    public String getStakingBlockNum() {
-        return stakingBlockNum;
+    public String getDelegationBlockNum() {
+        return delegationBlockNum;
     }
 
-    public void setStakingBlockNum(String stakingBlockNum) {
-        this.stakingBlockNum = stakingBlockNum;
+    public void setDelegationBlockNum(String delegationBlockNum) {
+        this.delegationBlockNum = delegationBlockNum;
     }
 
     public String getNodeId() {
@@ -57,7 +57,7 @@ public class DelegateDetailEntity extends RealmObject {
 
     public static final class Builder {
         private String address;
-        private String stakingBlockNum;
+        private String delegationBlockNum;
         private String nodeId;
 
 
@@ -70,8 +70,8 @@ public class DelegateDetailEntity extends RealmObject {
             return this;
         }
 
-        public Builder stakingBlockNum(String stakingBlockNum) {
-            this.stakingBlockNum = stakingBlockNum;
+        public Builder delegationBlockNum(String delegationBlockNum) {
+            this.delegationBlockNum = delegationBlockNum;
             return this;
         }
 

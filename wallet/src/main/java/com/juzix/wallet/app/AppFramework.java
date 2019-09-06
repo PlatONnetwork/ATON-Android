@@ -286,6 +286,22 @@ public class AppFramework {
                 oldVersion++;
             } else if (oldVersion == 106) {
 
+                 schema.get("WalletEntity")
+                         .transform(new RealmObjectSchema.Function() {
+                             @Override
+                             public void apply(DynamicRealmObject obj) {
+                                 obj.set("chainId","203"); //todo  这里只能写死，因为初始数据库是在初始化节点之前执行的，所以不能通过通用的方法去拿链id
+                             }
+                         });
+
+                schema.get("NodeEntity")
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.getDynamicRealm().where("NodeEntity").findAll().deleteAllFromRealm();
+                            }
+                        });
+
                 schema.get("TransactionEntity")
                         .addField("txReceiptStatus_temp", Integer.class).setRequired("txReceiptStatus_temp", true)
                         .transform(new RealmObjectSchema.Function() {
@@ -309,9 +325,9 @@ public class AppFramework {
                         .addField("isInit", boolean.class);
 
                 schema.create("DelegateDetailEntity")
-                        .addField("nodeId", String.class, FieldAttribute.PRIMARY_KEY)
+                        .addField("nodeId", String.class)
                         .addField("address", String.class)
-                        .addField("stakingBlockNum", String.class);
+                        .addField("delegationBlockNum", String.class);
 
                 oldVersion++;
 
