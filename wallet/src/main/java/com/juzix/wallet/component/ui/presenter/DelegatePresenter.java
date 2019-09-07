@@ -117,7 +117,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     public void updateDelegateButtonState() {
         if (isViewAttached()) {
             String withdrawAmount = getView().getDelegateAmount(); //获取输入的委托数量
-            boolean isAmountValid = !TextUtils.isEmpty(withdrawAmount) && NumberParserUtils.parseDouble(withdrawAmount) > 10;
+            boolean isAmountValid = !TextUtils.isEmpty(withdrawAmount) && NumberParserUtils.parseDouble(withdrawAmount) >= 10;
             getView().setDelegateButtonState(isAmountValid);
         }
 
