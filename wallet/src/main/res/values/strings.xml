@@ -465,7 +465,7 @@
 
     <!--ATON0.7.0-->
     <string name="guide_tips">已有钱包？使用钱包文件(json)、助记词、私钥导入</string>
-    <string name="restricted_amount_with_unit">(&#160;&#160;锁仓金额:&#160;%1$s&#160;LAT)</string>
+    <string name="restricted_amount_with_unit">(&#160;&#160;锁仓:&#160;%1$s&#160;LAT)</string>
     <string name="restricted_amount_tips">锁仓的LAT支持委托</string>
 
     <string name="msg_hundred">百</string>
