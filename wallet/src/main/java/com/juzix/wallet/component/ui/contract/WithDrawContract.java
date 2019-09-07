@@ -69,11 +69,6 @@ public class WithDrawContract {
 
         void showGas(BigInteger bigInteger);
 
-
-        /**
-         * 输入的数量和选择的类型的数量相减小于10，这填充选择的全部
-         */
-        void showAllWithDrawAmount(String allAmount);
     }
 
     public interface Presenter extends IPresenter<View> {
@@ -98,7 +93,6 @@ public class WithDrawContract {
 
         void getGas();
 
-        void checkIsAllWithdraw(String inputAmount);
     }
 
 }

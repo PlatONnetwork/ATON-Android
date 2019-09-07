@@ -24,6 +24,7 @@
                 android:paddingLeft="13dp"
                 android:paddingTop="26dp"
                 android:paddingRight="16dp"
+                android:gravity="center"
                 android:paddingBottom="16dp">
 
                 <ImageView
@@ -37,6 +38,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignTop="@id/iv_total_delegate"
+                    android:layout_centerVertical="true"
                     android:layout_toRightOf="@id/iv_total_delegate"
                     android:orientation="vertical">
 
@@ -53,6 +55,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="7dp"
                         android:textColor="@color/color_000000"
+                        tools:text="151651615516545133"
                         android:textSize="14sp" />
 
                 </LinearLayout>

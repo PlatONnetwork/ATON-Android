@@ -70,8 +70,8 @@ public class DelegatePopAdapter extends BaseAdapter {
         }
 
         holder.tv_delegate_type.setText(TextUtils.equals(item.getType(), "0") ? mContext.getString(R.string.available_balance): mContext.getString(R.string.locked_balance));
-//        holder.tv_delegate_amount.setText(StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(item.getAmount(), "1E18"))), false));
-        holder.tv_delegate_amount.setText(mContext.getString(R.string.amount_with_unit,StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(item.getAmount(), "1E18"))), false)));
+//        holder.tv_delegate_amount.setText(mContext.getString(R.string.amount_with_unit,StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(item.getAmount(), "1E18"))), false)));
+        holder.tv_delegate_amount.setText(StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(item.getAmount(), "1E18"))), false));
         return view;
     }
 

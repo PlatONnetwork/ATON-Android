@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_f9fbff"
@@ -31,7 +32,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/color_ffffff"
@@ -43,6 +44,7 @@
                     android:layout_height="42dp"
                     android:layout_marginLeft="13dp"
                     android:layout_marginTop="15dp"
+                    android:layout_centerVertical="true"
                     android:src="@drawable/icon_validators_default" />
 
                 <LinearLayout
@@ -51,6 +53,8 @@
                     android:layout_marginLeft="3dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="15dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/iv_delegate_node_icon"
                     android:orientation="vertical">
 
                     <TextView
@@ -58,6 +62,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/color_000000"
+                        tools:text="节点名称"
                         android:textSize="15sp" />
 
                     <TextView
@@ -66,12 +71,13 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:textColor="@color/color_898c9e"
+                        tools:text="0xc6548646845adfasafs"
                         android:textSize="13sp" />
 
                 </LinearLayout>
 
 
-            </LinearLayout>
+            </RelativeLayout>
 
 
             <RelativeLayout
@@ -81,6 +87,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginRight="10dp"
+                android:gravity="center"
                 android:background="@drawable/icon_my_delegate_item_bg"
                 android:orientation="horizontal">
 
@@ -89,7 +96,8 @@
                     android:layout_width="42dp"
                     android:layout_height="42dp"
                     android:layout_marginLeft="3dp"
-                    android:layout_marginTop="9dp"
+                    android:layout_marginTop="11dp"
+                    android:layout_centerVertical="true"
                     android:src="@drawable/icon_validators_default" />
 
                 <LinearLayout
@@ -99,6 +107,7 @@
                     android:layout_marginTop="11dp"
                     android:layout_marginBottom="12dp"
                     android:layout_toRightOf="@id/iv_wallet_icon"
+                    android:layout_centerVertical="true"
                     android:orientation="vertical">
 
                     <TextView
@@ -106,14 +115,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/color_000000"
+                        tools:text="钱包名称"
                         android:textSize="15sp" />
 
                     <TextView
                         android:id="@+id/tv_delegate_wallet_address"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="4dp"
                         android:textColor="@color/color_898c9e"
+                        tools:text="0x45648afsdafadfa66"
                         android:textSize="13sp" />
 
                 </LinearLayout>
@@ -169,6 +180,7 @@
                         android:gravity="right"
                         android:maxLines="1"
                         android:ellipsize="end"
+                        android:paddingRight="5dp"
                         android:textSize="15sp" />
 
 
@@ -177,6 +189,7 @@
                         android:layout_height="wrap_content"
                         android:text="LAT"
                         android:textColor="@color/color_000000"
+                        android:layout_marginRight="10dp"
                         android:textSize="12sp" />
 
                     <ImageView
@@ -184,7 +197,6 @@
                         android:layout_width="14dp"
                         android:layout_height="14dp"
                         android:layout_centerInParent="true"
-                        android:layout_marginLeft="10dp"
                         android:layout_marginRight="20dp"
                         android:src="@drawable/icon_drop_down" />
                 </LinearLayout>

@@ -112,14 +112,6 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     }
 
     @Override
-    public void checkIsAllWithdraw(String inputAmount) {
-        String choose = getView().getChooseType();
-        if (BigDecimalUtil.sub(choose, inputAmount) < 10) {
-            getView().showAllWithDrawAmount(choose);
-        }
-    }
-
-    @Override
     public void getBalanceType() {
         ServerUtils.getCommonApi().getWithDrawBalance(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
                 .put("addr", mWalletAddress)

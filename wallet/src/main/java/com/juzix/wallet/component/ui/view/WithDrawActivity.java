@@ -226,10 +226,13 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     private TextWatcher mAmountTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            Log.d("withDrawActivity", "======beforeTextChanged=======" + "--->s=" + s.toString() + "count=" + count + "====after=" + after);
         }
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {//改变后
+            Log.d("withDrawActivity", "=====onTextChanged========" + "--->s=" + s.toString() + "start=" + start + "====before=" + before + "====count=" + count);
+
             mPresenter.checkWithDrawAmount(s.toString().trim());
             mPresenter.updateWithDrawButtonState();
             mPresenter.getWithDrawGasPrice(gasPrice);
@@ -237,34 +240,30 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
             String amountMagnitudes = StringUtil.getAmountMagnitudes(getContext(), s.toString().trim());
             etWalletAmount.setText(amountMagnitudes);
             etWalletAmount.setVisibility(TextUtils.isEmpty(amountMagnitudes) ? View.GONE : View.VISIBLE);
+
+            if (count == 0) {
+                return;
+            }
+
+            if (!TextUtils.isEmpty(s.toString()) && !TextUtils.equals(s.toString(), ".")) {
+
+                if (BigDecimalUtil.sub(delegateAmount.getText().toString().replaceAll(",", ""), s.toString()) > 0) {
+                    if (BigDecimalUtil.sub(delegateAmount.getText().toString().replaceAll(",", ""), s.toString()) < 10) {
+                        withdrawAmount.setText(delegateAmount.getText().toString().replaceAll(",", ""));
+                        withdrawAmount.setSelection(delegateAmount.getText().toString().replaceAll(",", "").length());
+                    }
+                }
+            }
+
+
         }
 
         @Override
         public void afterTextChanged(Editable s) {
-            //方法一
-            if (!TextUtils.isEmpty(s.toString()) && !TextUtils.equals(s.toString(), ".")) {
-                withdrawAmount.removeTextChangedListener(this);
-                mPresenter.checkIsAllWithdraw(s.toString().trim()); //判断输入的数量和选择的数量的差值
-                withdrawAmount.addTextChangedListener(this);
-            }
-
-            //方法二
-//            if (!TextUtils.isEmpty(s.toString()) && !TextUtils.equals(s.toString(), ".")) {
-//                if (BigDecimalUtil.sub(delegateAmount.getText().toString().replaceAll(",", ""), s.toString()) < 10) {
-//                    withdrawAmount.removeTextChangedListener(this);
-//                    setText();
-//                }
-//            }
+            Log.d("withDrawActivity", "======afterTextChanged=======" + "--->s=" + s.toString());
 
         }
     };
-
-    private void setText() {
-        withdrawAmount.setText(delegateAmount.getText().toString().replace(",", ""));
-        withdrawAmount.invalidate();//这句话是不是需要添加
-        withdrawAmount.addTextChangedListener(mAmountTextWatcher);
-    }
-
 
     @Override
     public void showSelectedWalletInfo(Wallet individualWalletEntity) {
@@ -338,19 +337,6 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         list.add(new WithDrawType(WithDrawPopWindowAdapter.TAG_UNLOCKED, StringUtil.formatBalance(unlocked, false)));
         list.add(new WithDrawType(WithDrawPopWindowAdapter.TAG_RELEASED, StringUtil.formatBalance(released, false)));
         mPopWindowAdapter.notifyDataSetChanged();
-    }
-
-    /**
-     * 显示选择类型的全部数量
-     */
-    @Override
-    public void showAllWithDrawAmount(String allAmount) {
-        withdrawAmount.setText(allAmount);
-        withdrawAmount.setSelection(0, allAmount.length());
-        withdrawAmount.setFocusableInTouchMode(true);
-        withdrawAmount.setFocusable(true);
-        withdrawAmount.setEnabled(true);
-        withdrawAmount.requestFocus();
     }
 
     //获取输入的数量(edittext)
