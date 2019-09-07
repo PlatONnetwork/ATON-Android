@@ -226,12 +226,10 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     private TextWatcher mAmountTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            Log.d("withDrawActivity", "======beforeTextChanged=======" + "--->s=" + s.toString() + "count=" + count + "====after=" + after);
         }
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {//改变后
-            Log.d("withDrawActivity", "=====onTextChanged========" + "--->s=" + s.toString() + "start=" + start + "====before=" + before + "====count=" + count);
 
             mPresenter.checkWithDrawAmount(s.toString().trim());
             mPresenter.updateWithDrawButtonState();
@@ -260,7 +258,6 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
 
         @Override
         public void afterTextChanged(Editable s) {
-            Log.d("withDrawActivity", "======afterTextChanged=======" + "--->s=" + s.toString());
 
         }
     };
