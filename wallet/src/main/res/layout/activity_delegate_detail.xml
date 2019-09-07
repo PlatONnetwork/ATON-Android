@@ -33,7 +33,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/color_ffffff"
@@ -46,12 +46,15 @@
                     android:layout_width="42dp"
                     android:layout_height="42dp"
                     android:layout_marginLeft="13dp"
+                    android:layout_centerVertical="true"
                     android:src="@drawable/icon_tips" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="3dp"
+                    android:layout_toRightOf="@id/iv_wallet_icon"
+                    android:layout_centerVertical="true"
                     android:orientation="vertical">
 
                     <TextView
@@ -73,7 +76,7 @@
 
                 </LinearLayout>
 
-            </LinearLayout>
+            </RelativeLayout>
 
 
             <android.support.v7.widget.RecyclerView

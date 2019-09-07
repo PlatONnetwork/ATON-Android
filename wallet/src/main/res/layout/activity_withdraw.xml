@@ -32,10 +32,12 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/color_ffffff"
+                android:paddingBottom="15dp"
+                android:paddingTop="16dp"
                 android:orientation="horizontal">
 
                 <com.juzix.wallet.component.widget.CircleImageView
@@ -43,15 +45,15 @@
                     android:layout_width="42dp"
                     android:layout_height="42dp"
                     android:layout_marginLeft="13dp"
-                    android:layout_marginTop="15dp"
+                    android:layout_centerVertical="true"
                     android:src="@drawable/icon_validators_default" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="3dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="15dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/iv_node_icon"
                     android:orientation="vertical">
 
                     <TextView
@@ -74,7 +76,7 @@
                 </LinearLayout>
 
 
-            </LinearLayout>
+            </RelativeLayout>
 
 
             <RelativeLayout
@@ -92,15 +94,17 @@
                     android:layout_width="42dp"
                     android:layout_height="42dp"
                     android:layout_marginLeft="3dp"
-                    android:layout_marginTop="9dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_centerVertical="true"
                     android:src="@drawable/icon_validators_default" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="3dp"
-                    android:layout_marginTop="11dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginBottom="12dp"
+                    android:layout_centerVertical="true"
                     android:layout_toRightOf="@id/iv_wallet_icon"
                     android:orientation="vertical">
 
@@ -169,6 +173,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/color_000000"
+                        android:paddingRight="5dp"
                         android:textSize="15sp" />
 
 
