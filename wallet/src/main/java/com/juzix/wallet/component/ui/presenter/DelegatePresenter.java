@@ -149,7 +149,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
         }
 
 //        List<String> walletAddressList = WalletManager.getInstance().getAddressList();
-        ServerUtils.getCommonApi().getAccountBalance(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
+        ServerUtils.getCommonApi().getAccountBalance(ApiRequestBody.newBuilder()
                 .put("addrs", walletAddressList.toArray(new String[walletAddressList.size()]))
                 .build())
                 .compose(RxUtils.bindToLifecycle(getView()))
@@ -176,7 +176,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
     //获取钱包余额信息根据选择的钱包地址
     private void getBalanceByWalletAddress(String address) {
-        ServerUtils.getCommonApi().getAccountBalance(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
+        ServerUtils.getCommonApi().getAccountBalance(ApiRequestBody.newBuilder()
                 .put("addrs", new String[]{address})
                 .build())
                 .compose(RxUtils.bindToLifecycle(getView()))
@@ -206,7 +206,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
         if (mWallet == null) {
             return;
         }
-        ServerUtils.getCommonApi().getIsDelegateInfo(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
+        ServerUtils.getCommonApi().getIsDelegateInfo(ApiRequestBody.newBuilder()
                 .put("addr", mWallet.getPrefixAddress())
                 .put("nodeId", mNodeAddress)
                 .build())
@@ -350,7 +350,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                 //输入数量+手续费
                 return BigDecimalUtil.add(getView().getDelegateAmount(), feeAmount);
             }
-        }).zipWith(ServerUtils.getCommonApi().getIsDelegateInfo(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
+        }).zipWith(ServerUtils.getCommonApi().getIsDelegateInfo(ApiRequestBody.newBuilder()
                         .put("addr", mWallet.getPrefixAddress())
                         .put("nodeId", mNodeAddress)
                         .build()),

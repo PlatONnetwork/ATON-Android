@@ -37,7 +37,7 @@ public class ValidatorsDetailPresenter extends BasePresenter<ValidatorsDetailCon
             getView().showIsCanDelegate(false);
             return;
         } else {
-            ServerUtils.getCommonApi().getAccountBalance(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
+            ServerUtils.getCommonApi().getAccountBalance(ApiRequestBody.newBuilder()
                     .put("addrs", walletAddressList.toArray(new String[walletAddressList.size()]))
                     .build())
                     .compose(RxUtils.bindToLifecycle(getView()))
@@ -70,7 +70,7 @@ public class ValidatorsDetailPresenter extends BasePresenter<ValidatorsDetailCon
     }
 
     private void getValidatorsDetailData(String nodeId) {
-        ServerUtils.getCommonApi().getNodeCandidateDetail(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
+        ServerUtils.getCommonApi().getNodeCandidateDetail(ApiRequestBody.newBuilder()
                 .put("nodeId", nodeId)
                 .build())
                 .compose(bindToLifecycle())

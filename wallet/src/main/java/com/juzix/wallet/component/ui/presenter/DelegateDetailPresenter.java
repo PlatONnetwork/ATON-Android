@@ -70,7 +70,7 @@ public class DelegateDetailPresenter extends BasePresenter<DelegateDetailContrac
 
     private void getDelegateDetailData(String walletAddress) {
         getView().showWalletInfo(walletAddress, walletName, walletIcon);
-        ServerUtils.getCommonApi().getDelegateDetailList(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
+        ServerUtils.getCommonApi().getDelegateDetailList( ApiRequestBody.newBuilder()
                 .put("addr", walletAddress)
                 .build())
                 .flatMap(new Function<Response<ApiResponse<List<DelegateDetail>>>, SingleSource<Response<ApiResponse<List<DelegateDetail>>>>>() {
@@ -258,7 +258,7 @@ public class DelegateDetailPresenter extends BasePresenter<DelegateDetailContrac
     @Override
     public void getWalletBalance(String nodeAddress, String nodeName, String nodeIcon) {
         List<String> walletAddressList = WalletManager.getInstance().getAddressList();
-        ServerUtils.getCommonApi().getAccountBalance(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
+        ServerUtils.getCommonApi().getAccountBalance(ApiRequestBody.newBuilder()
                 .put("addrs", walletAddressList.toArray(new String[walletAddressList.size()]))
                 .build())
                 .compose(RxUtils.bindToLifecycle(getView()))
