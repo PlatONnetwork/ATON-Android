@@ -53,7 +53,7 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
      */
     private void getValidatorsData(String sortType, String nodeState, int sequence) {
         Log.d("ValidatorsPresenter", "=========nodeState=" + nodeState + "==============rank=" + sequence + "===============sortType=" + sortType);
-        ServerUtils.getCommonApi().getVerifyNodeList(NodeManager.getInstance().getChainId())
+        ServerUtils.getCommonApi().getVerifyNodeList()
                 .compose(bindUntilEvent(FragmentEvent.STOP))
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .subscribe(new ApiSingleObserver<List<VerifyNode>>() {

@@ -129,7 +129,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
 
         ServerUtils
                 .getCommonApi()
-                .getAccountBalance(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
+                .getAccountBalance(ApiRequestBody.newBuilder()
                         .put("addrs", Arrays.asList(walletEntity.getPrefixAddress()))
                         .build())
                 .compose(bindUntilEvent(FragmentEvent.STOP))

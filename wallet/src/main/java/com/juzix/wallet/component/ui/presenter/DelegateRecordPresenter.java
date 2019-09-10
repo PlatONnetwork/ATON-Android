@@ -30,7 +30,7 @@ public class DelegateRecordPresenter extends BasePresenter<DelegateRecordContrac
     }
 
     private void getDelegateRecordData(long beginSequence, int listSize, String direction, String type, String[] walletAddress) {
-        ServerUtils.getCommonApi().getDelegateRecordList(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
+        ServerUtils.getCommonApi().getDelegateRecordList(ApiRequestBody.newBuilder()
                 .put("beginSequence", beginSequence)
                 .put("listSize", listSize)
                 .put("direction", direction)

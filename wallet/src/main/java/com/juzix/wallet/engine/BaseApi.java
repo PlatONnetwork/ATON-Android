@@ -42,8 +42,8 @@ public interface BaseApi {
      * @param body
      * @return
      */
-    @POST("app-{cid}/v0700/transaction/list")
-    Single<Response<ApiResponse<List<Transaction>>>> getTransactionList(@Path("cid") String cid, @Body ApiRequestBody body);
+    @POST("app/v0700/transaction/list")
+    Single<Response<ApiResponse<List<Transaction>>>> getTransactionList(@Body ApiRequestBody body);
 
     /**
      * 获取节点列表
@@ -87,8 +87,8 @@ public interface BaseApi {
      * 获取验证节点列表
      */
 
-    @POST("app-{cid}/v0700/node/nodelist")
-    Single<Response<ApiResponse<List<VerifyNode>>>> getVerifyNodeList(@Path("cid") String cid);
+    @POST("app/v0700/node/nodelist")
+    Single<Response<ApiResponse<List<VerifyNode>>>> getVerifyNodeList();
 
 
     /**
@@ -96,8 +96,8 @@ public interface BaseApi {
      * nodeId   //节点id
      */
 
-    @POST("app-{cid}/v0700/node/nodeDetails")
-    Single<Response<ApiResponse<VerifyNodeDetail>>> getNodeCandidateDetail(@Path("cid") String cid, @Body ApiRequestBody body);
+    @POST("app/v0700/node/nodeDetails")
+    Single<Response<ApiResponse<VerifyNodeDetail>>> getNodeCandidateDetail(@Body ApiRequestBody body);
 
 
     /**
@@ -109,8 +109,8 @@ public interface BaseApi {
      *            ]
      * @return
      */
-    @POST("app-{cid}/v0700/node/listDelegateGroupByAddr")
-    Single<Response<ApiResponse<List<DelegateInfo>>>> getMyDelegateList(@Path("cid") String cid, @Body ApiRequestBody body);
+    @POST("app/v0700/node/listDelegateGroupByAddr")
+    Single<Response<ApiResponse<List<DelegateInfo>>>> getMyDelegateList(@Body ApiRequestBody body);
 
 
     /**
@@ -124,8 +124,8 @@ public interface BaseApi {
      *               客户端首次进入页面时或者上拉时传old。客户端自动获取最新记录时传new。
      */
 
-    @POST("app-{cid}/v0700/node/delegateDetails")
-    Single<Response<ApiResponse<List<DelegateDetail>>>> getDelegateDetailList(@Path("cid") String cid, @Body ApiRequestBody body);
+    @POST("app/v0700/node/delegateDetails")
+    Single<Response<ApiResponse<List<DelegateDetail>>>> getDelegateDetailList(@Body ApiRequestBody body);
 
 
     /**
@@ -146,8 +146,8 @@ public interface BaseApi {
      *               ]
      */
 
-    @POST("app-{cid}/v0700/transaction/delegateRecord")
-    Single<Response<ApiResponse<List<Transaction>>>> getDelegateRecordList(@Path("cid") String cid, @Body ApiRequestBody body);
+    @POST("app/v0700/transaction/delegateRecord")
+    Single<Response<ApiResponse<List<Transaction>>>> getDelegateRecordList(@Body ApiRequestBody body);
 
 
     /**
@@ -156,8 +156,8 @@ public interface BaseApi {
      * "address1",
      * "address2"]
      */
-    @POST("app-{cid}/v0700/account/getBalance")
-    Single<Response<ApiResponse<List<AccountBalance>>>> getAccountBalance(@Path("cid") String cid, @Body ApiRequestBody body);
+    @POST("app/v0700/account/getBalance")
+    Single<Response<ApiResponse<List<AccountBalance>>>> getAccountBalance(@Body ApiRequestBody body);
 
 
     /**
@@ -165,8 +165,8 @@ public interface BaseApi {
      * "addr":"",                             //委托的地址
      * "nodeId":"",                          //节点id
      */
-    @POST("app-{cid}/v0700/node/getDelegationValue")
-    Single<Response<ApiResponse<List<WithDrawBalance>>>> getWithDrawBalance(@Path("cid") String id, @Body ApiRequestBody body);
+    @POST("app/v0700/node/getDelegationValue")
+    Single<Response<ApiResponse<List<WithDrawBalance>>>> getWithDrawBalance(@Body ApiRequestBody body);
 
 
     /**
@@ -175,8 +175,8 @@ public interface BaseApi {
      * @param body
      * @return
      */
-    @POST("app-{cid}/v0700/node/canDelegation")
-    Single<Response<ApiResponse<DelegateHandle>>> getIsDelegateInfo(@Path("cid") String id, @Body ApiRequestBody body);
+    @POST("app/v0700/node/canDelegation")
+    Single<Response<ApiResponse<DelegateHandle>>> getIsDelegateInfo(@Body ApiRequestBody body);
 
 
 }

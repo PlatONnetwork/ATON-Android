@@ -36,7 +36,7 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
     }
 
     private void getMyDelegateData(String[] addressList) {
-        ServerUtils.getCommonApi().getMyDelegateList(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder().
+        ServerUtils.getCommonApi().getMyDelegateList(ApiRequestBody.newBuilder().
                 put("walletAddrs", addressList)
                 .build())
                 .compose(RxUtils.bindToParentLifecycleUtilEvent(getView(), FragmentEvent.STOP))

@@ -80,7 +80,7 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
 
         ServerUtils
                 .getCommonApi()
-                .getAccountBalance(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
+                .getAccountBalance(ApiRequestBody.newBuilder()
                         .put("addrs", WalletManager.getInstance().getAddressList())
                         .build())
                 .toFlowable()
@@ -186,7 +186,7 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
 
     private Single<Response<ApiResponse<List<AccountBalance>>>> getAccountBalanceList() {
 
-        return ServerUtils.getCommonApi().getAccountBalance(NodeManager.getInstance().getChainId(), ApiRequestBody.newBuilder()
+        return ServerUtils.getCommonApi().getAccountBalance(ApiRequestBody.newBuilder()
                 .put("addrs", WalletManager.getInstance().getAddressList())
                 .build());
     }
