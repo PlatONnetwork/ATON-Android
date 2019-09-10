@@ -275,7 +275,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                 if (!TextUtils.isEmpty(balance.getReleased())) {
                     stakingBlockNum = balance.getStakingBlockNum();
                     tag++;
-                    withdraw(credentials, nodeId, stakingBlockNum, balance.getReleased(), type); //这里传入的数量应该是记录中每个对象不为0的数量（而不是显示的全部数量，因为这里要循环执行多次）
+                    withdraw(credentials, nodeId, stakingBlockNum, NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(balance.getReleased(),"1E18")), type); //这里传入的数量应该是记录中每个对象不为0的数量（而不是显示的全部数量，因为这里要循环执行多次）
                 }
             }
 
