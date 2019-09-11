@@ -567,7 +567,7 @@
     <string name="validators_state_exited">Exited</string>
 
 
-    <string name="validators_details_tips">PlatON blockchain initial built-in validator, does not accept Delegation</string>
+    <string name="validators_details_tips">PlatON blockchain initial built-in validator,\ndoes not accept Delegation</string>
 
     <!--赎回类型-->
     <string name="withdraw_type_delegated">Delegated</string>
