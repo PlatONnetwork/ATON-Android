@@ -16,6 +16,7 @@ import com.juzix.wallet.component.widget.PendingAnimationLayout;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionStatus;
 import com.juzix.wallet.entity.TransactionType;
+import com.juzix.wallet.utils.StringUtil;
 
 import java.util.List;
 
@@ -58,15 +59,16 @@ public class TransactionViewHolder extends BaseViewHolder<Transaction> {
         TransactionType transactionType = transaction.getTxType();
         boolean isSender = transaction.isSender(mQueryAddressList);
         boolean isTransfer = transaction.isTransfer(mQueryAddressList);
+        boolean isEditValidator = transactionType == TransactionType.EDIT_VALIDATOR;
 
-        if (isTransfer) {
-            mTransactionAmountTv.setText(transaction.getShowValue());
+        if (isTransfer || isEditValidator) {
+            mTransactionAmountTv.setText(StringUtil.formatBalance(transaction.getShowValue()));
             mTransactionAmountTv.setTextColor(ContextCompat.getColor(mContext, R.color.color_000000));
         } else if (isSender) {
-            mTransactionAmountTv.setText(String.format("%s%s", "-", transaction.getShowValue()));
+            mTransactionAmountTv.setText(String.format("%s%s", "-", StringUtil.formatBalance(transaction.getShowValue())));
             mTransactionAmountTv.setTextColor(ContextCompat.getColor(mContext, R.color.color_ff3b3b));
         } else {
-            mTransactionAmountTv.setText(String.format("%s%s", "+", transaction.getShowValue()));
+            mTransactionAmountTv.setText(String.format("%s%s", "+", StringUtil.formatBalance(transaction.getShowValue())));
             mTransactionAmountTv.setTextColor(ContextCompat.getColor(mContext, R.color.color_19a20e));
         }
         mTransactionStatusTv.setText(transactionType == TransactionType.TRANSFER ? transaction.getTransferDescRes(mQueryAddressList) : transactionType.getTxTypeDescRes());

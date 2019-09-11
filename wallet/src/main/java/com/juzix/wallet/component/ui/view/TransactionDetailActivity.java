@@ -146,7 +146,6 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
 
         showTransactionStatus(transactionStatus);
 
-
         @TransferType int transferType = transaction.getTransferType(queryAddressList);
 
         if (transferType == TransferType.SEND) {
@@ -160,7 +159,7 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
             tvAmount.setTextColor(ContextCompat.getColor(this, R.color.color_000000));
         }
 
-        tvAmount.setVisibility(transactionStatus == TransactionStatus.SUCCESSED && transactionType == TransactionType.TRANSFER ? View.VISIBLE : View.GONE);
+        tvAmount.setVisibility(transactionStatus == TransactionStatus.SUCCESSED ? View.VISIBLE : View.GONE);
         tvCopyFromName.setText(walletName);
         tvFromAddress.setText(transaction.getFrom());
         tvToAddress.setText(transaction.getTo());

@@ -365,7 +365,7 @@
     <string name="joinTime">加入时间: %1$s</string>
     <string name="nominees">提名节点</string>
     <string name="candidates">候选节点</string>
-    <string name="validator">验证节点</string>
+    <string name="validator">验证人</string>
     <string name="ranking">排名</string>
     <string name="tickets">得票数</string>
     <string name="voteNum">投票数</string>
@@ -485,6 +485,7 @@
     <string name="withdrawal_amount">赎回数量</string>
     <string name="version">版本</string>
     <string name="stake_amount">质押数量</string>
+    <string name="stake_increase_amount">质押增加数量</string>
     <string name="return_amount">退回数量</string>
     <string name="report_type">举报类型</string>
     <string name="reported">被举报人</string>

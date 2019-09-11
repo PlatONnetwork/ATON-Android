@@ -1,5 +1,8 @@
 package com.juzix.wallet;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
@@ -13,39 +16,47 @@ public class Test {
 
     public static void main(String[] args) {
 
-        Flowable
-                .interval(1, TimeUnit.SECONDS)
-                .doOnNext(new Consumer<Long>() {
-                    @Override
-                    public void accept(Long aLong) throws Exception {
-//                        System.out.println(aLong);
-                    }
-                })
-                .takeUntil(new Predicate<Long>() {
-                    @Override
-                    public boolean test(Long aLong) throws Exception {
-                        return aLong == 5;
-                    }
-                })
-                .filter(new Predicate<Long>() {
-                    @Override
-                    public boolean test(Long aLong) throws Exception {
-                        return aLong == 5;
-                    }
-                })
-                .subscribe(new Consumer<Long>() {
-                    @Override
-                    public void accept(Long aLong) throws Exception {
-                        System.out.println(aLong);
-                    }
-                });
 
+        List<String> list = new ArrayList<>();
 
-        try {
-            Thread.sleep(1000000000000L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        for (String string:list){
+            System.out.println(string);
         }
+
+
+//        Flowable
+//                .interval(1, TimeUnit.SECONDS)
+//                .doOnNext(new Consumer<Long>() {
+//                    @Override
+//                    public void accept(Long aLong) throws Exception {
+////                        System.out.println(aLong);
+//                    }
+//                })
+//                .takeUntil(new Predicate<Long>() {
+//                    @Override
+//                    public boolean test(Long aLong) throws Exception {
+//                        return aLong == 5;
+//                    }
+//                })
+//                .filter(new Predicate<Long>() {
+//                    @Override
+//                    public boolean test(Long aLong) throws Exception {
+//                        return aLong == 5;
+//                    }
+//                })
+//                .subscribe(new Consumer<Long>() {
+//                    @Override
+//                    public void accept(Long aLong) throws Exception {
+//                        System.out.println(aLong);
+//                    }
+//                });
+//
+//
+//        try {
+//            Thread.sleep(1000000000000L);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 
     }
 

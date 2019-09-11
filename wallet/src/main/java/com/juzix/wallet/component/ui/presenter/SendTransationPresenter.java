@@ -7,6 +7,7 @@ import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.ApiSingleObserver;
 import com.juzhen.framework.network.NetConnectivity;
+import com.juzhen.framework.util.LogUtils;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomObserver;
@@ -157,6 +158,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
                     @Override
                     public void accept(BigInteger bigInteger) throws Exception {
                         if (isViewAttached()) {
+                            LogUtils.e("gasPrice为：  " + bigInteger.longValue());
                             minGasPrice = bigInteger.divide(BigInteger.valueOf(2));
                             maxGasPrice = bigInteger.multiply(BigInteger.valueOf(6));
                             calculateFeeAndTime(percent);

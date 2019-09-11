@@ -477,6 +477,7 @@
     <string name="withdrawal_amount">Withdrawal Amount</string>
     <string name="version">Version</string>
     <string name="stake_amount">Stake Amount</string>
+    <string name="stake_increase_amount">Stake Amount</string>
     <string name="return_amount">Return Amount</string>
     <string name="report_type">Report Type</string>
     <string name="reported">Reported</string>
