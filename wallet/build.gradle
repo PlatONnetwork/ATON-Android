@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
+apply plugin: 'org.sonarqube'
+
 // 注：需要配置符号表时，使用bugly插件
 apply plugin: 'bugly'
 bugly {
@@ -187,4 +189,37 @@ dependencies {
     annotationProcessor rootProject.ext.dependencies["glide"]
 
     implementation rootProject.ext.dependencies["webview-agentweb"]
+
+    //单元测试用到的库
+    //junit
+    implementation rootProject.ext.dependencies["junit"]
+    //mockito
+    testImplementation 'org.mockito:mockito-core:2.19.0'
+    //powermock
+    testImplementation 'org.powermock:powermock-module-junit4:1.7.4'
+    testImplementation 'org.powermock:powermock-module-junit4-rule:1.7.4'
+    testImplementation 'org.powermock:powermock-api-mockito2:1.7.4'
+    testImplementation 'org.powermock:powermock-classloading-xstream:1.7.4'
+    //robolectric
+    testImplementation 'org.robolectric:robolectric:3.8'
+    testImplementation 'org.robolectric:shadows-multidex:3.8'
+    testImplementation 'org.robolectric:robolectric:3.8-SNAPSHOT'
+    testImplementation 'org.robolectric:shadows-support-v4:3.0'
+
+    testImplementation 'com.squareup.okhttp3:mockwebserver:3.9.1'
+
+}
+
+task(name:'codeTotal'){
+    doLast{
+        sonarqube {
+            properties {
+                property "sonar.host.url", "http://192.168.16.173:9000"
+                property "sonar.sources", "src"
+                property "sonar.java.binaries", "build/intermediates/classes"
+                property "sonar.test.binaries", "build/intermediates/classes"
+                property "sonar.projectName", "aton-android" // Your project name
+            }
+        }
+    }
 }
