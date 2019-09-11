@@ -3,10 +3,12 @@ package com.juzix.wallet.component.ui.view;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,7 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxCompoundButton;
 import com.just.agentweb.WebChromeClient;
 import com.just.agentweb.WebViewClient;
+import com.juzhen.framework.util.LogUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
@@ -29,6 +32,9 @@ import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.WebType;
 import com.juzix.wallet.utils.RxUtils;
 import com.umeng.analytics.MobclickAgent;
+
+import java.net.URI;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -82,7 +88,10 @@ public class CommonHybridActivity extends BaseAgentWebActivity {
 
     private void init() {
 
-        mUrl = getIntent().getStringExtra(Constants.Extra.EXTRA_URL);
+        String url = getIntent().getStringExtra(Constants.Extra.EXTRA_URL);
+
+        mUrl = buildUrl(url);
+
         mWebType = getIntent().getIntExtra(Constants.Extra.EXTRA_WEB_TYPE, WebType.WEB_TYPE_COMMON);
 
         ctb = findViewById(R.id.ctb);
@@ -132,6 +141,19 @@ public class CommonHybridActivity extends BaseAgentWebActivity {
                         sbtnNext.setEnabled(aBoolean);
                     }
                 });
+    }
+
+    private String buildUrl(String originalUrl) {
+        if (TextUtils.isEmpty(originalUrl)) {
+            return "";
+        }
+        Uri uri = Uri.parse(originalUrl);
+
+        if (TextUtils.isEmpty(uri.getScheme())) {
+            return "https://".concat(originalUrl);
+        }
+
+        return originalUrl;
     }
 
     @Override
