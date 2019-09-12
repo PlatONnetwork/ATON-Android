@@ -113,15 +113,17 @@ public class TransactionDetailInfoView extends LinearLayout {
             case CREATE_TEXT_PROPOSAL:
             case CREATE_UPGRADE_PROPOSAL:
             case CREATE_PARAMETER_PROPOSAL:
+            case CANCEL_PROPOSAL:
             case VOTING_PROPOSAL:
                 addView(getItemView(getStringWithColon(R.string.type), getString(transaction.getTxType().getTxTypeDescRes())));
                 addView(getItemView(getStringWithColon(R.string.submissionTime), transaction.getShowCreateTime()));
                 addView(getItemView(getStringWithColon(R.string.validator), transaction.getNodeName()));
                 addView(getItemView(getStringWithColon(R.string.nodeId), transaction.getNodeId()));
-                addView(getItemView(getStringWithColon(R.string.proposal_id), transaction.getNodeId()));
-                addView(getItemView(getStringWithColon(R.string.proposal_type), transaction.getProposalType()));
+                addView(getItemView(getStringWithColon(R.string.proposal_id), transaction.getHash()));
+                addView(getItemView(getStringWithColon(R.string.pip_number),transaction.getPiDID()));
+                addView(getItemView(getStringWithColon(R.string.proposal_type), getString(transaction.getProposalTypeDescRes())));
                 if (transaction.getTxType() == TransactionType.VOTING_PROPOSAL) {
-                    addView(getItemView(getStringWithColon(R.string.vote), transaction.getVote()));
+                    addView(getItemView(getStringWithColon(R.string.vote), getString(transaction.getVoteOptionTypeDescRes())));
                 }
                 addView(getItemView(getStringWithColon(R.string.fee), getString(R.string.amount_with_unit, transaction.getShowActualTxCost())));
                 break;
@@ -138,7 +140,7 @@ public class TransactionDetailInfoView extends LinearLayout {
                 addView(getItemView(getStringWithColon(R.string.submissionTime), transaction.getShowCreateTime()));
                 addView(getItemView(getStringWithColon(R.string.reported), transaction.getNodeName()));
                 addView(getItemView(getStringWithColon(R.string.nodeId), transaction.getNodeId()));
-                addView(getItemView(getStringWithColon(R.string.report_type), transaction.getReportType()));
+                addView(getItemView(getStringWithColon(R.string.report_type), getString(transaction.getReportTypeDescRes())));
                 addView(getItemView(getStringWithColon(R.string.fee), getString(R.string.amount_with_unit, transaction.getShowActualTxCost())));
                 break;
             case CREATE_RESTRICTING:

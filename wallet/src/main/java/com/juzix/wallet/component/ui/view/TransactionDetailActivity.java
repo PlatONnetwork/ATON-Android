@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.juzhen.framework.util.NumberParserUtils;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
@@ -27,7 +28,9 @@ import com.juzix.wallet.entity.TransferType;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.AddressFormatUtil;
+import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.CommonUtil;
+import com.juzix.wallet.utils.StringUtil;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -146,17 +149,19 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
 
         showTransactionStatus(transactionStatus);
 
+        boolean isValueZero = !BigDecimalUtil.isBiggerThanZero(transaction.getValue());
+
         @TransferType int transferType = transaction.getTransferType(queryAddressList);
 
-        if (transferType == TransferType.SEND) {
-            tvAmount.setText(String.format("%s%s", "-", transaction.getShowValue()));
-            tvAmount.setTextColor(ContextCompat.getColor(this, R.color.color_ff3b3b));
-        } else if (transferType == TransferType.RECEIVE) {
-            tvAmount.setText(String.format("%s%s", "+", transaction.getShowValue()));
-            tvAmount.setTextColor(ContextCompat.getColor(this, R.color.color_19a20e));
-        } else {
+        if (transferType == TransferType.TRANSFER || isValueZero) {
             tvAmount.setText(transaction.getShowValue());
             tvAmount.setTextColor(ContextCompat.getColor(this, R.color.color_000000));
+        } else if (transferType == TransferType.SEND) {
+            tvAmount.setText(String.format("%s%s", "-", transaction.getShowValue()));
+            tvAmount.setTextColor(ContextCompat.getColor(this, R.color.color_ff3b3b));
+        } else {
+            tvAmount.setText(String.format("%s%s", "+", transaction.getShowValue()));
+            tvAmount.setTextColor(ContextCompat.getColor(this, R.color.color_19a20e));
         }
 
         tvAmount.setVisibility(transactionStatus == TransactionStatus.SUCCESSED ? View.VISIBLE : View.GONE);

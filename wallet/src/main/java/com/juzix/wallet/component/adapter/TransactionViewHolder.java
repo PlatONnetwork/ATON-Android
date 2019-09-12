@@ -1,5 +1,6 @@
 package com.juzix.wallet.component.adapter;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -9,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.adapter.base.BaseViewHolder;
 import com.juzix.wallet.component.ui.view.TransactionRecordsActivity;
@@ -16,8 +18,10 @@ import com.juzix.wallet.component.widget.PendingAnimationLayout;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionStatus;
 import com.juzix.wallet.entity.TransactionType;
+import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.StringUtil;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class TransactionViewHolder extends BaseViewHolder<Transaction> {
@@ -59,19 +63,19 @@ public class TransactionViewHolder extends BaseViewHolder<Transaction> {
         TransactionType transactionType = transaction.getTxType();
         boolean isSender = transaction.isSender(mQueryAddressList);
         boolean isTransfer = transaction.isTransfer(mQueryAddressList);
-        boolean isEditValidator = transactionType == TransactionType.EDIT_VALIDATOR;
+        boolean isValueZero = !BigDecimalUtil.isBiggerThanZero(transaction.getValue());
 
-        if (isTransfer || isEditValidator) {
-            mTransactionAmountTv.setText(StringUtil.formatBalance(transaction.getShowValue()));
+        if (isTransfer || isValueZero) {
+            mTransactionAmountTv.setText(mContext.getString(R.string.amount_with_unit, StringUtil.formatBalance(transaction.getShowValue())));
             mTransactionAmountTv.setTextColor(ContextCompat.getColor(mContext, R.color.color_000000));
         } else if (isSender) {
-            mTransactionAmountTv.setText(String.format("%s%s", "-", StringUtil.formatBalance(transaction.getShowValue())));
+            mTransactionAmountTv.setText(String.format("%s%s", "-", mContext.getString(R.string.amount_with_unit, StringUtil.formatBalance(transaction.getShowValue()))));
             mTransactionAmountTv.setTextColor(ContextCompat.getColor(mContext, R.color.color_ff3b3b));
         } else {
-            mTransactionAmountTv.setText(String.format("%s%s", "+", StringUtil.formatBalance(transaction.getShowValue())));
+            mTransactionAmountTv.setText(String.format("%s%s", "+", mContext.getString(R.string.amount_with_unit, StringUtil.formatBalance(transaction.getShowValue()))));
             mTransactionAmountTv.setTextColor(ContextCompat.getColor(mContext, R.color.color_19a20e));
         }
-        mTransactionStatusTv.setText(transactionType == TransactionType.TRANSFER ? transaction.getTransferDescRes(mQueryAddressList) : transactionType.getTxTypeDescRes());
+        mTransactionStatusTv.setText(getTxTDesc(transaction, mContext, isSender));
         mTransactionTimeTv.setText(transaction.getShowCreateTime());
         mPendingLayout.setVisibility(transactionStatus != TransactionStatus.PENDING || mContext instanceof TransactionRecordsActivity ? View.GONE : View.VISIBLE);
         mTransactionStatusIv.setVisibility(transactionStatus == TransactionStatus.PENDING || mContext instanceof TransactionRecordsActivity ? View.GONE : View.VISIBLE);
@@ -99,6 +103,17 @@ public class TransactionViewHolder extends BaseViewHolder<Transaction> {
                 default:
                     break;
             }
+        }
+    }
+
+    private String getTxTDesc(Transaction transaction, Context context, boolean isSender) {
+        TransactionType transactionType = transaction.getTxType();
+        if (transactionType == TransactionType.TRANSFER) {
+            return context.getResources().getString(isSender ? R.string.send : R.string.receive);
+        } else if (transactionType == TransactionType.VOTING_PROPOSAL) {
+            return String.format("%s(%s)", context.getResources().getString(transactionType.getTxTypeDescRes()), context.getResources().getString(transaction.getVoteOptionTypeDescRes()));
+        } else {
+            return context.getResources().getString(transactionType.getTxTypeDescRes());
         }
     }
 }
