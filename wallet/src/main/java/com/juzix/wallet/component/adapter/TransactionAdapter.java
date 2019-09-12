@@ -32,10 +32,11 @@ public class TransactionAdapter extends RecyclerAdapter<Transaction> {
             return;
         }
         TransactionStatus status = data.getTxReceiptStatus();
+        TransactionType transactionType = data.getTxType();
         boolean isSender = data.isSender(mQueryAddressList);
         //默认是发送，当发送和接收的钱包
-        int transferDescRes = isSender ? R.string.send : R.string.receive;
-        holder.setText(R.id.tv_transaction_status, data.getTxType() == TransactionType.TRANSFER ? transferDescRes : data.getTxType().getTxTypeDescRes());
+
+        holder.setText(R.id.tv_transaction_status, getTxTDesc(data, mContext, isSender));
         holder.setText(R.id.tv_transaction_amount, String.format("%s%s", isSender ? "-" : "+", data.getShowValue()));
         holder.setTextColor(R.id.tv_transaction_amount, isSender ? R.color.color_ff3b3b : R.color.color_19a20e);
         holder.setText(R.id.tv_transaction_time, data.getShowCreateTime());
@@ -44,7 +45,7 @@ public class TransactionAdapter extends RecyclerAdapter<Transaction> {
         transactionStatusIv.setVisibility(status == TransactionStatus.PENDING || mContext instanceof TransactionRecordsActivity ? View.GONE : View.VISIBLE);
         pendingAnimationLayout.setVisibility(status != TransactionStatus.PENDING || mContext instanceof TransactionRecordsActivity ? View.GONE : View.VISIBLE);
 
-        if (data.getTxType() == TransactionType.TRANSFER) {
+        if (transactionType == TransactionType.TRANSFER) {
             transactionStatusIv.setImageResource(isSender ? R.drawable.icon_send_transation : R.drawable.icon_receive_transaction);
         } else {
             transactionStatusIv.setImageResource(isSender ? R.drawable.icon_delegate : R.drawable.icon_undelegate);
@@ -83,5 +84,16 @@ public class TransactionAdapter extends RecyclerAdapter<Transaction> {
         this.mDatas = transactionList;
         notifyItemInserted(positionStart);
         notifyItemChanged(positionStart);
+    }
+
+    private String getTxTDesc(Transaction transaction, Context context, boolean isSender) {
+        TransactionType transactionType = transaction.getTxType();
+        if (transactionType == TransactionType.TRANSFER) {
+            return context.getResources().getString(isSender ? R.string.send : R.string.receive);
+        } else if (transactionType == TransactionType.VOTING_PROPOSAL) {
+            return String.format("%s(%s)", context.getResources().getString(transactionType.getTxTypeDescRes()), context.getResources().getString(transaction.getVoteOptionTypeDescRes()));
+        } else {
+            return context.getResources().getString(transactionType.getTxTypeDescRes());
+        }
     }
 }

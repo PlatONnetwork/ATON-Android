@@ -365,7 +365,7 @@
     <string name="joinTime">加入时间: %1$s</string>
     <string name="nominees">提名节点</string>
     <string name="candidates">候选节点</string>
-    <string name="validator">验证人</string>
+    <string name="validator">验证节点</string>
     <string name="ranking">排名</string>
     <string name="tickets">得票数</string>
     <string name="voteNum">投票数</string>
@@ -434,14 +434,14 @@
     <string name="node_exit_consensus">节点已退出共识，投票失败！</string>
     <string name="transfer">转账</string>
     <string name="mpc_transaction">MPC交易</string>
-    <string name="create_validator">创建验证人</string>
-    <string name="edit_validator">编辑验证人</string>
+    <string name="create_validator">创建验证节点</string>
+    <string name="edit_validator">编辑验证节点</string>
     <string name="increase_staking">增加自有质押</string>
-    <string name="exit_validator">退出验证人</string>
+    <string name="exit_validator">退出验证节点</string>
     <string name="create_proposal">创建提案</string>
     <string name="voting_proposal">提案投票</string>
     <string name="declare_version">版本声明</string>
-    <string name="report_validator">举报验证人</string>
+    <string name="report_validator">举报验证节点</string>
     <string name="create_restricting">创建锁仓</string>
     <string name="contract_creation">合约创建</string>
     <string name="contract_execution">合约执行</string>
@@ -490,6 +490,7 @@
     <string name="report_type">举报类型</string>
     <string name="reported">被举报人</string>
     <string name="proposal_id">提案ID</string>
+    <string name="pip_number">PIP编号</string>
     <string name="proposal_type">提案类型</string>
     <string name="restricted_account">锁仓地址</string>
     <string name="restricted_amount">锁仓数量</string>
@@ -551,6 +552,15 @@
     <string name="validators_yield">预计年化率</string>
     <string name="validators_staked">总质押</string>
 
+    <string name="upgrade_proposal">升级提案 </string>
+    <string name="text_proposal">文本提案</string>
+    <string name="parameter_proposal">参数提案</string>
+    <string name="cancel_proposal">取消提案</string>
+
+    <string name="vote_yes">支持</string>
+    <string name="vote_no">反对</string>
+    <string name="vote_abstain">弃权</string>
+
     <string name="title_official_community">官方社区</string>
     <string name="available_balance">可用余额</string>
     <string name="locked_balance">锁仓余额</string>
@@ -582,7 +592,7 @@
     <string name="validators_state_exiting">退出中</string>
     <string name="validators_state_exited">已退出</string>
 
-    <string name="validators_details_tips">PlatON初始内置验证人，不接收委托</string>
+    <string name="validators_details_tips">PlatON基金会资助的验证节点，不接受委托</string>
 
     <!--赎回类型-->
     <string name="withdraw_type_delegated">已委托</string>

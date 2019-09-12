@@ -481,7 +481,8 @@
     <string name="return_amount">Return Amount</string>
     <string name="report_type">Report Type</string>
     <string name="reported">Reported</string>
-    <string name="proposal_id">Proposal ID</string>
+    <string name="proposal_id">PIP SN</string>
+    <string name="pip_number">PIP编号</string>
     <string name="proposal_type">Proposal Type</string>
     <string name="restricted_account">Restricted Account</string>
     <string name="restricted_amount">Restricted Amount</string>
@@ -567,13 +568,21 @@
     <string name="validators_state_exiting">Exiting</string>
     <string name="validators_state_exited">Exited</string>
 
+    <string name="upgrade_proposal">Upgrade</string>
+    <string name="text_proposal">Text</string>
+    <string name="parameter_proposal">Parameter</string>
+    <string name="cancel_proposal">Cancel</string>
 
-    <string name="validators_details_tips">PlatON blockchain initial built-in validator,\ndoes not accept Delegation</string>
+    <string name="validators_details_tips">The Validator is provided by the PlatON Foundation, does not  accept Delegation</string>
 
     <!--赎回类型-->
     <string name="withdraw_type_delegated">Delegated</string>
     <string name="withdraw_type_unlocked">Unlocked delegate</string>
     <string name="withdraw_type_released">Released delegate</string>
+
+    <string name="vote_yes">VoteYes</string>
+    <string name="vote_no">VoteNo</string>
+    <string name="vote_abstain">VoteAbstain</string>
 
     <!--赎回提示语-->
     <string name="withdraw_operation_tips">Exceeded the available amount and cannot be submitted</string>

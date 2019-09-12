@@ -2,6 +2,7 @@ package com.juzix.wallet.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.StringRes;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.annotation.JSONField;
@@ -127,9 +128,17 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
      */
     private String url;
     /**
+     * PIP编号   eip-100(EIP-由前端拼接)
+     */
+    private String piDID;
+    /**
      * 提案类型
      */
     private String proposalType;
+    /**
+     * 投票提案类型  1：文本提案；  2：升级提案；  4.取消题案
+     */
+    private String voteProposalType;
     /**
      * 投票
      */
@@ -190,7 +199,9 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         reportType = in.readString();
         version = in.readString();
         url = in.readString();
+        piDID = in.readString();
         proposalType = in.readString();
+        voteProposalType = in.readString();
         vote = in.readString();
         redeemStatus = in.readString();
         walletIcon = in.readString();
@@ -218,16 +229,18 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         this.nodeName = builder.nodeName;
         this.nodeId = builder.nodeId;
         this.lockAddress = builder.lockAddress;
-        reportType = builder.reportType;
-        version = builder.version;
-        url = builder.url;
-        proposalType = builder.proposalType;
-        vote = builder.vote;
-        redeemStatus = builder.redeemStatus;
-        walletIcon = builder.walletIcon;
-        walletName = builder.walletName;
-        unDelegation = builder.unDelegation;
-        stakingValue = builder.stakingValue;
+        this.reportType = builder.reportType;
+        this.version = builder.version;
+        this.url = builder.url;
+        this.piDID = builder.piDID;
+        this.proposalType = builder.proposalType;
+        this.voteProposalType = builder.voteProposalType;
+        this.vote = builder.vote;
+        this.redeemStatus = builder.redeemStatus;
+        this.walletIcon = builder.walletIcon;
+        this.walletName = builder.walletName;
+        this.unDelegation = builder.unDelegation;
+        this.stakingValue = builder.stakingValue;
     }
 
     @Override
@@ -253,7 +266,9 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         dest.writeString(reportType);
         dest.writeString(version);
         dest.writeString(url);
+        dest.writeString(piDID);
         dest.writeString(proposalType);
+        dest.writeString(voteProposalType);
         dest.writeString(vote);
         dest.writeString(redeemStatus);
         dest.writeString(walletIcon);
@@ -614,6 +629,22 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         this.proposalType = proposalType;
     }
 
+    public String getVoteProposalType() {
+        return voteProposalType;
+    }
+
+    public void setVoteProposalType(String voteProposalType) {
+        this.voteProposalType = voteProposalType;
+    }
+
+    public String getPiDID() {
+        return piDID;
+    }
+
+    public void setPiDID(String piDID) {
+        this.piDID = piDID;
+    }
+
     public String getVote() {
         return vote;
     }
@@ -633,6 +664,46 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
     @Override
     public int hashCode() {
         return TextUtils.isEmpty(hash) ? 0 : hash.hashCode();
+    }
+
+    public @StringRes
+    int getProposalTypeDescRes() {
+        int proposalType = NumberParserUtils.parseInt(getProposalType());
+        if (proposalType == ProposalType.UPGRADE_PROPOSAL) {
+            return R.string.upgrade_proposal;
+        } else if (proposalType == ProposalType.TEXT_PROPOSAL) {
+            return R.string.text_proposal;
+        } else if (proposalType == ProposalType.PARAMETER_PROPOSAL) {
+            return R.string.parameter_proposal;
+        } else {
+            return R.string.cancel_proposal;
+        }
+    }
+
+    public @StringRes
+    int getVoteProposalTypeDescRes() {
+        int proposalType = NumberParserUtils.parseInt(getVoteProposalType());
+        if (proposalType == ProposalType.UPGRADE_PROPOSAL) {
+            return R.string.upgrade_proposal;
+        } else if (proposalType == ProposalType.TEXT_PROPOSAL) {
+            return R.string.text_proposal;
+        } else if (proposalType == ProposalType.PARAMETER_PROPOSAL) {
+            return R.string.parameter_proposal;
+        } else {
+            return R.string.cancel_proposal;
+        }
+    }
+
+    public @StringRes
+    int getVoteOptionTypeDescRes() {
+        int voteOptionType = NumberParserUtils.parseInt(vote);
+        if (voteOptionType == VoteOptionType.VOTE_YES) {
+            return R.string.vote_yes;
+        } else if (voteOptionType == VoteOptionType.VOTE_NO) {
+            return R.string.vote_no;
+        } else {
+            return R.string.vote_abstain;
+        }
     }
 
     @Override
@@ -702,7 +773,9 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         private String reportType;
         private String version;
         private String url;
+        private String piDID;
         private String proposalType;
+        private String voteProposalType;
         private String vote;
         private String redeemStatus;
         private String walletIcon;
@@ -825,6 +898,16 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
             return this;
         }
 
+        public Builder piDID(String piDID) {
+            this.piDID = piDID;
+            return this;
+        }
+
+        public Builder voteProposalType(String voteProposalType) {
+            this.voteProposalType = voteProposalType;
+            return this;
+        }
+
         public Builder vote(String vote) {
             this.vote = vote;
             return this;
@@ -884,12 +967,15 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
                 ", reportType='" + reportType + '\'' +
                 ", version='" + version + '\'' +
                 ", url='" + url + '\'' +
+                ", piDID='" + piDID + '\'' +
                 ", proposalType='" + proposalType + '\'' +
+                ", voteProposalType='" + voteProposalType + '\'' +
                 ", vote='" + vote + '\'' +
                 ", redeemStatus='" + redeemStatus + '\'' +
                 ", walletIcon='" + walletIcon + '\'' +
                 ", walletName='" + walletName + '\'' +
                 ", unDelegation='" + unDelegation + '\'' +
+                ", stakingValue='" + stakingValue + '\'' +
                 '}';
     }
 }
