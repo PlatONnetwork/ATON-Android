@@ -459,7 +459,6 @@
     <string name="restricted_amount_with_unit">(&#160;&#160;Restricted:&#160;%1$s&#160;LAT)</string>
     <string name="restricted_amount_tips">Non tradable LAT，but can be delegated</string>
 
-
     <string name="msg_hundred">hundred</string>
     <string name="msg_thousand">thousand</string>
     <string name="msg_ten_thousand">ten thousand</string>

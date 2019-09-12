@@ -454,6 +454,7 @@
     <string name="candidate_withdraw">提取质押</string>
     <string name="unknown">其他</string>
 
+
     <!--刷新header和footer-->
     <string name="pulldown_to_refresh">下拉开始刷新</string>
     <string name="release_to_refresh">释放立即刷新</string>
@@ -494,7 +495,7 @@
     <string name="proposal_type">提案类型</string>
     <string name="restricted_account">锁仓地址</string>
     <string name="restricted_amount">锁仓数量</string>
-    <string name="double_signing">多签</string>
+    <string name="double_signing">区块双签</string>
     <string name="nav_delegate">委托</string>
     <string name="total_delegate_title">总计委托</string>
     <string name="total_delegate">%1$s&#160;LAT</string>

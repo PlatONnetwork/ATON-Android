@@ -706,6 +706,11 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         }
     }
 
+    public @StringRes
+    int getReportTypeDescRes() {
+        return R.string.double_signing;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {

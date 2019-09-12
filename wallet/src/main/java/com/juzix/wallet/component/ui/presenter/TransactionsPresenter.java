@@ -253,12 +253,14 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
         List<Transaction> newList = new ArrayList<>();
         if (isLoadMore) {
             newList.addAll(oldList);
+            newList.removeAll(curList);
             newList.addAll(curList);
         } else {
             newList = curList;
         }
         return newList;
     }
+
 
     /**
      * 定时刷新交易记录

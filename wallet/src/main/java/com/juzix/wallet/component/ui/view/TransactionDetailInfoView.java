@@ -140,7 +140,7 @@ public class TransactionDetailInfoView extends LinearLayout {
                 addView(getItemView(getStringWithColon(R.string.submissionTime), transaction.getShowCreateTime()));
                 addView(getItemView(getStringWithColon(R.string.reported), transaction.getNodeName()));
                 addView(getItemView(getStringWithColon(R.string.nodeId), transaction.getNodeId()));
-                addView(getItemView(getStringWithColon(R.string.report_type), transaction.getReportType()));
+                addView(getItemView(getStringWithColon(R.string.report_type), getString(transaction.getReportTypeDescRes())));
                 addView(getItemView(getStringWithColon(R.string.fee), getString(R.string.amount_with_unit, transaction.getShowActualTxCost())));
                 break;
             case CREATE_RESTRICTING:

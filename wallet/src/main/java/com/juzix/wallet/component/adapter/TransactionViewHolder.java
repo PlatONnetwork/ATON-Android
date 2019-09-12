@@ -66,13 +66,13 @@ public class TransactionViewHolder extends BaseViewHolder<Transaction> {
         boolean isValueZero = !BigDecimalUtil.isBiggerThanZero(transaction.getValue());
 
         if (isTransfer || isValueZero) {
-            mTransactionAmountTv.setText(StringUtil.formatBalance(transaction.getShowValue()));
+            mTransactionAmountTv.setText(mContext.getString(R.string.amount_with_unit, StringUtil.formatBalance(transaction.getShowValue())));
             mTransactionAmountTv.setTextColor(ContextCompat.getColor(mContext, R.color.color_000000));
         } else if (isSender) {
-            mTransactionAmountTv.setText(String.format("%s%s", "-", StringUtil.formatBalance(transaction.getShowValue())));
+            mTransactionAmountTv.setText(String.format("%s%s", "-", mContext.getString(R.string.amount_with_unit, StringUtil.formatBalance(transaction.getShowValue()))));
             mTransactionAmountTv.setTextColor(ContextCompat.getColor(mContext, R.color.color_ff3b3b));
         } else {
-            mTransactionAmountTv.setText(String.format("%s%s", "+", StringUtil.formatBalance(transaction.getShowValue())));
+            mTransactionAmountTv.setText(String.format("%s%s", "+", mContext.getString(R.string.amount_with_unit, StringUtil.formatBalance(transaction.getShowValue()))));
             mTransactionAmountTv.setTextColor(ContextCompat.getColor(mContext, R.color.color_19a20e));
         }
         mTransactionStatusTv.setText(getTxTDesc(transaction, mContext, isSender));
