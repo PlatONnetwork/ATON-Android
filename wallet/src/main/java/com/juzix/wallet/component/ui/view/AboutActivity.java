@@ -39,8 +39,6 @@ import io.reactivex.functions.Consumer;
  */
 public class AboutActivity extends BaseActivity {
 
-    private final static String TAG = AboutActivity.class.getSimpleName();
-
     @BindView(R.id.tv_about_us)
     TextView tvAboutUs;
     @BindView(R.id.ll_update)
@@ -196,24 +194,10 @@ public class AboutActivity extends BaseActivity {
                 string(R.string.not_now), new OnDialogViewClickListener() {
                     @Override
                     public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
-                        if (versionInfo.getAndroidVersionInfo().isForce()) {
-                            CommonTipsDialogFragment.createDialogWithTwoButton(ContextCompat.getDrawable(AboutActivity.this, R.drawable.icon_dialog_tips), "退出应用?", "取消", new OnDialogViewClickListener() {
-                                @Override
-                                public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
-                                    showUpdateVersionDialog(versionInfo);
-                                }
-                            }, "确认", new OnDialogViewClickListener() {
-                                @Override
-                                public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
-                                    AboutActivity.this.finish();
-                                    Process.killProcess(Process.myPid());
-                                }
-                            }).show(getSupportFragmentManager(), "showExistDialog");
-                        }
                         if (fragment != null) {
                             fragment.dismiss();
                         }
                     }
-                }, !versionInfo.getAndroidVersionInfo().isForce()).show(currentActivity().getSupportFragmentManager(), "showTips");
+                }).show(currentActivity().getSupportFragmentManager(), "showTips");
     }
 }

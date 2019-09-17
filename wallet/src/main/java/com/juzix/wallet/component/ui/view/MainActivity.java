@@ -19,6 +19,7 @@ import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
 
+import com.juzhen.framework.app.activity.ActivityManager;
 import com.juzhen.framework.util.AndroidUtil;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
@@ -237,7 +238,7 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
 
     @Override
     public void exitApp() {
-        MainActivity.this.finish();
+        ActivityManager.getInstance().finishAll();
         Process.killProcess(Process.myPid());
     }
 }

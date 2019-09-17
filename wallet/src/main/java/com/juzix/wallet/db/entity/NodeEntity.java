@@ -29,6 +29,8 @@ public class NodeEntity extends RealmObject {
 
     private boolean isChecked;
 
+    private String chainId;
+
     public Node createNode() {
         return new Node.Builder()
                 .id(id)
@@ -48,12 +50,13 @@ public class NodeEntity extends RealmObject {
         this.isChecked = isChecked;
     }
 
-    public NodeEntity(long id, String nodeAddress, boolean isDefaultNode, boolean isChecked, boolean isMainNetworkNode) {
+    public NodeEntity(long id, String nodeAddress, boolean isDefaultNode, boolean isChecked, boolean isMainNetworkNode,String chainId) {
         this.id = id;
         this.nodeAddress = nodeAddress;
         this.isDefaultNode = isDefaultNode;
         this.isChecked = isChecked;
         this.isMainNetworkNode = isMainNetworkNode;
+        this.chainId = chainId;
     }
 
     public Node buildNodeEntity() {
@@ -63,6 +66,7 @@ public class NodeEntity extends RealmObject {
                 .isDefaultNode(isDefaultNode)
                 .isChecked(isChecked)
                 .isMainNetworkNode(isMainNetworkNode)
+                .chainId(chainId)
                 .build();
     }
 
@@ -104,5 +108,13 @@ public class NodeEntity extends RealmObject {
 
     public void setMainNetworkNode(boolean mainNetworkNode) {
         isMainNetworkNode = mainNetworkNode;
+    }
+
+    public String getChainId() {
+        return chainId;
+    }
+
+    public void setChainId(String chainId) {
+        this.chainId = chainId;
     }
 }
