@@ -20,6 +20,7 @@ import com.juzix.wallet.component.ui.contract.UnlockWithPasswordContract;
 import com.juzix.wallet.component.ui.dialog.SelectWalletDialogFragment;
 import com.juzix.wallet.component.ui.presenter.UnlockWithPasswordPresenter;
 import com.juzix.wallet.component.widget.CommonTitleBar;
+import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.entity.Wallet;
 
 import butterknife.BindView;
@@ -43,7 +44,7 @@ public class UnlockWithPasswordActivity extends MVPBaseActivity<UnlockWithPasswo
     @BindView(R.id.iv_wallet_avatar)
     ImageView ivWalletAvatar;
     @BindView(R.id.btn_unlock)
-    Button btnUnlock;
+    ShadowButton btnUnlock;
 
     private Unbinder unbinder;
 
@@ -60,6 +61,11 @@ public class UnlockWithPasswordActivity extends MVPBaseActivity<UnlockWithPasswo
         initViews();
         enableUnlock(false);
         mPresenter.init();
+    }
+
+    @Override
+    protected boolean immersiveBarViewEnabled() {
+        return true;
     }
 
     private void initViews() {
@@ -93,8 +99,6 @@ public class UnlockWithPasswordActivity extends MVPBaseActivity<UnlockWithPasswo
 
     private void enableUnlock(boolean enabled) {
         btnUnlock.setEnabled(enabled);
-        btnUnlock.setBackgroundResource(enabled ? R.drawable.bg_shape_button2 : R.drawable.bg_shape_button1);
-        btnUnlock.setTextColor(ContextCompat.getColor(getContext(), enabled ? R.color.color_f6f6f6 : R.color.color_d8d8d8));
     }
 
     @OnClick({R.id.layout_change_wallet, R.id.btn_unlock})
