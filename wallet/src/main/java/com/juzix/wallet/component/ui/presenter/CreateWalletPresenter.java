@@ -67,6 +67,7 @@ public class CreateWalletPresenter extends BasePresenter<CreateIndividualWalletC
                     public void accept(Wallet walletEntity) throws Exception {
                         if (isViewAttached()) {
                             BackupWalletActivity.actionStart(currentActivity(), walletEntity);
+                            currentActivity().finish();
                         }
                     }
                 }, new Consumer<Throwable>() {

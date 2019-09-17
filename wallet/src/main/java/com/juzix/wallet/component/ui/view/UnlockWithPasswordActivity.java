@@ -10,14 +10,17 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.UnlockWithPasswordContract;
 import com.juzix.wallet.component.ui.dialog.SelectWalletDialogFragment;
 import com.juzix.wallet.component.ui.presenter.UnlockWithPasswordPresenter;
 import com.juzix.wallet.component.widget.CommonTitleBar;
+import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.entity.Wallet;
 
 import butterknife.BindView;
@@ -38,8 +41,10 @@ public class UnlockWithPasswordActivity extends MVPBaseActivity<UnlockWithPasswo
     TextView tvWalletName;
     @BindView(R.id.tv_wallet_address)
     TextView tvWalletAddress;
+    @BindView(R.id.iv_wallet_avatar)
+    ImageView ivWalletAvatar;
     @BindView(R.id.btn_unlock)
-    Button   btnUnlock;
+    ShadowButton btnUnlock;
 
     private Unbinder unbinder;
 
@@ -58,7 +63,13 @@ public class UnlockWithPasswordActivity extends MVPBaseActivity<UnlockWithPasswo
         mPresenter.init();
     }
 
+    @Override
+    protected boolean immersiveBarViewEnabled() {
+        return true;
+    }
+
     private void initViews() {
+
         commonTitleBar.setLeftDrawableClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,8 +99,6 @@ public class UnlockWithPasswordActivity extends MVPBaseActivity<UnlockWithPasswo
 
     private void enableUnlock(boolean enabled) {
         btnUnlock.setEnabled(enabled);
-        btnUnlock.setBackgroundResource(enabled ? R.drawable.bg_shape_button2 : R.drawable.bg_shape_button1);
-        btnUnlock.setTextColor(ContextCompat.getColor(getContext(), enabled ? R.color.color_f6f6f6 : R.color.color_d8d8d8));
     }
 
     @OnClick({R.id.layout_change_wallet, R.id.btn_unlock})
@@ -114,6 +123,10 @@ public class UnlockWithPasswordActivity extends MVPBaseActivity<UnlockWithPasswo
 
     @Override
     public void updateWalletInfo(Wallet walletEntity) {
+        int walletAvatar = RUtils.drawable(walletEntity.getAvatar());
+        if (walletAvatar != -1) {
+            ivWalletAvatar.setImageResource(walletAvatar);
+        }
         tvWalletName.setText(walletEntity.getName());
         tvWalletAddress.setText(walletEntity.getPrefixAddress());
     }

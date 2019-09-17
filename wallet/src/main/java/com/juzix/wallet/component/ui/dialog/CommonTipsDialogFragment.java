@@ -47,6 +47,10 @@ public class CommonTipsDialogFragment extends DialogFragment {
         return create(drawable, title, content, new ButtonConfig(leftText, DEFAULT_LEFT_BUTTON_COLOR, leftDialogViewClickListener), new ButtonConfig(rightText, DEFAULT_RIGHT_BUTTON_COLOR, rightOnDialogViewClickListener), cancelable);
     }
 
+    public static CommonTipsDialogFragment createDialogWithTitleAndTwoButton(Drawable drawable, String title, String content, String leftText, OnDialogViewClickListener leftDialogViewClickListener, String rightText, OnDialogViewClickListener rightOnDialogViewClickListener) {
+        return create(drawable, title, content, new ButtonConfig(leftText, DEFAULT_LEFT_BUTTON_COLOR, leftDialogViewClickListener), new ButtonConfig(rightText, DEFAULT_RIGHT_BUTTON_COLOR, rightOnDialogViewClickListener), false);
+    }
+
     public static CommonTipsDialogFragment createDialogWithTwoButton(Drawable drawable, String content, String leftText, OnDialogViewClickListener leftDialogViewClickListener, String rightText, OnDialogViewClickListener rightOnDialogViewClickListener) {
         return create(drawable, null, content, new ButtonConfig(leftText, DEFAULT_LEFT_BUTTON_COLOR, leftDialogViewClickListener), new ButtonConfig(rightText, DEFAULT_RIGHT_BUTTON_COLOR, rightOnDialogViewClickListener), true);
     }

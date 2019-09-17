@@ -3,6 +3,8 @@ package com.juzix.wallet.entity;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.db.entity.NodeEntity;
 
+import jnr.constants.platform.PRIO;
+
 /**
  * @author matrixelement
  */
@@ -26,6 +28,8 @@ public class Node implements Cloneable, Nullable {
 
     private boolean isChecked = false;
 
+    private String chainId;
+
     protected Node() {
 
     }
@@ -37,6 +41,7 @@ public class Node implements Cloneable, Nullable {
         setFormatCorrect(builder.isFormatCorrect);
         setChecked(builder.isChecked);
         setMainNetworkNode(builder.isMainNetworkNode);
+        setChainId(builder.chainId);
     }
 
     public static Node createNullNode() {
@@ -44,7 +49,7 @@ public class Node implements Cloneable, Nullable {
     }
 
     public NodeEntity createNodeInfo() {
-        return new NodeEntity(id, nodeAddress, isDefaultNode, isChecked, isMainNetworkNode);
+        return new NodeEntity(id, nodeAddress, isDefaultNode, isChecked, isMainNetworkNode,chainId);
     }
 
     public String getNodeAddress() {
@@ -95,6 +100,14 @@ public class Node implements Cloneable, Nullable {
         isMainNetworkNode = mainNetworkNode;
     }
 
+    public String getChainId() {
+        return chainId;
+    }
+
+    public void setChainId(String chainId) {
+        this.chainId = chainId;
+    }
+
     @Override
     public int hashCode() {
         return (int) (id ^ (id >>> 32));
@@ -137,6 +150,7 @@ public class Node implements Cloneable, Nullable {
         private boolean isFormatCorrect;
         private boolean isChecked;
         private boolean isMainNetworkNode;
+        private String chainId;
 
         public Builder() {
             id = System.currentTimeMillis();
@@ -172,19 +186,18 @@ public class Node implements Cloneable, Nullable {
             return this;
         }
 
+        public Builder chainId(String val){
+            chainId = val;
+            return this;
+        }
+
         public Node build() {
             return new Node(this);
         }
     }
 
-    public String getHttpUrl() {
-        if (Constants.URL.URL_TEST_A.equals(nodeAddress)) {
-            return Constants.URL.URL_HTTP_A;
-        } else if (Constants.URL.URL_TEST_B.equals(nodeAddress)) {
-            return Constants.URL.URL_HTTP_B;
-        } else {
-            return Constants.URL.URL_HTTP_C;
-        }
+    public String getRPCUrl() {
+        return nodeAddress + "/rpc";
     }
 
 }

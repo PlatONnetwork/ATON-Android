@@ -42,7 +42,7 @@ public interface BaseApi {
      * @param body
      * @return
      */
-    @POST("app/v0700/transaction/list")
+    @POST("app/v700/transaction/list")
     Single<Response<ApiResponse<List<Transaction>>>> getTransactionList(@Body ApiRequestBody body);
 
     /**
@@ -50,7 +50,7 @@ public interface BaseApi {
      *
      * @return
      */
-    @POST("app-{cid}/v0700/node/list")
+    @POST("app-{cid}/v700/node/list")
     Single<Response<ApiResponse<CandidateWrap>>> getCandidateList(@Path("cid") String cid);
 
     /**
@@ -61,7 +61,7 @@ public interface BaseApi {
      * @return
      */
 
-    @POST("app-{cid}/v0700/node/listUserVoteNode")
+    @POST("app-{cid}/v700/node/listUserVoteNode")
     Single<Response<ApiResponse<List<VotedCandidate>>>> getVotedCandidateList(@Path("cid") String cid, @Body ApiRequestBody requestBody);
 
     /**
@@ -77,7 +77,7 @@ public interface BaseApi {
      *             ]
      * @return
      */
-    @POST("app-{cid}/v0700/transaction/listVote")
+    @POST("app-{cid}/v700/transaction/listVote")
     Single<Response<ApiResponse<List<VotedCandidate>>>> getVotedCandidateDetailList(@Path("cid") String cid, @Body ApiRequestBody body);
 
 
@@ -87,7 +87,7 @@ public interface BaseApi {
      * 获取验证节点列表
      */
 
-    @POST("app/v0700/node/nodelist")
+    @POST("app/v700/node/nodelist")
     Single<Response<ApiResponse<List<VerifyNode>>>> getVerifyNodeList();
 
 
@@ -96,7 +96,7 @@ public interface BaseApi {
      * nodeId   //节点id
      */
 
-    @POST("app/v0700/node/nodeDetails")
+    @POST("app/v700/node/nodeDetails")
     Single<Response<ApiResponse<VerifyNodeDetail>>> getNodeCandidateDetail(@Body ApiRequestBody body);
 
 
@@ -109,7 +109,7 @@ public interface BaseApi {
      *            ]
      * @return
      */
-    @POST("app/v0700/node/listDelegateGroupByAddr")
+    @POST("app/v700/node/listDelegateGroupByAddr")
     Single<Response<ApiResponse<List<DelegateInfo>>>> getMyDelegateList(@Body ApiRequestBody body);
 
 
@@ -124,7 +124,7 @@ public interface BaseApi {
      *               客户端首次进入页面时或者上拉时传old。客户端自动获取最新记录时传new。
      */
 
-    @POST("app/v0700/node/delegateDetails")
+    @POST("app/v700/node/delegateDetails")
     Single<Response<ApiResponse<List<DelegateDetail>>>> getDelegateDetailList(@Body ApiRequestBody body);
 
 
@@ -146,7 +146,7 @@ public interface BaseApi {
      *               ]
      */
 
-    @POST("app/v0700/transaction/delegateRecord")
+    @POST("app/v700/transaction/delegateRecord")
     Single<Response<ApiResponse<List<Transaction>>>> getDelegateRecordList(@Body ApiRequestBody body);
 
 
@@ -156,7 +156,7 @@ public interface BaseApi {
      * "address1",
      * "address2"]
      */
-    @POST("app/v0700/account/getBalance")
+    @POST("app/v700/account/getBalance")
     Single<Response<ApiResponse<List<AccountBalance>>>> getAccountBalance(@Body ApiRequestBody body);
 
 
@@ -165,7 +165,7 @@ public interface BaseApi {
      * "addr":"",                             //委托的地址
      * "nodeId":"",                          //节点id
      */
-    @POST("app/v0700/node/getDelegationValue")
+    @POST("app/v700/node/getDelegationValue")
     Single<Response<ApiResponse<List<WithDrawBalance>>>> getWithDrawBalance(@Body ApiRequestBody body);
 
 
@@ -175,7 +175,7 @@ public interface BaseApi {
      * @param body
      * @return
      */
-    @POST("app/v0700/node/canDelegation")
+    @POST("app/v700/node/canDelegation")
     Single<Response<ApiResponse<DelegateHandle>>> getIsDelegateInfo(@Body ApiRequestBody body);
 
 

@@ -6,6 +6,7 @@ import com.juzix.wallet.component.ui.base.IView;
 public class CreateIndividualWalletContract {
 
     public interface View extends IView {
+
         void showNameError(String text, boolean isVisible);
 
         void showPasswordError(String text, boolean isVisible);
