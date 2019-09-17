@@ -119,7 +119,7 @@ public class TransactionListAdapter extends RecyclerView.Adapter<BaseViewHolder>
             mMoreTransactionTv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    TransactionRecordsActivity.actionStart(mContext);
+                    TransactionRecordsActivity.actionStart(mContext,WalletManager.getInstance().getSelectedWallet());
                 }
             });
         }

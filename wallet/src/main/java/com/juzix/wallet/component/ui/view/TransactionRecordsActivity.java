@@ -44,6 +44,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import jnr.constants.platform.PRIO;
 
 public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecordsPresenter> implements TransactionRecordsContract.View {
 
@@ -99,6 +100,7 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
 
     private void initViews() {
 
+        Wallet selectedWallet = getIntent().getParcelableExtra(Constants.Extra.EXTRA_WALLET);
 
         mAddressList = WalletManager.getInstance().getAddressList();
 
@@ -141,9 +143,7 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
                         @Override
                         public void onWalletItemClick(int position) {
                             Wallet wallet = walletList.get(position);
-                            ivSelectedWalletAvatar.setImageResource(wallet.isNull() ? R.drawable.icon_all_wallets : RUtils.drawable(wallet.getAvatar()));
-                            tvSelectedWalletName.setText(wallet.isNull() ? getString(R.string.msg_all_wallets) : wallet.getName());
-                            mAddressList = position == 0 ? WalletManager.getInstance().getAddressList() : Arrays.asList(wallet.getPrefixAddress());
+                            showSelectWalletInfo(wallet);
                             mPresenter.fetchTransactions(TransactionRecordsPresenter.DIRECTION_NEW, mAddressList, true);
                         }
                     });
@@ -155,6 +155,9 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
                 }
             }
         });
+
+        showSelectWalletInfo(selectedWallet);
+
         layoutRefresh.autoRefresh();
     }
 
@@ -189,8 +192,26 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
         }
     }
 
+    private void showSelectWalletInfo(Wallet selectedWallet) {
+        if (selectedWallet == null || selectedWallet.isNull()) {
+            ivSelectedWalletAvatar.setImageResource(R.drawable.icon_all_wallets);
+            tvSelectedWalletName.setText(getString(R.string.msg_all_wallets));
+            mAddressList = WalletManager.getInstance().getAddressList();
+        } else {
+            ivSelectedWalletAvatar.setImageResource(RUtils.drawable(selectedWallet.getAvatar()));
+            tvSelectedWalletName.setText(selectedWallet.getName());
+            mAddressList = Arrays.asList(selectedWallet.getPrefixAddress());
+        }
+    }
+
     public static void actionStart(Context context) {
         Intent intent = new Intent(context, TransactionRecordsActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void actionStart(Context context, Wallet wallet) {
+        Intent intent = new Intent(context, TransactionRecordsActivity.class);
+        intent.putExtra(Constants.Extra.EXTRA_WALLET, wallet);
         context.startActivity(intent);
     }
 }

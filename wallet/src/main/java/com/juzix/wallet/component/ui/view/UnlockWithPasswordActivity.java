@@ -10,8 +10,10 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.UnlockWithPasswordContract;
@@ -38,8 +40,10 @@ public class UnlockWithPasswordActivity extends MVPBaseActivity<UnlockWithPasswo
     TextView tvWalletName;
     @BindView(R.id.tv_wallet_address)
     TextView tvWalletAddress;
+    @BindView(R.id.iv_wallet_avatar)
+    ImageView ivWalletAvatar;
     @BindView(R.id.btn_unlock)
-    Button   btnUnlock;
+    Button btnUnlock;
 
     private Unbinder unbinder;
 
@@ -59,6 +63,7 @@ public class UnlockWithPasswordActivity extends MVPBaseActivity<UnlockWithPasswo
     }
 
     private void initViews() {
+
         commonTitleBar.setLeftDrawableClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,6 +119,10 @@ public class UnlockWithPasswordActivity extends MVPBaseActivity<UnlockWithPasswo
 
     @Override
     public void updateWalletInfo(Wallet walletEntity) {
+        int walletAvatar = RUtils.drawable(walletEntity.getAvatar());
+        if (walletAvatar != -1) {
+            ivWalletAvatar.setImageResource(walletAvatar);
+        }
         tvWalletName.setText(walletEntity.getName());
         tvWalletAddress.setText(walletEntity.getPrefixAddress());
     }
