@@ -628,7 +628,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
 
         Uint32 uint32 = new Uint32(new BigInteger(version));
 
-        return TextUtils.join(".", byteArrayToList(uint32.getValue().toByteArray()));
+        return String.format("V%s", TextUtils.join(".", byteArrayToList(uint32.getValue().toByteArray())));
     }
 
     public String getUrl() {
