@@ -11,13 +11,13 @@ import android.support.annotation.IntDef;
 public @interface ProposalType {
 
     /**
-     * 升级提案
-     */
-    int UPGRADE_PROPOSAL = 1;
-    /**
      * 文本提案
      */
-    int TEXT_PROPOSAL = 2;
+    int TEXT_PROPOSAL = 1;
+    /**
+     * 升级提案
+     */
+    int UPGRADE_PROPOSAL = 2;
     /**
      * 参数提案
      */

@@ -59,9 +59,7 @@ public class TransactionListAdapter extends RecyclerView.Adapter<BaseViewHolder>
             holder.setOnItemClickListener(new BaseViewHolder.OnItemClickListener() {
                 @Override
                 public void onItemClick(Object o) {
-                    if (mTransactionList != null && !mTransactionList.isEmpty()) {
-                        TransactionDetailActivity.actionStart(mContext, mTransactionList.get(position), mQueryAddressList);
-                    }
+                    TransactionDetailActivity.actionStart(mContext, mTransactionList.get(position), mQueryAddressList);
                 }
             });
             holder.refreshData(mTransactionList.get(position), position);
@@ -119,7 +117,7 @@ public class TransactionListAdapter extends RecyclerView.Adapter<BaseViewHolder>
             mMoreTransactionTv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    TransactionRecordsActivity.actionStart(mContext,WalletManager.getInstance().getSelectedWallet());
+                    TransactionRecordsActivity.actionStart(mContext, WalletManager.getInstance().getSelectedWallet());
                 }
             });
         }

@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 
 import com.juzhen.framework.util.LogUtils;
 import com.juzix.wallet.R;
-import com.juzix.wallet.component.adapter.TransactionAdapter;
 import com.juzix.wallet.component.adapter.TransactionDiffCallback;
 import com.juzix.wallet.component.adapter.TransactionListAdapter;
 import com.juzix.wallet.component.adapter.base.RecyclerAdapter;

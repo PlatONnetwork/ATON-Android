@@ -67,7 +67,7 @@ public class TransactionViewHolder extends BaseViewHolder<Transaction> {
 
         if (isTransfer || isValueZero) {
             mTransactionAmountTv.setText(mContext.getString(R.string.amount_with_unit, StringUtil.formatBalance(transaction.getShowValue())));
-            mTransactionAmountTv.setTextColor(ContextCompat.getColor(mContext, R.color.color_000000));
+            mTransactionAmountTv.setTextColor(ContextCompat.getColor(mContext, R.color.color_b6bbd0));
         } else if (isSender) {
             mTransactionAmountTv.setText(String.format("%s%s", "-", mContext.getString(R.string.amount_with_unit, StringUtil.formatBalance(transaction.getShowValue()))));
             mTransactionAmountTv.setTextColor(ContextCompat.getColor(mContext, R.color.color_ff3b3b));
@@ -110,8 +110,6 @@ public class TransactionViewHolder extends BaseViewHolder<Transaction> {
         TransactionType transactionType = transaction.getTxType();
         if (transactionType == TransactionType.TRANSFER) {
             return context.getResources().getString(isSender ? R.string.send : R.string.receive);
-        } else if (transactionType == TransactionType.VOTING_PROPOSAL) {
-            return String.format("%s(%s)", context.getResources().getString(transactionType.getTxTypeDescRes()), context.getResources().getString(transaction.getVoteOptionTypeDescRes()));
         } else {
             return context.getResources().getString(transactionType.getTxTypeDescRes());
         }

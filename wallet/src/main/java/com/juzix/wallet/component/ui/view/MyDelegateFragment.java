@@ -103,18 +103,6 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        MobclickAgent.onPageStart(Constants.UMPages.MY_DELEGATION);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        MobclickAgent.onPageEnd(Constants.UMPages.MY_DELEGATION);
-    }
-
-    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initClickListener();
@@ -253,6 +241,7 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
 
     @Override
     public void showMyDelegateDataFailed() {
+        tv_total_delegate.setText("--");
         refreshLayout.finishRefresh();
         mMyDelegateAdapter.notifyDataSetChanged();
     }
@@ -267,6 +256,17 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
 
     }
 
+    @Override
+    public void onTabHidden() {
+        super.onTabHidden();
+        MobclickAgent.onPageEnd(Constants.UMPages.MY_DELEGATION);
+    }
+
+    @Override
+    public void onTabShown() {
+        super.onTabShown();
+        MobclickAgent.onPageStart(Constants.UMPages.MY_DELEGATION);
+    }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {

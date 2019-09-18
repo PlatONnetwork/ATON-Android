@@ -1,5 +1,6 @@
 package com.juzix.wallet.entity;
 
+import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.StringRes;
@@ -13,8 +14,14 @@ import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.DateUtil;
 import com.juzix.wallet.utils.JSONUtil;
 
+import org.web3j.abi.datatypes.generated.Uint32;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Flowable;
+import io.reactivex.functions.Function;
 import jnr.constants.platform.PRIO;
 
 public class Transaction implements Comparable<Transaction>, Parcelable, Cloneable {
@@ -613,6 +620,17 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         this.version = version;
     }
 
+    public String getFormatVersion() {
+
+        if (TextUtils.isEmpty(version)) {
+            return "--";
+        }
+
+        Uint32 uint32 = new Uint32(new BigInteger(version));
+
+        return TextUtils.join(".", byteArrayToList(uint32.getValue().toByteArray()));
+    }
+
     public String getUrl() {
         return url;
     }
@@ -982,5 +1000,19 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
                 ", unDelegation='" + unDelegation + '\'' +
                 ", stakingValue='" + stakingValue + '\'' +
                 '}';
+    }
+
+    private List<String> byteArrayToList(byte[] bytes) {
+
+        List<String> list = new ArrayList<>();
+
+        int size = bytes.length;
+        if (size == 2) {
+            list.add("0");
+        }
+        for (byte b : bytes) {
+            list.add(String.valueOf(b));
+        }
+        return list;
     }
 }

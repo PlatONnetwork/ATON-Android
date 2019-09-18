@@ -40,14 +40,14 @@ public class DelegateRecordActivity extends BaseActivity {
 
     @Override
     public void onResume() {
-        super.onResume();
         MobclickAgent.onPageStart(Constants.UMPages.DELEGATE_NODE_RECORD);
+        super.onResume();
     }
 
     @Override
     public void onPause() {
-        super.onPause();
         MobclickAgent.onPageEnd(Constants.UMPages.DELEGATE_NODE_RECORD);
+        super.onPause();
     }
 
     private void initView() {

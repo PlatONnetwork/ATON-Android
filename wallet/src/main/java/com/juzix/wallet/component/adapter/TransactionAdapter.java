@@ -90,9 +90,7 @@ public class TransactionAdapter extends RecyclerAdapter<Transaction> {
         TransactionType transactionType = transaction.getTxType();
         if (transactionType == TransactionType.TRANSFER) {
             return context.getResources().getString(isSender ? R.string.send : R.string.receive);
-        } else if (transactionType == TransactionType.VOTING_PROPOSAL) {
-            return String.format("%s(%s)", context.getResources().getString(transactionType.getTxTypeDescRes()), context.getResources().getString(transaction.getVoteOptionTypeDescRes()));
-        } else {
+        }  else {
             return context.getResources().getString(transactionType.getTxTypeDescRes());
         }
     }

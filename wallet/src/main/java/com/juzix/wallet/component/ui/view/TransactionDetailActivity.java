@@ -155,12 +155,12 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
 
         if (transferType == TransferType.TRANSFER || isValueZero) {
             tvAmount.setText(transaction.getShowValue());
-            tvAmount.setTextColor(ContextCompat.getColor(this, R.color.color_000000));
+            tvAmount.setTextColor(ContextCompat.getColor(this, R.color.color_b6bbd0));
         } else if (transferType == TransferType.SEND) {
-            tvAmount.setText(String.format("%s%s", "-", transaction.getShowValue()));
+            tvAmount.setText(String.format("%s%s", "-", StringUtil.formatBalance(transaction.getShowValue())));
             tvAmount.setTextColor(ContextCompat.getColor(this, R.color.color_ff3b3b));
         } else {
-            tvAmount.setText(String.format("%s%s", "+", transaction.getShowValue()));
+            tvAmount.setText(String.format("%s%s", "+", StringUtil.formatBalance(transaction.getShowValue())));
             tvAmount.setTextColor(ContextCompat.getColor(this, R.color.color_19a20e));
         }
 

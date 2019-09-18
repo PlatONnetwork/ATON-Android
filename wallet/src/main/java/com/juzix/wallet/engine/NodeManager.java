@@ -109,7 +109,7 @@ public class NodeManager {
     }
 
     public String getChainId() {
-        return getCurNode().getChainId();
+        return TextUtils.isEmpty(getCurNode().getChainId()) ? DEFAULT_NODE_CHAINID_LIST[1] : getCurNode().getChainId();
     }
 
     public String getChainId(String nodeAddress) {

@@ -83,14 +83,14 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
 
     @Override
     protected void onResume() {
-        super.onResume();
         MobclickAgent.onPageStart(Constants.UMPages.TRANSACTION_RECORD);
+        super.onResume();
     }
 
     @Override
     protected void onPause() {
-        super.onPause();
         MobclickAgent.onPageEnd(Constants.UMPages.TRANSACTION_RECORD);
+        super.onPause();
     }
 
     @Override
