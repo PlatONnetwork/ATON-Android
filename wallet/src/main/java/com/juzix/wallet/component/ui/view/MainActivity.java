@@ -129,14 +129,12 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
                     if (tabhost.getCurrentTab() != 1) {
                         tabhost.setCurrentTab(1);
                     }
-
                 } else {
                     //发送一个eventbus
                     EventPublisher.getInstance().sendUpdateDelegateTabEvent();
                     EventPublisher.getInstance().sendUpdateValidatorsTabEvent();
 
                 }
-
                 lastClickTime = currentTimeMillis;
             }
         });

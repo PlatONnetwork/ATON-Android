@@ -361,6 +361,7 @@
         </FrameLayout>
 
         <LinearLayout
+            android:id="@+id/layout_password_strength"
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_marginTop="1dp"

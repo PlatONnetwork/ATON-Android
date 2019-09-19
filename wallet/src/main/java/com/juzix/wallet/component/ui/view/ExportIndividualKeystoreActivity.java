@@ -27,9 +27,8 @@ import com.juzix.wallet.component.widget.table.SmartTabLayout;
 
 import java.util.ArrayList;
 
-public class ExportIndividualKeystoreActivity extends BaseActivity{
+public class ExportIndividualKeystoreActivity extends BaseActivity {
 
-    private final static String    TAG = ExportIndividualKeystoreActivity.class.getSimpleName();
 
     public static void actionStart(Context context, String password) {
         Intent intent = new Intent(context, ExportIndividualKeystoreActivity.class);
@@ -52,8 +51,8 @@ public class ExportIndividualKeystoreActivity extends BaseActivity{
     }
 
     private void initView() {
-        int            indicatorThickness = AndroidUtil.dip2px(getContext(), 2.0f);
-        SmartTabLayout stbBar             = mRootView.findViewById(R.id.stb_bar);
+        int indicatorThickness = AndroidUtil.dip2px(getContext(), 2.0f);
+        SmartTabLayout stbBar = mRootView.findViewById(R.id.stb_bar);
         stbBar.setIndicatorThickness(indicatorThickness);
         stbBar.setIndicatorCornerRadius(indicatorThickness / 2);
         ArrayList<Class<? extends BaseFragment>> fragments = getFragments();
@@ -63,8 +62,8 @@ public class ExportIndividualKeystoreActivity extends BaseActivity{
                 return getTableView(position, container);
             }
         });
-        PagerItems pages  = new PagerItems(getContext());
-        int        tabNum = fragments.size();
+        PagerItems pages = new PagerItems(getContext());
+        int tabNum = fragments.size();
         for (int i = 0; i < tabNum; i++) {
             pages.add(PagerItem.of(getTitles().get(i), fragments.get(i)));
         }
@@ -95,7 +94,7 @@ public class ExportIndividualKeystoreActivity extends BaseActivity{
         CommonTipsDialogFragment.createDialogWithTitleAndOneButton(ContextCompat.getDrawable(this, R.drawable.icon_dialog_tips), string(R.string.donotScreenshot), string(R.string.backupKeystore), string(R.string.understood), new OnDialogViewClickListener() {
             @Override
             public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
-                if (fragment != null){
+                if (fragment != null) {
                     fragment.dismiss();
                 }
             }

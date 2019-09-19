@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
@@ -93,6 +94,8 @@ public class ImportIndividualMnemonicPhraseFragment extends MVPBaseFragment<Impo
     TextView mTvMnemonicError;
     @BindView(R.id.tv_password_error)
     TextView mTvPasswordError;
+    @BindView(R.id.layout_password_strength)
+    LinearLayout mPasswordStrengthLayout;
 
     private boolean mShowPassword;
     private boolean mShowRepeatPassword;
@@ -218,9 +221,9 @@ public class ImportIndividualMnemonicPhraseFragment extends MVPBaseFragment<Impo
                         showNameError(string(R.string.validWalletNameEmptyTips), true);
                     } else if (name.length() > 12) {
                         showNameError(string(R.string.validWalletNameTips), true);
-                    } else if (mPresenter.isExists(name)){
+                    } else if (mPresenter.isExists(name)) {
                         showNameError(string(R.string.wallet_name_exists), true);
-                    }else {
+                    } else {
                         showNameError("", false);
                     }
                 }
@@ -266,7 +269,7 @@ public class ImportIndividualMnemonicPhraseFragment extends MVPBaseFragment<Impo
         });
     }
 
-    private void addTextWatcher(){
+    private void addTextWatcher() {
         setTextWatcher(mEtMnemonicPhrase1, mEtMnemonicPhrase2);
         setTextWatcher(mEtMnemonicPhrase2, mEtMnemonicPhrase3);
         setTextWatcher(mEtMnemonicPhrase3, mEtMnemonicPhrase4);
@@ -281,7 +284,7 @@ public class ImportIndividualMnemonicPhraseFragment extends MVPBaseFragment<Impo
         setTextWatcher(mEtMnemonicPhrase12, null);
     }
 
-    private void setTextWatcher(EditText src, EditText dst){
+    private void setTextWatcher(EditText src, EditText dst) {
         src.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -296,8 +299,8 @@ public class ImportIndividualMnemonicPhraseFragment extends MVPBaseFragment<Impo
             @Override
             public void afterTextChanged(Editable s) {
                 String text = s.toString();
-                if (text.contains(" ")){
-                    src.setText(text.replace(" ",""));
+                if (text.contains(" ")) {
+                    src.setText(text.replace(" ", ""));
                     if (dst != null) {
                         dst.requestFocus();
                         dst.setSelection(dst.getText().length());
@@ -392,6 +395,9 @@ public class ImportIndividualMnemonicPhraseFragment extends MVPBaseFragment<Impo
     }
 
     private void checkPwdStreng(String password) {
+
+        mPasswordStrengthLayout.setVisibility(TextUtils.isEmpty(password) ? View.GONE : View.VISIBLE);
+
         if (TextUtils.isEmpty(password)) {
             mTvStrength.setText(R.string.strength);
             mVLine1.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_00000000));

@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
@@ -71,6 +72,8 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportPr
     TextView mTvPasswordError;
     @BindView(R.id.btn_paste)
     Button mBtnPaste;
+    @BindView(R.id.layout_password_strength)
+    LinearLayout mPasswordStrengthLayout;
 
     private boolean mShowPassword;
     private boolean mShowRepeatPassword;
@@ -112,7 +115,7 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportPr
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object object)  {
+                    public void accept(Object object) {
                         showRepeatPassword();
                     }
                 });
@@ -153,7 +156,7 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportPr
         Observable<Boolean> passwordAndRepeatPasswordObservable = Observable.combineLatest(RxTextView.textChanges(mEtPassword).skipInitialValue(), RxTextView.textChanges(mEtRepeatPassword).skipInitialValue(), new BiFunction<CharSequence, CharSequence, Boolean>() {
             @Override
             public Boolean apply(CharSequence charSequence, CharSequence charSequence2) throws Exception {
-                checkPwdStreng(charSequence.toString());
+                checkPwdStrength(charSequence.toString());
                 return !TextUtils.isEmpty(charSequence) && !TextUtils.isEmpty(charSequence2) && charSequence.length() >= 6;
             }
         });
@@ -217,7 +220,7 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportPr
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Boolean>() {
                     @Override
-                    public void accept(Boolean hasFocus){
+                    public void accept(Boolean hasFocus) {
                         String password = mEtPassword.getText().toString().trim();
                         String repeatPassword = mEtRepeatPassword.getText().toString().trim();
                         if (!hasFocus) {
@@ -239,23 +242,23 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportPr
                 .skipInitialValue()
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Boolean>() {
-            @Override
-            public void accept(Boolean hasFocus) {
-                String password = mEtPassword.getText().toString().trim();
-                String repeatPassword = mEtRepeatPassword.getText().toString().trim();
-                if (!hasFocus) {
-                    if (TextUtils.isEmpty(repeatPassword)) {
-                        showPasswordError(string(R.string.validRepeatPasswordEmptyTips), true);
-                    } else if (!repeatPassword.equals(password)) {
-                        showPasswordError(string(R.string.passwordTips), true);
-                    } else {
-                        if (repeatPassword.equals(password) && password.length() >= 6) {
-                            showPasswordError("", false);
+                    @Override
+                    public void accept(Boolean hasFocus) {
+                        String password = mEtPassword.getText().toString().trim();
+                        String repeatPassword = mEtRepeatPassword.getText().toString().trim();
+                        if (!hasFocus) {
+                            if (TextUtils.isEmpty(repeatPassword)) {
+                                showPasswordError(string(R.string.validRepeatPasswordEmptyTips), true);
+                            } else if (!repeatPassword.equals(password)) {
+                                showPasswordError(string(R.string.passwordTips), true);
+                            } else {
+                                if (repeatPassword.equals(password) && password.length() >= 6) {
+                                    showPasswordError("", false);
+                                }
+                            }
                         }
                     }
-                }
-            }
-        });
+                });
 
     }
 
@@ -332,7 +335,10 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportPr
         }
     }
 
-    private void checkPwdStreng(String password) {
+    private void checkPwdStrength(String password) {
+
+        mPasswordStrengthLayout.setVisibility(TextUtils.isEmpty(password) ? View.GONE : View.VISIBLE);
+
         if (TextUtils.isEmpty(password)) {
             mTvStrength.setText(R.string.strength);
             mVLine1.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_00000000));

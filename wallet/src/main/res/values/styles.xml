@@ -58,14 +58,6 @@
         <item name="android:backgroundDimEnabled">true</item>
     </style>
 
-    <style name="Theme_Progressbar_circle1">
-        <item name="android:indeterminateDrawable">@drawable/pb_circle</item>
-        <item name="android:minWidth">24dp</item>
-        <item name="android:minHeight">24dp</item>
-        <item name="android:maxWidth">64dp</item>
-        <item name="android:maxHeight">64dp</item>
-    </style>
-
     <style name="Animation_slide_in_bottom" parent="@android:style/Animation.Dialog">
         <item name="android:windowEnterAnimation">@anim/abc_slide_in_bottom</item>
         <item name="android:windowExitAnimation">@anim/abc_slide_out_bottom</item>

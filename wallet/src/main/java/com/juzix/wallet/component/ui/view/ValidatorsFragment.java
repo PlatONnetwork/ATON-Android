@@ -72,6 +72,8 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
     ListView rlv_list;
     @BindView(R.id.layout_rank)
     LinearLayout rankLayout;
+    @BindView(R.id.layout_no_data)
+    LinearLayout mNoDataLayout;
 
     private String rankType;
     private String nodeState;//tab类型（所有/活跃中/候选中）
@@ -117,6 +119,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
         refreshLayout.setEnableAutoLoadMore(false);
         tv_rank.setOnClickListener(this);
         mValidatorsAdapter = new ValidatorsAdapter(R.layout.item_validators_list, null);
+        rlv_list.setEmptyView(mNoDataLayout);
         rlv_list.setAdapter(mValidatorsAdapter);
 
         //默认初始化值
