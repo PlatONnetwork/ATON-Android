@@ -41,7 +41,7 @@ public class ExportIndividualPrivateKeyActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_export_individual_private_key);
+        setContentView(R.layout.activity_export_private_key);
         showTipsDialog();
         initView();
     }
