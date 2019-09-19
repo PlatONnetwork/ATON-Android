@@ -16,7 +16,6 @@ import android.widget.TextView;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
-import com.juzix.wallet.component.adapter.TransactionAdapter;
 import com.juzix.wallet.component.adapter.TransactionDiffCallback;
 import com.juzix.wallet.component.adapter.TransactionListAdapter;
 import com.juzix.wallet.component.adapter.base.RecyclerAdapter;

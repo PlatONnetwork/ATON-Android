@@ -5,7 +5,7 @@ import android.text.TextUtils;
 
 import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
-import com.juzix.wallet.component.ui.contract.IndividualTransactionDetailContract;
+import com.juzix.wallet.component.ui.contract.TransactionDetailContract;
 import com.juzix.wallet.db.sqlite.AddressDao;
 import com.juzix.wallet.db.sqlite.WalletDao;
 import com.juzix.wallet.engine.DelegateManager;
@@ -27,14 +27,14 @@ import io.reactivex.functions.Function;
 /**
  * @author matrixelement
  */
-public class TransactionDetailPresenter extends BasePresenter<IndividualTransactionDetailContract.View> implements IndividualTransactionDetailContract.Presenter {
+public class TransactionDetailPresenter extends BasePresenter<TransactionDetailContract.View> implements TransactionDetailContract.Presenter {
 
     private Transaction mTransaction;
     private List<String> mQueryAddressList;
     private String delegateHash;
     private String mWithDrawHash;
 
-    public TransactionDetailPresenter(IndividualTransactionDetailContract.View view) {
+    public TransactionDetailPresenter(TransactionDetailContract.View view) {
         super(view);
         mTransaction = view.getTransactionFromIntent();
         mQueryAddressList = view.getAddressListFromIntent();

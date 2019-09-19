@@ -22,7 +22,7 @@ import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.MVPBaseFragment;
-import com.juzix.wallet.component.ui.contract.ImportIndividualKeystoreContract;
+import com.juzix.wallet.component.ui.contract.ImportKeystoreContract;
 import com.juzix.wallet.component.ui.presenter.ImportKeystorePresenter;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.utils.CommonUtil;
@@ -35,7 +35,7 @@ import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function3;
 
-public class ImportIndividualKeystoreFragment extends MVPBaseFragment<ImportKeystorePresenter> implements ImportIndividualKeystoreContract.View {
+public class ImportIndividualKeystoreFragment extends MVPBaseFragment<ImportKeystorePresenter> implements ImportKeystoreContract.View {
     Unbinder unbinder;
     @BindView(R.id.et_keystore)
     EditText mEtKeystore;

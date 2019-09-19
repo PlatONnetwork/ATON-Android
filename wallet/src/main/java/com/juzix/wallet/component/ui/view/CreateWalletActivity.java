@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
-import com.juzix.wallet.component.ui.contract.CreateIndividualWalletContract;
+import com.juzix.wallet.component.ui.contract.CreateWalletContract;
 import com.juzix.wallet.component.ui.presenter.CreateWalletPresenter;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.engine.WalletManager;
@@ -26,9 +26,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class CreateWalletActivity extends MVPBaseActivity<CreateWalletPresenter> implements CreateIndividualWalletContract.View, View.OnClickListener, TextWatcher, View.OnFocusChangeListener {
-
-    private final static String TAG = CreateWalletActivity.class.getSimpleName();
+public class CreateWalletActivity extends MVPBaseActivity<CreateWalletPresenter> implements CreateWalletContract.View, View.OnClickListener, TextWatcher, View.OnFocusChangeListener {
 
     Unbinder unbinder;
     @BindView(R.id.et_name)
@@ -74,7 +72,7 @@ public class CreateWalletActivity extends MVPBaseActivity<CreateWalletPresenter>
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_individual_wallet);
+        setContentView(R.layout.activity_create_wallet);
         unbinder = ButterKnife.bind(this);
         initView();
         showPassword();

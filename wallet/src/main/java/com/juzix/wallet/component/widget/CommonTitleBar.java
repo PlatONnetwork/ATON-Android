@@ -173,18 +173,18 @@ public class CommonTitleBar extends LinearLayout {
 
     public void setTitle(CharSequence title) {
 
-//        RxView.clicks(tvTitle)
-//                .throttleFirst(500, TimeUnit.MILLISECONDS)
-//                .subscribe(new Consumer<Object>() {
-//                    @Override
-//                    public void accept(Object object) throws Exception {
-//                        if (mContext instanceof Activity) {
-//                            BaseActivity baseActivity = (BaseActivity) mContext;
-//                            baseActivity.hideSoftInput();
-//                            baseActivity.finish();
-//                        }
-//                    }
-//                });
+        RxView.clicks(tvTitle)
+                .throttleFirst(500, TimeUnit.MILLISECONDS)
+                .subscribe(new Consumer<Object>() {
+                    @Override
+                    public void accept(Object object) throws Exception {
+                        if (mContext instanceof Activity) {
+                            BaseActivity baseActivity = (BaseActivity) mContext;
+                            baseActivity.hideSoftInput();
+                            baseActivity.finish();
+                        }
+                    }
+                });
 
         if (TextUtils.isEmpty(title)) {
             tvTitle.setVisibility(GONE);
