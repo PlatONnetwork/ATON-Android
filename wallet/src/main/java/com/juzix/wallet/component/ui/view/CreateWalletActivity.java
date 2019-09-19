@@ -12,6 +12,7 @@ import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.juzix.wallet.R;
@@ -57,6 +58,9 @@ public class CreateWalletActivity extends MVPBaseActivity<CreateWalletPresenter>
     View mVLine3;
     @BindView(R.id.v_line4)
     View mVLine4;
+    @BindView(R.id.layout_password_strength)
+    LinearLayout mPasswordStrengthLayout;
+
     private boolean mShowPassword;
     private boolean mShowRepeatPassword;
 
@@ -223,10 +227,13 @@ public class CreateWalletActivity extends MVPBaseActivity<CreateWalletPresenter>
         String password = mEtPassword.getText().toString().trim();
         String repeatPassword = mEtRepeatPassword.getText().toString().trim();
         enableCreate(!TextUtils.isEmpty(name) && !TextUtils.isEmpty(password) && !TextUtils.isEmpty(repeatPassword) && password.length() >= 6 && name.length() <= 12);
-        checkPwdStreng(password);
+        checkPwdStrength(password);
     }
 
-    private void checkPwdStreng(String password) {
+    private void checkPwdStrength(String password) {
+
+        mPasswordStrengthLayout.setVisibility(TextUtils.isEmpty(password) ? View.GONE : View.VISIBLE);
+
         if (TextUtils.isEmpty(password)) {
             mTvStrength.setText(R.string.strength);
             mVLine1.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_00000000));

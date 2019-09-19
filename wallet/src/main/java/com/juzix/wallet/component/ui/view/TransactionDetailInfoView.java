@@ -121,7 +121,7 @@ public class TransactionDetailInfoView extends LinearLayout {
                 addView(getItemView(getStringWithColon(R.string.validator), transaction.getNodeName()));
                 addView(getItemView(getStringWithColon(R.string.nodeId), transaction.getNodeId()));
                 addView(getItemView(getStringWithColon(R.string.proposal_id), transaction.getHash()));
-                addView(getItemView(getStringWithColon(R.string.pip_number), String.format("eip-%s", transaction.getPiDID())));
+                addView(getItemView(getStringWithColon(R.string.pip_number), transaction.getPiDID()));
                 addView(getItemView(getStringWithColon(R.string.proposal_type), getString(transaction.getProposalTypeDescRes())));
                 if (transaction.getTxType() == TransactionType.VOTING_PROPOSAL) {
                     addView(getItemView(getStringWithColon(R.string.vote), getString(transaction.getVoteOptionTypeDescRes())));
