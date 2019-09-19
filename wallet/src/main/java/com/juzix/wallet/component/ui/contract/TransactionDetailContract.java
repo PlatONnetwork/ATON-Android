@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * @author matrixelement
  */
-public class IndividualTransactionDetailContract {
+public class TransactionDetailContract {
 
     public interface View extends IView {
 

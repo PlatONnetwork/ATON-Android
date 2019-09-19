@@ -426,10 +426,10 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
 
     private Map<String, String> buildSendTransactionInfo(String fromWallet, String recipient, String fee) {
         Map<String, String> map = new LinkedHashMap<>();
-        map.put(string(R.string.txt_info), string(R.string.send_energon));
-        map.put(string(R.string.from_wallet), fromWallet);
-        map.put(string(R.string.recipient_address), recipient);
-        map.put(string(R.string.fee), string(R.string.amount_with_unit, fee));
+        map.put(String.format("%s:", string(R.string.txt_info)), string(R.string.send_energon));
+        map.put(String.format("%s:", string(R.string.from_wallet)), fromWallet);
+        map.put(String.format("%s:", string(R.string.recipient_address)), recipient);
+        map.put(String.format("%s:", string(R.string.fee)), string(R.string.amount_with_unit, fee));
         return map;
     }
 

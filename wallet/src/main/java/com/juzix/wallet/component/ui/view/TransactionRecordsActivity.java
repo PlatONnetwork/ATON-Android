@@ -16,7 +16,6 @@ import android.widget.TextView;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
-import com.juzix.wallet.component.adapter.TransactionAdapter;
 import com.juzix.wallet.component.adapter.TransactionDiffCallback;
 import com.juzix.wallet.component.adapter.TransactionListAdapter;
 import com.juzix.wallet.component.adapter.base.RecyclerAdapter;
@@ -83,14 +82,14 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
 
     @Override
     protected void onResume() {
-        super.onResume();
         MobclickAgent.onPageStart(Constants.UMPages.TRANSACTION_RECORD);
+        super.onResume();
     }
 
     @Override
     protected void onPause() {
-        super.onPause();
         MobclickAgent.onPageEnd(Constants.UMPages.TRANSACTION_RECORD);
+        super.onPause();
     }
 
     @Override

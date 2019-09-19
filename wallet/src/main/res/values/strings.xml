@@ -558,9 +558,9 @@
     <string name="parameter_proposal">参数提案</string>
     <string name="cancel_proposal">取消提案</string>
 
-    <string name="vote_yes">支持</string>
-    <string name="vote_no">反对</string>
-    <string name="vote_abstain">弃权</string>
+    <string name="vote_yes">VoteYes</string>
+    <string name="vote_no">VoteNo</string>
+    <string name="vote_abstain">VoteAbstain</string>
 
     <string name="title_official_community">官方社区</string>
     <string name="available_balance">可用余额</string>

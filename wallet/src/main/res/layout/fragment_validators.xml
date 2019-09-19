@@ -69,81 +69,10 @@
                     android:text="@string/validators_candidate"
                     android:textColor="@color/color_000000"
                     android:textSize="15sp" />
-
-
             </RadioGroup>
 
-            <!--<RadioGroup-->
-            <!--android:id="@+id/rg_select_condition"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="left"-->
-            <!--android:layout_marginLeft="16dp"-->
-            <!--android:layout_marginTop="16dp"-->
-            <!--android:layout_marginBottom="7dp"-->
-            <!--android:divider="@drawable/divider_vote_ticket_radio_group"-->
-            <!--android:gravity="center_vertical"-->
-            <!--android:orientation="horizontal"-->
-            <!--android:showDividers="middle">-->
-
-            <!--<RadioButton-->
-            <!--android:id="@+id/rb_default"-->
-            <!--style="@style/Text.105cfe.16"-->
-            <!--android:background="@null"-->
-            <!--android:button="@null"-->
-            <!--android:text="@string/action_default" />-->
-
-            <!--<RadioButton-->
-            <!--android:id="@+id/rb_reward"-->
-            <!--style="@style/Text.000000.13"-->
-            <!--android:background="@null"-->
-            <!--android:button="@null"-->
-            <!--android:text="@string/reward" />-->
-
-            <!--<RadioButton-->
-            <!--android:id="@+id/rb_location"-->
-            <!--style="@style/Text.000000.13"-->
-            <!--android:background="@null"-->
-            <!--android:button="@null"-->
-            <!--android:text="@string/location" />-->
-            <!--</RadioGroup>-->
-
-
-            <!--<Button-->
-            <!--android:id="@+id/btn_all"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="36dp"-->
-            <!--android:layout_gravity="center_vertical"-->
-            <!--android:layout_weight="1"-->
-            <!--android:background="@null"-->
-            <!--android:gravity="center"-->
-            <!--android:text="@string/validators_all"-->
-            <!--android:textColor="@color/color_000000"-->
-            <!--android:textSize="15sp" />-->
-
-            <!--<Button-->
-            <!--android:id="@+id/btn_active"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="36dp"-->
-            <!--android:layout_weight="1"-->
-            <!--android:background="@null"-->
-            <!--android:gravity="center"-->
-            <!--android:text="@string/validators_active"-->
-            <!--android:textColor="@color/color_000000"-->
-            <!--android:textSize="15sp" />-->
-
-            <!--<Button-->
-            <!--android:id="@+id/btn_candidate"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="36dp"-->
-            <!--android:layout_weight="1"-->
-            <!--android:background="@null"-->
-            <!--android:gravity="center"-->
-            <!--android:text="@string/validators_candidate"-->
-            <!--android:textColor="@color/color_000000"-->
-            <!--android:textSize="15sp" />-->
-
             <LinearLayout
+                android:id="@+id/layout_rank"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"

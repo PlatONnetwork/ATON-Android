@@ -109,14 +109,14 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
 
     @Override
     public void onResume() {
-        super.onResume();
         MobclickAgent.onPageStart(Constants.UMPages.NODE_DETAIL);
+        super.onResume();
     }
 
     @Override
     public void onPause() {
-        super.onPause();
         MobclickAgent.onPageEnd(Constants.UMPages.NODE_DETAIL);
+        super.onPause();
     }
 
     private void initView() {

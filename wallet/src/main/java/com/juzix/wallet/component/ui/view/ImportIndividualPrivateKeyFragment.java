@@ -22,7 +22,7 @@ import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.MVPBaseFragment;
-import com.juzix.wallet.component.ui.contract.ImportIndividualPrivateKeyContract;
+import com.juzix.wallet.component.ui.contract.ImportPrivateKeyContract;
 import com.juzix.wallet.component.ui.presenter.ImportPrivateKeyPresenter;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.utils.CheckStrength;
@@ -35,7 +35,7 @@ import butterknife.Unbinder;
 import io.reactivex.Observable;
 import io.reactivex.functions.BiFunction;
 
-public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportPrivateKeyPresenter> implements ImportIndividualPrivateKeyContract.View {
+public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportPrivateKeyPresenter> implements ImportPrivateKeyContract.View {
     Unbinder unbinder;
     @BindView(R.id.et_private_key)
     EditText mEtPrivateKey;

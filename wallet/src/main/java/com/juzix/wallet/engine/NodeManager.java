@@ -25,8 +25,8 @@ import io.reactivex.functions.Predicate;
  */
 public class NodeManager {
 
-    private final static String[] DEFAULT_NODE_URL_LIST = new String[]{"https://aton.main.platon.network", "https://aton.test.platon.network"};
-    private final static String[] DEFAULT_NODE_CHAINID_LIST = new String[]{"101", "103"};
+    private final static String[] DEFAULT_NODE_URL_LIST = new String[]{"https://aton.main.platon.network", "https://aton.test.platon.network", "http://192.168.9.190:1000"};
+    private final static String[] DEFAULT_NODE_CHAINID_LIST = new String[]{"101", "103", "103"};
 
     private Node curNode;
     private NodeService nodeService;
@@ -109,7 +109,7 @@ public class NodeManager {
     }
 
     public String getChainId() {
-        return getCurNode().getChainId();
+        return TextUtils.isEmpty(getCurNode().getChainId()) ? DEFAULT_NODE_CHAINID_LIST[1] : getCurNode().getChainId();
     }
 
     public String getChainId(String nodeAddress) {

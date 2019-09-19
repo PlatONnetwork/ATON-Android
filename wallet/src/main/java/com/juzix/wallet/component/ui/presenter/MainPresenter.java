@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+
 import com.juzhen.framework.util.AndroidUtil;
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.MainContract;
@@ -34,33 +36,42 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
 
     @Override
     public void checkVersion() {
-        long lastUpdateTime = AppSettings.getInstance().getUpdateVersionTime();
-        if (lastUpdateTime != 0 && DateUtil.isToday(lastUpdateTime)) {
-            return;
-        }
         VersionManager.getInstance().getVersion()
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
                 .subscribe(new Consumer<VersionInfo>() {
                     @Override
-                    public void accept(VersionInfo versionEntity) {
+                    public void accept(VersionInfo versionInfo) {
                         if (isViewAttached()) {
-                            String oldVersion = AndroidUtil.getVersionName(getContext()).toLowerCase();
-                            if (!oldVersion.startsWith("v")) {
-                                oldVersion = "v" + oldVersion;
-                            }
-                            String newVersion = versionEntity.getVersion().toLowerCase();
-                            if (!newVersion.startsWith("v")) {
-                                newVersion = "v" + newVersion;
-                            }
-                            if (oldVersion.compareTo(newVersion) < 0) {
-                                mVersionUpdate = new VersionUpdate(currentActivity(), versionEntity.getDownloadUrl(), versionEntity.getVersion(), false);
-                                AppSettings.getInstance().setUpdateVersionTime(System.currentTimeMillis());
-                                showUpdateVersionDialog(versionEntity);
+                            if (shouldUpdate(versionInfo)) {
+                                mVersionUpdate = new VersionUpdate(currentActivity(), versionInfo.getDownloadUrl(), versionInfo.getVersion(), false);
+                                //如果不是强制更新，则保存上次弹框时间
+                                if (!versionInfo.getAndroidVersionInfo().isForce()){
+                                    AppSettings.getInstance().setUpdateVersionTime(System.currentTimeMillis());
+                                }
+                                showUpdateVersionDialog(versionInfo);
                             }
                         }
                     }
                 });
+    }
+
+    private boolean shouldUpdate(VersionInfo versionInfo) {
+        String oldVersion = AndroidUtil.getVersionName(getContext()).toLowerCase();
+        if (!oldVersion.startsWith("v")) {
+            oldVersion = "v" + oldVersion;
+        }
+        String newVersion = versionInfo.getVersion().toLowerCase();
+        if (!newVersion.startsWith("v")) {
+            newVersion = "v" + newVersion;
+        }
+
+        long lastUpdateTime = AppSettings.getInstance().getUpdateVersionTime();
+        boolean shouldUpdate = oldVersion.compareTo(newVersion) < 0;
+        boolean isForce = versionInfo.getAndroidVersionInfo().isForce();
+        boolean shouldShowUpdateDialog = !(lastUpdateTime != 0 && DateUtil.isToday(lastUpdateTime));
+
+        return (shouldUpdate && isForce) || (shouldUpdate && shouldShowUpdateDialog);
     }
 
     private void showUpdateVersionDialog(VersionInfo versionInfo) {
@@ -73,18 +84,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
                         if (fragment != null) {
                             fragment.dismiss();
                         }
-                        new RxPermissions(currentActivity())
-                                .requestEach(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                                .subscribe(new Consumer<Permission>() {
-                                    @Override
-                                    public void accept(Permission permission) throws Exception {
-                                        if (isViewAttached()) {
-                                            if (permission.granted && Manifest.permission.ACCESS_COARSE_LOCATION.equals(permission.name)){
-                                                mVersionUpdate.execute();
-                                            }
-                                        }
-                                    }
-                                });
+                        requestPermission();
                     }
                 },
                 string(R.string.not_now), new OnDialogViewClickListener() {
@@ -110,6 +110,22 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
                         }
                     }
                 }, !versionInfo.getAndroidVersionInfo().isForce()).show(currentActivity().getSupportFragmentManager(), "showTips");
+    }
+
+    private void requestPermission() {
+
+        new RxPermissions(currentActivity())
+                .requestEach(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .subscribe(new CustomObserver<Permission>() {
+                    @Override
+                    public void accept(Permission permission) {
+                        if (isViewAttached()) {
+                            if (permission.granted && Manifest.permission.ACCESS_COARSE_LOCATION.equals(permission.name)) {
+                                mVersionUpdate.execute();
+                            }
+                        }
+                    }
+                });
     }
 
 }

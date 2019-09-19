@@ -3,23 +3,22 @@ package com.juzix.wallet.component.ui.contract;
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class ImportIndividualMnemonicPhraseContract {
+public class ImportPrivateKeyContract {
 
     public interface View extends IView {
         String getKeystoreFromIntent();
-        void showMnemonicWords(List<String> words);
-        void showMnemonicPhraseError(String text, boolean isVisible);
+        void showQRCode(String QRCode);
+        void showPrivateKeyError(String text, boolean isVisible);
         void showNameError(String text, boolean isVisible);
         void showPasswordError(String text, boolean isVisible);
+        void enablePaste(boolean enabled);
     }
 
-    public interface Presenter extends IPresenter<ImportIndividualMnemonicPhraseContract.View> {
+    public interface Presenter extends IPresenter<View> {
         void init();
         void parseQRCode(String QRCode);
-        void importMnemonic(String phrase, String name, String password, String repeatPassword);
+        void importPrivateKey(String privateKey, String name, String password, String repeatPassword);
+        void checkPaste();
         boolean isExists(String walletName);
     }
 }

@@ -68,14 +68,14 @@ public class AddressBookActivity extends MVPBaseActivity<AddressBookPresenter> i
 
     @Override
     protected void onResume() {
-        super.onResume();
         MobclickAgent.onPageStart(Constants.UMPages.ADDRESS_BOOK);
+        super.onResume();
     }
 
     @Override
     protected void onPause() {
-        super.onPause();
         MobclickAgent.onPageEnd(Constants.UMPages.ADDRESS_BOOK);
+        super.onPause();
     }
 
     private void initViews() {

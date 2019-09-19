@@ -72,18 +72,18 @@ public class CommonHybridActivity extends BaseAgentWebActivity {
 
     @Override
     protected void onResume() {
-        super.onResume();
         if (mWebType == WebType.WEB_TYPE_OFFICIAL_COMMUNITY || mWebType == WebType.WEB_TYPE_SUPPORT_FEEDBACK) {
             MobclickAgent.onPageStart(mWebType == WebType.WEB_TYPE_OFFICIAL_COMMUNITY ? Constants.UMPages.OFFICIAL_COMMUNITY : Constants.UMPages.SUPPORT_FEEDBACK);
         }
+        super.onResume();
     }
 
     @Override
     protected void onPause() {
-        super.onPause();
         if (mWebType == WebType.WEB_TYPE_OFFICIAL_COMMUNITY || mWebType == WebType.WEB_TYPE_SUPPORT_FEEDBACK) {
             MobclickAgent.onPageEnd(mWebType == WebType.WEB_TYPE_OFFICIAL_COMMUNITY ? Constants.UMPages.OFFICIAL_COMMUNITY : Constants.UMPages.SUPPORT_FEEDBACK);
         }
+        super.onPause();
     }
 
     private void init() {

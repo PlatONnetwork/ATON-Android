@@ -12,11 +12,12 @@ import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
-import com.juzix.wallet.component.ui.contract.CreateIndividualWalletContract;
+import com.juzix.wallet.component.ui.contract.CreateWalletContract;
 import com.juzix.wallet.component.ui.presenter.CreateWalletPresenter;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.engine.WalletManager;
@@ -26,9 +27,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class CreateWalletActivity extends MVPBaseActivity<CreateWalletPresenter> implements CreateIndividualWalletContract.View, View.OnClickListener, TextWatcher, View.OnFocusChangeListener {
-
-    private final static String TAG = CreateWalletActivity.class.getSimpleName();
+public class CreateWalletActivity extends MVPBaseActivity<CreateWalletPresenter> implements CreateWalletContract.View, View.OnClickListener, TextWatcher, View.OnFocusChangeListener {
 
     Unbinder unbinder;
     @BindView(R.id.et_name)
@@ -59,6 +58,9 @@ public class CreateWalletActivity extends MVPBaseActivity<CreateWalletPresenter>
     View mVLine3;
     @BindView(R.id.v_line4)
     View mVLine4;
+    @BindView(R.id.layout_password_strength)
+    LinearLayout mPasswordStrengthLayout;
+
     private boolean mShowPassword;
     private boolean mShowRepeatPassword;
 
@@ -74,7 +76,7 @@ public class CreateWalletActivity extends MVPBaseActivity<CreateWalletPresenter>
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_individual_wallet);
+        setContentView(R.layout.activity_create_wallet);
         unbinder = ButterKnife.bind(this);
         initView();
         showPassword();
@@ -225,10 +227,13 @@ public class CreateWalletActivity extends MVPBaseActivity<CreateWalletPresenter>
         String password = mEtPassword.getText().toString().trim();
         String repeatPassword = mEtRepeatPassword.getText().toString().trim();
         enableCreate(!TextUtils.isEmpty(name) && !TextUtils.isEmpty(password) && !TextUtils.isEmpty(repeatPassword) && password.length() >= 6 && name.length() <= 12);
-        checkPwdStreng(password);
+        checkPwdStrength(password);
     }
 
-    private void checkPwdStreng(String password) {
+    private void checkPwdStrength(String password) {
+
+        mPasswordStrengthLayout.setVisibility(TextUtils.isEmpty(password) ? View.GONE : View.VISIBLE);
+
         if (TextUtils.isEmpty(password)) {
             mTvStrength.setText(R.string.strength);
             mVLine1.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_00000000));
