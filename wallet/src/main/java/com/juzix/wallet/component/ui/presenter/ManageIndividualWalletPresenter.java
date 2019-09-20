@@ -8,8 +8,8 @@ import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.ManageIndividualWalletContract;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.view.BackupMnemonicPhraseActivity;
-import com.juzix.wallet.component.ui.view.ExportIndividualKeystoreActivity;
-import com.juzix.wallet.component.ui.view.ExportIndividualPrivateKeyActivity;
+import com.juzix.wallet.component.ui.view.ExportKeystoreActivity;
+import com.juzix.wallet.component.ui.view.ExportPrivateKeyActivity;
 import com.juzix.wallet.db.sqlite.WalletDao;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.Wallet;
@@ -62,9 +62,9 @@ public class ManageIndividualWalletPresenter extends BasePresenter<ManageIndivid
             deleteWallet();
         } else if (viewType == ManageIndividualWalletContract.View.TYPE_EXPORT_PRIVATE_KEY) {
             String privateKey = Numeric.toHexStringNoPrefixZeroPadded(credentials.getEcKeyPair().getPrivateKey(), Keys.PRIVATE_KEY_LENGTH_IN_HEX);
-            ExportIndividualPrivateKeyActivity.actionStart(getContext(), privateKey);
+            ExportPrivateKeyActivity.actionStart(getContext(), privateKey);
         } else if (viewType == ManageIndividualWalletContract.View.TYPE_EXPORT_KEYSTORE) {
-            ExportIndividualKeystoreActivity.actionStart(getContext(), mWalletEntity.getKey());
+            ExportKeystoreActivity.actionStart(getContext(), mWalletEntity.getKey());
         }
     }
 

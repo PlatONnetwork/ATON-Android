@@ -58,6 +58,7 @@
     <!--<string name="validRepeatPasswordEmptyTips">重复密码不能为空</string>-->
     <string name="validRepeatPasswordEmptyTips">确认密码不能为空</string>
     <string name="create">创建钱包</string>
+    <string name="create_wallet">创建钱包</string>
     <string name="setPassword">不少于6位字符，建议混合大小写、数字、符号</string>
     <!--<string name="repeatPassword">重复钱包密码</string>-->
     <string name="repeatPassword">确认钱包密码</string>
@@ -89,6 +90,8 @@
     <string name="InputWalletPassword">请输入密码进行确认</string>
     <string name="cancel">取消</string>
     <string name="confirm">确认</string>
+    <string name="yes">确认</string>
+    <string name="no">确认</string>
     <string name="donotScreenshot">请勿截图</string>
     <string name="backupMnemonicResume">如果有人获取了你的助记词，将可以直接获取你的资产！请抄写下助记词并存放在安全的地方。</string>
     <string name="backupPrivateKey">如果有人获取了你的私钥，将可以直接获取你的资产！请确保私钥存放在安全的地方。</string>

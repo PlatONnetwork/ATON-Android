@@ -35,7 +35,7 @@ import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function3;
 
-public class ImportIndividualKeystoreFragment extends MVPBaseFragment<ImportKeystorePresenter> implements ImportKeystoreContract.View {
+public class ImportKeystoreFragment extends MVPBaseFragment<ImportKeystorePresenter> implements ImportKeystoreContract.View {
     Unbinder unbinder;
     @BindView(R.id.et_keystore)
     EditText mEtKeystore;
@@ -70,7 +70,7 @@ public class ImportIndividualKeystoreFragment extends MVPBaseFragment<ImportKeys
 
     @Override
     protected View onCreateFragmentPage(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_import_individual_keystore, container, false);
+        View view = inflater.inflate(R.layout.fragment_import_keystore, container, false);
         unbinder = ButterKnife.bind(this, view);
         addListeners();
         initDatas();

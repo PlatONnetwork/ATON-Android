@@ -18,12 +18,12 @@ import com.juzix.wallet.component.ui.base.BaseFragment;
 import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.QRCodeEncoder;
 
-public class ExportIndividualPrivateKeyQRCodeFragment extends BaseFragment {
+public class ExportPrivateKeyQRCodeFragment extends BaseFragment {
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View     view     = inflater.inflate(R.layout.fragment_export_individual_private_key_qr_code, container, false);
+        View     view     = inflater.inflate(R.layout.fragment_export_private_key_qr_code, container, false);
         Activity activity = getActivity();
         int size = DensityUtil.dp2px(activity, 250f);
         new AsyncTask<Void, Void, Bitmap>() {

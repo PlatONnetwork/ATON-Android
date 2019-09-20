@@ -125,7 +125,7 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
     private void exit(){
         CommonTipsDialogFragment.createDialogWithTwoButton(ContextCompat.getDrawable(getContext(), R.drawable.icon_dialog_tips),
                 string(R.string.backup_exit_tips),
-                string(R.string.confirm),
+                string(R.string.yes),
                 new OnDialogViewClickListener() {
                     @Override
                     public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
@@ -137,7 +137,7 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
                         }
                         VerificationMnemonicActivity.this.finish();
                     }
-                },string(R.string.cancel),
+                },string(R.string.no),
                 new OnDialogViewClickListener() {
                     @Override
                     public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {

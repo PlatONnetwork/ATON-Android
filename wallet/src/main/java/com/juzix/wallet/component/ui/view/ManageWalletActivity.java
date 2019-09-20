@@ -30,9 +30,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-public class ManageIndividualWalletActivity extends MVPBaseActivity<ManageIndividualWalletPresenter> implements ManageIndividualWalletContract.View {
+public class ManageWalletActivity extends MVPBaseActivity<ManageIndividualWalletPresenter> implements ManageIndividualWalletContract.View {
 
-    private final static String TAG = ManageIndividualWalletActivity.class.getSimpleName();
+    private final static String TAG = ManageWalletActivity.class.getSimpleName();
 
     @BindView(R.id.commonTitleBar)
     CommonTitleBar commonTitleBar;
@@ -59,7 +59,7 @@ public class ManageIndividualWalletActivity extends MVPBaseActivity<ManageIndivi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_manager_individual_wallet);
+        setContentView(R.layout.activity_manager_wallet);
         unbinder = ButterKnife.bind(this);
         initView();
     }
@@ -125,7 +125,7 @@ public class ManageIndividualWalletActivity extends MVPBaseActivity<ManageIndivi
             public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
                 String text = extra.getString(Constants.Bundle.BUNDLE_TEXT);
                 if (text.length() > 12) {
-                    CommonTipsDialogFragment.createDialogWithTitleAndOneButton(ContextCompat.getDrawable(ManageIndividualWalletActivity.this, R.drawable.icon_dialog_tips),
+                    CommonTipsDialogFragment.createDialogWithTitleAndOneButton(ContextCompat.getDrawable(ManageWalletActivity.this, R.drawable.icon_dialog_tips),
                             string(R.string.formatError), string(R.string.validWalletNameTips), string(R.string.understood), new OnDialogViewClickListener() {
                                 @Override
                                 public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
@@ -193,7 +193,7 @@ public class ManageIndividualWalletActivity extends MVPBaseActivity<ManageIndivi
     }
 
     public static void actionStart(Context context, Wallet walletEntity) {
-        Intent intent = new Intent(context, ManageIndividualWalletActivity.class);
+        Intent intent = new Intent(context, ManageWalletActivity.class);
         intent.putExtra(Constants.Extra.EXTRA_WALLET, walletEntity);
         context.startActivity(intent);
     }

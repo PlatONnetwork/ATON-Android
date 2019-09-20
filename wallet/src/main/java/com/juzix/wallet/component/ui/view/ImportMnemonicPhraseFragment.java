@@ -38,7 +38,7 @@ import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 
-public class ImportIndividualMnemonicPhraseFragment extends MVPBaseFragment<ImportMnemonicPhrasePresenter> implements ImportMnemonicPhraseContract.View {
+public class ImportMnemonicPhraseFragment extends MVPBaseFragment<ImportMnemonicPhrasePresenter> implements ImportMnemonicPhraseContract.View {
     Unbinder unbinder;
     @BindView(R.id.et_mnemonic1)
     EditText mEtMnemonicPhrase1;
@@ -111,7 +111,7 @@ public class ImportIndividualMnemonicPhraseFragment extends MVPBaseFragment<Impo
 
     @Override
     protected View onCreateFragmentPage(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_import_individual_mnemonic_phrase, container, false);
+        View view = inflater.inflate(R.layout.fragment_import_mnemonic_phrase, container, false);
         unbinder = ButterKnife.bind(this, view);
         addListeners();
         addTextWatcher();

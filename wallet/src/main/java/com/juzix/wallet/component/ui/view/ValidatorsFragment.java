@@ -129,7 +129,6 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
 
         mPresenter.loadValidatorsData(rankType, nodeState, -1);
 
-
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {

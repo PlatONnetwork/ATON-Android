@@ -21,8 +21,6 @@ import com.juzix.wallet.utils.JZWalletUtil;
 
 public class BackupMnemonicPhraseActivity extends BaseActivity implements View.OnClickListener {
 
-    private final static String TAG = BackupMnemonicPhraseActivity.class.getSimpleName();
-
     public static void actionStart(Context context, String password, Wallet walletEntity) {
         actionStart(context, password, walletEntity, 0);
     }
