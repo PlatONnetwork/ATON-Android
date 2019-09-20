@@ -12,7 +12,7 @@ import org.robolectric.android.controller.ServiceController;
 import org.robolectric.annotation.Config;
 
 @RunWith(RobolectricTestRunner.class)
-//@Config(constants = BuildConfig.class, sdk = 27)
+@Config(constants = BuildConfig.class, sdk = 27)
 public class TestServiceTest {
 
     private ServiceController<LoopService> controller;

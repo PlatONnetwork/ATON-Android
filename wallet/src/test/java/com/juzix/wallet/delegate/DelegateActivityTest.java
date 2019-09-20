@@ -1,14 +1,20 @@
 package com.juzix.wallet.delegate;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.res.Configuration;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.ApiSingleObserver;
+import com.juzix.wallet.BuildConfig;
+import com.juzix.wallet.RobolectricApp;
+import com.juzix.wallet.component.ui.CustomContextWrapper;
 import com.juzix.wallet.component.ui.contract.DelegateContract;
 import com.juzix.wallet.component.ui.presenter.DelegatePresenter;
+import com.juzix.wallet.component.ui.view.DelegateActivity;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.engine.DelegateManager;
 import com.juzix.wallet.engine.NodeManager;
@@ -18,6 +24,7 @@ import com.juzix.wallet.entity.AccountBalance;
 import com.juzix.wallet.entity.DelegateHandle;
 import com.juzix.wallet.entity.Node;
 import com.juzix.wallet.rxjavatest.RxJavaTestSchedulerRule;
+import com.juzix.wallet.utils.LanguageUtil;
 import com.juzix.wallet.utils.RxUtils;
 
 import org.junit.Before;
@@ -25,8 +32,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.internal.configuration.MockAnnotationProcessor;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
@@ -43,9 +53,10 @@ import rx.Subscriber;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(sdk = 27, manifest = Config.NONE)
+@Config(sdk = 23, manifest = Config.NONE, constants = BuildConfig.class)
 public class DelegateActivityTest {
     private DelegatePresenter presenter;
     @Mock
@@ -59,6 +70,8 @@ public class DelegateActivityTest {
     public NodeManager nodeManager;
     @Mock
     public Node node;
+//    @Mock
+//    public CustomContextWrapper contextWrapper;
 
     @Before
     public void setup() {
@@ -79,7 +92,7 @@ public class DelegateActivityTest {
         presenter = new DelegatePresenter(view);
         presenter.attachView(view);
 
-
+//        contextWrapper = new CustomContextWrapper(RuntimeEnvironment.application);
     }
 
     @Test
@@ -163,9 +176,13 @@ public class DelegateActivityTest {
                     }
 
                 });
-
-
     }
+
+//    @Test
+//    public void testDelegateActivity() {
+//        DelegateActivity delegateActivity = Robolectric.setupActivity(DelegateActivity.class);
+//        assertNotNull("DelegateActivity not intstantitated", delegateActivity);
+//    }
 
 
 }
