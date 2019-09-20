@@ -109,7 +109,7 @@ public class DelegateDetailTest {
         delegateDetail.setReleased("134000000000000000000");
         delegateDetail.setUrl("www.baidu.com");
         assertNotNull(delegateDetail);
-        presenter.MoveOut(delegateDetail);
+//        presenter.MoveOut(delegateDetail);
 
     }
 
