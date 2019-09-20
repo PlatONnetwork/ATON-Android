@@ -616,4 +616,5 @@
     <string name="tips_no_wallet">无可用钱包，或钱包余额不足</string>
     <string name="msg_view_more_transactions">查看更多交易记录</string>
     <string name="delegate_record_wallet_address">(%1$s)</string>
+    <string name="msg_no_validators">没有验证节点</string>
 </resources>

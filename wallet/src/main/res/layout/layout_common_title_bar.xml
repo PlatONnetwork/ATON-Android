@@ -16,9 +16,10 @@
     <TextView
         android:id="@+id/tv_title"
         style="@style/Text.000000.16"
-        android:layout_marginLeft="8dp"
+        android:layout_height="match_parent"
         android:ellipsize="end"
         android:gravity="left|center_vertical"
+        android:paddingLeft="8dp"
         android:singleLine="true"
         android:textStyle="bold"
         tools:text="ReceiveReceive" />
