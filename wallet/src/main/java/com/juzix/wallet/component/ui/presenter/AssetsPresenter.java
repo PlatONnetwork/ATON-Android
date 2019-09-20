@@ -35,8 +35,6 @@ import retrofit2.Response;
 
 public class AssetsPresenter extends BasePresenter<AssetsContract.View> implements AssetsContract.Presenter {
 
-    private static final String TAG = AssetsPresenter.class.getSimpleName();
-
     private List<Wallet> mWalletList;
 
     public AssetsPresenter(AssetsContract.View view) {
@@ -78,46 +76,7 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
     @Override
     public void fetchWalletsBalance() {
 
-        ServerUtils
-                .getCommonApi()
-                .getAccountBalance(ApiRequestBody.newBuilder()
-                        .put("addrs", WalletManager.getInstance().getAddressList())
-                        .build())
-                .toFlowable()
-                .flatMap(new Function<Response<ApiResponse<List<AccountBalance>>>, Publisher<AccountBalance>>() {
-                    @Override
-                    public Publisher<AccountBalance> apply(Response<ApiResponse<List<AccountBalance>>> apiResponseResponse) throws Exception {
-                        if (apiResponseResponse != null && apiResponseResponse.isSuccessful() && apiResponseResponse.body().getResult() == ApiErrorCode.SUCCESS) {
-                            return Flowable.fromIterable(apiResponseResponse.body().getData());
-                        }
-                        return Flowable.error(new Throwable());
-                    }
-                })
-                .doOnNext(new Consumer<AccountBalance>() {
-                    @Override
-                    public void accept(AccountBalance accountBalance) throws Exception {
-                        WalletManager.getInstance().updateAccountBalance(accountBalance);
-                    }
-                })
-                .map(new Function<AccountBalance, BigDecimal>() {
-                    @Override
-                    public BigDecimal apply(AccountBalance accountBalance) throws Exception {
-                        return new BigDecimal(accountBalance.getFree());
-                    }
-                })
-                .reduce(new BiFunction<BigDecimal, BigDecimal, BigDecimal>() {
-                    @Override
-                    public BigDecimal apply(BigDecimal balance1, BigDecimal banalce2) throws Exception {
-                        return balance1.add(banalce2);
-                    }
-                })
-                .repeatWhen(new Function<Flowable<Object>, Publisher<?>>() {
-                    @Override
-                    public Publisher<?> apply(Flowable<Object> objectFlowable) throws Exception {
-                        return objectFlowable.delay(5, TimeUnit.SECONDS);
-                    }
-                })
-                .toObservable()
+        WalletManager.getInstance().getAccountBalance()
                 .compose(bindUntilEvent(FragmentEvent.STOP))
                 .compose(RxUtils.getSchedulerTransformer())
                 .subscribe(new CustomObserver<BigDecimal>() {
