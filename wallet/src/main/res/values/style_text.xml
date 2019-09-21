@@ -11,6 +11,14 @@
         <item name="android:textColor">@color/color_ffffff</item>
     </style>
 
+    <style name="Text.ff6b00">
+        <item name="android:textColor">@color/color_ff6b00</item>
+    </style>
+
+    <style name="Text.ff6b00.12">
+        <item name="android:textSize">12sp</item>
+    </style>
+
     <style name="Text.fff.11">
         <item name="android:textSize">11sp</item>
     </style>

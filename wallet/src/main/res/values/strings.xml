@@ -141,6 +141,7 @@
     <string name="copy">复制</string>
     <string name="msg_balance">余额</string>
     <string name="transactions">交易记录</string>
+    <string name="me_transactions">交易记录</string>
     <string name="sendATP">发送&#160;Energon</string>
     <string name="actionSendATP">下一步</string>
     <string name="action_send_transation">发送</string>
@@ -186,7 +187,7 @@
     <string name="open_flash_tips">轻点照亮</string>
     <string name="close_flash_tips">轻点关闭</string>
     <string name="scan_qr_code_open_lights_failed">暂时无法开启闪光灯</string>
-    <string name="scan_qr_code_failed_tips">识别失败</string>
+    <string name="scan_qr_code_failed_tips">无法识别二维码</string>
     <string name="scan_qr_code_failed_tips1">无法识别二维码</string>
     <string name="photograph">拍照</string>
     <string name="photo_album">相册</string>
@@ -566,6 +567,9 @@
     <string name="vote_abstain">VoteAbstain</string>
 
     <string name="title_official_community">官方社区</string>
+    <string name="group_secretary">官方微信群秘：PlatON-Alita</string>
+    <string name="official_account">官方微信公众号：PlatON_network</string>
+
     <string name="available_balance">可用余额</string>
     <string name="locked_balance">锁仓余额</string>
     <string name="delegate_amount_tips">委托数量不能少于10LAT</string>
@@ -620,4 +624,7 @@
     <string name="msg_view_more_transactions">查看更多交易记录</string>
     <string name="delegate_record_wallet_address">(%1$s)</string>
     <string name="msg_no_validators">没有验证节点</string>
+    <string name="details">详情</string>
+    <string name="undelegating">赎回中</string>
+    <string name="delegated">委托</string>
 </resources>
