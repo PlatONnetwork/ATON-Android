@@ -81,7 +81,7 @@ public class OfficialCommunityActivity extends BaseActivity {
         OfficialCommunity ghOfficialCommunity = new OfficialCommunity(OfficialCommunityType.GITHUB, getResources().getString(R.string.github), ghOfficialCommunityItemList);
         officialCommunityList.add(ghOfficialCommunity);
 
-        List<OfficialCommunityItem> rdOfficialCommunityItemList = Arrays.asList(new OfficialCommunityItem("https://reddit.com/user/PlatON_Network"));
+        List<OfficialCommunityItem> rdOfficialCommunityItemList = Arrays.asList(new OfficialCommunityItem("https://www.reddit.com/user/PlatON_Network"));
         OfficialCommunity rdOfficialCommunity = new OfficialCommunity(OfficialCommunityType.REDDIT, getResources().getString(R.string.reddit), rdOfficialCommunityItemList);
         officialCommunityList.add(rdOfficialCommunity);
 
@@ -89,7 +89,7 @@ public class OfficialCommunityActivity extends BaseActivity {
         OfficialCommunity meOfficialCommunity = new OfficialCommunity(OfficialCommunityType.MEDIUM, getResources().getString(R.string.medium), meOfficialCommunityItemList);
         officialCommunityList.add(meOfficialCommunity);
 
-        List<OfficialCommunityItem> liOfficialCommunityItemList = Arrays.asList(new OfficialCommunityItem("https://linkedin.com/company/platonnetwork/"));
+        List<OfficialCommunityItem> liOfficialCommunityItemList = Arrays.asList(new OfficialCommunityItem("https://www.linkedin.com/company/platonnetwork/"));
         OfficialCommunity liOfficialCommunity = new OfficialCommunity(OfficialCommunityType.LINKEDIN, getResources().getString(R.string.linked_in), liOfficialCommunityItemList);
         officialCommunityList.add(liOfficialCommunity);
 
@@ -97,11 +97,11 @@ public class OfficialCommunityActivity extends BaseActivity {
         OfficialCommunity tgOfficialCommunity = new OfficialCommunity(OfficialCommunityType.TELEGRAM, getResources().getString(R.string.telegram), tgOfficialCommunityItemList);
         officialCommunityList.add(tgOfficialCommunity);
 
-        List<OfficialCommunityItem> bhOfficialCommunityItemList = Arrays.asList(new OfficialCommunityItem("https://bihu.com/people/1215832888"));
+        List<OfficialCommunityItem> bhOfficialCommunityItemList = Arrays.asList(new OfficialCommunityItem("https://www.bihu.com/people/1215832888"));
         OfficialCommunity bhOfficialCommunity = new OfficialCommunity(OfficialCommunityType.BI_HU, getResources().getString(R.string.bi_hu), bhOfficialCommunityItemList);
         officialCommunityList.add(bhOfficialCommunity);
 
-        List<OfficialCommunityItem> baOfficialCommunityItemList = Arrays.asList(new OfficialCommunityItem("https://chainnode.com/forum/267"));
+        List<OfficialCommunityItem> baOfficialCommunityItemList = Arrays.asList(new OfficialCommunityItem("https://www.chainnode.com/forum/267"));
         OfficialCommunity baOfficialCommunity = new OfficialCommunity(OfficialCommunityType.BABIT, getResources().getString(R.string.babit), baOfficialCommunityItemList);
         officialCommunityList.add(baOfficialCommunity);
 

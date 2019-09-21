@@ -319,7 +319,7 @@
     <string name="medium">Medium</string>
     <string name="linked_in">LinkedIn</string>
     <string name="telegram">Telegram </string>
-    <string name="bi_hu">币乎 </string>
+    <string name="bi_hu">Bihu</string>
     <string name="babit">8BTC</string>
     <string name="weibo">Weibo</string>
     <string name="qq">QQ</string>
@@ -486,7 +486,7 @@
     <string name="report_type">Report Type</string>
     <string name="reported">Reported</string>
     <string name="proposal_id">PIP SN</string>
-    <string name="pip_number">PIP编号</string>
+    <string name="pip_number">PIP SN</string>
     <string name="proposal_type">Proposal Type</string>
     <string name="restricted_account">Restricted Account</string>
     <string name="restricted_amount">Restricted Amount</string>
