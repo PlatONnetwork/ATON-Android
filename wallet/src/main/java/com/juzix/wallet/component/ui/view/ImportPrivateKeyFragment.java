@@ -36,7 +36,7 @@ import butterknife.Unbinder;
 import io.reactivex.Observable;
 import io.reactivex.functions.BiFunction;
 
-public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportPrivateKeyPresenter> implements ImportPrivateKeyContract.View {
+public class ImportPrivateKeyFragment extends MVPBaseFragment<ImportPrivateKeyPresenter> implements ImportPrivateKeyContract.View {
     Unbinder unbinder;
     @BindView(R.id.et_private_key)
     EditText mEtPrivateKey;
@@ -90,7 +90,7 @@ public class ImportIndividualPrivateKeyFragment extends MVPBaseFragment<ImportPr
 
     @Override
     protected View onCreateFragmentPage(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_import_individual_private_key, container, false);
+        View view = inflater.inflate(R.layout.fragment_import_private_key, container, false);
         unbinder = ButterKnife.bind(this, view);
         addListeners();
         initDatas();

@@ -129,7 +129,6 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
                         null, null, string(R.string.expected_annualized_rate), string(R.string.expected_annualized_rate_des)).show(getSupportFragmentManager(), "validatorstip");
             }
         });
-
         clickViewListener();
         mPresenter.loadValidatorsDetailData();
     }
@@ -283,5 +282,8 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
     protected void onDestroy() {
         super.onDestroy();
         EventPublisher.getInstance().unRegister(this);
+        if (unbinder != null) {
+            unbinder.unbind();
+        }
     }
 }

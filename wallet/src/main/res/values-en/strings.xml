@@ -47,16 +47,18 @@
     <string name="btnImportwallet">Import Wallet</string>
     <string name="createIndividualWallet">Create Wallet</string>
     <string name="importIndividualWallet">Import Wallet</string>
-    <string name="name">Name</string>
+    <string name="name">Wallet Name</string>
+
     <string name="password">Password</string>
     <string name="password_with_colon">Password：</string>
     <string name="passwordLimit">*At least 6 characters,&#160;recommended to mix uppercase and lowercase alphabets,&#160;numbers and symbols</string>
     <string name="createIndividualWalletTips">Note: Be sure to keep your wallet password in mind, the server will not store your password, you will not be able to retrieve the password if forgetting or losing!</string>
     <string name="passwordTips">Password don\'t match</string>
     <string name="validPasswordEmptyTips">Password can\'t be empty</string>
-    <string name="validPasswordTips">Password at least 6 characters</string>
+    <string name="validPasswordTips">6 characters at least</string>
     <string name="validRepeatPasswordEmptyTips">Confirm password can\'t be empty</string>
     <string name="create">Create</string>
+    <string name="create_wallet">Create Wallet</string>
     <string name="setPassword">Set password</string>
     <!--<string name="repeatPassword">Repeat password</string>-->
     <string name="repeatPassword">Confirm password</string>
@@ -88,19 +90,21 @@
     <string name="InputWalletPassword">Input wallet password</string>
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
     <string name="donotScreenshot">Do not screenshot</string>
-    <string name="backupMnemonicResume">Please keep the mnemonics to prevent theft of your assets.</string>
-    <string name="backupPrivateKey">Please keep the Private Key to prevent theft of assets.</string>
-    <string name="backupKeystore">Please keep the Keystore to prevent theft of assets.</string>
+    <string name="backupMnemonicResume">Please keep your mnemonic phrase safe to prevent theft of your assets.</string>
+    <string name="backupPrivateKey">Please keep your Private Key safe to prevent theft of assets.</string>
+    <string name="backupKeystore">Please keep your Keystore safe to prevent theft of assets.</string>
     <string name="understood">Understood</string>
     <string name="understood1">OK</string>
-    <string name="backupMnemonicTitle">Please write down the Mnemonics on the paper</string>
+    <string name="backupMnemonicTitle">Please write down the words on the paper</string>
     <string name="backupMnemonicDescrition">Those 12 mnemonic words are for recovering your wallet, write down correctly on paper and keep in a safe place.</string>
     <string name="next">Next</string>
     <string name="individual_wallet">Classic Wallet</string>
     <string name="shared_wallet">Joint Wallet</string>
-    <string name="verificationOfMnemonic">Verification of Mnemonics</string>
-    <string name="verificationOfMnemonicTitle">Please click below words in correct order.</string>
+    <string name="verificationOfMnemonic">Backup Wallet</string>
+    <string name="verificationOfMnemonicTitle">Please choose mnemonics words in order.</string>
     <string name="completeBackup">Submit</string>
     <string name="submit">Submit</string>
     <string name="empty">Empty</string>
@@ -108,6 +112,7 @@
     <string name="msg_no_shared_wallet">There is no any Joint Wallet yet</string>
     <string name="msg_no_individual_wallet">There is no any Classic Wallet yet</string>
     <string name="transactions">Txn</string>
+    <string name="me_transactions">Transactions</string>
     <string name="sendATP">Send</string>
     <string name="actionSendATP">NEXT</string>
     <string name="action_send_transation">Send</string>
@@ -127,7 +132,7 @@
     <string name="wallet_name">Wallet name</string>
     <string name="wallet_name_with_colon">Wallet Name：</string>
     <string name="public_key">Public Key</string>
-    <string name="sharing">Sharing</string>
+    <string name="sharing">Share to friends</string>
     <string name="fromAddress">From</string>
     <string name="toAddress">To</string>
     <string name="wallet_balance">%1$s&#160;Energon</string>
@@ -152,9 +157,9 @@
     <string name="nav_vote">Vote</string>
     <string name="nav_me">Me</string>
     <string name="disclaimer">Disclaimer</string>
-    <string name="disclaimerResume">Please be sure to keep your mnemonics in a safe place. ATON is not responsible for any loss of assets caused by forgetting,&#160;losing or theft.</string>
+    <string name="disclaimerResume">Please be sure to keep the mnemonic phrase in a safe place. ATON is not responsible for any loss of assets caused by forgetting,&#160;losing or theft.</string>
     <string name="backupFailed">Backup Failed</string>
-    <string name="backupMnemonicFailedResume">Confirm failed,please examine your mnemonic words.</string>
+    <string name="backupMnemonicFailedResume">Please check the words\' order.</string>
     <string name="manage">Manage</string>
     <string name="exportPrivateKey">Export Private Key</string>
     <string name="exportKeystore">Export Keystore</string>
@@ -181,7 +186,7 @@
     <string name="open_flash_tips">Tap to turn light on</string>
     <string name="close_flash_tips">Tap to turn light off</string>
     <string name="scan_qr_code_open_lights_failed">No flash for the time being</string>
-    <string name="scan_qr_code_failed_tips">Failed to scan</string>
+    <string name="scan_qr_code_failed_tips">Unrecongnized QR Code</string>
     <string name="scan_qr_code_failed_tips1">Unable to identify qr code</string>
     <string name="photograph">Photograph</string>
     <string name="photo_album">Album</string>
@@ -194,7 +199,7 @@
     <string name="transferFailed">Transfer Failed</string>
     <string name="addWalletFailed">Add Wallet failed</string>
     <string name="validPasswordError">Incorrect password</string>
-    <string name="parsedError">%1$s cannot be parsed</string>
+    <string name="parsedError">%1$s cannot be recognized</string>
     <string name="enterAgainTips">Re-enter Password</string>
     <string name="textCopiedTips">Copy success</string>
     <string name="members">Members</string>
@@ -216,9 +221,9 @@
     <string name="edit_address">Edit Address</string>
     <string name="address_name_cannot_be_empty">Address name cannot be empty</string>
     <string name="address_cannot_be_empty">Address cannot be empty</string>
-    <string name="address_format_error">Address format is not correct</string>
-    <string name="address_name_length_error">Please input 1-12 digits address name</string>
-    <string name="wallet_name_length_error">Please input 1-12 digits wallet name</string>
+    <string name="address_format_error">Format error</string>
+    <string name="address_name_length_error">Please enter 1-12 characters</string>
+    <string name="wallet_name_length_error">Please enter 1-12 digits wallet name</string>
     <string name="estimated_transaction_confirmation_time">Estimated transaction confirmation time:</string>
     <string name="fastest_transfer_time">30s</string>
     <string name="slowest_transfer_time">15mins</string>
@@ -302,7 +307,7 @@
     <string name="inputMome">Memo(Non - compulsory)</string>
     <string name="duplicateAddress">Duplicate address exists</string>
     <string name="saveAndShareImage">Save image and Share</string>
-    <string name="versionUpdate">Version Update</string>
+    <string name="versionUpdate">App Update</string>
     <string name="illegalWalletAddress">Illegal wallet address</string>
     <string name="joint_wallet_can_not_added">Non-joint user wallet, unable to add</string>
     <string name="wechat">WeChat</string>
@@ -314,8 +319,8 @@
     <string name="medium">Medium</string>
     <string name="linked_in">LinkedIn</string>
     <string name="telegram">Telegram </string>
-    <string name="bi_hu">币乎 </string>
-    <string name="babit">Babit</string>
+    <string name="bi_hu">Bihu</string>
+    <string name="babit">8BTC</string>
     <string name="weibo">Weibo</string>
     <string name="qq">QQ</string>
     <string name="all">ALL</string>
@@ -400,7 +405,7 @@
     <string name="node_name">Node name</string>
     <string name="estimated_payment">Estimated payment</string>
     <string name="execute_wallet">Executor</string>
-    <string name="from_wallet">From</string>
+    <string name="from_wallet">Sender</string>
     <string name="wallet_name_exists">The name already exists on this APP, and can not be repeated.</string>
     <string name="rename_wallet">Rename Wallet</string>
     <string name="version_update">Update Available</string>
@@ -481,7 +486,7 @@
     <string name="report_type">Report Type</string>
     <string name="reported">Reported</string>
     <string name="proposal_id">PIP SN</string>
-    <string name="pip_number">PIP编号</string>
+    <string name="pip_number">PIP SN</string>
     <string name="proposal_type">Proposal Type</string>
     <string name="restricted_account">Restricted Account</string>
     <string name="restricted_amount">Restricted Amount</string>
@@ -543,6 +548,10 @@
     <string name="validators_staked">Staked</string>
 
     <string name="title_official_community">Official community</string>
+    <string name="group_secretary">Group Secretary：PlatON-Alita</string>
+    <string name="official_account">Official Account：PlatON_network</string>
+
+
     <string name="available_balance">Balance</string>
     <string name="locked_balance">Restricted balance</string>
     <string name="delegate_amount_tips">10LAT The Amount cannot be less than 10 LAT</string>
@@ -602,5 +611,8 @@
     <string name="msg_view_more_transactions">View more transactions</string>
     <string name="delegate_record_wallet_address">(%1$s)</string>
     <string name="msg_no_validators">No Validators</string>
+    <string name="details">Details</string>
+    <string name="undelegating">Undelegating</string>
+    <string name="delegated">Delegated</string>
 </resources>
 

@@ -64,7 +64,7 @@
                     style="@style/Text.000.16"
                     android:drawableLeft="@drawable/icon_me_transations"
                     android:drawablePadding="10dp"
-                    android:text="@string/transactions" />
+                    android:text="@string/me_transactions" />
 
                 <android.support.v4.widget.Space
                     android:layout_width="0dp"

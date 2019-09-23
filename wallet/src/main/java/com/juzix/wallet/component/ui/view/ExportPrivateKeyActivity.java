@@ -27,11 +27,12 @@ import com.juzix.wallet.component.widget.table.SmartTabLayout;
 
 import java.util.ArrayList;
 
-public class ExportIndividualKeystoreActivity extends BaseActivity {
+public class ExportPrivateKeyActivity extends BaseActivity {
 
+    private final static String TAG = ExportPrivateKeyActivity.class.getSimpleName();
 
     public static void actionStart(Context context, String password) {
-        Intent intent = new Intent(context, ExportIndividualKeystoreActivity.class);
+        Intent intent = new Intent(context, ExportPrivateKeyActivity.class);
         intent.putExtra(Constants.Extra.EXTRA_PASSWORD, password);
         context.startActivity(intent);
     }
@@ -40,7 +41,7 @@ public class ExportIndividualKeystoreActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_export_keystore);
+        setContentView(R.layout.activity_export_private_key);
         showTipsDialog();
         initView();
     }
@@ -78,20 +79,20 @@ public class ExportIndividualKeystoreActivity extends BaseActivity {
 
     private ArrayList<String> getTitles() {
         ArrayList<String> titleList = new ArrayList<>();
-        titleList.add(getString(R.string.keystore));
+        titleList.add(getString(R.string.privateKey));
         titleList.add(getString(R.string.qrCode));
         return titleList;
     }
 
     private ArrayList<Class<? extends BaseFragment>> getFragments() {
         ArrayList<Class<? extends BaseFragment>> list = new ArrayList<>();
-        list.add(ExportIndividualKeystoreFragment.class);
-        list.add(ExportIndividualKeystoreQRCodeFragment.class);
+        list.add(ExportPrivateKeyFragment.class);
+        list.add(ExportPrivateKeyQRCodeFragment.class);
         return list;
     }
 
     private void showTipsDialog() {
-        CommonTipsDialogFragment.createDialogWithTitleAndOneButton(ContextCompat.getDrawable(this, R.drawable.icon_dialog_tips), string(R.string.donotScreenshot), string(R.string.backupKeystore), string(R.string.understood), new OnDialogViewClickListener() {
+        CommonTipsDialogFragment.createDialogWithTitleAndOneButton(ContextCompat.getDrawable(this, R.drawable.icon_dialog_tips), string(R.string.donotScreenshot), string(R.string.backupPrivateKey), string(R.string.understood), new OnDialogViewClickListener() {
             @Override
             public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
                 if (fragment != null) {
@@ -108,7 +109,6 @@ public class ExportIndividualKeystoreActivity extends BaseActivity {
     }
 
     private void setTableView(View contentView, int position) {
-//        contentView.findViewById(R.id.iv_icon).setVisibility(View.i);
         TextView tvTitle = contentView.findViewById(R.id.tv_title);
         tvTitle.setText(getTitles().get(position));
         tvTitle.setTextColor(ContextCompat.getColorStateList(getContext(), R.color.color_app_tab_text2));

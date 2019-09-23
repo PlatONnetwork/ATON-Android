@@ -105,15 +105,15 @@
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".component.ui.view.ManageIndividualWalletActivity"
+            android:name=".component.ui.view.ManageWalletActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".component.ui.view.ExportIndividualPrivateKeyActivity"
+            android:name=".component.ui.view.ExportPrivateKeyActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".component.ui.view.ExportIndividualKeystoreActivity"
+            android:name=".component.ui.view.ExportKeystoreActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity

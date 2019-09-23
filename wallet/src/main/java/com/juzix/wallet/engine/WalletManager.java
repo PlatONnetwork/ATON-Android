@@ -3,33 +3,46 @@ package com.juzix.wallet.engine;
 import android.text.TextUtils;
 import android.widget.TextView;
 
+import com.juzhen.framework.network.ApiErrorCode;
+import com.juzhen.framework.network.ApiRequestBody;
+import com.juzhen.framework.network.ApiResponse;
+import com.juzhen.framework.util.LogUtils;
 import com.juzix.wallet.app.CustomThrowable;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.db.entity.WalletEntity;
 import com.juzix.wallet.db.sqlite.WalletDao;
 import com.juzix.wallet.entity.AccountBalance;
 import com.juzix.wallet.entity.Wallet;
+import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
 
+import org.greenrobot.eventbus.EventBus;
+import org.reactivestreams.Publisher;
 import org.web3j.platon.BaseResponse;
 import org.web3j.platon.bean.RestrictingItem;
 import org.web3j.platon.contracts.RestrictingPlanContract;
 import org.web3j.tx.gas.DefaultGasProvider;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
+import io.reactivex.Observable;
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
 import io.reactivex.SingleSource;
 import io.reactivex.functions.BiConsumer;
+import io.reactivex.functions.BiFunction;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import io.reactivex.Single;
+import retrofit2.Response;
 import retrofit2.http.POST;
 
 
@@ -43,13 +56,28 @@ public class WalletManager {
     public static final int CODE_ERROR_MNEMONIC = -5;
     public static final int CODE_ERROR_WALLET_EXISTS = -200;
     public static final int CODE_ERROR_UNKNOW = -999;
+
     private List<Wallet> mWalletList = new ArrayList<>();
+    //记录上次的余额
+    private BigDecimal mSumAccountBalance = BigDecimal.ZERO;
+    //当前选中的钱包
+    private Wallet mSelectedWallet;
 
     private WalletManager() {
 
     }
 
-    private Wallet mSelectedWallet;
+    private static class InstanceHolder {
+        private static volatile WalletManager INSTANCE = new WalletManager();
+    }
+
+    public BigDecimal getSumAccountBalance() {
+        return mSumAccountBalance;
+    }
+
+    public void setSumAccountBalance(BigDecimal sumAccountBalance) {
+        this.mSumAccountBalance = sumAccountBalance;
+    }
 
     public Wallet getSelectedWallet() {
         return mSelectedWallet;
@@ -106,6 +134,7 @@ public class WalletManager {
 
     /**
      * 根据钱包地址获取钱包账户信息
+     *
      * @param address
      * @return
      */
@@ -462,6 +491,59 @@ public class WalletManager {
                 .blockingGet();
     }
 
+    public Observable<BigDecimal> getAccountBalance() {
+        return ServerUtils
+                .getCommonApi()
+                .getAccountBalance(ApiRequestBody.newBuilder()
+                        .put("addrs", WalletManager.getInstance().getAddressList())
+                        .build())
+                .toFlowable()
+                .flatMap(new Function<Response<ApiResponse<List<AccountBalance>>>, Publisher<AccountBalance>>() {
+                    @Override
+                    public Publisher<AccountBalance> apply(Response<ApiResponse<List<AccountBalance>>> apiResponseResponse) throws Exception {
+                        if (apiResponseResponse != null && apiResponseResponse.isSuccessful() && apiResponseResponse.body().getResult() == ApiErrorCode.SUCCESS) {
+                            return Flowable.fromIterable(apiResponseResponse.body().getData());
+                        }
+                        return Flowable.error(new Throwable());
+                    }
+                })
+                .doOnNext(new Consumer<AccountBalance>() {
+                    @Override
+                    public void accept(AccountBalance accountBalance) throws Exception {
+                        WalletManager.getInstance().updateAccountBalance(accountBalance);
+                    }
+                })
+                .map(new Function<AccountBalance, BigDecimal>() {
+                    @Override
+                    public BigDecimal apply(AccountBalance accountBalance) throws Exception {
+                        return new BigDecimal(accountBalance.getFree());
+                    }
+                })
+                .reduce(new BiFunction<BigDecimal, BigDecimal, BigDecimal>() {
+                    @Override
+                    public BigDecimal apply(BigDecimal balance1, BigDecimal banalce2) throws Exception {
+                        return balance1.add(banalce2);
+                    }
+                })
+                .repeatWhen(new Function<Flowable<Object>, Publisher<?>>() {
+                    @Override
+                    public Publisher<?> apply(Flowable<Object> objectFlowable) throws Exception {
+                        return objectFlowable.delay(5, TimeUnit.SECONDS);
+                    }
+                })
+                .doOnNext(new Consumer<BigDecimal>() {
+                    @Override
+                    public void accept(BigDecimal sumAccountBalance) throws Exception {
+                        if (!sumAccountBalance.equals(mSumAccountBalance)) {
+                            LogUtils.e("钱包总余额已改变。。。");
+                            EventBus.getDefault().post(new Event.SumAccountBalanceChanged());
+                        }
+                        setSumAccountBalance(sumAccountBalance);
+                    }
+                })
+                .toObservable();
+    }
+
     private int getPositionByAddress(String address) {
         return Flowable
                 .range(0, mWalletList.size())
@@ -477,7 +559,4 @@ public class WalletManager {
                 .blockingGet();
     }
 
-    private static class InstanceHolder {
-        private static volatile WalletManager INSTANCE = new WalletManager();
-    }
 }

@@ -111,6 +111,11 @@ public class TransactionsFragment extends BaseViewPageFragment<TransactionsPrese
         mPresenter.loadLatestData();
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSumAccountBalanceChanged(Event.SumAccountBalanceChanged event){
+        mPresenter.loadNew(TransactionsPresenter.DIRECTION_NEW);
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();

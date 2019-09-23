@@ -228,7 +228,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginRight="12dp"
                 app:enabled="false"
-                app:text="@string/create"
+                app:text="@string/create_wallet"
                 app:textAppearance="@style/MainButtonStyle"
                 app:textBackground="@drawable/bg_main_button" />
 

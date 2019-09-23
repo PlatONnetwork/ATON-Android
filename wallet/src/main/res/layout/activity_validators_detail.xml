@@ -350,7 +350,7 @@
             android:id="@+id/sbtn_delegate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="false"
+            app:enabled="false"
             app:text="@string/validators_delegate"
             app:textAppearance="@style/MainButtonStyle"
             app:textBackground="@drawable/bg_main_button" />

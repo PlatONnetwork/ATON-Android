@@ -120,9 +120,9 @@ public class ImportWalletActivity extends BaseActivity {
 
     private ArrayList<Class<? extends BaseFragment>> getFragments() {
         ArrayList<Class<? extends BaseFragment>> list = new ArrayList<>();
-        list.add(ImportIndividualKeystoreFragment.class);
-        list.add(ImportIndividualMnemonicPhraseFragment.class);
-        list.add(ImportIndividualPrivateKeyFragment.class);
+        list.add(ImportKeystoreFragment.class);
+        list.add(ImportMnemonicPhraseFragment.class);
+        list.add(ImportPrivateKeyFragment.class);
         return list;
     }
 

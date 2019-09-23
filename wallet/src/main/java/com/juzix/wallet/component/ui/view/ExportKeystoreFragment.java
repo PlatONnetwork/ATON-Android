@@ -15,13 +15,13 @@ import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.BaseFragment;
 
-public class ExportIndividualPrivateKeyFragment extends BaseFragment implements View.OnClickListener {
+public class ExportKeystoreFragment extends BaseFragment implements View.OnClickListener {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_export_individual_private_key, container, false);
+        View view = inflater.inflate(R.layout.fragment_export_keystore, container, false);
+        ((TextView)view.findViewById(R.id.tv_keystore)).setText(getActivity().getIntent().getStringExtra(Constants.Extra.EXTRA_PASSWORD));
         view.findViewById(R.id.btn_copy).setOnClickListener(this);
-        ((TextView)view.findViewById(R.id.tv_private_key)).setText(getActivity().getIntent().getStringExtra(Constants.Extra.EXTRA_PASSWORD));
         return view;
     }
 

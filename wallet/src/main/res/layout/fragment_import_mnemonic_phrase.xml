@@ -15,7 +15,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="23dp"
+            android:layout_marginTop="15dp"
             android:text="@string/importMnemonicPhraseResume"
             android:textColor="@color/color_61646e"
             android:textSize="12sp" />

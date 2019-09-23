@@ -93,7 +93,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
                     android:layout_marginBottom="9dp"
-                    android:text="委托"
+                    android:text="@string/delegated"
                     android:textColor="@color/color_898c9e"
                     android:textSize="12sp" />
 
@@ -119,7 +119,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
                     android:layout_marginBottom="9dp"
-                    android:text="赎回中"
+                    android:text="@string/undelegating"
                     android:textColor="@color/color_898c9e"
                     android:textSize="12sp" />
 
@@ -142,7 +142,7 @@
                 android:drawableRight="@drawable/icon_right"
                 android:drawablePadding="3dp"
                 android:gravity="center"
-                android:text="详情" />
+                android:text="@string/details" />
 
 
         </RelativeLayout>
