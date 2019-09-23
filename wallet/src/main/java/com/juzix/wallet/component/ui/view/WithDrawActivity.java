@@ -349,7 +349,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     }
 
     @Override
-    public void withDrawSuccessInfo(String platonSendTransaction, String from, String to, long time, String txType, String value, String actualTxCost, String nodeName, String nodeId, int txReceiptStatus) {
+    public void withDrawSuccessInfo(String platonSendTransaction,String hash, String from, String to, long time, String txType, String value, String actualTxCost, String nodeName, String nodeId, int txReceiptStatus) {
         Transaction transaction = new Transaction.Builder()
                 .from(from)
                 .to(to)
@@ -360,6 +360,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
                 .nodeName(nodeName)
                 .nodeId(nodeId)
                 .txReceiptStatus(txReceiptStatus)
+                .hash(hash)
                 .build();
 
         TransactionDetailActivity.actionStart(getContext(), transaction, from, "", platonSendTransaction);
