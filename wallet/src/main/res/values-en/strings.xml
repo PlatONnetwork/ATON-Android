@@ -554,7 +554,7 @@
 
     <string name="available_balance">Balance</string>
     <string name="locked_balance">Restricted balance</string>
-    <string name="delegate_amount_tips">10LAT The Amount cannot be less than 10 LAT</string>
+    <string name="delegate_amount_tips">The Amount cannot be less than 10 LAT</string>
     <string name="insufficient_balance_unable_to_delegate">Insufficient balance, unable to delegate</string>
     <string name="the_Validator_has_exited_and_cannot_be_delegated">The Validator has Exited and cannot be delegated</string>
     <string name="delegate_failed">Delegated Failed</string>
@@ -581,7 +581,7 @@
     <string name="parameter_proposal">Parameter</string>
     <string name="cancel_proposal">Cancel</string>
 
-    <string name="validators_details_tips">The Validator is provided by the PlatON Foundation, does not  accept Delegation</string>
+    <string name="validators_details_tips">PlatON blockchain initial built-in validator, does not  accept Delegation</string>
 
     <!--赎回类型-->
     <string name="withdraw_type_delegated">Delegated</string>
