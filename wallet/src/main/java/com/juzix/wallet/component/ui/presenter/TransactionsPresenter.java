@@ -123,9 +123,6 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                             Collections.sort(newTransactionList);
                             getView().notifyDataSetChanged(mTransactionList, newTransactionList, mWalletAddress, true);
                             mTransactionList = newTransactionList;
-
-                            //开始轮询
-                            loadNew(DIRECTION_NEW);
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -212,8 +209,6 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                             getView().notifyDataSetChanged(mTransactionList, newTransactionList, mWalletAddress, false);
 
                             mTransactionList = newTransactionList;
-
-                            loadNew(DIRECTION_NEW);
                         }
                     }
 
@@ -253,12 +248,14 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
         List<Transaction> newList = new ArrayList<>();
         if (isLoadMore) {
             newList.addAll(oldList);
+            newList.removeAll(curList);
             newList.addAll(curList);
         } else {
             newList = curList;
         }
         return newList;
     }
+
 
     /**
      * 定时刷新交易记录
@@ -268,26 +265,20 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
      * @return
      */
     private Flowable<List<Transaction>> getTransactionListWithTime(String walletAddress, String direction) {
-        return Flowable
-                .interval(0, Constants.Common.TRANSCTION_LIST_LOOP_TIME, TimeUnit.MILLISECONDS)
-                .flatMap(new Function<Long, Publisher<List<Transaction>>>() {
+        return getTransactionList(walletAddress, DIRECTION_NEW, getBeginSequenceByDirection(direction))
+                .flatMap(new Function<Response<ApiResponse<List<Transaction>>>, SingleSource<List<Transaction>>>() {
                     @Override
-                    public Publisher<List<Transaction>> apply(Long aLong) throws Exception {
-                        return getTransactionList(walletAddress, DIRECTION_NEW, getBeginSequenceByDirection(direction))
-                                .flatMap(new Function<Response<ApiResponse<List<Transaction>>>, SingleSource<List<Transaction>>>() {
-                                    @Override
-                                    public SingleSource<List<Transaction>> apply(Response<ApiResponse<List<Transaction>>> apiResponseResponse) throws Exception {
-                                        if (apiResponseResponse.isSuccessful() && apiResponseResponse.body().getResult() == ApiErrorCode.SUCCESS) {
-                                            return Single.just(apiResponseResponse.body().getData());
-                                        } else {
-                                            return Single.error(new Throwable());
-                                        }
-                                    }
-                                })
-                                .toFlowable();
+                    public SingleSource<List<Transaction>> apply(Response<ApiResponse<List<Transaction>>> apiResponseResponse) throws Exception {
+                        if (apiResponseResponse.isSuccessful() && apiResponseResponse.body().getResult() == ApiErrorCode.SUCCESS) {
+                            return Single.just(apiResponseResponse.body().getData());
+                        } else {
+                            return Single.error(new Throwable());
+                        }
                     }
-                });
+                })
+                .toFlowable();
     }
+
 
     /**
      * 切换钱包，每次都是获取最新的数据
@@ -350,7 +341,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
         }).map(new Function<Transaction, Transaction>() {
             @Override
             public Transaction apply(Transaction transaction) throws Exception {
-                LogUtils.e("发送交易完成开始轮询。。"+transaction.toString());
+                LogUtils.e("发送交易完成开始轮询。。" + transaction.toString());
                 if (transaction.getTxReceiptStatus() == TransactionStatus.PENDING) {
                     TransactionManager.getInstance().getTransactionByLoop(transaction);
                 }

@@ -109,14 +109,14 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
 
     @Override
     public void onResume() {
-        super.onResume();
         MobclickAgent.onPageStart(Constants.UMPages.NODE_DETAIL);
+        super.onResume();
     }
 
     @Override
     public void onPause() {
-        super.onPause();
         MobclickAgent.onPageEnd(Constants.UMPages.NODE_DETAIL);
+        super.onPause();
     }
 
     private void initView() {
@@ -129,7 +129,6 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
                         null, null, string(R.string.expected_annualized_rate), string(R.string.expected_annualized_rate_des)).show(getSupportFragmentManager(), "validatorstip");
             }
         });
-
         clickViewListener();
         mPresenter.loadValidatorsDetailData();
     }
@@ -283,5 +282,8 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
     protected void onDestroy() {
         super.onDestroy();
         EventPublisher.getInstance().unRegister(this);
+        if (unbinder != null) {
+            unbinder.unbind();
+        }
     }
 }

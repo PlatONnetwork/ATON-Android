@@ -7,7 +7,7 @@ import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomThrowable;
 import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
-import com.juzix.wallet.component.ui.contract.CreateIndividualWalletContract;
+import com.juzix.wallet.component.ui.contract.CreateWalletContract;
 import com.juzix.wallet.component.ui.view.BackupWalletActivity;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.db.sqlite.WalletDao;
@@ -17,9 +17,9 @@ import com.juzix.wallet.utils.RxUtils;
 
 import io.reactivex.functions.Consumer;
 
-public class CreateWalletPresenter extends BasePresenter<CreateIndividualWalletContract.View> implements CreateIndividualWalletContract.Presenter {
+public class CreateWalletPresenter extends BasePresenter<CreateWalletContract.View> implements CreateWalletContract.Presenter {
 
-    public CreateWalletPresenter(CreateIndividualWalletContract.View view) {
+    public CreateWalletPresenter(CreateWalletContract.View view) {
         super(view);
     }
 
@@ -67,6 +67,7 @@ public class CreateWalletPresenter extends BasePresenter<CreateIndividualWalletC
                     public void accept(Wallet walletEntity) throws Exception {
                         if (isViewAttached()) {
                             BackupWalletActivity.actionStart(currentActivity(), walletEntity);
+                            currentActivity().finish();
                         }
                     }
                 }, new Consumer<Throwable>() {

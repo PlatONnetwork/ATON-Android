@@ -36,7 +36,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="8dp"
-                android:paddingTop="16dp"
+                android:paddingTop="15dp"
                 app:layout_collapseMode="parallax">
 
                 <ImageView
@@ -44,9 +44,8 @@
                     android:layout_width="58dp"
                     android:layout_height="58dp"
                     android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
                     android:layout_marginRight="9dp"
-                    android:src="@drawable/icon_default_coin" />
+                    android:src="@drawable/avatar_14" />
 
                 <TextView
                     android:id="@+id/tv_wallet_name"

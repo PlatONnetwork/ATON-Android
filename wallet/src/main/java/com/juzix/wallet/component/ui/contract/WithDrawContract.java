@@ -53,7 +53,7 @@ public class WithDrawContract {
          * @param nodeId
          * @param txReceiptStatus "2" 表示确认中
          */
-        void withDrawSuccessInfo(String platonSendTransaction, String from, String to, long time, String txType, String value, String actualTxCost, String nodeName, String nodeId, int txReceiptStatus);
+        void withDrawSuccessInfo(String platonSendTransaction,String hash, String from, String to, long time, String txType, String value, String actualTxCost, String nodeName, String nodeId, int txReceiptStatus);
 
 
         /**

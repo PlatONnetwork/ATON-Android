@@ -7,7 +7,7 @@ import android.text.TextUtils;
 
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.base.BasePresenter;
-import com.juzix.wallet.component.ui.contract.ImportIndividualMnemonicPhraseContract;
+import com.juzix.wallet.component.ui.contract.ImportMnemonicPhraseContract;
 import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.NodeManager;
@@ -16,9 +16,9 @@ import com.juzix.wallet.entity.Wallet;
 import java.util.Arrays;
 import java.util.List;
 
-public class ImportMnemonicPhrasePresenter extends BasePresenter<ImportIndividualMnemonicPhraseContract.View> implements ImportIndividualMnemonicPhraseContract.Presenter {
+public class ImportMnemonicPhrasePresenter extends BasePresenter<ImportMnemonicPhraseContract.View> implements ImportMnemonicPhraseContract.Presenter {
 
-    public ImportMnemonicPhrasePresenter(ImportIndividualMnemonicPhraseContract.View view) {
+    public ImportMnemonicPhrasePresenter(ImportMnemonicPhraseContract.View view) {
         super(view);
     }
 

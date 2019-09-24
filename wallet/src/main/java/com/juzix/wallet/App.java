@@ -98,7 +98,6 @@ public class App extends CoreApp {
 
     private void initUMConfigure() {
         UMConfigure.init(this, BuildConfig.UM_APPKEY, "Umeng", UMConfigure.DEVICE_TYPE_PHONE, null);
-        MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.MANUAL);
         if (BuildConfig.DEBUG) {
             UMConfigure.setLogEnabled(true);
         }

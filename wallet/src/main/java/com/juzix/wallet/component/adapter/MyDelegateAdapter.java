@@ -65,7 +65,6 @@ public class MyDelegateAdapter extends RecyclerView.Adapter<MyDelegateAdapter.Vi
         holder.withdrawNumber.setText(TextUtils.equals(info.getRedeem(),"0") ? "— —" : StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(info.getRedeem(), "1E18"))), false));
         holder.walletAmount.setText(TextUtils.equals(info.getAvailableDelegationBalance(),"0") ? "— —" :StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(info.getAvailableDelegationBalance(), "1E18"))), false));
 
-
         RxView.clicks(holder.itemView)
                 .compose(RxUtils.getClickTransformer())
                 .subscribe(new Consumer<Object>() {

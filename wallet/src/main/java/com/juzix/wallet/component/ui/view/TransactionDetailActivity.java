@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.AppCompatTextView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,7 +14,7 @@ import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
-import com.juzix.wallet.component.ui.contract.IndividualTransactionDetailContract;
+import com.juzix.wallet.component.ui.contract.TransactionDetailContract;
 import com.juzix.wallet.component.ui.presenter.TransactionDetailPresenter;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.db.sqlite.AddressDao;
@@ -27,12 +26,13 @@ import com.juzix.wallet.entity.TransferType;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.AddressFormatUtil;
+import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.CommonUtil;
+import com.juzix.wallet.utils.StringUtil;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.web3j.platon.BaseResponse;
-import org.web3j.utils.TXTypeEnum;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +45,7 @@ import butterknife.Unbinder;
 /**
  * @author matrixelement
  */
-public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetailPresenter> implements IndividualTransactionDetailContract.View {
+public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetailPresenter> implements TransactionDetailContract.View {
 
     @BindView(R.id.iv_copy_from_address)
     ImageView ivCopyFromAddress;
@@ -146,21 +146,22 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
 
         showTransactionStatus(transactionStatus);
 
+        boolean isValueZero = !BigDecimalUtil.isBiggerThanZero(transaction.getValue());
 
         @TransferType int transferType = transaction.getTransferType(queryAddressList);
 
-        if (transferType == TransferType.SEND) {
-            tvAmount.setText(String.format("%s%s", "-", transaction.getShowValue()));
-            tvAmount.setTextColor(ContextCompat.getColor(this, R.color.color_ff3b3b));
-        } else if (transferType == TransferType.RECEIVE) {
-            tvAmount.setText(String.format("%s%s", "+", transaction.getShowValue()));
-            tvAmount.setTextColor(ContextCompat.getColor(this, R.color.color_19a20e));
-        } else {
+        if (transferType == TransferType.TRANSFER || isValueZero) {
             tvAmount.setText(transaction.getShowValue());
-            tvAmount.setTextColor(ContextCompat.getColor(this, R.color.color_000000));
+            tvAmount.setTextColor(ContextCompat.getColor(this, R.color.color_b6bbd0));
+        } else if (transferType == TransferType.SEND) {
+            tvAmount.setText(String.format("%s%s", "-", StringUtil.formatBalance(transaction.getShowValue())));
+            tvAmount.setTextColor(ContextCompat.getColor(this, R.color.color_ff3b3b));
+        } else {
+            tvAmount.setText(String.format("%s%s", "+", StringUtil.formatBalance(transaction.getShowValue())));
+            tvAmount.setTextColor(ContextCompat.getColor(this, R.color.color_19a20e));
         }
 
-        tvAmount.setVisibility(transactionStatus == TransactionStatus.SUCCESSED && transactionType == TransactionType.TRANSFER ? View.VISIBLE : View.GONE);
+        tvAmount.setVisibility(transactionStatus == TransactionStatus.SUCCESSED ? View.VISIBLE : View.GONE);
         tvCopyFromName.setText(walletName);
         tvFromAddress.setText(transaction.getFrom());
         tvToAddress.setText(transaction.getTo());

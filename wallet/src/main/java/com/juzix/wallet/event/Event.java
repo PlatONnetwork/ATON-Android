@@ -122,6 +122,7 @@ public class Event {
 
         }
     }
+
     public static class UpdateRefreshPageEvent {
         public UpdateRefreshPageEvent() {
 
@@ -135,6 +136,12 @@ public class Event {
 
         public WalletListOrderChangedEvent() {
 
+        }
+    }
+
+    public static class SumAccountBalanceChanged {
+
+        public SumAccountBalanceChanged() {
         }
     }
 }

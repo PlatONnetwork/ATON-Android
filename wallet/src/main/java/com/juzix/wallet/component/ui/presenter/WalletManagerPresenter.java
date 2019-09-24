@@ -4,7 +4,7 @@ import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.WalletManagerContract;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.view.BackupMnemonicPhraseActivity;
-import com.juzix.wallet.component.ui.view.ManageIndividualWalletActivity;
+import com.juzix.wallet.component.ui.view.ManageWalletActivity;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.db.sqlite.WalletDao;
 import com.juzix.wallet.engine.WalletManager;
@@ -94,7 +94,7 @@ public class WalletManagerPresenter extends BasePresenter<WalletManagerContract.
 
     @Override
     public void startAction(int position) {
-        ManageIndividualWalletActivity.actionStart(currentActivity(), mWalletList.get(position));
+        ManageWalletActivity.actionStart(currentActivity(), mWalletList.get(position));
     }
 
     @Override

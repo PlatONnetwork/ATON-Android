@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -51,6 +52,7 @@ import butterknife.Unbinder;
  */
 
 public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> implements ValidatorsContract.View, OnClickListener {
+
     private Unbinder unbinder;
 
     @BindView(R.id.radio_group)
@@ -68,6 +70,10 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
     SmartRefreshLayout refreshLayout;
     @BindView(R.id.rlv_list)
     ListView rlv_list;
+    @BindView(R.id.layout_rank)
+    LinearLayout rankLayout;
+    @BindView(R.id.layout_no_data)
+    LinearLayout mNoDataLayout;
 
     private String rankType;
     private String nodeState;//tab类型（所有/活跃中/候选中）
@@ -113,6 +119,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
         refreshLayout.setEnableAutoLoadMore(false);
         tv_rank.setOnClickListener(this);
         mValidatorsAdapter = new ValidatorsAdapter(R.layout.item_validators_list, null);
+        rlv_list.setEmptyView(mNoDataLayout);
         rlv_list.setAdapter(mValidatorsAdapter);
 
         //默认初始化值
@@ -122,15 +129,10 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
 
         mPresenter.loadValidatorsData(rankType, nodeState, -1);
 
-
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 isLoadMore = false;
-                allList.clear();
-                activeList.clear();
-                candidateList.clear();
-
                 mPresenter.loadValidatorsData(rankType, nodeState, -1);
 
             }
@@ -165,7 +167,6 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
                             mPresenter.loadDataFromDB(rankType, nodeState, -1);
                         }
                         mValidatorsAdapter.notifyDataChanged(allList);
-//                        showLongToast("所有");
                         break;
                     case R.id.btn_active:
                         changeBtnState(id);
@@ -174,7 +175,6 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
                             mPresenter.loadDataFromDB(rankType, nodeState, -1);
                         }
                         mValidatorsAdapter.notifyDataChanged(activeList);
-//                        showLongToast("活跃中");
                         break;
                     case R.id.btn_candidate:
                         changeBtnState(id);
@@ -183,9 +183,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
                             mPresenter.loadDataFromDB(rankType, nodeState, -1);
                         }
                         mValidatorsAdapter.notifyDataChanged(candidateList);
-//                        showLongToast("候选中");
                         break;
-
                     default:
                         break;
                 }
@@ -193,12 +191,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
 
             }
         });
-    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        MobclickAgent.onPageStart(Constants.UMPages.VERIFY_NODE);
         RxAdapterView.itemClicks(rlv_list)
                 .compose(RxUtils.getClickTransformer())
                 .compose(RxUtils.bindToLifecycle(this))
@@ -209,20 +202,27 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
                         ValidatorsDetailActivity.actionStart(getContext(), verifyNode.getNodeId());
                     }
                 });
+    }
+
+    @Override
+    public void onResume() {
+        MobclickAgent.onPageStart(Constants.UMPages.VERIFY_NODE);
+        super.onResume();
         Log.d("ValidatorsFragment", "=============" + "onresume");
-        refreshLayout.autoRefresh();
+        mPresenter.loadValidatorsData(rankType, nodeState, -1);
     }
 
     @Override
     public void onPause() {
-        super.onPause();
         MobclickAgent.onPageEnd(Constants.UMPages.VERIFY_NODE);
+        super.onPause();
     }
 
     @Override
     public void onClick(View v) {
         int id = v.getId();
         switch (id) {
+            case R.id.layout_rank:
             case R.id.tv_rank:
                 if (TextUtils.equals(rankType, Constants.ValidatorsType.VALIDATORS_RANK)) {
                     tv_rank.setText(getString(R.string.validators_detail_yield));
@@ -393,6 +393,14 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
             AppSettings.getInstance().setValidatorsTab(true);
         } else {
             AppSettings.getInstance().setValidatorsTab(false);
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (unbinder != null) {
+            unbinder.unbind();
         }
     }
 

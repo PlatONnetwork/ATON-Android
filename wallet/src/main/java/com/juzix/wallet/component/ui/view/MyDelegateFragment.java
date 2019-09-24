@@ -56,7 +56,9 @@ import butterknife.Unbinder;
  */
 
 public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> implements MyDelegateContract.View {
+
     private Unbinder unbinder;
+
     @BindView(R.id.refreshLayout)
     SmartRefreshLayout refreshLayout;
     @BindView(R.id.iv_total_delegate)
@@ -103,18 +105,6 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        MobclickAgent.onPageStart(Constants.UMPages.MY_DELEGATION);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        MobclickAgent.onPageEnd(Constants.UMPages.MY_DELEGATION);
-    }
-
-    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initClickListener();
@@ -136,11 +126,11 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        String  url ="";
-                        if(Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage())){
+                        String url = "";
+                        if (Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage())) {
                             url = Constants.WEBURL.WEB_URL_FAQ_ZH;
-                        }else {
-                            url =Constants.WEBURL.WEB_URL_FAQ_EN;
+                        } else {
+                            url = Constants.WEBURL.WEB_URL_FAQ_EN;
                         }
 
                         CommonHybridActivity.actionStart(getContext(), url, WebType.WEB_TYPE_COMMON);
@@ -152,10 +142,10 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        String url ="";
-                        if(Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage())){
+                        String url = "";
+                        if (Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage())) {
                             url = Constants.WEBURL.WEB_URL_TUTORIAL_ZH;
-                        }else {
+                        } else {
                             url = Constants.WEBURL.WEB_URL_TUTORIAL_EN;
                         }
 
@@ -207,9 +197,9 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
     private void initColor() {
         String str = null;
         if (Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage())) {
-             str = "<font color='#61646E'>查看验证节点，</font>"
+            str = "<font color='#61646E'>查看验证节点，</font>"
                     + "<font color= '#105CFE'>参与委托</font>";
-        }else {
+        } else {
             str = "<font color='#61646E'>View all validators,</font>"
                     + "<font color= '#105CFE'>Delegate</font>";
         }
@@ -253,6 +243,7 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
 
     @Override
     public void showMyDelegateDataFailed() {
+        tv_total_delegate.setText("--");
         refreshLayout.finishRefresh();
         mMyDelegateAdapter.notifyDataSetChanged();
     }
@@ -267,6 +258,17 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
 
     }
 
+    @Override
+    public void onTabHidden() {
+        super.onTabHidden();
+        MobclickAgent.onPageEnd(Constants.UMPages.MY_DELEGATION);
+    }
+
+    @Override
+    public void onTabShown() {
+        super.onTabShown();
+        MobclickAgent.onPageStart(Constants.UMPages.MY_DELEGATION);
+    }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
@@ -274,6 +276,14 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
             AppSettings.getInstance().setMydelegateTab(true);
         } else {
             AppSettings.getInstance().setMydelegateTab(false);
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (unbinder != null) {
+            unbinder.unbind();
         }
     }
 

@@ -36,35 +36,41 @@ public class CommonTipsDialogFragment extends DialogFragment {
     private String mContent;
     private ButtonConfig mLeftButtonConfig;
     private ButtonConfig mRightButtonConfig;
+    private boolean mCancelable = true;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         return createDialog(getActivity(), mDrawable, mTitle, mContent, mLeftButtonConfig, mRightButtonConfig);
     }
 
+    public static CommonTipsDialogFragment createDialogWithTitleAndTwoButton(Drawable drawable, String title, String content, String leftText, OnDialogViewClickListener leftDialogViewClickListener, String rightText, OnDialogViewClickListener rightOnDialogViewClickListener, boolean cancelable) {
+        return create(drawable, title, content, new ButtonConfig(leftText, DEFAULT_LEFT_BUTTON_COLOR, leftDialogViewClickListener), new ButtonConfig(rightText, DEFAULT_RIGHT_BUTTON_COLOR, rightOnDialogViewClickListener), cancelable);
+    }
+
     public static CommonTipsDialogFragment createDialogWithTitleAndTwoButton(Drawable drawable, String title, String content, String leftText, OnDialogViewClickListener leftDialogViewClickListener, String rightText, OnDialogViewClickListener rightOnDialogViewClickListener) {
-        return create(drawable, title, content, new ButtonConfig(leftText, DEFAULT_LEFT_BUTTON_COLOR, leftDialogViewClickListener), new ButtonConfig(rightText, DEFAULT_RIGHT_BUTTON_COLOR, rightOnDialogViewClickListener));
+        return create(drawable, title, content, new ButtonConfig(leftText, DEFAULT_LEFT_BUTTON_COLOR, leftDialogViewClickListener), new ButtonConfig(rightText, DEFAULT_RIGHT_BUTTON_COLOR, rightOnDialogViewClickListener), false);
     }
 
     public static CommonTipsDialogFragment createDialogWithTwoButton(Drawable drawable, String content, String leftText, OnDialogViewClickListener leftDialogViewClickListener, String rightText, OnDialogViewClickListener rightOnDialogViewClickListener) {
-        return create(drawable, null, content, new ButtonConfig(leftText, DEFAULT_LEFT_BUTTON_COLOR, leftDialogViewClickListener), new ButtonConfig(rightText, DEFAULT_RIGHT_BUTTON_COLOR, rightOnDialogViewClickListener));
+        return create(drawable, null, content, new ButtonConfig(leftText, DEFAULT_LEFT_BUTTON_COLOR, leftDialogViewClickListener), new ButtonConfig(rightText, DEFAULT_RIGHT_BUTTON_COLOR, rightOnDialogViewClickListener), true);
     }
 
     public static CommonTipsDialogFragment createDialogWithOneButton(Drawable drawable, String content, String leftText, OnDialogViewClickListener leftDialogViewClickListener) {
-        return create(drawable, null, content, new ButtonConfig(leftText, DEFAULT_LEFT_BUTTON_COLOR, leftDialogViewClickListener), null);
+        return create(drawable, null, content, new ButtonConfig(leftText, DEFAULT_LEFT_BUTTON_COLOR, leftDialogViewClickListener), null, true);
     }
 
     public static CommonTipsDialogFragment createDialogWithTitleAndOneButton(Drawable drawable, String title, String content, String leftText, OnDialogViewClickListener leftDialogViewClickListener) {
-        return create(drawable, title, content, new ButtonConfig(leftText, DEFAULT_LEFT_BUTTON_COLOR, leftDialogViewClickListener), null);
+        return create(drawable, title, content, new ButtonConfig(leftText, DEFAULT_LEFT_BUTTON_COLOR, leftDialogViewClickListener), null, true);
     }
 
-    private static CommonTipsDialogFragment create(Drawable drawable, String title, String content, ButtonConfig leftButtonConfig, ButtonConfig rightButtonConfig) {
+    private static CommonTipsDialogFragment create(Drawable drawable, String title, String content, ButtonConfig leftButtonConfig, ButtonConfig rightButtonConfig, boolean cancelable) {
         CommonTipsDialogFragment dialogFragment = new CommonTipsDialogFragment();
         dialogFragment.mDrawable = drawable;
         dialogFragment.mTitle = title;
         dialogFragment.mContent = content;
         dialogFragment.mLeftButtonConfig = leftButtonConfig;
         dialogFragment.mRightButtonConfig = rightButtonConfig;
+        dialogFragment.mCancelable = cancelable;
         return dialogFragment;
     }
 
@@ -77,8 +83,8 @@ public class CommonTipsDialogFragment extends DialogFragment {
             getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
             dialog.getWindow().setLayout((int) (dm.widthPixels * 0.75), ViewGroup.LayoutParams.WRAP_CONTENT);
             dialog.getWindow().setWindowAnimations(R.style.Animation_CommonDialog);
-            dialog.setCanceledOnTouchOutside(false);
-            dialog.setCancelable(true);
+            dialog.setCanceledOnTouchOutside(mCancelable);
+            dialog.setCancelable(mCancelable);
         }
     }
 

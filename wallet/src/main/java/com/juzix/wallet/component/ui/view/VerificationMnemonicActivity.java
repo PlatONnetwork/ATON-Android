@@ -33,7 +33,6 @@ import butterknife.Unbinder;
 
 public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMnemonicPresenter> implements VerificationMnemonicContract.View, View.OnClickListener {
 
-    private final static String TAG = VerificationMnemonicActivity.class.getSimpleName();
     Unbinder unbinder;
 
     @BindView(R.id.tv_mnemonic1)
@@ -71,6 +70,11 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
         intent.putExtra(Constants.Extra.EXTRA_WALLET, walletEntity);
         intent.putExtra(Constants.Extra.EXTRA_TYPE, type);
         context.startActivity(intent);
+    }
+
+    @Override
+    protected boolean immersiveBarViewEnabled() {
+        return true;
     }
 
     @Override
@@ -121,7 +125,7 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
     private void exit(){
         CommonTipsDialogFragment.createDialogWithTwoButton(ContextCompat.getDrawable(getContext(), R.drawable.icon_dialog_tips),
                 string(R.string.backup_exit_tips),
-                string(R.string.confirm),
+                string(R.string.yes),
                 new OnDialogViewClickListener() {
                     @Override
                     public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
@@ -133,7 +137,7 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
                         }
                         VerificationMnemonicActivity.this.finish();
                     }
-                },string(R.string.cancel),
+                },string(R.string.no),
                 new OnDialogViewClickListener() {
                     @Override
                     public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
@@ -152,21 +156,6 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
                exit();
             }
         });
-//        mBtnSubmit = findViewById(R.id.sbtn_submit);
-//        mBtnEmpty = findViewById(R.id.btn_empty);
-//        mTvMnemonic1 = findViewById(R.id.tv_mnemonic1);
-//        mTvMnemonic2 = findViewById(R.id.tv_mnemonic2);
-//        mTvMnemonic3 = findViewById(R.id.tv_mnemonic3);
-//        mTvMnemonic4 = findViewById(R.id.tv_mnemonic4);
-//        mTvMnemonic5 = findViewById(R.id.tv_mnemonic5);
-//        mTvMnemonic6 = findViewById(R.id.tv_mnemonic6);
-//        mTvMnemonic7 = findViewById(R.id.tv_mnemonic7);
-//        mTvMnemonic8 = findViewById(R.id.tv_mnemonic8);
-//        mTvMnemonic9 = findViewById(R.id.tv_mnemonic9);
-//        mTvMnemonic10 = findViewById(R.id.tv_mnemonic10);
-//        mTvMnemonic11 = findViewById(R.id.tv_mnemonic11);
-//        mTvMnemonic12 = findViewById(R.id.tv_mnemonic12);
-
         mBtnSubmit.setOnClickListener(this);
         mBtnEmpty.setOnClickListener(this);
         addMnemonicListener();

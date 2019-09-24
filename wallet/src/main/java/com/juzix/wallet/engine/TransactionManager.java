@@ -22,10 +22,15 @@ import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscription;
 import org.spongycastle.util.encoders.Hex;
 import org.web3j.abi.PlatOnTypeEncoder;
+import org.web3j.abi.datatypes.BytesType;
 import org.web3j.abi.datatypes.generated.Int64;
+import org.web3j.abi.datatypes.generated.Uint256;
+import org.web3j.abi.datatypes.generated.Uint64;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionEncoder;
+import org.web3j.platon.FunctionType;
+import org.web3j.platon.PlatOnFunction;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.PlatonGetBalance;
 import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
@@ -38,6 +43,7 @@ import org.web3j.utils.Numeric;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -84,7 +90,7 @@ public class TransactionManager {
 
         try {
             List<RlpType> result = new ArrayList<>();
-            result.add(RlpString.create(Numeric.hexStringToByteArray(PlatOnTypeEncoder.encode(new Int64(0)))));
+
             String txType = Hex.toHexString(RlpEncoder.encode(new RlpList(result)));
 
             RawTransaction rawTransaction = RawTransaction.createTransaction(Web3jManager.getInstance().getNonce(from), gasPrice, gasLimit, toAddress, amount.toBigInteger(),
@@ -200,7 +206,11 @@ public class TransactionManager {
                     @Override
                     public void accept(Throwable throwable) {
                         super.accept(throwable);
-                        LogUtils.e("getIndividualTransactionByLoop 轮询交易失败" + throwable.getMessage());
+                        if (throwable instanceof CustomThrowable) {
+                            LogUtils.e("getIndividualTransactionByLoop 轮询交易失败" + ((CustomThrowable) throwable).getDetailMsgRes());
+                        } else {
+                            LogUtils.e("getIndividualTransactionByLoop 轮询交易失败" + throwable.getMessage());
+                        }
                     }
                 });
 
@@ -213,7 +223,7 @@ public class TransactionManager {
             public void subscribe(FlowableEmitter<Transaction> emitter) throws Exception {
                 org.web3j.protocol.core.methods.response.Transaction transaction = Web3jManager.getInstance().getTransactionByHash(tempTransaction.getHash());
                 if (transaction == null) {
-                    emitter.onError(new CustomThrowable(CustomThrowable.CODE_TRANSFER_FAILED));
+                    emitter.onNext(tempTransaction);
                 } else {
                     double actualTxCost = BigDecimalUtil.mul(transaction.getGas().doubleValue(), transaction.getGasPrice().doubleValue());
                     tempTransaction.setActualTxCost(String.valueOf(actualTxCost));

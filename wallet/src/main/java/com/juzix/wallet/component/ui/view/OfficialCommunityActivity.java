@@ -64,8 +64,8 @@ public class OfficialCommunityActivity extends BaseActivity {
 
         List<OfficialCommunity> officialCommunityList = new ArrayList<>();
 
-        List<OfficialCommunityItem> wxOfficialCommunityItemList = Arrays.asList(new OfficialCommunityItem("官方微信群秘：PlatON-Alita", R.drawable.icon_platon_alita),
-                new OfficialCommunityItem("官方微信公众号：PlatON_network", R.drawable.icon_platon_network));
+        List<OfficialCommunityItem> wxOfficialCommunityItemList = Arrays.asList(new OfficialCommunityItem(getString(R.string.group_secretary), R.drawable.icon_platon_alita),
+                new OfficialCommunityItem(getString(R.string.official_account), R.drawable.icon_platon_network));
         OfficialCommunity wxOfficialCommunity = new OfficialCommunity(OfficialCommunityType.WECHAT, getResources().getString(R.string.wechat), wxOfficialCommunityItemList);
         officialCommunityList.add(wxOfficialCommunity);
 
@@ -97,7 +97,7 @@ public class OfficialCommunityActivity extends BaseActivity {
         OfficialCommunity tgOfficialCommunity = new OfficialCommunity(OfficialCommunityType.TELEGRAM, getResources().getString(R.string.telegram), tgOfficialCommunityItemList);
         officialCommunityList.add(tgOfficialCommunity);
 
-        List<OfficialCommunityItem> bhOfficialCommunityItemList = Arrays.asList(new OfficialCommunityItem("https://bihu.com/people/1215832888"));
+        List<OfficialCommunityItem> bhOfficialCommunityItemList = Arrays.asList(new OfficialCommunityItem("https://www.bihu.com/people/1215832888"));
         OfficialCommunity bhOfficialCommunity = new OfficialCommunity(OfficialCommunityType.BI_HU, getResources().getString(R.string.bi_hu), bhOfficialCommunityItemList);
         officialCommunityList.add(bhOfficialCommunity);
 

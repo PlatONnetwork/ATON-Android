@@ -69,14 +69,14 @@ public class WalletManagerActivity extends MVPBaseActivity<WalletManagerPresente
     @Override
     protected void onResume() {
         mPresenter.fetchWalletList();
-        super.onResume();
         MobclickAgent.onPageStart(Constants.UMPages.WALLET_MANAGER);
+        super.onResume();
     }
 
     @Override
     protected void onPause() {
-        super.onPause();
         MobclickAgent.onPageEnd(Constants.UMPages.WALLET_MANAGER);
+        super.onPause();
     }
 
     @Override

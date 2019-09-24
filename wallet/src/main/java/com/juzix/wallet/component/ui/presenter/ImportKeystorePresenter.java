@@ -7,20 +7,20 @@ import android.text.TextUtils;
 
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.base.BasePresenter;
-import com.juzix.wallet.component.ui.contract.ImportIndividualKeystoreContract;
+import com.juzix.wallet.component.ui.contract.ImportKeystoreContract;
 import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.utils.CommonUtil;
 
-public class ImportKeystorePresenter extends BasePresenter<ImportIndividualKeystoreContract.View> implements ImportIndividualKeystoreContract.Presenter {
+public class ImportKeystorePresenter extends BasePresenter<ImportKeystoreContract.View> implements ImportKeystoreContract.Presenter {
 
-    public ImportKeystorePresenter(ImportIndividualKeystoreContract.View view) {
+    public ImportKeystorePresenter(ImportKeystoreContract.View view) {
         super(view);
     }
 
     @Override
     public void init() {
-        ImportIndividualKeystoreContract.View view = getView();
+        ImportKeystoreContract.View view = getView();
         if (view != null) {
             view.showQRCode(view.getKeystoreFromIntent());
         }

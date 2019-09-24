@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Process;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -25,6 +26,7 @@ import com.juzix.wallet.entity.VersionInfo;
 import com.juzix.wallet.entity.WebType;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.ShareUtil;
+import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import butterknife.BindView;
@@ -36,8 +38,6 @@ import io.reactivex.functions.Consumer;
  * @author matrixelement
  */
 public class AboutActivity extends BaseActivity {
-
-    private final static String TAG = AboutActivity.class.getSimpleName();
 
     @BindView(R.id.tv_about_us)
     TextView tvAboutUs;
@@ -163,38 +163,41 @@ public class AboutActivity extends BaseActivity {
                             showLongToast(string(R.string.download_tips));
                             return;
                         }
-
-                        CommonTipsDialogFragment.createDialogWithTitleAndTwoButton(ContextCompat.getDrawable(getContext(), R.drawable.icon_dialog_tips),
-                                string(R.string.version_update),
-                                string(R.string.version_update_tips, newVersion),
-                                string(R.string.update_now), new OnDialogViewClickListener() {
-                                    @Override
-                                    public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
-                                        if (fragment != null) {
-                                            fragment.dismiss();
-                                        }
-                                        new RxPermissions(currentActivity())
-                                                .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                                                .subscribe(new Consumer<Boolean>() {
-                                                    @Override
-                                                    public void accept(Boolean success) throws Exception {
-                                                        if (success) {
-                                                            mVersionUpdate.execute();
-                                                        }
-                                                    }
-                                                });
-
-                                    }
-                                },
-                                string(R.string.not_now), new OnDialogViewClickListener() {
-                                    @Override
-                                    public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
-                                        if (fragment != null) {
-                                            fragment.dismiss();
-                                        }
-                                    }
-                                }).show(getSupportFragmentManager(), "showTips");
+                        showUpdateVersionDialog(versionEntity);
                     }
                 });
+    }
+
+
+    private void showUpdateVersionDialog(VersionInfo versionInfo) {
+        CommonTipsDialogFragment.createDialogWithTitleAndTwoButton(ContextCompat.getDrawable(getContext(), R.drawable.icon_dialog_tips),
+                string(R.string.version_update),
+                string(R.string.version_update_tips, versionInfo.getAndroidVersionInfo().getVersion()),
+                string(R.string.update_now), new OnDialogViewClickListener() {
+                    @Override
+                    public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
+                        if (fragment != null) {
+                            fragment.dismiss();
+                        }
+                        new RxPermissions(currentActivity())
+                                .requestEach(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                                .subscribe(new Consumer<Permission>() {
+                                    @Override
+                                    public void accept(Permission permission) throws Exception {
+                                        if (permission.granted && Manifest.permission.ACCESS_COARSE_LOCATION.equals(permission.name)) {
+                                            mVersionUpdate.execute();
+                                        }
+                                    }
+                                });
+                    }
+                },
+                string(R.string.not_now), new OnDialogViewClickListener() {
+                    @Override
+                    public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
+                        if (fragment != null) {
+                            fragment.dismiss();
+                        }
+                    }
+                }).show(currentActivity().getSupportFragmentManager(), "showTips");
     }
 }

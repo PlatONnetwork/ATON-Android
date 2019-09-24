@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Process;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -18,6 +19,7 @@ import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
 
+import com.juzhen.framework.app.activity.ActivityManager;
 import com.juzhen.framework.util.AndroidUtil;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
@@ -127,14 +129,12 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
                     if (tabhost.getCurrentTab() != 1) {
                         tabhost.setCurrentTab(1);
                     }
-
                 } else {
                     //发送一个eventbus
                     EventPublisher.getInstance().sendUpdateDelegateTabEvent();
                     EventPublisher.getInstance().sendUpdateValidatorsTabEvent();
 
                 }
-
                 lastClickTime = currentTimeMillis;
             }
         });
@@ -232,5 +232,11 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
         intent.putExtra(Constants.Extra.EXTRA_WALLET_INDEX, index);
         intent.putExtra(Constants.Extra.EXTRA_WALLET_SUB_INDEX, subIndex);
         context.startActivity(intent);
+    }
+
+    @Override
+    public void exitApp() {
+        ActivityManager.getInstance().finishAll();
+        Process.killProcess(Process.myPid());
     }
 }

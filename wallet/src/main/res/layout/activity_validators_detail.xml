@@ -350,7 +350,7 @@
             android:id="@+id/sbtn_delegate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="false"
+            app:enabled="false"
             app:text="@string/validators_delegate"
             app:textAppearance="@style/MainButtonStyle"
             app:textBackground="@drawable/bg_main_button" />
@@ -359,8 +359,6 @@
             android:id="@+id/tv_no_delegate_tips"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="60dp"
-            android:layout_marginRight="60dp"
             android:drawableLeft="@drawable/icon_no_delegate_tips"
             android:gravity="center"
             android:text="@string/validators_details_tips"

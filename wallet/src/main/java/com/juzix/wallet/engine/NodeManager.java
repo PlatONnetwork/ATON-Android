@@ -2,13 +2,13 @@ package com.juzix.wallet.engine;
 
 import android.text.TextUtils;
 
-import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.entity.Node;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.RxUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,15 +25,8 @@ import io.reactivex.functions.Predicate;
  */
 public class NodeManager {
 
-//    private final static String[] DEFAULT_NODE_URL_LIST = new String[]{Constants.URL.URL_HTTP_A, Constants.URL.URL_TEST_B};
-    private final static String[] DEFAULT_NODE_URL_LIST = new String[]{"http://192.168.9.190:1000/rpc"};
-    //线上A网
-    private final static String CHAINID_TEST_NET_A = "103";
-    //线上B网
-    private final static String CHAINID_TEST_NET_B = "104";
-    //测试环境
-    private final static String CHAINID_TEST_NET_C = "103";
-
+    private final static String[] DEFAULT_NODE_URL_LIST = new String[]{"https://aton.main.platon.network", "https://aton.test.platon.network", "http://192.168.9.190:1000"};
+    private final static String[] DEFAULT_NODE_CHAINID_LIST = new String[]{"101", "103", "103"};
 
     private Node curNode;
     private NodeService nodeService;
@@ -115,10 +108,19 @@ public class NodeManager {
                 });
     }
 
+    public String getChainId() {
+        return TextUtils.isEmpty(getCurNode().getChainId()) ? DEFAULT_NODE_CHAINID_LIST[1] : getCurNode().getChainId();
+    }
+
+    public String getChainId(String nodeAddress) {
+        int index = Arrays.asList(DEFAULT_NODE_URL_LIST).indexOf(nodeAddress);
+        return index != -1 ? DEFAULT_NODE_CHAINID_LIST[index] : DEFAULT_NODE_CHAINID_LIST[1];
+    }
+
     public void switchNode(Node nodeEntity) {
         setCurNode(nodeEntity);
         AppSettings.getInstance().setCurrentNodeAddress(nodeEntity.getNodeAddress());
-        Web3jManager.getInstance().init(nodeEntity.getNodeAddress());
+        Web3jManager.getInstance().init(nodeEntity.getRPCUrl());
     }
 
     public Single<List<Node>> getNodeList() {
@@ -141,20 +143,6 @@ public class NodeManager {
         return nodeService.updateNode(nodeEntity.getId(), isChecked);
     }
 
-    public String getChainId() {
-        return getChainId(getCurNodeAddress());
-    }
-
-    public String getChainId(String curNodeAddress) {
-        if (Constants.URL.URL_TEST_A.equals(curNodeAddress)) {
-            return CHAINID_TEST_NET_A;
-        } else if (Constants.URL.URL_TEST_B.equals(curNodeAddress)) {
-            return CHAINID_TEST_NET_B;
-        } else {
-            return CHAINID_TEST_NET_C;
-        }
-    }
-
     private List<Node> buildDefaultNodeList() {
 
         List<Node> nodeInfoEntityList = new ArrayList<>();
@@ -167,6 +155,7 @@ public class NodeManager {
                     .nodeAddress(DEFAULT_NODE_URL_LIST[i])
                     .isDefaultNode(true)
                     .isChecked(i == 0)
+                    .chainId(DEFAULT_NODE_CHAINID_LIST[i])
                     .build();
             nodeInfoEntityList.add(nodeEntity);
         }

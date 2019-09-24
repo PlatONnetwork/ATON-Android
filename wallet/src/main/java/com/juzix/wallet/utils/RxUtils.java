@@ -22,6 +22,9 @@ import io.reactivex.Single;
 import io.reactivex.SingleSource;
 import io.reactivex.SingleTransformer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class RxUtils {
@@ -122,6 +125,48 @@ public class RxUtils {
             public ObservableSource<T> apply(Observable<T> upstream) {
                 return upstream
                         .debounce(500, TimeUnit.MILLISECONDS);
+            }
+        };
+    }
+
+    public static <T> ObservableTransformer<T, T> getLoadingTransformer(final BaseActivity activity) {
+        return new ObservableTransformer<T, T>() {
+            @Override
+            public ObservableSource<T> apply(Observable<T> upstream) {
+                return upstream
+                        .doOnSubscribe(new Consumer<Disposable>() {
+                            @Override
+                            public void accept(Disposable disposable) throws Exception {
+                                activity.showLoadingDialog();
+                            }
+                        })
+                        .doOnTerminate(new Action() {
+                            @Override
+                            public void run() throws Exception {
+                                activity.dismissLoadingDialogImmediately();
+                            }
+                        });
+            }
+        };
+    }
+
+    public static <T> ObservableTransformer<T, T> getLoadingTransformer(final BaseFragment baseFragment) {
+        return new ObservableTransformer<T, T>() {
+            @Override
+            public ObservableSource<T> apply(Observable<T> upstream) {
+                return upstream
+                        .doOnSubscribe(new Consumer<Disposable>() {
+                            @Override
+                            public void accept(Disposable disposable) throws Exception {
+                                ((BaseActivity) baseFragment.getActivity()).showLoadingDialog();
+                            }
+                        })
+                        .doOnTerminate(new Action() {
+                            @Override
+                            public void run() throws Exception {
+                                ((BaseActivity) baseFragment.getActivity()).dismissLoadingDialogImmediately();
+                            }
+                        });
             }
         };
     }
