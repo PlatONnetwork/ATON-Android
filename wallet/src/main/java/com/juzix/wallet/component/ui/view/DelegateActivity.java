@@ -288,7 +288,6 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         amount.setText(StringUtil.formatBalance(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(individualWalletEntity.getFreeBalance(), "1E18"))));
 
         checkIsClick(individualWalletEntity.getAccountBalance());
-
     }
 
     /**
