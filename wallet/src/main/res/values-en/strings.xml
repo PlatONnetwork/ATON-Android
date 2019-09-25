@@ -614,5 +614,6 @@
     <string name="details">Details</string>
     <string name="undelegating">Undelegating</string>
     <string name="delegated">Delegated</string>
+    <string name="delegate_less_than_fee">Insufficient balance payment fee</string>
 </resources>
 

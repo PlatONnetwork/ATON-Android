@@ -627,4 +627,5 @@
     <string name="details">详情</string>
     <string name="undelegating">赎回中</string>
     <string name="delegated">委托</string>
+    <string name="delegate_less_than_fee">余额不足支付手续费，无法委托</string>
 </resources>
