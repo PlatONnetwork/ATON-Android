@@ -257,9 +257,9 @@ public class DelegateDetailPresenter extends BasePresenter<DelegateDetailContrac
 
     @Override
     public void getWalletBalance(String nodeAddress, String nodeName, String nodeIcon) {
-        List<String> walletAddressList = WalletManager.getInstance().getAddressList();
+//        List<String> walletAddressList = WalletManager.getInstance().getAddressList();
         ServerUtils.getCommonApi().getAccountBalance(ApiRequestBody.newBuilder()
-                .put("addrs", walletAddressList.toArray(new String[walletAddressList.size()]))
+                .put("addrs", new String[]{mWalletAddress})
                 .build())
                 .compose(RxUtils.bindToLifecycle(getView()))
                 .compose(RxUtils.getSingleSchedulerTransformer())

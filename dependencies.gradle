@@ -103,6 +103,7 @@ project.ext {
             "umeng_analytics"                 : 'com.umeng.umsdk:analytics:8.0.2',
             "bugly"                           : 'com.tencent.bugly:crashreport:latest.release',
             "glide"                           : 'com.github.bumptech.glide:glide:4.9.0',
-            "webview-agentweb"                : 'com.just.agentweb:agentweb:4.0.3-alpha@aar' // (必选)
+            "webview-agentweb"                : 'com.just.agentweb:agentweb:4.0.3-alpha@aar', // (必选)
+            "rxandroid1"                      :'io.reactivex:rxandroid:1.1.0'//引入rxjava1对应的android库
     ]
 }

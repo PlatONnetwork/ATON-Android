@@ -293,9 +293,20 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:text=""
+                            android:layout_marginRight="3dp"
                             android:textColor="@color/color_b6bbd0"
                             android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/tv_lat"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="LAT"
+                            android:textColor="@color/color_b6bbd0"
+                            android:layout_marginTop="5dp"
+                            android:textSize="12sp"
+                            android:visibility="gone"
+                            />
 
                     </LinearLayout>
 
