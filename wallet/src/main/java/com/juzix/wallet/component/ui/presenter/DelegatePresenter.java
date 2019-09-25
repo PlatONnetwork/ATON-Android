@@ -42,12 +42,12 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Single;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import retrofit2.Response;
 import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class DelegatePresenter extends BasePresenter<DelegateContract.View> implements DelegateContract.Presenter {
@@ -316,6 +316,8 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
         org.web3j.platon.contracts.DelegateContract delegateContract = org.web3j.platon.contracts.DelegateContract.load(web3j);
         StakingAmountType stakingAmountType = TextUtils.equals(chooseType, "balance") ? StakingAmountType.FREE_AMOUNT_TYPE : StakingAmountType.RESTRICTING_AMOUNT_TYPE;
         delegateContract.getDelegateFeeAmount(new BigInteger(gasPrice), mNodeAddress, stakingAmountType, Convert.toVon(amount, Convert.Unit.LAT).toBigInteger())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<BigInteger>() {
                     @Override
                     public void onNext(BigInteger bigInteger) {
@@ -348,7 +350,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
             @Override
             public Double call() throws Exception {
                 //输入数量+手续费
-                return BigDecimalUtil.add(getView().getDelegateAmount(), feeAmount);
+                return BigDecimalUtil.add(getView().getDelegateAmount(), getView().getGasPrice());
             }
         }).zipWith(ServerUtils.getCommonApi().getIsDelegateInfo(ApiRequestBody.newBuilder()
                         .put("addr", mWallet.getPrefixAddress())

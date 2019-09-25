@@ -94,6 +94,8 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     ShadowButton btnDelegate;
     @BindView(R.id.iv_drop_down)
     ImageView iv_drop_down;
+    @BindView(R.id.tv_lat)
+    TextView tv_lat;
 
     private Unbinder unbinder;
 
@@ -107,6 +109,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     private DelegatePopAdapter mAdapter;
     private long transactionTime;
     private String gasPrice;
+    private boolean isAll = false;//是否点击的全部
 
     @Override
 
@@ -161,7 +164,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                         //点击全部
 //                        et_amount.setText(amount.getText().toString().replace(",", ""));
                         mPresenter.getAllPrice(gasPrice, amount.getText().toString().replace(",", ""), chooseType);
-
+                        isAll = true;
                     }
                 });
 
@@ -286,18 +289,6 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
 
         checkIsClick(individualWalletEntity.getAccountBalance());
 
-//        typeList.clear();
-//        for (AccountBalance bean : balanceList) {
-//            if (TextUtils.equals(address, bean.getAddr())) {
-//                //获取当前选中钱包的余额信息
-//                typeList.add(new DelegateType("0", bean.getFree()));
-//                typeList.add(new DelegateType("1", bean.getLock()));
-//                checkIsClick(bean);
-//                return;
-//            }
-//        }
-//        mAdapter.notifyDataSetChanged();
-
     }
 
     /**
@@ -393,7 +384,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     }
 
     @Override
-    public void transactionSuccessInfo(String platonSendTransaction,String hash, String from, String to, long time, String txType, String value, String actualTxCost, String nodeName, String nodeId, int txReceiptStatus) {
+    public void transactionSuccessInfo(String platonSendTransaction, String hash, String from, String to, long time, String txType, String value, String actualTxCost, String nodeName, String nodeId, int txReceiptStatus) {
         finish();
         Transaction transaction = new Transaction.Builder()
                 .from(from)
@@ -401,7 +392,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                 .timestamp(transactionTime)
                 .txType(txType)
                 .value(Convert.toVon(value, Convert.Unit.LAT).toBigInteger().toString())
-                .actualTxCost(Convert.toVon(actualTxCost, Convert.Unit.LAT).toBigInteger().toString())
+                .actualTxCost(Convert.toVon(fee.getText().toString(), Convert.Unit.LAT).toBigInteger().toString())
                 .nodeName(nodeName)
                 .nodeId(nodeId)
                 .txReceiptStatus(txReceiptStatus)
@@ -418,7 +409,17 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
      */
     @Override
     public void showGasPrice(String gas) {
-        fee.setText(string(R.string.amount_with_unit, gas));
+        Log.d("DelegateActivity", "手续费" + "================" + gas);
+        if (!isAll) {
+//            fee.setText(string(R.string.amount_with_unit, gas));
+            fee.setText(gas);
+        }
+        if (Double.valueOf(gas) > 0) {
+            tv_lat.setVisibility(View.VISIBLE);
+        } else {
+            tv_lat.setVisibility(View.GONE);
+        }
+        isAll = false;
     }
 
     /**
@@ -426,9 +427,26 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
      */
     @Override
     public void showAllGasPrice(String allPrice) {
-        fee.setText(string(R.string.amount_with_unit, allPrice));
+        Log.d("DelegateActivity", "手续费" + "================" + allPrice);
+//        fee.setText(string(R.string.amount_with_unit, allPrice));
+        fee.setText(allPrice);
+        if (Double.valueOf(allPrice) > 0) {
+            tv_lat.setVisibility(View.VISIBLE);
+        } else {
+            tv_lat.setVisibility(View.GONE);
+        }
         double diff = BigDecimalUtil.sub(amount.getText().toString().replace(",", ""), allPrice);
-        et_amount.setText(BigDecimalUtil.parseString(diff));
+        Log.d("showAllGasPrice", "剩余的钱" + "=============" + diff);
+        if(diff<0){
+            et_amount.setText(BigDecimalUtil.parseString(0.00));
+        }else {
+            et_amount.setText(BigDecimalUtil.parseString(diff));
+        }
+    }
+
+    @Override
+    public String getGasPrice() {
+        return fee.getText().toString();
     }
 
     @Override

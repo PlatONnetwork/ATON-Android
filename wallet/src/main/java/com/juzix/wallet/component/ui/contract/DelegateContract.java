@@ -75,6 +75,10 @@ public class DelegateContract {
          */
         void showAllGasPrice(String allPrice);
 
+        /**
+         * 获取手续费
+         */
+        String getGasPrice();
     }
 
     public interface Presenter extends IPresenter<View> {

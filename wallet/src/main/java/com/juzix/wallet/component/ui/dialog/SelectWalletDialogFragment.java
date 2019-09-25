@@ -169,7 +169,7 @@ public class SelectWalletDialogFragment extends BaseDialogFragment {
                             List<Wallet> newWalletEntityList = new ArrayList<>();
                             if (needAmount) {
                                 for (Wallet walletEntity : objects) {
-                                    if (BigDecimalUtil.isBiggerThanZero(walletEntity.getFreeBalance())) {
+                                    if (BigDecimalUtil.isBiggerThanZero(walletEntity.getFreeBalance())||BigDecimalUtil.isBiggerThanZero(walletEntity.getLockBalance())) {
                                         newWalletEntityList.add(walletEntity);
                                     }
                                 }
