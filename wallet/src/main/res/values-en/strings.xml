@@ -485,7 +485,7 @@
     <string name="return_amount">Return Amount</string>
     <string name="report_type">Report Type</string>
     <string name="reported">Reported</string>
-    <string name="proposal_id">PIP SN</string>
+    <string name="proposal_id">Proposal ID</string>
     <string name="pip_number">PIP SN</string>
     <string name="proposal_type">Proposal Type</string>
     <string name="restricted_account">Restricted Account</string>
