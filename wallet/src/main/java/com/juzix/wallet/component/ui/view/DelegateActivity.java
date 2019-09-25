@@ -42,6 +42,7 @@ import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.GlideUtils;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
+import com.juzix.wallet.utils.ToastUtil;
 import com.juzix.wallet.utils.UMEventUtil;
 
 import org.web3j.utils.Convert;
@@ -178,7 +179,6 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                         UMEventUtil.onEventCount(DelegateActivity.this, Constants.UMEventID.DELEGATE);
                         //点击委托操作
                         transactionTime = System.currentTimeMillis();
-                        Log.d("DelegateActivity", " =============" + transactionTime);
                         mPresenter.submitDelegate(chooseType);
                     }
                 });
@@ -409,9 +409,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
      */
     @Override
     public void showGasPrice(String gas) {
-        Log.d("DelegateActivity", "手续费" + "================" + gas);
         if (!isAll) {
-//            fee.setText(string(R.string.amount_with_unit, gas));
             fee.setText(gas);
         }
         if (Double.valueOf(gas) > 0) {
@@ -427,8 +425,6 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
      */
     @Override
     public void showAllGasPrice(String allPrice) {
-        Log.d("DelegateActivity", "手续费" + "================" + allPrice);
-//        fee.setText(string(R.string.amount_with_unit, allPrice));
         fee.setText(allPrice);
         if (Double.valueOf(allPrice) > 0) {
             tv_lat.setVisibility(View.VISIBLE);
@@ -436,9 +432,9 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
             tv_lat.setVisibility(View.GONE);
         }
         double diff = BigDecimalUtil.sub(amount.getText().toString().replace(",", ""), allPrice);
-        Log.d("showAllGasPrice", "剩余的钱" + "=============" + diff);
         if(diff<0){
             et_amount.setText(BigDecimalUtil.parseString(0.00));
+            ToastUtil.showLongToast(getContext(),R.string.delegate_less_than_fee);
         }else {
             et_amount.setText(BigDecimalUtil.parseString(diff));
         }
