@@ -18,11 +18,11 @@ public class ManageIndividualWalletContract {
 
         void showWalletName(String name);
 
-        void showWalletAddress(String address);
+//        void showWalletAddress(String address);
 
         void showErrorDialog(String title, String content, int type, Wallet walletEntity);
 
-        void showWalletAvatar(String avatar);
+//        void showWalletAvatar(String avatar);
 
         void showModifyNameDialog(String name);
 
@@ -31,6 +31,8 @@ public class ManageIndividualWalletContract {
         void enableBackup(boolean enabled);
 
         void enableDelete(boolean enabled);
+
+        void showWalletInfo(Wallet wallet);
     }
 
     public interface Presenter extends IPresenter<View> {
@@ -45,5 +47,9 @@ public class ManageIndividualWalletContract {
         void backup();
 
         boolean isExists(String walletName);
+
+        void deleteObservedWallet();
+
+
     }
 }

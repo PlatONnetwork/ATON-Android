@@ -99,6 +99,13 @@ public class AppSettings {
         setLongItem(Constants.Preference.KEY_UPDATE_VERSION_TIME, updateVersionTime);
     }
 
+    public int getWalletNameSequence() {
+        return getIntItem(Constants.Preference.KEY_WALLET_NAME_SEQUENCE_NUMBER, 1);
+    }
+
+    public void setWalletNameSequence(int walletNameSequence) {
+        setIntItem(Constants.Preference.KEY_WALLET_NAME_SEQUENCE_NUMBER, walletNameSequence);
+    }
     private String getStringItem(String key, String defaultvalue) {
         return preferences.getString(key, defaultvalue);
     }

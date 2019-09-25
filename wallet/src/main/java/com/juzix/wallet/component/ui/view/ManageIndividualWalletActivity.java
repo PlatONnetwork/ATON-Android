@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -30,9 +31,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-public class ManageWalletActivity extends MVPBaseActivity<ManageIndividualWalletPresenter> implements ManageIndividualWalletContract.View {
+public class ManageIndividualWalletActivity extends MVPBaseActivity<ManageIndividualWalletPresenter> implements ManageIndividualWalletContract.View {
 
-    private final static String TAG = ManageWalletActivity.class.getSimpleName();
+    private final static String TAG = ManageIndividualWalletActivity.class.getSimpleName();
 
     @BindView(R.id.commonTitleBar)
     CommonTitleBar commonTitleBar;
@@ -48,7 +49,8 @@ public class ManageWalletActivity extends MVPBaseActivity<ManageIndividualWallet
     RelativeLayout llBackup;
     @BindView(R.id.tv_delete)
     TextView tvDelete;
-
+    @BindView(R.id.rl_rename)
+    RelativeLayout rename;
     private Unbinder unbinder;
 
     @Override
@@ -101,9 +103,14 @@ public class ManageWalletActivity extends MVPBaseActivity<ManageIndividualWallet
             case R.id.rl_backup:
                 mPresenter.backup();
                 break;
-            case R.id.tv_delete:
-                showPasswordDialog(TYPE_DELETE_WALLET, getWalletEntityFromIntent());
+            case R.id.tv_delete://删除钱包按钮
+                if (TextUtils.isEmpty(getWalletEntityFromIntent().getKey())) {
+                    mPresenter.deleteObservedWallet();
+                } else {
+                    showPasswordDialog(TYPE_DELETE_WALLET, getWalletEntityFromIntent());
+                }
                 break;
+
         }
     }
 
@@ -113,10 +120,21 @@ public class ManageWalletActivity extends MVPBaseActivity<ManageIndividualWallet
         commonTitleBar.setTitle(name);
     }
 
+    //显示钱包基本信息
     @Override
-    public void showWalletAddress(String address) {
-        tvAddress.setText(AddressFormatUtil.formatAddress(address));
+    public void showWalletInfo(Wallet wallet) {
+        tvAddress.setText(AddressFormatUtil.formatAddress(wallet.getPrefixAddress()));
+        if (TextUtils.isEmpty(wallet.getKey())) {
+            rename.setVisibility(View.GONE);
+            llPrivateKey.setVisibility(View.GONE);
+            llKeystore.setVisibility(View.GONE);
+            llBackup.setVisibility(View.GONE);
+        }
     }
+//    @Override
+//    public void showWalletAddress(String address) {
+//        tvAddress.setText(AddressFormatUtil.formatAddress(address));
+//    }
 
     @Override
     public void showModifyNameDialog(String name) {
@@ -125,7 +143,7 @@ public class ManageWalletActivity extends MVPBaseActivity<ManageIndividualWallet
             public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
                 String text = extra.getString(Constants.Bundle.BUNDLE_TEXT);
                 if (text.length() > 12) {
-                    CommonTipsDialogFragment.createDialogWithTitleAndOneButton(ContextCompat.getDrawable(ManageWalletActivity.this, R.drawable.icon_dialog_tips),
+                    CommonTipsDialogFragment.createDialogWithTitleAndOneButton(ContextCompat.getDrawable(ManageIndividualWalletActivity.this, R.drawable.icon_dialog_tips),
                             string(R.string.formatError), string(R.string.validWalletNameTips), string(R.string.understood), new OnDialogViewClickListener() {
                                 @Override
                                 public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
@@ -154,10 +172,7 @@ public class ManageWalletActivity extends MVPBaseActivity<ManageIndividualWallet
         }).show(getSupportFragmentManager(), "showError");
     }
 
-    @Override
-    public void showWalletAvatar(String avatar) {
 
-    }
 
     @Override
     public void showPasswordDialog(int type, Wallet walletEntity) {
@@ -193,7 +208,7 @@ public class ManageWalletActivity extends MVPBaseActivity<ManageIndividualWallet
     }
 
     public static void actionStart(Context context, Wallet walletEntity) {
-        Intent intent = new Intent(context, ManageWalletActivity.class);
+        Intent intent = new Intent(context, ManageIndividualWalletActivity.class);
         intent.putExtra(Constants.Extra.EXTRA_WALLET, walletEntity);
         context.startActivity(intent);
     }
