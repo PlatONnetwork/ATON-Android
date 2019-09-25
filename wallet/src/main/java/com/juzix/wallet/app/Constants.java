@@ -93,7 +93,7 @@ public class Constants {
         String KEY_DELEGATE_OR_VALIDATORS_TAG ="tag";
 
         String DEVICE_ID = "device_id";
-
+        String KEY_WALLET_NAME_SEQUENCE_NUMBER = "key_wallet_name_sequence_number";
 
     }
 

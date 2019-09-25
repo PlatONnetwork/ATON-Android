@@ -7,6 +7,7 @@ import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.ManageIndividualWalletContract;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
+import com.juzix.wallet.component.ui.dialog.ObservedWalletDialogFragment;
 import com.juzix.wallet.component.ui.view.BackupMnemonicPhraseActivity;
 import com.juzix.wallet.component.ui.view.ExportKeystoreActivity;
 import com.juzix.wallet.component.ui.view.ExportPrivateKeyActivity;
@@ -46,9 +47,10 @@ public class ManageIndividualWalletPresenter extends BasePresenter<ManageIndivid
                     mWalletEntity = walletEntity;
                 }
             }
-            getView().showWalletName(mWalletEntity.getName());
-            getView().showWalletAddress(mWalletEntity.getPrefixAddress());
-            getView().showWalletAvatar(mWalletEntity.getAvatar());
+//            getView().showWalletName(mWalletEntity.getName());
+//            getView().showWalletAddress(mWalletEntity.getPrefixAddress());
+//            getView().showWalletAvatar(mWalletEntity.getAvatar());
+            getView().showWalletInfo(mWalletEntity);
             boolean hasBackup = TextUtils.isEmpty(mWalletEntity.getMnemonic());
             getView().enableBackup(!hasBackup);
             getView().enableDelete(hasBackup);
@@ -68,6 +70,16 @@ public class ManageIndividualWalletPresenter extends BasePresenter<ManageIndivid
         }
     }
 
+    //删除观察钱包
+    @Override
+    public void deleteObservedWallet() {
+        ObservedWalletDialogFragment.newInstance().setmConfirmListener(new ObservedWalletDialogFragment.ConfirmListener() {
+            @Override
+            public void confirm() {
+                deleteWallet();
+            }
+        }).show(currentActivity().getSupportFragmentManager(),"deleteObserverWallet");
+    }
     @Override
     public void deleteWallet() {
         Single

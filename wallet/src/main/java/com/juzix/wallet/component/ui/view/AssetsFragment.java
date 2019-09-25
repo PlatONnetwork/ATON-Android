@@ -25,6 +25,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.juzhen.framework.app.log.Log;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
@@ -46,6 +48,10 @@ import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
+import com.juzix.wallet.netlistener.NetStateChangeObserver;
+import com.juzix.wallet.netlistener.NetStateChangeReceiver;
+import com.juzix.wallet.netlistener.NetworkType;
+import com.juzix.wallet.netlistener.NetworkUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
 import com.juzix.wallet.utils.StringUtil;
@@ -69,7 +75,7 @@ import butterknife.Unbinder;
 /**
  * @author matrixelement
  */
-public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements AssetsContract.View {
+public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements AssetsContract.View, NetStateChangeObserver {
 
     public static final int TAB1 = 0;
     public static final int TAB2 = 1;
@@ -149,6 +155,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         View rootView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_assets, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         EventPublisher.getInstance().register(this);
+        NetStateChangeReceiver.registerReceiver(getContext());
         initViews();
         return rootView;
     }
@@ -156,11 +163,42 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     private void initViews() {
         initRefreshLayout();
         initHeader();
+        initIndicator();
         initTab();
         showAssets(AppSettings.getInstance().getShowAssetsFlag());
         showContent(true);
     }
 
+    private void initIndicator() {
+        List<BaseFragment> fragments = getFragments(null);
+        stbBar.setCustomTabView(new SmartTabLayout.TabProvider() {
+            @Override
+            public View createTabView(ViewGroup container, int position, PagerAdapter adapter) {
+                return getTableView(position, container);
+            }
+        });
+
+        int indicatorThickness = (int) getResources().getDimension(R.dimen.assetsCollapsIndicatorThickness);
+        int indicatorCornerRadius = indicatorThickness / 2;
+
+        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) stbBar.getLayoutParams();
+        params.topMargin = 0;
+        stbBar.setIndicatorCornerRadius(indicatorCornerRadius);
+        stbBar.setIndicatorThickness(indicatorThickness);
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
+                boolean collapsed = Math.abs(i) >= appBarLayout.getTotalScrollRange();
+                vTabLine.setVisibility(collapsed ? View.GONE : View.VISIBLE);
+                appBarLayout.setBackgroundColor(ContextCompat.getColor(getContext(), collapsed ? R.color.color_ffffff : R.color.color_f9fbff));
+            }
+        });
+        vpContent.setOffscreenPageLimit(fragments.size());
+        mTabAdapter = new TabAdapter(getChildFragmentManager(), getTitles(), fragments);
+        vpContent.setAdapter(mTabAdapter);
+        vpContent.setSlide(true);
+        stbBar.setViewPager(vpContent);
+    }
     private void initRefreshLayout() {
 
         layoutRefresh.setOnRefreshListener(new OnRefreshListener() {
@@ -177,14 +215,40 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     }
 
     public void initTab() {
-
-        List<BaseFragment> fragments = getFragments(null);
-        stbBar.setCustomTabView(new SmartTabLayout.TabProvider() {
+        vpContent.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public View createTabView(ViewGroup container, int position, PagerAdapter adapter) {
-                return getTableView(position, container);
+            public void onPageScrolled(int i, float v, int i1) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                switch (position){
+                    case 1:
+                        if ((NetworkUtil.getNetWorkType(getContext()) == NetworkType.NETWORK_NO)) { //没有网络，调起相机臊面
+                            new RxPermissions(currentActivity())
+                                    .request(Manifest.permission.CAMERA)
+                                    .subscribe(new CustomObserver<Boolean>() {
+                                        @Override
+                                        public void accept(Boolean success) {
+                                            if (success) {
+                                                ScanQRCodeActivity.startActivityForResult(currentActivity(), MainActivity.REQ_ASSETS_TAB_QR_CODE);
+                                            }
+                                        }
+                                    });
+                        }
+//                        EventPublisher.getInstance().sendUpdateAssetsTabEvent(TAB2);
+                        Log.debug("OnPageChangeListener", "我选中了" + TAB2);
+                        break;
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
             }
         });
+
         stbBar.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -213,26 +277,18 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
             }
         });
 
-        int indicatorThickness = (int) getResources().getDimension(R.dimen.assetsCollapsIndicatorThickness);
-        int indicatorCornerRadius = indicatorThickness / 2;
+    }
 
-        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) stbBar.getLayoutParams();
-        params.topMargin = 0;
-        stbBar.setIndicatorCornerRadius(indicatorCornerRadius);
-        stbBar.setIndicatorThickness(indicatorThickness);
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
-                boolean collapsed = Math.abs(i) >= appBarLayout.getTotalScrollRange();
-                vTabLine.setVisibility(collapsed ? View.GONE : View.VISIBLE);
-                appBarLayout.setBackgroundColor(ContextCompat.getColor(getContext(), collapsed ? R.color.color_ffffff : R.color.color_f9fbff));
-            }
-        });
-        vpContent.setOffscreenPageLimit(fragments.size());
-        mTabAdapter = new TabAdapter(getChildFragmentManager(), getTitles(), fragments);
-        vpContent.setAdapter(mTabAdapter);
-        vpContent.setSlide(true);
-        stbBar.setViewPager(vpContent);
+    @Override
+    public void onResume() {
+        super.onResume();
+        NetStateChangeReceiver.registerObserver(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        NetStateChangeReceiver.unRegisterObserver(this);
     }
 
     @Override
@@ -285,7 +341,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     @OnClick({R.id.iv_scan, R.id.tv_total_assets_title, R.id.tv_backup, R.id.iv_add, R.id.tv_restricted_amount, R.id.rl_wallet_detail})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.iv_scan:
+            case R.id.iv_scan://扫一扫功能
                 new RxPermissions(currentActivity())
                         .request(Manifest.permission.CAMERA)
                         .subscribe(new CustomObserver<Boolean>() {
@@ -321,7 +377,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
                 showLongToast(R.string.restricted_amount_tips);
                 break;
             case R.id.rl_wallet_detail:
-                ManageWalletActivity.actionStart(currentActivity(), mWalletAdapter.getSelectedWallet());
+                ManageIndividualWalletActivity.actionStart(currentActivity(), mWalletAdapter.getSelectedWallet());
                 break;
             default:
                 break;
@@ -397,7 +453,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     private ArrayList<String> getTitles() {
         ArrayList<String> titleList = new ArrayList<>();
         titleList.add(string(R.string.transactions));
-        titleList.add(string(R.string.action_send_transation));
+        titleList.add((NetworkUtil.getNetWorkType(getContext()) != NetworkType.NETWORK_NO) ? string(R.string.action_send_transation) : string(R.string.wallet_send_offline_signature));
         titleList.add(string(R.string.action_receive_transation));
         return titleList;
     }
@@ -543,5 +599,21 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         tvTitle.setText(getTitles().get(position));
         tvTitle.setTextColor(ContextCompat.getColorStateList(getContext(), R.color.color_app_tab_text2));
         return contentView;
+    }
+    @Override
+    public void onNetDisconnected() {
+        initIndicator();
+        android.util.Log.d("AssetsFragment", "网络断开连接");
+        mPresenter.fetchWalletsBalance();
+        mPresenter.fetchWalletList();
+    }
+
+    @Override
+    public void onNetConnected(NetworkType networkType) {
+        initIndicator();
+        Log.debug("AssetsFragment", "网络连接" + networkType.name());
+        mPresenter.fetchWalletList();
+        mPresenter.fetchWalletsBalance();
+
     }
 }
