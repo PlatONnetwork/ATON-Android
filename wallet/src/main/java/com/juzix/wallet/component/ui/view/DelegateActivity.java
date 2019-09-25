@@ -377,7 +377,6 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
             } else {
                 btnDelegate.setEnabled(false);
             }
-
         }
 
 
