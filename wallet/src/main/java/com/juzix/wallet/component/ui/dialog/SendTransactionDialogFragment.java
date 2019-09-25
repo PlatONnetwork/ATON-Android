@@ -21,6 +21,7 @@ import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
 import com.juzix.wallet.utils.RxUtils;
+import com.juzix.wallet.utils.StringUtil;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -101,7 +102,7 @@ public class SendTransactionDialogFragment extends BaseDialogFragment {
             tvTitle.setText(title);
         }
         if (!TextUtils.isEmpty(amount)) {
-            tvAmount.setText(amount);
+            tvAmount.setText(StringUtil.formatBalance(amount));
         }
 
         Map<String, String> data = (Map<String, String>) getArguments().getSerializable(Constants.Bundle.BUNDLE_MAP);
