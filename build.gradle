@@ -15,7 +15,9 @@ buildscript {
         classpath 'io.realm:realm-gradle-plugin:5.8.0'
         // 配置自动上传符号表插件，注：为了能快速并准确地定位用户APP发生Crash的代码位置，Bugly使用符号表对APP发生Crash的程序堆栈进行解析和还原
         classpath 'com.tencent.bugly:symtabfileuploader:latest.release'
+        classpath("org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6-rc1")
     }
+
 }
 
 allprojects {
