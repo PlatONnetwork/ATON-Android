@@ -586,4 +586,29 @@ public class WalletManager {
                 .blockingGet();
     }
 
+    /**
+     * 获取所有钱包的总计
+     * @return
+     */
+    public Observable<BigDecimal> getTotal() {
+        return Flowable.fromIterable(mWalletList)
+                .map(new Function<Wallet, AccountBalance>() {
+                    @Override
+                    public AccountBalance apply(Wallet wallet) throws Exception {
+                        return wallet.getAccountBalance();
+                    }
+                }).map(new Function<AccountBalance, BigDecimal>() {
+
+                    @Override
+                    public BigDecimal apply(AccountBalance accountBalance) throws Exception {
+                        return new BigDecimal(accountBalance.getFree());
+                    }
+                }).reduce(new BiFunction<BigDecimal, BigDecimal, BigDecimal>() {
+                    @Override
+                    public BigDecimal apply(BigDecimal balance1, BigDecimal balance2) throws Exception {
+                        return balance1.add(balance2);
+                    }
+                }).toObservable();
+    }
+
 }

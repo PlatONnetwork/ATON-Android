@@ -623,5 +623,6 @@
     <string name="observed_wallet_delete_title">Delete Wallet</string>
     <string name="observed_wallet_delete_tips">Are you sure want to delete observed wallet?</string>
     <string name="wallet_send_offline_signature">Offline Signature</string>
+    <string name="delegate_risk_tips">Validators would be punished for double signing or low block rate. It would indirectly affect your reward. Please select qualified validators.</string>
 </resources>
 

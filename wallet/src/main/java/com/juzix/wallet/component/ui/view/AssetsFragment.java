@@ -167,6 +167,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         initTab();
         showAssets(AppSettings.getInstance().getShowAssetsFlag());
         showContent(true);
+        tvTotalAssetsAmount.setText(StringUtil.formatBalance(BigDecimalUtil.div("0", "1E18"))); //设置总计默认值为0
     }
 
     private void initIndicator() {
@@ -225,7 +226,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
             public void onPageSelected(int position) {
                 switch (position){
                     case 1:
-                        if ((NetworkUtil.getNetWorkType(getContext()) == NetworkType.NETWORK_NO)) { //没有网络，调起相机臊面
+                        if ((NetworkUtil.getNetWorkType(getContext()) == NetworkType.NETWORK_NO)) { //没有网络，调起相机界面
                             new RxPermissions(currentActivity())
                                     .request(Manifest.permission.CAMERA)
                                     .subscribe(new CustomObserver<Boolean>() {
@@ -516,7 +517,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     }
 
     @Override
-    public void showLockBalance(String balance) {
+    public void showLockBalance(String balance) { //当前选中钱包的锁仓金额
         tvRestrictedAmount.setVisibility(BigDecimalUtil.isBiggerThanZero(balance) ? View.VISIBLE : View.GONE);
         tvRestrictedAmount.setText(getRestrictedAmount(string(R.string.restricted_amount_with_unit, StringUtil.formatBalance(BigDecimalUtil.div(balance, "1E18")))));
     }
@@ -604,7 +605,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     public void onNetDisconnected() {
         initIndicator();
         android.util.Log.d("AssetsFragment", "网络断开连接");
-        mPresenter.fetchWalletsBalance();
+//        mPresenter.fetchWalletsBalance();
         mPresenter.fetchWalletList();
     }
 
