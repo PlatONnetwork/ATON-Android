@@ -22,7 +22,7 @@
             <TextView
                 android:id="@+id/tv_wallet_address_info"
                 style="@style/Text.61646e.16"
-                android:text="@string/wallet_address" />
+                android:text="@string/recipient_wallet_address" />
 
             <TextView
                 android:id="@+id/tv_save_address"

@@ -285,28 +285,6 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
                 });
 
-//        delegateContract.getDelegateGasProvider(mNodeAddress, stakingAmountType, Convert.toVon(inputAmount, Convert.Unit.LAT).toBigInteger())
-//                .subscribeOn(Schedulers.io())
-//                .subscribe(new Subscriber<GasProvider>() {
-//                    @Override
-//                    public void onNext(GasProvider gasProvider) {
-//                        if (isViewAttached()) {
-//                            BigDecimal gas = BigDecimalUtil.mul(gasProvider.getGasLimit().toString(), gasProvider.getGasPrice().toString());
-//                            feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(String.valueOf(gas.doubleValue()), "1E18"));
-//                            getView().showGasPrice(feeAmount);
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//
-//                    }
-//                });
     }
 
 
@@ -315,7 +293,11 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
         Web3j web3j = Web3jManager.getInstance().getWeb3j();
         org.web3j.platon.contracts.DelegateContract delegateContract = org.web3j.platon.contracts.DelegateContract.load(web3j);
         StakingAmountType stakingAmountType = TextUtils.equals(chooseType, "balance") ? StakingAmountType.FREE_AMOUNT_TYPE : StakingAmountType.RESTRICTING_AMOUNT_TYPE;
-        delegateContract.getDelegateFeeAmount(new BigInteger(gasPrice), mNodeAddress, stakingAmountType, Convert.toVon(amount, Convert.Unit.LAT).toBigInteger())
+        Log.d("DelegatePresenter","转成von"+"===================" +Convert.toVon(amount, Convert.Unit.LAT).toBigInteger());
+        Log.d("DelegatePresenter","手续费"+"===================" +Convert.toVon(amount, Convert.Unit.LAT).toBigInteger().toString().replaceAll("0","1"));
+
+//        delegateContract.getDelegateFeeAmount(new BigInteger(gasPrice), mNodeAddress, stakingAmountType, Convert.toVon(amount, Convert.Unit.LAT).toBigInteger())
+        delegateContract.getDelegateFeeAmount(new BigInteger(gasPrice), mNodeAddress, stakingAmountType, new BigInteger(Convert.toVon(amount, Convert.Unit.LAT).toBigInteger().toString().replaceAll("0","1")))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<BigInteger>() {

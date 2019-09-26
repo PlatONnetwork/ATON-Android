@@ -581,7 +581,7 @@
     <string name="parameter_proposal">Parameter</string>
     <string name="cancel_proposal">Cancel</string>
 
-    <string name="validators_details_tips">PlatON blockchain initial built-in validator, does not  accept Delegation</string>
+    <string name="validators_details_tips">The Validator is provided by the PlatON Foundation, does not accept Delegation</string>
 
     <!--赎回类型-->
     <string name="withdraw_type_delegated">Delegated</string>
@@ -615,5 +615,6 @@
     <string name="undelegating">Undelegating</string>
     <string name="delegated">Delegated</string>
     <string name="delegate_less_than_fee">Insufficient balance payment fee</string>
+    <string name="recipient_wallet_address">Recipient</string>
 </resources>
 
