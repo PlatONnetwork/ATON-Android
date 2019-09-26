@@ -617,7 +617,19 @@
     <string name="details">Details</string>
     <string name="undelegating">Undelegating</string>
     <string name="delegated">Delegated</string>
+<<<<<<< HEAD
     <string name="delegate_less_than_fee">Insufficient balance payment fee</string>
     <string name="recipient_wallet_address">Recipient</string>
+=======
+    <!--0.7.3-->
+    <string name="observed">Observed</string>
+    <string name="observed_tips">• Recommend observed wallet and cold wallet to jointly manage large amount of tokens.\n• Need the cold wallet authorization for transferring tokens.\n• Observed wallet do not hold the private key.\n• Do not deposit tokens to the wallet that you can not control.</string>
+    <string name="observed_btn_finish">Finish</string>
+    <string name="observed_input_tips">Wallet Address</string>
+    <string name="observed_invalid_address">Invalid  Address</string>
+    <string name="observed_wallet_delete_title">Delete Wallet</string>
+    <string name="observed_wallet_delete_tips">Are you sure want to delete observed wallet?</string>
+    <string name="wallet_send_offline_signature">Offline Signature</string>
+>>>>>>> upstream/feature/bump-version-to-0.7.3
 </resources>
 

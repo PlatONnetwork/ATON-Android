@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:overScrollMode="never">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="23dp"
+            android:text="@string/observed_tips"
+            android:textColor="@color/color_002800"
+            android:lineSpacingExtra="3dp"
+            android:textSize="13sp" />
+
+
+        <EditText
+            android:id="@+id/et_observed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/color_f0f1f5"
+            android:gravity="left|top"
+            android:hint="@string/observed_input_tips"
+            android:minHeight="130dp"
+            android:padding="10dp"
+            android:textColor="@color/color_000000"
+            android:textColorHint="@color/color_b6bbd0"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="15dp"
+            android:textSize="13sp" />
+
+        <com.juzix.wallet.component.widget.ShadowButton
+            android:id="@+id/sbtn_finish"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginBottom="24dp"
+            app:enabled="false"
+            app:text="@string/observed_btn_finish"
+            app:textAppearance="@style/MainButtonStyle"
+            app:textBackground="@drawable/bg_main_button" />
+
+    </LinearLayout>
+
+</ScrollView>

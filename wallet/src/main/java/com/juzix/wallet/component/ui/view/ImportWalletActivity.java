@@ -115,6 +115,7 @@ public class ImportWalletActivity extends BaseActivity {
         titleList.add(getString(R.string.keystore));
         titleList.add(getString(R.string.mnemonicPhrase));
         titleList.add(getString(R.string.privateKey));
+        titleList.add(getString(R.string.observed));
         return titleList;
     }
 
@@ -123,6 +124,7 @@ public class ImportWalletActivity extends BaseActivity {
         list.add(ImportKeystoreFragment.class);
         list.add(ImportMnemonicPhraseFragment.class);
         list.add(ImportPrivateKeyFragment.class);
+        list.add(ImportIndividualObservedFragment.class);
         return list;
     }
 
@@ -148,6 +150,12 @@ public class ImportWalletActivity extends BaseActivity {
             if (JZWalletUtil.isValidMnemonic(scanResult)) {
                 mVpContent.setCurrentItem(1);
                 ((PagerItemAdapter) mVpContent.getAdapter()).getPage(1).onActivityResult(requestCode, resultCode, data);
+                return;
+            }
+            //新增导入观察钱包的判断
+            if (JZWalletUtil.isValidAddress(scanResult)) {
+                mVpContent.setCurrentItem(3);
+                ((PagerItemAdapter) mVpContent.getAdapter()).getPage(3).onActivityResult(requestCode, resultCode, data);
                 return;
             }
             showLongToast(string(R.string.unrecognized));
