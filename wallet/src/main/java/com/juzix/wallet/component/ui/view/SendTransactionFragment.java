@@ -135,7 +135,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
             public SparseArray<String> onCustomize(int sectionCount, @NonNull SparseArray<String> array) {
                 array.clear();
                 array.put(0, cheaper);
-                array.put(3, faster);
+                array.put(1, faster);
                 return array;
             }
         });

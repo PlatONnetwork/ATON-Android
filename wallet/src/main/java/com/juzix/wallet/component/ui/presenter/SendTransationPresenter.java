@@ -292,7 +292,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
         boolean success = AddressDao.insertAddressInfo(new AddressEntity(UUID.randomUUID().toString(), address, name, avatar));
         getView().setSaveAddressButtonEnable(!success);
         if (success) {
-            showLongToast("保存成功");
+            showLongToast(string(R.string.save_successfully));
         }
     }
 

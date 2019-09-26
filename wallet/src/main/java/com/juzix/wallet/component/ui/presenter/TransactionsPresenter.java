@@ -415,6 +415,8 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                     }
                 })
                 .firstElement()
+                .defaultIfEmpty(-1L)
+                .onErrorReturnItem(-1L)
                 .blockingGet();
     }
 
