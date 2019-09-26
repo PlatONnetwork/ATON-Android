@@ -28,6 +28,7 @@ import org.web3j.tx.gas.DefaultGasProvider;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
@@ -58,6 +59,8 @@ public class WalletManager {
     public static final int CODE_ERROR_UNKNOW = -999;
 
     private List<Wallet> mWalletList = new ArrayList<>();
+    public static final int CODE_ERROR_INVALIA_ADDRESS = -5;
+
     //记录上次的余额
     private BigDecimal mSumAccountBalance = BigDecimal.ZERO;
     //当前选中的钱包
@@ -293,6 +296,30 @@ public class WalletManager {
         } catch (Exception exp) {
             return CODE_ERROR_UNKNOW;
         }
+    }
+    public int importWalletAddress(String walletAddress) {
+        if (!JZWalletUtil.isValidAddress(walletAddress)) {
+            return CODE_ERROR_INVALIA_ADDRESS;
+        }
+        Wallet mWallet = new Wallet();
+        mWallet.setAddress(walletAddress);
+        mWallet.setUuid(UUID.randomUUID().toString());
+        mWallet.setAvatar(WalletServiceImpl.getInstance().getWalletAvatar());
+
+        for (Wallet param : mWalletList) {
+            if (param.getPrefixAddress().toLowerCase().equals(mWallet.getPrefixAddress().toLowerCase())) {
+                return CODE_ERROR_WALLET_EXISTS;
+            }
+        }
+        mWallet.setChainId(NodeManager.getInstance().getChainId());
+//        mWallet.setMnemonic("");
+        mWallet.setCreateTime(System.currentTimeMillis());
+        mWallet.setUpdateTime(System.currentTimeMillis());
+        mWallet.setName("LAT-Wallet" + AppSettings.getInstance().getWalletNameSequence());
+        mWalletList.add(mWallet);
+        WalletDao.insertWalletInfo(mWallet.buildWalletInfoEntity());
+        AppSettings.getInstance().setOperateMenuFlag(false);
+        return CODE_OK;
     }
 
     public int importPrivateKey(String privateKey, String name, String password) {
@@ -557,6 +584,31 @@ public class WalletManager {
                 .defaultIfEmpty(-1)
                 .onErrorReturnItem(-1)
                 .blockingGet();
+    }
+
+    /**
+     * 获取所有钱包的总计
+     * @return
+     */
+    public Observable<BigDecimal> getTotal() {
+        return Flowable.fromIterable(mWalletList)
+                .map(new Function<Wallet, AccountBalance>() {
+                    @Override
+                    public AccountBalance apply(Wallet wallet) throws Exception {
+                        return wallet.getAccountBalance();
+                    }
+                }).map(new Function<AccountBalance, BigDecimal>() {
+
+                    @Override
+                    public BigDecimal apply(AccountBalance accountBalance) throws Exception {
+                        return new BigDecimal(accountBalance.getFree());
+                    }
+                }).reduce(new BiFunction<BigDecimal, BigDecimal, BigDecimal>() {
+                    @Override
+                    public BigDecimal apply(BigDecimal balance1, BigDecimal balance2) throws Exception {
+                        return balance1.add(balance2);
+                    }
+                }).toObservable();
     }
 
 }

@@ -630,7 +630,20 @@
     <string name="details">详情</string>
     <string name="undelegating">赎回中</string>
     <string name="delegated">委托</string>
+
     <string name="delegate_less_than_fee">余额不足支付手续费，无法委托</string>
 
     <string name="recipient_wallet_address">接收钱包地址</string>
+
+    <!--0.7.3-->
+    <string name="observed">观察钱包</string>
+    <string name="observed_tips">• 存储大额资金建议使用观察钱包和冷钱包联动管理。\n• 交易时需要配合冷钱包进行操作。\n• 观察钱包不存有私钥，请勿将资产充值至不受控制的观察钱包。</string>
+    <string name="observed_btn_finish">完成</string>
+    <string name="observed_input_tips">请输入离线冷钱包地址</string>
+    <string name="observed_invalid_address">钱包地址无效</string>
+    <string name="observed_wallet_delete_title">删除观察钱包</string>
+    <string name="observed_wallet_delete_tips">请确认是否删除此观察钱包?</string>
+    <string name="wallet_send_offline_signature">离线签名</string>
+    <string name="delegate_risk_tips">节点双重签名、出块率低会被惩罚，从而间接影响您的收益。为规避风险，请认真选择合格的节点。</string>
+
 </resources>
