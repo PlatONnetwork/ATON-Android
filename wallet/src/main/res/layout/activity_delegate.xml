@@ -389,7 +389,7 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="20dp"
                 android:lineSpacingExtra="2dp"
-                android:text="@string/risk_title_explain"
+                android:text="@string/delegate_risk_tips"
                 android:textColor="@color/color_898c9e"
                 android:textSize="14sp" />
 
