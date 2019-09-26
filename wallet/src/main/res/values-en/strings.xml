@@ -324,8 +324,11 @@
     <string name="weibo">Weibo</string>
     <string name="qq">QQ</string>
     <string name="all">ALL</string>
+    <string name="action_send_all">ALL</string>
     <string name="balance_text">Balance:&#160;%1$s&#160;LAT</string>
     <string name="fee">Fee</string>
+    <string name="transaction_fee">Fee</string>
+    <string name="save_successfully">Save successfully</string>
     <string name="joint_wallet_execution">Joint Wallet Execution</string>
     <string name="create_joint_wallet">Create Joint Wallet</string>
     <string name="fee_of_contract_creation">Fee of Contract Creation</string>
@@ -485,7 +488,7 @@
     <string name="return_amount">Return Amount</string>
     <string name="report_type">Report Type</string>
     <string name="reported">Reported</string>
-    <string name="proposal_id">PIP SN</string>
+    <string name="proposal_id">Proposal ID</string>
     <string name="pip_number">PIP SN</string>
     <string name="proposal_type">Proposal Type</string>
     <string name="restricted_account">Restricted Account</string>

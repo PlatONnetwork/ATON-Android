@@ -8,6 +8,7 @@ import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.db.entity.WalletEntity;
 
 import java.math.BigDecimal;
+import java.security.KeyStore;
 
 import retrofit2.http.PUT;
 
@@ -58,6 +59,7 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
     protected AccountBalance accountBalance;
 
     public Wallet() {
+
     }
 
     protected Wallet(Parcel in) {
