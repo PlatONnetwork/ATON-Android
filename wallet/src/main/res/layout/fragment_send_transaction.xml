@@ -129,7 +129,7 @@
                     android:id="@+id/tv_all_amount"
                     style="@style/Text.105cfe.14"
                     android:layout_gravity="right|center_vertical"
-                    android:text="@string/all" />
+                    android:text="@string/action_send_all" />
             </FrameLayout>
 
             <TextView
@@ -160,7 +160,7 @@
                 style="@style/Text.61646e.16"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:text="@string/select_fee" />
+                android:text="@string/transaction_fee" />
 
             <TextView
                 android:id="@+id/tv_fee_amount"
