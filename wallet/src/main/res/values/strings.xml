@@ -124,7 +124,7 @@
     <string name="exportPrivateKey">导出私钥</string>
     <string name="exportKeystore">导出钱包文件(.json)</string>
     <string name="backupMnemonics">备份助记词</string>
-    <string name="backup">备份钱包</string>
+    <string name="backup">备份</string>
     <string name="changeWalletName">修改钱包名称</string>
     <string name="formatError">钱包名称格式错误</string>
     <string name="validWalletNameTips">请输入1-12位字符</string>
@@ -628,4 +628,6 @@
     <string name="undelegating">赎回中</string>
     <string name="delegated">委托</string>
     <string name="delegate_less_than_fee">余额不足支付手续费，无法委托</string>
+
+    <string name="recipient_wallet_address">接收钱包地址</string>
 </resources>
