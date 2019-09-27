@@ -619,5 +619,6 @@
     <string name="delegated">Delegated</string>
     <string name="delegate_less_than_fee">Insufficient balance payment fee</string>
     <string name="recipient_wallet_address">Recipient</string>
+    <string name="withdraw_less_than_fee">Insufficient balance payment fee</string>
 </resources>
 
