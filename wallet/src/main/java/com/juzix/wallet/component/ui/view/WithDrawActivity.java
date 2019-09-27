@@ -19,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
+import com.juzhen.framework.util.NumberParserUtils;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
@@ -38,6 +39,7 @@ import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.GlideUtils;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
+import com.juzix.wallet.utils.ToastUtil;
 import com.juzix.wallet.utils.UMEventUtil;
 
 import org.web3j.utils.Convert;
@@ -92,6 +94,8 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     private WithDrawPopWindowAdapter mPopWindowAdapter;
     private long transactionTime;
     private String gasPrice;
+    private String withdraw_fee;//手续费
+    private String free_account;//自由金额
 
     @Override
     protected WithDrawPresenter createPresenter() {
@@ -136,7 +140,6 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
                     public void accept(Object o) {
                         //点击全部
                         withdrawAmount.setText(delegateAmount.getText().toString().replaceAll(",", ""));
-                        Log.d("WithDrawActivity1111", " ======================" + delegateAmount.getText().toString());
                     }
                 });
 
@@ -148,7 +151,6 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
                     public void accept(Object o) {
                         UMEventUtil.onEventCount(WithDrawActivity.this, Constants.UMEventID.WITHDRAW_DELEGATE);
                         //点击赎回按钮操作
-                        transactionTime = System.currentTimeMillis();
                         String chooseType = WithDrawPopWindowAdapter.TAG_DELEGATED;
 
                         if (TextUtils.equals(delegateType.getText().toString(), getString(R.string.withdraw_type_delegated))) {
@@ -158,6 +160,12 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
                         } else {
                             chooseType = WithDrawPopWindowAdapter.TAG_RELEASED; //已解除
                         }
+
+                        if(BigDecimalUtil.sub(free_account,withdraw_fee) < 0){ //赎回时，自用金额必须大于手续费，才能赎回
+                            ToastUtil.showLongToast(getContext(),R.string.withdraw_less_than_fee);
+                            return;
+                        }
+                        transactionTime = System.currentTimeMillis();
                         mPresenter.submitWithDraw(chooseType);
                     }
                 });
@@ -267,6 +275,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         walletName.setText(individualWalletEntity.getName());
         walletAddress.setText(AddressFormatUtil.formatAddress(individualWalletEntity.getPrefixAddress()));
         wallet_icon.setImageResource(RUtils.drawable(individualWalletEntity.getAvatar()));
+        free_account = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(individualWalletEntity.getAccountBalance().getFree(), "1E18"));
     }
 
     @Override
@@ -371,6 +380,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     @Override
     public void showWithDrawGasPrice(String gas) {
         fee.setText(string(R.string.amount_with_unit, gas));
+        withdraw_fee = gas;
     }
 
     //获取手续费

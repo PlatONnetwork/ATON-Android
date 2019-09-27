@@ -111,6 +111,8 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     private long transactionTime;
     private String gasPrice;
     private boolean isAll = false;//是否点击的全部
+    private String delegate_fee;//手续费
+    private String free_account;//自由金额
 
     @Override
 
@@ -163,7 +165,6 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                     @Override
                     public void accept(Object o) {
                         //点击全部
-//                        et_amount.setText(amount.getText().toString().replace(",", ""));
                         mPresenter.getAllPrice(gasPrice, amount.getText().toString().replace(",", ""), chooseType);
                         isAll = true;
                     }
@@ -178,6 +179,10 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                     public void accept(Object o) {
                         UMEventUtil.onEventCount(DelegateActivity.this, Constants.UMEventID.DELEGATE);
                         //点击委托操作
+                        if(BigDecimalUtil.sub(free_account, delegate_fee) < 0){ //可用余额大于手续费才能委托
+                            ToastUtil.showLongToast(getContext(), R.string.delegate_less_than_fee);
+                            return;
+                        }
                         transactionTime = System.currentTimeMillis();
                         mPresenter.submitDelegate(chooseType);
                     }
@@ -324,6 +329,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
             iv_drop_down.setVisibility(View.VISIBLE);
             amounChoose.setClickable(true);
         }
+        free_account = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(bean.getFree(), "1E18"));
 
     }
 
@@ -416,6 +422,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
             tv_lat.setVisibility(View.GONE);
         }
         isAll = false;
+        delegate_fee = gas;
     }
 
     /**
@@ -429,13 +436,15 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         } else {
             tv_lat.setVisibility(View.GONE);
         }
-        double diff = BigDecimalUtil.sub(amount.getText().toString().replace(",", ""), allPrice);
-        if(diff<0){
+        double diff = BigDecimalUtil.sub(amount.getText().toString().replace(",", ""), allPrice);// 剩余的余额和手续费相减
+        if (diff < 0) {
             et_amount.setText(BigDecimalUtil.parseString(0.00));
-            ToastUtil.showLongToast(getContext(),R.string.delegate_less_than_fee);
-        }else {
+            ToastUtil.showLongToast(getContext(), R.string.delegate_less_than_fee);
+        } else {
             et_amount.setText(BigDecimalUtil.parseString(diff));
         }
+
+        delegate_fee = allPrice;
     }
 
     @Override
