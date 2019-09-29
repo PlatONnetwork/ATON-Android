@@ -643,4 +643,5 @@
     <string name="observed_wallet_delete_tips">请确认是否删除此观察钱包?</string>
     <string name="wallet_send_offline_signature">离线签名</string>
 
+    <string name="withdraw_less_than_fee">余额不足支付手续费，无法赎回</string>
 </resources>
