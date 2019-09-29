@@ -433,6 +433,10 @@
         <item name="android:textSize">24sp</item>
     </style>
 
+    <style name="Text.105cfe.30">
+        <item name="android:textSize">30sp</item>
+    </style>
+
     <style name="Text.b6bbd0">
         <item name="android:textColor">@color/color_b6bbd0</item>
     </style>
