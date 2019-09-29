@@ -87,7 +87,8 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
         }
         if (requestCode == MainActivity.REQ_ASSETS_TAB_QR_CODE
                 || requestCode == MainActivity.REQ_ASSETS_ADDRESS_QR_CODE
-                || requestCode == MainActivity.REQ_ASSETS_SELECT_ADDRESS_BOOK) {
+                || requestCode == MainActivity.REQ_ASSETS_SELECT_ADDRESS_BOOK
+                || requestCode == Constants.RequestCode.REQUEST_CODE_TRANSACTION_SIGNATURE) {
             fragmentManager.findFragmentByTag(TAG_PROPERTY).onActivityResult(requestCode, resultCode, data);
         }
     }

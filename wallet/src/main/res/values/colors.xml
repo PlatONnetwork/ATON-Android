@@ -141,4 +141,7 @@
     <!--0.7.3-->
     <color name="color_002800">#002800</color>
     <color name="color_F5A623">#F5A623</color>
+    <color name="color_fafdff">#FAFDFF</color>
+    <color name="color_1861fe">#1861FE</color>
+
 </resources>

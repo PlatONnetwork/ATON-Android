@@ -39,12 +39,16 @@ import com.juzix.wallet.component.ui.base.BaseViewPageFragment;
 import com.juzix.wallet.component.ui.base.MVPBaseFragment;
 import com.juzix.wallet.component.ui.contract.AssetsContract;
 import com.juzix.wallet.component.ui.dialog.AssetsMoreDialogFragment;
+import com.juzix.wallet.component.ui.dialog.TransactionSignatureDialogFragment;
 import com.juzix.wallet.component.ui.presenter.AssetsPresenter;
 import com.juzix.wallet.component.widget.CustomImageSpan;
 import com.juzix.wallet.component.widget.ShadowContainer;
 import com.juzix.wallet.component.widget.ViewPagerSlide;
 import com.juzix.wallet.component.widget.table.SmartTabLayout;
 import com.juzix.wallet.config.AppSettings;
+import com.juzix.wallet.entity.QrCodeType;
+import com.juzix.wallet.entity.TransactionAuthorizationData;
+import com.juzix.wallet.entity.TransactionSignatureData;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
@@ -53,7 +57,9 @@ import com.juzix.wallet.netlistener.NetStateChangeReceiver;
 import com.juzix.wallet.netlistener.NetworkType;
 import com.juzix.wallet.netlistener.NetworkUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.JSONUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
+import com.juzix.wallet.utils.QrCodeParser;
 import com.juzix.wallet.utils.StringUtil;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -64,6 +70,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 
 import butterknife.BindString;
@@ -200,6 +207,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         vpContent.setSlide(true);
         stbBar.setViewPager(vpContent);
     }
+
     private void initRefreshLayout() {
 
         layoutRefresh.setOnRefreshListener(new OnRefreshListener() {
@@ -216,6 +224,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     }
 
     public void initTab() {
+
         vpContent.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i1) {
@@ -224,7 +233,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
             @Override
             public void onPageSelected(int position) {
-                switch (position){
+                switch (position) {
                     case 1:
                         if ((NetworkUtil.getNetWorkType(getContext()) == NetworkType.NETWORK_NO)) { //没有网络，调起相机界面
                             new RxPermissions(currentActivity())
@@ -301,7 +310,25 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         switch (requestCode) {
             case MainActivity.REQ_ASSETS_TAB_QR_CODE:
                 String result = data.getStringExtra(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
-                if (JZWalletUtil.isValidAddress(result)) {
+
+                @QrCodeType int qrCodeType = QrCodeParser.parseQrCode(result);
+
+                if (qrCodeType == QrCodeType.NONE){
+                    showLongToast(currentActivity().string(R.string.unrecognized));
+                    return;
+                }
+
+                if (qrCodeType == QrCodeType.TRANSACTION_AUTHORIZATION){
+                    TransactionAuthorizationDetailActivity.actionStart(currentActivity(), JSONUtil.parseObject(result, TransactionAuthorizationData.class));
+                    return;
+                }
+
+                if (qrCodeType == QrCodeType.TRANSACTION_SIGNATURE){
+                    TransactionSignatureDialogFragment.newInstance(JSONUtil.parseObject(result, TransactionSignatureData.class)).show(getActivity().getSupportFragmentManager(),TransactionSignatureDialogFragment.TAG);
+                    return;
+                }
+
+                if (qrCodeType == QrCodeType.WALLET_ADDRESS){
                     if (vpContent.getVisibility() == View.VISIBLE) {
                         vpContent.setCurrentItem(1);
                         ((TabAdapter) vpContent.getAdapter()).getItem(1).onActivityResult(MainActivity.REQ_ASSETS_ADDRESS_QR_CODE, resultCode, data);
@@ -310,29 +337,30 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
                     }
                     return;
                 }
-                if (JZWalletUtil.isValidKeystore(result)) {
-                    ImportWalletActivity.actionStart(currentActivity(), 0, result);
+
+                if (qrCodeType == QrCodeType.WALLET_KEYSTORE){
+                    ImportWalletActivity.actionStart(currentActivity(), ImportWalletActivity.TabIndex.IMPORT_KEYSTORE, result);
                     return;
                 }
-                if (JZWalletUtil.isValidMnemonic(result)) {
-                    ImportWalletActivity.actionStart(currentActivity(), 1, result);
+
+                if (qrCodeType == QrCodeType.WALLET_MNEMONIC){
+                    ImportWalletActivity.actionStart(currentActivity(), ImportWalletActivity.TabIndex.IMPORT_MNEMONIC, result);
                     return;
                 }
-                if (JZWalletUtil.isValidPrivateKey(result)) {
-                    ImportWalletActivity.actionStart(currentActivity(), 2, result);
+
+                if (qrCodeType == QrCodeType.WALLET_PRIVATEKEY){
+                    ImportWalletActivity.actionStart(currentActivity(), ImportWalletActivity.TabIndex.IMPORT_PRIVATEKEY, result);
                     return;
                 }
-                showLongToast(currentActivity().string(R.string.unrecognized));
                 break;
             case MainActivity.REQ_ASSETS_ADDRESS_QR_CODE:
-                if (vpContent.getVisibility() == View.VISIBLE) {
-                    ((TabAdapter) vpContent.getAdapter()).getItem(1).onActivityResult(requestCode, resultCode, data);
-                }
-                break;
             case MainActivity.REQ_ASSETS_SELECT_ADDRESS_BOOK:
                 if (vpContent.getVisibility() == View.VISIBLE) {
                     ((TabAdapter) vpContent.getAdapter()).getItem(1).onActivityResult(requestCode, resultCode, data);
                 }
+                break;
+            case Constants.RequestCode.REQUEST_CODE_TRANSACTION_SIGNATURE:
+                getActivity().getSupportFragmentManager().findFragmentByTag(TransactionSignatureDialogFragment.TAG).onActivityResult(Constants.RequestCode.REQUEST_CODE_TRANSACTION_SIGNATURE, resultCode, data);
                 break;
             default:
                 break;
@@ -601,6 +629,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         tvTitle.setTextColor(ContextCompat.getColorStateList(getContext(), R.color.color_app_tab_text2));
         return contentView;
     }
+
     @Override
     public void onNetDisconnected() {
         initIndicator();

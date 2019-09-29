@@ -327,6 +327,14 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
         return NullWallet.getInstance();
     }
 
+    /**
+     * 是否是观察者钱包
+     * @return
+     */
+    public boolean isObservedWallet() {
+        return TextUtils.isEmpty(key);
+    }
+
     public static final class Builder {
         private String uuid;
         private String name;
