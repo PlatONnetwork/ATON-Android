@@ -224,22 +224,22 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
             @Override
             public void onPageSelected(int position) {
                 switch (position){
-                    case 1:
-                        if ((NetworkUtil.getNetWorkType(getContext()) == NetworkType.NETWORK_NO)) { //没有网络，调起相机臊面
-                            new RxPermissions(currentActivity())
-                                    .request(Manifest.permission.CAMERA)
-                                    .subscribe(new CustomObserver<Boolean>() {
-                                        @Override
-                                        public void accept(Boolean success) {
-                                            if (success) {
-                                                ScanQRCodeActivity.startActivityForResult(currentActivity(), MainActivity.REQ_ASSETS_TAB_QR_CODE);
-                                            }
-                                        }
-                                    });
-                        }
-//                        EventPublisher.getInstance().sendUpdateAssetsTabEvent(TAB2);
-                        Log.debug("OnPageChangeListener", "我选中了" + TAB2);
-                        break;
+//                    case 1:
+//                        if ((NetworkUtil.getNetWorkType(getContext()) == NetworkType.NETWORK_NO)) { //没有网络，调起相机臊面
+//                            new RxPermissions(currentActivity())
+//                                    .request(Manifest.permission.CAMERA)
+//                                    .subscribe(new CustomObserver<Boolean>() {
+//                                        @Override
+//                                        public void accept(Boolean success) {
+//                                            if (success) {
+//                                                ScanQRCodeActivity.startActivityForResult(currentActivity(), MainActivity.REQ_ASSETS_TAB_QR_CODE);
+//                                            }
+//                                        }
+//                                    });
+//                        }
+////                        EventPublisher.getInstance().sendUpdateAssetsTabEvent(TAB2);
+//                        Log.debug("OnPageChangeListener", "我选中了" + TAB2);
+//                        break;
                 }
             }
 
@@ -453,7 +453,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     private ArrayList<String> getTitles() {
         ArrayList<String> titleList = new ArrayList<>();
         titleList.add(string(R.string.transactions));
-        titleList.add((NetworkUtil.getNetWorkType(getContext()) != NetworkType.NETWORK_NO) ? string(R.string.action_send_transation) : string(R.string.wallet_send_offline_signature));
+        titleList.add(string(R.string.action_send_transation));
         titleList.add(string(R.string.action_receive_transation));
         return titleList;
     }
@@ -602,18 +602,18 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     }
     @Override
     public void onNetDisconnected() {
-        initIndicator();
-        android.util.Log.d("AssetsFragment", "网络断开连接");
-        mPresenter.fetchWalletsBalance();
-        mPresenter.fetchWalletList();
+//        initIndicator();
+//        android.util.Log.d("AssetsFragment", "网络断开连接");
+//        mPresenter.fetchWalletsBalance();
+//        mPresenter.fetchWalletList();
     }
 
     @Override
     public void onNetConnected(NetworkType networkType) {
         initIndicator();
-        Log.debug("AssetsFragment", "网络连接" + networkType.name());
-        mPresenter.fetchWalletList();
-        mPresenter.fetchWalletsBalance();
+//        Log.debug("AssetsFragment", "网络连接" + networkType.name());
+//        mPresenter.fetchWalletList();
+//        mPresenter.fetchWalletsBalance();
 
     }
 }

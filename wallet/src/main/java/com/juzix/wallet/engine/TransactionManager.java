@@ -65,8 +65,6 @@ import io.reactivex.schedulers.Schedulers;
  */
 public class TransactionManager {
 
-    private final static String TAG = TransactionManager.class.getSimpleName();
-
     private TransactionManager() {
 
     }

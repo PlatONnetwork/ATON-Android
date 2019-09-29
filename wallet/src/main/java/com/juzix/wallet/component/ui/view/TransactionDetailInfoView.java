@@ -53,6 +53,7 @@ public class TransactionDetailInfoView extends LinearLayout {
                 addView(getItemView(getStringWithColon(R.string.type), getString(transaction.getTransferDescRes(transferType))));
                 addView(getItemView(getStringWithColon(R.string.submissionTime), transaction.getShowCreateTime()));
                 addView(getItemView(getStringWithColon(R.string.submissionAmount), getString(R.string.amount_with_unit, StringUtil.formatBalance(transaction.getShowValue()))));
+                addView(getItemView(getStringWithColon(R.string.fee), getString(R.string.amount_with_unit, transaction.getShowActualTxCost())));
                 addView(getItemView(getStringWithColon(R.string.hash), transaction.getHash(),true));
                 break;
             case CONTRACT_CREATION:

@@ -9,21 +9,28 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
+import com.juzhen.framework.util.LogUtils;
 import com.juzix.wallet.App;
 import com.juzix.wallet.BuildConfig;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.BaseFragment;
+import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.WebType;
 import com.juzix.wallet.utils.LanguageUtil;
 import com.juzix.wallet.utils.RxUtils;
 
+import org.web3j.protocol.core.methods.response.Transaction;
+
 import java.util.Locale;
+import java.util.concurrent.Callable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import io.reactivex.Single;
+import io.reactivex.functions.Consumer;
 
 /**
  * @author matrixelement
