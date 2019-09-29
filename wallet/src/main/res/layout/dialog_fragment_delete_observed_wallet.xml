@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/layout_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:paddingTop="56dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="28dp">
+
+        <TextView
+            android:id="@+id/tv_title"
+            style="@style/Text.000000.16"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="14dp"
+            android:hint="@string/observed_wallet_delete_title"
+            android:text="@string/observed_wallet_delete_title" />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginRight="24dp"
+            android:gravity="center"
+            android:text="@string/observed_wallet_delete_tips"
+            android:textColor="@color/color_000000"
+            android:textSize="14sp" />
+
+        <com.juzix.wallet.component.widget.ShadowButton
+            android:id="@+id/button_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="18dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="18dp"
+            app:enabled="true"
+            app:text="@string/confirm"
+            app:textAppearance="@style/MainButtonStyle"
+            app:textBackground="@drawable/bg_main_button" />
+
+        <TextView
+            android:id="@+id/tv_cancel"
+            style="@style/Text.316def.14"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal|top"
+            android:paddingTop="8dp"
+            android:text="@string/cancel" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/icon_dialog_tips" />
+
+
+</FrameLayout>
+
+
+

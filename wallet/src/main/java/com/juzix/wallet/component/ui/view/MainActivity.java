@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.juzhen.framework.app.activity.ActivityManager;
 import com.juzhen.framework.util.AndroidUtil;
+import com.juzhen.framework.util.LogUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.service.LoopService;
@@ -28,12 +29,20 @@ import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.MainContract;
 import com.juzix.wallet.component.ui.presenter.MainPresenter;
 import com.juzix.wallet.component.widget.FragmentTabHost;
+import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.CommonUtil;
+import com.juzix.wallet.utils.RxUtils;
+
+import org.web3j.protocol.core.methods.response.Transaction;
+
+import java.util.concurrent.Callable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import io.reactivex.Single;
+import io.reactivex.functions.Consumer;
 
 /**
  * @author matrixelement
@@ -42,13 +51,13 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
 
     private final static String TAG = MainActivity.class.getSimpleName();
     private final static String TAG_PROPERTY = "property";
-//    private final static String TAG_VOTE = "vote";
-    private final  static  String TAG_DELEGATE="delegate";
+    //    private final static String TAG_VOTE = "vote";
+    private final static String TAG_DELEGATE = "delegate";
     private final static String TAG_ME = "me";
     private final static String TAG_ASSET = "asset";
     public final static int TAB_PROPERTY = 0;
-//    public final static int TAB_VOTE = 1;
-    public final  static  int TAB_DELEGATE =1;
+    //    public final static int TAB_VOTE = 1;
+    public final static int TAB_DELEGATE = 1;
     public final static int TAB_ME = 2;
     public static final int REQ_ASSETS_TAB_QR_CODE = 0x101;
     public static final int REQ_ASSETS_ADDRESS_QR_CODE = 0x102;

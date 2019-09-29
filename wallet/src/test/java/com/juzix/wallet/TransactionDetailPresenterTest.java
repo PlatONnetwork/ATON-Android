@@ -1,47 +1,5 @@
 package com.juzix.wallet;
 
-import android.app.Application;
-import android.text.TextUtils;
-
-import com.juzhen.framework.network.ApiResponse;
-
-import com.juzix.wallet.component.ui.contract.SendTransationContract;
-import com.juzix.wallet.component.ui.presenter.SendTransationPresenter;
-import com.juzix.wallet.component.ui.presenter.TransactionDetailPresenter;
-import com.juzix.wallet.config.AppSettings;
-import com.juzix.wallet.db.sqlite.WalletDao;
-import com.juzix.wallet.engine.DelegateManager;
-import com.juzix.wallet.engine.NodeManager;
-import com.juzix.wallet.engine.Web3jManager;
-import com.juzix.wallet.entity.Node;
-import com.juzix.wallet.rxjavatest.RxJavaTestSchedulerRule;
-import com.juzix.wallet.schedulers.SchedulerTestProvider;
-import com.juzix.wallet.utils.RxUtils;
-
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.annotation.Config;
-import org.robolectric.shadows.ShadowLog;
-import org.web3j.platon.BaseResponse;
-import org.web3j.platon.contracts.DelegateContract;
-import org.web3j.protocol.Web3j;
-import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
-
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
-
-import io.reactivex.Single;
-import io.reactivex.SingleSource;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
-
 import static org.mockito.Mockito.mock;
 
 //@RunWith(RobolectricTestRunner.class)

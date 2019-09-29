@@ -17,11 +17,26 @@
         style="@style/Text.000.14"
         android:layout_width="0dp"
         android:layout_marginLeft="16dp"
+        android:layout_marginRight="12.2dp"
         android:gravity="right|center_vertical"
         app:layout_constrainedWidth="true"
         app:layout_constraintLeft_toRightOf="@id/tv_key"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/iv_copy_hash"
         tools:text="钱包余额不足钱包余额不足钱包余额不足钱包余额不足钱包余额不足钱包余额" />
+
+
+    <ImageView
+        android:id="@+id/iv_copy_hash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_copy"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
+        />
+
 
 </android.support.constraint.ConstraintLayout>
