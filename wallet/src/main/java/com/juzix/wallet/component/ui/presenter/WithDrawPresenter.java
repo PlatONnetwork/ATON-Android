@@ -28,6 +28,7 @@ import org.web3j.crypto.Credentials;
 import org.web3j.platon.ContractAddress;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
+import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.GasProvider;
 import org.web3j.utils.Convert;
 
@@ -41,6 +42,8 @@ import io.reactivex.Single;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> implements WithDrawContract.Presenter {
     private Wallet mWallet;
@@ -54,6 +57,8 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     //    private double delegatedSum = 0; //已委托 (已锁定+未锁定)
     private int tag = 0;
     private String feeAmount;
+    private BigInteger gas_Price; //调web3j获取gasprice
+    private BigInteger gas_limit;
 
     public WithDrawPresenter(WithDrawContract.View view) {
         super(view);
@@ -162,9 +167,10 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .subscribe(new Consumer<BigInteger>() {
                     @Override
-                    public void accept(BigInteger integer) throws Exception {
+                    public void accept(BigInteger gasPrice) throws Exception {
                         if (isViewAttached()) {
-                            getView().showGas(integer);
+                            gas_Price = gasPrice;
+                            getView().showGas(gasPrice);
                         }
 
                     }
@@ -186,24 +192,45 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
 
         Web3j web3j = Web3jManager.getInstance().getWeb3j();
         org.web3j.platon.contracts.DelegateContract delegateContract = org.web3j.platon.contracts.DelegateContract.load(web3j);
-        delegateContract.getUnDelegateFeeAmount(new BigInteger(gasPrice), mNodeAddress, new BigInteger(list.get(0).getStakingBlockNum()), Convert.toVon(input, Convert.Unit.LAT).toBigInteger())
-                .subscribe(new Subscriber<BigInteger>() {
-                    @Override
-                    public void onNext(BigInteger bigInteger) {
-                        feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(bigInteger.toString(), "1E18"));
-                        getView().showWithDrawGasPrice(feeAmount);
-                    }
-
+        delegateContract.getUnDelegateGasProvider(mNodeAddress, new BigInteger(list.get(0).getStakingBlockNum()), Convert.toVon(input, Convert.Unit.LAT).toBigInteger())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<GasProvider>() {
                     @Override
                     public void onCompleted() {
                     }
-
                     @Override
                     public void onError(Throwable e) {
-
                     }
-
+                    @Override
+                    public void onNext(GasProvider gasProvider) {
+                        gas_limit = gasProvider.getGasLimit();
+                        Log.d("gasLimit","===============" + "gasprice" + "====" + gas_Price + "=========" + "gasLimit" +"========" + gas_limit);
+                        BigDecimal mul = BigDecimalUtil.mul(gasProvider.getGasLimit().toString(), gas_Price.toString());
+                        feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(mul.toString(), "1E18"));
+                        getView().showWithDrawGasPrice(feeAmount);
+                    }
                 });
+
+
+//        delegateContract.getUnDelegateFeeAmount(null, mNodeAddress, new BigInteger(list.get(0).getStakingBlockNum()), Convert.toVon(input, Convert.Unit.LAT).toBigInteger())
+//                .subscribe(new Subscriber<BigInteger>() {
+//                    @Override
+//                    public void onNext(BigInteger bigInteger) {
+//                        feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(bigInteger.toString(), "1E18"));
+//                        getView().showWithDrawGasPrice(feeAmount);
+//                    }
+//
+//                    @Override
+//                    public void onCompleted() {
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//
+//                    }
+//
+//                });
 
     }
 
@@ -275,7 +302,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                 if (!TextUtils.isEmpty(balance.getReleased())) {
                     stakingBlockNum = balance.getStakingBlockNum();
                     tag++;
-                    withdraw(credentials, nodeId, stakingBlockNum, NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(balance.getReleased(),"1E18")), type); //这里传入的数量应该是记录中每个对象不为0的数量（而不是显示的全部数量，因为这里要循环执行多次）
+                    withdraw(credentials, nodeId, stakingBlockNum, NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(balance.getReleased(), "1E18")), type); //这里传入的数量应该是记录中每个对象不为0的数量（而不是显示的全部数量，因为这里要循环执行多次）
                 }
             }
 
@@ -287,7 +314,8 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     //操作赎回
     @SuppressLint("CheckResult")
     public void withdraw(Credentials credentials, String nodeId, String blockNum, String withdrawAmount, String type) {
-        DelegateManager.getInstance().withdraw(credentials, nodeId, blockNum, withdrawAmount)
+        GasProvider gasProvider =new ContractGasProvider(gas_Price,gas_limit);
+        DelegateManager.getInstance().withdraw(credentials, nodeId, blockNum, withdrawAmount,gasProvider)
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .subscribe(new Consumer<PlatonSendTransaction>() {
                     @Override
