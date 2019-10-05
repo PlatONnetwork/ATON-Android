@@ -1,8 +1,11 @@
 package com.juzix.wallet.component.ui.presenter;
 
+import android.util.Log;
+
 import com.juzhen.framework.network.ApiErrorCode;
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
+import com.juzhen.framework.util.LogUtils;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.BasePresenter;
@@ -125,6 +128,8 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
     }
 
     private void show() {
+        Log.e("AssetsFragment", "钱包列表是否为空：" + (mWalletList == null || mWalletList.isEmpty()));
+        mWalletList = WalletManager.getInstance().getWalletList();
         if (mWalletList.isEmpty()) {
             getView().showTotalBalance("0");
             getView().showContent(true);

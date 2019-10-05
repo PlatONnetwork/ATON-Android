@@ -30,6 +30,15 @@ public class Event {
         }
     }
 
+    public static class DeleteTransactionEvent {
+
+        public Transaction transaction;
+
+        public DeleteTransactionEvent(Transaction transaction) {
+            this.transaction = transaction;
+        }
+    }
+
     public static class UpdateSelectedWalletEvent {
 
         public Wallet walletEntity;
@@ -75,15 +84,6 @@ public class Event {
 
         public UpdateAssetsTabEvent(int tabIndex) {
             this.tabIndex = tabIndex;
-        }
-    }
-
-    public static class UpdateVoteTransactionListEvent {
-
-        public VoteTransaction voteTransactionEntity;
-
-        public UpdateVoteTransactionListEvent(VoteTransaction voteTransactionEntity) {
-            this.voteTransactionEntity = voteTransactionEntity;
         }
     }
 
