@@ -13,20 +13,25 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.juzhen.framework.util.AndroidUtil;
+import com.juzix.wallet.App;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.base.BaseFragment;
+import com.juzix.wallet.component.ui.dialog.CommonGuideDialogFragment;
 import com.juzix.wallet.component.widget.CommonTitleBar;
 import com.juzix.wallet.component.widget.ViewPagerSlide;
 import com.juzix.wallet.component.widget.table.PagerItem;
 import com.juzix.wallet.component.widget.table.PagerItemAdapter;
 import com.juzix.wallet.component.widget.table.PagerItems;
 import com.juzix.wallet.component.widget.table.SmartTabLayout;
+import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.utils.JZWalletUtil;
+import com.juzix.wallet.utils.LanguageUtil;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import io.reactivex.functions.Consumer;
 
@@ -53,6 +58,21 @@ public class ImportWalletActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_import_wallet);
         initView();
+        initGuide();
+    }
+
+    private void initGuide() {
+        boolean isShowObservedWallet = AppSettings.getInstance().getObservedWalletBoolean();
+        boolean isEnglish = Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage()) == true ? false : true;
+        if (!isShowObservedWallet) {
+            CommonGuideDialogFragment.newInstance(CommonGuideDialogFragment.OBSERVED_WALLET, isEnglish).setKnowListener(new CommonGuideDialogFragment.knowListener() {
+                @Override
+                public void know() {
+                    AppSettings.getInstance().setObservedWalletBoolean(true);
+                }
+            }).show(getSupportFragmentManager(), "observedWallet");
+        }
+
     }
 
     @Override

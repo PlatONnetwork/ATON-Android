@@ -17,12 +17,14 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.juzhen.framework.util.NumberParserUtils;
+import com.juzix.wallet.App;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.adapter.ValidatorsAdapter;
 import com.juzix.wallet.component.ui.base.MVPBaseFragment;
 import com.juzix.wallet.component.ui.contract.ValidatorsContract;
+import com.juzix.wallet.component.ui.dialog.CommonGuideDialogFragment;
 import com.juzix.wallet.component.ui.presenter.ValidatorsPresenter;
 import com.juzix.wallet.component.widget.CustomRefreshFooter;
 import com.juzix.wallet.component.widget.CustomRefreshHeader;
@@ -30,6 +32,7 @@ import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.entity.VerifyNode;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
+import com.juzix.wallet.utils.LanguageUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -42,6 +45,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -408,5 +412,21 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
     public void onDestroy() {
         super.onDestroy();
         EventPublisher.getInstance().unRegister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void showValidatorsGuide(Event.ValidatorsGuide event){
+
+        boolean isShowValidators = AppSettings.getInstance().getValidatorsBoolean();
+        boolean isEnglish = Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage()) == true ? false : true;
+        if(!isShowValidators){
+            CommonGuideDialogFragment.newInstance(CommonGuideDialogFragment.VALIDATORS,isEnglish)
+                    .setKnowListener(new CommonGuideDialogFragment.knowListener() {
+                        @Override
+                        public void know() {
+                            AppSettings.getInstance().setValidatorsBoolean(true);
+                        }
+                    }).show(getChildFragmentManager(),"validators");
+        }
     }
 }

@@ -28,6 +28,7 @@ import android.widget.TextView;
 
 import com.juzhen.framework.app.log.Log;
 import com.juzhen.framework.util.RUtils;
+import com.juzix.wallet.App;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
@@ -39,11 +40,12 @@ import com.juzix.wallet.component.ui.base.BaseViewPageFragment;
 import com.juzix.wallet.component.ui.base.MVPBaseFragment;
 import com.juzix.wallet.component.ui.contract.AssetsContract;
 import com.juzix.wallet.component.ui.dialog.AssetsMoreDialogFragment;
+import com.juzix.wallet.component.ui.dialog.CommonGuideDialogFragment;
 import com.juzix.wallet.component.ui.presenter.AssetsPresenter;
 import com.juzix.wallet.component.widget.CustomImageSpan;
 import com.juzix.wallet.component.widget.ShadowContainer;
 import com.juzix.wallet.component.widget.ViewPagerSlide;
-import com.juzix.wallet.component.widget.table.SmartTabLayout;
+import com.juzix.wallet.component.widget.table.AssetsTabLayout;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.event.Event;
@@ -54,6 +56,7 @@ import com.juzix.wallet.netlistener.NetworkType;
 import com.juzix.wallet.netlistener.NetworkUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
+import com.juzix.wallet.utils.LanguageUtil;
 import com.juzix.wallet.utils.StringUtil;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -65,6 +68,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -96,7 +100,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     @BindView(R.id.tv_total_assets_amount)
     TextView tvTotalAssetsAmount;
     @BindView(R.id.stb_bar)
-    SmartTabLayout stbBar;
+    AssetsTabLayout stbBar;
     @BindView(R.id.rv_wallet)
     RecyclerView rvWallet;
     @BindView(R.id.rl_wallet_detail)
@@ -139,6 +143,8 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
     @Override
     protected void onFragmentPageStart() {
+        Log.debug("AssetsFragment111","===============" + "走这里");
+        initIndicator();
         mPresenter.fetchWalletList();
         mPresenter.fetchWalletsBalance();
         //如果切回来是在交易列表页面，则重新轮询交易列表，因为轮询绑定了父Fragment的stop事件
@@ -163,16 +169,31 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     private void initViews() {
         initRefreshLayout();
         initHeader();
-        initIndicator();
+//        initIndicator();
         initTab();
         showAssets(AppSettings.getInstance().getShowAssetsFlag());
         showContent(true);
         tvTotalAssetsAmount.setText(StringUtil.formatBalance(BigDecimalUtil.div("0", "1E18"))); //设置总计默认值为0
+        initGuide();
+    }
+
+    private void initGuide() {
+        boolean isShowRecord = AppSettings.getInstance().getRecordBoolean();
+        boolean isEnglish = Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage()) == true ? false : true;
+        if (!isShowRecord) {
+            CommonGuideDialogFragment.newInstance(CommonGuideDialogFragment.RECORD, isEnglish).setKnowListener(new CommonGuideDialogFragment.knowListener() {
+                @Override
+                public void know() {
+                    AppSettings.getInstance().setRecordBoolean(true);
+                }
+            }).show(getChildFragmentManager(), "transactionRecord");
+        }
+
     }
 
     private void initIndicator() {
         List<BaseFragment> fragments = getFragments(null);
-        stbBar.setCustomTabView(new SmartTabLayout.TabProvider() {
+        stbBar.setCustomTabView(new AssetsTabLayout.TabProvider() {
             @Override
             public View createTabView(ViewGroup container, int position, PagerAdapter adapter) {
                 return getTableView(position, container);
@@ -397,6 +418,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
             unbinder.unbind();
         }
         EventPublisher.getInstance().unRegister(this);
+        NetStateChangeReceiver.unRegisterReceiver(getContext());
     }
 
     private String makeFragmentName(long id) {
@@ -601,6 +623,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         tvTitle.setTextColor(ContextCompat.getColorStateList(getContext(), R.color.color_app_tab_text2));
         return contentView;
     }
+
     @Override
     public void onNetDisconnected() {
         initIndicator();

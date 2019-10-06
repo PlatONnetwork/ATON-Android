@@ -637,4 +637,8 @@
     <string name="observed_wallet_delete_tips">请确认是否删除此观察钱包?</string>
     <string name="wallet_send_offline_signature">离线签名</string>
     <string name="delegate_risk_tips">节点双重签名、出块率低会被惩罚，从而间接影响您的收益。为规避风险，请认真选择合格的节点。</string>
+    <string name="recipient_wallet_address">接收钱包地址</string>
+    <string name="delegate_less_than_fee">余额不足支付手续费，无法委托</string>
+    <string name="cold_wallet">冷钱包</string>
+    <string name="observed_wallet">观察钱包</string>
 </resources>

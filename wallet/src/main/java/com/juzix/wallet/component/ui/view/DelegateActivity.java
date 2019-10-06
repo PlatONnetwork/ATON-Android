@@ -22,16 +22,19 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzhen.framework.util.RUtils;
+import com.juzix.wallet.App;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.adapter.DelegatePopAdapter;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.DelegateContract;
+import com.juzix.wallet.component.ui.dialog.CommonGuideDialogFragment;
 import com.juzix.wallet.component.ui.presenter.DelegatePresenter;
 import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.component.widget.PointLengthFilter;
 import com.juzix.wallet.component.widget.ShadowButton;
+import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.entity.AccountBalance;
 import com.juzix.wallet.entity.DelegateHandle;
 import com.juzix.wallet.entity.DelegateType;
@@ -40,8 +43,10 @@ import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.GlideUtils;
+import com.juzix.wallet.utils.LanguageUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
+import com.juzix.wallet.utils.ToastUtil;
 import com.juzix.wallet.utils.UMEventUtil;
 
 import org.web3j.utils.Convert;
@@ -49,6 +54,7 @@ import org.web3j.utils.Convert;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -96,6 +102,8 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     ImageView iv_drop_down;
     @BindView(R.id.tv_lat)
     TextView tv_lat;
+    @BindView(R.id.v_tips)
+    View v_tips;
 
     private Unbinder unbinder;
 
@@ -178,10 +186,24 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                         UMEventUtil.onEventCount(DelegateActivity.this, Constants.UMEventID.DELEGATE);
                         //点击委托操作
                         transactionTime = System.currentTimeMillis();
-                        Log.d("DelegateActivity", " =============" + transactionTime);
                         mPresenter.submitDelegate(chooseType);
                     }
                 });
+        initGuide();
+    }
+
+    private void initGuide() {
+        boolean isShowDelegateOperation = AppSettings.getInstance().getDelegateOperationBoolean();
+        boolean isEnglish = Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage()) == true ? false : true;
+        if(!isShowDelegateOperation){
+            CommonGuideDialogFragment.newInstance(CommonGuideDialogFragment.DELEGATE_OPERATION,isEnglish)
+                    .setKnowListener(new CommonGuideDialogFragment.knowListener() {
+                        @Override
+                        public void know() {
+                            AppSettings.getInstance().setDelegateOperationBoolean(true);
+                        }
+                    }).show(getSupportFragmentManager(),"delegateOperation");
+        }
     }
 
     private void initPopWindow() {
@@ -242,6 +264,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
             String amountMagnitudes = StringUtil.getAmountMagnitudes(getContext(), s.toString().trim());
             inputTips.setText(amountMagnitudes);
             inputTips.setVisibility(TextUtils.isEmpty(amountMagnitudes) ? View.GONE : View.VISIBLE);
+            v_tips.setVisibility(TextUtils.isEmpty(amountMagnitudes) ? View.GONE : View.VISIBLE);
 
             mPresenter.getGasPrice(gasPrice, chooseType); //获取手续费
         }
@@ -288,7 +311,6 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         amount.setText(StringUtil.formatBalance(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(individualWalletEntity.getFreeBalance(), "1E18"))));
 
         checkIsClick(individualWalletEntity.getAccountBalance());
-
     }
 
     /**
@@ -377,7 +399,6 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
             } else {
                 btnDelegate.setEnabled(false);
             }
-
         }
 
 
@@ -409,9 +430,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
      */
     @Override
     public void showGasPrice(String gas) {
-        Log.d("DelegateActivity", "手续费" + "================" + gas);
         if (!isAll) {
-//            fee.setText(string(R.string.amount_with_unit, gas));
             fee.setText(gas);
         }
         if (Double.valueOf(gas) > 0) {
@@ -427,8 +446,6 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
      */
     @Override
     public void showAllGasPrice(String allPrice) {
-        Log.d("DelegateActivity", "手续费" + "================" + allPrice);
-//        fee.setText(string(R.string.amount_with_unit, allPrice));
         fee.setText(allPrice);
         if (Double.valueOf(allPrice) > 0) {
             tv_lat.setVisibility(View.VISIBLE);
@@ -436,9 +453,9 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
             tv_lat.setVisibility(View.GONE);
         }
         double diff = BigDecimalUtil.sub(amount.getText().toString().replace(",", ""), allPrice);
-        Log.d("showAllGasPrice", "剩余的钱" + "=============" + diff);
         if(diff<0){
             et_amount.setText(BigDecimalUtil.parseString(0.00));
+            ToastUtil.showLongToast(getContext(),R.string.delegate_less_than_fee);
         }else {
             et_amount.setText(BigDecimalUtil.parseString(diff));
         }
