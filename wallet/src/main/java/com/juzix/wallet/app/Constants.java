@@ -69,7 +69,13 @@ public class Constants {
         String BUNDLE_FEE = "bundle_fee";
         String BUNDLE_TEXT = "bundle_text";
         String BUNDLE_MAP = "bundle_map";
+
+        String BUNDLE_PAGE = "bundle_page";
+        String BUNDLE_ENGLISH = "bundle_english";
+
+
         String BUNDLE_DATA = "bundle_data";
+
     }
 
     public interface Action {
@@ -98,6 +104,15 @@ public class Constants {
 
         String DEVICE_ID = "device_id";
         String KEY_WALLET_NAME_SEQUENCE_NUMBER = "key_wallet_name_sequence_number";
+
+        //下面几个是引导页需要的key
+        String KEY_SHOW_RECORD = "key_show_record";
+        String KEY_SHOW_DELEGATE_DETAIL = "key_show_delegate_detail";
+        String KEY_SHOW_DELEGATE_OPERATION = "key_show_delegate_operation";
+        String KEY_SHOW_VALIDATORS = "key_show_validators";
+        String KEY_SHOW_OBSERVED_WALLET = "key_show_observed_walLet";
+        String KEY_SHOW_MY_DELEGATE = "key_show_my_delegate";
+        String KEY_SHOW_WITHDRAW_OPERATION = "key_show_withdraw_operation";
 
     }
 

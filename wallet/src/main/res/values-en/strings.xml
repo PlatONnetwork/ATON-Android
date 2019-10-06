@@ -111,7 +111,7 @@
     <string name="msg_no_wallet">No Wallet yet.</string>
     <string name="msg_no_shared_wallet">There is no any Joint Wallet yet</string>
     <string name="msg_no_individual_wallet">There is no any Classic Wallet yet</string>
-    <string name="transactions">Txn</string>
+    <string name="transactions">Transaction</string>
     <string name="me_transactions">Transactions</string>
     <string name="sendATP">Send</string>
     <string name="actionSendATP">NEXT</string>
@@ -628,6 +628,13 @@
     <string name="observed_wallet_delete_title">Delete Wallet</string>
     <string name="observed_wallet_delete_tips">Are you sure want to delete observed wallet?</string>
     <string name="wallet_send_offline_signature">Offline Signature</string>
+
+    <string name="delegate_risk_tips">Validators would be punished for double signing or low block rate. It would indirectly affect your reward. Please select qualified validators.</string>
+    <string name="recipient_wallet_address">Recipient</string>
+    <string name="delegate_less_than_fee">Insufficient balance payment fee</string>
+    <string name="cold_wallet">Cold</string>
+    <string name="observed_wallet">Observed</string>
+
     <string name="title_transaction_authorization">Transaction Authorization</string>
     <string name="title_authorization_signature">Authorization Signature</string>
     <string name="msg_transaction_authorization_desc">Please scan below QR code using the cold wallet that holds the private key.</string>
@@ -645,5 +652,6 @@
     <string name="action_authorized_signature">Next</string>
     <string name="msg_authorization_signature_desc">Scan the OR code to finish your authorization for the cold wallet.</string>
     <string name="finish">Finish</string>
+
 </resources>
 

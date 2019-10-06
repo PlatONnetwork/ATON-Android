@@ -20,9 +20,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.juzix.wallet.R;
-import com.juzix.wallet.event.EventPublisher;
 
-public class CustomTabLayout  extends HorizontalScrollView {
+public class AssetsTabLayout extends HorizontalScrollView {
+
+
     private static final boolean DEFAULT_DISTRIBUTE_EVENLY = false;
     private static final int TITLE_OFFSET_DIPS = 24;
     private static final int TITLE_OFFSET_AUTO_CENTER = -1;
@@ -33,41 +34,41 @@ public class CustomTabLayout  extends HorizontalScrollView {
     private static final int TAB_VIEW_TEXT_MIN_WIDTH = 0;
     private static final boolean TAB_CLICKABLE = true;
 
-    protected final CustomTabStrip tabStrip;
-    private int titleOffset;
-    private int tabViewBackgroundResId;
-    private boolean tabViewTextAllCaps;
+    protected final AssetsTabStrip                  tabStrip;
+    private         int                            titleOffset;
+    private         int                            tabViewBackgroundResId;
+    private         boolean                        tabViewTextAllCaps;
     private ColorStateList tabViewTextColors;
-    private float tabViewTextSize;
-    private int tabViewTextHorizontalPadding;
-    private int tabViewTextMinWidth;
-    private ViewPager viewPager;
-    private ViewPager.OnPageChangeListener viewPagerPageChangeListener;
-    private OnScrollChangeListener onScrollChangeListener;
-    private TabProvider tabProvider;
-    private InternalTabClickListener internalTabClickListener;
-    private OnTabClickListener onTabClickListener;
-    private boolean distributeEvenly;
+    private         float                          tabViewTextSize;
+    private         int                            tabViewTextHorizontalPadding;
+    private         int                            tabViewTextMinWidth;
+    private         ViewPager                      viewPager;
+    private         ViewPager.OnPageChangeListener viewPagerPageChangeListener;
+    private         OnScrollChangeListener         onScrollChangeListener;
+    private         TabProvider                    tabProvider;
+    private         InternalTabClickListener       internalTabClickListener;
+    private         OnTabClickListener             onTabClickListener;
+    private         boolean                        distributeEvenly;
 
-    public CustomTabLayout(Context context) {
+    public AssetsTabLayout(Context context) {
         this(context, null);
     }
 
-    public CustomTabLayout(Context context, AttributeSet attrs) {
+    public AssetsTabLayout(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public CustomTabLayout(Context context, AttributeSet attrs, int defStyle) {
+    public AssetsTabLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
         // Disable the Scroll Bar
         setHorizontalScrollBarEnabled(false);
 
-        final DisplayMetrics dm = getResources().getDisplayMetrics();
-        final float density = dm.density;
+        final DisplayMetrics dm      = getResources().getDisplayMetrics();
+        final float          density = dm.density;
 
-        int tabBackgroundResId = NO_ID;
-        boolean textAllCaps = TAB_VIEW_TEXT_ALL_CAPS;
+        int            tabBackgroundResId = NO_ID;
+        boolean        textAllCaps = TAB_VIEW_TEXT_ALL_CAPS;
         ColorStateList textColors;
         float textSize = TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_SP, TAB_VIEW_TEXT_SIZE_SP, dm);
@@ -121,7 +122,7 @@ public class CustomTabLayout  extends HorizontalScrollView {
             setCustomTabView(customTabLayoutId, customTabTextViewId);
         }
 
-        this.tabStrip = new CustomTabStrip(context, attrs);
+        this.tabStrip = new AssetsTabStrip(context, attrs);
 
         if (distributeEvenly && tabStrip.isIndicatorAlwaysInCenter()) {
             throw new UnsupportedOperationException(
@@ -148,9 +149,9 @@ public class CustomTabLayout  extends HorizontalScrollView {
         super.onSizeChanged(w, h, oldw, oldh);
         if (tabStrip.isIndicatorAlwaysInCenter() && tabStrip.getChildCount() > 0) {
             View firstTab = tabStrip.getChildAt(0);
-            View lastTab = tabStrip.getChildAt(tabStrip.getChildCount() - 1);
-            int start = (w - Utils.getMeasuredWidth(firstTab)) / 2 - Utils.getMarginStart(firstTab);
-            int end = (w - Utils.getMeasuredWidth(lastTab)) / 2 - Utils.getMarginEnd(lastTab);
+            View lastTab  = tabStrip.getChildAt(tabStrip.getChildCount() - 1);
+            int  start    = (w - Utils.getMeasuredWidth(firstTab)) / 2 - Utils.getMarginStart(firstTab);
+            int  end      = (w - Utils.getMeasuredWidth(lastTab)) / 2 - Utils.getMarginEnd(lastTab);
             tabStrip.setMinimumWidth(tabStrip.getMeasuredWidth());
             ViewCompat.setPaddingRelative(this, start, getPaddingTop(), end, getPaddingBottom());
             setClipToPadding(false);
@@ -176,13 +177,13 @@ public class CustomTabLayout  extends HorizontalScrollView {
     }
 
     /**
-     * Set the custom {@link CustomTabLayout.TabColorizer} to be used.
-     * <p>
+     * Set the custom {@link TabColorizer} to be used.
+     *
      * If you only require simple customisation then you can use
      * {@link #setSelectedIndicatorColors(int...)} and {@link #setDividerColors(int...)} to achieve
      * similar effects.
      */
-    public void setCustomTabColorizer(CustomTabLayout.TabColorizer tabColorizer) {
+    public void setCustomTabColorizer(TabColorizer tabColorizer) {
         tabStrip.setCustomTabColorizer(tabColorizer);
     }
 
@@ -245,7 +246,7 @@ public class CustomTabLayout  extends HorizontalScrollView {
     }
 
     /**
-     * Set the {@link ViewPager.OnPageChangeListener}. When using {@link CustomTabLayout} you are
+     * Set the {@link ViewPager.OnPageChangeListener}. When using {@link AssetsTabLayout} you are
      * required to set any {@link ViewPager.OnPageChangeListener} through this method. This is so
      * that the layout can update it's scroll position correctly.
      *
@@ -256,18 +257,18 @@ public class CustomTabLayout  extends HorizontalScrollView {
     }
 
     /**
-     * Set {@link CustomTabLayout.OnScrollChangeListener} for obtaining values of scrolling.
+     * Set {@link OnScrollChangeListener} for obtaining values of scrolling.
      *
-     * @param listener the {@link CustomTabLayout.OnScrollChangeListener} to set
+     * @param listener the {@link OnScrollChangeListener} to set
      */
-    public void setOnScrollChangeListener(CustomTabLayout.OnScrollChangeListener listener) {
+    public void setOnScrollChangeListener(OnScrollChangeListener listener) {
         onScrollChangeListener = listener;
     }
 
     /**
-     * Set {@link CustomTabLayout.OnTabClickListener} for obtaining click event.
+     * Set {@link OnTabClickListener} for obtaining click event.
      *
-     * @param listener the {@link CustomTabLayout.OnTabClickListener} to set
+     * @param listener the {@link OnTabClickListener} to set
      */
     public void setOnTabClickListener(OnTabClickListener listener) {
         onTabClickListener = listener;
@@ -277,7 +278,7 @@ public class CustomTabLayout  extends HorizontalScrollView {
      * Set the custom layout to be inflated for the tab views.
      *
      * @param layoutResId Layout id to be inflated
-     * @param textViewId  id of the {@link TextView} in the inflated view
+     * @param textViewId id of the {@link TextView} in the inflated view
      */
     public void setCustomTabView(int layoutResId, int textViewId) {
         tabProvider = new SimpleTabProvider(getContext(), layoutResId, textViewId);
@@ -286,9 +287,9 @@ public class CustomTabLayout  extends HorizontalScrollView {
     /**
      * Set the custom layout to be inflated for the tab views.
      *
-     * @param provider {@link CustomTabLayout.TabProvider}
+     * @param provider {@link TabProvider}
      */
-    public void setCustomTabView(CustomTabLayout.TabProvider provider) {
+    public void setCustomTabView(TabProvider provider) {
         tabProvider = provider;
     }
 
@@ -371,11 +372,15 @@ public class CustomTabLayout  extends HorizontalScrollView {
                 throw new IllegalStateException("tabView is null.");
             }
 
-//            if (distributeEvenly) {
-//                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) tabView.getLayoutParams();
-//                lp.width = 0;
-//                lp.weight = 1;
-//            }
+            if (distributeEvenly) {
+                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) tabView.getLayoutParams();
+                lp.width = 0;
+                if(i == 1){
+                    lp.weight = 3.8f;
+                }else {
+                    lp.weight = 3.1f;
+                }
+            }
 
             if (internalTabClickListener != null) {
                 tabView.setOnClickListener(internalTabClickListener);
@@ -385,9 +390,6 @@ public class CustomTabLayout  extends HorizontalScrollView {
 
             if (i == viewPager.getCurrentItem()) {
                 tabView.setSelected(true);
-                TextView textView= tabView.findViewById(R.id.tv_title);
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-                textView.setTypeface(Typeface.DEFAULT_BOLD);
             }
 
         }
@@ -399,22 +401,22 @@ public class CustomTabLayout  extends HorizontalScrollView {
             return;
         }
 
-        final boolean isLayoutRtl = Utils.isLayoutRtl(this);
-        View selectedTab = tabStrip.getChildAt(tabIndex);
-        int widthPlusMargin = Utils.getWidth(selectedTab) + Utils.getMarginHorizontally(selectedTab);
-        int extraOffset = (int) (positionOffset * widthPlusMargin);
+        final boolean isLayoutRtl     = Utils.isLayoutRtl(this);
+        View          selectedTab     = tabStrip.getChildAt(tabIndex);
+        int           widthPlusMargin = Utils.getWidth(selectedTab) + Utils.getMarginHorizontally(selectedTab);
+        int           extraOffset     = (int) (positionOffset * widthPlusMargin);
 
         if (tabStrip.isIndicatorAlwaysInCenter()) {
 
             if (0f < positionOffset && positionOffset < 1f) {
-                View nextTab = tabStrip.getChildAt(tabIndex + 1);
-                int selectHalfWidth = Utils.getWidth(selectedTab) / 2 + Utils.getMarginEnd(selectedTab);
-                int nextHalfWidth = Utils.getWidth(nextTab) / 2 + Utils.getMarginStart(nextTab);
+                View nextTab         = tabStrip.getChildAt(tabIndex + 1);
+                int  selectHalfWidth = Utils.getWidth(selectedTab) / 2 + Utils.getMarginEnd(selectedTab);
+                int  nextHalfWidth   = Utils.getWidth(nextTab) / 2 + Utils.getMarginStart(nextTab);
                 extraOffset = Math.round(positionOffset * (selectHalfWidth + nextHalfWidth));
             }
 
             View firstTab = tabStrip.getChildAt(0);
-            int x;
+            int  x;
             if (isLayoutRtl) {
                 int first = Utils.getWidth(firstTab) + Utils.getMarginEnd(firstTab);
                 int selected = Utils.getWidth(selectedTab) + Utils.getMarginEnd(selectedTab);
@@ -436,9 +438,9 @@ public class CustomTabLayout  extends HorizontalScrollView {
         if (titleOffset == TITLE_OFFSET_AUTO_CENTER) {
 
             if (0f < positionOffset && positionOffset < 1f) {
-                View nextTab = tabStrip.getChildAt(tabIndex + 1);
-                int selectHalfWidth = Utils.getWidth(selectedTab) / 2 + Utils.getMarginEnd(selectedTab);
-                int nextHalfWidth = Utils.getWidth(nextTab) / 2 + Utils.getMarginStart(nextTab);
+                View nextTab         = tabStrip.getChildAt(tabIndex + 1);
+                int  selectHalfWidth = Utils.getWidth(selectedTab) / 2 + Utils.getMarginEnd(selectedTab);
+                int  nextHalfWidth   = Utils.getWidth(nextTab) / 2 + Utils.getMarginStart(nextTab);
                 extraOffset = Math.round(positionOffset * (selectHalfWidth + nextHalfWidth));
             }
 
@@ -474,7 +476,7 @@ public class CustomTabLayout  extends HorizontalScrollView {
 
     /**
      * Allows complete control over the colors drawn in the tab layout. Set with
-     * {@link #setCustomTabColorizer(CustomTabLayout.TabColorizer)}.
+     * {@link #setCustomTabColorizer(TabColorizer)}.
      */
     public interface TabColorizer {
 
@@ -498,7 +500,7 @@ public class CustomTabLayout  extends HorizontalScrollView {
         /**
          * Called when the scroll position of a view changes.
          *
-         * @param scrollX    Current horizontal scroll origin.
+         * @param scrollX Current horizontal scroll origin.
          * @param oldScrollX Previous horizontal scroll origin.
          */
         void onScrollChanged(int scrollX, int oldScrollX);
@@ -519,7 +521,7 @@ public class CustomTabLayout  extends HorizontalScrollView {
 
     /**
      * Create the custom tabs in the tab layout. Set with
-     * {@link #setCustomTabView(CustomTabLayout.TabProvider)}
+     * {@link #setCustomTabView(AssetsTabLayout.TabProvider)}
      */
     public interface TabProvider {
 
@@ -530,11 +532,11 @@ public class CustomTabLayout  extends HorizontalScrollView {
 
     }
 
-    private static class SimpleTabProvider implements CustomTabLayout.TabProvider {
+    private static class SimpleTabProvider implements TabProvider {
 
         private final LayoutInflater inflater;
-        private final int tabViewLayoutId;
-        private final int tabViewTextViewId;
+        private final int            tabViewLayoutId;
+        private final int            tabViewTextViewId;
 
         private SimpleTabProvider(Context context, int layoutResId, int textViewId) {
             inflater = LayoutInflater.from(context);
@@ -544,7 +546,7 @@ public class CustomTabLayout  extends HorizontalScrollView {
 
         @Override
         public View createTabView(ViewGroup container, int position, PagerAdapter adapter) {
-            View tabView = null;
+            View     tabView      = null;
             TextView tabTitleView = null;
 
             if (tabViewLayoutId != NO_ID) {
@@ -604,33 +606,9 @@ public class CustomTabLayout  extends HorizontalScrollView {
                 scrollToTab(position, 0);
             }
 
-
-
             for (int i = 0, size = tabStrip.getChildCount(); i < size; i++) {
                 tabStrip.getChildAt(i).setSelected(position == i);
-                if (i == position) {
-                    //表示被选中的页面
-                    TextView tv = tabStrip.getChildAt(position).findViewById(R.id.tv_title);
-                    tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-                    tv.setTypeface(Typeface.DEFAULT_BOLD);
-                    if(position == 0){
-                      EventPublisher.getInstance().sendShowMyDelegateGuide();
-                    }else {
-                        EventPublisher.getInstance().sendShowValidatorsGuide();
-                    }
-
-                } else {
-                    //未选中的页面
-                    for (int j = 0; j < tabStrip.getChildCount(); j++) {
-                        TextView textView =tabStrip.getChildAt(i).findViewById(R.id.tv_title);
-                        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-                        textView.setTypeface(Typeface.DEFAULT);
-                    }
-
-                }
-
             }
-
 
             if (viewPagerPageChangeListener != null) {
                 viewPagerPageChangeListener.onPageSelected(position);
@@ -653,4 +631,5 @@ public class CustomTabLayout  extends HorizontalScrollView {
             }
         }
     }
+
 }

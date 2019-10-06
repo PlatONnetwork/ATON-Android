@@ -2,7 +2,6 @@ package com.juzix.wallet.component.ui.view;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -14,15 +13,12 @@ import android.widget.TextView;
 import com.juzhen.framework.app.log.Log;
 import com.juzhen.framework.util.AndroidUtil;
 import com.juzix.wallet.R;
-import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.BaseFragment;
 import com.juzix.wallet.component.widget.ViewPagerSlide;
 import com.juzix.wallet.component.widget.table.PagerItem;
 import com.juzix.wallet.component.widget.table.PagerItemAdapter;
 import com.juzix.wallet.component.widget.table.PagerItems;
-import com.juzix.wallet.component.widget.table.SmartTabLayout;
 import com.juzix.wallet.component.widget.table.CustomTabLayout;
-import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 
