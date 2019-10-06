@@ -9,11 +9,13 @@ import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.ApiSingleObserver;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.app.CustomThrowable;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.DelegateContract;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.dialog.SelectWalletDialogFragment;
+import com.juzix.wallet.component.ui.dialog.TransactionAuthorizationDialogFragment;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.engine.DelegateManager;
 import com.juzix.wallet.engine.NodeManager;
@@ -22,6 +24,9 @@ import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.AccountBalance;
 import com.juzix.wallet.entity.DelegateHandle;
+import com.juzix.wallet.entity.TransactionAuthorizationBaseData;
+import com.juzix.wallet.entity.TransactionAuthorizationData;
+import com.juzix.wallet.entity.TransactionAuthorizationDelegateData;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.RxUtils;
@@ -38,14 +43,15 @@ import org.web3j.utils.Convert;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import retrofit2.Response;
-import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -285,28 +291,6 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
                 });
 
-//        delegateContract.getDelegateGasProvider(mNodeAddress, stakingAmountType, Convert.toVon(inputAmount, Convert.Unit.LAT).toBigInteger())
-//                .subscribeOn(Schedulers.io())
-//                .subscribe(new Subscriber<GasProvider>() {
-//                    @Override
-//                    public void onNext(GasProvider gasProvider) {
-//                        if (isViewAttached()) {
-//                            BigDecimal gas = BigDecimalUtil.mul(gasProvider.getGasLimit().toString(), gasProvider.getGasPrice().toString());
-//                            feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(String.valueOf(gas.doubleValue()), "1E18"));
-//                            getView().showGasPrice(feeAmount);
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//
-//                    }
-//                });
     }
 
 
@@ -315,7 +299,11 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
         Web3j web3j = Web3jManager.getInstance().getWeb3j();
         org.web3j.platon.contracts.DelegateContract delegateContract = org.web3j.platon.contracts.DelegateContract.load(web3j);
         StakingAmountType stakingAmountType = TextUtils.equals(chooseType, "balance") ? StakingAmountType.FREE_AMOUNT_TYPE : StakingAmountType.RESTRICTING_AMOUNT_TYPE;
-        delegateContract.getDelegateFeeAmount(new BigInteger(gasPrice), mNodeAddress, stakingAmountType, Convert.toVon(amount, Convert.Unit.LAT).toBigInteger())
+        Log.d("DelegatePresenter", "转成von" + "===================" + Convert.toVon(amount, Convert.Unit.LAT).toBigInteger());
+        Log.d("DelegatePresenter", "手续费" + "===================" + Convert.toVon(amount, Convert.Unit.LAT).toBigInteger().toString().replaceAll("0", "1"));
+
+//        delegateContract.getDelegateFeeAmount(new BigInteger(gasPrice), mNodeAddress, stakingAmountType, Convert.toVon(amount, Convert.Unit.LAT).toBigInteger())
+        delegateContract.getDelegateFeeAmount(new BigInteger(gasPrice), mNodeAddress, stakingAmountType, new BigInteger(Convert.toVon(amount, Convert.Unit.LAT).toBigInteger().toString().replaceAll("0", "1")))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<BigInteger>() {
@@ -350,7 +338,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
             @Override
             public Double call() throws Exception {
                 //输入数量+手续费
-                return BigDecimalUtil.add(getView().getDelegateAmount(), getView().getGasPrice());
+                return BigDecimalUtil.add(getView().getDelegateAmount(), getView().getGasPrice()).doubleValue();
             }
         }).zipWith(ServerUtils.getCommonApi().getIsDelegateInfo(ApiRequestBody.newBuilder()
                         .put("addr", mWallet.getPrefixAddress())
@@ -410,16 +398,11 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
                             String inputAmount = getView().getDelegateAmount();
 
-                            InputWalletPasswordDialogFragment
-                                    .newInstance(mWallet)
-                                    .setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
-                                        @Override
-                                        public void onWalletPasswordCorrect(Credentials credentials) {
-                                            delegate(credentials, inputAmount, mNodeAddress, type);
-                                        }
-                                    })
-                                    .show(currentActivity().getSupportFragmentManager(), "inputWalletPasssword");
-
+                            if (mWallet.isObservedWallet()) {
+                                showTransactionAuthorizationDialogFragment(mNodeAddress, mNodeName, StakingAmountType.FREE_AMOUNT_TYPE,inputAmount,mWalletAddress, );
+                            } else {
+                                showInputPasswordDialogFragment(inputAmount, type);
+                            }
                         }
 
 
@@ -450,7 +433,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                     public void accept(PlatonSendTransaction platonSendTransaction) throws Exception {
                         if (isViewAttached()) {
                             if (!TextUtils.isEmpty(platonSendTransaction.getTransactionHash())) {
-                                getView().transactionSuccessInfo(platonSendTransaction.getResult(),platonSendTransaction.getTransactionHash() ,mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, 0, "1004", inputAmount, feeAmount, mNodeName, mNodeAddress
+                                getView().transactionSuccessInfo(platonSendTransaction.getResult(), platonSendTransaction.getTransactionHash(), mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, 0, "1004", inputAmount, feeAmount, mNodeName, mNodeAddress
                                         , 2);
 
                             } else {
@@ -471,6 +454,62 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                 });
 
 
+    }
+
+    private void showInputPasswordDialogFragment(String inputAmount, String type) {
+        InputWalletPasswordDialogFragment
+                .newInstance(mWallet)
+                .setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
+                    @Override
+                    public void onWalletPasswordCorrect(Credentials credentials) {
+                        delegate(credentials, inputAmount, mNodeAddress, type);
+                    }
+                })
+                .show(currentActivity().getSupportFragmentManager(), "inputWalletPasssword");
+    }
+
+    private void showTransactionAuthorizationDialogFragment(String nodeId, String nodeName, int stakingAmountType, String transferAmount, String from, String to, String gasLimit, String gasPrice) {
+
+        Observable
+                .fromCallable(new Callable<BigInteger>() {
+                    @Override
+                    public BigInteger call() throws Exception {
+                        return Web3jManager.getInstance().getNonce(from);
+                    }
+                })
+                .compose(RxUtils.getSchedulerTransformer())
+                .compose(bindToLifecycle())
+                .compose(RxUtils.getLoadingTransformer(currentActivity()))
+                .subscribe(new CustomObserver<BigInteger>() {
+                    @Override
+                    public void accept(BigInteger nonce) {
+                        if (isViewAttached()) {
+                            TransactionAuthorizationDialogFragment.newInstance(new TransactionAuthorizationData(Arrays.asList(new TransactionAuthorizationDelegateData.Builder()
+                                    .setAmount(transferAmount)
+                                    .setChainId(NodeManager.getInstance().getChainId())
+                                    .setNonce(nonce.toString(10))
+                                    .setFrom(from)
+                                    .setTo(to)
+                                    .setGasLimit(gasLimit)
+                                    .setGasPrice(gasPrice)
+                                    .setNodeId(nodeId)
+                                    .setNodeName(nodeName)
+                                    .setStakingAmountType(stakingAmountType)
+                                    .build())).toJSONString())
+                                    .show(currentActivity().getSupportFragmentManager(), "showTransactionAuthorizationDialog");
+                        }
+                    }
+
+                    @Override
+                    public void accept(Throwable throwable) {
+                        super.accept(throwable);
+                        if (isViewAttached()) {
+                            if (!TextUtils.isEmpty(throwable.getMessage())) {
+                                ToastUtil.showLongToast(currentActivity(), throwable.getMessage());
+                            }
+                        }
+                    }
+                });
     }
 
 

@@ -27,6 +27,7 @@ public class Constants {
         String EXTRA_PIC = "extra_pic";
         String EXTRA_SCAN_QRCODE_DATA = "extra_scan_qrcode_data";
         String EXTRA_TYPE = "extra_type";
+        String EXTRA_TAB_INDEX = "extra_tab_index";
         String EXTRA_SHARED_OWNERS = "extra_shared_owners";
         String EXTRA_REQUIRED_SIGNATURES = "extra_required_signatures";
         String EXTRA_WALLET_NAME = "extra_wallet_name";
@@ -51,6 +52,8 @@ public class Constants {
         String EXTRA_WEB_TYPE = "extra_web_type";
         String EXTRA_DELEGATE_TRANSACTION_HASH = "extra_delegate_transaction_hash";//委托的交易hash
         String EXTRA_WITHDRAW_TRANSACTION_HASH = "extra_withdraw_transaction_hash";//赎回的交易hash
+        String EXTRA_TRANSACTION_AUTHORIZATION_DATA = "extra_transaction_authorization_data";
+        String EXTRA_TRANSACTION_SIGNATURE_DATA = "extra_transaction_signature_data";
     }
 
     public interface Bundle {
@@ -66,8 +69,12 @@ public class Constants {
         String BUNDLE_FEE = "bundle_fee";
         String BUNDLE_TEXT = "bundle_text";
         String BUNDLE_MAP = "bundle_map";
+
         String BUNDLE_PAGE = "bundle_page";
         String BUNDLE_ENGLISH = "bundle_english";
+
+
+        String BUNDLE_DATA = "bundle_data";
 
     }
 
@@ -121,6 +128,7 @@ public class Constants {
         int REQUEST_CODE_ADD_ADDRESS = 4;
         int REQUEST_CODE_GET_ADDRESS = 5;
         int REQUEST_CODE_SCAN_QRCODE = 6;
+        int REQUEST_CODE_TRANSACTION_SIGNATURE = 7;
 
     }
 

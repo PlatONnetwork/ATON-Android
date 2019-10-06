@@ -283,7 +283,7 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
     }
 
 
-    private List<VerifyNode> sort(List<VerifyNode> verifyNodeList) {
+    public List<VerifyNode> sort(List<VerifyNode> verifyNodeList) {
 
         Collections.sort(verifyNodeList, new Comparator<VerifyNode>() {
             @Override
