@@ -21,7 +21,7 @@ public class TransactionDetailContract {
 
         String getDelegateHash();
 
-        String getWithDrawHash();
+//        String getWithDrawHash();
 
         void setTransactionDetailInfo(Transaction transaction, List<String> queryAddressList, String senderWalletName);
 
