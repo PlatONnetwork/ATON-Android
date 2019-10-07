@@ -50,17 +50,12 @@ public class EventPublisher {
         BusProvider.post(new Event.UpdateTransactionEvent(transaction));
     }
 
+    public void sendDeleteTransactionEvent(Transaction transaction){
+        BusProvider.post(new Event.DeleteTransactionEvent(transaction));
+    }
+
     public void sendUpdateSelectedWalletEvent(Wallet entity) {
         BusProvider.post(new Event.UpdateSelectedWalletEvent(entity));
-    }
-
-    public void sendUpdateSharedWalletUnreadMessageEvent(String contractAddress, boolean hasUnreadMessage) {
-        Log.e(TAG, contractAddress + ":" + hasUnreadMessage);
-        BusProvider.post(new Event.UpdateSharedWalletUnreadMessageEvent(contractAddress, hasUnreadMessage));
-    }
-
-    public void sendUpdateTransactionUnreadMessageEvent(String uuid, boolean hasUnread) {
-        BusProvider.post(new Event.UpdateTransactionUnreadMessageEvent(uuid, hasUnread));
     }
 
     public void sendUpdateWalletListEvent() {
@@ -69,10 +64,6 @@ public class EventPublisher {
 
     public void sendUpdateAssetsTabEvent(int tabIndex) {
         BusProvider.post(new Event.UpdateAssetsTabEvent(tabIndex));
-    }
-
-    public void sendUpdateVoteTransactionListEvent(VoteTransaction voteTransactionEntity) {
-        BusProvider.post(new Event.UpdateVoteTransactionListEvent(voteTransactionEntity));
     }
 
     public void sendNodeChangedEvent(Node nodeEntity) {
