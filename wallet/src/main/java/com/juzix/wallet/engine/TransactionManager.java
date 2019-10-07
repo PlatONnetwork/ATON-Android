@@ -40,6 +40,7 @@ import org.web3j.rlp.RlpString;
 import org.web3j.rlp.RlpType;
 import org.web3j.utils.Numeric;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -103,6 +104,34 @@ public class TransactionManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
+    }
+
+    public String sendTransaction(String signedMessage) {
+
+        try {
+            PlatonSendTransaction transaction = Web3jManager.getInstance().getWeb3j().platonSendRawTransaction(signedMessage).send();
+            return transaction.getTransactionHash();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public String signTransaction(Credentials credentials, String data, String toAddress, BigDecimal amount, BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit) {
+
+        try {
+            RawTransaction rawTransaction = RawTransaction.createTransaction(nonce, gasPrice, gasLimit, toAddress, amount.toBigInteger(),
+                    data);
+
+            byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, NumberParserUtils.parseLong(NodeManager.getInstance().getChainId()), credentials);
+
+            return Numeric.toHexString(signedMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return null;
     }
 

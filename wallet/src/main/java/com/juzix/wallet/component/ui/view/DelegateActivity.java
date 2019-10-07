@@ -22,16 +22,19 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzhen.framework.util.RUtils;
+import com.juzix.wallet.App;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.adapter.DelegatePopAdapter;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.DelegateContract;
+import com.juzix.wallet.component.ui.dialog.CommonGuideDialogFragment;
 import com.juzix.wallet.component.ui.presenter.DelegatePresenter;
 import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.component.widget.PointLengthFilter;
 import com.juzix.wallet.component.widget.ShadowButton;
+import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.entity.AccountBalance;
 import com.juzix.wallet.entity.DelegateHandle;
 import com.juzix.wallet.entity.DelegateType;
@@ -40,6 +43,7 @@ import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.GlideUtils;
+import com.juzix.wallet.utils.LanguageUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
 import com.juzix.wallet.utils.ToastUtil;
@@ -50,6 +54,7 @@ import org.web3j.utils.Convert;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -97,6 +102,8 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     ImageView iv_drop_down;
     @BindView(R.id.tv_lat)
     TextView tv_lat;
+    @BindView(R.id.v_tips)
+    View v_tips;
 
     private Unbinder unbinder;
 
@@ -187,6 +194,21 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                         mPresenter.submitDelegate(chooseType);
                     }
                 });
+        initGuide();
+    }
+
+    private void initGuide() {
+        boolean isShowDelegateOperation = AppSettings.getInstance().getDelegateOperationBoolean();
+        boolean isEnglish = Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage()) == true ? false : true;
+        if(!isShowDelegateOperation){
+            CommonGuideDialogFragment.newInstance(CommonGuideDialogFragment.DELEGATE_OPERATION,isEnglish)
+                    .setKnowListener(new CommonGuideDialogFragment.knowListener() {
+                        @Override
+                        public void know() {
+                            AppSettings.getInstance().setDelegateOperationBoolean(true);
+                        }
+                    }).show(getSupportFragmentManager(),"delegateOperation");
+        }
     }
 
     private void initPopWindow() {
@@ -247,6 +269,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
             String amountMagnitudes = StringUtil.getAmountMagnitudes(getContext(), s.toString().trim());
             inputTips.setText(amountMagnitudes);
             inputTips.setVisibility(TextUtils.isEmpty(amountMagnitudes) ? View.GONE : View.VISIBLE);
+            v_tips.setVisibility(TextUtils.isEmpty(amountMagnitudes) ? View.GONE : View.VISIBLE);
 
             mPresenter.getGasPrice(gasPrice, chooseType); //获取手续费
         }

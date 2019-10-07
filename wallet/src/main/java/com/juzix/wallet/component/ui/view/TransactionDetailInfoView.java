@@ -3,22 +3,21 @@ package com.juzix.wallet.component.ui.view;
 import android.content.Context;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.juzix.wallet.R;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.entity.TransferType;
 import com.juzix.wallet.utils.CommonUtil;
 import com.juzix.wallet.utils.StringUtil;
+
+import retrofit2.http.HEAD;
 
 
 public class TransactionDetailInfoView extends LinearLayout {

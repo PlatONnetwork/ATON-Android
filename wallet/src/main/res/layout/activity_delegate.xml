@@ -221,14 +221,39 @@
                     android:textColor="@color/color_61646e"
                     android:textSize="16sp" />
 
-                <TextView
-                    android:id="@+id/tv_input_tips"
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_input_tips"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginTop="6dp"-->
+                    <!--android:textColor="@color/color_000000"-->
+                    <!--android:textSize="12sp"-->
+                    <!--android:visibility="gone" />-->
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:textColor="@color/color_000000"
-                    android:textSize="12sp"
-                    android:visibility="gone" />
+                    android:orientation="horizontal">
+                    <View
+                        android:id="@+id/v_tips"
+                        android:layout_width="1dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
+                        android:background="#FF909090"
+                        android:visibility="gone"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_input_tips"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:textColor="@color/color_000000"
+                        android:textSize="12sp"
+                        tools:text="亿"
+                        android:layout_marginLeft="4dp"
+                        android:visibility="gone" />
+                </LinearLayout>
 
                 <FrameLayout
                     android:id="@+id/layout_transation_amount"
@@ -389,7 +414,7 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="20dp"
                 android:lineSpacingExtra="2dp"
-                android:text="@string/risk_title_explain"
+                android:text="@string/delegate_risk_tips"
                 android:textColor="@color/color_898c9e"
                 android:textSize="14sp" />
 

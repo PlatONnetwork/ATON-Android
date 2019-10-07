@@ -402,10 +402,6 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
         context.startActivity(new Intent(context, ScanQRCodeActivity.class));
     }
 
-    public static void actionStart(Activity activity, int requestCode) {
-        activity.startActivityForResult(new Intent(activity, ScanQRCodeActivity.class), requestCode);
-    }
-
     public static void startActivityForResult(Context context, int requestCode) {
         Intent intent = new Intent(context, ScanQRCodeActivity.class);
         ((Activity) context).startActivityForResult(intent, requestCode);

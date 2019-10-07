@@ -98,7 +98,7 @@
 
             </RelativeLayout>
 
-            <include layout="@layout/layout_app_tab" />
+            <include layout="@layout/layout_app_tab_assets" />
 
             <View
                 android:id="@+id/v_tab_line"

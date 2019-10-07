@@ -17,18 +17,21 @@ import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.SendTransationContract;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.dialog.SendTransactionDialogFragment;
+import com.juzix.wallet.component.ui.dialog.TransactionAuthorizationDialogFragment;
 import com.juzix.wallet.component.ui.view.AssetsFragment;
 import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.db.entity.AddressEntity;
 import com.juzix.wallet.db.sqlite.AddressDao;
-import com.juzix.wallet.db.sqlite.WalletDao;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.TransactionManager;
 import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.AccountBalance;
+import com.juzix.wallet.entity.PlatOnFunction;
 import com.juzix.wallet.entity.Transaction;
+import com.juzix.wallet.entity.TransactionAuthorizationBaseData;
+import com.juzix.wallet.entity.TransactionAuthorizationData;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
@@ -37,7 +40,6 @@ import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.ToastUtil;
 import com.trello.rxlifecycle2.android.FragmentEvent;
 
-import org.reactivestreams.Publisher;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
 import org.web3j.tx.gas.DefaultGasProvider;
@@ -56,7 +58,7 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Flowable;
+import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleObserver;
@@ -254,6 +256,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
 
             getWalletNameFromAddress(toAddress)
                     .compose(RxUtils.getSingleSchedulerTransformer())
+                    .compose(bindToLifecycle())
                     .subscribe(new Consumer<String>() {
                         @Override
                         public void accept(String s) throws Exception {
@@ -263,7 +266,11 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                                         .setOnConfirmBtnClickListener(new SendTransactionDialogFragment.OnConfirmBtnClickListener() {
                                             @Override
                                             public void onConfirmBtnClick() {
-                                                showInputWalletPasswordDialogFragment(transferAmount, fee, toAddress);
+                                                if (WalletManager.getInstance().getSelectedWallet().isObservedWallet()) {
+                                                    showTransactionAuthorizationDialogFragment(Convert.toVon(transferAmount, Convert.Unit.LAT).toPlainString(), walletEntity.getPrefixAddress(), toAddress, gasLimit.toString(10), gasPrice.toString(10));
+                                                } else {
+                                                    showInputWalletPasswordDialogFragment(transferAmount, fee, toAddress);
+                                                }
                                             }
                                         })
                                         .show(currentActivity().getSupportFragmentManager(), "sendTransaction");
@@ -392,6 +399,47 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                 sendTransaction(Numeric.toHexStringNoPrefix(credentials.getEcKeyPair().getPrivateKey()), Convert.toVon(transferAmount, Convert.Unit.LAT), Convert.toVon(feeAmount, Convert.Unit.LAT), toAddress);
             }
         }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
+    }
+
+    private void showTransactionAuthorizationDialogFragment(String transferAmount, String from, String to, String gasLimit, String gasPrice) {
+
+        Observable
+                .fromCallable(new Callable<BigInteger>() {
+                    @Override
+                    public BigInteger call() throws Exception {
+                        return Web3jManager.getInstance().getNonce(from);
+                    }
+                })
+                .compose(RxUtils.getSchedulerTransformer())
+                .compose(bindToLifecycle())
+                .compose(RxUtils.getLoadingTransformer(currentActivity()))
+                .subscribe(new CustomObserver<BigInteger>() {
+                    @Override
+                    public void accept(BigInteger nonce) {
+                        if (isViewAttached()) {
+                            TransactionAuthorizationDialogFragment.newInstance(new TransactionAuthorizationData(Arrays.asList(new TransactionAuthorizationBaseData.Builder()
+                                    .setAmount(transferAmount)
+                                    .setChainId(NodeManager.getInstance().getChainId())
+                                    .setNonce(nonce.toString(10))
+                                    .setFrom(from)
+                                    .setTo(to)
+                                    .setGasLimit(gasLimit)
+                                    .setGasPrice(gasPrice)
+                                    .build())).toJSONString())
+                                    .show(currentActivity().getSupportFragmentManager(), "showTransactionAuthorizationDialog");
+                        }
+                    }
+
+                    @Override
+                    public void accept(Throwable throwable) {
+                        super.accept(throwable);
+                        if (isViewAttached()) {
+                            if (!TextUtils.isEmpty(throwable.getMessage())) {
+                                ToastUtil.showLongToast(currentActivity(), throwable.getMessage());
+                            }
+                        }
+                    }
+                });
     }
 
     private void updateFeeAmount(double percent) {

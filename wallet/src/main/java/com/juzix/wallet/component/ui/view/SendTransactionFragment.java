@@ -304,6 +304,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
 
     @Override
     public void resetView(String feeAmount) {
+        tvAmountMagnitudes.setVisibility(View.GONE);
         etWalletAddress.removeTextChangedListener(mEtWalletAddressWatcher);
         etWalletAmount.removeTextChangedListener(mEtWalletAmountWatcher);
         etWalletAddress.setOnFocusChangeListener(null);

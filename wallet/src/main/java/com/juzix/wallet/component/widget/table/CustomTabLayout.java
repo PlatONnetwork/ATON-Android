@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.juzix.wallet.R;
+import com.juzix.wallet.event.EventPublisher;
 
 public class CustomTabLayout  extends HorizontalScrollView {
     private static final boolean DEFAULT_DISTRIBUTE_EVENLY = false;
@@ -612,6 +613,11 @@ public class CustomTabLayout  extends HorizontalScrollView {
                     TextView tv = tabStrip.getChildAt(position).findViewById(R.id.tv_title);
                     tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
                     tv.setTypeface(Typeface.DEFAULT_BOLD);
+                    if(position == 0){
+                      EventPublisher.getInstance().sendShowMyDelegateGuide();
+                    }else {
+                        EventPublisher.getInstance().sendShowValidatorsGuide();
+                    }
 
                 } else {
                     //未选中的页面

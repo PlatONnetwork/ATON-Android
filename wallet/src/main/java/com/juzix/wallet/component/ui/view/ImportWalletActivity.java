@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.IntDef;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
@@ -13,37 +14,56 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.juzhen.framework.util.AndroidUtil;
+import com.juzix.wallet.App;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.base.BaseFragment;
+import com.juzix.wallet.component.ui.dialog.CommonGuideDialogFragment;
 import com.juzix.wallet.component.widget.CommonTitleBar;
 import com.juzix.wallet.component.widget.ViewPagerSlide;
 import com.juzix.wallet.component.widget.table.PagerItem;
 import com.juzix.wallet.component.widget.table.PagerItemAdapter;
 import com.juzix.wallet.component.widget.table.PagerItems;
 import com.juzix.wallet.component.widget.table.SmartTabLayout;
+import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.utils.JZWalletUtil;
+import com.juzix.wallet.utils.LanguageUtil;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import io.reactivex.functions.Consumer;
 
 public class ImportWalletActivity extends BaseActivity {
-    public static final int TAB1 = 0;
-    public static final int TAB2 = 1;
-    public static final int TAB3 = 2;
+
     public static final int REQ_QR_CODE = 101;
+
     private ViewPagerSlide mVpContent;
+
+    private @TabIndex int mTabIndex = TabIndex.IMPORT_KEYSTORE;
+
+    @IntDef({
+            TabIndex.IMPORT_KEYSTORE,
+            TabIndex.IMPORT_MNEMONIC,
+            TabIndex.IMPORT_PRIVATEKEY,
+            TabIndex.IMPORT_OBSERVED
+    })
+    @interface TabIndex{
+        int IMPORT_KEYSTORE = 0;
+        int IMPORT_MNEMONIC = 1;
+        int IMPORT_PRIVATEKEY = 2;
+        int IMPORT_OBSERVED = 3;
+    }
 
     public static void actionStart(Context context) {
         context.startActivity(new Intent(context, ImportWalletActivity.class));
     }
 
-    public static void actionStart(Context context, int type, String content) {
+    public static void actionStart(Context context, @TabIndex int tabIndex, String content) {
         Intent intent = new Intent(context, ImportWalletActivity.class);
-        intent.putExtra(Constants.Extra.EXTRA_TYPE, type);
+        intent.putExtra(Constants.Extra.EXTRA_TAB_INDEX, tabIndex);
         intent.putExtra(Constants.Extra.EXTRA_SCAN_QRCODE_DATA, content);
         context.startActivity(intent);
     }
@@ -53,6 +73,21 @@ public class ImportWalletActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_import_wallet);
         initView();
+        initGuide();
+    }
+
+    private void initGuide() {
+        boolean isShowObservedWallet = AppSettings.getInstance().getObservedWalletBoolean();
+        boolean isEnglish = Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage()) == true ? false : true;
+        if (!isShowObservedWallet) {
+            CommonGuideDialogFragment.newInstance(CommonGuideDialogFragment.OBSERVED_WALLET, isEnglish).setKnowListener(new CommonGuideDialogFragment.knowListener() {
+                @Override
+                public void know() {
+                    AppSettings.getInstance().setObservedWalletBoolean(true);
+                }
+            }).show(getSupportFragmentManager(), "observedWallet");
+        }
+
     }
 
     @Override
@@ -80,11 +115,8 @@ public class ImportWalletActivity extends BaseActivity {
         stbBar.setIndicatorThickness(indicatorThickness);
         stbBar.setIndicatorCornerRadius(indicatorThickness / 2);
         ArrayList<Class<? extends BaseFragment>> fragments = getFragments();
-        Intent intent = getIntent();
-        int index = -1;
-        if (intent.hasExtra(Constants.Extra.EXTRA_TYPE)) {
-            index = intent.getIntExtra(Constants.Extra.EXTRA_TYPE, TAB1);
-        }
+        int mTabIndex = getIntent().getIntExtra(Constants.Extra.EXTRA_TAB_INDEX, TabIndex.IMPORT_KEYSTORE);
+
         stbBar.setCustomTabView(new SmartTabLayout.TabProvider() {
             @Override
             public View createTabView(ViewGroup container, int position, PagerAdapter adapter) {
@@ -94,8 +126,8 @@ public class ImportWalletActivity extends BaseActivity {
         PagerItems pages = new PagerItems(getContext());
         int tabNum = fragments.size();
         for (int i = 0; i < tabNum; i++) {
-            if (i == index) {
-                pages.add(PagerItem.of(getTitles().get(i), fragments.get(i), intent.getExtras()));
+            if (i == mTabIndex) {
+                pages.add(PagerItem.of(getTitles().get(i), fragments.get(i), getIntent().getExtras()));
             } else {
                 pages.add(PagerItem.of(getTitles().get(i), fragments.get(i), new Bundle()));
             }
@@ -105,9 +137,8 @@ public class ImportWalletActivity extends BaseActivity {
         mVpContent.setOffscreenPageLimit(fragments.size());
         mVpContent.setAdapter(new PagerItemAdapter(getSupportFragmentManager(), pages));
         stbBar.setViewPager(mVpContent);
-        index = index == -1 ? TAB1 : index;
-        setTableView(stbBar.getTabAt(index), index);
-        mVpContent.setCurrentItem(index);
+        setTableView(stbBar.getTabAt(mTabIndex), mTabIndex);
+        mVpContent.setCurrentItem(mTabIndex);
     }
 
     private ArrayList<String> getTitles() {
@@ -169,7 +200,7 @@ public class ImportWalletActivity extends BaseActivity {
                     @Override
                     public void accept(Boolean success) throws Exception {
                         if (success) {
-                            ScanQRCodeActivity.actionStart(currentActivity(), REQ_QR_CODE);
+                            ScanQRCodeActivity.startActivityForResult(currentActivity(), REQ_QR_CODE);
                         }
                     }
                 });

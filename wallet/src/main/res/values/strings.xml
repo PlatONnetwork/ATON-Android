@@ -630,9 +630,6 @@
     <string name="details">详情</string>
     <string name="undelegating">赎回中</string>
     <string name="delegated">委托</string>
-    <string name="delegate_less_than_fee">余额不足支付手续费，无法委托</string>
-
-    <string name="recipient_wallet_address">接收钱包地址</string>
     <!--0.7.3-->
     <string name="observed">观察钱包</string>
     <string name="observed_tips">• 存储大额资金建议使用观察钱包和冷钱包联动管理。\n• 交易时需要配合冷钱包进行操作。\n• 观察钱包不存有私钥，请勿将资产充值至不受控制的观察钱包。</string>
@@ -644,4 +641,28 @@
     <string name="wallet_send_offline_signature">离线签名</string>
 
     <string name="withdraw_less_than_fee">余额不足支付手续费，无法赎回</string>
+    <string name="delegate_risk_tips">节点双重签名、出块率低会被惩罚，从而间接影响您的收益。为规避风险，请认真选择合格的节点。</string>
+    <string name="recipient_wallet_address">接收钱包地址</string>
+    <string name="delegate_less_than_fee">余额不足支付手续费，无法委托</string>
+    <string name="cold_wallet">冷钱包</string>
+    <string name="observed_wallet">观察钱包</string>
+
+    <string name="title_transaction_authorization">冷钱包确认</string>
+    <string name="title_authorization_signature">授权签名</string>
+    <string name="msg_transaction_authorization_desc">请使用冷钱包扫描下方二维码进行授权签名</string>
+    <string name="title_details">交易预览</string>
+    <string name="msg_txn_info">交易信息：</string>
+    <string name="msg_sender">发送钱包：</string>
+    <string name="msg_recipient">接收地址：</string>
+    <string name="msg_fee">交易手续费：</string>
+    <string name="msg_transfer_info">发送LAT</string>
+    <string name="msg_delegate_info">委托LAT</string>
+    <string name="msg_withdraw_info">赎回LAT</string>
+    <string name="title_transaction_signature">读取签名数据</string>
+    <string name="msg_transaction_signature_desc">扫描观察钱包页面的授权二维码，获取签名数据。</string>
+    <string name="action_send_transaction">发送交易</string>
+    <string name="action_authorized_signature">授权签名</string>
+    <string name="msg_authorization_signature_desc">使用对应冷钱包扫描下方二维码，完成授权。</string>
+    <string name="finish">完成</string>
+
 </resources>
