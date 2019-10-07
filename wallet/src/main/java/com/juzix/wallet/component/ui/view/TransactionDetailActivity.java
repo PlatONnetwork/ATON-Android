@@ -127,15 +127,15 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
         return getIntent().getStringExtra(Constants.Extra.EXTRA_DELEGATE_TRANSACTION_HASH);
     }
 
-    /**
-     * 获取赎回交易hash
-     *
-     * @return
-     */
-    @Override
-    public String getWithDrawHash() {
-        return getIntent().getStringExtra(Constants.Extra.EXTRA_WITHDRAW_TRANSACTION_HASH);
-    }
+//    /**
+//     * 获取赎回交易hash
+//     *
+//     * @return
+//     */
+//    @Override
+//    public String getWithDrawHash() {
+//        return getIntent().getStringExtra(Constants.Extra.EXTRA_WITHDRAW_TRANSACTION_HASH);
+//    }
 
     @Override
     public void setTransactionDetailInfo(Transaction transaction, List<String> queryAddressList, String walletName) {
@@ -298,12 +298,12 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
         EventPublisher.getInstance().unRegister(this);
     }
 
-    public static void actionStart(Context context, Transaction transaction, String queryAddress, String platonSendTransaction, String withdrawTransaction) {
+    public static void actionStart(Context context, Transaction transaction, String queryAddress, String hash) {
         Intent intent = new Intent(context, TransactionDetailActivity.class);
         intent.putExtra(Constants.Extra.EXTRA_TRANSACTION, transaction);
         intent.putExtra(Constants.Extra.EXTRA_ADDRESS, queryAddress);
-        intent.putExtra(Constants.Extra.EXTRA_DELEGATE_TRANSACTION_HASH, platonSendTransaction);
-        intent.putExtra(Constants.Extra.EXTRA_WITHDRAW_TRANSACTION_HASH, withdrawTransaction);
+        intent.putExtra(Constants.Extra.EXTRA_DELEGATE_TRANSACTION_HASH, hash);
+//        intent.putExtra(Constants.Extra.EXTRA_WITHDRAW_TRANSACTION_HASH, withdrawTransaction);
         context.startActivity(intent);
     }
 

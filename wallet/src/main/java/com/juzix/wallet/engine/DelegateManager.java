@@ -11,6 +11,7 @@ import org.web3j.platon.contracts.DelegateContract;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 import org.web3j.tx.gas.DefaultGasProvider;
+import org.web3j.tx.gas.GasProvider;
 import org.web3j.utils.Convert;
 
 import java.math.BigInteger;
@@ -28,7 +29,7 @@ public class DelegateManager {
         return InstanceHolder.INSTANCE;
     }
 
-    public Single<PlatonSendTransaction> delegate(Credentials credentials, String amount, String nodeId, String type) {
+    public Single<PlatonSendTransaction> delegate(Credentials credentials, String amount, String nodeId, String type, GasProvider gasProvider) { //这里新修改，传入GasProvider
 
         return Single.fromCallable(new Callable<PlatonSendTransaction>() {
             @Override
@@ -40,7 +41,7 @@ public class DelegateManager {
 
                 StakingAmountType stakingAmountType = TextUtils.equals(type, "balance") ? StakingAmountType.FREE_AMOUNT_TYPE : StakingAmountType.RESTRICTING_AMOUNT_TYPE;
 
-                return delegateContract.delegateReturnTransaction(nodeId, stakingAmountType, Convert.toVon(amount, Convert.Unit.LAT).toBigInteger()).send();
+                return delegateContract.delegateReturnTransaction(nodeId, stakingAmountType, Convert.toVon(amount, Convert.Unit.LAT).toBigInteger(), gasProvider).send();
             }
         });
     }
@@ -64,7 +65,7 @@ public class DelegateManager {
 
     }
 
-    public Single<PlatonSendTransaction> withdraw(Credentials credentials, String nodeId, String stakingBlockNum, String amount) {
+    public Single<PlatonSendTransaction> withdraw(Credentials credentials, String nodeId, String stakingBlockNum, String amount,GasProvider GasProvider) {
 
         return Single.fromCallable(new Callable<PlatonSendTransaction>() {
             @Override
@@ -72,7 +73,7 @@ public class DelegateManager {
                 Web3j web3j = Web3jManager.getInstance().getWeb3j();
                 String chainId = NodeManager.getInstance().getChainId();
                 DelegateContract delegateContract = DelegateContract.load(web3j, credentials, NumberParserUtils.parseLong(chainId));
-                return delegateContract.unDelegateReturnTransaction(nodeId, new BigInteger(stakingBlockNum), Convert.toVon(amount, Convert.Unit.LAT).toBigInteger()).send();
+                return delegateContract.unDelegateReturnTransaction(nodeId, new BigInteger(stakingBlockNum), Convert.toVon(amount, Convert.Unit.LAT).toBigInteger(),GasProvider).send();
             }
         });
 
@@ -105,7 +106,7 @@ public class DelegateManager {
             public BigInteger call() throws Exception {
                 return Web3jManager.getInstance().getWeb3j().platonGasPrice().send().getGasPrice();
             }
-        }).onErrorReturnItem(new BigInteger("0"));
+        }).onErrorReturnItem(DefaultGasProvider.GAS_PRICE);
     }
 
 
