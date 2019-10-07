@@ -340,8 +340,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
         android:layout_marginBottom="30dp"
         android:gravity="center"
         android:orientation="vertical">
@@ -351,6 +349,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:enabled="false"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             app:text="@string/validators_delegate"
             app:textAppearance="@style/MainButtonStyle"
             app:textBackground="@drawable/bg_main_button" />
@@ -365,6 +365,8 @@
             android:textColor="@color/color_61646e"
             android:textSize="12sp"
             android:visibility="visible"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             app:drawableLeftHeight="8.6dp"
             app:drawableLeftWidth="8.6dp"
             app:isAliganCenter="false" />

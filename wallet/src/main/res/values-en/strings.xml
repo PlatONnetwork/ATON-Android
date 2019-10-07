@@ -324,8 +324,11 @@
     <string name="weibo">Weibo</string>
     <string name="qq">QQ</string>
     <string name="all">ALL</string>
+    <string name="action_send_all">ALL</string>
     <string name="balance_text">Balance:&#160;%1$s&#160;LAT</string>
     <string name="fee">Fee</string>
+    <string name="transaction_fee">Fee</string>
+    <string name="save_successfully">Save successfully</string>
     <string name="joint_wallet_execution">Joint Wallet Execution</string>
     <string name="create_joint_wallet">Create Joint Wallet</string>
     <string name="fee_of_contract_creation">Fee of Contract Creation</string>
@@ -485,7 +488,7 @@
     <string name="return_amount">Return Amount</string>
     <string name="report_type">Report Type</string>
     <string name="reported">Reported</string>
-    <string name="proposal_id">PIP SN</string>
+    <string name="proposal_id">Proposal ID</string>
     <string name="pip_number">PIP SN</string>
     <string name="proposal_type">Proposal Type</string>
     <string name="restricted_account">Restricted Account</string>
@@ -581,7 +584,7 @@
     <string name="parameter_proposal">Parameter</string>
     <string name="cancel_proposal">Cancel</string>
 
-    <string name="validators_details_tips">PlatON blockchain initial built-in validator, does not  accept Delegation</string>
+    <string name="validators_details_tips">The Validator is provided by the PlatON Foundation, does not accept Delegation</string>
 
     <!--赎回类型-->
     <string name="withdraw_type_delegated">Delegated</string>
@@ -614,6 +617,8 @@
     <string name="details">Details</string>
     <string name="undelegating">Undelegating</string>
     <string name="delegated">Delegated</string>
+    <string name="delegate_less_than_fee">Insufficient balance payment fee</string>
+    <string name="recipient_wallet_address">Recipient</string>
     <!--0.7.3-->
     <string name="observed">Observed</string>
     <string name="observed_tips">• Recommend observed wallet and cold wallet to jointly manage large amount of tokens.\n• Need the cold wallet authorization for transferring tokens.\n• Observed wallet do not hold the private key.\n• Do not deposit tokens to the wallet that you can not control.</string>
@@ -623,10 +628,30 @@
     <string name="observed_wallet_delete_title">Delete Wallet</string>
     <string name="observed_wallet_delete_tips">Are you sure want to delete observed wallet?</string>
     <string name="wallet_send_offline_signature">Offline Signature</string>
+
     <string name="delegate_risk_tips">Validators would be punished for double signing or low block rate. It would indirectly affect your reward. Please select qualified validators.</string>
     <string name="recipient_wallet_address">Recipient</string>
     <string name="delegate_less_than_fee">Insufficient balance payment fee</string>
     <string name="cold_wallet">Cold</string>
     <string name="observed_wallet">Observed</string>
+
+    <string name="title_transaction_authorization">Transaction Authorization</string>
+    <string name="title_authorization_signature">Authorization Signature</string>
+    <string name="msg_transaction_authorization_desc">Please scan below QR code using the cold wallet that holds the private key.</string>
+    <string name="title_details">Details</string>
+    <string name="msg_txn_info">Txn info：</string>
+    <string name="msg_sender">Sender：</string>
+    <string name="msg_recipient">Recipient：</string>
+    <string name="msg_fee">Fee：</string>
+    <string name="msg_transfer_info">Send LAT</string>
+    <string name="msg_delegate_info">Delegate LAT</string>
+    <string name="msg_withdraw_info">Withdraw LAT</string>
+    <string name="title_transaction_signature">Transaction Signature</string>
+    <string name="msg_transaction_signature_desc">Scan the OR code displayed on the cold wallet to get the transaction signature .</string>
+    <string name="action_send_transaction">Finish</string>
+    <string name="action_authorized_signature">Next</string>
+    <string name="msg_authorization_signature_desc">Scan the OR code to finish your authorization for the cold wallet.</string>
+    <string name="finish">Finish</string>
+
 </resources>
 

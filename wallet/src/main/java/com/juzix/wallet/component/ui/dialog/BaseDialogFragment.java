@@ -64,6 +64,8 @@ public abstract class BaseDialogFragment extends DialogFragment implements Lifec
 
     private boolean fullHeightEnable = false;
 
+    private boolean cancelable = true;
+
     protected Context context;
 
     private WeakHandler weakHandler;
@@ -108,6 +110,16 @@ public abstract class BaseDialogFragment extends DialogFragment implements Lifec
 
     public void setHorizontalMargin(int horizontalMargin) {
         this.horizontalMargin = horizontalMargin;
+    }
+
+    @Override
+    public boolean isCancelable() {
+        return cancelable;
+    }
+
+    @Override
+    public void setCancelable(boolean cancelable) {
+        this.cancelable = cancelable;
     }
 
     public BaseDialogFragment setOnDissmissListener(OnDissmissListener dissmissListener) {
@@ -267,8 +279,8 @@ public abstract class BaseDialogFragment extends DialogFragment implements Lifec
             layoutParams.width = fullWidthEnable ? WindowManager.LayoutParams.MATCH_PARENT : WindowManager.LayoutParams.WRAP_CONTENT;
             layoutParams.height = fullHeightEnable ? WindowManager.LayoutParams.MATCH_PARENT : WindowManager.LayoutParams.WRAP_CONTENT;
 
-            dialog.setCanceledOnTouchOutside(true);
-            dialog.setCancelable(true);
+            dialog.setCanceledOnTouchOutside(cancelable);
+            dialog.setCancelable(cancelable);
             dialog.getWindow().setGravity(gravity);
             dialog.getWindow().setWindowAnimations(animation);
             if (backgroundDimEnabled) {

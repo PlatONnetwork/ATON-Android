@@ -18,10 +18,6 @@ public class BigDecimalUtil {
 
     }
 
-    public static double add(String v1, String v2) {
-        return add(NumberParserUtils.parseDouble(v1), NumberParserUtils.parseDouble(v2));
-    }
-
     public static double add(long v1, long v2) {
         return add(NumberParserUtils.parseDouble(v1), NumberParserUtils.parseDouble(v2));
     }
@@ -39,6 +35,28 @@ public class BigDecimalUtil {
             BigDecimal b1 = new BigDecimal(Double.toString(v1));
             BigDecimal b2 = new BigDecimal(Double.toString(v2));
             result = b1.add(b2).doubleValue();
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+
+    }
+
+
+    /**
+     * 提供精确的加法运算。
+     *
+     * @param v1 被加数
+     * @param v2 加数
+     * @return 两个参数的和
+     */
+    public static BigDecimal add(String v1, String v2) {
+        BigDecimal result = BigDecimal.ZERO;
+        try {
+            BigDecimal b1 = new BigDecimal(v1);
+            BigDecimal b2 = new BigDecimal(v2);
+            result = b1.add(b2);
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
@@ -346,5 +364,14 @@ public class BigDecimalUtil {
             return false;
         }
         return new BigDecimal(val1).compareTo(BigDecimal.ZERO) > 0;
+    }
+
+    public static BigDecimal toBigDecimal(String value) {
+        try {
+            return new BigDecimal(value);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return BigDecimal.ZERO;
     }
 }
