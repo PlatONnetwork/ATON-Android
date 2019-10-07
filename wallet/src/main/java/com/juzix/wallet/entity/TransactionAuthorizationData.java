@@ -29,12 +29,15 @@ public class TransactionAuthorizationData implements Parcelable {
     @JSONField(name = "qrCodeData")
     private List<TransactionAuthorizationBaseData> baseDataList;
 
+    protected long timeStamp;
+
     public TransactionAuthorizationData() {
 
     }
 
-    public TransactionAuthorizationData(List<TransactionAuthorizationBaseData> baseDataList) {
+    public TransactionAuthorizationData(List<TransactionAuthorizationBaseData> baseDataList,long timeStamp) {
         this.baseDataList = baseDataList;
+        this.timeStamp = timeStamp;
     }
 
     public List<TransactionAuthorizationBaseData> getBaseDataList() {
@@ -45,13 +48,23 @@ public class TransactionAuthorizationData implements Parcelable {
         this.baseDataList = baseDataList;
     }
 
+    public long getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
+    }
+
     protected TransactionAuthorizationData(Parcel in) {
         baseDataList = in.createTypedArrayList(TransactionAuthorizationBaseData.CREATOR);
+        timeStamp = in.readLong();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(baseDataList);
+        dest.writeLong(timeStamp);
     }
 
     @Override
@@ -98,7 +111,9 @@ public class TransactionAuthorizationData implements Parcelable {
             return null;
         }
 
-        return new TransactionSignatureData(getSignedMessageList(credentials), baseDataList.get(0).getFrom(), baseDataList.get(0).getChainId(), baseDataList.get(0).getPlatOnFunction().getType());
+        TransactionAuthorizationBaseData firstBaseData = baseDataList.get(0);
+
+        return new TransactionSignatureData(getSignedMessageList(credentials), firstBaseData.getFrom(),firstBaseData.getChainId(),timeStamp, firstBaseData.getPlatOnFunction().getType());
     }
 
     private List<String> getSignedMessageList(Credentials credentials) {

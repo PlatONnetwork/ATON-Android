@@ -18,6 +18,7 @@ import com.juzix.wallet.component.ui.contract.SendTransationContract;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.dialog.SendTransactionDialogFragment;
 import com.juzix.wallet.component.ui.dialog.TransactionAuthorizationDialogFragment;
+import com.juzix.wallet.component.ui.dialog.TransactionSignatureDialogFragment;
 import com.juzix.wallet.component.ui.view.AssetsFragment;
 import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.db.entity.AddressEntity;
@@ -417,7 +418,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                     @Override
                     public void accept(BigInteger nonce) {
                         if (isViewAttached()) {
-                            TransactionAuthorizationDialogFragment.newInstance(new TransactionAuthorizationData(Arrays.asList(new TransactionAuthorizationBaseData.Builder()
+                            TransactionAuthorizationData transactionAuthorizationData = new TransactionAuthorizationData(Arrays.asList(new TransactionAuthorizationBaseData.Builder()
                                     .setAmount(transferAmount)
                                     .setChainId(NodeManager.getInstance().getChainId())
                                     .setNonce(nonce.toString(10))
@@ -425,7 +426,23 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                                     .setTo(to)
                                     .setGasLimit(gasLimit)
                                     .setGasPrice(gasPrice)
-                                    .build())).toJSONString())
+                                    .build()), System.currentTimeMillis() / 1000);
+                            TransactionAuthorizationDialogFragment.newInstance(transactionAuthorizationData)
+                                    .setOnNextBtnClickListener(new TransactionAuthorizationDialogFragment.OnNextBtnClickListener() {
+                                        @Override
+                                        public void onNextBtnClick() {
+                                            TransactionSignatureDialogFragment.newInstance(transactionAuthorizationData.getTimeStamp())
+                                                    .setOnSendTransactionSucceedListener(new TransactionSignatureDialogFragment.OnSendTransactionSucceedListener() {
+                                                        @Override
+                                                        public void onSendTransactionSucceed() {
+                                                            if (isViewAttached()) {
+                                                                backToTransactionListWithDelay();
+                                                            }
+                                                        }
+                                                    })
+                                                    .show(currentActivity().getSupportFragmentManager(), TransactionSignatureDialogFragment.TAG);
+                                        }
+                                    })
                                     .show(currentActivity().getSupportFragmentManager(), "showTransactionAuthorizationDialog");
                         }
                     }

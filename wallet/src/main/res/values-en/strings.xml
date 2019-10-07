@@ -651,7 +651,8 @@
     <string name="action_authorized_signature">Next</string>
     <string name="msg_authorization_signature_desc">Scan the OR code to finish your authorization for the cold wallet.</string>
     <string name="finish">Finish</string>
+    <string name="msg_invalid_signature">Invalid Signature</string>
 
->>>>>>> upstream/feature/bump-version-to-0.7.3
+    >>>>>>> upstream/feature/bump-version-to-0.7.3
 </resources>
 

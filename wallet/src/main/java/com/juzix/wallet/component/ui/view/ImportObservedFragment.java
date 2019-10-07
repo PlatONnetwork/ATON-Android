@@ -25,7 +25,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class ImportIndividualObservedFragment extends MVPBaseFragment<ImportObservedPresenter> implements ImportIndividualObservedContract.View {
+public class ImportObservedFragment extends MVPBaseFragment<ImportObservedPresenter> implements ImportIndividualObservedContract.View {
     Unbinder unbinder;
     @BindView(R.id.et_observed)
     EditText et_observed;

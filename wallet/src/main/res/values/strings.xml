@@ -664,5 +664,6 @@
     <string name="action_authorized_signature">授权签名</string>
     <string name="msg_authorization_signature_desc">使用对应冷钱包扫描下方二维码，完成授权。</string>
     <string name="finish">完成</string>
+    <string name="msg_invalid_signature">无效签名</string>
 
 </resources>

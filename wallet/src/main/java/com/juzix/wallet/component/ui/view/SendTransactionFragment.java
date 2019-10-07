@@ -368,11 +368,13 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
     private View.OnFocusChangeListener mEtWalletAddressFocusChangeListener = new View.OnFocusChangeListener() {
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
-            String address = etWalletAddress.getText().toString().trim();
-            if (!hasFocus) {
-                mPresenter.checkToAddress(address);
-            } else {
-                showToAddressError("");
+            if (etWalletAddress != null){
+                String address = etWalletAddress.getText().toString().trim();
+                if (!hasFocus) {
+                    mPresenter.checkToAddress(address);
+                } else {
+                    showToAddressError("");
+                }
             }
         }
     };
@@ -399,11 +401,13 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
     private View.OnFocusChangeListener mEtWalletAmountFocusChangeListener = new View.OnFocusChangeListener() {
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
-            String amount = etWalletAmount.getText().toString().trim();
-            if (!hasFocus) {
-                mPresenter.checkTransferAmount(amount);
-            } else {
-                showAmountError("");
+            if (etWalletAmount != null){
+                String amount = etWalletAmount.getText().toString().trim();
+                if (!hasFocus) {
+                    mPresenter.checkTransferAmount(amount);
+                } else {
+                    showAmountError("");
+                }
             }
         }
     };

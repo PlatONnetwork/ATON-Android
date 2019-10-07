@@ -65,7 +65,6 @@ import com.juzix.wallet.netlistener.NetworkType;
 import com.juzix.wallet.netlistener.NetworkUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.JSONUtil;
-import com.juzix.wallet.utils.JZWalletUtil;
 
 import com.juzix.wallet.utils.LanguageUtil;
 
@@ -81,7 +80,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
-import java.util.IllegalFormatCodePointException;
 import java.util.List;
 import java.util.Locale;
 
@@ -90,7 +88,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import retrofit2.http.HEAD;
 
 /**
  * @author matrixelement

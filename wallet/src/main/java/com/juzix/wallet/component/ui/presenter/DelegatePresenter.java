@@ -16,6 +16,7 @@ import com.juzix.wallet.component.ui.contract.DelegateContract;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.dialog.SelectWalletDialogFragment;
 import com.juzix.wallet.component.ui.dialog.TransactionAuthorizationDialogFragment;
+import com.juzix.wallet.component.ui.dialog.TransactionSignatureDialogFragment;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.engine.DelegateManager;
 import com.juzix.wallet.engine.NodeManager;
@@ -27,6 +28,7 @@ import com.juzix.wallet.entity.DelegateHandle;
 import com.juzix.wallet.entity.TransactionAuthorizationBaseData;
 import com.juzix.wallet.entity.TransactionAuthorizationData;
 import com.juzix.wallet.entity.TransactionAuthorizationDelegateData;
+import com.juzix.wallet.entity.TransactionStatus;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.RxUtils;
@@ -45,6 +47,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -293,7 +296,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                         @Override
                         public void onNext(GasProvider gasProvider) {
                             gas_limit = gasProvider.getGasLimit();
-                            Log.d("gaslimit", "========getGasPrice========" + "limit ===" + gas_limit +"gasprice ======" + gas_Price);
+                            Log.d("gaslimit", "========getGasPrice========" + "limit ===" + gas_limit + "gasprice ======" + gas_Price);
                             BigDecimal mul = BigDecimalUtil.mul(gasProvider.getGasLimit().toString(), gas_Price.toString());
                             feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(mul.toString(), "1E18"));
                             getView().showGasPrice(feeAmount);
@@ -354,7 +357,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                     @Override
                     public void onNext(GasProvider gasProvider) {
                         gas_limit = gasProvider.getGasLimit();
-                        Log.d("gaslimit", "========getAllPrice========" + "limit" + gas_limit +"gasprice ========" +gas_Price);
+                        Log.d("gaslimit", "========getAllPrice========" + "limit" + gas_limit + "gasprice ========" + gas_Price);
                         Log.d("gasprovide", "========getAllPrice======" + gasProvider.getGasLimit());
                         BigDecimal mul = BigDecimalUtil.mul(gasProvider.getGasLimit().toString(), gas_Price.toString());
                         feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(mul.toString(), "1E18"));
@@ -433,7 +436,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                             String inputAmount = getView().getDelegateAmount();
 
                             if (mWallet.isObservedWallet()) {
-                                showTransactionAuthorizationDialogFragment(mNodeAddress, mNodeName, StakingAmountType.FREE_AMOUNT_TYPE.getValue(),inputAmount,mWalletAddress, "","","");
+                                showTransactionAuthorizationDialogFragment(mNodeAddress, mNodeName, StakingAmountType.FREE_AMOUNT_TYPE.getValue(), inputAmount, mWalletAddress, "", "", "");
                             } else {
                                 showInputPasswordDialogFragment(inputAmount, type);
                             }
@@ -470,7 +473,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                         if (isViewAttached()) {
                             if (!TextUtils.isEmpty(platonSendTransaction.getTransactionHash())) {
                                 getView().transactionSuccessInfo(platonSendTransaction.getResult(), platonSendTransaction.getTransactionHash(), mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, 0, "1004", inputAmount, feeAmount, mNodeName, mNodeAddress
-                                        , 2);
+                                        , TransactionStatus.PENDING.ordinal());
 
                             } else {
                                 ToastUtil.showLongToast(getContext(), platonSendTransaction.getError().getMessage());
@@ -520,7 +523,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                     @Override
                     public void accept(BigInteger nonce) {
                         if (isViewAttached()) {
-                            TransactionAuthorizationDialogFragment.newInstance(new TransactionAuthorizationData(Arrays.asList(new TransactionAuthorizationDelegateData.Builder()
+                            TransactionAuthorizationData transactionAuthorizationData = new TransactionAuthorizationData(Arrays.asList(new TransactionAuthorizationDelegateData.Builder()
                                     .setAmount(transferAmount)
                                     .setChainId(NodeManager.getInstance().getChainId())
                                     .setNonce(nonce.toString(10))
@@ -531,7 +534,24 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                                     .setNodeId(nodeId)
                                     .setNodeName(nodeName)
                                     .setStakingAmountType(stakingAmountType)
-                                    .build())).toJSONString())
+                                    .build()), System.currentTimeMillis() / 1000);
+                            TransactionAuthorizationDialogFragment.newInstance(transactionAuthorizationData)
+                                    .setOnNextBtnClickListener(new TransactionAuthorizationDialogFragment.OnNextBtnClickListener() {
+                                        @Override
+                                        public void onNextBtnClick() {
+                                            TransactionSignatureDialogFragment.newInstance(transactionAuthorizationData.getTimeStamp())
+                                                    .setOnSendTransactionSucceedListener(new TransactionSignatureDialogFragment.OnSendTransactionSucceedListener() {
+                                                        @Override
+                                                        public void onSendTransactionSucceed(String hash) {
+                                                            if (isViewAttached()) {
+//                                                                getView().transactionSuccessInfo(platonSendTransaction.getResult(), hash, mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, 0, "1004", inputAmount, feeAmount, mNodeName, mNodeAddress
+//                                                                        , TransactionStatus.PENDING.ordinal());
+                                                            }
+                                                        }
+                                                    })
+                                                    .show(currentActivity().getSupportFragmentManager(), TransactionSignatureDialogFragment.TAG);
+                                        }
+                                    })
                                     .show(currentActivity().getSupportFragmentManager(), "showTransactionAuthorizationDialog");
                         }
                     }

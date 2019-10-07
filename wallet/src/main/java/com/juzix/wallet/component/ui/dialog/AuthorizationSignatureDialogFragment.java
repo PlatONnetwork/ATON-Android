@@ -77,7 +77,7 @@ public class AuthorizationSignatureDialogFragment extends BaseDialogFragment {
 
                     @Override
                     public Bitmap call() throws Exception {
-                        return QRCodeEncoder.syncEncodeQRCode(data, DensityUtil.dp2px(getActivity(), 200f));
+                        return QRCodeEncoder.syncEncodeQRCode(data, DensityUtil.getScreenWidth(getContext()) - DensityUtil.dp2px(getActivity(), 36f));
                     }
                 })
                 .compose(bindToLifecycle())
@@ -86,7 +86,7 @@ public class AuthorizationSignatureDialogFragment extends BaseDialogFragment {
                     @Override
                     public void accept(Bitmap bitmap) {
                         if (bitmap != null) {
-                            ivSignedData.setBackground(new BitmapDrawable(bitmap));
+                            ivSignedData.setImageBitmap(bitmap);
                         }
                     }
                 });

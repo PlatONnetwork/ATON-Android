@@ -75,8 +75,9 @@ public class Constants {
         String BUNDLE_PAGE = "bundle_page";
         String BUNDLE_ENGLISH = "bundle_english";
 
-
         String BUNDLE_DATA = "bundle_data";
+
+        String BUNDLE_TIME_STAMP = "bundle_time_stamp";
 
     }
 

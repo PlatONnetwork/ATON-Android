@@ -42,7 +42,8 @@ public class ImportWalletActivity extends BaseActivity {
 
     private ViewPagerSlide mVpContent;
 
-    private @TabIndex int mTabIndex = TabIndex.IMPORT_KEYSTORE;
+    private @TabIndex
+    int mTabIndex = TabIndex.IMPORT_KEYSTORE;
 
     @IntDef({
             TabIndex.IMPORT_KEYSTORE,
@@ -50,7 +51,7 @@ public class ImportWalletActivity extends BaseActivity {
             TabIndex.IMPORT_PRIVATEKEY,
             TabIndex.IMPORT_OBSERVED
     })
-    @interface TabIndex{
+    @interface TabIndex {
         int IMPORT_KEYSTORE = 0;
         int IMPORT_MNEMONIC = 1;
         int IMPORT_PRIVATEKEY = 2;
@@ -96,14 +97,14 @@ public class ImportWalletActivity extends BaseActivity {
     }
 
     private void initView() {
+
+        Bundle bundle = getIntent().getExtras();
+
+        if (bundle != null) {
+            mTabIndex = bundle.getInt(Constants.Extra.EXTRA_TAB_INDEX, TabIndex.IMPORT_KEYSTORE);
+        }
+
         CommonTitleBar commonTitleBar = findViewById(R.id.commonTitleBar);
-        commonTitleBar.setLeftDrawableClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideSoftInput();
-                finish();
-            }
-        });
         commonTitleBar.setRightDrawableClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,7 +116,7 @@ public class ImportWalletActivity extends BaseActivity {
         stbBar.setIndicatorThickness(indicatorThickness);
         stbBar.setIndicatorCornerRadius(indicatorThickness / 2);
         ArrayList<Class<? extends BaseFragment>> fragments = getFragments();
-        int mTabIndex = getIntent().getIntExtra(Constants.Extra.EXTRA_TAB_INDEX, TabIndex.IMPORT_KEYSTORE);
+
 
         stbBar.setCustomTabView(new SmartTabLayout.TabProvider() {
             @Override
@@ -127,7 +128,7 @@ public class ImportWalletActivity extends BaseActivity {
         int tabNum = fragments.size();
         for (int i = 0; i < tabNum; i++) {
             if (i == mTabIndex) {
-                pages.add(PagerItem.of(getTitles().get(i), fragments.get(i), getIntent().getExtras()));
+                pages.add(PagerItem.of(getTitles().get(i), fragments.get(i), bundle == null ? new Bundle() : bundle));
             } else {
                 pages.add(PagerItem.of(getTitles().get(i), fragments.get(i), new Bundle()));
             }
@@ -155,7 +156,7 @@ public class ImportWalletActivity extends BaseActivity {
         list.add(ImportKeystoreFragment.class);
         list.add(ImportMnemonicPhraseFragment.class);
         list.add(ImportPrivateKeyFragment.class);
-        list.add(ImportIndividualObservedFragment.class);
+        list.add(ImportObservedFragment.class);
         return list;
     }
 
