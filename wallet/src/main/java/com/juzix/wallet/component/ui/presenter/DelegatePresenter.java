@@ -253,7 +253,6 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                             gas_Price = gasPrice;
                             getView().showGas(gasPrice);
                         }
-
                     }
                 });
     }
@@ -304,27 +303,6 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
             isAll = false;
             Log.d("gasprovide", "============" + "1111111111111表示点击的全部");
         }
-
-//        delegateContract.getDelegateFeeAmount(new BigInteger(gasPrice), mNodeAddress, stakingAmountType, Convert.toVon(inputAmount, Convert.Unit.LAT).toBigInteger())
-//                .subscribe(new Subscriber<BigInteger>() {
-//                    @Override
-//                    public void onNext(BigInteger integer) {
-//                        if (isViewAttached()) {
-//                            feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(integer.toString(), "1E18"));
-//                            getView().showGasPrice(feeAmount);
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCompleted() {
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                    }
-//
-//                });
-
     }
 
 
@@ -334,8 +312,6 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
         Web3j web3j = Web3jManager.getInstance().getWeb3j();
         org.web3j.platon.contracts.DelegateContract delegateContract = org.web3j.platon.contracts.DelegateContract.load(web3j);
         StakingAmountType stakingAmountType = TextUtils.equals(chooseType, "balance") ? StakingAmountType.FREE_AMOUNT_TYPE : StakingAmountType.RESTRICTING_AMOUNT_TYPE;
-        Log.d("DelegatePresenter", "转成von" + "===================" + Convert.toVon(amount, Convert.Unit.LAT).toBigInteger());
-        Log.d("DelegatePresenter", "手续费" + "===================" + Convert.toVon(amount, Convert.Unit.LAT).toBigInteger().toString().replaceAll("0", "1"));
 
         delegateContract.getDelegateGasProvider(mNodeAddress, stakingAmountType, new BigInteger(Convert.toVon(amount, Convert.Unit.LAT).toBigInteger().toString().replaceAll("0", "1")))
                 .subscribeOn(Schedulers.io())
@@ -469,7 +445,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                     public void accept(PlatonSendTransaction platonSendTransaction) throws Exception {
                         if (isViewAttached()) {
                             if (!TextUtils.isEmpty(platonSendTransaction.getTransactionHash())) {
-                                getView().transactionSuccessInfo(platonSendTransaction.getResult(), platonSendTransaction.getTransactionHash(), mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, 0, "1004", inputAmount, feeAmount, mNodeName, mNodeAddress
+                                getView().transactionSuccessInfo(platonSendTransaction.getTransactionHash() ,mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, 0, "1004", inputAmount, feeAmount, mNodeName, mNodeAddress
                                         , 2);
 
                             } else {
@@ -488,7 +464,6 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                         }
                     }
                 });
-
 
     }
 

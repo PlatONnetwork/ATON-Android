@@ -411,7 +411,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     }
 
     @Override
-    public void transactionSuccessInfo(String platonSendTransaction, String hash, String from, String to, long time, String txType, String value, String actualTxCost, String nodeName, String nodeId, int txReceiptStatus) {
+    public void transactionSuccessInfo(String hash, String from, String to, long time, String txType, String value, String actualTxCost, String nodeName, String nodeId, int txReceiptStatus) {
         finish();
         Transaction transaction = new Transaction.Builder()
                 .from(from)
@@ -426,7 +426,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                 .hash(hash)
                 .build();
 
-        TransactionDetailActivity.actionStart(getContext(), transaction, from, platonSendTransaction, "");
+        TransactionDetailActivity.actionStart(getContext(), transaction, from, hash);
     }
 
     /**
