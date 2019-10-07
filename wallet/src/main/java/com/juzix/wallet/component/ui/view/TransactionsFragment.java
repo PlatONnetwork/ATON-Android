@@ -101,6 +101,11 @@ public class TransactionsFragment extends BaseViewPageFragment<TransactionsPrese
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDeleteTransactionEvent(Event.DeleteTransactionEvent event){
+        mPresenter.deleteTransaction(event.transaction);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateSelectedWalletEvent(Event.UpdateSelectedWalletEvent event) {
         mPresenter.loadLatestData();
     }

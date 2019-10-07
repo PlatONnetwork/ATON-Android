@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -27,6 +28,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.juzhen.framework.app.log.Log;
+import com.juzhen.framework.util.LogUtils;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.App;
 import com.juzix.wallet.R;
@@ -247,6 +249,46 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         });
     }
 
+    private void saveStateToArguments(){
+        Bundle saveState = saveState();
+        LogUtils.e("saveStateToArguments");
+        if (saveState != null) {
+            Bundle bundle = getArguments(); // 获取之前初始化时候的bundle
+            bundle.putBundle(Constants.Extra.EXTRA_BUNDLE, saveState);//将bundle传入数据
+        }
+    }
+
+    private void reStoreStateFromArguments(){
+        Bundle bundle = getArguments().getBundle(Constants.Extra.EXTRA_BUNDLE);
+        LogUtils.e("reStoreStateFromArguments");
+        if (bundle != null){
+            List<Wallet> walletList = bundle.getParcelableArrayList(Constants.Extra.EXTRA_WALLET_LIST);
+            LogUtils.e("reStoreStateFromArguments"+walletList.size());
+            showContent(walletList == null || walletList.isEmpty());
+        }
+    }
+
+    private Bundle saveState(){
+        Bundle outState = new Bundle();
+        List<Wallet> walletList = mPresenter.getRecycleViewDataSource();
+        if (walletList != null && walletList.size() > 0) {
+            outState.putParcelableArrayList(Constants.Extra.EXTRA_WALLET_LIST, (ArrayList<? extends Parcelable>) walletList);
+        }
+        return outState;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        saveStateToArguments();
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        reStoreStateFromArguments();
+    }
+
     public void fetchWalletsBalance() {
         mPresenter.fetchWalletsBalance();
     }
@@ -448,6 +490,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        saveStateToArguments();
         if (unbinder != null) {
             unbinder.unbind();
         }
@@ -621,16 +664,6 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
             bundle.putParcelable(Constants.Extra.EXTRA_WALLET, entity);
             fragment.setArguments(bundle);
         }
-    }
-
-    @Override
-    public void notifyItemChanged(int position) {
-        mWalletAdapter.notifyItemChanged(position);
-    }
-
-    @Override
-    public void notifyAllChanged() {
-        mWalletAdapter.notifyDataSetChanged();
     }
 
     @Override

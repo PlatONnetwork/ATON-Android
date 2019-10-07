@@ -22,7 +22,7 @@ public class TransactionsContract {
 
         void loadNew(String direction);
 
-        void loadMore();
+        void deleteTransaction(Transaction transaction);
 
         void addNewTransaction(Transaction transaction);
     }

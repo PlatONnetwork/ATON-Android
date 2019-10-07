@@ -183,42 +183,12 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
     }
 
     @Override
-    public void loadMore() {
-
-        if (TextUtils.isEmpty(mWalletAddress)) {
-            return;
-        }
-
-        if (!mAutoRefreshDisposable.isDisposed()) {
-            mAutoRefreshDisposable.dispose();
-        }
-
-        getTransactionList(mWalletAddress, DIRECTION_OLD, getBeginSequenceByDirection(DIRECTION_OLD))
-                .compose(RxUtils.getSingleSchedulerTransformer())
-                .compose(bindUntilEvent(FragmentEvent.STOP))
-                .subscribe(new ApiSingleObserver<List<Transaction>>() {
-                    @Override
-                    public void onApiSuccess(List<Transaction> transactions) {
-                        Log.e(TAG, "onApiSuccess");
-                        if (isViewAttached()) {
-                            //先进行排序
-                            Collections.sort(transactions);
-                            List<Transaction> newTransactionList = getNewTransactionList(mTransactionList, transactions, true);
-                            Collections.sort(newTransactionList);
-                            //累加,mTransactionList不可能为null,放在最后面
-                            getView().notifyDataSetChanged(mTransactionList, newTransactionList, mWalletAddress, false);
-
-                            mTransactionList = newTransactionList;
-                        }
-                    }
-
-                    @Override
-                    public void onApiFailure(ApiResponse response) {
-                        if (isViewAttached()) {
-//                            getView().finishLoadMore();
-                        }
-                    }
-                });
+    public void deleteTransaction(Transaction transaction) {
+        List<Transaction> newTransactionList = new ArrayList<>(mTransactionList);
+        newTransactionList.remove(transaction);
+        Collections.sort(newTransactionList);
+        getView().notifyDataSetChanged(mTransactionList, newTransactionList, mWalletAddress, false);
+        mTransactionList = newTransactionList;
     }
 
     @Override
