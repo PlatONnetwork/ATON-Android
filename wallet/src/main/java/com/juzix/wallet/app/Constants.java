@@ -18,6 +18,7 @@ public class Constants {
         String EXTRA_PASSWORD = "extra_password";
         String EXTRA_KEYSTORE = "extra_keystore";
         String EXTRA_WALLET = "extra_walletEntity";
+        String EXTRA_WALLET_LIST = "extra_wallet_list";
         String EXTRA_ADDRESS = "extra_address";
         String EXTRA_ADDRESS_LIST = "extra_address_list";
         String EXTRA_TO_ADDRESS = "extra_to_address";
@@ -54,6 +55,7 @@ public class Constants {
         String EXTRA_WITHDRAW_TRANSACTION_HASH = "extra_withdraw_transaction_hash";//赎回的交易hash
         String EXTRA_TRANSACTION_AUTHORIZATION_DATA = "extra_transaction_authorization_data";
         String EXTRA_TRANSACTION_SIGNATURE_DATA = "extra_transaction_signature_data";
+        String EXTRA_BUNDLE = "extra_bundle";
     }
 
     public interface Bundle {
@@ -73,8 +75,9 @@ public class Constants {
         String BUNDLE_PAGE = "bundle_page";
         String BUNDLE_ENGLISH = "bundle_english";
 
-
         String BUNDLE_DATA = "bundle_data";
+
+        String BUNDLE_TIME_STAMP = "bundle_time_stamp";
 
     }
 

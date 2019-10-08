@@ -59,6 +59,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     private String feeAmount;
     private BigInteger gas_Price; //调web3j获取gasprice
     private BigInteger gas_limit;
+
     public WithDrawPresenter(WithDrawContract.View view) {
         super(view);
         mNodeAddress = view.getNodeAddressFromIntent();

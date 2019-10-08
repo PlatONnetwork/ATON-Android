@@ -29,10 +29,6 @@ public class AssetsContract {
 
         void setArgument(Wallet entity);
 
-        void notifyItemChanged(int position);
-
-        void notifyAllChanged();
-
         void finishRefresh();
     }
 

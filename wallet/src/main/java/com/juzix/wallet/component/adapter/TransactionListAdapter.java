@@ -59,7 +59,7 @@ public class TransactionListAdapter extends RecyclerView.Adapter<BaseViewHolder>
             holder.setOnItemClickListener(new BaseViewHolder.OnItemClickListener() {
                 @Override
                 public void onItemClick(Object o) {
-                    TransactionDetailActivity.actionStart(mContext, mTransactionList.get(position), mQueryAddressList);
+                    TransactionDetailActivity.actionStart(mContext, mTransactionList.get(holder.getAdapterPosition()), mQueryAddressList);
                 }
             });
             holder.refreshData(mTransactionList.get(position), position);

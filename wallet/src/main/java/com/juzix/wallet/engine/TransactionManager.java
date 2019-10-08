@@ -18,6 +18,8 @@ import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.NumericUtil;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.EventBusBuilder;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscription;
 import org.spongycastle.util.encoders.Hex;
@@ -28,6 +30,7 @@ import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.abi.datatypes.generated.Uint64;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.RawTransaction;
+import org.web3j.crypto.TransactionDecoder;
 import org.web3j.crypto.TransactionEncoder;
 import org.web3j.platon.FunctionType;
 import org.web3j.platon.PlatOnFunction;
@@ -66,7 +69,7 @@ import io.reactivex.schedulers.Schedulers;
  */
 public class TransactionManager {
 
-    private final static String TAG = TransactionManager.class.getSimpleName();
+    private final static int MAX_PENDING_TIME = 4 * 60 * 60 * 1000;
 
     private TransactionManager() {
 
@@ -181,7 +184,6 @@ public class TransactionManager {
                 });
     }
 
-
     /**
      * 通过轮询获取普通钱包的交易
      */
@@ -193,23 +195,28 @@ public class TransactionManager {
                     @Override
                     public Transaction apply(Long aLong) throws Exception {
                         Transaction trans = getTransactionByHash(transaction);
-                        long latestBlockNumber = Web3jManager.getInstance().getLatestBlockNumber();
-                        long blockNumber = trans.getBlockNumber();
-                        TransactionStatus transactionStatus = blockNumber > 0 && latestBlockNumber - blockNumber >= 1 ? TransactionStatus.SUCCESSED : TransactionStatus.PENDING;
-                        trans.setTxReceiptStatus(transactionStatus.ordinal());
+                        //如果pending时间超过4小时，则删除
+                        if (System.currentTimeMillis() - transaction.getTimestamp() >= MAX_PENDING_TIME) {
+                            trans.setTxReceiptStatus(TransactionStatus.FAILED.ordinal());
+                        } else {
+                            long latestBlockNumber = Web3jManager.getInstance().getLatestBlockNumber();
+                            long blockNumber = trans.getBlockNumber();
+                            TransactionStatus transactionStatus = blockNumber > 0 && latestBlockNumber - blockNumber >= 1 ? TransactionStatus.SUCCESSED : TransactionStatus.PENDING;
+                            trans.setTxReceiptStatus(transactionStatus.ordinal());
+                        }
                         return trans;
                     }
                 })
                 .takeUntil(new Predicate<Transaction>() {
                     @Override
                     public boolean test(Transaction transaction) throws Exception {
-                        return transaction.getTxReceiptStatus() == TransactionStatus.SUCCESSED;
+                        return transaction.getTxReceiptStatus() == TransactionStatus.SUCCESSED || transaction.getTxReceiptStatus() == TransactionStatus.FAILED;
                     }
                 })
                 .filter(new Predicate<Transaction>() {
                     @Override
                     public boolean test(Transaction transaction) throws Exception {
-                        return transaction.getTxReceiptStatus() == TransactionStatus.SUCCESSED;
+                        return transaction.getTxReceiptStatus() == TransactionStatus.SUCCESSED || transaction.getTxReceiptStatus() == TransactionStatus.FAILED;
                     }
                 })
                 .doOnNext(new Consumer<Transaction>() {
@@ -221,7 +228,11 @@ public class TransactionManager {
                 .doOnNext(new Consumer<Transaction>() {
                     @Override
                     public void accept(Transaction transaction) throws Exception {
-                        EventPublisher.getInstance().sendUpdateTransactionEvent(transaction);
+                        if (transaction.getTxReceiptStatus() == TransactionStatus.SUCCESSED) {
+                            EventPublisher.getInstance().sendUpdateTransactionEvent(transaction);
+                        } else {
+                            EventPublisher.getInstance().sendDeleteTransactionEvent(transaction);
+                        }
                     }
                 })
                 .toObservable()

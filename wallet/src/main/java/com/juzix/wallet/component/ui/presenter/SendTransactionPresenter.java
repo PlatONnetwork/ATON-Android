@@ -18,6 +18,7 @@ import com.juzix.wallet.component.ui.contract.SendTransationContract;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.dialog.SendTransactionDialogFragment;
 import com.juzix.wallet.component.ui.dialog.TransactionAuthorizationDialogFragment;
+import com.juzix.wallet.component.ui.dialog.TransactionSignatureDialogFragment;
 import com.juzix.wallet.component.ui.view.AssetsFragment;
 import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.db.entity.AddressEntity;
@@ -42,6 +43,7 @@ import com.trello.rxlifecycle2.android.FragmentEvent;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
+import org.web3j.platon.FunctionType;
 import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.utils.Convert;
 import org.web3j.utils.Numeric;
@@ -73,7 +75,7 @@ import io.reactivex.functions.Predicate;
 /**
  * @author matrixelement
  */
-public class SendTransationPresenter extends BasePresenter<SendTransationContract.View> implements SendTransationContract.Presenter {
+public class SendTransactionPresenter extends BasePresenter<SendTransationContract.View> implements SendTransationContract.Presenter {
 
     private final static double DEFAULT_PERCENT = 0;
     //默认gasLimit
@@ -81,7 +83,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
     //默认最小gasPrice
     private final static BigInteger DEFAULT_MIN_GASPRICE = DefaultGasProvider.GAS_PRICE;
     //默认最大gasPrice
-    private final static BigInteger DEFAULT_MAX_GASPRICE = BigInteger.valueOf(5).multiply(DefaultGasProvider.GAS_PRICE);
+    private final static BigInteger DEFAULT_MAX_GASPRICE = BigInteger.valueOf(6).multiply(DefaultGasProvider.GAS_PRICE);
     //当前gasLimit
     private BigInteger gasLimit = DEAULT_GAS_LIMIT;
     //最低gasPrice
@@ -101,7 +103,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
     private Wallet walletEntity;
     private String toAddress;
 
-    public SendTransationPresenter(SendTransationContract.View view) {
+    public SendTransactionPresenter(SendTransationContract.View view) {
         super(view);
     }
 
@@ -159,9 +161,10 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
                     @Override
                     public void accept(BigInteger bigInteger) throws Exception {
                         if (isViewAttached()) {
-                            LogUtils.e("gasPrice为：  " + bigInteger.longValue());
-                            minGasPrice = bigInteger.divide(BigInteger.valueOf(2));
+                            minGasPrice = bigInteger;
                             maxGasPrice = bigInteger.multiply(BigInteger.valueOf(6));
+                            dGasPrice = maxGasPrice.subtract(minGasPrice);
+                            LogUtils.e("gasPrice为：  " + bigInteger.longValue() + "minGasPrice为： " + minGasPrice);
                             calculateFeeAndTime(percent);
                         }
                     }
@@ -193,8 +196,8 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
     @Override
     public void calculateFeeAndTime(double percent) {
         this.percent = percent;
-        updateFeeAmount(percent);
         updateGasPrice(percent);
+        updateFeeAmount(percent);
     }
 
     @Override
@@ -416,7 +419,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
                     @Override
                     public void accept(BigInteger nonce) {
                         if (isViewAttached()) {
-                            TransactionAuthorizationDialogFragment.newInstance(new TransactionAuthorizationData(Arrays.asList(new TransactionAuthorizationBaseData.Builder()
+                            TransactionAuthorizationData transactionAuthorizationData = new TransactionAuthorizationData(Arrays.asList(new TransactionAuthorizationBaseData.Builder(FunctionType.TRANSFER)
                                     .setAmount(transferAmount)
                                     .setChainId(NodeManager.getInstance().getChainId())
                                     .setNonce(nonce.toString(10))
@@ -424,7 +427,23 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
                                     .setTo(to)
                                     .setGasLimit(gasLimit)
                                     .setGasPrice(gasPrice)
-                                    .build())).toJSONString())
+                                    .build()), System.currentTimeMillis() / 1000);
+                            TransactionAuthorizationDialogFragment.newInstance(transactionAuthorizationData)
+                                    .setOnNextBtnClickListener(new TransactionAuthorizationDialogFragment.OnNextBtnClickListener() {
+                                        @Override
+                                        public void onNextBtnClick() {
+                                            TransactionSignatureDialogFragment.newInstance(transactionAuthorizationData.getTimeStamp())
+                                                    .setOnSendTransactionSucceedListener(new TransactionSignatureDialogFragment.OnSendTransactionSucceedListener() {
+                                                        @Override
+                                                        public void onSendTransactionSucceed(String hash) {
+                                                            if (isViewAttached()) {
+                                                                backToTransactionListWithDelay();
+                                                            }
+                                                        }
+                                                    })
+                                                    .show(currentActivity().getSupportFragmentManager(), TransactionSignatureDialogFragment.TAG);
+                                        }
+                                    })
                                     .show(currentActivity().getSupportFragmentManager(), "showTransactionAuthorizationDialog");
                         }
                     }
@@ -453,6 +472,7 @@ public class SendTransationPresenter extends BasePresenter<SendTransationContrac
 
     private void updateGasPrice(double percent) {
         gasPrice = minGasPrice.add(BigDecimalUtil.mul(String.valueOf(percent), String.valueOf(dGasPrice.doubleValue())).toBigInteger());
+        LogUtils.e("当前gasPrice为：" + gasPrice);
     }
 
     private boolean isBalanceEnough(String transferAmount) {

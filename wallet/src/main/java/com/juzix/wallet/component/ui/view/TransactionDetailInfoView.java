@@ -3,7 +3,6 @@ package com.juzix.wallet.component.ui.view;
 import android.content.Context;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -17,6 +16,8 @@ import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.entity.TransferType;
 import com.juzix.wallet.utils.CommonUtil;
 import com.juzix.wallet.utils.StringUtil;
+
+import retrofit2.http.HEAD;
 
 
 public class TransactionDetailInfoView extends LinearLayout {
@@ -51,6 +52,7 @@ public class TransactionDetailInfoView extends LinearLayout {
                 addView(getItemView(getStringWithColon(R.string.type), getString(transaction.getTransferDescRes(transferType))));
                 addView(getItemView(getStringWithColon(R.string.submissionTime), transaction.getShowCreateTime()));
                 addView(getItemView(getStringWithColon(R.string.submissionAmount), getString(R.string.amount_with_unit, StringUtil.formatBalance(transaction.getShowValue()))));
+                addView(getItemView(getStringWithColon(R.string.fee), getString(R.string.amount_with_unit, transaction.getShowActualTxCost())));
                 addView(getItemView(getStringWithColon(R.string.hash), transaction.getHash(),true));
                 break;
             case CONTRACT_CREATION:
@@ -127,11 +129,7 @@ public class TransactionDetailInfoView extends LinearLayout {
                 addView(getItemView(getStringWithColon(R.string.validator), getString(transaction.getNodeName())));
                 addView(getItemView(getStringWithColon(R.string.nodeId), transaction.getNodeId()));
                 addView(getItemView(getStringWithColon(R.string.proposal_id), transaction.getHash()));
-
                 addView(getItemView(getStringWithColon(R.string.pip_number), TextUtils.isEmpty(transaction.getPiDID()) ? "--" : String.format("%s-%s", "PIP", transaction.getPiDID())));
-
-                addView(getItemView(getStringWithColon(R.string.pip_number), String.format("%s-%s", "PIP", transaction.getPiDID())));
-
                 addView(getItemView(getStringWithColon(R.string.proposal_type), getString(transaction.getProposalTypeDescRes())));
                 if (transaction.getTxType() == TransactionType.VOTING_PROPOSAL) {
                     addView(getItemView(getStringWithColon(R.string.vote), getString(transaction.getVoteOptionTypeDescRes())));

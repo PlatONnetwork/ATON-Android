@@ -14,6 +14,7 @@ import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.widget.ShadowButton;
+import com.juzix.wallet.entity.TransactionAuthorizationData;
 import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.QRCodeEncoder;
 import com.juzix.wallet.utils.RxUtils;
@@ -34,13 +35,19 @@ public class TransactionAuthorizationDialogFragment extends BaseDialogFragment {
     ShadowButton sbtnNext;
 
     private Unbinder unbinder;
+    private OnNextBtnClickListener nextBtnClickListener;
 
-    public static TransactionAuthorizationDialogFragment newInstance(String data) {
+    public static TransactionAuthorizationDialogFragment newInstance(TransactionAuthorizationData data) {
         TransactionAuthorizationDialogFragment dialogFragment = new TransactionAuthorizationDialogFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(Constants.Bundle.BUNDLE_DATA, data);
+        bundle.putParcelable(Constants.Bundle.BUNDLE_DATA, data);
         dialogFragment.setArguments(bundle);
         return dialogFragment;
+    }
+
+    public TransactionAuthorizationDialogFragment setOnNextBtnClickListener(OnNextBtnClickListener nextBtnClickListener){
+        this.nextBtnClickListener = nextBtnClickListener;
+        return this;
     }
 
     @Override
@@ -59,27 +66,27 @@ public class TransactionAuthorizationDialogFragment extends BaseDialogFragment {
 
     private void initViews() {
 
-        String data = getArguments().getString(Constants.Bundle.BUNDLE_DATA);
+        TransactionAuthorizationData data = getArguments().getParcelable(Constants.Bundle.BUNDLE_DATA);
 
         RxView
                 .clicks(sbtnNext)
                 .compose(RxUtils.getClickTransformer())
                 .compose(bindToLifecycle())
                 .subscribe(new CustomObserver<Object>() {
-
                     @Override
                     public void accept(Object o) {
-                            dismiss();
-                            TransactionSignatureDialogFragment.newInstance().show(getActivity().getSupportFragmentManager(),TransactionSignatureDialogFragment.TAG);
+                        dismiss();
+                        if (nextBtnClickListener != null){
+                            nextBtnClickListener.onNextBtnClick();
+                        }
                     }
                 });
 
         Observable
                 .fromCallable(new Callable<Bitmap>() {
-
                     @Override
                     public Bitmap call() throws Exception {
-                        return QRCodeEncoder.syncEncodeQRCode(data, DensityUtil.dp2px(getActivity(), 200f));
+                        return QRCodeEncoder.syncEncodeQRCode(data.toJSONString(), DensityUtil.getScreenWidth(getContext()) - DensityUtil.dp2px(getActivity(), 36f));
                     }
                 })
                 .compose(bindToLifecycle())
@@ -88,7 +95,7 @@ public class TransactionAuthorizationDialogFragment extends BaseDialogFragment {
                     @Override
                     public void accept(Bitmap bitmap) {
                         if (bitmap != null) {
-                            ivTransactionData.setBackground(new BitmapDrawable(bitmap));
+                            ivTransactionData.setImageBitmap(bitmap);
                         }
                     }
                 });
@@ -101,5 +108,9 @@ public class TransactionAuthorizationDialogFragment extends BaseDialogFragment {
         if (unbinder != null) {
             unbinder.unbind();
         }
+    }
+
+    public interface OnNextBtnClickListener{
+        void onNextBtnClick();
     }
 }

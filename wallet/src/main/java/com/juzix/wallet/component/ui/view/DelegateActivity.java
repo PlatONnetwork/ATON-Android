@@ -1,8 +1,10 @@
 package com.juzix.wallet.component.ui.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextUtils;
@@ -30,6 +32,7 @@ import com.juzix.wallet.component.adapter.DelegatePopAdapter;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.DelegateContract;
 import com.juzix.wallet.component.ui.dialog.CommonGuideDialogFragment;
+import com.juzix.wallet.component.ui.dialog.TransactionSignatureDialogFragment;
 import com.juzix.wallet.component.ui.presenter.DelegatePresenter;
 import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.component.widget.PointLengthFilter;
@@ -115,9 +118,10 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     private PopupWindow mPopupWindow;
     private ListView mPopListview;
     private DelegatePopAdapter mAdapter;
-    private long transactionTime;
     private String gasPrice;
     private boolean isAll = false;//是否点击的全部
+    private String delegate_fee;//手续费
+    private String free_account;//自由金额
 
     @Override
 
@@ -170,7 +174,6 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                     @Override
                     public void accept(Object o) {
                         //点击全部
-//                        et_amount.setText(amount.getText().toString().replace(",", ""));
                         mPresenter.getAllPrice(gasPrice, amount.getText().toString().replace(",", ""), chooseType);
                         isAll = true;
                     }
@@ -185,7 +188,10 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                     public void accept(Object o) {
                         UMEventUtil.onEventCount(DelegateActivity.this, Constants.UMEventID.DELEGATE);
                         //点击委托操作
-                        transactionTime = System.currentTimeMillis();
+                        if (BigDecimalUtil.sub(free_account, delegate_fee) < 0) { //可用余额大于手续费才能委托
+                            ToastUtil.showLongToast(getContext(), R.string.delegate_less_than_fee);
+                            return;
+                        }
                         mPresenter.submitDelegate(chooseType);
                     }
                 });
@@ -195,14 +201,14 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     private void initGuide() {
         boolean isShowDelegateOperation = AppSettings.getInstance().getDelegateOperationBoolean();
         boolean isEnglish = Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage()) == true ? false : true;
-        if(!isShowDelegateOperation){
-            CommonGuideDialogFragment.newInstance(CommonGuideDialogFragment.DELEGATE_OPERATION,isEnglish)
+        if (!isShowDelegateOperation) {
+            CommonGuideDialogFragment.newInstance(CommonGuideDialogFragment.DELEGATE_OPERATION, isEnglish)
                     .setKnowListener(new CommonGuideDialogFragment.knowListener() {
                         @Override
                         public void know() {
                             AppSettings.getInstance().setDelegateOperationBoolean(true);
                         }
-                    }).show(getSupportFragmentManager(),"delegateOperation");
+                    }).show(getSupportFragmentManager(), "delegateOperation");
         }
     }
 
@@ -308,7 +314,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
 
         //显示余额类型和余额
         amountType.setText(getString(R.string.available_balance));
-        amount.setText(StringUtil.formatBalance(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(individualWalletEntity.getFreeBalance(), "1E18"))));
+        amount.setText(StringUtil.formatBalance((BigDecimalUtil.div(individualWalletEntity.getFreeBalance(), "1E18"))));
 
         checkIsClick(individualWalletEntity.getAccountBalance());
     }
@@ -347,6 +353,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
             iv_drop_down.setVisibility(View.VISIBLE);
             amounChoose.setClickable(true);
         }
+        free_account = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(bean.getFree(), "1E18"));
 
     }
 
@@ -405,12 +412,12 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     }
 
     @Override
-    public void transactionSuccessInfo(String hash, String from, String to, long time, String txType, String value, String actualTxCost, String nodeName, String nodeId, int txReceiptStatus) {
+    public void transactionSuccessInfo(String hash, String from, String to, String txType, String value, String actualTxCost, String nodeName, String nodeId, int txReceiptStatus) {
         finish();
         Transaction transaction = new Transaction.Builder()
                 .from(from)
                 .to(to)
-                .timestamp(transactionTime)
+                .timestamp(System.currentTimeMillis())
                 .txType(txType)
                 .value(Convert.toVon(value, Convert.Unit.LAT).toBigInteger().toString())
                 .actualTxCost(Convert.toVon(fee.getText().toString(), Convert.Unit.LAT).toBigInteger().toString())
@@ -439,6 +446,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
             tv_lat.setVisibility(View.GONE);
         }
         isAll = false;
+        delegate_fee = gas;
     }
 
     /**
@@ -452,13 +460,15 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         } else {
             tv_lat.setVisibility(View.GONE);
         }
-        double diff = BigDecimalUtil.sub(amount.getText().toString().replace(",", ""), allPrice);
-        if(diff<0){
+        double diff = BigDecimalUtil.sub(amount.getText().toString().replace(",", ""), allPrice);// 剩余的余额和手续费相减
+        if (diff < 0) {
             et_amount.setText(BigDecimalUtil.parseString(0.00));
-            ToastUtil.showLongToast(getContext(),R.string.delegate_less_than_fee);
-        }else {
+            ToastUtil.showLongToast(getContext(), R.string.delegate_less_than_fee);
+        } else {
             et_amount.setText(BigDecimalUtil.parseString(diff));
         }
+
+        delegate_fee = allPrice;
     }
 
     @Override
@@ -516,5 +526,18 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     @Override
     protected boolean immersiveBarViewEnabled() {
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+
+        TransactionSignatureDialogFragment dialogFragment = (TransactionSignatureDialogFragment) getSupportFragmentManager().findFragmentByTag(TransactionSignatureDialogFragment.TAG);
+        if (dialogFragment != null) {
+            dialogFragment.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }

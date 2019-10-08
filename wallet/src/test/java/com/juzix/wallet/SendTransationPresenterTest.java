@@ -8,9 +8,8 @@ import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.ApiSingleObserver;
 import com.juzhen.framework.util.LogUtils;
 import com.juzix.wallet.component.ui.contract.SendTransationContract;
-import com.juzix.wallet.component.ui.presenter.SendTransationPresenter;
+import com.juzix.wallet.component.ui.presenter.SendTransactionPresenter;
 import com.juzix.wallet.config.AppSettings;
-import com.juzix.wallet.db.sqlite.AddressDao;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.Web3jManager;
@@ -54,7 +53,7 @@ import static org.mockito.Mockito.mock;
 @Config(sdk = 27, manifest = Config.NONE)
 public class SendTransationPresenterTest {
 
-    private SendTransationPresenter presenter;
+    private SendTransactionPresenter presenter;
     @Mock
     private SendTransationContract.View view;
 
@@ -85,7 +84,7 @@ public class SendTransationPresenterTest {
         ShadowLog.stream = System.out;
 
         view = mock(SendTransationContract.View.class);
-        presenter = new SendTransationPresenter(view);
+        presenter = new SendTransactionPresenter(view);
         presenter.attachView(view);
 
         appSettings.init(app);

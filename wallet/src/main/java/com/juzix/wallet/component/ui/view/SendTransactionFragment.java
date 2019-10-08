@@ -33,7 +33,7 @@ import com.juzix.wallet.component.ui.contract.SendTransationContract;
 import com.juzix.wallet.component.ui.dialog.CommonEditDialogFragment;
 import com.juzix.wallet.component.ui.dialog.CommonTipsDialogFragment;
 import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
-import com.juzix.wallet.component.ui.presenter.SendTransationPresenter;
+import com.juzix.wallet.component.ui.presenter.SendTransactionPresenter;
 import com.juzix.wallet.component.widget.PointLengthFilter;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.component.widget.bubbleSeekBar.BubbleSeekBar;
@@ -63,7 +63,7 @@ import io.reactivex.functions.Consumer;
 /**
  * @author matrixelement
  */
-public class SendTransactionFragment extends MVPBaseFragment<SendTransationPresenter> implements SendTransationContract.View {
+public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPresenter> implements SendTransationContract.View {
 
     @BindView(R.id.iv_address_book)
     ImageView ivAddressBook;
@@ -118,8 +118,8 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
     }
 
     @Override
-    protected SendTransationPresenter createPresenter() {
-        return new SendTransationPresenter(this);
+    protected SendTransactionPresenter createPresenter() {
+        return new SendTransactionPresenter(this);
     }
 
     private void initViews() {
@@ -368,11 +368,13 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
     private View.OnFocusChangeListener mEtWalletAddressFocusChangeListener = new View.OnFocusChangeListener() {
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
-            String address = etWalletAddress.getText().toString().trim();
-            if (!hasFocus) {
-                mPresenter.checkToAddress(address);
-            } else {
-                showToAddressError("");
+            if (etWalletAddress != null){
+                String address = etWalletAddress.getText().toString().trim();
+                if (!hasFocus) {
+                    mPresenter.checkToAddress(address);
+                } else {
+                    showToAddressError("");
+                }
             }
         }
     };
@@ -399,11 +401,13 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransationPrese
     private View.OnFocusChangeListener mEtWalletAmountFocusChangeListener = new View.OnFocusChangeListener() {
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
-            String amount = etWalletAmount.getText().toString().trim();
-            if (!hasFocus) {
-                mPresenter.checkTransferAmount(amount);
-            } else {
-                showAmountError("");
+            if (etWalletAmount != null){
+                String amount = etWalletAmount.getText().toString().trim();
+                if (!hasFocus) {
+                    mPresenter.checkTransferAmount(amount);
+                } else {
+                    showAmountError("");
+                }
             }
         }
     };

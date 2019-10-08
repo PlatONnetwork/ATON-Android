@@ -22,13 +22,16 @@ public class TransactionSignatureData implements Parcelable {
      */
     private int functionType;
 
+    private long timeStamp;
+
     public TransactionSignatureData() {
     }
 
-    public TransactionSignatureData(List<String> signedDatas, String from, String chainId,int functionType) {
+    public TransactionSignatureData(List<String> signedDatas, String from, String chainId,long timeStamp,int functionType) {
         this.signedDatas = signedDatas;
         this.from = from;
         this.chainId = chainId;
+        this.timeStamp = timeStamp;
         this.functionType = functionType;
     }
 
@@ -36,6 +39,7 @@ public class TransactionSignatureData implements Parcelable {
         signedDatas = in.createStringArrayList();
         from = in.readString();
         chainId = in.readString();
+        timeStamp = in.readLong();
         functionType = in.readInt();
     }
 
@@ -44,6 +48,7 @@ public class TransactionSignatureData implements Parcelable {
         dest.writeStringList(signedDatas);
         dest.writeString(from);
         dest.writeString(chainId);
+        dest.writeLong(timeStamp);
         dest.writeInt(functionType);
     }
 
@@ -94,6 +99,14 @@ public class TransactionSignatureData implements Parcelable {
 
     public void setFunctionType(int functionType) {
         this.functionType = functionType;
+    }
+
+    public long getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
     }
 
     public @QrCodeType

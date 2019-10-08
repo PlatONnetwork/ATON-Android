@@ -140,13 +140,20 @@ public class Web3jManager {
     }
 
     public Single<BigInteger> getGasPrice() {
-        return Single.fromCallable(new Callable<BigInteger>() {
-            @Override
-            public BigInteger call() throws Exception {
-                PlatonGasPrice gasPrice = Web3jManager.getInstance().getWeb3j().platonGasPrice().send();
-                return gasPrice.getGasPrice();
-            }
-        }).onErrorReturnItem(DefaultGasProvider.GAS_PRICE);
+        return Single
+                .fromCallable(new Callable<BigInteger>() {
+                    @Override
+                    public BigInteger call() {
+                        BigInteger gasPrice = DefaultGasProvider.GAS_PRICE;
+                        try {
+                            PlatonGasPrice platonGasPrice = Web3jManager.getInstance().getWeb3j().platonGasPrice().send();
+                            gasPrice = platonGasPrice.getGasPrice();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        return gasPrice;
+                    }
+                }).onErrorReturnItem(DefaultGasProvider.GAS_PRICE);
     }
 
 
