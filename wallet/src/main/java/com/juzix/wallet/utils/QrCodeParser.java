@@ -8,6 +8,7 @@ import com.juzix.wallet.component.ui.view.ImportWalletActivity;
 import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.component.ui.view.TransactionAuthorizationDetailActivity;
 import com.juzix.wallet.entity.QrCodeType;
+import com.juzix.wallet.entity.TransactionAuthorizationBaseData;
 import com.juzix.wallet.entity.TransactionAuthorizationData;
 import com.juzix.wallet.entity.TransactionSignatureData;
 

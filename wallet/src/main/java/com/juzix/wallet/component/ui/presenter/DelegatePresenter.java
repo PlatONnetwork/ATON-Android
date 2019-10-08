@@ -36,9 +36,11 @@ import com.juzix.wallet.utils.ToastUtil;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.platon.ContractAddress;
+import org.web3j.platon.FunctionType;
 import org.web3j.platon.StakingAmountType;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
+import org.web3j.tx.PlatOnContract;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.GasProvider;
 import org.web3j.utils.Convert;
@@ -256,7 +258,6 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                             gas_Price = gasPrice;
                             getView().showGas(gasPrice);
                         }
-
                     }
                 });
     }
@@ -307,27 +308,6 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
             isAll = false;
             Log.d("gasprovide", "============" + "1111111111111表示点击的全部");
         }
-
-//        delegateContract.getDelegateFeeAmount(new BigInteger(gasPrice), mNodeAddress, stakingAmountType, Convert.toVon(inputAmount, Convert.Unit.LAT).toBigInteger())
-//                .subscribe(new Subscriber<BigInteger>() {
-//                    @Override
-//                    public void onNext(BigInteger integer) {
-//                        if (isViewAttached()) {
-//                            feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(integer.toString(), "1E18"));
-//                            getView().showGasPrice(feeAmount);
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCompleted() {
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                    }
-//
-//                });
-
     }
 
 
@@ -337,8 +317,6 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
         Web3j web3j = Web3jManager.getInstance().getWeb3j();
         org.web3j.platon.contracts.DelegateContract delegateContract = org.web3j.platon.contracts.DelegateContract.load(web3j);
         StakingAmountType stakingAmountType = TextUtils.equals(chooseType, "balance") ? StakingAmountType.FREE_AMOUNT_TYPE : StakingAmountType.RESTRICTING_AMOUNT_TYPE;
-        Log.d("DelegatePresenter", "转成von" + "===================" + Convert.toVon(amount, Convert.Unit.LAT).toBigInteger());
-        Log.d("DelegatePresenter", "手续费" + "===================" + Convert.toVon(amount, Convert.Unit.LAT).toBigInteger().toString().replaceAll("0", "1"));
 
         delegateContract.getDelegateGasProvider(mNodeAddress, stakingAmountType, new BigInteger(Convert.toVon(amount, Convert.Unit.LAT).toBigInteger().toString().replaceAll("0", "1")))
                 .subscribeOn(Schedulers.io())
@@ -436,7 +414,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                             String inputAmount = getView().getDelegateAmount();
 
                             if (mWallet.isObservedWallet()) {
-                                showTransactionAuthorizationDialogFragment(mNodeAddress, mNodeName, StakingAmountType.FREE_AMOUNT_TYPE.getValue(), inputAmount, mWalletAddress, "", "", "");
+                                showTransactionAuthorizationDialogFragment(mNodeAddress, mNodeName, StakingAmountType.FREE_AMOUNT_TYPE.getValue(), inputAmount, mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, gas_limit.toString(10), gas_Price.toString(10));
                             } else {
                                 showInputPasswordDialogFragment(inputAmount, type);
                             }
@@ -472,15 +450,13 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                     public void accept(PlatonSendTransaction platonSendTransaction) throws Exception {
                         if (isViewAttached()) {
                             if (!TextUtils.isEmpty(platonSendTransaction.getTransactionHash())) {
-                                getView().transactionSuccessInfo(platonSendTransaction.getResult(), platonSendTransaction.getTransactionHash(), mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, 0, "1004", inputAmount, feeAmount, mNodeName, mNodeAddress
+                                getView().transactionSuccessInfo(platonSendTransaction.getTransactionHash() ,mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, String.valueOf(FunctionType.DELEGATE_FUNC_TYPE), inputAmount, feeAmount, mNodeName, mNodeAddress
                                         , TransactionStatus.PENDING.ordinal());
-
                             } else {
                                 ToastUtil.showLongToast(getContext(), platonSendTransaction.getError().getMessage());
                             }
 
                         }
-
 
                     }
                 }, new Consumer<Throwable>() {
@@ -491,7 +467,6 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                         }
                     }
                 });
-
 
     }
 
@@ -507,7 +482,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                 .show(currentActivity().getSupportFragmentManager(), "inputWalletPasssword");
     }
 
-    private void showTransactionAuthorizationDialogFragment(String nodeId, String nodeName, int stakingAmountType, String transferAmount, String from, String to, String gasLimit, String gasPrice) {
+    private void showTransactionAuthorizationDialogFragment(String nodeId, String nodeName, int stakingAmountType, String transactionAmount, String from, String to, String gasLimit, String gasPrice) {
 
         Observable
                 .fromCallable(new Callable<BigInteger>() {
@@ -523,8 +498,8 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                     @Override
                     public void accept(BigInteger nonce) {
                         if (isViewAttached()) {
-                            TransactionAuthorizationData transactionAuthorizationData = new TransactionAuthorizationData(Arrays.asList(new TransactionAuthorizationDelegateData.Builder()
-                                    .setAmount(transferAmount)
+                            TransactionAuthorizationData transactionAuthorizationData = new TransactionAuthorizationData(Arrays.asList(new TransactionAuthorizationBaseData.Builder(FunctionType.DELEGATE_FUNC_TYPE)
+                                    .setAmount(BigDecimalUtil.mul(transactionAmount,"1E18").toPlainString())
                                     .setChainId(NodeManager.getInstance().getChainId())
                                     .setNonce(nonce.toString(10))
                                     .setFrom(from)
@@ -544,8 +519,8 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                                                         @Override
                                                         public void onSendTransactionSucceed(String hash) {
                                                             if (isViewAttached()) {
-//                                                                getView().transactionSuccessInfo(platonSendTransaction.getResult(), hash, mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, 0, "1004", inputAmount, feeAmount, mNodeName, mNodeAddress
-//                                                                        , TransactionStatus.PENDING.ordinal());
+                                                                getView().transactionSuccessInfo(hash ,mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS,  String.valueOf(FunctionType.DELEGATE_FUNC_TYPE), transactionAmount, feeAmount, mNodeName, mNodeAddress
+                                                                        , TransactionStatus.PENDING.ordinal());
                                                             }
                                                         }
                                                     })

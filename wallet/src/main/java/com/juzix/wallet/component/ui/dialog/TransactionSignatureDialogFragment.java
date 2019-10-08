@@ -221,6 +221,9 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
             afterTransferSucceed(hash, signedDatas.get(signedDatas.size() - 1));
         } else {
             //进入交易详情
+            if (sendTransactionSucceedListener != null) {
+                sendTransactionSucceedListener.onSendTransactionSucceed(hash);
+            }
         }
     }
 

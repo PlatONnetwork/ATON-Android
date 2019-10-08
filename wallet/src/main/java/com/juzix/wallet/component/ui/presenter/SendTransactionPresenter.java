@@ -43,6 +43,7 @@ import com.trello.rxlifecycle2.android.FragmentEvent;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
+import org.web3j.platon.FunctionType;
 import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.utils.Convert;
 import org.web3j.utils.Numeric;
@@ -418,7 +419,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                     @Override
                     public void accept(BigInteger nonce) {
                         if (isViewAttached()) {
-                            TransactionAuthorizationData transactionAuthorizationData = new TransactionAuthorizationData(Arrays.asList(new TransactionAuthorizationBaseData.Builder()
+                            TransactionAuthorizationData transactionAuthorizationData = new TransactionAuthorizationData(Arrays.asList(new TransactionAuthorizationBaseData.Builder(FunctionType.TRANSFER)
                                     .setAmount(transferAmount)
                                     .setChainId(NodeManager.getInstance().getChainId())
                                     .setNonce(nonce.toString(10))
@@ -434,7 +435,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                                             TransactionSignatureDialogFragment.newInstance(transactionAuthorizationData.getTimeStamp())
                                                     .setOnSendTransactionSucceedListener(new TransactionSignatureDialogFragment.OnSendTransactionSucceedListener() {
                                                         @Override
-                                                        public void onSendTransactionSucceed() {
+                                                        public void onSendTransactionSucceed(String hash) {
                                                             if (isViewAttached()) {
                                                                 backToTransactionListWithDelay();
                                                             }

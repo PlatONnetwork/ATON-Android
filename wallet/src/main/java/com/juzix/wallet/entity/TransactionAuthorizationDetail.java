@@ -1,5 +1,7 @@
 package com.juzix.wallet.entity;
 
+import jnr.constants.platform.PRIO;
+
 public class TransactionAuthorizationDetail {
 
     private String amount;
@@ -12,12 +14,18 @@ public class TransactionAuthorizationDetail {
 
     private String fee;
 
-    public TransactionAuthorizationDetail(String amount, int functionType, String sender, String receiver, String fee) {
+    private String nodeId;
+
+    private String nodeName;
+
+    public TransactionAuthorizationDetail(String amount, int functionType, String sender, String receiver, String fee,String nodeId,String nodeName) {
         this.amount = amount;
         this.functionType = functionType;
         this.sender = sender;
         this.receiver = receiver;
         this.fee = fee;
+        this.nodeId = nodeId;
+        this.nodeName = nodeName;
     }
 
     public String getAmount() {
@@ -58,5 +66,21 @@ public class TransactionAuthorizationDetail {
 
     public void setFee(String fee) {
         this.fee = fee;
+    }
+
+    public String getNodeId() {
+        return nodeId;
+    }
+
+    public void setNodeId(String nodeId) {
+        this.nodeId = nodeId;
+    }
+
+    public String getNodeName() {
+        return nodeName;
+    }
+
+    public void setNodeName(String nodeName) {
+        this.nodeName = nodeName;
     }
 }

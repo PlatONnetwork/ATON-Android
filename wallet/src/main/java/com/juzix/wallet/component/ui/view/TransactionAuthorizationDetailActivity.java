@@ -83,7 +83,7 @@ public class TransactionAuthorizationDetailActivity extends BaseActivity {
         tvTxnInfo.setText(string(getTxnInfoRes(transactionAuthorizationDetail.getFunctionType())));
         tvAmount.setText(StringUtil.formatBalance(BigDecimalUtil.div(transactionAuthorizationDetail.getAmount(), "1E18")));
         tvSender.setText(getFormatName(transactionAuthorizationDetail.getSender(), null));
-        tvRecipient.setText(getFormatName(transactionAuthorizationDetail.getReceiver(), null));
+        tvRecipient.setText(getReceiverName(transactionAuthorizationDetail));
         tvFee.setText(string(R.string.amount_with_unit, NumberParserUtils.getPrettyBalance(new BigDecimal(transactionAuthorizationDetail.getFee()).divide(new BigDecimal("1E18")).toPlainString())));
 
         RxView
@@ -148,6 +148,14 @@ public class TransactionAuthorizationDetailActivity extends BaseActivity {
             return String.format("%s(%s)", remark, AddressFormatUtil.formatTransactionAddress(prefixAddress));
         }
         return AddressFormatUtil.formatTransactionAddress(prefixAddress);
+    }
+
+    private String getReceiverName(TransactionAuthorizationDetail transactionAuthorizationDetail) {
+        if (FunctionType.TRANSFER == transactionAuthorizationDetail.getFunctionType()) {
+            return getFormatName(transactionAuthorizationDetail.getReceiver(), null);
+        } else {
+            return String.format("%s(%s)", transactionAuthorizationDetail.getNodeName(), transactionAuthorizationDetail.getNodeId());
+        }
     }
 
     @Override
