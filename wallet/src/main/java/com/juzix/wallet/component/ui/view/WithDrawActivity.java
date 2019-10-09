@@ -1,8 +1,10 @@
 package com.juzix.wallet.component.ui.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextUtils;
@@ -28,6 +30,7 @@ import com.juzix.wallet.component.adapter.WithDrawPopWindowAdapter;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.WithDrawContract;
 import com.juzix.wallet.component.ui.dialog.CommonGuideDialogFragment;
+import com.juzix.wallet.component.ui.dialog.TransactionSignatureDialogFragment;
 import com.juzix.wallet.component.ui.presenter.WithDrawPresenter;
 import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.component.widget.PointLengthFilter;
@@ -380,12 +383,12 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     }
 
     @Override
-    public void withDrawSuccessInfo(String hash, String from, String to, long time, String txType, String value, String actualTxCost, String nodeName, String nodeId, int txReceiptStatus) {
+    public void withDrawSuccessInfo(String hash, String from, String to, int txType, String value, String actualTxCost, String nodeName, String nodeId, int txReceiptStatus) {
         Transaction transaction = new Transaction.Builder()
                 .from(from)
                 .to(to)
                 .timestamp(transactionTime)
-                .txType(txType)
+                .txType(String.valueOf(txType))
                 .unDelegation(Convert.toVon(withdrawAmount.getText().toString(), Convert.Unit.LAT).toBigInteger().toString())
                 .actualTxCost(Convert.toVon(actualTxCost, Convert.Unit.LAT).toBigInteger().toString())
                 .nodeName(nodeName)
@@ -419,6 +422,19 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     @Override
     protected boolean immersiveBarViewEnabled() {
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+
+        TransactionSignatureDialogFragment dialogFragment = (TransactionSignatureDialogFragment) getSupportFragmentManager().findFragmentByTag(TransactionSignatureDialogFragment.TAG);
+        if (dialogFragment != null) {
+            dialogFragment.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     public static void actionStart(Context context, String nodeAddress, String nodeName, String nodeIcon, String stakingBlockNum, String walletAddress, String walletName, String walletIcon) {

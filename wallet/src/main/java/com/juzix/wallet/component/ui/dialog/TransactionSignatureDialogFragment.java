@@ -51,9 +51,11 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 
 public class TransactionSignatureDialogFragment extends BaseDialogFragment {
@@ -153,14 +155,17 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
                     @Override
                     public void accept(Object o) {
                         if (transactionSignatureData != null && transactionSignatureData.getTimeStamp() == timeStamp) {
-                            Single
-                                    .fromCallable(new Callable<String>() {
+
+                            Flowable
+                                    .fromIterable(transactionSignatureData.getSignedDatas())
+                                    .map(new Function<String, String>() {
                                         @Override
-                                        public String call() throws Exception {
-                                            return TransactionManager.getInstance().sendTransaction(transactionSignatureData.getSignedDatas().get(0));
+                                        public String apply(String signedMessage) throws Exception {
+                                            return TransactionManager.getInstance().sendTransaction(signedMessage);
                                         }
                                     })
-                                    .compose(RxUtils.getSingleSchedulerTransformer())
+                                    .takeLast(1)
+                                    .compose(RxUtils.getFlowableSchedulerTransformer())
                                     .compose(bindToLifecycle())
                                     .subscribe(new Consumer<String>() {
                                         @Override

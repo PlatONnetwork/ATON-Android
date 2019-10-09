@@ -33,9 +33,7 @@ public class WithDrawContract {
 
         void showNodeInfo(String nodeAddress, String nodeName, String nodeIcon);
 
-        //        void showBalanceType(WithDrawBalance drawBalance, Map<String, String> map);
         void showBalanceType(double delegated, double unlocked, double released);
-
 
         String getInputAmount();
 
@@ -45,7 +43,6 @@ public class WithDrawContract {
         /**
          * @param from            发起的钱包地址
          * @param to              接收的钱包地址
-         * @param time            交易时间
          * @param txType          交易类型
          * @param value           交易数量
          * @param actualTxCost    交易手续费
@@ -53,8 +50,7 @@ public class WithDrawContract {
          * @param nodeId
          * @param txReceiptStatus "2" 表示确认中
          */
-        void withDrawSuccessInfo(String hash, String from, String to, long time, String txType, String value, String actualTxCost, String nodeName, String nodeId, int txReceiptStatus);
-
+        void withDrawSuccessInfo(String hash, String from, String to, int txType, String value, String actualTxCost, String nodeName, String nodeId, int txReceiptStatus);
 
         /**
          * 显示手续费
