@@ -43,7 +43,9 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
 
     private static final String ACTIVE = "Active";
     private static final String CANDIDATE = "Candidate";
-    private static final String EXITED= "Exited";
+    private static final String EXITED = "Exited";
+    private static final String EXITING = "Exiting";
+
     public void setmOnDelegateClickListener(OnDelegateClickListener mOnDelegateClickListener) {
         this.mOnDelegateClickListener = mOnDelegateClickListener;
     }
@@ -72,6 +74,10 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
         holder.tv_node_released_delegate.setText(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getReleased(), "1E18"))) == 0 ? "— —" : StringUtil.formatBalance(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getReleased(), "1E18"))));
         holder.tv_node_undelegating.setText(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getRedeem(), "1E18"))) == 0 ? "— —" : StringUtil.formatBalance(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getRedeem(), "1E18"))));
 
+        //委托按钮置灰不可点击( a.节点退出中或已退出 /b.节点状态为初始化验证人（收益地址为激励池地址的验证人）)
+        if(TextUtils.equals(detail.getNodeStatus(),EXITED)|| TextUtils.equals(detail.getNodeStatus(),EXITING) || detail.isInit()){
+            holder.ll_delegate.setBackgroundColor(ContextCompat.getColor(mContext, R.color.color_66DCDFE8));
+        }
 
         if (NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getReleased(), "1E18"))) > 0) {
             holder.ll_delegate.setBackgroundColor(ContextCompat.getColor(mContext, R.color.color_66DCDFE8));
@@ -145,10 +151,10 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
                     @Override
                     public void accept(Object o) throws Exception {
                         if (null != mOnDelegateClickListener) {
-                            if (NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getReleased(), "1E18"))) > 0) {
-                                //提示，不可点击
-                                ToastUtil.showLongToast(mContext, R.string.delegate_no_click);
-                            } else {
+                            if(TextUtils.equals(detail.getNodeStatus(),EXITED)|| TextUtils.equals(detail.getNodeStatus(),EXITING) || detail.isInit()){
+                                //可以不做处理
+                            }
+                            else {
                                 mOnDelegateClickListener.onDelegateClick(detail.getNodeId(), detail.getNodeName(), detail.getUrl());
                             }
                         }
@@ -278,5 +284,6 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
 
         void onLinkClick(String webSiteUrl);
     }
+
 
 }
