@@ -303,7 +303,6 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                             getView().showGasPrice(feeAmount);
                         }
                     });
-
         } else {
             isAll = false;
             Log.d("gasprovide", "============" + "1111111111111表示点击的全部");
@@ -342,7 +341,6 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                         getView().showAllGasPrice(feeAmount);
                     }
                 });
-
     }
 
     @SuppressLint("CheckResult")
