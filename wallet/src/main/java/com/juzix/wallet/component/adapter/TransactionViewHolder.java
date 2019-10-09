@@ -72,7 +72,7 @@ public class TransactionViewHolder extends BaseViewHolder<Transaction> {
             mTransactionAmountTv.setText(String.format("%s%s", "-", StringUtil.formatBalance(transaction.getShowValue())));
             mTransactionAmountTv.setTextColor(ContextCompat.getColor(mContext, R.color.color_ff3b3b));
         } else {
-            mTransactionAmountTv.setText(String.format("%s%s", "+",StringUtil.formatBalance(transaction.getShowValue())));
+            mTransactionAmountTv.setText(String.format("%s%s", "+", StringUtil.formatBalance(transaction.getShowValue())));
             mTransactionAmountTv.setTextColor(ContextCompat.getColor(mContext, R.color.color_19a20e));
         }
         mTransactionStatusTv.setText(getTxTDesc(transaction, mContext, isSender));
@@ -80,10 +80,14 @@ public class TransactionViewHolder extends BaseViewHolder<Transaction> {
         mPendingLayout.setVisibility(transactionStatus != TransactionStatus.PENDING || mContext instanceof TransactionRecordsActivity ? View.GONE : View.VISIBLE);
         mTransactionStatusIv.setVisibility(transactionStatus == TransactionStatus.PENDING || mContext instanceof TransactionRecordsActivity ? View.GONE : View.VISIBLE);
 
-        if (transactionType == TransactionType.TRANSFER) {
-            mTransactionStatusIv.setImageResource(isSender ? R.drawable.icon_send_transation : R.drawable.icon_receive_transaction);
+        if (transactionStatus == TransactionStatus.TIMEOUT) {
+            mTransactionStatusIv.setImageResource(R.drawable.icon_timeout);
         } else {
-            mTransactionStatusIv.setImageResource(isSender ? R.drawable.icon_delegate : R.drawable.icon_undelegate);
+            if (transactionType == TransactionType.TRANSFER) {
+                mTransactionStatusIv.setImageResource(isSender ? R.drawable.icon_send_transation : R.drawable.icon_receive_transaction);
+            } else {
+                mTransactionStatusIv.setImageResource(isSender ? R.drawable.icon_delegate : R.drawable.icon_undelegate);
+            }
         }
     }
 

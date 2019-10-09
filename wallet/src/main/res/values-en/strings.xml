@@ -296,6 +296,7 @@
     <string name="signing">Signing</string>
     <string name="success">Success</string>
     <string name="failed">Failed</string>
+    <string name="timeout">Time out</string>
     <string name="energon_price">Energon Price</string>
     <string name="wallet">Wallet</string>
     <string name="transaction_hash">Hash:</string>

@@ -21,15 +21,6 @@ public class Event {
         }
     }
 
-    public static class UpdateTransactionEvent {
-
-        public Transaction transaction;
-
-        public UpdateTransactionEvent(Transaction transaction) {
-            this.transaction = transaction;
-        }
-    }
-
     public static class DeleteTransactionEvent {
 
         public Transaction transaction;
@@ -45,31 +36,6 @@ public class Event {
 
         public UpdateSelectedWalletEvent(Wallet walletEntity) {
             this.walletEntity = walletEntity;
-        }
-    }
-
-    public static class UpdateSharedWalletUnreadMessageEvent {
-
-        public String contractAddress;
-        public boolean hasUnreadMessage;
-
-        public UpdateSharedWalletUnreadMessageEvent(String contractAddress, boolean hasUnreadMessage) {
-            this.contractAddress = contractAddress;
-            this.hasUnreadMessage = hasUnreadMessage;
-        }
-    }
-
-    public static class UpdateTransactionUnreadMessageEvent {
-
-        public String uuid;
-        /**
-         * 是否未读
-         */
-        public boolean hasUnread;
-
-        public UpdateTransactionUnreadMessageEvent(String uuid, boolean hasUnread) {
-            this.uuid = uuid;
-            this.hasUnread = hasUnread;
         }
     }
 

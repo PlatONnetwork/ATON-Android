@@ -40,6 +40,16 @@ public enum TransactionStatus implements Parcelable {
         public int getTransactionStatusDescColorRes() {
             return R.color.color_105cfe;
         }
+    }, TIMEOUT {
+        @Override
+        public int getTransactionStatusDescRes() {
+            return R.string.timeout;
+        }
+
+        @Override
+        public int getTransactionStatusDescColorRes() {
+            return R.color.color_f5302c;
+        }
     };
 
     private static Map<Integer, TransactionStatus> map = new HashMap<>();

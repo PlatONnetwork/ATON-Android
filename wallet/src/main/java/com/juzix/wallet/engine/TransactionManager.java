@@ -69,7 +69,7 @@ import io.reactivex.schedulers.Schedulers;
  */
 public class TransactionManager {
 
-    private final static int MAX_PENDING_TIME = 4 * 60 * 60 * 1000;
+    private final static int MAX_PENDING_TIME = 24 * 60 * 60 * 1000;
 
     private TransactionManager() {
 
@@ -197,7 +197,7 @@ public class TransactionManager {
                         Transaction trans = getTransactionByHash(transaction);
                         //如果pending时间超过4小时，则删除
                         if (System.currentTimeMillis() - transaction.getTimestamp() >= MAX_PENDING_TIME) {
-                            trans.setTxReceiptStatus(TransactionStatus.FAILED.ordinal());
+                            trans.setTxReceiptStatus(TransactionStatus.TIMEOUT.ordinal());
                         } else {
                             long latestBlockNumber = Web3jManager.getInstance().getLatestBlockNumber();
                             long blockNumber = trans.getBlockNumber();
@@ -210,13 +210,13 @@ public class TransactionManager {
                 .takeUntil(new Predicate<Transaction>() {
                     @Override
                     public boolean test(Transaction transaction) throws Exception {
-                        return transaction.getTxReceiptStatus() == TransactionStatus.SUCCESSED || transaction.getTxReceiptStatus() == TransactionStatus.FAILED;
+                        return transaction.getTxReceiptStatus() == TransactionStatus.SUCCESSED || transaction.getTxReceiptStatus() == TransactionStatus.TIMEOUT;
                     }
                 })
                 .filter(new Predicate<Transaction>() {
                     @Override
                     public boolean test(Transaction transaction) throws Exception {
-                        return transaction.getTxReceiptStatus() == TransactionStatus.SUCCESSED || transaction.getTxReceiptStatus() == TransactionStatus.FAILED;
+                        return transaction.getTxReceiptStatus() == TransactionStatus.SUCCESSED;
                     }
                 })
                 .doOnNext(new Consumer<Transaction>() {
@@ -230,8 +230,6 @@ public class TransactionManager {
                     public void accept(Transaction transaction) throws Exception {
                         if (transaction.getTxReceiptStatus() == TransactionStatus.SUCCESSED) {
                             EventPublisher.getInstance().sendUpdateTransactionEvent(transaction);
-                        } else {
-                            EventPublisher.getInstance().sendDeleteTransactionEvent(transaction);
                         }
                     }
                 })
