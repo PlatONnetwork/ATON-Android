@@ -147,13 +147,11 @@ public class NodeManager {
 
         List<Node> nodeInfoEntityList = new ArrayList<>();
 
-        Node nodeEntity = null;
-
         for (int i = 0; i < DEFAULT_NODE_URL_LIST.length; i++) {
-            nodeEntity = new Node.Builder()
+            Node nodeEntity = new Node.Builder()
                     .id(UUID.randomUUID().hashCode())
                     .nodeAddress(DEFAULT_NODE_URL_LIST[i])
-                    .isDefaultNode(true)
+                    .isDefaultNode(i != 2)
                     .isChecked(i == 0)
                     .chainId(DEFAULT_NODE_CHAINID_LIST[i])
                     .build();

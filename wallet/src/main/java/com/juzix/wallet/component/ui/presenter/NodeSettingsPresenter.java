@@ -15,6 +15,7 @@ import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.db.entity.WalletEntity;
 import com.juzix.wallet.db.sqlite.WalletDao;
 import com.juzix.wallet.engine.NodeManager;
+import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.Node;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.RxUtils;
@@ -197,16 +198,17 @@ public class NodeSettingsPresenter extends BasePresenter<NodeSettingsContract.Vi
                 .flatMap(new Function<Boolean, SingleSource<Boolean>>() {
                     @Override
                     public SingleSource<Boolean> apply(Boolean aBoolean) throws Exception {
-                        return checkIndividualWalletList();
+                        return checkWalletList();
                     }
                 })
                 .compose(new SchedulersTransformer())
-                .compose(bindToLifecycle())
                 .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
                 .subscribe(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean success) throws Exception {
-
+                        if (isViewAttached() && success){
+                            WalletManager.getInstance().init();
+                        }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -227,12 +229,12 @@ public class NodeSettingsPresenter extends BasePresenter<NodeSettingsContract.Vi
         return mEdited;
     }
 
-    private Single<Boolean> checkIndividualWalletList() {
+    private Single<Boolean> checkWalletList() {
         return Single.create(new SingleOnSubscribe<Boolean>() {
             @Override
             public void subscribe(SingleEmitter<Boolean> emitter) throws Exception {
-                List<WalletEntity> individualWalletInfoEntityList = WalletDao.getWalletInfoList();
-                if (individualWalletInfoEntityList.isEmpty()) {
+                List<WalletEntity> walletEntityList = WalletDao.getWalletInfoList();
+                if (walletEntityList.isEmpty()) {
                     emitter.onError(new CustomThrowable(CustomThrowable.CODE_ERROR_NOT_EXIST_VALID_WALLET));
                 } else {
                     emitter.onSuccess(true);
