@@ -13,6 +13,8 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
@@ -25,7 +27,15 @@ public class Test {
 
     public static void main(String[] args) {
 
-        System.out.println(JSONUtil.toJSONString(new Number(BigDecimalUtil.toBigDecimal("1E80"))));
+        Pattern pattern = Pattern.compile("(.*?)([\\d\\,]+\\.\\d+)(.*)");
+        Matcher matcher = pattern.matcher("9,01.919728840LAT");
+        while (matcher.find()) {
+            System.out.println(matcher.group(0));
+            System.out.println(matcher.group(1));
+            System.out.println(matcher.group(2));
+            System.out.println(matcher.group(3));
+        }
+
     }
 
 
