@@ -9,11 +9,14 @@ import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.ApiSingleObserver;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.app.CustomThrowable;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.DelegateContract;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.dialog.SelectWalletDialogFragment;
+import com.juzix.wallet.component.ui.dialog.TransactionAuthorizationDialogFragment;
+import com.juzix.wallet.component.ui.dialog.TransactionSignatureDialogFragment;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.engine.DelegateManager;
 import com.juzix.wallet.engine.NodeManager;
@@ -22,6 +25,10 @@ import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.AccountBalance;
 import com.juzix.wallet.entity.DelegateHandle;
+import com.juzix.wallet.entity.TransactionAuthorizationBaseData;
+import com.juzix.wallet.entity.TransactionAuthorizationData;
+import com.juzix.wallet.entity.TransactionAuthorizationDelegateData;
+import com.juzix.wallet.entity.TransactionStatus;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.RxUtils;
@@ -29,9 +36,11 @@ import com.juzix.wallet.utils.ToastUtil;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.platon.ContractAddress;
+import org.web3j.platon.FunctionType;
 import org.web3j.platon.StakingAmountType;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
+import org.web3j.tx.PlatOnContract;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.GasProvider;
 import org.web3j.utils.Convert;
@@ -39,14 +48,16 @@ import org.web3j.utils.Convert;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import retrofit2.Response;
-import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -247,7 +258,6 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                             gas_Price = gasPrice;
                             getView().showGas(gasPrice);
                         }
-
                     }
                 });
     }
@@ -287,38 +297,16 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                         @Override
                         public void onNext(GasProvider gasProvider) {
                             gas_limit = gasProvider.getGasLimit();
-                            Log.d("gaslimit", "========getGasPrice========" + "limit ===" + gas_limit +"gasprice ======" + gas_Price);
+                            Log.d("gaslimit", "========getGasPrice========" + "limit ===" + gas_limit + "gasprice ======" + gas_Price);
                             BigDecimal mul = BigDecimalUtil.mul(gasProvider.getGasLimit().toString(), gas_Price.toString());
                             feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(mul.toString(), "1E18"));
                             getView().showGasPrice(feeAmount);
                         }
                     });
-
         } else {
             isAll = false;
             Log.d("gasprovide", "============" + "1111111111111表示点击的全部");
         }
-
-//        delegateContract.getDelegateFeeAmount(new BigInteger(gasPrice), mNodeAddress, stakingAmountType, Convert.toVon(inputAmount, Convert.Unit.LAT).toBigInteger())
-//                .subscribe(new Subscriber<BigInteger>() {
-//                    @Override
-//                    public void onNext(BigInteger integer) {
-//                        if (isViewAttached()) {
-//                            feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(integer.toString(), "1E18"));
-//                            getView().showGasPrice(feeAmount);
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCompleted() {
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                    }
-//
-//                });
-
     }
 
 
@@ -328,10 +316,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
         Web3j web3j = Web3jManager.getInstance().getWeb3j();
         org.web3j.platon.contracts.DelegateContract delegateContract = org.web3j.platon.contracts.DelegateContract.load(web3j);
         StakingAmountType stakingAmountType = TextUtils.equals(chooseType, "balance") ? StakingAmountType.FREE_AMOUNT_TYPE : StakingAmountType.RESTRICTING_AMOUNT_TYPE;
-        Log.d("DelegatePresenter", "转成von" + "===================" + Convert.toVon(amount, Convert.Unit.LAT).toBigInteger());
-        Log.d("DelegatePresenter", "手续费" + "===================" + Convert.toVon(amount, Convert.Unit.LAT).toBigInteger().toString().replaceAll("0", "1"));
 
-//        delegateContract.getDelegateFeeAmount(new BigInteger(gasPrice), mNodeAddress, stakingAmountType, Convert.toVon(amount, Convert.Unit.LAT).toBigInteger())
         delegateContract.getDelegateGasProvider(mNodeAddress, stakingAmountType, new BigInteger(Convert.toVon(amount, Convert.Unit.LAT).toBigInteger().toString().replaceAll("0", "1")))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -349,39 +334,13 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                     @Override
                     public void onNext(GasProvider gasProvider) {
                         gas_limit = gasProvider.getGasLimit();
-                        Log.d("gaslimit", "========getAllPrice========" + "limit" + gas_limit +"gasprice ========" +gas_Price);
+                        Log.d("gaslimit", "========getAllPrice========" + "limit" + gas_limit + "gasprice ========" + gas_Price);
                         Log.d("gasprovide", "========getAllPrice======" + gasProvider.getGasLimit());
                         BigDecimal mul = BigDecimalUtil.mul(gasProvider.getGasLimit().toString(), gas_Price.toString());
                         feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(mul.toString(), "1E18"));
                         getView().showAllGasPrice(feeAmount);
                     }
                 });
-
-//        delegateContract.getDelegateFeeAmount(null, mNodeAddress, stakingAmountType, new BigInteger(Convert.toVon(amount, Convert.Unit.LAT).toBigInteger().toString().replaceAll("0", "1")))
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Subscriber<BigInteger>() {
-//                    @Override
-//                    public void onNext(BigInteger bigInteger) {
-//                        if (isViewAttached()) {
-//                            feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(bigInteger.toString(), "1E18"));
-//                            getView().showAllGasPrice(feeAmount);
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//
-//                    }
-//
-//
-//                });
-
     }
 
     @SuppressLint("CheckResult")
@@ -392,7 +351,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
             @Override
             public Double call() throws Exception {
                 //输入数量+手续费
-                return BigDecimalUtil.add(getView().getDelegateAmount(), getView().getGasPrice());
+                return BigDecimalUtil.add(getView().getDelegateAmount(), getView().getGasPrice()).doubleValue();
             }
         }).zipWith(ServerUtils.getCommonApi().getIsDelegateInfo(ApiRequestBody.newBuilder()
                         .put("addr", mWallet.getPrefixAddress())
@@ -452,16 +411,11 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
                             String inputAmount = getView().getDelegateAmount();
 
-                            InputWalletPasswordDialogFragment
-                                    .newInstance(mWallet)
-                                    .setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
-                                        @Override
-                                        public void onWalletPasswordCorrect(Credentials credentials) {
-                                            delegate(credentials, inputAmount, mNodeAddress, type);
-                                        }
-                                    })
-                                    .show(currentActivity().getSupportFragmentManager(), "inputWalletPasssword");
-
+                            if (mWallet.isObservedWallet()) {
+                                showTransactionAuthorizationDialogFragment(mNodeAddress, mNodeName, StakingAmountType.FREE_AMOUNT_TYPE.getValue(), inputAmount, mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, gas_limit.toString(10), gas_Price.toString(10));
+                            } else {
+                                showInputPasswordDialogFragment(inputAmount, type);
+                            }
                         }
 
 
@@ -494,15 +448,13 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                     public void accept(PlatonSendTransaction platonSendTransaction) throws Exception {
                         if (isViewAttached()) {
                             if (!TextUtils.isEmpty(platonSendTransaction.getTransactionHash())) {
-                                getView().transactionSuccessInfo(platonSendTransaction.getResult(),platonSendTransaction.getTransactionHash() ,mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, 0, "1004", inputAmount, feeAmount, mNodeName, mNodeAddress
-                                        , 2);
-
+                                getView().transactionSuccessInfo(platonSendTransaction.getTransactionHash() ,mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, String.valueOf(FunctionType.DELEGATE_FUNC_TYPE), inputAmount, feeAmount, mNodeName, mNodeAddress
+                                        , TransactionStatus.PENDING.ordinal());
                             } else {
                                 ToastUtil.showLongToast(getContext(), platonSendTransaction.getError().getMessage());
                             }
 
                         }
-
 
                     }
                 }, new Consumer<Throwable>() {
@@ -514,7 +466,79 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                     }
                 });
 
+    }
 
+    private void showInputPasswordDialogFragment(String inputAmount, String type) {
+        InputWalletPasswordDialogFragment
+                .newInstance(mWallet)
+                .setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
+                    @Override
+                    public void onWalletPasswordCorrect(Credentials credentials) {
+                        delegate(credentials, inputAmount, mNodeAddress, type);
+                    }
+                })
+                .show(currentActivity().getSupportFragmentManager(), "inputWalletPasssword");
+    }
+
+    private void showTransactionAuthorizationDialogFragment(String nodeId, String nodeName, int stakingAmountType, String transactionAmount, String from, String to, String gasLimit, String gasPrice) {
+
+        Observable
+                .fromCallable(new Callable<BigInteger>() {
+                    @Override
+                    public BigInteger call() throws Exception {
+                        return Web3jManager.getInstance().getNonce(from);
+                    }
+                })
+                .compose(RxUtils.getSchedulerTransformer())
+                .compose(bindToLifecycle())
+                .compose(RxUtils.getLoadingTransformer(currentActivity()))
+                .subscribe(new CustomObserver<BigInteger>() {
+                    @Override
+                    public void accept(BigInteger nonce) {
+                        if (isViewAttached()) {
+                            TransactionAuthorizationData transactionAuthorizationData = new TransactionAuthorizationData(Arrays.asList(new TransactionAuthorizationBaseData.Builder(FunctionType.DELEGATE_FUNC_TYPE)
+                                    .setAmount(BigDecimalUtil.mul(transactionAmount,"1E18").toPlainString())
+                                    .setChainId(NodeManager.getInstance().getChainId())
+                                    .setNonce(nonce.toString(10))
+                                    .setFrom(from)
+                                    .setTo(to)
+                                    .setGasLimit(gasLimit)
+                                    .setGasPrice(gasPrice)
+                                    .setNodeId(nodeId)
+                                    .setNodeName(nodeName)
+                                    .setStakingAmountType(stakingAmountType)
+                                    .build()), System.currentTimeMillis() / 1000);
+                            TransactionAuthorizationDialogFragment.newInstance(transactionAuthorizationData)
+                                    .setOnNextBtnClickListener(new TransactionAuthorizationDialogFragment.OnNextBtnClickListener() {
+                                        @Override
+                                        public void onNextBtnClick() {
+                                            TransactionSignatureDialogFragment.newInstance(transactionAuthorizationData.getTimeStamp())
+                                                    .setOnSendTransactionSucceedListener(new TransactionSignatureDialogFragment.OnSendTransactionSucceedListener() {
+                                                        @Override
+                                                        public void onSendTransactionSucceed(String hash) {
+                                                            if (isViewAttached()) {
+                                                                getView().transactionSuccessInfo(hash ,mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS,  String.valueOf(FunctionType.DELEGATE_FUNC_TYPE), transactionAmount, feeAmount, mNodeName, mNodeAddress
+                                                                        , TransactionStatus.PENDING.ordinal());
+                                                            }
+                                                        }
+                                                    })
+                                                    .show(currentActivity().getSupportFragmentManager(), TransactionSignatureDialogFragment.TAG);
+                                        }
+                                    })
+                                    .show(currentActivity().getSupportFragmentManager(), "showTransactionAuthorizationDialog");
+                        }
+                    }
+
+                    @Override
+                    public void accept(Throwable throwable) {
+                        super.accept(throwable);
+                        if (isViewAttached()) {
+                            if (!TextUtils.isEmpty(throwable.getMessage())) {
+                                ToastUtil.showLongToast(currentActivity(), throwable.getMessage());
+                            }
+                        }
+                    }
+                });
     }
 
 

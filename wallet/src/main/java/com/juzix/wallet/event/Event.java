@@ -144,4 +144,15 @@ public class Event {
         public SumAccountBalanceChanged() {
         }
     }
+    public static class  MyDelegateGuide{
+        public MyDelegateGuide(){
+
+        }
+    }
+
+    public static  class  ValidatorsGuide{
+        public ValidatorsGuide(){
+
+        }
+    }
 }

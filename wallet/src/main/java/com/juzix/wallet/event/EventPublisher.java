@@ -98,4 +98,11 @@ public class EventPublisher {
         BusProvider.post(new Event.UpdateRefreshPageEvent());
     }
 
+    public void sendShowMyDelegateGuide(){
+        BusProvider.post(new Event.MyDelegateGuide());
+    }
+
+    public void sendShowValidatorsGuide(){
+        BusProvider.post(new Event.ValidatorsGuide());
+    }
 }

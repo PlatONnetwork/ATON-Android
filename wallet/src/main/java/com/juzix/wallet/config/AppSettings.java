@@ -83,6 +83,56 @@ public class AppSettings {
         setBooleanItem(Constants.Preference.KEY_FACE_TOUCH_ID_FLAG, supportFaceTouchId);
     }
 
+    public boolean getRecordBoolean() {
+        return getBooleanItem(Constants.Preference.KEY_SHOW_RECORD, false);
+    }
+
+    public void setRecordBoolean(boolean isShowRecord) {
+        setBooleanItem(Constants.Preference.KEY_SHOW_RECORD, isShowRecord);
+    }
+
+    public boolean getDelegateDetailBoolean(){
+        return  getBooleanItem(Constants.Preference.KEY_SHOW_DELEGATE_DETAIL,false);
+    }
+    public void setDelegateDetailBoolean(boolean isShowDelegateDetail){
+        setBooleanItem(Constants.Preference.KEY_SHOW_DELEGATE_DETAIL,isShowDelegateDetail);
+    }
+
+    public boolean getDelegateOperationBoolean(){
+        return  getBooleanItem(Constants.Preference.KEY_SHOW_DELEGATE_OPERATION,false);
+    }
+    public void setDelegateOperationBoolean(boolean isShowDelegateOperation){
+        setBooleanItem(Constants.Preference.KEY_SHOW_DELEGATE_OPERATION,isShowDelegateOperation);
+    }
+
+    public boolean getValidatorsBoolean(){
+        return  getBooleanItem(Constants.Preference.KEY_SHOW_VALIDATORS,false);
+    }
+    public void setValidatorsBoolean(boolean isShowValidators){
+        setBooleanItem(Constants.Preference.KEY_SHOW_VALIDATORS,isShowValidators);
+    }
+
+    public boolean getObservedWalletBoolean(){
+        return getBooleanItem(Constants.Preference.KEY_SHOW_OBSERVED_WALLET,false);
+    }
+    public void setObservedWalletBoolean(boolean isShowObservedWallet){
+        setBooleanItem(Constants.Preference.KEY_SHOW_OBSERVED_WALLET,isShowObservedWallet);
+    }
+
+    public boolean getMyDelegateBoolean(){
+        return  getBooleanItem(Constants.Preference.KEY_SHOW_MY_DELEGATE,false);
+    }
+    public void setMyDelegateBoolean(boolean isShowMydelegate){
+        setBooleanItem(Constants.Preference.KEY_SHOW_MY_DELEGATE,isShowMydelegate);
+    }
+
+    public boolean getWithdrawOperation(){
+        return  getBooleanItem(Constants.Preference.KEY_SHOW_WITHDRAW_OPERATION,false);
+    }
+    public void setWithdrawOperation(boolean isShowWithdrawOperation){
+        setBooleanItem(Constants.Preference.KEY_SHOW_WITHDRAW_OPERATION,isShowWithdrawOperation);
+    }
+
     public boolean getShowAssetsFlag() {
         return getBooleanItem(Constants.Preference.KEY_SHOW_ASSETS_FLAG, true);
     }

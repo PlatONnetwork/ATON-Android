@@ -63,6 +63,12 @@ public class DelegateDetail implements Parcelable {
      */
     private String delegationBlockNum;
 
+    /**
+     *是否为链初始化时内置的候选人
+     * 0.7.3 新增字段
+     */
+    private boolean isInit;
+
     public DelegateDetail() {
 
     }
@@ -163,6 +169,14 @@ public class DelegateDetail implements Parcelable {
         this.delegationBlockNum = delegationBlockNum;
     }
 
+    public boolean isInit() {
+        return isInit;
+    }
+
+    public void setInit(boolean init) {
+        isInit = init;
+    }
+
     protected DelegateDetail(Parcel in) {
         nodeId = in.readString();
         nodeName = in.readString();
@@ -174,8 +188,8 @@ public class DelegateDetail implements Parcelable {
         released = in.readString();
         unLocked = in.readString();
         stakingBlockNum = in.readString();
-        walletAddress =in.readString();
-        delegationBlockNum =in.readString();
+        walletAddress = in.readString();
+        delegationBlockNum = in.readString();
     }
 
     @Override

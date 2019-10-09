@@ -1,5 +1,6 @@
 package com.juzix.wallet.component.adapter;
 
+import android.content.Context;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -16,26 +17,30 @@ import android.widget.TextView;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.entity.Wallet;
+import com.juzix.wallet.netlistener.NetworkType;
+import com.juzix.wallet.netlistener.NetworkUtil;
 import com.juzix.wallet.utils.AddressFormatUtil;
 
 import java.util.ArrayList;
 
 public class WalletManagerAdapter extends RecyclerView.Adapter<WalletManagerAdapter.ViewHolder> {
-    private OnBackupClickListener       mClickListener;
+    private OnBackupClickListener mClickListener;
     private ArrayList<Wallet> mWalletList;
+    private Context mContext;
 
-    public WalletManagerAdapter(ArrayList<Wallet> walletList) {
+    public WalletManagerAdapter(ArrayList<Wallet> walletList, Context context) {
         mWalletList = walletList;
+        this.mContext = context;
     }
 
-    public void setOnBackupClickListener(OnBackupClickListener listener){
+    public void setOnBackupClickListener(OnBackupClickListener listener) {
         mClickListener = listener;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View       itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_wallet_manager_list, parent, false);
-        ViewHolder holder   = new ViewHolder(itemView);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_wallet_manager_list, parent, false);
+        ViewHolder holder = new ViewHolder(itemView);
         return holder;
     }
 
@@ -55,10 +60,23 @@ public class WalletManagerAdapter extends RecyclerView.Adapter<WalletManagerAdap
         viewHolder.tvwalletName.setText(item.getName());
         viewHolder.tvWalletAddress.setText(AddressFormatUtil.formatAddress(item.getPrefixAddress()));
         viewHolder.tvWalletBackup.setVisibility(!TextUtils.isEmpty(item.getMnemonic()) ? View.VISIBLE : View.GONE);
+
+        if (TextUtils.isEmpty(item.getKey())) {//观察钱包
+            viewHolder.tv_wallet_logo.setVisibility(View.VISIBLE);
+            viewHolder.tv_wallet_logo.setText(mContext.getString(R.string.observed_wallet));
+        } else {
+            if (NetworkUtil.getNetWorkType(mContext) == NetworkType.NETWORK_NO) { //没网，冷钱包
+                viewHolder.tv_wallet_logo.setVisibility(View.VISIBLE);
+                viewHolder.tv_wallet_logo.setText(mContext.getString(R.string.cold_wallet));
+            } else {
+                viewHolder.tv_wallet_logo.setVisibility(View.GONE);
+            }
+        }
+
         viewHolder.tvWalletBackup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mClickListener != null){
+                if (mClickListener != null) {
                     mClickListener.onBackupClick(position);
                 }
             }
@@ -66,7 +84,7 @@ public class WalletManagerAdapter extends RecyclerView.Adapter<WalletManagerAdap
         viewHolder.rlItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mClickListener != null){
+                if (mClickListener != null) {
                     mClickListener.onItemClick(position);
                 }
             }
@@ -75,7 +93,7 @@ public class WalletManagerAdapter extends RecyclerView.Adapter<WalletManagerAdap
 
     public abstract static class OnRecyclerItemClickListener implements RecyclerView.OnItemTouchListener {
         private GestureDetectorCompat mGestureDetector;
-        private RecyclerView          recyclerView;
+        private RecyclerView recyclerView;
 
         public OnRecyclerItemClickListener(RecyclerView recyclerView) {
             this.recyclerView = recyclerView;
@@ -123,8 +141,9 @@ public class WalletManagerAdapter extends RecyclerView.Adapter<WalletManagerAdap
         public abstract void onItemLongClick(RecyclerView.ViewHolder vh);
     }
 
-    public interface OnBackupClickListener{
+    public interface OnBackupClickListener {
         void onBackupClick(int position);
+
         void onItemClick(int position);
     }
 
@@ -132,10 +151,11 @@ public class WalletManagerAdapter extends RecyclerView.Adapter<WalletManagerAdap
     class ViewHolder extends RecyclerView.ViewHolder {
         RelativeLayout rlItem;
         FrameLayout flAvatar;
-        ImageView   ivWalletAvatar;
-        TextView    tvwalletName;
-        TextView    tvWalletBackup;
-        TextView    tvWalletAddress;
+        ImageView ivWalletAvatar;
+        TextView tvwalletName;
+        TextView tvWalletBackup;
+        TextView tvWalletAddress;
+        TextView tv_wallet_logo;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -145,6 +165,7 @@ public class WalletManagerAdapter extends RecyclerView.Adapter<WalletManagerAdap
             tvwalletName = (TextView) itemView.findViewById(R.id.tv_wallet_name);
             tvWalletBackup = (TextView) itemView.findViewById(R.id.tv_wallet_backup);
             tvWalletAddress = (TextView) itemView.findViewById(R.id.tv_wallet_address);
+            tv_wallet_logo = itemView.findViewById(R.id.tv_wallet_logo);
         }
 
     }

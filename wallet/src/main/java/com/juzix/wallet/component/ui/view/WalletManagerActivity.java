@@ -20,6 +20,9 @@ import com.juzix.wallet.component.ui.contract.WalletManagerContract;
 import com.juzix.wallet.component.ui.presenter.WalletManagerPresenter;
 import com.juzix.wallet.component.widget.CommonTitleBar;
 import com.juzix.wallet.component.widget.ShadowContainer;
+import com.juzix.wallet.netlistener.NetStateChangeObserver;
+import com.juzix.wallet.netlistener.NetStateChangeReceiver;
+import com.juzix.wallet.netlistener.NetworkType;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.Collections;
@@ -32,7 +35,7 @@ import butterknife.Unbinder;
 /**
  * @author matrixelement
  */
-public class WalletManagerActivity extends MVPBaseActivity<WalletManagerPresenter> implements WalletManagerContract.View {
+public class WalletManagerActivity extends MVPBaseActivity<WalletManagerPresenter> implements WalletManagerContract.View, NetStateChangeObserver {
 
     @BindView(R.id.commonTitleBar)
     CommonTitleBar commonTitleBar;
@@ -63,6 +66,7 @@ public class WalletManagerActivity extends MVPBaseActivity<WalletManagerPresente
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wallet_manager);
         unbinder = ButterKnife.bind(this);
+        NetStateChangeReceiver.registerReceiver(this);
         initView();
     }
 
@@ -70,12 +74,14 @@ public class WalletManagerActivity extends MVPBaseActivity<WalletManagerPresente
     protected void onResume() {
         mPresenter.fetchWalletList();
         MobclickAgent.onPageStart(Constants.UMPages.WALLET_MANAGER);
+        NetStateChangeReceiver.registerObserver(this);
         super.onResume();
     }
 
     @Override
     protected void onPause() {
         MobclickAgent.onPageEnd(Constants.UMPages.WALLET_MANAGER);
+        NetStateChangeReceiver.unRegisterObserver(this);
         super.onPause();
     }
 
@@ -85,6 +91,7 @@ public class WalletManagerActivity extends MVPBaseActivity<WalletManagerPresente
         if (unbinder != null) {
             unbinder.unbind();
         }
+        NetStateChangeReceiver.unRegisterReceiver(this);
     }
 
     @OnClick({R.id.sc_create_wallet, R.id.sc_import_wallet})
@@ -110,7 +117,7 @@ public class WalletManagerActivity extends MVPBaseActivity<WalletManagerPresente
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rvWallet.setLayoutManager(linearLayoutManager);
-        mAdapter = new WalletManagerAdapter(mPresenter.getDataSource());
+        mAdapter = new WalletManagerAdapter(mPresenter.getDataSource(),getContext());
         mAdapter.setOnBackupClickListener(new WalletManagerAdapter.OnBackupClickListener() {
             @Override
             public void onBackupClick(int position) {
@@ -256,4 +263,14 @@ public class WalletManagerActivity extends MVPBaseActivity<WalletManagerPresente
             viewHolder.itemView.setBackgroundColor(0);
         }
     };
+
+    @Override
+    public void onNetDisconnected() {
+        mPresenter.fetchWalletList();
+    }
+
+    @Override
+    public void onNetConnected(NetworkType networkType) {
+       mPresenter.fetchWalletList();
+    }
 }

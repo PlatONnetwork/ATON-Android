@@ -20,22 +20,26 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzhen.framework.util.RUtils;
+import com.juzix.wallet.App;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.adapter.WithDrawPopWindowAdapter;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.WithDrawContract;
+import com.juzix.wallet.component.ui.dialog.CommonGuideDialogFragment;
 import com.juzix.wallet.component.ui.presenter.WithDrawPresenter;
 import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.component.widget.PointLengthFilter;
 import com.juzix.wallet.component.widget.ShadowButton;
+import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.entity.WithDrawType;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.GlideUtils;
+import com.juzix.wallet.utils.LanguageUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
 import com.juzix.wallet.utils.ToastUtil;
@@ -46,6 +50,7 @@ import org.web3j.utils.Convert;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -86,6 +91,8 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     ShadowButton btnWithdraw;
     @BindView(R.id.tv_amount_magnitudes)
     TextView etWalletAmount;//显示量级
+    @BindView(R.id.v_tips)
+    View v_tips;
 
     private PopupWindow mPopupWindow;
     private ListView mPopListview;
@@ -168,7 +175,22 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
                         mPresenter.submitWithDraw(chooseType);
                     }
                 });
+        initGuide();
 
+    }
+
+    private void initGuide() {
+        boolean isShowWithdrawOperation = AppSettings.getInstance().getWithdrawOperation();
+        boolean isEnglish = Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage()) == true ? false : true;
+        if(!isShowWithdrawOperation){
+            CommonGuideDialogFragment.newInstance(CommonGuideDialogFragment.WITHDRAW_OPERATION,isEnglish)
+                    .setKnowListener(new CommonGuideDialogFragment.knowListener() {
+                        @Override
+                        public void know() {
+                            AppSettings.getInstance().setWithdrawOperation(true);
+                        }
+                    }).show(getSupportFragmentManager(),"withdrawOperation");
+        }
 
     }
 
@@ -245,6 +267,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
             String amountMagnitudes = StringUtil.getAmountMagnitudes(getContext(), s.toString().trim());
             etWalletAmount.setText(amountMagnitudes);
             etWalletAmount.setVisibility(TextUtils.isEmpty(amountMagnitudes) ? View.GONE : View.VISIBLE);
+            v_tips.setVisibility(TextUtils.isEmpty(amountMagnitudes) ? View.GONE : View.VISIBLE);
 
             if (count == 0) {
                 return;
@@ -357,7 +380,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     }
 
     @Override
-    public void withDrawSuccessInfo(String platonSendTransaction,String hash, String from, String to, long time, String txType, String value, String actualTxCost, String nodeName, String nodeId, int txReceiptStatus) {
+    public void withDrawSuccessInfo(String hash, String from, String to, long time, String txType, String value, String actualTxCost, String nodeName, String nodeId, int txReceiptStatus) {
         Transaction transaction = new Transaction.Builder()
                 .from(from)
                 .to(to)
@@ -371,7 +394,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
                 .hash(hash)
                 .build();
 
-        TransactionDetailActivity.actionStart(getContext(), transaction, from, "", platonSendTransaction);
+        TransactionDetailActivity.actionStart(getContext(), transaction, from, hash);
         finish();
     }
 

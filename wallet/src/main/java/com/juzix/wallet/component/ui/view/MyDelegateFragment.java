@@ -24,6 +24,7 @@ import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.adapter.MyDelegateAdapter;
 import com.juzix.wallet.component.ui.base.MVPBaseFragment;
 import com.juzix.wallet.component.ui.contract.MyDelegateContract;
+import com.juzix.wallet.component.ui.dialog.CommonGuideDialogFragment;
 import com.juzix.wallet.component.ui.presenter.MyDelegatePresenter;
 import com.juzix.wallet.component.widget.CustomRefreshHeader;
 import com.juzix.wallet.config.AppSettings;
@@ -190,8 +191,21 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
                 DelegateDetailActivity.actionStart(getContext(), walletAddress, walletName, walletIcon);
             }
         });
+        initGuide();
+    }
 
-
+    private void initGuide() {
+        boolean isShowMyDelegate = AppSettings.getInstance().getMyDelegateBoolean();
+        boolean isEnglish = Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage()) == true ? false : true;
+        if(!isShowMyDelegate){
+            CommonGuideDialogFragment.newInstance(CommonGuideDialogFragment.MY_DELEGATE,isEnglish)
+                    .setKnowListener(new CommonGuideDialogFragment.knowListener() {
+                        @Override
+                        public void know() {
+                            AppSettings.getInstance().setMyDelegateBoolean(true);
+                        }
+                    }).show(getChildFragmentManager(),"MyDelegate");
+        }
     }
 
     private void initColor() {
@@ -291,5 +305,20 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
     public void onDestroy() {
         super.onDestroy();
         EventPublisher.getInstance().unRegister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void showMydelegateGuide(Event.MyDelegateGuide event){
+        boolean isShowMyDelegate = AppSettings.getInstance().getMyDelegateBoolean();
+        boolean isEnglish = Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage()) == true ? false : true;
+        if(!isShowMyDelegate){
+            CommonGuideDialogFragment.newInstance(CommonGuideDialogFragment.MY_DELEGATE,isEnglish)
+                    .setKnowListener(new CommonGuideDialogFragment.knowListener() {
+                        @Override
+                        public void know() {
+                            AppSettings.getInstance().setMyDelegateBoolean(true);
+                        }
+                    }).show(getChildFragmentManager(),"MyDelegate");
+        }
     }
 }

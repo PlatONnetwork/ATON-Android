@@ -32,14 +32,14 @@ public class TransactionDetailPresenter extends BasePresenter<TransactionDetailC
     private Transaction mTransaction;
     private List<String> mQueryAddressList;
     private String delegateHash;
-    private String mWithDrawHash;
+//    private String mWithDrawHash;
 
     public TransactionDetailPresenter(TransactionDetailContract.View view) {
         super(view);
         mTransaction = view.getTransactionFromIntent();
         mQueryAddressList = view.getAddressListFromIntent();
         delegateHash = view.getDelegateHash();
-        mWithDrawHash = view.getWithDrawHash();
+//        mWithDrawHash = view.getWithDrawHash();
     }
 
 
@@ -132,7 +132,7 @@ public class TransactionDetailPresenter extends BasePresenter<TransactionDetailC
 
     @Override
     public void getWithDrawResult() {
-        loadWithDrawResult(mWithDrawHash);
+        loadWithDrawResult(delegateHash);
     }
 
     private void loadWithDrawResult(String mWithDrawHash) {
