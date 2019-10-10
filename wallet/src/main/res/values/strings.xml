@@ -296,6 +296,7 @@
     <string name="signing">签名中</string>
     <string name="success">已完成</string>
     <string name="failed">交易失败</string>
+    <string name="timeout">交易超时</string>
     <string name="energon_price">手续费</string>
     <string name="wallet">钱包</string>
     <string name="transaction_hash">交易hash:</string>

@@ -72,7 +72,7 @@ public class TransactionViewHolder extends BaseViewHolder<Transaction> {
             mTransactionAmountTv.setText(String.format("%s%s", "-", StringUtil.formatBalance(transaction.getShowValue())));
             mTransactionAmountTv.setTextColor(ContextCompat.getColor(mContext, R.color.color_ff3b3b));
         } else {
-            mTransactionAmountTv.setText(String.format("%s%s", "+",StringUtil.formatBalance(transaction.getShowValue())));
+            mTransactionAmountTv.setText(String.format("%s%s", "+", StringUtil.formatBalance(transaction.getShowValue())));
             mTransactionAmountTv.setTextColor(ContextCompat.getColor(mContext, R.color.color_19a20e));
         }
         mTransactionStatusTv.setText(getTxTDesc(transaction, mContext, isSender));
