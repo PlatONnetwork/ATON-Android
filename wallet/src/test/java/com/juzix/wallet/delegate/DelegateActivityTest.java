@@ -9,6 +9,7 @@ import android.util.Log;
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.ApiSingleObserver;
+import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.BuildConfig;
 import com.juzix.wallet.RobolectricApp;
 import com.juzix.wallet.component.ui.CustomContextWrapper;
@@ -19,11 +20,14 @@ import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.engine.DelegateManager;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
+import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.AccountBalance;
 import com.juzix.wallet.entity.DelegateHandle;
 import com.juzix.wallet.entity.Node;
+import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.rxjavatest.RxJavaTestSchedulerRule;
+import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.LanguageUtil;
 import com.juzix.wallet.utils.RxUtils;
 
@@ -46,6 +50,9 @@ import org.web3j.protocol.Web3j;
 import org.web3j.utils.Convert;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import io.reactivex.functions.Consumer;
@@ -70,6 +77,8 @@ public class DelegateActivityTest {
     public NodeManager nodeManager;
     @Mock
     public Node node;
+
+
 //    @Mock
 //    public CustomContextWrapper contextWrapper;
 
@@ -178,11 +187,124 @@ public class DelegateActivityTest {
                 });
     }
 
-//    @Test
-//    public void testDelegateActivity() {
-//        DelegateActivity delegateActivity = Robolectric.setupActivity(DelegateActivity.class);
-//        assertNotNull("DelegateActivity not intstantitated", delegateActivity);
-//    }
+    @Test
+    public void testSortByFreeAccount() {
+        List<Wallet> list = new ArrayList<>();
+
+        Wallet wallet = new Wallet();
+        wallet.setCreateTime(1115448481);
+        wallet.setName("001");
+        AccountBalance balance = new AccountBalance();
+        balance.setFree("10000000084489");
+        balance.setLock("0");
+        wallet.setAccountBalance(balance);
+        list.add(wallet);
+
+        Wallet wallet2 = new Wallet();
+        wallet2.setCreateTime(1115448485);
+        wallet2.setName("002");
+        AccountBalance balance2 = new AccountBalance();
+        balance2.setFree("1000000005655655");
+        balance2.setLock("0");
+        wallet2.setAccountBalance(balance2);
+
+        list.add(wallet2);
+
+        Wallet wallet3 = new Wallet();
+        wallet3.setName("003");
+        wallet3.setCreateTime(1115448483);
+        AccountBalance balance3 = new AccountBalance();
+        balance3.setFree("10000000056556584855");
+        balance3.setLock("0");
+        wallet3.setAccountBalance(balance3);
+
+        list.add(wallet3);
+
+
+        Wallet wallet4 = new Wallet();
+        wallet4.setName("004");
+        wallet4.setCreateTime(1115448486);
+        AccountBalance balance4 = new AccountBalance();
+        balance4.setFree("1000000001156584855");
+        balance4.setLock("0");
+        wallet4.setAccountBalance(balance4);
+
+        list.add(wallet4);
+
+
+        Collections.sort(list, new Comparator<Wallet>() {
+            @Override
+            public int compare(Wallet o1, Wallet o2) {
+               return Double.compare(NumberParserUtils.parseDouble(o2.getFreeBalance()), NumberParserUtils.parseDouble(o1.getFreeBalance()));
+            }
+        });
+
+
+        Log.d("DelegateActivityTest", "=============" + list.size());
+
+        for(Wallet bean :list){
+            Log.d("DelegateActivityTest", "=============" + bean);
+        }
+
+    }
+
+    @Test
+    public  void testSortByCreateTime(){
+        List<Wallet> list = new ArrayList<>();
+
+        Wallet wallet = new Wallet();
+        wallet.setCreateTime(1115448484);
+        wallet.setName("001");
+        AccountBalance balance = new AccountBalance();
+        balance.setFree("10000000084489");
+        balance.setLock("0");
+        wallet.setAccountBalance(balance);
+        list.add(wallet);
+
+        Wallet wallet2 = new Wallet();
+        wallet2.setCreateTime(1115448485);
+        wallet2.setName("002");
+        AccountBalance balance2 = new AccountBalance();
+        balance2.setFree("1000000005655655");
+        balance2.setLock("0");
+        wallet2.setAccountBalance(balance2);
+
+        list.add(wallet2);
+
+        Wallet wallet3 = new Wallet();
+        wallet3.setName("003");
+        wallet3.setCreateTime(1115448483);
+        AccountBalance balance3 = new AccountBalance();
+        balance3.setFree("10000000056556584855");
+        balance3.setLock("0");
+        wallet3.setAccountBalance(balance3);
+
+        list.add(wallet3);
+
+
+        Wallet wallet4 = new Wallet();
+        wallet4.setName("004");
+        wallet4.setCreateTime(1115448486);
+        AccountBalance balance4 = new AccountBalance();
+        balance4.setFree("10000000054546556584855");
+        balance4.setLock("0");
+        wallet4.setAccountBalance(balance4);
+
+        list.add(wallet4);
+
+
+        Collections.sort(list, new Comparator<Wallet>() {
+            @Override
+            public int compare(Wallet o1, Wallet o2) {
+                return Long.compare(o1.getCreateTime(), o2.getCreateTime());
+            }
+        });
+
+        for(Wallet bean :list){
+            Log.d("DelegateActivityTest", "=============" + bean);
+        }
+
+    }
 
 
 }
