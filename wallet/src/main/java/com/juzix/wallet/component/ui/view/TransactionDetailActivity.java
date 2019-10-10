@@ -61,6 +61,8 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
     ImageView ivFailed;
     @BindView(R.id.iv_succeed)
     ImageView ivSucceed;
+    @BindView(R.id.iv_timeout)
+    ImageView ivTimeout;
     @BindView(R.id.layout_pending)
     RelativeLayout layoutPending;
     @BindView(R.id.tv_transaction_status_desc)
@@ -222,20 +224,29 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
                 tvTransactionStatusDesc.setText(R.string.pending);
                 ivFailed.setVisibility(View.GONE);
                 ivSucceed.setVisibility(View.GONE);
+                ivTimeout.setVisibility(View.GONE);
                 layoutPending.setVisibility(View.VISIBLE);
                 break;
             case SUCCESSED:
                 tvTransactionStatusDesc.setText(R.string.success);
                 ivFailed.setVisibility(View.GONE);
                 ivSucceed.setVisibility(View.VISIBLE);
+                ivTimeout.setVisibility(View.GONE);
                 layoutPending.setVisibility(View.GONE);
                 break;
             case FAILED:
                 tvTransactionStatusDesc.setText(R.string.failed);
                 ivFailed.setVisibility(View.VISIBLE);
                 ivSucceed.setVisibility(View.GONE);
+                ivTimeout.setVisibility(View.GONE);
                 layoutPending.setVisibility(View.GONE);
                 break;
+            case TIMEOUT:
+                tvTransactionStatusDesc.setText(R.string.timeout);
+                ivFailed.setVisibility(View.GONE);
+                ivSucceed.setVisibility(View.GONE);
+                ivTimeout.setVisibility(View.VISIBLE);
+                layoutPending.setVisibility(View.GONE);
             default:
                 break;
         }
