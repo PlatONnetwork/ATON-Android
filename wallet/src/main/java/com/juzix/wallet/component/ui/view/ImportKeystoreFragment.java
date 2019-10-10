@@ -167,9 +167,9 @@ public class ImportKeystoreFragment extends MVPBaseFragment<ImportKeystorePresen
                     }
         });
 
-        RxView.focusChanges(mEtWalletName).skipInitialValue().subscribe(new Consumer<Boolean>() {
+        RxView.focusChanges(mEtWalletName).skipInitialValue().subscribe(new CustomObserver<Boolean>() {
             @Override
-            public void accept(Boolean hasFocus) throws Exception {
+            public void accept(Boolean hasFocus){
                 String walletName = mEtWalletName.getText().toString().trim();
                 if (!hasFocus) {
                     if (TextUtils.isEmpty(walletName)) {

@@ -11,10 +11,10 @@
 
         <ImageView
             android:id="@+id/iv_guide"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:scaleType="fitStart"
-            android:src="@drawable/wallet_transction_record_en" />
+            android:src="@drawable/import_observed_wallet_cn" />
 
         <Button
             android:id="@+id/btn_close"
