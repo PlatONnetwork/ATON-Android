@@ -6,6 +6,8 @@ import com.juzix.wallet.entity.AccountBalance;
 import com.juzix.wallet.entity.DelegateHandle;
 import com.juzix.wallet.entity.Wallet;
 
+import org.web3j.platon.StakingAmountType;
+
 import java.math.BigInteger;
 import java.util.List;
 
@@ -89,13 +91,12 @@ public class DelegateContract {
 
         String checkDelegateAmount(String delegateAmount);
 
-
-        void submitDelegate(String type);
+        void submitDelegate(StakingAmountType type);
 
         void checkIsCanDelegate();
 
 
-        void getGasPrice(String gasPrice, String chooseType);
+        void getGasPrice(StakingAmountType stakingAmountType);
 
         void getGas();
 

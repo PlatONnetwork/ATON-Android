@@ -37,6 +37,7 @@ public class NodeEntity extends RealmObject {
                 .nodeAddress(nodeAddress)
                 .isDefaultNode(isDefaultNode)
                 .isChecked(isChecked)
+                .chainId(chainId)
                 .build();
     }
 

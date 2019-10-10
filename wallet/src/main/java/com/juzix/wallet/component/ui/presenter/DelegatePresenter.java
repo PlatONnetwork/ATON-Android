@@ -295,7 +295,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     //获取手续费
     @SuppressLint("CheckResult")
     @Override
-    public void getGasPrice(String gasPrice, String chooseType) {
+    public void getGasPrice(StakingAmountType stakingAmountType) {
         String inputAmount = getView().getDelegateAmount();//输入的数量
         if (TextUtils.isEmpty(inputAmount) || TextUtils.equals(inputAmount, ".")) {
             getView().showGasPrice("0.00");
@@ -309,7 +309,6 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
         Web3j web3j = Web3jManager.getInstance().getWeb3j();
         org.web3j.platon.contracts.DelegateContract delegateContract = org.web3j.platon.contracts.DelegateContract.load(web3j);
-        StakingAmountType stakingAmountType = TextUtils.equals(chooseType, "balance") ? StakingAmountType.FREE_AMOUNT_TYPE : StakingAmountType.RESTRICTING_AMOUNT_TYPE;
         if (!isAll) {
             Log.d("gasprovide", "============" + "表示不是点击的全部");
             delegateContract.getDelegateGasProvider(mNodeAddress, stakingAmountType, Convert.toVon(inputAmount, Convert.Unit.LAT).toBigInteger())
@@ -333,7 +332,6 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                             getView().showGasPrice(feeAmount);
                         }
                     });
-
         } else {
             isAll = false;
             Log.d("gasprovide", "============" + "1111111111111表示点击的全部");
@@ -342,11 +340,10 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
 
     //点击全部的时候，需要获取一次手续费
-    public void getAllPrice(String gasPrice, String amount, String chooseType) {
+    public void getAllPrice(StakingAmountType stakingAmountType,String amount) {
         isAll = true;
         Web3j web3j = Web3jManager.getInstance().getWeb3j();
         org.web3j.platon.contracts.DelegateContract delegateContract = org.web3j.platon.contracts.DelegateContract.load(web3j);
-        StakingAmountType stakingAmountType = TextUtils.equals(chooseType, "balance") ? StakingAmountType.FREE_AMOUNT_TYPE : StakingAmountType.RESTRICTING_AMOUNT_TYPE;
 
         delegateContract.getDelegateGasProvider(mNodeAddress, stakingAmountType, new BigInteger(Convert.toVon(amount, Convert.Unit.LAT).toBigInteger().toString().replaceAll("0", "1")))
                 .subscribeOn(Schedulers.io())
@@ -372,12 +369,11 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                         getView().showAllGasPrice(feeAmount);
                     }
                 });
-
     }
 
     @SuppressLint("CheckResult")
     @Override
-    public void submitDelegate(String type) {
+    public void submitDelegate(StakingAmountType stakingAmountType) {
 
         Single.fromCallable(new Callable<Double>() {
             @Override
@@ -450,9 +446,9 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                             String inputAmount = getView().getDelegateAmount();
 
                             if (mWallet.isObservedWallet()) {
-                                showTransactionAuthorizationDialogFragment(mNodeAddress, mNodeName, StakingAmountType.FREE_AMOUNT_TYPE.getValue(), inputAmount, mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, gas_limit.toString(10), gas_Price.toString(10));
+                                showTransactionAuthorizationDialogFragment(mNodeAddress, mNodeName,stakingAmountType, inputAmount, mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, gas_limit.toString(10), gas_Price.toString(10));
                             } else {
-                                showInputPasswordDialogFragment(inputAmount, type);
+                                showInputPasswordDialogFragment(inputAmount, stakingAmountType);
                             }
                         }
 
@@ -476,10 +472,10 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
 
     @SuppressLint("CheckResult")
-    private void delegate(Credentials credentials, String inputAmount, String address, String type) {
+    private void delegate(Credentials credentials, String inputAmount, String address, StakingAmountType stakingAmountType) {
         //这里调用新的方法，传入GasProvider
         GasProvider gasProvider = new ContractGasProvider(gas_Price, gas_limit);
-        DelegateManager.getInstance().delegate(credentials, inputAmount, address, type, gasProvider)
+        DelegateManager.getInstance().delegate(credentials, inputAmount, address, stakingAmountType, gasProvider)
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .subscribe(new Consumer<PlatonSendTransaction>() {
                     @Override
@@ -506,19 +502,19 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
     }
 
-    private void showInputPasswordDialogFragment(String inputAmount, String type) {
+    private void showInputPasswordDialogFragment(String inputAmount, StakingAmountType stakingAmountType) {
         InputWalletPasswordDialogFragment
                 .newInstance(mWallet)
                 .setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
                     @Override
                     public void onWalletPasswordCorrect(Credentials credentials) {
-                        delegate(credentials, inputAmount, mNodeAddress, type);
+                        delegate(credentials, inputAmount, mNodeAddress, stakingAmountType);
                     }
                 })
                 .show(currentActivity().getSupportFragmentManager(), "inputWalletPasssword");
     }
 
-    private void showTransactionAuthorizationDialogFragment(String nodeId, String nodeName, int stakingAmountType, String transactionAmount, String from, String to, String gasLimit, String gasPrice) {
+    private void showTransactionAuthorizationDialogFragment(String nodeId, String nodeName, StakingAmountType stakingAmountType, String transactionAmount, String from, String to, String gasLimit, String gasPrice) {
 
         Observable
                 .fromCallable(new Callable<BigInteger>() {
@@ -544,7 +540,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                                     .setGasPrice(gasPrice)
                                     .setNodeId(nodeId)
                                     .setNodeName(nodeName)
-                                    .setStakingAmountType(stakingAmountType)
+                                    .setStakingAmountType(stakingAmountType.getValue())
                                     .build()), System.currentTimeMillis() / 1000);
                             TransactionAuthorizationDialogFragment.newInstance(transactionAuthorizationData)
                                     .setOnNextBtnClickListener(new TransactionAuthorizationDialogFragment.OnNextBtnClickListener() {

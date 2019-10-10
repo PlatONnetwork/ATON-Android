@@ -27,6 +27,11 @@ import com.juzix.wallet.utils.CommonUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.ToastUtil;
 
+import org.web3j.protocol.Web3jFactory;
+import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.methods.response.PlatonBlock;
+import org.web3j.protocol.http.HttpService;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -260,7 +265,7 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
                 if (nodeEntity.isChecked()) {
                     return;
                 }
-                checkAddress(position, nodeEntity.getNodeAddress());
+                checkAddress(position, nodeEntity.getRPCUrl());
             }
         });
 
@@ -281,7 +286,8 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
         Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return CommonUtil.validUrl(address);
+                PlatonBlock platonBlock =  Web3jFactory.build(new HttpService(address)).platonGetBlockByNumber(DefaultBlockParameterName.LATEST,false).send();
+                return platonBlock != null && platonBlock.getBlock() != null && platonBlock.getBlock().getNumber().longValue() > 0;
             }
         })
                 .compose(RxUtils.getSingleSchedulerTransformer())
@@ -293,6 +299,11 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
                             setChecked(position);
                         }
                         ToastUtil.showShortToast(activity, isValid ? R.string.switch_node_successed : R.string.switch_node_failed);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        ToastUtil.showShortToast(activity, R.string.switch_node_failed);
                     }
                 });
     }

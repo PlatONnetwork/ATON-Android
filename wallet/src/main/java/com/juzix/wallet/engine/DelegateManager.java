@@ -29,7 +29,7 @@ public class DelegateManager {
         return InstanceHolder.INSTANCE;
     }
 
-    public Single<PlatonSendTransaction> delegate(Credentials credentials, String amount, String nodeId, String type, GasProvider gasProvider) { //这里新修改，传入GasProvider
+    public Single<PlatonSendTransaction> delegate(Credentials credentials, String amount, String nodeId, StakingAmountType stakingAmountType, GasProvider gasProvider) { //这里新修改，传入GasProvider
 
         return Single.fromCallable(new Callable<PlatonSendTransaction>() {
             @Override
@@ -38,8 +38,6 @@ public class DelegateManager {
                 String chainId = NodeManager.getInstance().getChainId();
 
                 DelegateContract delegateContract = DelegateContract.load(web3j, credentials, NumberParserUtils.parseLong(chainId));
-
-                StakingAmountType stakingAmountType = TextUtils.equals(type, "balance") ? StakingAmountType.FREE_AMOUNT_TYPE : StakingAmountType.RESTRICTING_AMOUNT_TYPE;
 
                 return delegateContract.delegateReturnTransaction(nodeId, stakingAmountType, Convert.toVon(amount, Convert.Unit.LAT).toBigInteger(), gasProvider).send();
             }

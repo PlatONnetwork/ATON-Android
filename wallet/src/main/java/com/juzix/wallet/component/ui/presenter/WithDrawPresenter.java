@@ -9,15 +9,21 @@ import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.ApiSingleObserver;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.adapter.WithDrawPopWindowAdapter;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.WithDrawContract;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
+import com.juzix.wallet.component.ui.dialog.TransactionAuthorizationDialogFragment;
+import com.juzix.wallet.component.ui.dialog.TransactionSignatureDialogFragment;
 import com.juzix.wallet.engine.DelegateManager;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.Web3jManager;
+import com.juzix.wallet.entity.TransactionAuthorizationBaseData;
+import com.juzix.wallet.entity.TransactionAuthorizationData;
+import com.juzix.wallet.entity.TransactionStatus;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.entity.WithDrawBalance;
 import com.juzix.wallet.utils.BigDecimalUtil;
@@ -26,6 +32,7 @@ import com.juzix.wallet.utils.ToastUtil;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.platon.ContractAddress;
+import org.web3j.platon.FunctionType;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 import org.web3j.tx.gas.ContractGasProvider;
@@ -35,9 +42,12 @@ import org.web3j.utils.Convert;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import io.reactivex.Flowable;
+import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
@@ -211,27 +221,6 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                         getView().showWithDrawGasPrice(feeAmount);
                     }
                 });
-
-
-//        delegateContract.getUnDelegateFeeAmount(null, mNodeAddress, new BigInteger(list.get(0).getStakingBlockNum()), Convert.toVon(input, Convert.Unit.LAT).toBigInteger())
-//                .subscribe(new Subscriber<BigInteger>() {
-//                    @Override
-//                    public void onNext(BigInteger bigInteger) {
-//                        feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(bigInteger.toString(), "1E18"));
-//                        getView().showWithDrawGasPrice(feeAmount);
-//                    }
-//
-//                    @Override
-//                    public void onCompleted() {
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//
-//                    }
-//
-//                });
-
     }
 
     @SuppressLint("CheckResult")
@@ -260,18 +249,19 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                                 return;
                             }
 
-                            String inputAmount = getView().getInputAmount();
-
-                            InputWalletPasswordDialogFragment
-                                    .newInstance(mWallet)
-                                    .setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
-                                        @Override
-                                        public void onWalletPasswordCorrect(Credentials credentials) {
-//                                            withdraw(credentials, mNodeAddress, mBlockNum, inputAmount, type);
-                                            withDrawIterate(credentials, mNodeAddress, inputAmount, type);
-                                        }
-                                    })
-                                    .show(currentActivity().getSupportFragmentManager(), "inputWalletPasssword");
+                            if (mWallet.isObservedWallet()){
+                                showTransactionAuthorizationDialogFragment(mNodeAddress,mNodeName,getView().getInputAmount(),mWallet.getPrefixAddress(),ContractAddress.DELEGATE_CONTRACT_ADDRESS,gas_limit.toString(10),gas_Price.toString(10),type);
+                            }else{
+                                InputWalletPasswordDialogFragment
+                                        .newInstance(mWallet)
+                                        .setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
+                                            @Override
+                                            public void onWalletPasswordCorrect(Credentials credentials) {
+                                                withDrawIterate(credentials, mNodeAddress, getView().getInputAmount(), type);
+                                            }
+                                        })
+                                        .show(currentActivity().getSupportFragmentManager(), "inputWalletPasssword");
+                            }
                         }
                     }
                 });
@@ -324,12 +314,12 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                             if (!TextUtils.isEmpty(platonSendTransaction.getTransactionHash())) {
                                 //操作成功，跳转到交易详情，当前页面关闭
                                 if (TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_DELEGATED) || TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_UNLOCKED)) {
-                                    getView().withDrawSuccessInfo(platonSendTransaction.getTransactionHash(), mWalletAddress, ContractAddress.DELEGATE_CONTRACT_ADDRESS, 0, "1005", list.get(0).getReleased(),
-                                            feeAmount, mNodeName, mNodeAddress, 2);
+                                    getView().withDrawSuccessInfo(platonSendTransaction.getTransactionHash(), mWalletAddress, ContractAddress.DELEGATE_CONTRACT_ADDRESS,  FunctionType.WITHDREW_DELEGATE_FUNC_TYPE, list.get(0).getReleased(),
+                                            feeAmount, mNodeName, mNodeAddress, TransactionStatus.PENDING.ordinal());
                                 } else {
                                     if (tag == list.size()) {
-                                        getView().withDrawSuccessInfo(platonSendTransaction.getTransactionHash(),mWalletAddress, ContractAddress.DELEGATE_CONTRACT_ADDRESS, 0, "1005", list.get(0).getReleased(),
-                                                feeAmount, mNodeName, mNodeAddress, 2);
+                                        getView().withDrawSuccessInfo(platonSendTransaction.getTransactionHash(),mWalletAddress, ContractAddress.DELEGATE_CONTRACT_ADDRESS,  FunctionType.WITHDREW_DELEGATE_FUNC_TYPE, list.get(0).getReleased(),
+                                                feeAmount, mNodeName, mNodeAddress, TransactionStatus.PENDING.ordinal());
                                     }
                                 }
 
@@ -350,6 +340,93 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                     }
                 });
 
+    }
+
+    private List<TransactionAuthorizationBaseData> buildTransactionAuthorizationBaseDataList(final BigInteger nonce,String nodeId, String nodeName, String transactionAmount, String from, String to, String gasLimit, String gasPrice){
+        if (list == null || list.isEmpty()){
+            return new ArrayList<>();
+        }
+        
+        return Flowable
+                .range(0,list.size())
+                .map(new Function<Integer, TransactionAuthorizationBaseData>() {
+                    @Override
+                    public TransactionAuthorizationBaseData apply(Integer position) throws Exception {
+                        return new TransactionAuthorizationBaseData.Builder(FunctionType.WITHDREW_DELEGATE_FUNC_TYPE)
+                                .setAmount(BigDecimalUtil.mul(transactionAmount,"1E18").toPlainString())
+                                .setChainId(NodeManager.getInstance().getChainId())
+                                .setNonce(nonce.add(BigInteger.valueOf(position)).toString(10))
+                                .setFrom(from)
+                                .setTo(to)
+                                .setGasLimit(gasLimit)
+                                .setGasPrice(gasPrice)
+                                .setNodeId(nodeId)
+                                .setNodeName(nodeName)
+                                .setStakingBlockNum(list.get(position).getStakingBlockNum())
+                                .build();
+                    }
+                })
+                .toList()
+                .blockingGet();
+    }
+
+
+    private void showTransactionAuthorizationDialogFragment(String nodeId, String nodeName, String transactionAmount, String from, String to, String gasLimit, String gasPrice,String type) {
+
+        Observable
+                .fromCallable(new Callable<BigInteger>() {
+                    @Override
+                    public BigInteger call() throws Exception {
+                        return Web3jManager.getInstance().getNonce(from);
+                    }
+                })
+                .compose(RxUtils.getSchedulerTransformer())
+                .compose(bindToLifecycle())
+                .compose(RxUtils.getLoadingTransformer(currentActivity()))
+                .subscribe(new CustomObserver<BigInteger>() {
+                    @Override
+                    public void accept(BigInteger nonce) {
+                        if (isViewAttached()) {
+                            TransactionAuthorizationData transactionAuthorizationData = new TransactionAuthorizationData(buildTransactionAuthorizationBaseDataList(nonce,nodeId,nodeName,transactionAmount,from,to,gasLimit,gasPrice), System.currentTimeMillis() / 1000);
+                            TransactionAuthorizationDialogFragment.newInstance(transactionAuthorizationData)
+                                    .setOnNextBtnClickListener(new TransactionAuthorizationDialogFragment.OnNextBtnClickListener() {
+                                        @Override
+                                        public void onNextBtnClick() {
+                                            TransactionSignatureDialogFragment.newInstance(transactionAuthorizationData.getTimeStamp())
+                                                    .setOnSendTransactionSucceedListener(new TransactionSignatureDialogFragment.OnSendTransactionSucceedListener() {
+                                                        @Override
+                                                        public void onSendTransactionSucceed(String hash) {
+                                                            if (isViewAttached()) {
+                                                                //操作成功，跳转到交易详情，当前页面关闭
+                                                                if (TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_DELEGATED) || TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_UNLOCKED)) {
+                                                                    getView().withDrawSuccessInfo(hash, mWalletAddress, ContractAddress.DELEGATE_CONTRACT_ADDRESS, FunctionType.WITHDREW_DELEGATE_FUNC_TYPE, list.get(0).getReleased(),
+                                                                            feeAmount, mNodeName, mNodeAddress, TransactionStatus.PENDING.ordinal());
+                                                                } else {
+                                                                    if (tag == list.size()) {
+                                                                        getView().withDrawSuccessInfo(hash,mWalletAddress, ContractAddress.DELEGATE_CONTRACT_ADDRESS,  FunctionType.WITHDREW_DELEGATE_FUNC_TYPE, list.get(0).getReleased(),
+                                                                                feeAmount, mNodeName, mNodeAddress, TransactionStatus.PENDING.ordinal());
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    })
+                                                    .show(currentActivity().getSupportFragmentManager(), TransactionSignatureDialogFragment.TAG);
+                                        }
+                                    })
+                                    .show(currentActivity().getSupportFragmentManager(), "showTransactionAuthorizationDialog");
+                        }
+                    }
+
+                    @Override
+                    public void accept(Throwable throwable) {
+                        super.accept(throwable);
+                        if (isViewAttached()) {
+                            if (!TextUtils.isEmpty(throwable.getMessage())) {
+                                ToastUtil.showLongToast(currentActivity(), throwable.getMessage());
+                            }
+                        }
+                    }
+                });
     }
 
 }

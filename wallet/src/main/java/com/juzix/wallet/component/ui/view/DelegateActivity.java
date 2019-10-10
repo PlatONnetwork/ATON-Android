@@ -53,6 +53,7 @@ import com.juzix.wallet.utils.StringUtil;
 import com.juzix.wallet.utils.ToastUtil;
 import com.juzix.wallet.utils.UMEventUtil;
 
+import org.web3j.platon.StakingAmountType;
 import org.web3j.utils.Convert;
 
 import java.math.BigInteger;
@@ -112,9 +113,9 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     TextViewDrawable tv_no_delegate_tips;
 
     private Unbinder unbinder;
-
     private String address;//钱包地址
-    private String chooseType;//选择的钱包类型（可用余额/锁仓余额）
+    private StakingAmountType stakingAmountType;//选择的钱包类型（可用余额/锁仓余额）
+    private List<AccountBalance> balanceList = new ArrayList<>();
     private List<DelegateType> typeList = new ArrayList<>();
 
     private PopupWindow mPopupWindow;
@@ -176,7 +177,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                     @Override
                     public void accept(Object o) {
                         //点击全部
-                        mPresenter.getAllPrice(gasPrice, amount.getText().toString().replace(",", ""), chooseType);
+                        mPresenter.getAllPrice(stakingAmountType,amount.getText().toString().replace(",", ""));
                         isAll = true;
                     }
                 });
@@ -194,7 +195,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                             ToastUtil.showLongToast(getContext(), R.string.delegate_less_than_fee);
                             return;
                         }
-                        mPresenter.submitDelegate(chooseType);
+                        mPresenter.submitDelegate(stakingAmountType);
                     }
                 });
         initGuide();
@@ -240,7 +241,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     }
 
     private void refreshData(DelegateType item) {
-        chooseType = item.getType() == "0" ? "balance" : "locked";
+        stakingAmountType = item.getType() == "0" ? StakingAmountType.FREE_AMOUNT_TYPE : StakingAmountType.RESTRICTING_AMOUNT_TYPE;
         amountType.setText(TextUtils.equals(item.getType(), "0") ? getString(R.string.available_balance) : getString(R.string.locked_balance));
         String number = StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(item.getAmount(), "1E18"))), false);
         amount.setText(number);
@@ -274,7 +275,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
             inputTips.setVisibility(TextUtils.isEmpty(amountMagnitudes) ? View.GONE : View.VISIBLE);
             v_tips.setVisibility(TextUtils.isEmpty(amountMagnitudes) ? View.GONE : View.VISIBLE);
 
-            mPresenter.getGasPrice(gasPrice, chooseType); //获取手续费
+            mPresenter.getGasPrice(stakingAmountType); //获取手续费
         }
 
         @Override
@@ -307,18 +308,12 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     //显示钱包信息
     @Override
     public void showSelectedWalletInfo(Wallet individualWalletEntity) {
-        chooseType = "balance";
+        stakingAmountType = StakingAmountType.FREE_AMOUNT_TYPE;
         address = individualWalletEntity.getPrefixAddress();
         //显示钱包基本信息
         walletName.setText(individualWalletEntity.getName());
         walletAddress.setText(AddressFormatUtil.formatAddress(individualWalletEntity.getPrefixAddress()));//钱包地址
         walletIcon.setImageResource(RUtils.drawable(individualWalletEntity.getAvatar()));
-
-        //显示余额类型和余额
-//        amountType.setText(getString(R.string.available_balance));
-//        amount.setText(StringUtil.formatBalance((BigDecimalUtil.div(individualWalletEntity.getFreeBalance(), "1E18"))));
-
-//        checkIsClick(individualWalletEntity.getAccountBalance());
     }
 
     /**
@@ -328,21 +323,6 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
      */
     @Override
     public void getWalletBalanceList(List<AccountBalance> accountBalances) {
-//        typeList.clear();
-//        //选中钱包
-//        String walletAddress = address;
-//        for (AccountBalance bean : accountBalances) {
-//            if (TextUtils.equals(walletAddress, bean.getAddr())) {
-//                //获取当前选中钱包的余额信息
-//                typeList.add(new DelegateType("0", bean.getFree()));
-//                typeList.add(new DelegateType("1", bean.getLock()));
-//                amountType.setText(getString(R.string.available_balance));
-//                amount.setText(StringUtil.formatBalance((BigDecimalUtil.div(bean.getFree(), "1E18"))));
-//                checkIsClick(bean);
-//                return;
-//            }
-//        }
-//        mAdapter.notifyDataSetChanged();
     }
 
 
