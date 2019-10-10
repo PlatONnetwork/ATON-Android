@@ -151,7 +151,9 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
                     @Override
                     public void accept(Object o) throws Exception {
                         if (null != mOnDelegateClickListener) {
-                            if(TextUtils.equals(detail.getNodeStatus(),EXITED)|| TextUtils.equals(detail.getNodeStatus(),EXITING) || detail.isInit()){
+                            if(detail.isInit()){
+                                 ToastUtil.showLongToast(mContext,R.string.validators_details_tips);
+                            } else if(TextUtils.equals(detail.getNodeStatus(),EXITED)|| TextUtils.equals(detail.getNodeStatus(),EXITING)){
                                 //可以不做处理
                             }
                             else {

@@ -21,6 +21,7 @@ import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.component.widget.CommonTitleBar;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.component.widget.TextViewDrawable;
+import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.VerifyNodeDetail;
 import com.juzix.wallet.entity.WebType;
 import com.juzix.wallet.event.Event;
@@ -152,7 +153,9 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
 
                     @Override
                     public void accept(Object o) {
-                        mPresenter.getWalletBalance();
+//                        mPresenter.getWalletBalance();
+                        //点击委托不需要做任何判断，跳转就行
+                        DelegateActivity.actionStart(getContext(), mNodeAddress, mNodeName, mNodeIcon, 1, "");
                     }
                 });
 
@@ -222,22 +225,37 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
         webSite.setText(nodeDetail.getWebsite());//官网
 
         //判断按钮是否可点击
-        if ((TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITING) || TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITED)) && nodeDetail.isInit()) {
+//        if ((TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITING) || TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITED)) && nodeDetail.isInit()) {
+//            tips.setVisibility(View.VISIBLE);
+//            delegate.setEnabled(false);
+//
+//        } else if ((TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITING) || TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITED)) && !nodeDetail.isInit()) {
+//            tips.setVisibility(View.GONE);
+//            delegate.setEnabled(false);
+//
+//        } else if (!(TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITING) || TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITED)) && nodeDetail.isInit()) {
+//            tips.setVisibility(View.VISIBLE);
+//            delegate.setEnabled(false);
+//        } else {
+//            tips.setVisibility(View.GONE);
+//            delegate.setEnabled(true);
+//        }
+
+        if (WalletManager.getInstance().getAddressList().size() == 0) { // a.客户端本地没有钱包
+            tips.setVisibility(View.VISIBLE);
+            tips.setText(getString(R.string.tips_no_wallet));
+            delegate.setEnabled(false);
+        }else if(TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITING) || TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITED)){//b.节点退出中或已退出
+              tips.setVisibility(View.VISIBLE);
+              tips.setText(getString(R.string.the_Validator_has_exited_and_cannot_be_delegated));
+              delegate.setEnabled(false);
+        }else if(nodeDetail.isInit()){ //c.节点状态为初始化验证人（收益地址为激励池地址的验证人）
             tips.setVisibility(View.VISIBLE);
             delegate.setEnabled(false);
-
-        } else if ((TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITING) || TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITED)) && !nodeDetail.isInit()) {
-            tips.setVisibility(View.GONE);
-            delegate.setEnabled(false);
-
-        } else if (!(TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITING) || TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITED)) && nodeDetail.isInit()) {
-            tips.setVisibility(View.VISIBLE);
-            delegate.setEnabled(false);
-        } else {
-            tips.setVisibility(View.GONE);
+        }else {
             delegate.setEnabled(true);
+            tips.setVisibility(View.GONE);
         }
-
 
     }
 

@@ -37,6 +37,7 @@ import com.juzix.wallet.component.ui.presenter.DelegatePresenter;
 import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.component.widget.PointLengthFilter;
 import com.juzix.wallet.component.widget.ShadowButton;
+import com.juzix.wallet.component.widget.TextViewDrawable;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.entity.AccountBalance;
 import com.juzix.wallet.entity.DelegateHandle;
@@ -107,12 +108,13 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     TextView tv_lat;
     @BindView(R.id.v_tips)
     View v_tips;
+    @BindView(R.id.tv_no_delegate_tips)
+    TextViewDrawable tv_no_delegate_tips;
 
     private Unbinder unbinder;
 
     private String address;//钱包地址
     private String chooseType;//选择的钱包类型（可用余额/锁仓余额）
-    private List<AccountBalance> balanceList = new ArrayList<>();
     private List<DelegateType> typeList = new ArrayList<>();
 
     private PopupWindow mPopupWindow;
@@ -136,7 +138,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         unbinder = ButterKnife.bind(this);
         initView();
         mPresenter.showWalletInfo();
-        mPresenter.checkIsCanDelegate();
+//        mPresenter.checkIsCanDelegate();
         mPresenter.getGas();
     }
 
@@ -313,10 +315,10 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         walletIcon.setImageResource(RUtils.drawable(individualWalletEntity.getAvatar()));
 
         //显示余额类型和余额
-        amountType.setText(getString(R.string.available_balance));
-        amount.setText(StringUtil.formatBalance((BigDecimalUtil.div(individualWalletEntity.getFreeBalance(), "1E18"))));
+//        amountType.setText(getString(R.string.available_balance));
+//        amount.setText(StringUtil.formatBalance((BigDecimalUtil.div(individualWalletEntity.getFreeBalance(), "1E18"))));
 
-        checkIsClick(individualWalletEntity.getAccountBalance());
+//        checkIsClick(individualWalletEntity.getAccountBalance());
     }
 
     /**
@@ -326,25 +328,25 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
      */
     @Override
     public void getWalletBalanceList(List<AccountBalance> accountBalances) {
-        balanceList.clear();
-        typeList.clear();
-        balanceList.addAll(accountBalances);
-        //选中钱包
-        String walletAddress = address;
-        for (AccountBalance bean : accountBalances) {
-            if (TextUtils.equals(walletAddress, bean.getAddr())) {
-                //获取当前选中钱包的余额信息
-                typeList.add(new DelegateType("0", bean.getFree()));
-                typeList.add(new DelegateType("1", bean.getLock()));
-                checkIsClick(bean);
-                return;
-            }
-        }
-        mAdapter.notifyDataSetChanged();
+//        typeList.clear();
+//        //选中钱包
+//        String walletAddress = address;
+//        for (AccountBalance bean : accountBalances) {
+//            if (TextUtils.equals(walletAddress, bean.getAddr())) {
+//                //获取当前选中钱包的余额信息
+//                typeList.add(new DelegateType("0", bean.getFree()));
+//                typeList.add(new DelegateType("1", bean.getLock()));
+//                amountType.setText(getString(R.string.available_balance));
+//                amount.setText(StringUtil.formatBalance((BigDecimalUtil.div(bean.getFree(), "1E18"))));
+//                checkIsClick(bean);
+//                return;
+//            }
+//        }
+//        mAdapter.notifyDataSetChanged();
     }
 
 
-    private void checkIsClick(AccountBalance bean) {
+    private void checkIsClick(DelegateHandle bean) {
         if (TextUtils.equals(bean.getLock(), "0")) {
             //锁仓金额为0，不可点击
             amounChoose.setClickable(false);
@@ -389,25 +391,46 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
 
     @Override
     public void showIsCanDelegate(DelegateHandle bean) {
+        typeList.clear();
+        typeList.add(new DelegateType("0", bean.getFree()));
+        typeList.add(new DelegateType("1", bean.getLock()));
+        amountType.setText(getString(R.string.available_balance));
+        amount.setText(StringUtil.formatBalance((BigDecimalUtil.div(bean.getFree(), "1E18"))));
+        checkIsClick(bean);
+
         //判断是否允许委托
         if (!bean.isCanDelegation()) {
+            et_amount.setFocusableInTouchMode(false);
+            et_amount.setFocusable(false);
             //表示不能委托
             if (TextUtils.equals(bean.getMessage(), "1")) { //不能委托原因：1.解除委托金额大于0
                 btnDelegate.setEnabled(false);
                 showLongToast(getString(R.string.delegate_no_click));
-            } else { //节点已退出或退出中
+            } else if(TextUtils.equals(bean.getMessage(),"2")){ //节点已退出或退出中
                 btnDelegate.setEnabled(false);
-                showLongToast(getString(R.string.the_Validator_has_exited_and_cannot_be_delegated));
+//                showLongToast(getString(R.string.the_Validator_has_exited_and_cannot_be_delegated));
+                tv_no_delegate_tips.setVisibility(View.VISIBLE);
+                tv_no_delegate_tips.setText(getString(R.string.the_Validator_has_exited_and_cannot_be_delegated));
+            }else if(TextUtils.equals(bean.getMessage(),"3")){
+                  btnDelegate.setEnabled(false);
+                  tv_no_delegate_tips.setVisibility(View.VISIBLE);
+                  tv_no_delegate_tips.setText(getString(R.string.tips_not_delegate));
+            }else {
+                btnDelegate.setEnabled(false);
+                tv_no_delegate_tips.setVisibility(View.VISIBLE);
+                tv_no_delegate_tips.setText(getString(R.string.tips_not_balance));
             }
         } else {
+            et_amount.setFocusableInTouchMode(true);
+            et_amount.setFocusable(true);
+            tv_no_delegate_tips.setVisibility(View.GONE);
             //可以委托,判断数量是否大于10
-            if (NumberParserUtils.parseDouble(et_amount.getText().toString()) > 10) {
+            if (NumberParserUtils.parseDouble(et_amount.getText().toString()) >= 10) {
                 btnDelegate.setEnabled(true);
             } else {
                 btnDelegate.setEnabled(false);
             }
         }
-
 
     }
 

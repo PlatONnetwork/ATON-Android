@@ -623,7 +623,7 @@
     <string name="delegate_and_withdraw_fee">手续费:</string>
     <string name="msg_turn_light_on">轻点照亮</string>
     <string name="msg_turn_light_off">轻点关闭</string>
-    <string name="tips_no_wallet">无可用钱包，或钱包余额不足</string>
+    <string name="tips_no_wallet">无可用钱包</string>
     <string name="msg_view_more_transactions">查看更多交易记录</string>
     <string name="delegate_record_wallet_address">(%1$s)</string>
     <string name="msg_no_validators">没有验证节点</string>
@@ -665,5 +665,6 @@
     <string name="msg_authorization_signature_desc">使用对应冷钱包扫描下方二维码，完成授权。</string>
     <string name="finish">完成</string>
     <string name="msg_invalid_signature">无效签名</string>
-
+    <string name="tips_not_delegate">节点关联的钱包地址，不可参与委托。</string>
+    <string name="tips_not_balance">可用余额为0,无法委托</string>
 </resources>

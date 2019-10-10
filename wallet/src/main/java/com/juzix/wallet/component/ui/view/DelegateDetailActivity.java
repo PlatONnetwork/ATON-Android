@@ -102,8 +102,8 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
             @Override
             public void onDelegateClick(String nodeAddress, String nodeName, String nodeIcon) {
                 //操作委托
-//                DelegateActivity.actionStart(getContext(), nodeAddress, nodeName, nodeIcon, 0,walletAddress);
-                mPresenter.getWalletBalance(nodeAddress, nodeName, nodeIcon);
+                DelegateActivity.actionStart(getContext(), nodeAddress, nodeName, nodeIcon, 0,walletAddress);
+//                mPresenter.getWalletBalance(nodeAddress, nodeName, nodeIcon);
 
             }
 

@@ -13,6 +13,7 @@ import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.app.CustomThrowable;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.DelegateContract;
+import com.juzix.wallet.component.ui.dialog.DelegateSelectWalletDialogFragment;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.dialog.SelectWalletDialogFragment;
 import com.juzix.wallet.component.ui.dialog.TransactionAuthorizationDialogFragment;
@@ -49,6 +50,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.IllegalFormatCodePointException;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -87,14 +90,16 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
     @Override
     public void showSelectWalletDialogFragment() {
-        SelectWalletDialogFragment.newInstance(mWallet != null ? mWallet.getUuid() : "", true)
-                .setOnItemClickListener(new SelectWalletDialogFragment.OnItemClickListener() {
+        DelegateSelectWalletDialogFragment.newInstance(mWallet != null ? mWallet.getUuid() : "", false)
+                .setOnItemClickListener(new DelegateSelectWalletDialogFragment.OnItemClickListener() {
                     @Override
                     public void onItemClick(Wallet walletEntity) {
                         if (isViewAttached()) {
                             mWallet = walletEntity;
                             getView().showSelectedWalletInfo(walletEntity);
-                            getBalanceByWalletAddress(walletEntity.getPrefixAddress());//获取钱包余额信息
+//                            getBalanceByWalletAddress(walletEntity.getPrefixAddress());//获取钱包余额信息
+                            //0.7.3修改-->选择钱包调用是否可以委托的接口
+                            checkIsCanDelegate(walletEntity);
                         }
                     }
                 })
@@ -102,11 +107,13 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
     }
 
+
     @Override
     public void showWalletInfo() {
         getView().showNodeInfo(mNodeAddress, mNodeName, mNodeIcon);
         showDefaultWalletInfo();
-        getWalletBalance();
+        checkIsCanDelegate(); //0.7.3修改
+//        getWalletBalance();
     }
 
     @Override
@@ -138,14 +145,16 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
     }
 
-    private void showDefaultWalletInfo() { //这里如果从验证列表进来显示第一大于0的钱包，从委托详情进来，是哪个钱包就显示哪个钱包的信息
+    private void showDefaultWalletInfo() {
         if (!TextUtils.isEmpty(mWalletAddress)) {
             mWallet = WalletManager.getInstance().getWalletEntityByWalletAddress(mWalletAddress);
         } else {
-            mWallet = WalletManager.getInstance().getFirstValidIndividualWalletBalance();
+//            mWallet = WalletManager.getInstance().getFirstValidIndividualWalletBalance();
+            //0.7.3 修改 (一级排序按照可用余额从大到小排序，二级排序按照钱包创建时间从旧到新排序)
+            mWallet = sortByCreateTime(sortByFreeAccount(WalletManager.getInstance().getWalletList())).get(0);
+
         }
 
-//        mWallet = WalletManager.getInstance().getFirstValidIndividualWalletBalance();
         if (isViewAttached() && mWallet != null) {
             getView().showSelectedWalletInfo(mWallet);
         }
@@ -190,17 +199,41 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
 
     //获取钱包余额信息根据选择的钱包地址
-    private void getBalanceByWalletAddress(String address) {
-        ServerUtils.getCommonApi().getAccountBalance(ApiRequestBody.newBuilder()
-                .put("addrs", new String[]{address})
+//    private void getBalanceByWalletAddress(String address) {
+//        ServerUtils.getCommonApi().getAccountBalance(ApiRequestBody.newBuilder()
+//                .put("addrs", new String[]{address})
+//                .build())
+//                .compose(RxUtils.bindToLifecycle(getView()))
+//                .compose(RxUtils.getSingleSchedulerTransformer())
+//                .subscribe(new ApiSingleObserver<List<AccountBalance>>() {
+//                    @Override
+//                    public void onApiSuccess(List<AccountBalance> accountBalances) {
+//                        if (isViewAttached()) {
+//                            getView().getWalletBalanceList(accountBalances);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onApiFailure(ApiResponse response) {
+//
+//                    }
+//                });
+//
+//
+//    }
+
+    public void checkIsCanDelegate(Wallet walletEntity) {
+        ServerUtils.getCommonApi().getIsDelegateInfo(ApiRequestBody.newBuilder()
+                .put("addr",walletEntity.getPrefixAddress())
+                .put("nodeId",mNodeAddress)
                 .build())
                 .compose(RxUtils.bindToLifecycle(getView()))
                 .compose(RxUtils.getSingleSchedulerTransformer())
-                .subscribe(new ApiSingleObserver<List<AccountBalance>>() {
+                .subscribe(new ApiSingleObserver<DelegateHandle>() {
                     @Override
-                    public void onApiSuccess(List<AccountBalance> accountBalances) {
-                        if (isViewAttached()) {
-                            getView().getWalletBalanceList(accountBalances);
+                    public void onApiSuccess(DelegateHandle delegateHandle) {
+                        if(isViewAttached()){
+                            getView().showIsCanDelegate(delegateHandle);
                         }
                     }
 
@@ -209,10 +242,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
                     }
                 });
-
-
     }
-
     /**
      * 检测是否可以委托
      */
@@ -405,8 +435,14 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                                 if (TextUtils.equals(msg, "1")) { //不能委托原因：解除委托金额大于0
                                     showLongToast(R.string.delegate_no_click);
                                     return;
-                                } else { //节点已退出或退出中
+                                } else if(TextUtils.equals(msg,"2")){ //节点已退出或退出中
                                     showLongToast(R.string.the_Validator_has_exited_and_cannot_be_delegated);
+                                    return;
+                                }else if(TextUtils.equals(msg,"3")){ //节点关联的钱包地址，不可参与委托
+                                    showLongToast(R.string.tips_not_delegate);
+                                    return;
+                                }else { //可用余额为0,无法委托
+                                    showLongToast(R.string.tips_not_balance);
                                     return;
                                 }
                             }
@@ -543,5 +579,24 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                 });
     }
 
+    private List<Wallet> sortByFreeAccount(List<Wallet> walletList) {
+        Collections.sort(walletList, new Comparator<Wallet>() {
+            @Override
+            public int compare(Wallet o1, Wallet o2) {
+                return Double.compare(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(o2.getFreeBalance(), "1E18"))), NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(o1.getFreeBalance(), "1E18"))));
+            }
+        });
 
+        return walletList;
+    }
+
+    private List<Wallet> sortByCreateTime(List<Wallet> list) {
+        Collections.sort(list, new Comparator<Wallet>() {
+            @Override
+            public int compare(Wallet o1, Wallet o2) {
+                return Long.compare(o1.getCreateTime(), o2.getCreateTime());
+            }
+        });
+        return list;
+    }
 }
