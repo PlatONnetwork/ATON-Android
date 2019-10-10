@@ -611,7 +611,7 @@
 
     <string name="msg_turn_light_on">Tap to turn light on</string>
     <string name="msg_turn_light_off">Tap to turn light off</string>
-    <string name="tips_no_wallet">No wallet available, or insufficient wallet balance</string>
+    <string name="tips_no_wallet">No wallet available</string>
     <string name="msg_view_more_transactions">View more transactions</string>
     <string name="delegate_record_wallet_address">(%1$s)</string>
     <string name="msg_no_validators">No Validators</string>
@@ -653,7 +653,7 @@
     <string name="msg_authorization_signature_desc">Scan the OR code to finish your authorization for the cold wallet.</string>
     <string name="finish">Finish</string>
     <string name="msg_invalid_signature">Invalid Signature</string>
-
-    >>>>>>> upstream/feature/bump-version-to-0.7.3
+    <string name="tips_not_delegate">The wallet associated with the validator is not allowed for delegation.</string>
+    <string name="tips_not_balance">Wallet balance is 0,unable to delegate</string>
 </resources>
 

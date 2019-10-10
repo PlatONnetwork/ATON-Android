@@ -60,11 +60,9 @@ public class CommonGuideDialogFragment extends BaseDialogFragment {
     protected Dialog onCreateDialog(Dialog baseDialog) {
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_fragment_common_guide, null, false);
         baseDialog.setContentView(contentView);
-//        baseDialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         setFullHeightEnable(false);
         setFullWidthEnable(true);
         unbinder = ButterKnife.bind(this, contentView);
-//        baseDialog.getWindow().setLayout(FrameLayout.LayoutParams.MATCH_PARENT,FrameLayout.LayoutParams.MATCH_PARENT);
         initView();
         return baseDialog;
     }
@@ -72,6 +70,43 @@ public class CommonGuideDialogFragment extends BaseDialogFragment {
     @Override
     public void onStart() {
         super.onStart();
+
+//        Window win = getDialog().getWindow();
+//
+//        DisplayMetrics dm =new DisplayMetrics();
+//
+//        win.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.color_00000000)));
+//
+//        getActivity().getWindowManager().getDefaultDisplay().getMetrics( dm );
+//
+//        win.setLayout( dm.widthPixels,dm.heightPixels );
+//
+//        // 一定要设置Background，如果不设置，window属性设置无效
+//
+//        WindowManager.LayoutParams params = win.getAttributes();
+//
+//        params.gravity = Gravity.BOTTOM;
+//
+//       // 使用ViewGroup.LayoutParams，以便Dialog 宽度充满整个屏幕
+//
+//        params.width =  ViewGroup.LayoutParams.MATCH_PARENT;
+//
+//        int v = win.getAttributes().flags;
+//
+//       // 全屏 66816 - 非全屏65792
+//
+//        if(v !=66816){//非全屏
+//
+//            params.height = ViewGroup.LayoutParams.MATCH_PARENT;
+//
+//        }else{//取消全屏
+//
+//            params.height = dm.heightPixels;
+//
+//        }
+//
+//        win.setAttributes(params);
+
         Dialog dialog =getDialog();
         if(null !=dialog){
             dialog.setCanceledOnTouchOutside(false);
