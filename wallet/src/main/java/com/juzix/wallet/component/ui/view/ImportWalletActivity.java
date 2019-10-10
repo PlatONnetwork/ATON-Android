@@ -19,7 +19,7 @@ import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.base.BaseFragment;
-import com.juzix.wallet.component.ui.dialog.CommonGuideDialogFragment;
+import com.juzix.wallet.component.ui.dialog.ObservedWalletGuideDialogFragment;
 import com.juzix.wallet.component.widget.CommonTitleBar;
 import com.juzix.wallet.component.widget.ViewPagerSlide;
 import com.juzix.wallet.component.widget.table.PagerItem;
@@ -81,7 +81,7 @@ public class ImportWalletActivity extends BaseActivity {
         boolean isShowObservedWallet = AppSettings.getInstance().getObservedWalletBoolean();
         boolean isEnglish = Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage()) == true ? false : true;
         if (!isShowObservedWallet) {
-            CommonGuideDialogFragment.newInstance(CommonGuideDialogFragment.OBSERVED_WALLET, isEnglish).setKnowListener(new CommonGuideDialogFragment.knowListener() {
+            ObservedWalletGuideDialogFragment.newInstance(isEnglish).setKnowListener(new ObservedWalletGuideDialogFragment.knowListener() {
                 @Override
                 public void know() {
                     AppSettings.getInstance().setObservedWalletBoolean(true);
