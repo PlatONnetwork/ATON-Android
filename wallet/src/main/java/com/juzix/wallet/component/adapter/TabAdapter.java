@@ -62,14 +62,4 @@ public class TabAdapter extends FragmentStatePagerAdapter {
     public void setPrimaryItem(ViewGroup container, int position, Object object) {
         super.setPrimaryItem(container, position, object);
     }
-
-    /**
-     * 刷新pageTitle
-     *
-     * @param mTitles
-     */
-    public void recreatItem(List<String> mTitles) {
-        this.mTitles = mTitles;
-        notifyDataSetChanged();
-    }
 }

@@ -2,6 +2,7 @@ package com.juzix.wallet.component.ui.view;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -199,7 +200,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         stbBar.setCustomTabView(new AssetsTabLayout.TabProvider() {
             @Override
             public View createTabView(ViewGroup container, int position, PagerAdapter adapter) {
-                return getTableView(position, container);
+                return new TabView(container.getContext(), position);
             }
         });
 
@@ -662,19 +663,33 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         return spannableString;
     }
 
-    private View getTableView(int position, ViewGroup container) {
-        View contentView = LayoutInflater.from(getContext()).inflate(R.layout.layout_app_tab_item1, container, false);
-        ImageView ivIcon = contentView.findViewById(R.id.iv_icon);
-        ivIcon.setImageResource(getCollapsIcons().get(position));
-        TextView tvTitle = contentView.findViewById(R.id.tv_title);
-        tvTitle.setText(getTitles().get(position));
-        tvTitle.setTextColor(ContextCompat.getColorStateList(getContext(), R.color.color_app_tab_text2));
-        return contentView;
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNetWorkStateChangedEvent(Event.NetWorkStateChangedEvent event) {
-        mTabAdapter.recreatItem(getTitles());
+        ((TabView) stbBar.getTabAt(1)).setTitle((NetworkUtil.getNetWorkType(getContext()) != NetworkType.NETWORK_NO) ? string(R.string.action_send_transation) : string(R.string.wallet_send_offline_signature));
         mPresenter.fetchWalletList();
+    }
+
+    class TabView extends LinearLayout {
+
+        private ImageView mIconIv;
+        private TextView mTitleTv;
+
+        public TabView(Context context, int position) {
+            super(context);
+            LayoutInflater.from(context).inflate(R.layout.layout_app_tab_item1, this);
+
+            setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT));
+
+            mIconIv = findViewById(R.id.iv_icon);
+            mTitleTv = findViewById(R.id.tv_title);
+
+            mIconIv.setImageResource(getCollapsIcons().get(position));
+            mTitleTv.setText(getTitles().get(position));
+            mTitleTv.setTextColor(ContextCompat.getColorStateList(getContext(), R.color.color_app_tab_text2));
+        }
+
+        public void setTitle(String text) {
+            mTitleTv.setText(text);
+        }
     }
 }
