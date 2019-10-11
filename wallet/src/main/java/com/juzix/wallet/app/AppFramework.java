@@ -58,7 +58,7 @@ public class AppFramework {
 
         EventPublisher.getInstance().register(this);
         //注册网络状态变化
-        registerNetStateChangedBC();
+        NetConnectivity.getConnectivityManager().registerNetworkStateChange(new NetStateBroadcastReceiver());
         //初始化realm
         initRealm(context);
         //初始化节点配置
@@ -82,14 +82,6 @@ public class AppFramework {
                 .schemaVersion(Constants.DBName.VERSION)
                 .migration(new ATONRealmMigration())
                 .build());
-    }
-
-    /**
-     * 注册网络状态变化
-     */
-    private void registerNetStateChangedBC() {
-        IntentFilter intentFilter = new IntentFilter(NetConnectivity.ACITION_CONNECTIVITY_CHANGE);
-        mContext.registerReceiver(new NetStateBroadcastReceiver(), intentFilter);
     }
 
     static class NetStateBroadcastReceiver extends BroadcastReceiver {

@@ -28,6 +28,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.juzhen.framework.app.log.Log;
+import com.juzhen.framework.network.NetState;
 import com.juzhen.framework.util.LogUtils;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.App;
@@ -60,7 +61,6 @@ import com.juzix.wallet.entity.TransactionSignatureData;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
-import com.juzix.wallet.netlistener.NetStateChangeObserver;
 import com.juzix.wallet.netlistener.NetStateChangeReceiver;
 import com.juzix.wallet.netlistener.NetworkType;
 import com.juzix.wallet.netlistener.NetworkUtil;
@@ -93,7 +93,7 @@ import butterknife.Unbinder;
 /**
  * @author matrixelement
  */
-public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements AssetsContract.View, NetStateChangeObserver {
+public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements AssetsContract.View {
 
     public static final int TAB1 = 0;
     public static final int TAB2 = 1;
@@ -157,17 +157,8 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
     @Override
     protected void onFragmentPageStart() {
-        Log.debug("AssetsFragment111","===============" + "走这里");
-        initIndicator();
         mPresenter.fetchWalletList();
         mPresenter.fetchWalletsBalance();
-        //如果切回来是在交易列表页面，则重新轮询交易列表，因为轮询绑定了父Fragment的stop事件
-        if (vpContent.getCurrentItem() == TAB1) {
-            BaseViewPageFragment viewPageFragment = (BaseViewPageFragment) mTabAdapter.getItem(TAB1);
-            if (viewPageFragment != null) {
-                viewPageFragment.onPageStart();
-            }
-        }
     }
 
     @Override
@@ -175,19 +166,17 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         View rootView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_assets, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         EventPublisher.getInstance().register(this);
-        NetStateChangeReceiver.registerReceiver(getContext());
         initViews();
         return rootView;
     }
 
     private void initViews() {
+        initIndicator();
         initRefreshLayout();
         initHeader();
-//        initIndicator();
         initTab();
         showAssets(AppSettings.getInstance().getShowAssetsFlag());
         showContent(true);
-        tvTotalAssetsAmount.setText(StringUtil.formatBalance(BigDecimalUtil.div("0", "1E18"))); //设置总计默认值为0
         initGuide();
     }
 
@@ -247,7 +236,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         });
     }
 
-    private void saveStateToArguments(){
+    private void saveStateToArguments() {
         Bundle saveState = saveState();
         LogUtils.e("saveStateToArguments");
         if (saveState != null) {
@@ -256,17 +245,17 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         }
     }
 
-    private void reStoreStateFromArguments(){
+    private void reStoreStateFromArguments() {
         Bundle bundle = getArguments().getBundle(Constants.Extra.EXTRA_BUNDLE);
         LogUtils.e("reStoreStateFromArguments");
-        if (bundle != null){
+        if (bundle != null) {
             List<Wallet> walletList = bundle.getParcelableArrayList(Constants.Extra.EXTRA_WALLET_LIST);
-            LogUtils.e("reStoreStateFromArguments"+walletList.size());
+            LogUtils.e("reStoreStateFromArguments" + walletList.size());
             showContent(walletList == null || walletList.isEmpty());
         }
     }
 
-    private Bundle saveState(){
+    private Bundle saveState() {
         Bundle outState = new Bundle();
         List<Wallet> walletList = mPresenter.getRecycleViewDataSource();
         if (walletList != null && walletList.size() > 0) {
@@ -357,18 +346,6 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        NetStateChangeReceiver.registerObserver(this);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        NetStateChangeReceiver.unRegisterObserver(this);
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != Activity.RESULT_OK) {
@@ -380,22 +357,22 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
                 @QrCodeType int qrCodeType = QrCodeParser.parseQrCode(result);
 
-                if (qrCodeType == QrCodeType.NONE){
+                if (qrCodeType == QrCodeType.NONE) {
                     showLongToast(currentActivity().string(R.string.unrecognized));
                     return;
                 }
 
-                if (qrCodeType == QrCodeType.TRANSACTION_AUTHORIZATION){
+                if (qrCodeType == QrCodeType.TRANSACTION_AUTHORIZATION) {
                     TransactionAuthorizationDetailActivity.actionStart(currentActivity(), JSONUtil.parseObject(result, TransactionAuthorizationData.class));
                     return;
                 }
 
-                if (qrCodeType == QrCodeType.TRANSACTION_SIGNATURE){
-                    TransactionSignatureDialogFragment.newInstance(JSONUtil.parseObject(result, TransactionSignatureData.class)).show(getActivity().getSupportFragmentManager(),TransactionSignatureDialogFragment.TAG);
+                if (qrCodeType == QrCodeType.TRANSACTION_SIGNATURE) {
+                    TransactionSignatureDialogFragment.newInstance(JSONUtil.parseObject(result, TransactionSignatureData.class)).show(getActivity().getSupportFragmentManager(), TransactionSignatureDialogFragment.TAG);
                     return;
                 }
 
-                if (qrCodeType == QrCodeType.WALLET_ADDRESS){
+                if (qrCodeType == QrCodeType.WALLET_ADDRESS) {
                     if (vpContent.getVisibility() == View.VISIBLE) {
                         vpContent.setCurrentItem(1);
                         ((TabAdapter) vpContent.getAdapter()).getItem(1).onActivityResult(MainActivity.REQ_ASSETS_ADDRESS_QR_CODE, resultCode, data);
@@ -405,17 +382,17 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
                     return;
                 }
 
-                if (qrCodeType == QrCodeType.WALLET_KEYSTORE){
+                if (qrCodeType == QrCodeType.WALLET_KEYSTORE) {
                     ImportWalletActivity.actionStart(currentActivity(), ImportWalletActivity.TabIndex.IMPORT_KEYSTORE, result);
                     return;
                 }
 
-                if (qrCodeType == QrCodeType.WALLET_MNEMONIC){
+                if (qrCodeType == QrCodeType.WALLET_MNEMONIC) {
                     ImportWalletActivity.actionStart(currentActivity(), ImportWalletActivity.TabIndex.IMPORT_MNEMONIC, result);
                     return;
                 }
 
-                if (qrCodeType == QrCodeType.WALLET_PRIVATEKEY){
+                if (qrCodeType == QrCodeType.WALLET_PRIVATEKEY) {
                     ImportWalletActivity.actionStart(currentActivity(), ImportWalletActivity.TabIndex.IMPORT_PRIVATEKEY, result);
                     return;
                 }
@@ -500,7 +477,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         return "android:switcher:" + vpContent.getId() + ":" + id;
     }
 
-    private void initHeader(){
+    private void initHeader() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         rvWallet.setLayoutManager(linearLayoutManager);
@@ -553,7 +530,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     private ArrayList<String> getTitles() {
         ArrayList<String> titleList = new ArrayList<>();
         titleList.add(string(R.string.transactions));
-        titleList.add(string(R.string.action_send_transation));
+        titleList.add((NetworkUtil.getNetWorkType(getContext()) != NetworkType.NETWORK_NO) ? string(R.string.action_send_transation) : string(R.string.wallet_send_offline_signature));
         titleList.add(string(R.string.action_receive_transation));
         return titleList;
     }
@@ -566,7 +543,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         return titleList;
     }
 
-    private List<BaseFragment> getFragments(Wallet walletEntity){
+    private List<BaseFragment> getFragments(Wallet walletEntity) {
         List<BaseFragment> list = new ArrayList<>();
         list.add(getFragment(TAB1, walletEntity));
         list.add(getFragment(TAB2, walletEntity));
@@ -695,20 +672,9 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         return contentView;
     }
 
-    @Override
-    public void onNetDisconnected() {
-        initIndicator();
-        android.util.Log.d("AssetsFragment", "网络断开连接");
-//        mPresenter.fetchWalletsBalance();
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onNetWorkStateChangedEvent(Event.NetWorkStateChangedEvent event) {
+        mTabAdapter.recreatItem(getTitles());
         mPresenter.fetchWalletList();
-    }
-
-    @Override
-    public void onNetConnected(NetworkType networkType) {
-        initIndicator();
-//        Log.debug("AssetsFragment", "网络连接" + networkType.name());
-//        mPresenter.fetchWalletList();
-//        mPresenter.fetchWalletsBalance();
-
     }
 }

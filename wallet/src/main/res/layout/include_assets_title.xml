@@ -57,7 +57,7 @@
         android:layout_marginRight="16dp"
         android:ellipsize="end"
         android:lines="1"
-        tools:text="236.45639292992" />
+        android:text="0.00" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_wallet"
