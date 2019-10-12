@@ -2,7 +2,6 @@ package com.juzix.wallet.component.ui.dialog;
 
 import android.Manifest;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -18,8 +17,6 @@ import com.juzhen.framework.util.LogUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
-import com.juzix.wallet.component.ui.view.AssetsFragment;
-import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.component.ui.view.ScanQRCodeActivity;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.db.sqlite.AddressDao;
@@ -32,7 +29,6 @@ import com.juzix.wallet.entity.TransactionStatus;
 import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.AddressFormatUtil;
-import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.JSONUtil;
 import com.juzix.wallet.utils.RxUtils;
@@ -46,14 +42,12 @@ import org.web3j.platon.FunctionType;
 
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
@@ -154,7 +148,7 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        if (transactionSignatureData != null && transactionSignatureData.getTimeStamp() == timeStamp) {
+                        if (transactionSignatureData != null && transactionSignatureData.getTimestamp() == timeStamp) {
 
                             Flowable
                                     .fromIterable(transactionSignatureData.getSignedDatas())

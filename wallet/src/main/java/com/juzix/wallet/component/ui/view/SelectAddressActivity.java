@@ -68,6 +68,7 @@ public class SelectAddressActivity extends MVPBaseActivity<SelectAddressPresente
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (((Address) parent.getAdapter().getItem(position)).getPrefixAddress().equals(senderAddress)) {
+                    showLongToast(R.string.can_not_send_to_itself);
                     return;
                 } else {
                     mPresenter.selectAddress(position);

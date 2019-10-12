@@ -5,22 +5,17 @@ import android.os.Parcelable;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.juzhen.framework.util.NumberParserUtils;
-import com.juzix.wallet.R;
 import com.juzix.wallet.engine.TransactionManager;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.BigIntegerUtil;
 import com.juzix.wallet.utils.JSONUtil;
 
 import org.web3j.crypto.Credentials;
-import org.web3j.platon.FunctionType;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Flowable;
-import io.reactivex.Observable;
-import io.reactivex.Single;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
 
@@ -29,7 +24,7 @@ public class TransactionAuthorizationData implements Parcelable {
     @JSONField(name = "qrCodeData")
     private List<TransactionAuthorizationBaseData> baseDataList;
 
-    protected long timeStamp;
+    protected long timestamp;
 
     public TransactionAuthorizationData() {
 
@@ -37,7 +32,7 @@ public class TransactionAuthorizationData implements Parcelable {
 
     public TransactionAuthorizationData(List<TransactionAuthorizationBaseData> baseDataList,long timeStamp) {
         this.baseDataList = baseDataList;
-        this.timeStamp = timeStamp;
+        this.timestamp = timeStamp;
     }
 
     public List<TransactionAuthorizationBaseData> getBaseDataList() {
@@ -48,23 +43,23 @@ public class TransactionAuthorizationData implements Parcelable {
         this.baseDataList = baseDataList;
     }
 
-    public long getTimeStamp() {
-        return timeStamp;
+    public long getTimestamp() {
+        return timestamp;
     }
 
-    public void setTimeStamp(long timeStamp) {
-        this.timeStamp = timeStamp;
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 
     protected TransactionAuthorizationData(Parcel in) {
         baseDataList = in.createTypedArrayList(TransactionAuthorizationBaseData.CREATOR);
-        timeStamp = in.readLong();
+        timestamp = in.readLong();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(baseDataList);
-        dest.writeLong(timeStamp);
+        dest.writeLong(timestamp);
     }
 
     @Override
@@ -113,7 +108,7 @@ public class TransactionAuthorizationData implements Parcelable {
 
         TransactionAuthorizationBaseData firstBaseData = baseDataList.get(0);
 
-        return new TransactionSignatureData(getSignedMessageList(credentials), firstBaseData.getFrom(),firstBaseData.getChainId(),timeStamp, firstBaseData.getPlatOnFunction().getType());
+        return new TransactionSignatureData(getSignedMessageList(credentials), firstBaseData.getFrom(),firstBaseData.getChainId(), timestamp, firstBaseData.getPlatOnFunction().getType());
     }
 
     private List<String> getSignedMessageList(Credentials credentials) {
