@@ -26,4 +26,5 @@ dependencies {
     implementation rootProject.ext.dependencies["support-appcompat-v7"]
     implementation rootProject.ext.dependencies["support-zxing"]
     implementation rootProject.ext.dependencies["junit"]
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
 }
