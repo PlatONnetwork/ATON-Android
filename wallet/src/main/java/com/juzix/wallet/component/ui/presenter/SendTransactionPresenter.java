@@ -29,7 +29,6 @@ import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.TransactionManager;
 import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.AccountBalance;
-import com.juzix.wallet.entity.PlatOnFunction;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionAuthorizationBaseData;
 import com.juzix.wallet.entity.TransactionAuthorizationData;
@@ -432,7 +431,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                                     .setOnNextBtnClickListener(new TransactionAuthorizationDialogFragment.OnNextBtnClickListener() {
                                         @Override
                                         public void onNextBtnClick() {
-                                            TransactionSignatureDialogFragment.newInstance(transactionAuthorizationData.getTimeStamp())
+                                            TransactionSignatureDialogFragment.newInstance(transactionAuthorizationData.getTimestamp())
                                                     .setOnSendTransactionSucceedListener(new TransactionSignatureDialogFragment.OnSendTransactionSucceedListener() {
                                                         @Override
                                                         public void onSendTransactionSucceed(String hash) {

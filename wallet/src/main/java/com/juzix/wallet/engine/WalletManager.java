@@ -297,6 +297,7 @@ public class WalletManager {
             return CODE_ERROR_UNKNOW;
         }
     }
+
     public int importWalletAddress(String walletAddress) {
         if (!JZWalletUtil.isValidAddress(walletAddress)) {
             return CODE_ERROR_INVALIA_ADDRESS;
@@ -451,8 +452,9 @@ public class WalletManager {
         if (TextUtils.isEmpty(address)) {
             return null;
         }
+
         for (Wallet walletEntity : mWalletList) {
-            if (walletEntity.getPrefixAddress().contains(address)) {
+            if (walletEntity.getPrefixAddress().contains(address.toLowerCase())) {
                 return walletEntity;
             }
         }
@@ -588,6 +590,7 @@ public class WalletManager {
 
     /**
      * 获取所有钱包的总计
+     *
      * @return
      */
     public Observable<BigDecimal> getTotal() {
