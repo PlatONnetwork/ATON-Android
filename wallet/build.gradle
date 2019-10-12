@@ -1,9 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
-apply plugin: 'org.sonarqube'
-
-
-//apply from: "$rootDir/jacoco-report.gradle"
+//apply plugin: 'org.sonarqube'
 
 // 注：需要配置符号表时，使用bugly插件
 apply plugin: 'bugly'
@@ -13,7 +10,6 @@ bugly {
 
 }
 
-//def IS_JENKINS=true
 
 android {
 
@@ -148,48 +144,48 @@ repositories {
 }
 
 //下面jacoco插件的配置
-apply plugin: 'jacoco'
-
-jacoco{
-    toolVersion ="0.7.4+"
-}
-def coverageSourceDirs = [
-        '../wallet/src/main/java']
-
-task jacocoTestReport(type:JacocoReport,dependsOn: "testDebugUnitTest") {
-    group = "Reporting"
-
-    description = "Generate Jacoco coverage reports"
-
-    classDirectories = fileTree(
-            dir: '../wallet/build/intermediates/classes/debug',
-            excludes: ['**/R.class',
-                       '**/R$*.class',
-                       '**/*$ViewInjector*.*',
-                       '**/BuildConfig.*',
-                       '**/Manifest*.*']          // 去掉不进行检查的文件
-    )
-
-    additionalSourceDirs = files(coverageSourceDirs)
-    sourceDirectories = files(coverageSourceDirs) //设置需要检测覆盖率的目录
-//    executionData = files('../wallet/build/jacoco/testDebugUnitTest.exec')
-    executionData = files('$buildDir/outputs/code-coverage/connected/coverage.ec')
-
-    reports {
-        xml.enabled = true
-        html.enabled = true
-    }
-
-    doFirst {
-        new File("$buildDir/intermediates/classes/").eachFileRecurse { file ->
-            if (file.name.contains('$$')) {
-                file.renameTo(file.path.replace('$$', '$'))
-            }
-        }
-
-    }
-
-}
+//apply plugin: 'jacoco'
+//
+//jacoco{
+//    toolVersion ="0.7.4+"
+//}
+//def coverageSourceDirs = [
+//        '../wallet/src/main/java']
+//
+//task jacocoTestReport(type:JacocoReport,dependsOn: "testDebugUnitTest") {
+//    group = "Reporting"
+//
+//    description = "Generate Jacoco coverage reports"
+//
+//    classDirectories = fileTree(
+//            dir: '../wallet/build/intermediates/classes/debug',
+//            excludes: ['**/R.class',
+//                       '**/R$*.class',
+//                       '**/*$ViewInjector*.*',
+//                       '**/BuildConfig.*',
+//                       '**/Manifest*.*']          // 去掉不进行检查的文件
+//    )
+//
+//    additionalSourceDirs = files(coverageSourceDirs)
+//    sourceDirectories = files(coverageSourceDirs) //设置需要检测覆盖率的目录
+////    executionData = files('../wallet/build/jacoco/testDebugUnitTest.exec')
+//    executionData = files('$buildDir/outputs/code-coverage/connected/coverage.ec')
+//
+//    reports {
+//        xml.enabled = true
+//        html.enabled = true
+//    }
+//
+//    doFirst {
+//        new File("$buildDir/intermediates/classes/").eachFileRecurse { file ->
+//            if (file.name.contains('$$')) {
+//                file.renameTo(file.path.replace('$$', '$'))
+//            }
+//        }
+//
+//    }
+//
+//}
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':zxing')

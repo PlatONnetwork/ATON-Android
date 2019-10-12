@@ -61,6 +61,7 @@
                 android:background="@drawable/bg_validators_state"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
+                android:textSize="11sp"
                 android:textColor="@color/color_4a90e2"
                 android:layout_toRightOf="@id/tv_wallet_name"
                 android:visibility="gone"
