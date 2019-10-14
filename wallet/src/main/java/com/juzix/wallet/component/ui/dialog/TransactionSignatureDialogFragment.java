@@ -168,7 +168,7 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
                                                 ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.transfer_succeed));
                                             } else if (transactionSignatureData.getFunctionType() == FunctionType.DELEGATE_FUNC_TYPE) {
                                                 ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.delegate_success));
-                                            }else if(transactionSignatureData.getFunctionType() == FunctionType.WITHDREW_DELEGATE_FUNC_TYPE){
+                                            } else if (transactionSignatureData.getFunctionType() == FunctionType.WITHDREW_DELEGATE_FUNC_TYPE) {
                                                 ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.withdraw_success));
                                             }
                                             afterSendTransactionSucceed(hash);
@@ -180,7 +180,7 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
                                                 ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.transfer_failed));
                                             } else if (transactionSignatureData.getFunctionType() == FunctionType.DELEGATE_FUNC_TYPE) {
                                                 ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.delegate_failed));
-                                            }else if(transactionSignatureData.getFunctionType() == FunctionType.WITHDREW_DELEGATE_FUNC_TYPE){
+                                            } else if (transactionSignatureData.getFunctionType() == FunctionType.WITHDREW_DELEGATE_FUNC_TYPE) {
                                                 ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.withdraw_failed));
                                             }
                                         }
@@ -197,11 +197,13 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
         super.onActivityResult(requestCode, resultCode, data);
         String signature = data.getStringExtra(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
         transactionSignatureData = JSONUtil.parseObject(signature, TransactionSignatureData.class);
-        tvTransactionSignature.setText(getSignedMessage(transactionSignatureData));
-
-        RawTransaction rawTransaction = TransactionDecoder.decode(transactionSignatureData.getSignedDatas().get(0));
-
-        LogUtils.e(rawTransaction.toString());
+        if (transactionSignatureData != null) {
+            tvTransactionSignature.setText(getSignedMessage(transactionSignatureData));
+            RawTransaction rawTransaction = TransactionDecoder.decode(transactionSignatureData.getSignedDatas().get(0));
+            LogUtils.e(rawTransaction.toString());
+        } else {
+            ToastUtil.showLongToast(getContext(), R.string.msg_invalid_signature);
+        }
     }
 
     @Override

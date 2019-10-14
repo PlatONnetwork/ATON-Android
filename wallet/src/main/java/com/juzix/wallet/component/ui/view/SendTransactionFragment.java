@@ -438,7 +438,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
         public void onProgressChanged(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat, boolean fromUser) {
             LogUtils.d(progress + ":" + progressFloat + ":" + bubbleSeekBar.getMax());
             if (fromUser) {
-                mPresenter.calculateFeeAndTime(BigDecimalUtil.div(progress, bubbleSeekBar.getMax()));
+                mPresenter.calculateFeeAndTime(progress);
                 mPresenter.updateSendTransactionButtonStatus();
                 if (etWalletAmount.isFocused()) {
                     etWalletAmount.clearFocus();

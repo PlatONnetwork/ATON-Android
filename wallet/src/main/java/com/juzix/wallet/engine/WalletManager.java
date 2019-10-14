@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
 import io.reactivex.SingleSource;
@@ -507,56 +508,59 @@ public class WalletManager {
     }
 
     public Observable<BigDecimal> getAccountBalance() {
-        return ServerUtils
-                .getCommonApi()
-                .getAccountBalance(ApiRequestBody.newBuilder()
-                        .put("addrs", WalletManager.getInstance().getAddressList())
-                        .build())
-                .toFlowable()
-                .flatMap(new Function<Response<ApiResponse<List<AccountBalance>>>, Publisher<AccountBalance>>() {
+        return Observable
+                .interval(5, TimeUnit.SECONDS)
+                .flatMap(new Function<Long, ObservableSource<BigDecimal>>() {
                     @Override
-                    public Publisher<AccountBalance> apply(Response<ApiResponse<List<AccountBalance>>> apiResponseResponse) throws Exception {
-                        if (apiResponseResponse != null && apiResponseResponse.isSuccessful() && apiResponseResponse.body().getResult() == ApiErrorCode.SUCCESS) {
-                            return Flowable.fromIterable(apiResponseResponse.body().getData());
-                        }
-                        return Flowable.error(new Throwable());
+                    public ObservableSource<BigDecimal> apply(Long aLong) throws Exception {
+                        return ServerUtils
+                                .getCommonApi()
+                                .getAccountBalance(ApiRequestBody.newBuilder()
+                                        .put("addrs", WalletManager.getInstance().getAddressList())
+                                        .build())
+                                .toFlowable()
+                                .flatMap(new Function<Response<ApiResponse<List<AccountBalance>>>, Publisher<AccountBalance>>() {
+                                    @Override
+                                    public Publisher<AccountBalance> apply(Response<ApiResponse<List<AccountBalance>>> apiResponseResponse) throws Exception {
+                                        if (apiResponseResponse != null && apiResponseResponse.isSuccessful() && apiResponseResponse.body().getResult() == ApiErrorCode.SUCCESS) {
+                                            return Flowable.fromIterable(apiResponseResponse.body().getData());
+                                        }
+                                        return Flowable.error(new Throwable());
+                                    }
+                                })
+                                .doOnNext(new Consumer<AccountBalance>() {
+                                    @Override
+                                    public void accept(AccountBalance accountBalance) throws Exception {
+                                        WalletManager.getInstance().updateAccountBalance(accountBalance);
+                                    }
+                                })
+                                .map(new Function<AccountBalance, BigDecimal>() {
+                                    @Override
+                                    public BigDecimal apply(AccountBalance accountBalance) throws Exception {
+                                        return new BigDecimal(accountBalance.getFree());
+                                    }
+                                })
+                                .reduce(new BiFunction<BigDecimal, BigDecimal, BigDecimal>() {
+                                    @Override
+                                    public BigDecimal apply(BigDecimal balance1, BigDecimal banalce2) throws Exception {
+                                        return balance1.add(banalce2);
+                                    }
+                                })
+                                .onErrorReturnItem(BigDecimal.ZERO)
+                                .doOnSuccess(new Consumer<BigDecimal>() {
+                                    @Override
+                                    public void accept(BigDecimal sumAccountBalance) throws Exception {
+                                        if (!sumAccountBalance.equals(mSumAccountBalance)) {
+                                            LogUtils.e("钱包总余额已改变。。。");
+                                            EventBus.getDefault().post(new Event.SumAccountBalanceChanged());
+                                        }
+                                        setSumAccountBalance(sumAccountBalance);
+                                    }
+                                })
+                                .toObservable();
                     }
-                })
-                .doOnNext(new Consumer<AccountBalance>() {
-                    @Override
-                    public void accept(AccountBalance accountBalance) throws Exception {
-                        WalletManager.getInstance().updateAccountBalance(accountBalance);
-                    }
-                })
-                .map(new Function<AccountBalance, BigDecimal>() {
-                    @Override
-                    public BigDecimal apply(AccountBalance accountBalance) throws Exception {
-                        return new BigDecimal(accountBalance.getFree());
-                    }
-                })
-                .reduce(new BiFunction<BigDecimal, BigDecimal, BigDecimal>() {
-                    @Override
-                    public BigDecimal apply(BigDecimal balance1, BigDecimal banalce2) throws Exception {
-                        return balance1.add(banalce2);
-                    }
-                })
-                .repeatWhen(new Function<Flowable<Object>, Publisher<?>>() {
-                    @Override
-                    public Publisher<?> apply(Flowable<Object> objectFlowable) throws Exception {
-                        return objectFlowable.delay(5, TimeUnit.SECONDS);
-                    }
-                })
-                .doOnNext(new Consumer<BigDecimal>() {
-                    @Override
-                    public void accept(BigDecimal sumAccountBalance) throws Exception {
-                        if (!sumAccountBalance.equals(mSumAccountBalance)) {
-                            LogUtils.e("钱包总余额已改变。。。");
-                            EventBus.getDefault().post(new Event.SumAccountBalanceChanged());
-                        }
-                        setSumAccountBalance(sumAccountBalance);
-                    }
-                })
-                .toObservable();
+                });
+
     }
 
     private int getPositionByAddress(String address) {
