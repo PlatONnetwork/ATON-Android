@@ -107,15 +107,6 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
         mLoadLatestDisposable = getTransactionList(mWalletAddress)
                 .toObservable()
                 .observeOn(Schedulers.newThread())
-                .doOnNext(new Consumer<List<Transaction>>() {
-                    @Override
-                    public void accept(List<Transaction> transactionList) throws Exception {
-                        //存在数据就刷新余额
-                        if (isViewAttached()) {
-                            ((AssetsFragment) (((TransactionsFragment) getView()).getParentFragment())).fetchWalletsBalance();
-                        }
-                    }
-                })
                 .compose(RxUtils.getSchedulerTransformer())
                 .subscribe(new Consumer<List<Transaction>>() {
                     @Override
@@ -123,7 +114,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                         if (isViewAttached()) {
                             //先进行排序
                             List<Transaction> transactions = mTransactionMap.get(mWalletAddress);
-                            List<Transaction> newTransactionList = getNewTransactionList(transactions, transactionList, false);
+                            List<Transaction> newTransactionList = getNewTransactionList(transactions, transactionList, true);
                             Collections.sort(newTransactionList);
                             getView().notifyDataSetChanged(transactions, newTransactionList, mWalletAddress, true);
 
@@ -135,7 +126,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                     public void accept(Throwable throwable) throws Exception {
                         Log.e(TAG, "loadLatestData onApiFailure");
                         if (isViewAttached()) {
-                            getView().notifyDataSetChanged(mTransactionMap.get(mWalletAddress), null, mWalletAddress, true);
+                            getView().notifyDataSetChanged(mTransactionMap.get(mWalletAddress), mTransactionMap.get(mWalletAddress), mWalletAddress, true);
                         }
                     }
                 });
@@ -157,15 +148,6 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
 
         mAutoRefreshDisposable = getTransactionListWithTime(mWalletAddress, direction)
                 .toObservable()
-                .doOnNext(new Consumer<List<Transaction>>() {
-                    @Override
-                    public void accept(List<Transaction> transactionList) throws Exception {
-                        //存在数据就刷新余额
-                        if (isViewAttached()) {
-                            ((AssetsFragment) (((TransactionsFragment) getView()).getParentFragment())).fetchWalletsBalance();
-                        }
-                    }
-                })
                 .compose(RxUtils.getSchedulerTransformer())
                 .compose(RxUtils.bindToParentLifecycleUtilEvent(getView(), FragmentEvent.STOP))
                 .subscribe(new Consumer<List<Transaction>>() {
@@ -279,7 +261,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
             @Override
             public SingleSource<List<Transaction>> apply(List<Transaction> transactionList) throws Exception {
                 LogUtils.d("getTransactionListFromDB success" + transactionList);
-                return getTransactionList(walletAddress, DIRECTION_NEW, -1)
+                return getTransactionList(walletAddress, DIRECTION_NEW, getBeginSequenceByDirection(DIRECTION_NEW))
                         .flatMap(new Function<Response<ApiResponse<List<Transaction>>>, SingleSource<List<Transaction>>>() {
                             @Override
                             public SingleSource<List<Transaction>> apply(Response<ApiResponse<List<Transaction>>> apiResponseResponse) throws Exception {
