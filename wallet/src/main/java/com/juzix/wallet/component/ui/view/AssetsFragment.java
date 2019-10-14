@@ -283,36 +283,23 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
     public void initTab() {
 
-        vpContent.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        stbBar.getTabAt(1).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onPageScrolled(int i, float v, int i1) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                switch (position) {
-                    case 1:
-                        if ((NetworkUtil.getNetWorkType(getContext()) == NetworkType.NETWORK_NO)) { //没有网络，调起相机界面
-                            new RxPermissions(currentActivity())
-                                    .request(Manifest.permission.CAMERA)
-                                    .subscribe(new CustomObserver<Boolean>() {
-                                        @Override
-                                        public void accept(Boolean success) {
-                                            if (success) {
-                                                ScanQRCodeActivity.startActivityForResult(currentActivity(), MainActivity.REQ_ASSETS_TAB_QR_CODE);
-                                            }
-                                        }
-                                    });
-                        }
-                        Log.debug("OnPageChangeListener", "我选中了" + TAB2);
-                        break;
+            public void onClick(View v) {
+                if ((NetworkUtil.getNetWorkType(getContext()) == NetworkType.NETWORK_NO)) { //没有网络，调起相机界面
+                    new RxPermissions(currentActivity())
+                            .request(Manifest.permission.CAMERA)
+                            .subscribe(new CustomObserver<Boolean>() {
+                                @Override
+                                public void accept(Boolean success) {
+                                    if (success) {
+                                        ScanQRCodeActivity.startActivityForResult(currentActivity(), MainActivity.REQ_ASSETS_TAB_QR_CODE);
+                                    }
+                                }
+                            });
+                }else{
+                    vpContent.setCurrentItem(1);
                 }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int i) {
-
             }
         });
 
