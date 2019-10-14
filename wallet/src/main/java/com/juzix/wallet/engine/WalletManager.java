@@ -1,7 +1,6 @@
 package com.juzix.wallet.engine;
 
 import android.text.TextUtils;
-import android.widget.TextView;
 
 import com.juzhen.framework.network.ApiErrorCode;
 import com.juzhen.framework.network.ApiRequestBody;
@@ -20,10 +19,6 @@ import com.juzix.wallet.utils.JZWalletUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.reactivestreams.Publisher;
-import org.web3j.platon.BaseResponse;
-import org.web3j.platon.bean.RestrictingItem;
-import org.web3j.platon.contracts.RestrictingPlanContract;
-import org.web3j.tx.gas.DefaultGasProvider;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -44,7 +39,6 @@ import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import io.reactivex.Single;
 import retrofit2.Response;
-import retrofit2.http.POST;
 
 
 public class WalletManager {
@@ -173,7 +167,7 @@ public class WalletManager {
     public String getWalletNameByWalletAddress(String walletAddress) {
         if (!mWalletList.isEmpty()) {
             for (Wallet walletEntity : mWalletList) {
-                if (!TextUtils.isEmpty(walletAddress) && walletAddress.equals(walletEntity.getPrefixAddress())) {
+                if (!TextUtils.isEmpty(walletAddress) && walletAddress.equalsIgnoreCase(walletEntity.getPrefixAddress())) {
                     return walletEntity.getName();
                 }
             }
@@ -188,7 +182,7 @@ public class WalletManager {
     public String getWalletIconByWalletAddress(String walletAddress) {
         if (!mWalletList.isEmpty()) {
             for (Wallet walletEntity : mWalletList) {
-                if (!TextUtils.isEmpty(walletAddress) && walletAddress.equals(walletEntity.getPrefixAddress())) {
+                if (!TextUtils.isEmpty(walletAddress) && walletAddress.equalsIgnoreCase(walletEntity.getPrefixAddress())) {
                     return walletEntity.getAvatar();
                 }
 
@@ -204,7 +198,7 @@ public class WalletManager {
 
         if (!mWalletList.isEmpty()) {
             for (Wallet walletEntity : mWalletList) {
-                if (!TextUtils.isEmpty(walletAddress) && walletAddress.equals(walletEntity.getPrefixAddress())) {
+                if (!TextUtils.isEmpty(walletAddress) && walletAddress.equalsIgnoreCase(walletEntity.getPrefixAddress())) {
                     return walletEntity;
                 }
             }
@@ -283,7 +277,7 @@ public class WalletManager {
                 return CODE_ERROR_PASSWORD;
             }
             for (Wallet param : mWalletList) {
-                if (param.getPrefixAddress().toLowerCase().equals(entity.getPrefixAddress().toLowerCase())) {
+                if (param.getPrefixAddress().toLowerCase().equalsIgnoreCase(entity.getPrefixAddress().toLowerCase())) {
                     return CODE_ERROR_WALLET_EXISTS;
                 }
             }
@@ -308,7 +302,7 @@ public class WalletManager {
         mWallet.setAvatar(WalletServiceImpl.getInstance().getWalletAvatar());
 
         for (Wallet param : mWalletList) {
-            if (param.getPrefixAddress().toLowerCase().equals(mWallet.getPrefixAddress().toLowerCase())) {
+            if (param.getPrefixAddress().toLowerCase().equalsIgnoreCase(mWallet.getPrefixAddress().toLowerCase())) {
                 return CODE_ERROR_WALLET_EXISTS;
             }
         }
@@ -339,7 +333,7 @@ public class WalletManager {
                 return CODE_ERROR_PASSWORD;
             }
             for (Wallet param : mWalletList) {
-                if (param.getPrefixAddress().toLowerCase().equals(entity.getPrefixAddress().toLowerCase())) {
+                if (param.getPrefixAddress().toLowerCase().equalsIgnoreCase(entity.getPrefixAddress().toLowerCase())) {
                     return CODE_ERROR_WALLET_EXISTS;
                 }
             }
@@ -386,7 +380,7 @@ public class WalletManager {
                 return CODE_ERROR_PASSWORD;
             }
             for (Wallet param : mWalletList) {
-                if (param.getPrefixAddress().toLowerCase().equals(entity.getPrefixAddress().toLowerCase())) {
+                if (param.getPrefixAddress().toLowerCase().equalsIgnoreCase(entity.getPrefixAddress().toLowerCase())) {
                     return CODE_ERROR_WALLET_EXISTS;
                 }
             }
@@ -400,14 +394,6 @@ public class WalletManager {
             return CODE_ERROR_UNKNOW;
         }
     }
-
-//    public String exportKeystore(IndividualWalletEntity wallet, String password) {
-//        return WalletServiceImpl.getInstance().exportKeystore(wallet, password);
-//    }
-//
-//    public String exportPrivateKey(IndividualWalletEntity wallet, String password) {
-//        return WalletServiceImpl.getInstance().exportPrivateKey(wallet, password);
-//    }
 
     public boolean emptyMnemonic(String mnenonic) {
         String uuid = "";
@@ -438,7 +424,7 @@ public class WalletManager {
         int position = -1;
         for (int i = 0; i < mWalletList.size(); i++) {
             Wallet walletEntity = mWalletList.get(i);
-            if (address.equals(walletEntity.getPrefixAddress())) {
+            if (address.equalsIgnoreCase(walletEntity.getPrefixAddress())) {
                 position = i;
                 break;
             }
@@ -506,7 +492,7 @@ public class WalletManager {
                 .map(new Function<Wallet, Boolean>() {
                     @Override
                     public Boolean apply(Wallet walletEntity) throws Exception {
-                        return walletEntity.getPrefixAddress().toLowerCase().equals(prefixAddress.toLowerCase());
+                        return walletEntity.getPrefixAddress().toLowerCase().equalsIgnoreCase(prefixAddress.toLowerCase());
                     }
                 })
                 .filter(new Predicate<Boolean>() {
@@ -579,7 +565,7 @@ public class WalletManager {
                 .filter(new Predicate<Integer>() {
                     @Override
                     public boolean test(Integer integer) throws Exception {
-                        return mWalletList.get(integer).getPrefixAddress().equals(address);
+                        return mWalletList.get(integer).getPrefixAddress().equalsIgnoreCase(address);
                     }
                 })
                 .firstElement()
