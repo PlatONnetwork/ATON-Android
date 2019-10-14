@@ -310,7 +310,7 @@ public class WalletManager {
 //        mWallet.setMnemonic("");
         mWallet.setCreateTime(System.currentTimeMillis());
         mWallet.setUpdateTime(System.currentTimeMillis());
-        mWallet.setName("LAT-Wallet" + AppSettings.getInstance().getWalletNameSequence());
+        mWallet.setName("LAT-Wallet-" + AppSettings.getInstance().getWalletNameSequence());
         mWalletList.add(mWallet);
         WalletDao.insertWalletInfo(mWallet.buildWalletInfoEntity());
         AppSettings.getInstance().setOperateMenuFlag(false);
