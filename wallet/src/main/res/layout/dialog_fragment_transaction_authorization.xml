@@ -42,8 +42,6 @@
         android:id="@+id/iv_transaction_data"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginLeft="18dp"
-        android:layout_marginRight="18dp"
         app:layout_constraintDimensionRatio="1:1"
         android:layout_marginTop="16dp"
         android:scaleType="fitXY"
