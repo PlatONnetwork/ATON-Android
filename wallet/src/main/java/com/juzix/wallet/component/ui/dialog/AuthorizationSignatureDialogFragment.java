@@ -74,10 +74,9 @@ public class AuthorizationSignatureDialogFragment extends BaseDialogFragment {
 
         Observable
                 .fromCallable(new Callable<Bitmap>() {
-
                     @Override
                     public Bitmap call() throws Exception {
-                        return QRCodeEncoder.syncEncodeQRCode(data, DensityUtil.getScreenWidth(getContext()) - DensityUtil.dp2px(getActivity(), 36f));
+                        return QRCodeEncoder.syncEncodeQRCode(data, DensityUtil.getScreenWidth(getContext()) - DensityUtil.dp2px(getActivity(), 64f));
                     }
                 })
                 .compose(bindToLifecycle())
