@@ -3,10 +3,13 @@ package com.juzix.wallet.component.ui.view;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.InputFilter;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -37,7 +40,7 @@ import com.juzix.wallet.component.ui.presenter.DelegatePresenter;
 import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.component.widget.PointLengthFilter;
 import com.juzix.wallet.component.widget.ShadowButton;
-import com.juzix.wallet.component.widget.TextViewDrawable;
+import com.juzix.wallet.component.widget.VerticalImageSpan;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.entity.AccountBalance;
 import com.juzix.wallet.entity.DelegateHandle;
@@ -110,7 +113,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     @BindView(R.id.v_tips)
     View v_tips;
     @BindView(R.id.tv_no_delegate_tips)
-    TextViewDrawable tv_no_delegate_tips;
+    TextView tv_no_delegate_tips;
 
     private Unbinder unbinder;
     private String address;//钱包地址
@@ -388,17 +391,16 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                 showLongToast(getString(R.string.delegate_no_click));
             } else if(TextUtils.equals(bean.getMessage(),"2")){ //节点已退出或退出中
                 btnDelegate.setEnabled(false);
-//                showLongToast(getString(R.string.the_Validator_has_exited_and_cannot_be_delegated));
                 tv_no_delegate_tips.setVisibility(View.VISIBLE);
-                tv_no_delegate_tips.setText(getString(R.string.the_Validator_has_exited_and_cannot_be_delegated));
+                setImageIconForText(tv_no_delegate_tips,getString(R.string.the_Validator_has_exited_and_cannot_be_delegated));
             }else if(TextUtils.equals(bean.getMessage(),"3")){
                   btnDelegate.setEnabled(false);
                   tv_no_delegate_tips.setVisibility(View.VISIBLE);
-                  tv_no_delegate_tips.setText(getString(R.string.tips_not_delegate));
+                  setImageIconForText(tv_no_delegate_tips,getString(R.string.tips_not_delegate));
             }else {
                 btnDelegate.setEnabled(false);
                 tv_no_delegate_tips.setVisibility(View.VISIBLE);
-                tv_no_delegate_tips.setText(getString(R.string.tips_not_balance));
+                setImageIconForText(tv_no_delegate_tips,getString(R.string.tips_not_balance));
             }
         } else {
             et_amount.setFocusableInTouchMode(true);
@@ -413,7 +415,13 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         }
 
     }
-
+    public void setImageIconForText(TextView textView,String content){
+        SpannableString spannableString = new SpannableString(" " + content);
+        Drawable drawable = getResources().getDrawable(R.drawable.icon_no_delegate_tips);
+        drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+        spannableString.setSpan(new VerticalImageSpan(drawable), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textView.setText(spannableString);
+    }
     @Override
     public void transactionSuccessInfo(String hash, String from, String to, String txType, String value, String actualTxCost, String nodeName, String nodeId, int txReceiptStatus) {
         finish();

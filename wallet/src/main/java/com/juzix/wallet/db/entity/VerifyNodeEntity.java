@@ -35,7 +35,7 @@ public class VerifyNodeEntity extends RealmObject {
     /**
      * 预计年化率(存入数据库为int类型)
      */
-    private int ratePA;
+    private String ratePA;
 
 
     /**
@@ -115,11 +115,11 @@ public class VerifyNodeEntity extends RealmObject {
         this.url = url;
     }
 
-    public int getRatePA() {
+    public String getRatePA() {
         return ratePA;
     }
 
-    public void setRatePA(int ratePA) {
+    public void setRatePA(String ratePA) {
         this.ratePA = ratePA;
     }
 
@@ -137,7 +137,7 @@ public class VerifyNodeEntity extends RealmObject {
         private String name;
         private String deposit;
         private String url;
-        private int ratePA;
+        private String ratePA;
         private String nodeStatus;
         private boolean isInit;
 
@@ -171,7 +171,7 @@ public class VerifyNodeEntity extends RealmObject {
             return this;
         }
 
-        public Builder ratePA(int val) {
+        public Builder ratePA(String val) {
             this.ratePA = val;
             return this;
         }
@@ -200,7 +200,7 @@ public class VerifyNodeEntity extends RealmObject {
                 .nodeId(nodeId)
                 .nodeStatus(nodeStatus)
                 .ranking(ranking)
-                .ratePA(String.valueOf(ratePA))
+                .ratePA(ratePA)
                 .url(url)
                 .isInit(isInit)
                 .build();

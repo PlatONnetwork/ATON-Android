@@ -252,7 +252,7 @@ public class VerifyNode implements Parcelable {
                 .name(name)
                 .nodeId(nodeId)
                 .ranking(ranking)
-                .ratePA(NumberParserUtils.parseInt(ratePA))
+                .ratePA(ratePA)
                 .url(url)
                 .nodeStatus(nodeStatus)
                 .isInit(isInit)
