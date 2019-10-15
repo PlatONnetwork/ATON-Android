@@ -542,7 +542,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                                     .setOnNextBtnClickListener(new TransactionAuthorizationDialogFragment.OnNextBtnClickListener() {
                                         @Override
                                         public void onNextBtnClick() {
-                                            TransactionSignatureDialogFragment.newInstance(transactionAuthorizationData.getTimestamp())
+                                            TransactionSignatureDialogFragment.newInstance(transactionAuthorizationData)
                                                     .setOnSendTransactionSucceedListener(new TransactionSignatureDialogFragment.OnSendTransactionSucceedListener() {
                                                         @Override
                                                         public void onSendTransactionSucceed(String hash) {

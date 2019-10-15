@@ -664,8 +664,10 @@
     <string name="action_send_transaction">发送交易</string>
     <string name="action_authorized_signature">授权签名</string>
     <string name="msg_authorization_signature_desc">使用对应冷钱包扫描下方二维码，完成授权。</string>
+    <string name="msg_wallet_mismatch">钱包不匹配</string>
     <string name="finish">完成</string>
     <string name="msg_invalid_signature">无效签名</string>
     <string name="tips_not_delegate">节点关联的钱包地址，不可参与委托。</string>
     <string name="tips_not_balance">可用余额为0,无法委托</string>
+
 </resources>

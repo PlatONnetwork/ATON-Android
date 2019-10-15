@@ -50,7 +50,7 @@ public class SendTransationContract {
 
         void calculateFee();
 
-        void calculateFeeAndTime(double percent);
+        void calculateFeeAndTime(int progress);
 
         boolean checkToAddress(String toAddress);
 

@@ -24,6 +24,8 @@ import com.juzix.wallet.db.sqlite.TransactionDao;
 import com.juzix.wallet.db.sqlite.WalletDao;
 import com.juzix.wallet.engine.TransactionManager;
 import com.juzix.wallet.entity.Transaction;
+import com.juzix.wallet.entity.TransactionAuthorizationBaseData;
+import com.juzix.wallet.entity.TransactionAuthorizationData;
 import com.juzix.wallet.entity.TransactionSignatureData;
 import com.juzix.wallet.entity.TransactionStatus;
 import com.juzix.wallet.entity.TransactionType;
@@ -40,6 +42,8 @@ import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionDecoder;
 import org.web3j.platon.FunctionType;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -51,10 +55,23 @@ import io.reactivex.Single;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
+import jnr.constants.platform.PRIO;
 
 public class TransactionSignatureDialogFragment extends BaseDialogFragment {
 
     public final static String TAG = TransactionSignatureDialogFragment.class.getSimpleName();
+    /**
+     * 有效签名
+     */
+    private final static int CODE_VALID_SIGNATURE = 0;
+    /**
+     * 钱包不匹配
+     */
+    private final static int CODE_WALLET_MISMATCH = 1;
+    /**
+     * 无效签名
+     */
+    private final static int CODE_INVALID_SIGNATURE = 2;
 
     @BindView(R.id.iv_scan)
     ImageView ivScan;
@@ -75,10 +92,10 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
         return dialogFragment;
     }
 
-    public static TransactionSignatureDialogFragment newInstance(long timeStamp) {
+    public static TransactionSignatureDialogFragment newInstance(TransactionAuthorizationData transactionAuthorizationData) {
         TransactionSignatureDialogFragment dialogFragment = new TransactionSignatureDialogFragment();
         Bundle bundle = new Bundle();
-        bundle.putLong(Constants.Bundle.BUNDLE_TIME_STAMP, timeStamp);
+        bundle.putParcelable(Constants.Extra.EXTRA_TRANSACTION_AUTHORIZATION_DATA, transactionAuthorizationData);
         dialogFragment.setArguments(bundle);
         return dialogFragment;
     }
@@ -105,7 +122,7 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
 
         transactionSignatureData = getArguments().getParcelable(Constants.Extra.EXTRA_TRANSACTION_SIGNATURE_DATA);
 
-        long timeStamp = getArguments().getLong(Constants.Bundle.BUNDLE_TIME_STAMP);
+        TransactionAuthorizationData transactionAuthorizationData = getArguments().getParcelable(Constants.Extra.EXTRA_TRANSACTION_AUTHORIZATION_DATA);
 
         tvTransactionSignature.setMovementMethod(ScrollingMovementMethod.getInstance());
 
@@ -148,45 +165,15 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        if (transactionSignatureData != null && transactionSignatureData.getTimestamp() == timeStamp) {
 
-                            Flowable
-                                    .fromIterable(transactionSignatureData.getSignedDatas())
-                                    .map(new Function<String, String>() {
-                                        @Override
-                                        public String apply(String signedMessage) throws Exception {
-                                            return TransactionManager.getInstance().sendTransaction(signedMessage);
-                                        }
-                                    })
-                                    .takeLast(1)
-                                    .compose(RxUtils.getFlowableSchedulerTransformer())
-                                    .compose(bindToLifecycle())
-                                    .subscribe(new Consumer<String>() {
-                                        @Override
-                                        public void accept(String hash) throws Exception {
-                                            if (transactionSignatureData.getFunctionType() == FunctionType.TRANSFER) {
-                                                ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.transfer_succeed));
-                                            } else if (transactionSignatureData.getFunctionType() == FunctionType.DELEGATE_FUNC_TYPE) {
-                                                ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.delegate_success));
-                                            }else if(transactionSignatureData.getFunctionType() == FunctionType.WITHDREW_DELEGATE_FUNC_TYPE){
-                                                ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.withdraw_success));
-                                            }
-                                            afterSendTransactionSucceed(hash);
-                                        }
-                                    }, new Consumer<Throwable>() {
-                                        @Override
-                                        public void accept(Throwable throwable) throws Exception {
-                                            if (transactionSignatureData.getFunctionType() == FunctionType.TRANSFER) {
-                                                ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.transfer_failed));
-                                            } else if (transactionSignatureData.getFunctionType() == FunctionType.DELEGATE_FUNC_TYPE) {
-                                                ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.delegate_failed));
-                                            }else if(transactionSignatureData.getFunctionType() == FunctionType.WITHDREW_DELEGATE_FUNC_TYPE){
-                                                ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.withdraw_failed));
-                                            }
-                                        }
-                                    });
+                        int result = checkSignature(transactionAuthorizationData);
+
+                        if (result == CODE_INVALID_SIGNATURE) {
+                            ToastUtil.showLongToast(getContext(), R.string.msg_invalid_signature);
+                        } else if (result == CODE_WALLET_MISMATCH) {
+                            ToastUtil.showLongToast(getContext(), R.string.msg_wallet_mismatch);
                         } else {
-                            ToastUtil.showLongToast(getActivity(), R.string.msg_invalid_signature);
+                            sendTransaction(transactionSignatureData);
                         }
                     }
                 });
@@ -197,11 +184,13 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
         super.onActivityResult(requestCode, resultCode, data);
         String signature = data.getStringExtra(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
         transactionSignatureData = JSONUtil.parseObject(signature, TransactionSignatureData.class);
-        tvTransactionSignature.setText(getSignedMessage(transactionSignatureData));
-
-        RawTransaction rawTransaction = TransactionDecoder.decode(transactionSignatureData.getSignedDatas().get(0));
-
-        LogUtils.e(rawTransaction.toString());
+        if (transactionSignatureData != null) {
+            tvTransactionSignature.setText(getSignedMessage(transactionSignatureData));
+            RawTransaction rawTransaction = TransactionDecoder.decode(transactionSignatureData.getSignedDatas().get(0));
+            LogUtils.e(rawTransaction.toString());
+        } else {
+            ToastUtil.showLongToast(getContext(), R.string.msg_invalid_signature);
+        }
     }
 
     @Override
@@ -210,6 +199,66 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
         if (unbinder != null) {
             unbinder.unbind();
         }
+    }
+
+    private void sendTransaction(TransactionSignatureData transactionSignatureData) {
+
+        Flowable
+                .fromIterable(transactionSignatureData.getSignedDatas())
+                .map(new Function<String, String>() {
+                    @Override
+                    public String apply(String signedMessage) throws Exception {
+                        return TransactionManager.getInstance().sendTransaction(signedMessage);
+                    }
+                })
+                .takeLast(1)
+                .compose(RxUtils.getFlowableSchedulerTransformer())
+                .compose(bindToLifecycle())
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String hash) throws Exception {
+                        if (transactionSignatureData.getFunctionType() == FunctionType.TRANSFER) {
+                            ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.transfer_succeed));
+                        } else if (transactionSignatureData.getFunctionType() == FunctionType.DELEGATE_FUNC_TYPE) {
+                            ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.delegate_success));
+                        } else if (transactionSignatureData.getFunctionType() == FunctionType.WITHDREW_DELEGATE_FUNC_TYPE) {
+                            ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.withdraw_success));
+                        }
+                        afterSendTransactionSucceed(hash);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        if (transactionSignatureData.getFunctionType() == FunctionType.TRANSFER) {
+                            ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.transfer_failed));
+                        } else if (transactionSignatureData.getFunctionType() == FunctionType.DELEGATE_FUNC_TYPE) {
+                            ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.delegate_failed));
+                        } else if (transactionSignatureData.getFunctionType() == FunctionType.WITHDREW_DELEGATE_FUNC_TYPE) {
+                            ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.withdraw_failed));
+                        }
+                    }
+                });
+    }
+
+    private int checkSignature(TransactionAuthorizationData transactionAuthorizationData) {
+
+        TransactionAuthorizationBaseData transactionAuthorizationBaseData = transactionAuthorizationData.getBaseDataList().get(0);
+
+        boolean fromNotEquals = !TextUtils.equals(transactionAuthorizationBaseData.getFrom(), transactionSignatureData.getFrom());
+
+        if (fromNotEquals) {
+            return CODE_WALLET_MISMATCH;
+        }
+
+        boolean chainIdNotEquals = !TextUtils.equals(transactionAuthorizationBaseData.getChainId(), transactionSignatureData.getChainId());
+        boolean timestampNotEquals = transactionAuthorizationData.getTimestamp() != transactionSignatureData.getTimestamp();
+        boolean functionTypeNotEquals = transactionAuthorizationBaseData.getFunctionType() != transactionSignatureData.getFunctionType();
+
+        if (chainIdNotEquals || timestampNotEquals || functionTypeNotEquals) {
+            return CODE_INVALID_SIGNATURE;
+        }
+
+        return CODE_VALID_SIGNATURE;
     }
 
     private void afterSendTransactionSucceed(String hash) {

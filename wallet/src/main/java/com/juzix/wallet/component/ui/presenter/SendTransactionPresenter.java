@@ -49,7 +49,6 @@ import org.web3j.utils.Numeric;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -76,15 +75,16 @@ import io.reactivex.functions.Predicate;
  */
 public class SendTransactionPresenter extends BasePresenter<SendTransationContract.View> implements SendTransationContract.Presenter {
 
-    private final static double DEFAULT_PERCENT = 0;
+    private final static int DEFAULT_PERCENT = 0;
+    private final static BigInteger DEFAULT_EXCHANGE_RATE = BigInteger.valueOf(1000000000000000000L);
     //默认gasLimit
-    private final static BigInteger DEAULT_GAS_LIMIT = DefaultGasProvider.GAS_LIMIT;
+    private final static BigInteger DEFAULT_GAS_LIMIT = DefaultGasProvider.GAS_LIMIT;
     //默认最小gasPrice
     private final static BigInteger DEFAULT_MIN_GASPRICE = DefaultGasProvider.GAS_PRICE;
     //默认最大gasPrice
     private final static BigInteger DEFAULT_MAX_GASPRICE = BigInteger.valueOf(6).multiply(DefaultGasProvider.GAS_PRICE);
     //当前gasLimit
-    private BigInteger gasLimit = DEAULT_GAS_LIMIT;
+    private BigInteger gasLimit = DEFAULT_GAS_LIMIT;
     //最低gasPrice
     private BigInteger minGasPrice = DEFAULT_MIN_GASPRICE;
     //最高gasPrice
@@ -94,9 +94,9 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     //当前gasPrice
     private BigInteger gasPrice = minGasPrice;
     //当前滑动百分比
-    private double percent = DEFAULT_PERCENT;
+    private int progress = DEFAULT_PERCENT;
 
-    private double feeAmount;
+    private String feeAmount;
     //刷新时间
     private Disposable mDisposable;
     private Wallet walletEntity;
@@ -164,7 +164,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                             maxGasPrice = bigInteger.multiply(BigInteger.valueOf(6));
                             dGasPrice = maxGasPrice.subtract(minGasPrice);
                             LogUtils.e("gasPrice为：  " + bigInteger.longValue() + "minGasPrice为： " + minGasPrice);
-                            calculateFeeAndTime(percent);
+                            calculateFeeAndTime(progress);
                         }
                     }
                 });
@@ -177,7 +177,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
             if (BigDecimalUtil.isBigger(String.valueOf(feeAmount), walletEntity.getFreeBalance())) {
                 getView().setTransferAmount(0D);
             } else {
-                getView().setTransferAmount(BigDecimalUtil.sub(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(walletEntity.getFreeBalance(), "1E18")), String.valueOf(feeAmount)));
+                getView().setTransferAmount(BigDecimalUtil.sub(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(walletEntity.getFreeBalance(), DEFAULT_EXCHANGE_RATE.toString(10))), String.valueOf(feeAmount)));
             }
         }
     }
@@ -189,14 +189,14 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
         if (TextUtils.isEmpty(toAddress) || walletEntity == null || TextUtils.isEmpty(address)) {
             return;
         }
-        updateFeeAmount(percent);
+        updateFeeAmount(progress);
     }
 
     @Override
-    public void calculateFeeAndTime(double percent) {
-        this.percent = percent;
-        updateGasPrice(percent);
-        updateFeeAmount(percent);
+    public void calculateFeeAndTime(int progress) {
+        this.progress = progress;
+        updateGasPrice(progress);
+        updateFeeAmount(progress);
     }
 
     @Override
@@ -309,7 +309,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
         if (isViewAttached()) {
             if (tabIndex != AssetsFragment.TAB2) {
                 resetData();
-                getView().resetView(BigDecimalUtil.parseString(feeAmount));
+                getView().resetView(feeAmount);
             }
         }
     }
@@ -370,7 +370,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                     public void accept(Long aLong) throws Exception {
                         if (isViewAttached()) {
                             resetData();
-                            getView().resetView(BigDecimalUtil.parseString(feeAmount));
+                            getView().resetView(feeAmount);
                             MainActivity.actionStart(getContext(), MainActivity.TAB_PROPERTY, AssetsFragment.TAB1);
                         }
                     }
@@ -383,7 +383,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
             @Override
             public void subscribe(SingleEmitter<Credentials> emitter) throws Exception {
                 double balance = Web3jManager.getInstance().getBalance(walletEntity.getPrefixAddress());
-                if (balance < feeAmount) {
+                if (balance < NumberParserUtils.parseDouble(feeAmount)) {
                     emitter.onError(new CustomThrowable(CustomThrowable.CODE_ERROR_NOT_SUFFICIENT_BALANCE));
                 } else {
                     emitter.onSuccess(credentials);
@@ -431,7 +431,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                                     .setOnNextBtnClickListener(new TransactionAuthorizationDialogFragment.OnNextBtnClickListener() {
                                         @Override
                                         public void onNextBtnClick() {
-                                            TransactionSignatureDialogFragment.newInstance(transactionAuthorizationData.getTimestamp())
+                                            TransactionSignatureDialogFragment.newInstance(transactionAuthorizationData)
                                                     .setOnSendTransactionSucceedListener(new TransactionSignatureDialogFragment.OnSendTransactionSucceedListener() {
                                                         @Override
                                                         public void onSendTransactionSucceed(String hash) {
@@ -459,35 +459,38 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                 });
     }
 
-    private void updateFeeAmount(double percent) {
-        double minFee = getMinFee();
-        double maxFee = getMaxFee();
-        double dValue = maxFee - minFee;
-        feeAmount = BigDecimalUtil.add(minFee, BigDecimalUtil.mul(percent, dValue), 8, RoundingMode.CEILING);
+    private void updateFeeAmount(int progress) {
+        BigInteger minFee = getMinFee();
+        BigInteger maxFee = getMaxFee();
+        BigInteger dValue = maxFee.subtract(minFee);
+
+        BigInteger sumFeeAmount = minFee.add(dValue.multiply(BigInteger.valueOf(progress))).divide(BigInteger.valueOf(100L));
+
+        feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(sumFeeAmount.toString(10), DEFAULT_EXCHANGE_RATE.toString(10)));
+
         if (isViewAttached()) {
-            getView().setTransferFeeAmount(BigDecimalUtil.parseString(feeAmount));
+            getView().setTransferFeeAmount(feeAmount);
         }
     }
 
-    private void updateGasPrice(double percent) {
-        gasPrice = minGasPrice.add(BigDecimalUtil.mul(String.valueOf(percent), String.valueOf(dGasPrice.doubleValue())).toBigInteger());
-        LogUtils.e("当前gasPrice为：" + gasPrice);
+    private void updateGasPrice(int progress) {
+        gasPrice = minGasPrice.add(dGasPrice.multiply(BigInteger.valueOf(progress))).divide(BigInteger.valueOf(100L));
     }
 
     private boolean isBalanceEnough(String transferAmount) {
-        double usedAmount = BigDecimalUtil.add(NumberParserUtils.parseDouble(transferAmount), feeAmount);
+        double usedAmount = BigDecimalUtil.add(transferAmount, feeAmount).doubleValue();
         if (walletEntity != null) {
             return BigDecimalUtil.isBigger(walletEntity.getFreeBalance(), String.valueOf(usedAmount));
         }
         return false;
     }
 
-    private double getMinFee() {
-        return BigDecimalUtil.div(BigDecimalUtil.mul(gasLimit.doubleValue(), minGasPrice.doubleValue()), 1E18);
+    private BigInteger getMinFee() {
+        return gasLimit.multiply(minGasPrice);
     }
 
-    private double getMaxFee() {
-        return BigDecimalUtil.div(BigDecimalUtil.mul(gasLimit.doubleValue(), maxGasPrice.doubleValue()), 1E18);
+    private BigInteger getMaxFee() {
+        return gasLimit.multiply(maxGasPrice);
     }
 
     private Map<String, String> buildSendTransactionInfo(String fromWallet, String recipient, String fee) {
@@ -502,9 +505,9 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     private void resetData() {
         toAddress = "";
         gasPrice = minGasPrice;
-        gasLimit = DEAULT_GAS_LIMIT;
-        percent = DEFAULT_PERCENT;
-        feeAmount = getMinFee();
+        gasLimit = DEFAULT_GAS_LIMIT;
+        progress = DEFAULT_PERCENT;
+        feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(getMinFee().toString(10),DEFAULT_EXCHANGE_RATE.toString(10)));
     }
 
     private Single<String> getWalletNameFromAddress(String address) {

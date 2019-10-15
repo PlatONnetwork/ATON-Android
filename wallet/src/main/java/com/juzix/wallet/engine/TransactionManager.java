@@ -93,12 +93,9 @@ public class TransactionManager {
         Credentials credentials = Credentials.create(privateKey);
 
         try {
-            List<RlpType> result = new ArrayList<>();
-
-            String txType = Hex.toHexString(RlpEncoder.encode(new RlpList(result)));
 
             RawTransaction rawTransaction = RawTransaction.createTransaction(Web3jManager.getInstance().getNonce(from), gasPrice, gasLimit, toAddress, amount.toBigInteger(),
-                    txType);
+                    "");
 
             byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, NumberParserUtils.parseLong(NodeManager.getInstance().getChainId()), credentials);
             String hexValue = Numeric.toHexString(signedMessage);

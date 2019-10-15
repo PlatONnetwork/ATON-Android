@@ -9,7 +9,7 @@ def daggerVersion = "2.8"
 def routerVersion = "0.2.3"
 def htextviewVersion = "0.1.6"
 def multidexVersion = "1.0.3"
-def web3jVersion = "0.7.3.3-android"
+def web3jVersion = "0.7.3.4-android"
 def rxlifecycle = "2.2.1";
 
 project.ext {
