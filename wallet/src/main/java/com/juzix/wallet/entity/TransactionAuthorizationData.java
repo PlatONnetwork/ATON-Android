@@ -11,7 +11,9 @@ import com.juzix.wallet.utils.BigIntegerUtil;
 import com.juzix.wallet.utils.JSONUtil;
 
 import org.web3j.crypto.Credentials;
+import org.web3j.platon.FunctionType;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +32,7 @@ public class TransactionAuthorizationData implements Parcelable {
 
     }
 
-    public TransactionAuthorizationData(List<TransactionAuthorizationBaseData> baseDataList,long timeStamp) {
+    public TransactionAuthorizationData(List<TransactionAuthorizationBaseData> baseDataList, long timeStamp) {
         this.baseDataList = baseDataList;
         this.timestamp = timeStamp;
     }
@@ -92,7 +94,7 @@ public class TransactionAuthorizationData implements Parcelable {
 
         TransactionAuthorizationBaseData baseData = baseDataList.get(0);
 
-        return new TransactionAuthorizationDetail(getSumAmount(), baseData.getPlatOnFunction().getType(), baseData.getFrom(), baseData.getTo(), getSumFee(),baseData.getNodeId(),baseData.getNodeName());
+        return new TransactionAuthorizationDetail(getSumAmount(), baseData.getPlatOnFunction().getType(), baseData.getFrom(), baseData.getTo(), getSumFee(), baseData.getNodeId(), baseData.getNodeName());
 
     }
 
@@ -108,7 +110,7 @@ public class TransactionAuthorizationData implements Parcelable {
 
         TransactionAuthorizationBaseData firstBaseData = baseDataList.get(0);
 
-        return new TransactionSignatureData(getSignedMessageList(credentials), firstBaseData.getFrom(),firstBaseData.getChainId(), timestamp, firstBaseData.getPlatOnFunction().getType());
+        return new TransactionSignatureData(getSignedMessageList(credentials), firstBaseData.getFrom(), firstBaseData.getChainId(), timestamp, firstBaseData.getPlatOnFunction().getType());
     }
 
     private List<String> getSignedMessageList(Credentials credentials) {
@@ -128,8 +130,8 @@ public class TransactionAuthorizationData implements Parcelable {
     }
 
     private String getSignedMessage(TransactionAuthorizationBaseData baseData, Credentials credentials, String nonce) {
-
-        return TransactionManager.getInstance().signTransaction(credentials, baseData.getPlatOnFunction().getEncodeData(), baseData.getTo(), BigDecimalUtil.toBigDecimal(baseData.getAmount()), BigIntegerUtil.toBigInteger(nonce), BigIntegerUtil.toBigInteger(baseData.getGasPrice()), BigIntegerUtil.toBigInteger(baseData.getGasLimit()));
+        BigDecimal transferAmount = baseData.functionType == FunctionType.TRANSFER ? BigDecimalUtil.toBigDecimal(baseData.getAmount()) : BigDecimal.ZERO;
+        return TransactionManager.getInstance().signTransaction(credentials, baseData.getPlatOnFunction().getEncodeData(), baseData.getTo(), transferAmount, BigIntegerUtil.toBigInteger(nonce), BigIntegerUtil.toBigInteger(baseData.getGasPrice()), BigIntegerUtil.toBigInteger(baseData.getGasLimit()));
     }
 
     private String getSumAmount() {
