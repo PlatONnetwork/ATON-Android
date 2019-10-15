@@ -19,7 +19,6 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
-import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -458,7 +457,6 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
             unbinder.unbind();
         }
         EventPublisher.getInstance().unRegister(this);
-        NetStateChangeReceiver.unRegisterReceiver(getContext());
     }
 
     private String makeFragmentName(long id) {
