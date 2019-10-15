@@ -42,6 +42,8 @@ import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionDecoder;
 import org.web3j.platon.FunctionType;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.List;
 import java.util.concurrent.Callable;
 
