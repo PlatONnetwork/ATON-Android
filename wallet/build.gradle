@@ -128,7 +128,7 @@ android {
                 type = (type + "_" + variant.flavorName)
             }
 
-            outputFileName = "wallet_android_v${verName}_${innerVer}_${releaseTime}_${verCode}_${type}_${gitVersion}.apk";
+            outputFileName = "ATON-android_v${verName}_${innerVer}_${releaseTime}_${verCode}_${type}_${gitVersion}.apk";
         }
     }
     compileOptions {
