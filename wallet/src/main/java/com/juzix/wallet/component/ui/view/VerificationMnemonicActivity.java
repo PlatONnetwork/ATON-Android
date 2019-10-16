@@ -26,6 +26,8 @@ import com.juzix.wallet.component.ui.presenter.VerificationMnemonicPresenter;
 import com.juzix.wallet.component.widget.CommonTitleBar;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.entity.Wallet;
+import com.juzix.wallet.utils.DensityUtil;
+
 import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -183,7 +185,8 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
         textView.setText(dataEntity.getMnemonic());
         textView.setGravity(Gravity.CENTER);
         textView.setAllCaps(false);
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+        textView.setPadding(DensityUtil.dp2px(getContext(),10),DensityUtil.dp2px(getContext(),15),DensityUtil.dp2px(getContext(),10),DensityUtil.dp2px(getContext(),15));
         if (!dataEntity.isChecked()){
             textView.setBackgroundResource(R.drawable.bg_shape_verify_mnemonic_n);
             textView.setTextColor(ContextCompat.getColor(this, R.color.color_316def));

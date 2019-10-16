@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.jakewharton.rxbinding2.view.RxView;
@@ -19,6 +21,7 @@ import com.juzix.wallet.component.ui.base.MVPBaseFragment;
 import com.juzix.wallet.component.ui.contract.ImportIndividualObservedContract;
 import com.juzix.wallet.component.ui.presenter.ImportObservedPresenter;
 import com.juzix.wallet.component.widget.ShadowButton;
+import com.juzix.wallet.utils.CommonUtil;
 import com.juzix.wallet.utils.RxUtils;
 
 import butterknife.BindView;
@@ -31,6 +34,8 @@ public class ImportObservedFragment extends MVPBaseFragment<ImportObservedPresen
     EditText et_observed;
     @BindView(R.id.sbtn_finish)
     ShadowButton sbtn_finish;
+    @BindView(R.id.btn_paste)
+    Button mBtnPaste;
 
     @Override
     protected ImportObservedPresenter createPresenter() {
@@ -39,6 +44,7 @@ public class ImportObservedFragment extends MVPBaseFragment<ImportObservedPresen
 
     @Override
     protected void onFragmentPageStart() {
+        mPresenter.checkPaste();
     }
 
     @Override
@@ -62,6 +68,16 @@ public class ImportObservedFragment extends MVPBaseFragment<ImportObservedPresen
                     }
                 });
 
+        RxView.clicks(mBtnPaste)
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        et_observed.setText(CommonUtil.getTextFromClipboard(getContext()));
+                        et_observed.setSelection(et_observed.getText().toString().length());
+                    }
+                });
     }
 
     TextWatcher textWatcher = new TextWatcher() {
@@ -110,4 +126,11 @@ public class ImportObservedFragment extends MVPBaseFragment<ImportObservedPresen
     public void enableImportObservedWallet(boolean isCan) {
         sbtn_finish.setEnabled(isCan);
     }
+
+    @Override
+    public void enablePaste(boolean enabled) {
+        mBtnPaste.setEnabled(enabled);
+        mBtnPaste.setTextColor(ContextCompat.getColor(getContext(), enabled ? R.color.color_105cfe : R.color.color_d8d8d8));
+    }
+
 }
