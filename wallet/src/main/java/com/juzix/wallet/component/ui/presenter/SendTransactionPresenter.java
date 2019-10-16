@@ -174,7 +174,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     @Override
     public void transferAllBalance() {
         if (isViewAttached() && walletEntity != null) {
-            if (BigDecimalUtil.isBigger(String.valueOf(feeAmount), walletEntity.getFreeBalance())) {
+            if (BigDecimalUtil.isBigger(String.valueOf(feeAmount), BigDecimalUtil.div(walletEntity.getFreeBalance(),DEFAULT_EXCHANGE_RATE.toString(10)))) {
                 getView().setTransferAmount(0D);
             } else {
                 getView().setTransferAmount(BigDecimalUtil.sub(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(walletEntity.getFreeBalance(), DEFAULT_EXCHANGE_RATE.toString(10))), String.valueOf(feeAmount)));

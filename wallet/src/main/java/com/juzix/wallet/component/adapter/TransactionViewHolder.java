@@ -78,7 +78,7 @@ public class TransactionViewHolder extends BaseViewHolder<Transaction> {
         mTransactionStatusTv.setText(getTxTDesc(transaction, mContext, isSender));
         mTransactionTimeTv.setText(transaction.getShowCreateTime());
         mPendingLayout.setVisibility(transactionStatus != TransactionStatus.PENDING || mContext instanceof TransactionRecordsActivity || !isSender ? View.GONE : View.VISIBLE);
-        mTransactionStatusIv.setVisibility(transactionStatus == TransactionStatus.PENDING || mContext instanceof TransactionRecordsActivity || isSender ? View.GONE : View.VISIBLE);
+        mTransactionStatusIv.setVisibility(transactionStatus == TransactionStatus.PENDING || mContext instanceof TransactionRecordsActivity ? View.GONE : View.VISIBLE);
 
         if (transactionType == TransactionType.TRANSFER) {
             mTransactionStatusIv.setImageResource(isSender ? R.drawable.icon_send_transation : R.drawable.icon_receive_transaction);
