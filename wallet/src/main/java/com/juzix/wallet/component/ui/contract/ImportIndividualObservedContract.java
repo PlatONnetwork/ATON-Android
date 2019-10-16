@@ -12,6 +12,7 @@ public class ImportIndividualObservedContract {
 
         String getWalletAddress();
 
+        void enablePaste(boolean enabled);
 
     }
 
@@ -23,5 +24,7 @@ public class ImportIndividualObservedContract {
         void IsImportObservedWallet(String content);
 
         void importWalletAddress(String walletAddress);
+
+        void checkPaste();
     }
 }
