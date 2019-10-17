@@ -19,8 +19,10 @@ import com.juzix.wallet.db.sqlite.AddressDao;
 import com.juzix.wallet.db.sqlite.WalletDao;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.PlatOnFunction;
+import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionAuthorizationData;
 import com.juzix.wallet.entity.TransactionAuthorizationDetail;
+import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
@@ -127,11 +129,11 @@ public class TransactionAuthorizationDetailActivity extends BaseActivity {
     private int getTxnInfoRes(int functionType) {
         switch (functionType) {
             case FunctionType.DELEGATE_FUNC_TYPE:
-                return R.string.msg_delegate_info;
+                return R.string.delegate;
             case FunctionType.WITHDREW_DELEGATE_FUNC_TYPE:
-                return R.string.msg_withdraw_info;
+                return R.string.undelegate;
             default:
-                return R.string.msg_transfer_info;
+                return R.string.transfer;
         }
     }
 

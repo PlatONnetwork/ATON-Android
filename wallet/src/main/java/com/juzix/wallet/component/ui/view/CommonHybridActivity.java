@@ -14,17 +14,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.CheckBox;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxCompoundButton;
 import com.just.agentweb.WebChromeClient;
 import com.just.agentweb.WebViewClient;
-import com.juzhen.framework.util.LogUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.BaseAgentWebActivity;
+import com.juzix.wallet.component.ui.dialog.NodeDetailMoreDialogFragment;
 import com.juzix.wallet.component.widget.CommonTitleBar;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.config.AppSettings;
@@ -56,6 +58,20 @@ public class CommonHybridActivity extends BaseAgentWebActivity {
     ShadowButton sbtnNext;
     @BindView(R.id.layout_service_agreement)
     ConstraintLayout layoutServiceAgreement;
+    @BindView(R.id.layout_common_title)
+    LinearLayout mCommonLayoutTitle;
+    @BindView(R.id.layout_node_detail_title)
+    ConstraintLayout mNodeDetailTitleLayout;
+    @BindView(R.id.iv_back)
+    ImageView mBackIv;
+    @BindView(R.id.tv_middle_title)
+    TextView mMiddleTitleTv;
+    @BindView(R.id.iv_exit)
+    ImageView mExitIv;
+    @BindView(R.id.iv_refresh)
+    ImageView mRefreshIv;
+    @BindView(R.id.iv_more)
+    ImageView mMoreIv;
 
     private String mUrl;
     private @WebType
@@ -98,6 +114,8 @@ public class CommonHybridActivity extends BaseAgentWebActivity {
         layoutServiceAgreement = findViewById(R.id.layout_service_agreement);
 
         layoutServiceAgreement.setVisibility(mWebType == WebType.WEB_TYPE_AGREEMENT ? View.VISIBLE : View.GONE);
+        mCommonLayoutTitle.setVisibility(mWebType == WebType.WEB_TYPE_NODE_DETAIL ? View.GONE : View.VISIBLE);
+        mNodeDetailTitleLayout.setVisibility(mWebType == WebType.WEB_TYPE_NODE_DETAIL ? View.VISIBLE : View.GONE);
 
         ctb.setLeftDrawableClickListener(new View.OnClickListener() {
             @Override
@@ -141,6 +159,53 @@ public class CommonHybridActivity extends BaseAgentWebActivity {
                         sbtnNext.setEnabled(aBoolean);
                     }
                 });
+
+        RxView
+                .clicks(mBackIv)
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
+
+                    @Override
+                    public void accept(Object o) {
+                        if (mAgentWeb == null || !mAgentWeb.back()) {
+                            finish();
+                        }
+                    }
+                });
+        RxView
+                .clicks(mExitIv)
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
+
+                    @Override
+                    public void accept(Object o) {
+                        finish();
+                    }
+                });
+        RxView
+                .clicks(mRefreshIv)
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
+
+                    @Override
+                    public void accept(Object o) {
+                        mAgentWeb.getUrlLoader().reload();
+                    }
+                });
+        RxView
+                .clicks(mMoreIv)
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
+
+                    @Override
+                    public void accept(Object o) {
+                        NodeDetailMoreDialogFragment.newInstance(mUrl).show(getSupportFragmentManager(), "showNodeDetailMoreDialog");
+                    }
+                });
     }
 
     private String buildUrl(String originalUrl) {
@@ -171,6 +236,7 @@ public class CommonHybridActivity extends BaseAgentWebActivity {
     protected void setTitle(WebView view, String title) {
         super.setTitle(view, title);
         ctb.setTitle(title);
+        mMiddleTitleTv.setText(title);
     }
 
     @Override
@@ -178,7 +244,6 @@ public class CommonHybridActivity extends BaseAgentWebActivity {
         if (mAgentWeb != null && mAgentWeb.handleKeyEvent(keyCode, event)) {
             return true;
         }
-
         return super.onKeyDown(keyCode, event);
     }
 

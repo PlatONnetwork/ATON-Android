@@ -669,5 +669,7 @@
     <string name="msg_invalid_signature">无效签名</string>
     <string name="tips_not_delegate">节点关联的钱包地址，不可参与委托。</string>
     <string name="tips_not_balance">可用余额为0,无法委托</string>
+    <string name="action_copy_link">复制链接</string>
+    <string name="action_open_browser">在浏览器中打开</string>
 
 </resources>

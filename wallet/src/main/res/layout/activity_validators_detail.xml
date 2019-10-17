@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_f9fbff"
@@ -52,77 +53,68 @@
                     android:layout_marginBottom="18dp"
                     android:src="@drawable/icon_validators_default" />
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:layout_toRightOf="@id/iv_url"
-                    android:orientation="vertical">
+                    android:paddingLeft="3dp"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp">
 
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/tv_detail_node_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:orientation="horizontal">
+                        android:layout_marginRight="6dp"
+                        android:text="jiang"
+                        android:textColor="@color/color_000000"
+                        android:textSize="15sp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                        <TextView
-                            android:id="@+id/tv_detail_node_name"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="6dp"
-                            android:text="jiang"
-                            android:textColor="@color/color_000000"
-                            android:textSize="15sp" />
-
-                        <TextView
-                            android:id="@+id/tv_detail_node_state"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/bg_validators_state"
-                            android:paddingLeft="8dp"
-                            android:paddingRight="8dp"
-                            android:paddingTop="1dp"
-                            android:paddingBottom="1dp"
-                            android:text="active"
-                            android:gravity="center"
-                            android:textColor="@color/color_4a90e2"
-                            android:textSize="11sp" />
-
-                        <ImageView
-                            android:id="@+id/iv_detail_node_link"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginLeft="7dp"
-                            android:paddingRight="20dp"
-                            android:src="@drawable/icon_link" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/tv_detail_node_state"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="9dp"
-                        android:orientation="horizontal">
+                        android:layout_marginLeft="6dp"
+                        android:background="@drawable/bg_validators_state"
+                        android:gravity="center"
+                        android:paddingLeft="8dp"
+                        android:paddingTop="1dp"
+                        android:paddingRight="8dp"
+                        android:paddingBottom="1dp"
+                        android:text="active"
+                        android:textColor="@color/color_4a90e2"
+                        android:textSize="11sp"
+                        app:layout_constraintBaseline_toBaselineOf="@id/tv_detail_node_name"
+                        app:layout_constraintLeft_toRightOf="@id/tv_detail_node_name"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                        <!--<TextView-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_marginRight="6dp"-->
-                        <!--android:text="staked"-->
-                        <!--android:textColor="@color/color_61646e"-->
-                        <!--android:textSize="12sp" />-->
+                    <ImageView
+                        android:id="@+id/iv_detail_node_link"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="7dp"
+                        android:paddingRight="20dp"
+                        android:src="@drawable/icon_link"
+                        app:layout_constraintBottom_toBottomOf="@id/tv_detail_node_state"
+                        app:layout_constraintLeft_toRightOf="@id/tv_detail_node_state"
+                        app:layout_constraintTop_toTopOf="@id/tv_detail_node_state" />
 
-                        <TextView
-                            android:id="@+id/tv_detail_node_address"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="1644848.10552"
-                            android:textColor="@color/color_000000"
-                            android:textSize="13sp" />
+                    <TextView
+                        android:id="@+id/tv_detail_node_address"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:textColor="@color/color_000000"
+                        android:textSize="13sp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_detail_node_name"
+                        tools:text="1644848.10552" />
 
-                    </LinearLayout>
-                </LinearLayout>
+                </android.support.constraint.ConstraintLayout>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -348,9 +340,9 @@
             android:id="@+id/sbtn_delegate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:enabled="false"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
+            app:enabled="false"
             app:text="@string/validators_delegate"
             app:textAppearance="@style/MainButtonStyle"
             app:textBackground="@drawable/bg_main_button" />
@@ -359,14 +351,14 @@
             android:id="@+id/tv_no_delegate_tips"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:drawableLeft="@drawable/icon_no_delegate_tips"
             android:gravity="center"
             android:text="@string/validators_details_tips"
             android:textColor="@color/color_61646e"
             android:textSize="12sp"
             android:visibility="visible"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
             app:drawableLeftHeight="8.6dp"
             app:drawableLeftWidth="8.6dp"
             app:isAliganCenter="false" />

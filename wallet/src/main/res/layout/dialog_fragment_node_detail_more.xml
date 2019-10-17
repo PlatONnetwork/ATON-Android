@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_common_dialog_fragment"
+    android:divider="@drawable/bg_dialog_fragment_vertical_divider"
+    android:orientation="vertical"
+    android:showDividers="middle">
+
+    <TextView
+        android:id="@+id/tv_copy_link"
+        style="@style/Text.000.16"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:text="@string/action_copy_link"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_open_browser"
+        style="@style/Text.000.16"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:text="@string/action_open_browser"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_cancel"
+        style="@style/Text.0077ff.16"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:text="@string/cancel"
+        android:textStyle="bold" />
+
+
+</LinearLayout>
