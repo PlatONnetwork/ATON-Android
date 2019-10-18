@@ -66,7 +66,8 @@ public class NodeSettingsActivity extends MVPBaseActivity<NodeSettingsPresenter>
     @Override
     public void showTitleView(boolean isEdit) {
         hideSoftInput();
-        ctb.setRightText(string(isEdit ? R.string.save : R.string.edit));
+//        ctb.setRightText(string(isEdit ? R.string.save : R.string.edit));
+        ctb.setRightText("");
         tvAddNode.setVisibility(isEdit ? View.VISIBLE : View.GONE);
         nodeListAdapter.setEditable(isEdit);
     }

@@ -27,12 +27,12 @@ import com.juzix.wallet.component.ui.presenter.ImportKeystorePresenter;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.utils.CommonUtil;
 import com.juzix.wallet.utils.RxUtils;
+import com.juzix.wallet.utils.SoftHideKeyboardUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.reactivex.Observable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function3;
 
 public class ImportKeystoreFragment extends MVPBaseFragment<ImportKeystorePresenter> implements ImportKeystoreContract.View {
@@ -90,6 +90,7 @@ public class ImportKeystoreFragment extends MVPBaseFragment<ImportKeystorePresen
         showNameError("", false);
         showPasswordError("", false);
         mPresenter.init();
+        SoftHideKeyboardUtils.assistActivity(getActivity());
     }
 
     private void addListeners() {

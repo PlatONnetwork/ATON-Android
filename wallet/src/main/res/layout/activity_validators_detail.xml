@@ -347,21 +347,17 @@
             app:textAppearance="@style/MainButtonStyle"
             app:textBackground="@drawable/bg_main_button" />
 
-        <com.juzix.wallet.component.widget.TextViewDrawable
+        <TextView
             android:id="@+id/tv_no_delegate_tips"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:drawableLeft="@drawable/icon_no_delegate_tips"
             android:gravity="center"
             android:text="@string/validators_details_tips"
             android:textColor="@color/color_61646e"
             android:textSize="12sp"
-            android:visibility="visible"
-            app:drawableLeftHeight="8.6dp"
-            app:drawableLeftWidth="8.6dp"
-            app:isAliganCenter="false" />
+            android:visibility="visible" />
 
     </LinearLayout>
 

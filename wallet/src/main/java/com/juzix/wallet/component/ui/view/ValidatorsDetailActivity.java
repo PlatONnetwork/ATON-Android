@@ -2,7 +2,10 @@ package com.juzix.wallet.component.ui.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -20,7 +23,7 @@ import com.juzix.wallet.component.ui.presenter.ValidatorsDetailPresenter;
 import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.component.widget.CommonTitleBar;
 import com.juzix.wallet.component.widget.ShadowButton;
-import com.juzix.wallet.component.widget.TextViewDrawable;
+import com.juzix.wallet.component.widget.VerticalImageSpan;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.VerifyNodeDetail;
 import com.juzix.wallet.entity.WebType;
@@ -36,6 +39,8 @@ import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.text.NumberFormat;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -77,7 +82,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
     @BindView(R.id.sbtn_delegate)
     ShadowButton delegate;
     @BindView(R.id.tv_no_delegate_tips)
-    TextViewDrawable tips;
+    TextView tips;
 
 //    @BindView(R.id.ll_validators_withdraw)
 //    LinearLayout withdraw;
@@ -200,7 +205,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
             nodeState.setText(getString(R.string.validators_state_exiting));
         }
 
-        rate.setText(nodeDetail.isInit() ? "— —" : (NumberParserUtils.parseDouble(nodeDetail.getRatePA())) / 100 + "%");
+        rate.setText(nodeDetail.isInit() ? "— —" : NumberFormat.getInstance().format((NumberParserUtils.parseDouble(nodeDetail.getRatePA())) / 100) + "%");
 
         if (TextUtils.isEmpty(nodeDetail.getDeposit())) {
             totalStaked.setText("--");
@@ -243,22 +248,31 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
 
         if (WalletManager.getInstance().getAddressList().size() == 0) { // a.客户端本地没有钱包
             tips.setVisibility(View.VISIBLE);
-            tips.setText(getString(R.string.tips_no_wallet));
+//            tips.setText(getString(R.string.tips_no_wallet));
+            setImageIconForText(tips,getString(R.string.tips_no_wallet));
             delegate.setEnabled(false);
         }else if(TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITING) || TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITED)){//b.节点退出中或已退出
               tips.setVisibility(View.VISIBLE);
-              tips.setText(getString(R.string.the_Validator_has_exited_and_cannot_be_delegated));
+//              tips.setText(getString(R.string.the_Validator_has_exited_and_cannot_be_delegated));
+              setImageIconForText(tips,getString(R.string.the_Validator_has_exited_and_cannot_be_delegated));
               delegate.setEnabled(false);
         }else if(nodeDetail.isInit()){ //c.节点状态为初始化验证人（收益地址为激励池地址的验证人）
             tips.setVisibility(View.VISIBLE);
             delegate.setEnabled(false);
+            setImageIconForText(tips,getString(R.string.validators_details_tips));
         }else {
             delegate.setEnabled(true);
             tips.setVisibility(View.GONE);
         }
 
-    }
-
+}
+ public void setImageIconForText(TextView textView,String content){
+     SpannableString spannableString = new SpannableString(" " + content);
+     Drawable drawable = getResources().getDrawable(R.drawable.icon_no_delegate_tips);
+     drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+     spannableString.setSpan(new VerticalImageSpan(drawable), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+     textView.setText(spannableString);
+ }
     @Override
     public void showValidatorsDetailFailed() {
 

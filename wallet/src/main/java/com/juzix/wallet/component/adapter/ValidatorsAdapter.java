@@ -5,7 +5,6 @@ import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.TypedValue;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,6 +20,7 @@ import com.juzix.wallet.utils.GlideUtils;
 import com.juzix.wallet.utils.LanguageUtil;
 import com.juzix.wallet.utils.StringUtil;
 
+import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
@@ -75,7 +75,7 @@ public class ValidatorsAdapter extends CommonAdapter<VerifyNode> {
 
     private void isShowRA(Context context, VerifyNode item, TextView tv_yield) {
         if (!item.isInit()) {
-            tv_yield.setText(((NumberParserUtils.parseDouble(item.getRatePA())) / 100) + "%");
+            tv_yield.setText(NumberFormat.getInstance().format(((NumberParserUtils.parseDouble(item.getRatePA())) / 100)) + "%");
         } else {
             tv_yield.setText("— —");
         }

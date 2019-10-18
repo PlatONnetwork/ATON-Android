@@ -16,7 +16,7 @@ import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.adapter.DelegateDetailAdapter;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.DelegateDetailContract;
-import com.juzix.wallet.component.ui.dialog.CommonGuideDialogFragment;
+import com.juzix.wallet.component.ui.dialog.DelegateDetailGuideDialogFragment;
 import com.juzix.wallet.component.ui.dialog.DelegateTipsDialog;
 import com.juzix.wallet.component.ui.presenter.DelegateDetailPresenter;
 import com.juzix.wallet.component.widget.CircleImageView;
@@ -161,8 +161,8 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
         boolean isShowDelegateDetail = AppSettings.getInstance().getDelegateDetailBoolean();
         boolean isEnglish = Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage()) == true ? false : true;
         if(!isShowDelegateDetail){
-            CommonGuideDialogFragment.newInstance(CommonGuideDialogFragment.DELEGATE_DETAIL,isEnglish)
-                    .setKnowListener(new CommonGuideDialogFragment.knowListener() {
+            DelegateDetailGuideDialogFragment.newInstance(isEnglish)
+                    .setKnowListener(new DelegateDetailGuideDialogFragment.knowListener() {
                         @Override
                         public void know() {
                             AppSettings.getInstance().setDelegateDetailBoolean(true);
