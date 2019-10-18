@@ -485,7 +485,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     private boolean isBalanceEnough(String transferAmount) {
         double usedAmount = BigDecimalUtil.add(transferAmount, feeAmount).doubleValue();
         if (walletEntity != null) {
-            return BigDecimalUtil.isBigger(walletEntity.getFreeBalance(), String.valueOf(usedAmount));
+            return BigDecimalUtil.isBigger(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(walletEntity.getFreeBalance(), "1E18")), String.valueOf(usedAmount));
         }
         return false;
     }
