@@ -8,22 +8,9 @@
     android:paddingTop="10dp"
     android:paddingBottom="15dp">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical">
-
-        <TextView
-            style="@style/Text.61646e.14"
-            android:text="@string/fromAddress" />
-
-        <TextView
-            android:id="@+id/tv_copy_from_name"
-            style="@style/Text.000000.14"
-            android:layout_alignParentRight="true"
-            tools:text="WalletName" />
-
-    </RelativeLayout>
+    <TextView
+        style="@style/Text.61646e.14"
+        android:text="@string/fromAddress" />
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -39,12 +26,12 @@
             style="@style/Text.898c9e.12"
             android:layout_width="0dp"
             android:ellipsize="end"
-            app:autoSizeTextType="uniform"
-            app:autoSizeStepGranularity="1sp"
-            app:autoSizeMaxTextSize="12sp"
-            app:autoSizeMinTextSize="10sp"
             android:gravity="left|center_vertical"
             android:lines="1"
+            app:autoSizeMaxTextSize="12sp"
+            app:autoSizeMinTextSize="10sp"
+            app:autoSizeStepGranularity="1sp"
+            app:autoSizeTextType="uniform"
             app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -91,12 +78,12 @@
             style="@style/Text.898c9e.12"
             android:layout_width="0dp"
             android:ellipsize="end"
-            app:autoSizeTextType="uniform"
-            app:autoSizeStepGranularity="1sp"
-            app:autoSizeMaxTextSize="12sp"
-            app:autoSizeMinTextSize="10sp"
             android:gravity="left|center_vertical"
             android:lines="1"
+            app:autoSizeMaxTextSize="12sp"
+            app:autoSizeMinTextSize="10sp"
+            app:autoSizeStepGranularity="1sp"
+            app:autoSizeTextType="uniform"
             app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"

@@ -174,7 +174,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     @Override
     public void transferAllBalance() {
         if (isViewAttached() && walletEntity != null) {
-            if (BigDecimalUtil.isBigger(String.valueOf(feeAmount), BigDecimalUtil.div(walletEntity.getFreeBalance(),DEFAULT_EXCHANGE_RATE.toString(10)))) {
+            if (BigDecimalUtil.isBigger(String.valueOf(feeAmount), BigDecimalUtil.div(walletEntity.getFreeBalance(), DEFAULT_EXCHANGE_RATE.toString(10)))) {
                 getView().setTransferAmount(0D);
             } else {
                 getView().setTransferAmount(BigDecimalUtil.sub(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(walletEntity.getFreeBalance(), DEFAULT_EXCHANGE_RATE.toString(10))), String.valueOf(feeAmount)));
@@ -464,9 +464,9 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
         BigInteger maxFee = getMaxFee();
         BigInteger dValue = maxFee.subtract(minFee);
 
-        BigInteger sumFeeAmount = minFee.add(dValue.multiply(BigInteger.valueOf(progress))).divide(BigInteger.valueOf(100L));
+        double percent = BigDecimalUtil.div(progress, 100D);
 
-        feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(sumFeeAmount.toString(10), DEFAULT_EXCHANGE_RATE.toString(10)));
+        feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(BigDecimalUtil.add(BigDecimalUtil.mul(dValue.doubleValue(), percent), minFee.doubleValue()), DEFAULT_EXCHANGE_RATE.doubleValue()));
 
         if (isViewAttached()) {
             getView().setTransferFeeAmount(feeAmount);
@@ -474,7 +474,12 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     }
 
     private void updateGasPrice(int progress) {
-        gasPrice = minGasPrice.add(dGasPrice.multiply(BigInteger.valueOf(progress))).divide(BigInteger.valueOf(100L));
+
+        if (progress == 0) {
+            gasPrice = minGasPrice;
+        } else {
+            gasPrice = minGasPrice.add(dGasPrice.multiply(BigInteger.valueOf(progress))).divide(BigInteger.valueOf(100L));
+        }
     }
 
     private boolean isBalanceEnough(String transferAmount) {
@@ -507,7 +512,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
         gasPrice = minGasPrice;
         gasLimit = DEFAULT_GAS_LIMIT;
         progress = DEFAULT_PERCENT;
-        feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(getMinFee().toString(10),DEFAULT_EXCHANGE_RATE.toString(10)));
+        feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(getMinFee().toString(10), DEFAULT_EXCHANGE_RATE.toString(10)));
     }
 
     private Single<String> getWalletNameFromAddress(String address) {

@@ -49,8 +49,6 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
 
     @BindView(R.id.iv_copy_from_address)
     ImageView ivCopyFromAddress;
-    @BindView(R.id.tv_copy_from_name)
-    TextView tvCopyFromName;
     @BindView(R.id.tv_from_address)
     TextView tvFromAddress;
     @BindView(R.id.iv_copy_to_address)
@@ -129,16 +127,6 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
         return getIntent().getStringExtra(Constants.Extra.EXTRA_DELEGATE_TRANSACTION_HASH);
     }
 
-//    /**
-//     * 获取赎回交易hash
-//     *
-//     * @return
-//     */
-//    @Override
-//    public String getWithDrawHash() {
-//        return getIntent().getStringExtra(Constants.Extra.EXTRA_WITHDRAW_TRANSACTION_HASH);
-//    }
-
     @Override
     public void setTransactionDetailInfo(Transaction transaction, List<String> queryAddressList, String walletName) {
 
@@ -164,7 +152,6 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
         }
 
         tvAmount.setVisibility(transactionStatus == TransactionStatus.SUCCESSED ? View.VISIBLE : View.GONE);
-        tvCopyFromName.setText(walletName);
         tvFromAddress.setText(transaction.getFrom());
         tvToAddress.setText(transaction.getTo());
 
@@ -183,8 +170,7 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
         if (null != response) {
             if (response.isStatusOk()) {
                 //更新UI
-                TransactionStatus transactionStatus = TransactionStatus.SUCCESSED;
-                showTransactionStatus(transactionStatus);
+                showTransactionStatus(TransactionStatus.SUCCESSED);
             }
         }
         //发送一个eventbus
@@ -193,8 +179,6 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
         }else {
             EventPublisher.getInstance().sendUpdateValidatorsDetailEvent();
         }
-
-//        EventPublisher.getInstance().sendRefreshPageEvent();
 
     }
 
@@ -219,6 +203,7 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
     }
 
     private void showTransactionStatus(TransactionStatus status) {
+        tvAmount.setVisibility(status == TransactionStatus.SUCCESSED ? View.VISIBLE : View.GONE);
         switch (status) {
             case PENDING:
                 tvTransactionStatusDesc.setText(R.string.pending);
@@ -295,7 +280,7 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
             }
             return R.drawable.avatar_1;
         } else {
-            return R.drawable.icon_contract;
+            return R.drawable.icon_node;
         }
     }
 

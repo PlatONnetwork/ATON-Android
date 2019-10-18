@@ -178,7 +178,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        CommonHybridActivity.actionStart(getContext(), websiteUrl, WebType.WEB_TYPE_COMMON);
+                        CommonHybridActivity.actionStart(getContext(), websiteUrl, WebType.WEB_TYPE_NODE_DETAIL);
                     }
                 });
 

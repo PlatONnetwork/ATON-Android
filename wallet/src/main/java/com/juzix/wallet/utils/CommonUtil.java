@@ -42,6 +42,11 @@ public class CommonUtil {
 
     private static final double EARTH_RADIUS = 6378.137; //地图半径（单位：KM）
 
+    public static void openABrowser(Context context,String url){
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        context.startActivity(intent);
+    }
+
     public static void makeACall(String phonenUmber, Context context) {
         Intent callIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phonenUmber));
         context.startActivity(callIntent);
