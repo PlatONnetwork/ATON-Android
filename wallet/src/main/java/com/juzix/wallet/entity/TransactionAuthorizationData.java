@@ -131,7 +131,8 @@ public class TransactionAuthorizationData implements Parcelable {
 
     private String getSignedMessage(TransactionAuthorizationBaseData baseData, Credentials credentials, String nonce) {
         BigDecimal transferAmount = baseData.functionType == FunctionType.TRANSFER ? BigDecimalUtil.toBigDecimal(baseData.getAmount()) : BigDecimal.ZERO;
-        return TransactionManager.getInstance().signTransaction(credentials, baseData.getPlatOnFunction().getEncodeData(), baseData.getTo(), transferAmount, BigIntegerUtil.toBigInteger(nonce), BigIntegerUtil.toBigInteger(baseData.getGasPrice()), BigIntegerUtil.toBigInteger(baseData.getGasLimit()));
+        String encodeData = baseData.functionType == FunctionType.TRANSFER ? "" : baseData.getPlatOnFunction().getEncodeData();
+        return TransactionManager.getInstance().signTransaction(credentials, encodeData, baseData.getTo(), transferAmount, BigIntegerUtil.toBigInteger(nonce), BigIntegerUtil.toBigInteger(baseData.getGasPrice()), BigIntegerUtil.toBigInteger(baseData.getGasLimit()));
     }
 
     private String getSumAmount() {

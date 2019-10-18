@@ -65,7 +65,7 @@ public class TransactionViewHolder extends BaseViewHolder<Transaction> {
         boolean isTransfer = transaction.isTransfer(mQueryAddressList);
         boolean isValueZero = !BigDecimalUtil.isBiggerThanZero(transaction.getValue());
 
-        if (isTransfer || isValueZero) {
+        if (isTransfer || isValueZero || transactionStatus == TransactionStatus.FAILED) {
             mTransactionAmountTv.setText(StringUtil.formatBalance(transaction.getShowValue()));
             mTransactionAmountTv.setTextColor(ContextCompat.getColor(mContext, R.color.color_b6bbd0));
         } else if (isSender) {
