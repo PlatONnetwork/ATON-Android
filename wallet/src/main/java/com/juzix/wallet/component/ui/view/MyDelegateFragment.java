@@ -257,9 +257,11 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
 
     @Override
     public void showMyDelegateDataFailed() {
+        ll_no_data.setVisibility(View.VISIBLE);
         tv_total_delegate.setText("--");
         refreshLayout.finishRefresh();
-        mMyDelegateAdapter.notifyDataSetChanged();
+//        mMyDelegateAdapter.notifyDataSetChanged();
+        mMyDelegateAdapter.notifyDataChanged(null);
     }
 
 
