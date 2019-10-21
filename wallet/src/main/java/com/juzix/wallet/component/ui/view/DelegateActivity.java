@@ -128,6 +128,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     private boolean isAll = false;//是否点击的全部
     private String delegate_fee;//手续费
     private String free_account;//自由金额
+    private boolean isCanDelegate;//是否允许委托
 
     @Override
 
@@ -368,12 +369,13 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     @Override
     public void showTips(boolean isShow) {
         inputError.setText(getString(R.string.delegate_amount_tips));
-        inputError.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        inputError.setVisibility(isShow && isCanDelegate ? View.VISIBLE : View.GONE);
     }
 
 
     @Override
     public void showIsCanDelegate(DelegateHandle bean) {
+        isCanDelegate = bean.isCanDelegation();
         typeList.clear();
         typeList.add(new DelegateType("0", bean.getFree()));
         typeList.add(new DelegateType("1", bean.getLock()));
@@ -383,26 +385,29 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
 
         //判断是否允许委托
         if (!bean.isCanDelegation()) {
+            all.setClickable(false);
+            et_amount.setText("");
             et_amount.setFocusableInTouchMode(false);
             et_amount.setFocusable(false);
             //表示不能委托
             if (TextUtils.equals(bean.getMessage(), "1")) { //不能委托原因：1.解除委托金额大于0
                 btnDelegate.setEnabled(false);
                 showLongToast(getString(R.string.delegate_no_click));
-            } else if(TextUtils.equals(bean.getMessage(),"2")){ //节点已退出或退出中
+            } else if (TextUtils.equals(bean.getMessage(), "2")) { //节点已退出或退出中
                 btnDelegate.setEnabled(false);
                 tv_no_delegate_tips.setVisibility(View.VISIBLE);
-                setImageIconForText(tv_no_delegate_tips,getString(R.string.the_Validator_has_exited_and_cannot_be_delegated));
-            }else if(TextUtils.equals(bean.getMessage(),"3")){
-                  btnDelegate.setEnabled(false);
-                  tv_no_delegate_tips.setVisibility(View.VISIBLE);
-                  setImageIconForText(tv_no_delegate_tips,getString(R.string.tips_not_delegate));
-            }else {
+                setImageIconForText(tv_no_delegate_tips, getString(R.string.the_Validator_has_exited_and_cannot_be_delegated));
+            } else if (TextUtils.equals(bean.getMessage(), "3")) {
                 btnDelegate.setEnabled(false);
                 tv_no_delegate_tips.setVisibility(View.VISIBLE);
-                setImageIconForText(tv_no_delegate_tips,getString(R.string.tips_not_balance));
+                setImageIconForText(tv_no_delegate_tips, getString(R.string.tips_not_delegate));
+            } else {
+                btnDelegate.setEnabled(false);
+                tv_no_delegate_tips.setVisibility(View.VISIBLE);
+                setImageIconForText(tv_no_delegate_tips, getString(R.string.tips_not_balance));
             }
         } else {
+            all.setClickable(true);
             et_amount.setFocusableInTouchMode(true);
             et_amount.setFocusable(true);
             tv_no_delegate_tips.setVisibility(View.GONE);
@@ -415,13 +420,15 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         }
 
     }
-    public void setImageIconForText(TextView textView,String content){
+
+    public void setImageIconForText(TextView textView, String content) {
         SpannableString spannableString = new SpannableString(" " + content);
         Drawable drawable = getResources().getDrawable(R.drawable.icon_no_delegate_tips);
         drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
         spannableString.setSpan(new VerticalImageSpan(drawable), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         textView.setText(spannableString);
     }
+
     @Override
     public void transactionSuccessInfo(String hash, String from, String to, String txType, String value, String actualTxCost, String nodeName, String nodeId, int txReceiptStatus) {
         finish();
