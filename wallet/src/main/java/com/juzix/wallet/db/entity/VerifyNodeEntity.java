@@ -33,7 +33,7 @@ public class VerifyNodeEntity extends RealmObject {
     private String url;
 
     /**
-     * 预计年化率(存入数据库为int类型)
+     * 预计年化率
      */
     private String ratePA;
 

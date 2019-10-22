@@ -278,15 +278,8 @@ public class AppFramework {
                 oldVersion++;
             } else if (oldVersion == 106) {
 
-//                 schema.get("WalletEntity")
-//                         .transform(new RealmObjectSchema.Function() {
-//                             @Override
-//                             public void apply(DynamicRealmObject obj) {
-//                                 obj.set("chainId","203"); //todo  这里只能写死，因为初始数据库是在初始化节点之前执行的，所以不能通过通用的方法去拿链id
-//                             }
-//                         });
-
                 schema.get("NodeEntity")
+                        .addField("chainId",String.class)
                         .transform(new RealmObjectSchema.Function() {
                             @Override
                             public void apply(DynamicRealmObject obj) {
@@ -312,7 +305,7 @@ public class AppFramework {
                         .addField("name", String.class)
                         .addField("deposit", String.class)
                         .addField("url", String.class)
-                        .addField("ratePA", Integer.class).setRequired("ratePA", true) //这里以前写成string类型啦，现在改成int类型
+                        .addField("ratePA", String.class)
                         .addField("nodeStatus", String.class)
                         .addField("isInit", boolean.class);
 
@@ -337,18 +330,38 @@ public class AppFramework {
 
 
             }else if(oldVersion ==107){
-                schema.get("VerifyNodeEntity")
-                        .addField("ratePA_temp",String.class)
+
+                //删除节点地址的表
+                schema.get("NodeEntity")
                         .transform(new RealmObjectSchema.Function() {
                             @Override
                             public void apply(DynamicRealmObject obj) {
-                                obj.setString("ratePA_temp",String.valueOf(obj.getInt("ratePA"))); //这里从int又改成string类型，注意，如果改成int类型的话，需要加setRequired(),string不需要，否则就会升级失败
+                                obj.getDynamicRealm().where("NodeEntity").findAll().deleteAllFromRealm();
                             }
-                        })
-                        .removeField("ratePA")
-                        .renameField("ratePA_temp","ratePA");
+                        });
+
+                //删除链ID为104的钱包
+                schema.get("walletEntity")
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.getDynamicRealm().where("walletEntity").equalTo("chainId","104").findAll().deleteAllFromRealm();
+                            }
+                        });
+
+//                schema.get("VerifyNodeEntity")
+//                        .addField("ratePA_temp",String.class)
+//                        .transform(new RealmObjectSchema.Function() {
+//                            @Override
+//                            public void apply(DynamicRealmObject obj) {
+//                                obj.setString("ratePA_temp",String.valueOf(obj.getInt("ratePA"))); //这里从int又改成string类型，注意，如果改成int类型的话，需要加setRequired(),string不需要，否则就会升级失败
+//                            }
+//                        })
+//                        .removeField("ratePA")
+//                        .renameField("ratePA_temp","ratePA");
 
                     oldVersion++;
+
             }
         }
     }
