@@ -109,16 +109,14 @@
                     android:scaleType="centerInside"
                     android:src="@drawable/icon_export_avatar_7"  />
 
-                <TextView
-                    android:id="@+id/tv_name"
+                <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:layout_centerHorizontal="true"
                     android:layout_marginBottom="8dp"
-                    android:text="ATON"
-                    android:textColor="@color/color_c5cbdc"
-                    android:textSize="12sp" />
+                    android:src="@drawable/icon_share_logo"
+                    />
             </RelativeLayout>
         </FrameLayout>
     </LinearLayout>

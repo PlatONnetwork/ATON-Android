@@ -421,7 +421,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             mPresenter.updateSendTransactionButtonStatus();
-//            String amountMagnitudes = getAmountMagnitudes(s.toString().trim());
+            mPresenter.checkTransferAmount(s.toString().trim());
             String amountMagnitudes = StringUtil.getAmountMagnitudes(getContext(), s.toString().trim());
             tvAmountMagnitudes.setText(amountMagnitudes);
             tvAmountMagnitudes.setVisibility(TextUtils.isEmpty(amountMagnitudes) ? View.GONE : View.VISIBLE);
