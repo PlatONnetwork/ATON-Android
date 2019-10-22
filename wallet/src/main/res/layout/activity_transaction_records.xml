@@ -81,6 +81,8 @@
                 android:fadeScrollbars="true"
                 android:scrollbarStyle="outsideOverlay"
                 android:scrollbars="vertical"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
                 tools:listitem="@layout/item_transaction_list" />
 
             <include layout="@layout/include_no_transaction" />
