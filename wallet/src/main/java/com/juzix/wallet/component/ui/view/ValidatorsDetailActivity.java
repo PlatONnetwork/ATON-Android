@@ -78,7 +78,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
     @BindView(R.id.sbtn_delegate)
     ShadowButton delegate;
     @BindView(R.id.tv_no_delegate_tips)
-    TextViewDrawable tips;
+    TextView tips;
 
 //    @BindView(R.id.ll_validators_withdraw)
 //    LinearLayout withdraw;
