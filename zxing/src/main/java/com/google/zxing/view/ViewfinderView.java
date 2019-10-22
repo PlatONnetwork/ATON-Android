@@ -22,6 +22,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ComposeShader;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
@@ -34,7 +35,9 @@ import android.graphics.SweepGradient;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.WindowManager;
 
 import com.google.zxing.R;
 import com.google.zxing.ResultPoint;
@@ -104,11 +107,11 @@ public final class ViewfinderView extends View {
         maskColor = array.getColor(R.styleable.ViewfinderView_mask_color, 0x60000000);
         resultColor = array.getColor(R.styleable.ViewfinderView_result_color, 0xB0000000);
 
-        labelTextColor = array.getColor(R.styleable.ViewfinderView_label_text_color, 0x90FFFFFF);
+        labelTextColor = array.getColor(R.styleable.ViewfinderView_label_text_color, 0xb6ddb0);
         labelText = array.getString(R.styleable.ViewfinderView_label_text);
-        labelTextSize = array.getFloat(R.styleable.ViewfinderView_label_text_size, 42f);
+        labelTextSize = array.getDimensionPixelSize(R.styleable.ViewfinderView_label_text_size, 14);
 
-        flashLabelTextColor = array.getColor(R.styleable.ViewfinderView_flash_label_text_color, 0x90FFFFFF);
+        flashLabelTextColor = array.getColor(R.styleable.ViewfinderView_flash_label_text_color, 0xb6ddb0);
         flashLabelText = array.getString(R.styleable.ViewfinderView_flash_label_text);
         flashLabelTextSize = array.getFloat(R.styleable.ViewfinderView_flash_label_text_size, 36f);
 

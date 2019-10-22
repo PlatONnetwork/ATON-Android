@@ -226,6 +226,7 @@ public class TransactionManager {
                     @Override
                     public void accept(Transaction transaction) throws Exception {
                         if (transaction.getTxReceiptStatus() == TransactionStatus.SUCCESSED) {
+                            LogUtils.e("getIndividualTransactionByLoop 轮询交易成功" + transaction.toString());
                             EventPublisher.getInstance().sendUpdateTransactionEvent(transaction);
                         }
                     }

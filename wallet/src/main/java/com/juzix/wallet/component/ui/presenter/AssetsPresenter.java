@@ -155,11 +155,4 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
         getView().showWalletInfo(walletEntity);
         getView().showContent(false);
     }
-
-    private Single<Response<ApiResponse<List<AccountBalance>>>> getAccountBalanceList() {
-
-        return ServerUtils.getCommonApi().getAccountBalance(ApiRequestBody.newBuilder()
-                .put("addrs", WalletManager.getInstance().getAddressList())
-                .build());
-    }
 }

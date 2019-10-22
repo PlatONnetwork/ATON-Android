@@ -36,6 +36,8 @@ import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.component.widget.PointLengthFilter;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.config.AppSettings;
+import com.juzix.wallet.entity.DelegateDetail;
+import com.juzix.wallet.entity.DelegateInfo;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.entity.WithDrawType;
@@ -52,6 +54,7 @@ import org.web3j.utils.Convert;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -60,7 +63,6 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> implements WithDrawContract.View {
-    private Unbinder unbinder;
 
     @BindView(R.id.iv_node_icon)
     CircleImageView node_icon;
@@ -97,6 +99,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     @BindView(R.id.v_tips)
     View v_tips;
 
+    private Unbinder unbinder;
     private PopupWindow mPopupWindow;
     private ListView mPopListview;
     private List<WithDrawType> list = new ArrayList<>();
@@ -170,8 +173,8 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
                             chooseType = WithDrawPopWindowAdapter.TAG_RELEASED; //已解除
                         }
 
-                        if(BigDecimalUtil.sub(free_account,withdraw_fee) < 0){ //赎回时，自用金额必须大于手续费，才能赎回
-                            ToastUtil.showLongToast(getContext(),R.string.withdraw_less_than_fee);
+                        if (BigDecimalUtil.sub(free_account, withdraw_fee) < 0) { //赎回时，自用金额必须大于手续费，才能赎回
+                            ToastUtil.showLongToast(getContext(), R.string.withdraw_less_than_fee);
                             return;
                         }
                         transactionTime = System.currentTimeMillis();
@@ -185,14 +188,14 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     private void initGuide() {
         boolean isShowWithdrawOperation = AppSettings.getInstance().getWithdrawOperation();
         boolean isEnglish = Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage()) == true ? false : true;
-        if(!isShowWithdrawOperation){
-            CommonGuideDialogFragment.newInstance(CommonGuideDialogFragment.WITHDRAW_OPERATION,isEnglish)
+        if (!isShowWithdrawOperation) {
+            CommonGuideDialogFragment.newInstance(CommonGuideDialogFragment.WITHDRAW_OPERATION, isEnglish)
                     .setKnowListener(new CommonGuideDialogFragment.knowListener() {
                         @Override
                         public void know() {
                             AppSettings.getInstance().setWithdrawOperation(true);
                         }
-                    }).show(getSupportFragmentManager(),"withdrawOperation");
+                    }).show(getSupportFragmentManager(), "withdrawOperation");
         }
 
     }
@@ -300,7 +303,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         walletName.setText(individualWalletEntity.getName());
         walletAddress.setText(AddressFormatUtil.formatAddress(individualWalletEntity.getPrefixAddress()));
         wallet_icon.setImageResource(RUtils.drawable(individualWalletEntity.getAvatar()));
-        free_account = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(individualWalletEntity.getAccountBalance().getFree(), "1E18"));
+        free_account = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(individualWalletEntity.getFreeBalance(), "1E18"));
     }
 
     @Override
@@ -324,39 +327,12 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         tips.setVisibility(isShow ? View.VISIBLE : View.INVISIBLE);
     }
 
-    @Override
-    public String getNodeAddressFromIntent() {
-
-        return getIntent().getStringExtra(Constants.Extra.EXTRA_NODE_ADDRESS);
-
-    }
-
-    @Override
-    public String getNodeNameFromIntent() {
-        return getIntent().getStringExtra(Constants.Extra.EXTRA_NODE_NAME);
-    }
-
-    @Override
-    public String getNodeIconFromIntent() {
-        return getIntent().getStringExtra(Constants.Extra.EXTRA_NODE_ICON);
-    }
-
-    @Override
-    public String getBlockNumFromIntent() {
-        return getIntent().getStringExtra(Constants.Extra.EXTRA_NODE_BLOCK_NUM);
-    }
-
-    @Override
-    public String getWalletAddressFromIntent() {
-        return getIntent().getStringExtra(Constants.Extra.EXTRA_WALLET_ADDRESS);
-    }
-
     //显示节点基本信息
     @Override
-    public void showNodeInfo(String address, String name, String nodeIcon) {
-        GlideUtils.loadRound(getContext(), nodeIcon, node_icon);
-        nodeName.setText(name);
-        nodeAddress.setText(AddressFormatUtil.formatAddress(address));
+    public void showNodeInfo(DelegateDetail delegateDetail) {
+        GlideUtils.loadRound(getContext(), delegateDetail.getUrl(), node_icon);
+        nodeName.setText(delegateDetail.getNodeName());
+        nodeAddress.setText(AddressFormatUtil.formatAddress(delegateDetail.getNodeId()));
     }
 
     @Override
@@ -368,6 +344,11 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         list.add(new WithDrawType(WithDrawPopWindowAdapter.TAG_UNLOCKED, StringUtil.formatBalance(unlocked, false)));
         list.add(new WithDrawType(WithDrawPopWindowAdapter.TAG_RELEASED, StringUtil.formatBalance(released, false)));
         mPopWindowAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public DelegateDetail getDelegateDetailFromIntent() {
+        return getIntent().getParcelableExtra(Constants.Extra.EXTRA_DELEGATE_DETAIL);
     }
 
     //获取输入的数量(edittext)
@@ -383,21 +364,8 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     }
 
     @Override
-    public void withDrawSuccessInfo(String hash, String from, String to, int txType, String value, String actualTxCost, String nodeName, String nodeId, int txReceiptStatus) {
-        Transaction transaction = new Transaction.Builder()
-                .from(from)
-                .to(to)
-                .timestamp(transactionTime)
-                .txType(String.valueOf(txType))
-                .unDelegation(Convert.toVon(withdrawAmount.getText().toString(), Convert.Unit.LAT).toBigInteger().toString())
-                .actualTxCost(Convert.toVon(actualTxCost, Convert.Unit.LAT).toBigInteger().toString())
-                .nodeName(nodeName)
-                .nodeId(nodeId)
-                .txReceiptStatus(txReceiptStatus)
-                .hash(hash)
-                .build();
-
-        TransactionDetailActivity.actionStart(getContext(), transaction, from, hash);
+    public void withDrawSuccessInfo(Transaction transaction) {
+        TransactionDetailActivity.actionStart(getContext(), transaction, Arrays.asList(transaction.getFrom()));
         finish();
     }
 
@@ -437,15 +405,9 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         }
     }
 
-    public static void actionStart(Context context, String nodeAddress, String nodeName, String nodeIcon, String stakingBlockNum, String walletAddress, String walletName, String walletIcon) {
+    public static void actionStart(Context context, DelegateDetail delegateDetail) {
         Intent intent = new Intent(context, WithDrawActivity.class);
-        intent.putExtra(Constants.Extra.EXTRA_NODE_ADDRESS, nodeAddress);
-        intent.putExtra(Constants.Extra.EXTRA_NODE_NAME, nodeName);
-        intent.putExtra(Constants.Extra.EXTRA_NODE_ICON, nodeIcon);
-        intent.putExtra(Constants.Extra.EXTRA_NODE_BLOCK_NUM, stakingBlockNum);//块高
-        intent.putExtra(Constants.Extra.EXTRA_WALLET_ADDRESS, walletAddress);//钱包地址
-        intent.putExtra(Constants.Extra.EXTRA_WALLET_NAME, walletName);
-        intent.putExtra(Constants.Extra.EXTRA_WALLET_ICON, walletIcon);
+        intent.putExtra(Constants.Extra.EXTRA_DELEGATE_DETAIL, delegateDetail);
         context.startActivity(intent);
     }
 

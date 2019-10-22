@@ -3,7 +3,10 @@ package com.juzix.wallet.component.ui.contract;
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
 import com.juzix.wallet.entity.AccountBalance;
+import com.juzix.wallet.entity.DelegateDetail;
 import com.juzix.wallet.entity.DelegateHandle;
+import com.juzix.wallet.entity.DelegateInfo;
+import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.Wallet;
 
 import org.web3j.platon.StakingAmountType;
@@ -15,45 +18,28 @@ public class DelegateContract {
 
     public interface View extends IView {
 
-        void showSelectedWalletInfo(Wallet individualWalletEntity);
-
-        void setDelegateButtonState(boolean isClickable);
+        DelegateDetail getDelegateDetailFromIntent();
 
         String getDelegateAmount();
 
         String getChooseBalance();
 
-        void showAmountError(String errMsg);
+        void showSelectedWalletInfo(Wallet individualWalletEntity);
+
+        void setDelegateButtonState(boolean isClickable);
 
         void showTips(boolean isShowTips);
 
-        String getNodeAddressFromIntent();
-
-        String getNodeNameFromIntent();
-
-        String getNodeIconFromIntent();
-
-        String getWalletAddressFromIntent();
-
-        int getJumpTagFromIntent();
-
-        void showNodeInfo(String nodeAddress, String nodeName, String nodeIcon);
+        void showNodeInfo(DelegateDetail delegateDetail);
 
         void getWalletBalanceList(List<AccountBalance> accountBalances);
 
         void showIsCanDelegate(DelegateHandle bean);
 
         /**
-         * @param from            发起的钱包地址
-         * @param to              接收的钱包地址
-         * @param txType          交易类型
-         * @param value           交易数量
-         * @param actualTxCost    交易手续费
-         * @param nodeName
-         * @param nodeId
-         * @param txReceiptStatus "2" 表示确认中
+         * @param transaction
          */
-        void transactionSuccessInfo(String hash, String from, String to,  String txType, String value, String actualTxCost, String nodeName, String nodeId, int txReceiptStatus);
+        void transactionSuccessInfo(Transaction transaction);
 
 
         /**
@@ -79,7 +65,7 @@ public class DelegateContract {
         /**
          * 获取手续费
          */
-        String getGasPrice();
+        String getFeeAmount();
     }
 
     public interface Presenter extends IPresenter<View> {
@@ -93,8 +79,7 @@ public class DelegateContract {
 
         void submitDelegate(StakingAmountType type);
 
-        void checkIsCanDelegate();
-
+        void checkIsCanDelegate(String walletAddress,String nodeAddress);
 
         void getGasPrice(StakingAmountType stakingAmountType);
 

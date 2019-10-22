@@ -55,6 +55,7 @@ import com.juzix.wallet.component.widget.ShadowContainer;
 import com.juzix.wallet.component.widget.ViewPagerSlide;
 import com.juzix.wallet.component.widget.table.AssetsTabLayout;
 import com.juzix.wallet.config.AppSettings;
+import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.QrCodeType;
 import com.juzix.wallet.entity.TransactionAuthorizationData;
 import com.juzix.wallet.entity.TransactionSignatureData;
@@ -157,8 +158,8 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
     @Override
     protected void onFragmentPageStart() {
-        mPresenter.fetchWalletList();
         mPresenter.fetchWalletsBalance();
+        mPresenter.fetchWalletList();
     }
 
     @Override
@@ -296,7 +297,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
                                     }
                                 }
                             });
-                }else{
+                } else {
                     vpContent.setCurrentItem(1);
                 }
             }
@@ -471,7 +472,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         mWalletAdapter.setOnItemClickListener(new WalletHorizontalRecycleViewAdapter.OnRecycleViewItemClickListener() {
             @Override
             public void onContentViewClick(Wallet walletEntity) {
-                mPresenter.clickRecycleViewItem(walletEntity);
+                mPresenter.clickRecycleViewItem(WalletManager.getInstance().getWalletByAddress(walletEntity.getPrefixAddress()));
             }
         });
         RecycleViewProxyAdapter proxyAdapter = new RecycleViewProxyAdapter(mWalletAdapter);
@@ -569,10 +570,9 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
     @Override
     public void showFreeBalance(String balance) {//当前钱包的资产
-        boolean visible = AppSettings.getInstance().getShowAssetsFlag();
+
         tvWalletAmount.setText(string(R.string.amount_with_unit, StringUtil.formatBalance(BigDecimalUtil.div(balance, "1E18"))));
-        tvWalletAmount.setTransformationMethod(visible ? HideReturnsTransformationMethod.getInstance() : new AmountTransformationMethod(tvWalletAmount.getText().toString()));
-        tvRestrictedAmount.setTransformationMethod(visible ? HideReturnsTransformationMethod.getInstance() : new AmountTransformationMethod(tvRestrictedAmount.getText().toString()));
+        tvWalletAmount.setTransformationMethod(AppSettings.getInstance().getShowAssetsFlag() ? HideReturnsTransformationMethod.getInstance() : new AmountTransformationMethod(tvWalletAmount.getText().toString()));
 
         if (vpContent.getCurrentItem() == TAB2) {
             SendTransactionFragment sendTransactionFragment = (SendTransactionFragment) mTabAdapter.getItem(TAB2);
@@ -586,6 +586,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     public void showLockBalance(String balance) { //当前选中钱包的锁仓金额
         tvRestrictedAmount.setVisibility(BigDecimalUtil.isBiggerThanZero(balance) ? View.VISIBLE : View.GONE);
         tvRestrictedAmount.setText(getRestrictedAmount(string(R.string.restricted_amount_with_unit, StringUtil.formatBalance(BigDecimalUtil.div(balance, "1E18")))));
+        tvRestrictedAmount.setTransformationMethod(AppSettings.getInstance().getShowAssetsFlag() ? HideReturnsTransformationMethod.getInstance() : new AmountTransformationMethod(tvRestrictedAmount.getText().toString()));
     }
 
     @Override
@@ -603,6 +604,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         ivWalletAvatar.setImageResource(resId);
         tvWalletName.setText(wallet.getName());
         showFreeBalance(wallet.getFreeBalance());
+        showLockBalance(wallet.getLockBalance());
     }
 
     @Override
@@ -663,7 +665,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
             super(context);
             LayoutInflater.from(context).inflate(R.layout.layout_app_tab_item1, this);
 
-            setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT));
+            setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
             mIconIv = findViewById(R.id.iv_icon);
             mTitleTv = findViewById(R.id.tv_title);

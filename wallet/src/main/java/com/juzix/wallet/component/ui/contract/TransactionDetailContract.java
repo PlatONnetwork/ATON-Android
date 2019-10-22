@@ -19,15 +19,7 @@ public class TransactionDetailContract {
 
         List<String> getAddressListFromIntent();
 
-        String getDelegateHash();
-
-//        String getWithDrawHash();
-
         void setTransactionDetailInfo(Transaction transaction, List<String> queryAddressList, String senderWalletName);
-
-        void showDelegateResponse(BaseResponse response);
-
-        void showWithDrawResponse(BaseResponse response);
 
     }
 
@@ -36,10 +28,6 @@ public class TransactionDetailContract {
         void loadData();
 
         void updateTransactionDetailInfo(Transaction transaction);
-
-        void getDelegateResult();
-
-        void getWithDrawResult();
 
     }
 }

@@ -6,21 +6,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/layout_common_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_status_bar"
-        android:orientation="vertical"
-        android:paddingTop="20dp">
-
-        <com.juzix.wallet.component.widget.CommonTitleBar
-            android:id="@+id/ctb"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:ctb_left_drawable="@drawable/icon_back_black" />
-    </LinearLayout>
-
     <android.support.constraint.ConstraintLayout
         android:id="@+id/layout_node_detail_title"
         android:layout_width="match_parent"
@@ -29,8 +14,7 @@
         android:orientation="horizontal"
         android:paddingLeft="16dp"
         android:paddingTop="20dp"
-        android:paddingRight="16dp"
-        android:visibility="gone">
+        android:paddingRight="16dp">
 
         <ImageView
             android:id="@+id/iv_back"

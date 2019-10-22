@@ -71,7 +71,7 @@ public class MyDelegateAdapter extends RecyclerView.Adapter<MyDelegateAdapter.Vi
                     @Override
                     public void accept(Object o) {
                         if (mOnItemClickListener != null) {
-                            mOnItemClickListener.onItemClick(info.getWalletAddress(), info.getWalletName(), info.getWalletIcon());
+                            mOnItemClickListener.onItemClick(info);
                         }
                     }
                 });
@@ -123,7 +123,7 @@ public class MyDelegateAdapter extends RecyclerView.Adapter<MyDelegateAdapter.Vi
     }
 
     public interface OnItemClickListener {
-        void onItemClick(String walletAddress, String walletName, String walletIcon);
+        void onItemClick(DelegateInfo delegateInfo);
 
     }
 }

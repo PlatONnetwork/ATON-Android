@@ -109,7 +109,7 @@ public class DelegateDetailTest {
         delegateDetail.setReleased("134000000000000000000");
         delegateDetail.setUrl("www.baidu.com");
         assertNotNull(delegateDetail);
-//        presenter.MoveOut(delegateDetail);
+//        presenter.moveOut(delegateDetail);
 
     }
 
@@ -127,7 +127,7 @@ public class DelegateDetailTest {
 
         for (AccountBalance balance1 : accountBalances) {
             if (!TextUtils.equals(balance1.getLock(), "0") || !TextUtils.equals(balance1.getFree(), "0")) {
-                view.showIsCanDelegate(balance1.getPrefixAddress(), "Node-123", "", true);
+                view.showIsCanDelegate(balance1.getPrefixAddress(), "Node-123", "","", true);
                 return;
             }
         }

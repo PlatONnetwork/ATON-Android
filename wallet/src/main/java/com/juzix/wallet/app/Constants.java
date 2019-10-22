@@ -56,6 +56,8 @@ public class Constants {
         String EXTRA_TRANSACTION_AUTHORIZATION_DATA = "extra_transaction_authorization_data";
         String EXTRA_TRANSACTION_SIGNATURE_DATA = "extra_transaction_signature_data";
         String EXTRA_BUNDLE = "extra_bundle";
+        String EXTRA_DELEGATE_INFO = "extra_delegate_info";
+        String EXTRA_DELEGATE_DETAIL = "extra_delegate_detail";
     }
 
     public interface Bundle {
@@ -103,7 +105,7 @@ public class Constants {
         String KEY_MYDELEGATETAB = "mydelegatetab";
         String KEY_VALIDATORSTAB = "validatorstab";
 
-        String KEY_DELEGATE_OR_VALIDATORS_TAG ="tag";
+        String KEY_DELEGATE_OR_VALIDATORS_TAG = "tag";
 
         String DEVICE_ID = "device_id";
         String KEY_WALLET_NAME_SEQUENCE_NUMBER = "key_wallet_name_sequence_number";

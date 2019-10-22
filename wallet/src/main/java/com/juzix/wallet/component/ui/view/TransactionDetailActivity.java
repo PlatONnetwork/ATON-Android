@@ -88,8 +88,6 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
         EventPublisher.getInstance().register(this);
         unbinder = ButterKnife.bind(this);
         mPresenter.loadData();
-        mPresenter.getDelegateResult();
-        mPresenter.getWithDrawResult();
     }
 
 
@@ -115,16 +113,6 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
     @Override
     public List<String> getAddressListFromIntent() {
         return getIntent().getStringArrayListExtra(Constants.Extra.EXTRA_ADDRESS_LIST);
-    }
-
-    /**
-     * 获取委托的交易hash
-     *
-     * @return
-     */
-    @Override
-    public String getDelegateHash() {
-        return getIntent().getStringExtra(Constants.Extra.EXTRA_DELEGATE_TRANSACTION_HASH);
     }
 
     @Override
@@ -165,35 +153,8 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
 
     }
 
-    @Override
-    public void showDelegateResponse(BaseResponse response) {
-        if (null != response) {
-            if (response.isStatusOk()) {
-                //更新UI
-                showTransactionStatus(TransactionStatus.SUCCESSED);
-            }
-        }
-        //发送一个eventbus
-        if(TextUtils.equals(AppSettings.getInstance().getTagFromDelegateOrValidators(),"0")){
-            EventPublisher.getInstance().sendUpdateDelegateEvent();
-        }else {
-            EventPublisher.getInstance().sendUpdateValidatorsDetailEvent();
-        }
-
-    }
-
-    @Override
-    public void showWithDrawResponse(BaseResponse response) {
-        if (null != response && response.isStatusOk()) {
-            //更新UI
-            TransactionStatus status = TransactionStatus.SUCCESSED;
-            showTransactionStatus(status);
-        }
-        EventPublisher.getInstance().sendRefreshPageEvent();
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUpdateIndividualWalletTransactionEvent(Event.UpdateTransactionEvent event) {
+    public void onUpdateTransactionEvent(Event.UpdateTransactionEvent event) {
         mPresenter.updateTransactionDetailInfo(event.transaction);
     }
 
@@ -203,7 +164,6 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
     }
 
     private void showTransactionStatus(TransactionStatus status) {
-        tvAmount.setVisibility(status == TransactionStatus.SUCCESSED ? View.VISIBLE : View.GONE);
         switch (status) {
             case PENDING:
                 tvTransactionStatusDesc.setText(R.string.pending);
@@ -292,15 +252,6 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
             unbinder.unbind();
         }
         EventPublisher.getInstance().unRegister(this);
-    }
-
-    public static void actionStart(Context context, Transaction transaction, String queryAddress, String hash) {
-        Intent intent = new Intent(context, TransactionDetailActivity.class);
-        intent.putExtra(Constants.Extra.EXTRA_TRANSACTION, transaction);
-        intent.putExtra(Constants.Extra.EXTRA_ADDRESS, queryAddress);
-        intent.putExtra(Constants.Extra.EXTRA_DELEGATE_TRANSACTION_HASH, hash);
-//        intent.putExtra(Constants.Extra.EXTRA_WITHDRAW_TRANSACTION_HASH, withdrawTransaction);
-        context.startActivity(intent);
     }
 
     public static void actionStart(Context context, Transaction transaction, List<String> queryAddress) {

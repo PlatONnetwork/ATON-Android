@@ -46,7 +46,7 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
     private static final String EXITED = "Exited";
     private static final String EXITING = "Exiting";
 
-    public void setmOnDelegateClickListener(OnDelegateClickListener mOnDelegateClickListener) {
+    public void setOnDelegateClickListener(OnDelegateClickListener mOnDelegateClickListener) {
         this.mOnDelegateClickListener = mOnDelegateClickListener;
     }
 
@@ -65,7 +65,7 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
         GlideUtils.loadRound(mContext, detail.getUrl(), holder.nodeIcon);
 
         TextView nodeState = holder.nodeState;
-        showTextSpan(mContext,detail,nodeState);
+        showTextSpan(mContext, detail, nodeState);
 //        holder.nodeState.setText(detail.getNodeStatus());
 
         changeTextViewColorByState(holder.nodeState, detail.getNodeStatus()); //NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(value, "1E18")
@@ -75,7 +75,7 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
         holder.tv_node_undelegating.setText(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getRedeem(), "1E18"))) == 0 ? "— —" : StringUtil.formatBalance(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getRedeem(), "1E18"))));
 
         //委托按钮置灰不可点击( a.节点退出中或已退出 /b.节点状态为初始化验证人（收益地址为激励池地址的验证人）)
-        if(TextUtils.equals(detail.getNodeStatus(),EXITED)|| TextUtils.equals(detail.getNodeStatus(),EXITING) || detail.isInit()){
+        if (TextUtils.equals(detail.getNodeStatus(), EXITED) || TextUtils.equals(detail.getNodeStatus(), EXITING) || detail.isInit()) {
             holder.ll_delegate.setBackgroundColor(ContextCompat.getColor(mContext, R.color.color_66DCDFE8));
         }
 
@@ -106,7 +106,7 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
         if (NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getLocked(), "1E18"))) == 0
                 && NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getUnLocked(), "1E18"))) == 0
                 && NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getReleased(), "1E18"))) == 0
-                && NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getRedeem(), "1E18"))) == 0){
+                && NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getRedeem(), "1E18"))) == 0) {
             //操作移除列表
             RxView.clicks(holder.ll_withdraw)
                     .compose(RxUtils.getClickTransformer())
@@ -121,9 +121,9 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
                         }
                     });
 
-        } else if (NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getLocked(), "1E18"))) ==0
-                && NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getUnLocked(), "1E18"))) ==0
-                && NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getReleased(), "1E18"))) ==0) {
+        } else if (NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getLocked(), "1E18"))) == 0
+                && NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getUnLocked(), "1E18"))) == 0
+                && NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getReleased(), "1E18"))) == 0) {
             //按钮置灰并不可点击
             holder.ll_withdraw.setOnClickListener(null);
             holder.ll_withdraw.setBackgroundColor(ContextCompat.getColor(mContext, R.color.color_66DCDFE8));
@@ -137,7 +137,7 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
                         @Override
                         public void accept(Object o) throws Exception {
                             if (null != mOnDelegateClickListener) {
-                                mOnDelegateClickListener.onWithDrawClick(detail.getNodeId(), detail.getNodeName(), detail.getUrl(), detail.getStakingBlockNum());
+                                mOnDelegateClickListener.onWithDrawClick(detail);
                             }
 
                         }
@@ -151,13 +151,12 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
                     @Override
                     public void accept(Object o) throws Exception {
                         if (null != mOnDelegateClickListener) {
-                            if(detail.isInit()){
-                                 ToastUtil.showLongToast(mContext,R.string.validators_details_tips);
-                            } else if(TextUtils.equals(detail.getNodeStatus(),EXITED)|| TextUtils.equals(detail.getNodeStatus(),EXITING)){
+                            if (detail.isInit()) {
+                                ToastUtil.showLongToast(mContext, R.string.validators_details_tips);
+                            } else if (TextUtils.equals(detail.getNodeStatus(), EXITED) || TextUtils.equals(detail.getNodeStatus(), EXITING)) {
                                 //可以不做处理
-                            }
-                            else {
-                                mOnDelegateClickListener.onDelegateClick(detail.getNodeId(), detail.getNodeName(), detail.getUrl());
+                            } else {
+                                mOnDelegateClickListener.onDelegateClick(detail);
                             }
                         }
                     }
@@ -180,18 +179,18 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
     }
 
     private void showTextSpan(Context mContext, DelegateDetail detail, TextView nodeState) {
-        if(Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage())){ //中文环境下
-            if(TextUtils.equals(detail.getNodeStatus(),ACTIVE)){
+        if (Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage())) { //中文环境下
+            if (TextUtils.equals(detail.getNodeStatus(), ACTIVE)) {
                 nodeState.setText(R.string.validators_active);
-            }else if(TextUtils.equals(detail.getNodeStatus(),CANDIDATE)){
+            } else if (TextUtils.equals(detail.getNodeStatus(), CANDIDATE)) {
                 nodeState.setText(R.string.validators_candidate);
-            }else if(TextUtils.equals(detail.getNodeStatus(),EXITED)){
+            } else if (TextUtils.equals(detail.getNodeStatus(), EXITED)) {
                 nodeState.setText(R.string.validators_state_exited);
-            }else {
+            } else {
                 nodeState.setText(R.string.validators_state_exiting);
             }
 
-        }else {
+        } else {
             nodeState.setText(detail.getNodeStatus());
         }
     }
@@ -271,6 +270,8 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
             case "Exited":
                 tv.setTextColor(ContextCompat.getColorStateList(mContext, R.color.color_9eabbe));
                 break;
+            default:
+                break;
         }
 
     }
@@ -278,9 +279,9 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
 
     public interface OnDelegateClickListener {
 
-        void onDelegateClick(String nodeAddress, String nodeName, String nodeIcon);
+        void onDelegateClick(DelegateDetail delegateDetail);
 
-        void onWithDrawClick(String nodeAddress, String nodeName, String nodeIcon, String stakingBlockNum);
+        void onWithDrawClick(DelegateDetail delegateDetail);
 
         void onMoveOutClick(DelegateDetail detail);
 
