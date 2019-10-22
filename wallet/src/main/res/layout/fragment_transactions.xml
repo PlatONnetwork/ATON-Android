@@ -1,5 +1,6 @@
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -18,11 +19,12 @@
             android:paddingRight="16dp"
             android:paddingBottom="16dp"
             android:scrollbarStyle="outsideOverlay"
-            android:scrollbars="vertical" />
+            android:scrollbars="vertical"
+            tools:listitem="@layout/item_transaction_list" />
 
         <include
             layout="@layout/include_no_transaction"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
     </FrameLayout>
 </android.support.v4.widget.NestedScrollView>
