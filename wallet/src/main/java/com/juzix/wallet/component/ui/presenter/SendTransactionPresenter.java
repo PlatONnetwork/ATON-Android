@@ -7,7 +7,6 @@ import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.ApiSingleObserver;
 import com.juzhen.framework.network.NetConnectivity;
-import com.juzhen.framework.util.LogUtils;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomObserver;
@@ -81,20 +80,16 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     private final static BigInteger DEFAULT_GAS_LIMIT = DefaultGasProvider.GAS_LIMIT;
     //默认最小gasPrice
     private final static BigInteger DEFAULT_MIN_GASPRICE = DefaultGasProvider.GAS_PRICE;
-    //默认最大gasPrice
-    private final static BigInteger DEFAULT_MAX_GASPRICE = BigInteger.valueOf(6).multiply(DefaultGasProvider.GAS_PRICE);
     //当前gasLimit
     private BigInteger gasLimit = DEFAULT_GAS_LIMIT;
-    //最低gasPrice
-    private BigInteger minGasPrice = DEFAULT_MIN_GASPRICE;
     //最高gasPrice
-    private BigInteger maxGasPrice = DEFAULT_MAX_GASPRICE;
+    private BigInteger maxGasPrice;
     //最高与最低差值
-    private BigInteger dGasPrice = maxGasPrice.subtract(minGasPrice);
+    private BigInteger dGasPrice;
     //当前gasPrice
-    private BigInteger gasPrice = minGasPrice;
+    private BigInteger gasPrice;
     //当前滑动百分比
-    private int progress = DEFAULT_PERCENT;
+    private float progress = DEFAULT_PERCENT;
 
     private String feeAmount;
     //刷新时间
@@ -160,11 +155,8 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                     @Override
                     public void accept(BigInteger bigInteger) throws Exception {
                         if (isViewAttached()) {
-                            minGasPrice = getMinGasprice(bigInteger);
-                            maxGasPrice = getMaxGasprice(bigInteger);
-                            dGasPrice = maxGasPrice.subtract(minGasPrice);
-                            LogUtils.e("gasPrice为：  " + bigInteger.longValue() + "minGasPrice为： " + minGasPrice);
-                            calculateFeeAndTime(progress);
+                            initConfig(bigInteger.divide(BigInteger.valueOf(2)));
+                            getView().setProgress(progress);
                         }
                     }
                 });
@@ -193,7 +185,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     }
 
     @Override
-    public void calculateFeeAndTime(int progress) {
+    public void calculateFeeAndTime(float progress) {
         this.progress = progress;
         updateGasPrice(progress);
         updateFeeAmount(progress);
@@ -327,15 +319,30 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
         }
     }
 
-    private BigInteger getMinGasprice(BigInteger gasPrice) {
-
-        BigInteger minGasprice = gasPrice.divide(BigInteger.valueOf(2));
-
-        return minGasprice.compareTo(DefaultGasProvider.GAS_PRICE) == 1 ? minGasprice : DefaultGasProvider.GAS_PRICE;
+    /**
+     * 根据当前gasPrice获取当前进度
+     *
+     * @param maxGasPrice
+     * @param minGasPrice
+     * @param gasPrice
+     * @return
+     */
+    private float getDefaultProgress(BigInteger maxGasPrice, BigInteger minGasPrice, BigInteger gasPrice) {
+        String progress = BigDecimalUtil.div(gasPrice.subtract(minGasPrice).toString(10), maxGasPrice.subtract(minGasPrice).toString(10));
+        return BigDecimalUtil.convertsToFloat(progress);
     }
 
-    private BigInteger getMaxGasprice(BigInteger gasPrice) {
-        return gasPrice.multiply(BigInteger.valueOf(6));
+    /**
+     * gasPrice为当前的gasPrice，默认为推荐值(链上获取值的二分之一)
+     * 如果推荐值的二分之一小于最小值，则推荐值为最小值，否则为推荐值
+     *
+     * @param recommendedGasPrice
+     */
+    private void initConfig(BigInteger recommendedGasPrice) {
+        gasPrice = recommendedGasPrice.compareTo(DEFAULT_MIN_GASPRICE) == 1 ? recommendedGasPrice : DEFAULT_MIN_GASPRICE;
+        maxGasPrice = recommendedGasPrice.multiply(BigInteger.valueOf(6));
+        dGasPrice = maxGasPrice.subtract(DEFAULT_MIN_GASPRICE);
+        progress = getDefaultProgress(maxGasPrice, DEFAULT_MIN_GASPRICE, gasPrice);
     }
 
     @SuppressLint("CheckResult")
@@ -470,27 +477,21 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                 });
     }
 
-    private void updateFeeAmount(int progress) {
-        BigInteger minFee = getMinFee();
-        BigInteger maxFee = getMaxFee();
-        BigInteger dValue = maxFee.subtract(minFee);
+    private void updateFeeAmount(float progress) {
 
-        double percent = BigDecimalUtil.div(progress, 100D);
+        BigInteger minFee = DEFAULT_MIN_GASPRICE.multiply(DEFAULT_GAS_LIMIT);
 
-        feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(BigDecimalUtil.add(BigDecimalUtil.mul(dValue.doubleValue(), percent), minFee.doubleValue()), DEFAULT_EXCHANGE_RATE.doubleValue()));
+        BigInteger dValue = dGasPrice.multiply(DEFAULT_GAS_LIMIT);
+
+        feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(BigDecimalUtil.mul(dValue.toString(10), String.valueOf(progress)).add(new BigDecimal(minFee.toString(10))).toPlainString(), DEFAULT_EXCHANGE_RATE.toString(10)));
 
         if (isViewAttached()) {
             getView().setTransferFeeAmount(feeAmount);
         }
     }
 
-    private void updateGasPrice(int progress) {
-
-        if (progress == 0) {
-            gasPrice = minGasPrice;
-        } else {
-            gasPrice = minGasPrice.add(dGasPrice.multiply(BigInteger.valueOf(progress))).divide(BigInteger.valueOf(100L));
-        }
+    private void updateGasPrice(float progress) {
+        gasPrice = DEFAULT_MIN_GASPRICE.add(BigDecimalUtil.mul(dGasPrice.toString(10), String.valueOf(progress)).toBigInteger());
     }
 
     private boolean isBalanceEnough(String transferAmount) {
@@ -499,14 +500,6 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
             return BigDecimalUtil.isNotSmaller(walletEntity.getFreeBalance(), BigDecimalUtil.mul(String.valueOf(usedAmount), DEFAULT_EXCHANGE_RATE.toString(10)).toPlainString());
         }
         return false;
-    }
-
-    private BigInteger getMinFee() {
-        return gasLimit.multiply(minGasPrice);
-    }
-
-    private BigInteger getMaxFee() {
-        return gasLimit.multiply(maxGasPrice);
     }
 
     private Map<String, String> buildSendTransactionInfo(String fromWallet, String recipient, String fee) {
@@ -519,11 +512,11 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     }
 
     private void resetData() {
-        toAddress = "";
-        gasPrice = minGasPrice;
-        gasLimit = DEFAULT_GAS_LIMIT;
-        progress = DEFAULT_PERCENT;
-        feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(getMinFee().toString(10), DEFAULT_EXCHANGE_RATE.toString(10)));
+//        toAddress = "";
+//        gasPrice = minGasPrice;
+//        gasLimit = DEFAULT_GAS_LIMIT;
+//        progress = DEFAULT_PERCENT;
+//        feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(getMinFee().toString(10), DEFAULT_EXCHANGE_RATE.toString(10)));
     }
 
     private Single<String> getWalletNameFromAddress(String address) {

@@ -38,6 +38,8 @@ public class SendTransationContract {
         void resetView(String feeAmount);
 
         void showSaveAddressDialog();
+
+        void setProgress(float progress);
     }
 
     public interface Presenter extends IPresenter<View> {
@@ -50,7 +52,7 @@ public class SendTransationContract {
 
         void calculateFee();
 
-        void calculateFeeAndTime(int progress);
+        void calculateFeeAndTime(float progress);
 
         boolean checkToAddress(String toAddress);
 
