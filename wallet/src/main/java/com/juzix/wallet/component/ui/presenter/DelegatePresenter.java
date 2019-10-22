@@ -204,9 +204,14 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
         String inputAmount = getView().getDelegateAmount();//输入的数量
 
-        if (NumberParserUtils.parseDouble(inputAmount) < 0) {
+        if (TextUtils.isEmpty(inputAmount) || TextUtils.equals(inputAmount, ".")) {
             getView().showGasPrice("0.00");
             return;
+        } else {
+            if (NumberParserUtils.parseDouble(inputAmount) < 0) {
+                getView().showGasPrice("0.00");
+                return;
+            }
         }
 
         if (mDelegateDetail != null && !TextUtils.isEmpty(mDelegateDetail.getNodeId())) {
