@@ -31,15 +31,11 @@ public class TransactionDetailPresenter extends BasePresenter<TransactionDetailC
 
     private Transaction mTransaction;
     private List<String> mQueryAddressList;
-    private String delegateHash;
-//    private String mWithDrawHash;
 
     public TransactionDetailPresenter(TransactionDetailContract.View view) {
         super(view);
         mTransaction = view.getTransactionFromIntent();
         mQueryAddressList = view.getAddressListFromIntent();
-        delegateHash = view.getDelegateHash();
-//        mWithDrawHash = view.getWithDrawHash();
     }
 
 
@@ -104,53 +100,6 @@ public class TransactionDetailPresenter extends BasePresenter<TransactionDetailC
                         }
                     });
         }
-    }
-
-    @Override
-    public void getDelegateResult() {
-        loadDelegateResult(delegateHash);
-    }
-
-    private void loadDelegateResult(String delegateHash) {
-        if (TextUtils.isEmpty(delegateHash)) {
-            return;
-        }
-        PlatonSendTransaction sendTransaction = new PlatonSendTransaction();
-        sendTransaction.setResult(delegateHash);
-        DelegateManager.getInstance().getDelegateReSult(sendTransaction)
-                .compose(RxUtils.getSingleSchedulerTransformer())
-                .compose(RxUtils.bindToLifecycle(getView()))
-                .subscribe(new Consumer<BaseResponse>() {
-                    @Override
-                    public void accept(BaseResponse response) throws Exception {
-                        if (isViewAttached()) {
-                            getView().showDelegateResponse(response);
-                        }
-                    }
-                });
-    }
-
-    @Override
-    public void getWithDrawResult() {
-        loadWithDrawResult(delegateHash);
-    }
-
-    private void loadWithDrawResult(String mWithDrawHash) {
-        if (TextUtils.isEmpty(mWithDrawHash)) {
-            return;
-        }
-
-        PlatonSendTransaction transaction = new PlatonSendTransaction();
-        transaction.setResult(mWithDrawHash);
-        DelegateManager.getInstance().getWithDrawResult(transaction)
-                .compose(RxUtils.getSingleSchedulerTransformer())
-                .compose(RxUtils.bindToLifecycle(getView()))
-                .subscribe(new Consumer<BaseResponse>() {
-                    @Override
-                    public void accept(BaseResponse response) throws Exception {
-                        getView().showWithDrawResponse(response);
-                    }
-                });
     }
 
     private Single<String> getWalletNameByAddressFromWalletDB(String address) {

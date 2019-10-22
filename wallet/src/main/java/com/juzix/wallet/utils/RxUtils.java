@@ -129,6 +129,7 @@ public class RxUtils {
         };
     }
 
+
     public static <T> ObservableTransformer<T, T> getLoadingTransformer(final BaseActivity activity) {
         return new ObservableTransformer<T, T>() {
             @Override

@@ -509,14 +509,17 @@ public class WalletManager {
 
     public Observable<BigDecimal> getAccountBalance() {
         return Observable
-                .interval(5, TimeUnit.SECONDS)
+                .interval( 5,TimeUnit.SECONDS)
                 .flatMap(new Function<Long, ObservableSource<BigDecimal>>() {
                     @Override
                     public ObservableSource<BigDecimal> apply(Long aLong) throws Exception {
+                        List<String> walletAddress = WalletManager.getInstance().getAddressList();
+
+                        LogUtils.e(walletAddress.size()+"");
                         return ServerUtils
                                 .getCommonApi()
                                 .getAccountBalance(ApiRequestBody.newBuilder()
-                                        .put("addrs", WalletManager.getInstance().getAddressList())
+                                        .put("addrs", walletAddress)
                                         .build())
                                 .toFlowable()
                                 .flatMap(new Function<Response<ApiResponse<List<AccountBalance>>>, Publisher<AccountBalance>>() {

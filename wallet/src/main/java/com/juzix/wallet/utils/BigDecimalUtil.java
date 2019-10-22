@@ -359,6 +359,13 @@ public class BigDecimalUtil {
         return new BigDecimal(val1).compareTo(new BigDecimal(val2)) > 0;
     }
 
+    public static boolean isNotSmaller(String val1, String val2) {
+        if (TextUtils.isEmpty(val1) || TextUtils.isEmpty(val2)) {
+            return false;
+        }
+        return new BigDecimal(val1).compareTo(new BigDecimal(val2)) >= 0;
+    }
+
     public static boolean isBiggerThanZero(String val1) {
         if (TextUtils.isEmpty(val1)) {
             return false;

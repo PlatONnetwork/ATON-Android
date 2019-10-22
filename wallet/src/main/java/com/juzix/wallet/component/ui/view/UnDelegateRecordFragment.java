@@ -27,6 +27,7 @@ import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -87,7 +88,7 @@ public class UnDelegateRecordFragment extends MVPBaseFragment<DelegateRecordPres
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Transaction transactionRecord = mAdapter.getItem(position);
-                TransactionDetailActivity.actionStart(getContext(), transactionRecord, transactionRecord.getFrom(),"");
+                TransactionDetailActivity.actionStart(getContext(), transactionRecord, Arrays.asList(transactionRecord.getFrom()));
             }
         });
 

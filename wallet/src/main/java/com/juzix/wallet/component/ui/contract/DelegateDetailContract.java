@@ -3,34 +3,30 @@ package com.juzix.wallet.component.ui.contract;
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
 import com.juzix.wallet.entity.DelegateDetail;
+import com.juzix.wallet.entity.DelegateInfo;
 
 import java.util.List;
 
 public class DelegateDetailContract {
     public interface View extends IView {
 
-        String getWalletNameFromIntent();
-
-        String getWalletAddressFromIntent();
-
-        String getWalletIconFromIntent();
-
-        void showWalletInfo(String walletAddress, String walletName, String walletIcon);
-
+        void showWalletInfo(DelegateInfo delegateInfo);
 
         void showDelegateDetailData(List<DelegateDetail> detailList);
 
         void showDelegateDetailFailed();
 
-        void showIsCanDelegate(String nodeAddress, String nodeName, String nodeIcon,boolean isCanDelegate);
+        void showIsCanDelegate(String nodeAddress, String nodeName, String nodeIcon,String walletAddress,boolean isCanDelegate);
+
+        DelegateInfo getDelegateInfoFromIntent();
     }
 
     public interface Presenter extends IPresenter<View> {
 
         void loadDelegateDetailData();
 
-        void MoveOut(DelegateDetail detail);
+        void moveOut(DelegateDetail detail);
 
-        void getWalletBalance(String nodeAddress, String nodeName, String nodeIcon);
+        DelegateInfo getDelegateInfo();
     }
 }

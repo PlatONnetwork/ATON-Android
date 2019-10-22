@@ -28,6 +28,12 @@
     <!--bugly-->
     <uses-permission android:name="android.permission.READ_LOGS" />
 
+    <instrumentation
+        android:handleProfiling="true"
+        android:label="JacocoInstrumentation"
+        android:name="com.juzix.wallet.jacoco.JacocoInstrumentation"
+        android:targetPackage="com.juzix.wallet"/>
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -196,6 +202,16 @@
             android:name=".component.ui.view.TransactionAuthorizationDetailActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:label="InstrumentationActivity"
+            android:name="com.juzix.wallet.jacoco.InstrumentedActivity"/>
+
+        <receiver android:name=".jacoco.JacocoStopBroacast">
+            <intent-filter>
+                <action android:name="com.juzix.wallet.jacoco.JacocoStopBroacast"/>
+            </intent-filter>
+        </receiver>
 
         <service
             android:name=".component.service.LoopService"

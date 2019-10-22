@@ -1,5 +1,10 @@
 package com.juzix.wallet.entity;
 
+import android.content.Context;
+import android.text.TextUtils;
+
+import com.juzix.wallet.R;
+
 /**
  * 委托操作的判断
  */
@@ -43,6 +48,25 @@ public class DelegateHandle {
 
     public void setLock(String lock) {
         this.lock = lock;
+    }
+
+    public String getMessageDesc(Context context) {
+        return isCanDelegation() ? "" : getMessageDescByMessage(context);
+    }
+
+    private String getMessageDescByMessage(Context context) {
+        switch (message) {
+            case "1":
+                return context.getString(R.string.delegate_no_click);
+            case "2":
+                return context.getString(R.string.the_Validator_has_exited_and_cannot_be_delegated);
+            case "3":
+                return context.getString(R.string.tips_not_delegate);
+            case "4":
+                return context.getString(R.string.tips_not_balance);
+            default:
+                return "";
+        }
     }
 }
 

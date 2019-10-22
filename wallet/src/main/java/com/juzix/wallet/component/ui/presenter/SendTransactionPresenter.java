@@ -160,8 +160,8 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                     @Override
                     public void accept(BigInteger bigInteger) throws Exception {
                         if (isViewAttached()) {
-                            minGasPrice = bigInteger;
-                            maxGasPrice = bigInteger.multiply(BigInteger.valueOf(6));
+                            minGasPrice = getMinGasprice(bigInteger);
+                            maxGasPrice = getMaxGasprice(bigInteger);
                             dGasPrice = maxGasPrice.subtract(minGasPrice);
                             LogUtils.e("gasPrice为：  " + bigInteger.longValue() + "minGasPrice为： " + minGasPrice);
                             calculateFeeAndTime(progress);
@@ -327,6 +327,17 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
         }
     }
 
+    private BigInteger getMinGasprice(BigInteger gasPrice) {
+
+        BigInteger minGasprice = gasPrice.divide(BigInteger.valueOf(2));
+
+        return minGasprice.compareTo(DefaultGasProvider.GAS_PRICE) == 1 ? minGasprice : DefaultGasProvider.GAS_PRICE;
+    }
+
+    private BigInteger getMaxGasprice(BigInteger gasPrice) {
+        return gasPrice.multiply(BigInteger.valueOf(6));
+    }
+
     @SuppressLint("CheckResult")
     private void sendTransaction(String privateKey, BigDecimal transferAmount, BigDecimal feeAmount, String toAddress) {
         TransactionManager
@@ -485,7 +496,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     private boolean isBalanceEnough(String transferAmount) {
         double usedAmount = BigDecimalUtil.add(transferAmount, feeAmount).doubleValue();
         if (walletEntity != null) {
-            return BigDecimalUtil.isBigger(walletEntity.getFreeBalance(), String.valueOf(usedAmount));
+            return BigDecimalUtil.isNotSmaller(walletEntity.getFreeBalance(), BigDecimalUtil.mul(String.valueOf(usedAmount), DEFAULT_EXCHANGE_RATE.toString(10)).toPlainString());
         }
         return false;
     }

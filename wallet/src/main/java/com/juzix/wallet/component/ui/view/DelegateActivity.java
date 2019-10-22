@@ -43,6 +43,7 @@ import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.component.widget.VerticalImageSpan;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.entity.AccountBalance;
+import com.juzix.wallet.entity.DelegateDetail;
 import com.juzix.wallet.entity.DelegateHandle;
 import com.juzix.wallet.entity.DelegateType;
 import com.juzix.wallet.entity.Transaction;
@@ -61,6 +62,7 @@ import org.web3j.utils.Convert;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -142,7 +144,6 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         unbinder = ButterKnife.bind(this);
         initView();
         mPresenter.showWalletInfo();
-//        mPresenter.checkIsCanDelegate();
         mPresenter.getGas();
     }
 
@@ -287,13 +288,9 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         }
     };
 
-    public static void actionStart(Context context, String nodeAddress, String nodeName, String nodeIcon, int tag, String walletAddress) {
+    public static void actionStart(Context context, DelegateDetail delegateDetail) {
         Intent intent = new Intent(context, DelegateActivity.class);
-        intent.putExtra(Constants.Extra.EXTRA_NODE_ADDRESS, nodeAddress);
-        intent.putExtra(Constants.Extra.EXTRA_NODE_NAME, nodeName);
-        intent.putExtra(Constants.Extra.EXTRA_NODE_ICON, nodeIcon);
-        intent.putExtra("tag", tag);
-        intent.putExtra(Constants.Extra.EXTRA_WALLET_ADDRESS, walletAddress);
+        intent.putExtra(Constants.Extra.EXTRA_DELEGATE_DETAIL, delegateDetail);
         context.startActivity(intent);
     }
 
@@ -301,11 +298,11 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
      * 显示节点基本信息
      */
     @Override
-    public void showNodeInfo(String nodeAddr, String name, String UrlIcon) {
+    public void showNodeInfo(DelegateDetail delegateDetail) {
         //显示节点基本信息
-        GlideUtils.loadRound(getContext(), UrlIcon, nodeIcon);
-        nodeName.setText(name);
-        nodeAddress.setText(AddressFormatUtil.formatAddress(nodeAddr));
+        GlideUtils.loadRound(getContext(), delegateDetail.getUrl(), nodeIcon);
+        nodeName.setText(delegateDetail.getNodeName());
+        nodeAddress.setText(AddressFormatUtil.formatAddress(delegateDetail.getNodeId()));
     }
 
     //显示钱包信息
@@ -347,6 +344,11 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         btnDelegate.setEnabled(isClickable);
     }
 
+    @Override
+    public DelegateDetail getDelegateDetailFromIntent() {
+        return getIntent().getParcelableExtra(Constants.Extra.EXTRA_DELEGATE_DETAIL);
+    }
+
     //获取输入的数量
     @Override
     public String getDelegateAmount() {
@@ -357,12 +359,6 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     @Override
     public String getChooseBalance() {
         return amount.getText().toString().replaceAll(",", "");
-    }
-
-    @Override
-    public void showAmountError(String errMsg) {
-        inputTips.setVisibility(TextUtils.isEmpty(errMsg) ? View.GONE : View.VISIBLE);
-        inputTips.setText(errMsg);
     }
 
     @Override
@@ -423,22 +419,9 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         textView.setText(spannableString);
     }
     @Override
-    public void transactionSuccessInfo(String hash, String from, String to, String txType, String value, String actualTxCost, String nodeName, String nodeId, int txReceiptStatus) {
+    public void transactionSuccessInfo(Transaction transaction) {
         finish();
-        Transaction transaction = new Transaction.Builder()
-                .from(from)
-                .to(to)
-                .timestamp(System.currentTimeMillis())
-                .txType(txType)
-                .value(Convert.toVon(value, Convert.Unit.LAT).toBigInteger().toString())
-                .actualTxCost(Convert.toVon(fee.getText().toString(), Convert.Unit.LAT).toBigInteger().toString())
-                .nodeName(nodeName)
-                .nodeId(nodeId)
-                .txReceiptStatus(txReceiptStatus)
-                .hash(hash)
-                .build();
-
-        TransactionDetailActivity.actionStart(getContext(), transaction, from, hash);
+        TransactionDetailActivity.actionStart(getContext(), transaction, Arrays.asList(transaction.getFrom()));
     }
 
     /**
@@ -483,7 +466,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     }
 
     @Override
-    public String getGasPrice() {
+    public String getFeeAmount() {
         return fee.getText().toString();
     }
 
@@ -502,36 +485,6 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         if (integer != null) {
             gasPrice = integer.toString();
         }
-    }
-
-    /**
-     * 下面四个方法是获取intent传递的值
-     *
-     * @return
-     */
-    @Override
-    public String getNodeAddressFromIntent() {
-        return getIntent().getStringExtra(Constants.Extra.EXTRA_NODE_ADDRESS);
-    }
-
-    @Override
-    public String getNodeNameFromIntent() {
-        return getIntent().getStringExtra(Constants.Extra.EXTRA_NODE_NAME);
-    }
-
-    @Override
-    public String getNodeIconFromIntent() {
-        return getIntent().getStringExtra(Constants.Extra.EXTRA_NODE_ICON);
-    }
-
-    @Override
-    public String getWalletAddressFromIntent() {
-        return getIntent().getStringExtra(Constants.Extra.EXTRA_WALLET_ADDRESS);
-    }
-
-    @Override
-    public int getJumpTagFromIntent() {
-        return getIntent().getIntExtra("tag", 0);
     }
 
     @Override

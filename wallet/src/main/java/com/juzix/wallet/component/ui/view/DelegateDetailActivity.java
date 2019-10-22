@@ -16,7 +16,7 @@ import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.adapter.DelegateDetailAdapter;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.DelegateDetailContract;
-import com.juzix.wallet.component.ui.dialog.DelegateDetailGuideDialogFragment;
+import com.juzix.wallet.component.ui.dialog.CommonGuideDialogFragment;
 import com.juzix.wallet.component.ui.dialog.DelegateTipsDialog;
 import com.juzix.wallet.component.ui.presenter.DelegateDetailPresenter;
 import com.juzix.wallet.component.widget.CircleImageView;
@@ -24,6 +24,7 @@ import com.juzix.wallet.component.widget.CommonTitleBar;
 import com.juzix.wallet.component.widget.CustomRefreshHeader;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.entity.DelegateDetail;
+import com.juzix.wallet.entity.DelegateInfo;
 import com.juzix.wallet.entity.WebType;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
@@ -50,6 +51,7 @@ import butterknife.Unbinder;
 public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresenter> implements DelegateDetailContract.View {
 
     private Unbinder unbinder;
+
     @BindView(R.id.commonTitleBar)
     CommonTitleBar titleBar;
     @BindView(R.id.refreshLayout)
@@ -62,14 +64,10 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
     TextView tv_wallet_address;
     @BindView(R.id.rlv_list)
     RecyclerView rlv_list;
-    //    public boolean isLoadMore = false;
-//    public String beginSequence = "-1";//加载更多需要传入的值
-//    private List<DelegateDetail> list = new ArrayList<>();
+
     private DelegateDetailAdapter mDetailAdapter;
     private LinearLayoutManager linearLayoutManager;
-    private String walletAddress;
-    private String walletName;
-    private String walletIcon;
+
 
     @Override
     protected DelegateDetailPresenter createPresenter() {
@@ -93,35 +91,31 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-//                isLoadMore = false;
                 mPresenter.loadDelegateDetailData();
             }
         });
 
-        mDetailAdapter.setmOnDelegateClickListener(new DelegateDetailAdapter.OnDelegateClickListener() {
-            @Override
-            public void onDelegateClick(String nodeAddress, String nodeName, String nodeIcon) {
-                //操作委托
-                DelegateActivity.actionStart(getContext(), nodeAddress, nodeName, nodeIcon, 0,walletAddress);
-//                mPresenter.getWalletBalance(nodeAddress, nodeName, nodeIcon);
+        mDetailAdapter.setOnDelegateClickListener(new DelegateDetailAdapter.OnDelegateClickListener() {
 
+            @Override
+            public void onDelegateClick(DelegateDetail delegateDetail) {
+                DelegateActivity.actionStart(getContext(), delegateDetail);
             }
 
             @Override
-            public void onWithDrawClick(String nodeAddress, String nodeName, String nodeIcon, String blockNum) {
-                //操作赎回
-                WithDrawActivity.actionStart(getContext(), nodeAddress, nodeName, nodeIcon, blockNum, walletAddress, walletName, walletIcon);
+            public void onWithDrawClick(DelegateDetail delegateDetail) {
+                WithDrawActivity.actionStart(getContext(), delegateDetail);
             }
 
             @Override
             public void onMoveOutClick(DelegateDetail detail) {
                 //操作移除列表
-                mPresenter.MoveOut(detail);
+                mPresenter.moveOut(detail);
             }
 
             @Override
             public void onLinkClick(String webSiteUrl) {
-                CommonHybridActivity.actionStart(getContext(), webSiteUrl, WebType.WEB_TYPE_COMMON);
+                CommonHybridActivity.actionStart(getContext(), webSiteUrl, WebType.WEB_TYPE_NODE_DETAIL);
             }
         });
 
@@ -160,42 +154,26 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
     private void initGuide() {
         boolean isShowDelegateDetail = AppSettings.getInstance().getDelegateDetailBoolean();
         boolean isEnglish = Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage()) == true ? false : true;
-        if(!isShowDelegateDetail){
-            DelegateDetailGuideDialogFragment.newInstance(isEnglish)
-                    .setKnowListener(new DelegateDetailGuideDialogFragment.knowListener() {
+        if (!isShowDelegateDetail) {
+            CommonGuideDialogFragment.newInstance(CommonGuideDialogFragment.DELEGATE_DETAIL, isEnglish)
+                    .setKnowListener(new CommonGuideDialogFragment.knowListener() {
                         @Override
                         public void know() {
                             AppSettings.getInstance().setDelegateDetailBoolean(true);
 
                         }
-                    }).show(getSupportFragmentManager(),"delegateDetail");
+                    }).show(getSupportFragmentManager(), "delegateDetail");
         }
     }
 
 
     @Override
-    public String getWalletNameFromIntent() {
-        walletName = getIntent().getStringExtra(Constants.Extra.EXTRA_WALLET_NAME);
-        return walletName;
-    }
-
-    @Override
-    public String getWalletAddressFromIntent() {
-        walletAddress = getIntent().getStringExtra(Constants.Extra.EXTRA_WALLET_ADDRESS);
-        return walletAddress;
-    }
-
-    @Override
-    public String getWalletIconFromIntent() {
-        walletIcon = getIntent().getStringExtra(Constants.Extra.EXTRA_WALLET_ICON);
-        return walletIcon;
-    }
-
-    @Override
-    public void showWalletInfo(String walletAddress, String walletName, String walletIcon) {
-        circleImageView.setImageResource(RUtils.drawable(walletIcon));
-        tv_wallet_name.setText(walletName);
-        tv_wallet_address.setText(AddressFormatUtil.formatAddress(walletAddress));
+    public void showWalletInfo(DelegateInfo delegateInfo) {
+        if (delegateInfo != null) {
+            circleImageView.setImageResource(RUtils.drawable(delegateInfo.getWalletIcon()));
+            tv_wallet_name.setText(delegateInfo.getWalletName());
+            tv_wallet_address.setText(AddressFormatUtil.formatAddress(delegateInfo.getWalletAddress()));
+        }
     }
 
     @Override
@@ -216,19 +194,27 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
 
     //是否可以进入委托页面进行委托
     @Override
-    public void showIsCanDelegate(String nodeAddress, String nodeName, String nodeIcon, boolean isCanDelegate) {
+    public void showIsCanDelegate(String nodeAddress, String nodeName, String nodeIcon, String walletAddress, boolean isCanDelegate) {
         if (!isCanDelegate) {//表示不能委托
             ToastUtil.showLongToast(getContext(), R.string.tips_no_wallet);
         } else {
-            DelegateActivity.actionStart(getContext(), nodeAddress, nodeName, nodeIcon, 0, walletAddress);
+            DelegateDetail delegateDetail = new DelegateDetail();
+            delegateDetail.setNodeId(nodeAddress);
+            delegateDetail.setNodeName(nodeName);
+            delegateDetail.setUrl(nodeIcon);
+            delegateDetail.setWalletAddress(walletAddress);
+            DelegateActivity.actionStart(getContext(), delegateDetail);
         }
     }
 
-    public static void actionStart(Context context, String walletAddress, String walletName, String walletIcon) {
+    @Override
+    public DelegateInfo getDelegateInfoFromIntent() {
+        return getIntent().getParcelableExtra(Constants.Extra.EXTRA_DELEGATE_INFO);
+    }
+
+    public static void actionStart(Context context, DelegateInfo delegateInfo) {
         Intent intent = new Intent(context, DelegateDetailActivity.class);
-        intent.putExtra(Constants.Extra.EXTRA_WALLET_ADDRESS, walletAddress);
-        intent.putExtra(Constants.Extra.EXTRA_WALLET_NAME, walletName);
-        intent.putExtra(Constants.Extra.EXTRA_WALLET_ICON, walletIcon);
+        intent.putExtra(Constants.Extra.EXTRA_DELEGATE_INFO, delegateInfo);
         context.startActivity(intent);
     }
 
@@ -236,7 +222,6 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
     protected boolean immersiveBarViewEnabled() {
         return true;
     }
-
 
     /**
      * event事件，刷新的操作
@@ -255,4 +240,12 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
         mPresenter.loadDelegateDetailData();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventPublisher.getInstance().unRegister(this);
+        if (unbinder != null) {
+            unbinder.unbind();
+        }
+    }
 }

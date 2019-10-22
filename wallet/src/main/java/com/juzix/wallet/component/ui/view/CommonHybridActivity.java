@@ -35,21 +35,12 @@ import com.juzix.wallet.entity.WebType;
 import com.juzix.wallet.utils.RxUtils;
 import com.umeng.analytics.MobclickAgent;
 
-import java.net.URI;
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * Created by will12190 on 2019/4/27
- * Email:will12190@hotmail.com
- * 通用webview界面
- */
+
 public class CommonHybridActivity extends BaseAgentWebActivity {
 
-    @BindView(R.id.ctb)
-    CommonTitleBar ctb;
     @BindView(R.id.ck_agreement)
     CheckBox ckAgreement;
     @BindView(R.id.tv_argee_agreement)
@@ -58,8 +49,6 @@ public class CommonHybridActivity extends BaseAgentWebActivity {
     ShadowButton sbtnNext;
     @BindView(R.id.layout_service_agreement)
     ConstraintLayout layoutServiceAgreement;
-    @BindView(R.id.layout_common_title)
-    LinearLayout mCommonLayoutTitle;
     @BindView(R.id.layout_node_detail_title)
     ConstraintLayout mNodeDetailTitleLayout;
     @BindView(R.id.iv_back)
@@ -104,27 +93,10 @@ public class CommonHybridActivity extends BaseAgentWebActivity {
 
     private void init() {
 
-        String url = getIntent().getStringExtra(Constants.Extra.EXTRA_URL);
-
-        mUrl = buildUrl(url);
-
+        mUrl = buildUrl(getIntent().getStringExtra(Constants.Extra.EXTRA_URL));
         mWebType = getIntent().getIntExtra(Constants.Extra.EXTRA_WEB_TYPE, WebType.WEB_TYPE_COMMON);
-
-        ctb = findViewById(R.id.ctb);
         layoutServiceAgreement = findViewById(R.id.layout_service_agreement);
-
         layoutServiceAgreement.setVisibility(mWebType == WebType.WEB_TYPE_AGREEMENT ? View.VISIBLE : View.GONE);
-        mCommonLayoutTitle.setVisibility(mWebType == WebType.WEB_TYPE_NODE_DETAIL ? View.GONE : View.VISIBLE);
-        mNodeDetailTitleLayout.setVisibility(mWebType == WebType.WEB_TYPE_NODE_DETAIL ? View.VISIBLE : View.GONE);
-
-        ctb.setLeftDrawableClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mAgentWeb == null || !mAgentWeb.back()) {
-                    finish();
-                }
-            }
-        });
 
         RxView
                 .clicks(sbtnNext)
@@ -235,7 +207,6 @@ public class CommonHybridActivity extends BaseAgentWebActivity {
     @Override
     protected void setTitle(WebView view, String title) {
         super.setTitle(view, title);
-        ctb.setTitle(title);
         mMiddleTitleTv.setText(title);
     }
 

@@ -17,7 +17,7 @@
         <attr name="result_color" format="color" />
         <attr name="label_text_color" format="color"/>
         <attr name="label_text" format="string"/>
-        <attr name="label_text_size" format="float"/>
+        <attr name="label_text_size" format="dimension"/>
         <attr name="flash_label_text_color" format="color"/>
         <attr name="flash_label_text" format="string"/>
         <attr name="flash_label_text_size" format="float"/>

@@ -299,7 +299,7 @@
     <string name="timeout">交易超时</string>
     <string name="energon_price">手续费</string>
     <string name="wallet">钱包</string>
-    <string name="transaction_hash">交易hash:</string>
+    <string name="transaction_hash">交易哈希:</string>
     <string name="none">无</string>
     <string name="noWalletTips">请先创建普通钱包</string>
     <string name="insufficientBalanceTips">钱包余额不足，无法创建</string>

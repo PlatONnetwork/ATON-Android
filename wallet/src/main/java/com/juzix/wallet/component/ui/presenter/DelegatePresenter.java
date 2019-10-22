@@ -17,17 +17,18 @@ import com.juzix.wallet.component.ui.dialog.DelegateSelectWalletDialogFragment;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.dialog.TransactionAuthorizationDialogFragment;
 import com.juzix.wallet.component.ui.dialog.TransactionSignatureDialogFragment;
-import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.engine.DelegateManager;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.Web3jManager;
-import com.juzix.wallet.entity.AccountBalance;
+import com.juzix.wallet.entity.DelegateDetail;
 import com.juzix.wallet.entity.DelegateHandle;
+import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionAuthorizationBaseData;
 import com.juzix.wallet.entity.TransactionAuthorizationData;
 import com.juzix.wallet.entity.TransactionStatus;
+import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.RxUtils;
@@ -37,8 +38,6 @@ import org.web3j.crypto.Credentials;
 import org.web3j.platon.ContractAddress;
 import org.web3j.platon.FunctionType;
 import org.web3j.platon.StakingAmountType;
-import org.web3j.protocol.Web3j;
-import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.GasProvider;
 import org.web3j.utils.Convert;
@@ -57,18 +56,15 @@ import io.reactivex.Single;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import retrofit2.Response;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class DelegatePresenter extends BasePresenter<DelegateContract.View> implements DelegateContract.Presenter {
     private Wallet mWallet;
-    private String mNodeAddress;
-    private String mNodeName;
-    private String mNodeIcon;
-    private int tag;//获取是从哪个页面跳转到委托页
+    private DelegateDetail mDelegateDetail;
+
     private String feeAmount;
-    private String mWalletAddress;
     private List<String> walletAddressList = new ArrayList<>();
     private BigInteger gas_Price; //调web3j获取gasprice
     private BigInteger gas_limit;
@@ -76,12 +72,8 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
     public DelegatePresenter(DelegateContract.View view) {
         super(view);
-        mNodeAddress = view.getNodeAddressFromIntent();
-        mNodeName = view.getNodeNameFromIntent();
-        mNodeIcon = view.getNodeIconFromIntent();
-        mWalletAddress = view.getWalletAddressFromIntent();
-        tag = view.getJumpTagFromIntent();
-        AppSettings.getInstance().setFromDelegateOrValidators(String.valueOf(tag));
+        mDelegateDetail = view.getDelegateDetailFromIntent();
+        mWallet = getDefaultWallet(mDelegateDetail);
     }
 
     @Override
@@ -89,13 +81,15 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
         DelegateSelectWalletDialogFragment.newInstance(mWallet != null ? mWallet.getUuid() : "", false)
                 .setOnItemClickListener(new DelegateSelectWalletDialogFragment.OnItemClickListener() {
                     @Override
-                    public void onItemClick(Wallet walletEntity) {
+                    public void onItemClick(Wallet wallet) {
                         if (isViewAttached()) {
-                            mWallet = walletEntity;
-                            getView().showSelectedWalletInfo(walletEntity);
-//                            getBalanceByWalletAddress(walletEntity.getPrefixAddress());//获取钱包余额信息
-                            //0.7.3修改-->选择钱包调用是否可以委托的接口
-                            checkIsCanDelegate(walletEntity);
+                            mWallet = wallet;
+                            if (mWallet != null) {
+                                getView().showSelectedWalletInfo(mWallet);
+                            }
+                            if (mDelegateDetail != null && mWallet != null) {
+                                checkIsCanDelegate(mWallet.getPrefixAddress(), mDelegateDetail.getNodeId()); //0.7.3修改
+                            }
                         }
                     }
                 })
@@ -106,10 +100,17 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
     @Override
     public void showWalletInfo() {
-        getView().showNodeInfo(mNodeAddress, mNodeName, mNodeIcon);
-        showDefaultWalletInfo();
-        checkIsCanDelegate(); //0.7.3修改
-//        getWalletBalance();
+        if (isViewAttached()) {
+            if (mDelegateDetail != null) {
+                getView().showNodeInfo(mDelegateDetail);
+            }
+            if (mWallet != null) {
+                getView().showSelectedWalletInfo(mWallet);
+            }
+            if (mDelegateDetail != null && mWallet != null) {
+                checkIsCanDelegate(mWallet.getPrefixAddress(), mDelegateDetail.getNodeId()); //0.7.3修改
+            }
+        }
     }
 
     @Override
@@ -141,115 +142,22 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
     }
 
-    private void showDefaultWalletInfo() {
-        if (!TextUtils.isEmpty(mWalletAddress)) {
-            mWallet = WalletManager.getInstance().getWalletEntityByWalletAddress(mWalletAddress);
+    private Wallet getDefaultWallet(DelegateDetail delegateDetail) {
+        if (delegateDetail != null && !TextUtils.isEmpty(delegateDetail.getWalletAddress())) {
+            return WalletManager.getInstance().getWalletEntityByWalletAddress(delegateDetail.getWalletAddress());
         } else {
-//            mWallet = WalletManager.getInstance().getFirstValidIndividualWalletBalance();
-            //0.7.3 修改 (一级排序按照可用余额从大到小排序，二级排序按照钱包创建时间从旧到新排序)
-            mWallet = sortByFreeAccountAndCreateTime(WalletManager.getInstance().getWalletList()).get(0);
-
-        }
-
-        if (isViewAttached() && mWallet != null) {
-            getView().showSelectedWalletInfo(mWallet);
+            return sortByCreateTime(sortByFreeAccount(WalletManager.getInstance().getWalletList())).get(0);
         }
     }
 
-
-    /**
-     * 获取所有钱包的余额(可用余额+锁仓余额)
-     */
-    private void getWalletBalance() {
-        walletAddressList.clear();
-        if (!TextUtils.isEmpty(mWalletAddress)) {
-            walletAddressList.add(mWalletAddress);
-        } else {
-            walletAddressList.addAll(WalletManager.getInstance().getAddressList());
-        }
-
-//        List<String> walletAddressList = WalletManager.getInstance().getAddressList();
-        ServerUtils.getCommonApi().getAccountBalance(ApiRequestBody.newBuilder()
-                .put("addrs", walletAddressList.toArray(new String[walletAddressList.size()]))
-                .build())
-                .compose(RxUtils.bindToLifecycle(getView()))
-                .compose(RxUtils.getSingleSchedulerTransformer())
-                .subscribe(new ApiSingleObserver<List<AccountBalance>>() {
-                    @Override
-                    public void onApiSuccess(List<AccountBalance> accountBalances) {
-                        if (isViewAttached()) {
-                            if (null != accountBalances && accountBalances.size() > 0) {
-                                getView().getWalletBalanceList(accountBalances);
-                            }
-
-                        }
-                    }
-
-                    @Override
-                    public void onApiFailure(ApiResponse response) {
-
-                    }
-                });
-
-    }
-
-
-    //获取钱包余额信息根据选择的钱包地址
-//    private void getBalanceByWalletAddress(String address) {
-//        ServerUtils.getCommonApi().getAccountBalance(ApiRequestBody.newBuilder()
-//                .put("addrs", new String[]{address})
-//                .build())
-//                .compose(RxUtils.bindToLifecycle(getView()))
-//                .compose(RxUtils.getSingleSchedulerTransformer())
-//                .subscribe(new ApiSingleObserver<List<AccountBalance>>() {
-//                    @Override
-//                    public void onApiSuccess(List<AccountBalance> accountBalances) {
-//                        if (isViewAttached()) {
-//                            getView().getWalletBalanceList(accountBalances);
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onApiFailure(ApiResponse response) {
-//
-//                    }
-//                });
-//
-//
-//    }
-
-    public void checkIsCanDelegate(Wallet walletEntity) {
-        ServerUtils.getCommonApi().getIsDelegateInfo(ApiRequestBody.newBuilder()
-                .put("addr",walletEntity.getPrefixAddress())
-                .put("nodeId",mNodeAddress)
-                .build())
-                .compose(RxUtils.bindToLifecycle(getView()))
-                .compose(RxUtils.getSingleSchedulerTransformer())
-                .subscribe(new ApiSingleObserver<DelegateHandle>() {
-                    @Override
-                    public void onApiSuccess(DelegateHandle delegateHandle) {
-                        if(isViewAttached()){
-                            getView().showIsCanDelegate(delegateHandle);
-                        }
-                    }
-
-                    @Override
-                    public void onApiFailure(ApiResponse response) {
-
-                    }
-                });
-    }
     /**
      * 检测是否可以委托
      */
     @Override
-    public void checkIsCanDelegate() {
-        if (mWallet == null) {
-            return;
-        }
+    public void checkIsCanDelegate(String walletAddress, String nodeAddress) {
         ServerUtils.getCommonApi().getIsDelegateInfo(ApiRequestBody.newBuilder()
-                .put("addr", mWallet.getPrefixAddress())
-                .put("nodeId", mNodeAddress)
+                .put("addr", walletAddress)
+                .put("nodeId", nodeAddress)
                 .build())
                 .compose(RxUtils.bindToLifecycle(getView()))
                 .compose(RxUtils.getSingleSchedulerTransformer())
@@ -272,6 +180,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                 });
     }
 
+    @SuppressLint("CheckResult")
     @Override
     public void getGas() {
         DelegateManager.getInstance().getGasPrice()
@@ -292,198 +201,134 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     @SuppressLint("CheckResult")
     @Override
     public void getGasPrice(StakingAmountType stakingAmountType) {
+
         String inputAmount = getView().getDelegateAmount();//输入的数量
-        if (TextUtils.isEmpty(inputAmount) || TextUtils.equals(inputAmount, ".")) {
+
+        if (NumberParserUtils.parseDouble(inputAmount) < 0) {
             getView().showGasPrice("0.00");
             return;
-        } else {
-            if (NumberParserUtils.parseDouble(inputAmount) < 0) {
-                getView().showGasPrice("0.00");
-                return;
+        }
+
+        if (mDelegateDetail != null && !TextUtils.isEmpty(mDelegateDetail.getNodeId())) {
+            if (!isAll) {
+                Log.d("gasprovide", "============" + "表示不是点击的全部");
+                org.web3j.platon.contracts.DelegateContract
+                        .load(Web3jManager.getInstance().getWeb3j())
+                        .getDelegateGasProvider(mDelegateDetail.getNodeId(), stakingAmountType, Convert.toVon(inputAmount, Convert.Unit.LAT).toBigInteger())
+                        .subscribe(new Action1<GasProvider>() {
+                            @Override
+                            public void call(GasProvider gasProvider) {
+                                gas_limit = gasProvider.getGasLimit();
+                                Log.d("gaslimit", "========getFeeAmount========" + "limit ===" + gas_limit + "gasprice ======" + gas_Price);
+                                BigDecimal mul = BigDecimalUtil.mul(gasProvider.getGasLimit().toString(), gas_Price.toString());
+                                feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(mul.toString(), "1E18"));
+                                getView().showGasPrice(feeAmount);
+                            }
+                        });
+            } else {
+                isAll = false;
+                Log.d("gasprovide", "============" + "1111111111111表示点击的全部");
             }
         }
 
-        Web3j web3j = Web3jManager.getInstance().getWeb3j();
-        org.web3j.platon.contracts.DelegateContract delegateContract = org.web3j.platon.contracts.DelegateContract.load(web3j);
-        if (!isAll) {
-            Log.d("gasprovide", "============" + "表示不是点击的全部");
-            delegateContract.getDelegateGasProvider(mNodeAddress, stakingAmountType, Convert.toVon(inputAmount, Convert.Unit.LAT).toBigInteger())
-                    .subscribe(new Subscriber<GasProvider>() {
-                        @Override
-                        public void onCompleted() {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-
-                        }
-
-                        @Override
-                        public void onNext(GasProvider gasProvider) {
-                            gas_limit = gasProvider.getGasLimit();
-                            Log.d("gaslimit", "========getGasPrice========" + "limit ===" + gas_limit + "gasprice ======" + gas_Price);
-                            BigDecimal mul = BigDecimalUtil.mul(gasProvider.getGasLimit().toString(), gas_Price.toString());
-                            feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(mul.toString(), "1E18"));
-                            getView().showGasPrice(feeAmount);
-                        }
-                    });
-        } else {
-            isAll = false;
-            Log.d("gasprovide", "============" + "1111111111111表示点击的全部");
-        }
     }
 
 
     //点击全部的时候，需要获取一次手续费
-    public void getAllPrice(StakingAmountType stakingAmountType,String amount) {
+    public void getAllPrice(StakingAmountType stakingAmountType, String amount) {
         isAll = true;
-        Web3j web3j = Web3jManager.getInstance().getWeb3j();
-        org.web3j.platon.contracts.DelegateContract delegateContract = org.web3j.platon.contracts.DelegateContract.load(web3j);
+        if (mDelegateDetail != null) {
+            org.web3j.platon.contracts.DelegateContract
+                    .load(Web3jManager.getInstance().getWeb3j())
+                    .getDelegateGasProvider(mDelegateDetail.getNodeId(), stakingAmountType, new BigInteger(Convert.toVon(amount, Convert.Unit.LAT).toBigInteger().toString().replaceAll("0", "1")))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<GasProvider>() {
+                        @Override
+                        public void call(GasProvider gasProvider) {
+                            gas_limit = gasProvider.getGasLimit();
+                            Log.d("gaslimit", "========getAllPrice========" + "limit" + gas_limit + "gasprice ========" + gas_Price);
+                            Log.d("gasprovide", "========getAllPrice======" + gasProvider.getGasLimit());
+                            BigDecimal mul = BigDecimalUtil.mul(gasProvider.getGasLimit().toString(), gas_Price.toString());
+                            feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(mul.toString(), "1E18"));
+                            getView().showAllGasPrice(feeAmount);
+                        }
+                    });
+        }
+    }
 
-        delegateContract.getDelegateGasProvider(mNodeAddress, stakingAmountType, new BigInteger(Convert.toVon(amount, Convert.Unit.LAT).toBigInteger().toString().replaceAll("0", "1")))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<GasProvider>() {
-                    @Override
-                    public void onCompleted() {
+    private String checkDelegateParam(DelegateHandle delegateHandle) {
 
-                    }
+        BigDecimal usedAmount = BigDecimalUtil.add(getView().getDelegateAmount(), getView().getFeeAmount());
+        BigDecimal balanceAmount = new BigDecimal(getView().getChooseBalance());
+        boolean isBalanceNotEnough = balanceAmount.compareTo(usedAmount) < 0;
 
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(GasProvider gasProvider) {
-                        gas_limit = gasProvider.getGasLimit();
-                        Log.d("gaslimit", "========getAllPrice========" + "limit" + gas_limit + "gasprice ========" + gas_Price);
-                        Log.d("gasprovide", "========getAllPrice======" + gasProvider.getGasLimit());
-                        BigDecimal mul = BigDecimalUtil.mul(gasProvider.getGasLimit().toString(), gas_Price.toString());
-                        feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(mul.toString(), "1E18"));
-                        getView().showAllGasPrice(feeAmount);
-                    }
-                });
+        if (isBalanceNotEnough) {
+            return string(R.string.insufficient_balance_unable_to_delegate);
+        }
+        return delegateHandle.getMessageDesc(getContext());
     }
 
     @SuppressLint("CheckResult")
     @Override
     public void submitDelegate(StakingAmountType stakingAmountType) {
 
-        Single.fromCallable(new Callable<Double>() {
-            @Override
-            public Double call() throws Exception {
-                //输入数量+手续费
-                return BigDecimalUtil.add(getView().getDelegateAmount(), getView().getGasPrice()).doubleValue();
-            }
-        }).zipWith(ServerUtils.getCommonApi().getIsDelegateInfo(ApiRequestBody.newBuilder()
-                        .put("addr", mWallet.getPrefixAddress())
-                        .put("nodeId", mNodeAddress)
-                        .build()),
-                new BiFunction<Double, Response<ApiResponse<DelegateHandle>>, String>() {
-                    @Override
-                    public String apply(Double amount, Response<ApiResponse<DelegateHandle>> apiResponseResponse) throws Exception {
-                        if (apiResponseResponse == null || !apiResponseResponse.isSuccessful()) {
-                            return "";
-                        } else {
-                            DelegateHandle data = apiResponseResponse.body().getData();
-                            String isDelegate = "0"; //0 表示false,1 表示true
-                            if (!data.isCanDelegation()) {
-                                isDelegate = "0";
-                            } else {
-                                isDelegate = "1";
-                            }
-
-                            String message = data.getMessage();
-
-                            return amount + "&" + isDelegate + "&" + message;
-                        }
-
-                    }
-                })
-                .compose(bindToLifecycle())
-                .compose(RxUtils.getSingleSchedulerTransformer())
-//                .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
-                .subscribe(new Consumer<String>() {
-                    @Override
-                    public void accept(String result) throws Exception {
-                        if (isViewAttached()) {
-
-                            double amount = NumberParserUtils.parseDouble(result.split("&", 3)[0]);
-                            String delegateState = result.split("&", 3)[1];
-                            String msg = result.split("&", 3)[2];
-
-                            double chooseAmount = NumberParserUtils.parseDouble(getView().getChooseBalance()); //选择的余额
-                            if (chooseAmount < amount) {
-                                //余额不足
-                                showLongToast(R.string.insufficient_balance_unable_to_delegate);
-                                return;
-                            }
-
-                            //不能委托
-                            if (TextUtils.equals(delegateState, "0")) {
-                                //表示不能委托
-                                if (TextUtils.equals(msg, "1")) { //不能委托原因：解除委托金额大于0
-                                    showLongToast(R.string.delegate_no_click);
-                                    return;
-                                } else if(TextUtils.equals(msg,"2")){ //节点已退出或退出中
-                                    showLongToast(R.string.the_Validator_has_exited_and_cannot_be_delegated);
-                                    return;
-                                }else if(TextUtils.equals(msg,"3")){ //节点关联的钱包地址，不可参与委托
-                                    showLongToast(R.string.tips_not_delegate);
-                                    return;
-                                }else { //可用余额为0,无法委托
-                                    showLongToast(R.string.tips_not_balance);
-                                    return;
+        if (mWallet != null && mDelegateDetail != null) {
+            getIsDelegateInfo(mWallet.getPrefixAddress(), mDelegateDetail.getNodeId())
+                    .compose(RxUtils.getSingleSchedulerTransformer())
+                    .compose(bindToLifecycle())
+                    .subscribe(new ApiSingleObserver<DelegateHandle>() {
+                        @Override
+                        public void onApiSuccess(DelegateHandle delegateHandle) {
+                            if (isViewAttached()) {
+                                String errMsg = checkDelegateParam(delegateHandle);
+                                if (!TextUtils.isEmpty(errMsg)) {
+                                    showLongToast(errMsg);
+                                } else {
+                                    if (mWallet.isObservedWallet()) {
+                                        showTransactionAuthorizationDialogFragment(mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), stakingAmountType, getView().getDelegateAmount(), mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, gas_limit.toString(10), gas_Price.toString(10));
+                                    } else {
+                                        showInputPasswordDialogFragment(getView().getDelegateAmount(), mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), stakingAmountType);
+                                    }
                                 }
                             }
-
-                            String inputAmount = getView().getDelegateAmount();
-
-                            if (mWallet.isObservedWallet()) {
-                                showTransactionAuthorizationDialogFragment(mNodeAddress, mNodeName,stakingAmountType, inputAmount, mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, gas_limit.toString(10), gas_Price.toString(10));
-                            } else {
-                                showInputPasswordDialogFragment(inputAmount, stakingAmountType);
-                            }
                         }
 
-
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        if (isViewAttached()) {
-                            if (throwable instanceof CustomThrowable) {
-                                CustomThrowable customThrowable = (CustomThrowable) throwable;
-                                showLongToast(customThrowable.getDetailMsgRes());
-                            } else {
-                                showLongToast(R.string.delegate_failed);
+                        @Override
+                        public void onApiFailure(ApiResponse response) {
+                            if (isViewAttached()) {
+                                if (!TextUtils.isEmpty(response.getErrMsg(getContext()))) {
+                                    showLongToast(response.getErrMsg(getContext()));
+                                } else {
+                                    showLongToast(R.string.delegate_failed);
+                                }
                             }
                         }
-                    }
-                });
+                    });
+        }
 
+    }
+
+    private Single<Response<ApiResponse<DelegateHandle>>> getIsDelegateInfo(String walletAddress, String nodeAddress) {
+        return ServerUtils.getCommonApi().getIsDelegateInfo(ApiRequestBody.newBuilder()
+                .put("addr", walletAddress)
+                .put("nodeId", nodeAddress)
+                .build());
     }
 
 
     @SuppressLint("CheckResult")
-    private void delegate(Credentials credentials, String inputAmount, String address, StakingAmountType stakingAmountType) {
+    private void delegate(Credentials credentials, String inputAmount, String nodeId, String nodeName, StakingAmountType stakingAmountType) {
         //这里调用新的方法，传入GasProvider
         GasProvider gasProvider = new ContractGasProvider(gas_Price, gas_limit);
-        DelegateManager.getInstance().delegate(credentials, inputAmount, address, stakingAmountType, gasProvider)
-                .compose(RxUtils.getSingleSchedulerTransformer())
-                .subscribe(new Consumer<PlatonSendTransaction>() {
+        DelegateManager.getInstance().delegate(credentials, ContractAddress.DELEGATE_CONTRACT_ADDRESS, inputAmount, nodeId, nodeName, feeAmount, String.valueOf(TransactionType.DELEGATE.getTxTypeValue()), stakingAmountType, gasProvider)
+                .compose(RxUtils.getSchedulerTransformer())
+                .compose(RxUtils.getLoadingTransformer(currentActivity()))
+                .subscribe(new Consumer<Transaction>() {
                     @Override
-                    public void accept(PlatonSendTransaction platonSendTransaction) throws Exception {
+                    public void accept(Transaction transaction) throws Exception {
                         if (isViewAttached()) {
-                            if (!TextUtils.isEmpty(platonSendTransaction.getTransactionHash())) {
-                                getView().transactionSuccessInfo(platonSendTransaction.getTransactionHash() ,mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, String.valueOf(FunctionType.DELEGATE_FUNC_TYPE), inputAmount, feeAmount, mNodeName, mNodeAddress
-                                        , TransactionStatus.PENDING.ordinal());
-                            } else {
-                                ToastUtil.showLongToast(getContext(), platonSendTransaction.getError().getMessage());
-                            }
-
+                            getView().transactionSuccessInfo(transaction);
                         }
 
                     }
@@ -498,13 +343,13 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
     }
 
-    private void showInputPasswordDialogFragment(String inputAmount, StakingAmountType stakingAmountType) {
+    private void showInputPasswordDialogFragment(String inputAmount, String nodeAddress, String nodeName, StakingAmountType stakingAmountType) {
         InputWalletPasswordDialogFragment
                 .newInstance(mWallet)
                 .setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
                     @Override
                     public void onWalletPasswordCorrect(Credentials credentials) {
-                        delegate(credentials, inputAmount, mNodeAddress, stakingAmountType);
+                        delegate(credentials, inputAmount, nodeAddress, nodeName, stakingAmountType);
                     }
                 })
                 .show(currentActivity().getSupportFragmentManager(), "inputWalletPasssword");
@@ -527,7 +372,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                     public void accept(BigInteger nonce) {
                         if (isViewAttached()) {
                             TransactionAuthorizationData transactionAuthorizationData = new TransactionAuthorizationData(Arrays.asList(new TransactionAuthorizationBaseData.Builder(FunctionType.DELEGATE_FUNC_TYPE)
-                                    .setAmount(BigDecimalUtil.mul(transactionAmount,"1E18").toPlainString())
+                                    .setAmount(BigDecimalUtil.mul(transactionAmount, "1E18").toPlainString())
                                     .setChainId(NodeManager.getInstance().getChainId())
                                     .setNonce(nonce.toString(10))
                                     .setFrom(from)
@@ -547,8 +392,18 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                                                         @Override
                                                         public void onSendTransactionSucceed(String hash) {
                                                             if (isViewAttached()) {
-                                                                getView().transactionSuccessInfo(hash ,mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS,  String.valueOf(FunctionType.DELEGATE_FUNC_TYPE), transactionAmount, feeAmount, mNodeName, mNodeAddress
-                                                                        , TransactionStatus.PENDING.ordinal());
+                                                                getView().transactionSuccessInfo(new Transaction.Builder()
+                                                                        .from(from)
+                                                                        .to(to)
+                                                                        .timestamp(System.currentTimeMillis())
+                                                                        .txType(String.valueOf(TransactionType.DELEGATE.getTxTypeValue()))
+                                                                        .value(Convert.toVon(transactionAmount, Convert.Unit.LAT).toBigInteger().toString())
+                                                                        .actualTxCost(Convert.toVon(feeAmount, Convert.Unit.LAT).toBigInteger().toString())
+                                                                        .nodeName(nodeName)
+                                                                        .nodeId(nodeId)
+                                                                        .txReceiptStatus(TransactionStatus.PENDING.ordinal())
+                                                                        .hash(hash)
+                                                                        .build());
                                                             }
                                                         }
                                                     })
@@ -571,24 +426,24 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                 });
     }
 
-    private List<Wallet> sortByFreeAccountAndCreateTime(List<Wallet> walletList){
+    private List<Wallet> sortByFreeAccount(List<Wallet> walletList) {
         Collections.sort(walletList, new Comparator<Wallet>() {
             @Override
             public int compare(Wallet o1, Wallet o2) {
-                int compare = Double.compare(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(o2.getFreeBalance(), "1E18"))), NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(o1.getFreeBalance(), "1E18"))));
-                if(compare !=0 ){
-                    return  compare;
-                }
-                compare  =  Long.compare(o1.getCreateTime(), o2.getCreateTime());
-                if(compare !=0){
-                    return  compare;
-                }
-                return 0;
+                return Double.compare(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(o2.getFreeBalance(), "1E18"))), NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(o1.getFreeBalance(), "1E18"))));
             }
         });
 
-
         return walletList;
+    }
 
+    private List<Wallet> sortByCreateTime(List<Wallet> list) {
+        Collections.sort(list, new Comparator<Wallet>() {
+            @Override
+            public int compare(Wallet o1, Wallet o2) {
+                return Long.compare(o1.getCreateTime(), o2.getCreateTime());
+            }
+        });
+        return list;
     }
 }

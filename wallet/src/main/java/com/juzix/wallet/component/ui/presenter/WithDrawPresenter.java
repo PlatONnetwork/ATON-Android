@@ -21,9 +21,13 @@ import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.Web3jManager;
+import com.juzix.wallet.entity.DelegateDetail;
+import com.juzix.wallet.entity.DelegateInfo;
+import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionAuthorizationBaseData;
 import com.juzix.wallet.entity.TransactionAuthorizationData;
 import com.juzix.wallet.entity.TransactionStatus;
+import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.entity.WithDrawBalance;
 import com.juzix.wallet.utils.BigDecimalUtil;
@@ -33,6 +37,7 @@ import com.juzix.wallet.utils.ToastUtil;
 import org.web3j.crypto.Credentials;
 import org.web3j.platon.ContractAddress;
 import org.web3j.platon.FunctionType;
+import org.web3j.platon.contracts.DelegateContract;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 import org.web3j.tx.gas.ContractGasProvider;
@@ -52,45 +57,39 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> implements WithDrawContract.Presenter {
+
+    private DelegateDetail mDelegateDetail;
     private Wallet mWallet;
-    private String mNodeAddress;
-    private String mNodeName;
-    private String mNodeIcon;
-    private String mBlockNum;
-    private String mWalletAddress;
 
     private List<WithDrawBalance> list = new ArrayList<>();
-    //    private double delegatedSum = 0; //已委托 (已锁定+未锁定)
-    private int tag = 0;
+
+    private int tag;
     private String feeAmount;
     private BigInteger gas_Price; //调web3j获取gasprice
     private BigInteger gas_limit;
 
     public WithDrawPresenter(WithDrawContract.View view) {
         super(view);
-        mNodeAddress = view.getNodeAddressFromIntent();
-        mNodeName = view.getNodeNameFromIntent();
-        mNodeIcon = view.getNodeIconFromIntent();
-        mBlockNum = view.getBlockNumFromIntent();
-        mWalletAddress = view.getWalletAddressFromIntent();
+        mDelegateDetail = view.getDelegateDetailFromIntent();
+        if (mDelegateDetail != null) {
+            mWallet = WalletManager.getInstance().getWalletEntityByWalletAddress(mDelegateDetail.getWalletAddress());
+        }
     }
 
 
     @Override
     public void showWalletInfo() {
-        getView().showNodeInfo(mNodeAddress, mNodeName, mNodeIcon);
-        showSelectedWalletInfo();
-    }
-
-
-    private void showSelectedWalletInfo() {
-//        mWallet = WalletManager.getInstance().getFirstValidIndividualWalletBalance();
-        mWallet = WalletManager.getInstance().getWalletEntityByWalletAddress(mWalletAddress);//通过钱包地址获取钱包对象
-        if (isViewAttached() && mWallet != null) {
-            getView().showSelectedWalletInfo(mWallet);
+        if (isViewAttached()) {
+            if (mWallet != null) {
+                getView().showSelectedWalletInfo(mWallet);
+            }
+            if (mDelegateDetail != null) {
+                getView().showNodeInfo(mDelegateDetail);
+            }
         }
     }
 
@@ -127,9 +126,12 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
 
     @Override
     public void getBalanceType() {
+        if (mDelegateDetail == null) {
+            return;
+        }
         ServerUtils.getCommonApi().getWithDrawBalance(ApiRequestBody.newBuilder()
-                .put("addr", mWalletAddress)
-                .put("nodeId", mNodeAddress)
+                .put("addr", mDelegateDetail.getWalletAddress())
+                .put("nodeId", mDelegateDetail.getNodeId())
                 .build())
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(bindToLifecycle())
@@ -199,22 +201,19 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
             return;
         }
 
-        Web3j web3j = Web3jManager.getInstance().getWeb3j();
-        org.web3j.platon.contracts.DelegateContract delegateContract = org.web3j.platon.contracts.DelegateContract.load(web3j);
-        delegateContract.getUnDelegateGasProvider(mNodeAddress, new BigInteger(list.get(0).getStakingBlockNum()), Convert.toVon(input, Convert.Unit.LAT).toBigInteger())
+        if (mDelegateDetail == null) {
+            return;
+        }
+
+        DelegateContract.load(Web3jManager.getInstance().getWeb3j())
+                .getUnDelegateGasProvider(mDelegateDetail.getWalletAddress(), new BigInteger(list.get(0).getStakingBlockNum()), Convert.toVon(input, Convert.Unit.LAT).toBigInteger())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<GasProvider>() {
+                .subscribe(new Action1<GasProvider>() {
                     @Override
-                    public void onCompleted() {
-                    }
-                    @Override
-                    public void onError(Throwable e) {
-                    }
-                    @Override
-                    public void onNext(GasProvider gasProvider) {
+                    public void call(GasProvider gasProvider) {
                         gas_limit = gasProvider.getGasLimit();
-                        Log.d("gasLimit","===============" + "gasprice" + "====" + gas_Price + "=========" + "gasLimit" +"========" + gas_limit);
+                        Log.d("gasLimit", "===============" + "gasprice" + "====" + gas_Price + "=========" + "gasLimit" + "========" + gas_limit);
                         BigDecimal mul = BigDecimalUtil.mul(gasProvider.getGasLimit().toString(), gas_Price.toString());
                         feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(mul.toString(), "1E18"));
                         getView().showWithDrawGasPrice(feeAmount);
@@ -225,46 +224,32 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     @SuppressLint("CheckResult")
     @Override
     public void submitWithDraw(String type) {
-        Single.fromCallable(new Callable<Double>() {
-            @Override
-            public Double call() throws Exception {
-                String input = getView().getInputAmount();
-                return Double.valueOf(input); //获取输入数量
-            }
-        }).map(new Function<Double, Double>() {
-            @Override
-            public Double apply(Double aDouble) throws Exception {
-                return aDouble;
-            }
-        }).compose(bindToLifecycle())
-                .subscribe(new Consumer<Double>() {
-                    @Override
-                    public void accept(Double aDouble) throws Exception {
-                        //把输入的数量和选择的数量做判断
-                        if (isViewAttached()) {
-                            double chooseNum = NumberParserUtils.parseDouble(getView().getChooseType());
-                            if (chooseNum < aDouble) {
-                                showLongToast(R.string.withdraw_operation_tips);
-                                return;
-                            }
+        if (mDelegateDetail == null) {
+            return;
+        }
 
-                            if (mWallet.isObservedWallet()){
-                                showTransactionAuthorizationDialogFragment(mNodeAddress,mNodeName,getView().getInputAmount(),mWallet.getPrefixAddress(),ContractAddress.DELEGATE_CONTRACT_ADDRESS,gas_limit.toString(10),gas_Price.toString(10),type);
-                            }else{
-                                InputWalletPasswordDialogFragment
-                                        .newInstance(mWallet)
-                                        .setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
-                                            @Override
-                                            public void onWalletPasswordCorrect(Credentials credentials) {
-                                                withDrawIterate(credentials, mNodeAddress, getView().getInputAmount(), type);
-                                            }
-                                        })
-                                        .show(currentActivity().getSupportFragmentManager(), "inputWalletPasssword");
-                            }
-                        }
-                    }
-                });
+        if (isViewAttached()) {
+            double chooseNum = NumberParserUtils.parseDouble(getView().getChooseType());
+            double inputPutAmount = NumberParserUtils.parseDouble(getView().getInputAmount());
+            if (chooseNum < inputPutAmount) {
+                showLongToast(R.string.withdraw_operation_tips);
+                return;
+            }
 
+            if (mWallet.isObservedWallet()) {
+                showTransactionAuthorizationDialogFragment(mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), getView().getInputAmount(), mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, gas_limit.toString(10), gas_Price.toString(10), type);
+            } else {
+                InputWalletPasswordDialogFragment
+                        .newInstance(mWallet)
+                        .setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
+                            @Override
+                            public void onWalletPasswordCorrect(Credentials credentials) {
+                                withDrawIterate(credentials, mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), getView().getInputAmount(), type);
+                            }
+                        })
+                        .show(currentActivity().getSupportFragmentManager(), "inputWalletPasssword");
+            }
+        }
     }
 
 
@@ -275,13 +260,13 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
      * @param type           从  已委托 或 未锁定委托 提取：  只操作记录最新的那个委托对象（快高最大）
      *                       从  已解除委托 提取：  查看记录中所有 已解锁余额非0的记录。  会存在调用多次底层的情况。
      */
-    public void withDrawIterate(Credentials credentials, String nodeId, String withdrawAmount, String type) {
+    public void withDrawIterate(Credentials credentials, String nodeId, String nodeName, String withdrawAmount, String type) {
         String stakingBlockNum = "0";
         if (TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_DELEGATED) || TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_UNLOCKED)) { //已委托 || 未锁定
             for (int i = 0; i < list.size(); i++) {
                 if (!TextUtils.isEmpty(list.get(i).getLocked()) && !TextUtils.isEmpty(list.get(i).getUnLocked())) {
                     stakingBlockNum = list.get(i).getStakingBlockNum(); //这里其实就是第一条，因为最新的块高排在前面
-                    withdraw(credentials, nodeId, stakingBlockNum, withdrawAmount, type);
+                    withdraw(credentials, nodeId, nodeName, stakingBlockNum, withdrawAmount, type);
                     return;
                 }
             }
@@ -291,7 +276,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                 if (!TextUtils.isEmpty(balance.getReleased())) {
                     stakingBlockNum = balance.getStakingBlockNum();
                     tag++;
-                    withdraw(credentials, nodeId, stakingBlockNum, NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(balance.getReleased(), "1E18")), type); //这里传入的数量应该是记录中每个对象不为0的数量（而不是显示的全部数量，因为这里要循环执行多次）
+                    withdraw(credentials, nodeId, nodeName, stakingBlockNum, NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(balance.getReleased(), "1E18")), type); //这里传入的数量应该是记录中每个对象不为0的数量（而不是显示的全部数量，因为这里要循环执行多次）
                 }
             }
 
@@ -302,57 +287,51 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
 
     //操作赎回
     @SuppressLint("CheckResult")
-    public void withdraw(Credentials credentials, String nodeId, String blockNum, String withdrawAmount, String type) {
-        GasProvider gasProvider =new ContractGasProvider(gas_Price,gas_limit);
-        DelegateManager.getInstance().withdraw(credentials, nodeId, blockNum, withdrawAmount,gasProvider)
-                .compose(RxUtils.getSingleSchedulerTransformer())
-                .subscribe(new Consumer<PlatonSendTransaction>() {
+    public void withdraw(Credentials credentials, String nodeId, String nodeName, String blockNum, String withdrawAmount, String type) {
+        GasProvider gasProvider = new ContractGasProvider(gas_Price, gas_limit);
+        DelegateManager.getInstance().withdraw(credentials, ContractAddress.DELEGATE_CONTRACT_ADDRESS, nodeId, nodeName, feeAmount, blockNum, withdrawAmount, String.valueOf(TransactionType.UNDELEGATE.getTxTypeValue()), gasProvider)
+                .compose(RxUtils.getSchedulerTransformer())
+                .compose(RxUtils.getLoadingTransformer(currentActivity()))
+                .subscribe(new CustomObserver<Transaction>() {
                     @Override
-                    public void accept(PlatonSendTransaction platonSendTransaction) throws Exception {
+                    public void accept(Transaction transaction) {
                         if (isViewAttached()) {
-                            if (!TextUtils.isEmpty(platonSendTransaction.getTransactionHash())) {
-                                //操作成功，跳转到交易详情，当前页面关闭
-                                if (TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_DELEGATED) || TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_UNLOCKED)) {
-                                    getView().withDrawSuccessInfo(platonSendTransaction.getTransactionHash(), mWalletAddress, ContractAddress.DELEGATE_CONTRACT_ADDRESS,  FunctionType.WITHDREW_DELEGATE_FUNC_TYPE, list.get(0).getReleased(),
-                                            feeAmount, mNodeName, mNodeAddress, TransactionStatus.PENDING.ordinal());
-                                } else {
-                                    if (tag == list.size()) {
-                                        getView().withDrawSuccessInfo(platonSendTransaction.getTransactionHash(),mWalletAddress, ContractAddress.DELEGATE_CONTRACT_ADDRESS,  FunctionType.WITHDREW_DELEGATE_FUNC_TYPE, list.get(0).getReleased(),
-                                                feeAmount, mNodeName, mNodeAddress, TransactionStatus.PENDING.ordinal());
-                                    }
-                                }
-
+                            //操作成功，跳转到交易详情，当前页面关闭
+                            if (TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_DELEGATED) || TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_UNLOCKED)) {
+                                getView().withDrawSuccessInfo(transaction);
                             } else {
-                                ToastUtil.showLongToast(getContext(), platonSendTransaction.getError().getMessage());
+                                if (tag == list.size()) {
+                                    getView().withDrawSuccessInfo(transaction);
+                                }
                             }
-
-
                         }
-
                     }
-                }, new Consumer<Throwable>() {
+
                     @Override
-                    public void accept(Throwable throwable) throws Exception {
+                    public void accept(Throwable throwable) {
+                        super.accept(throwable);
                         if (isViewAttached()) {
-                            showLongToast(R.string.withdraw_failed);
+                            if (isViewAttached()) {
+                                showLongToast(R.string.withdraw_failed);
+                            }
                         }
                     }
                 });
 
     }
 
-    private List<TransactionAuthorizationBaseData> buildTransactionAuthorizationBaseDataList(final BigInteger nonce,String nodeId, String nodeName, String transactionAmount, String from, String to, String gasLimit, String gasPrice){
-        if (list == null || list.isEmpty()){
+    private List<TransactionAuthorizationBaseData> buildTransactionAuthorizationBaseDataList(final BigInteger nonce, String nodeId, String nodeName, String transactionAmount, String from, String to, String gasLimit, String gasPrice) {
+        if (list == null || list.isEmpty()) {
             return new ArrayList<>();
         }
-        
+
         return Flowable
-                .range(0,list.size())
+                .range(0, list.size())
                 .map(new Function<Integer, TransactionAuthorizationBaseData>() {
                     @Override
                     public TransactionAuthorizationBaseData apply(Integer position) throws Exception {
                         return new TransactionAuthorizationBaseData.Builder(FunctionType.WITHDREW_DELEGATE_FUNC_TYPE)
-                                .setAmount(BigDecimalUtil.mul(transactionAmount,"1E18").toPlainString())
+                                .setAmount(BigDecimalUtil.mul(transactionAmount, "1E18").toPlainString())
                                 .setChainId(NodeManager.getInstance().getChainId())
                                 .setNonce(nonce.add(BigInteger.valueOf(position)).toString(10))
                                 .setFrom(from)
@@ -370,7 +349,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     }
 
 
-    private void showTransactionAuthorizationDialogFragment(String nodeId, String nodeName, String transactionAmount, String from, String to, String gasLimit, String gasPrice,String type) {
+    private void showTransactionAuthorizationDialogFragment(String nodeId, String nodeName, String transactionAmount, String from, String to, String gasLimit, String gasPrice, String type) {
 
         Observable
                 .fromCallable(new Callable<BigInteger>() {
@@ -386,7 +365,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                     @Override
                     public void accept(BigInteger nonce) {
                         if (isViewAttached()) {
-                            TransactionAuthorizationData transactionAuthorizationData = new TransactionAuthorizationData(buildTransactionAuthorizationBaseDataList(nonce,nodeId,nodeName,transactionAmount,from,to,gasLimit,gasPrice), System.currentTimeMillis() / 1000);
+                            TransactionAuthorizationData transactionAuthorizationData = new TransactionAuthorizationData(buildTransactionAuthorizationBaseDataList(nonce, nodeId, nodeName, transactionAmount, from, to, gasLimit, gasPrice), System.currentTimeMillis() / 1000);
                             TransactionAuthorizationDialogFragment.newInstance(transactionAuthorizationData)
                                     .setOnNextBtnClickListener(new TransactionAuthorizationDialogFragment.OnNextBtnClickListener() {
                                         @Override
@@ -396,16 +375,19 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                                                         @Override
                                                         public void onSendTransactionSucceed(String hash) {
                                                             if (isViewAttached()) {
-                                                                //操作成功，跳转到交易详情，当前页面关闭
-                                                                if (TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_DELEGATED) || TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_UNLOCKED)) {
-                                                                    getView().withDrawSuccessInfo(hash, mWalletAddress, ContractAddress.DELEGATE_CONTRACT_ADDRESS, FunctionType.WITHDREW_DELEGATE_FUNC_TYPE, list.get(0).getReleased(),
-                                                                            feeAmount, mNodeName, mNodeAddress, TransactionStatus.PENDING.ordinal());
-                                                                } else {
-                                                                    if (tag == list.size()) {
-                                                                        getView().withDrawSuccessInfo(hash,mWalletAddress, ContractAddress.DELEGATE_CONTRACT_ADDRESS,  FunctionType.WITHDREW_DELEGATE_FUNC_TYPE, list.get(0).getReleased(),
-                                                                                feeAmount, mNodeName, mNodeAddress, TransactionStatus.PENDING.ordinal());
-                                                                    }
-                                                                }
+                                                                getView().withDrawSuccessInfo(new Transaction.Builder()
+                                                                        .from(from)
+                                                                        .to(to)
+                                                                        .timestamp(System.currentTimeMillis())
+                                                                        .txType(String.valueOf(TransactionType.UNDELEGATE.getTxTypeValue()))
+                                                                        .value(Convert.toVon(transactionAmount, Convert.Unit.LAT).toBigInteger().toString())
+                                                                        .actualTxCost(Convert.toVon(feeAmount, Convert.Unit.LAT).toBigInteger().toString())
+                                                                        .unDelegation(Convert.toVon(transactionAmount, Convert.Unit.LAT).toBigInteger().toString())
+                                                                        .nodeName(nodeName)
+                                                                        .nodeId(nodeId)
+                                                                        .txReceiptStatus(TransactionStatus.PENDING.ordinal())
+                                                                        .hash(hash)
+                                                                        .build());
                                                             }
                                                         }
                                                     })

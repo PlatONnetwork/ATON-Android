@@ -15,6 +15,7 @@ import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.AccountBalance;
 import com.juzix.wallet.entity.DelegateDetail;
+import com.juzix.wallet.entity.DelegateInfo;
 import com.juzix.wallet.utils.RxUtils;
 
 import java.util.List;
@@ -29,49 +30,49 @@ import io.reactivex.schedulers.Schedulers;
 import retrofit2.Response;
 
 public class DelegateDetailPresenter extends BasePresenter<DelegateDetailContract.View> implements DelegateDetailContract.Presenter {
-    private String mWalletAddress;
-    private String walletName;
-    private String walletIcon;
+
+    private DelegateInfo mDelegateInfo;
 
     public DelegateDetailPresenter(DelegateDetailContract.View view) {
         super(view);
-        mWalletAddress = getView().getWalletAddressFromIntent();
-        walletName = getView().getWalletNameFromIntent();
-        walletIcon = getView().getWalletIconFromIntent();
+        mDelegateInfo = view.getDelegateInfoFromIntent();
     }
 
 
     @Override
     public void loadDelegateDetailData() {
-        getDelegateDetailData(mWalletAddress);
+
+        if (isViewAttached()) {
+            getView().showWalletInfo(mDelegateInfo);
+        }
+
+        getDelegateDetailData();
     }
 
     @Override
-    public void MoveOut(DelegateDetail detail) {
-        //移除操作，需要保存到数据库
-        Single.fromCallable(new Callable<DelegateDetailEntity>() {
-            @Override
-            public DelegateDetailEntity call() throws Exception {
-                DelegateDetailEntity entity = new DelegateDetailEntity();
-                entity.setAddress(mWalletAddress);
-                entity.setNodeId(detail.getNodeId());
-                entity.setDelegationBlockNum(detail.getDelegationBlockNum());
-                return entity;
-            }
-        }).map(new Function<DelegateDetailEntity, Boolean>() {
-            @Override
-            public Boolean apply(DelegateDetailEntity entity) throws Exception {
-
-                return DelegateDetailDao.insertDelegateNodeAddressInfo(entity);
-            }
-        }).subscribeOn(Schedulers.io()).blockingGet();
-
+    public void moveOut(DelegateDetail detail) {
+        Single
+                .fromCallable(new Callable<Boolean>() {
+                    @Override
+                    public Boolean call() throws Exception {
+                        return DelegateDetailDao.insertDelegateNodeAddressInfo(detail.toDelegateDetailEntity());
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .subscribe();
     }
 
-    private void getDelegateDetailData(String walletAddress) {
-        getView().showWalletInfo(walletAddress, walletName, walletIcon);
-        ServerUtils.getCommonApi().getDelegateDetailList( ApiRequestBody.newBuilder()
-                .put("addr", walletAddress)
+    @Override
+    public DelegateInfo getDelegateInfo() {
+        return mDelegateInfo;
+    }
+
+    private void getDelegateDetailData() {
+        if (mDelegateInfo == null) {
+            return;
+        }
+        ServerUtils.getCommonApi().getDelegateDetailList(ApiRequestBody.newBuilder()
+                .put("addr", mDelegateInfo.getWalletAddress())
                 .build())
                 .flatMap(new Function<Response<ApiResponse<List<DelegateDetail>>>, SingleSource<Response<ApiResponse<List<DelegateDetail>>>>>() {
                     @Override
@@ -84,7 +85,7 @@ public class DelegateDetailPresenter extends BasePresenter<DelegateDetailContrac
                                     .map(new Function<DelegateDetail, DelegateDetail>() {
                                         @Override
                                         public DelegateDetail apply(DelegateDetail delegateDetail) throws Exception {
-                                            delegateDetail.setWalletAddress(mWalletAddress); //给每个对象赋值钱包地址
+                                            delegateDetail.setWalletAddress(mDelegateInfo.getWalletAddress()); //给每个对象赋值钱包地址
                                             return delegateDetail;
                                         }
                                     }).toList().map(new Function<List<DelegateDetail>, Response<ApiResponse<List<DelegateDetail>>>>() {
@@ -117,22 +118,6 @@ public class DelegateDetailPresenter extends BasePresenter<DelegateDetailContrac
                                 }
                             }
                         })
-//                        .map(new Function<DelegateDetail, DelegateDetail>() {
-//                            @Override
-//                            public DelegateDetail apply(DelegateDetail delegateDetail) throws Exception {
-//                                DelegateDetailEntity entity = DelegateDetailDao.getEntityWithAddressAndNodeId(delegateDetail.getWalletAddress(), delegateDetail.getNodeId());
-//                                if (entity != null) {
-//                                    if (TextUtils.equals(entity.getStakingBlockNum(), delegateDetail.getStakingBlockNum())) { //数据库中拿到的对象的块高和列表中的块高做比较
-//                                        return null;
-//                                    } else {
-//                                        DelegateDetailDao.deleteDelegateDetailEntityByAddressAndNodeId(delegateDetail.getNodeId(), delegateDetail.getWalletAddress());
-//                                        return delegateDetail;
-//                                    }
-//                                } else {
-//                                    return delegateDetail;
-//                                }
-//                            }
-//                        })
                         .toList()
                         .map(new Function<List<DelegateDetail>, Response<ApiResponse<List<DelegateDetail>>>>() {
                             @Override
@@ -253,36 +238,5 @@ public class DelegateDetailPresenter extends BasePresenter<DelegateDetailContrac
                 return DelegateDetailDao.deleteDelegateDetailEntity();
             }
         }).subscribeOn(Schedulers.io()).blockingGet();
-    }
-
-    @Override
-    public void getWalletBalance(String nodeAddress, String nodeName, String nodeIcon) {
-//        List<String> walletAddressList = WalletManager.getInstance().getAddressList();
-        ServerUtils.getCommonApi().getAccountBalance(ApiRequestBody.newBuilder()
-                .put("addrs", new String[]{mWalletAddress})
-                .build())
-                .compose(RxUtils.bindToLifecycle(getView()))
-                .compose(RxUtils.getSingleSchedulerTransformer())
-                .subscribe(new ApiSingleObserver<List<AccountBalance>>() {
-                    @Override
-                    public void onApiSuccess(List<AccountBalance> accountBalances) {
-                        if (isViewAttached()) {
-                            for (AccountBalance balance : accountBalances) {
-                                if (!TextUtils.equals(balance.getLock(), "0") || !TextUtils.equals(balance.getFree(), "0")) {
-                                    getView().showIsCanDelegate(nodeAddress, nodeName, nodeIcon, true);
-                                    return;
-                                }
-                            }
-
-                            getView().showIsCanDelegate(nodeAddress, nodeName, nodeIcon, false);
-                        }
-
-                    }
-
-                    @Override
-                    public void onApiFailure(ApiResponse response) {
-
-                    }
-                });
     }
 }
