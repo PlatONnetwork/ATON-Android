@@ -236,7 +236,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
 
     @Override
     public void updateWalletBalance(String balance) {
-        if (isAdded()){
+        if (isAdded()) {
             tvWalletBalance.setText(getString(R.string.balance_text, NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(balance, "1E18"))));
         }
     }
@@ -355,6 +355,11 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
     }
 
     @Override
+    public void setProgress(float progress) {
+        bubbleSeekBar.setProgress(progress);
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         EventPublisher.getInstance().unRegister(this);
@@ -368,7 +373,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
     private View.OnFocusChangeListener mEtWalletAddressFocusChangeListener = new View.OnFocusChangeListener() {
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
-            if (etWalletAddress != null){
+            if (etWalletAddress != null) {
                 String address = etWalletAddress.getText().toString().trim();
                 if (!hasFocus) {
                     mPresenter.checkToAddress(address);
@@ -401,7 +406,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
     private View.OnFocusChangeListener mEtWalletAmountFocusChangeListener = new View.OnFocusChangeListener() {
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
-            if (etWalletAmount != null){
+            if (etWalletAmount != null) {
                 String amount = etWalletAmount.getText().toString().trim();
                 if (!hasFocus) {
                     mPresenter.checkTransferAmount(amount);
@@ -437,19 +442,17 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
         @Override
         public void onProgressChanged(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat, boolean fromUser) {
             LogUtils.d(progress + ":" + progressFloat + ":" + bubbleSeekBar.getMax());
-            if (fromUser) {
-                mPresenter.calculateFeeAndTime(progress);
-                mPresenter.updateSendTransactionButtonStatus();
-                if (etWalletAmount.isFocused()) {
-                    etWalletAmount.clearFocus();
-                }
-                if (etWalletAddress.isFocused()) {
-                    etWalletAddress.clearFocus();
-                }
-                String amount = etWalletAmount.getText().toString().trim();
-                if (!TextUtils.isEmpty(amount)) {
-                    mPresenter.checkTransferAmount(amount);
-                }
+            mPresenter.calculateFeeAndTime(progressFloat);
+            mPresenter.updateSendTransactionButtonStatus();
+            if (etWalletAmount.isFocused()) {
+                etWalletAmount.clearFocus();
+            }
+            if (etWalletAddress.isFocused()) {
+                etWalletAddress.clearFocus();
+            }
+            String amount = etWalletAmount.getText().toString().trim();
+            if (!TextUtils.isEmpty(amount)) {
+                mPresenter.checkTransferAmount(amount);
             }
         }
 
