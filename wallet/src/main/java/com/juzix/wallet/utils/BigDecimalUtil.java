@@ -248,8 +248,26 @@ public class BigDecimalUtil {
     public static float convertsToFloat(double v) {
         float result = 0f;
         try {
-            BigDecimal b = new BigDecimal(v);
+            BigDecimal b = BigDecimal.valueOf(v);
             result = b.floatValue();
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    /**
+     * 提供精确的类型转换(Float)
+     *
+     * @param v 需要被转换的数字
+     * @return 返回转换结果
+     */
+    public static float convertsToFloat(String v) {
+        float result = 0f;
+        try {
+            BigDecimal b = new BigDecimal(v);
+            result = b.setScale(2, RoundingMode.HALF_UP).floatValue();
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }

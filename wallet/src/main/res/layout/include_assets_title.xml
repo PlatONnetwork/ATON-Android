@@ -27,37 +27,53 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/iv_add"
+        <LinearLayout
+            android:id="@+id/layout_add"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_add"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:paddingLeft="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/iv_scan"
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/icon_add" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_scan"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="4dp"
-            android:background="@drawable/bg_scan"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/iv_add"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintRight_toLeftOf="@id/layout_add"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/icon_scan" />
+        </LinearLayout>
 
     </android.support.constraint.ConstraintLayout>
 
     <TextView
         android:id="@+id/tv_total_assets_amount"
         style="@style/Text.000.16"
-        android:textStyle="bold"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="6dp"
         android:layout_marginRight="16dp"
         android:ellipsize="end"
         android:lines="1"
-        android:text="0.00" />
+        android:text="0.00"
+        android:textStyle="bold" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_wallet"

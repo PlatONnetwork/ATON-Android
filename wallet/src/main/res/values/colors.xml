@@ -143,5 +143,8 @@
     <color name="color_F5A623">#F5A623</color>
     <color name="color_fafdff">#FAFDFF</color>
     <color name="color_1861fe">#1861FE</color>
+    <!--透明度25%-->
+    <color name="color_000000_25">#bf000000</color>
+    <color name="color_404040">#404040</color>
 
 </resources>

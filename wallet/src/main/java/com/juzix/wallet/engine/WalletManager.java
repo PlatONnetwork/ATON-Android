@@ -241,12 +241,15 @@ public class WalletManager {
         return Single.create(new SingleOnSubscribe<String>() {
             @Override
             public void subscribe(SingleEmitter<String> emitter) throws Exception {
+                LogUtils.e("before createMnemonic " + System.currentTimeMillis() + " " + Thread.currentThread().getName());
                 String mnemonic = generateMnemonic();
                 if (JZWalletUtil.isValidMnemonic(mnemonic)) {
                     emitter.onSuccess(mnemonic);
                 } else {
                     emitter.onError(new CustomThrowable(CustomThrowable.CODE_ERROR_CREATE_WALLET_FAILED));
                 }
+
+                LogUtils.e("after createMnemonic " + System.currentTimeMillis() + " " + Thread.currentThread().getName());
             }
         });
     }
@@ -509,13 +512,13 @@ public class WalletManager {
 
     public Observable<BigDecimal> getAccountBalance() {
         return Observable
-                .interval( 5,TimeUnit.SECONDS)
+                .interval(5, TimeUnit.SECONDS)
                 .flatMap(new Function<Long, ObservableSource<BigDecimal>>() {
                     @Override
                     public ObservableSource<BigDecimal> apply(Long aLong) throws Exception {
                         List<String> walletAddress = WalletManager.getInstance().getAddressList();
 
-                        LogUtils.e(walletAddress.size()+"");
+                        LogUtils.e(walletAddress.size() + "");
                         return ServerUtils
                                 .getCommonApi()
                                 .getAccountBalance(ApiRequestBody.newBuilder()

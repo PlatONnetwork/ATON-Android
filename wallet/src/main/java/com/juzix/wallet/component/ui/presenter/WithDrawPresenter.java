@@ -193,7 +193,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
         }
 
         DelegateContract.load(Web3jManager.getInstance().getWeb3j())
-                .getUnDelegateGasProvider(mDelegateDetail.getWalletAddress(), new BigInteger(list.get(0).getStakingBlockNum()), Convert.toVon(input, Convert.Unit.LAT).toBigInteger())
+                .getUnDelegateGasProvider(mDelegateDetail.getNodeId(), new BigInteger(list.get(0).getStakingBlockNum()), Convert.toVon(input, Convert.Unit.LAT).toBigInteger())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<GasProvider>() {

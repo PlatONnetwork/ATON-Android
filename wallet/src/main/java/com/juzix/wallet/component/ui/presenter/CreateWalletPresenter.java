@@ -3,6 +3,7 @@ package com.juzix.wallet.component.ui.presenter;
 import android.annotation.SuppressLint;
 import android.text.TextUtils;
 
+import com.juzhen.framework.util.LogUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomThrowable;
 import com.juzix.wallet.app.LoadingTransformer;
@@ -65,6 +66,7 @@ public class CreateWalletPresenter extends BasePresenter<CreateWalletContract.Vi
                 .subscribe(new Consumer<Wallet>() {
                     @Override
                     public void accept(Wallet walletEntity) throws Exception {
+                        LogUtils.e("accept " + System.currentTimeMillis() + " " + Thread.currentThread().getName());
                         if (isViewAttached()) {
                             BackupWalletActivity.actionStart(currentActivity(), walletEntity);
                             currentActivity().finish();
