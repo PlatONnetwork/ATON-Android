@@ -1,5 +1,6 @@
 package com.juzix.wallet.engine;
 
+import com.juzhen.framework.util.LogUtils;
 import com.juzix.wallet.App;
 import com.juzix.wallet.R;
 import com.juzix.wallet.entity.Wallet;
@@ -54,8 +55,8 @@ class WalletServiceImpl implements WalletService {
                     .build();
         } catch (Exception exp) {
             exp.printStackTrace();
-            return null;
         }
+        return null;
     }
 
     @Override
@@ -75,8 +76,9 @@ class WalletServiceImpl implements WalletService {
             ECKeyPair ecKeyPair = ECKeyPair.create(child.getPrivKeyBytes());
             return generateWallet(ecKeyPair, name, password);
         } catch (Exception exp) {
-            return null;
+            exp.printStackTrace();
         }
+        return null;
     }
 
     @Override
