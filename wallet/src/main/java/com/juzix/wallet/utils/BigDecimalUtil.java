@@ -267,8 +267,7 @@ public class BigDecimalUtil {
         float result = 0f;
         try {
             BigDecimal b = new BigDecimal(v);
-            b.setScale(2,RoundingMode.HALF_UP);
-            result = b.floatValue();
+            result = b.setScale(2, RoundingMode.HALF_UP).floatValue();
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
