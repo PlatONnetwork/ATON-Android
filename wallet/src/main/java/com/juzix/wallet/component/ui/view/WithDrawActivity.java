@@ -48,7 +48,6 @@ import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
 import com.juzix.wallet.utils.ToastUtil;
 import com.juzix.wallet.utils.UMEventUtil;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -100,7 +99,6 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     private ListView mPopListview;
     private List<WithDrawType> list = new ArrayList<>();
     private WithDrawPopWindowAdapter mPopWindowAdapter;
-    private long transactionTime;
     private String gasPrice;
     private String withdraw_fee;//手续费
     private String free_account;//自由金额
@@ -163,9 +161,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
 
                         if (TextUtils.equals(delegateType.getText().toString(), getString(R.string.withdraw_type_delegated))) {
                             chooseType = WithDrawPopWindowAdapter.TAG_DELEGATED; //已委托
-                        } else if (TextUtils.equals(delegateType.getText().toString(), getString(R.string.withdraw_type_unlocked))) {
-                            chooseType = WithDrawPopWindowAdapter.TAG_UNLOCKED; //未锁定
-                        } else {
+                        }else {
                             chooseType = WithDrawPopWindowAdapter.TAG_RELEASED; //已解除
                         }
 
@@ -173,7 +169,6 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
                             ToastUtil.showLongToast(getContext(), R.string.withdraw_less_than_fee);
                             return;
                         }
-                        transactionTime = System.currentTimeMillis();
                         mPresenter.submitWithDraw(chooseType);
                     }
                 });
@@ -222,11 +217,6 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
 
         if (TextUtils.equals(item.getKey(), WithDrawPopWindowAdapter.TAG_DELEGATED)) {
             delegateType.setText(getString(R.string.withdraw_type_delegated));
-            withdrawAmount.setFocusableInTouchMode(true);
-            withdrawAmount.setFocusable(true);
-            withdrawAmount.setText("");
-        } else if (TextUtils.equals(item.getKey(), WithDrawPopWindowAdapter.TAG_UNLOCKED)) {
-            delegateType.setText(getString(R.string.withdraw_type_unlocked));
             withdrawAmount.setFocusableInTouchMode(true);
             withdrawAmount.setFocusable(true);
             withdrawAmount.setText("");
@@ -310,11 +300,6 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     }
 
     @Override
-    public void showAmountError(String errMsg) {
-
-    }
-
-    @Override
     public void showTips(boolean isShow) {
         tips.setText(getString(R.string.delegate_amount_tips));
         tips.setVisibility(isShow ? View.VISIBLE : View.INVISIBLE);
@@ -329,12 +314,11 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     }
 
     @Override
-    public void showBalanceType(double delegated, double unlocked, double released) {
+    public void showBalanceType(double delegated, double released) {
         delegateType.setText(getString(R.string.withdraw_type_delegated));
         delegateAmount.setText(StringUtil.formatBalance(delegated, false));
         list.clear();
         list.add(new WithDrawType(WithDrawPopWindowAdapter.TAG_DELEGATED, StringUtil.formatBalance(delegated, false)));
-        list.add(new WithDrawType(WithDrawPopWindowAdapter.TAG_UNLOCKED, StringUtil.formatBalance(unlocked, false)));
         list.add(new WithDrawType(WithDrawPopWindowAdapter.TAG_RELEASED, StringUtil.formatBalance(released, false)));
         mPopWindowAdapter.notifyDataSetChanged();
     }
@@ -367,12 +351,6 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     public void showWithDrawGasPrice(String gas) {
         fee.setText(string(R.string.amount_with_unit, gas));
         withdraw_fee = gas;
-    }
-
-    //获取手续费
-    @Override
-    public String getGas() {
-        return fee.getText().toString();
     }
 
     @Override

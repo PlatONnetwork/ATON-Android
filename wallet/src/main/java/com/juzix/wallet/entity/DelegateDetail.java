@@ -14,10 +14,10 @@ public class DelegateDetail implements Parcelable {
      */
     private String nodeId;
 
-    /**
-     * 最新的质押交易块高
-     */
-    private String stakingBlockNum;
+//    /**
+//     * 最新的质押交易块高
+//     */
+//    private String stakingBlockNum;
     /**
      * 节点名称
      */
@@ -39,19 +39,19 @@ public class DelegateDetail implements Parcelable {
      */
     private String nodeStatus;
 
-    /**
-     * 赎回中委托
-     */
-    private String redeem;
-    /**
-     * 已锁定委托
-     */
-    private String locked;
-
-    /**
-     * 未锁定委托
-     */
-    private String unLocked;
+//    /**
+//     * 赎回中委托
+//     */
+//    private String redeem;
+//    /**
+//     * 已锁定委托
+//     */
+//    private String locked;
+//
+//    /**
+//     * 未锁定委托
+//     */
+//    private String unLocked;
 
     /**
      * 已解除委托
@@ -60,16 +60,21 @@ public class DelegateDetail implements Parcelable {
 
     private String walletAddress;
 
-    /**
-     * 最新委托交易块高 后面新加的
-     */
-    private String delegationBlockNum;
+//    /**
+//     * 最新委托交易块高 后面新加的
+//     */
+//    private String delegationBlockNum;
 
     /**
      *是否为链初始化时内置的候选人
      * 0.7.3 新增字段
      */
     private boolean isInit;
+
+    /**
+     * 已委托  单位von
+     */
+    private String delegated;
 
     public DelegateDetail() {
 
@@ -115,29 +120,37 @@ public class DelegateDetail implements Parcelable {
         this.nodeStatus = nodeStatus;
     }
 
-    public String getRedeem() {
-        return redeem;
+    public String getDelegated() {
+        return delegated;
     }
 
-    public void setRedeem(String redeem) {
-        this.redeem = redeem;
+    public void setDelegated(String delegated) {
+        this.delegated = delegated;
     }
 
-    public String getLocked() {
-        return locked;
-    }
-
-    public void setLocked(String locked) {
-        this.locked = locked;
-    }
-
-    public String getUnLocked() {
-        return unLocked;
-    }
-
-    public void setUnLocked(String unLocked) {
-        this.unLocked = unLocked;
-    }
+    //    public String getRedeem() {
+//        return redeem;
+//    }
+//
+//    public void setRedeem(String redeem) {
+//        this.redeem = redeem;
+//    }
+//
+//    public String getLocked() {
+//        return locked;
+//    }
+//
+//    public void setLocked(String locked) {
+//        this.locked = locked;
+//    }
+//
+//    public String getUnLocked() {
+//        return unLocked;
+//    }
+//
+//    public void setUnLocked(String unLocked) {
+//        this.unLocked = unLocked;
+//    }
 
     public String getReleased() {
         return released;
@@ -147,13 +160,13 @@ public class DelegateDetail implements Parcelable {
         this.released = released;
     }
 
-    public String getStakingBlockNum() {
-        return stakingBlockNum;
-    }
-
-    public void setStakingBlockNum(String stakingBlockNum) {
-        this.stakingBlockNum = stakingBlockNum;
-    }
+//    public String getStakingBlockNum() {
+//        return stakingBlockNum;
+//    }
+//
+//    public void setStakingBlockNum(String stakingBlockNum) {
+//        this.stakingBlockNum = stakingBlockNum;
+//    }
 
     public String getWalletAddress() {
         return walletAddress;
@@ -163,13 +176,13 @@ public class DelegateDetail implements Parcelable {
         this.walletAddress = walletAddress;
     }
 
-    public String getDelegationBlockNum() {
-        return delegationBlockNum;
-    }
-
-    public void setDelegationBlockNum(String delegationBlockNum) {
-        this.delegationBlockNum = delegationBlockNum;
-    }
+//    public String getDelegationBlockNum() {
+//        return delegationBlockNum;
+//    }
+//
+//    public void setDelegationBlockNum(String delegationBlockNum) {
+//        this.delegationBlockNum = delegationBlockNum;
+//    }
 
     public boolean isInit() {
         return isInit;
@@ -185,13 +198,14 @@ public class DelegateDetail implements Parcelable {
         website = in.readString();
         nodeStatus = in.readString();
         url = in.readString();
-        redeem = in.readString();
-        locked = in.readString();
+//        redeem = in.readString();
+//        locked = in.readString();
         released = in.readString();
-        unLocked = in.readString();
-        stakingBlockNum = in.readString();
+//        unLocked = in.readString();
+//        stakingBlockNum = in.readString();
         walletAddress = in.readString();
-        delegationBlockNum = in.readString();
+//        delegationBlockNum = in.readString();
+        delegated =in.readString();
     }
 
     @Override
@@ -201,13 +215,14 @@ public class DelegateDetail implements Parcelable {
         dest.writeString(nodeStatus);
         dest.writeString(website);
         dest.writeString(url);
-        dest.writeString(redeem);
-        dest.writeString(locked);
+//        dest.writeString(redeem);
+//        dest.writeString(locked);
         dest.writeString(released);
-        dest.writeString(unLocked);
-        dest.writeString(stakingBlockNum);
+//        dest.writeString(unLocked);
+//        dest.writeString(stakingBlockNum);
         dest.writeString(walletAddress);
-        dest.writeString(delegationBlockNum);
+        dest.writeString(delegated);
+//        dest.writeString(delegationBlockNum);
     }
 
     @Override
@@ -227,24 +242,24 @@ public class DelegateDetail implements Parcelable {
         }
     };
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        DelegateDetail that = (DelegateDetail) o;
-        return this.stakingBlockNum == that.stakingBlockNum;
-    }
-
-    @Override
-    public int hashCode() {
-        return TextUtils.isEmpty(stakingBlockNum) ? 0 : stakingBlockNum.hashCode();
-    }
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        DelegateDetail that = (DelegateDetail) o;
+//        return this.stakingBlockNum == that.stakingBlockNum;
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return TextUtils.isEmpty(stakingBlockNum) ? 0 : stakingBlockNum.hashCode();
+//    }
 
     public DelegateDetailEntity toDelegateDetailEntity(){
         DelegateDetailEntity entity = new DelegateDetailEntity();
         entity.setAddress(walletAddress);
         entity.setNodeId(nodeId);
-        entity.setDelegationBlockNum(delegationBlockNum);
+//        entity.setDelegationBlockNum(delegationBlockNum);
         return entity;
     }
 

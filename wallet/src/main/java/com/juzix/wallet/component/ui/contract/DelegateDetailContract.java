@@ -25,8 +25,5 @@ public class DelegateDetailContract {
 
         void loadDelegateDetailData();
 
-        void moveOut(DelegateDetail detail);
-
-        DelegateInfo getDelegateInfo();
     }
 }

@@ -112,22 +112,18 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     }
 
     @Override
-    public String checkDelegateAmount(String delegateAmount) {
+    public void checkDelegateAmount(String delegateAmount) {
         double amount = NumberParserUtils.parseDouble(delegateAmount);
         //检查委托的数量
-        String errMsg = null;
         if (TextUtils.isEmpty(delegateAmount)) {
-            errMsg = string(R.string.transfer_amount_cannot_be_empty);
+           getView().showTips(false);
         } else if (amount < 10) {
             //按钮不可点击,并且下方提示
             getView().showTips(true);
-            updateDelegateButtonState();
         } else {
             getView().showTips(false);
-            updateDelegateButtonState();
         }
-        return delegateAmount;
-
+        updateDelegateButtonState();
     }
 
     @Override

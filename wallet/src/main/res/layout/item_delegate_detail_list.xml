@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center">
@@ -95,38 +96,38 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginTop="14dp"
-                        android:text="@string/node_locked_delegate"
+                        android:text="@string/detail_delegated"
                         android:textColor="@color/color_898c9e"
                         android:textSize="12sp" />
 
                     <TextView
-                        android:id="@+id/tv_node_locked_delegate"
+                        android:id="@+id/tv_node_delegated"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginTop="9dp"
-                        android:text="1555.003"
                         android:textColor="@color/color_000000"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:text="151561.45847"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginTop="15dp"
-                        android:text="@string/node_released_delegate"
-                        android:textColor="@color/color_898c9e"
-                        android:textSize="12sp" />
+                    <!--<TextView-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_centerVertical="true"-->
+                        <!--android:layout_marginTop="15dp"-->
+                        <!--android:text="@string/node_released_delegate"-->
+                        <!--android:textColor="@color/color_898c9e"-->
+                        <!--android:textSize="12sp" />-->
 
-                    <TextView
-                        android:id="@+id/tv_node_released_delegate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginTop="9dp"
-                        android:text="1555.003"
-                        android:textColor="@color/color_000000"
-                        android:textSize="14sp" />
+                    <!--<TextView-->
+                        <!--android:id="@+id/tv_node_released_delegate"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_centerVertical="true"-->
+                        <!--android:layout_marginTop="9dp"-->
+                        <!--android:text="1555.003"-->
+                        <!--android:textColor="@color/color_000000"-->
+                        <!--android:textSize="14sp" />-->
 
                 </LinearLayout>
 
@@ -142,38 +143,38 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginTop="14dp"
-                        android:text="@string/node_unlocked_delegate"
+                        android:text="@string/detail_wait_undelegate"
                         android:textColor="@color/color_898c9e"
                         android:textSize="12sp" />
 
                     <TextView
-                        android:id="@+id/tv_node_unlocked_delegate"
+                        android:id="@+id/tv_node_withdraw_delegate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginTop="9dp"
-                        android:text="1555.003"
                         android:textColor="@color/color_000000"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:text="151561.45847"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginTop="15dp"
-                        android:text="@string/node_undelegating"
-                        android:textColor="@color/color_898c9e"
-                        android:textSize="12sp" />
+                    <!--<TextView-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_centerVertical="true"-->
+                        <!--android:layout_marginTop="15dp"-->
+                        <!--android:text="@string/node_undelegating"-->
+                        <!--android:textColor="@color/color_898c9e"-->
+                        <!--android:textSize="12sp" />-->
 
-                    <TextView
-                        android:id="@+id/tv_node_undelegating"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginTop="9dp"
-                        android:text="1555.003"
-                        android:textColor="@color/color_000000"
-                        android:textSize="14sp" />
+                    <!--<TextView-->
+                        <!--android:id="@+id/tv_node_undelegating"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_centerVertical="true"-->
+                        <!--android:layout_marginTop="9dp"-->
+                        <!--android:text="1555.003"-->
+                        <!--android:textColor="@color/color_000000"-->
+                        <!--android:textSize="14sp" />-->
 
                 </LinearLayout>
             </LinearLayout>

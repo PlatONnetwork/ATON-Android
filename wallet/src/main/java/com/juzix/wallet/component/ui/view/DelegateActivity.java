@@ -312,16 +312,6 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         walletIcon.setImageResource(RUtils.drawable(individualWalletEntity.getAvatar()));
     }
 
-    /**
-     * 获取所有钱包余额列表
-     *
-     * @param accountBalances
-     */
-    @Override
-    public void getWalletBalanceList(List<AccountBalance> accountBalances) {
-    }
-
-
     private void checkIsClick(DelegateHandle bean) {
         if (TextUtils.equals(bean.getLock(), "0")) {
             //锁仓金额为0，不可点击
@@ -469,11 +459,6 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
 
     @Override
     public String getFeeAmount() {
-        return fee.getText().toString();
-    }
-
-    @Override
-    public String getGas() {
         return fee.getText().toString();
     }
 

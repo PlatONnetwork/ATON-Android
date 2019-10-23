@@ -67,7 +67,6 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
     private DelegateDetailAdapter mDetailAdapter;
     private LinearLayoutManager linearLayoutManager;
 
-
     @Override
     protected DelegateDetailPresenter createPresenter() {
         return new DelegateDetailPresenter(this);
@@ -107,12 +106,6 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
             }
 
             @Override
-            public void onMoveOutClick(DelegateDetail detail) {
-                //操作移除列表
-                mPresenter.moveOut(detail);
-            }
-
-            @Override
             public void onLinkClick(String webSiteUrl) {
                 CommonHybridActivity.actionStart(getContext(), webSiteUrl, WebType.WEB_TYPE_NODE_DETAIL);
             }
@@ -135,8 +128,8 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
             public void onClick(View v) {
                 //弹出tips
 //               new DelegateTipsDialog().show(getSupportFragmentManager(),"delegateTips");
-                DelegateTipsDialog.createWithTitleAndContentDialog(string(R.string.locked_delegate), string(R.string.locked_delegate_des), string(R.string.unlocked_delegate),
-                        string(R.string.unlocked_delegate_des), string(R.string.released_delegate), string(R.string.released_delegate_des))
+                DelegateTipsDialog.createWithTitleAndContentDialog(string(R.string.detail_wait_undelegate), string(R.string.detail_tips_content),
+                        "", "", "", "")
                         .show(getSupportFragmentManager(), "delegateTips");
             }
         });

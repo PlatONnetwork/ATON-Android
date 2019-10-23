@@ -535,9 +535,9 @@
     <string name="expected_annualized_rate_des">The expected annualized rate of the current validator, the Delegation rewards is distributed by the validator</string>
     <string name="withdraw_tip">Input Amount (not less than 10 LAT)</string>
     <string name="delegate_node">Note</string>
-    <string name="delegate_node_des">Un-delegation (i.e. withdrawal) LAT, the unlocked \ndelegate LAT and released delegate LAT can\n immediately returns to the account. However,the\n locked delegate LAT takes 6.1 hours to unlock and\n return to the account.\nThe released delegate has to be withdrawal all at once;\nIf the remaining delegations has been less than\n 10LAT, it will be automatically returned all.</string>
+    <string name="delegate_node_des">The transaction has been successfully submitted and the delegated LAT can return to your account immediately.\nThe released delegate has to be withdrawal all at once;\nIf the remaining delegations has been less than 10LAT, it will be automatically returned all.</string>
     <string name="delegations_title">Delegations</string>
-    <string name="delegations_title_explain">Delegated LAT can be un-delegated (i.e withdrawal)\n at any time.Locked in about 6.1 hours.Only locked\n delegates are rewarded.Un-delegation takes\n immediate effect.but,the delegated LAT takes 6.1\n hours to unlock and return to the account.</string>
+    <string name="delegations_title_explain">The user keeps the delegate\'s Token ownership forever, and the user can withdraw the delegated token at any time.\nThe Validator\'s operator address and reward receiving address are not allowed for delegation</string>
     <string name="rewards_title">Rewards</string>
     <string name="rewards_title_explain">Delegation rewards come from validation block\n reward,staking reward and transaction fees.Reward\n assigned by validator.For details on how to assign,\n please see the official website description of each validator.</string>
     <string name="risk_title">Risk</string>
@@ -585,12 +585,12 @@
     <string name="parameter_proposal">Parameter</string>
     <string name="cancel_proposal">Cancel</string>
 
-    <string name="validators_details_tips">The Validator is provided by the PlatON Foundation, does not accept Delegation</string>
+    <string name="validators_details_tips">Foundation-funded nodes do not accept delegations</string>
 
     <!--赎回类型-->
     <string name="withdraw_type_delegated">Delegated</string>
     <string name="withdraw_type_unlocked">Unlocked delegate</string>
-    <string name="withdraw_type_released">Released delegate</string>
+    <string name="withdraw_type_released">Invalid delegations</string>
 
     <string name="vote_yes">VoteYes</string>
     <string name="vote_no">VoteNo</string>
@@ -658,5 +658,12 @@
     <string name="tips_not_balance">Wallet balance is 0,unable to delegate</string>
     <string name="action_copy_link">Copy Link</string>
     <string name="action_open_browser">Open in browser</string>
+
+    <!--0.7.3.1-->
+    <string name="available_money">Available balance</string>
+    <string name="total_delegated">Delegated</string>
+    <string name="detail_delegated">Delegated</string>
+    <string name="detail_wait_undelegate">Invalid delegations</string>
+    <string name="detail_tips_content">Validator exits, the delegations is automatically released,and need user to withdraw the delegations</string>
 </resources>
 
