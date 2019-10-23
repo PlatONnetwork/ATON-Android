@@ -7,7 +7,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,12 +23,13 @@ import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.adapter.MyDelegateAdapter;
 import com.juzix.wallet.component.ui.base.MVPBaseFragment;
 import com.juzix.wallet.component.ui.contract.MyDelegateContract;
+import com.juzix.wallet.component.ui.dialog.BaseDialogFragment;
 import com.juzix.wallet.component.ui.dialog.CommonGuideDialogFragment;
 import com.juzix.wallet.component.ui.presenter.MyDelegatePresenter;
 import com.juzix.wallet.component.widget.CustomRefreshHeader;
 import com.juzix.wallet.config.AppSettings;
-import com.juzix.wallet.entity.DelegateDetail;
 import com.juzix.wallet.entity.DelegateInfo;
+import com.juzix.wallet.entity.GuideType;
 import com.juzix.wallet.entity.WebType;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
@@ -194,16 +194,13 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
     }
 
     private void initGuide() {
-        boolean isShowMyDelegate = AppSettings.getInstance().getMyDelegateBoolean();
-        boolean isEnglish = Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage()) == true ? false : true;
-        if (!isShowMyDelegate) {
-            CommonGuideDialogFragment.newInstance(CommonGuideDialogFragment.MY_DELEGATE, isEnglish)
-                    .setKnowListener(new CommonGuideDialogFragment.knowListener() {
-                        @Override
-                        public void know() {
-                            AppSettings.getInstance().setMyDelegateBoolean(true);
-                        }
-                    }).show(getChildFragmentManager(), "MyDelegate");
+        if (!AppSettings.getInstance().getMyDelegateBoolean()) {
+            CommonGuideDialogFragment.newInstance(GuideType.DELEGATE_LIST).setOnDissmissListener(new BaseDialogFragment.OnDissmissListener() {
+                @Override
+                public void onDismiss() {
+                    AppSettings.getInstance().setMyDelegateBoolean(true);
+                }
+            }).show(getActivity().getSupportFragmentManager(), "showGuideDialogFragment");
         }
     }
 
@@ -309,17 +306,14 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void showMydelegateGuide(Event.MyDelegateGuide event) {
-        boolean isShowMyDelegate = AppSettings.getInstance().getMyDelegateBoolean();
-        boolean isEnglish = Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage()) == true ? false : true;
-        if (!isShowMyDelegate) {
-            CommonGuideDialogFragment.newInstance(CommonGuideDialogFragment.MY_DELEGATE, isEnglish)
-                    .setKnowListener(new CommonGuideDialogFragment.knowListener() {
-                        @Override
-                        public void know() {
-                            AppSettings.getInstance().setMyDelegateBoolean(true);
-                        }
-                    }).show(getChildFragmentManager(), "MyDelegate");
+    public void onShowMyDelegateGuideEvent(Event.MyDelegateGuide event) {
+        if (!AppSettings.getInstance().getMyDelegateBoolean()) {
+            CommonGuideDialogFragment.newInstance(GuideType.DELEGATE_LIST).setOnDissmissListener(new BaseDialogFragment.OnDissmissListener() {
+                @Override
+                public void onDismiss() {
+                    AppSettings.getInstance().setMyDelegateBoolean(true);
+                }
+            }).show(getActivity().getSupportFragmentManager(), "showGuideDialogFragment");
         }
     }
 }

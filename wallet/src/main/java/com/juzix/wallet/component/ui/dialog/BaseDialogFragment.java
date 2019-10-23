@@ -70,7 +70,7 @@ public abstract class BaseDialogFragment extends DialogFragment implements Lifec
 
     private WeakHandler weakHandler;
 
-    private OnDissmissListener dissmissListener;
+    protected OnDissmissListener dissmissListener;
 
     public void setGravity(int gravity) {
         this.gravity = gravity;

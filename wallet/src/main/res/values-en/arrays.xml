@@ -1,31 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string-array name="shared_owners">
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
-        <item>5</item>
-        <item>6</item>
-        <item>7</item>
-        <item>8</item>
-        <item>9</item>
-        <item>10</item>
-    </string-array>
-
-    <string-array name="required_signatures">
-        <!--<item>1</item>-->
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
-        <item>5</item>
-        <item>6</item>
-        <item>7</item>
-        <item>8</item>
-        <item>9</item>
-        <item>10</item>
-    </string-array>
-
     <string-array name="wallet_avatar">
         <item>avatar_1</item>
         <item>avatar_2</item>
@@ -87,5 +62,15 @@
         <item>ic_node_41</item>
         <item>ic_node_42</item>
     </string-array>
+
+    <array name="guide_image">
+        <item>@drawable/icon_import_wallet_en</item>
+        <item>@drawable/icon_transaction_list_en</item>
+        <item>@drawable/icon_delegate_list_en</item>
+        <item>@drawable/icon_delegate_validators_en</item>
+        <item>@drawable/icon_delegate_node_detail_en</item>
+        <item>@drawable/icon_delegate_en</item>
+        <item>@drawable/icon_withdraw_delegate_en</item>
+    </array>
 
 </resources>

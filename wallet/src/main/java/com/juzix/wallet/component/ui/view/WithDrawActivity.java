@@ -22,13 +22,13 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzhen.framework.util.RUtils;
-import com.juzix.wallet.App;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.adapter.WithDrawPopWindowAdapter;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.WithDrawContract;
+import com.juzix.wallet.component.ui.dialog.BaseDialogFragment;
 import com.juzix.wallet.component.ui.dialog.CommonGuideDialogFragment;
 import com.juzix.wallet.component.ui.dialog.TransactionSignatureDialogFragment;
 import com.juzix.wallet.component.ui.presenter.WithDrawPresenter;
@@ -37,26 +37,22 @@ import com.juzix.wallet.component.widget.PointLengthFilter;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.entity.DelegateDetail;
-import com.juzix.wallet.entity.DelegateInfo;
+import com.juzix.wallet.entity.GuideType;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.entity.WithDrawType;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.GlideUtils;
-import com.juzix.wallet.utils.LanguageUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
 import com.juzix.wallet.utils.ToastUtil;
 import com.juzix.wallet.utils.UMEventUtil;
 
-import org.web3j.utils.Convert;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -186,16 +182,13 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     }
 
     private void initGuide() {
-        boolean isShowWithdrawOperation = AppSettings.getInstance().getWithdrawOperation();
-        boolean isEnglish = Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage()) == true ? false : true;
-        if (!isShowWithdrawOperation) {
-            CommonGuideDialogFragment.newInstance(CommonGuideDialogFragment.WITHDRAW_OPERATION, isEnglish)
-                    .setKnowListener(new CommonGuideDialogFragment.knowListener() {
-                        @Override
-                        public void know() {
-                            AppSettings.getInstance().setWithdrawOperation(true);
-                        }
-                    }).show(getSupportFragmentManager(), "withdrawOperation");
+        if (!AppSettings.getInstance().getWithdrawOperation()) {
+            CommonGuideDialogFragment.newInstance(GuideType.WITHDRAW_DELEGATE).setOnDissmissListener(new BaseDialogFragment.OnDissmissListener() {
+                @Override
+                public void onDismiss() {
+                    AppSettings.getInstance().setWithdrawOperation(true);
+                }
+            }).show(getSupportFragmentManager(), "showGuideDialogFragment");
         }
 
     }

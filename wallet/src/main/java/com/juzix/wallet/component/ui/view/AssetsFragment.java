@@ -27,11 +27,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.juzhen.framework.app.log.Log;
-import com.juzhen.framework.network.NetState;
 import com.juzhen.framework.util.LogUtils;
 import com.juzhen.framework.util.RUtils;
-import com.juzix.wallet.App;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
@@ -39,13 +36,13 @@ import com.juzix.wallet.component.adapter.RecycleViewProxyAdapter;
 import com.juzix.wallet.component.adapter.TabAdapter;
 import com.juzix.wallet.component.adapter.WalletHorizontalRecycleViewAdapter;
 import com.juzix.wallet.component.ui.base.BaseFragment;
-import com.juzix.wallet.component.ui.base.BaseViewPageFragment;
 import com.juzix.wallet.component.ui.base.MVPBaseFragment;
 import com.juzix.wallet.component.ui.contract.AssetsContract;
 import com.juzix.wallet.component.ui.dialog.AssetsMoreDialogFragment;
 
-import com.juzix.wallet.component.ui.dialog.CommonGuideDialogFragment;
+import com.juzix.wallet.component.ui.dialog.BaseDialogFragment;
 
+import com.juzix.wallet.component.ui.dialog.CommonGuideDialogFragment;
 import com.juzix.wallet.component.ui.dialog.TransactionSignatureDialogFragment;
 
 import com.juzix.wallet.component.ui.presenter.AssetsPresenter;
@@ -56,19 +53,17 @@ import com.juzix.wallet.component.widget.ViewPagerSlide;
 import com.juzix.wallet.component.widget.table.AssetsTabLayout;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.engine.WalletManager;
+import com.juzix.wallet.entity.GuideType;
 import com.juzix.wallet.entity.QrCodeType;
 import com.juzix.wallet.entity.TransactionAuthorizationData;
 import com.juzix.wallet.entity.TransactionSignatureData;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
-import com.juzix.wallet.netlistener.NetStateChangeReceiver;
 import com.juzix.wallet.netlistener.NetworkType;
 import com.juzix.wallet.netlistener.NetworkUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.JSONUtil;
-
-import com.juzix.wallet.utils.LanguageUtil;
 
 import com.juzix.wallet.utils.QrCodeParser;
 
@@ -83,7 +78,6 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -182,15 +176,13 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     }
 
     private void initGuide() {
-        boolean isShowRecord = AppSettings.getInstance().getRecordBoolean();
-        boolean isEnglish = Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage()) == true ? false : true;
-        if (!isShowRecord) {
-            CommonGuideDialogFragment.newInstance(CommonGuideDialogFragment.RECORD, isEnglish).setKnowListener(new CommonGuideDialogFragment.knowListener() {
+        if (!AppSettings.getInstance().getRecordBoolean()) {
+            CommonGuideDialogFragment.newInstance(GuideType.TRANSACTION_LIST).setOnDissmissListener(new BaseDialogFragment.OnDissmissListener() {
                 @Override
-                public void know() {
+                public void onDismiss() {
                     AppSettings.getInstance().setRecordBoolean(true);
                 }
-            }).show(getChildFragmentManager(), "transactionRecord");
+            }).show(getActivity().getSupportFragmentManager(), "showGuideDialogFragment");
         }
 
     }
