@@ -28,7 +28,7 @@
         <item name="colorPrimary">@color/color_00000000</item>
         <item name="colorPrimaryDark">@color/color_00000000</item>
         <item name="colorAccent">@color/color_00000000</item>
-        <item name="android:windowBackground">@color/color_88000000</item>
+        <item name="android:windowBackground">@color/color_404040</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">false</item>

@@ -153,7 +153,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                 .subscribe(new Consumer<List<Transaction>>() {
                     @Override
                     public void accept(List<Transaction> transactionList) throws Exception {
-                        if (isViewAttached() && !transactionList.isEmpty()) {
+                        if (isViewAttached()) {
                             //先进行排序
                             List<Transaction> transactions = mTransactionMap.get(mWalletAddress);
 

@@ -10,14 +10,14 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.juzhen.framework.util.RUtils;
-import com.juzix.wallet.App;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.adapter.DelegateDetailAdapter;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.DelegateDetailContract;
-import com.juzix.wallet.component.ui.dialog.CommonGuideDialogFragment;
+import com.juzix.wallet.component.ui.dialog.BaseDialogFragment;
 import com.juzix.wallet.component.ui.dialog.DelegateTipsDialog;
+import com.juzix.wallet.component.ui.dialog.CommonGuideDialogFragment;
 import com.juzix.wallet.component.ui.presenter.DelegateDetailPresenter;
 import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.component.widget.CommonTitleBar;
@@ -25,11 +25,11 @@ import com.juzix.wallet.component.widget.CustomRefreshHeader;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.entity.DelegateDetail;
 import com.juzix.wallet.entity.DelegateInfo;
+import com.juzix.wallet.entity.GuideType;
 import com.juzix.wallet.entity.WebType;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.AddressFormatUtil;
-import com.juzix.wallet.utils.LanguageUtil;
 import com.juzix.wallet.utils.ToastUtil;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -39,7 +39,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -152,17 +151,13 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
     }
 
     private void initGuide() {
-        boolean isShowDelegateDetail = AppSettings.getInstance().getDelegateDetailBoolean();
-        boolean isEnglish = Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage()) == true ? false : true;
-        if (!isShowDelegateDetail) {
-            CommonGuideDialogFragment.newInstance(CommonGuideDialogFragment.DELEGATE_DETAIL, isEnglish)
-                    .setKnowListener(new CommonGuideDialogFragment.knowListener() {
-                        @Override
-                        public void know() {
-                            AppSettings.getInstance().setDelegateDetailBoolean(true);
-
-                        }
-                    }).show(getSupportFragmentManager(), "delegateDetail");
+        if (!AppSettings.getInstance().getDelegateDetailBoolean()) {
+            CommonGuideDialogFragment.newInstance(GuideType.DELEGATE_NODE_DETAIL).setOnDissmissListener(new BaseDialogFragment.OnDissmissListener() {
+                @Override
+                public void onDismiss() {
+                    AppSettings.getInstance().setDelegateDetailBoolean(true);
+                }
+            }).show(getSupportFragmentManager(), "showGuideDialogFragment");
         }
     }
 
