@@ -108,10 +108,10 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     LinearLayout llAssetsTitle;
     @BindView(R.id.tv_total_assets_title)
     TextView tvTotalAssetsUnit;
-    @BindView(R.id.iv_add)
-    ImageView ivAdd;
-    @BindView(R.id.iv_scan)
-    ImageView ivScan;
+    @BindView(R.id.layout_add)
+    LinearLayout addLayout;
+    @BindView(R.id.layout_scan)
+    LinearLayout scanLayout;
     @BindView(R.id.tv_total_assets_amount)
     TextView tvTotalAssetsAmount;
     @BindView(R.id.stb_bar)
@@ -399,10 +399,10 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         }
     }
 
-    @OnClick({R.id.iv_scan, R.id.tv_total_assets_title, R.id.tv_backup, R.id.iv_add, R.id.tv_restricted_amount, R.id.rl_wallet_detail})
+    @OnClick({R.id.layout_scan, R.id.tv_total_assets_title, R.id.tv_backup, R.id.layout_add, R.id.tv_restricted_amount, R.id.rl_wallet_detail})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.iv_scan://扫一扫功能
+            case R.id.layout_scan://扫一扫功能
                 new RxPermissions(currentActivity())
                         .request(Manifest.permission.CAMERA)
                         .subscribe(new CustomObserver<Boolean>() {
@@ -414,7 +414,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
                             }
                         });
                 break;
-            case R.id.iv_add:
+            case R.id.layout_add:
                 AssetsMoreDialogFragment.newInstance().setOnAssetMoreClickListener(new AssetsMoreDialogFragment.OnAssetMoreClickListener() {
                     @Override
                     public void onCreateWalletClick() {
