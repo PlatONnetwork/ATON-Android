@@ -45,6 +45,13 @@
                 android:textColor="@color/color_000000"
                 android:textSize="14sp" />
 
+            <ImageView
+                android:id="@+id/iv_copy_wallet_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_copy"
+                android:layout_alignParentRight="true"/>
+
             <TextView
                 android:id="@+id/tv_address"
                 android:layout_width="match_parent"

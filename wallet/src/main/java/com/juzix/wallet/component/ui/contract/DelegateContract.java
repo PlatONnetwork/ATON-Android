@@ -32,7 +32,6 @@ public class DelegateContract {
 
         void showNodeInfo(DelegateDetail delegateDetail);
 
-        void getWalletBalanceList(List<AccountBalance> accountBalances);
 
         void showIsCanDelegate(DelegateHandle bean);
 
@@ -46,13 +45,6 @@ public class DelegateContract {
          * 显示手续费
          */
         void showGasPrice(String gas);
-
-        /**
-         * 拿到手续费
-         *
-         * @return
-         */
-        String getGas();
 
 
         void showGas(BigInteger integer);
@@ -75,7 +67,7 @@ public class DelegateContract {
 
         void updateDelegateButtonState();
 
-        String checkDelegateAmount(String delegateAmount);
+        void checkDelegateAmount(String delegateAmount);
 
         void submitDelegate(StakingAmountType type);
 

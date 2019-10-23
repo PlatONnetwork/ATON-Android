@@ -22,7 +22,6 @@ import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.DelegateDetail;
-import com.juzix.wallet.entity.DelegateInfo;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionAuthorizationBaseData;
 import com.juzix.wallet.entity.TransactionAuthorizationData;
@@ -38,8 +37,6 @@ import org.web3j.crypto.Credentials;
 import org.web3j.platon.ContractAddress;
 import org.web3j.platon.FunctionType;
 import org.web3j.platon.contracts.DelegateContract;
-import org.web3j.protocol.Web3j;
-import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.GasProvider;
 import org.web3j.utils.Convert;
@@ -52,10 +49,8 @@ import java.util.concurrent.Callable;
 
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
-import io.reactivex.Single;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -95,24 +90,19 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
 
 
     @Override
-    public boolean checkWithDrawAmount(String withdrawAmount) {
+    public void checkWithDrawAmount(String withdrawAmount) {
         //检查赎回的数量
         double amount = NumberParserUtils.parseDouble(withdrawAmount);
-        String errMsg = null;
         if (TextUtils.isEmpty(withdrawAmount)) {
-            errMsg = string(R.string.transfer_amount_cannot_be_empty);
+            getView().showTips(false);
         } else if (amount < 10) {
             //按钮不可点击,并且下方提示
             getView().showTips(true);
-            updateWithDrawButtonState();
         } else {
             getView().showTips(false);
-            updateWithDrawButtonState();
         }
 
-        getView().showAmountError(errMsg);
-
-        return TextUtils.isEmpty(errMsg);
+        updateWithDrawButtonState();
     }
 
     @Override
@@ -143,20 +133,17 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                             list.addAll(balanceList);
 
                             if (null != balanceList && balanceList.size() > 0) {
-                                double lockedSum = 0;
-                                double unLockedSum = 0;
-                                double releasedSum = 0;
-                                double delegatedSum = 0;
+                                double releasedSum = 0; //待赎回
+                                double delegatedSum = 0;//已委托
                                 for (WithDrawBalance balance : balanceList) {
-                                    lockedSum += NumberParserUtils.parseDouble(balance.getShowLocked());
-                                    unLockedSum += NumberParserUtils.parseDouble(balance.getShowUnLocked());
+                                    delegatedSum += NumberParserUtils.parseDouble(balance.getShowDelegated());
                                     releasedSum += NumberParserUtils.parseDouble(balance.getShowReleased());
                                 }
 
-                                delegatedSum = lockedSum + unLockedSum;
-                                getView().showBalanceType(delegatedSum, unLockedSum, releasedSum);
+                                getView().showBalanceType(delegatedSum, releasedSum);
 
                             }
+
                         }
 
                     }
@@ -262,9 +249,9 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
      */
     public void withDrawIterate(Credentials credentials, String nodeId, String nodeName, String withdrawAmount, String type) {
         String stakingBlockNum = "0";
-        if (TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_DELEGATED) || TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_UNLOCKED)) { //已委托 || 未锁定
+        if (TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_DELEGATED)) { //已委托
             for (int i = 0; i < list.size(); i++) {
-                if (!TextUtils.isEmpty(list.get(i).getLocked()) && !TextUtils.isEmpty(list.get(i).getUnLocked())) {
+                if (!TextUtils.isEmpty(list.get(i).getDelegated())) {
                     stakingBlockNum = list.get(i).getStakingBlockNum(); //这里其实就是第一条，因为最新的块高排在前面
                     withdraw(credentials, nodeId, nodeName, stakingBlockNum, withdrawAmount, type);
                     return;
@@ -297,7 +284,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                     public void accept(Transaction transaction) {
                         if (isViewAttached()) {
                             //操作成功，跳转到交易详情，当前页面关闭
-                            if (TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_DELEGATED) || TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_UNLOCKED)) {
+                            if (TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_DELEGATED)) {
                                 getView().withDrawSuccessInfo(transaction);
                             } else {
                                 if (tag == list.size()) {

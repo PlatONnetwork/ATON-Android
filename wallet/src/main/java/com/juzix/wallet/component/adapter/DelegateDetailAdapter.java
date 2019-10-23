@@ -66,84 +66,42 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
 
         TextView nodeState = holder.nodeState;
         showTextSpan(mContext, detail, nodeState);
-//        holder.nodeState.setText(detail.getNodeStatus());
+        changeTextViewColorByState(holder.nodeState, detail.getNodeStatus());
 
-        changeTextViewColorByState(holder.nodeState, detail.getNodeStatus()); //NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(value, "1E18")
-        holder.tv_node_locked_delegate.setText(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getLocked(), "1E18"))) == 0 ? "— —" : StringUtil.formatBalance(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getLocked(), "1E18"))));
-        holder.tv_node_unlocked_delegate.setText(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getUnLocked(), "1E18"))) == 0 ? "— —" : StringUtil.formatBalance(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getUnLocked(), "1E18"))));
-        holder.tv_node_released_delegate.setText(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getReleased(), "1E18"))) == 0 ? "— —" : StringUtil.formatBalance(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getReleased(), "1E18"))));
-        holder.tv_node_undelegating.setText(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getRedeem(), "1E18"))) == 0 ? "— —" : StringUtil.formatBalance(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getRedeem(), "1E18"))));
+        holder.tv_delegated.setText(TextUtils.equals(detail.getDelegated(), "0") ? "—" : StringUtil.formatBalance(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getDelegated(), "1E18"))));
+        holder.tv_withdraw.setText(TextUtils.equals(detail.getReleased(), "0") ? "—" : StringUtil.formatBalance(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getReleased(), "1E18"))));
+
 
         //委托按钮置灰不可点击( a.节点退出中或已退出 /b.节点状态为初始化验证人（收益地址为激励池地址的验证人）)
         if (TextUtils.equals(detail.getNodeStatus(), EXITED) || TextUtils.equals(detail.getNodeStatus(), EXITING) || detail.isInit()) {
             holder.ll_delegate.setBackgroundColor(ContextCompat.getColor(mContext, R.color.color_66DCDFE8));
         }
 
+        //只要待赎回的数量大于0，那么委托按钮置灰(即验证节点退出，委托解除，已解除委托不为0)
         if (NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getReleased(), "1E18"))) > 0) {
             holder.ll_delegate.setBackgroundColor(ContextCompat.getColor(mContext, R.color.color_66DCDFE8));
             holder.iv_detail_delegate.setImageResource(R.drawable.icon_delegate);
         }
 
-
-        if (NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getLocked(), "1E18"))) == 0
-                && NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getUnLocked(), "1E18"))) == 0
-                && NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getReleased(), "1E18"))) == 0
-                && NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getRedeem(), "1E18"))) == 0) {
-            holder.tv_show_delegate.setText(R.string.nav_delegate);
-            holder.tv_show_withdraw.setText(R.string.node_move_out);
-            holder.iv_detail_un_delegate.setImageResource(R.drawable.icon_detatil_move_out);
-
-        } else if (NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getLocked(), "1E18"))) > 0
-                || NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getUnLocked(), "1E18"))) > 0
-                || NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getReleased(), "1E18"))) > 0
-                || NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getRedeem(), "1E18"))) > 0) {
+        if (NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getReleased(), "1E18"))) > 0
+                || NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getDelegated(), "1E18"))) > 0) {
             //只要一个不为空
             holder.tv_show_delegate.setText(R.string.nav_delegate);
             holder.tv_show_withdraw.setText(R.string.node_withdraw_delegate);
         }
 
 
-        if (NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getLocked(), "1E18"))) == 0
-                && NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getUnLocked(), "1E18"))) == 0
-                && NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getReleased(), "1E18"))) == 0
-                && NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getRedeem(), "1E18"))) == 0) {
-            //操作移除列表
-            RxView.clicks(holder.ll_withdraw)
-                    .compose(RxUtils.getClickTransformer())
-                    .subscribe(new Consumer<Object>() {
-                        @Override
-                        public void accept(Object o) throws Exception {
-                            if (null != mOnDelegateClickListener) {
-                                removeData(position);
-                                mOnDelegateClickListener.onMoveOutClick(detail);
-                            }
-
+        RxView.clicks(holder.ll_withdraw)
+                .compose(RxUtils.getClickTransformer())
+                .subscribe(new Consumer<Object>() {
+                    @Override
+                    public void accept(Object o) throws Exception {
+                        if (null != mOnDelegateClickListener) {
+                            mOnDelegateClickListener.onWithDrawClick(detail);
                         }
-                    });
 
-        } else if (NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getLocked(), "1E18"))) == 0
-                && NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getUnLocked(), "1E18"))) == 0
-                && NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getReleased(), "1E18"))) == 0) {
-            //按钮置灰并不可点击
-            holder.ll_withdraw.setOnClickListener(null);
-            holder.ll_withdraw.setBackgroundColor(ContextCompat.getColor(mContext, R.color.color_66DCDFE8));
-            holder.iv_detail_un_delegate.setImageResource(R.drawable.icon_undelegate);
-
-        } else {
-            //操作赎回
-            RxView.clicks(holder.ll_withdraw)
-                    .compose(RxUtils.getClickTransformer())
-                    .subscribe(new Consumer<Object>() {
-                        @Override
-                        public void accept(Object o) throws Exception {
-                            if (null != mOnDelegateClickListener) {
-                                mOnDelegateClickListener.onWithDrawClick(detail);
-                            }
-
-                        }
-                    });
-        }
-
+                    }
+                });
 
         RxView.clicks(holder.ll_delegate)
                 .compose(RxUtils.getClickTransformer())
@@ -228,14 +186,13 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
         TextView nodeAddress;
         @BindView(R.id.tv_node_state)
         TextView nodeState;
-        @BindView(R.id.tv_node_locked_delegate)
-        TextView tv_node_locked_delegate;
-        @BindView(R.id.tv_node_unlocked_delegate)
-        TextView tv_node_unlocked_delegate;
-        @BindView(R.id.tv_node_released_delegate)
-        TextView tv_node_released_delegate;
-        @BindView(R.id.tv_node_undelegating)
-        TextView tv_node_undelegating;
+        //已委托
+        @BindView(R.id.tv_node_delegated)
+        TextView tv_delegated;
+        //待赎回委托
+        @BindView(R.id.tv_node_withdraw_delegate)
+        TextView tv_withdraw;
+
         @BindView(R.id.ll_delegate)
         LinearLayout ll_delegate;
         @BindView(R.id.ll_withdraw)
@@ -283,7 +240,7 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
 
         void onWithDrawClick(DelegateDetail delegateDetail);
 
-        void onMoveOutClick(DelegateDetail detail);
+//        void onMoveOutClick(DelegateDetail detail);
 
         void onLinkClick(String webSiteUrl);
     }

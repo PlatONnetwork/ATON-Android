@@ -26,13 +26,15 @@ public class WithDrawContract {
 
         void setWithDrawButtonState(boolean isClickable);
 
-        void showAmountError(String errMsg);
-
         void showTips(boolean isShow);
 
         void showNodeInfo(DelegateDetail delegateDetail);
 
-        void showBalanceType(double delegated, double unlocked, double released);
+        /**
+         * @param delegated 已委托
+         * @param released  待赎回
+         */
+        void showBalanceType(double delegated,double released);
 
         /**
          * @param transaction
@@ -45,11 +47,6 @@ public class WithDrawContract {
 
         void showWithDrawGasPrice(String gas);
 
-        //拿到手续费
-
-        String getGas();
-
-
         void showGas(BigInteger bigInteger);
 
     }
@@ -61,7 +58,7 @@ public class WithDrawContract {
 
         void updateWithDrawButtonState();
 
-        boolean checkWithDrawAmount(String withdrawAmount);
+        void  checkWithDrawAmount(String withdrawAmount);
 
         void getBalanceType();
 

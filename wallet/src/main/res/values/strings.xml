@@ -545,7 +545,7 @@
     <string name="expected_annualized_rate_des">当前节点的预计年化率，具体委托收益由节点分配</string>
     <string name="withdraw_tip">输入数量不能少于10LAT</string>
     <string name="delegate_node">说明</string>
-    <string name="delegate_node_des">赎回委托的Token，未锁定的委托和已解除委托可立即到账，\n已锁定的委托大约等待6.1小时才能到账;\n已解除委托必须一次性全部赎回；\n赎回数量扣除后，已委托剩余数量少于10LAT时，自动赎回全部。</string>
+    <string name="delegate_node_des">赎回交易提交成功,委托的Token可立即到账;\n待赎回委托必须一次性全部赎回;\n赎回数量扣除后,已委托剩余数量少于10LAT时,自动赎回全部</string>
     <string name="delegations_title">委托</string>
     <string name="delegations_title_explain">委托的Token可以随时赎回，委托后大约在6.1小时内完成锁定，锁定后可以参与节点收益分配，但是赎回锁定的委托大约等待6.1小时才能到账;</string>
     <string name="rewards_title">收益</string>
@@ -604,12 +604,12 @@
     <string name="validators_state_exiting">退出中</string>
     <string name="validators_state_exited">已退出</string>
 
-    <string name="validators_details_tips">PlatON基金会资助的验证节点，不接受委托</string>
+    <string name="validators_details_tips">基金会资助的节点不接受委托</string>
 
     <!--赎回类型-->
     <string name="withdraw_type_delegated">已委托</string>
     <string name="withdraw_type_unlocked">未锁定委托</string>
-    <string name="withdraw_type_released">已解除委托</string>
+    <string name="withdraw_type_released">待赎回委托</string>
 
     <!--赎回提示语-->
     <string name="withdraw_operation_tips">超出可赎回数量，无法提交</string>
@@ -671,5 +671,12 @@
     <string name="tips_not_balance">可用余额为0,无法委托</string>
     <string name="action_copy_link">复制链接</string>
     <string name="action_open_browser">在浏览器中打开</string>
+
+    <!--0.7.3.1-->
+    <string name="available_money">可用余额</string>
+    <string name="total_delegated">总委托</string>
+    <string name="detail_delegated">已委托</string>
+    <string name="detail_wait_undelegate">待赎回委托</string>
+    <string name="detail_tips_content">一旦节点退出，原委托与节点解除关联，委托失效，需要主动赎回委托</string>
 
 </resources>

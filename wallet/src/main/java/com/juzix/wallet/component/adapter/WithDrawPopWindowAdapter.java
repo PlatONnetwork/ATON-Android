@@ -72,8 +72,6 @@ public class WithDrawPopWindowAdapter extends BaseAdapter {
 
         if (TextUtils.equals(typeList.get(position).getKey(), TAG_DELEGATED)) {
             holder.tv_delegate_type.setText(mContext.getString(R.string.withdraw_type_delegated));
-        } else if (TextUtils.equals(typeList.get(position).getKey(), TAG_UNLOCKED)) {
-            holder.tv_delegate_type.setText(mContext.getString(R.string.withdraw_type_unlocked));
         } else {
             holder.tv_delegate_type.setText(mContext.getString(R.string.withdraw_type_released));
         }

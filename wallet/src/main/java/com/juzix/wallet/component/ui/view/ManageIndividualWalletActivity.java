@@ -8,6 +8,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -23,6 +24,7 @@ import com.juzix.wallet.component.ui.presenter.ManageIndividualWalletPresenter;
 import com.juzix.wallet.component.widget.CommonTitleBar;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.AddressFormatUtil;
+import com.juzix.wallet.utils.CommonUtil;
 
 import org.web3j.crypto.Credentials;
 
@@ -51,6 +53,8 @@ public class ManageIndividualWalletActivity extends MVPBaseActivity<ManageIndivi
     TextView tvDelete;
     @BindView(R.id.rl_rename)
     RelativeLayout rename;
+    @BindView(R.id.iv_copy_wallet_address)
+    ImageView ivCopyAddress;
     private Unbinder unbinder;
 
     @Override
@@ -88,7 +92,7 @@ public class ManageIndividualWalletActivity extends MVPBaseActivity<ManageIndivi
         });
     }
 
-    @OnClick({R.id.rl_rename, R.id.rl_private_key, R.id.rl_keystore, R.id.rl_backup, R.id.tv_delete})
+    @OnClick({R.id.rl_rename, R.id.rl_private_key, R.id.rl_keystore, R.id.rl_backup, R.id.tv_delete,R.id.iv_copy_wallet_address})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.rl_rename:
@@ -110,6 +114,10 @@ public class ManageIndividualWalletActivity extends MVPBaseActivity<ManageIndivi
                     showPasswordDialog(TYPE_DELETE_WALLET, getWalletEntityFromIntent());
                 }
                 break;
+            case R.id.iv_copy_wallet_address:
+                CommonUtil.copyTextToClipboard(this,tvAddress.getText().toString());
+                break;
+
 
         }
     }
@@ -123,7 +131,8 @@ public class ManageIndividualWalletActivity extends MVPBaseActivity<ManageIndivi
     //显示钱包基本信息
     @Override
     public void showWalletInfo(Wallet wallet) {
-        tvAddress.setText(AddressFormatUtil.formatAddress(wallet.getPrefixAddress()));
+        tvReName.setText(wallet.getName());
+        tvAddress.setText(wallet.getPrefixAddress());
         if (TextUtils.isEmpty(wallet.getKey())) {
             rename.setVisibility(View.GONE);
             llPrivateKey.setVisibility(View.GONE);

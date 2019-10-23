@@ -247,7 +247,7 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
     private void showTotal(List<DelegateInfo> list) {
         double total = 0;
         for (DelegateInfo info : list) {
-            total += NumberParserUtils.parseDouble(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(info.getDelegate(), "1E18"))));
+            total += NumberParserUtils.parseDouble(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(info.getDelegated(), "1E18"))));
         }
 
         tv_total_delegate.setText(total > 0 ? getString(R.string.amount_with_unit, StringUtil.formatBalance(total, false)) : "— —");

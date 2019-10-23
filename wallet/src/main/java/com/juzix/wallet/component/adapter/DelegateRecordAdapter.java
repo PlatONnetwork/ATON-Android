@@ -25,13 +25,6 @@ import java.util.List;
  * 委托记录adapter
  */
 public class DelegateRecordAdapter extends CommonAdapter<Transaction> {
-//    private static final String CONFIRM = "confirm";
-//    private static final String DELEGATESUCC = "delegateSucc";
-//    private static final String DELEGATEFAIL = "delegateFail";
-//    private static final String REDEEM = "redeem";
-//    private static final String REDEEMSUCC = "redeemSucc";
-//    private static final String REDEEMFAIL = "redeemFail";
-
     public DelegateRecordAdapter(int layoutId, List<Transaction> list) {
         super(layoutId, list);
     }
@@ -45,21 +38,15 @@ public class DelegateRecordAdapter extends CommonAdapter<Transaction> {
         viewHolder.setText(R.id.tv_address_node, AddressFormatUtil.formatTransactionAddress(item.getNodeId())); //节点地址
         TextView tv_number = viewHolder.getView(R.id.tv_number);
         showDelegateNumber(context, item, tv_number);
-//        viewHolder.setText(R.id.tv_number, context.getString(R.string.amount_with_unit, StringUtil.formatBalance(item.getNumber(), false))); //显示数量
-
-
-//        viewHolder.setText(R.id.tv_state, item.getDelegateStatus()); //状态
         TextView tv = viewHolder.getView(R.id.tv_state);
-//        changeTextColor(context, tv, item.getDelegateSt  atus());
         changeTextStateAndColor(context, tv, item);
 
-//        viewHolder.setText(R.id.tv_delegate_time, DateUtil.format(NumberParserUtils.parseLong(item.getDelegateTime()), DateUtil.DATETIME_FORMAT_PATTERN_WITH_SECOND)); //委托时间
         viewHolder.setText(R.id.tv_delegate_time, DateUtil.format(item.getTimestamp(), DateUtil.DATETIME_FORMAT_PATTERN2));
 
         CircleImageView walletIcon = viewHolder.getView(R.id.iv_wallet);
         walletIcon.setImageResource(RUtils.drawable(item.getWalletIcon()));
         viewHolder.setText(R.id.tv_wallet_name, item.getWalletName());
-        viewHolder.setText(R.id.tv_wallet_address, context.getString(R.string.delegate_record_wallet_address,AddressFormatUtil.formatTransactionAddress(item.getFrom())));//钱包名称+钱包地址
+        viewHolder.setText(R.id.tv_wallet_address, context.getString(R.string.delegate_record_wallet_address, AddressFormatUtil.formatTransactionAddress(item.getFrom())));//钱包名称+钱包地址
     }
 
     private void changeImageViewIcon(Context context, ImageView iv, Transaction model) {
@@ -93,24 +80,15 @@ public class DelegateRecordAdapter extends CommonAdapter<Transaction> {
 
                 break;
             case UNDELEGATE: //减持/撤销委托(赎回委托)
-                if (TextUtils.equals(model.getRedeemStatus(), "1")) { //1： 赎回中
-                    tv.setTextColor(ContextCompat.getColorStateList(context, R.color.color_4a90e2));
-                    tv.setText(context.getString(R.string.withdraw_undelegating));
-                } else if (TextUtils.equals(model.getRedeemStatus(), "2")) {//2：赎回成功
+                if (model.getTxReceiptStatus() == TransactionStatus.SUCCESSED) {
                     tv.setTextColor(ContextCompat.getColorStateList(context, R.color.color_19a20e));
                     tv.setText(context.getString(R.string.withdraw_success));
+                } else if (model.getTxReceiptStatus() == TransactionStatus.PENDING) {
+                    tv.setTextColor(ContextCompat.getColorStateList(context, R.color.color_4a90e2));
+                    tv.setText(context.getString(R.string.withdraw_pending));
                 } else {
-                    if (model.getTxReceiptStatus() == TransactionStatus.PENDING) {
-                        tv.setTextColor(ContextCompat.getColorStateList(context, R.color.color_4a90e2));
-                        tv.setText(context.getString(R.string.withdraw_pending));
-                    } else if (model.getTxReceiptStatus() == TransactionStatus.FAILED) {
-                        tv.setTextColor(ContextCompat.getColorStateList(context, R.color.color_f5302c));
-                        tv.setText(context.getString(R.string.withdraw_failed));
-                    } else {
-                        //可以不做处理
-                    }
-
-
+                    tv.setTextColor(ContextCompat.getColorStateList(context, R.color.color_f5302c));
+                    tv.setText(context.getString(R.string.withdraw_failed));
                 }
 
                 break;

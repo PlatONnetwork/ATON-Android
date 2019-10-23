@@ -59,79 +59,21 @@
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/tv_item_wallet_amount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerInParent="true"
-                android:layout_marginRight="10dp"
-                android:drawablePadding="3dp"
-                android:textColor="@color/color_000000"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:gravity="right"
-                android:layout_toRightOf="@id/ll_wallet_info"
-                android:textSize="16sp" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_mydelegate_item">
-
-            <LinearLayout
-                android:id="@+id/ll_left"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="12dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:layout_marginBottom="9dp"
-                    android:text="@string/delegated"
-                    android:textColor="@color/color_898c9e"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:id="@+id/tv_item_delegate_number"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="15dp"
-                    android:text="16545455.645"
-                    android:textColor="@color/color_000000"
-                    android:textSize="14sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginLeft="12dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:layout_marginBottom="9dp"
-                    android:text="@string/undelegating"
-                    android:textColor="@color/color_898c9e"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:id="@+id/tv_item_withdrawing"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="15dp"
-                    android:text="16545455.645"
-                    android:textColor="@color/color_000000"
-                    android:textSize="14sp" />
-            </LinearLayout>
+            <!--<TextView-->
+                <!--android:id="@+id/tv_item_wallet_amount"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:layout_centerInParent="true"-->
+                <!--android:layout_marginRight="10dp"-->
+                <!--android:drawablePadding="3dp"-->
+                <!--android:textColor="@color/color_000000"-->
+                <!--android:maxLines="1"-->
+                <!--android:ellipsize="end"-->
+                <!--android:gravity="right"-->
+                <!--android:layout_toRightOf="@id/ll_wallet_info"-->
+                <!--tools:text="15161516515515154"-->
+                <!--android:textSize="16sp" />-->
 
             <TextView
                 android:layout_width="wrap_content"
@@ -142,10 +84,102 @@
                 android:drawableRight="@drawable/icon_right"
                 android:drawablePadding="3dp"
                 android:gravity="center"
+                android:textSize="13sp"
+                android:textColor="@color/color_105cfe"
                 android:text="@string/details" />
 
 
         </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_mydelegate_item"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/ll_left"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:orientation="vertical"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginBottom="9dp"
+                    android:text="@string/available_money"
+                    android:textColor="@color/color_898c9e"
+                    android:textSize="12sp" />
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/tv_item_available_balance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
+                    android:textColor="@color/color_000000"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:autoSizeMaxTextSize="14sp"
+                    android:autoSizeMinTextSize="10sp"
+                    android:autoSizeTextType="uniform"
+                    android:gravity="center"
+                    android:layout_gravity="center|left"
+                    android:lines="1"
+                    tools:text="16545455454645464555455454.645"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:orientation="vertical"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginBottom="9dp"
+                    android:text="@string/total_delegated"
+                    android:textColor="@color/color_898c9e"
+                    android:textSize="12sp" />
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/tv_item_delegate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
+                    android:textColor="@color/color_000000"
+                    android:textStyle="bold"
+                    android:lines="1"
+                    android:textSize="14sp"
+                    android:autoSizeMaxTextSize="14sp"
+                    android:autoSizeMinTextSize="10sp"
+                    android:autoSizeTextType="uniform"
+                    android:includeFontPadding="false"
+                    android:gravity="center_vertical"
+                    android:layout_gravity="left|center"
+                    tools:text="1654545465465.645"/>
+            </LinearLayout>
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:layout_centerInParent="true"-->
+                <!--android:layout_marginRight="10dp"-->
+                <!--android:drawableRight="@drawable/icon_right"-->
+                <!--android:drawablePadding="3dp"-->
+                <!--android:gravity="center"-->
+                <!--android:text="@string/details" />-->
+
+
+        </LinearLayout>
 
 
     </LinearLayout>

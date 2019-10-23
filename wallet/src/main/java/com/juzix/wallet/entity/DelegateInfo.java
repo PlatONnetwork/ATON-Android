@@ -14,15 +14,15 @@ public class DelegateInfo implements Parcelable {
      */
     private String walletAddress;
 
-    /**
-     * 委托金额
-     */
-    private String delegate;
-
-    /**
-     * 赎回中
-     */
-    private String redeem;
+//    /**
+//     * 委托金额
+//     */
+//    private String delegate;
+//
+//    /**
+//     * 赎回中
+//     */
+//    private String redeem;
 
     /**
      * 钱包头像
@@ -35,6 +35,12 @@ public class DelegateInfo implements Parcelable {
      */
     private String availableDelegationBalance;
 
+    /**
+     * 总委托  单位von   1LAT(ETH)=1000000000000000000von(wei)
+     */
+    private String delegated;
+
+
 
     public DelegateInfo() {
 
@@ -43,20 +49,22 @@ public class DelegateInfo implements Parcelable {
     protected DelegateInfo(Parcel in) {
         walletName = in.readString();
         walletAddress = in.readString();
-        delegate = in.readString();
-        redeem = in.readString();
+//        delegate = in.readString();
+//        redeem = in.readString();
         walletIcon = in.readString();
         availableDelegationBalance =in.readString();
+        delegated = in.readString();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(walletName);
         dest.writeString(walletAddress);
-        dest.writeString(delegate);
-        dest.writeString(redeem);
+//        dest.writeString(delegate);
+//        dest.writeString(redeem);
         dest.writeString(walletIcon);
         dest.writeString(availableDelegationBalance);
+        dest.writeString(delegated);
     }
 
     @Override
@@ -92,20 +100,29 @@ public class DelegateInfo implements Parcelable {
         this.walletAddress = walletAddress;
     }
 
-    public String getDelegate() {
-        return delegate;
+//    public String getDelegate() {
+//        return delegate;
+//    }
+//
+//    public void setDelegate(String delegate) {
+//        this.delegate = delegate;
+//    }
+
+//    public String getRedeem() {
+//        return redeem;
+//    }
+//
+//    public void setRedeem(String redeem) {
+//        this.redeem = redeem;
+//    }
+
+
+    public String getDelegated() {
+        return delegated;
     }
 
-    public void setDelegate(String delegate) {
-        this.delegate = delegate;
-    }
-
-    public String getRedeem() {
-        return redeem;
-    }
-
-    public void setRedeem(String redeem) {
-        this.redeem = redeem;
+    public void setDelegated(String delegated) {
+        this.delegated = delegated;
     }
 
     public String getWalletIcon() {

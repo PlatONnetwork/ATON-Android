@@ -11,17 +11,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
-import com.juzhen.framework.util.NumberParserUtils;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
-import com.juzix.wallet.app.CustomObserver;
-import com.juzix.wallet.component.adapter.base.ViewHolder;
 import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.entity.DelegateInfo;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
+
 
 
 import java.util.List;
@@ -61,9 +59,8 @@ public class MyDelegateAdapter extends RecyclerView.Adapter<MyDelegateAdapter.Vi
         holder.walletName.setText(info.getWalletName());
         holder.walletAddress.setText(AddressFormatUtil.formatAddress(info.getWalletAddress()));
         //转换的数据
-        holder.delegateNumber.setText((TextUtils.equals(info.getDelegate(),"0")) ? "— —" : StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(info.getDelegate(), "1E18"))), false));
-        holder.withdrawNumber.setText(TextUtils.equals(info.getRedeem(),"0") ? "— —" : StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(info.getRedeem(), "1E18"))), false));
-        holder.walletAmount.setText(TextUtils.equals(info.getAvailableDelegationBalance(),"0") ? "— —" :StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(info.getAvailableDelegationBalance(), "1E18"))), false));
+        holder.available_balance.setText(TextUtils.equals(info.getAvailableDelegationBalance(),"0") ? "— —" :StringUtil.formatBalance(BigDecimalUtil.div(info.getAvailableDelegationBalance(), "1E18"))); // StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(info.getAvailableDelegationBalance(), "1E18"))), false)
+        holder.totalDelegated.setText(TextUtils.equals(info.getDelegated(),"0") ? "— —" : StringUtil.formatBalance(BigDecimalUtil.div(info.getDelegated(), "1E18")));//StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(info.getDelegated(), "1E18"))), false)
 
         RxView.clicks(holder.itemView)
                 .compose(RxUtils.getClickTransformer())
@@ -107,12 +104,10 @@ public class MyDelegateAdapter extends RecyclerView.Adapter<MyDelegateAdapter.Vi
         TextView walletName;
         @BindView(R.id.tv_item_wallet_address)
         TextView walletAddress;
-        @BindView(R.id.tv_item_wallet_amount)
-        TextView walletAmount;
-        @BindView(R.id.tv_item_delegate_number)
-        TextView delegateNumber;
-        @BindView(R.id.tv_item_withdrawing)
-        TextView withdrawNumber;
+        @BindView(R.id.tv_item_available_balance)
+        TextView available_balance;
+        @BindView(R.id.tv_item_delegate)
+        TextView totalDelegated;
         @BindView(R.id.ll_item)
         LinearLayout item;
 

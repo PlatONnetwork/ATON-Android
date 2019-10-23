@@ -20,7 +20,7 @@
             android:layout_marginLeft="13dp"
             android:layout_marginTop="14dp"
             android:layout_marginBottom="10dp"
-            android:text="@string/locked_delegate"
+            android:text="@string/detail_wait_undelegate"
             android:textColor="@color/color_2a5ffe" />
 
         <TextView
@@ -30,7 +30,7 @@
             android:layout_marginLeft="12dp"
             android:layout_marginRight="12dp"
             android:lineSpacingExtra="2dp"
-            android:text="@string/locked_delegate_des"
+            android:text="@string/detail_tips_content"
             android:textSize="13sp" />
 
         <TextView
