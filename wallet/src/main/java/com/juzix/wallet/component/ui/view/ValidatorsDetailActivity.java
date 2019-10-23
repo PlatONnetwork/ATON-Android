@@ -114,6 +114,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
 
     @Override
     public void onResume() {
+        mPresenter.loadValidatorsDetailData();
         MobclickAgent.onPageStart(Constants.UMPages.NODE_DETAIL);
         super.onResume();
     }
@@ -135,7 +136,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
             }
         });
         clickViewListener();
-        mPresenter.loadValidatorsDetailData();
+
     }
 
     public static void actionStart(Context context, String nodeId) {
