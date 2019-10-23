@@ -53,6 +53,7 @@ import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.GlideUtils;
 import com.juzix.wallet.utils.RxUtils;
+import com.juzix.wallet.utils.SoftHideKeyboardUtils;
 import com.juzix.wallet.utils.StringUtil;
 import com.juzix.wallet.utils.ToastUtil;
 import com.juzix.wallet.utils.UMEventUtil;
@@ -202,6 +203,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                     }
                 });
         initGuide();
+        SoftHideKeyboardUtils.assistActivity(this);
     }
 
     private void initGuide() {
