@@ -80,12 +80,13 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
         EventPublisher.getInstance().register(this);
         initView();
 
-        mPresenter.loadDelegateDetailData();
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        mPresenter.loadDelegateDetailData();
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {

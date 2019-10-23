@@ -1,34 +1,21 @@
 package com.juzix.wallet.component.ui.presenter;
 
-import android.text.TextUtils;
 
-import com.juzhen.framework.network.ApiErrorCode;
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.ApiSingleObserver;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.DelegateDetailContract;
-import com.juzix.wallet.db.entity.DelegateDetailEntity;
-import com.juzix.wallet.db.sqlite.DelegateDetailDao;
-import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
-import com.juzix.wallet.engine.WalletManager;
-import com.juzix.wallet.entity.AccountBalance;
 import com.juzix.wallet.entity.DelegateDetail;
 import com.juzix.wallet.entity.DelegateInfo;
 import com.juzix.wallet.utils.RxUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import io.reactivex.Flowable;
-import io.reactivex.Single;
-import io.reactivex.SingleSource;
 import io.reactivex.functions.Function;
-import io.reactivex.functions.Predicate;
-import io.reactivex.schedulers.Schedulers;
-import retrofit2.Response;
 
 public class DelegateDetailPresenter extends BasePresenter<DelegateDetailContract.View> implements DelegateDetailContract.Presenter {
 
