@@ -360,21 +360,9 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                                             TransactionSignatureDialogFragment.newInstance(transactionAuthorizationData)
                                                     .setOnSendTransactionSucceedListener(new TransactionSignatureDialogFragment.OnSendTransactionSucceedListener() {
                                                         @Override
-                                                        public void onSendTransactionSucceed(String hash) {
+                                                        public void onSendTransactionSucceed(Transaction transaction) {
                                                             if (isViewAttached()) {
-                                                                getView().withDrawSuccessInfo(new Transaction.Builder()
-                                                                        .from(from)
-                                                                        .to(to)
-                                                                        .timestamp(System.currentTimeMillis())
-                                                                        .txType(String.valueOf(TransactionType.UNDELEGATE.getTxTypeValue()))
-                                                                        .value(Convert.toVon(transactionAmount, Convert.Unit.LAT).toBigInteger().toString())
-                                                                        .actualTxCost(Convert.toVon(feeAmount, Convert.Unit.LAT).toBigInteger().toString())
-                                                                        .unDelegation(Convert.toVon(transactionAmount, Convert.Unit.LAT).toBigInteger().toString())
-                                                                        .nodeName(nodeName)
-                                                                        .nodeId(nodeId)
-                                                                        .txReceiptStatus(TransactionStatus.PENDING.ordinal())
-                                                                        .hash(hash)
-                                                                        .build());
+                                                                getView().withDrawSuccessInfo(transaction);
                                                             }
                                                         }
                                                     })

@@ -121,6 +121,16 @@ public class TransactionManager {
         return null;
     }
 
+    public PlatonSendTransaction sendTransactionReturnPlatonSendTransaction(String signedMessage) {
+        try {
+            return Web3jManager.getInstance().getWeb3j().platonSendRawTransaction(signedMessage).send();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     public String signTransaction(Credentials credentials, String data, String toAddress, BigDecimal amount, BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit) {
 
         try {
