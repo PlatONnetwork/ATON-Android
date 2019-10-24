@@ -242,6 +242,10 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
 
     private int checkSignature(TransactionAuthorizationData transactionAuthorizationData) {
 
+        if (transactionAuthorizationData == null) {
+            return CODE_INVALID_SIGNATURE;
+        }
+
         TransactionAuthorizationBaseData transactionAuthorizationBaseData = transactionAuthorizationData.getBaseDataList().get(0);
 
         boolean fromNotEquals = !TextUtils.equals(transactionAuthorizationBaseData.getFrom(), transactionSignatureData.getFrom());
