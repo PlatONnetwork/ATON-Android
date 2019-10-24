@@ -189,7 +189,7 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
         super.onActivityResult(requestCode, resultCode, data);
         String signature = data.getStringExtra(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
         transactionSignatureData = JSONUtil.parseObject(signature, TransactionSignatureData.class);
-        if (transactionSignatureData != null) {
+        if (transactionSignatureData != null && transactionSignatureData.getSignedDatas() != null && !transactionSignatureData.getSignedDatas().isEmpty()) {
             tvTransactionSignature.setText(getSignedMessage(transactionSignatureData));
             RawTransaction rawTransaction = TransactionDecoder.decode(transactionSignatureData.getSignedDatas().get(0));
             LogUtils.e(rawTransaction.toString());
