@@ -22,10 +22,13 @@ import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.db.sqlite.AddressDao;
 import com.juzix.wallet.db.sqlite.TransactionDao;
 import com.juzix.wallet.db.sqlite.WalletDao;
+import com.juzix.wallet.engine.DelegateManager;
+import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.TransactionManager;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionAuthorizationBaseData;
 import com.juzix.wallet.entity.TransactionAuthorizationData;
+import com.juzix.wallet.entity.TransactionAuthorizationDetail;
 import com.juzix.wallet.entity.TransactionSignatureData;
 import com.juzix.wallet.entity.TransactionStatus;
 import com.juzix.wallet.entity.TransactionType;
@@ -41,6 +44,8 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionDecoder;
 import org.web3j.platon.FunctionType;
+import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
+import org.web3j.utils.Convert;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -173,7 +178,7 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
                         } else if (result == CODE_WALLET_MISMATCH) {
                             ToastUtil.showLongToast(getContext(), R.string.msg_wallet_mismatch);
                         } else {
-                            sendTransaction(transactionSignatureData);
+                            sendTransaction(transactionSignatureData, transactionAuthorizationData.getTransactionAuthorizationDetail());
                         }
                     }
                 });
@@ -201,22 +206,22 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
         }
     }
 
-    private void sendTransaction(TransactionSignatureData transactionSignatureData) {
+    private void sendTransaction(TransactionSignatureData transactionSignatureData, TransactionAuthorizationDetail transactionAuthorizationDetail) {
 
         Flowable
                 .fromIterable(transactionSignatureData.getSignedDatas())
-                .map(new Function<String, String>() {
+                .map(new Function<String, PlatonSendTransaction>() {
                     @Override
-                    public String apply(String signedMessage) throws Exception {
-                        return TransactionManager.getInstance().sendTransaction(signedMessage);
+                    public PlatonSendTransaction apply(String signedMessage) throws Exception {
+                        return TransactionManager.getInstance().sendTransactionReturnPlatonSendTransaction(signedMessage);
                     }
                 })
                 .takeLast(1)
                 .compose(RxUtils.getFlowableSchedulerTransformer())
                 .compose(bindToLifecycle())
-                .subscribe(new Consumer<String>() {
+                .subscribe(new Consumer<PlatonSendTransaction>() {
                     @Override
-                    public void accept(String hash) throws Exception {
+                    public void accept(PlatonSendTransaction platonSendTransaction) throws Exception {
                         if (transactionSignatureData.getFunctionType() == FunctionType.TRANSFER) {
                             ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.transfer_succeed));
                         } else if (transactionSignatureData.getFunctionType() == FunctionType.DELEGATE_FUNC_TYPE) {
@@ -224,7 +229,7 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
                         } else if (transactionSignatureData.getFunctionType() == FunctionType.WITHDREW_DELEGATE_FUNC_TYPE) {
                             ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.withdraw_success));
                         }
-                        afterSendTransactionSucceed(hash);
+                        afterSendTransactionSucceed(platonSendTransaction, transactionAuthorizationDetail);
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -241,6 +246,10 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
     }
 
     private int checkSignature(TransactionAuthorizationData transactionAuthorizationData) {
+
+        if (transactionAuthorizationData == null) {
+            return CODE_INVALID_SIGNATURE;
+        }
 
         TransactionAuthorizationBaseData transactionAuthorizationBaseData = transactionAuthorizationData.getBaseDataList().get(0);
 
@@ -261,48 +270,57 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
         return CODE_VALID_SIGNATURE;
     }
 
-    private void afterSendTransactionSucceed(String hash) {
+    private void afterSendTransactionSucceed(PlatonSendTransaction platonSendTransaction, TransactionAuthorizationDetail transactionAuthorizationDetail) {
         dismiss();
+        List<String> signedDatas = transactionSignatureData.getSignedDatas();
+        Transaction transaction = buildTransaction(transactionAuthorizationDetail, platonSendTransaction.getTransactionHash(), signedDatas.get(signedDatas.size() - 1));
         if (transactionSignatureData.getFunctionType() == FunctionType.TRANSFER) {
             //跳转至交易记录页签
-            List<String> signedDatas = transactionSignatureData.getSignedDatas();
-            afterTransferSucceed(hash, signedDatas.get(signedDatas.size() - 1));
-        } else {
-            //进入交易详情
+            transaction.setTxType(String.valueOf(TransactionType.TRANSFER.getTxTypeValue()));
+            afterTransferSucceed(transaction);
+        } else if (transactionSignatureData.getFunctionType() == FunctionType.DELEGATE_FUNC_TYPE) {
+            transaction.setTxType(String.valueOf(TransactionType.DELEGATE.getTxTypeValue()));
+            DelegateManager.getInstance().getTransactionResult(platonSendTransaction, transaction);
             if (sendTransactionSucceedListener != null) {
-                sendTransactionSucceedListener.onSendTransactionSucceed(hash);
+                sendTransactionSucceedListener.onSendTransactionSucceed(transaction);
+            }
+        } else if (transactionSignatureData.getFunctionType() == FunctionType.WITHDREW_DELEGATE_FUNC_TYPE) {
+            transaction.setTxType(String.valueOf(TransactionType.UNDELEGATE.getTxTypeValue()));
+            DelegateManager.getInstance().getTransactionResult(platonSendTransaction, transaction);
+            if (sendTransactionSucceedListener != null) {
+                sendTransactionSucceedListener.onSendTransactionSucceed(transaction);
             }
         }
     }
 
-    private void afterTransferSucceed(String hash, String signedMessage) {
+    private void afterTransferSucceed(Transaction transaction) {
 
         Single
-                .fromCallable(new Callable<Transaction>() {
+                .fromCallable(new Callable<Boolean>() {
                     @Override
-                    public Transaction call() throws Exception {
-                        return buildTransaction(hash, signedMessage);
-                    }
-                })
-                .filter(new Predicate<Transaction>() {
-                    @Override
-                    public boolean test(Transaction transaction) throws Exception {
+                    public Boolean call() throws Exception {
                         return TransactionDao.insertTransaction(transaction.toTransactionEntity());
                     }
                 })
-                .toSingle()
-                .doOnSuccess(new Consumer<Transaction>() {
+                .filter(new Predicate<Boolean>() {
                     @Override
-                    public void accept(Transaction transaction) throws Exception {
+                    public boolean test(Boolean aBoolean) throws Exception {
+                        return aBoolean;
+                    }
+                })
+                .toSingle()
+                .doOnSuccess(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean aBoolean) throws Exception {
                         EventPublisher.getInstance().sendUpdateTransactionEvent(transaction);
                         TransactionManager.getInstance().getTransactionByLoop(transaction);
                     }
                 })
-                .subscribe(new Consumer<Transaction>() {
+                .subscribe(new Consumer<Boolean>() {
                     @Override
-                    public void accept(Transaction transaction) throws Exception {
+                    public void accept(Boolean aBoolean) throws Exception {
                         if (sendTransactionSucceedListener != null) {
-                            sendTransactionSucceedListener.onSendTransactionSucceed(hash);
+                            sendTransactionSucceedListener.onSendTransactionSucceed(transaction);
                         }
                     }
                 });
@@ -310,19 +328,21 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
     }
 
 
-    private Transaction buildTransaction(String hash, String signedMessage) {
+    private Transaction buildTransaction(TransactionAuthorizationDetail transactionAuthorizationDetail, String hash, String signedMessage) {
         RawTransaction rawTransaction = TransactionDecoder.decode(signedMessage);
         return new Transaction.Builder()
                 .hash(hash)
                 .from(transactionSignatureData.getFrom())
                 .to(rawTransaction.getTo())
                 .senderWalletName(getSenderName(transactionSignatureData.getFrom()))
-                .value(rawTransaction.getValue().toString(10))
+                .value(transactionAuthorizationDetail.getAmount())
                 .chainId(transactionSignatureData.getChainId())
-                .txType(String.valueOf(TransactionType.TRANSFER.getTxTypeValue()))
                 .timestamp(System.currentTimeMillis())
                 .txReceiptStatus(TransactionStatus.PENDING.ordinal())
-                .actualTxCost(rawTransaction.getGasLimit().multiply(rawTransaction.getGasLimit()).toString(10))
+                .actualTxCost(transactionAuthorizationDetail.getFee())
+                .unDelegation(transactionAuthorizationDetail.getAmount())
+                .nodeName(transactionAuthorizationDetail.getNodeName())
+                .nodeId(transactionAuthorizationDetail.getNodeId())
                 .build();
     }
 
@@ -353,6 +373,6 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
 
     public interface OnSendTransactionSucceedListener {
 
-        void onSendTransactionSucceed(String hash);
+        void onSendTransactionSucceed(Transaction transaction);
     }
 }

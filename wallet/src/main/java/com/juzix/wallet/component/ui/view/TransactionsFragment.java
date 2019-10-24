@@ -85,7 +85,7 @@ public class TransactionsFragment extends BaseViewPageFragment<TransactionsPrese
     @Override
     public void notifyDataSetChanged(List<Transaction> oldTransactionList, List<Transaction> newTransactionList, String queryAddress, boolean isLoadLatestData) {
         mTransactionListAdapter.setQueryAddressList(Arrays.asList(queryAddress));
-        emptyView.setVisibility(newTransactionList.isEmpty() ? View.VISIBLE : View.GONE);
+        emptyView.setVisibility(newTransactionList == null || newTransactionList.isEmpty() ? View.VISIBLE : View.GONE);
         if (isLoadLatestData) {
             mTransactionListAdapter.notifyDataSetChanged(newTransactionList);
         } else {
@@ -101,7 +101,7 @@ public class TransactionsFragment extends BaseViewPageFragment<TransactionsPrese
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onDeleteTransactionEvent(Event.DeleteTransactionEvent event){
+    public void onDeleteTransactionEvent(Event.DeleteTransactionEvent event) {
         mPresenter.deleteTransaction(event.transaction);
     }
 
@@ -117,7 +117,7 @@ public class TransactionsFragment extends BaseViewPageFragment<TransactionsPrese
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onSumAccountBalanceChanged(Event.SumAccountBalanceChanged event){
+    public void onSumAccountBalanceChanged(Event.SumAccountBalanceChanged event) {
         mPresenter.loadNew(TransactionsPresenter.DIRECTION_NEW);
     }
 

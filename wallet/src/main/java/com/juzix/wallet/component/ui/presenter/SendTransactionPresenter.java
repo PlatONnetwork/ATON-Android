@@ -491,7 +491,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                                             TransactionSignatureDialogFragment.newInstance(transactionAuthorizationData)
                                                     .setOnSendTransactionSucceedListener(new TransactionSignatureDialogFragment.OnSendTransactionSucceedListener() {
                                                         @Override
-                                                        public void onSendTransactionSucceed(String hash) {
+                                                        public void onSendTransactionSucceed(Transaction transaction) {
                                                             if (isViewAttached()) {
                                                                 backToTransactionListWithDelay();
                                                             }

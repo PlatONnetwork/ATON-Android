@@ -116,7 +116,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
         double amount = NumberParserUtils.parseDouble(delegateAmount);
         //检查委托的数量
         if (TextUtils.isEmpty(delegateAmount)) {
-           getView().showTips(false);
+            getView().showTips(false);
         } else if (amount < 10) {
             //按钮不可点击,并且下方提示
             getView().showTips(true);
@@ -140,7 +140,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
         if (delegateDetail != null && !TextUtils.isEmpty(delegateDetail.getWalletAddress())) {
             return WalletManager.getInstance().getWalletEntityByWalletAddress(delegateDetail.getWalletAddress());
         } else {
-            return sortByCreateTime(sortByFreeAccount(WalletManager.getInstance().getWalletList())).get(0);
+            return sortByFreeAccountAndCreateTime(WalletManager.getInstance().getWalletList()).get(0);
         }
     }
 
@@ -389,20 +389,9 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                                             TransactionSignatureDialogFragment.newInstance(transactionAuthorizationData)
                                                     .setOnSendTransactionSucceedListener(new TransactionSignatureDialogFragment.OnSendTransactionSucceedListener() {
                                                         @Override
-                                                        public void onSendTransactionSucceed(String hash) {
+                                                        public void onSendTransactionSucceed(Transaction transaction) {
                                                             if (isViewAttached()) {
-                                                                getView().transactionSuccessInfo(new Transaction.Builder()
-                                                                        .from(from)
-                                                                        .to(to)
-                                                                        .timestamp(System.currentTimeMillis())
-                                                                        .txType(String.valueOf(TransactionType.DELEGATE.getTxTypeValue()))
-                                                                        .value(Convert.toVon(transactionAmount, Convert.Unit.LAT).toBigInteger().toString())
-                                                                        .actualTxCost(Convert.toVon(feeAmount, Convert.Unit.LAT).toBigInteger().toString())
-                                                                        .nodeName(nodeName)
-                                                                        .nodeId(nodeId)
-                                                                        .txReceiptStatus(TransactionStatus.PENDING.ordinal())
-                                                                        .hash(hash)
-                                                                        .build());
+                                                                getView().transactionSuccessInfo(transaction);
                                                             }
                                                         }
                                                     })
@@ -425,24 +414,22 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                 });
     }
 
-    private List<Wallet> sortByFreeAccount(List<Wallet> walletList) {
+    private List<Wallet> sortByFreeAccountAndCreateTime(List<Wallet> walletList) {
         Collections.sort(walletList, new Comparator<Wallet>() {
             @Override
             public int compare(Wallet o1, Wallet o2) {
-                return Double.compare(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(o2.getFreeBalance(), "1E18"))), NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(o1.getFreeBalance(), "1E18"))));
+                int compare = Double.compare(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(o2.getFreeBalance(), "1E18"))), NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(o1.getFreeBalance(), "1E18"))));
+                if (compare != 0) {
+                    return compare;
+                }
+                compare = Long.compare(o1.getCreateTime(), o2.getCreateTime());
+                if (compare != 0) {
+                    return compare;
+                }
+                return 0;
             }
         });
 
         return walletList;
-    }
-
-    private List<Wallet> sortByCreateTime(List<Wallet> list) {
-        Collections.sort(list, new Comparator<Wallet>() {
-            @Override
-            public int compare(Wallet o1, Wallet o2) {
-                return Long.compare(o1.getCreateTime(), o2.getCreateTime());
-            }
-        });
-        return list;
     }
 }
