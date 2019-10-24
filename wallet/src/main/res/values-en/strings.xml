@@ -254,7 +254,7 @@
     <string name="unlockWithWalletPasswordTitle">Unlock with Wallet Password</string>
     <string name="unlockWithWalletPasswordDesc">Be sure to correspond password to wallet.</string>
     <string name="company_name">juzix（shenzhen)</string>
-    <string name="copyright_resume">Powered by PlatON</string>
+    <string name="copyright_resume">Powered by PlatON Network</string>
     <string name="language">Languages</string>
     <string name="warning">Warning</string>
     <string name="test_node_warn">You are on the PlatON Test NetWork.&#160;Be careful not to transfer real funds to this address</string>
@@ -665,5 +665,12 @@
     <string name="detail_delegated">Delegated</string>
     <string name="detail_wait_undelegate">Invalid delegations</string>
     <string name="detail_tips_content">Validator exits, the delegations is automatically released,and need user to withdraw the delegations</string>
+
+    <string name="web_url_web_portals">https://www.platon.network</string>
+    <string name="web_url_faq">https://platon.zendesk.com/hc/en-us/categories/360002174434</string>
+    <string name="web_url_tutorial">https://platon.zendesk.com/hc/en-us/categories/360002174434</string>
+    <string name="web_url_agreement">https://platon.zendesk.com/hc/en-us/categories/360002174434</string>
+    <string name="web_url_support_feedback">https://platon.zendesk.com/hc/en-us/categories/360002174434</string>
+    <string name="web_url_common_delegate_problem">https://platon.zendesk.com/hc/en-us/articles/360037373194-Common-questions-about-PlatON-Delegators</string>
 </resources>
 

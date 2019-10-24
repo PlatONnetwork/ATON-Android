@@ -254,7 +254,7 @@
     <string name="unlockWithWalletPasswordTitle">钱包密码解锁</string>
     <string name="unlockWithWalletPasswordDesc">请使用选定的钱包密码验证解锁</string>
     <string name="company_name">矩阵元技术（深圳）有限公司</string>
-    <string name="copyright_resume">Powered by PlatON</string>
+    <string name="copyright_resume">Powered by PlatON Network</string>
     <string name="language">语言</string>
     <string name="warning">警告</string>
     <string name="test_node_warn">你正处于PlatON测试网络，切勿将真实的资产转账到当前测试网络钱包地址</string>
@@ -678,5 +678,12 @@
     <string name="detail_delegated">已委托</string>
     <string name="detail_wait_undelegate">待赎回委托</string>
     <string name="detail_tips_content">一旦节点退出，原委托与节点解除关联，委托失效，需要主动赎回委托</string>
+
+    <string name="web_url_web_portals">https://www.platon.network</string>
+    <string name="web_url_faq">https://platon.zendesk.com/hc/zh-cn/categories/360002174434</string>
+    <string name="web_url_tutorial">https://platon.zendesk.com/hc/zh-cn/categories/360002174434</string>
+    <string name="web_url_agreement">https://platon.zendesk.com/hc/zh-cn/categories/360002174434</string>
+    <string name="web_url_support_feedback">https://platon.zendesk.com/hc/zh-cn/categories/360002174434</string>
+    <string name="web_url_common_delegate_problem">https://platon.zendesk.com/hc/zh-cn/articles/360037373194-Common-questions-about-PlatON-Delegators</string>
 
 </resources>

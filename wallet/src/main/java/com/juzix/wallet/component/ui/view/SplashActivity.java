@@ -30,8 +30,6 @@ import java.util.Locale;
 
 public class SplashActivity extends BaseActivity {
 
-    private final static String TAG = SplashActivity.class.getSimpleName();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
