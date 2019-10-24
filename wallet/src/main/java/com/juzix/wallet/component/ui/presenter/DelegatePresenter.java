@@ -140,7 +140,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
         if (delegateDetail != null && !TextUtils.isEmpty(delegateDetail.getWalletAddress())) {
             return WalletManager.getInstance().getWalletEntityByWalletAddress(delegateDetail.getWalletAddress());
         } else {
-            return sortByCreateTime(sortByFreeAccount(WalletManager.getInstance().getWalletList())).get(0);
+            return sortByFreeAccountAndCreateTime(WalletManager.getInstance().getWalletList()).get(0);
         }
     }
 
@@ -425,24 +425,22 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                 });
     }
 
-    private List<Wallet> sortByFreeAccount(List<Wallet> walletList) {
-        Collections.sort(walletList, new Comparator<Wallet>() {
-            @Override
-            public int compare(Wallet o1, Wallet o2) {
-                return Double.compare(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(o2.getFreeBalance(), "1E18"))), NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(o1.getFreeBalance(), "1E18"))));
-            }
-        });
+      private List<Wallet> sortByFreeAccountAndCreateTime(List<Wallet> walletList){
+            Collections.sort(walletList, new Comparator<Wallet>() {
+                @Override
+                public int compare(Wallet o1, Wallet o2) {
+                    int compare = Double.compare(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(o2.getFreeBalance(), "1E18"))), NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(o1.getFreeBalance(), "1E18"))));
+                    if(compare !=0 ){
+                        return  compare;
+                    }
+                    compare  =  Long.compare(o1.getCreateTime(), o2.getCreateTime());
+                    if(compare !=0){
+                        return  compare;
+                    }
+                    return 0;
+                }
+            });
 
-        return walletList;
-    }
-
-    private List<Wallet> sortByCreateTime(List<Wallet> list) {
-        Collections.sort(list, new Comparator<Wallet>() {
-            @Override
-            public int compare(Wallet o1, Wallet o2) {
-                return Long.compare(o1.getCreateTime(), o2.getCreateTime());
-            }
-        });
-        return list;
-    }
+            return walletList;
+        }
 }

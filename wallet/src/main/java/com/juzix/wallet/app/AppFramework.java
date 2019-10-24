@@ -330,7 +330,8 @@ public class AppFramework {
 
 
             }else if(oldVersion ==107){
-
+                //删除节点详情移除功能相关的表
+                schema.remove("DelegateDetailEntity");
                 //删除节点地址的表
                 schema.get("NodeEntity")
                         .transform(new RealmObjectSchema.Function() {
@@ -349,20 +350,9 @@ public class AppFramework {
                             }
                         });
 
-//                schema.get("VerifyNodeEntity")
-//                        .addField("ratePA_temp",String.class)
-//                        .transform(new RealmObjectSchema.Function() {
-//                            @Override
-//                            public void apply(DynamicRealmObject obj) {
-//                                obj.setString("ratePA_temp",String.valueOf(obj.getInt("ratePA"))); //这里从int又改成string类型，注意，如果改成int类型的话，需要加setRequired(),string不需要，否则就会升级失败
-//                            }
-//                        })
-//                        .removeField("ratePA")
-//                        .renameField("ratePA_temp","ratePA");
-
                     oldVersion++;
-
             }
+
         }
     }
 }

@@ -2,11 +2,6 @@ package com.juzix.wallet.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.text.TextUtils;
-
-import com.juzix.wallet.db.entity.DelegateDetailEntity;
-
-import java.util.Objects;
 
 public class DelegateDetail implements Parcelable {
     /**
@@ -167,12 +162,4 @@ public class DelegateDetail implements Parcelable {
             return new DelegateDetail[size];
         }
     };
-
-    public DelegateDetailEntity toDelegateDetailEntity(){
-        DelegateDetailEntity entity = new DelegateDetailEntity();
-        entity.setAddress(walletAddress);
-        entity.setNodeId(nodeId);
-        return entity;
-    }
-
 }
