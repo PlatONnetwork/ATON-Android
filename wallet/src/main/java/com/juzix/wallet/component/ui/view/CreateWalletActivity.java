@@ -22,6 +22,7 @@ import com.juzix.wallet.component.ui.presenter.CreateWalletPresenter;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.utils.CheckStrength;
+import com.juzix.wallet.utils.SoftHideKeyboardUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -101,6 +102,7 @@ public class CreateWalletActivity extends MVPBaseActivity<CreateWalletPresenter>
         mEtRepeatPassword.setOnFocusChangeListener(this);
         showNameError("", false);
         showPasswordError("", false);
+        SoftHideKeyboardUtils.assistActivity(this);
     }
 
     private void enableCreate(boolean enabled) {

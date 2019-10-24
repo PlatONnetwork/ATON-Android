@@ -97,16 +97,12 @@ public class DelegateDetailTest {
     @Test
     public void testMoveOut() {
         DelegateDetail delegateDetail = mock(DelegateDetail.class);
-        delegateDetail.setStakingBlockNum("1007");
         delegateDetail.setWalletAddress("0xjfaskfjaskfa46545");
         delegateDetail.setNodeId("0x546a46ad4f5a65safa645");
-        delegateDetail.setDelegationBlockNum("1205");
         delegateDetail.setNodeName("node-123");
         delegateDetail.setNodeStatus("Active");
-        delegateDetail.setRedeem("120000000000000000000");
-        delegateDetail.setUnLocked("134000000000000000000");
-        delegateDetail.setRedeem("134000000000000000000");
         delegateDetail.setReleased("134000000000000000000");
+        delegateDetail.setDelegated("5238855000000000000000000");
         delegateDetail.setUrl("www.baidu.com");
         assertNotNull(delegateDetail);
 //        presenter.moveOut(delegateDetail);
@@ -139,46 +135,31 @@ public class DelegateDetailTest {
         List<DelegateDetail> detailList = new ArrayList<>();
 
         DelegateDetail delegateDetail = new DelegateDetail();
-        delegateDetail.setStakingBlockNum("1007");
         delegateDetail.setNodeId("0x546a46ad4f5a65safa645");
-        delegateDetail.setDelegationBlockNum("1205");
         delegateDetail.setNodeName("node-1");
         delegateDetail.setNodeStatus("Active");
-        delegateDetail.setRedeem("120000000000000000000");
-        delegateDetail.setUnLocked("134000000000000000000");
-        delegateDetail.setRedeem("134000000000000000000");
         delegateDetail.setReleased("134000000000000000000");
         delegateDetail.setUrl("www.baidu.com");
-        delegateDetail.setLocked("15890000000000000000");
+        delegateDetail.setDelegated("546800000000000000000");
         detailList.add(delegateDetail);
 
         DelegateDetail delegateDetail2 = new DelegateDetail();
-        delegateDetail.setStakingBlockNum("1007");
         delegateDetail.setNodeId("0x546a46ad4f5a65safa645");
-        delegateDetail.setDelegationBlockNum("1205");
         delegateDetail.setNodeName("node-2");
         delegateDetail.setNodeStatus("Active");
-        delegateDetail.setRedeem("120000000000000000000");
-        delegateDetail.setUnLocked("134000000000000000000");
-        delegateDetail.setRedeem("134000000000000000000");
         delegateDetail.setReleased("134000000000000000000");
         delegateDetail.setUrl("www.baidu.com");
-        delegateDetail.setLocked("15890000000000000000");
+        delegateDetail.setDelegated("546800000000000000000");
         detailList.add(delegateDetail2);
 
 
         DelegateDetail delegateDetail3 = new DelegateDetail();
-        delegateDetail.setStakingBlockNum("1007");
         delegateDetail.setNodeId("0x546a46ad4f5a65safa645");
-        delegateDetail.setDelegationBlockNum("1205");
         delegateDetail.setNodeName("node-3");
         delegateDetail.setNodeStatus("Active");
-        delegateDetail.setRedeem("120000000000000000000");
-        delegateDetail.setUnLocked("134000000000000000000");
-        delegateDetail.setRedeem("134000000000000000000");
         delegateDetail.setReleased("134000000000000000000");
         delegateDetail.setUrl("www.baidu.com");
-        delegateDetail.setLocked("15890000000000000000");
+        delegateDetail.setDelegated("546800000000000000000");
         detailList.add(delegateDetail3);
 
         List<DelegateDetail> list = Flowable.fromIterable(detailList)
