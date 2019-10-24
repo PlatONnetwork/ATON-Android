@@ -3,6 +3,7 @@ package com.juzix.wallet.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.juzix.wallet.R;
 import com.juzix.wallet.engine.TransactionManager;
 import com.juzix.wallet.utils.BigDecimalUtil;
@@ -37,6 +38,7 @@ public class TransactionAuthorizationBaseData implements Parcelable {
     /**
      * @see StakingAmountType
      */
+    @JSONField(name = "typ")
     protected int stakingAmountType;
 
     protected String nodeName;
@@ -284,6 +286,7 @@ public class TransactionAuthorizationBaseData implements Parcelable {
         }
     }
 
+    @JSONField(serialize = false,deserialize = false)
     public PlatOnFunction getPlatOnFunction() {
         if (functionType == FunctionType.DELEGATE_FUNC_TYPE) {
             return PlatOnFunctionFactory.createDelegateFunction(nodeId, StakingAmountType.getStakingAmountType(stakingAmountType), BigIntegerUtil.toBigInteger(amount));
@@ -294,6 +297,7 @@ public class TransactionAuthorizationBaseData implements Parcelable {
         }
     }
 
+    @JSONField(serialize = false,deserialize = false)
     public String getGasUsed() {
         return BigDecimalUtil.mul(gasPrice, gasLimit).toPlainString();
     }
