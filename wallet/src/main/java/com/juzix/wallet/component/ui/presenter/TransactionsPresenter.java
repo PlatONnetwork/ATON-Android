@@ -168,6 +168,9 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         Log.e(TAG, "onApiFailure");
+                        if(isViewAttached()){
+                            getView().notifyDataSetChanged(mTransactionMap.get(mWalletAddress), mTransactionMap.get(mWalletAddress), mWalletAddress, true);
+                        }
                     }
                 });
     }
