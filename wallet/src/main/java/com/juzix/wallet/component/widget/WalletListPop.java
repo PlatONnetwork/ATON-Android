@@ -43,15 +43,17 @@ public class WalletListPop extends PopupWindow {
     private boolean mDismissed = false;
     private int mDuration = 100;
     private int mContentHeight;
+    private int mSelectedWalletPosition = 0;
     private View mContentView;
     private OnWalletItemClickListener mWalletItemClickListener;
 
-    public WalletListPop(Context context, List<Wallet> walletList, OnWalletItemClickListener walletItemClickListener) {
+    public WalletListPop(Context context, List<Wallet> walletList, OnWalletItemClickListener walletItemClickListener,int selectedWalletPosition) {
         super(context);
         this.mWalletList = walletList;
         this.mContext = context;
         this.mWalletItemClickListener = walletItemClickListener;
         this.mContentHeight = walletList.size() > 5 ? DensityUtil.dp2px(context, 390) + DensityUtil.dp2px(context, 20) : DensityUtil.dp2px(context, 65) * walletList.size() + DensityUtil.dp2px(context, 20);
+        this.mSelectedWalletPosition = selectedWalletPosition;
 
         View rootView = LayoutInflater.from(context).inflate(R.layout.pop_select_wallets, null);
 
@@ -105,7 +107,7 @@ public class WalletListPop extends PopupWindow {
         mWalletListAdapter = new SelectWalletListAdapter(mWalletList, mWalletListView);
 
         mWalletListView.setAdapter(mWalletListAdapter);
-        mWalletListView.setItemChecked(0, true);
+        mWalletListView.setItemChecked(mSelectedWalletPosition, true);
         mWalletListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

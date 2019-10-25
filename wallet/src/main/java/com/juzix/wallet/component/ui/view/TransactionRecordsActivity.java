@@ -43,6 +43,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import io.reactivex.Flowable;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 import jnr.constants.platform.PRIO;
 
 public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecordsPresenter> implements TransactionRecordsContract.View {
@@ -145,7 +148,7 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
                             showSelectWalletInfo(wallet);
                             mPresenter.fetchTransactions(TransactionRecordsPresenter.DIRECTION_NEW, mAddressList, true);
                         }
-                    });
+                    }, getSelectedWalletPosition(selectedWallet));
                 }
                 if (mWalletListPop.isShowing()) {
                     mWalletListPop.dismiss();
@@ -189,6 +192,31 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
         if (unbinder != null) {
             unbinder.unbind();
         }
+    }
+
+    private int getSelectedWalletPosition(Wallet selectedWallet) {
+        if (selectedWallet == null || WalletManager.getInstance().getWalletList() == null || WalletManager.getInstance().getWalletList().isEmpty()) {
+            return 0;
+        }
+
+        return Flowable
+                .range(0, WalletManager.getInstance().getWalletList().size())
+                .filter(new Predicate<Integer>() {
+                    @Override
+                    public boolean test(Integer integer) throws Exception {
+                        return WalletManager.getInstance().getWalletList().get(integer).getPrefixAddress().equalsIgnoreCase(selectedWallet.getPrefixAddress());
+                    }
+                })
+                .map(new Function<Integer, Integer>() {
+                    @Override
+                    public Integer apply(Integer integer) throws Exception {
+                        return integer + 1;
+                    }
+                })
+                .firstElement()
+                .defaultIfEmpty(0)
+                .onErrorReturnItem(0)
+                .blockingGet();
     }
 
     private void showSelectWalletInfo(Wallet selectedWallet) {

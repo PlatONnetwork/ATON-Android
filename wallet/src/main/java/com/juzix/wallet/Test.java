@@ -8,6 +8,8 @@ public class Test {
         String b = "ab1";
 
         System.out.println(a == b);
+
+//        Byte/Short/Integer/Long/Float/Double/Char/
     }
 
 }
