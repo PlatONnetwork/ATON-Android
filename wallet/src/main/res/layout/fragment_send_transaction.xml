@@ -184,7 +184,6 @@
                 app:bsb_auto_adjust_section_mark="false"
                 app:bsb_colors="#ff28ADFF_#ff2092FF_#ff1877FE_#ff105CFE"
                 app:bsb_hide_bubble="true"
-                app:bsb_max="1"
                 app:bsb_second_track_color="@color/color_105cfe"
                 app:bsb_second_track_size="2dp"
                 app:bsb_section_count="1"

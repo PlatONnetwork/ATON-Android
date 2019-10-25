@@ -70,7 +70,6 @@ public class ValidatorsAdapter extends CommonAdapter<VerifyNode> {
           }else {
               tv_status.setText(item.getNodeStatus());
           }
-
     }
 
     private void isShowRA(Context context, VerifyNode item, TextView tv_yield) {
