@@ -107,7 +107,7 @@
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".component.ui.view.ManageIndividualWalletActivity"
+            android:name=".component.ui.view.ManageWalletActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity

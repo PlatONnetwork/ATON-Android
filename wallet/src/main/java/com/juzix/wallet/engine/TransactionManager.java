@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.juzhen.framework.network.ApiRequestBody;
+import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.util.LogUtils;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.app.Constants;
@@ -11,6 +13,7 @@ import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.app.CustomThrowable;
 import com.juzix.wallet.db.sqlite.TransactionDao;
 import com.juzix.wallet.entity.Transaction;
+import com.juzix.wallet.entity.TransactionReceipt;
 import com.juzix.wallet.entity.TransactionStatus;
 import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.entity.Wallet;
@@ -63,6 +66,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.Response;
 
 /**
  * @author matrixelement
@@ -201,41 +205,34 @@ public class TransactionManager {
                 .map(new Function<Long, Transaction>() {
                     @Override
                     public Transaction apply(Long aLong) throws Exception {
-                        Transaction trans = getTransactionByHash(transaction);
+                        Transaction tempTransaction = transaction.clone();
                         //如果pending时间超过4小时，则删除
                         if (System.currentTimeMillis() - transaction.getTimestamp() >= MAX_PENDING_TIME) {
-                            trans.setTxReceiptStatus(TransactionStatus.TIMEOUT.ordinal());
+                            tempTransaction.setTxReceiptStatus(TransactionStatus.TIMEOUT.ordinal());
                         } else {
-                            long latestBlockNumber = Web3jManager.getInstance().getLatestBlockNumber();
-                            long blockNumber = trans.getBlockNumber();
-                            TransactionStatus transactionStatus = blockNumber > 0 && latestBlockNumber - blockNumber >= 1 ? TransactionStatus.SUCCESSED : TransactionStatus.PENDING;
-                            trans.setTxReceiptStatus(transactionStatus.ordinal());
+                            TransactionReceipt transactionReceipt = getTransactionReceipt(tempTransaction.getHash());
+                            tempTransaction.setTxReceiptStatus(transactionReceipt.getStatus());
                         }
-                        return trans;
+                        return tempTransaction;
                     }
                 })
                 .takeUntil(new Predicate<Transaction>() {
                     @Override
                     public boolean test(Transaction transaction) throws Exception {
-                        return transaction.getTxReceiptStatus() == TransactionStatus.SUCCESSED || transaction.getTxReceiptStatus() == TransactionStatus.TIMEOUT;
+                        return transaction.getTxReceiptStatus() != TransactionStatus.PENDING;
                     }
                 })
                 .filter(new Predicate<Transaction>() {
                     @Override
                     public boolean test(Transaction transaction) throws Exception {
-                        return transaction.getTxReceiptStatus() == TransactionStatus.SUCCESSED;
-                    }
-                })
-                .doOnNext(new Consumer<Transaction>() {
-                    @Override
-                    public void accept(Transaction transaction) throws Exception {
-                        TransactionDao.deleteTransaction(transaction.getHash());
+                        return transaction.getTxReceiptStatus() != TransactionStatus.PENDING;
                     }
                 })
                 .doOnNext(new Consumer<Transaction>() {
                     @Override
                     public void accept(Transaction transaction) throws Exception {
                         if (transaction.getTxReceiptStatus() == TransactionStatus.SUCCESSED) {
+                            TransactionDao.deleteTransaction(transaction.getHash());
                             LogUtils.e("getIndividualTransactionByLoop 轮询交易成功" + transaction.toString());
                             EventPublisher.getInstance().sendUpdateTransactionEvent(transaction);
                         }
@@ -278,5 +275,38 @@ public class TransactionManager {
                 }
             }
         }, BackpressureStrategy.BUFFER).blockingFirst();
+    }
+
+    public TransactionReceipt getTransactionReceipt(String hash) {
+
+        return ServerUtils
+                .getCommonApi()
+                .getTransactionsStatus(ApiRequestBody.newBuilder()
+                        .put("hash", Arrays.asList(hash))
+                        .build())
+                .filter(new Predicate<Response<ApiResponse<List<TransactionReceipt>>>>() {
+                    @Override
+                    public boolean test(Response<ApiResponse<List<TransactionReceipt>>> apiResponseResponse) throws Exception {
+                        return apiResponseResponse != null && apiResponseResponse.isSuccessful();
+                    }
+                })
+                .filter(new Predicate<Response<ApiResponse<List<TransactionReceipt>>>>() {
+                    @Override
+                    public boolean test(Response<ApiResponse<List<TransactionReceipt>>> apiResponseResponse) throws Exception {
+                        List<TransactionReceipt> transactionReceiptList = apiResponseResponse.body().getData();
+                        return transactionReceiptList != null && !transactionReceiptList.isEmpty();
+                    }
+                })
+                .map(new Function<Response<ApiResponse<List<TransactionReceipt>>>, TransactionReceipt>() {
+                    @Override
+                    public TransactionReceipt apply(Response<ApiResponse<List<TransactionReceipt>>> apiResponseResponse) throws Exception {
+                        return apiResponseResponse.body().getData().get(0);
+                    }
+                })
+                .defaultIfEmpty(new TransactionReceipt(TransactionStatus.PENDING.ordinal(), hash))
+                .onErrorReturnItem(new TransactionReceipt(TransactionStatus.PENDING.ordinal(), hash))
+                .toSingle()
+                .blockingGet();
+
     }
 }

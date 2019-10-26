@@ -181,7 +181,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                     @Override
                     public void accept(Object o) {
                         //点击全部
-                        mPresenter.getAllPrice(stakingAmountType,amount.getText().toString().replace(",", ""));
+                        mPresenter.getAllPrice(stakingAmountType, amount.getText().toString().replace(",", ""));
                         isAll = true;
                     }
                 });
@@ -441,21 +441,21 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
      * 点击所有获取到的手续费
      */
     @Override
-    public void showAllGasPrice(String allPrice) {
+    public void showAllGasPrice(StakingAmountType stakingAmountType, String allPrice) {
         fee.setText(allPrice);
-        if (Double.valueOf(allPrice) > 0) {
+        if (NumberParserUtils.parseDouble(allPrice) > 0) {
             tv_lat.setVisibility(View.VISIBLE);
         } else {
             tv_lat.setVisibility(View.GONE);
         }
-        double diff = BigDecimalUtil.sub(amount.getText().toString().replace(",", ""), allPrice);// 剩余的余额和手续费相减
+        double balance = NumberParserUtils.parseDouble(amount.getText().toString().replace(",", ""));
+        double diff = stakingAmountType == StakingAmountType.FREE_AMOUNT_TYPE ? BigDecimalUtil.sub(balance, NumberParserUtils.parseDouble(allPrice)) : balance;// 剩余的余额和手续费相减
         if (diff < 0) {
             et_amount.setText(BigDecimalUtil.parseString(0.00));
             ToastUtil.showLongToast(getContext(), R.string.delegate_less_than_fee);
         } else {
             et_amount.setText(BigDecimalUtil.parseString(diff));
         }
-
         delegate_fee = allPrice;
     }
 

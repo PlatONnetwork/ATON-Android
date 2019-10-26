@@ -6,7 +6,7 @@ import com.juzix.wallet.entity.Wallet;
 
 import org.web3j.crypto.Credentials;
 
-public class ManageIndividualWalletContract {
+public class ManageWalletContract {
 
     public interface View extends IView {
         int TYPE_DELETE_WALLET       = -1;

@@ -52,7 +52,7 @@
                 android:src="@drawable/icon_copy"
                 android:layout_alignParentRight="true"/>
 
-            <TextView
+            <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/tv_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -60,7 +60,9 @@
                 android:layout_marginTop="8dp"
                 android:textColor="@color/color_b6bbd0"
                 android:textSize="14sp"
-                tools:text="0x493301712671Ada506ba6Ca7891F436D29185821" />
+                android:lines="1"
+                android:autoSizeTextType="uniform"
+                tools:text="0x493301712671Ada506ba6Ca7891F436D291858210x4933017" />
 
             <View
                 android:layout_width="match_parent"

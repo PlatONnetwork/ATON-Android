@@ -14,11 +14,12 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="-10.345.21"
+        android:textStyle="bold"
         android:visibility="gone"/>
 
     <TextView
         android:id="@+id/tv_from"
-        style="@style/Text.000.15"
+        style="@style/Text.000.14"
         android:layout_marginTop="15dp"
         app:layout_goneMarginTop="0dp"
         android:drawableLeft="@drawable/avatar_1"
@@ -43,7 +44,7 @@
 
     <TextView
         android:id="@+id/tv_to"
-        style="@style/Text.000.15"
+        style="@style/Text.000.14"
         android:drawableLeft="@drawable/avatar_1"
         android:drawablePadding="4dp"
         app:layout_constraintBottom_toBottomOf="@id/tv_from"

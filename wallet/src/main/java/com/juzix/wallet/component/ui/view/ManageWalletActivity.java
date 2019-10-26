@@ -15,15 +15,14 @@ import android.widget.TextView;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
-import com.juzix.wallet.component.ui.contract.ManageIndividualWalletContract;
+import com.juzix.wallet.component.ui.contract.ManageWalletContract;
 import com.juzix.wallet.component.ui.dialog.CommonEditDialogFragment;
 import com.juzix.wallet.component.ui.dialog.CommonTipsDialogFragment;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
-import com.juzix.wallet.component.ui.presenter.ManageIndividualWalletPresenter;
+import com.juzix.wallet.component.ui.presenter.ManageWalletPresenter;
 import com.juzix.wallet.component.widget.CommonTitleBar;
 import com.juzix.wallet.entity.Wallet;
-import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.CommonUtil;
 
 import org.web3j.crypto.Credentials;
@@ -33,9 +32,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-public class ManageIndividualWalletActivity extends MVPBaseActivity<ManageIndividualWalletPresenter> implements ManageIndividualWalletContract.View {
-
-    private final static String TAG = ManageIndividualWalletActivity.class.getSimpleName();
+public class ManageWalletActivity extends MVPBaseActivity<ManageWalletPresenter> implements ManageWalletContract.View {
 
     @BindView(R.id.commonTitleBar)
     CommonTitleBar commonTitleBar;
@@ -58,8 +55,8 @@ public class ManageIndividualWalletActivity extends MVPBaseActivity<ManageIndivi
     private Unbinder unbinder;
 
     @Override
-    protected ManageIndividualWalletPresenter createPresenter() {
-        return new ManageIndividualWalletPresenter(this);
+    protected ManageWalletPresenter createPresenter() {
+        return new ManageWalletPresenter(this);
     }
 
     @Override
@@ -152,7 +149,7 @@ public class ManageIndividualWalletActivity extends MVPBaseActivity<ManageIndivi
             public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
                 String text = extra.getString(Constants.Bundle.BUNDLE_TEXT);
                 if (text.length() > 12) {
-                    CommonTipsDialogFragment.createDialogWithTitleAndOneButton(ContextCompat.getDrawable(ManageIndividualWalletActivity.this, R.drawable.icon_dialog_tips),
+                    CommonTipsDialogFragment.createDialogWithTitleAndOneButton(ContextCompat.getDrawable(ManageWalletActivity.this, R.drawable.icon_dialog_tips),
                             string(R.string.formatError), string(R.string.validWalletNameTips), string(R.string.understood), new OnDialogViewClickListener() {
                                 @Override
                                 public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
@@ -217,7 +214,7 @@ public class ManageIndividualWalletActivity extends MVPBaseActivity<ManageIndivi
     }
 
     public static void actionStart(Context context, Wallet walletEntity) {
-        Intent intent = new Intent(context, ManageIndividualWalletActivity.class);
+        Intent intent = new Intent(context, ManageWalletActivity.class);
         intent.putExtra(Constants.Extra.EXTRA_WALLET, walletEntity);
         context.startActivity(intent);
     }

@@ -52,7 +52,7 @@ public class DelegateContract {
         /**
          * 显示全部的手续费
          */
-        void showAllGasPrice(String allPrice);
+        void showAllGasPrice(StakingAmountType stakingAmountType,String allPrice);
 
         /**
          * 获取手续费

@@ -8,6 +8,7 @@ import com.juzix.wallet.entity.DelegateDetail;
 import com.juzix.wallet.entity.DelegateHandle;
 import com.juzix.wallet.entity.DelegateInfo;
 import com.juzix.wallet.entity.Transaction;
+import com.juzix.wallet.entity.TransactionReceipt;
 import com.juzix.wallet.entity.VerifyNode;
 import com.juzix.wallet.entity.VerifyNodeDetail;
 import com.juzix.wallet.entity.VotedCandidate;
@@ -171,6 +172,7 @@ public interface BaseApi {
 
     /**
      * 是否允许委托及原因
+     *
      * @param id
      * @param body
      * @return
@@ -178,5 +180,12 @@ public interface BaseApi {
     @POST("app/v0700/node/canDelegation")
     Single<Response<ApiResponse<DelegateHandle>>> getIsDelegateInfo(@Body ApiRequestBody body);
 
-
+    /**
+     * 批量查询交易记录状态
+     *
+     * @param body
+     * @return
+     */
+    @POST("app/v0700/transaction/getTransactionsStatus")
+    Single<Response<ApiResponse<List<TransactionReceipt>>>> getTransactionsStatus(@Body ApiRequestBody body);
 }
