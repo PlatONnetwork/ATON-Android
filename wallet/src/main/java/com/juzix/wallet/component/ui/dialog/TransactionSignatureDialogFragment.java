@@ -280,13 +280,13 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
             afterTransferSucceed(transaction);
         } else if (transactionSignatureData.getFunctionType() == FunctionType.DELEGATE_FUNC_TYPE) {
             transaction.setTxType(String.valueOf(TransactionType.DELEGATE.getTxTypeValue()));
-            DelegateManager.getInstance().getTransactionResult(platonSendTransaction, transaction);
+            TransactionManager.getInstance().getTransactionByLoop(transaction);
             if (sendTransactionSucceedListener != null) {
                 sendTransactionSucceedListener.onSendTransactionSucceed(transaction);
             }
         } else if (transactionSignatureData.getFunctionType() == FunctionType.WITHDREW_DELEGATE_FUNC_TYPE) {
             transaction.setTxType(String.valueOf(TransactionType.UNDELEGATE.getTxTypeValue()));
-            DelegateManager.getInstance().getTransactionResult(platonSendTransaction, transaction);
+            TransactionManager.getInstance().getTransactionByLoop(transaction);
             if (sendTransactionSucceedListener != null) {
                 sendTransactionSucceedListener.onSendTransactionSucceed(transaction);
             }
