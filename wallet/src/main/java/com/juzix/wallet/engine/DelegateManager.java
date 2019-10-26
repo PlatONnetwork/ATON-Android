@@ -106,51 +106,10 @@ public class DelegateManager {
                 .doOnSuccess(new Consumer<Transaction>() {
                     @Override
                     public void accept(Transaction transaction) throws Exception {
-                        getTransactionResult(platonSendTransaction, transaction);
+                        TransactionManager.getInstance().getTransactionByLoop(transaction);
                     }
                 })
                 .toSingle();
-    }
-
-
-    /**
-     * 获取委托结果，是否交易成功
-     *
-     * @param platonSendTransaction
-     * @return
-     */
-    public void getTransactionResult(PlatonSendTransaction platonSendTransaction, Transaction transaction) {
-        Transaction tempTransaction = transaction.clone();
-        Single
-                .fromCallable(new Callable<TransactionReceipt>() {
-                    @Override
-                    public TransactionReceipt call() throws Exception {
-                       return TransactionManager.getInstance().getTransactionReceipt(transaction.getHash());
-                    }
-                })
-                .map(new Function<TransactionReceipt, Transaction>() {
-                    @Override
-                    public Transaction apply(TransactionReceipt transactionReceipt) throws Exception {
-                        tempTransaction.setTxReceiptStatus(transactionReceipt.getStatus());
-                        return tempTransaction;
-                    }
-                })
-                .filter(new Predicate<Transaction>() {
-                    @Override
-                    public boolean test(Transaction transaction) throws Exception {
-                        return TransactionDao.deleteTransaction(transaction.getHash());
-                    }
-                })
-                .doOnSuccess(new Consumer<Transaction>() {
-                    @Override
-                    public void accept(Transaction transaction) throws Exception {
-                        EventPublisher.getInstance().sendUpdateTransactionEvent(transaction);
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .subscribe();
-
-
     }
 
     public Observable<Transaction> withdraw(Credentials credentials, String to, String nodeId, String nodeName, String feeAmount, String stakingBlockNum, String amount, String transactionType, GasProvider GasProvider) {

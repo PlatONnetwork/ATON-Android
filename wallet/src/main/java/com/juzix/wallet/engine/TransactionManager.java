@@ -259,25 +259,7 @@ public class TransactionManager {
 
     }
 
-    private Transaction getTransactionByHash(final Transaction transaction) {
-        final Transaction tempTransaction = transaction.clone();
-        return Flowable.create(new FlowableOnSubscribe<Transaction>() {
-            @Override
-            public void subscribe(FlowableEmitter<Transaction> emitter) throws Exception {
-                org.web3j.protocol.core.methods.response.Transaction transaction = Web3jManager.getInstance().getTransactionByHash(tempTransaction.getHash());
-                if (transaction == null) {
-                    emitter.onNext(tempTransaction);
-                } else {
-                    double actualTxCost = BigDecimalUtil.mul(transaction.getGas().doubleValue(), transaction.getGasPrice().doubleValue());
-                    tempTransaction.setActualTxCost(String.valueOf(actualTxCost));
-                    tempTransaction.setBlockNumber(transaction.getBlockNumber().longValue());
-                    emitter.onNext(tempTransaction);
-                }
-            }
-        }, BackpressureStrategy.BUFFER).blockingFirst();
-    }
-
-    public TransactionReceipt getTransactionReceipt(String hash) {
+    private TransactionReceipt getTransactionReceipt(String hash) {
 
         return ServerUtils
                 .getCommonApi()
