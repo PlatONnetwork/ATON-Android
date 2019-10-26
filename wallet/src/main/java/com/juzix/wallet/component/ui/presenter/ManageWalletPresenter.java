@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import com.juzhen.framework.network.SchedulersTransformer;
 import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
-import com.juzix.wallet.component.ui.contract.ManageIndividualWalletContract;
+import com.juzix.wallet.component.ui.contract.ManageWalletContract;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.dialog.ObservedWalletDialogFragment;
 import com.juzix.wallet.component.ui.view.BackupMnemonicPhraseActivity;
@@ -29,11 +29,11 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 
-public class ManageIndividualWalletPresenter extends BasePresenter<ManageIndividualWalletContract.View> implements ManageIndividualWalletContract.Presenter {
+public class ManageWalletPresenter extends BasePresenter<ManageWalletContract.View> implements ManageWalletContract.Presenter {
 
     private Wallet mWalletEntity;
 
-    public ManageIndividualWalletPresenter(ManageIndividualWalletContract.View view) {
+    public ManageWalletPresenter(ManageWalletContract.View view) {
         super(view);
         mWalletEntity = getView().getWalletEntityFromIntent();
     }
@@ -59,13 +59,13 @@ public class ManageIndividualWalletPresenter extends BasePresenter<ManageIndivid
 
     @Override
     public void validPassword(int viewType, Credentials credentials) {
-        if (viewType == ManageIndividualWalletContract.View.TYPE_MODIFY_NAME
-                || viewType == ManageIndividualWalletContract.View.TYPE_DELETE_WALLET) {
+        if (viewType == ManageWalletContract.View.TYPE_MODIFY_NAME
+                || viewType == ManageWalletContract.View.TYPE_DELETE_WALLET) {
             deleteWallet();
-        } else if (viewType == ManageIndividualWalletContract.View.TYPE_EXPORT_PRIVATE_KEY) {
+        } else if (viewType == ManageWalletContract.View.TYPE_EXPORT_PRIVATE_KEY) {
             String privateKey = Numeric.toHexStringNoPrefixZeroPadded(credentials.getEcKeyPair().getPrivateKey(), Keys.PRIVATE_KEY_LENGTH_IN_HEX);
             ExportPrivateKeyActivity.actionStart(getContext(), privateKey);
-        } else if (viewType == ManageIndividualWalletContract.View.TYPE_EXPORT_KEYSTORE) {
+        } else if (viewType == ManageWalletContract.View.TYPE_EXPORT_KEYSTORE) {
             ExportKeystoreActivity.actionStart(getContext(), mWalletEntity.getKey());
         }
     }

@@ -2,19 +2,13 @@ package com.juzix.wallet;
 
 import android.text.TextUtils;
 
-import com.juzix.wallet.app.LoadingTransformer;
-import com.juzix.wallet.component.ui.contract.AssetsContract;
-import com.juzix.wallet.component.ui.contract.ManageIndividualWalletContract;
-import com.juzix.wallet.component.ui.presenter.AssetsPresenter;
-import com.juzix.wallet.component.ui.presenter.ManageIndividualWalletPresenter;
+import com.juzix.wallet.component.ui.contract.ManageWalletContract;
+import com.juzix.wallet.component.ui.presenter.ManageWalletPresenter;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.engine.NodeManager;
-import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.Wallet;
-import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.rxjavatest.RxJavaTestSchedulerRule;
 import com.juzix.wallet.schedulers.SchedulerTestProvider;
-import com.juzix.wallet.utils.RxUtils;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -44,10 +38,10 @@ import static org.mockito.Mockito.mock;
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 27, manifest = Config.NONE)
 public class ManageIndividualWalletPresenterTest {
-    private ManageIndividualWalletPresenter presenter;
+    private ManageWalletPresenter presenter;
 
     @Mock
-    private ManageIndividualWalletContract.View view;
+    private ManageWalletContract.View view;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -65,8 +59,8 @@ public class ManageIndividualWalletPresenterTest {
         //输出日志
         ShadowLog.stream = System.out;
         schedulerTestProvider = new SchedulerTestProvider();
-        view = mock(ManageIndividualWalletContract.View.class);
-        presenter = new ManageIndividualWalletPresenter(view);
+        view = mock(ManageWalletContract.View.class);
+        presenter = new ManageWalletPresenter(view);
         presenter.attachView(view);
         appSettings.init(RuntimeEnvironment.application);
     }

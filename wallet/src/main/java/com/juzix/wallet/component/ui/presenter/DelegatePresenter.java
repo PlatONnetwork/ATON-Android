@@ -59,6 +59,9 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class DelegatePresenter extends BasePresenter<DelegateContract.View> implements DelegateContract.Presenter {
+
+    private final static BigInteger DEFAULT_EXCHANGE_RATE = BigInteger.valueOf(1000000000000000000L);
+
     private Wallet mWallet;
     private DelegateDetail mDelegateDetail;
 
@@ -250,19 +253,41 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                             Log.d("gasprovide", "========getAllPrice======" + gasProvider.getGasLimit());
                             BigDecimal mul = BigDecimalUtil.mul(gasProvider.getGasLimit().toString(), gas_Price.toString());
                             feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(mul.toString(), "1E18"));
-                            getView().showAllGasPrice(feeAmount);
+                            getView().showAllGasPrice(stakingAmountType, feeAmount);
                         }
                     });
         }
     }
 
-    private String checkDelegateParam(DelegateHandle delegateHandle) {
+    /**
+     * 检查余额是否充足
+     * 1.当用自由金额委托时，判断自由金额是否大于委托金额与手续费的和
+     * 2.当用锁仓金额委托时，手续费是从自由金额扣除的，这时候就需要考虑两个条件
+     * 1.锁仓金额是否够委托金额
+     * 2.自由金额是否够手续费
+     *
+     * @param delegateHandle
+     * @param stakingAmountType
+     * @return
+     */
+    private String checkDelegateParam(DelegateHandle delegateHandle, StakingAmountType stakingAmountType) {
 
-        BigDecimal usedAmount = BigDecimalUtil.add(getView().getDelegateAmount(), getView().getFeeAmount());
-        BigDecimal balanceAmount = new BigDecimal(getView().getChooseBalance());
-        boolean isBalanceNotEnough = balanceAmount.compareTo(usedAmount) < 0;
+        BigDecimal feeAmount = new BigDecimal(getView().getFeeAmount()).multiply(new BigDecimal(DEFAULT_EXCHANGE_RATE));
+        BigDecimal delegateAmount = new BigDecimal(getView().getDelegateAmount()).multiply(new BigDecimal(DEFAULT_EXCHANGE_RATE));
+        BigDecimal freeAmount = new BigDecimal(delegateHandle.getFree());
+        BigDecimal lockAmount = new BigDecimal(delegateHandle.getLock());
 
-        if (isBalanceNotEnough) {
+
+        //自由金额是否够委托金额与手续费的和
+        boolean isFreeAmountNotEnoughDelegateAmount = freeAmount.compareTo(feeAmount.add(delegateAmount)) < 0;
+        //自由金额是否够手续费
+        boolean isFreeAmountNotEnoughFeeAmount = freeAmount.compareTo(feeAmount) < 0;
+        //锁仓金额是否够委托金额
+        boolean isLockAmountNotEnough = lockAmount.compareTo(delegateAmount) < 0;
+        //金额不足
+        boolean isNotEnough = stakingAmountType == StakingAmountType.FREE_AMOUNT_TYPE ? isFreeAmountNotEnoughDelegateAmount : isFreeAmountNotEnoughFeeAmount || isLockAmountNotEnough;
+
+        if (isNotEnough) {
             return string(R.string.insufficient_balance_unable_to_delegate);
         }
         return delegateHandle.getMessageDesc(getContext());
@@ -280,7 +305,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                         @Override
                         public void onApiSuccess(DelegateHandle delegateHandle) {
                             if (isViewAttached()) {
-                                String errMsg = checkDelegateParam(delegateHandle);
+                                String errMsg = checkDelegateParam(delegateHandle, stakingAmountType);
                                 if (!TextUtils.isEmpty(errMsg)) {
                                     showLongToast(errMsg);
                                 } else {
