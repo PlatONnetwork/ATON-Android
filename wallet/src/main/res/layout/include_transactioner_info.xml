@@ -9,7 +9,7 @@
     android:paddingBottom="15dp">
 
     <TextView
-        style="@style/Text.61646e.14"
+        style="@style/Text.000.14"
         android:text="@string/fromAddress" />
 
     <android.support.constraint.ConstraintLayout
@@ -51,7 +51,7 @@
     </android.support.constraint.ConstraintLayout>
 
     <TextView
-        style="@style/Text.61646e.14"
+        style="@style/Text.000.14"
         android:layout_marginTop="15dp"
         android:text="@string/toAddress" />
 

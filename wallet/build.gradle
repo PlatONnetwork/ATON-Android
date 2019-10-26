@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
-//apply plugin: 'org.sonarqube'
+apply plugin: 'org.sonarqube'
 
 // 注：需要配置符号表时，使用bugly插件
 apply plugin: 'bugly'

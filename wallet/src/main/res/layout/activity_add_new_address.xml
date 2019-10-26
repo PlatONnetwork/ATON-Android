@@ -40,7 +40,7 @@
 
         <EditText
             android:id="@+id/et_address_name"
-            style="@style/Text.000.13"
+            style="@style/Text.000.14"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:background="@drawable/bg_edittext_underline"
@@ -71,7 +71,7 @@
 
             <EditText
                 android:id="@+id/et_address"
-                style="@style/Text.000.13"
+                style="@style/Text.000.14"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:background="@drawable/bg_edittext_underline"

@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.db.sqlite.TransactionDao;
 import com.juzix.wallet.entity.Transaction;
+import com.juzix.wallet.entity.TransactionReceipt;
 import com.juzix.wallet.entity.TransactionStatus;
 import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.event.EventPublisher;
@@ -121,26 +122,16 @@ public class DelegateManager {
     public void getTransactionResult(PlatonSendTransaction platonSendTransaction, Transaction transaction) {
         Transaction tempTransaction = transaction.clone();
         Single
-                .fromCallable(new Callable<BaseResponse>() {
+                .fromCallable(new Callable<TransactionReceipt>() {
                     @Override
-                    public BaseResponse call() throws Exception {
-                        if (tempTransaction.getTxType() == TransactionType.UNDELEGATE) {
-                            return DelegateContract.load(Web3jManager.getInstance().getWeb3j()).getUnDelegateResult(platonSendTransaction).send();
-                        } else {
-                            return DelegateContract.load(Web3jManager.getInstance().getWeb3j()).getDelegateResult(platonSendTransaction).send();
-                        }
+                    public TransactionReceipt call() throws Exception {
+                       return TransactionManager.getInstance().getTransactionReceipt(transaction.getHash());
                     }
                 })
-                .onErrorReturn(new Function<Throwable, BaseResponse>() {
+                .map(new Function<TransactionReceipt, Transaction>() {
                     @Override
-                    public BaseResponse apply(Throwable throwable) throws Exception {
-                        return new BaseResponse(throwable);
-                    }
-                })
-                .map(new Function<BaseResponse, Transaction>() {
-                    @Override
-                    public Transaction apply(BaseResponse baseResponse) throws Exception {
-                        tempTransaction.setTxReceiptStatus(baseResponse.isStatusOk() ? TransactionStatus.SUCCESSED.ordinal() : TransactionStatus.FAILED.ordinal());
+                    public Transaction apply(TransactionReceipt transactionReceipt) throws Exception {
+                        tempTransaction.setTxReceiptStatus(transactionReceipt.getStatus());
                         return tempTransaction;
                     }
                 })

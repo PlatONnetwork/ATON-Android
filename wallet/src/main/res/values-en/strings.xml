@@ -325,7 +325,7 @@
     <string name="weibo">Weibo</string>
     <string name="qq">QQ</string>
     <string name="all">ALL</string>
-    <string name="action_send_all">ALL</string>
+    <string name="action_send_all">Send all</string>
     <string name="balance_text">Balance:&#160;%1$s&#160;LAT</string>
     <string name="fee">Fee</string>
     <string name="transaction_fee">Fee</string>

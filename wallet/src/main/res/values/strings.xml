@@ -400,7 +400,7 @@
     <string name="voteTicketCreateWalletTips">请先创建钱包</string>
     <string name="paste">粘贴</string>
     <string name="skip">跳过</string>
-    <string name="save_to_address_book">保存到地址薄</string>
+    <string name="save_to_address_book">保存至地址薄</string>
     <string name="hint_search_vote">输入节点账户查询</string>
     <string name="vote_rate_with_colon_and_value">投票率：%1$s</string>
     <string name="vote_rate_with_colon">投票率：%1$</string>

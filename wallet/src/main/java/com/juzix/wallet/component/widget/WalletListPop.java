@@ -6,6 +6,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
@@ -217,7 +218,12 @@ public class WalletListPop extends PopupWindow {
             if (avatar != -1) {
                 viewHolder.walletAvatarIv.setImageResource(avatar);
             }
-            viewHolder.selectedIv.setVisibility(mListView != null && mListView.getCheckedItemPosition() == position ? View.VISIBLE : View.GONE);
+
+            boolean isSelected = mListView != null && mListView.getCheckedItemPosition() == position;
+
+            viewHolder.selectedIv.setVisibility(isSelected ? View.VISIBLE : View.GONE);
+            viewHolder.walletNameTv.setTextAppearance(parent.getContext(),isSelected ? R.style.Text_000000_16:R.style.Text_898c9e_16);
+            viewHolder.walletNameTv.setTypeface(isSelected ? Typeface.DEFAULT_BOLD:Typeface.DEFAULT);
 
             return convertView;
         }
