@@ -11,6 +11,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.juzhen.framework.util.LogUtils;
 import com.juzix.wallet.R;
 
 public class AssetsTabStrip extends LinearLayout {
@@ -45,7 +46,7 @@ public class AssetsTabStrip extends LinearLayout {
     private final boolean indicatorWithoutPadding;
     private final boolean indicatorAlwaysInCenter;
     private final boolean indicatorInFront;
-    private final int indicatorWidth;
+    private int indicatorWidth;
     private final int indicatorGravity;
     private final Paint indicatorPaint;
     private final int dividerThickness;
