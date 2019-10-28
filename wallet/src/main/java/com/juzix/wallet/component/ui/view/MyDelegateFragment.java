@@ -255,7 +255,11 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
         }
 
     }
-
+    //接收tab切换到当前页面的时候，刷新
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void refreshTabChange(Event.UpdateTabChangeEvent event) {
+        refreshLayout.autoRefresh();
+    }
     @Override
     public void onTabHidden() {
         super.onTabHidden();

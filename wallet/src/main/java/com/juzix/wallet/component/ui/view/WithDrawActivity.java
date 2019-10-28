@@ -302,7 +302,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
 
     @Override
     public void showTips(boolean isShow) {
-        tips.setText(getString(R.string.delegate_amount_tips));
+        tips.setText(getString(R.string.withdraw_amount_tips));
         tips.setVisibility(isShow ? View.VISIBLE : View.INVISIBLE);
     }
 

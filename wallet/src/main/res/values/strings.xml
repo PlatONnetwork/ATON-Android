@@ -531,7 +531,7 @@
     <string name="validators_candidate">候选中</string>
     <string name="validators_detail">节点详情</string>
     <string name="total_staked">总质押(LAT)</string>
-    <string name="delegations">接受委托</string>
+    <string name="delegations">接受委托(LAT)</string>
     <string name="delegators">委托者</string>
     <string name="slash">处罚次数</string>
     <string name="blocks">已出块数</string>
@@ -547,7 +547,7 @@
     <string name="delegate_node">说明</string>
     <string name="delegate_node_des">赎回交易提交成功,委托的Token可立即到账;\n待赎回委托必须一次性全部赎回;\n赎回数量扣除后,已委托剩余数量少于10LAT时,自动赎回全部</string>
     <string name="delegations_title">委托</string>
-    <string name="delegations_title_explain">委托的Token可以随时赎回，委托后大约在6.1小时内完成锁定，锁定后可以参与节点收益分配，但是赎回锁定的委托大约等待6.1小时才能到账;</string>
+    <string name="delegations_title_explain">委托的Token所有权永远归于委托人，用户可以随时赎回委托的Token。\n验证节点关联的操作地址和奖励接收地址不允许参与委托。</string>
     <string name="rewards_title">收益</string>
     <string name="rewards_title_explain">委托收益来自节点的收益分配，节点收益主要有出块奖励、质押奖励和区块手续费奖励。具体如何分配请查看各节点官网说明。</string>
     <string name="risk_title">风险</string>
@@ -685,5 +685,5 @@
     <string name="web_url_agreement">https://platon.zendesk.com/hc/zh-cn/categories/360002174434</string>
     <string name="web_url_support_feedback">https://platon.zendesk.com/hc/zh-cn/categories/360002174434</string>
     <string name="web_url_common_delegate_problem">https://platon.zendesk.com/hc/zh-cn/articles/360037373194-Common-questions-about-PlatON-Delegators</string>
-
+    <string name="withdraw_amount_tips">赎回数量不能少于10LAT</string>
 </resources>

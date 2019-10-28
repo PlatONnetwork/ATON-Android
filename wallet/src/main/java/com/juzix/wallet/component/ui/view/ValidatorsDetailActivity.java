@@ -209,17 +209,17 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
             nodeState.setText(getString(R.string.validators_state_exiting));
         }
 
-        rate.setText(nodeDetail.isInit() ? "— —" : (NumberParserUtils.parseDouble(nodeDetail.getRatePA())) / 100 + "%");
+        rate.setText(nodeDetail.isInit() ? "- -" : (NumberParserUtils.parseDouble(nodeDetail.getRatePA())) / 100 + "%");
 
         if (TextUtils.isEmpty(nodeDetail.getDeposit())) {
-            totalStaked.setText("--");
+            totalStaked.setText("- -");
         } else {
             totalStaked.setText(StringUtil.formatBalance(NumberParserUtils.parseDouble
                     (NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(nodeDetail.getDeposit(), "1E18"))), false)); //总质押
         }
 
         if (TextUtils.isEmpty(nodeDetail.getDelegateSum())) {
-            delegation.setText("--");
+            delegation.setText("- -");
         } else {
             delegation.setText(StringUtil.formatBalance(NumberParserUtils.parseDouble
                     (NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(nodeDetail.getDelegateSum(), "1E18"))), false)); // //接受委托
@@ -227,7 +227,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
 
         delegators.setText(nodeDetail.getDelegate());
         slash.setText(nodeDetail.getPunishNumber() + "");  //处罚次数
-        blocks.setText(nodeDetail.getBlockOutNumber() == 0 ? "— —" : nodeDetail.getBlockOutNumber() + "");
+        blocks.setText(nodeDetail.getBlockOutNumber() == 0 ? "--" : nodeDetail.getBlockOutNumber() + "");
         blockRate.setText(NumberParserUtils.parseDouble(nodeDetail.getBlockRate()) / 100 + "%");
 
         introduction.setText(nodeDetail.getIntro());

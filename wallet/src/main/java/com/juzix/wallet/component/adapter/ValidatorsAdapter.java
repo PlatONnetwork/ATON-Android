@@ -76,7 +76,7 @@ public class ValidatorsAdapter extends CommonAdapter<VerifyNode> {
         if (!item.isInit()) {
             tv_yield.setText(NumberFormat.getInstance().format(((NumberParserUtils.parseDouble(item.getRatePA())) / 100)) + "%");
         } else {
-            tv_yield.setText("— —");
+            tv_yield.setText("- -");
         }
 
     }

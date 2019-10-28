@@ -68,8 +68,9 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
         showTextSpan(mContext, detail, nodeState);
         changeTextViewColorByState(holder.nodeState, detail.getNodeStatus());
 
-        holder.tv_delegated.setText(TextUtils.equals(detail.getDelegated(), "0") ? "--" : StringUtil.formatBalance(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getDelegated(), "1E18"))));
-        holder.tv_withdraw.setText(TextUtils.equals(detail.getReleased(), "0") ? "--" : StringUtil.formatBalance(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getReleased(), "1E18"))));
+        holder.tv_delegated.setText(TextUtils.equals(detail.getDelegated(), "0") ? "- -" : StringUtil.formatBalance(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getDelegated(), "1E18"))));
+        holder.tv_withdraw.setText(TextUtils.equals(detail.getReleased(), "0") ? "- -" : StringUtil.formatBalance(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getReleased(), "1E18"))));
+
 
 
         //委托按钮置灰不可点击( a.节点退出中或已退出 /b.节点状态为初始化验证人（收益地址为激励池地址的验证人）)

@@ -128,6 +128,7 @@ public class ManageWalletActivity extends MVPBaseActivity<ManageWalletPresenter>
     //显示钱包基本信息
     @Override
     public void showWalletInfo(Wallet wallet) {
+        commonTitleBar.setTitle(wallet.getName());
         tvReName.setText(wallet.getName());
         tvAddress.setText(wallet.getPrefixAddress());
         if (TextUtils.isEmpty(wallet.getKey())) {
