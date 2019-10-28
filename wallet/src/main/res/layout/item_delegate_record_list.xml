@@ -88,7 +88,6 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="44dp"
-            android:layout_marginBottom="15dp"
             android:background="@drawable/bg_mydelegate_item">
 
             <TextView

@@ -28,6 +28,7 @@ import com.juzix.wallet.entity.TransactionStatus;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.RxUtils;
 import com.trello.rxlifecycle2.android.FragmentEvent;
+import com.umeng.commonsdk.debug.D;
 
 import org.reactivestreams.Publisher;
 
@@ -118,7 +119,9 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                             Collections.sort(newTransactionList);
                             getView().notifyDataSetChanged(transactions, newTransactionList, mWalletAddress, true);
 
-                            mTransactionMap.put(mWalletAddress,newTransactionList);
+                            mTransactionMap.put(mWalletAddress, newTransactionList);
+
+                            deleteExceptionalTransaction(transactions, newTransactionList);
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -156,12 +159,13 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                         if (isViewAttached()) {
                             //先进行排序
                             List<Transaction> transactions = mTransactionMap.get(mWalletAddress);
-
                             List<Transaction> newTransactionList = getNewTransactionList(transactions, transactionList, true);
                             Collections.sort(newTransactionList);
                             getView().notifyDataSetChanged(transactions, newTransactionList, mWalletAddress, false);
 
-                            mTransactionMap.put(mWalletAddress,newTransactionList);
+                            mTransactionMap.put(mWalletAddress, newTransactionList);
+
+                            deleteExceptionalTransaction(transactions, newTransactionList);
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -212,6 +216,40 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                 mTransactionMap.put(mWalletAddress,newTransactionList);
             }
         }
+    }
+
+    /**
+     * 删除异常的交易记录，删除的前提就是，服务端返回了与本地异常(交易状态为pending或者timeout)交易记录相同的记录
+     * 如果服务端
+     *
+     * @param oldTransactionList
+     * @param curTransactionList
+     */
+    private void deleteExceptionalTransaction(List<Transaction> oldTransactionList, List<Transaction> curTransactionList) {
+
+        if (oldTransactionList == null || oldTransactionList.isEmpty() || curTransactionList.isEmpty()) {
+            return;
+        }
+
+        for (int i = 0; i < oldTransactionList.size(); i++) {
+            if (curTransactionList.contains(oldTransactionList.get(i))){
+                //删除掉
+                deleteTransaction(oldTransactionList.get(i).getHash());
+            }
+        }
+
+    }
+
+    private void deleteTransaction(String hash){
+        Single
+                .fromCallable(new Callable<Boolean>() {
+                    @Override
+                    public Boolean call() throws Exception {
+                        return TransactionDao.deleteTransaction(hash);
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .subscribe();
     }
 
     private List<Transaction> getNewTransactionList(List<Transaction> oldTransactionList, List<Transaction> curTransactionList, boolean isLoadMore) {

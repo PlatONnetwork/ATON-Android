@@ -6,6 +6,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
@@ -43,15 +44,17 @@ public class WalletListPop extends PopupWindow {
     private boolean mDismissed = false;
     private int mDuration = 100;
     private int mContentHeight;
+    private int mSelectedWalletPosition = 0;
     private View mContentView;
     private OnWalletItemClickListener mWalletItemClickListener;
 
-    public WalletListPop(Context context, List<Wallet> walletList, OnWalletItemClickListener walletItemClickListener) {
+    public WalletListPop(Context context, List<Wallet> walletList, OnWalletItemClickListener walletItemClickListener,int selectedWalletPosition) {
         super(context);
         this.mWalletList = walletList;
         this.mContext = context;
         this.mWalletItemClickListener = walletItemClickListener;
         this.mContentHeight = walletList.size() > 5 ? DensityUtil.dp2px(context, 390) + DensityUtil.dp2px(context, 20) : DensityUtil.dp2px(context, 65) * walletList.size() + DensityUtil.dp2px(context, 20);
+        this.mSelectedWalletPosition = selectedWalletPosition;
 
         View rootView = LayoutInflater.from(context).inflate(R.layout.pop_select_wallets, null);
 
@@ -105,7 +108,7 @@ public class WalletListPop extends PopupWindow {
         mWalletListAdapter = new SelectWalletListAdapter(mWalletList, mWalletListView);
 
         mWalletListView.setAdapter(mWalletListAdapter);
-        mWalletListView.setItemChecked(0, true);
+        mWalletListView.setItemChecked(mSelectedWalletPosition, true);
         mWalletListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -215,7 +218,12 @@ public class WalletListPop extends PopupWindow {
             if (avatar != -1) {
                 viewHolder.walletAvatarIv.setImageResource(avatar);
             }
-            viewHolder.selectedIv.setVisibility(mListView != null && mListView.getCheckedItemPosition() == position ? View.VISIBLE : View.GONE);
+
+            boolean isSelected = mListView != null && mListView.getCheckedItemPosition() == position;
+
+            viewHolder.selectedIv.setVisibility(isSelected ? View.VISIBLE : View.GONE);
+            viewHolder.walletNameTv.setTextAppearance(parent.getContext(),isSelected ? R.style.Text_000000_16:R.style.Text_898c9e_16);
+            viewHolder.walletNameTv.setTypeface(isSelected ? Typeface.DEFAULT_BOLD:Typeface.DEFAULT);
 
             return convertView;
         }

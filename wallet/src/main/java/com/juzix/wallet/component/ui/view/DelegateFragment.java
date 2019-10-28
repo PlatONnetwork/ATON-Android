@@ -19,6 +19,7 @@ import com.juzix.wallet.component.widget.table.PagerItem;
 import com.juzix.wallet.component.widget.table.PagerItemAdapter;
 import com.juzix.wallet.component.widget.table.PagerItems;
 import com.juzix.wallet.component.widget.table.CustomTabLayout;
+import com.juzix.wallet.event.EventPublisher;
 
 import java.util.ArrayList;
 
@@ -28,6 +29,7 @@ import java.util.ArrayList;
  */
 public class DelegateFragment extends BaseFragment {
     private ViewPagerSlide vpContent;
+    private CustomTabLayout stbBar;
 
     @Nullable
     @Override
@@ -38,7 +40,7 @@ public class DelegateFragment extends BaseFragment {
     }
 
     private void initView(View view) {
-        CustomTabLayout stbBar = view.findViewById(R.id.stb_bar);
+        stbBar = view.findViewById(R.id.stb_bar);
         int indicatorThickness = AndroidUtil.dip2px(getContext(), 2.0f);
         Log.debug("indicatorThickness", "==============>" + indicatorThickness);
         stbBar.setIndicatorThickness(indicatorThickness + 4);
@@ -66,6 +68,33 @@ public class DelegateFragment extends BaseFragment {
         stbBar.setViewPager(vpContent);
         setTableView(stbBar.getTabAt(0), 0);
         vpContent.setCurrentItem(0);
+        initTab();
+    }
+
+    private void initTab() {
+        stbBar.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                switch (position) {
+                    case 0:
+                    case 1:
+                        //切换tab刷新页面（0.7.3.1）
+                        EventPublisher.getInstance().sendTabChangeUpdateValidatorsEvent();
+                        break;
+                }
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
 
     }
 

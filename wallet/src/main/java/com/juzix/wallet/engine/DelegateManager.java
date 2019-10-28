@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.db.sqlite.TransactionDao;
 import com.juzix.wallet.entity.Transaction;
+import com.juzix.wallet.entity.TransactionReceipt;
 import com.juzix.wallet.entity.TransactionStatus;
 import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.event.EventPublisher;
@@ -105,61 +106,10 @@ public class DelegateManager {
                 .doOnSuccess(new Consumer<Transaction>() {
                     @Override
                     public void accept(Transaction transaction) throws Exception {
-                        getTransactionResult(platonSendTransaction, transaction);
+                        TransactionManager.getInstance().getTransactionByLoop(transaction);
                     }
                 })
                 .toSingle();
-    }
-
-
-    /**
-     * 获取委托结果，是否交易成功
-     *
-     * @param platonSendTransaction
-     * @return
-     */
-    public void getTransactionResult(PlatonSendTransaction platonSendTransaction, Transaction transaction) {
-        Transaction tempTransaction = transaction.clone();
-        Single
-                .fromCallable(new Callable<BaseResponse>() {
-                    @Override
-                    public BaseResponse call() throws Exception {
-                        if (tempTransaction.getTxType() == TransactionType.UNDELEGATE) {
-                            return DelegateContract.load(Web3jManager.getInstance().getWeb3j()).getUnDelegateResult(platonSendTransaction).send();
-                        } else {
-                            return DelegateContract.load(Web3jManager.getInstance().getWeb3j()).getDelegateResult(platonSendTransaction).send();
-                        }
-                    }
-                })
-                .onErrorReturn(new Function<Throwable, BaseResponse>() {
-                    @Override
-                    public BaseResponse apply(Throwable throwable) throws Exception {
-                        return new BaseResponse(throwable);
-                    }
-                })
-                .map(new Function<BaseResponse, Transaction>() {
-                    @Override
-                    public Transaction apply(BaseResponse baseResponse) throws Exception {
-                        tempTransaction.setTxReceiptStatus(baseResponse.isStatusOk() ? TransactionStatus.SUCCESSED.ordinal() : TransactionStatus.FAILED.ordinal());
-                        return tempTransaction;
-                    }
-                })
-                .filter(new Predicate<Transaction>() {
-                    @Override
-                    public boolean test(Transaction transaction) throws Exception {
-                        return TransactionDao.deleteTransaction(transaction.getHash());
-                    }
-                })
-                .doOnSuccess(new Consumer<Transaction>() {
-                    @Override
-                    public void accept(Transaction transaction) throws Exception {
-                        EventPublisher.getInstance().sendUpdateTransactionEvent(transaction);
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .subscribe();
-
-
     }
 
     public Observable<Transaction> withdraw(Credentials credentials, String to, String nodeId, String nodeName, String feeAmount, String stakingBlockNum, String amount, String transactionType, GasProvider GasProvider) {

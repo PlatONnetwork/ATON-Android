@@ -135,6 +135,7 @@ public class TransactionAuthorizationData implements Parcelable {
         return TransactionManager.getInstance().signTransaction(credentials, encodeData, baseData.getTo(), transferAmount, BigIntegerUtil.toBigInteger(nonce), BigIntegerUtil.toBigInteger(baseData.getGasPrice()), BigIntegerUtil.toBigInteger(baseData.getGasLimit()));
     }
 
+    @JSONField(serialize = false,deserialize = false)
     private String getSumAmount() {
 
         if (baseDataList == null || baseDataList.isEmpty()) {
@@ -158,6 +159,7 @@ public class TransactionAuthorizationData implements Parcelable {
                 .blockingGet();
     }
 
+    @JSONField(serialize = false,deserialize = false)
     private String getSumFee() {
 
         if (baseDataList == null || baseDataList.isEmpty()) {

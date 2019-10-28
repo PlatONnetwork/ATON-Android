@@ -126,14 +126,14 @@
     <color name="color_f2f5fa">#f2f5fa</color>
     <color name="color_19a201">#19a201</color>
     <color name="color_ff3b3b">#ff3b3b</color>
-    <color name="color_eeeeee">#eeeeee</color>
+    <color name="color_eeeeee">#F7640000</color>
     <color name="color_2a5ffe">#2a5ffe</color>
     <color name="color_dfeafc">#dfeafc</color>
     <color name="color_f0f4fb">#f0f4fb</color>
     <color name="color_cc9ca7c2">#cc9ca7c2</color>
     <color name="color_33dcdfe8">#33dcdfe8</color>
 
-    <color name="color_4a90e2">#4A90E2</color>
+    <color name="color_4a90e2">#616464</color>
     <color name="color_525768">#525768</color>
     <color name="color_9eabbe">#9EABBE</color>
 
@@ -146,5 +146,5 @@
     <!--透明度25%-->
     <color name="color_000000_25">#bf000000</color>
     <color name="color_404040">#404040</color>
-
+    <color name="color_61646E">#61646E</color>
 </resources>

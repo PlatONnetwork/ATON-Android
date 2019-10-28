@@ -260,7 +260,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                                             @Override
                                             public void onConfirmBtnClick() {
                                                 if (WalletManager.getInstance().getSelectedWallet().isObservedWallet()) {
-                                                    showTransactionAuthorizationDialogFragment(Convert.toVon(transferAmount, Convert.Unit.LAT).toPlainString(), walletEntity.getPrefixAddress(), toAddress, gasLimit.toString(10), gasPrice.toString(10));
+                                                    showTransactionAuthorizationDialogFragment(BigDecimalUtil.mul(transferAmount, "1E18").toPlainString(), walletEntity.getPrefixAddress(), toAddress, gasLimit.toString(10), gasPrice.toString(10));
                                                 } else {
                                                     showInputWalletPasswordDialogFragment(transferAmount, fee, toAddress);
                                                 }

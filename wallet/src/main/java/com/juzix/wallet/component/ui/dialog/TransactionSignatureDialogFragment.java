@@ -189,7 +189,7 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
         super.onActivityResult(requestCode, resultCode, data);
         String signature = data.getStringExtra(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
         transactionSignatureData = JSONUtil.parseObject(signature, TransactionSignatureData.class);
-        if (transactionSignatureData != null) {
+        if (transactionSignatureData != null && transactionSignatureData.getSignedDatas() != null && !transactionSignatureData.getSignedDatas().isEmpty()) {
             tvTransactionSignature.setText(getSignedMessage(transactionSignatureData));
             RawTransaction rawTransaction = TransactionDecoder.decode(transactionSignatureData.getSignedDatas().get(0));
             LogUtils.e(rawTransaction.toString());
@@ -280,13 +280,13 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
             afterTransferSucceed(transaction);
         } else if (transactionSignatureData.getFunctionType() == FunctionType.DELEGATE_FUNC_TYPE) {
             transaction.setTxType(String.valueOf(TransactionType.DELEGATE.getTxTypeValue()));
-            DelegateManager.getInstance().getTransactionResult(platonSendTransaction, transaction);
+            TransactionManager.getInstance().getTransactionByLoop(transaction);
             if (sendTransactionSucceedListener != null) {
                 sendTransactionSucceedListener.onSendTransactionSucceed(transaction);
             }
         } else if (transactionSignatureData.getFunctionType() == FunctionType.WITHDREW_DELEGATE_FUNC_TYPE) {
             transaction.setTxType(String.valueOf(TransactionType.UNDELEGATE.getTxTypeValue()));
-            DelegateManager.getInstance().getTransactionResult(platonSendTransaction, transaction);
+            TransactionManager.getInstance().getTransactionByLoop(transaction);
             if (sendTransactionSucceedListener != null) {
                 sendTransactionSucceedListener.onSendTransactionSucceed(transaction);
             }

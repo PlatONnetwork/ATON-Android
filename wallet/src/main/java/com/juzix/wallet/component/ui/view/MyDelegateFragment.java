@@ -127,14 +127,7 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        String url = "";
-                        if (Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage())) {
-                            url = Constants.WEBURL.WEB_URL_FAQ_ZH;
-                        } else {
-                            url = Constants.WEBURL.WEB_URL_FAQ_EN;
-                        }
-
-                        CommonHybridActivity.actionStart(getContext(), url, WebType.WEB_TYPE_COMMON);
+                        CommonHybridActivity.actionStart(getContext(), getResources().getString(R.string.web_url_common_delegate_problem), WebType.WEB_TYPE_COMMON);
                     }
                 });
 
@@ -143,14 +136,7 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        String url = "";
-                        if (Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage())) {
-                            url = Constants.WEBURL.WEB_URL_TUTORIAL_ZH;
-                        } else {
-                            url = Constants.WEBURL.WEB_URL_TUTORIAL_EN;
-                        }
-
-                        CommonHybridActivity.actionStart(getContext(), url, WebType.WEB_TYPE_COMMON);
+                        CommonHybridActivity.actionStart(getContext(), getResources().getString(R.string.web_url_tutorial), WebType.WEB_TYPE_COMMON);
                     }
                 });
 
@@ -269,7 +255,11 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
         }
 
     }
-
+    //接收tab切换到当前页面的时候，刷新
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void refreshTabChange(Event.UpdateTabChangeEvent event) {
+        refreshLayout.autoRefresh();
+    }
     @Override
     public void onTabHidden() {
         super.onTabHidden();

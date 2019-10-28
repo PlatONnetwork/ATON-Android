@@ -79,7 +79,7 @@ public class AboutActivity extends BaseActivity {
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        CommonHybridActivity.actionStart(getContext(), "https://www.platon.network", WebType.WEB_TYPE_COMMON);
+                        CommonHybridActivity.actionStart(getContext(), getResources().getString(R.string.web_url_web_portals), WebType.WEB_TYPE_COMMON);
                     }
                 });
 

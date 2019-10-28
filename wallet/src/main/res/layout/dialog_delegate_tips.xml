@@ -30,6 +30,7 @@
             android:layout_marginLeft="12dp"
             android:layout_marginRight="12dp"
             android:lineSpacingExtra="2dp"
+            android:textColor="@color/color_61646E"
             android:text="@string/detail_tips_content"
             android:textSize="13sp" />
 
@@ -49,6 +50,7 @@
             android:layout_marginLeft="12dp"
             android:layout_marginRight="12dp"
             android:lineSpacingExtra="2dp"
+            android:textColor="@color/color_61646E"
             android:text="@string/unlocked_delegate_des"
             android:textSize="13sp" />
 
@@ -69,6 +71,7 @@
             android:layout_marginRight="12dp"
             android:layout_marginBottom="29dp"
             android:lineSpacingExtra="2dp"
+            android:textColor="@color/color_61646E"
             android:text="@string/released_delegate_des"
             android:textSize="13sp" />
 

@@ -1,5 +1,6 @@
 package com.juzix.wallet.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.juzix.wallet.R;
 import com.juzix.wallet.utils.BigIntegerUtil;
 
@@ -124,6 +125,7 @@ public class TransactionAuthorizationDelegateData extends TransactionAuthorizati
         }
     }
 
+    @JSONField(serialize = false,deserialize = false)
     @Override
     public PlatOnFunction getPlatOnFunction() {
         return PlatOnFunctionFactory.createDelegateFunction(nodeId, StakingAmountType.getStakingAmountType(stakingAmountType), BigIntegerUtil.toBigInteger(amount));

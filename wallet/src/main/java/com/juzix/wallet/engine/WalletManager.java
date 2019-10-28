@@ -444,7 +444,7 @@ public class WalletManager {
         }
 
         for (Wallet walletEntity : mWalletList) {
-            if (walletEntity.getPrefixAddress().contains(address.toLowerCase())) {
+            if (walletEntity.getPrefixAddress().toLowerCase().contains(address.toLowerCase())) {
                 return walletEntity;
             }
         }
