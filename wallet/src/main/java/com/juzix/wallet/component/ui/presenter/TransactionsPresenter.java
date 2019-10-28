@@ -233,7 +233,6 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
         }
 
         for (int i = 0; i < oldTransactionList.size(); i++) {
-            if (curTransactionList.contains(oldTransactionList.get(i))){
             Transaction oldTransaction = oldTransactionList.get(i);
             boolean isTransactionStatusException = oldTransaction.getTxReceiptStatus() == TransactionStatus.PENDING || oldTransaction.getTxReceiptStatus() == TransactionStatus.TIMEOUT;
             if (curTransactionList.contains(oldTransaction) && isTransactionStatusException) {
@@ -244,9 +243,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
 
     }
 
-
     private void deleteTransaction(String hash) {
-
         Single
                 .fromCallable(new Callable<Boolean>() {
                     @Override
