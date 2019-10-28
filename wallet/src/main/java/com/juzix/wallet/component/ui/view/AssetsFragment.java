@@ -657,7 +657,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
             super(context);
             LayoutInflater.from(context).inflate(R.layout.layout_app_tab_item1, this);
 
-            setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
             mIconIv = findViewById(R.id.iv_icon);
             mTitleTv = findViewById(R.id.tv_title);
