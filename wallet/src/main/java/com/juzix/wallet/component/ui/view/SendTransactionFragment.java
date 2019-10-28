@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
@@ -93,6 +94,8 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
     TextView tvSaveAddress;
     @BindView(R.id.tv_amount_magnitudes)
     TextView tvAmountMagnitudes;
+    @BindView(R.id.layout_amount_magnitudes)
+    LinearLayout layoutAmountMagnitudes;
     @BindString(R.string.cheaper)
     String cheaper;
     @BindString(R.string.faster)
@@ -304,7 +307,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
 
     @Override
     public void resetView(String feeAmount) {
-        tvAmountMagnitudes.setVisibility(View.GONE);
+        layoutAmountMagnitudes.setVisibility(View.GONE);
         etWalletAddress.removeTextChangedListener(mEtWalletAddressWatcher);
         etWalletAmount.removeTextChangedListener(mEtWalletAmountWatcher);
         etWalletAddress.setOnFocusChangeListener(null);
@@ -429,7 +432,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
             mPresenter.checkTransferAmount(s.toString().trim());
             String amountMagnitudes = StringUtil.getAmountMagnitudes(getContext(), s.toString().trim());
             tvAmountMagnitudes.setText(amountMagnitudes);
-            tvAmountMagnitudes.setVisibility(TextUtils.isEmpty(amountMagnitudes) ? View.GONE : View.VISIBLE);
+            layoutAmountMagnitudes.setVisibility(TextUtils.isEmpty(amountMagnitudes) ? View.GONE : View.VISIBLE);
         }
 
         @Override

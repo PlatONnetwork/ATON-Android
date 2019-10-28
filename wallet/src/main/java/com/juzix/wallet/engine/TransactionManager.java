@@ -51,7 +51,10 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
@@ -62,6 +65,7 @@ import io.reactivex.FlowableOnSubscribe;
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
@@ -74,6 +78,8 @@ import retrofit2.Response;
 public class TransactionManager {
 
     private final static int MAX_PENDING_TIME = 24 * 60 * 60 * 1000;
+
+    private volatile Map<String, Disposable> mDisposableMap = new HashMap<>();
 
     private TransactionManager() {
 
@@ -90,6 +96,27 @@ public class TransactionManager {
     public Wallet getBalanceByAddress(Wallet walletEntity) {
 //        walletEntity.setBalance(Web3jManager.getInstance().getBalance(walletEntity.getPrefixAddress()));
         return walletEntity;
+    }
+
+    public Disposable getTaskByHash(String hash) {
+        return mDisposableMap.get(hash);
+    }
+
+    public Disposable removeTaskByHash(String hash) {
+        LogUtils.e("removeTaskByHash:    " + hash);
+        return mDisposableMap.remove(hash);
+    }
+
+    public void putTask(String hash, Disposable disposable) {
+        mDisposableMap.put(hash, disposable);
+        LogUtils.e("putTask:    " + hash);
+    }
+
+    public void cancelTaskByHash(String hash) {
+        Disposable disposable = removeTaskByHash(hash);
+        if (disposable != null) {
+            disposable.dispose();
+        }
     }
 
     public String sendTransaction(String privateKey, String from, String toAddress, BigDecimal amount, BigInteger gasPrice, BigInteger gasLimit) {
@@ -190,7 +217,7 @@ public class TransactionManager {
                     @Override
                     public void accept(Transaction transaction) throws Exception {
                         EventPublisher.getInstance().sendUpdateTransactionEvent(transaction);
-                        getTransactionByLoop(transaction);
+                        putTask(transaction.getHash(), getTransactionByLoop(transaction));
                     }
                 });
     }
@@ -198,9 +225,9 @@ public class TransactionManager {
     /**
      * 通过轮询获取普通钱包的交易
      */
-    public void getTransactionByLoop(Transaction transaction) {
+    public Disposable getTransactionByLoop(Transaction transaction) {
 
-        Flowable
+        return Flowable
                 .interval(Constants.Common.TRANSACTION_STATUS_LOOP_TIME, TimeUnit.MILLISECONDS)
                 .map(new Function<Long, Transaction>() {
                     @Override
@@ -231,31 +258,17 @@ public class TransactionManager {
                 .doOnNext(new Consumer<Transaction>() {
                     @Override
                     public void accept(Transaction transaction) throws Exception {
+                        cancelTaskByHash(transaction.getHash());
                         if (transaction.getTxReceiptStatus() == TransactionStatus.SUCCESSED) {
                             TransactionDao.deleteTransaction(transaction.getHash());
                             LogUtils.e("getIndividualTransactionByLoop 轮询交易成功" + transaction.toString());
-                            EventPublisher.getInstance().sendUpdateTransactionEvent(transaction);
                         }
+                        EventPublisher.getInstance().sendUpdateTransactionEvent(transaction);
                     }
                 })
                 .toObservable()
                 .subscribeOn(Schedulers.io())
-                .subscribe(new CustomObserver<Transaction>() {
-                    @Override
-                    public void accept(Transaction transaction) {
-                        LogUtils.e("getIndividualTransactionByLoop 轮询交易成功" + Thread.currentThread().getName());
-                    }
-
-                    @Override
-                    public void accept(Throwable throwable) {
-                        super.accept(throwable);
-                        if (throwable instanceof CustomThrowable) {
-                            LogUtils.e("getIndividualTransactionByLoop 轮询交易失败" + ((CustomThrowable) throwable).getDetailMsgRes());
-                        } else {
-                            LogUtils.e("getIndividualTransactionByLoop 轮询交易失败" + throwable.getMessage());
-                        }
-                    }
-                });
+                .subscribe();
 
     }
 

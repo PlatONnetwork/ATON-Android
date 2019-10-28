@@ -36,23 +36,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/color_ffffff"
-                android:paddingBottom="15dp"
+                android:orientation="horizontal"
                 android:paddingTop="16dp"
-                android:orientation="horizontal">
+                android:paddingBottom="15dp">
 
                 <com.juzix.wallet.component.widget.CircleImageView
                     android:id="@+id/iv_node_icon"
                     android:layout_width="42dp"
                     android:layout_height="42dp"
-                    android:layout_marginLeft="13dp"
                     android:layout_centerVertical="true"
+                    android:layout_marginLeft="13dp"
                     android:src="@drawable/icon_validators_default" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="3dp"
                     android:layout_centerVertical="true"
+                    android:layout_marginLeft="3dp"
                     android:layout_toRightOf="@id/iv_node_icon"
                     android:orientation="vertical">
 
@@ -92,18 +92,18 @@
                     android:id="@+id/iv_wallet_icon"
                     android:layout_width="42dp"
                     android:layout_height="42dp"
+                    android:layout_centerVertical="true"
                     android:layout_marginLeft="3dp"
                     android:layout_marginTop="10dp"
-                    android:layout_centerVertical="true"
                     android:src="@drawable/icon_validators_default" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:layout_marginLeft="3dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="12dp"
-                    android:layout_centerVertical="true"
                     android:layout_toRightOf="@id/iv_wallet_icon"
                     android:orientation="vertical">
 
@@ -170,8 +170,8 @@
                         android:id="@+id/tv_delegate_amount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/color_000000"
                         android:paddingRight="5dp"
+                        android:textColor="@color/color_000000"
                         android:textSize="15sp" />
 
 
@@ -212,38 +212,38 @@
                     android:textSize="16sp" />
 
                 <!--<TextView-->
-                    <!--android:id="@+id/tv_amount_magnitudes"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_marginTop="6dp"-->
-                    <!--android:gravity="center"-->
-                    <!--android:text="百"-->
-                    <!--android:textColor="@color/color_000000"-->
-                    <!--android:textSize="12sp"-->
-                    <!--android:visibility="gone" />-->
+                <!--android:id="@+id/tv_amount_magnitudes"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="6dp"-->
+                <!--android:gravity="center"-->
+                <!--android:text="百"-->
+                <!--android:textColor="@color/color_000000"-->
+                <!--android:textSize="12sp"-->
+                <!--android:visibility="gone" />-->
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <View
                         android:id="@+id/v_tips"
                         android:layout_width="1dp"
-                        android:layout_marginTop="6dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="5dp"
-                        android:background="#FF909090"
+                        android:layout_height="7dp"
+                        android:background="@drawable/bg_amount_magnitudes"
                         android:visibility="gone"
-                        />
+                        tools:visibility="visible" />
+
                     <TextView
                         android:id="@+id/tv_amount_magnitudes"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
+                        android:layout_marginLeft="4dp"
                         android:gravity="center"
                         android:textColor="@color/color_000000"
                         android:textSize="12sp"
-                        android:layout_marginLeft="4dp"
                         android:visibility="gone" />
 
                 </LinearLayout>

@@ -96,19 +96,37 @@
                 style="@style/Text.61646e.16"
                 android:text="@string/amount" />
 
-            <TextView
-                android:id="@+id/tv_amount_magnitudes"
-                style="@style/Text.b6bbd0.12"
+            <LinearLayout
+                android:id="@+id/layout_amount_magnitudes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/tv_transation_amount"
                 android:layout_marginTop="4dp"
-                android:visibility="gone"
-                tools:text="百" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="7dp"
+                    android:layout_below="@id/tv_transation_amount"
+                    android:background="@drawable/bg_amount_magnitudes"
+                    tools:visibility="visible" />
+
+                <TextView
+                    android:id="@+id/tv_amount_magnitudes"
+                    style="@style/Text.b6bbd0.12"
+                    android:layout_marginLeft="3dp"
+                    tools:text="百"
+                    tools:visibility="visible" />
+
+            </LinearLayout>
 
             <FrameLayout
                 android:id="@+id/layout_transation_amount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tv_amount_magnitudes"
+                android:layout_below="@id/layout_amount_magnitudes"
                 android:gravity="center_vertical">
 
                 <EditText
