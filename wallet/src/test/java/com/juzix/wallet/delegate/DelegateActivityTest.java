@@ -136,7 +136,7 @@ public class DelegateActivityTest {
                 .subscribe(new ApiSingleObserver<List<AccountBalance>>() {
                     @Override
                     public void onApiSuccess(List<AccountBalance> accountBalances) {
-                        view.getWalletBalanceList(accountBalances);
+//                        view.getWalletBalanceList(accountBalances);
                         Log.d("result", "message" + "--------------------" + accountBalances.toString());
                     }
 

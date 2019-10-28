@@ -36,31 +36,31 @@ public class AssetsTabStrip extends LinearLayout {
     private static final int DEFAULT_INDICATOR_GRAVITY = GRAVITY_BOTTOM;
     private static final boolean DEFAULT_DRAW_DECORATION_AFTER_TAB = false;
 
-    private final int                topBorderThickness;
-    private final int                topBorderColor;
-    private final int                bottomBorderThickness;
-    private final int                bottomBorderColor;
+    private final int topBorderThickness;
+    private final int topBorderColor;
+    private final int bottomBorderThickness;
+    private final int bottomBorderColor;
     private final Paint borderPaint;
     private final RectF indicatorRectF = new RectF();
-    private final boolean            indicatorWithoutPadding;
-    private final boolean            indicatorAlwaysInCenter;
-    private final boolean            indicatorInFront;
-    private final int                indicatorWidth;
-    private final int                indicatorGravity;
-    private final Paint              indicatorPaint;
-    private final int                dividerThickness;
-    private final Paint              dividerPaint;
-    private final float              dividerHeight;
+    private final boolean indicatorWithoutPadding;
+    private final boolean indicatorAlwaysInCenter;
+    private final boolean indicatorInFront;
+    private final int indicatorWidth;
+    private final int indicatorGravity;
+    private final Paint indicatorPaint;
+    private final int dividerThickness;
+    private final Paint dividerPaint;
+    private final float dividerHeight;
     private final SimpleTabColorizer defaultTabColorizer;
-    private final boolean            drawDecorationAfterTab;
+    private final boolean drawDecorationAfterTab;
 
-    private int                            lastPosition;
-    private int                            selectedPosition;
-    private float                          selectionOffset;
+    private int lastPosition;
+    private int selectedPosition;
+    private float selectionOffset;
     private SmartTabIndicationInterpolator indicationInterpolator;
-    private int                            indicatorThickness;
-    private float                          indicatorCornerRadius;
-    private AssetsTabLayout.TabColorizer    customTabColorizer;
+    private int indicatorThickness;
+    private float indicatorCornerRadius;
+    private AssetsTabLayout.TabColorizer customTabColorizer;
 
     AssetsTabStrip(Context context, AttributeSet attrs) {
         super(context);
@@ -131,11 +131,11 @@ public class AssetsTabStrip extends LinearLayout {
         a.recycle();
 
         final int[] indicatorColors = (indicatorColorsId == NO_ID)
-                ? new int[] { indicatorColor }
+                ? new int[]{indicatorColor}
                 : getResources().getIntArray(indicatorColorsId);
 
         final int[] dividerColors = (dividerColorsId == NO_ID)
-                ? new int[] { dividerColor }
+                ? new int[]{dividerColor}
                 : getResources().getIntArray(dividerColorsId);
 
         this.defaultTabColorizer = new SimpleTabColorizer();
@@ -178,7 +178,7 @@ public class AssetsTabStrip extends LinearLayout {
      * Blend {@code color1} and {@code color2} using the given ratio.
      *
      * @param ratio of which to blend. 1.0 will return {@code color1}, 0.5 will give an even blend,
-     * 0.0 will return {@code color2}.
+     *              0.0 will return {@code color2}.
      */
     private static int blendColors(int color1, int color2, float ratio) {
         final float inverseRation = 1f - ratio;
@@ -255,11 +255,11 @@ public class AssetsTabStrip extends LinearLayout {
     }
 
     private void drawDecoration(Canvas canvas) {
-        final int                         height       = getHeight();
-        final int                         width        = getWidth();
-        final int                         tabCount     = getChildCount();
+        final int height = getHeight();
+        final int width = getWidth();
+        final int tabCount = getChildCount();
         final AssetsTabLayout.TabColorizer tabColorizer = getTabColorizer();
-        final boolean                     isLayoutRtl  = Utils.isLayoutRtl(this);
+        final boolean isLayoutRtl = Utils.isLayoutRtl(this);
 
         if (indicatorInFront) {
             drawOverline(canvas, 0, width);
@@ -268,11 +268,11 @@ public class AssetsTabStrip extends LinearLayout {
 
         // Thick colored underline below the current selection
         if (tabCount > 0) {
-            View selectedTab   = getChildAt(selectedPosition);
-            int  selectedStart = Utils.getStart(selectedTab, indicatorWithoutPadding);
-            int  selectedEnd   = Utils.getEnd(selectedTab, indicatorWithoutPadding);
-            int  left;
-            int  right;
+            View selectedTab = getChildAt(selectedPosition);
+            int selectedStart = Utils.getStart(selectedTab, indicatorWithoutPadding);
+            int selectedEnd = Utils.getEnd(selectedTab, indicatorWithoutPadding);
+            int left;
+            int right;
             if (isLayoutRtl) {
                 left = selectedEnd;
                 right = selectedStart;
@@ -295,9 +295,9 @@ public class AssetsTabStrip extends LinearLayout {
                 float endOffset = indicationInterpolator.getRightEdge(selectionOffset);
                 float thicknessOffset = indicationInterpolator.getThickness(selectionOffset);
 
-                View nextTab   = getChildAt(selectedPosition + 1);
-                int  nextStart = Utils.getStart(nextTab, indicatorWithoutPadding);
-                int  nextEnd   = Utils.getEnd(nextTab, indicatorWithoutPadding);
+                View nextTab = getChildAt(selectedPosition + 1);
+                int nextStart = Utils.getStart(nextTab, indicatorWithoutPadding);
+                int nextEnd = Utils.getEnd(nextTab, indicatorWithoutPadding);
                 if (isLayoutRtl) {
                     left = (int) (endOffset * nextEnd + (1.0f - endOffset) * left);
                     right = (int) (startOffset * nextStart + (1.0f - startOffset) * right);
@@ -327,8 +327,8 @@ public class AssetsTabStrip extends LinearLayout {
             return;
         }
 
-        final int                         dividerHeightPx = (int) (Math.min(Math.max(0f, dividerHeight), 1f) * height);
-        final AssetsTabLayout.TabColorizer tabColorizer    = getTabColorizer();
+        final int dividerHeightPx = (int) (Math.min(Math.max(0f, dividerHeight), 1f) * height);
+        final AssetsTabLayout.TabColorizer tabColorizer = getTabColorizer();
 
         // Vertical separators between the titles
         final int separatorTop = (height - dividerHeightPx) / 2;
@@ -336,10 +336,10 @@ public class AssetsTabStrip extends LinearLayout {
 
         final boolean isLayoutRtl = Utils.isLayoutRtl(this);
         for (int i = 0; i < tabCount - 1; i++) {
-            View child      = getChildAt(i);
-            int  end        = Utils.getEnd(child);
-            int  endMargin  = Utils.getMarginEnd(child);
-            int  separatorX = isLayoutRtl ? end - endMargin : end + endMargin;
+            View child = getChildAt(i);
+            int end = Utils.getEnd(child);
+            int endMargin = Utils.getMarginEnd(child);
+            int separatorX = isLayoutRtl ? end - endMargin : end + endMargin;
             dividerPaint.setColor(tabColorizer.getDividerColor(i));
             canvas.drawLine(separatorX, separatorTop, separatorX, separatorBottom, dividerPaint);
         }

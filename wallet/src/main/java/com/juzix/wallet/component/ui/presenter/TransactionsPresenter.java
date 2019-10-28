@@ -13,6 +13,7 @@ import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.ApiSingleObserver;
 import com.juzhen.framework.util.LogUtils;
 import com.juzix.wallet.app.Constants;
+import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.TransactionsContract;
 import com.juzix.wallet.component.ui.view.AssetsFragment;
@@ -172,7 +173,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         Log.e(TAG, "onApiFailure");
-                        if(isViewAttached()){
+                        if (isViewAttached()) {
                             getView().notifyDataSetChanged(mTransactionMap.get(mWalletAddress), mTransactionMap.get(mWalletAddress), mWalletAddress, true);
                         }
                     }
@@ -183,13 +184,13 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
     public void deleteTransaction(Transaction transaction) {
 
         List<Transaction> transactionList = mTransactionMap.get(mWalletAddress);
-        if (transactionList != null && !transactionList.isEmpty()){
+        if (transactionList != null && !transactionList.isEmpty()) {
             List<Transaction> newTransactionList = new ArrayList<>(transactionList);
             newTransactionList.remove(transaction);
             Collections.sort(newTransactionList);
             getView().notifyDataSetChanged(transactionList, newTransactionList, mWalletAddress, false);
 
-            mTransactionMap.put(mWalletAddress,newTransactionList);
+            mTransactionMap.put(mWalletAddress, newTransactionList);
         }
     }
 
@@ -198,7 +199,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
         if (isViewAttached()) {
             List<Transaction> transactionList = mTransactionMap.get(mWalletAddress);
             List<Transaction> newTransactionList = new ArrayList<>();
-            if (transactionList != null && !transactionList.isEmpty()){
+            if (transactionList != null && !transactionList.isEmpty()) {
                 if (transactionList.contains(transaction)) {
                     //更新
                     newTransactionList = new ArrayList<>(transactionList);
@@ -213,7 +214,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                     getView().notifyDataSetChanged(transactionList, newTransactionList, mWalletAddress, false);
                 }
 
-                mTransactionMap.put(mWalletAddress,newTransactionList);
+                mTransactionMap.put(mWalletAddress, newTransactionList);
             }
         }
     }
@@ -233,6 +234,9 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
 
         for (int i = 0; i < oldTransactionList.size(); i++) {
             if (curTransactionList.contains(oldTransactionList.get(i))){
+            Transaction oldTransaction = oldTransactionList.get(i);
+            boolean isTransactionStatusException = oldTransaction.getTxReceiptStatus() == TransactionStatus.PENDING || oldTransaction.getTxReceiptStatus() == TransactionStatus.TIMEOUT;
+            if (curTransactionList.contains(oldTransaction) && isTransactionStatusException) {
                 //删除掉
                 deleteTransaction(oldTransactionList.get(i).getHash());
             }
@@ -240,7 +244,9 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
 
     }
 
-    private void deleteTransaction(String hash){
+
+    private void deleteTransaction(String hash) {
+
         Single
                 .fromCallable(new Callable<Boolean>() {
                     @Override
@@ -249,6 +255,18 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                     }
                 })
                 .subscribeOn(Schedulers.io())
+                .filter(new Predicate<Boolean>() {
+                    @Override
+                    public boolean test(Boolean aBoolean) throws Exception {
+                        return aBoolean;
+                    }
+                })
+                .doOnSuccess(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean aBoolean) throws Exception {
+                        TransactionManager.getInstance().cancelTaskByHash(hash);
+                    }
+                })
                 .subscribe();
     }
 

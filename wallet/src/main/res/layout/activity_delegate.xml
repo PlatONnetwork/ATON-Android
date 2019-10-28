@@ -42,18 +42,18 @@
                     android:id="@+id/iv_delegate_node_icon"
                     android:layout_width="42dp"
                     android:layout_height="42dp"
+                    android:layout_centerVertical="true"
                     android:layout_marginLeft="13dp"
                     android:layout_marginTop="15dp"
-                    android:layout_centerVertical="true"
                     android:src="@drawable/icon_validators_default" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:layout_marginLeft="3dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="15dp"
-                    android:layout_centerVertical="true"
                     android:layout_toRightOf="@id/iv_delegate_node_icon"
                     android:orientation="vertical">
 
@@ -62,8 +62,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/color_000000"
-                        tools:text="节点名称"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"
+                        tools:text="节点名称" />
 
                     <TextView
                         android:id="@+id/tv_delegate_node_address"
@@ -71,8 +71,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:textColor="@color/color_898c9e"
-                        tools:text="0xc6548646845adfasafs"
-                        android:textSize="13sp" />
+                        android:textSize="13sp"
+                        tools:text="0xc6548646845adfasafs" />
 
                 </LinearLayout>
 
@@ -87,27 +87,27 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginRight="10dp"
-                android:gravity="center"
                 android:background="@drawable/icon_my_delegate_item_bg"
+                android:gravity="center"
                 android:orientation="horizontal">
 
                 <com.juzix.wallet.component.widget.CircleImageView
                     android:id="@+id/iv_wallet_icon"
                     android:layout_width="42dp"
                     android:layout_height="42dp"
+                    android:layout_centerVertical="true"
                     android:layout_marginLeft="3dp"
                     android:layout_marginTop="11dp"
-                    android:layout_centerVertical="true"
                     android:src="@drawable/icon_validators_default" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:layout_marginLeft="3dp"
                     android:layout_marginTop="11dp"
                     android:layout_marginBottom="12dp"
                     android:layout_toRightOf="@id/iv_wallet_icon"
-                    android:layout_centerVertical="true"
                     android:orientation="vertical">
 
                     <TextView
@@ -115,8 +115,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/color_000000"
-                        tools:text="钱包名称"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"
+                        tools:text="钱包名称" />
 
                     <TextView
                         android:id="@+id/tv_delegate_wallet_address"
@@ -124,8 +124,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:textColor="@color/color_898c9e"
-                        tools:text="0x45648afsdafadfa66"
-                        android:textSize="13sp" />
+                        android:textSize="13sp"
+                        tools:text="0x45648afsdafadfa66" />
 
                 </LinearLayout>
 
@@ -165,31 +165,31 @@
                     android:id="@+id/ll_delegate_amount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
                     android:layout_alignParentRight="true"
+                    android:layout_centerInParent="true"
                     android:layout_marginLeft="5dp"
-                    android:gravity="center_vertical|right"
                     android:layout_toRightOf="@id/tv_amount_type"
+                    android:gravity="center_vertical|right"
                     android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/tv_amount_delegate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/color_000000"
+                        android:ellipsize="end"
                         android:gravity="right"
                         android:maxLines="1"
-                        android:ellipsize="end"
                         android:paddingRight="5dp"
+                        android:textColor="@color/color_000000"
                         android:textSize="15sp" />
 
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
                         android:text="LAT"
                         android:textColor="@color/color_000000"
-                        android:layout_marginRight="10dp"
                         android:textSize="12sp" />
 
                     <ImageView
@@ -200,7 +200,6 @@
                         android:layout_marginRight="20dp"
                         android:src="@drawable/icon_drop_down" />
                 </LinearLayout>
-
 
 
             </RelativeLayout>
@@ -222,37 +221,37 @@
                     android:textSize="16sp" />
 
                 <!--<TextView-->
-                    <!--android:id="@+id/tv_input_tips"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_marginTop="6dp"-->
-                    <!--android:textColor="@color/color_000000"-->
-                    <!--android:textSize="12sp"-->
-                    <!--android:visibility="gone" />-->
+                <!--android:id="@+id/tv_input_tips"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="6dp"-->
+                <!--android:textColor="@color/color_000000"-->
+                <!--android:textSize="12sp"-->
+                <!--android:visibility="gone" />-->
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="6dp"
                     android:orientation="horizontal">
+
                     <View
                         android:id="@+id/v_tips"
                         android:layout_width="1dp"
-                        android:layout_marginTop="6dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="5dp"
-                        android:background="#FF909090"
+                        android:layout_height="7dp"
+                        android:background="@drawable/bg_amount_magnitudes"
                         android:visibility="gone"
-                        />
+                        tools:visibility="visible" />
 
                     <TextView
                         android:id="@+id/tv_input_tips"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
+                        android:layout_marginLeft="3dp"
                         android:textColor="@color/color_000000"
                         android:textSize="12sp"
-                        tools:text="亿"
-                        android:layout_marginLeft="4dp"
-                        android:visibility="gone" />
+                        android:visibility="gone"
+                        tools:text="亿" />
                 </LinearLayout>
 
                 <FrameLayout
@@ -326,12 +325,11 @@
                             android:id="@+id/tv_lat"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
                             android:text="LAT"
                             android:textColor="@color/color_b6bbd0"
-                            android:layout_marginTop="5dp"
                             android:textSize="12sp"
-                            android:visibility="gone"
-                            />
+                            android:visibility="gone" />
 
                     </LinearLayout>
 
@@ -359,14 +357,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="20dp"
                 android:gravity="center"
                 android:text="@string/validators_details_tips"
                 android:textColor="@color/color_ff6b00"
                 android:textSize="13sp"
-                android:visibility="gone"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="15dp" />
+                android:visibility="gone" />
 
 
             <TextView

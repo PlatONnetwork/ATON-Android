@@ -430,7 +430,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
                 showLongToast(R.string.restricted_amount_tips);
                 break;
             case R.id.rl_wallet_detail:
-                ManageIndividualWalletActivity.actionStart(currentActivity(), mWalletAdapter.getSelectedWallet());
+                ManageWalletActivity.actionStart(currentActivity(), mWalletAdapter.getSelectedWallet());
                 break;
             default:
                 break;
