@@ -303,38 +303,5 @@ public class TransactionManager {
                 .toSingle()
                 .blockingGet();
 
-
-    private TransactionReceipt getTransactionReceipt(String hash) {
-
-        return ServerUtils
-                .getCommonApi()
-                .getTransactionsStatus(ApiRequestBody.newBuilder()
-                        .put("hash", Arrays.asList(hash))
-                        .build())
-                .filter(new Predicate<Response<ApiResponse<List<TransactionReceipt>>>>() {
-                    @Override
-                    public boolean test(Response<ApiResponse<List<TransactionReceipt>>> apiResponseResponse) throws Exception {
-                        return apiResponseResponse != null && apiResponseResponse.isSuccessful();
-                    }
-                })
-                .filter(new Predicate<Response<ApiResponse<List<TransactionReceipt>>>>() {
-                    @Override
-                    public boolean test(Response<ApiResponse<List<TransactionReceipt>>> apiResponseResponse) throws Exception {
-                        List<TransactionReceipt> transactionReceiptList = apiResponseResponse.body().getData();
-                        return transactionReceiptList != null && !transactionReceiptList.isEmpty();
-                    }
-                })
-                .map(new Function<Response<ApiResponse<List<TransactionReceipt>>>, TransactionReceipt>() {
-                    @Override
-                    public TransactionReceipt apply(Response<ApiResponse<List<TransactionReceipt>>> apiResponseResponse) throws Exception {
-                        return apiResponseResponse.body().getData().get(0);
-                    }
-                })
-                .defaultIfEmpty(new TransactionReceipt(TransactionStatus.PENDING.ordinal(), hash))
-                .onErrorReturnItem(new TransactionReceipt(TransactionStatus.PENDING.ordinal(), hash))
-                .toSingle()
-                .blockingGet();
-
-
     }
 }

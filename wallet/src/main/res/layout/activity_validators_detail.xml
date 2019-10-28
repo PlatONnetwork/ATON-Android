@@ -68,11 +68,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="6dp"
-                        android:text="jiang"
                         android:textColor="@color/color_000000"
                         android:textSize="15sp"
                         app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="jiang"
+                        />
 
                     <TextView
                         android:id="@+id/tv_detail_node_state"
@@ -85,12 +86,12 @@
                         android:paddingTop="1dp"
                         android:paddingRight="8dp"
                         android:paddingBottom="1dp"
-                        android:text="active"
                         android:textColor="@color/color_4a90e2"
                         android:textSize="11sp"
                         app:layout_constraintBaseline_toBaselineOf="@id/tv_detail_node_name"
                         app:layout_constraintLeft_toRightOf="@id/tv_detail_node_name"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="active"/>
 
                     <ImageView
                         android:id="@+id/iv_detail_node_link"
@@ -132,9 +133,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="2dp"
-                        android:text="12.30%"
                         android:textColor="@color/color_105cfe"
-                        android:textSize="17sp" />
+                        android:textSize="17sp"
+                        tools:text="12.30%"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -173,9 +174,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="9dp"
-                        android:text="12"
                         android:textColor="@color/color_000000"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:text="12"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -190,9 +191,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="9dp"
-                        android:text="xxxx"
                         android:textColor="@color/color_000000"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:text="xxxx"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -208,9 +209,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="9dp"
                         android:layout_marginBottom="15dp"
-                        android:text="18"
                         android:textColor="@color/color_000000"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:text="18"/>
 
                 </LinearLayout>
 
@@ -233,9 +234,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="9dp"
-                        android:text="12"
                         android:textColor="@color/color_000000"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:text="12"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -250,9 +251,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="9dp"
-                        android:text="12"
                         android:textColor="@color/color_000000"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:text="12"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -268,9 +269,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="9dp"
                         android:layout_marginBottom="15dp"
-                        android:text="90%"
                         android:textColor="@color/color_000000"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:text="90%"/>
 
                 </LinearLayout>
 
@@ -292,9 +293,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="6dp"
                 android:layout_marginTop="10dp"
-                android:text="fasdfasdfasdfa"
                 android:textColor="@color/color_000000"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                tools:text="fasdfasdfasdfa"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -311,9 +312,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="6dp"
                 android:layout_marginTop="10dp"
-                android:text="fasdfasdfasdfa"
                 android:textColor="@color/color_105cfe"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                tools:text="fasdfasdfasdfa"/>
 
             <TextView
                 android:layout_width="wrap_content"

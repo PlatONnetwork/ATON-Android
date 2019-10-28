@@ -46,6 +46,7 @@
             style="@style/Text.000.16"
             android:layout_marginLeft="8dp"
             android:layout_weight="1"
+            android:textStyle="bold"
             android:gravity="center_vertical|left"
             android:text="@string/msg_all_wallets" />
 
