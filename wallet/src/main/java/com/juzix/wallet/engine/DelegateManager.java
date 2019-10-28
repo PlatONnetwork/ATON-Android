@@ -106,7 +106,7 @@ public class DelegateManager {
                 .doOnSuccess(new Consumer<Transaction>() {
                     @Override
                     public void accept(Transaction transaction) throws Exception {
-                        TransactionManager.getInstance().getTransactionByLoop(transaction);
+                        TransactionManager.getInstance().putTask(transaction.getHash(), TransactionManager.getInstance().getTransactionByLoop(transaction));
                     }
                 })
                 .toSingle();
