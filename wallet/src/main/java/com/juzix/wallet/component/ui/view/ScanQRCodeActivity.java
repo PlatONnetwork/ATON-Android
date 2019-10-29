@@ -299,7 +299,7 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
         }
         if (handler == null) {
             handler = new CaptureProviderHandler(this, decodeFormats,
-                    characterSet);
+                    "ISO-8859-1");
         }
     }
 

@@ -63,6 +63,7 @@ import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.netlistener.NetworkType;
 import com.juzix.wallet.netlistener.NetworkUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.GZipUtil;
 import com.juzix.wallet.utils.JSONUtil;
 
 import com.juzix.wallet.utils.QrCodeParser;
@@ -334,8 +335,14 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         switch (requestCode) {
             case MainActivity.REQ_ASSETS_TAB_QR_CODE:
                 String result = data.getStringExtra(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
-
-                @QrCodeType int qrCodeType = QrCodeParser.parseQrCode(result);
+                String unzip = null;
+                if(QrCodeParser.parseQrCode(result) == QrCodeType.WALLET_ADDRESS ||QrCodeParser.parseQrCode(result) == QrCodeType.WALLET_KEYSTORE
+                ||QrCodeParser.parseQrCode(result) == QrCodeType.WALLET_MNEMONIC||QrCodeParser.parseQrCode(result) == QrCodeType.WALLET_PRIVATEKEY){
+                  unzip =result;
+                }else {
+                    unzip =GZipUtil.unCompress(result);
+                }
+                @QrCodeType int qrCodeType = QrCodeParser.parseQrCode(unzip);
 
                 if (qrCodeType == QrCodeType.NONE) {
                     showLongToast(currentActivity().string(R.string.unrecognized));
@@ -343,12 +350,12 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
                 }
 
                 if (qrCodeType == QrCodeType.TRANSACTION_AUTHORIZATION) {
-                    TransactionAuthorizationDetailActivity.actionStart(currentActivity(), JSONUtil.parseObject(result, TransactionAuthorizationData.class));
+                    TransactionAuthorizationDetailActivity.actionStart(currentActivity(), JSONUtil.parseObject(unzip, TransactionAuthorizationData.class));
                     return;
                 }
 
                 if (qrCodeType == QrCodeType.TRANSACTION_SIGNATURE) {
-                    TransactionSignatureDialogFragment.newInstance(JSONUtil.parseObject(result, TransactionSignatureData.class)).show(getActivity().getSupportFragmentManager(), TransactionSignatureDialogFragment.TAG);
+                    TransactionSignatureDialogFragment.newInstance(JSONUtil.parseObject(unzip, TransactionSignatureData.class)).show(getActivity().getSupportFragmentManager(), TransactionSignatureDialogFragment.TAG);
                     return;
                 }
 

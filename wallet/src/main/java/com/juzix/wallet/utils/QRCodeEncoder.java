@@ -20,7 +20,7 @@ public class QRCodeEncoder {
     public static final Map<EncodeHintType, Object> HINTS = new EnumMap<>(EncodeHintType.class);
 
     static {
-        HINTS.put(EncodeHintType.CHARACTER_SET, "utf-8");
+        HINTS.put(EncodeHintType.CHARACTER_SET, "ISO-8859-1");
         HINTS.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
         HINTS.put(EncodeHintType.MARGIN, 0);
     }
