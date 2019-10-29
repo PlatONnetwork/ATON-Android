@@ -154,6 +154,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     protected void onFragmentPageStart() {
         mPresenter.fetchWalletsBalance();
         mPresenter.fetchWalletList();
+
     }
 
     @Override

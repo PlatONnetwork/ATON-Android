@@ -232,7 +232,7 @@
     <string name="amount_with_unit">%1$s&#160;LAT</string>
     <string name="transfer_amount_cannot_be_empty">Amount cannot be empty</string>
     <string name="transfer_amount_exceed_balance">Amount exceed balance</string>
-    <string name="insufficient_balance">Insufficient balance</string>
+    <string name="insufficient_balance">Insufficient balance payment fee</string>
     <string name="send">Send</string>
     <string name="receive">Receive</string>
     <string name="receive_atp">Receive&#160;LAT</string>
