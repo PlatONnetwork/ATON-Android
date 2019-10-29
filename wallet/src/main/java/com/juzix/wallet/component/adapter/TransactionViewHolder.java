@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.juzhen.framework.util.LogUtils;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.adapter.base.BaseViewHolder;
@@ -55,9 +56,31 @@ public class TransactionViewHolder extends BaseViewHolder<Transaction> {
     @Override
     public void refreshData(Transaction transaction, int position) {
         super.refreshData(transaction, position);
+        refreshData(transaction);
+    }
+
+    @Override
+    public void updateItem(Bundle bundle) {
+        if (bundle.isEmpty()) {
+            return;
+        }
+
+        for (String key : bundle.keySet()) {
+            switch (key) {
+                case TransactionDiffCallback.KEY_TRANSACTION:
+                    refreshData(bundle.getParcelable(key));
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    private void refreshData(Transaction transaction) {
         if (transaction == null) {
             return;
         }
+
 
         TransactionStatus transactionStatus = transaction.getTxReceiptStatus();
         TransactionType transactionType = transaction.getTxType();
@@ -84,25 +107,6 @@ public class TransactionViewHolder extends BaseViewHolder<Transaction> {
             mTransactionStatusIv.setImageResource(isSender ? R.drawable.icon_send_transation : R.drawable.icon_receive_transaction);
         } else {
             mTransactionStatusIv.setImageResource(isSender ? R.drawable.icon_delegate : R.drawable.icon_undelegate);
-        }
-    }
-
-    @Override
-    public void updateItem(Bundle bundle) {
-        if (bundle.isEmpty()) {
-            return;
-        }
-
-        for (String key : bundle.keySet()) {
-            switch (key) {
-                case TransactionDiffCallback.KEY_TRANSACTION_STATUS:
-                    TransactionStatus transactionStatus = bundle.getParcelable(key);
-                    mPendingLayout.setVisibility(transactionStatus != TransactionStatus.PENDING || mContext instanceof TransactionRecordsActivity ? View.GONE : View.VISIBLE);
-                    mTransactionStatusIv.setVisibility(transactionStatus == TransactionStatus.PENDING || mContext instanceof TransactionRecordsActivity ? View.GONE : View.VISIBLE);
-                    break;
-                default:
-                    break;
-            }
         }
     }
 

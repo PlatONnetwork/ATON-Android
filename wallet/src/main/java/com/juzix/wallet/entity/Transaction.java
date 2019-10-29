@@ -325,16 +325,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
      * @return
      */
     public boolean isSender(List<String> queryAddressList) {
-        TransactionType transactionType = getTxType();
-        switch (transactionType) {
-            case TRANSFER:
-                return queryAddressList != null && queryAddressList.contains(from);
-            case UNDELEGATE:
-            case EXIT_VALIDATOR:
-                return false;
-            default:
-                return true;
-        }
+        return queryAddressList != null && queryAddressList.contains(from);
     }
 
     /**

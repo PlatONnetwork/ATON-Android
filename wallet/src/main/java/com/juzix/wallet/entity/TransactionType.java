@@ -77,7 +77,9 @@ public enum TransactionType {
      * 版本声明
      */
     DECLARE_VERSION(2004, R.string.declare_version),
-
+    /**
+     * 创建取消提案
+     */
     CANCEL_PROPOSAL(2005, R.string.create_proposal),
     /**
      * 举报多签(举报验证人)
