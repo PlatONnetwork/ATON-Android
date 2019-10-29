@@ -35,6 +35,7 @@ import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.DensityUtil;
+import com.juzix.wallet.utils.GZipUtil;
 import com.juzix.wallet.utils.JSONUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.ToastUtil;
@@ -188,7 +189,7 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         String signature = data.getStringExtra(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
-        transactionSignatureData = JSONUtil.parseObject(signature, TransactionSignatureData.class);
+        transactionSignatureData = JSONUtil.parseObject(GZipUtil.unCompress(signature), TransactionSignatureData.class);
         if (transactionSignatureData != null && transactionSignatureData.getSignedDatas() != null && !transactionSignatureData.getSignedDatas().isEmpty()) {
             tvTransactionSignature.setText(getSignedMessage(transactionSignatureData));
             RawTransaction rawTransaction = TransactionDecoder.decode(transactionSignatureData.getSignedDatas().get(0));

@@ -2,11 +2,9 @@ package com.juzix.wallet.component.ui.dialog;
 
 import android.app.Dialog;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.jakewharton.rxbinding2.view.RxView;
@@ -16,6 +14,7 @@ import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.entity.TransactionAuthorizationData;
 import com.juzix.wallet.utils.DensityUtil;
+import com.juzix.wallet.utils.GZipUtil;
 import com.juzix.wallet.utils.QRCodeEncoder;
 import com.juzix.wallet.utils.RxUtils;
 
@@ -25,7 +24,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.reactivex.Observable;
-import io.reactivex.functions.Consumer;
 
 public class TransactionAuthorizationDialogFragment extends BaseDialogFragment {
 
@@ -86,7 +84,7 @@ public class TransactionAuthorizationDialogFragment extends BaseDialogFragment {
                 .fromCallable(new Callable<Bitmap>() {
                     @Override
                     public Bitmap call() throws Exception {
-                        return QRCodeEncoder.syncEncodeQRCode(data.toJSONString(), DensityUtil.getScreenWidth(getContext()) - DensityUtil.dp2px(getActivity(), 64f));
+                        return QRCodeEncoder.syncEncodeQRCode(GZipUtil.compress(data.toJSONString()), DensityUtil.getScreenWidth(getContext()) - DensityUtil.dp2px(getActivity(), 64f));
                     }
                 })
                 .compose(bindToLifecycle())

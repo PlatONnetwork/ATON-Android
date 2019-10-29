@@ -15,6 +15,7 @@ import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.utils.DensityUtil;
+import com.juzix.wallet.utils.GZipUtil;
 import com.juzix.wallet.utils.QRCodeEncoder;
 import com.juzix.wallet.utils.RxUtils;
 
@@ -76,7 +77,7 @@ public class AuthorizationSignatureDialogFragment extends BaseDialogFragment {
                 .fromCallable(new Callable<Bitmap>() {
                     @Override
                     public Bitmap call() throws Exception {
-                        return QRCodeEncoder.syncEncodeQRCode(data, DensityUtil.getScreenWidth(getContext()) - DensityUtil.dp2px(getActivity(), 64f));
+                        return QRCodeEncoder.syncEncodeQRCode(GZipUtil.compress(data), DensityUtil.getScreenWidth(getContext()) - DensityUtil.dp2px(getActivity(), 64f));
                     }
                 })
                 .compose(bindToLifecycle())
