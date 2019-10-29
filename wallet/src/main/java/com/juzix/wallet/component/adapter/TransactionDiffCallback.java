@@ -11,7 +11,7 @@ import java.util.List;
 
 public class TransactionDiffCallback extends BaseDiffCallback<Transaction> {
 
-    public final static String KEY_TRANSACTION_STATUS = "key_transaction_status";
+    public final static String KEY_TRANSACTION = "key_transaction";
 
     public TransactionDiffCallback(List<Transaction> oldList, List<Transaction> newList) {
         super(oldList, newList);
@@ -43,7 +43,7 @@ public class TransactionDiffCallback extends BaseDiffCallback<Transaction> {
         Bundle payload = new Bundle();
 
         if (oldTransaction.getTxReceiptStatus() != newTransaction.getTxReceiptStatus()) {
-            payload.putParcelable(KEY_TRANSACTION_STATUS, newTransaction.getTxReceiptStatus());
+            payload.putParcelable(KEY_TRANSACTION, newTransaction);
         }
 
         return payload;

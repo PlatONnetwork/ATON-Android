@@ -199,24 +199,36 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
         if (isViewAttached()) {
             List<Transaction> transactionList = mTransactionMap.get(mWalletAddress);
             List<Transaction> newTransactionList = new ArrayList<>();
-            if (transactionList != null && !transactionList.isEmpty()) {
-                if (transactionList.contains(transaction)) {
-                    //更新
-                    newTransactionList = new ArrayList<>(transactionList);
-                    int index = newTransactionList.indexOf(transaction);
-                    newTransactionList.set(index, transaction);
-                    Collections.sort(newTransactionList);
-                    getView().notifyDataSetChanged(transactionList, newTransactionList, mWalletAddress, false);
-                } else {
-                    //添加
-                    newTransactionList = getNewTransactionList(transactionList, Arrays.asList(transaction), true);
-                    Collections.sort(newTransactionList);
-                    getView().notifyDataSetChanged(transactionList, newTransactionList, mWalletAddress, false);
+            if (isCurrentSelectedWallet(transaction)){
+                if (transactionList != null && !transactionList.isEmpty()) {
+                    if (transactionList.contains(transaction)) {
+                        //更新
+                        newTransactionList = new ArrayList<>(transactionList);
+                        int index = newTransactionList.indexOf(transaction);
+                        newTransactionList.set(index, transaction);
+                        Collections.sort(newTransactionList);
+                        getView().notifyDataSetChanged(transactionList, newTransactionList, mWalletAddress, false);
+                    } else {
+                        //添加
+                        newTransactionList = getNewTransactionList(transactionList, Arrays.asList(transaction), true);
+                        Collections.sort(newTransactionList);
+                        getView().notifyDataSetChanged(transactionList, newTransactionList, mWalletAddress, false);
+                    }
+                    mTransactionMap.put(mWalletAddress, newTransactionList);
                 }
-
-                mTransactionMap.put(mWalletAddress, newTransactionList);
             }
+
         }
+    }
+
+    /**
+     * 当前交易
+     *
+     * @param transaction
+     * @return
+     */
+    private boolean isCurrentSelectedWallet(Transaction transaction) {
+        return transaction.getFrom().equals(mWalletAddress) || transaction.getTo().equals(mWalletAddress);
     }
 
     /**
