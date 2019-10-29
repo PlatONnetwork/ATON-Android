@@ -35,7 +35,7 @@ public class BigDecimalUtil {
             BigDecimal b1 = new BigDecimal(Double.toString(v1));
             BigDecimal b2 = new BigDecimal(Double.toString(v2));
             result = b1.add(b2).doubleValue();
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -57,7 +57,7 @@ public class BigDecimalUtil {
             BigDecimal b1 = new BigDecimal(v1);
             BigDecimal b2 = new BigDecimal(v2);
             result = b1.add(b2);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -72,7 +72,7 @@ public class BigDecimalUtil {
             BigDecimal b2 = new BigDecimal(Double.toString(v2));
             BigDecimal b3 = b1.add(b2);
             result = b3.setScale(scale, roundingMode).doubleValue();
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -92,7 +92,7 @@ public class BigDecimalUtil {
             BigDecimal b1 = new BigDecimal(Double.toString(v1));
             BigDecimal b2 = new BigDecimal(Double.toString(v2));
             result = b1.subtract(b2).doubleValue();
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return result;
@@ -111,7 +111,7 @@ public class BigDecimalUtil {
             BigDecimal b1 = new BigDecimal(v1);
             BigDecimal b2 = new BigDecimal(v2);
             result = b1.subtract(b2).doubleValue();
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return result;
@@ -130,7 +130,7 @@ public class BigDecimalUtil {
             BigDecimal b1 = new BigDecimal(Double.toString(v1));
             BigDecimal b2 = new BigDecimal(Double.toString(v2));
             result = b1.multiply(b2).doubleValue();
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return result;
@@ -152,7 +152,7 @@ public class BigDecimalUtil {
             BigDecimal b1 = new BigDecimal(v1);
             BigDecimal b2 = new BigDecimal(v2);
             result = b1.multiply(b2);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return result;
@@ -187,9 +187,7 @@ public class BigDecimalUtil {
             BigDecimal b1 = new BigDecimal(Double.toString(v1));
             BigDecimal b2 = new BigDecimal(Double.toString(v2));
             result = b1.divide(b2, scale, BigDecimal.ROUND_HALF_UP).doubleValue();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (ArithmeticException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -210,9 +208,7 @@ public class BigDecimalUtil {
             BigDecimal b1 = new BigDecimal(v1);
             BigDecimal b2 = new BigDecimal(v2);
             result = b1.divide(b2, scale, BigDecimal.ROUND_HALF_UP).toPlainString();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (ArithmeticException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return result;
@@ -231,9 +227,7 @@ public class BigDecimalUtil {
             BigDecimal b = new BigDecimal(Double.toString(v));
             BigDecimal one = new BigDecimal("1");
             result = b.divide(one, scale, BigDecimal.ROUND_HALF_UP).doubleValue();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (ArithmeticException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return result;
@@ -250,7 +244,7 @@ public class BigDecimalUtil {
         try {
             BigDecimal b = BigDecimal.valueOf(v);
             result = b.floatValue();
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -268,7 +262,7 @@ public class BigDecimalUtil {
         try {
             BigDecimal b = new BigDecimal(v);
             result = b.setScale(2, RoundingMode.HALF_UP).floatValue();
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -286,7 +280,7 @@ public class BigDecimalUtil {
         try {
             BigDecimal b = new BigDecimal(v);
             result = b.intValue();
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return result;
@@ -303,7 +297,7 @@ public class BigDecimalUtil {
         try {
             BigDecimal b = new BigDecimal(v);
             result = b.longValue();
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return result;
@@ -322,7 +316,7 @@ public class BigDecimalUtil {
             BigDecimal b1 = new BigDecimal(v1);
             BigDecimal b2 = new BigDecimal(v2);
             result = b1.max(b2).doubleValue();
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return result;
@@ -341,7 +335,7 @@ public class BigDecimalUtil {
             BigDecimal b1 = new BigDecimal(v1);
             BigDecimal b2 = new BigDecimal(v2);
             result = b1.min(b2).doubleValue();
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return result;
@@ -360,7 +354,7 @@ public class BigDecimalUtil {
             BigDecimal b1 = new BigDecimal(v1);
             BigDecimal b2 = new BigDecimal(v2);
             result = b1.compareTo(b2);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return result;

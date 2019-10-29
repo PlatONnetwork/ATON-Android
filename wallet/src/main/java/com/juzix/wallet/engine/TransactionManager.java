@@ -77,7 +77,7 @@ import retrofit2.Response;
  */
 public class TransactionManager {
 
-    private final static int MAX_PENDING_TIME = 24 * 60 * 60 * 1000;
+    private transient final static int MAX_PENDING_TIME = 24 * 60 * 60 * 1000;
 
     private volatile Map<String, Disposable> mDisposableMap = new HashMap<>();
 

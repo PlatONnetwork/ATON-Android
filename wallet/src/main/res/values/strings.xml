@@ -290,7 +290,7 @@
     <string name="time">时间</string>
     <string name="submissionTime">交易时间</string>
     <string name="memo">备注</string>
-    <string name="hash">交易Hash</string>
+    <string name="hash">交易哈希</string>
     <string name="executeContractConfirm">交易确认</string>
     <string name="pending">待确认</string>
     <string name="signing">签名中</string>
