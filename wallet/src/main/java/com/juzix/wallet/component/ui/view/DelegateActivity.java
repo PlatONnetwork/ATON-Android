@@ -152,7 +152,12 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         setDelegateButtonState(false);
         et_amount.setFilters(new InputFilter[]{new PointLengthFilter()});
         et_amount.addTextChangedListener(delegateWatcher);
+        initClick();
+        initGuide();
+        SoftHideKeyboardUtils.assistActivity(this);
+    }
 
+    private void initClick() {
         RxView.clicks(walletChoose).compose(RxUtils.bindToLifecycle(this))
                 .compose(RxUtils.getClickTransformer())
                 .subscribe(new CustomObserver<Object>() {
@@ -202,8 +207,6 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                         mPresenter.submitDelegate(stakingAmountType);
                     }
                 });
-        initGuide();
-        SoftHideKeyboardUtils.assistActivity(this);
     }
 
     private void initGuide() {
@@ -365,8 +368,12 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         amountType.setText(getString(R.string.available_balance));
         amount.setText(StringUtil.formatBalance((BigDecimalUtil.div(bean.getFree(), "1E18"))));
         checkIsClick(bean);
-
         //判断是否允许委托
+        checkIsCanDelegate(bean);
+
+    }
+
+    private void checkIsCanDelegate(DelegateHandle bean) {
         if (!bean.isCanDelegation()) {
             all.setClickable(false);
             et_amount.setText("");
@@ -401,7 +408,6 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                 btnDelegate.setEnabled(false);
             }
         }
-
     }
 
     public void setImageIconForText(TextView textView, String content) {

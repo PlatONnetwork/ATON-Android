@@ -129,35 +129,24 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
         tv_rank.setText(getString(R.string.validators_rank));
         rankType = Constants.ValidatorsType.VALIDATORS_RANK;
         nodeState = Constants.ValidatorsType.ALL_VALIDATORS;
-
         mPresenter.loadValidatorsData(rankType, nodeState, -1);
 
-        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
-            @Override
-            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                isLoadMore = false;
-                mPresenter.loadValidatorsData(rankType, nodeState, -1);
+        initPullRefreshListener();
+        initCheckedListener();
 
-            }
-        });
+        RxAdapterView.itemClicks(rlv_list)
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Integer>() {
+                    @Override
+                    public void accept(Integer position) {
+                        VerifyNode verifyNode = mValidatorsAdapter.getItem(position);
+                        ValidatorsDetailActivity.actionStart(getContext(), verifyNode.getNodeId());
+                    }
+                });
+    }
 
-        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
-            @Override
-            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-                //加载更多
-                isLoadMore = true;
-                if (TextUtils.equals(nodeState, Constants.ValidatorsType.ALL_VALIDATORS)) {
-                    rank = allLastRank;
-                } else if (TextUtils.equals(nodeState, Constants.ValidatorsType.ACTIVE_VALIDATORS)) {
-                    rank = activeLastRank;
-                } else {
-                    rank = candidateLastRank;
-                }
-                mPresenter.loadDataFromDB(rankType, nodeState, rank);
-
-            }
-        });
-
+    private void initCheckedListener() {
         radio_group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int id) {
@@ -194,17 +183,34 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
 
             }
         });
+    }
 
-        RxAdapterView.itemClicks(rlv_list)
-                .compose(RxUtils.getClickTransformer())
-                .compose(RxUtils.bindToLifecycle(this))
-                .subscribe(new CustomObserver<Integer>() {
-                    @Override
-                    public void accept(Integer position) {
-                        VerifyNode verifyNode = mValidatorsAdapter.getItem(position);
-                        ValidatorsDetailActivity.actionStart(getContext(), verifyNode.getNodeId());
-                    }
-                });
+    private void initPullRefreshListener() {
+        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                isLoadMore = false;
+                mPresenter.loadValidatorsData(rankType, nodeState, -1);
+
+            }
+        });
+
+        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+                //加载更多
+                isLoadMore = true;
+                if (TextUtils.equals(nodeState, Constants.ValidatorsType.ALL_VALIDATORS)) {
+                    rank = allLastRank;
+                } else if (TextUtils.equals(nodeState, Constants.ValidatorsType.ACTIVE_VALIDATORS)) {
+                    rank = activeLastRank;
+                } else {
+                    rank = candidateLastRank;
+                }
+                mPresenter.loadDataFromDB(rankType, nodeState, rank);
+
+            }
+        });
     }
 
     @Override
