@@ -126,7 +126,12 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         setWithDrawButtonState(false);
         withdrawAmount.setFilters(new InputFilter[]{new PointLengthFilter()});
         withdrawAmount.addTextChangedListener(mAmountTextWatcher);
+        initClicks();
+        initGuide();
+        SoftHideKeyboardUtils.assistActivity(this);
+    }
 
+    private void initClicks() {
         RxView.clicks(chooseDelegate)
                 .compose(RxUtils.bindToLifecycle(this))
                 .compose(RxUtils.getClickTransformer())
@@ -173,8 +178,6 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
                         mPresenter.submitWithDraw(chooseType);
                     }
                 });
-        initGuide();
-        SoftHideKeyboardUtils.assistActivity(this);
     }
 
     private void initGuide() {
