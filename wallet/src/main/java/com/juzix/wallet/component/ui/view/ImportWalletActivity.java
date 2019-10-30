@@ -28,6 +28,7 @@ import com.juzix.wallet.component.widget.table.PagerItems;
 import com.juzix.wallet.component.widget.table.SmartTabLayout;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.entity.GuideType;
+import com.juzix.wallet.utils.GZipUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
@@ -169,23 +170,24 @@ public class ImportWalletActivity extends BaseActivity {
         if (requestCode == ImportWalletActivity.REQ_QR_CODE) {
             Bundle bundle = data.getExtras();
             String scanResult = bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
-            if (JZWalletUtil.isValidKeystore(scanResult)) {
+            String unzip = GZipUtil.unCompress(scanResult);
+            if (JZWalletUtil.isValidKeystore(unzip)) {
                 mVpContent.setCurrentItem(0);
                 ((PagerItemAdapter) mVpContent.getAdapter()).getPage(0).onActivityResult(requestCode, resultCode, data);
                 return;
             }
-            if (JZWalletUtil.isValidPrivateKey(scanResult)) {
+            if (JZWalletUtil.isValidPrivateKey(unzip)) {
                 mVpContent.setCurrentItem(2);
                 ((PagerItemAdapter) mVpContent.getAdapter()).getPage(2).onActivityResult(requestCode, resultCode, data);
                 return;
             }
-            if (JZWalletUtil.isValidMnemonic(scanResult)) {
+            if (JZWalletUtil.isValidMnemonic(unzip)) {
                 mVpContent.setCurrentItem(1);
                 ((PagerItemAdapter) mVpContent.getAdapter()).getPage(1).onActivityResult(requestCode, resultCode, data);
                 return;
             }
             //新增导入观察钱包的判断
-            if (JZWalletUtil.isValidAddress(scanResult)) {
+            if (JZWalletUtil.isValidAddress(unzip)) {
                 mVpContent.setCurrentItem(3);
                 ((PagerItemAdapter) mVpContent.getAdapter()).getPage(3).onActivityResult(requestCode, resultCode, data);
                 return;

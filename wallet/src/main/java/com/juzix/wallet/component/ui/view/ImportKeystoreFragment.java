@@ -26,6 +26,7 @@ import com.juzix.wallet.component.ui.contract.ImportKeystoreContract;
 import com.juzix.wallet.component.ui.presenter.ImportKeystorePresenter;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.utils.CommonUtil;
+import com.juzix.wallet.utils.GZipUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.SoftHideKeyboardUtils;
 
@@ -232,7 +233,8 @@ public class ImportKeystoreFragment extends MVPBaseFragment<ImportKeystorePresen
         if (requestCode == ImportWalletActivity.REQ_QR_CODE) {
             Bundle bundle = data.getExtras();
             String scanResult = bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
-            mPresenter.parseQRCode(scanResult);
+            String unzip= GZipUtil.unCompress(scanResult);
+            mPresenter.parseQRCode(unzip);
         }
     }
 
