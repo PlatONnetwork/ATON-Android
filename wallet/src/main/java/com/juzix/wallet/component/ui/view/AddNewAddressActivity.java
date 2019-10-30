@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -22,7 +23,9 @@ import com.juzix.wallet.component.ui.presenter.AddNewAddressPresenter;
 import com.juzix.wallet.component.widget.CommonTitleBar;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.entity.Address;
+import com.juzix.wallet.utils.GZipUtil;
 import com.juzix.wallet.utils.RxUtils;
+import com.juzix.wallet.utils.ToastUtil;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import butterknife.BindString;
@@ -122,7 +125,12 @@ public class AddNewAddressActivity extends MVPBaseActivity<AddNewAddressPresente
         if (resultCode == RESULT_OK && data != null) {
             if (requestCode == Constants.RequestCode.REQUEST_CODE_SCAN_QRCODE) {
                 String address = data.getStringExtra(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
-                mPresenter.validQRCode(address);
+                String unzip = GZipUtil.unCompress(address);
+                if(TextUtils.isEmpty(unzip)){
+                    ToastUtil.showLongToast(getContext(),R.string.unrecognized_content);
+                    return;
+                }
+                mPresenter.validQRCode(unzip);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
