@@ -100,6 +100,7 @@ public class NodeManager {
                     public void accept(Node nodeEntity) throws Exception {
                         switchNode(nodeEntity);
                         EventPublisher.getInstance().sendNodeChangedEvent(nodeEntity);
+                        AppConfigManager.getInstance().init();
                     }
                 }, new Consumer<Throwable>() {
                     @Override

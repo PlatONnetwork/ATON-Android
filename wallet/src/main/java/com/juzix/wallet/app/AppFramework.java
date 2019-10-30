@@ -10,6 +10,7 @@ import com.juzhen.framework.network.NetState;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.config.JZAppConfigure;
+import com.juzix.wallet.engine.AppConfigManager;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.event.Event;
@@ -279,7 +280,7 @@ public class AppFramework {
             } else if (oldVersion == 106) {
 
                 schema.get("NodeEntity")
-                        .addField("chainId",String.class)
+                        .addField("chainId", String.class)
                         .transform(new RealmObjectSchema.Function() {
                             @Override
                             public void apply(DynamicRealmObject obj) {
@@ -329,7 +330,7 @@ public class AppFramework {
 //                oldVersion++;
 
 
-            }else if(oldVersion ==107){
+            } else if (oldVersion == 107) {
                 //删除节点详情移除功能相关的表
                 schema.remove("DelegateDetailEntity");
                 //删除节点地址的表
@@ -346,11 +347,11 @@ public class AppFramework {
                         .transform(new RealmObjectSchema.Function() {
                             @Override
                             public void apply(DynamicRealmObject obj) {
-                                obj.getDynamicRealm().where("walletEntity").equalTo("chainId","104").findAll().deleteAllFromRealm();
+                                obj.getDynamicRealm().where("walletEntity").equalTo("chainId", "104").findAll().deleteAllFromRealm();
                             }
                         });
 
-                    oldVersion++;
+                oldVersion++;
             }
 
         }

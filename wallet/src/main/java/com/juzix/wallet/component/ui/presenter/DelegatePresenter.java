@@ -16,6 +16,7 @@ import com.juzix.wallet.component.ui.dialog.DelegateSelectWalletDialogFragment;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.dialog.TransactionAuthorizationDialogFragment;
 import com.juzix.wallet.component.ui.dialog.TransactionSignatureDialogFragment;
+import com.juzix.wallet.engine.AppConfigManager;
 import com.juzix.wallet.engine.DelegateManager;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
@@ -70,6 +71,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     private BigInteger gas_Price; //调web3j获取gasprice
     private BigInteger gas_limit;
     private boolean isAll = false;//是否点击全部
+    private long minDelegation = NumberParserUtils.parseLong(AppConfigManager.getInstance().getMinDelegation());
 
     public DelegatePresenter(DelegateContract.View view) {
         super(view);
@@ -120,7 +122,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
         //检查委托的数量
         if (TextUtils.isEmpty(delegateAmount)) {
             getView().showTips(false);
-        } else if (amount < 10) {
+        } else if (amount < minDelegation) {
             //按钮不可点击,并且下方提示
             getView().showTips(true);
         } else {
@@ -133,7 +135,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     public void updateDelegateButtonState() {
         if (isViewAttached()) {
             String withdrawAmount = getView().getDelegateAmount(); //获取输入的委托数量
-            boolean isAmountValid = !TextUtils.isEmpty(withdrawAmount) && NumberParserUtils.parseDouble(withdrawAmount) >= 10;
+            boolean isAmountValid = !TextUtils.isEmpty(withdrawAmount) && NumberParserUtils.parseDouble(withdrawAmount) >= minDelegation;
             getView().setDelegateButtonState(isAmountValid);
         }
 

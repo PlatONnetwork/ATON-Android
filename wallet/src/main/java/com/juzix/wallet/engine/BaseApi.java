@@ -3,6 +3,7 @@ package com.juzix.wallet.engine;
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
 import com.juzix.wallet.entity.AccountBalance;
+import com.juzix.wallet.entity.AppConfig;
 import com.juzix.wallet.entity.CandidateWrap;
 import com.juzix.wallet.entity.DelegateDetail;
 import com.juzix.wallet.entity.DelegateHandle;
@@ -188,4 +189,11 @@ public interface BaseApi {
      */
     @POST("app/v0700/transaction/getTransactionsStatus")
     Single<Response<ApiResponse<List<TransactionReceipt>>>> getTransactionsStatus(@Body ApiRequestBody body);
+
+    /**
+     * 获取app 配置
+     * @return
+     */
+    @GET("config/config.json")
+    Single<Response<ApiResponse<AppConfig>>> getAppConfig();
 }
