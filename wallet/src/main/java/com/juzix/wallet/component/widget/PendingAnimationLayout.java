@@ -68,7 +68,6 @@ public class PendingAnimationLayout extends LinearLayout {
         objectAnimator3.start();
     }
 
-
     private TextView buildView(Context context) {
         int childWidth = DensityUtil.dp2px(context, 3f);
         int childHeight = DensityUtil.dp2px(context, 3f);

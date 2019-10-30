@@ -1,15 +1,11 @@
 package com.juzix.wallet.engine;
 
-import android.annotation.SuppressLint;
 import android.text.TextUtils;
-import android.util.Log;
-
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.util.LogUtils;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.app.Constants;
-import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.app.CustomThrowable;
 import com.juzix.wallet.db.sqlite.TransactionDao;
 import com.juzix.wallet.entity.Transaction;
@@ -18,50 +14,20 @@ import com.juzix.wallet.entity.TransactionStatus;
 import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.event.EventPublisher;
-import com.juzix.wallet.utils.BigDecimalUtil;
-import com.juzix.wallet.utils.NumericUtil;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.EventBusBuilder;
-import org.reactivestreams.Publisher;
-import org.reactivestreams.Subscription;
-import org.spongycastle.util.encoders.Hex;
-import org.web3j.abi.PlatOnTypeEncoder;
-import org.web3j.abi.datatypes.BytesType;
-import org.web3j.abi.datatypes.generated.Int64;
-import org.web3j.abi.datatypes.generated.Uint256;
-import org.web3j.abi.datatypes.generated.Uint64;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.RawTransaction;
-import org.web3j.crypto.TransactionDecoder;
 import org.web3j.crypto.TransactionEncoder;
-import org.web3j.platon.FunctionType;
-import org.web3j.platon.PlatOnFunction;
-import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.methods.response.PlatonGetBalance;
 import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
-import org.web3j.rlp.RlpEncoder;
-import org.web3j.rlp.RlpList;
-import org.web3j.rlp.RlpString;
-import org.web3j.rlp.RlpType;
 import org.web3j.utils.Numeric;
-
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
-
-import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
-import io.reactivex.FlowableEmitter;
-import io.reactivex.FlowableOnSubscribe;
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
