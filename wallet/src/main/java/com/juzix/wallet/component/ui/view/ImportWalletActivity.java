@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,7 @@ import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.entity.GuideType;
 import com.juzix.wallet.utils.GZipUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
+import com.juzix.wallet.utils.ToastUtil;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.util.ArrayList;
@@ -171,6 +173,10 @@ public class ImportWalletActivity extends BaseActivity {
             Bundle bundle = data.getExtras();
             String scanResult = bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
             String unzip = GZipUtil.unCompress(scanResult);
+            if(TextUtils.isEmpty(unzip)){
+                ToastUtil.showLongToast(getContext(),R.string.unrecognized_content);
+                return;
+            }
             if (JZWalletUtil.isValidKeystore(unzip)) {
                 mVpContent.setCurrentItem(0);
                 ((PagerItemAdapter) mVpContent.getAdapter()).getPage(0).onActivityResult(requestCode, resultCode, data);

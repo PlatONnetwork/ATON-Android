@@ -673,5 +673,6 @@
     <string name="web_url_support_feedback">https://platon.zendesk.com/hc/en-us/categories/360002174434</string>
     <string name="web_url_common_delegate_problem">https://platon.zendesk.com/hc/en-us/articles/360037373194-Common-questions-about-PlatON-Delegators</string>
     <string name="withdraw_amount_tips">The Amount cannot be less than 10 LAT</string>
+    <string name="unrecognized_content">Unrecognized content</string>
 </resources>
 

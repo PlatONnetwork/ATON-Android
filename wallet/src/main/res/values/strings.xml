@@ -686,4 +686,5 @@
     <string name="web_url_support_feedback">https://platon.zendesk.com/hc/zh-cn/categories/360002174434</string>
     <string name="web_url_common_delegate_problem">https://platon.zendesk.com/hc/zh-cn/articles/360037373194-Common-questions-about-PlatON-Delegators</string>
     <string name="withdraw_amount_tips">赎回数量不能少于10LAT</string>
+    <string name="unrecognized_content">无法识别内容</string>
 </resources>

@@ -337,12 +337,10 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
             case MainActivity.REQ_ASSETS_TAB_QR_CODE:
                 String result = data.getStringExtra(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
                 String unzip = GZipUtil.unCompress(result);
-//                if(QrCodeParser.parseQrCode(result) == QrCodeType.WALLET_ADDRESS ||QrCodeParser.parseQrCode(result) == QrCodeType.WALLET_KEYSTORE
-//                ||QrCodeParser.parseQrCode(result) == QrCodeType.WALLET_MNEMONIC||QrCodeParser.parseQrCode(result) == QrCodeType.WALLET_PRIVATEKEY){
-//                  unzip =result;
-//                }else {
-//                    unzip =GZipUtil.unCompress(result);
-//                }
+                if(TextUtils.isEmpty(unzip)){
+                    showLongToast(currentActivity().string(R.string.unrecognized_content));
+                    return;
+                }
                 @QrCodeType int qrCodeType = QrCodeParser.parseQrCode(unzip);
 
                 if (qrCodeType == QrCodeType.NONE) {
