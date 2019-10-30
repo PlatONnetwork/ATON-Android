@@ -44,6 +44,7 @@ import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.GZipUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
@@ -213,8 +214,9 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
                     break;
                 case MainActivity.REQ_ASSETS_ADDRESS_QR_CODE:
                     String address = data.getStringExtra(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
-                    if (JZWalletUtil.isValidAddress(address)) {
-                        setToAddress(address);
+                    String unzip = GZipUtil.unCompress(address);
+                    if (JZWalletUtil.isValidAddress(unzip)) {
+                        setToAddress(unzip);
                         if (mPresenter != null) {
                             mPresenter.calculateFee();
                         }

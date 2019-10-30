@@ -336,13 +336,13 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         switch (requestCode) {
             case MainActivity.REQ_ASSETS_TAB_QR_CODE:
                 String result = data.getStringExtra(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
-                String unzip = null;
-                if(QrCodeParser.parseQrCode(result) == QrCodeType.WALLET_ADDRESS ||QrCodeParser.parseQrCode(result) == QrCodeType.WALLET_KEYSTORE
-                ||QrCodeParser.parseQrCode(result) == QrCodeType.WALLET_MNEMONIC||QrCodeParser.parseQrCode(result) == QrCodeType.WALLET_PRIVATEKEY){
-                  unzip =result;
-                }else {
-                    unzip =GZipUtil.unCompress(result);
-                }
+                String unzip = GZipUtil.unCompress(result);
+//                if(QrCodeParser.parseQrCode(result) == QrCodeType.WALLET_ADDRESS ||QrCodeParser.parseQrCode(result) == QrCodeType.WALLET_KEYSTORE
+//                ||QrCodeParser.parseQrCode(result) == QrCodeType.WALLET_MNEMONIC||QrCodeParser.parseQrCode(result) == QrCodeType.WALLET_PRIVATEKEY){
+//                  unzip =result;
+//                }else {
+//                    unzip =GZipUtil.unCompress(result);
+//                }
                 @QrCodeType int qrCodeType = QrCodeParser.parseQrCode(unzip);
 
                 if (qrCodeType == QrCodeType.NONE) {
@@ -365,23 +365,23 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
                         vpContent.setCurrentItem(1);
                         ((TabAdapter) vpContent.getAdapter()).getItem(1).onActivityResult(MainActivity.REQ_ASSETS_ADDRESS_QR_CODE, resultCode, data);
                     } else {
-                        AddNewAddressActivity.actionStartWithAddress(getContext(), result);
+                        AddNewAddressActivity.actionStartWithAddress(getContext(), unzip);
                     }
                     return;
                 }
 
                 if (qrCodeType == QrCodeType.WALLET_KEYSTORE) {
-                    ImportWalletActivity.actionStart(currentActivity(), ImportWalletActivity.TabIndex.IMPORT_KEYSTORE, result);
+                    ImportWalletActivity.actionStart(currentActivity(), ImportWalletActivity.TabIndex.IMPORT_KEYSTORE, unzip);
                     return;
                 }
 
                 if (qrCodeType == QrCodeType.WALLET_MNEMONIC) {
-                    ImportWalletActivity.actionStart(currentActivity(), ImportWalletActivity.TabIndex.IMPORT_MNEMONIC, result);
+                    ImportWalletActivity.actionStart(currentActivity(), ImportWalletActivity.TabIndex.IMPORT_MNEMONIC, unzip);
                     return;
                 }
 
                 if (qrCodeType == QrCodeType.WALLET_PRIVATEKEY) {
-                    ImportWalletActivity.actionStart(currentActivity(), ImportWalletActivity.TabIndex.IMPORT_PRIVATEKEY, result);
+                    ImportWalletActivity.actionStart(currentActivity(), ImportWalletActivity.TabIndex.IMPORT_PRIVATEKEY, unzip);
                     return;
                 }
                 break;

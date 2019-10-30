@@ -21,6 +21,7 @@ import com.juzix.wallet.component.ui.base.BaseFragment;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.utils.CommonUtil;
 import com.juzix.wallet.utils.DensityUtil;
+import com.juzix.wallet.utils.GZipUtil;
 import com.juzix.wallet.utils.QRCodeEncoder;
 import com.juzix.wallet.utils.RxUtils;
 
@@ -67,7 +68,7 @@ public class ExportKeystoreQRCodeFragment extends BaseFragment {
 
                     @Override
                     public Bitmap call() throws Exception {
-                        return QRCodeEncoder.syncEncodeQRCode(qrCodeData, size);
+                        return QRCodeEncoder.syncEncodeQRCode(GZipUtil.compress(qrCodeData), size);
                     }
                 })
                 .compose(RxUtils.bindToLifecycle(this))

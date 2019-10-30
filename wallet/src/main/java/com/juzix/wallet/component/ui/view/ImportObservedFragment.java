@@ -22,6 +22,7 @@ import com.juzix.wallet.component.ui.contract.ImportIndividualObservedContract;
 import com.juzix.wallet.component.ui.presenter.ImportObservedPresenter;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.utils.CommonUtil;
+import com.juzix.wallet.utils.GZipUtil;
 import com.juzix.wallet.utils.RxUtils;
 
 import butterknife.BindView;
@@ -111,8 +112,9 @@ public class ImportObservedFragment extends MVPBaseFragment<ImportObservedPresen
         if (requestCode == ImportWalletActivity.REQ_QR_CODE) {
             Bundle bundle = data.getExtras();
             String scanResult = bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
-            mPresenter.parseQRCode(scanResult);
-            mPresenter.IsImportObservedWallet(scanResult);
+            String  unzip = GZipUtil.unCompress(scanResult);
+            mPresenter.parseQRCode(unzip);
+            mPresenter.IsImportObservedWallet(unzip);
         }
     }
 
