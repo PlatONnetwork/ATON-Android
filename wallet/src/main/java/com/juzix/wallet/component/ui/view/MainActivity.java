@@ -29,6 +29,7 @@ import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.MainContract;
 import com.juzix.wallet.component.ui.presenter.MainPresenter;
 import com.juzix.wallet.component.widget.FragmentTabHost;
+import com.juzix.wallet.engine.AppConfigManager;
 import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.CommonUtil;

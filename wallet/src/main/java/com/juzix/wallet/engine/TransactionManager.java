@@ -77,8 +77,6 @@ import retrofit2.Response;
  */
 public class TransactionManager {
 
-    private transient final static int MAX_PENDING_TIME = 24 * 60 * 60 * 1000;
-
     private volatile Map<String, Disposable> mDisposableMap = new HashMap<>();
 
     private TransactionManager() {
@@ -103,18 +101,16 @@ public class TransactionManager {
     }
 
     public Disposable removeTaskByHash(String hash) {
-        LogUtils.e("removeTaskByHash:    " + hash);
         return mDisposableMap.remove(hash);
     }
 
     public void putTask(String hash, Disposable disposable) {
         mDisposableMap.put(hash, disposable);
-        LogUtils.e("putTask:    " + hash);
     }
 
     public void cancelTaskByHash(String hash) {
         Disposable disposable = removeTaskByHash(hash);
-        if (disposable != null) {
+        if (disposable != null && !disposable.isDisposed()) {
             disposable.dispose();
         }
     }
@@ -234,7 +230,7 @@ public class TransactionManager {
                     public Transaction apply(Long aLong) throws Exception {
                         Transaction tempTransaction = transaction.clone();
                         //如果pending时间超过4小时，则删除
-                        if (System.currentTimeMillis() - transaction.getTimestamp() >= MAX_PENDING_TIME) {
+                        if (System.currentTimeMillis() - transaction.getTimestamp() >= NumberParserUtils.parseLong(AppConfigManager.getInstance().getTimeout())) {
                             tempTransaction.setTxReceiptStatus(TransactionStatus.TIMEOUT.ordinal());
                         } else {
                             TransactionReceipt transactionReceipt = getTransactionReceipt(tempTransaction.getHash());
@@ -258,7 +254,7 @@ public class TransactionManager {
                 .doOnNext(new Consumer<Transaction>() {
                     @Override
                     public void accept(Transaction transaction) throws Exception {
-                        cancelTaskByHash(transaction.getHash());
+                        removeTaskByHash(transaction.getHash());
                         if (transaction.getTxReceiptStatus() == TransactionStatus.SUCCESSED) {
                             TransactionDao.deleteTransaction(transaction.getHash());
                             LogUtils.e("getIndividualTransactionByLoop 轮询交易成功" + transaction.toString());

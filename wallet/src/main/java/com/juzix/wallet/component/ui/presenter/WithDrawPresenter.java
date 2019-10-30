@@ -16,6 +16,7 @@ import com.juzix.wallet.component.ui.contract.WithDrawContract;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.dialog.TransactionAuthorizationDialogFragment;
 import com.juzix.wallet.component.ui.dialog.TransactionSignatureDialogFragment;
+import com.juzix.wallet.engine.AppConfigManager;
 import com.juzix.wallet.engine.DelegateManager;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
@@ -66,6 +67,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     private String feeAmount;
     private BigInteger gas_Price; //调web3j获取gasprice
     private BigInteger gas_limit;
+    private long minDelegation = NumberParserUtils.parseLong(AppConfigManager.getInstance().getMinDelegation());
 
     public WithDrawPresenter(WithDrawContract.View view) {
         super(view);
@@ -95,7 +97,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
         double amount = NumberParserUtils.parseDouble(withdrawAmount);
         if (TextUtils.isEmpty(withdrawAmount)) {
             getView().showTips(false);
-        } else if (amount < 10) {
+        } else if (amount < minDelegation) {
             //按钮不可点击,并且下方提示
             getView().showTips(true);
         } else {
@@ -109,7 +111,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     public void updateWithDrawButtonState() {
         if (isViewAttached()) {
             String withdrawAmount = getView().getWithDrawAmount();
-            boolean isAmountValid = !TextUtils.isEmpty(withdrawAmount) && NumberParserUtils.parseDouble(withdrawAmount) >= 10;
+            boolean isAmountValid = !TextUtils.isEmpty(withdrawAmount) && NumberParserUtils.parseDouble(withdrawAmount) >= minDelegation;
             getView().setWithDrawButtonState(isAmountValid);
         }
     }

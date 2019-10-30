@@ -199,7 +199,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
         if (isViewAttached()) {
             List<Transaction> transactionList = mTransactionMap.get(mWalletAddress);
             List<Transaction> newTransactionList = new ArrayList<>();
-            if (isCurrentSelectedWallet(transaction)){
+            if (isCurrentSelectedWallet(transaction)) {
                 if (transactionList != null && !transactionList.isEmpty()) {
                     if (transactionList.contains(transaction)) {
                         //更新
@@ -246,10 +246,13 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
 
         for (int i = 0; i < oldTransactionList.size(); i++) {
             Transaction oldTransaction = oldTransactionList.get(i);
-            boolean isTransactionStatusException = oldTransaction.getTxReceiptStatus() == TransactionStatus.PENDING || oldTransaction.getTxReceiptStatus() == TransactionStatus.TIMEOUT;
-            if (curTransactionList.contains(oldTransaction) && isTransactionStatusException) {
-                //删除掉
-                deleteTransaction(oldTransactionList.get(i).getHash());
+            boolean isOldTransactionStatusException = oldTransaction.getTxReceiptStatus() == TransactionStatus.PENDING || oldTransaction.getTxReceiptStatus() == TransactionStatus.TIMEOUT;
+            if (curTransactionList.contains(oldTransaction) && isOldTransactionStatusException) {
+                Transaction newTransaction = curTransactionList.get(i);
+                if (newTransaction.getTxReceiptStatus() == TransactionStatus.SUCCESSED || newTransaction.getTxReceiptStatus() == TransactionStatus.FAILED) {
+                    //删除掉
+                    deleteTransaction(oldTransactionList.get(i).getHash());
+                }
             }
         }
 
@@ -273,6 +276,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                 .doOnSuccess(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean aBoolean) throws Exception {
+                        LogUtils.e("deleteTransaction cancelTaskByHash " + hash);
                         TransactionManager.getInstance().cancelTaskByHash(hash);
                     }
                 })

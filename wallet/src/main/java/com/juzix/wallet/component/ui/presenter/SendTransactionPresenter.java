@@ -22,6 +22,7 @@ import com.juzix.wallet.component.ui.view.AssetsFragment;
 import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.db.entity.AddressEntity;
 import com.juzix.wallet.db.sqlite.AddressDao;
+import com.juzix.wallet.engine.AppConfigManager;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.WalletManager;
@@ -79,7 +80,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     //默认gasLimit
     private final static BigInteger DEFAULT_GAS_LIMIT = DefaultGasProvider.GAS_LIMIT;
     //默认最小gasPrice
-    private final static BigInteger DEFAULT_MIN_GASPRICE = BigInteger.valueOf(1000000000L);
+    private final static BigInteger DEFAULT_MIN_GASPRICE = new BigInteger(AppConfigManager.getInstance().getMinGasPrice());
     //当前gasLimit
     private BigInteger gasLimit = DEFAULT_GAS_LIMIT;
     //最小值gasPrice
