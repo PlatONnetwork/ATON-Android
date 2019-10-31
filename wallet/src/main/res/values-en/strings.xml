@@ -263,8 +263,8 @@
     <string name="password_cannot_be_empty">Password cannot be empty</string>
     <string name="no_address">No address yet</string>
     <string name="no_transaction_record">No transaction yet</string>
-    <string name="figerprintUnlockTips">Touch ID won\'t start, please Unlock with Wallet Password</string>
-    <string name="openFigerprintError">Touch ID was disallowed,please check system settings and try again</string>
+    <string name="figerprintUnlockTips">Fingerprint Verification can not be activated, Please Login with Password</string>
+    <string name="openFigerprintError">Fingerprint was disallowed,please check system settings and try again</string>
     <string name="total_assets">Total LAT</string>
     <string name="transfer_succeed">Transfer succeed</string>
     <string name="transfer_failed">Transfer failed</string>
