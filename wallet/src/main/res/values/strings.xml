@@ -248,7 +248,7 @@
     <string name="fingerprintRecognitionFailed">指纹识别失败，请再试一次！</string>
     <string name="fingerprintMatchFailed">指纹不匹配，请使用开通验证的手指！</string>
     <string name="multipleVerificationsFailed">多次验证不通过，请使用钱包密码登录解锁</string>
-    <string name="unlockWithWalletPassword">使用钱包密码登录解锁</string>
+    <string name="unlockWithWalletPassword">钱包密码解锁</string>
     <string name="purse">钱包</string>
     <string name="unlock">解锁</string>
     <string name="unlockWithWalletPasswordTitle">钱包密码解锁</string>

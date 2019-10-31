@@ -30,7 +30,7 @@
         android:layout_marginTop="18.4dp"
         android:gravity="center"
         android:text="@string/evokeFingerprintVerification"
-        android:textColor="@color/color_898c9e"
+        android:textColor="@color/color_105cfe"
         android:textSize="14sp" />
 
     <TextView

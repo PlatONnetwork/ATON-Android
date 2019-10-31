@@ -244,14 +244,14 @@
     <string name="node_format_error">Node format error</string>
     <string name="save_node_succeed">Node save succeed</string>
     <string name="fingerprintTouch">Fingerprint Touch</string>
-    <string name="evokeFingerprintVerification">click to evoke Fingerprint Verification</string>
+    <string name="evokeFingerprintVerification">Login with Fingerprint</string>
     <string name="fingerprintRecognitionFailed">Fingerprint Recognition failed, please try again!</string>
     <string name="fingerprintMatchFailed">The Fingerprint does not match, please try again!</string>
     <string name="multipleVerificationsFailed">Multiple verifications failed，Please Unlock with Wallet Password</string>
-    <string name="unlockWithWalletPassword">Unlock with Wallet Password</string>
+    <string name="unlockWithWalletPassword">Login with Password</string>
     <string name="purse">Wallet</string>
     <string name="unlock">Unlock</string>
-    <string name="unlockWithWalletPasswordTitle">Unlock with Wallet Password</string>
+    <string name="unlockWithWalletPasswordTitle">Login with Password</string>
     <string name="unlockWithWalletPasswordDesc">Be sure to correspond password to wallet.</string>
     <string name="company_name">juzix（shenzhen)</string>
     <string name="copyright_resume">Powered by PlatON Network</string>
