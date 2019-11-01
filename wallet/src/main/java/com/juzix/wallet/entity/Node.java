@@ -30,7 +30,7 @@ public class Node implements Cloneable, Nullable {
 
     private String chainId;
 
-    protected Node() {
+    public Node() {
 
     }
 
