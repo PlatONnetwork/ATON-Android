@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/assetsTabLayoutHeight"
     app:stl_defaultTabTextColor="@color/color_00000000"
-    app:stl_distributeEvenly="true"
+    app:stl_distributeEvenly="false"
     app:stl_dividerColor="@color/color_00000000"
     app:stl_dividerThickness="0dp"
     app:stl_indicatorColor="@color/color_105cfe"
@@ -13,6 +13,5 @@
     app:stl_indicatorGravity="bottom"
     app:stl_indicatorInterpolation="smart"
     app:stl_indicatorThickness="@dimen/assetsTabLayoutHeight"
-    app:stl_indicatorWidth="78dp"
     app:stl_underlineColor="@color/color_00000000"
     app:stl_underlineThickness="1dp" />
