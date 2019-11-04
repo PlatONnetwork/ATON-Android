@@ -372,16 +372,24 @@ public class AssetsTabLayout extends HorizontalScrollView {
                 throw new IllegalStateException("tabView is null.");
             }
 
-            if (distributeEvenly) {
-                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) tabView.getLayoutParams();
-                lp.width = 0;
-                lp.weight = 1f;
+            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) tabView.getLayoutParams();
+            lp.width = 0;
+//                lp.weight = 1f;
+            if(i == 1){
+                lp.weight = 3.8f;
+            }else {
+                lp.weight = 3.1f;
+            }
+//            if (distributeEvenly) {
+//                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) tabView.getLayoutParams();
+//                lp.width = 0;
+////                lp.weight = 1f;
 //                if(i == 1){
 //                    lp.weight = 3.8f;
 //                }else {
 //                    lp.weight = 3.1f;
 //                }
-            }
+//            }
 
             if (internalTabClickListener != null) {
                 tabView.setOnClickListener(internalTabClickListener);

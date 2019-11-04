@@ -31,23 +31,20 @@
             android:layout_marginLeft="5dp"
             android:src="@drawable/icon_assets_classic_n" />
 
-        <android.support.v7.widget.AppCompatTextView
+        <com.juzix.wallet.component.widget.AutofitTextView
             android:id="@+id/tv_item2_name"
             android:layout_width="64dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:gravity="center_vertical"
-            android:layout_toRightOf="@id/iv_item2_icon"
-            android:lines="1"
-            android:textSize="13sp"
             android:textColor="@color/color_b6bbd0"
-            android:autoSizeMaxTextSize="13sp"
-            android:autoSizeMinTextSize="6sp"
-            android:autoSizeTextType="uniform"
-            tools:text="walletName" />
+            android:textSize="13sp"
+            app:minTextSize="6sp"
+            android:singleLine="true"
+            android:layout_marginLeft="4dp"
+            tools:text="walletName"
+            android:layout_toRightOf="@id/iv_item2_icon"/>
 
         <View
             android:id="@+id/v_new_msg"
