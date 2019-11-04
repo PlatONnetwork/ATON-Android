@@ -14,6 +14,7 @@ import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.DateUtil;
 import com.juzix.wallet.utils.JSONUtil;
 
+import org.web3j.abi.datatypes.Bool;
 import org.web3j.abi.datatypes.generated.Uint32;
 
 import java.math.BigInteger;
@@ -22,6 +23,7 @@ import java.util.List;
 
 import io.reactivex.Flowable;
 import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 import jnr.constants.platform.PRIO;
 
 public class Transaction implements Comparable<Transaction>, Parcelable, Cloneable {
@@ -310,7 +312,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         TransactionType transactionType = getTxType();
         switch (transactionType) {
             case TRANSFER:
-                return !TextUtils.isEmpty(queryAddress) && queryAddress.equals(from);
+                return !TextUtils.isEmpty(queryAddress) && queryAddress.equalsIgnoreCase(from);
             case UNDELEGATE:
             case EXIT_VALIDATOR:
                 return false;
@@ -325,7 +327,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
      * @return
      */
     public boolean isSender(List<String> queryAddressList) {
-        return queryAddressList != null && queryAddressList.contains(from);
+        return isContainIgnoreCase(queryAddressList, from);
     }
 
     /**
@@ -338,7 +340,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         TransactionType transactionType = getTxType();
         switch (transactionType) {
             case TRANSFER:
-                return queryAddressList != null && queryAddressList.contains(to);
+                return isContainIgnoreCase(queryAddressList, to);
             case UNDELEGATE:
             case EXIT_VALIDATOR:
                 return true;
@@ -356,6 +358,38 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
     public boolean isTransfer(List<String> queryAddressList) {
 
         return getTxType() == TransactionType.TRANSFER && isSender(queryAddressList) && isReceiver(queryAddressList);
+    }
+
+    private boolean isContainIgnoreCase(List<String> queryAddressList, String address) {
+
+        if (TextUtils.isEmpty(address) || queryAddressList == null || queryAddressList.isEmpty()) {
+            return false;
+        }
+
+        return Flowable
+                .fromIterable(queryAddressList)
+                .map(new Function<String, Boolean>() {
+                    @Override
+                    public Boolean apply(String s) throws Exception {
+                        return address.equalsIgnoreCase(s);
+                    }
+                })
+                .takeUntil(new Predicate<Boolean>() {
+                    @Override
+                    public boolean test(Boolean aBoolean) throws Exception {
+                        return aBoolean;
+                    }
+                })
+                .filter(new Predicate<Boolean>() {
+                    @Override
+                    public boolean test(Boolean aBoolean) throws Exception {
+                        return aBoolean;
+                    }
+                })
+                .defaultIfEmpty(false)
+                .onErrorReturnItem(false)
+                .blockingSingle();
+
     }
 
     public @TransferType
