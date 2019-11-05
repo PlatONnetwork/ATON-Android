@@ -199,6 +199,7 @@
                 android:layout_marginTop="14dp"
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
+                app:bsb_max="1"
                 app:bsb_auto_adjust_section_mark="false"
                 app:bsb_colors="#ff28ADFF_#ff2092FF_#ff1877FE_#ff105CFE"
                 app:bsb_hide_bubble="true"
