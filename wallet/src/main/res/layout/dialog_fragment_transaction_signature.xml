@@ -11,6 +11,7 @@
         android:id="@+id/tv_title"
         style="@style/Text.000.16"
         android:padding="16dp"
+        android:textStyle="bold"
         android:text="@string/title_transaction_signature"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

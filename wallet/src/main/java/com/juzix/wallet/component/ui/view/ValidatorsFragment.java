@@ -1,5 +1,6 @@
 package com.juzix.wallet.component.ui.view;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -278,6 +279,9 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
                 active.setBackgroundResource(R.drawable.bg_delegate_textview_unchoosed);
                 candidate.setBackgroundResource(R.drawable.bg_delegate_textview_unchoosed);
                 all.setTextColor(getResources().getColor(R.color.color_ffffff));
+                all.setTypeface(Typeface.DEFAULT_BOLD);
+                active.setTypeface(Typeface.DEFAULT);
+                candidate.setTypeface(Typeface.DEFAULT);
                 active.setTextColor(getResources().getColor(R.color.color_000000));
                 candidate.setTextColor(getResources().getColor(R.color.color_000000));
                 break;
@@ -285,6 +289,9 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
                 active.setBackgroundResource(R.drawable.bg_delegate_textview_choosed);
                 candidate.setBackgroundResource(R.drawable.bg_delegate_textview_unchoosed);
                 all.setBackgroundResource(R.drawable.bg_delegate_textview_unchoosed);
+                all.setTypeface(Typeface.DEFAULT);
+                active.setTypeface(Typeface.DEFAULT_BOLD);
+                candidate.setTypeface(Typeface.DEFAULT);
                 active.setTextColor(getResources().getColor(R.color.color_ffffff));
                 all.setTextColor(getResources().getColor(R.color.color_000000));
                 candidate.setTextColor(getResources().getColor(R.color.color_000000));
@@ -293,6 +300,9 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
                 candidate.setBackgroundResource(R.drawable.bg_delegate_textview_choosed);
                 all.setBackgroundResource(R.drawable.bg_delegate_textview_unchoosed);
                 active.setBackgroundResource(R.drawable.bg_delegate_textview_unchoosed);
+                all.setTypeface(Typeface.DEFAULT);
+                active.setTypeface(Typeface.DEFAULT);
+                candidate.setTypeface(Typeface.DEFAULT_BOLD);
                 candidate.setTextColor(getResources().getColor(R.color.color_ffffff));
                 all.setTextColor(getResources().getColor(R.color.color_000000));
                 active.setTextColor(getResources().getColor(R.color.color_000000));
@@ -420,7 +430,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void showValidatorsGuide(Event.ValidatorsGuide event){
+    public void showValidatorsGuide(Event.ValidatorsGuide event) {
 
         if (!AppSettings.getInstance().getValidatorsBoolean()) {
             CommonGuideDialogFragment.newInstance(GuideType.DELEGATE_VALIDATORS).setOnDissmissListener(new BaseDialogFragment.OnDissmissListener() {

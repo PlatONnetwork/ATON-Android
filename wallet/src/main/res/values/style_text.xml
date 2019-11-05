@@ -349,6 +349,10 @@
         <item name="android:textSize">14sp</item>
     </style>
 
+    <style name="Text.000000.15">
+        <item name="android:textSize">15sp</item>
+    </style>
+
     <style name="Text.000000.16">
         <item name="android:textSize">16sp</item>
     </style>
@@ -401,6 +405,10 @@
         <item name="android:textSize">12sp</item>
     </style>
 
+    <style name="Text.898c9e.13">
+        <item name="android:textSize">13sp</item>
+    </style>
+
     <style name="Text.898c9e.14">
         <item name="android:textSize">14sp</item>
     </style>
@@ -431,6 +439,10 @@
 
     <style name="Text.105cfe.16">
         <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="Text.105cfe.17">
+        <item name="android:textSize">17sp</item>
     </style>
 
     <style name="Text.105cfe.24">

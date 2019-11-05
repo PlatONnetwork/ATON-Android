@@ -17,6 +17,7 @@
     <TextView
         android:id="@+id/tv_wallet_name"
         style="@style/Text.000000.14"
+        android:textStyle="bold"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="12dp"
         android:layout_toRightOf="@id/iv_wallet_avatar"
@@ -36,7 +37,7 @@
 
     <TextView
         android:id="@+id/tv_wallet_address"
-        style="@style/Text.898c9e.12"
+        style="@style/Text.898c9e.13"
         android:layout_width="wrap_content"
         android:layout_below="@id/tv_wallet_name"
         android:layout_alignLeft="@id/tv_wallet_name"

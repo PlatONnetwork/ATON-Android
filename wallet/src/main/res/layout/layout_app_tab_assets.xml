@@ -13,5 +13,6 @@
     app:stl_indicatorGravity="bottom"
     app:stl_indicatorInterpolation="smart"
     app:stl_indicatorThickness="@dimen/assetsTabLayoutHeight"
+    app:stl_indicatorWidth="78dp"
     app:stl_underlineColor="@color/color_00000000"
     app:stl_underlineThickness="1dp" />

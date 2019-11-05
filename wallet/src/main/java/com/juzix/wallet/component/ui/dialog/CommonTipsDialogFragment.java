@@ -156,7 +156,6 @@ public class CommonTipsDialogFragment extends DialogFragment {
 
         if (!TextUtils.isEmpty(content)) {
             dialog.textContent.setText(content);
-            dialog.textContent.setTypeface(TextUtils.isEmpty(title) ? Typeface.DEFAULT : Typeface.DEFAULT_BOLD);
         }
 
         return dialog;

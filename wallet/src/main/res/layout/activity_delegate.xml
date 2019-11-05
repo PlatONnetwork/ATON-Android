@@ -61,6 +61,7 @@
                         android:id="@+id/tv_delegate_node_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textStyle="bold"
                         android:textColor="@color/color_000000"
                         android:textSize="15sp"
                         tools:text="节点名称" />
@@ -115,6 +116,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/color_000000"
+                        android:textStyle="bold"
                         android:textSize="15sp"
                         tools:text="钱包名称" />
 
@@ -180,6 +182,7 @@
                         android:gravity="right"
                         android:maxLines="1"
                         android:paddingRight="5dp"
+                        android:textStyle="bold"
                         android:textColor="@color/color_000000"
                         android:textSize="15sp" />
 
@@ -373,6 +376,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="15dp"
                 android:text="@string/delegations_title"
+                android:textStyle="bold"
                 android:textColor="@color/color_000000"
                 android:textSize="14sp" />
 
@@ -393,6 +397,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="11dp"
                 android:text="@string/rewards_title"
+                android:textStyle="bold"
                 android:textColor="@color/color_000000"
                 android:textSize="14sp" />
 
@@ -415,6 +420,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="11dp"
                 android:text="@string/risk_title"
+                android:textStyle="bold"
                 android:textColor="@color/color_000000"
                 android:textSize="14sp" />
 

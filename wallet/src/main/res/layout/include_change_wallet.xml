@@ -22,7 +22,7 @@
         android:layout_marginRight="5dp" >
 
         <TextView
-            style="@style/Text.105cfe.12"
+            style="@style/Text.105cfe.13"
             android:layout_centerInParent="true"
             android:drawableLeft="@drawable/icon_changge"
             android:drawablePadding="8.5dp"
@@ -31,8 +31,9 @@
 
     <TextView
         android:id="@+id/tv_wallet_name"
-        style="@style/Text.000000.14"
+        style="@style/Text.000000.15"
         android:layout_width="match_parent"
+        android:textStyle="bold"
         android:layout_marginTop="7dp"
         android:layout_toLeftOf="@id/layout_change_wallet"
         android:layout_toRightOf="@id/iv_wallet_avatar"
@@ -43,7 +44,7 @@
 
     <TextView
         android:id="@+id/tv_wallet_address"
-        style="@style/Text.61646e.12"
+        style="@style/Text.61646e.13"
         android:layout_width="match_parent"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="7dp"
