@@ -91,7 +91,7 @@
     <string name="cancel">取消</string>
     <string name="confirm">确认</string>
     <string name="yes">确认</string>
-    <string name="no">确认</string>
+    <string name="no">取消</string>
     <string name="donotScreenshot">请勿截图</string>
     <string name="backupMnemonicResume">如果有人获取了你的助记词，将可以直接获取你的资产！请抄写下助记词并存放在安全的地方。</string>
     <string name="backupPrivateKey">如果有人获取了你的私钥，将可以直接获取你的资产！请确保私钥存放在安全的地方。</string>

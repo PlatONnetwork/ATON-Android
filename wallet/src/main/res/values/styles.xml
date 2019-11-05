@@ -175,6 +175,7 @@
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/color_main_button_text</item>
         <item name="android:gravity">center</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:background">@drawable/bg_main_button</item>
     </style>
 
@@ -190,7 +191,7 @@
     <style name="EditTextWithUnderlineStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">13sp</item>
+        <item name="android:textSize">15sp</item>
         <item name="android:textColor">@color/color_000000</item>
         <item name="android:background">@drawable/bg_account_activation_et</item>
         <item name="android:textColorHint">@color/color_b6bbd0</item>

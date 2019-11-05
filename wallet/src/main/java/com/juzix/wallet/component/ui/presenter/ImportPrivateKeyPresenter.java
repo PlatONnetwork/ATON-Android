@@ -4,6 +4,7 @@ package com.juzix.wallet.component.ui.presenter;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.ImportPrivateKeyContract;
@@ -107,6 +108,8 @@ public class ImportPrivateKeyPresenter extends BasePresenter<ImportPrivateKeyCon
                 case MSG_WALLET_EXISTS:
                     dismissLoadingDialogImmediately();
                     showLongToast(string(R.string.walletExists));
+                    break;
+                default:
                     break;
             }
         }

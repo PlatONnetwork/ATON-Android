@@ -3,6 +3,7 @@ package com.juzix.wallet.component.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
@@ -68,6 +69,7 @@ public class ShadowButton extends LinearLayout {
         mTextView.setTextAppearance(context, mTextAppearance);
         mTextView.setText(mText);
         mTextView.setGravity(Gravity.CENTER);
+        mTextView.setTypeface(Typeface.DEFAULT_BOLD);
         mTextView.setBackgroundDrawable(mTextBackground);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(mTextWidth, mTextHeight);

@@ -24,6 +24,7 @@
             android:layout_marginTop="14dp"
             android:paddingLeft="24dp"
             android:paddingRight="24dp"
+            android:textStyle="bold"
             tools:text="Backup failed" />
 
         <TextView
