@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -113,8 +114,8 @@ public class ImportObservedFragment extends MVPBaseFragment<ImportObservedPresen
             Bundle bundle = data.getExtras();
             String scanResult = bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
             String  unzip = GZipUtil.unCompress(scanResult);
-            mPresenter.parseQRCode(unzip);
-            mPresenter.IsImportObservedWallet(unzip);
+            mPresenter.parseQRCode(TextUtils.isEmpty(unzip)? scanResult : unzip);
+            mPresenter.IsImportObservedWallet(TextUtils.isEmpty(unzip)? scanResult : unzip);
         }
     }
 
