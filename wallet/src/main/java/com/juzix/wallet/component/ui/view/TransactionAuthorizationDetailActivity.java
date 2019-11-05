@@ -152,9 +152,21 @@ public class TransactionAuthorizationDetailActivity extends BaseActivity {
         return AddressFormatUtil.formatTransactionAddress(prefixAddress);
     }
 
+    private String getTransferFormatName(String prefixAddress) {
+        String walletName = WalletDao.getWalletNameByAddress(prefixAddress);
+        if (!TextUtils.isEmpty(walletName)) {
+            return String.format("%s(%s)", walletName, prefixAddress);
+        }
+        String remark = AddressDao.getAddressNameByAddress(prefixAddress);
+        if (!TextUtils.isEmpty(remark)) {
+            return String.format("%s(%s)", remark, prefixAddress);
+        }
+        return prefixAddress;
+    }
+
     private String getReceiverName(TransactionAuthorizationDetail transactionAuthorizationDetail) {
         if (FunctionType.TRANSFER == transactionAuthorizationDetail.getFunctionType()) {
-            return getFormatName(transactionAuthorizationDetail.getReceiver(), null);
+            return getTransferFormatName(transactionAuthorizationDetail.getReceiver());
         } else {
             return String.format("%s(%s)", transactionAuthorizationDetail.getNodeName(), transactionAuthorizationDetail.getNodeId());
         }
