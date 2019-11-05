@@ -6,16 +6,16 @@ import android.text.TextUtils;
 
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.base.BasePresenter;
-import com.juzix.wallet.component.ui.contract.ImportIndividualObservedContract;
+import com.juzix.wallet.component.ui.contract.ImportObservedContract;
 import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.utils.CommonUtil;
 
 
-public class ImportObservedPresenter extends BasePresenter<ImportIndividualObservedContract.View> implements ImportIndividualObservedContract.Presenter {
+public class ImportObservedPresenter extends BasePresenter<ImportObservedContract.View> implements ImportObservedContract.Presenter {
 
-    public ImportObservedPresenter(ImportIndividualObservedContract.View view) {
+    public ImportObservedPresenter(ImportObservedContract.View view) {
         super(view);
     }
 

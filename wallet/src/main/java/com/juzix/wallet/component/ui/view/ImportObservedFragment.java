@@ -18,7 +18,7 @@ import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.MVPBaseFragment;
-import com.juzix.wallet.component.ui.contract.ImportIndividualObservedContract;
+import com.juzix.wallet.component.ui.contract.ImportObservedContract;
 import com.juzix.wallet.component.ui.presenter.ImportObservedPresenter;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.utils.CommonUtil;
@@ -29,7 +29,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class ImportObservedFragment extends MVPBaseFragment<ImportObservedPresenter> implements ImportIndividualObservedContract.View {
+public class ImportObservedFragment extends MVPBaseFragment<ImportObservedPresenter> implements ImportObservedContract.View {
     Unbinder unbinder;
     @BindView(R.id.et_observed)
     EditText et_observed;

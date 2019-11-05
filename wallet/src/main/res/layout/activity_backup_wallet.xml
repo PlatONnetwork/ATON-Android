@@ -10,7 +10,8 @@
 
     <TextView
         android:id="@+id/tv_title"
-        style="@style/Text.000000.16"
+        style="@style/Text.000000.18"
+        android:textStyle="bold"
         android:layout_width="match_parent"
         android:layout_height="44dp"
         android:layout_marginLeft="16dp"
@@ -35,6 +36,7 @@
             android:layout_marginTop="24dp"
             android:gravity="center_horizontal"
             android:text="@string/create_success"
+            android:textStyle="bold"
             android:textColor="@color/color_000000"
             android:textSize="20sp" />
 

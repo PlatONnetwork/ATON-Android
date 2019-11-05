@@ -100,7 +100,7 @@ class WalletServiceImpl implements WalletService {
             return null;
         }
         try {
-            ECKeyPair ecKeyPair = ECKeyPair.create(Numeric.toBigIntNoPrefix(privateKey));
+            ECKeyPair ecKeyPair = ECKeyPair.create(Numeric.toBigIntNoPrefix(Numeric.cleanHexPrefix(privateKey)));
             if (ecKeyPair == null) {
                 return null;
             }

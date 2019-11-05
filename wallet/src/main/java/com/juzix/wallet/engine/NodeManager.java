@@ -25,9 +25,13 @@ import io.reactivex.functions.Predicate;
  */
 public class NodeManager {
 
-    private final static String[] DEFAULT_NODE_URL_LIST = new String[]{"http://192.168.9.190:1000", "http://192.168.9.190:443"};
-//    private final static String[] DEFAULT_NODE_URL_LIST = new String[]{"https://aton.test.platon.network","https://aton.main.platon.network"};
-    private final static String[] DEFAULT_NODE_CHAINID_LIST = new String[]{"101", "103"};
+//    private final static String[] DEFAULT_NODE_URL_LIST = new String[]{"http://192.168.9.190:1000", "http://192.168.9.190:443"};
+//    //    private final static String[] DEFAULT_NODE_URL_LIST = new String[]{"https://aton.test.platon.network","https://aton.main.platon.network"};
+//    private final static String[] DEFAULT_NODE_CHAINID_LIST = new String[]{"101", "103"};
+
+    private final static String[] DEFAULT_NODE_URL_LIST = new String[]{"https://aton.main.platon.network"};
+    //    private final static String[] DEFAULT_NODE_URL_LIST = new String[]{"https://aton.test.platon.network","https://aton.main.platon.network"};
+    private final static String[] DEFAULT_NODE_CHAINID_LIST = new String[]{"100"};
 
     private Node curNode;
     private NodeService nodeService;

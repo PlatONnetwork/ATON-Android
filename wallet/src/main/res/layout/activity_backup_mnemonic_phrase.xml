@@ -34,7 +34,8 @@
             android:layout_marginRight="16dp"
             android:text="@string/backupMnemonicTitle"
             android:textColor="@color/color_000000"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="match_parent"
@@ -61,36 +62,30 @@
 
                 <TextView
                     android:id="@+id/tv_mnemonic1"
+                    style="@style/Text.000.14"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginRight="6dp"
                     android:layout_weight="1"
-                    android:background="@color/color_f0f1f5"
-                    android:gravity="center"
-                    android:textColor="@color/color_000000"
-                    android:textSize="13sp" />
+                    android:background="@color/color_f0f1f5" />
 
                 <TextView
                     android:id="@+id/tv_mnemonic2"
+                    style="@style/Text.000.14"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginRight="6dp"
                     android:layout_weight="1"
                     android:background="@color/color_f0f1f5"
-                    android:gravity="center"
-                    android:maxLength="12"
-                    android:textColor="@color/color_000000"
-                    android:textSize="13sp" />
+                    android:maxLength="12" />
 
                 <TextView
                     android:id="@+id/tv_mnemonic3"
+                    style="@style/Text.000.14"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@color/color_f0f1f5"
-                    android:gravity="center"
-                    android:textColor="@color/color_000000"
-                    android:textSize="13sp" />
+                    android:background="@color/color_f0f1f5" />
             </LinearLayout>
 
             <LinearLayout
@@ -101,38 +96,32 @@
 
                 <TextView
                     android:id="@+id/tv_mnemonic4"
+                    style="@style/Text.000.14"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginRight="6dp"
                     android:layout_weight="1"
                     android:background="@color/color_f0f1f5"
-                    android:gravity="center"
-                    android:maxLength="12"
-                    android:textColor="@color/color_000000"
-                    android:textSize="13sp" />
+                    android:maxLength="12" />
 
                 <TextView
                     android:id="@+id/tv_mnemonic5"
+                    style="@style/Text.000.14"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginRight="6dp"
                     android:layout_weight="1"
                     android:background="@color/color_f0f1f5"
-                    android:gravity="center"
-                    android:maxLength="12"
-                    android:textColor="@color/color_000000"
-                    android:textSize="13sp" />
+                    android:maxLength="12" />
 
                 <TextView
                     android:id="@+id/tv_mnemonic6"
+                    style="@style/Text.000.14"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@color/color_f0f1f5"
-                    android:gravity="center"
-                    android:maxLength="12"
-                    android:textColor="@color/color_000000"
-                    android:textSize="13sp" />
+                    android:maxLength="12" />
             </LinearLayout>
 
             <LinearLayout
@@ -143,38 +132,32 @@
 
                 <TextView
                     android:id="@+id/tv_mnemonic7"
+                    style="@style/Text.000.14"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginRight="6dp"
                     android:layout_weight="1"
                     android:background="@color/color_f0f1f5"
-                    android:gravity="center"
-                    android:maxLength="12"
-                    android:textColor="@color/color_000000"
-                    android:textSize="13sp" />
+                    android:maxLength="12" />
 
                 <TextView
                     android:id="@+id/tv_mnemonic8"
+                    style="@style/Text.000.14"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginRight="6dp"
                     android:layout_weight="1"
                     android:background="@color/color_f0f1f5"
-                    android:gravity="center"
-                    android:maxLength="12"
-                    android:textColor="@color/color_000000"
-                    android:textSize="13sp" />
+                    android:maxLength="12" />
 
                 <TextView
                     android:id="@+id/tv_mnemonic9"
+                    style="@style/Text.000.14"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@color/color_f0f1f5"
-                    android:gravity="center"
-                    android:maxLength="12"
-                    android:textColor="@color/color_000000"
-                    android:textSize="13sp" />
+                    android:maxLength="12" />
             </LinearLayout>
 
             <LinearLayout
@@ -185,38 +168,32 @@
 
                 <TextView
                     android:id="@+id/tv_mnemonic10"
+                    style="@style/Text.000.14"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginRight="6dp"
                     android:layout_weight="1"
                     android:background="@color/color_f0f1f5"
-                    android:gravity="center"
-                    android:maxLength="12"
-                    android:textColor="@color/color_000000"
-                    android:textSize="13sp" />
+                    android:maxLength="12" />
 
                 <TextView
                     android:id="@+id/tv_mnemonic11"
+                    style="@style/Text.000.14"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginRight="6dp"
                     android:layout_weight="1"
                     android:background="@color/color_f0f1f5"
-                    android:gravity="center"
-                    android:maxLength="12"
-                    android:textColor="@color/color_000000"
-                    android:textSize="13sp" />
+                    android:maxLength="12" />
 
                 <TextView
                     android:id="@+id/tv_mnemonic12"
+                    style="@style/Text.000.14"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@color/color_f0f1f5"
-                    android:gravity="center"
-                    android:maxLength="12"
-                    android:textColor="@color/color_000000"
-                    android:textSize="13sp" />
+                    android:maxLength="12" />
             </LinearLayout>
         </LinearLayout>
 
@@ -253,28 +230,6 @@
                         android:textColor="@color/color_main_button_text" />
                 </LinearLayout>
             </com.juzix.wallet.component.widget.ShadowContainer>
-
-            <!--<LinearLayout-->
-            <!--android:id="@+id/ll_next"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:paddingTop="12dp"-->
-            <!--android:paddingBottom="12dp"-->
-            <!--android:gravity="center"-->
-            <!--android:orientation="horizontal"-->
-            <!--android:background="@drawable/bg_shape_button2"-->
-            <!--android:visibility="gone">-->
-            <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:drawableRight="@drawable/icon_next_enable"-->
-            <!--android:drawablePadding="8dp"-->
-            <!--android:textColor="@color/color_ffffff"-->
-            <!--android:textSize="16sp"-->
-            <!--android:text="@string/next"-->
-            <!--android:textAllCaps="false"-->
-            <!--android:fontFamily="normal"/>-->
-            <!--</LinearLayout>-->
         </LinearLayout>
     </LinearLayout>
 
