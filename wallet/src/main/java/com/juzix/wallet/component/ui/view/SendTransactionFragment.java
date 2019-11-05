@@ -215,8 +215,9 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
                 case MainActivity.REQ_ASSETS_ADDRESS_QR_CODE:
                     String address = data.getStringExtra(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
                     String unzip = GZipUtil.unCompress(address);
-                    if (JZWalletUtil.isValidAddress(unzip)) {
-                        setToAddress(unzip);
+                    String newStr = TextUtils.isEmpty(unzip)? address :unzip;
+                    if (JZWalletUtil.isValidAddress(newStr)) {
+                        setToAddress(newStr);
                         if (mPresenter != null) {
                             mPresenter.calculateFee();
                         }

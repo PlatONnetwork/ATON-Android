@@ -337,11 +337,11 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
             case MainActivity.REQ_ASSETS_TAB_QR_CODE:
                 String result = data.getStringExtra(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
                 String unzip = GZipUtil.unCompress(result);
-                if(TextUtils.isEmpty(unzip)){
+                if(TextUtils.isEmpty(unzip) && TextUtils.isEmpty(result)){
                     showLongToast(currentActivity().string(R.string.unrecognized_content));
                     return;
                 }
-                @QrCodeType int qrCodeType = QrCodeParser.parseQrCode(unzip);
+                @QrCodeType int qrCodeType = QrCodeParser.parseQrCode(TextUtils.isEmpty(unzip) ? result : unzip);
 
                 if (qrCodeType == QrCodeType.NONE) {
                     showLongToast(currentActivity().string(R.string.unrecognized));
@@ -363,23 +363,23 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
                         vpContent.setCurrentItem(1);
                         ((TabAdapter) vpContent.getAdapter()).getItem(1).onActivityResult(MainActivity.REQ_ASSETS_ADDRESS_QR_CODE, resultCode, data);
                     } else {
-                        AddNewAddressActivity.actionStartWithAddress(getContext(), unzip);
+                        AddNewAddressActivity.actionStartWithAddress(getContext(), TextUtils.isEmpty(unzip) ? result : unzip);
                     }
                     return;
                 }
 
                 if (qrCodeType == QrCodeType.WALLET_KEYSTORE) {
-                    ImportWalletActivity.actionStart(currentActivity(), ImportWalletActivity.TabIndex.IMPORT_KEYSTORE, unzip);
-                    return;
-                }
+                ImportWalletActivity.actionStart(currentActivity(), ImportWalletActivity.TabIndex.IMPORT_KEYSTORE, TextUtils.isEmpty(unzip) ? result : unzip);
+                return;
+            }
 
                 if (qrCodeType == QrCodeType.WALLET_MNEMONIC) {
-                    ImportWalletActivity.actionStart(currentActivity(), ImportWalletActivity.TabIndex.IMPORT_MNEMONIC, unzip);
+                    ImportWalletActivity.actionStart(currentActivity(), ImportWalletActivity.TabIndex.IMPORT_MNEMONIC, TextUtils.isEmpty(unzip) ? result : unzip);
                     return;
                 }
 
                 if (qrCodeType == QrCodeType.WALLET_PRIVATEKEY) {
-                    ImportWalletActivity.actionStart(currentActivity(), ImportWalletActivity.TabIndex.IMPORT_PRIVATEKEY, unzip);
+                    ImportWalletActivity.actionStart(currentActivity(), ImportWalletActivity.TabIndex.IMPORT_PRIVATEKEY, TextUtils.isEmpty(unzip) ? result : unzip);
                     return;
                 }
                 break;
