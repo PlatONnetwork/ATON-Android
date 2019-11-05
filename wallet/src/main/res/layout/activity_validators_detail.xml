@@ -65,15 +65,12 @@
 
                     <TextView
                         android:id="@+id/tv_detail_node_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        style="@style/Text.000.15"
                         android:layout_marginRight="6dp"
-                        android:textColor="@color/color_000000"
-                        android:textSize="15sp"
+                        android:textStyle="bold"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        tools:text="jiang"
-                        />
+                        tools:text="jiang" />
 
                     <TextView
                         android:id="@+id/tv_detail_node_state"
@@ -91,7 +88,7 @@
                         app:layout_constraintBaseline_toBaselineOf="@id/tv_detail_node_name"
                         app:layout_constraintLeft_toRightOf="@id/tv_detail_node_name"
                         app:layout_constraintTop_toTopOf="parent"
-                        tools:text="active"/>
+                        tools:text="active" />
 
                     <ImageView
                         android:id="@+id/iv_detail_node_link"
@@ -130,12 +127,12 @@
 
                     <TextView
                         android:id="@+id/tv_detail_rate"
+                        style="@style/Text.105cfe.17"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="2dp"
-                        android:textColor="@color/color_105cfe"
-                        android:textSize="17sp"
-                        tools:text="12.30%"/>
+                        android:textStyle="bold"
+                        tools:text="12.30%" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -176,7 +173,8 @@
                         android:layout_marginTop="9dp"
                         android:textColor="@color/color_000000"
                         android:textSize="14sp"
-                        tools:text="12"/>
+                        android:textStyle="bold"
+                        tools:text="12" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -193,7 +191,8 @@
                         android:layout_marginTop="9dp"
                         android:textColor="@color/color_000000"
                         android:textSize="14sp"
-                        tools:text="xxxx"/>
+                        android:textStyle="bold"
+                        tools:text="xxxx" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -211,7 +210,8 @@
                         android:layout_marginBottom="15dp"
                         android:textColor="@color/color_000000"
                         android:textSize="14sp"
-                        tools:text="18"/>
+                        android:textStyle="bold"
+                        tools:text="18" />
 
                 </LinearLayout>
 
@@ -236,7 +236,8 @@
                         android:layout_marginTop="9dp"
                         android:textColor="@color/color_000000"
                         android:textSize="14sp"
-                        tools:text="12"/>
+                        android:textStyle="bold"
+                        tools:text="12" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -253,7 +254,8 @@
                         android:layout_marginTop="9dp"
                         android:textColor="@color/color_000000"
                         android:textSize="14sp"
-                        tools:text="12"/>
+                        android:textStyle="bold"
+                        tools:text="12" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -271,7 +273,8 @@
                         android:layout_marginBottom="15dp"
                         android:textColor="@color/color_000000"
                         android:textSize="14sp"
-                        tools:text="90%"/>
+                        android:textStyle="bold"
+                        tools:text="90%" />
 
                 </LinearLayout>
 
@@ -295,7 +298,7 @@
                 android:layout_marginTop="10dp"
                 android:textColor="@color/color_000000"
                 android:textSize="14sp"
-                tools:text="fasdfasdfasdfa"/>
+                tools:text="fasdfasdfasdfa" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -314,7 +317,7 @@
                 android:layout_marginTop="10dp"
                 android:textColor="@color/color_105cfe"
                 android:textSize="14sp"
-                tools:text="fasdfasdfasdfa"/>
+                tools:text="fasdfasdfasdfa" />
 
             <TextView
                 android:layout_width="wrap_content"

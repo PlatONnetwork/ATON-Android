@@ -17,9 +17,10 @@
         android:paddingTop="12dp">
 
         <TextView
-            style="@style/Text.292929.15"
+            style="@style/Text.000.16"
             android:layout_width="0dp"
             android:layout_weight="1"
+            android:textStyle="bold"
             android:gravity="center_vertical|left"
             android:text="@string/sharing" />
 

@@ -17,6 +17,7 @@
     <TextView
         style="@style/Text.000000.16"
         android:paddingBottom="16dp"
+        android:textStyle="bold"
         android:text="@string/select_wallet" />
 
     <ListView

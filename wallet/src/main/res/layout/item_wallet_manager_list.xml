@@ -50,7 +50,8 @@
                 android:ellipsize="end"
                 android:lines="1"
                 android:textColor="@color/color_000000"
-                android:textSize="14dp"
+                android:textSize="14sp"
+                android:textStyle="bold"
                 tools:text="Wallet name_wallet" />
 
             <TextView
@@ -58,25 +59,25 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="6dp"
+                android:layout_toRightOf="@id/tv_wallet_name"
                 android:background="@drawable/bg_validators_state"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
-                android:textSize="11sp"
                 android:textColor="@color/color_4a90e2"
-                android:layout_toRightOf="@id/tv_wallet_name"
+                android:textSize="11sp"
                 android:visibility="gone"
-                tools:text="observed"/>
+                tools:text="observed" />
 
             <TextView
                 android:id="@+id/tv_wallet_backup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
                 android:drawableLeft="@drawable/icon_backup"
                 android:drawablePadding="5dp"
                 android:text="@string/backup"
                 android:textColor="@color/color_105cfe"
-                android:layout_alignParentRight="true"
-                android:textSize="12dp" />
+                android:textSize="13sp" />
 
         </RelativeLayout>
 
@@ -94,7 +95,7 @@
         android:ellipsize="middle"
         android:singleLine="true"
         android:textColor="@color/color_898c9e"
-        android:textSize="12dp"
+        android:textSize="13sp"
         tools:text="ox2ce48152fF49B2b3d3" />
 
     <View

@@ -41,8 +41,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="6dp"
                     tools:text="jiang"
-                    android:textColor="@color/color_000000"
-                    android:textSize="15sp" />
+                    style="@style/Text.000.15"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tv_validators_node_state"
@@ -103,8 +103,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
                 tools:text="12.30%"
-                android:textColor="@color/color_105cfe"
-                android:textSize="17sp" />
+                style="@style/Text.105cfe.17"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"

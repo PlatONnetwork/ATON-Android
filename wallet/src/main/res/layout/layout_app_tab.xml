@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.juzix.wallet.component.widget.table.SmartTabLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.juzix.wallet.component.widget.table.SmartTabLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/stb_bar"
     android:layout_width="match_parent"
     android:layout_height="@dimen/assetsTabLayoutHeight"
     app:stl_defaultTabTextColor="@color/color_00000000"
     app:stl_distributeEvenly="true"
-    app:stl_indicatorWidth = "auto"
-    app:stl_indicatorInterpolation="smart"
-    app:stl_underlineColor="@color/color_00000000"
-    app:stl_underlineThickness="1dp"
     app:stl_dividerColor="@color/color_00000000"
     app:stl_dividerThickness="0dp"
     app:stl_indicatorColor="@color/color_105cfe"
     app:stl_indicatorCornerRadius="@dimen/assetsCollapsIndicatorThickness"
+    app:stl_indicatorGravity="bottom"
+    app:stl_indicatorInterpolation="smart"
     app:stl_indicatorThickness="@dimen/assetsTabLayoutHeight"
-    app:stl_indicatorGravity="bottom" />
+    app:stl_indicatorWidth="83dp"
+    app:stl_underlineColor="@color/color_00000000"
+    app:stl_underlineThickness="1dp" />

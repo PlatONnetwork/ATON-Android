@@ -60,7 +60,8 @@
                         android:id="@+id/tv_withdraw_node_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="节点名称"
+                        tools:text="节点名称"
+                        android:textStyle="bold"
                         android:textColor="@color/color_000000"
                         android:textSize="15sp" />
 
@@ -111,7 +112,8 @@
                         android:id="@+id/tv_withdraw_wallet_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="钱包名称"
+                        tools:text="钱包名称"
+                        android:textStyle="bold"
                         android:textColor="@color/color_000000"
                         android:textSize="15sp" />
 
@@ -171,6 +173,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingRight="5dp"
+                        android:textStyle="bold"
                         android:textColor="@color/color_000000"
                         android:textSize="15sp" />
 
@@ -343,6 +346,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="30dp"
                 android:text="@string/delegate_node"
+                android:textStyle="bold"
                 android:textColor="@color/color_000000"
                 android:textSize="14sp" />
 

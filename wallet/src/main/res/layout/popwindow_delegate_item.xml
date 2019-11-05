@@ -28,8 +28,8 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
                 android:textColor="@color/color_000000"
-                tools:text="56546545465"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                tools:text="56546545465" />
 
 
             <LinearLayout
@@ -46,10 +46,11 @@
                     android:id="@+id/tv_delegate_amount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/color_000000"
-                    tools:text="454654545"
                     android:paddingRight="5dp"
-                    android:textSize="15sp" />
+                    android:textColor="@color/color_000000"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    tools:text="454654545" />
 
 
                 <TextView

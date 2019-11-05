@@ -21,7 +21,8 @@
             android:layout_marginTop="14dp"
             android:layout_marginBottom="10dp"
             android:text="@string/detail_wait_undelegate"
-            android:textColor="@color/color_2a5ffe" />
+            android:textColor="@color/color_2a5ffe"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tv_content_one"
@@ -30,8 +31,8 @@
             android:layout_marginLeft="12dp"
             android:layout_marginRight="12dp"
             android:lineSpacingExtra="2dp"
-            android:textColor="@color/color_61646E"
             android:text="@string/detail_tips_content"
+            android:textColor="@color/color_61646E"
             android:textSize="13sp" />
 
         <TextView
@@ -41,7 +42,8 @@
             android:layout_marginTop="12dp"
             android:layout_marginBottom="10dp"
             android:text="@string/unlocked_delegate"
-            android:textColor="@color/color_2a5ffe" />
+            android:textColor="@color/color_2a5ffe"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tv_content_two"
@@ -50,8 +52,8 @@
             android:layout_marginLeft="12dp"
             android:layout_marginRight="12dp"
             android:lineSpacingExtra="2dp"
-            android:textColor="@color/color_61646E"
             android:text="@string/unlocked_delegate_des"
+            android:textColor="@color/color_61646E"
             android:textSize="13sp" />
 
         <TextView
@@ -61,7 +63,8 @@
             android:layout_marginTop="12dp"
             android:layout_marginBottom="10dp"
             android:text="@string/released_delegate"
-            android:textColor="@color/color_2a5ffe" />
+            android:textColor="@color/color_2a5ffe"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tv_content_three"
@@ -71,8 +74,8 @@
             android:layout_marginRight="12dp"
             android:layout_marginBottom="29dp"
             android:lineSpacingExtra="2dp"
-            android:textColor="@color/color_61646E"
             android:text="@string/released_delegate_des"
+            android:textColor="@color/color_61646E"
             android:textSize="13sp" />
 
     </LinearLayout>

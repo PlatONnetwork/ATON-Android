@@ -12,6 +12,7 @@
         style="@style/Text.000.16"
         android:padding="16dp"
         android:text="@string/title_transaction_authorization"
+        android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
