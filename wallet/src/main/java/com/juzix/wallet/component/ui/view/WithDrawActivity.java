@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextUtils;
@@ -35,6 +36,7 @@ import com.juzix.wallet.component.ui.presenter.WithDrawPresenter;
 import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.component.widget.PointLengthFilter;
 import com.juzix.wallet.component.widget.ShadowButton;
+import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.entity.DelegateDetail;
 import com.juzix.wallet.entity.GuideType;
@@ -43,6 +45,7 @@ import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.entity.WithDrawType;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.GlideUtils;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.SoftHideKeyboardUtils;
@@ -122,6 +125,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     }
 
     private void initView() {
+        initShade();
         initPopWindow();
         setWithDrawButtonState(false);
         withdrawAmount.setFilters(new InputFilter[]{new PointLengthFilter()});
@@ -129,6 +133,17 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         initClicks();
         initGuide();
         SoftHideKeyboardUtils.assistActivity(this);
+    }
+
+    private void initShade() {
+        ShadowDrawable.setShadowDrawable(chooseDelegate,
+                ContextCompat.getColor(this, R.color.color_ffffff),
+                DensityUtil.dp2px(this, 4),
+                ContextCompat.getColor(this, R.color.color_cc9ca7c2),
+                DensityUtil.dp2px(this, 5),
+                0,
+                DensityUtil.dp2px(this, 2));
+
     }
 
     private void initClicks() {

@@ -17,7 +17,7 @@
         <TextView
             android:id="@+id/text_title_one"
             style="@style/Text.f5302c.16"
-            android:layout_marginLeft="13dp"
+            android:layout_marginLeft="8dp"
             android:layout_marginTop="14dp"
             android:layout_marginBottom="10dp"
             android:text="@string/detail_wait_undelegate"
@@ -28,7 +28,7 @@
             android:id="@+id/tv_content_one"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="12dp"
+            android:layout_marginLeft="7dp"
             android:layout_marginRight="12dp"
             android:lineSpacingExtra="2dp"
             android:text="@string/detail_tips_content"

@@ -71,7 +71,8 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     private BigInteger gas_Price; //调web3j获取gasprice
     private BigInteger gas_limit;
     private boolean isAll = false;//是否点击全部
-    private long minDelegation = NumberParserUtils.parseLong(AppConfigManager.getInstance().getMinDelegation());
+//    private long minDelegation = NumberParserUtils.parseLong(AppConfigManager.getInstance().getMinDelegation());
+    private String minDelegation = AppConfigManager.getInstance().getMinDelegation();
 
     public DelegatePresenter(DelegateContract.View view) {
         super(view);
@@ -122,7 +123,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
         //检查委托的数量
         if (TextUtils.isEmpty(delegateAmount)) {
             getView().showTips(false);
-        } else if (amount < minDelegation) {
+        } else if (amount <NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(minDelegation, "1E18")))) {
             //按钮不可点击,并且下方提示
             getView().showTips(true);
         } else {
@@ -135,7 +136,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     public void updateDelegateButtonState() {
         if (isViewAttached()) {
             String withdrawAmount = getView().getDelegateAmount(); //获取输入的委托数量
-            boolean isAmountValid = !TextUtils.isEmpty(withdrawAmount) && NumberParserUtils.parseDouble(withdrawAmount) >= minDelegation;
+            boolean isAmountValid = !TextUtils.isEmpty(withdrawAmount) && NumberParserUtils.parseDouble(withdrawAmount) >= NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(minDelegation, "1E18")));
             getView().setDelegateButtonState(isAmountValid);
         }
 

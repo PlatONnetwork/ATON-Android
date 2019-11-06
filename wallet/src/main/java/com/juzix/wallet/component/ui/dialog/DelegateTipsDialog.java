@@ -10,9 +10,11 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.juzix.wallet.R;
+import com.juzix.wallet.utils.DensityUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -93,6 +95,11 @@ public class DelegateTipsDialog extends DialogFragment {
 
         if (!TextUtils.isEmpty(contentThree)) {
             dialog.contentThree.setText(contentThree);
+        }
+        if(TextUtils.isEmpty(contentTwo) && TextUtils.isEmpty(contentThree)){
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) dialog.contentOne.getLayoutParams();
+            params.setMargins(DensityUtil.dp2px(context,7),0,DensityUtil.dp2px(context,17), DensityUtil.dp2px(context,30));
+            dialog.contentOne.setLayoutParams(params);
         }
         return dialog;
     }

@@ -144,9 +144,11 @@
                 android:id="@+id/rl_choose_delegate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="5dp"
                 android:layout_marginTop="14dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginRight="5dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
                 android:background="@drawable/bg_validators_item">
 
                 <TextView
@@ -214,16 +216,6 @@
                     android:textColor="@color/color_61646e"
                     android:textSize="16sp" />
 
-                <!--<TextView-->
-                <!--android:id="@+id/tv_amount_magnitudes"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginTop="6dp"-->
-                <!--android:gravity="center"-->
-                <!--android:text="百"-->
-                <!--android:textColor="@color/color_000000"-->
-                <!--android:textSize="12sp"-->
-                <!--android:visibility="gone" />-->
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -234,7 +226,8 @@
                     <View
                         android:id="@+id/v_tips"
                         android:layout_width="1dp"
-                        android:layout_height="7dp"
+                        android:layout_height="15dp"
+                        android:layout_marginLeft="6dp"
                         android:background="@drawable/bg_amount_magnitudes"
                         android:visibility="gone"
                         tools:visibility="visible" />
@@ -245,7 +238,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="4dp"
                         android:gravity="center"
-                        android:textColor="@color/color_000000"
+                        android:textColor="@color/color_8c8c8c"
                         android:textSize="12sp"
                         android:visibility="gone" />
 
@@ -339,16 +332,27 @@
                 app:textAppearance="@style/MainButtonStyle"
                 app:textBackground="@drawable/bg_main_button" />
 
-
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:layout_marginLeft="16dp"
-                android:layout_marginTop="30dp"
-                android:text="@string/delegate_node"
-                android:textStyle="bold"
-                android:textColor="@color/color_000000"
-                android:textSize="14sp" />
+                android:layout_marginTop="30dp">
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="14dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/bg_amount_magnitudes" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/delegate_node"
+                    android:textStyle="bold"
+                    android:textColor="@color/color_000000"
+                    android:layout_marginLeft="8dp"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"

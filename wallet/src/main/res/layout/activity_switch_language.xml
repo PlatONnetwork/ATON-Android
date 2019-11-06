@@ -35,7 +35,7 @@
 
         <TextView
             android:id="@+id/tv_switch_chinese"
-            style="@style/Text.000.14"
+            style="@style/Text.000.16"
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:drawableRight="@drawable/icon_hook_s"
@@ -45,7 +45,7 @@
 
         <TextView
             android:id="@+id/tv_switch_english"
-            style="@style/Text.000.14"
+            style="@style/Text.000.16"
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:drawableRight="@drawable/icon_hook_s"
