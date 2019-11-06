@@ -53,6 +53,8 @@ public class ManageWalletActivity extends MVPBaseActivity<ManageWalletPresenter>
     @BindView(R.id.iv_copy_wallet_address)
     ImageView ivCopyAddress;
     private Unbinder unbinder;
+    @BindView(R.id.rl_wallet_address)
+    RelativeLayout rl_wallet_address;
 
     @Override
     protected ManageWalletPresenter createPresenter() {
@@ -89,7 +91,7 @@ public class ManageWalletActivity extends MVPBaseActivity<ManageWalletPresenter>
         });
     }
 
-    @OnClick({R.id.rl_rename, R.id.rl_private_key, R.id.rl_keystore, R.id.rl_backup, R.id.tv_delete,R.id.iv_copy_wallet_address})
+    @OnClick({R.id.rl_rename, R.id.rl_private_key, R.id.rl_keystore, R.id.rl_backup, R.id.tv_delete,R.id.iv_copy_wallet_address,R.id.rl_wallet_address})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.rl_rename:
@@ -112,6 +114,9 @@ public class ManageWalletActivity extends MVPBaseActivity<ManageWalletPresenter>
                 }
                 break;
             case R.id.iv_copy_wallet_address:
+                CommonUtil.copyTextToClipboard(this,tvAddress.getText().toString());
+                break;
+            case R.id.rl_wallet_address:
                 CommonUtil.copyTextToClipboard(this,tvAddress.getText().toString());
                 break;
 

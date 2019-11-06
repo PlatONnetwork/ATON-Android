@@ -67,7 +67,8 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     private String feeAmount;
     private BigInteger gas_Price; //调web3j获取gasprice
     private BigInteger gas_limit;
-    private long minDelegation = NumberParserUtils.parseLong(AppConfigManager.getInstance().getMinDelegation());
+//    private long minDelegation = NumberParserUtils.parseLong(AppConfigManager.getInstance().getMinDelegation());
+    private String minDelegation = AppConfigManager.getInstance().getMinDelegation();
 
     public WithDrawPresenter(WithDrawContract.View view) {
         super(view);
@@ -97,7 +98,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
         double amount = NumberParserUtils.parseDouble(withdrawAmount);
         if (TextUtils.isEmpty(withdrawAmount)) {
             getView().showTips(false);
-        } else if (amount < minDelegation) {
+        } else if (amount < NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(minDelegation, "1E18")))) {
             //按钮不可点击,并且下方提示
             getView().showTips(true);
         } else {
@@ -111,7 +112,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     public void updateWithDrawButtonState() {
         if (isViewAttached()) {
             String withdrawAmount = getView().getWithDrawAmount();
-            boolean isAmountValid = !TextUtils.isEmpty(withdrawAmount) && NumberParserUtils.parseDouble(withdrawAmount) >= minDelegation;
+            boolean isAmountValid = !TextUtils.isEmpty(withdrawAmount) && NumberParserUtils.parseDouble(withdrawAmount) >= NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(minDelegation, "1E18")));
             getView().setWithDrawButtonState(isAmountValid);
         }
     }

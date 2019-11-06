@@ -186,7 +186,7 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
         textView.setGravity(Gravity.CENTER);
         textView.setAllCaps(false);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-        textView.setPadding(DensityUtil.dp2px(getContext(),10),DensityUtil.dp2px(getContext(),15),DensityUtil.dp2px(getContext(),10),DensityUtil.dp2px(getContext(),15));
+//        textView.setPadding(DensityUtil.dp2px(getContext(),20),DensityUtil.dp2px(getContext(),25),DensityUtil.dp2px(getContext(),20),DensityUtil.dp2px(getContext(),25));
         if (!dataEntity.isChecked()){
             textView.setBackgroundResource(R.drawable.bg_shape_verify_mnemonic_n);
             textView.setTextColor(ContextCompat.getColor(this, R.color.color_316def));
@@ -194,6 +194,7 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
             textView.setBackgroundResource(R.drawable.bg_shape_verify_mnemonic_h);
             textView.setTextColor(ContextCompat.getColor(this, R.color.color_b6bbd0));
         }
+        textView.setPadding(DensityUtil.dp2px(getContext(),20),DensityUtil.dp2px(getContext(),100),DensityUtil.dp2px(getContext(),20),DensityUtil.dp2px(getContext(),100));
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
