@@ -46,7 +46,7 @@ public class ValidatorsAdapter extends CommonAdapter<VerifyNode> {
                 ContextCompat.getColor(context, R.color.color_cc9ca7c2),
                 DensityUtil.dp2px(context, 5),
                 0,
-                DensityUtil.dp2px(context, 2));
+                DensityUtil.dp2px(context, 0));
 
         CircleImageView imageView = viewHolder.getView(R.id.iv_url);
         GlideUtils.loadRound(context, item.getUrl(), imageView);
