@@ -21,234 +21,242 @@
             app:ctb_title="@string/verificationOfMnemonic" />
     </LinearLayout>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginRight="16dp"
-            android:text="@string/verificationOfMnemonicTitle"
-            android:textColor="@color/color_000000"
-            android:textSize="16sp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginRight="16dp"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/tv_mnemonic1"
-                    style="@style/Text.000.14"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="6dp"
-                    android:layout_weight="1"
-                    android:background="@color/color_f0f1f5"
-                    android:hint="1"
-                    android:textColorHint="@color/color_b6bbd0" />
-
-                <TextView
-                    android:id="@+id/tv_mnemonic2"
-                    style="@style/Text.000.14"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="6dp"
-                    android:layout_weight="1"
-                    android:background="@color/color_f0f1f5"
-                    android:hint="2"
-                    android:textColorHint="@color/color_b6bbd0" />
-
-                <TextView
-                    android:id="@+id/tv_mnemonic3"
-                    style="@style/Text.000.14"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@color/color_f0f1f5"
-                    android:hint="3"
-                    android:textColorHint="@color/color_b6bbd0" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginTop="6dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/tv_mnemonic4"
-                    style="@style/Text.000.14"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="6dp"
-                    android:layout_weight="1"
-                    android:background="@color/color_f0f1f5"
-                    android:hint="4"
-                    android:textColorHint="@color/color_b6bbd0" />
-
-                <TextView
-                    android:id="@+id/tv_mnemonic5"
-                    style="@style/Text.000.14"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="6dp"
-                    android:layout_weight="1"
-                    android:background="@color/color_f0f1f5"
-                    android:hint="5"
-                    android:textColorHint="@color/color_b6bbd0" />
-
-                <TextView
-                    android:id="@+id/tv_mnemonic6"
-                    style="@style/Text.000.14"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@color/color_f0f1f5"
-                    android:hint="6"
-                    android:textColorHint="@color/color_b6bbd0" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginTop="6dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/tv_mnemonic7"
-                    style="@style/Text.000.14"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="6dp"
-                    android:layout_weight="1"
-                    android:background="@color/color_f0f1f5"
-                    android:hint="7"
-                    android:textColorHint="@color/color_b6bbd0" />
-
-                <TextView
-                    android:id="@+id/tv_mnemonic8"
-                    style="@style/Text.000.14"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="6dp"
-                    android:layout_weight="1"
-                    android:background="@color/color_f0f1f5"
-                    android:hint="8"
-                    android:textColorHint="@color/color_b6bbd0" />
-
-                <TextView
-                    android:id="@+id/tv_mnemonic9"
-                    style="@style/Text.000.14"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@color/color_f0f1f5"
-                    android:hint="9"
-                    android:textColorHint="@color/color_b6bbd0" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginTop="6dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/tv_mnemonic10"
-                    style="@style/Text.000.14"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="6dp"
-                    android:layout_weight="1"
-                    android:background="@color/color_f0f1f5"
-                    android:hint="10"
-                    android:textColorHint="@color/color_b6bbd0" />
-
-                <TextView
-                    android:id="@+id/tv_mnemonic11"
-                    style="@style/Text.000.14"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="6dp"
-                    android:layout_weight="1"
-                    android:background="@color/color_f0f1f5"
-                    android:hint="11"
-                    android:textColorHint="@color/color_b6bbd0" />
-
-                <TextView
-                    android:id="@+id/tv_mnemonic12"
-                    style="@style/Text.000.14"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@color/color_f0f1f5"
-                    android:hint="12"
-                    android:textColorHint="@color/color_b6bbd0" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <com.google.android.flexbox.FlexboxLayout
-            android:id="@+id/fl_all"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginRight="16dp"
-            android:orientation="vertical"
-            app:flexWrap="wrap" />
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="24dp"
-            android:gravity="bottom"
             android:orientation="vertical">
 
-            <com.juzix.wallet.component.widget.ShadowButton
-                android:id="@+id/sbtn_submit"
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
+                android:layout_marginTop="24dp"
                 android:layout_marginRight="16dp"
-                android:enabled="false"
-                app:enabled="false"
-                app:text="@string/completeBackup"
-                app:textAppearance="@style/MainButtonStyle"
-                app:textBackground="@drawable/bg_main_button" />
+                android:text="@string/verificationOfMnemonicTitle"
+                android:textColor="@color/color_000000"
+                android:textSize="16sp" />
 
-            <Button
-                android:id="@+id/btn_empty"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom|center_horizontal"
                 android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginRight="16dp"
-                android:background="@null"
-                android:enabled="false"
-                android:fontFamily="normal"
-                android:gravity="center"
-                android:paddingTop="13dp"
-                android:paddingBottom="13dp"
-                android:text="@string/empty"
-                android:textAllCaps="false"
-                android:textColor="@color/color_105cfe"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:orientation="vertical">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_mnemonic1"
+                        style="@style/Text.000.14"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="6dp"
+                        android:layout_weight="1"
+                        android:background="@color/color_f0f1f5"
+                        android:hint="1"
+                        android:textColorHint="@color/color_b6bbd0" />
+
+                    <TextView
+                        android:id="@+id/tv_mnemonic2"
+                        style="@style/Text.000.14"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="6dp"
+                        android:layout_weight="1"
+                        android:background="@color/color_f0f1f5"
+                        android:hint="2"
+                        android:textColorHint="@color/color_b6bbd0" />
+
+                    <TextView
+                        android:id="@+id/tv_mnemonic3"
+                        style="@style/Text.000.14"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@color/color_f0f1f5"
+                        android:hint="3"
+                        android:textColorHint="@color/color_b6bbd0" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="6dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_mnemonic4"
+                        style="@style/Text.000.14"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="6dp"
+                        android:layout_weight="1"
+                        android:background="@color/color_f0f1f5"
+                        android:hint="4"
+                        android:textColorHint="@color/color_b6bbd0" />
+
+                    <TextView
+                        android:id="@+id/tv_mnemonic5"
+                        style="@style/Text.000.14"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="6dp"
+                        android:layout_weight="1"
+                        android:background="@color/color_f0f1f5"
+                        android:hint="5"
+                        android:textColorHint="@color/color_b6bbd0" />
+
+                    <TextView
+                        android:id="@+id/tv_mnemonic6"
+                        style="@style/Text.000.14"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@color/color_f0f1f5"
+                        android:hint="6"
+                        android:textColorHint="@color/color_b6bbd0" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="6dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_mnemonic7"
+                        style="@style/Text.000.14"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="6dp"
+                        android:layout_weight="1"
+                        android:background="@color/color_f0f1f5"
+                        android:hint="7"
+                        android:textColorHint="@color/color_b6bbd0" />
+
+                    <TextView
+                        android:id="@+id/tv_mnemonic8"
+                        style="@style/Text.000.14"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="6dp"
+                        android:layout_weight="1"
+                        android:background="@color/color_f0f1f5"
+                        android:hint="8"
+                        android:textColorHint="@color/color_b6bbd0" />
+
+                    <TextView
+                        android:id="@+id/tv_mnemonic9"
+                        style="@style/Text.000.14"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@color/color_f0f1f5"
+                        android:hint="9"
+                        android:textColorHint="@color/color_b6bbd0" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="6dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_mnemonic10"
+                        style="@style/Text.000.14"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="6dp"
+                        android:layout_weight="1"
+                        android:background="@color/color_f0f1f5"
+                        android:hint="10"
+                        android:textColorHint="@color/color_b6bbd0" />
+
+                    <TextView
+                        android:id="@+id/tv_mnemonic11"
+                        style="@style/Text.000.14"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="6dp"
+                        android:layout_weight="1"
+                        android:background="@color/color_f0f1f5"
+                        android:hint="11"
+                        android:textColorHint="@color/color_b6bbd0" />
+
+                    <TextView
+                        android:id="@+id/tv_mnemonic12"
+                        style="@style/Text.000.14"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@color/color_f0f1f5"
+                        android:hint="12"
+                        android:textColorHint="@color/color_b6bbd0" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/fl_all"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                android:orientation="vertical"
+                app:flexWrap="wrap" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"
+                android:gravity="bottom"
+                android:orientation="vertical">
+
+                <com.juzix.wallet.component.widget.ShadowButton
+                    android:id="@+id/sbtn_submit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:enabled="false"
+                    app:enabled="false"
+                    app:text="@string/completeBackup"
+                    app:textAppearance="@style/MainButtonStyle"
+                    app:textBackground="@drawable/bg_main_button" />
+
+                <Button
+                    android:id="@+id/btn_empty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:background="@null"
+                    android:enabled="false"
+                    android:fontFamily="normal"
+                    android:gravity="center"
+                    android:paddingTop="13dp"
+                    android:paddingBottom="13dp"
+                    android:text="@string/empty"
+                    android:textAllCaps="false"
+                    android:textColor="@color/color_105cfe"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+
+    </ScrollView>
+
 
 </LinearLayout>
