@@ -143,10 +143,6 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
         return avatar;
     }
 
-    public String getExportAvatar() {
-        return "icon_export_" + avatar;
-    }
-
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }

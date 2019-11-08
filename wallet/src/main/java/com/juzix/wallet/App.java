@@ -54,7 +54,6 @@ public class App extends CoreApp {
         registerActivityLifecycleCallbacks(mActivityLifecycleCallbacks);
 
     }
-
     private void initBugly() {
         CrashReport.initCrashReport(getApplicationContext(), BuildConfig.BUGLY_APPID, true);
     }

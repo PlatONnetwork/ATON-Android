@@ -60,11 +60,6 @@
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
 
         <activity
-            android:name=".component.ui.view.ServiceTermsActivity"
-            android:launchMode="standard"
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name=".component.ui.view.OperateMenuActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
