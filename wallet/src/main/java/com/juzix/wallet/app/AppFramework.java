@@ -247,7 +247,7 @@ public class AppFramework {
                         .transform(new RealmObjectSchema.Function() {
                             @Override
                             public void apply(DynamicRealmObject obj) {
-                                obj.set("chainId", NodeManager.getInstance().getChainId(obj.get("nodeAddress")));
+//                                obj.set("chainId", NodeManager.getInstance().getChainId(obj.get("nodeAddress")));
                             }
                         })
                         .removeField("nodeAddress");
@@ -257,7 +257,7 @@ public class AppFramework {
                         .transform(new RealmObjectSchema.Function() {
                             @Override
                             public void apply(DynamicRealmObject obj) {
-                                obj.set("chainId", NodeManager.getInstance().getChainId(obj.get("nodeAddress")));
+//                                obj.set("chainId", NodeManager.getInstance().getChainId(obj.get("nodeAddress")));
                             }
                         })
                         .removeField("nodeAddress");
