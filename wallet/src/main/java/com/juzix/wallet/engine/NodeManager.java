@@ -2,6 +2,7 @@ package com.juzix.wallet.engine;
 
 import android.text.TextUtils;
 
+import com.juzix.wallet.BuildConfig;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.entity.Node;
 import com.juzix.wallet.event.EventPublisher;
@@ -24,14 +25,6 @@ import io.reactivex.functions.Predicate;
  * @author matrixelement
  */
 public class NodeManager {
-
-    private final static String[] DEFAULT_NODE_URL_LIST = new String[]{"http://192.168.9.190:1000", "http://192.168.9.190:443"};
-    //    private final static String[] DEFAULT_NODE_URL_LIST = new String[]{"https://aton.test.platon.network","https://aton.main.platon.network"};
-    private final static String[] DEFAULT_NODE_CHAINID_LIST = new String[]{"101", "103"};
-
-//    private final static String[] DEFAULT_NODE_URL_LIST = new String[]{"https://aton.main.platon.network"};
-//    //    private final static String[] DEFAULT_NODE_URL_LIST = new String[]{"https://aton.test.platon.network","https://aton.main.platon.network"};
-//    private final static String[] DEFAULT_NODE_CHAINID_LIST = new String[]{"100"};
 
     private Node curNode;
     private NodeService nodeService;
@@ -115,12 +108,15 @@ public class NodeManager {
     }
 
     public String getChainId() {
-        return TextUtils.isEmpty(getCurNode().getChainId()) ? DEFAULT_NODE_CHAINID_LIST[1] : getCurNode().getChainId();
-    }
-
-    public String getChainId(String nodeAddress) {
-        int index = Arrays.asList(DEFAULT_NODE_URL_LIST).indexOf(nodeAddress);
-        return index != -1 ? DEFAULT_NODE_CHAINID_LIST[index] : DEFAULT_NODE_CHAINID_LIST[1];
+        if (TextUtils.isEmpty(getCurNode().getChainId())) {
+            if (BuildConfig.RELEASE_TYPE.equals("server.typeC")) {
+                return BuildConfig.ID_TEST_CHAIN;
+            } else {
+                return BuildConfig.ID_MAIN_CHAIN;
+            }
+        } else {
+            return getCurNode().getChainId();
+        }
     }
 
     public void switchNode(Node nodeEntity) {
@@ -153,15 +149,30 @@ public class NodeManager {
 
         List<Node> nodeInfoEntityList = new ArrayList<>();
 
-        for (int i = 0; i < DEFAULT_NODE_URL_LIST.length; i++) {
-            Node nodeEntity = new Node.Builder()
+        if (BuildConfig.RELEASE_TYPE.equals("server.typeC")) {
+            nodeInfoEntityList.add(new Node.Builder()
                     .id(UUID.randomUUID().hashCode())
-                    .nodeAddress(DEFAULT_NODE_URL_LIST[i])
-                    .isDefaultNode(i != 2)
-                    .isChecked(i == 0)
-                    .chainId(DEFAULT_NODE_CHAINID_LIST[i])
-                    .build();
-            nodeInfoEntityList.add(nodeEntity);
+                    .nodeAddress(BuildConfig.URL_TEST_SERVER)
+                    .isDefaultNode(true)
+                    .isChecked(true)
+                    .chainId(BuildConfig.ID_TEST_CHAIN)
+                    .build());
+
+            nodeInfoEntityList.add(new Node.Builder()
+                    .id(UUID.randomUUID().hashCode())
+                    .nodeAddress(BuildConfig.URL_DEVELOP_SERVER)
+                    .isDefaultNode(false)
+                    .isChecked(false)
+                    .chainId(BuildConfig.ID_DEVELOP_CHAIN)
+                    .build());
+        } else {
+            nodeInfoEntityList.add(new Node.Builder()
+                    .id(UUID.randomUUID().hashCode())
+                    .nodeAddress(BuildConfig.URL_MAIN_SERVER)
+                    .isDefaultNode(true)
+                    .isChecked(true)
+                    .chainId(BuildConfig.ID_MAIN_CHAIN)
+                    .build());
         }
         return nodeInfoEntityList;
     }

@@ -52,6 +52,7 @@ public class App extends CoreApp {
         initBugly();
         AppFramework.getAppFramework().initAppFramework(this);
         registerActivityLifecycleCallbacks(mActivityLifecycleCallbacks);
+
     }
 
     private void initBugly() {
