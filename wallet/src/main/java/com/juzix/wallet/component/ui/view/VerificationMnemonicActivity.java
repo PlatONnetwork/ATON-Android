@@ -158,6 +158,13 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
                exit();
             }
         });
+
+        ((CommonTitleBar)findViewById(R.id.commonTitleBar)).setLeftTitleClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                exit();
+            }
+        });
         mBtnSubmit.setOnClickListener(this);
         mBtnEmpty.setOnClickListener(this);
         addMnemonicListener();
