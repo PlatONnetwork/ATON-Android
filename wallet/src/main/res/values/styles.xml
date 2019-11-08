@@ -158,11 +158,6 @@
         <item name="android:scrollbars">none</item>
     </style>
 
-    <style name="SeekBarStyle" parent="Base.Widget.AppCompat.SeekBar">
-        <item name="android:progressDrawable">@drawable/bg_seekbar</item>
-        <item name="android:thumb">@drawable/icon_seekbar_thumb</item>
-    </style>
-
     <style name="Activity_Translucent">
         <item name="android:windowBackground">@color/color_00000000</item>
         <item name="android:windowIsTranslucent">true</item>

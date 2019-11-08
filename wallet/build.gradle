@@ -29,6 +29,12 @@ android {
         buildConfigField("String", "URL_SERVICE_AGREEMENT", "${URL_SERVICE_AGREEMENT}")
         buildConfigField("String", "URL_SUPPORT_FEEDBACK", "${URL_SUPPORT_FEEDBACK}")
         buildConfigField("String", "URL_PLATON_NETWORK", "${URL_PLATON_NETWORK}")
+        buildConfigField("String", "URL_MAIN_SERVER", "${URL_MAIN_SERVER}")
+        buildConfigField("String", "URL_TEST_SERVER", "${URL_TEST_SERVER}")
+        buildConfigField("String", "URL_DEVELOP_SERVER", "${URL_DEVELOP_SERVER}")
+        buildConfigField("String","ID_MAIN_CHAIN","${ID_MAIN_CHAIN}")
+        buildConfigField("String","ID_TEST_CHAIN","${ID_TEST_CHAIN}")
+        buildConfigField("String","ID_DEVELOP_CHAIN","${ID_DEVELOP_CHAIN}")
         renderscriptTargetApi 19
         renderscriptSupportModeEnabled true
 
@@ -56,15 +62,26 @@ android {
 
             v2SigningEnabled false
         }
+
         releaseX {
-            storeFile file("/Users/jenkins/extras/wallet.keystore")
-//            storeFile file("../extras/wallet.keystore")
+            storeFile file("../extras/wallet.keystore")
             storePassword "123456"
             keyAlias "wallet"
             keyPassword "123456"
 
             v2SigningEnabled false
         }
+
+        releaseJX {
+            storeFile file("/Users/jenkins/extras/wallet.keystore")
+            storePassword "123456"
+            keyAlias "wallet"
+            keyPassword "123456"
+
+            v2SigningEnabled false
+        }
+
+
 
 
     }
@@ -99,6 +116,16 @@ android {
             zipAlignEnabled true
             multiDexEnabled true
         }
+
+        releaseJX {
+            debuggable false
+            signingConfig signingConfigs.releaseJX
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField("String", "RELEASE_TYPE", "${releaseTypeX}")
+            zipAlignEnabled true
+            multiDexEnabled true
+        }
     }
 
     applicationVariants.all { variant ->
@@ -124,7 +151,7 @@ android {
                 type = (type + "_" + variant.flavorName)
             }
 
-            outputFileName = "wallet_android_v${verName}_${innerVer}_${releaseTime}_${verCode}_${type}_${gitVersion}.apk";
+            outputFileName = "aton_android_v${verName}_${innerVer}_${releaseTime}_${verCode}_${type}_${gitVersion}.apk";
         }
     }
     compileOptions {
