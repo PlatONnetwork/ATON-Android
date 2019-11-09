@@ -7,6 +7,7 @@ import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.ApiSingleObserver;
 import com.juzhen.framework.network.NetConnectivity;
+import com.juzhen.framework.util.LogUtils;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomObserver;
@@ -21,6 +22,7 @@ import com.juzix.wallet.component.ui.dialog.TransactionSignatureDialogFragment;
 import com.juzix.wallet.component.ui.view.AssetsFragment;
 import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.db.entity.AddressEntity;
+import com.juzix.wallet.db.entity.WalletEntity;
 import com.juzix.wallet.db.sqlite.AddressDao;
 import com.juzix.wallet.engine.AppConfigManager;
 import com.juzix.wallet.engine.NodeManager;
@@ -68,6 +70,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Predicate;
+import jnr.constants.platform.PRIO;
 
 
 /**
@@ -126,10 +129,17 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
             mDisposable.dispose();
         }
 
+        getAccountBalance(walletEntity.getPrefixAddress());
+
+        getGasPrice();
+    }
+
+    private void getAccountBalance(String prefixAddress) {
+
         ServerUtils
                 .getCommonApi()
                 .getAccountBalance(ApiRequestBody.newBuilder()
-                        .put("addrs", Arrays.asList(walletEntity.getPrefixAddress()))
+                        .put("addrs", Arrays.asList(prefixAddress))
                         .build())
                 .compose(bindUntilEvent(FragmentEvent.STOP))
                 .compose(RxUtils.getSingleSchedulerTransformer())
@@ -147,8 +157,10 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
 
                     }
                 });
+    }
 
-        mDisposable = Web3jManager
+    private Disposable getGasPrice() {
+        return Web3jManager
                 .getInstance()
                 .getGasPrice()
                 .compose(RxUtils.getSingleSchedulerTransformer())
@@ -156,6 +168,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                     @Override
                     public void accept(BigInteger bigInteger) throws Exception {
                         if (isViewAttached()) {
+                            LogUtils.e("gasPrice 为："+bigInteger.toString());
                             initGasPrice(bigInteger);
                             setDefaultProgress();
                             setDefaultFeeAmount();
@@ -301,8 +314,9 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     public void updateAssetsTab(int tabIndex) {
         if (isViewAttached()) {
             if (tabIndex != AssetsFragment.TAB2) {
-                resetData();
                 getView().resetView(feeAmount);
+            } else {
+                getGasPrice();
             }
         }
     }
@@ -427,7 +441,6 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                     @Override
                     public void accept(Long aLong) throws Exception {
                         if (isViewAttached()) {
-                            resetData();
                             getView().resetView(feeAmount);
                             MainActivity.actionStart(getContext(), MainActivity.TAB_PROPERTY, AssetsFragment.TAB1);
                         }
@@ -567,14 +580,6 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
         map.put(String.format("%s:", string(R.string.recipient_address)), recipient);
         map.put(String.format("%s:", string(R.string.fee)), string(R.string.amount_with_unit, fee));
         return map;
-    }
-
-    private void resetData() {
-//        toAddress = "";
-//        gasPrice = minGasPrice;
-//        gasLimit = DEFAULT_GAS_LIMIT;
-//        progress = DEFAULT_PERCENT;
-//        feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(getMinFee().toString(10), DEFAULT_EXCHANGE_RATE.toString(10)));
     }
 
     private Single<String> getWalletNameFromAddress(String address) {

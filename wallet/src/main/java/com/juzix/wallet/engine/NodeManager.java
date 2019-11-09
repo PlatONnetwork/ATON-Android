@@ -9,7 +9,6 @@ import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.RxUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 

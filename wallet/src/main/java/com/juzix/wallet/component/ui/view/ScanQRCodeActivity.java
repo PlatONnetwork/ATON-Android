@@ -20,8 +20,6 @@ import android.text.TextUtils;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -47,8 +45,6 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 import java.io.File;
 import java.io.IOException;
 import java.util.Vector;
-
-import io.reactivex.functions.Consumer;
 
 
 public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider, SurfaceHolder.Callback {

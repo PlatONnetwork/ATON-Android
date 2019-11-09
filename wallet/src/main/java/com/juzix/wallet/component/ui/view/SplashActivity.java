@@ -5,28 +5,17 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
-import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowInsets;
-import android.widget.ImageView;
 
-import com.juzix.wallet.App;
-import com.juzix.wallet.BuildConfig;
 import com.juzix.wallet.R;
-import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.engine.WalletManager;
-import com.juzix.wallet.entity.WebType;
-import com.juzix.wallet.utils.CommonUtil;
-import com.juzix.wallet.utils.LanguageUtil;
-
-import java.util.Locale;
 
 public class SplashActivity extends BaseActivity {
 

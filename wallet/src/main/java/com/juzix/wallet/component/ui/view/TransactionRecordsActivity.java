@@ -18,7 +18,6 @@ import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.adapter.TransactionDiffCallback;
 import com.juzix.wallet.component.adapter.TransactionListAdapter;
-import com.juzix.wallet.component.adapter.base.RecyclerAdapter;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.TransactionRecordsContract;
 import com.juzix.wallet.component.ui.presenter.TransactionRecordsPresenter;
@@ -28,7 +27,6 @@ import com.juzix.wallet.component.widget.WalletListPop;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.Wallet;
-import com.juzix.wallet.entity.WebType;
 import com.juzix.wallet.utils.DensityUtil;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -46,7 +44,6 @@ import butterknife.Unbinder;
 import io.reactivex.Flowable;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
-import jnr.constants.platform.PRIO;
 
 public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecordsPresenter> implements TransactionRecordsContract.View {
 

@@ -2,12 +2,10 @@ package com.juzix.wallet;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.multidex.MultiDex;
-import android.widget.TextView;
 
 import com.juzhen.framework.app.CoreApp;
 import com.juzix.wallet.app.AppFramework;
@@ -17,11 +15,6 @@ import com.juzix.wallet.engine.WalletManager;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
-
-import org.web3j.platon.contracts.NodeContract;
-import org.web3j.platon.contracts.RestrictingPlanContract;
-
-import java.util.concurrent.locks.Lock;
 
 import io.reactivex.functions.Consumer;
 import io.reactivex.plugins.RxJavaPlugins;

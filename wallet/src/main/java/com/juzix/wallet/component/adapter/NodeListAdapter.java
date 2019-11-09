@@ -22,8 +22,6 @@ import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.widget.CustomEditText;
 import com.juzix.wallet.component.widget.TextChangedListener;
 import com.juzix.wallet.entity.Node;
-import com.juzix.wallet.event.EventPublisher;
-import com.juzix.wallet.utils.CommonUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.ToastUtil;
 

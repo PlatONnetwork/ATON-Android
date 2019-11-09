@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.provider.Settings;
 import android.text.TextUtils;
 
-import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.utils.MD5Utils;
 import com.juzix.wallet.utils.SystemUtil;

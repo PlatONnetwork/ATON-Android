@@ -1,6 +1,5 @@
 package com.juzix.wallet.component.widget.swipeenulistview;
 
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -8,8 +7,6 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.juzix.wallet.R;
 
 import java.util.List;
 

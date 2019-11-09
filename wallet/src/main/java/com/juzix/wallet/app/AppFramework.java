@@ -3,14 +3,12 @@ package com.juzix.wallet.app;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 
 import com.juzhen.framework.network.NetConnectivity;
 import com.juzhen.framework.network.NetState;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.config.JZAppConfigure;
-import com.juzix.wallet.engine.AppConfigManager;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.event.Event;

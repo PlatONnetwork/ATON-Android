@@ -1,6 +1,5 @@
 package com.juzix.wallet.component.adapter.base;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;

@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Process;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -12,7 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
-import com.juzhen.framework.network.SchedulersTransformer;
 import com.juzhen.framework.util.AndroidUtil;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomObserver;
@@ -25,7 +23,6 @@ import com.juzix.wallet.engine.VersionUpdate;
 import com.juzix.wallet.entity.VersionInfo;
 import com.juzix.wallet.entity.WebType;
 import com.juzix.wallet.utils.RxUtils;
-import com.juzix.wallet.utils.ShareUtil;
 import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 

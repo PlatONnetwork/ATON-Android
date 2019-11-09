@@ -1,26 +1,21 @@
 package com.juzix.wallet.component.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.adapter.base.RecycleHolder;
 import com.juzix.wallet.component.adapter.base.RecyclerAdapter;
 import com.juzix.wallet.component.ui.view.CommonHybridActivity;
-import com.juzix.wallet.component.ui.view.ScanQRCodeActivity;
 import com.juzix.wallet.entity.OfficialCommunity;
 import com.juzix.wallet.entity.OfficialCommunityItem;
 import com.juzix.wallet.entity.OfficialCommunityType;
 import com.juzix.wallet.entity.WebType;
 import com.juzix.wallet.utils.CommonUtil;
-import com.juzix.wallet.utils.ShareUtil;
 
 import java.util.List;
 

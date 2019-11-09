@@ -10,7 +10,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
-import com.juzhen.framework.app.log.Log;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;

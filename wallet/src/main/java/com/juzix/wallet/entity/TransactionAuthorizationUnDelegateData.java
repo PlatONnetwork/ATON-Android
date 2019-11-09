@@ -1,7 +1,6 @@
 package com.juzix.wallet.entity;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import com.juzix.wallet.R;
 import com.juzix.wallet.utils.BigIntegerUtil;
 
 import org.web3j.platon.PlatOnFunction;

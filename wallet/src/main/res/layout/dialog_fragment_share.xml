@@ -3,43 +3,49 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:clipToPadding="false"
+    android:clipChildren="false"
+    android:background="@drawable/bg_common_dialog_fragment"
     android:orientation="vertical">
 
-    <LinearLayout
+    <TextView
+        style="@style/Text.000.16"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/color_ffffff"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingBottom="12dp"
-        android:paddingLeft="21dp"
-        android:paddingRight="24dp"
-        android:paddingTop="12dp">
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:text="@string/sharing"
+        android:textStyle="bold" />
 
-        <TextView
-            style="@style/Text.000.16"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:textStyle="bold"
-            android:gravity="center_vertical|left"
-            android:text="@string/sharing" />
-
-        <ImageView
-            android:id="@+id/iv_close"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icon_close" />
-    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/bg_divider_share" />
 
     <GridView
         android:id="@+id/gridview"
         android:layout_width="match_parent"
         android:layout_height="210dp"
-        android:background="@color/color_f8f8f8"
         android:gravity="center_horizontal"
         android:numColumns="4"
         android:paddingTop="16dp"
-        android:verticalSpacing="20dp"
+        android:scrollbars="none"
+        android:verticalSpacing="18dp"
         tools:listitem="@layout/item_share" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/bg_divider_share" />
+
+    <TextView
+        android:id="@+id/tv_cancel"
+        style="@style/Text.105cfe.16"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:text="@string/cancel"
+        android:textStyle="bold" />
 
 </LinearLayout>
