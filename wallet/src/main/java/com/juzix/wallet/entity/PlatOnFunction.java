@@ -3,9 +3,7 @@ package com.juzix.wallet.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import com.juzhen.framework.util.MapUtils;
-import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 
 import org.web3j.abi.datatypes.BytesType;

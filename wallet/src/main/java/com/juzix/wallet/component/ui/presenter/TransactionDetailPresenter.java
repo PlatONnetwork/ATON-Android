@@ -8,12 +8,8 @@ import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.TransactionDetailContract;
 import com.juzix.wallet.db.sqlite.AddressDao;
 import com.juzix.wallet.db.sqlite.WalletDao;
-import com.juzix.wallet.engine.DelegateManager;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.utils.RxUtils;
-
-import org.web3j.platon.BaseResponse;
-import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 
 import java.util.List;
 import java.util.concurrent.Callable;

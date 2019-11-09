@@ -24,7 +24,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
-import com.juzhen.framework.util.LogUtils;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
@@ -107,6 +106,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
     @Override
     protected void onFragmentPageStart() {
         mPresenter.checkAddressBook(etWalletAddress.getText().toString());
+        mPresenter.fetchDefaultWalletInfo();
     }
 
     @Nullable
@@ -223,6 +223,8 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
                     } else {
                         ToastUtil.showLongToast(getContext(), string(R.string.unrecognized));
                     }
+                    break;
+                default:
                     break;
             }
 

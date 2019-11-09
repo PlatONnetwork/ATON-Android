@@ -6,8 +6,6 @@ import com.juzix.wallet.BuildConfig;
 import com.juzix.wallet.app.Constants;
 
 import java.security.cert.CertificateException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLContext;

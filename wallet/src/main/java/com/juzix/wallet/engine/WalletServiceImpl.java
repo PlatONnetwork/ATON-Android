@@ -1,6 +1,5 @@
 package com.juzix.wallet.engine;
 
-import com.juzhen.framework.util.LogUtils;
 import com.juzix.wallet.App;
 import com.juzix.wallet.R;
 import com.juzix.wallet.entity.Wallet;

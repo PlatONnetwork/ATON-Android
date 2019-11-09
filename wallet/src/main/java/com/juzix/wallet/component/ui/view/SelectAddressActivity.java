@@ -16,7 +16,6 @@ import com.juzix.wallet.component.ui.contract.SelectAddressContract;
 import com.juzix.wallet.component.ui.presenter.SelectAddressPresenter;
 import com.juzix.wallet.component.widget.CommonTitleBar;
 import com.juzix.wallet.entity.Address;
-import com.juzix.wallet.utils.ToastUtil;
 
 import java.util.List;
 

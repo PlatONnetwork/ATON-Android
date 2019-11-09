@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 
 import com.juzix.wallet.component.ui.base.BaseFragment;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class TabAdapter extends FragmentStatePagerAdapter {

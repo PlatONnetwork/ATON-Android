@@ -2,7 +2,6 @@ package com.juzix.wallet.component.adapter;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
-import android.text.TextUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 

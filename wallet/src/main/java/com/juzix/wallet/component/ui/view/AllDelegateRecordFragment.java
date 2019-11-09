@@ -18,10 +18,7 @@ import com.juzix.wallet.component.ui.contract.DelegateRecordContract;
 import com.juzix.wallet.component.ui.presenter.DelegateRecordPresenter;
 import com.juzix.wallet.component.widget.CustomRefreshFooter;
 import com.juzix.wallet.component.widget.CustomRefreshHeader;
-import com.juzix.wallet.entity.DelegateRecord;
 import com.juzix.wallet.entity.Transaction;
-import com.juzix.wallet.entity.VotedCandidate;
-import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItem;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
@@ -29,7 +26,6 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;

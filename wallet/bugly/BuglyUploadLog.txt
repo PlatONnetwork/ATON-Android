@@ -2,3 +2,11 @@ file=D:\jzy_project\ATON-Android\wallet\build\outputs\mapping\releaseX\mapping.t
 sha1=723f4c84ae6783285d36d263e46568ffe4cf213b
 appId=0970ddc6bd
 
+file=D:\Android\ATON-Android\wallet\build\outputs\mapping\releaseX\mapping.txt
+sha1=dbc5c0ca790a2c083948de14d496b96ac98b4f7c
+appId=0970ddc6bd
+
+file=D:\Android\ATON-Android\wallet\build\outputs\mapping\releaseX\mapping.txt
+sha1=dbc5c0ca790a2c083948de14d496b96ac98b4f7c
+appId=0970ddc6bd
+

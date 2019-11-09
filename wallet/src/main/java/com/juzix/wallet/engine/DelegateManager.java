@@ -5,13 +5,10 @@ import android.text.TextUtils;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.db.sqlite.TransactionDao;
 import com.juzix.wallet.entity.Transaction;
-import com.juzix.wallet.entity.TransactionReceipt;
 import com.juzix.wallet.entity.TransactionStatus;
-import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.event.EventPublisher;
 
 import org.web3j.crypto.Credentials;
-import org.web3j.platon.BaseResponse;
 import org.web3j.platon.StakingAmountType;
 import org.web3j.platon.contracts.DelegateContract;
 import org.web3j.protocol.Web3j;
@@ -30,7 +27,6 @@ import io.reactivex.SingleSource;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
-import io.reactivex.schedulers.Schedulers;
 
 
 public class DelegateManager {

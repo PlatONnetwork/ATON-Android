@@ -1,12 +1,10 @@
 package com.juzix.wallet.entity;
 
-import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.StringRes;
 import android.text.TextUtils;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.db.entity.TransactionEntity;
@@ -14,7 +12,6 @@ import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.DateUtil;
 import com.juzix.wallet.utils.JSONUtil;
 
-import org.web3j.abi.datatypes.Bool;
 import org.web3j.abi.datatypes.generated.Uint32;
 
 import java.math.BigInteger;
@@ -24,7 +21,6 @@ import java.util.List;
 import io.reactivex.Flowable;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
-import jnr.constants.platform.PRIO;
 
 public class Transaction implements Comparable<Transaction>, Parcelable, Cloneable {
 

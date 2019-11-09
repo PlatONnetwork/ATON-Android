@@ -1,9 +1,6 @@
 package com.juzix.wallet.entity;
 
-import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.db.entity.NodeEntity;
-
-import jnr.constants.platform.PRIO;
 
 /**
  * @author matrixelement
