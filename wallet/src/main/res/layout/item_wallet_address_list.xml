@@ -11,8 +11,7 @@
         android:id="@+id/iv_wallet_avatar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:src="@drawable/icon_default_coin" />
+        android:layout_centerVertical="true" />
 
     <TextView
         android:id="@+id/tv_wallet_name"

@@ -25,6 +25,7 @@ import com.juzix.wallet.utils.RxUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -100,9 +101,9 @@ public class ReceiveTransationPresenter extends BasePresenter<ReceiveTransationC
                     boolean saved = PhotoUtil.saveImageToAlbum(activity, dir, getImageName(), screenShot(shareView));
                     if (saved) {
                         showLongToast(R.string.save_image_tips);
-                        List<ShareAppInfo> shareAppInfoList = AppUtil.getShareAppInfoList(getContext());
+                        List<ShareAppInfo> shareAppInfoList = Arrays.asList(ShareAppInfo.values());
                         if (!shareAppInfoList.isEmpty()) {
-                            ShareDialogFragment.newInstance((ArrayList<ShareAppInfo>) shareAppInfoList).show(activity.getSupportFragmentManager(), "share");
+                            ShareDialogFragment.newInstance(new ArrayList<>(shareAppInfoList) ).show(activity.getSupportFragmentManager(), "share");
                         }
                     } else {
                         showShortToast(R.string.save_image_failed_tips);
