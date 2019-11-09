@@ -324,7 +324,7 @@
     <string name="babit">8BTC</string>
     <string name="weibo">Weibo</string>
     <string name="qq">QQ</string>
-    <string name="all">ALL</string>
+    <string name="all">All</string>
     <string name="action_send_all">Send all</string>
     <string name="balance_text">Balance:&#160;%1$s&#160;LAT</string>
     <string name="fee">Fee</string>
@@ -531,15 +531,15 @@
     <string name="validators_withdraw">Withdraw</string>
     <string name="validators_delegate">Delegate</string>
     <string name="validators_detail_yield">Yield</string>
-    <string name="expected_annualized_rate">Expected annualized rate</string>
+    <string name="expected_annualized_rate">Yield</string>
     <string name="expected_annualized_rate_des">The expected annualized rate of the current validator, the Delegation rewards is distributed by the validator</string>
     <string name="withdraw_tip">Input Amount (not less than 10 LAT)</string>
     <string name="delegate_node">Note</string>
-    <string name="delegate_node_des">The transaction has been successfully submitted and the delegated LAT can return to your account immediately.\nThe released delegate has to be withdrawal all at once;\nIf the remaining delegations has been less than 10LAT, it will be automatically returned all.</string>
+    <string name="delegate_node_des">The transaction has been successfully submitted and the delegated LAT can return to your account immediately.\nThe Invalid delegations has to be withdrawal all at once;\nIf the remaining delegations has been less than 10LAT, it will be automatically returned all.</string>
     <string name="delegations_title">Delegations</string>
-    <string name="delegations_title_explain">The user keeps the delegate\'s Token ownership forever, and the user can withdraw the delegated token at any time.\nThe Validator\'s operator address and reward receiving address are not allowed for delegation</string>
+    <string name="delegations_title_explain">The user keeps the delegate\'s Token ownership forever, and the user can withdraw the delegated token at any time.\nThe Validator\'s operator address and reward receiving address are not allowed for delegation.</string>
     <string name="rewards_title">Rewards</string>
-    <string name="rewards_title_explain">Delegation rewards come from validation block\n reward,staking reward and transaction fees.Reward\n assigned by validator.For details on how to assign,\n please see the official website description of each validator.</string>
+    <string name="rewards_title_explain">Delegation rewards come from validation block\nreward, staking reward and transaction fees. Reward\nassigned by validator. For details on how to assign,\nplease see the official website description of each validator.</string>
     <string name="risk_title">Risk</string>
     <string name="risk_title_explain">No risk.</string>
     <string name="node_locked_delegate">Locked delegate</string>
@@ -674,5 +674,6 @@
     <string name="web_url_common_delegate_problem">https://platon.zendesk.com/hc/en-us/articles/360037373194-Common-questions-about-PlatON-Delegators</string>
     <string name="withdraw_amount_tips">The Amount cannot be less than 10 LAT</string>
     <string name="unrecognized_content">Unrecognized content</string>
+    <string name="no_delegation_information">No delegation information</string>
 </resources>
 

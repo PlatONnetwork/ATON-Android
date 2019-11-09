@@ -108,9 +108,10 @@
 
                 <View
                     android:layout_width="1dp"
-                    android:layout_height="7dp"
+                    android:layout_height="15dp"
                     android:layout_below="@id/tv_transation_amount"
                     android:background="@drawable/bg_amount_magnitudes"
+                    android:layout_marginLeft="6dp"
                     tools:visibility="visible" />
 
                 <TextView

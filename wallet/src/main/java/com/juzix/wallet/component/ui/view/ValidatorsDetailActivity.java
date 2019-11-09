@@ -4,11 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
@@ -23,6 +25,7 @@ import com.juzix.wallet.component.ui.presenter.ValidatorsDetailPresenter;
 import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.component.widget.CommonTitleBar;
 import com.juzix.wallet.component.widget.ShadowButton;
+import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.component.widget.VerticalImageSpan;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.DelegateDetail;
@@ -32,6 +35,7 @@ import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.GlideUtils;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
@@ -82,11 +86,9 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
     ShadowButton delegate;
     @BindView(R.id.tv_no_delegate_tips)
     TextView tips;
+    @BindView(R.id.ll_shade)
+    LinearLayout ll_shade;
 
-//    @BindView(R.id.ll_validators_withdraw)
-//    LinearLayout withdraw;
-//    @BindView(R.id.ll_validators_delegate)
-//    LinearLayout delegate;
 
     public static final String STATE_ACTIVE = "Active";
     public static final String STATE_CANDIDATE = "Candidate";
@@ -126,6 +128,14 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
     }
 
     private void initView() {
+        ShadowDrawable.setShadowDrawable(ll_shade,
+                ContextCompat.getColor(this, R.color.color_ffffff),
+                DensityUtil.dp2px(this, 4),
+                ContextCompat.getColor(this, R.color.color_cc9ca7c2),
+                DensityUtil.dp2px(this, 10),
+                0,
+                DensityUtil.dp2px(this, 2));
+
         titleBar.setRightDrawable(R.drawable.icon_tips);
         titleBar.setRightDrawableClickListener(new View.OnClickListener() {
             @Override
@@ -253,7 +263,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
 
     }
     public void setImageIconForText(TextView textView, String content) {
-        SpannableString spannableString = new SpannableString(" " + content);
+        SpannableString spannableString = new SpannableString("  " + content);
         Drawable drawable = getResources().getDrawable(R.drawable.icon_no_delegate_tips);
         drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
         spannableString.setSpan(new VerticalImageSpan(drawable), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

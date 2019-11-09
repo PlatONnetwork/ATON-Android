@@ -65,6 +65,12 @@ public class BackupMnemonicPhraseActivity extends BaseActivity implements View.O
                 exit();
             }
         });
+        ((CommonTitleBar)findViewById(R.id.commonTitleBar)).setLeftTitleClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                exit();
+            }
+        });
         findViewById(R.id.sc_next).setOnClickListener(this);
     }
 

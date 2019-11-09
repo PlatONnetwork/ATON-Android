@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.SpannableString;
@@ -40,6 +41,7 @@ import com.juzix.wallet.component.ui.presenter.DelegatePresenter;
 import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.component.widget.PointLengthFilter;
 import com.juzix.wallet.component.widget.ShadowButton;
+import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.component.widget.VerticalImageSpan;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.entity.AccountBalance;
@@ -51,6 +53,7 @@ import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.GlideUtils;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.SoftHideKeyboardUtils;
@@ -148,6 +151,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     }
 
     private void initView() {
+        initShade();
         initPopWindow();
         setDelegateButtonState(false);
         et_amount.setFilters(new InputFilter[]{new PointLengthFilter()});
@@ -155,6 +159,16 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         initClick();
         initGuide();
         SoftHideKeyboardUtils.assistActivity(this);
+    }
+
+    private void initShade() {
+        ShadowDrawable.setShadowDrawable(amounChoose,
+                ContextCompat.getColor(this, R.color.color_ffffff),
+                DensityUtil.dp2px(this, 4),
+                ContextCompat.getColor(this, R.color.color_cc9ca7c2),
+                DensityUtil.dp2px(this, 5),
+                0,
+                DensityUtil.dp2px(this, 2));
     }
 
     private void initClick() {
@@ -411,7 +425,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     }
 
     public void setImageIconForText(TextView textView, String content) {
-        SpannableString spannableString = new SpannableString(" " + content);
+        SpannableString spannableString = new SpannableString("  " + content);
         Drawable drawable = getResources().getDrawable(R.drawable.icon_no_delegate_tips);
         drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
         spannableString.setSpan(new VerticalImageSpan(drawable), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

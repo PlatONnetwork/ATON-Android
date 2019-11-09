@@ -126,11 +126,12 @@ public class AddNewAddressActivity extends MVPBaseActivity<AddNewAddressPresente
             if (requestCode == Constants.RequestCode.REQUEST_CODE_SCAN_QRCODE) {
                 String address = data.getStringExtra(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
                 String unzip = GZipUtil.unCompress(address);
-                if(TextUtils.isEmpty(unzip)){
+                String newStr = TextUtils.isEmpty(unzip)? address :unzip;
+                if(TextUtils.isEmpty(newStr)){
                     ToastUtil.showLongToast(getContext(),R.string.unrecognized_content);
                     return;
                 }
-                mPresenter.validQRCode(unzip);
+                mPresenter.validQRCode(newStr);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
