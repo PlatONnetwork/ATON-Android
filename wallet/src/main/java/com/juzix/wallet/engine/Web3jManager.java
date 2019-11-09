@@ -139,7 +139,7 @@ public class Web3jManager {
         return Single
                 .fromCallable(new Callable<BigInteger>() {
                     @Override
-                    public BigInteger call() {
+                    public BigInteger call(){
                         BigInteger gasPrice = DefaultGasProvider.GAS_PRICE;
                         try {
                             PlatonGasPrice platonGasPrice = Web3jManager.getInstance().getWeb3j().platonGasPrice().send();

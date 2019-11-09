@@ -106,7 +106,6 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
     @Override
     protected void onFragmentPageStart() {
         mPresenter.checkAddressBook(etWalletAddress.getText().toString());
-        mPresenter.fetchDefaultWalletInfo();
     }
 
     @Nullable
