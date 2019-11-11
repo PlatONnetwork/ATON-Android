@@ -17,9 +17,11 @@ import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.App;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.widget.CircleImageView;
+import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.entity.DelegateDetail;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.GlideUtils;
 import com.juzix.wallet.utils.LanguageUtil;
 import com.juzix.wallet.utils.RxUtils;
@@ -59,6 +61,14 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         DelegateDetail detail = detailList.get(position);
+        ShadowDrawable.setShadowDrawable(holder.ll_delegate_detail_shade,
+                ContextCompat.getColor(mContext, R.color.color_ffffff),
+                DensityUtil.dp2px(mContext, 4),
+                ContextCompat.getColor(mContext, R.color.color_cc9ca7c2),
+                DensityUtil.dp2px(mContext, 5),
+                0,
+                DensityUtil.dp2px(mContext, 2));
+
         holder.nodeName.setText(detail.getNodeName());
         holder.nodeAddress.setText(AddressFormatUtil.formatAddress(detail.getNodeId()));
         GlideUtils.loadRound(mContext, detail.getUrl(), holder.nodeIcon);
@@ -205,6 +215,8 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
         ImageView iv_detail_un_delegate;
         @BindView(R.id.iv_detail_delegate)
         ImageView iv_detail_delegate;
+        @BindView(R.id.ll_delegate_detail_shade)
+        LinearLayout ll_delegate_detail_shade;
 
         public ViewHolder(View view) {
             super(view);
@@ -216,7 +228,7 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
     public void changeTextViewColorByState(TextView tv, String nodeStatus) {
         switch (nodeStatus) {
             case "Active":
-                tv.setTextColor(ContextCompat.getColorStateList(mContext, R.color.color_4a90e2));
+                tv.setTextColor(ContextCompat.getColorStateList(mContext, R.color.color_4A90E2));
                 break;
             case "Candidate":
                 tv.setTextColor(ContextCompat.getColorStateList(mContext, R.color.color_19a20e));

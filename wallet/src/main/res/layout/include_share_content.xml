@@ -14,6 +14,7 @@
             android:id="@+id/fl_share"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingBottom="17dp"
             android:background="@color/color_f0f1f5">
 
             <LinearLayout
@@ -113,7 +114,6 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="8dp"
                     android:src="@drawable/icon_share_logo"
                     />
             </RelativeLayout>
