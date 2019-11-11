@@ -1,7 +1,6 @@
 package com.juzix.wallet.entity;
 
 import android.support.annotation.IntDef;
-import android.support.annotation.StringDef;
 
 @IntDef({
         TransferType.SEND,

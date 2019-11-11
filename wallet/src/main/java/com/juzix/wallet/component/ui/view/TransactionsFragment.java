@@ -1,7 +1,6 @@
 package com.juzix.wallet.component.ui.view;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,22 +9,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.juzhen.framework.util.LogUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.adapter.TransactionDiffCallback;
 import com.juzix.wallet.component.adapter.TransactionListAdapter;
-import com.juzix.wallet.component.adapter.base.RecyclerAdapter;
 import com.juzix.wallet.component.ui.base.BaseViewPageFragment;
 import com.juzix.wallet.component.ui.contract.TransactionsContract;
 import com.juzix.wallet.component.ui.presenter.TransactionsPresenter;
 import com.juzix.wallet.component.widget.CommonVerticalItemDecoration;
-import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
-import com.scwang.smartrefresh.layout.SmartRefreshLayout;
-import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;

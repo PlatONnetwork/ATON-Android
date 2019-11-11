@@ -8,12 +8,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.adapter.CommonAdapter;
 import com.juzix.wallet.component.adapter.base.ViewHolder;
 import com.juzix.wallet.entity.ShareAppInfo;
+import com.juzix.wallet.utils.DensityUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +30,8 @@ import butterknife.Unbinder;
  */
 public class ShareDialogFragment extends BaseDialogFragment {
 
-    @BindView(R.id.iv_close)
-    ImageView ivClose;
+    @BindView(R.id.tv_cancel)
+    TextView tvCancel;
     @BindView(R.id.gridview)
     GridView gridView;
 
@@ -49,6 +51,8 @@ public class ShareDialogFragment extends BaseDialogFragment {
         baseDialog.setContentView(contentView);
         setFullWidthEnable(true);
         setAnimation(R.style.Animation_slide_in_bottom);
+        setHorizontalMargin(DensityUtil.dp2px(getContext(),24));
+        setyOffset(DensityUtil.dp2px(getContext(),16));
         unbinder = ButterKnife.bind(this, contentView);
         initViews();
         return baseDialog;
@@ -77,10 +81,10 @@ public class ShareDialogFragment extends BaseDialogFragment {
         });
     }
 
-    @OnClick({R.id.iv_close})
+    @OnClick({R.id.tv_cancel})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.iv_close:
+            case R.id.tv_cancel:
                 dismiss();
                 break;
             default:

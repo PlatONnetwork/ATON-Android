@@ -4,8 +4,6 @@ import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
 import com.juzix.wallet.entity.Transaction;
 
-import org.web3j.platon.BaseResponse;
-
 import java.util.List;
 
 /**

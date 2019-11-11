@@ -2,39 +2,23 @@ package com.juzix.wallet.component.ui.presenter;
 
 import android.util.Log;
 
-import com.juzhen.framework.network.ApiErrorCode;
-import com.juzhen.framework.network.ApiRequestBody;
-import com.juzhen.framework.network.ApiResponse;
-import com.juzhen.framework.util.LogUtils;
-import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.AssetsContract;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.view.BackupMnemonicPhraseActivity;
-import com.juzix.wallet.engine.NodeManager;
-import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.WalletManager;
-import com.juzix.wallet.entity.AccountBalance;
 import com.juzix.wallet.entity.Wallet;
-import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.trello.rxlifecycle2.android.FragmentEvent;
 
-import org.reactivestreams.Publisher;
 import org.web3j.crypto.Credentials;
 
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Flowable;
-import io.reactivex.Single;
-import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
-import retrofit2.Response;
 
 public class AssetsPresenter extends BasePresenter<AssetsContract.View> implements AssetsContract.Presenter {
 

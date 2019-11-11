@@ -27,14 +27,11 @@ import com.juzix.wallet.utils.RxUtils;
 
 import java.util.Arrays;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
-import io.reactivex.functions.Consumer;
 
 /**
  * @author matrixelement

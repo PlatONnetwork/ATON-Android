@@ -18,6 +18,9 @@ android {
         releaseX {
 
         }
+        releaseJX {
+
+        }
     }
 }
 

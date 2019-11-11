@@ -4,13 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.db.entity.WalletEntity;
-
-import java.math.BigDecimal;
-import java.security.KeyStore;
-
-import retrofit2.http.PUT;
 
 public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
 
@@ -141,10 +135,6 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
 
     public String getAvatar() {
         return avatar;
-    }
-
-    public String getExportAvatar() {
-        return "icon_export_" + avatar;
     }
 
     public void setAvatar(String avatar) {

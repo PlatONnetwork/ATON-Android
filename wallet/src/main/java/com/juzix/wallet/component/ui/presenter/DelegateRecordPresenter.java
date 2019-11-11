@@ -6,12 +6,10 @@ import com.juzhen.framework.network.ApiSingleObserver;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.DelegateRecordContract;
-import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.utils.RxUtils;
-import com.trello.rxlifecycle2.android.FragmentEvent;
 
 import java.util.List;
 

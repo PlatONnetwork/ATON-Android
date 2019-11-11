@@ -1,17 +1,11 @@
 package com.juzix.wallet.entity;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import com.juzix.wallet.R;
 import com.juzix.wallet.utils.BigIntegerUtil;
 
-import org.web3j.platon.FunctionType;
 import org.web3j.platon.PlatOnFunction;
 import org.web3j.platon.PlatOnFunctionFactory;
 import org.web3j.platon.StakingAmountType;
-
-import java.util.ArrayList;
-
-import jnr.constants.platform.PRIO;
 
 public class TransactionAuthorizationDelegateData extends TransactionAuthorizationBaseData {
 

@@ -1,6 +1,5 @@
 package com.juzix.wallet.component.adapter;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;

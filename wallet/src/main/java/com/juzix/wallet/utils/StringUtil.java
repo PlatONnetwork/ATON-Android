@@ -23,7 +23,6 @@ import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
 /**

@@ -1,14 +1,9 @@
 package com.juzix.wallet.utils;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
-import android.support.v4.content.FileProvider;
 
 import org.spongycastle.util.encoders.Hex;
 
-import java.io.File;
 import java.io.InputStream;
 
 public class FileUtil {

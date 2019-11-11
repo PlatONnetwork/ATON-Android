@@ -7,9 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
-import com.juzhen.framework.app.activity.CoreFragment;
 import com.juzhen.framework.app.log.Log;
-import com.trello.rxlifecycle2.android.FragmentEvent;
 
 /**
  * viewPager+Fragment使用

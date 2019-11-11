@@ -17,8 +17,6 @@ import com.juzix.wallet.entity.TransferType;
 import com.juzix.wallet.utils.CommonUtil;
 import com.juzix.wallet.utils.StringUtil;
 
-import retrofit2.http.HEAD;
-
 
 public class TransactionDetailInfoView extends LinearLayout {
 

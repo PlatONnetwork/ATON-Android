@@ -1,8 +1,6 @@
 package com.juzix.wallet.component.widget;
 
-import android.text.method.PasswordTransformationMethod;
 import android.text.method.ReplacementTransformationMethod;
-import android.view.View;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

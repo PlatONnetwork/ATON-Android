@@ -1,7 +1,5 @@
 package com.juzix.wallet.entity;
 
-import jnr.constants.platform.PRIO;
-
 public class TransactionAuthorizationDetail {
 
     private String amount;

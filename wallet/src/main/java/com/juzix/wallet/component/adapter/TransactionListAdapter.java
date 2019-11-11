@@ -15,7 +15,6 @@ import com.juzix.wallet.component.ui.view.TransactionRecordsActivity;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.Transaction;
 
-import java.util.IllegalFormatCodePointException;
 import java.util.List;
 
 public class TransactionListAdapter extends RecyclerView.Adapter<BaseViewHolder> {
