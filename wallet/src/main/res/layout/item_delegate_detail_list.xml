@@ -6,16 +6,20 @@
     android:layout_gravity="center">
 
     <LinearLayout
+        android:id="@+id/ll_delegate_detail_shade"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
         android:layout_marginTop="15dp"
-        android:layout_marginRight="10dp"
+        android:background="@drawable/bg_mydelegate_item"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp"
         android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:background="@drawable/icon_my_delegate_item_bg">
 
             <com.juzix.wallet.component.widget.CircleImageView
@@ -75,7 +79,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_mydelegate_item"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:orientation="vertical">
 
 
@@ -184,6 +189,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="15dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:background="@color/color_e4e7f3" />
 
 
@@ -199,8 +206,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:paddingTop="12dp"
-                    android:paddingBottom="12dp"
+                    android:paddingTop="17dp"
+                    android:paddingBottom="17dp"
                     android:orientation="horizontal">
 
                     <ImageView
@@ -235,8 +242,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:paddingTop="12dp"
-                    android:paddingBottom="12dp"
+                    android:paddingTop="17dp"
+                    android:paddingBottom="17dp"
                     android:orientation="horizontal">
 
                     <ImageView

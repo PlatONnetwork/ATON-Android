@@ -41,13 +41,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_mydelegate_item"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:orientation="vertical">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
                     android:background="@drawable/icon_my_delegate_item_bg">
 
                     <com.juzix.wallet.component.widget.CircleImageView
@@ -291,8 +293,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
                 android:orientation="vertical">
 
                 <TextView
