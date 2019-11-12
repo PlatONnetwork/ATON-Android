@@ -2,34 +2,24 @@ package com.juzix.wallet.component.ui.presenter;
 
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.juzhen.framework.network.ApiErrorCode;
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
-import com.juzhen.framework.network.ApiSingleObserver;
 import com.juzhen.framework.util.LogUtils;
-import com.juzix.wallet.app.Constants;
-import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.TransactionsContract;
-import com.juzix.wallet.component.ui.view.AssetsFragment;
-import com.juzix.wallet.component.ui.view.TransactionsFragment;
 import com.juzix.wallet.db.entity.TransactionEntity;
 import com.juzix.wallet.db.sqlite.TransactionDao;
-import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.TransactionManager;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionStatus;
-import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.RxUtils;
 import com.trello.rxlifecycle2.android.FragmentEvent;
-import com.umeng.commonsdk.debug.D;
 
 import org.reactivestreams.Publisher;
 
@@ -37,24 +27,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.IllegalFormatCodePointException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
-import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
-import io.reactivex.Observer;
 import io.reactivex.Single;
-import io.reactivex.SingleEmitter;
-import io.reactivex.SingleOnSubscribe;
 import io.reactivex.SingleSource;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;

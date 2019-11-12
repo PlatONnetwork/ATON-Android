@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<inset xmlns:android="http://schemas.android.com/apk/res/android"
-    android:drawable="@drawable/icon_add"
-    android:insetLeft="8dp"
-    android:insetTop="4dp"
-    android:insetRight="8dp"
-    android:insetBottom="4dp"/>

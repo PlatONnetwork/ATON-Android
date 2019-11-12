@@ -2,7 +2,6 @@ package com.juzix.wallet.component.ui.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;

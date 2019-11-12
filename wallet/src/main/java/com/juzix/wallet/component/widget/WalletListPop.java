@@ -15,21 +15,16 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
-import com.juzix.wallet.component.adapter.CommonAdapter;
-import com.juzix.wallet.component.adapter.base.ViewHolder;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.DensityUtil;
 
 import java.util.List;
-
-import jnr.constants.platform.PRIO;
 
 public class WalletListPop extends PopupWindow {
 

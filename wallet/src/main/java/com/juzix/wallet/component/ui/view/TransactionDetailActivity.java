@@ -16,7 +16,6 @@ import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.TransactionDetailContract;
 import com.juzix.wallet.component.ui.presenter.TransactionDetailPresenter;
-import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.db.sqlite.AddressDao;
 import com.juzix.wallet.db.sqlite.WalletDao;
 import com.juzix.wallet.entity.Transaction;
@@ -32,7 +31,6 @@ import com.juzix.wallet.utils.StringUtil;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.web3j.platon.BaseResponse;
 
 import java.util.ArrayList;
 import java.util.List;

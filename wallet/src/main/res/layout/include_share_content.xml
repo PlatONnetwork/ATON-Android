@@ -107,8 +107,7 @@
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_centerHorizontal="true"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/icon_export_avatar_7"  />
+                    android:scaleType="centerInside" />
 
                 <ImageView
                     android:layout_width="wrap_content"

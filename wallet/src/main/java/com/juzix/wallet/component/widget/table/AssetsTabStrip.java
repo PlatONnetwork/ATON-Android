@@ -11,7 +11,6 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.juzhen.framework.util.LogUtils;
 import com.juzix.wallet.R;
 
 public class AssetsTabStrip extends LinearLayout {

@@ -22,8 +22,6 @@ import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.db.sqlite.AddressDao;
 import com.juzix.wallet.db.sqlite.TransactionDao;
 import com.juzix.wallet.db.sqlite.WalletDao;
-import com.juzix.wallet.engine.DelegateManager;
-import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.TransactionManager;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionAuthorizationBaseData;
@@ -46,10 +44,7 @@ import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionDecoder;
 import org.web3j.platon.FunctionType;
 import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
-import org.web3j.utils.Convert;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -61,7 +56,6 @@ import io.reactivex.Single;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
-import jnr.constants.platform.PRIO;
 
 public class TransactionSignatureDialogFragment extends BaseDialogFragment {
 

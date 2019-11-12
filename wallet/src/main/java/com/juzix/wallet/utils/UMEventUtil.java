@@ -4,8 +4,6 @@ import android.content.Context;
 
 import com.umeng.analytics.MobclickAgent;
 
-import org.web3j.crypto.Hash;
-
 import java.util.HashMap;
 import java.util.Map;
 

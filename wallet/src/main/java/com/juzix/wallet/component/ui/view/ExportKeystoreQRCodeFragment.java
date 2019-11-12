@@ -1,17 +1,12 @@
 package com.juzix.wallet.component.ui.view;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.juzix.wallet.R;
@@ -28,7 +23,6 @@ import com.juzix.wallet.utils.RxUtils;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
-import io.reactivex.Single;
 import io.reactivex.functions.Consumer;
 
 public class ExportKeystoreQRCodeFragment extends BaseFragment {

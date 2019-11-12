@@ -12,7 +12,6 @@ import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.ValidatorsContract;
 import com.juzix.wallet.db.entity.VerifyNodeEntity;
 import com.juzix.wallet.db.sqlite.VerifyNodeDao;
-import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.ValidatorsService;
 import com.juzix.wallet.entity.VerifyNode;

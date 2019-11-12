@@ -3,15 +3,12 @@ package com.juzix.wallet.component.adapter;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.juzhen.framework.util.LogUtils;
-import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.adapter.base.BaseViewHolder;
 import com.juzix.wallet.component.ui.view.TransactionRecordsActivity;
@@ -22,7 +19,6 @@ import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.StringUtil;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 public class TransactionViewHolder extends BaseViewHolder<Transaction> {

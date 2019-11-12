@@ -1,14 +1,10 @@
 package com.juzix.wallet.component.ui.presenter;
 
-import android.app.Activity;
-
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.ApiSingleObserver;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.TransactionRecordsContract;
-import com.juzix.wallet.engine.WalletManager;
-import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.utils.RxUtils;

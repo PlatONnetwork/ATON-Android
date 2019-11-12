@@ -11,8 +11,7 @@
         android:layout_height="match_parent">
 
         <include
-            layout="@layout/include_share_content"
-            app:layout_constraintTop_toBottomOf="@id/rtv_save" />
+            layout="@layout/include_share_content" />
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"

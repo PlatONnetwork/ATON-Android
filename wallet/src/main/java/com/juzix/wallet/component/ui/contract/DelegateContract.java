@@ -2,17 +2,14 @@ package com.juzix.wallet.component.ui.contract;
 
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
-import com.juzix.wallet.entity.AccountBalance;
 import com.juzix.wallet.entity.DelegateDetail;
 import com.juzix.wallet.entity.DelegateHandle;
-import com.juzix.wallet.entity.DelegateInfo;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.Wallet;
 
 import org.web3j.platon.StakingAmountType;
 
 import java.math.BigInteger;
-import java.util.List;
 
 public class DelegateContract {
 

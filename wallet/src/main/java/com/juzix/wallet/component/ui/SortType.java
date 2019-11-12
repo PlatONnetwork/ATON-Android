@@ -3,7 +3,6 @@ package com.juzix.wallet.component.ui;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.App;
 import com.juzix.wallet.entity.Candidate;
-import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.LanguageUtil;
 
 import java.util.Comparator;

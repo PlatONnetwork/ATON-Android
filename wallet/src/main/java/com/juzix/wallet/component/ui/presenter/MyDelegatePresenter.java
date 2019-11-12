@@ -5,10 +5,8 @@ import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.ApiSingleObserver;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.MyDelegateContract;
-import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.WalletManager;
-import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.DelegateInfo;
 import com.juzix.wallet.utils.RxUtils;
 import com.trello.rxlifecycle2.android.FragmentEvent;
@@ -17,10 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Flowable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
 
 public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> implements MyDelegateContract.Presenter {
     public MyDelegatePresenter(MyDelegateContract.View view) {

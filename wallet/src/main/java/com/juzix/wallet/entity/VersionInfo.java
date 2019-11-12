@@ -1,12 +1,6 @@
 package com.juzix.wallet.entity;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.text.TextUtils;
-
 import com.alibaba.fastjson.annotation.JSONField;
-
-import jnr.constants.platform.PRIO;
 
 /**
  * @author matrixelement

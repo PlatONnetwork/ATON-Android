@@ -2,8 +2,6 @@ package com.juzix.wallet.entity;
 
 import android.support.annotation.IntDef;
 
-import jnr.ffi.annotations.In;
-
 @IntDef({
         ReportType.DUPLICATE_SIGN
 })

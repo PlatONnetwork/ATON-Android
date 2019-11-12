@@ -21,29 +21,17 @@ import android.widget.TextView;
 
 import com.juzhen.framework.app.activity.ActivityManager;
 import com.juzhen.framework.util.AndroidUtil;
-import com.juzhen.framework.util.LogUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
-import com.juzix.wallet.component.service.LoopService;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.MainContract;
 import com.juzix.wallet.component.ui.presenter.MainPresenter;
 import com.juzix.wallet.component.widget.FragmentTabHost;
-import com.juzix.wallet.engine.AppConfigManager;
-import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.event.EventPublisher;
-import com.juzix.wallet.utils.CommonUtil;
-import com.juzix.wallet.utils.RxUtils;
-
-import org.web3j.protocol.core.methods.response.Transaction;
-
-import java.util.concurrent.Callable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import io.reactivex.Single;
-import io.reactivex.functions.Consumer;
 
 /**
  * @author matrixelement

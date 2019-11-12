@@ -3,7 +3,6 @@ package com.juzix.wallet.component.adapter;
 import android.content.Context;
 import android.widget.ListView;
 
-import com.juzhen.framework.util.NumberParserUtils;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.adapter.base.ViewHolder;

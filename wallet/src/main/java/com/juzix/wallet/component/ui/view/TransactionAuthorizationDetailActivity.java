@@ -18,11 +18,8 @@ import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.db.sqlite.AddressDao;
 import com.juzix.wallet.db.sqlite.WalletDao;
 import com.juzix.wallet.engine.WalletManager;
-import com.juzix.wallet.entity.PlatOnFunction;
-import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionAuthorizationData;
 import com.juzix.wallet.entity.TransactionAuthorizationDetail;
-import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
@@ -152,9 +149,21 @@ public class TransactionAuthorizationDetailActivity extends BaseActivity {
         return AddressFormatUtil.formatTransactionAddress(prefixAddress);
     }
 
+    private String getTransferFormatName(String prefixAddress) {
+        String walletName = WalletDao.getWalletNameByAddress(prefixAddress);
+        if (!TextUtils.isEmpty(walletName)) {
+            return String.format("%s(%s)", walletName, prefixAddress);
+        }
+        String remark = AddressDao.getAddressNameByAddress(prefixAddress);
+        if (!TextUtils.isEmpty(remark)) {
+            return String.format("%s(%s)", remark, prefixAddress);
+        }
+        return prefixAddress;
+    }
+
     private String getReceiverName(TransactionAuthorizationDetail transactionAuthorizationDetail) {
         if (FunctionType.TRANSFER == transactionAuthorizationDetail.getFunctionType()) {
-            return getFormatName(transactionAuthorizationDetail.getReceiver(), null);
+            return getTransferFormatName(transactionAuthorizationDetail.getReceiver());
         } else {
             return String.format("%s(%s)", transactionAuthorizationDetail.getNodeName(), transactionAuthorizationDetail.getNodeId());
         }

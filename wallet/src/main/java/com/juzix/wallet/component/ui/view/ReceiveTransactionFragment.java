@@ -101,9 +101,9 @@ public class ReceiveTransactionFragment extends MVPBaseFragment<ReceiveTransatio
 
     @Override
     public void setWalletInfo(Wallet entity) {
-        int resId = RUtils.drawable(entity.getExportAvatar());
+        int resId = RUtils.drawable(entity.getAvatar());
         if (resId < 0){
-            resId = R.drawable.icon_export_avatar_15;
+            resId = R.drawable.avatar_15;
         }
         shareWalletAvatar.setImageResource(resId);
         tvAddress.setText(entity.getPrefixAddress());
