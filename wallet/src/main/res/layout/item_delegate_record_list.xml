@@ -5,16 +5,20 @@
     android:layout_gravity="center">
 
     <LinearLayout
+        android:id="@+id/ll_record_shade"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginTop="11dp"
+        android:background="@drawable/bg_mydelegate_item"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:background="@drawable/icon_my_delegate_item_bg">
 
             <com.juzix.wallet.component.widget.CircleImageView
@@ -41,6 +45,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="3dp"
                     android:text="委托节点名称"
+                    android:textStyle="bold"
                     android:textColor="@color/color_000000"
                     android:textSize="15sp" />
 
@@ -71,7 +76,8 @@
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="6dp"
                     android:textColor="@color/color_000000"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/tv_state"
@@ -87,15 +93,14 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:background="@drawable/bg_mydelegate_item">
+            android:layout_height="44dp">
 
             <TextView
                 android:id="@+id/tv_delegate_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="15dp"
                 android:text="2019-06-17"
                 android:textColor="@color/color_898c9e"
                 android:textSize="13sp" />
@@ -105,7 +110,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="10dp">
+                android:layout_marginRight="15dp">
 
                 <com.juzix.wallet.component.widget.CircleImageView
                     android:id="@+id/iv_wallet"

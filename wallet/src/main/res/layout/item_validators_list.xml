@@ -6,10 +6,13 @@
     android:layout_gravity="center">
 
     <RelativeLayout
+        android:id="@+id/rl_shade"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="11dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="16dp"
         android:layout_marginRight="10dp"
         android:background="@drawable/bg_validators_item">
 
@@ -17,7 +20,7 @@
             android:id="@+id/iv_url"
             android:layout_width="42dp"
             android:layout_height="42dp"
-            android:layout_marginLeft="3dp"
+            android:layout_marginLeft="13dp"
             android:layout_marginTop="20dp"
             android:layout_marginRight="3dp"
             android:layout_marginBottom="18dp" />
@@ -54,7 +57,7 @@
                     android:paddingTop="1dp"
                     android:paddingBottom="1dp"
                     tools:text="active"
-                    android:textColor="@color/color_4a90e2"
+                    android:textColor="@color/color_4A90E2"
                     android:textSize="11sp" />
 
             </LinearLayout>
@@ -119,15 +122,16 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
+            android:layout_marginRight="5dp"
+            android:layout_alignParentTop="true"
             android:gravity="center_vertical">
 
             <ImageView
                 android:id="@+id/iv_rank_bg"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:layout_centerInParent="true"
+                android:layout_alignParentTop="true"
                 android:src="@drawable/icon_rank1" />
 
             <TextView

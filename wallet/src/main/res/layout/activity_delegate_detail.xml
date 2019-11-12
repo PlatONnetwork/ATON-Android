@@ -78,13 +78,43 @@
 
             </RelativeLayout>
 
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rlv_list"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:itemCount="5"
-                tools:listitem="@layout/item_delegate_detail_list" />
+                android:layout_height="match_parent">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rlv_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:itemCount="5"
+                    tools:listitem="@layout/item_delegate_detail_list" />
+
+                <LinearLayout
+                    android:id="@+id/ll_no_data"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="22dp"
+                        android:src="@drawable/icon_delegate_no_data" />
+
+                    <TextView
+                        android:id="@+id/tv_no_data_tips"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/no_delegation_information"
+                        android:textColor="@color/color_61646e"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+            </RelativeLayout>
+
 
 
         </LinearLayout>

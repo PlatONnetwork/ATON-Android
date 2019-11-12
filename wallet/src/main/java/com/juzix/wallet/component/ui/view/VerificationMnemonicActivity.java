@@ -158,6 +158,13 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
                exit();
             }
         });
+
+        ((CommonTitleBar)findViewById(R.id.commonTitleBar)).setLeftTitleClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                exit();
+            }
+        });
         mBtnSubmit.setOnClickListener(this);
         mBtnEmpty.setOnClickListener(this);
         addMnemonicListener();
@@ -186,7 +193,6 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
         textView.setGravity(Gravity.CENTER);
         textView.setAllCaps(false);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-        textView.setPadding(DensityUtil.dp2px(getContext(),10),DensityUtil.dp2px(getContext(),15),DensityUtil.dp2px(getContext(),10),DensityUtil.dp2px(getContext(),15));
         if (!dataEntity.isChecked()){
             textView.setBackgroundResource(R.drawable.bg_shape_verify_mnemonic_n);
             textView.setTextColor(ContextCompat.getColor(this, R.color.color_316def));
@@ -205,7 +211,7 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
         ViewCompat.setPaddingRelative(textView, paddingLeftAndRight, paddingTopAndBottom, paddingLeftAndRight, paddingTopAndBottom);
         FlexboxLayout.LayoutParams layoutParams = new FlexboxLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
-                AndroidUtil.dip2px(this, 24));
+                AndroidUtil.dip2px(this, 38));
         int marginRight = AndroidUtil.dip2px(this, 10);
         int marginTop = AndroidUtil.dip2px(this, 12);
         layoutParams.setMargins(0, marginTop, marginRight, 0);

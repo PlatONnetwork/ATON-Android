@@ -62,7 +62,7 @@ public class ExportPrivateKeyQRCodeFragment extends BaseFragment {
 
                     @Override
                     public Bitmap call() throws Exception {
-                        return QRCodeEncoder.syncEncodeQRCode(GZipUtil.compress(qrCodeData), size);
+                        return QRCodeEncoder.syncEncodeQRCode(qrCodeData, size);
                     }
                 })
                 .compose(RxUtils.bindToLifecycle(this))

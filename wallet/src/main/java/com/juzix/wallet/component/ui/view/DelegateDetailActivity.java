@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.juzhen.framework.util.RUtils;
@@ -63,6 +64,8 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
     TextView tv_wallet_address;
     @BindView(R.id.rlv_list)
     RecyclerView rlv_list;
+    @BindView(R.id.ll_no_data)
+    LinearLayout ll_no_data;
 
     private DelegateDetailAdapter mDetailAdapter;
     private LinearLayoutManager linearLayoutManager;
@@ -167,6 +170,11 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
 
     @Override
     public void showDelegateDetailData(List<DelegateDetail> detailList) {
+        if (detailList != null && detailList.size() > 0) {
+            ll_no_data.setVisibility(View.GONE);
+        } else {
+            ll_no_data.setVisibility(View.VISIBLE);
+        }
         mDetailAdapter.notifyDataChanged(detailList);
         refreshLayout.finishRefresh();
         refreshLayout.finishLoadMore();
@@ -176,6 +184,7 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
 
     @Override
     public void showDelegateDetailFailed() {
+        ll_no_data.setVisibility(View.VISIBLE);
         refreshLayout.finishRefresh();
         refreshLayout.finishLoadMore();
         dismissLoadingDialogImmediately();

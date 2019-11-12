@@ -63,7 +63,9 @@
                 android:background="@drawable/bg_validators_state"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
-                android:textColor="@color/color_4a90e2"
+                android:paddingTop="1dp"
+                android:paddingBottom="1dp"
+                android:textColor="@color/color_4A90E2"
                 android:textSize="11sp"
                 android:visibility="gone"
                 tools:text="observed" />

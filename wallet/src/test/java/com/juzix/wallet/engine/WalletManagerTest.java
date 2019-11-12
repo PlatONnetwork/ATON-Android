@@ -1,13 +1,29 @@
 package com.juzix.wallet.engine;
 
+import android.app.Application;
 import android.text.TextUtils;
 
 import com.juzhen.framework.app.log.Log;
+import com.juzhen.framework.network.ApiResponse;
 import com.juzix.wallet.BaseTestCase;
+import com.juzix.wallet.BuildConfig;
+import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.entity.AccountBalance;
+import com.juzix.wallet.entity.Node;
 import com.juzix.wallet.entity.Wallet;
+import com.juzix.wallet.rxjavatest.RxJavaTestSchedulerRule;
 
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
+import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowLog;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -21,9 +37,34 @@ import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 
 import static org.junit.Assert.*;
+@RunWith(RobolectricTestRunner.class)
+@Config(sdk = 23, manifest = Config.NONE, constants = BuildConfig.class)
+public class WalletManagerTest{
+    @Rule
+    public MockitoRule mockitoRule = MockitoJUnit.rule();
+    @Rule
+    public RxJavaTestSchedulerRule rule = new RxJavaTestSchedulerRule();
 
-public class WalletManagerTest extends BaseTestCase {
+    @Mock
+    public NodeManager nodeManager;
+    @Mock
+    public Node node;
+    @Before
+    public void setup() {
+        Application app = RuntimeEnvironment.application;
+        ApiResponse.init(app);
 
+        AppSettings appSettings = AppSettings.getInstance();
+        nodeManager = NodeManager.getInstance();
+        node = new Node.Builder().build();
+        nodeManager.setCurNode(node);
+
+        //输出日志
+        ShadowLog.stream = System.out;
+
+        appSettings.init(app);
+
+    }
     @Test
     public void getTotal() {
         List<Wallet> list = new ArrayList<>();

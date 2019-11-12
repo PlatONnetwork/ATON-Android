@@ -6,6 +6,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.juzhen.framework.util.NumberParserUtils;
@@ -14,8 +15,10 @@ import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.adapter.base.ViewHolder;
 import com.juzix.wallet.component.widget.CircleImageView;
+import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.entity.VerifyNode;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.GlideUtils;
 import com.juzix.wallet.utils.LanguageUtil;
 import com.juzix.wallet.utils.StringUtil;
@@ -36,6 +39,15 @@ public class ValidatorsAdapter extends CommonAdapter<VerifyNode> {
     @SuppressLint("StringFormatInvalid")
     @Override
     protected void convert(Context context, ViewHolder viewHolder, VerifyNode item, int position) {
+        RelativeLayout rl_shade =viewHolder.getView(R.id.rl_shade);
+        ShadowDrawable.setShadowDrawable(rl_shade,
+                ContextCompat.getColor(context, R.color.color_ffffff),
+                DensityUtil.dp2px(context, 4),
+                ContextCompat.getColor(context, R.color.color_cc9ca7c2),
+                DensityUtil.dp2px(context, 5),
+                0,
+                DensityUtil.dp2px(context, 0));
+
         CircleImageView imageView = viewHolder.getView(R.id.iv_url);
         GlideUtils.loadRound(context, item.getUrl(), imageView);
         viewHolder.setText(R.id.tv_validators_node_name, item.getName());
@@ -107,7 +119,7 @@ public class ValidatorsAdapter extends CommonAdapter<VerifyNode> {
     public void changeTextBgAndTextColor(Context context, TextView textView, String state) {
         switch (state) {
             case ACTIVE:
-                textView.setTextColor(ContextCompat.getColorStateList(context, R.color.color_4a90e2));
+                textView.setTextColor(ContextCompat.getColorStateList(context, R.color.color_4A90E2));
                 textView.setBackgroundResource(R.drawable.bg_validators_state);
                 break;
             case CANDIDATE:

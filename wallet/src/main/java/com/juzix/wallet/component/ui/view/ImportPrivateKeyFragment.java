@@ -283,7 +283,7 @@ public class ImportPrivateKeyFragment extends MVPBaseFragment<ImportPrivateKeyPr
             Bundle bundle = data.getExtras();
             String scanResult = bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
             String unzip = GZipUtil.unCompress(scanResult);
-            mPresenter.parseQRCode(unzip);
+            mPresenter.parseQRCode(TextUtils.isEmpty(unzip)? scanResult : unzip);
         }
     }
 

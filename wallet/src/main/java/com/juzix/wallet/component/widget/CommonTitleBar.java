@@ -314,6 +314,20 @@ public class CommonTitleBar extends LinearLayout {
         }
     }
 
+    public void setLeftTitleClickListener(OnClickListener listener){
+        if(tvTitle.getVisibility() == VISIBLE){
+            RxView.clicks(tvTitle)
+                    .throttleFirst(500, TimeUnit.MILLISECONDS)
+                    .subscribe(new Consumer<Object>() {
+                        @Override
+                        public void accept(Object object) throws Exception {
+                            if (listener != null) {
+                                listener.onClick(ivLeft);
+                            }
+                        }
+                    });
+        }
+    }
     public void setRightDrawableClickListener(OnClickListener listener) {
         if (ivRight.getVisibility() == VISIBLE) {
             RxView.clicks(ivRight)

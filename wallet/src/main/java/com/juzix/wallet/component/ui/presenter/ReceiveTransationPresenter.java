@@ -18,7 +18,6 @@ import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.AppUtil;
 import com.juzix.wallet.utils.CommonUtil;
 import com.juzix.wallet.utils.DensityUtil;
-import com.juzix.wallet.utils.GZipUtil;
 import com.juzix.wallet.utils.PhotoUtil;
 import com.juzix.wallet.utils.QRCodeEncoder;
 import com.juzix.wallet.utils.RxUtils;
@@ -59,7 +58,7 @@ public class ReceiveTransationPresenter extends BasePresenter<ReceiveTransationC
                     if (!TextUtils.isEmpty(text) && !text.toLowerCase().startsWith("0x")){
                         text = "0x" + text;
                     }
-                    return QRCodeEncoder.syncEncodeQRCode(GZipUtil.compress(text), DensityUtil.dp2px(getContext(), 250f));
+                    return QRCodeEncoder.syncEncodeQRCode(text, DensityUtil.dp2px(getContext(), 250f));
                 }
             }).compose(RxUtils.getFlowableSchedulerTransformer())
                     .subscribe(new Consumer<Bitmap>() {
