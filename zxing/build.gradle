@@ -15,6 +15,9 @@ android {
         releaseC {
 
         }
+        releaseJC{
+
+        }
         releaseX {
 
         }
