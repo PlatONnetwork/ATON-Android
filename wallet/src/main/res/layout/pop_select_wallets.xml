@@ -24,6 +24,7 @@
         android:layout_height="wrap_content"
         android:choiceMode="singleChoice"
         android:dividerHeight="0dp"
+        android:divider="#00000000"
         tools:listitem="@layout/item_pop_wallets" />
 
 </LinearLayout>
