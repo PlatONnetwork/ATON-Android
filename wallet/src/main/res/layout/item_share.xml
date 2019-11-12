@@ -13,7 +13,7 @@
 
     <TextView
         android:id="@+id/tv_share"
-        style="@style/Text.292929.10"
+        style="@style/Text.292929.14"
         android:layout_marginTop="11dp"
         android:orientation="vertical"
         android:text="@string/wechat" />
