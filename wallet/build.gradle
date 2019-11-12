@@ -63,6 +63,15 @@ android {
             v2SigningEnabled false
         }
 
+        releaseJC {
+            storeFile file("/Users/jenkins/extras/wallet.keystore")
+            storePassword "123456"
+            keyAlias "wallet"
+            keyPassword "123456"
+
+            v2SigningEnabled false
+        }
+
         releaseX {
             storeFile file("../extras/wallet.keystore")
             storePassword "123456"
@@ -101,6 +110,15 @@ android {
         releaseC {
             debuggable false
             signingConfig signingConfigs.releaseC
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
+            multiDexEnabled true
+        }
+
+        releaseJC {
+            debuggable false
+            signingConfig signingConfigs.releaseJC
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
