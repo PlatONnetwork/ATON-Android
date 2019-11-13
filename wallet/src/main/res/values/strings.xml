@@ -540,7 +540,7 @@
     <string name="website">官网</string>
     <string name="validators_withdraw">赎回</string>
     <string name="validators_delegate">委托</string>
-    <string name="validators_detail_yield">预计年化率</string>
+    <string name="validators_detail_yield">年化率</string>
     <string name="expected_annualized_rate">预计年化率</string>
     <string name="expected_annualized_rate_des">当前节点的预计年化率，具体委托收益由节点分配</string>
     <string name="withdraw_tip">输入数量不能少于10LAT</string>

@@ -51,7 +51,7 @@
                 android:hint="@string/nameOfWallet"
                 android:textColor="@color/color_000000"
                 android:textColorHint="@color/color_b6bbd0"
-                android:textSize="13sp" />
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/tv_name_error"
@@ -90,7 +90,7 @@
                     android:paddingRight="25dp"
                     android:textColor="@color/color_000000"
                     android:textColorHint="@color/color_b6bbd0"
-                    android:textSize="13sp" />
+                    android:textSize="15sp" />
 
                 <ImageView
                     android:id="@+id/iv_password_eyes"
@@ -117,7 +117,7 @@
                     android:hint="@string/repeatPassword"
                     android:textColor="@color/color_000000"
                     android:textColorHint="@color/color_b6bbd0"
-                    android:textSize="13sp" />
+                    android:textSize="15sp" />
 
                 <ImageView
                     android:id="@+id/iv_repeat_password_eyes"
