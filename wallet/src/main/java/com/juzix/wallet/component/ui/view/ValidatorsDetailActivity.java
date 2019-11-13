@@ -200,6 +200,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
 
     @Override
     public void showValidatorsDetailData(VerifyNodeDetail nodeDetail) {
+        nodeState.setVisibility(View.VISIBLE);
         websiteUrl = nodeDetail.getWebsite();
         mNodeAddress = nodeDetail.getNodeId();
         mNodeName = nodeDetail.getName();
@@ -272,7 +273,8 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
 
     @Override
     public void showValidatorsDetailFailed() {
-
+        nodeState.setVisibility(View.GONE);
+        tips.setVisibility(View.GONE);
     }
 
     @Override

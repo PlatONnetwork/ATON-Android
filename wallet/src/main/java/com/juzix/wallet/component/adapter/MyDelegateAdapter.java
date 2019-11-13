@@ -2,6 +2,7 @@ package com.juzix.wallet.component.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -14,9 +15,11 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.widget.CircleImageView;
+import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.entity.DelegateInfo;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
 
@@ -54,6 +57,13 @@ public class MyDelegateAdapter extends RecyclerView.Adapter<MyDelegateAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        ShadowDrawable.setShadowDrawable(holder.item,
+                ContextCompat.getColor(mContext, R.color.color_ffffff),
+                DensityUtil.dp2px(mContext, 4),
+                ContextCompat.getColor(mContext, R.color.color_cc9ca7c2),
+                DensityUtil.dp2px(mContext, 5),
+                0,
+                DensityUtil.dp2px(mContext, 2));
         DelegateInfo info = infoList.get(position);
         holder.walletIcon.setImageResource(RUtils.drawable(info.getWalletIcon()));
         holder.walletName.setText(info.getWalletName());

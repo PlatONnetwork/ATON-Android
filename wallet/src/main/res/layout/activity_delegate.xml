@@ -185,10 +185,12 @@
                         android:paddingRight="5dp"
                         android:textStyle="bold"
                         android:textColor="@color/color_000000"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"
+                        tools:text="1000000000"/>
 
 
                     <TextView
+                        android:id="@+id/tv_lat_one"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="10dp"
@@ -196,13 +198,31 @@
                         android:textColor="@color/color_000000"
                         android:textSize="12sp" />
 
-                    <ImageView
-                        android:id="@+id/iv_drop_down"
-                        android:layout_width="14dp"
-                        android:layout_height="14dp"
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_centerInParent="true"
-                        android:layout_marginRight="20dp"
-                        android:src="@drawable/icon_drop_down" />
+                        android:layout_marginRight="20dp">
+
+                        <ImageView
+                            android:id="@+id/iv_drop_down"
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/icon_drop_down" />
+
+                        <TextView
+                            android:id="@+id/tv_lat_two"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="LAT"
+                            android:gravity="center"
+                            android:layout_gravity="center_vertical"
+                            android:textColor="@color/color_000000"
+                            android:textSize="12sp"
+                            android:visibility="gone"/>
+                    </FrameLayout>
+
                 </LinearLayout>
 
 
