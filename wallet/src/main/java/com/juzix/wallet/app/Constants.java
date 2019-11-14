@@ -144,6 +144,7 @@ public class Constants {
         String URL_HTTP_A = "http://192.168.9.190:1000";
         String URL_HTTP_B = "https://aton.platon.network";
         String URL_HTTP_C = "http://192.168.9.190:1000";
+        String URL_MAIN_A = "https://aton.main.platon.network/rpc";
     }
 
     public interface VoteConstants {

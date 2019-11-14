@@ -688,4 +688,5 @@
     <string name="withdraw_amount_tips">赎回数量不能少于10LAT</string>
     <string name="unrecognized_content">无法识别内容</string>
     <string name="no_delegation_information">暂无委托信息</string>
+    <string name="newbaleyworld">新贝莱世界</string>
 </resources>
