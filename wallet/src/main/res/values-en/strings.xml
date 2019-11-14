@@ -675,5 +675,6 @@
     <string name="withdraw_amount_tips">The Amount cannot be less than 10 LAT</string>
     <string name="unrecognized_content">Unrecognized content</string>
     <string name="no_delegation_information">No delegation information</string>
+    <string name="newbaleyworld">NewBaleyworld</string>
 </resources>
 

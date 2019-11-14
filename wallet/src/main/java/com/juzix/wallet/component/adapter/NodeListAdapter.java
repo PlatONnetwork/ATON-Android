@@ -274,6 +274,8 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
             return String.format("(%s)", activity.getString(R.string.amigo_test_net));
         } else if (Constants.URL.URL_TEST_B.equals(nodeAddress)) {
             return String.format("(%s)", activity.getString(R.string.batalla_test_net));
+        }else if(Constants.URL.URL_MAIN_A.equals(nodeAddress)){
+            return String.format("(%s)", activity.getString(R.string.newbaleyworld));
         }
 
         return "";
