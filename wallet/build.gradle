@@ -179,7 +179,7 @@ android {
 }
 
 def getGitVersion() {
-    return 'git rev-parse --short HEAD'.execute().text.trim()
+//    return 'git rev-parse --short HEAD'.execute().text.trim()
 }
 
 repositories {
