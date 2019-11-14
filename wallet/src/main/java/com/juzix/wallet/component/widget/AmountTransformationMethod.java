@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class AmountTransformationMethod extends ReplacementTransformationMethod {
 
-    private static char DOT = '\u2022';
+    private static char DOT = '\u002a';
 
     private String originalText;
 

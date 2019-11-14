@@ -97,25 +97,28 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
         holder.rlItem.findViewById(R.id.v_new_msg).setVisibility(View.GONE);
         AutofitTextView tvName = holder.rlItem.findViewById(R.id.tv_item2_name);
         ImageView ivIcon = holder.rlItem.findViewById(R.id.iv_item2_icon);
-        ShadowDrawable.setShadowDrawable(holder.vShadow,
-                ContextCompat.getColor(mContext, R.color.color_660051ff),
-                mShapeRadius,
-                ContextCompat.getColor(mContext, R.color.color_660051ff),
-                mShadowRadius,
-                0,
-                0);
+//        ShadowDrawable.setShadowDrawable(holder.vShadow,
+//                ContextCompat.getColor(mContext, R.color.color_660051ff),
+//                mShapeRadius,
+//                ContextCompat.getColor(mContext, R.color.color_660051ff),
+//                mShadowRadius,
+//                0,
+//                0);
         if (mSelectedWallet == walletEntity) {
-//            holder.vShadow.setVisibility(View.VISIBLE);
-//            holder.rlItem.setBackgroundResource(R.drawable.bg_assets_classic_h);
-//            ivIcon.setImageResource(R.drawable.icon_assets_classic_h);
-//            tvName.setTextColor(ContextCompat.getColor(mContext, R.color.color_ffffff));
             tvName.setText(walletEntity.getName());
 
             if (TextUtils.isEmpty(walletEntity.getKey())) { //观察钱包(与联不联网没关系)
                 holder.vShadow.setVisibility(View.VISIBLE);
                 holder.rlItem.setBackgroundResource(R.drawable.bg_assets_observed_h);
-                ivIcon.setImageResource(R.drawable.icon_assets_observed_h);
+                ivIcon.setImageResource(R.drawable.icon_assets_cold_h);
                 tvName.setTextColor(ContextCompat.getColor(mContext, R.color.color_ffffff));
+                ShadowDrawable.setShadowDrawable(holder.vShadow,
+                        ContextCompat.getColor(mContext, R.color.color_B3FA9100),
+                        mShapeRadius,
+                        ContextCompat.getColor(mContext, R.color.color_B3FA9100),
+                        mShadowRadius,
+                        0,
+                        0);
 
             } else {
                 if (NetworkUtil.getNetWorkType(mContext) != NetworkType.NETWORK_NO && NetworkUtil.getNetWorkType(mContext) != NetworkType.NETWORK_UNKNOWN) {//表示联网状态
@@ -124,26 +127,36 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
                     holder.rlItem.setBackgroundResource(R.drawable.bg_assets_classic_h);
                     ivIcon.setImageResource(R.drawable.icon_assets_classic_h);
                     tvName.setTextColor(ContextCompat.getColor(mContext, R.color.color_ffffff));
-//                    tvName.setText(walletEntity.getName());
+                    ShadowDrawable.setShadowDrawable(holder.vShadow,
+                        ContextCompat.getColor(mContext, R.color.color_660051ff),
+                        mShapeRadius,
+                        ContextCompat.getColor(mContext, R.color.color_660051ff),
+                        mShadowRadius,
+                        0,
+                        0);
                 } else {
                     //冷钱包
                     holder.vShadow.setVisibility(View.VISIBLE);
                     holder.rlItem.setBackgroundResource(R.drawable.bg_assets_cold_h);
-                    ivIcon.setImageResource(R.drawable.icon_assets_cold_h);
+                    ivIcon.setImageResource(R.drawable.icon_assets_observed_h);
                     tvName.setTextColor(ContextCompat.getColor(mContext, R.color.color_ffffff));
+                    ShadowDrawable.setShadowDrawable(holder.vShadow,
+                        ContextCompat.getColor(mContext, R.color.color_B3858585),
+                        mShapeRadius,
+                        ContextCompat.getColor(mContext, R.color.color_B3858585),
+                        mShadowRadius,
+                        0,
+                        0);
                 }
             }
 
         } else {
             holder.vShadow.setVisibility(View.GONE);
-//            holder.rlItem.setBackgroundResource(R.drawable.bg_assets_classic_n);
-//            ivIcon.setImageResource(R.drawable.icon_assets_classic_n);
-//            tvName.setTextColor(ContextCompat.getColor(mContext, R.color.color_105cfe));
             tvName.setText(walletEntity.getName());
 
             if (TextUtils.isEmpty(walletEntity.getKey())) {//观察钱包
                 holder.rlItem.setBackgroundResource(R.drawable.bg_assets_observed_n);
-                ivIcon.setImageResource(R.drawable.icon_assets_observed_n);
+                ivIcon.setImageResource(R.drawable.icon_assets_cold_n);
                 tvName.setTextColor(ContextCompat.getColor(mContext, R.color.color_F5A623));
 
             } else {
@@ -155,7 +168,7 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
                 } else {
                     //未选中的冷钱包
                     holder.rlItem.setBackgroundResource(R.drawable.bg_assets_cold_n);
-                    ivIcon.setImageResource(R.drawable.icon_assets_cold_n);
+                    ivIcon.setImageResource(R.drawable.icon_assets_observed_n);
                     tvName.setTextColor(ContextCompat.getColor(mContext,R.color.color_61646e));
                 }
             }

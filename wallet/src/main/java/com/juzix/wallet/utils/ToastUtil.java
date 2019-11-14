@@ -1,6 +1,7 @@
 package com.juzix.wallet.utils;
 
 import android.content.Context;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -39,6 +40,7 @@ public class ToastUtil {
         Toast toast = getInstance(context);
         toast.setView(buildToastTextView(context, msg));
         toast.setDuration(duration);
+        toast.setGravity(Gravity.TOP,0,DensityUtil.dp2px(context,10));
         toast.show();
     }
 

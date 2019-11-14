@@ -132,7 +132,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
                 ContextCompat.getColor(this, R.color.color_ffffff),
                 DensityUtil.dp2px(this, 4),
                 ContextCompat.getColor(this, R.color.color_cc9ca7c2),
-                DensityUtil.dp2px(this, 10),
+                DensityUtil.dp2px(this, 5),
                 0,
                 DensityUtil.dp2px(this, 2));
 
@@ -200,6 +200,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
 
     @Override
     public void showValidatorsDetailData(VerifyNodeDetail nodeDetail) {
+        nodeState.setVisibility(View.VISIBLE);
         websiteUrl = nodeDetail.getWebsite();
         mNodeAddress = nodeDetail.getNodeId();
         mNodeName = nodeDetail.getName();
@@ -272,7 +273,8 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
 
     @Override
     public void showValidatorsDetailFailed() {
-
+        nodeState.setVisibility(View.GONE);
+        tips.setVisibility(View.GONE);
     }
 
     @Override

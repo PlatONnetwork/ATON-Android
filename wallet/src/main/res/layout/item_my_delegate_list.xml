@@ -11,14 +11,17 @@
         android:id="@+id/ll_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/bg_mydelegate_item"
         android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:background="@drawable/icon_my_delegate_item_bg">
 
             <com.juzix.wallet.component.widget.CircleImageView
@@ -59,22 +62,6 @@
 
             </LinearLayout>
 
-            <!--<TextView-->
-                <!--android:id="@+id/tv_item_wallet_amount"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_alignParentRight="true"-->
-                <!--android:layout_centerInParent="true"-->
-                <!--android:layout_marginRight="10dp"-->
-                <!--android:drawablePadding="3dp"-->
-                <!--android:textColor="@color/color_000000"-->
-                <!--android:maxLines="1"-->
-                <!--android:ellipsize="end"-->
-                <!--android:gravity="right"-->
-                <!--android:layout_toRightOf="@id/ll_wallet_info"-->
-                <!--tools:text="15161516515515154"-->
-                <!--android:textSize="16sp" />-->
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -94,14 +81,13 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_mydelegate_item"
             android:orientation="horizontal">
 
             <LinearLayout
                 android:id="@+id/ll_left"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="12dp"
+                android:layout_marginLeft="17dp"
                 android:orientation="vertical"
                 android:layout_weight="1">
 
@@ -166,18 +152,6 @@
                     android:layout_gravity="left|center"
                     tools:text="1654545465465.645"/>
             </LinearLayout>
-
-            <!--<TextView-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_alignParentRight="true"-->
-                <!--android:layout_centerInParent="true"-->
-                <!--android:layout_marginRight="10dp"-->
-                <!--android:drawableRight="@drawable/icon_right"-->
-                <!--android:drawablePadding="3dp"-->
-                <!--android:gravity="center"-->
-                <!--android:text="@string/details" />-->
-
 
         </LinearLayout>
 

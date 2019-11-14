@@ -540,7 +540,7 @@
     <string name="website">官网</string>
     <string name="validators_withdraw">赎回</string>
     <string name="validators_delegate">委托</string>
-    <string name="validators_detail_yield">预计年化率</string>
+    <string name="validators_detail_yield">年化率</string>
     <string name="expected_annualized_rate">预计年化率</string>
     <string name="expected_annualized_rate_des">当前节点的预计年化率，具体委托收益由节点分配</string>
     <string name="withdraw_tip">输入数量不能少于10LAT</string>
@@ -681,11 +681,12 @@
 
     <string name="web_url_web_portals">https://www.platon.network</string>
     <string name="web_url_faq">https://platon.zendesk.com/hc/zh-cn/categories/360002174434</string>
-    <string name="web_url_tutorial">https://platon.zendesk.com/hc/zh-cn/categories/360002174434</string>
+    <string name="web_url_tutorial">https://platon.zendesk.com/hc/zh-cn/categories/360002193633</string>
     <string name="web_url_agreement">https://platon.zendesk.com/hc/zh-cn/categories/360002174434</string>
-    <string name="web_url_support_feedback">https://platon.zendesk.com/hc/zh-cn/categories/360002174434</string>
+    <string name="web_url_support_feedback">https://platon.zendesk.com/hc/zh-cn</string>
     <string name="web_url_common_delegate_problem">https://platon.zendesk.com/hc/zh-cn/articles/360037373194-Common-questions-about-PlatON-Delegators</string>
     <string name="withdraw_amount_tips">赎回数量不能少于10LAT</string>
     <string name="unrecognized_content">无法识别内容</string>
     <string name="no_delegation_information">暂无委托信息</string>
+    <string name="newbaleyworld">新贝莱世界</string>
 </resources>

@@ -9,11 +9,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.juzix.wallet.R;
 import com.juzix.wallet.entity.WithDrawType;
-
 import java.util.List;
+
 
 public class WithDrawPopWindowAdapter extends BaseAdapter {
     private List<WithDrawType> typeList;
@@ -58,6 +57,7 @@ public class WithDrawPopWindowAdapter extends BaseAdapter {
             holder.tv_delegate_amount = view.findViewById(R.id.tv_delegate_amount);
             holder.iv_drop_down = view.findViewById(R.id.iv_drop_down);
             holder.rl_choose_delegate = view.findViewById(R.id.rl_choose_delegate);
+            holder.v_line =view.findViewById(R.id.v_line);
             view.setTag(holder);
         } else {
             view = convertView;
@@ -76,6 +76,7 @@ public class WithDrawPopWindowAdapter extends BaseAdapter {
             holder.tv_delegate_type.setText(mContext.getString(R.string.withdraw_type_released));
         }
 
+        holder.v_line.setVisibility((position == typeList.size() -1) ? View.GONE : View.VISIBLE);
 //        holder.tv_delegate_amount.setText(mContext.getString(R.string.amount_with_unit, typeList.get(position).getValue()));
         holder.tv_delegate_amount.setText(typeList.get(position).getValue());
         return view;
@@ -105,6 +106,7 @@ public class WithDrawPopWindowAdapter extends BaseAdapter {
         TextView tv_delegate_amount;
         ImageView iv_drop_down;
         RelativeLayout rl_choose_delegate;
+        View v_line;
 
     }
 }

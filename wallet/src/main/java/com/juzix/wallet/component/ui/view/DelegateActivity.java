@@ -118,6 +118,10 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     View v_tips;
     @BindView(R.id.tv_no_delegate_tips)
     TextView tv_no_delegate_tips;
+    @BindView(R.id.tv_lat_one)
+    TextView tv_lat_one;
+    @BindView(R.id.tv_lat_two)
+    TextView tv_lat_two;
 
     private Unbinder unbinder;
     private String address;//钱包地址
@@ -336,8 +340,13 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
             //锁仓金额为0，不可点击
             amounChoose.setClickable(false);
             iv_drop_down.setVisibility(View.GONE);
+            tv_lat_one.setVisibility(View.GONE);
+            tv_lat_two.setVisibility(View.VISIBLE);
+
         } else {
             iv_drop_down.setVisibility(View.VISIBLE);
+            tv_lat_two.setVisibility(View.GONE);
+            tv_lat_one.setVisibility(View.VISIBLE);
             amounChoose.setClickable(true);
         }
         free_account = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(bean.getFree(), "1E18"));

@@ -40,7 +40,7 @@ public class DelegateRecordAdapter extends CommonAdapter<Transaction> {
                 ContextCompat.getColor(context, R.color.color_cc9ca7c2),
                 DensityUtil.dp2px(context, 5),
                 0,
-                DensityUtil.dp2px(context, 2));
+                DensityUtil.dp2px(context, 0));
 
         CircleImageView imageView = viewHolder.getView(R.id.iv_total_delegate);
         changeImageViewIcon(context, imageView, item);
