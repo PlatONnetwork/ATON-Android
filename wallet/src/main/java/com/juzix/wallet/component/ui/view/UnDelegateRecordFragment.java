@@ -143,6 +143,7 @@ public class UnDelegateRecordFragment extends MVPBaseFragment<DelegateRecordPres
         refreshLayout.finishLoadMore();
         refreshLayout.finishRefresh();
         dismissLoadingDialogImmediately();
+        ll_no_data.setVisibility(View.VISIBLE);
     }
 
     @Override
