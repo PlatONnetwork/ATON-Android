@@ -89,7 +89,6 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
     @BindView(R.id.ll_shade)
     LinearLayout ll_shade;
 
-
     public static final String STATE_ACTIVE = "Active";
     public static final String STATE_CANDIDATE = "Candidate";
     public static final String STATE_EXITING = "Exiting";

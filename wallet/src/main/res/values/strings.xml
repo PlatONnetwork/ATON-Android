@@ -334,7 +334,7 @@
     <string name="create_joint_wallet">创建联名钱包</string>
     <string name="fee_of_contract_creation">创建合约手续费</string>
     <string name="fee_of_create_joint_wallet">创建联名钱包手续费</string>
-    <string name="send_energon">LAT&#160;发送</string>
+    <string name="send_energon">发送&#160;LAT</string>
     <string name="can_not_send_to_itself">无法发送给自己</string>
     <string name="default_main_network">默认主网络</string>
     <string name="default_test_network">默认测试网络</string>
@@ -689,5 +689,6 @@
     <string name="unrecognized_content">无法识别内容</string>
     <string name="no_delegation_information">暂无委托信息</string>
     <string name="newbaleyworld">新贝莱世界</string>
-    <string name="time_out_tip">请对准二维码，耐心等待</string>
+
+    <string name="msg_scan_qrcode">请对准二维码，耐心等待.</string>
 </resources>

@@ -168,7 +168,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                     @Override
                     public void accept(BigInteger bigInteger) throws Exception {
                         if (isViewAttached()) {
-                            LogUtils.e("gasPrice 为："+bigInteger.toString());
+                            LogUtils.e("gasPrice 为：" + bigInteger.toString());
                             initGasPrice(bigInteger);
                             setDefaultProgress();
                             setDefaultFeeAmount();
@@ -605,7 +605,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
             public boolean test(String s) throws Exception {
                 return !TextUtils.isEmpty(s);
             }
-        }).defaultIfEmpty(AddressFormatUtil.formatAddress(address))
+        }).defaultIfEmpty(address)
                 .toSingle();
     }
 
