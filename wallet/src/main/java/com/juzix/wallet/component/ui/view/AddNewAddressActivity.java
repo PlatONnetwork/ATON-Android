@@ -21,11 +21,13 @@ import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.AddNewAddressContract;
 import com.juzix.wallet.component.ui.presenter.AddNewAddressPresenter;
 import com.juzix.wallet.component.widget.CommonTitleBar;
+import com.juzix.wallet.component.widget.CustomUnderlineEditText;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.entity.Address;
 import com.juzix.wallet.utils.GZipUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.ToastUtil;
+import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import butterknife.BindString;
@@ -45,9 +47,7 @@ public class AddNewAddressActivity extends MVPBaseActivity<AddNewAddressPresente
     @BindView(R.id.tv_name_error)
     TextView tvNameError;
     @BindView(R.id.et_address)
-    EditText etAddress;
-    @BindView(R.id.iv_address_scan)
-    ImageView ivAddressScan;
+    CustomUnderlineEditText etAddress;
     @BindView(R.id.tv_address_error)
     TextView tvAddressError;
     @BindString(R.string.add_new_address)
@@ -91,6 +91,23 @@ public class AddNewAddressActivity extends MVPBaseActivity<AddNewAddressPresente
                     }
                 });
 
+        etAddress.setDrawableClickListener(new CustomUnderlineEditText.DrawableClickListener() {
+            @Override
+            public void onClick(DrawablePosition target) {
+                new RxPermissions(AddNewAddressActivity.this)
+                        .request(Manifest.permission.CAMERA)
+                        .subscribe(new CustomObserver<Boolean>() {
+                            @Override
+                            public void accept(Boolean success) {
+                                if (success) {
+                                    ScanQRCodeActivity.startActivityForResult(AddNewAddressActivity.this, Constants.RequestCode.REQUEST_CODE_SCAN_QRCODE);
+                                }
+                            }
+                        })
+                ;
+            }
+        });
+
         RxView.clicks(sbtnAddAddress)
                 .compose(RxUtils.getClickTransformer())
                 .compose(RxUtils.bindToLifecycle(this))
@@ -99,19 +116,6 @@ public class AddNewAddressActivity extends MVPBaseActivity<AddNewAddressPresente
                     public void accept(Object o) {
                         hideSoftInput();
                         mPresenter.addAddress();
-                    }
-                });
-
-        RxView.clicks(ivAddressScan)
-                .compose(RxUtils.getClickTransformer())
-                .compose(RxUtils.bindToLifecycle(this))
-                .compose(new RxPermissions(AddNewAddressActivity.this).ensure(Manifest.permission.CAMERA))
-                .subscribe(new CustomObserver<Boolean>() {
-                    @Override
-                    public void accept(Boolean success) {
-                        if (success) {
-                            ScanQRCodeActivity.startActivityForResult(AddNewAddressActivity.this, Constants.RequestCode.REQUEST_CODE_SCAN_QRCODE);
-                        }
                     }
                 });
 
@@ -126,9 +130,9 @@ public class AddNewAddressActivity extends MVPBaseActivity<AddNewAddressPresente
             if (requestCode == Constants.RequestCode.REQUEST_CODE_SCAN_QRCODE) {
                 String address = data.getStringExtra(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
                 String unzip = GZipUtil.unCompress(address);
-                String newStr = TextUtils.isEmpty(unzip)? address :unzip;
-                if(TextUtils.isEmpty(newStr)){
-                    ToastUtil.showLongToast(getContext(),R.string.unrecognized_content);
+                String newStr = TextUtils.isEmpty(unzip) ? address : unzip;
+                if (TextUtils.isEmpty(newStr)) {
+                    ToastUtil.showLongToast(getContext(), R.string.unrecognized_content);
                     return;
                 }
                 mPresenter.validQRCode(newStr);

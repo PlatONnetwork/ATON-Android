@@ -92,7 +92,6 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
 
                                         }
                                     });
-//                            getView().showTotalBalance("0");
                             getView().finishRefresh();
                         }
                     }

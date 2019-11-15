@@ -40,11 +40,16 @@ import com.juzix.wallet.component.widget.CommonTitleBar;
 import com.juzix.wallet.utils.PhotoUtil;
 import com.juzix.wallet.utils.QRCodeDecoder;
 import com.juzix.wallet.utils.RxUtils;
+import com.juzix.wallet.utils.ToastUtil;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Vector;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Flowable;
+import io.reactivex.functions.Consumer;
 
 
 public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider, SurfaceHolder.Callback {
@@ -139,6 +144,17 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
                 lightIv.setVisibility(View.VISIBLE);
             }
         }, 5000);
+
+        Flowable
+                .interval(15, TimeUnit.SECONDS)
+                .compose(bindToLifecycle())
+                .compose(RxUtils.getFlowableSchedulerTransformer())
+                .subscribe(new Consumer<Long>() {
+                    @Override
+                    public void accept(Long aLong) throws Exception {
+                        showLongToast(R.string.msg_scan_qrcode);
+                    }
+                });
     }
 
     @Override
@@ -147,6 +163,8 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
             switch (requestCode) {
                 case REQUEST_CODE_SCAN_GALLERY:
                     handleAlbumPic(data);
+                    break;
+                default:
                     break;
             }
         }

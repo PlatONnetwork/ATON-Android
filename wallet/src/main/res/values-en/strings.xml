@@ -676,5 +676,7 @@
     <string name="unrecognized_content">Unrecognized content</string>
     <string name="no_delegation_information">No delegation information</string>
     <string name="newbaleyworld">NewBaleyworld</string>
+
+    <string name="msg_scan_qrcode">Please aim at the QR code and wait patiently.</string>
 </resources>
 
