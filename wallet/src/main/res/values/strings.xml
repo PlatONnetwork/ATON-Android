@@ -689,4 +689,5 @@
     <string name="unrecognized_content">无法识别内容</string>
     <string name="no_delegation_information">暂无委托信息</string>
     <string name="newbaleyworld">新贝莱世界</string>
+    <string name="time_out_tip">请对准二维码，耐心等待</string>
 </resources>

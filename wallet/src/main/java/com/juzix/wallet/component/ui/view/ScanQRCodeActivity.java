@@ -40,6 +40,7 @@ import com.juzix.wallet.component.widget.CommonTitleBar;
 import com.juzix.wallet.utils.PhotoUtil;
 import com.juzix.wallet.utils.QRCodeDecoder;
 import com.juzix.wallet.utils.RxUtils;
+import com.juzix.wallet.utils.ToastUtil;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.io.File;
@@ -139,6 +140,14 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
                 lightIv.setVisibility(View.VISIBLE);
             }
         }, 5000);
+
+        viewfinderView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ToastUtil.showLongToast(ScanQRCodeActivity.this, getResources().getString(R.string.time_out_tip));
+                viewfinderView.postDelayed(this,15000);
+            }
+        },15000);
     }
 
     @Override
