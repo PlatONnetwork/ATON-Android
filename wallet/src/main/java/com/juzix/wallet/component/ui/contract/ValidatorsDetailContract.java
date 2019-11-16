@@ -14,14 +14,12 @@ public class ValidatorsDetailContract {
         void showValidatorsDetailFailed();
 
         void showIsCanDelegate(boolean isCanDelegate);
-
     }
 
     public interface Presenter extends IPresenter<View> {
 
         void loadValidatorsDetailData();
 
-        void getWalletBalance();
     }
 
 }

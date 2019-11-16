@@ -89,7 +89,6 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
                                         @Override
                                         public void accept(BigDecimal bigDecimal) throws Exception {
                                             getView().showTotalBalance(bigDecimal.toPlainString());
-
                                         }
                                     });
                             getView().finishRefresh();
