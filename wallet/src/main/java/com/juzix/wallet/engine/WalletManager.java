@@ -512,7 +512,7 @@ public class WalletManager {
 
     public Observable<BigDecimal> getAccountBalance() {
         return Observable
-                .interval(5, TimeUnit.SECONDS)
+                .interval(0, 5, TimeUnit.SECONDS)
                 .flatMap(new Function<Long, ObservableSource<BigDecimal>>() {
                     @Override
                     public ObservableSource<BigDecimal> apply(Long aLong) throws Exception {
