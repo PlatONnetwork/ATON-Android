@@ -24,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
+import com.juzhen.framework.util.LogUtils;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
@@ -214,7 +215,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
                 case MainActivity.REQ_ASSETS_ADDRESS_QR_CODE:
                     String address = data.getStringExtra(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
                     String unzip = GZipUtil.unCompress(address);
-                    String newStr = TextUtils.isEmpty(unzip)? address :unzip;
+                    String newStr = TextUtils.isEmpty(unzip) ? address : unzip;
                     if (JZWalletUtil.isValidAddress(newStr)) {
                         setToAddress(newStr);
 //                        if (mPresenter != null) {
@@ -449,7 +450,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
         @Override
         public void onProgressChanged(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat, boolean fromUser) {
             if (fromUser) {
-                mPresenter.calculateFeeAndTime(NumberParserUtils.parseFloat(BigDecimalUtil.div(String.valueOf(progressFloat), "100")));
+                mPresenter.calculateFeeAndTime(progressFloat);
                 mPresenter.updateSendTransactionButtonStatus();
                 if (etWalletAmount.isFocused()) {
                     etWalletAmount.clearFocus();

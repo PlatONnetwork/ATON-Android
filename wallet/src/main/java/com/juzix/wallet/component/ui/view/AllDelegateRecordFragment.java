@@ -143,6 +143,7 @@ public class AllDelegateRecordFragment extends MVPBaseFragment<DelegateRecordPre
         refreshLayout.finishLoadMore();
         refreshLayout.finishRefresh();
         dismissLoadingDialogImmediately();
+        ll_no_data.setVisibility(View.VISIBLE);
     }
 
 
