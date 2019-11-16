@@ -43,7 +43,6 @@ import org.web3j.utils.Convert;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -66,11 +65,10 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     private DelegateDetail mDelegateDetail;
 
     private String feeAmount;
-    private List<String> walletAddressList = new ArrayList<>();
-    private BigInteger gas_Price; //调web3j获取gasprice
-    private BigInteger gas_limit;
+    private BigInteger gasPrice; //调web3j获取gasprice
+    private BigInteger gasLimit;
     private boolean isAll = false;//是否点击全部
-//    private long minDelegation = NumberParserUtils.parseLong(AppConfigManager.getInstance().getMinDelegation());
+
     private String minDelegation = AppConfigManager.getInstance().getMinDelegation();
 
     public DelegatePresenter(DelegateContract.View view) {
@@ -189,7 +187,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                     @Override
                     public void accept(BigInteger gasPrice) throws Exception {
                         if (isViewAttached()) {
-                            gas_Price = gasPrice;
+                            DelegatePresenter.this.gasPrice = gasPrice;
                             getView().showGas(gasPrice);
                         }
                     }
@@ -222,9 +220,9 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                         .subscribe(new Action1<GasProvider>() {
                             @Override
                             public void call(GasProvider gasProvider) {
-                                gas_limit = gasProvider.getGasLimit();
-                                Log.d("gaslimit", "========getFeeAmount========" + "limit ===" + gas_limit + "gasprice ======" + gas_Price);
-                                BigDecimal mul = BigDecimalUtil.mul(gasProvider.getGasLimit().toString(), gas_Price.toString());
+                                gasLimit = gasProvider.getGasLimit();
+                                Log.d("gaslimit", "========getFeeAmount========" + "limit ===" + gasLimit + "gasprice ======" + gasPrice);
+                                BigDecimal mul = BigDecimalUtil.mul(gasProvider.getGasLimit().toString(), gasPrice.toString());
                                 feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(mul.toString(), "1E18"));
                                 getView().showGasPrice(feeAmount);
                             }
@@ -242,18 +240,19 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     public void getAllPrice(StakingAmountType stakingAmountType, String amount) {
         isAll = true;
         if (mDelegateDetail != null) {
+            String delegateAmount = stakingAmountType == StakingAmountType.FREE_AMOUNT_TYPE ? Convert.toVon(amount, Convert.Unit.LAT).toBigInteger().toString().replaceAll("0", "1"):Convert.toVon(amount, Convert.Unit.LAT).toBigInteger().toString();
             org.web3j.platon.contracts.DelegateContract
                     .load(Web3jManager.getInstance().getWeb3j())
-                    .getDelegateGasProvider(mDelegateDetail.getNodeId(), stakingAmountType, new BigInteger(Convert.toVon(amount, Convert.Unit.LAT).toBigInteger().toString().replaceAll("0", "1")))
+                    .getDelegateGasProvider(mDelegateDetail.getNodeId(), stakingAmountType, new BigInteger(delegateAmount))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Action1<GasProvider>() {
                         @Override
                         public void call(GasProvider gasProvider) {
-                            gas_limit = gasProvider.getGasLimit();
-                            Log.d("gaslimit", "========getAllPrice========" + "limit" + gas_limit + "gasprice ========" + gas_Price);
+                            gasLimit = gasProvider.getGasLimit();
+                            Log.d("gaslimit", "========getAllPrice========" + "limit" + gasLimit + "gasprice ========" + gasPrice);
                             Log.d("gasprovide", "========getAllPrice======" + gasProvider.getGasLimit());
-                            BigDecimal mul = BigDecimalUtil.mul(gasProvider.getGasLimit().toString(), gas_Price.toString());
+                            BigDecimal mul = BigDecimalUtil.mul(gasProvider.getGasLimit().toString(), gasPrice.toString());
                             feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(mul.toString(), "1E18"));
                             getView().showAllGasPrice(stakingAmountType, feeAmount);
                         }
@@ -312,7 +311,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                                     showLongToast(errMsg);
                                 } else {
                                     if (mWallet.isObservedWallet()) {
-                                        showTransactionAuthorizationDialogFragment(mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), stakingAmountType, getView().getDelegateAmount(), mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, gas_limit.toString(10), gas_Price.toString(10));
+                                        showTransactionAuthorizationDialogFragment(mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), stakingAmountType, getView().getDelegateAmount(), mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, gasLimit.toString(10), gasPrice.toString(10));
                                     } else {
                                         showInputPasswordDialogFragment(getView().getDelegateAmount(), mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), stakingAmountType);
                                     }
@@ -346,7 +345,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     @SuppressLint("CheckResult")
     private void delegate(Credentials credentials, String inputAmount, String nodeId, String nodeName, StakingAmountType stakingAmountType) {
         //这里调用新的方法，传入GasProvider
-        GasProvider gasProvider = new ContractGasProvider(gas_Price, gas_limit);
+        GasProvider gasProvider = new ContractGasProvider(gasPrice, gasLimit);
         DelegateManager.getInstance().delegate(credentials, ContractAddress.DELEGATE_CONTRACT_ADDRESS, inputAmount, nodeId, nodeName, feeAmount, String.valueOf(TransactionType.DELEGATE.getTxTypeValue()), stakingAmountType, gasProvider)
                 .compose(RxUtils.getSchedulerTransformer())
                 .compose(RxUtils.getLoadingTransformer(currentActivity()))

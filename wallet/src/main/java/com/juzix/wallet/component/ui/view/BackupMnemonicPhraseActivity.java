@@ -21,18 +21,6 @@ import com.juzix.wallet.utils.JZWalletUtil;
 
 public class BackupMnemonicPhraseActivity extends BaseActivity implements View.OnClickListener {
 
-    public static void actionStart(Context context, String password, Wallet walletEntity) {
-        actionStart(context, password, walletEntity, 0);
-    }
-
-    public static void actionStart(Context context, String password, Wallet walletEntity, int type) {
-        Intent intent = new Intent(context, BackupMnemonicPhraseActivity.class);
-        intent.putExtra(Constants.Extra.EXTRA_PASSWORD, password);
-        intent.putExtra(Constants.Extra.EXTRA_WALLET, walletEntity);
-        intent.putExtra(Constants.Extra.EXTRA_TYPE, type);
-        context.startActivity(intent);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
@@ -129,6 +117,8 @@ public class BackupMnemonicPhraseActivity extends BaseActivity implements View.O
                         getIntent().getParcelableExtra(Constants.Extra.EXTRA_WALLET), getIntent().getIntExtra(Constants.Extra.EXTRA_TYPE, 0));
                 BackupMnemonicPhraseActivity.this.finish();
                 break;
+            default:
+                break;
         }
     }
 
@@ -141,5 +131,17 @@ public class BackupMnemonicPhraseActivity extends BaseActivity implements View.O
                 }
             }
         }).show(getSupportFragmentManager(), "showTips");
+    }
+
+    public static void actionStart(Context context, String password, Wallet walletEntity) {
+        actionStart(context, password, walletEntity, 0);
+    }
+
+    public static void actionStart(Context context, String password, Wallet walletEntity, int type) {
+        Intent intent = new Intent(context, BackupMnemonicPhraseActivity.class);
+        intent.putExtra(Constants.Extra.EXTRA_PASSWORD, password);
+        intent.putExtra(Constants.Extra.EXTRA_WALLET, walletEntity);
+        intent.putExtra(Constants.Extra.EXTRA_TYPE, type);
+        context.startActivity(intent);
     }
 }
