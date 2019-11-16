@@ -12,21 +12,21 @@ import zipfile
 import time
 
 PGY_KEYS_C = {
-    'apiKey': '1a29c253e8fbfc5a829a1a86aba607ec',
-    'userKey': 'd4b66ee185fcf4470b979c6c304fc3ee'
+    'apiKey': '7e6d99ff26c9940514d937f396b6e996',
+    'userKey': '28e13eea4cb2852007b505cfbf8c111d'
 }
 
 PGY_KEYS_U = {
-    'apiKey': 'c6a5ea2c5a0a7836935e2cbedd66d614',
-    'userKey': '9cb7c5573344ccb88ce9c85954adc962'
+    'apiKey': '7e6d99ff26c9940514d937f396b6e996',
+    'userKey': '28e13eea4cb2852007b505cfbf8c111d'
 }
 
 PGY_KEYS_X = {
-    'apiKey': '0918e9928a7c6253920be90335ee4f37',
-    'userKey': '53da6e905a03e639f69d5e46da317879'
+    'apiKey': '7e6d99ff26c9940514d937f396b6e996',
+    'userKey': '28e13eea4cb2852007b505cfbf8c111d'
 }
 
-OUT_PUT_DIR = 'buy/build/outputs'
+OUT_PUT_DIR = 'wallet/build/outputs'
 global author_name
 global output_apk_file_path
 global output_mapping_file_path
@@ -238,9 +238,9 @@ def usage():
         How to use the script:
         -t, --type   the env type you want to build.
                     c : Environmental of test
-                    k : Environmental of develop
-                    u : Environmental of UAT
-                    x : Environmental of production
+                    x : Environmental of release
+                    jc : Environmental of jenkins test
+                    jx : Environmental of jenkins release
         -r, --rePublish  only release, without build & compile
         -h, --help   show this help message
         e.g.
@@ -364,7 +364,7 @@ def main(args):
     re_publish = False
     for op, value in opts:
         if op in ('-t', '--type'):
-            if value not in ('c', 'x', 'u', 'k'):
+            if value not in ('c', 'x', 'jc', 'jx'):
                 usage()
                 exit_with_error()
             env_type = value
