@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -11,6 +12,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
@@ -88,6 +90,12 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
     TextView tips;
     @BindView(R.id.ll_shade)
     LinearLayout ll_shade;
+    @BindView(R.id.layout_no_network)
+    ConstraintLayout noNetworkLayout;
+    @BindView(R.id.sv_content)
+    ScrollView contentSV;
+    @BindView(R.id.ll_guide)
+    LinearLayout ll_guide;
 
     public static final String STATE_ACTIVE = "Active";
     public static final String STATE_CANDIDATE = "Candidate";
@@ -261,6 +269,10 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
             tips.setVisibility(View.GONE);
         }
 
+        contentSV.setVisibility(View.VISIBLE);
+        noNetworkLayout.setVisibility(View.GONE);
+        ll_guide.setVisibility(View.VISIBLE);
+
     }
     public void setImageIconForText(TextView textView, String content) {
         SpannableString spannableString = new SpannableString("  " + content);
@@ -274,6 +286,10 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
     public void showValidatorsDetailFailed() {
         nodeState.setVisibility(View.GONE);
         tips.setVisibility(View.GONE);
+
+        contentSV.setVisibility(View.GONE);
+        noNetworkLayout.setVisibility(View.VISIBLE);
+        ll_guide.setVisibility(View.GONE);
     }
 
     @Override

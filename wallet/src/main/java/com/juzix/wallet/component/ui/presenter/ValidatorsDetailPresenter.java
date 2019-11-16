@@ -33,45 +33,6 @@ public class ValidatorsDetailPresenter extends BasePresenter<ValidatorsDetailCon
         getValidatorsDetailData(mNodeId);
     }
 
-    @Override
-    public void getWalletBalance() {
-        List<String> walletAddressList = WalletManager.getInstance().getAddressList();
-        if (walletAddressList.size() == 0) { //当前没有创建钱包,不能进行委托
-            getView().showIsCanDelegate(false);
-            return;
-        } else {
-            ServerUtils.getCommonApi().getAccountBalance(ApiRequestBody.newBuilder()
-                    .put("addrs", walletAddressList.toArray(new String[walletAddressList.size()]))
-                    .build())
-                    .compose(RxUtils.bindToLifecycle(getView()))
-                    .compose(RxUtils.getSingleSchedulerTransformer())
-                    .subscribe(new ApiSingleObserver<List<AccountBalance>>() {
-                        @Override
-                        public void onApiSuccess(List<AccountBalance> accountBalances) {
-                            if (isViewAttached()) {
-                                for (AccountBalance balance : accountBalances) {
-                                    if (!TextUtils.equals(balance.getLock(), "0") || !TextUtils.equals(balance.getFree(), "0")) {
-                                        getView().showIsCanDelegate(true);
-                                        return;
-                                    }
-                                }
-
-                                getView().showIsCanDelegate(false);
-                            }
-
-                        }
-
-                        @Override
-                        public void onApiFailure(ApiResponse response) {
-
-                        }
-                    });
-
-
-        }
-
-    }
-
     private void getValidatorsDetailData(String nodeId) {
         ServerUtils.getCommonApi()
                 .getNodeCandidateDetail(ApiRequestBody.newBuilder()
@@ -92,7 +53,9 @@ public class ValidatorsDetailPresenter extends BasePresenter<ValidatorsDetailCon
 
                     @Override
                     public void onApiFailure(ApiResponse response) {
-                        getView().showValidatorsDetailFailed();
+                        if (isViewAttached()){
+                            getView().showValidatorsDetailFailed();
+                        }
                     }
                 });
 
