@@ -481,6 +481,7 @@
     <string name="msg_trillion">trillion</string>
 
     <string name="delegated_to">Delegated To</string>
+    <string name="undelegated_from">UnDelegated From</string>
     <string name="delegation_amount">Delegation Amount</string>
     <string name="withdrawal_amount">Withdrawal Amount</string>
     <string name="version">Version</string>
@@ -683,5 +684,9 @@
     <string name="msg_refresh_or_check_the_network">please try again to refresh or check the network</string>
 
     <string name="msg_timestamp">Timestamp</string>
+
+    <string name="msg_operator_address">Operator_Address：</string>
+    <string name="msg_delegated_to">Delegated to：</string>
+    <string name="msg_undelegated_from">Undelegated from：</string>
 </resources>
 

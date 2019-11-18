@@ -115,7 +115,7 @@ public class TransactionDetailInfoView extends LinearLayout {
             case UNDELEGATE:
                 addView(getItemView(getStringWithColon(R.string.type), transaction.getTxType() == TransactionType.DELEGATE ? getString(R.string.delegate) : getString(R.string.undelegate)));
                 addView(getItemView(getStringWithColon(transactionTimeDescRes), transaction.getShowCreateTime()));
-                addView(getItemView(getStringWithColon(R.string.delegated_to), transaction.getNodeName()));
+                addView(getItemView(getStringWithColon(transaction.getTxType() == TransactionType.DELEGATE ? R.string.delegated_to : R.string.undelegated_from), transaction.getNodeName()));
                 addView(getItemView(getStringWithColon(R.string.nodeId), transaction.getNodeId()));
                 addView(getItemView(transaction.getTxType() == TransactionType.DELEGATE ? getStringWithColon(R.string.delegation_amount) : getStringWithColon(R.string.withdrawal_amount), getString(R.string.amount_with_unit, StringUtil.formatBalance(transaction.getShowValue()))));
                 addView(getItemView(getStringWithColon(R.string.fee), getString(R.string.amount_with_unit, transaction.getShowActualTxCost())));

@@ -490,6 +490,7 @@
     <string name="msg_trillion">万亿</string>
 
     <string name="delegated_to">委托给</string>
+    <string name="undelegated_from">赎回From</string>
     <string name="delegation_amount">委托数量</string>
     <string name="withdrawal_amount">赎回数量</string>
     <string name="version">版本</string>
@@ -696,4 +697,8 @@
     <string name="msg_refresh_or_check_the_network">请您重新刷新或者检查网络</string>
 
     <string name="msg_timestamp">交易时间</string>
+
+    <string name="msg_operator_address">操作钱包：</string>
+    <string name="msg_delegated_to">委托给：</string>
+    <string name="msg_undelegated_from">赎回From：</string>
 </resources>
