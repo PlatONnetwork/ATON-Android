@@ -290,7 +290,7 @@
     <string name="time">时间</string>
     <string name="submissionTime">交易时间</string>
     <string name="memo">备注</string>
-    <string name="hash">交易哈希</string>
+    <string name="msg_transaction_hash">交易哈希</string>
     <string name="executeContractConfirm">交易确认</string>
     <string name="pending">确认中</string>
     <string name="signing">签名中</string>
@@ -694,4 +694,6 @@
     <string name="action_refresh">刷新</string>
     <string name="msg_network_loading_failed">网络加载失败</string>
     <string name="msg_refresh_or_check_the_network">请您重新刷新或者检查网络</string>
+
+    <string name="msg_timestamp">交易时间</string>
 </resources>

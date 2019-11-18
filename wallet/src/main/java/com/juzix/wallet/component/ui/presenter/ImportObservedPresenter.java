@@ -9,6 +9,7 @@ import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.ImportObservedContract;
 import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.config.AppSettings;
+import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.utils.CommonUtil;
 
@@ -32,6 +33,7 @@ public class ImportObservedPresenter extends BasePresenter<ImportObservedContrac
             getView().enableImportObservedWallet(false);
         }
     }
+
     @Override
     public void checkPaste() {
         String text = CommonUtil.getTextFromClipboard(getContext());
@@ -55,31 +57,9 @@ public class ImportObservedPresenter extends BasePresenter<ImportObservedContrac
             case WalletManager.CODE_ERROR_WALLET_EXISTS:
                 mHandler.sendEmptyMessage(MSG_WALLET_EXISTS);
                 break;
+            default:
+                break;
         }
-
-//        Observable.fromCallable(new Callable<Boolean>() {
-//            @Override
-//            public Boolean call() throws Exception {
-//                return JZWalletUtil.isValidAddress(walletAddress);
-//            }
-//        }).map(new Function<Boolean, Boolean>() {
-//            @Override
-//            public Boolean apply(Boolean aBoolean) throws Exception {
-//                return null;
-//            }
-//        }).flatMap(new Function<Boolean, ObservableSource<Wallet>>() {
-//            @Override
-//            public ObservableSource<Wallet> apply(Boolean aBoolean) throws Exception {
-//                return;
-//            }
-//        }).compose(RxUtils.bindToLifecycle(getView()))
-//                .compose(RxUtils.getSchedulerTransformer())
-//                .subscribe(new CustomObserver<Wallet>() {
-//                    @Override
-//                    public void accept(Wallet wallet) {
-//
-//                    }long time = System.currentTimeMillis();
-//                });
     }
 
     private static final int MSG_OK = 1;
@@ -92,7 +72,7 @@ public class ImportObservedPresenter extends BasePresenter<ImportObservedContrac
             switch (msg.what) {
                 case MSG_OK:
                     dismissLoadingDialogImmediately();
-                    AppSettings.getInstance().setWalletNameSequence(AppSettings.getInstance().getWalletNameSequence()+1);//钱包名称序号自增长
+                    AppSettings.getInstance().setWalletNameSequence(AppSettings.getInstance().getWalletNameSequence(NodeManager.getInstance().getChainId()) + 1);//钱包名称序号自增长
                     MainActivity.actionStart(currentActivity());
                     currentActivity().finish();
                     break;
@@ -103,6 +83,8 @@ public class ImportObservedPresenter extends BasePresenter<ImportObservedContrac
                 case MSG_WALLET_EXISTS:
                     dismissLoadingDialogImmediately();
                     showLongToast(string(R.string.walletExists));
+                    break;
+                default:
                     break;
             }
         }

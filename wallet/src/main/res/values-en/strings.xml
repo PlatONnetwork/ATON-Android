@@ -290,7 +290,7 @@
     <string name="time">Time</string>
     <string name="submissionTime">Submission Time</string>
     <string name="memo">Memo</string>
-    <string name="hash">Hash</string>
+    <string name="msg_transaction_hash">Tx Hash</string>
     <string name="executeContractConfirm">Execute Contract-Confirm</string>
     <string name="pending">Pending</string>
     <string name="signing">Signing</string>
@@ -676,10 +676,12 @@
     <string name="unrecognized_content">Unrecognized content</string>
     <string name="no_delegation_information">No delegation information</string>
     <string name="newbaleyworld">NewBaleyworld</string>
-  
+
     <string name="msg_scan_qrcode">Please aim at the QR code and wait patiently.</string>
     <string name="action_refresh">Refresh</string>
     <string name="msg_network_loading_failed">Network loading failed</string>
     <string name="msg_refresh_or_check_the_network">please try again to refresh or check the network</string>
+
+    <string name="msg_timestamp">Timestamp</string>
 </resources>
 

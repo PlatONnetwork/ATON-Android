@@ -10,8 +10,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.juzix.wallet.R;
 import com.juzix.wallet.entity.Transaction;
+import com.juzix.wallet.entity.TransactionStatus;
 import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.entity.TransferType;
 import com.juzix.wallet.utils.CommonUtil;
@@ -45,77 +47,79 @@ public class TransactionDetailInfoView extends LinearLayout {
 
     private void addView(Transaction transaction, @TransferType int transferType) {
 
+        int transactionTimeDescRes = getTransactionTimeDescRes(transaction.getTxReceiptStatus());
+
         switch (transaction.getTxType()) {
             case TRANSFER:
                 addView(getItemView(getStringWithColon(R.string.type), getString(transaction.getTransferDescRes(transferType))));
-                addView(getItemView(getStringWithColon(R.string.submissionTime), transaction.getShowCreateTime()));
+                addView(getItemView(getStringWithColon(transactionTimeDescRes), transaction.getShowCreateTime()));
                 addView(getItemView(getStringWithColon(R.string.submissionAmount), getString(R.string.amount_with_unit, StringUtil.formatBalance(transaction.getShowValue()))));
                 addView(getItemView(getStringWithColon(R.string.fee), getString(R.string.amount_with_unit, transaction.getShowActualTxCost())));
-                addView(getItemView(getStringWithColon(R.string.hash), transaction.getHash(),true));
+                addView(getItemView(getStringWithColon(R.string.msg_transaction_hash), transaction.getHash(), true));
                 break;
             case CONTRACT_CREATION:
             case CONTRACT_EXECUTION:
             case MPC_TRANSACTION:
                 addView(getItemView(getStringWithColon(R.string.type), getString(transaction.getTxType().getTxTypeDescRes())));
-                addView(getItemView(getStringWithColon(R.string.submissionTime), transaction.getShowCreateTime()));
+                addView(getItemView(getStringWithColon(transactionTimeDescRes), transaction.getShowCreateTime()));
                 addView(getItemView(getStringWithColon(R.string.submissionAmount), getString(R.string.amount_with_unit, StringUtil.formatBalance(transaction.getShowValue()))));
                 addView(getItemView(getStringWithColon(R.string.fee), getString(R.string.amount_with_unit, transaction.getShowActualTxCost())));
-                addView(getItemView(getStringWithColon(R.string.hash), transaction.getHash(),true));
+                addView(getItemView(getStringWithColon(R.string.msg_transaction_hash), transaction.getHash(), true));
                 break;
             case OTHER_INCOME:
             case OTHER_EXPENSES:
                 addView(getItemView(getStringWithColon(R.string.type), transferType == TransferType.SEND ? getString(R.string.other_expenses) : getString(R.string.other_income)));
-                addView(getItemView(getStringWithColon(R.string.submissionTime), transaction.getShowCreateTime()));
+                addView(getItemView(getStringWithColon(transactionTimeDescRes), transaction.getShowCreateTime()));
                 addView(getItemView(getStringWithColon(R.string.submissionAmount), getString(R.string.amount_with_unit, StringUtil.formatBalance(transaction.getShowValue()))));
                 addView(getItemView(getStringWithColon(R.string.fee), getString(R.string.amount_with_unit, transaction.getShowActualTxCost())));
-                addView(getItemView(getStringWithColon(R.string.hash), transaction.getHash(),true));
+                addView(getItemView(getStringWithColon(R.string.msg_transaction_hash), transaction.getHash(), true));
                 break;
             case CREATE_VALIDATOR:
                 addView(getItemView(getStringWithColon(R.string.type), getString(transaction.getTxType().getTxTypeDescRes())));
-                addView(getItemView(getStringWithColon(R.string.submissionTime), transaction.getShowCreateTime()));
+                addView(getItemView(getStringWithColon(transactionTimeDescRes), transaction.getShowCreateTime()));
                 addView(getItemView(getStringWithColon(R.string.validator), getString(transaction.getNodeName())));
                 addView(getItemView(getStringWithColon(R.string.nodeId), transaction.getNodeId()));
                 addView(getItemView(getStringWithColon(R.string.version), transaction.getFormatVersion()));
                 addView(getItemView(getStringWithColon(R.string.stake_amount), getString(R.string.amount_with_unit, StringUtil.formatBalance(transaction.getShowValue()))));
                 addView(getItemView(getStringWithColon(R.string.fee), getString(R.string.amount_with_unit, transaction.getShowActualTxCost())));
-                addView(getItemView(getStringWithColon(R.string.hash), transaction.getHash(),true));
+                addView(getItemView(getStringWithColon(R.string.msg_transaction_hash), transaction.getHash(), true));
                 break;
             case EDIT_VALIDATOR:
                 addView(getItemView(getStringWithColon(R.string.type), getString(transaction.getTxType().getTxTypeDescRes())));
-                addView(getItemView(getStringWithColon(R.string.submissionTime), transaction.getShowCreateTime()));
+                addView(getItemView(getStringWithColon(transactionTimeDescRes), transaction.getShowCreateTime()));
                 addView(getItemView(getStringWithColon(R.string.validator), getString(transaction.getNodeName())));
                 addView(getItemView(getStringWithColon(R.string.nodeId), transaction.getNodeId()));
                 addView(getItemView(getStringWithColon(R.string.stake_amount), getString(R.string.amount_with_unit, StringUtil.formatBalance(transaction.getShowValue()))));
                 addView(getItemView(getStringWithColon(R.string.fee), getString(R.string.amount_with_unit, transaction.getShowActualTxCost())));
-                addView(getItemView(getStringWithColon(R.string.hash), transaction.getHash(),true));
+                addView(getItemView(getStringWithColon(R.string.msg_transaction_hash), transaction.getHash(), true));
                 break;
             case INCREASE_STAKING:
                 addView(getItemView(getStringWithColon(R.string.type), getString(transaction.getTxType().getTxTypeDescRes())));
-                addView(getItemView(getStringWithColon(R.string.submissionTime), transaction.getShowCreateTime()));
+                addView(getItemView(getStringWithColon(transactionTimeDescRes), transaction.getShowCreateTime()));
                 addView(getItemView(getStringWithColon(R.string.validator), getString(transaction.getNodeName())));
                 addView(getItemView(getStringWithColon(R.string.nodeId), transaction.getNodeId()));
                 addView(getItemView(getStringWithColon(R.string.stake_increase_amount), getString(R.string.amount_with_unit, StringUtil.formatBalance(transaction.getShowValue()))));
                 addView(getItemView(getStringWithColon(R.string.fee), getString(R.string.amount_with_unit, transaction.getShowActualTxCost())));
-                addView(getItemView(getStringWithColon(R.string.hash), transaction.getHash(),true));
+                addView(getItemView(getStringWithColon(R.string.msg_transaction_hash), transaction.getHash(), true));
                 break;
             case EXIT_VALIDATOR:
                 addView(getItemView(getStringWithColon(R.string.type), getString(transaction.getTxType().getTxTypeDescRes())));
-                addView(getItemView(getStringWithColon(R.string.submissionTime), transaction.getShowCreateTime()));
+                addView(getItemView(getStringWithColon(transactionTimeDescRes), transaction.getShowCreateTime()));
                 addView(getItemView(getStringWithColon(R.string.validator), getString(transaction.getNodeName())));
                 addView(getItemView(getStringWithColon(R.string.nodeId), transaction.getNodeId()));
                 addView(getItemView(getStringWithColon(R.string.return_amount), getString(R.string.amount_with_unit, StringUtil.formatBalance(transaction.getShowValue()))));
                 addView(getItemView(getStringWithColon(R.string.fee), getString(R.string.amount_with_unit, transaction.getShowActualTxCost())));
-                addView(getItemView(getStringWithColon(R.string.hash), transaction.getHash(),true));
+                addView(getItemView(getStringWithColon(R.string.msg_transaction_hash), transaction.getHash(), true));
                 break;
             case DELEGATE:
             case UNDELEGATE:
                 addView(getItemView(getStringWithColon(R.string.type), transaction.getTxType() == TransactionType.DELEGATE ? getString(R.string.delegate) : getString(R.string.undelegate)));
-                addView(getItemView(getStringWithColon(R.string.submissionTime), transaction.getShowCreateTime()));
+                addView(getItemView(getStringWithColon(transactionTimeDescRes), transaction.getShowCreateTime()));
                 addView(getItemView(getStringWithColon(R.string.delegated_to), transaction.getNodeName()));
                 addView(getItemView(getStringWithColon(R.string.nodeId), transaction.getNodeId()));
                 addView(getItemView(transaction.getTxType() == TransactionType.DELEGATE ? getStringWithColon(R.string.delegation_amount) : getStringWithColon(R.string.withdrawal_amount), getString(R.string.amount_with_unit, StringUtil.formatBalance(transaction.getShowValue()))));
                 addView(getItemView(getStringWithColon(R.string.fee), getString(R.string.amount_with_unit, transaction.getShowActualTxCost())));
-                addView(getItemView(getStringWithColon(R.string.hash), transaction.getHash(),true));
+                addView(getItemView(getStringWithColon(R.string.msg_transaction_hash), transaction.getHash(), true));
                 break;
             case CREATE_TEXT_PROPOSAL:
             case CREATE_UPGRADE_PROPOSAL:
@@ -123,7 +127,7 @@ public class TransactionDetailInfoView extends LinearLayout {
             case CANCEL_PROPOSAL:
             case VOTING_PROPOSAL:
                 addView(getItemView(getStringWithColon(R.string.type), getString(transaction.getTxType().getTxTypeDescRes())));
-                addView(getItemView(getStringWithColon(R.string.submissionTime), transaction.getShowCreateTime()));
+                addView(getItemView(getStringWithColon(transactionTimeDescRes), transaction.getShowCreateTime()));
                 addView(getItemView(getStringWithColon(R.string.validator), getString(transaction.getNodeName())));
                 addView(getItemView(getStringWithColon(R.string.nodeId), transaction.getNodeId()));
                 addView(getItemView(getStringWithColon(R.string.proposal_id), transaction.getHash()));
@@ -133,33 +137,33 @@ public class TransactionDetailInfoView extends LinearLayout {
                     addView(getItemView(getStringWithColon(R.string.vote), getString(transaction.getVoteOptionTypeDescRes())));
                 }
                 addView(getItemView(getStringWithColon(R.string.fee), getString(R.string.amount_with_unit, transaction.getShowActualTxCost())));
-                addView(getItemView(getStringWithColon(R.string.hash), transaction.getHash(),true));
+                addView(getItemView(getStringWithColon(R.string.msg_transaction_hash), transaction.getHash(), true));
                 break;
             case DECLARE_VERSION:
                 addView(getItemView(getStringWithColon(R.string.type), getString(transaction.getTxType().getTxTypeDescRes())));
-                addView(getItemView(getStringWithColon(R.string.submissionTime), transaction.getShowCreateTime()));
+                addView(getItemView(getStringWithColon(transactionTimeDescRes), transaction.getShowCreateTime()));
                 addView(getItemView(getStringWithColon(R.string.validator), getString(transaction.getNodeName())));
                 addView(getItemView(getStringWithColon(R.string.nodeId), transaction.getNodeId()));
                 addView(getItemView(getStringWithColon(R.string.version), transaction.getFormatVersion()));
                 addView(getItemView(getStringWithColon(R.string.fee), getString(R.string.amount_with_unit, transaction.getShowActualTxCost())));
-                addView(getItemView(getStringWithColon(R.string.hash), transaction.getHash(),true));
+                addView(getItemView(getStringWithColon(R.string.msg_transaction_hash), transaction.getHash(), true));
                 break;
             case REPORT_VALIDATOR:
                 addView(getItemView(getStringWithColon(R.string.type), getString(transaction.getTxType().getTxTypeDescRes())));
-                addView(getItemView(getStringWithColon(R.string.submissionTime), transaction.getShowCreateTime()));
+                addView(getItemView(getStringWithColon(transactionTimeDescRes), transaction.getShowCreateTime()));
                 addView(getItemView(getStringWithColon(R.string.reported), transaction.getNodeName()));
                 addView(getItemView(getStringWithColon(R.string.nodeId), transaction.getNodeId()));
                 addView(getItemView(getStringWithColon(R.string.report_type), getString(transaction.getReportTypeDescRes())));
                 addView(getItemView(getStringWithColon(R.string.fee), getString(R.string.amount_with_unit, transaction.getShowActualTxCost())));
-                addView(getItemView(getStringWithColon(R.string.hash), transaction.getHash(),true));
+                addView(getItemView(getStringWithColon(R.string.msg_transaction_hash), transaction.getHash(), true));
                 break;
             case CREATE_RESTRICTING:
                 addView(getItemView(getStringWithColon(R.string.type), getString(transaction.getTxType().getTxTypeDescRes())));
-                addView(getItemView(getStringWithColon(R.string.submissionTime), transaction.getShowCreateTime()));
+                addView(getItemView(getStringWithColon(transactionTimeDescRes), transaction.getShowCreateTime()));
                 addView(getItemView(getStringWithColon(R.string.restricted_account), transaction.getLockAddress()));
                 addView(getItemView(getStringWithColon(R.string.restricted_amount), getString(R.string.amount_with_unit, StringUtil.formatBalance(transaction.getShowValue()))));
                 addView(getItemView(getStringWithColon(R.string.fee), getString(R.string.amount_with_unit, transaction.getShowActualTxCost())));
-                addView(getItemView(getStringWithColon(R.string.hash), transaction.getHash(),true));
+                addView(getItemView(getStringWithColon(R.string.msg_transaction_hash), transaction.getHash(), true));
                 break;
             default:
                 break;
@@ -167,17 +171,22 @@ public class TransactionDetailInfoView extends LinearLayout {
 
     }
 
+    private @StringRes
+    int getTransactionTimeDescRes(TransactionStatus transactionStatus) {
+        return transactionStatus == TransactionStatus.SUCCESSED ? R.string.msg_timestamp : R.string.submissionTime;
+    }
 
-    private View getItemView(String key, String value,boolean isShowCopyImage) {
+
+    private View getItemView(String key, String value, boolean isShowCopyImage) {
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.item_transaction_detail_info, null);
         TextView keyTv = contentView.findViewById(R.id.tv_key);
         TextView valueTv = contentView.findViewById(R.id.tv_value);
         ImageView iv_copy_hash = contentView.findViewById(R.id.iv_copy_hash);
-        iv_copy_hash.setVisibility(isShowCopyImage? View.VISIBLE :View.GONE);
+        iv_copy_hash.setVisibility(isShowCopyImage ? View.VISIBLE : View.GONE);
         iv_copy_hash.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                CommonUtil.copyTextToClipboard(getContext(),value);
+                CommonUtil.copyTextToClipboard(getContext(), value);
             }
         });
         keyTv.setText(key);
