@@ -678,5 +678,8 @@
     <string name="newbaleyworld">NewBaleyworld</string>
   
     <string name="msg_scan_qrcode">Please aim at the QR code and wait patiently.</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="msg_network_loading_failed">Network loading failed</string>
+    <string name="msg_refresh_or_check_the_network">please try again to refresh or check the network</string>
 </resources>
 

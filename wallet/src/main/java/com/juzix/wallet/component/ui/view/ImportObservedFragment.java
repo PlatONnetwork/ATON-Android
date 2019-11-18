@@ -51,7 +51,7 @@ public class ImportObservedFragment extends MVPBaseFragment<ImportObservedPresen
 
     @Override
     protected View onCreateFragmentPage(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_import_individual_observed, container, false);
+        View view = inflater.inflate(R.layout.fragment_import_observed, container, false);
         unbinder = ButterKnife.bind(this, view);
         addListener();
         return view;

@@ -691,4 +691,7 @@
     <string name="newbaleyworld">新贝莱世界</string>
 
     <string name="msg_scan_qrcode">请对准二维码，耐心等待.</string>
+    <string name="action_refresh">刷新</string>
+    <string name="msg_network_loading_failed">网络加载失败</string>
+    <string name="msg_refresh_or_check_the_network">请您重新刷新或者检查网络</string>
 </resources>
