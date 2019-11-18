@@ -413,7 +413,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
                 return R.string.send;
             }
         } else {
-            return R.string.receive;
+            return R.string.received;
         }
     }
 
@@ -428,7 +428,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
             case TransferType.TRANSFER:
                 return R.string.transfer;
             case TransferType.RECEIVE:
-                return R.string.receive;
+                return R.string.received;
             default:
                 return R.string.send;
         }

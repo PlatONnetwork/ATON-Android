@@ -77,7 +77,6 @@ public class TransactionViewHolder extends BaseViewHolder<Transaction> {
             return;
         }
 
-
         TransactionStatus transactionStatus = transaction.getTxReceiptStatus();
         TransactionType transactionType = transaction.getTxType();
         boolean isSender = transaction.isSender(mQueryAddressList);
@@ -87,7 +86,7 @@ public class TransactionViewHolder extends BaseViewHolder<Transaction> {
         if (isTransfer || isValueZero || transactionStatus == TransactionStatus.FAILED) {
             mTransactionAmountTv.setText(StringUtil.formatBalance(transaction.getShowValue()));
             mTransactionAmountTv.setTextColor(ContextCompat.getColor(mContext, R.color.color_b6bbd0));
-        } else if (isSender) {
+        } else if (isSender && transactionType != TransactionType.UNDELEGATE) {
             mTransactionAmountTv.setText(String.format("%s%s", "-", StringUtil.formatBalance(transaction.getShowValue())));
             mTransactionAmountTv.setTextColor(ContextCompat.getColor(mContext, R.color.color_ff3b3b));
         } else {
@@ -109,7 +108,7 @@ public class TransactionViewHolder extends BaseViewHolder<Transaction> {
     private String getTxTDesc(Transaction transaction, Context context, boolean isSender) {
         TransactionType transactionType = transaction.getTxType();
         if (transactionType == TransactionType.TRANSFER) {
-            return context.getResources().getString(isSender ? R.string.send : R.string.receive);
+            return context.getResources().getString(isSender ? R.string.send : R.string.received);
         } else {
             return context.getResources().getString(transactionType.getTxTypeDescRes());
         }

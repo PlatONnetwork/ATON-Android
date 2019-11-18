@@ -234,7 +234,7 @@
     <string name="transfer_amount_exceed_balance">Amount exceed balance</string>
     <string name="insufficient_balance">Insufficient balance payment fee</string>
     <string name="send">Send</string>
-    <string name="receive">Receive</string>
+    <string name="received">Received</string>
     <string name="receive_atp">Receive&#160;LAT</string>
     <string name="editNode">Edit Node</string>
     <string name="node_settings">Node Settings</string>
