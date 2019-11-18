@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.juzix.wallet.app.Constants;
+import com.juzix.wallet.engine.NodeManager;
 
 /**
  * @author matrixelement
@@ -57,8 +58,9 @@ public class AppSettings {
     }
 
     public String getTagFromDelegateOrValidators() {
-      return  getStringItem(Constants.Preference.KEY_DELEGATE_OR_VALIDATORS_TAG, null);
+        return getStringItem(Constants.Preference.KEY_DELEGATE_OR_VALIDATORS_TAG, null);
     }
+
     public boolean getMydelegateTab() {
         return getBooleanItem(Constants.Preference.KEY_MYDELEGATETAB, true);
     }
@@ -91,46 +93,52 @@ public class AppSettings {
         setBooleanItem(Constants.Preference.KEY_SHOW_RECORD, isShowRecord);
     }
 
-    public boolean getDelegateDetailBoolean(){
-        return  getBooleanItem(Constants.Preference.KEY_SHOW_DELEGATE_DETAIL,false);
-    }
-    public void setDelegateDetailBoolean(boolean isShowDelegateDetail){
-        setBooleanItem(Constants.Preference.KEY_SHOW_DELEGATE_DETAIL,isShowDelegateDetail);
+    public boolean getDelegateDetailBoolean() {
+        return getBooleanItem(Constants.Preference.KEY_SHOW_DELEGATE_DETAIL, false);
     }
 
-    public boolean getDelegateOperationBoolean(){
-        return  getBooleanItem(Constants.Preference.KEY_SHOW_DELEGATE_OPERATION,false);
-    }
-    public void setDelegateOperationBoolean(boolean isShowDelegateOperation){
-        setBooleanItem(Constants.Preference.KEY_SHOW_DELEGATE_OPERATION,isShowDelegateOperation);
+    public void setDelegateDetailBoolean(boolean isShowDelegateDetail) {
+        setBooleanItem(Constants.Preference.KEY_SHOW_DELEGATE_DETAIL, isShowDelegateDetail);
     }
 
-    public boolean getValidatorsBoolean(){
-        return  getBooleanItem(Constants.Preference.KEY_SHOW_VALIDATORS,false);
-    }
-    public void setValidatorsBoolean(boolean isShowValidators){
-        setBooleanItem(Constants.Preference.KEY_SHOW_VALIDATORS,isShowValidators);
+    public boolean getDelegateOperationBoolean() {
+        return getBooleanItem(Constants.Preference.KEY_SHOW_DELEGATE_OPERATION, false);
     }
 
-    public boolean getObservedWalletBoolean(){
-        return getBooleanItem(Constants.Preference.KEY_SHOW_OBSERVED_WALLET,false);
-    }
-    public void setObservedWalletBoolean(boolean isShowObservedWallet){
-        setBooleanItem(Constants.Preference.KEY_SHOW_OBSERVED_WALLET,isShowObservedWallet);
+    public void setDelegateOperationBoolean(boolean isShowDelegateOperation) {
+        setBooleanItem(Constants.Preference.KEY_SHOW_DELEGATE_OPERATION, isShowDelegateOperation);
     }
 
-    public boolean getMyDelegateBoolean(){
-        return  getBooleanItem(Constants.Preference.KEY_SHOW_MY_DELEGATE,false);
-    }
-    public void setMyDelegateBoolean(boolean isShowMydelegate){
-        setBooleanItem(Constants.Preference.KEY_SHOW_MY_DELEGATE,isShowMydelegate);
+    public boolean getValidatorsBoolean() {
+        return getBooleanItem(Constants.Preference.KEY_SHOW_VALIDATORS, false);
     }
 
-    public boolean getWithdrawOperation(){
-        return  getBooleanItem(Constants.Preference.KEY_SHOW_WITHDRAW_OPERATION,false);
+    public void setValidatorsBoolean(boolean isShowValidators) {
+        setBooleanItem(Constants.Preference.KEY_SHOW_VALIDATORS, isShowValidators);
     }
-    public void setWithdrawOperation(boolean isShowWithdrawOperation){
-        setBooleanItem(Constants.Preference.KEY_SHOW_WITHDRAW_OPERATION,isShowWithdrawOperation);
+
+    public boolean getObservedWalletBoolean() {
+        return getBooleanItem(Constants.Preference.KEY_SHOW_OBSERVED_WALLET, false);
+    }
+
+    public void setObservedWalletBoolean(boolean isShowObservedWallet) {
+        setBooleanItem(Constants.Preference.KEY_SHOW_OBSERVED_WALLET, isShowObservedWallet);
+    }
+
+    public boolean getMyDelegateBoolean() {
+        return getBooleanItem(Constants.Preference.KEY_SHOW_MY_DELEGATE, false);
+    }
+
+    public void setMyDelegateBoolean(boolean isShowMydelegate) {
+        setBooleanItem(Constants.Preference.KEY_SHOW_MY_DELEGATE, isShowMydelegate);
+    }
+
+    public boolean getWithdrawOperation() {
+        return getBooleanItem(Constants.Preference.KEY_SHOW_WITHDRAW_OPERATION, false);
+    }
+
+    public void setWithdrawOperation(boolean isShowWithdrawOperation) {
+        setBooleanItem(Constants.Preference.KEY_SHOW_WITHDRAW_OPERATION, isShowWithdrawOperation);
     }
 
     public boolean getShowAssetsFlag() {
@@ -149,15 +157,16 @@ public class AppSettings {
         setLongItem(Constants.Preference.KEY_UPDATE_VERSION_TIME, updateVersionTime);
     }
 
-    public int getWalletNameSequence() {
-        return getIntItem(Constants.Preference.KEY_WALLET_NAME_SEQUENCE_NUMBER, 1);
+    public int getWalletNameSequence(String key) {
+        return getIntItem(key, 1);
     }
 
     public void setWalletNameSequence(int walletNameSequence) {
-        setIntItem(Constants.Preference.KEY_WALLET_NAME_SEQUENCE_NUMBER, walletNameSequence);
+        setIntItem(NodeManager.getInstance().getChainId(),walletNameSequence);
     }
-    private String getStringItem(String key, String defaultvalue) {
-        return preferences.getString(key, defaultvalue);
+
+    private String getStringItem(String key, String defaultValue) {
+        return preferences.getString(key, defaultValue);
     }
 
     private void setStringItem(String key, String value) {

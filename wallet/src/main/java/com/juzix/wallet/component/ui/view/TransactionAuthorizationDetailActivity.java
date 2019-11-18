@@ -3,6 +3,7 @@ package com.juzix.wallet.component.ui.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.text.TextUtils;
 import android.widget.TextView;
 
@@ -53,6 +54,10 @@ public class TransactionAuthorizationDetailActivity extends BaseActivity {
     TextView tvFee;
     @BindView(R.id.sbtn_next)
     ShadowButton sbtnNext;
+    @BindView(R.id.tv_sender_title)
+    TextView tvSenderTitle;
+    @BindView(R.id.tv_recipient_title)
+    TextView tvRecipientTitle;
 
     Unbinder unbinder;
 
@@ -79,6 +84,8 @@ public class TransactionAuthorizationDetailActivity extends BaseActivity {
 
         TransactionAuthorizationDetail transactionAuthorizationDetail = transactionAuthorizationData.getTransactionAuthorizationDetail();
 
+        tvSenderTitle.setText(getResources().getString(R.string.msg_operator_address));
+        tvRecipientTitle.setText(getRecipientInfoRes(transactionAuthorizationDetail.getFunctionType()));
         tvTxnInfo.setText(string(getTxnInfoRes(transactionAuthorizationDetail.getFunctionType())));
         tvAmount.setText(StringUtil.formatBalance(BigDecimalUtil.div(transactionAuthorizationDetail.getAmount(), "1E18")));
         tvSender.setText(getFormatName(transactionAuthorizationDetail.getSender(), null));
@@ -131,6 +138,18 @@ public class TransactionAuthorizationDetailActivity extends BaseActivity {
                 return R.string.undelegate;
             default:
                 return R.string.transfer;
+        }
+    }
+
+    private @StringRes
+    int getRecipientInfoRes(int functionType) {
+        switch (functionType) {
+            case FunctionType.DELEGATE_FUNC_TYPE:
+                return R.string.msg_delegated_to;
+            case FunctionType.WITHDREW_DELEGATE_FUNC_TYPE:
+                return R.string.msg_undelegated_from;
+            default:
+                return R.string.msg_recipient;
         }
     }
 

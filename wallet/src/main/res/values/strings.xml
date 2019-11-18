@@ -290,7 +290,7 @@
     <string name="time">时间</string>
     <string name="submissionTime">交易时间</string>
     <string name="memo">备注</string>
-    <string name="hash">交易哈希</string>
+    <string name="msg_transaction_hash">交易哈希</string>
     <string name="executeContractConfirm">交易确认</string>
     <string name="pending">确认中</string>
     <string name="signing">签名中</string>
@@ -490,6 +490,7 @@
     <string name="msg_trillion">万亿</string>
 
     <string name="delegated_to">委托给</string>
+    <string name="undelegated_from">赎回From</string>
     <string name="delegation_amount">委托数量</string>
     <string name="withdrawal_amount">赎回数量</string>
     <string name="version">版本</string>
@@ -691,4 +692,13 @@
     <string name="newbaleyworld">新贝莱世界</string>
 
     <string name="msg_scan_qrcode">请对准二维码，耐心等待.</string>
+    <string name="action_refresh">刷新</string>
+    <string name="msg_network_loading_failed">网络加载失败</string>
+    <string name="msg_refresh_or_check_the_network">请您重新刷新或者检查网络</string>
+
+    <string name="msg_timestamp">交易时间</string>
+
+    <string name="msg_operator_address">操作钱包：</string>
+    <string name="msg_delegated_to">委托给：</string>
+    <string name="msg_undelegated_from">赎回From：</string>
 </resources>

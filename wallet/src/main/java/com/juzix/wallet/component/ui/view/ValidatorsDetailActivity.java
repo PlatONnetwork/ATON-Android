@@ -91,11 +91,13 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
     @BindView(R.id.ll_shade)
     LinearLayout ll_shade;
     @BindView(R.id.layout_no_network)
-    ConstraintLayout noNetworkLayout;
+    LinearLayout noNetworkLayout;
     @BindView(R.id.sv_content)
     ScrollView contentSV;
     @BindView(R.id.ll_guide)
     LinearLayout ll_guide;
+    @BindView(R.id.tv_refresh)
+    TextView refreshTv;
 
     public static final String STATE_ACTIVE = "Active";
     public static final String STATE_CANDIDATE = "Candidate";
@@ -169,13 +171,13 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
 
     public void clickViewListener() {
 
-        RxView.clicks(delegate).compose(RxUtils.bindToLifecycle(this))
+        RxView.clicks(delegate)
+                .compose(RxUtils.bindToLifecycle(this))
                 .compose(RxUtils.getClickTransformer())
                 .subscribe(new CustomObserver<Object>() {
 
                     @Override
                     public void accept(Object o) {
-//                        mPresenter.getWalletBalance();
                         //点击委托不需要做任何判断，跳转就行
                         DelegateDetail delegateDetail = new DelegateDetail();
                         delegateDetail.setNodeName(mNodeName);
@@ -185,7 +187,8 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
                     }
                 });
 
-        RxView.clicks(webSite).compose(RxUtils.bindToLifecycle(this))
+        RxView.clicks(webSite)
+                .compose(RxUtils.bindToLifecycle(this))
                 .compose(RxUtils.getClickTransformer())
                 .subscribe(new CustomObserver<Object>() {
                     @Override
@@ -194,12 +197,23 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
                     }
                 });
 
-        RxView.clicks(nodeLink).compose(RxUtils.bindToLifecycle(this))
+        RxView.clicks(nodeLink)
+                .compose(RxUtils.bindToLifecycle(this))
                 .compose(RxUtils.getClickTransformer())
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
                         CommonHybridActivity.actionStart(getContext(), websiteUrl, WebType.WEB_TYPE_NODE_DETAIL);
+                    }
+                });
+
+        RxView.clicks(refreshTv)
+                .compose(RxUtils.bindToLifecycle(this))
+                .compose(RxUtils.getClickTransformer())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        mPresenter.loadValidatorsDetailData();
                     }
                 });
 
@@ -274,6 +288,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
         ll_guide.setVisibility(View.VISIBLE);
 
     }
+
     public void setImageIconForText(TextView textView, String content) {
         SpannableString spannableString = new SpannableString("  " + content);
         Drawable drawable = getResources().getDrawable(R.drawable.icon_no_delegate_tips);

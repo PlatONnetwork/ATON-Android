@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.jakewharton.rxbinding2.view.RxView;
+import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
@@ -51,14 +52,14 @@ public class ImportObservedFragment extends MVPBaseFragment<ImportObservedPresen
 
     @Override
     protected View onCreateFragmentPage(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_import_individual_observed, container, false);
+        View view = inflater.inflate(R.layout.fragment_import_observed, container, false);
         unbinder = ButterKnife.bind(this, view);
         addListener();
         return view;
     }
 
     private void addListener() {
-        et_observed.addTextChangedListener(textWatcher);
+
         RxView.clicks(sbtn_finish)
                 .compose(RxUtils.getClickTransformer())
                 .compose(RxUtils.bindToLifecycle(this))
@@ -80,23 +81,17 @@ public class ImportObservedFragment extends MVPBaseFragment<ImportObservedPresen
                         et_observed.setSelection(et_observed.getText().toString().length());
                     }
                 });
+
+        RxTextView
+                .textChanges(et_observed)
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<CharSequence>() {
+                    @Override
+                    public void accept(CharSequence charSequence) {
+                        mPresenter.IsImportObservedWallet(charSequence.toString());
+                    }
+                });
     }
-
-    TextWatcher textWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            mPresenter.IsImportObservedWallet(s.toString());
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-        }
-    };
-
 
     @Override
     public String getWalletAddress() {

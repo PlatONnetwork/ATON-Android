@@ -53,7 +53,7 @@ public class ValidatorsDetailPresenter extends BasePresenter<ValidatorsDetailCon
 
                     @Override
                     public void onApiFailure(ApiResponse response) {
-                        if (isViewAttached()){
+                        if (isViewAttached()) {
                             getView().showValidatorsDetailFailed();
                         }
                     }
