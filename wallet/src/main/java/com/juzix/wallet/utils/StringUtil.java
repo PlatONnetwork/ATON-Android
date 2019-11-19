@@ -23,6 +23,7 @@ import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
 /**
@@ -100,8 +101,22 @@ public class StringUtil {
         decimalFormat.setMaximumFractionDigits(8);//设置最大的小数位数
         decimalFormat.setMinimumFractionDigits(2);
         decimalFormat.setGroupingSize(3);//设置分组大小，也就是显示逗号的位置
-//        decimalFormat.setRoundingMode(halfUp ? RoundingMode.HALF_UP : RoundingMode.FLOOR);
+        decimalFormat.setRoundingMode(halfUp ? RoundingMode.HALF_UP : RoundingMode.FLOOR);
         return decimalFormat.format(new BigDecimal(NumberParserUtils.getPrettyNumber(price, 8)));
+    }
+
+    /**
+     * 字符串数字显示按千分位显示
+     */
+    public static String formatBalance(String price, boolean halfUp) {
+        DecimalFormat decimalFormat = new DecimalFormat();
+        decimalFormat.setMaximumFractionDigits(8);//设置最大的小数位数
+        decimalFormat.setMinimumFractionDigits(2);
+        decimalFormat.setGroupingSize(3);//设置分组大小，也就是显示逗号的位置
+        if (halfUp) {
+            decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
+        }
+        return decimalFormat.format(new BigDecimal(price));
     }
 
     /**

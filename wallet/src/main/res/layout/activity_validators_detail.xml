@@ -68,7 +68,6 @@
                         android:layout_marginBottom="18dp"
                         android:src="@drawable/icon_validators_default" />
 
-
                     <android.support.constraint.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

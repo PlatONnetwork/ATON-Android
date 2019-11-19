@@ -9,8 +9,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.juzix.wallet.R;
 import com.juzix.wallet.entity.WithDrawType;
+import com.juzix.wallet.utils.StringUtil;
+
 import java.util.List;
 
 
@@ -18,7 +21,6 @@ public class WithDrawPopWindowAdapter extends BaseAdapter {
     private List<WithDrawType> typeList;
     private Context mContext;
     private int defItem;//声明默认选中项
-    public static final String TAG_UNLOCKED = "tag_unlocked";
     public static final String TAG_RELEASED = "tag_released";
     public static final String TAG_DELEGATED = "tag_delegated";
 
@@ -57,7 +59,7 @@ public class WithDrawPopWindowAdapter extends BaseAdapter {
             holder.tv_delegate_amount = view.findViewById(R.id.tv_delegate_amount);
             holder.iv_drop_down = view.findViewById(R.id.iv_drop_down);
             holder.rl_choose_delegate = view.findViewById(R.id.rl_choose_delegate);
-            holder.v_line =view.findViewById(R.id.v_line);
+            holder.v_line = view.findViewById(R.id.v_line);
             view.setTag(holder);
         } else {
             view = convertView;
@@ -76,19 +78,15 @@ public class WithDrawPopWindowAdapter extends BaseAdapter {
             holder.tv_delegate_type.setText(mContext.getString(R.string.withdraw_type_released));
         }
 
-        holder.v_line.setVisibility((position == typeList.size() -1) ? View.GONE : View.VISIBLE);
-//        holder.tv_delegate_amount.setText(mContext.getString(R.string.amount_with_unit, typeList.get(position).getValue()));
-        holder.tv_delegate_amount.setText(typeList.get(position).getValue());
+        holder.v_line.setVisibility((position == typeList.size() - 1) ? View.GONE : View.VISIBLE);
+        holder.tv_delegate_amount.setText(StringUtil.formatBalance(typeList.get(position).getValue(), false));
         return view;
     }
 
 
     @Override
     public boolean isEnabled(int position) {
-        if (TextUtils.equals(typeList.get(position).getValue(), "0.00")) {
-            return false;
-        }
-        return true;
+        return typeList.get(position).getValue() > 0;
     }
 
     @Override

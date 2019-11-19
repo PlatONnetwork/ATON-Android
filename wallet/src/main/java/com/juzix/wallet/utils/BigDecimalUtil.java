@@ -12,7 +12,7 @@ import java.math.RoundingMode;
  */
 public class BigDecimalUtil {
 
-    private static final int DEF_DIV_SCALE = 10;
+    private static final int DEF_DIV_SCALE = 8;
 
     private BigDecimalUtil() {
 
@@ -186,7 +186,7 @@ public class BigDecimalUtil {
         try {
             BigDecimal b1 = new BigDecimal(Double.toString(v1));
             BigDecimal b2 = new BigDecimal(Double.toString(v2));
-            result = b1.divide(b2, scale, BigDecimal.ROUND_HALF_UP).doubleValue();
+            result = b1.divide(b2, scale, BigDecimal.ROUND_FLOOR).doubleValue();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -207,7 +207,27 @@ public class BigDecimalUtil {
         try {
             BigDecimal b1 = new BigDecimal(v1);
             BigDecimal b2 = new BigDecimal(v2);
-            result = b1.divide(b2, scale, BigDecimal.ROUND_HALF_UP).toPlainString();
+            result = b1.divide(b2, scale, BigDecimal.ROUND_FLOOR).toPlainString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    /**
+     * 提供（相对）精确的除法运算。当发生除不尽的情况时，由scale参数指 定精度，以后的数字四舍五入。
+     *
+     * @param v1    被除数
+     * @param v2    除数
+     * @param scale 表示表示需要精确到小数点以后几位。
+     * @return 两个参数的商
+     */
+    public static String div(String v1, String v2, int scale, int roundingMode) {
+        String result = BigDecimal.ZERO.toPlainString();
+        try {
+            BigDecimal b1 = new BigDecimal(v1);
+            BigDecimal b2 = new BigDecimal(v2);
+            result = b1.divide(b2, scale, roundingMode).toPlainString();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -226,7 +246,7 @@ public class BigDecimalUtil {
         try {
             BigDecimal b = new BigDecimal(Double.toString(v));
             BigDecimal one = new BigDecimal("1");
-            result = b.divide(one, scale, BigDecimal.ROUND_HALF_UP).doubleValue();
+            result = b.divide(one, scale, BigDecimal.ROUND_FLOOR).doubleValue();
         } catch (Exception e) {
             e.printStackTrace();
         }

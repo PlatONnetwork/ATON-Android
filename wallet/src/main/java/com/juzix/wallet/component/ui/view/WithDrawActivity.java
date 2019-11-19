@@ -52,9 +52,11 @@ import com.juzix.wallet.utils.SoftHideKeyboardUtils;
 import com.juzix.wallet.utils.StringUtil;
 import com.juzix.wallet.utils.ToastUtil;
 import com.juzix.wallet.utils.UMEventUtil;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -104,8 +106,8 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     private List<WithDrawType> list = new ArrayList<>();
     private WithDrawPopWindowAdapter mPopWindowAdapter;
     private String gasPrice;
-    private String withdraw_fee;//手续费
-    private String free_account;//自由金额
+    private String withdrawFee;//手续费
+    private String freeAccount;//自由金额
 
     @Override
     protected WithDrawPresenter createPresenter() {
@@ -182,11 +184,11 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
 
                         if (TextUtils.equals(delegateType.getText().toString(), getString(R.string.withdraw_type_delegated))) {
                             chooseType = WithDrawPopWindowAdapter.TAG_DELEGATED; //已委托
-                        }else {
+                        } else {
                             chooseType = WithDrawPopWindowAdapter.TAG_RELEASED; //已解除
                         }
 
-                        if (BigDecimalUtil.sub(free_account, withdraw_fee) < 0) { //赎回时，自用金额必须大于手续费，才能赎回
+                        if (BigDecimalUtil.sub(freeAccount, withdrawFee) < 0) { //赎回时，自用金额必须大于手续费，才能赎回
                             ToastUtil.showLongToast(getContext(), R.string.withdraw_less_than_fee);
                             return;
                         }
@@ -241,12 +243,12 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
             withdrawAmount.setText("");
         } else {
             delegateType.setText(getString(R.string.withdraw_type_released)); //已解除
-            withdrawAmount.setText(item.getValue().replace(",", ""));
+            withdrawAmount.setText(String.valueOf(item.getValue()));
             withdrawAmount.setFocusableInTouchMode(false);
             withdrawAmount.setFocusable(false);
             mPresenter.getWithDrawGasPrice(gasPrice);//已解除不能操作，所以需要再获取一次手续费
         }
-        delegateAmount.setText(item.getValue());
+        delegateAmount.setText(String.valueOf(item.getValue()));
 
     }
 
@@ -305,7 +307,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         walletName.setText(individualWalletEntity.getName());
         walletAddress.setText(AddressFormatUtil.formatAddress(individualWalletEntity.getPrefixAddress()));
         wallet_icon.setImageResource(RUtils.drawable(individualWalletEntity.getAvatar()));
-        free_account = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(individualWalletEntity.getFreeBalance(), "1E18"));
+        freeAccount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(individualWalletEntity.getFreeBalance(), "1E18"));
     }
 
     @Override
@@ -334,12 +336,15 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
 
     @Override
     public void showBalanceType(double delegated, double released) {
-        delegateType.setText(getString(R.string.withdraw_type_delegated));
-        delegateAmount.setText(StringUtil.formatBalance(delegated, false));
         list.clear();
-        list.add(new WithDrawType(WithDrawPopWindowAdapter.TAG_DELEGATED, StringUtil.formatBalance(delegated, false)));
-        list.add(new WithDrawType(WithDrawPopWindowAdapter.TAG_RELEASED, StringUtil.formatBalance(released, false)));
+        list.add(new WithDrawType(WithDrawPopWindowAdapter.TAG_DELEGATED, delegated));
+        list.add(new WithDrawType(WithDrawPopWindowAdapter.TAG_RELEASED, released));
+        Collections.sort(list);
         mPopWindowAdapter.notifyDataSetChanged();
+
+        WithDrawType withDrawType = list.get(0);
+        delegateType.setText(WithDrawPopWindowAdapter.TAG_RELEASED.equals(withDrawType.getKey()) ? getString(R.string.withdraw_type_released) : getString(R.string.withdraw_type_delegated));
+        delegateAmount.setText(StringUtil.formatBalance(withDrawType.getValue(), false));
     }
 
     @Override
@@ -369,12 +374,23 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     @Override
     public void showWithDrawGasPrice(String gas) {
         fee.setText(string(R.string.amount_with_unit, gas));
-        withdraw_fee = gas;
+        withdrawFee = gas;
     }
 
     @Override
     public void showGas(BigInteger bigInteger) {
         gasPrice = bigInteger.toString();
+    }
+
+    @Override
+    public void finishDelayed() {
+        nodeName.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                showLongToast(R.string.msg_no_delegation_available);
+                finish();
+            }
+        }, 300);
     }
 
     @Override

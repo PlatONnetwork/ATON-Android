@@ -46,6 +46,8 @@ public class WithDrawContract {
 
         void showGas(BigInteger bigInteger);
 
+        void finishDelayed();
+
     }
 
     public interface Presenter extends IPresenter<View> {

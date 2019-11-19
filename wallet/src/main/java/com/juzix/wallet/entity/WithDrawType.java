@@ -1,10 +1,12 @@
 package com.juzix.wallet.entity;
 
-public class WithDrawType {
-    private String key;
-    private String value;
+import com.juzix.wallet.component.adapter.WithDrawPopWindowAdapter;
 
-    public WithDrawType(String key, String value) {
+public class WithDrawType implements Comparable<WithDrawType> {
+    private String key;
+    private double value;
+
+    public WithDrawType(String key, double value) {
         this.key = key;
         this.value = value;
     }
@@ -17,11 +19,25 @@ public class WithDrawType {
         this.key = key;
     }
 
-    public String getValue() {
+    public double getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(double value) {
         this.value = value;
+    }
+
+    /**
+     * 当“待赎回委托”不为0时，优先显示待赎回委托。
+     *
+     * @param withDrawType
+     * @return
+     */
+    @Override
+    public int compareTo(WithDrawType withDrawType) {
+        if (WithDrawPopWindowAdapter.TAG_RELEASED.equals(key) && WithDrawPopWindowAdapter.TAG_DELEGATED.equals(withDrawType.getKey()) && value > 0) {
+            return -1;
+        }
+        return 1;
     }
 }
