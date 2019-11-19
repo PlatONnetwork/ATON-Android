@@ -47,6 +47,8 @@ import com.umeng.analytics.MobclickAgent;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.math.BigDecimal;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -241,7 +243,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
             nodeState.setText(getString(R.string.validators_state_exiting));
         }
 
-        rate.setText(nodeDetail.isInit() ? "- -" : (NumberParserUtils.parseDouble(nodeDetail.getRatePA())) / 100 + "%");
+        rate.setText(nodeDetail.isInit() ? "- -" : String.format("%s%%", BigDecimalUtil.div(nodeDetail.getRatePA(), "100", 2, BigDecimal.ROUND_UNNECESSARY)));
 
         if (TextUtils.isEmpty(nodeDetail.getDeposit())) {
             totalStaked.setText("- -");

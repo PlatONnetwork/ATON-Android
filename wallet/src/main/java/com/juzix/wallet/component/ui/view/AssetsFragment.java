@@ -28,6 +28,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.juzhen.framework.util.LogUtils;
+import com.juzhen.framework.util.NumberParserUtils;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
@@ -77,6 +78,8 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -337,7 +340,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
             case MainActivity.REQ_ASSETS_TAB_QR_CODE:
                 String result = data.getStringExtra(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
                 String unzip = GZipUtil.unCompress(result);
-                if(TextUtils.isEmpty(unzip) && TextUtils.isEmpty(result)){
+                if (TextUtils.isEmpty(unzip) && TextUtils.isEmpty(result)) {
                     showLongToast(currentActivity().string(R.string.unrecognized_content));
                     return;
                 }
@@ -369,9 +372,9 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
                 }
 
                 if (qrCodeType == QrCodeType.WALLET_KEYSTORE) {
-                ImportWalletActivity.actionStart(currentActivity(), ImportWalletActivity.TabIndex.IMPORT_KEYSTORE, TextUtils.isEmpty(unzip) ? result : unzip);
-                return;
-            }
+                    ImportWalletActivity.actionStart(currentActivity(), ImportWalletActivity.TabIndex.IMPORT_KEYSTORE, TextUtils.isEmpty(unzip) ? result : unzip);
+                    return;
+                }
 
                 if (qrCodeType == QrCodeType.WALLET_MNEMONIC) {
                     ImportWalletActivity.actionStart(currentActivity(), ImportWalletActivity.TabIndex.IMPORT_MNEMONIC, TextUtils.isEmpty(unzip) ? result : unzip);
@@ -569,7 +572,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     @Override
     public void showFreeBalance(String balance) {//当前钱包的资产
 
-        tvWalletAmount.setText(string(R.string.amount_with_unit, StringUtil.formatBalance(BigDecimalUtil.div(balance, "1E18"))));
+        tvWalletAmount.setText(string(R.string.amount_with_unit, StringUtil.formatBalance(BigDecimalUtil.div(balance, "1E18"), false)));
         tvWalletAmount.setTransformationMethod(AppSettings.getInstance().getShowAssetsFlag() ? HideReturnsTransformationMethod.getInstance() : new AmountTransformationMethod(tvWalletAmount.getText().toString()));
 
         if (vpContent.getCurrentItem() == TAB2) {

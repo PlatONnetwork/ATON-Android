@@ -701,4 +701,5 @@
     <string name="msg_operator_address">操作钱包：</string>
     <string name="msg_delegated_to">委托给：</string>
     <string name="msg_undelegated_from">赎回From：</string>
+    <string name="msg_no_delegation_available">没有可赎回的委托</string>
 </resources>

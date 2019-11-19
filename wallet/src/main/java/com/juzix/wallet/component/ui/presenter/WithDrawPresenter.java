@@ -64,9 +64,9 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
 
     private int tag;
     private String feeAmount;
-    private BigInteger gas_Price; //调web3j获取gasprice
-    private BigInteger gas_limit;
-//    private long minDelegation = NumberParserUtils.parseLong(AppConfigManager.getInstance().getMinDelegation());
+    private BigInteger gasPrice; //调web3j获取gasprice
+    private BigInteger gasLimit;
+
     private String minDelegation = AppConfigManager.getInstance().getMinDelegation();
 
     public WithDrawPresenter(WithDrawContract.View view) {
@@ -144,6 +144,10 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
 
                                 getView().showBalanceType(delegatedSum, releasedSum);
 
+                                if (releasedSum <= 0) {
+                                    getView().finishDelayed();
+                                }
+
                             }
 
                         }
@@ -169,7 +173,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                     @Override
                     public void accept(BigInteger gasPrice) throws Exception {
                         if (isViewAttached()) {
-                            gas_Price = gasPrice;
+                            WithDrawPresenter.this.gasPrice = gasPrice;
                             getView().showGas(gasPrice);
                         }
 
@@ -201,9 +205,9 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                 .subscribe(new Action1<GasProvider>() {
                     @Override
                     public void call(GasProvider gasProvider) {
-                        gas_limit = gasProvider.getGasLimit();
-                        Log.d("gasLimit", "===============" + "gasprice" + "====" + gas_Price + "=========" + "gasLimit" + "========" + gas_limit);
-                        BigDecimal mul = BigDecimalUtil.mul(gasProvider.getGasLimit().toString(), gas_Price.toString());
+                        gasLimit = gasProvider.getGasLimit();
+                        Log.d("gasLimit", "===============" + "gasprice" + "====" + WithDrawPresenter.this.gasPrice + "=========" + "gasLimit" + "========" + gasLimit);
+                        BigDecimal mul = BigDecimalUtil.mul(gasProvider.getGasLimit().toString(), WithDrawPresenter.this.gasPrice.toString());
                         feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(mul.toString(), "1E18"));
                         getView().showWithDrawGasPrice(feeAmount);
                     }
@@ -226,7 +230,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
             }
 
             if (mWallet.isObservedWallet()) {
-                showTransactionAuthorizationDialogFragment(mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), getView().getInputAmount(), mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, gas_limit.toString(10), gas_Price.toString(10), type);
+                showTransactionAuthorizationDialogFragment(mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), getView().getInputAmount(), mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, gasLimit.toString(10), gasPrice.toString(10), type);
             } else {
                 InputWalletPasswordDialogFragment
                         .newInstance(mWallet)
@@ -277,7 +281,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     //操作赎回
     @SuppressLint("CheckResult")
     public void withdraw(Credentials credentials, String nodeId, String nodeName, String blockNum, String withdrawAmount, String type) {
-        GasProvider gasProvider = new ContractGasProvider(gas_Price, gas_limit);
+        GasProvider gasProvider = new ContractGasProvider(gasPrice, gasLimit);
         DelegateManager.getInstance().withdraw(credentials, ContractAddress.DELEGATE_CONTRACT_ADDRESS, nodeId, nodeName, feeAmount, blockNum, withdrawAmount, String.valueOf(TransactionType.UNDELEGATE.getTxTypeValue()), gasProvider)
                 .compose(RxUtils.getSchedulerTransformer())
                 .compose(RxUtils.getLoadingTransformer(currentActivity()))

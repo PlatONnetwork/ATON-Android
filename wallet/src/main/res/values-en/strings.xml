@@ -688,5 +688,6 @@
     <string name="msg_operator_address">Operator_Address：</string>
     <string name="msg_delegated_to">Delegated to：</string>
     <string name="msg_undelegated_from">Undelegated from：</string>
+    <string name="msg_no_delegation_available">No delegation LAT available for withdrawal</string>
 </resources>
 
