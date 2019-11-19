@@ -144,7 +144,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
 
                                 getView().showBalanceType(delegatedSum, releasedSum);
 
-                                if (releasedSum <= 0) {
+                                if (delegatedSum + releasedSum <= 0) {
                                     getView().finishDelayed();
                                 }
 
