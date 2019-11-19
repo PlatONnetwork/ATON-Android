@@ -339,12 +339,10 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         list.clear();
         list.add(new WithDrawType(WithDrawPopWindowAdapter.TAG_DELEGATED, delegated));
         list.add(new WithDrawType(WithDrawPopWindowAdapter.TAG_RELEASED, released));
-        Collections.sort(list);
         mPopWindowAdapter.notifyDataSetChanged();
 
-        WithDrawType withDrawType = list.get(0);
-        delegateType.setText(WithDrawPopWindowAdapter.TAG_RELEASED.equals(withDrawType.getKey()) ? getString(R.string.withdraw_type_released) : getString(R.string.withdraw_type_delegated));
-        delegateAmount.setText(StringUtil.formatBalance(withDrawType.getValue(), false));
+        delegateType.setText(released > 0 ? getString(R.string.withdraw_type_released) : getString(R.string.withdraw_type_delegated));
+        delegateAmount.setText(StringUtil.formatBalance(released > 0 ? released : delegated, false));
     }
 
     @Override
