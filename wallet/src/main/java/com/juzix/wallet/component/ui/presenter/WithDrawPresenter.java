@@ -44,6 +44,7 @@ import org.web3j.utils.Convert;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -134,20 +135,19 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                             list.clear();
                             list.addAll(balanceList);
 
+                            double releasedSum = 0; //待赎回
+                            double delegatedSum = 0;//已委托
                             if (null != balanceList && balanceList.size() > 0) {
-                                double releasedSum = 0; //待赎回
-                                double delegatedSum = 0;//已委托
                                 for (WithDrawBalance balance : balanceList) {
                                     delegatedSum += NumberParserUtils.parseDouble(balance.getShowDelegated());
                                     releasedSum += NumberParserUtils.parseDouble(balance.getShowReleased());
                                 }
+                            }
 
-                                getView().showBalanceType(delegatedSum, releasedSum);
+                            getView().showBalanceType(delegatedSum, releasedSum);
 
-                                if (delegatedSum + releasedSum <= 0) {
-                                    getView().finishDelayed();
-                                }
-
+                            if (delegatedSum + releasedSum <= 0) {
+                                getView().finishDelayed();
                             }
 
                         }
