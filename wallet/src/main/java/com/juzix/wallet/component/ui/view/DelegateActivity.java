@@ -485,6 +485,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         } else {
             et_amount.setText(BigDecimalUtil.parseString(diff));
         }
+        et_amount.setSelection(et_amount.getText().toString().length());
         delegate_fee = allPrice;
     }
 

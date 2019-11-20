@@ -112,7 +112,7 @@ public class ImportKeystoreFragment extends MVPBaseFragment<ImportKeystorePresen
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object unit){
+                    public void accept(Object unit) {
                         mPresenter.importKeystore(mEtKeystore.getText().toString(),
                                 mEtWalletName.getText().toString(),
                                 mEtPassword.getText().toString());
@@ -157,7 +157,7 @@ public class ImportKeystoreFragment extends MVPBaseFragment<ImportKeystorePresen
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Boolean>() {
                     @Override
-                    public void accept(Boolean hasFocus){
+                    public void accept(Boolean hasFocus) {
                         String keystore = mEtKeystore.getText().toString().trim();
                         if (!hasFocus) {
                             if (TextUtils.isEmpty(keystore)) {
@@ -167,11 +167,11 @@ public class ImportKeystoreFragment extends MVPBaseFragment<ImportKeystorePresen
                             }
                         }
                     }
-        });
+                });
 
         RxView.focusChanges(mEtWalletName).skipInitialValue().subscribe(new CustomObserver<Boolean>() {
             @Override
-            public void accept(Boolean hasFocus){
+            public void accept(Boolean hasFocus) {
                 String walletName = mEtWalletName.getText().toString().trim();
                 if (!hasFocus) {
                     if (TextUtils.isEmpty(walletName)) {
@@ -185,7 +185,7 @@ public class ImportKeystoreFragment extends MVPBaseFragment<ImportKeystorePresen
                     }
                 }
             }
-                });
+        });
 
         RxView
                 .focusChanges(mEtPassword)
@@ -233,8 +233,8 @@ public class ImportKeystoreFragment extends MVPBaseFragment<ImportKeystorePresen
         if (requestCode == ImportWalletActivity.REQ_QR_CODE) {
             Bundle bundle = data.getExtras();
             String scanResult = bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
-            String unzip= GZipUtil.unCompress(scanResult);
-            mPresenter.parseQRCode(TextUtils.isEmpty(unzip)? scanResult : unzip);
+            String unzip = GZipUtil.unCompress(scanResult);
+            mPresenter.parseQRCode(TextUtils.isEmpty(unzip) ? scanResult : unzip);
         }
     }
 
@@ -250,6 +250,7 @@ public class ImportKeystoreFragment extends MVPBaseFragment<ImportKeystorePresen
     @Override
     public void showQRCode(String QRCode) {
         mEtKeystore.setText(QRCode);
+        mEtKeystore.setSelection(QRCode.length());
     }
 
     private void enableImport(boolean enabled) {

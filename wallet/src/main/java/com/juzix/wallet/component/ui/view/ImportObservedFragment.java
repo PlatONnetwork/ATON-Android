@@ -117,7 +117,7 @@ public class ImportObservedFragment extends MVPBaseFragment<ImportObservedPresen
     @Override
     public void showQRCode(String QRCode) {
         et_observed.setText(QRCode);
-
+        et_observed.setSelection(QRCode.length());
     }
 
     @Override
