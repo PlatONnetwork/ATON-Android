@@ -44,7 +44,6 @@ import org.web3j.utils.Convert;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.IllegalFormatCodePointException;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -194,7 +193,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
             return;
         }
 
-        if (mDelegateDetail == null) {
+        if (mDelegateDetail == null || list.isEmpty()) {
             return;
         }
 
