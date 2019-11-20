@@ -45,7 +45,8 @@
                     android:layout_width="42dp"
                     android:layout_height="42dp"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="13dp" />
+                    android:layout_marginLeft="13dp"
+                    android:padding="5dp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -59,10 +60,10 @@
                         android:id="@+id/tv_withdraw_node_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        tools:text="节点名称"
-                        android:textStyle="bold"
                         android:textColor="@color/color_000000"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        tools:text="节点名称" />
 
                     <TextView
                         android:id="@+id/tv_withdraw_node_address"
@@ -110,10 +111,10 @@
                         android:id="@+id/tv_withdraw_wallet_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        tools:text="钱包名称"
-                        android:textStyle="bold"
                         android:textColor="@color/color_000000"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        tools:text="钱包名称" />
 
                     <TextView
                         android:id="@+id/tv_withdraw_wallet_address"
@@ -145,9 +146,9 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="14dp"
                 android:layout_marginRight="5dp"
+                android:background="@drawable/bg_validators_item"
                 android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:background="@drawable/bg_validators_item">
+                android:paddingBottom="10dp">
 
                 <TextView
                     android:id="@+id/tv_delegate_type"
@@ -173,9 +174,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingRight="5dp"
-                        android:textStyle="bold"
                         android:textColor="@color/color_000000"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
 
 
                     <TextView
@@ -333,22 +334,24 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_marginLeft="16dp"
-                android:layout_marginTop="30dp">
+                android:layout_marginTop="30dp"
+                android:orientation="horizontal">
+
                 <View
                     android:layout_width="2dp"
                     android:layout_height="14dp"
                     android:layout_gravity="center_vertical"
                     android:background="@drawable/bg_amount_magnitudes" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/delegate_node"
-                    android:textStyle="bold"
-                    android:textColor="@color/color_000000"
                     android:layout_marginLeft="8dp"
-                    android:textSize="14sp" />
+                    android:text="@string/delegate_node"
+                    android:textColor="@color/color_000000"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
             </LinearLayout>
 

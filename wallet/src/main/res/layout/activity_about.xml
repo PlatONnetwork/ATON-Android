@@ -52,6 +52,15 @@
             android:showDividers="middle">
 
             <TextView
+                android:id="@+id/tv_privacy_policy"
+                style="@style/Text.000.16"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:drawableRight="@drawable/icon_right_arrow"
+                android:gravity="center_vertical|left"
+                android:text="@string/msg_privacy_policy" />
+
+            <TextView
                 android:id="@+id/tv_about_us"
                 style="@style/Text.000.16"
                 android:layout_width="match_parent"
@@ -91,14 +100,6 @@
                     android:text="@string/versionUpdate" />
             </LinearLayout>
 
-            <TextView
-                style="@style/Text.fff.14"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:drawableRight="@drawable/icon_right_arrow"
-                android:gravity="center_vertical|left"
-                android:text="隐私政策"
-                android:visibility="gone" />
 
             <!--为了兼容5.0-->
             <android.support.v4.widget.Space
