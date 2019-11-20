@@ -32,12 +32,16 @@ public class ApiResponse<T> {
 
     public ApiResponse(ApiErrorCode apiErrorCode) {
         result = apiErrorCode;
-        errMsg = getString(apiErrorCode.descId);
+        if (apiErrorCode != null) {
+            errMsg = getString(apiErrorCode.descId);
+        }
     }
 
     public ApiResponse(ApiErrorCode apiErrorCode, Throwable throwable) {
         result = apiErrorCode;
-        errMsg = getString(apiErrorCode.descId);
+        if (apiErrorCode != null) {
+            errMsg = getString(apiErrorCode.descId);
+        }
     }
 
     @JSONField(serialize = false)

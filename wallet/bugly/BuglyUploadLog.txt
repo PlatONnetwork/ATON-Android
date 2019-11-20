@@ -10,3 +10,11 @@ file=D:\Android\ATON-Android\wallet\build\outputs\mapping\releaseX\mapping.txt
 sha1=dbc5c0ca790a2c083948de14d496b96ac98b4f7c
 appId=0970ddc6bd
 
+file=D:\Android\ATON-Android\wallet\build\outputs\mapping\releaseX\mapping.txt
+sha1=f6a30e9bf74661e9ed8baaf5d8f78c44c2384c96
+appId=0970ddc6bd
+
+file=D:\Android\ATON-Android\wallet\build\outputs\mapping\releaseX\mapping.txt
+sha1=39fafa246669b891857323bf2ceb76f943ffdfde
+appId=0970ddc6bd
+
