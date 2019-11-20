@@ -253,6 +253,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
     public void setToAddress(String address) {
         if (etWalletAddress != null) {
             etWalletAddress.setText(address);
+            etWalletAddress.setSelection(address.length());
         }
     }
 

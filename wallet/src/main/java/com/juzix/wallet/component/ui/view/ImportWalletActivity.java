@@ -173,30 +173,30 @@ public class ImportWalletActivity extends BaseActivity {
             Bundle bundle = data.getExtras();
             String scanResult = bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
             String unzip = GZipUtil.unCompress(scanResult);
-            if(TextUtils.isEmpty(unzip) && TextUtils.isEmpty(scanResult)){
-                ToastUtil.showLongToast(getContext(),R.string.unrecognized_content);
+            if (TextUtils.isEmpty(unzip) && TextUtils.isEmpty(scanResult)) {
+                ToastUtil.showLongToast(getContext(), R.string.unrecognized_content);
                 return;
             }
             String newStr = TextUtils.isEmpty(unzip) ? scanResult : unzip;
             if (JZWalletUtil.isValidKeystore(newStr)) {
                 mVpContent.setCurrentItem(0);
-                ((PagerItemAdapter) mVpContent.getAdapter()).getPage(0).onActivityResult(requestCode, resultCode, data);
-                return;
-            }
-            if (JZWalletUtil.isValidPrivateKey(newStr)) {
-                mVpContent.setCurrentItem(2);
-                ((PagerItemAdapter) mVpContent.getAdapter()).getPage(2).onActivityResult(requestCode, resultCode, data);
+                ((PagerItemAdapter) mVpContent.getAdapter()).getPage(TabIndex.IMPORT_KEYSTORE).onActivityResult(requestCode, resultCode, data);
                 return;
             }
             if (JZWalletUtil.isValidMnemonic(newStr)) {
                 mVpContent.setCurrentItem(1);
-                ((PagerItemAdapter) mVpContent.getAdapter()).getPage(1).onActivityResult(requestCode, resultCode, data);
+                ((PagerItemAdapter) mVpContent.getAdapter()).getPage(TabIndex.IMPORT_MNEMONIC).onActivityResult(requestCode, resultCode, data);
+                return;
+            }
+            if (JZWalletUtil.isValidPrivateKey(newStr)) {
+                mVpContent.setCurrentItem(2);
+                ((PagerItemAdapter) mVpContent.getAdapter()).getPage(TabIndex.IMPORT_PRIVATEKEY).onActivityResult(requestCode, resultCode, data);
                 return;
             }
             //新增导入观察钱包的判断
             if (JZWalletUtil.isValidAddress(newStr)) {
                 mVpContent.setCurrentItem(3);
-                ((PagerItemAdapter) mVpContent.getAdapter()).getPage(3).onActivityResult(requestCode, resultCode, data);
+                ((PagerItemAdapter) mVpContent.getAdapter()).getPage(TabIndex.IMPORT_OBSERVED).onActivityResult(requestCode, resultCode, data);
                 return;
             }
             showLongToast(string(R.string.unrecognized));

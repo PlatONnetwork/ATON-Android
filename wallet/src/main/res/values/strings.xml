@@ -686,6 +686,8 @@
     <string name="web_url_agreement">https://platon.zendesk.com/hc/zh-cn/categories/360002174434</string>
     <string name="web_url_support_feedback">https://platon.zendesk.com/hc/zh-cn</string>
     <string name="web_url_common_delegate_problem">https://platon.zendesk.com/hc/zh-cn/articles/360037373194-Common-questions-about-PlatON-Delegators</string>
+    <string name="web_url_privacy_policy">http://192.168.9.190:1000/aton-agreement/zh-cn/privacyAgreement.html</string>
+    
     <string name="withdraw_amount_tips">赎回数量不能少于10LAT</string>
     <string name="unrecognized_content">无法识别内容</string>
     <string name="no_delegation_information">暂无委托信息</string>
@@ -702,4 +704,5 @@
     <string name="msg_delegated_to">委托给：</string>
     <string name="msg_undelegated_from">赎回From：</string>
     <string name="msg_no_delegation_available">没有可赎回的委托</string>
+    <string name="msg_privacy_policy">隐私政策</string>
 </resources>

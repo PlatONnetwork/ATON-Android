@@ -39,7 +39,7 @@ public class ValidatorsAdapter extends CommonAdapter<VerifyNode> {
     @SuppressLint("StringFormatInvalid")
     @Override
     protected void convert(Context context, ViewHolder viewHolder, VerifyNode item, int position) {
-        RelativeLayout rl_shade =viewHolder.getView(R.id.rl_shade);
+        RelativeLayout rl_shade = viewHolder.getView(R.id.rl_shade);
         ShadowDrawable.setShadowDrawable(rl_shade,
                 ContextCompat.getColor(context, R.color.color_ffffff),
                 DensityUtil.dp2px(context, 4),
@@ -48,19 +48,15 @@ public class ValidatorsAdapter extends CommonAdapter<VerifyNode> {
                 0,
                 DensityUtil.dp2px(context, 0));
 
-        CircleImageView imageView = viewHolder.getView(R.id.iv_url);
-        GlideUtils.loadRound(context, item.getUrl(), imageView);
+        GlideUtils.loadRound(context, item.getUrl(), viewHolder.getView(R.id.iv_url));
         viewHolder.setText(R.id.tv_validators_node_name, item.getName());
-//        viewHolder.setText(R.id.tv_validators_node_state, item.getNodeStatus());
-        TextView tv_status  =viewHolder.getView(R.id.tv_validators_node_state);
-        showState(context,item,tv_status);
+        TextView tv_status = viewHolder.getView(R.id.tv_validators_node_state);
+        showState(context, item, tv_status);
 
-//        viewHolder.setText(R.id.tv_yield, ((NumberParserUtils.parseDouble(item.getRatePA())) / 100) + "%");
         TextView tv_yield = viewHolder.getView(R.id.tv_yield);
         isShowRA(context, item, tv_yield);
 
         viewHolder.setText(R.id.tv_staked_money, context.getString(R.string.amount_with_unit, StringUtil.formatBalance(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(item.getDeposit(), "1E18")))));
-//        viewHolder.setText(R.id.tv_validators_rank, item.getRanking() + "");
         TextView tv = viewHolder.getView(R.id.tv_validators_rank);
         tv.setText(item.getRanking() + "");
         changeTextFontSize(context, tv, item);
@@ -72,16 +68,16 @@ public class ValidatorsAdapter extends CommonAdapter<VerifyNode> {
     }
 
     private void showState(Context context, VerifyNode item, TextView tv_status) {
-          if(Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage())){ //中文环境下
-                 if(TextUtils.equals(item.getNodeStatus(),ACTIVE)){
-                  tv_status.setText(R.string.validators_active);
-                 }else {
-                     tv_status.setText(R.string.validators_candidate);
-                 }
+        if (Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage())) { //中文环境下
+            if (TextUtils.equals(item.getNodeStatus(), ACTIVE)) {
+                tv_status.setText(R.string.validators_active);
+            } else {
+                tv_status.setText(R.string.validators_candidate);
+            }
 
-          }else {
-              tv_status.setText(item.getNodeStatus());
-          }
+        } else {
+            tv_status.setText(item.getNodeStatus());
+        }
     }
 
     private void isShowRA(Context context, VerifyNode item, TextView tv_yield) {

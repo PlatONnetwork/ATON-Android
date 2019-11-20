@@ -299,6 +299,7 @@ public class ImportPrivateKeyFragment extends MVPBaseFragment<ImportPrivateKeyPr
     @Override
     public void showQRCode(String QRCode) {
         mEtPrivateKey.setText(QRCode);
+        mEtPrivateKey.setSelection(QRCode.length());
     }
 
     private void enableImport(boolean enabled) {

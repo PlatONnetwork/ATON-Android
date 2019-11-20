@@ -44,6 +44,8 @@ public class AboutActivity extends BaseActivity {
     TextView tvUpdate;
     @BindView(R.id.v_new_msg)
     View vNewMsg;
+    @BindView(R.id.tv_privacy_policy)
+    TextView tvPrivacyPolicy;
 
     private Unbinder unbinder;
     private VersionUpdate mVersionUpdate;
@@ -87,6 +89,16 @@ public class AboutActivity extends BaseActivity {
                     @Override
                     public void accept(Object object) {
                         update();
+                    }
+                });
+
+        RxView.clicks(tvPrivacyPolicy)
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object object) {
+                        CommonHybridActivity.actionStart(AboutActivity.this, getString(R.string.web_url_privacy_policy), WebType.WEB_TYPE_COMMON);
                     }
                 });
     }

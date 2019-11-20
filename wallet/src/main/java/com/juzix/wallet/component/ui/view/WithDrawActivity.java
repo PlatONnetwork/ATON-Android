@@ -168,6 +168,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
                     public void accept(Object o) {
                         //点击全部
                         withdrawAmount.setText(delegateAmount.getText().toString().replaceAll(",", ""));
+                        withdrawAmount.setSelection(delegateAmount.getText().toString().replaceAll(",", "").length());
                     }
                 });
 

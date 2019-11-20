@@ -9,12 +9,12 @@
         android:id="@+id/rl_shade"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
         android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
         android:layout_marginRight="10dp"
-        android:background="@drawable/bg_validators_item">
+        android:background="@drawable/bg_validators_item"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp">
 
         <com.juzix.wallet.component.widget.CircleImageView
             android:id="@+id/iv_url"
@@ -23,7 +23,8 @@
             android:layout_marginLeft="13dp"
             android:layout_marginTop="20dp"
             android:layout_marginRight="3dp"
-            android:layout_marginBottom="18dp" />
+            android:layout_marginBottom="18dp"
+            android:padding="5dp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -39,12 +40,12 @@
 
                 <TextView
                     android:id="@+id/tv_validators_node_name"
+                    style="@style/Text.000.15"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="6dp"
-                    tools:text="jiang"
-                    style="@style/Text.000.15"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:text="jiang" />
 
                 <TextView
                     android:id="@+id/tv_validators_node_state"
@@ -53,12 +54,12 @@
                     android:background="@drawable/bg_validators_state"
                     android:gravity="center"
                     android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
                     android:paddingTop="1dp"
+                    android:paddingRight="8dp"
                     android:paddingBottom="1dp"
-                    tools:text="active"
                     android:textColor="@color/color_4A90E2"
-                    android:textSize="11sp" />
+                    android:textSize="11sp"
+                    tools:text="active" />
 
             </LinearLayout>
 
@@ -81,9 +82,9 @@
                     android:id="@+id/tv_staked_money"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="1644848.10552"
                     android:textColor="@color/color_000000"
-                    android:textSize="13sp" />
+                    android:textSize="13sp"
+                    tools:text="1644848.10552" />
 
             </LinearLayout>
         </LinearLayout>
@@ -101,18 +102,18 @@
 
             <TextView
                 android:id="@+id/tv_yield"
+                style="@style/Text.105cfe.17"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
-                tools:text="12.30%"
-                style="@style/Text.105cfe.17"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:text="12.30%" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/validators_yield"
                 android:layout_gravity="right"
+                android:text="@string/validators_yield"
                 android:textColor="@color/color_898c9e"
                 android:textSize="11sp" />
 
@@ -122,9 +123,9 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:layout_marginRight="5dp"
-            android:layout_alignParentTop="true"
             android:gravity="center_vertical">
 
             <ImageView
@@ -142,9 +143,9 @@
                 android:gravity="center"
                 android:paddingLeft="4dp"
                 android:paddingBottom="2dp"
-                tools:text="55"
                 android:textColor="@color/color_ffffff"
-                android:textSize="11sp" />
+                android:textSize="11sp"
+                tools:text="55" />
 
         </RelativeLayout>
 
