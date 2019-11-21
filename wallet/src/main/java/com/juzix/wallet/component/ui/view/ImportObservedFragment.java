@@ -107,7 +107,7 @@ public class ImportObservedFragment extends MVPBaseFragment<ImportObservedPresen
 
         if (requestCode == ImportWalletActivity.REQ_QR_CODE) {
             Bundle bundle = data.getExtras();
-            String scanResult = bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
+            String scanResult = bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA,"");
             String  unzip = GZipUtil.unCompress(scanResult);
             mPresenter.parseQRCode(TextUtils.isEmpty(unzip)? scanResult : unzip);
             mPresenter.IsImportObservedWallet(TextUtils.isEmpty(unzip)? scanResult : unzip);
