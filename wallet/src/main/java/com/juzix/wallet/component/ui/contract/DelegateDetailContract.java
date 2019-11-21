@@ -14,8 +14,6 @@ public class DelegateDetailContract {
 
         void showDelegateDetailData(List<DelegateDetail> detailList);
 
-        void showDelegateDetailFailed();
-
         void showIsCanDelegate(String nodeAddress, String nodeName, String nodeIcon,String walletAddress,boolean isCanDelegate);
 
         DelegateInfo getDelegateInfoFromIntent();

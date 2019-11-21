@@ -60,12 +60,13 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+
         DelegateDetail detail = detailList.get(position);
         ShadowDrawable.setShadowDrawable(holder.ll_delegate_detail_shade,
                 ContextCompat.getColor(mContext, R.color.color_ffffff),
                 DensityUtil.dp2px(mContext, 4),
                 ContextCompat.getColor(mContext, R.color.color_cc9ca7c2),
-                DensityUtil.dp2px(mContext, 5),
+                DensityUtil.dp2px(mContext, 10),
                 0,
                 DensityUtil.dp2px(mContext, 2));
 
@@ -80,16 +81,14 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
         holder.tv_delegated.setText(TextUtils.equals(detail.getDelegated(), "0") ? "- -" : StringUtil.formatBalance(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getDelegated(), "1E18"))));
         holder.tv_withdraw.setText(TextUtils.equals(detail.getReleased(), "0") ? "- -" : StringUtil.formatBalance(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getReleased(), "1E18"))));
 
-
-
         //委托按钮置灰不可点击( a.节点退出中或已退出 /b.节点状态为初始化验证人（收益地址为激励池地址的验证人）)
         if (TextUtils.equals(detail.getNodeStatus(), EXITED) || TextUtils.equals(detail.getNodeStatus(), EXITING) || detail.isInit()) {
-            holder.ll_delegate.setBackgroundColor(ContextCompat.getColor(mContext, R.color.color_66DCDFE8));
+            holder.ll_delegate.setBackgroundColor(ContextCompat.getColor(mContext, R.color.color_66dcdfe8));
         }
 
         //只要待赎回的数量大于0，那么委托按钮置灰(即验证节点退出，委托解除，已解除委托不为0)
         if (NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getReleased(), "1E18"))) > 0) {
-            holder.ll_delegate.setBackgroundColor(ContextCompat.getColor(mContext, R.color.color_66DCDFE8));
+            holder.ll_delegate.setBackgroundColor(ContextCompat.getColor(mContext, R.color.color_66dcdfe8));
             holder.iv_detail_delegate.setImageResource(R.drawable.icon_delegate);
         }
 
@@ -137,10 +136,8 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
                     @Override
                     public void accept(Object o) throws Exception {
                         if (null != mOnDelegateClickListener) {
-
                             mOnDelegateClickListener.onLinkClick(detail.getWebsite());
                         }
-
                     }
                 });
 
@@ -251,8 +248,6 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
         void onDelegateClick(DelegateDetail delegateDetail);
 
         void onWithDrawClick(DelegateDetail delegateDetail);
-
-//        void onMoveOutClick(DelegateDetail detail);
 
         void onLinkClick(String webSiteUrl);
     }

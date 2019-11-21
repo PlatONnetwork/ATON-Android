@@ -9,17 +9,17 @@
         android:id="@+id/ll_delegate_detail_shade"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginRight="5dp"
+        android:layout_marginTop="13dp"
         android:background="@drawable/bg_mydelegate_item"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:paddingTop="2dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="12dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
             android:background="@drawable/icon_my_delegate_item_bg">
 
             <com.juzix.wallet.component.widget.CircleImageView
@@ -80,10 +80,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
             android:orientation="vertical">
-
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -116,25 +113,6 @@
                         android:textSize="14sp"
                         tools:text="151561.45847" />
 
-                    <!--<TextView-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_centerVertical="true"-->
-                    <!--android:layout_marginTop="15dp"-->
-                    <!--android:text="@string/node_released_delegate"-->
-                    <!--android:textColor="@color/color_898c9e"-->
-                    <!--android:textSize="12sp" />-->
-
-                    <!--<TextView-->
-                    <!--android:id="@+id/tv_node_released_delegate"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_centerVertical="true"-->
-                    <!--android:layout_marginTop="9dp"-->
-                    <!--android:text="1555.003"-->
-                    <!--android:textColor="@color/color_000000"-->
-                    <!--android:textSize="14sp" />-->
-
                 </LinearLayout>
 
 
@@ -162,26 +140,6 @@
                         android:textColor="@color/color_000000"
                         android:textSize="14sp"
                         tools:text="151561.45847" />
-
-                    <!--<TextView-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_centerVertical="true"-->
-                    <!--android:layout_marginTop="15dp"-->
-                    <!--android:text="@string/node_undelegating"-->
-                    <!--android:textColor="@color/color_898c9e"-->
-                    <!--android:textSize="12sp" />-->
-
-                    <!--<TextView-->
-                    <!--android:id="@+id/tv_node_undelegating"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_centerVertical="true"-->
-                    <!--android:layout_marginTop="9dp"-->
-                    <!--android:text="1555.003"-->
-                    <!--android:textColor="@color/color_000000"-->
-                    <!--android:textSize="14sp" />-->
-
                 </LinearLayout>
             </LinearLayout>
 
@@ -198,18 +156,19 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:showDividers="middle"
+                android:dividerPadding="14dp"
+                android:divider="@drawable/divider_delegate_undelegate"
                 android:orientation="horizontal">
 
 
                 <LinearLayout
                     android:id="@+id/ll_delegate"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:orientation="horizontal"
-                    android:paddingTop="17dp"
-                    android:paddingBottom="17dp">
+                    android:orientation="horizontal">
 
                     <ImageView
                         android:id="@+id/iv_detail_delegate"
@@ -229,23 +188,14 @@
 
                 </LinearLayout>
 
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="12dp"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="3dp"
-                    android:layout_marginRight="3dp"
-                    android:background="@color/color_e4e7f3" />
 
                 <LinearLayout
                     android:id="@+id/ll_withdraw"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:orientation="horizontal"
-                    android:paddingTop="17dp"
-                    android:paddingBottom="17dp">
+                    android:orientation="horizontal">
 
                     <ImageView
                         android:id="@+id/iv_detail_un_delegate"
