@@ -20,9 +20,8 @@ public class ImportKeystorePresenter extends BasePresenter<ImportKeystoreContrac
 
     @Override
     public void init() {
-        ImportKeystoreContract.View view = getView();
-        if (view != null) {
-            view.showQRCode(view.getKeystoreFromIntent());
+        if (isViewAttached()){
+            getView().showQRCode(getView().getKeystoreFromIntent());
         }
     }
 

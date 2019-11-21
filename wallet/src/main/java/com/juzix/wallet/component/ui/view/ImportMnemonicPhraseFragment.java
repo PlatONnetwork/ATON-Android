@@ -328,7 +328,7 @@ public class ImportMnemonicPhraseFragment extends MVPBaseFragment<ImportMnemonic
         }
         if (requestCode == ImportWalletActivity.REQ_QR_CODE) {
             Bundle bundle = data.getExtras();
-            String scanResult = bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
+            String scanResult = bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA,"");
             mPresenter.parseQRCode(scanResult);
         }
     }
@@ -337,7 +337,7 @@ public class ImportMnemonicPhraseFragment extends MVPBaseFragment<ImportMnemonic
     public String getKeystoreFromIntent() {
         Bundle bundle = getArguments();
         if (bundle != null && !bundle.isEmpty()) {
-            return bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
+            return bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA,"");
         }
         return "";
     }
