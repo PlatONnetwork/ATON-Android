@@ -11,6 +11,7 @@ import com.juzhen.framework.network.ApiSingleObserver;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomObserver;
+import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.component.adapter.WithDrawPopWindowAdapter;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.WithDrawContract;
@@ -129,6 +130,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                 .build())
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(bindToLifecycle())
+                .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
                 .subscribe(new ApiSingleObserver<List<WithDrawBalance>>() {
                     @Override
                     public void onApiSuccess(List<WithDrawBalance> balanceList) {
