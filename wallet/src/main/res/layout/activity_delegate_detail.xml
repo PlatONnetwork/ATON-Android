@@ -14,19 +14,20 @@
         android:orientation="vertical"
         android:paddingTop="20dp">
 
-    <com.juzix.wallet.component.widget.CommonTitleBar
-        android:id="@+id/commonTitleBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:ctb_left_drawable="@drawable/icon_back_black"
-        app:ctb_title="@string/delegate_node_detail" />
+        <com.juzix.wallet.component.widget.CommonTitleBar
+            android:id="@+id/commonTitleBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:ctb_left_drawable="@drawable/icon_back_black"
+            app:ctb_title="@string/delegate_node_detail" />
 
     </LinearLayout>
 
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:srlEnableLoadMore="false">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -45,23 +46,23 @@
                     android:id="@+id/iv_wallet_icon"
                     android:layout_width="42dp"
                     android:layout_height="42dp"
-                    android:layout_marginLeft="13dp"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/icon_tips" />
+                    android:layout_marginLeft="13dp"
+                    tools:src="@drawable/icon_tips" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:layout_marginLeft="3dp"
                     android:layout_toRightOf="@id/iv_wallet_icon"
-                    android:layout_centerVertical="true"
                     android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/tv_wallet_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="钱包名称"
+                        tools:text="钱包名称"
                         android:textColor="@color/color_000000"
                         android:textSize="16sp" />
 
@@ -70,7 +71,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="aadskfajskdfjaks"
+                        tools:text="aadskfajskdfjaks"
                         android:textColor="@color/color_898c9e"
                         android:textSize="13sp" />
 
@@ -114,7 +115,6 @@
                 </LinearLayout>
 
             </RelativeLayout>
-
 
 
         </LinearLayout>

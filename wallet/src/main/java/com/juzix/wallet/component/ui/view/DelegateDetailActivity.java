@@ -82,14 +82,36 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
         unbinder = ButterKnife.bind(this);
         EventPublisher.getInstance().register(this);
         initView();
-
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mPresenter.loadDelegateDetailData();
+        refreshLayout.autoRefresh();
+    }
+
+    private void initView() {
+
+        linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        rlv_list.setLayoutManager(linearLayoutManager);
+        mDetailAdapter = new DelegateDetailAdapter();
+        rlv_list.setAdapter(mDetailAdapter);
+
+        titleBar.setRightDrawable(R.drawable.icon_tips);
+        titleBar.setRightDrawableClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //弹出tips
+                DelegateTipsDialog.createWithTitleAndContentDialog(string(R.string.detail_wait_undelegate), string(R.string.detail_tips_content),
+                        "", "", "", "")
+                        .show(getSupportFragmentManager(), "delegateTips");
+            }
+        });
+
+        //添加下拉刷新的header和加载更多的footer
+        refreshLayout.setRefreshHeader(new CustomRefreshHeader(getContext()));
+
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
@@ -115,35 +137,6 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
             }
         });
 
-    }
-
-    private void initView() {
-        showLoadingDialog();
-        linearLayoutManager = new LinearLayoutManager(getContext());
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        rlv_list.setLayoutManager(linearLayoutManager);
-        mDetailAdapter = new DelegateDetailAdapter();
-        rlv_list.setAdapter(mDetailAdapter);
-
-
-        titleBar.setRightDrawable(R.drawable.icon_tips);
-        titleBar.setRightDrawableClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //弹出tips
-//               new DelegateTipsDialog().show(getSupportFragmentManager(),"delegateTips");
-                DelegateTipsDialog.createWithTitleAndContentDialog(string(R.string.detail_wait_undelegate), string(R.string.detail_tips_content),
-                        "", "", "", "")
-                        .show(getSupportFragmentManager(), "delegateTips");
-            }
-        });
-
-        //添加下拉刷新的header和加载更多的footer
-        refreshLayout.setRefreshHeader(new CustomRefreshHeader(getContext()));
-        refreshLayout.setEnableRefresh(true);
-//        refreshLayout.setRefreshFooter(new CustomRefreshFooter(getContext()));
-        refreshLayout.setEnableLoadMore(false);//启用上拉加载功能
-        refreshLayout.setEnableAutoLoadMore(false);//这个功能是本刷新库的特色功能：在列表滚动到底部时自动加载更多。 如果不想要这个功能，是可以关闭的
         initGuide();
     }
 
@@ -161,11 +154,9 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
 
     @Override
     public void showWalletInfo(DelegateInfo delegateInfo) {
-        if (delegateInfo != null) {
-            circleImageView.setImageResource(RUtils.drawable(delegateInfo.getWalletIcon()));
-            tv_wallet_name.setText(delegateInfo.getWalletName());
-            tv_wallet_address.setText(AddressFormatUtil.formatAddress(delegateInfo.getWalletAddress()));
-        }
+        circleImageView.setImageResource(RUtils.drawable(delegateInfo.getWalletIcon()));
+        tv_wallet_name.setText(delegateInfo.getWalletName());
+        tv_wallet_address.setText(AddressFormatUtil.formatAddress(delegateInfo.getWalletAddress()));
     }
 
     @Override
@@ -177,17 +168,6 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
         }
         mDetailAdapter.notifyDataChanged(detailList);
         refreshLayout.finishRefresh();
-        refreshLayout.finishLoadMore();
-        dismissLoadingDialogImmediately();
-
-    }
-
-    @Override
-    public void showDelegateDetailFailed() {
-        ll_no_data.setVisibility(View.VISIBLE);
-        refreshLayout.finishRefresh();
-        refreshLayout.finishLoadMore();
-        dismissLoadingDialogImmediately();
     }
 
     //是否可以进入委托页面进行委托
