@@ -157,13 +157,13 @@ public class VerifyNodeDao {
                 result = realm.where(VerifyNodeEntity.class)
                         .sort("ratePA", Sort.DESCENDING)
                         .limit(10)
-                        .findAll();
+                        .findAllAsync();
             } else {
                 result = realm.where(VerifyNodeEntity.class)
                         .lessThan("ratePA", ratePAing)
                         .sort("ratePA", Sort.DESCENDING)
                         .limit(10)
-                        .findAll();
+                        .findAllAsync();
             }
             if (null != result) {
                 list = realm.copyFromRealm(result);

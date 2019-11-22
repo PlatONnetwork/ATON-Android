@@ -59,27 +59,9 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
                     @Override
                     public void onApiSuccess(List<VerifyNode> nodeList) {
                         if (isViewAttached()) {
-//                            if (nodeList != null && nodeList.size() > 0) {
-                                if (getNodeList().size() > 0) { //读取数据库数据
-                                    //删除数据库
-                                    if (deleteVerifyNodeList()) {
-                                        //插入数据库
-                                        if (insertVerifyNodeIntoDB(nodeList)) {
-                                            //读取数据
-//                                            loadDataFromDB(nodeState, rank);
-                                            loadDataFromDB(sortType, nodeState, sequence);
-                                        }
-                                    }
-
-                                } else {
-                                    if (insertVerifyNodeIntoDB(nodeList)) {
-                                        //读取数据
-//                                        loadDataFromDB(nodeState, sequnce);
-                                        loadDataFromDB(sortType, nodeState, sequence);
-                                    }
-                                }
-//                            }
-
+                            deleteVerifyNodeList();
+                            insertVerifyNodeIntoDB(nodeList);
+                            loadDataFromDB(sortType, nodeState, sequence);
                         }
 
                     }
@@ -106,7 +88,6 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
         if (TextUtils.equals(state, Constants.ValidatorsType.ALL_VALIDATORS)) {
             //在加一个判断
             if (TextUtils.equals(soryType, Constants.ValidatorsType.VALIDATORS_RANK)) {   //（在所有tab）按排序操作
-
                 //(在所有页签)
                 Flowable
                         .fromIterable(VerifyNodeDao.getVerifyNodeByAll(ranking))
