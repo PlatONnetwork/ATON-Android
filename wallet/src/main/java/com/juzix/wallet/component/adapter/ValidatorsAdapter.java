@@ -54,14 +54,13 @@ public class ValidatorsAdapter extends CommonAdapter<VerifyNode> {
         showState(context, item, tv_status);
 
         TextView tv_yield = viewHolder.getView(R.id.tv_yield);
-        isShowRA(context, item, tv_yield);
+        isShowRA(item, tv_yield);
 
         viewHolder.setText(R.id.tv_staked_money, context.getString(R.string.amount_with_unit, StringUtil.formatBalance(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(item.getDeposit(), "1E18")))));
         TextView tv = viewHolder.getView(R.id.tv_validators_rank);
-        tv.setText(item.getRanking() + "");
-        changeTextFontSize(context, tv, item);
-        ImageView iv = viewHolder.getView(R.id.iv_rank_bg);
-        changeImageViewBg(context, iv, item.getRanking());
+        tv.setText(String.format("%d", item.getRanking()));
+        changeTextFontSize(tv, item);
+        changeImageViewBg(tv, item.getRanking());
         TextView tv_state = viewHolder.getView(R.id.tv_validators_node_state);
         changeTextBgAndTextColor(context, tv_state, item.getNodeStatus());
 
@@ -80,7 +79,7 @@ public class ValidatorsAdapter extends CommonAdapter<VerifyNode> {
         }
     }
 
-    private void isShowRA(Context context, VerifyNode item, TextView tv_yield) {
+    private void isShowRA(VerifyNode item, TextView tv_yield) {
         if (!item.isInit()) {
             tv_yield.setText(NumberFormat.getInstance().format(((NumberParserUtils.parseDouble(item.getRatePA())) / 100)) + "%");
         } else {
@@ -89,7 +88,7 @@ public class ValidatorsAdapter extends CommonAdapter<VerifyNode> {
 
     }
 
-    private void changeTextFontSize(Context context, TextView tv, VerifyNode item) {
+    private void changeTextFontSize(TextView tv, VerifyNode item) {
         if (item.getRanking() >= Constants.Magnitudes.THOUSAND) {
             tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
             tv.setPadding(0, 0, 0, 0);
@@ -99,15 +98,15 @@ public class ValidatorsAdapter extends CommonAdapter<VerifyNode> {
 
     }
 
-    public void changeImageViewBg(Context context, ImageView iv, int rank) {
+    public void changeImageViewBg(TextView tv, int rank) {
         if (rank == 1) {
-            iv.setImageResource(R.drawable.icon_rank1);
+            tv.setBackgroundResource(R.drawable.icon_rank1);
         } else if (rank == 2) {
-            iv.setImageResource(R.drawable.icon_rank2);
+            tv.setBackgroundResource(R.drawable.icon_rank2);
         } else if (rank == 3) {
-            iv.setImageResource(R.drawable.icon_rank3);
+            tv.setBackgroundResource(R.drawable.icon_rank3);
         } else {
-            iv.setImageResource(R.drawable.icon_rank4);
+            tv.setBackgroundResource(R.drawable.icon_rank4);
         }
 
     }

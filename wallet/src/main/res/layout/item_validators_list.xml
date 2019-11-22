@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -120,34 +121,24 @@
         </LinearLayout>
 
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_validators_rank"
+            style="@style/Text.fff.11"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:layout_marginRight="5dp"
-            android:gravity="center_vertical">
+            android:background="@drawable/icon_rank1"
+            android:includeFontPadding="false"
+            android:lines="1"
+            android:paddingLeft="3dp"
+            android:paddingBottom="2dp"
+            app:autoSizeMaxTextSize="11sp"
+            app:autoSizeMinTextSize="8sp"
+            app:autoSizeTextType="uniform"
+            tools:text="5500" />
 
-            <ImageView
-                android:id="@+id/iv_rank_bg"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_alignParentTop="true"
-                android:src="@drawable/icon_rank1" />
-
-            <TextView
-                android:id="@+id/tv_validators_rank"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:gravity="center"
-                android:paddingLeft="4dp"
-                android:paddingBottom="2dp"
-                android:textColor="@color/color_ffffff"
-                android:textSize="11sp"
-                tools:text="55" />
-
-        </RelativeLayout>
 
     </RelativeLayout>
 
