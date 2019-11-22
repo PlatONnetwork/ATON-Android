@@ -714,8 +714,10 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
             return R.string.text_proposal;
         } else if (proposalType == ProposalType.PARAMETER_PROPOSAL) {
             return R.string.parameter_proposal;
-        } else {
+        } else if (proposalType == ProposalType.CANCEL_PROPOSAL) {
             return R.string.cancel_proposal;
+        } else {
+            return -1;
         }
     }
 
@@ -728,8 +730,10 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
             return R.string.text_proposal;
         } else if (proposalType == ProposalType.PARAMETER_PROPOSAL) {
             return R.string.parameter_proposal;
-        } else {
+        } else if (proposalType == ProposalType.CANCEL_PROPOSAL) {
             return R.string.cancel_proposal;
+        } else {
+            return -1;
         }
     }
 
@@ -740,8 +744,10 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
             return R.string.vote_yes;
         } else if (voteOptionType == VoteOptionType.VOTE_NO) {
             return R.string.vote_no;
-        } else {
+        } else if (voteOptionType == VoteOptionType.VOTE_ABSTAIN) {
             return R.string.vote_abstain;
+        } else {
+            return -1;
         }
     }
 

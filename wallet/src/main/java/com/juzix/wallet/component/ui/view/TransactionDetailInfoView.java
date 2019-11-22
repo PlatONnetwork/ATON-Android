@@ -206,7 +206,7 @@ public class TransactionDetailInfoView extends LinearLayout {
     }
 
     private String getString(@StringRes int id) {
-        return getResources().getString(id);
+        return id == -1 ? "--" : getResources().getString(id);
     }
 
     private String getStringWithColon(@StringRes int id) {
