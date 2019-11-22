@@ -243,7 +243,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
             nodeState.setText(getString(R.string.validators_state_exiting));
         }
 
-        rate.setText(nodeDetail.isInit() ? "- -":String.format("%s%%",StringUtil.formatBalance(BigDecimalUtil.div(nodeDetail.getRatePA(), "100"))));
+        rate.setText(nodeDetail.isInit() ? "- -" : String.format("%s%%", StringUtil.formatBalance(BigDecimalUtil.div(nodeDetail.getRatePA(), "100"))));
 
         if (TextUtils.isEmpty(nodeDetail.getDeposit())) {
             totalStaked.setText("- -");
@@ -268,17 +268,17 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
         webSite.setText(nodeDetail.getWebsite());//官网
 
         //判断按钮是否可点击
-        if (WalletManager.getInstance().getAddressList().size() == 0) { // a.客户端本地没有钱包
-            tips.setVisibility(View.VISIBLE);
-            setImageIconForText(tips, getString(R.string.tips_no_wallet));
-            delegate.setEnabled(false);
-        } else if (TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITING) || TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITED)) {//b.节点退出中或已退出
+        if (TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITING) || TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITED)) {//b.节点退出中或已退出
             tips.setVisibility(View.VISIBLE);
             setImageIconForText(tips, getString(R.string.the_Validator_has_exited_and_cannot_be_delegated));
             delegate.setEnabled(false);
         } else if (nodeDetail.isInit()) { //c.节点状态为初始化验证人（收益地址为激励池地址的验证人）
             tips.setVisibility(View.VISIBLE);
             setImageIconForText(tips, getString(R.string.validators_details_tips));
+            delegate.setEnabled(false);
+        } else if (WalletManager.getInstance().getAddressList().size() == 0) { // a.客户端本地没有钱包
+            tips.setVisibility(View.VISIBLE);
+            setImageIconForText(tips, getString(R.string.tips_no_wallet));
             delegate.setEnabled(false);
         } else {
             delegate.setEnabled(true);

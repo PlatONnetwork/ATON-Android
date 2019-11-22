@@ -122,8 +122,7 @@ public class TransactionAuthorizationDetailActivity extends BaseActivity {
                                 }, new Consumer<Throwable>() {
                                     @Override
                                     public void accept(Throwable throwable) throws Exception {
-                                        showLongToast(string(R.string.transfer_failed));
-                                        ToastUtil.showLongToast(currentActivity(), "钱包不匹配");
+                                        showLongToast(R.string.msg_wallet_mismatch);
                                     }
                                 });
                     }
