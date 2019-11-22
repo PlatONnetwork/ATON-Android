@@ -93,13 +93,13 @@
     <string name="yes">确认</string>
     <string name="no">取消</string>
     <string name="donotScreenshot">请勿截图</string>
-    <string name="backupMnemonicResume">如果有人获取了你的助记词，将可以直接获取你的资产！请抄写下助记词并存放在安全的地方。</string>
-    <string name="backupPrivateKey">如果有人获取了你的私钥，将可以直接获取你的资产！请确保私钥存放在安全的地方。</string>
-    <string name="backupKeystore">如果有人获取了你的钱包文件(.json)，将可以直接获取你的资产！请确保钱包文件(.json)存放在安全的地方。</string>
+    <string name="backupMnemonicResume">如果有人获取了您的助记词，将可以直接获取您的资产！请抄写下助记词并存放在安全的地方。</string>
+    <string name="backupPrivateKey">如果有人获取了您的私钥，将可以直接获取您的资产！请确保私钥存放在安全的地方。</string>
+    <string name="backupKeystore">如果有人获取了您的钱包文件(.json)，将可以直接获取您的资产！请确保钱包文件(.json)存放在安全的地方。</string>
     <string name="understood">我知道了</string>
     <string name="understood1">我知道了</string>
     <string name="backupMnemonicTitle">请抄写下方助记词，我们将在下一步进行验证</string>
-    <string name="backupMnemonicDescrition">助记词用于恢复钱包或重置钱包密码，请将它准确抄写在纸上并存放在只有你知道的安全地点。</string>
+    <string name="backupMnemonicDescrition">助记词用于恢复钱包或重置钱包密码，请将它准确抄写在纸上并存放在只有您知道的安全地点。</string>
     <string name="next">下一步</string>
     <string name="individual_wallet">普通钱包</string>
     <string name="shared_wallet">联名钱包</string>
@@ -257,7 +257,7 @@
     <string name="copyright_resume">Powered by PlatON Network</string>
     <string name="language">语言</string>
     <string name="warning">警告</string>
-    <string name="test_node_warn">你正处于PlatON测试网络，切勿将真实的资产转账到当前测试网络钱包地址</string>
+    <string name="test_node_warn">您正处于PlatON测试网络，切勿将真实的资产转账到当前测试网络钱包地址</string>
     <string name="copy_succeed">复制成功</string>
     <string name="unrecognized">无法识别</string>
     <string name="password_cannot_be_empty">密码不能为空</string>

@@ -130,7 +130,7 @@ public class TransactionDetailInfoView extends LinearLayout {
                 addView(getItemView(getStringWithColon(transactionTimeDescRes), transaction.getShowCreateTime()));
                 addView(getItemView(getStringWithColon(R.string.validator), getString(transaction.getNodeName())));
                 addView(getItemView(getStringWithColon(R.string.nodeId), transaction.getNodeId()));
-                addView(getItemView(getStringWithColon(R.string.proposal_id), transaction.getHash()));
+                addView(getItemView(getStringWithColon(R.string.proposal_id), transaction.getProposalId()));
                 addView(getItemView(getStringWithColon(R.string.pip_number), TextUtils.isEmpty(transaction.getPiDID()) ? "--" : String.format("%s-%s", "PIP", transaction.getPiDID())));
                 addView(getItemView(getStringWithColon(R.string.proposal_type), getString(transaction.getProposalTypeDescRes())));
                 if (transaction.getTxType() == TransactionType.VOTING_PROPOSAL) {
@@ -206,7 +206,7 @@ public class TransactionDetailInfoView extends LinearLayout {
     }
 
     private String getString(@StringRes int id) {
-        return getResources().getString(id);
+        return id == -1 ? "--" : getResources().getString(id);
     }
 
     private String getStringWithColon(@StringRes int id) {
