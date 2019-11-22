@@ -405,6 +405,14 @@ public class BigDecimalUtil {
         return new BigDecimal(val1).compareTo(BigDecimal.ZERO) > 0;
     }
 
+    public static boolean isEqualsZero(BigDecimal bigDecimal) {
+        if (bigDecimal == null) {
+            return true;
+        }
+
+        return bigDecimal.compareTo(BigDecimal.ZERO) == 0;
+    }
+
     public static BigDecimal toBigDecimal(String value) {
         try {
             return new BigDecimal(value);
