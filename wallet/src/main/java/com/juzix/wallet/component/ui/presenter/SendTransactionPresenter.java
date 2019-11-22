@@ -260,6 +260,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
 
             String fromWallet = String.format("%s(%s)", walletEntity.getName(), AddressFormatUtil.formatTransactionAddress(walletEntity.getPrefixAddress()));
             String fee = NumberParserUtils.getPrettyBalance(feeAmount);
+            String confirmText = WalletManager.getInstance().getSelectedWallet().isObservedWallet() ? string(R.string.next) : string(R.string.action_send_transation);
 
             getWalletNameFromAddress(toAddress)
                     .compose(RxUtils.getSingleSchedulerTransformer())
@@ -269,7 +270,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                         public void accept(String s) throws Exception {
                             if (isViewAttached()) {
                                 SendTransactionDialogFragment
-                                        .newInstance(string(R.string.send_transaction), NumberParserUtils.getPrettyBalance(transferAmount), buildSendTransactionInfo(fromWallet, s, fee))
+                                        .newInstance(string(R.string.send_transaction), NumberParserUtils.getPrettyBalance(transferAmount), confirmText, buildSendTransactionInfo(fromWallet, s, fee))
                                         .setOnConfirmBtnClickListener(new SendTransactionDialogFragment.OnConfirmBtnClickListener() {
                                             @Override
                                             public void onConfirmBtnClick() {
