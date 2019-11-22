@@ -86,7 +86,7 @@ public class TransactionViewHolder extends BaseViewHolder<Transaction> {
         if (isTransfer || isValueZero || transactionStatus == TransactionStatus.FAILED) {
             mTransactionAmountTv.setText(StringUtil.formatBalance(transaction.getShowValue()));
             mTransactionAmountTv.setTextColor(ContextCompat.getColor(mContext, R.color.color_b6bbd0));
-        } else if (isSender && transactionType != TransactionType.UNDELEGATE) {
+        } else if (isSender && transactionType != TransactionType.UNDELEGATE && transactionType != TransactionType.EXIT_VALIDATOR) {
             mTransactionAmountTv.setText(String.format("%s%s", "-", StringUtil.formatBalance(transaction.getShowValue())));
             mTransactionAmountTv.setTextColor(ContextCompat.getColor(mContext, R.color.color_ff3b3b));
         } else {
