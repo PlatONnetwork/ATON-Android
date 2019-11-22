@@ -288,6 +288,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
         contentSV.setVisibility(View.VISIBLE);
         noNetworkLayout.setVisibility(View.GONE);
         ll_guide.setVisibility(View.VISIBLE);
+        nodeLink.setVisibility(TextUtils.isEmpty(websiteUrl) ? View.GONE : View.VISIBLE);
 
     }
 
