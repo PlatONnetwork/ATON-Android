@@ -266,7 +266,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
 
         introduction.setText(nodeDetail.getIntro());
         webSite.setText(TextUtils.isEmpty(websiteUrl) ? "--" : websiteUrl);//官网
-        webSite.setTextColor(TextUtils.isEmpty(websiteUrl) ? ContextCompat.getColor(this, R.color.color_105cfe) : ContextCompat.getColor(this, R.color.color_000000));
+        webSite.setTextColor(TextUtils.isEmpty(websiteUrl) ? ContextCompat.getColor(this, R.color.color_000000) : ContextCompat.getColor(this, R.color.color_105cfe));
 
         //判断按钮是否可点击
         if (TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITING) || TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITED)) {//b.节点退出中或已退出
