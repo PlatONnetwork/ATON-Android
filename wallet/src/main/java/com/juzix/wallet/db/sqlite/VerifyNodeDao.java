@@ -117,13 +117,13 @@ public class VerifyNodeDao {
                 result = realm.where(VerifyNodeEntity.class)
                         .sort("ranking", Sort.ASCENDING)
                         .limit(10)
-                        .findAll();
+                        .findAllAsync();
             } else {
                 result = realm.where(VerifyNodeEntity.class)
                         .greaterThan("ranking", rank)
                         .sort("ranking", Sort.ASCENDING)
                         .limit(10)
-                        .findAll();
+                        .findAllAsync();
             }
             if (null != result) {
                 list = realm.copyFromRealm(result);
