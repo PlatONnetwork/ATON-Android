@@ -141,9 +141,9 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
      */
     private String proposalType;
     /**
-     * 投票提案类型  1：文本提案；  2：升级提案；  4.取消题案
+     * 提案id
      */
-    private String voteProposalType;
+    private String proposalId;
     /**
      * 投票
      */
@@ -206,7 +206,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         url = in.readString();
         piDID = in.readString();
         proposalType = in.readString();
-        voteProposalType = in.readString();
+        proposalId = in.readString();
         vote = in.readString();
         redeemStatus = in.readString();
         walletIcon = in.readString();
@@ -239,7 +239,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         this.url = builder.url;
         this.piDID = builder.piDID;
         this.proposalType = builder.proposalType;
-        this.voteProposalType = builder.voteProposalType;
+        this.proposalId = builder.proposalId;
         this.vote = builder.vote;
         this.redeemStatus = builder.redeemStatus;
         this.walletIcon = builder.walletIcon;
@@ -273,7 +273,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         dest.writeString(url);
         dest.writeString(piDID);
         dest.writeString(proposalType);
-        dest.writeString(voteProposalType);
+        dest.writeString(proposalId);
         dest.writeString(vote);
         dest.writeString(redeemStatus);
         dest.writeString(walletIcon);
@@ -668,14 +668,6 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         this.proposalType = proposalType;
     }
 
-    public String getVoteProposalType() {
-        return voteProposalType;
-    }
-
-    public void setVoteProposalType(String voteProposalType) {
-        this.voteProposalType = voteProposalType;
-    }
-
     public String getPiDID() {
         return piDID;
     }
@@ -700,6 +692,14 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         this.stakingValue = stakingValue;
     }
 
+    public String getProposalId() {
+        return proposalId;
+    }
+
+    public void setProposalId(String proposalId) {
+        this.proposalId = proposalId;
+    }
+
     @Override
     public int hashCode() {
         return TextUtils.isEmpty(hash) ? 0 : hash.hashCode();
@@ -721,21 +721,6 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         }
     }
 
-    public @StringRes
-    int getVoteProposalTypeDescRes() {
-        int proposalType = NumberParserUtils.parseInt(getVoteProposalType());
-        if (proposalType == ProposalType.UPGRADE_PROPOSAL) {
-            return R.string.upgrade_proposal;
-        } else if (proposalType == ProposalType.TEXT_PROPOSAL) {
-            return R.string.text_proposal;
-        } else if (proposalType == ProposalType.PARAMETER_PROPOSAL) {
-            return R.string.parameter_proposal;
-        } else if (proposalType == ProposalType.CANCEL_PROPOSAL) {
-            return R.string.cancel_proposal;
-        } else {
-            return -1;
-        }
-    }
 
     public @StringRes
     int getVoteOptionTypeDescRes() {
@@ -825,7 +810,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         private String url;
         private String piDID;
         private String proposalType;
-        private String voteProposalType;
+        private String proposalId;
         private String vote;
         private String redeemStatus;
         private String walletIcon;
@@ -953,8 +938,8 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
             return this;
         }
 
-        public Builder voteProposalType(String voteProposalType) {
-            this.voteProposalType = voteProposalType;
+        public Builder voteProposalType(String proposalId) {
+            this.proposalId = proposalId;
             return this;
         }
 
@@ -1019,7 +1004,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
                 ", url='" + url + '\'' +
                 ", piDID='" + piDID + '\'' +
                 ", proposalType='" + proposalType + '\'' +
-                ", voteProposalType='" + voteProposalType + '\'' +
+                ", proposalId='" + proposalId + '\'' +
                 ", vote='" + vote + '\'' +
                 ", redeemStatus='" + redeemStatus + '\'' +
                 ", walletIcon='" + walletIcon + '\'' +
