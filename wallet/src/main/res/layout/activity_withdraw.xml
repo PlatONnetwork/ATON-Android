@@ -157,6 +157,7 @@
                     android:layout_marginLeft="15dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="16dp"
+                    android:text="@string/withdraw_type_released"
                     android:textColor="@color/color_000000"
                     android:textSize="15sp" />
 
@@ -174,6 +175,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingRight="5dp"
+                        android:text="0.00"
                         android:textColor="@color/color_000000"
                         android:textSize="15sp"
                         android:textStyle="bold" />

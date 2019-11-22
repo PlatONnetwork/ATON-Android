@@ -73,7 +73,7 @@ public class Constants {
         String BUNDLE_FEE = "bundle_fee";
         String BUNDLE_TEXT = "bundle_text";
         String BUNDLE_MAP = "bundle_map";
-
+        String BUNDLE_CONFIRM_TEXT = "bundle_confirm_text";
         String BUNDLE_PAGE = "bundle_page";
         String BUNDLE_ENGLISH = "bundle_english";
 
