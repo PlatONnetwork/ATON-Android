@@ -124,7 +124,7 @@ android {
         releaseX {
             debuggable false
             signingConfig signingConfigs.releaseX
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeX}")
             zipAlignEnabled true
@@ -134,7 +134,7 @@ android {
         releaseJX {
             debuggable false
             signingConfig signingConfigs.releaseJX
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeX}")
             zipAlignEnabled true
