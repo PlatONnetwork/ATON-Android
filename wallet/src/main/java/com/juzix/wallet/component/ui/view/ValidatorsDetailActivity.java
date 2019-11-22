@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -46,8 +45,6 @@ import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.math.BigDecimal;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -268,16 +265,20 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
         webSite.setText(TextUtils.isEmpty(websiteUrl) ? "--" : websiteUrl);//官网
         webSite.setTextColor(TextUtils.isEmpty(websiteUrl) ? ContextCompat.getColor(this, R.color.color_000000) : ContextCompat.getColor(this, R.color.color_105cfe));
 
-        //判断按钮是否可点击
-        if (TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITING) || TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITED)) {//b.节点退出中或已退出
+        if (BigDecimalUtil.isEqualsZero(WalletManager.getInstance().getSumAccountBalance())) {
             tips.setVisibility(View.VISIBLE);
-            setImageIconForText(tips, getString(R.string.the_Validator_has_exited_and_cannot_be_delegated));
+            setImageIconForText(tips, getString(R.string.msg_undelegate_with_no_avaliable_balance));
+            delegate.setEnabled(false);
+        } else if (TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITING) || TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITED)) {
+            //b.节点退出中或已退出
+            tips.setVisibility(View.VISIBLE);
+            setImageIconForText(tips, getString(R.string.the_validator_has_exited_and_cannot_be_delegated));
             delegate.setEnabled(false);
         } else if (nodeDetail.isInit()) { //c.节点状态为初始化验证人（收益地址为激励池地址的验证人）
             tips.setVisibility(View.VISIBLE);
             setImageIconForText(tips, getString(R.string.validators_details_tips));
             delegate.setEnabled(false);
-        } else if (WalletManager.getInstance().getAddressList().size() == 0) { // a.客户端本地没有钱包
+        } else if (WalletManager.getInstance().getAddressList().isEmpty()) { // a.客户端本地没有钱包
             tips.setVisibility(View.VISIBLE);
             setImageIconForText(tips, getString(R.string.tips_no_wallet));
             delegate.setEnabled(false);

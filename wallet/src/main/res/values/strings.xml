@@ -579,7 +579,7 @@
     <string name="locked_balance">锁仓余额</string>
     <string name="delegate_amount_tips">委托数量不能少于10LAT</string>
     <string name="insufficient_balance_unable_to_delegate">余额不足，无法委托</string>
-    <string name="the_Validator_has_exited_and_cannot_be_delegated">委托节点已退出，无法委托</string>
+    <string name="the_validator_has_exited_and_cannot_be_delegated">委托节点已退出，无法委托</string>
     <string name="delegate_failed">委托失败</string>
     <string name="delegate_success">委托成功</string>
 
@@ -705,4 +705,6 @@
     <string name="msg_undelegated_from">赎回From：</string>
     <string name="msg_no_delegation_available">没有可赎回的委托</string>
     <string name="msg_privacy_policy">隐私政策</string>
+
+    <string name="msg_undelegate_with_no_avaliable_balance">可用余额为0，无法委托</string>
 </resources>

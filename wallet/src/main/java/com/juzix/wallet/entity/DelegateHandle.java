@@ -58,7 +58,7 @@ public class DelegateHandle {
             case "1":
                 return context.getString(R.string.delegate_no_click);
             case "2":
-                return context.getString(R.string.the_Validator_has_exited_and_cannot_be_delegated);
+                return context.getString(R.string.the_validator_has_exited_and_cannot_be_delegated);
             case "3":
                 return context.getString(R.string.tips_not_delegate);
             case "4":

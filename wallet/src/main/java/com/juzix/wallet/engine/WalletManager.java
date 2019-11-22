@@ -146,6 +146,9 @@ public class WalletManager {
     }
 
     public List<String> getAddressList() {
+        if (mWalletList == null || mWalletList.isEmpty()) {
+            return new ArrayList<>();
+        }
         return Flowable.fromIterable(mWalletList)
                 .map(new Function<Wallet, String>() {
                     @Override

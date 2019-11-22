@@ -409,7 +409,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
             } else if (TextUtils.equals(bean.getMessage(), "2")) { //节点已退出或退出中
                 btnDelegate.setEnabled(false);
                 tv_no_delegate_tips.setVisibility(View.VISIBLE);
-                setImageIconForText(tv_no_delegate_tips, getString(R.string.the_Validator_has_exited_and_cannot_be_delegated));
+                setImageIconForText(tv_no_delegate_tips, getString(R.string.the_validator_has_exited_and_cannot_be_delegated));
             } else if (TextUtils.equals(bean.getMessage(), "3")) {
                 btnDelegate.setEnabled(false);
                 tv_no_delegate_tips.setVisibility(View.VISIBLE);

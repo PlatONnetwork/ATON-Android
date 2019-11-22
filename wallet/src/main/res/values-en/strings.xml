@@ -561,7 +561,7 @@
     <string name="locked_balance">Restricted balance</string>
     <string name="delegate_amount_tips">The Amount cannot be less than 10 LAT</string>
     <string name="insufficient_balance_unable_to_delegate">Insufficient balance, unable to delegate</string>
-    <string name="the_Validator_has_exited_and_cannot_be_delegated">The Validator has Exited and cannot be delegated</string>
+    <string name="the_validator_has_exited_and_cannot_be_delegated">The Validator has Exited and cannot be delegated</string>
     <string name="delegate_failed">Delegated Failed</string>
     <string name="delegate_success">Delegated Success</string>
 
@@ -692,5 +692,7 @@
     <string name="msg_undelegated_from">Undelegated from：</string>
     <string name="msg_no_delegation_available">No delegation LAT available for withdrawal</string>
     <string name="msg_privacy_policy">Privacy Policy</string>
+
+    <string name="msg_undelegate_with_no_avaliable_balance">Wallet balance is 0, unable to delegate</string>
 </resources>
 
