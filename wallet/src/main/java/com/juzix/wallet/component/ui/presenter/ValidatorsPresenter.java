@@ -26,8 +26,10 @@ import java.util.concurrent.Callable;
 
 import io.reactivex.Flowable;
 import io.reactivex.Single;
+import io.reactivex.SingleSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.BiConsumer;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
@@ -59,16 +61,28 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
                     @Override
                     public void onApiSuccess(List<VerifyNode> nodeList) {
                         if (isViewAttached()) {
-                            deleteVerifyNodeList();
-                            insertVerifyNodeIntoDB(nodeList);
-                            loadDataFromDB(sortType, nodeState, sequence);
+
+                            deleteVerifyNodeList()
+                                    .flatMap(new Function<Boolean, SingleSource<Boolean>>() {
+                                        @Override
+                                        public SingleSource<Boolean> apply(Boolean aBoolean) throws Exception {
+                                            return ValidatorsService.insertVerifyNodeList(nodeList);
+                                        }
+                                    })
+                                    .compose(RxUtils.getSingleSchedulerTransformer())
+                                    .subscribe(new Consumer<Boolean>() {
+                                        @Override
+                                        public void accept(Boolean aBoolean) throws Exception {
+                                            loadDataFromDB(sortType, nodeState, sequence);
+                                        }
+                                    });
                         }
 
                     }
 
                     @Override
                     public void onApiFailure(ApiResponse response) {
-                        if (isViewAttached()){
+                        if (isViewAttached()) {
                             getView().showValidatorsFailed();
                         }
                     }
@@ -106,8 +120,7 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
                     }
                 })
                         .toList()
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
+                        .compose(RxUtils.getSingleSchedulerTransformer())
                         .subscribe(new BiConsumer<List<VerifyNode>, Throwable>() {
                             @Override
                             public void accept(List<VerifyNode> nodeList, Throwable throwable) throws Exception {
@@ -117,7 +130,7 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
                             }
                         });
 
-            }else {
+            } else {
                 //(在所有页签)(按年化率操作)
                 Flowable
                         .fromIterable(VerifyNodeDao.getVerifyNodeAllByRate(ranking))
@@ -127,17 +140,16 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
                                 return entity != null;
                             }
                         })
-                        .compose(((BaseFragment) getView()).bindToLifecycle()).map(new Function<VerifyNodeEntity, VerifyNode>() {
-
-                    @Override
-                    public VerifyNode apply(VerifyNodeEntity entity) throws Exception {
-                        //转换对象并赋值
-                        return new VerifyNode(entity.getNodeId(), entity.getRanking(), entity.getName(), entity.getDeposit(), entity.getUrl(), String.valueOf(entity.getRatePA()), entity.getNodeStatus(), entity.isInit());
-                    }
-                })
+                        .map(new Function<VerifyNodeEntity, VerifyNode>() {
+                            @Override
+                            public VerifyNode apply(VerifyNodeEntity entity) throws Exception {
+                                //转换对象并赋值
+                                return new VerifyNode(entity.getNodeId(), entity.getRanking(), entity.getName(), entity.getDeposit(), entity.getUrl(), String.valueOf(entity.getRatePA()), entity.getNodeStatus(), entity.isInit());
+                            }
+                        })
                         .toList()
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
+                        .compose(((BaseFragment) getView()).bindToLifecycle())
+                        .compose(RxUtils.getSingleSchedulerTransformer())
                         .subscribe(new BiConsumer<List<VerifyNode>, Throwable>() {
                             @Override
                             public void accept(List<VerifyNode> nodeList, Throwable throwable) throws Exception {
@@ -189,7 +201,7 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
                             }
                         });
 
-            }else { //按年化率操作
+            } else { //按年化率操作
 
                 Flowable
                         .fromIterable(VerifyNodeDao.getVerifyNodeByStateAndRate(state, ranking))
@@ -248,20 +260,14 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
                 .blockingGet();
     }
 
-    public boolean deleteVerifyNodeList() {
+    public Single<Boolean> deleteVerifyNodeList() {
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
                 return VerifyNodeDao.deleteVerifyNode();
             }
-        }).subscribeOn(Schedulers.io())
-                .blockingGet();
+        });
     }
-
-    public boolean insertVerifyNodeIntoDB(List<VerifyNode> nodeList) {
-        return ValidatorsService.insertVerifyNodeList(nodeList).blockingGet();
-    }
-
 
     public List<VerifyNode> sort(List<VerifyNode> verifyNodeList) {
 

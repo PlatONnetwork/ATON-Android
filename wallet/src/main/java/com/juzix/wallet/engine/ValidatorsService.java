@@ -50,7 +50,7 @@ public class ValidatorsService {
                     public Boolean apply(List<VerifyNodeEntity> entityList) throws Exception {
                         return VerifyNodeDao.insertVerifyNodeList(entityList);
                     }
-                }).subscribeOn(Schedulers.io());
+                });
 
     }
 

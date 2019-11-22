@@ -25,7 +25,7 @@ public class VerifyNodeDao {
                         .equalTo("nodeStatus", state)
                         .sort("ranking", Sort.ASCENDING)
                         .limit(10)
-                        .findAll();
+                        .findAllAsync();
             } else {
                 result = realm.where(VerifyNodeEntity.class)
                         .equalTo("nodeStatus", state)
@@ -33,7 +33,7 @@ public class VerifyNodeDao {
                         .greaterThan("ranking", ranking)
                         .sort("ranking", Sort.ASCENDING)
                         .limit(10)
-                        .findAll();
+                        .findAllAsync();
             }
 
             if (null != result) {
@@ -70,7 +70,7 @@ public class VerifyNodeDao {
                         .equalTo("nodeStatus", state)
                         .sort("ratePA", Sort.DESCENDING)
                         .limit(10)
-                        .findAll();
+                        .findAllAsync();
             } else {
                 result = realm.where(VerifyNodeEntity.class)
                         .equalTo("nodeStatus", state)
@@ -78,7 +78,7 @@ public class VerifyNodeDao {
                         .lessThan("ratePA", ratePA)
                         .sort("ratePA", Sort.DESCENDING)
                         .limit(10)
-                        .findAll();
+                        .findAllAsync();
             }
 
             if (null != result) {
@@ -148,7 +148,6 @@ public class VerifyNodeDao {
     public static List<VerifyNodeEntity> getVerifyNodeAllByRate(int ratePAing) {
         List<VerifyNodeEntity> list = new ArrayList<>();
         Realm realm = null;
-
         try {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
