@@ -22,6 +22,7 @@ import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.db.sqlite.AddressDao;
 import com.juzix.wallet.db.sqlite.TransactionDao;
 import com.juzix.wallet.db.sqlite.WalletDao;
+import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.TransactionManager;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionAuthorizationBaseData;
@@ -184,7 +185,7 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
         super.onActivityResult(requestCode, resultCode, data);
         String signature = data.getStringExtra(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
         transactionSignatureData = JSONUtil.parseObject(GZipUtil.unCompress(signature), TransactionSignatureData.class);
-        if (transactionSignatureData != null && transactionSignatureData.getSignedDatas() != null && !transactionSignatureData.getSignedDatas().isEmpty()) {
+        if (transactionSignatureData != null && transactionSignatureData.getSignedDatas() != null && !transactionSignatureData.getSignedDatas().isEmpty() && NodeManager.getInstance().getChainId().equals(transactionSignatureData.getChainId())) {
             tvTransactionSignature.setText(getSignedMessage(transactionSignatureData));
             RawTransaction rawTransaction = TransactionDecoder.decode(transactionSignatureData.getSignedDatas().get(0));
             LogUtils.e(rawTransaction.toString());
