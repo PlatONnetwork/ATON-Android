@@ -140,7 +140,7 @@
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".component.ui.view.SettingsActiivty"
+            android:name=".component.ui.view.SettingsActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity

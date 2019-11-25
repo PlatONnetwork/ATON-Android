@@ -102,16 +102,16 @@ public class NodeSettingsPresenterTest {
                     continue;
                 }
 
-                String nodeAddress = presenter.getView().getNodeAddress(node.getId());
-                if (TextUtils.isEmpty(nodeAddress) || !nodeAddress.trim().matches("^(http(s?)://)?((25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))\\.){3}(25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)):\\d{3,})")) {
-                    removeNodeList.add(node);
-                }
+//                String nodeAddress = presenter.getView().getNodeAddress(node.getId());
+//                if (TextUtils.isEmpty(nodeAddress) || !nodeAddress.trim().matches("^(http(s?)://)?((25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))\\.){3}(25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)):\\d{3,})")) {
+//                    removeNodeList.add(node);
+//                }
 
             }
         }
-        if (!removeNodeList.isEmpty()) {
-            presenter.getView().removeNodeList(removeNodeList);
-        }
+//        if (!removeNodeList.isEmpty()) {
+//            presenter.getView().removeNodeList(removeNodeList);
+//        }
     }
 
     @Test
@@ -176,19 +176,19 @@ public class NodeSettingsPresenterTest {
             }
         }
 
-        if (errorNodeList.isEmpty()) {
-            if (!removeNodeList.isEmpty()) {
-                presenter.getView().removeNodeList(removeNodeList);
-            }
-            if (!normalNodeList.isEmpty()) {
-//                insertNodeList(normalNodeList);
-                presenter.getView().updateNodeList(normalNodeList);
-            }
-            presenter.getView().showTitleView(false);
-        } else {
-//            showLongToast(R.string.node_format_error);
-           presenter.getView().updateNodeList(errorNodeList);
-        }
+//        if (errorNodeList.isEmpty()) {
+//            if (!removeNodeList.isEmpty()) {
+//                presenter.getView().removeNodeList(removeNodeList);
+//            }
+//            if (!normalNodeList.isEmpty()) {
+////                insertNodeList(normalNodeList);
+//                presenter.getView().updateNodeList(normalNodeList);
+//            }
+//            presenter.getView().showTitleView(false);
+//        } else {
+////            showLongToast(R.string.node_format_error);
+//           presenter.getView().updateNodeList(errorNodeList);
+//        }
 
     }
 

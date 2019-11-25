@@ -3,20 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="55dp"
+    android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:paddingLeft="16dp"
-    android:paddingRight="16dp">
-
-    <ImageView
-        android:id="@+id/iv_del"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/icon_node_del"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    android:paddingTop="20dp"
+    android:paddingRight="16dp"
+    android:paddingBottom="20dp">
 
     <ImageView
         android:id="@+id/iv_selected"
@@ -27,22 +20,33 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.juzix.wallet.component.widget.CustomEditText
-        android:id="@+id/et_node"
+    <TextView
+        android:id="@+id/tv_node_name"
         style="@style/Text.000.14"
         android:layout_width="0dp"
-        android:layout_marginLeft="12dp"
-        android:background="@null"
         android:ellipsize="end"
         android:gravity="center_vertical|left"
-        android:lines="2"
-        android:layout_marginRight="24dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/iv_del"
+        android:includeFontPadding="false"
+        android:lines="1"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/iv_selected"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_goneMarginLeft="0dp"
-        tools:text="http://xxxxxxxhttp://xxxxxxxhttp://xxxxxxxhttp://xxxxxxxhttp://xxxxxxx" />
+        tools:text="NewBaleyworld" />
+
+    <TextView
+        android:id="@+id/tv_node_info"
+        style="@style/Text.898c9e.13"
+        android:layout_width="0dp"
+        android:layout_marginTop="10dp"
+        android:ellipsize="end"
+        android:gravity="center_vertical|left"
+        android:includeFontPadding="false"
+        android:lines="1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/iv_selected"
+        app:layout_constraintTop_toBottomOf="@id/tv_node_name"
+        tools:text="http://192.168.9.190:1000/rpc(chainId:99)" />
 
 
 </android.support.constraint.ConstraintLayout>

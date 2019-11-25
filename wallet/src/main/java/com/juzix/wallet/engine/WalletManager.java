@@ -473,6 +473,9 @@ public class WalletManager {
     }
 
     public boolean isWalletNameExists(String walletName) {
+        if (mWalletList == null || mWalletList.isEmpty()) {
+            return false;
+        }
         return Flowable
                 .fromIterable(mWalletList)
                 .map(new Function<Wallet, Boolean>() {
@@ -493,6 +496,9 @@ public class WalletManager {
     }
 
     public boolean isWalletAddressExists(String prefixAddress) {
+        if (mWalletList == null || mWalletList.isEmpty()) {
+            return false;
+        }
         return Flowable
                 .fromIterable(mWalletList)
                 .map(new Function<Wallet, Boolean>() {

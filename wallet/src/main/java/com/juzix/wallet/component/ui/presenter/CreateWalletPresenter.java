@@ -47,6 +47,7 @@ public class CreateWalletPresenter extends BasePresenter<CreateWalletContract.Vi
             return;
         }
         if (WalletManager.getInstance().isWalletNameExists(name)) {
+            showLongToast(string(R.string.walletExists));
             return;
         }
 

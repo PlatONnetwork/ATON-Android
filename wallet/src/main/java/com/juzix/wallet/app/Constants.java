@@ -97,6 +97,7 @@ public class Constants {
         String KEY_OPERATE_MENU_FLAG = "operateMenuFlag";
         String KEY_LANGUAGE = "language";
         String KEY_FACE_TOUCH_ID_FLAG = "faceTouchIdFlag";
+        String KEY_RESEND_REMINDER = "resendReminder";
         String KEY_FIRST_ENTER = "firstEnter";
         String KEY_SHOW_ASSETS_FLAG = "showAssetsFlag";
         String KEY_UPDATE_VERSION_TIME = "updateVersionTime";
@@ -118,6 +119,8 @@ public class Constants {
         String KEY_SHOW_OBSERVED_WALLET = "key_show_observed_walLet";
         String KEY_SHOW_MY_DELEGATE = "key_show_my_delegate";
         String KEY_SHOW_WITHDRAW_OPERATION = "key_show_withdraw_operation";
+
+        String KEY_REMINDER_THRESHOLD_AMOUNT = "key_reminder_threshold_amount";
 
     }
 
