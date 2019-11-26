@@ -4,9 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/color_f9fbff"
-    >
+    android:orientation="vertical">
 
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/refreshLayout"
@@ -17,20 +16,22 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-
             <ListView
                 android:id="@+id/rlv_list"
+                style="@style/List_common_style"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:divider="@null"
-                tools:listitem="@layout/item_delegate_record_list"
-                />
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:divider="@color/color_00000000"
+                android:dividerHeight="4dp"
+                android:paddingTop="16dp"
+                tools:listitem="@layout/item_delegate_record_list" />
 
             <include
                 android:id="@+id/layout_no_record"
                 layout="@layout/include_no_delegate_record"
-                android:visibility="gone"
-                />
+                android:visibility="gone" />
 
         </RelativeLayout>
 
