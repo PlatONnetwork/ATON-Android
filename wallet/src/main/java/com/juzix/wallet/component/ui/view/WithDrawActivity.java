@@ -336,13 +336,16 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
 
     @Override
     public void showBalanceType(double delegated, double released) {
+
+        WithDrawType delegatedWithDrawType = new WithDrawType(WithDrawPopWindowAdapter.TAG_DELEGATED, delegated);
+        WithDrawType releasedWithDrawType = new WithDrawType(WithDrawPopWindowAdapter.TAG_RELEASED, released);
+
         list.clear();
-        list.add(new WithDrawType(WithDrawPopWindowAdapter.TAG_DELEGATED, delegated));
-        list.add(new WithDrawType(WithDrawPopWindowAdapter.TAG_RELEASED, released));
+        list.add(delegatedWithDrawType);
+        list.add(releasedWithDrawType);
         mPopWindowAdapter.notifyDataSetChanged();
 
-        delegateType.setText(released > 0 ? getString(R.string.withdraw_type_released) : getString(R.string.withdraw_type_delegated));
-        delegateAmount.setText(StringUtil.formatBalance(released > 0 ? released : delegated, false));
+        refreshData(released > 0 ? releasedWithDrawType : delegatedWithDrawType);
     }
 
     @Override
@@ -406,6 +409,14 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         TransactionSignatureDialogFragment dialogFragment = (TransactionSignatureDialogFragment) getSupportFragmentManager().findFragmentByTag(TransactionSignatureDialogFragment.TAG);
         if (dialogFragment != null) {
             dialogFragment.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (unbinder != null) {
+            unbinder.unbind();
         }
     }
 

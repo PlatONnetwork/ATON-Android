@@ -49,6 +49,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -121,7 +122,6 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
         refreshLayout.setRefreshFooter(new CustomRefreshFooter(getContext()));
         refreshLayout.setEnableLoadMore(true);//启用上拉加载功能
         refreshLayout.setEnableAutoLoadMore(false);
-        tv_rank.setOnClickListener(this);
         mValidatorsAdapter = new ValidatorsAdapter(R.layout.item_validators_list, null);
         rlv_list.setEmptyView(mNoDataLayout);
         rlv_list.setAdapter(mValidatorsAdapter);
@@ -228,41 +228,23 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
         super.onPause();
     }
 
-    @Override
+    @OnClick({R.id.layout_rank})
     public void onClick(View v) {
-        int id = v.getId();
-        switch (id) {
+        switch (v.getId()) {
             case R.id.layout_rank:
-            case R.id.tv_rank:
                 if (TextUtils.equals(rankType, Constants.ValidatorsType.VALIDATORS_RANK)) {
                     tv_rank.setText(getString(R.string.validators_detail_yield));
                     rankType = Constants.ValidatorsType.VALIDATORS_YIELD;
-
-                    allList.clear();
-                    activeList.clear();
-                    candidateList.clear();
-                    //按年化操作
-//                    mPresenter.loadValidatorsData(rankType, nodeState, -1);
-
-                    //这里不再调用接口，直接从数据库去拿数据
-                    mPresenter.loadDataFromDB(rankType, nodeState, -1);
-
-
                 } else {
                     tv_rank.setText(getString(R.string.validators_rank));
                     rankType = Constants.ValidatorsType.VALIDATORS_RANK;
-
-                    allList.clear();
-                    activeList.clear();
-                    candidateList.clear();
-                    //按排名操作
-//                    mPresenter.loadValidatorsData(rankType, nodeState, -1);
-
-                    //这里不再调用接口，直接从数据库去拿数据
-                    mPresenter.loadDataFromDB(rankType, nodeState, -1);
-
                 }
-
+                allList.clear();
+                activeList.clear();
+                candidateList.clear();
+                //按排名操作
+                //这里不再调用接口，直接从数据库去拿数据
+                mPresenter.loadDataFromDB(rankType, nodeState, -1);
                 break;
             default:
                 break;

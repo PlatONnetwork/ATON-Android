@@ -140,7 +140,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
                 ContextCompat.getColor(this, R.color.color_ffffff),
                 DensityUtil.dp2px(this, 4),
                 ContextCompat.getColor(this, R.color.color_cc9ca7c2),
-                DensityUtil.dp2px(this, 5),
+                DensityUtil.dp2px(this, 10),
                 0,
                 DensityUtil.dp2px(this, 2));
 
@@ -261,8 +261,8 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
         blocks.setText(nodeDetail.getBlockOutNumber() == 0 ? "--" : nodeDetail.getBlockOutNumber() + "");
         blockRate.setText(NumberParserUtils.parseDouble(nodeDetail.getBlockRate()) / 100 + "%");
 
-        introduction.setText(nodeDetail.getIntro());
-        webSite.setText(TextUtils.isEmpty(websiteUrl) ? "--" : websiteUrl);//官网
+        introduction.setText(TextUtils.isEmpty(nodeDetail.getIntro()) ? "- -" : websiteUrl);
+        webSite.setText(TextUtils.isEmpty(websiteUrl) ? "- -" : websiteUrl);//官网
         webSite.setTextColor(TextUtils.isEmpty(websiteUrl) ? ContextCompat.getColor(this, R.color.color_000000) : ContextCompat.getColor(this, R.color.color_105cfe));
 
         if (BigDecimalUtil.isEqualsZero(WalletManager.getInstance().getSumAccountBalance())) {

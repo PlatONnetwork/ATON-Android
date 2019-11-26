@@ -8,17 +8,15 @@
         android:id="@+id/ll_record_shade"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="11dp"
         android:background="@drawable/bg_mydelegate_item"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
             android:background="@drawable/icon_my_delegate_item_bg">
 
             <com.juzix.wallet.component.widget.CircleImageView
@@ -45,9 +43,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="3dp"
                     android:text="委托节点名称"
-                    android:textStyle="bold"
                     android:textColor="@color/color_000000"
-                    android:textSize="15sp" />
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tv_address_node"
@@ -77,7 +75,7 @@
                     android:layout_marginBottom="6dp"
                     android:textColor="@color/color_000000"
                     android:textSize="16sp"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tv_state"
@@ -120,14 +118,15 @@
                     android:src="@drawable/icon_total_delegate" />
 
                 <TextView
-                android:id="@+id/tv_wallet_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_toRightOf="@id/iv_wallet"
-                android:text="123"
-                android:textColor="@color/color_898c9e"
-                android:textSize="13sp" />
+                    android:id="@+id/tv_wallet_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_toRightOf="@id/iv_wallet"
+                    android:text="123"
+                    android:textColor="@color/color_898c9e"
+                    android:textSize="13sp" />
+
                 <TextView
                     android:id="@+id/tv_wallet_address"
                     android:layout_width="wrap_content"
