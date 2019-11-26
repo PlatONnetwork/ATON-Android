@@ -12,6 +12,7 @@ public class DelegateHandle {
     private String message;
     private String free;
     private String lock;
+    private String minDelegation;
 
     public DelegateHandle() {
     }
@@ -47,6 +48,14 @@ public class DelegateHandle {
 
     public void setLock(String lock) {
         this.lock = lock;
+    }
+
+    public String getMinDelegation() {
+        return minDelegation;
+    }
+
+    public void setMinDelegation(String minDelegation) {
+        this.minDelegation = minDelegation;
     }
 
     public String getMessageDesc(Context context) {

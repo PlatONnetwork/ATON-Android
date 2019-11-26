@@ -32,6 +32,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/iv_selected"
         app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
         tools:text="NewBaleyworld" />
 
     <TextView
@@ -46,6 +47,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/iv_selected"
         app:layout_constraintTop_toBottomOf="@id/tv_node_name"
+        app:layout_goneMarginTop="0dp"
         tools:text="http://192.168.9.190:1000/rpc(chainId:99)" />
 
 

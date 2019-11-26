@@ -102,7 +102,9 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
         Node nodeEntity = mNodeList.get(position);
 
         holder.ivSelected.setVisibility(nodeEntity.isChecked() ? View.VISIBLE : View.GONE);
-        holder.tvNodeName.setText(getNodeName(nodeEntity));
+        String nodeName = getNodeName(nodeEntity);
+        holder.tvNodeName.setVisibility(TextUtils.isEmpty(nodeName) ? View.GONE : View.VISIBLE);
+        holder.tvNodeName.setText(nodeName);
         holder.tvNodeInfo.setText(getNodeInfo(nodeEntity));
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
