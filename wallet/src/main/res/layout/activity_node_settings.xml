@@ -18,38 +18,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:ctb_left_drawable="@drawable/icon_back_black"
-            app:ctb_right_text="@string/edit"
             app:ctb_title="@string/node_settings" />
     </LinearLayout>
 
-
-    <android.support.v4.widget.NestedScrollView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list_nodes"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:overScrollMode="never" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/list_nodes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:overScrollMode="never" />
-
-            <TextView
-                android:id="@+id/tv_add_node"
-                style="@style/Text.000.14"
-                android:layout_marginTop="16dp"
-                android:drawableLeft="@drawable/icon_node_add"
-                android:drawablePadding="13dp"
-                android:paddingLeft="17dp"
-                android:text="@string/add"
-                android:visibility="gone" />
-
-        </LinearLayout>
-
-    </android.support.v4.widget.NestedScrollView>
 
 </LinearLayout>

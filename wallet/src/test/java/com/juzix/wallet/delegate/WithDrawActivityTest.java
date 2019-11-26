@@ -81,7 +81,7 @@ public class WithDrawActivityTest {
     public void testBalanceType() {
         String walletAddress = "0x4ded81199608adb765fb2fe029bbfdf57f538be8";
         String nodeId = "0xdac7931462dc0db97d9a0010c5719411810c06f90bd8b66432113a6f31bf9d1ab8a8f7db5bbbc76f4448ad6b3215cb527ba3276e185f9ba2360ef09be62d90c5";
-        ServerUtils.getCommonApi().getWithDrawBalance(ApiRequestBody.newBuilder()
+        ServerUtils.getCommonApi().getDelegationValue(ApiRequestBody.newBuilder()
                 .put("addr", walletAddress)
                 .put("nodeId", nodeId)
                 .build())

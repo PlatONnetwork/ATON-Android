@@ -11,10 +11,18 @@ import com.juzix.wallet.engine.NodeManager;
  */
 public class AppSettings {
 
+    /**
+     * 默认大额提醒金额1000 LAT
+     */
+    private static final long DEFAULT_REMINDER_THRESHOLD_AMOUNT = 1000L;
+    /**
+     * 默认重发提醒开启
+     */
+    private static final boolean DEFAULT_RESEND_REMINDER = true;
+
     private static final String PREFERENCES_NAME = "com.juzix.wallet.appsettings";
 
     private static final AppSettings APP_SETTINGS = new AppSettings();
-
     /**
      * 文件存储
      */
@@ -75,6 +83,22 @@ public class AppSettings {
 
     public void setValidatorsTab(boolean isChoosedTab) {
         setBooleanItem(Constants.Preference.KEY_VALIDATORSTAB, isChoosedTab);
+    }
+
+    public boolean getResendReminder() {
+        return getBooleanItem(Constants.Preference.KEY_RESEND_REMINDER, DEFAULT_RESEND_REMINDER);
+    }
+
+    public void setResendReminder(boolean on) {
+        setBooleanItem(Constants.Preference.KEY_RESEND_REMINDER, on);
+    }
+
+    public long getReminderThresholdAmount() {
+        return getLongItem(Constants.Preference.KEY_REMINDER_THRESHOLD_AMOUNT, DEFAULT_REMINDER_THRESHOLD_AMOUNT);
+    }
+
+    public void setReminderThresholdAmount(long reminderThresholdAmount) {
+        setLongItem(Constants.Preference.KEY_REMINDER_THRESHOLD_AMOUNT, reminderThresholdAmount);
     }
 
     public boolean getFaceTouchIdFlag() {
@@ -162,7 +186,7 @@ public class AppSettings {
     }
 
     public void setWalletNameSequence(int walletNameSequence) {
-        setIntItem(NodeManager.getInstance().getChainId(),walletNameSequence);
+        setIntItem(NodeManager.getInstance().getChainId(), walletNameSequence);
     }
 
     private String getStringItem(String key, String defaultValue) {

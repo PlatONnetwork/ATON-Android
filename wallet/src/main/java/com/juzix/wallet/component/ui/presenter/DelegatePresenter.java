@@ -120,7 +120,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
         //检查委托的数量
         if (TextUtils.isEmpty(delegateAmount)) {
             getView().showTips(false);
-        } else if (amount <NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(minDelegation, "1E18")))) {
+        } else if (amount < NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(minDelegation, "1E18")))) {
             //按钮不可点击,并且下方提示
             getView().showTips(true);
         } else {
@@ -163,6 +163,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                     public void onApiSuccess(DelegateHandle delegateHandle) {
                         if (isViewAttached()) {
                             if (null != delegateHandle) {
+                                minDelegation = delegateHandle.getMinDelegation();
                                 getView().showIsCanDelegate(delegateHandle);
                             }
 
@@ -240,7 +241,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     public void getAllPrice(StakingAmountType stakingAmountType, String amount) {
         isAll = true;
         if (mDelegateDetail != null) {
-            String delegateAmount = stakingAmountType == StakingAmountType.FREE_AMOUNT_TYPE ? Convert.toVon(amount, Convert.Unit.LAT).toBigInteger().toString().replaceAll("0", "1"):Convert.toVon(amount, Convert.Unit.LAT).toBigInteger().toString();
+            String delegateAmount = stakingAmountType == StakingAmountType.FREE_AMOUNT_TYPE ? Convert.toVon(amount, Convert.Unit.LAT).toBigInteger().toString().replaceAll("0", "1") : Convert.toVon(amount, Convert.Unit.LAT).toBigInteger().toString();
             org.web3j.platon.contracts.DelegateContract
                     .load(Web3jManager.getInstance().getWeb3j())
                     .getDelegateGasProvider(mDelegateDetail.getNodeId(), stakingAmountType, new BigInteger(delegateAmount))
@@ -306,6 +307,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                         @Override
                         public void onApiSuccess(DelegateHandle delegateHandle) {
                             if (isViewAttached()) {
+                                minDelegation = delegateHandle.getMinDelegation();
                                 String errMsg = checkDelegateParam(delegateHandle, stakingAmountType);
                                 if (!TextUtils.isEmpty(errMsg)) {
                                     showLongToast(errMsg);

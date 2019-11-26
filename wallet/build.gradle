@@ -258,7 +258,6 @@ dependencies {
     implementation rootProject.ext.dependencies["rxpermissions"]
     implementation rootProject.ext.dependencies["butterknife"]
     annotationProcessor rootProject.ext.dependencies["butterknife-compiler"]
-    implementation rootProject.ext.dependencies["PickerView"]
     implementation rootProject.ext.dependencies["support-zxing"]
     implementation rootProject.ext.dependencies["flexbox"]
     implementation rootProject.ext.dependencies["tinypinyin"]

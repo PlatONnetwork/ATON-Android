@@ -8,6 +8,7 @@ import com.juzix.wallet.entity.CandidateWrap;
 import com.juzix.wallet.entity.DelegateDetail;
 import com.juzix.wallet.entity.DelegateHandle;
 import com.juzix.wallet.entity.DelegateInfo;
+import com.juzix.wallet.entity.DelegationValue;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionReceipt;
 import com.juzix.wallet.entity.VerifyNode;
@@ -139,7 +140,7 @@ public interface BaseApi {
      * "nodeId":"",                          //节点id
      */
     @POST("app/v0700/node/getDelegationValue")
-    Single<Response<ApiResponse<List<WithDrawBalance>>>> getWithDrawBalance(@Body ApiRequestBody body);
+    Single<Response<ApiResponse<DelegationValue>>> getDelegationValue(@Body ApiRequestBody body);
 
 
     /**

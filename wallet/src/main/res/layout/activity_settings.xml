@@ -41,6 +41,58 @@
             android:text="@string/node_settings" />
 
         <LinearLayout
+            android:id="@+id/layout_large_transaction_reminder"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                style="@style/Text.000.16"
+                android:text="@string/msg_reminder_threshold" />
+
+            <android.support.v4.widget.Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tv_reminder_threshold_amount"
+                style="@style/Text.61646e.15"
+                android:drawableRight="@drawable/icon_right_arrow"
+                android:drawablePadding="4dp"
+                tools:text="1000 LAT" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_resend_reminder"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                style="@style/Text.000.16"
+                android:text="@string/msg_resend_reminder" />
+
+            <android.support.v4.widget.Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <com.juzix.wallet.component.widget.togglebutton.ToggleButton
+                android:id="@+id/tgb_resend_reminder"
+                android:layout_width="51dp"
+                android:layout_height="31dp"
+                app:tbAsDefaultOn="false"
+                app:tbOffColor="@color/color_ffffff"
+                app:tbOnColor="@color/color_4cd964" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/layout_face_touch_id"
             android:layout_width="match_parent"
             android:layout_height="60dp"

@@ -41,49 +41,8 @@ public class NodeSettingsPresenter extends BasePresenter<NodeSettingsContract.Vi
     private final static String IP_WITH_HTTP_PREFIX = "^(http(s?)://)?((25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))\\.){3}(25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)):\\d{3,})";
     private final static String IP_WITHOUT_HTTP_PREFIX = "((25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))\\.){3}(25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)):\\d{3,})";
 
-    private boolean mEdited;
-
     public NodeSettingsPresenter(NodeSettingsContract.View view) {
         super(view);
-    }
-
-    @Override
-    public void edit() {
-        if (isViewAttached()) {
-            mEdited = !mEdited;
-            if (mEdited) {
-                getView().showTitleView(mEdited);
-            } else {
-                save();
-            }
-        }
-    }
-
-    @Override
-    public void cancel() {
-        mEdited = false;
-        if (isViewAttached()) {
-            List<Node> nodeList = getView().getNodeList();
-            List<Node> removeNodeList = new ArrayList<>();
-            if (nodeList != null && !nodeList.isEmpty()) {
-                for (int i = 0; i < nodeList.size(); i++) {
-                    Node node = nodeList.get(i);
-                    if (node.isDefaultNode() || !TextUtils.isEmpty(node.getNodeAddress())) {
-                        continue;
-                    }
-
-                    String nodeAddress = getView().getNodeAddress(node.getId());
-                    if (TextUtils.isEmpty(nodeAddress) || !nodeAddress.trim().matches(IP_WITH_HTTP_PREFIX)) {
-                        removeNodeList.add(node);
-                    }
-
-                }
-            }
-            if (!removeNodeList.isEmpty()) {
-                getView().removeNodeList(removeNodeList);
-            }
-            getView().showTitleView(mEdited);
-        }
     }
 
     @Override
@@ -103,77 +62,6 @@ public class NodeSettingsPresenter extends BasePresenter<NodeSettingsContract.Vi
                     }
                 });
 
-    }
-
-    @Override
-    public void save() {
-        if (isViewAttached()) {
-
-            ((BaseActivity) getView()).hideSoftInput();
-
-            List<Node> nodeList = getView().getNodeList();
-            List<Node> removeNodeList = new ArrayList<>();
-            List<Node> errorNodeList = new ArrayList<>();
-            List<Node> normalNodeList = new ArrayList<>();
-            if (nodeList != null && !nodeList.isEmpty()) {
-                for (int i = 0; i < nodeList.size(); i++) {
-                    Node node = nodeList.get(i);
-                    if (node.isDefaultNode()) {
-                        continue;
-                    }
-
-                    String nodeAddress = getView().getNodeAddress(node.getId());
-
-                    if (TextUtils.isEmpty(nodeAddress)) {
-                        removeNodeList.add(node);
-                    } else {
-                        Node nodeEntity = node.clone();
-                        String address = nodeAddress.trim();
-                        if (address.matches(IP_WITH_HTTP_PREFIX) || address.matches(IP_WITHOUT_HTTP_PREFIX)) {
-                            if (address.matches(IP_WITHOUT_HTTP_PREFIX)) {
-                                nodeEntity.setNodeAddress("http://".concat(address));
-                            } else {
-                                nodeEntity.setNodeAddress(address);
-                            }
-                            normalNodeList.add(nodeEntity);
-                        } else {
-                            nodeEntity.setFormatCorrect(true);
-                            errorNodeList.add(nodeEntity);
-                        }
-                    }
-                }
-            }
-
-            if (errorNodeList.isEmpty()) {
-                if (!removeNodeList.isEmpty()) {
-                    getView().removeNodeList(removeNodeList);
-                }
-                if (!normalNodeList.isEmpty()) {
-                    insertNodeList(normalNodeList);
-                    getView().updateNodeList(normalNodeList);
-                }
-                getView().showTitleView(mEdited);
-            } else {
-                showLongToast(R.string.node_format_error);
-                getView().updateNodeList(errorNodeList);
-            }
-
-        }
-    }
-
-    @Override
-    public void delete(Node nodeEntity) {
-        NodeManager.getInstance()
-                .deleteNode(nodeEntity)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(Boolean aBoolean) throws Exception {
-                        if (aBoolean && nodeEntity.isChecked() && isViewAttached()) {
-                            getView().setChecked(0);
-                        }
-                    }
-                });
     }
 
     @Override
@@ -222,11 +110,6 @@ public class NodeSettingsPresenter extends BasePresenter<NodeSettingsContract.Vi
                         }
                     }
                 });
-    }
-
-    @Override
-    public boolean isEdit() {
-        return mEdited;
     }
 
     private Single<Boolean> checkWalletList() {
