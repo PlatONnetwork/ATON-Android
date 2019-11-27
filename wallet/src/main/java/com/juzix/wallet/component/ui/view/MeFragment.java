@@ -86,7 +86,7 @@ public class MeFragment extends BaseFragment {
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) {
-                        SettingsActiivty.actionStart(getActivity());
+                        SettingsActivity.actionStart(getActivity());
                     }
                 });
         RxView.clicks(layoutAbout)

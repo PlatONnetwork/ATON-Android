@@ -5,22 +5,21 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.juzhen.framework.util.AndroidUtil;
+import com.juzix.wallet.BuildConfig;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.component.ui.base.BaseActivity;
-import com.juzix.wallet.component.widget.CustomEditText;
-import com.juzix.wallet.component.widget.TextChangedListener;
+import com.juzix.wallet.db.entity.NodeEntity;
 import com.juzix.wallet.entity.Node;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.ToastUtil;
@@ -30,13 +29,9 @@ import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.PlatonBlock;
 import org.web3j.protocol.http.HttpService;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
 
-import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.Single;
@@ -47,19 +42,11 @@ import io.reactivex.functions.Consumer;
  */
 public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHolder> {
 
-    private final static String TAG = NodeListAdapter.class.getSimpleName();
-
     private BaseActivity activity;
 
-    private Map<Long, String> map = new HashMap<>();
     private List<Node> mNodeList;
-    private boolean mIsEdit;
-    private OnItemRemovedListener mRemovedListener;
     private OnItemCheckedListener mCheckedListener;
 
-    public void setOnItemRemovedListener(OnItemRemovedListener mListener) {
-        this.mRemovedListener = mListener;
-    }
 
     public void setOnItemCheckedListener(OnItemCheckedListener mListener) {
         this.mCheckedListener = mListener;
@@ -70,84 +57,8 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
         this.mNodeList = nodeList;
     }
 
-    public List<Node> getNodeList() {
-        return mNodeList;
-    }
-
     public void notifyDataChanged(List<Node> nodeEntityList) {
         this.mNodeList = nodeEntityList;
-        notifyDataSetChanged();
-    }
-
-    public void setEditable(boolean isEdit) {
-        this.mIsEdit = isEdit;
-        notifyDataSetChanged();
-    }
-
-    public String getNodeAddress(long id) {
-        return map.get(id);
-    }
-
-    public void addNode() {
-        if (mNodeList == null) {
-            mNodeList = new ArrayList<>();
-        }
-
-        mNodeList.add(mNodeList.size(), Node.createNullNode());
-
-        notifyItemInserted(mNodeList.size() - 1);
-    }
-
-    public void removeNodeList(List<Node> nodeEntityList) {
-
-        if (mNodeList == null || mNodeList.isEmpty()) {
-            return;
-        }
-
-        for (Node nodeEntity : nodeEntityList) {
-            notifyItemRemoved(mNodeList.indexOf(nodeEntity));
-            map.remove(nodeEntity.getId());
-        }
-
-        mNodeList.removeAll(nodeEntityList);
-    }
-
-    public void removeNode(long id) {
-
-        if (mNodeList == null || mNodeList.isEmpty()) {
-            return;
-        }
-
-        Node tempNodeEntity = new Node.Builder()
-                .id(id)
-                .build();
-
-        if (mNodeList.contains(tempNodeEntity)) {
-            int position = mNodeList.indexOf(tempNodeEntity);
-            if (mNodeList.remove(position) != null) {
-                map.remove(tempNodeEntity.getId());
-                notifyItemRemoved(position);
-
-                if (mRemovedListener != null) {
-                    mRemovedListener.onItemRemoved(tempNodeEntity);
-                }
-            }
-        }
-    }
-
-    public void updateNodeList(List<Node> nodeEntityList) {
-
-        if (mNodeList == null || mNodeList.isEmpty()) {
-            return;
-        }
-
-        for (Node entity : nodeEntityList) {
-            int position = mNodeList.indexOf(entity);
-            if (position != -1) {
-                mNodeList.set(position, entity);
-            }
-        }
-
         notifyDataSetChanged();
     }
 
@@ -187,79 +98,18 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        if (holder.etNode.getTag() instanceof TextChangedListener) {
-            holder.etNode.removeTextChangedListener((TextWatcher) holder.etNode.getTag());
-        }
 
         Node nodeEntity = mNodeList.get(position);
-        holder.etNode.setEnabled(mIsEdit && !nodeEntity.isDefaultNode());
-        if (holder.etNode.isEnabled() && position == mNodeList.size() - 1) {
-            showSoftInput(holder.etNode, true);
-        } else {
-            showSoftInput(holder.etNode, false);
-        }
 
-        holder.etNode.setError(nodeEntity.isFormatCorrect() ? holder.nodeFormatError : null);
-
-        holder.ivDel.setVisibility(mIsEdit && !nodeEntity.isDefaultNode() ? View.VISIBLE : View.GONE);
-
-        holder.ivSelected.setVisibility(!mIsEdit && nodeEntity.isChecked() ? View.VISIBLE : View.GONE);
-
-        TextChangedListener textChangedListener = new TextChangedListener() {
-            @Override
-            protected void onTextChanged(CharSequence s) {
-                map.put(nodeEntity.getId(), s.toString());
-            }
-        };
-
-        holder.etNode.addTextChangedListener(textChangedListener);
-        holder.etNode.setTag(textChangedListener);
-        String nodeAddress = TextUtils.isEmpty(nodeEntity.getRPCUrl()) ? map.get(nodeEntity.getId()) : nodeEntity.getRPCUrl();
-        boolean isDefaultMainNetwork = nodeEntity.isDefaultNode() && nodeEntity.isMainNetworkNode();
-        boolean isDefaultTestNetwork = nodeEntity.isDefaultNode() && !nodeEntity.isMainNetworkNode();
-        SpannableStringBuilder stringBuilder;
-        if (isDefaultMainNetwork) {
-            String text = String.format("(%1$s)", activity.getString(R.string.default_main_network));
-            stringBuilder = new SpannableStringBuilder(nodeAddress + text);
-            stringBuilder.setSpan(new ForegroundColorSpan(ContextCompat.getColor(activity, R.color.color_000000)), 0, nodeAddress.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-            stringBuilder.setSpan(new ForegroundColorSpan(ContextCompat.getColor(activity, R.color.color_898c9e)), nodeAddress.length(), nodeAddress.length() + text.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-            stringBuilder.setSpan(new AbsoluteSizeSpan(AndroidUtil.sp2px(activity, 14)), 0, nodeAddress.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-            stringBuilder.setSpan(new AbsoluteSizeSpan(AndroidUtil.sp2px(activity, 12)), nodeAddress.length(), nodeAddress.length() + text.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-            holder.etNode.setText(stringBuilder);
-        } else if (isDefaultTestNetwork) {
-            String text = getNodeDesc(nodeAddress);
-            stringBuilder = new SpannableStringBuilder(nodeAddress + text);
-            stringBuilder.setSpan(new ForegroundColorSpan(ContextCompat.getColor(activity, R.color.color_000000)), 0, nodeAddress.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-            stringBuilder.setSpan(new ForegroundColorSpan(ContextCompat.getColor(activity, R.color.color_898c9e)), nodeAddress.length(), nodeAddress.length() + text.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-            stringBuilder.setSpan(new AbsoluteSizeSpan(AndroidUtil.sp2px(activity, 14)), 0, nodeAddress.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-            stringBuilder.setSpan(new AbsoluteSizeSpan(AndroidUtil.sp2px(activity, 12)), nodeAddress.length(), nodeAddress.length() + text.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-            holder.etNode.setText(stringBuilder);
-        } else if (!TextUtils.isEmpty(nodeAddress)) {
-            stringBuilder = new SpannableStringBuilder(nodeAddress);
-            stringBuilder.setSpan(new ForegroundColorSpan(ContextCompat.getColor(activity, R.color.color_000000)), 0, nodeAddress.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-            stringBuilder.setSpan(new AbsoluteSizeSpan(AndroidUtil.sp2px(activity, 14)), 0, nodeAddress.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-            holder.etNode.setText(stringBuilder);
-        }
-        holder.ivDel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                removeNode(nodeEntity.getId());
-                if (nodeEntity.isChecked()) {
-                    setChecked(0);
-                    return;
-                }
-                if (mNodeList.size() == 1) {
-                    showSoftInput(holder.etNode, false);
-                }
-            }
-        });
+        holder.ivSelected.setVisibility(nodeEntity.isChecked() ? View.VISIBLE : View.GONE);
+        String nodeName = getNodeName(nodeEntity);
+        holder.tvNodeName.setVisibility(TextUtils.isEmpty(nodeName) ? View.GONE : View.VISIBLE);
+        holder.tvNodeName.setText(nodeName);
+        holder.tvNodeInfo.setText(getNodeInfo(nodeEntity));
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mIsEdit) {
-                    return;
-                }
                 if (nodeEntity.isChecked()) {
                     return;
                 }
@@ -269,15 +119,14 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
 
     }
 
-    private String getNodeDesc(String nodeAddress) {
-        if (Constants.URL.URL_TEST_A.equals(nodeAddress)) {
-            return String.format("(%s)", activity.getString(R.string.amigo_test_net));
-        } else if (Constants.URL.URL_TEST_B.equals(nodeAddress)) {
-            return String.format("(%s)", activity.getString(R.string.batalla_test_net));
-        }else if(Constants.URL.URL_MAIN_A.equals(nodeAddress)){
-            return String.format("(%s)", activity.getString(R.string.newbaleyworld));
-        }
+    private String getNodeInfo(Node node) {
+        return String.format("%s(chainId:%s)", node.getRPCUrl(), node.getChainId());
+    }
 
+    private String getNodeName(Node node) {
+        if (BuildConfig.URL_MAIN_SERVER.equals(node.getNodeAddress())) {
+            return activity.getString(R.string.newbaleyworld);
+        }
         return "";
     }
 
@@ -286,7 +135,7 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
         Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                PlatonBlock platonBlock =  Web3jFactory.build(new HttpService(address)).platonGetBlockByNumber(DefaultBlockParameterName.LATEST,false).send();
+                PlatonBlock platonBlock = Web3jFactory.build(new HttpService(address)).platonGetBlockByNumber(DefaultBlockParameterName.LATEST, false).send();
                 return platonBlock != null && platonBlock.getBlock() != null && platonBlock.getBlock().getNumber().longValue() > 0;
             }
         })
@@ -308,20 +157,6 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
                 });
     }
 
-    private void showSoftInput(EditText editText, boolean isShow) {
-        if (isShow) {
-            activity.showSoftInput(editText);
-        } else {
-            activity.hideSoftInput(activity, editText);
-        }
-        editText.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                editText.setSelection(editText.getText().toString().length());
-            }
-        }, 150);
-    }
-
     @Override
     public int getItemCount() {
         if (mNodeList != null) {
@@ -332,14 +167,12 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.iv_del)
-        ImageView ivDel;
-        @BindView(R.id.et_node)
-        CustomEditText etNode;
+        @BindView(R.id.tv_node_name)
+        TextView tvNodeName;
         @BindView(R.id.iv_selected)
         ImageView ivSelected;
-        @BindString(R.string.node_format_error)
-        String nodeFormatError;
+        @BindView(R.id.tv_node_info)
+        TextView tvNodeInfo;
 
         public ViewHolder(View itemView) {
             super(itemView);

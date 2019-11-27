@@ -321,8 +321,8 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     }
 
     @Override
-    public void showTips(boolean isShow) {
-        tips.setText(getString(R.string.withdraw_amount_tips));
+    public void showTips(boolean isShow, String minDelegationAmount) {
+        tips.setText(getString(R.string.withdraw_amount_tips, minDelegationAmount));
         tips.setVisibility(isShow ? View.VISIBLE : View.INVISIBLE);
     }
 
@@ -335,14 +335,19 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     }
 
     @Override
-    public void showBalanceType(double delegated, double released) {
+    public void showBalanceType(double delegated, double released, String minDelegationAmount) {
+
+        WithDrawType delegatedWithDrawType = new WithDrawType(WithDrawPopWindowAdapter.TAG_DELEGATED, delegated);
+        WithDrawType releasedWithDrawType = new WithDrawType(WithDrawPopWindowAdapter.TAG_RELEASED, released);
+
         list.clear();
-        list.add(new WithDrawType(WithDrawPopWindowAdapter.TAG_DELEGATED, delegated));
-        list.add(new WithDrawType(WithDrawPopWindowAdapter.TAG_RELEASED, released));
+        list.add(delegatedWithDrawType);
+        list.add(releasedWithDrawType);
         mPopWindowAdapter.notifyDataSetChanged();
 
-        delegateType.setText(released > 0 ? getString(R.string.withdraw_type_released) : getString(R.string.withdraw_type_delegated));
-        delegateAmount.setText(StringUtil.formatBalance(released > 0 ? released : delegated, false));
+        withdrawAmount.setHint(getString(R.string.withdraw_tip, minDelegationAmount));
+
+        refreshData(released > 0 ? releasedWithDrawType : delegatedWithDrawType);
     }
 
     @Override
@@ -406,6 +411,14 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         TransactionSignatureDialogFragment dialogFragment = (TransactionSignatureDialogFragment) getSupportFragmentManager().findFragmentByTag(TransactionSignatureDialogFragment.TAG);
         if (dialogFragment != null) {
             dialogFragment.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (unbinder != null) {
+            unbinder.unbind();
         }
     }
 

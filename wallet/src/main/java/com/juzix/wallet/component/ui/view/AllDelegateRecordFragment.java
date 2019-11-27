@@ -56,7 +56,6 @@ public class AllDelegateRecordFragment extends MVPBaseFragment<DelegateRecordPre
 
     @Override
     protected void onFragmentPageStart() {
-//        mPresenter.loadDelegateRecordData(-1, Constants.VoteConstants.REFRESH_DIRECTION, Constants.DelegateRecordType.All);
         refreshLayout.autoRefresh();
     }
 
@@ -151,6 +150,14 @@ public class AllDelegateRecordFragment extends MVPBaseFragment<DelegateRecordPre
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (!isVisibleToUser) {
             isLoadMore = false;
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (unbinder != null) {
+            unbinder.unbind();
         }
     }
 }

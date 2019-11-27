@@ -39,23 +39,23 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:orientation="vertical">
 
             <LinearLayout
                 android:id="@+id/ll_shade"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
                 android:background="@drawable/bg_mydelegate_item"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingLeft="10dp"
+                android:paddingTop="8dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="12dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
                     android:background="@drawable/icon_my_delegate_item_bg">
 
                     <com.juzix.wallet.component.widget.CircleImageView
@@ -300,55 +300,38 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="16dp"
                 android:orientation="vertical">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="6dp"
-                    android:layout_marginTop="20dp"
-                    android:text="@string/introduction"
-                    android:textColor="@color/color_61646e"
-                    android:textSize="14sp" />
+                    style="@style/Text.61646e.14"
+                    android:includeFontPadding="false"
+                    android:text="@string/introduction" />
 
                 <TextView
                     android:id="@+id/tv_detail_introduction"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="6dp"
+                    style="@style/Text.000.14"
                     android:layout_marginTop="10dp"
-                    android:textColor="@color/color_000000"
-                    android:textSize="14sp"
-                    tools:text="fasdfasdfasdfa" />
+                    android:includeFontPadding="false"
+                    tools:text="- -" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="6dp"
                     android:layout_marginTop="16dp"
+                    android:includeFontPadding="false"
                     android:text="@string/website"
                     android:textColor="@color/color_61646e"
                     android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/tv_detail_website"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="6dp"
+                    style="@style/Text.105cfe.14"
                     android:layout_marginTop="10dp"
-                    android:textColor="@color/color_105cfe"
-                    android:textSize="14sp"
-                    tools:text="fasdfasdfasdfa" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="6dp"
-                    android:layout_marginTop="10dp"
-                    android:textColor="@color/color_105cfe"
-                    android:textSize="14sp" />
+                    android:includeFontPadding="false"
+                    tools:text="- -" />
             </LinearLayout>
         </LinearLayout>
 
@@ -359,6 +342,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_marginBottom="30dp"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent">

@@ -30,10 +30,6 @@ public class NodeSettingsActivity extends MVPBaseActivity<NodeSettingsPresenter>
 
     @BindView(R.id.list_nodes)
     RecyclerView listNodes;
-    @BindView(R.id.tv_add_node)
-    TextView tvAddNode;
-    @BindView(R.id.ctb)
-    CommonTitleBar ctb;
 
     private Unbinder unbinder;
     private NodeListAdapter nodeListAdapter;
@@ -58,37 +54,8 @@ public class NodeSettingsActivity extends MVPBaseActivity<NodeSettingsPresenter>
     }
 
     @Override
-    public void showTitleView(boolean isEdit) {
-        hideSoftInput();
-//        ctb.setRightText(string(isEdit ? R.string.save : R.string.edit));
-        ctb.setRightText("");
-        tvAddNode.setVisibility(isEdit ? View.VISIBLE : View.GONE);
-        nodeListAdapter.setEditable(isEdit);
-    }
-
-    @Override
-    public void updateNodeList(List<Node> nodeEntityList) {
-        nodeListAdapter.updateNodeList(nodeEntityList);
-    }
-
-    @Override
     public void notifyDataChanged(List<Node> nodeEntityList) {
         nodeListAdapter.notifyDataChanged(nodeEntityList);
-    }
-
-    @Override
-    public String getNodeAddress(long id) {
-        return nodeListAdapter.getNodeAddress(id);
-    }
-
-    @Override
-    public List<Node> getNodeList() {
-        return nodeListAdapter.getNodeList();
-    }
-
-    @Override
-    public void removeNodeList(List<Node> nodeEntityList) {
-        nodeListAdapter.removeNodeList(nodeEntityList);
     }
 
     @Override
@@ -106,41 +73,8 @@ public class NodeSettingsActivity extends MVPBaseActivity<NodeSettingsPresenter>
         listNodes.addItemDecoration(new NodeListDecoration(this, padding, 0, padding, 0));
         listNodes.setAdapter(nodeListAdapter);
 
-        nodeListAdapter.setOnItemRemovedListener(nodeEntity -> mPresenter.delete(nodeEntity));
-
         nodeListAdapter.setOnItemCheckedListener((nodeEntity, isChecked) -> mPresenter.updateNode(nodeEntity, isChecked));
 
-        ctb.setRightTextClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPresenter.edit();
-            }
-        });
-
-        ctb.setLeftDrawableClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mPresenter.isEdit()) {
-                    mPresenter.cancel();
-                } else {
-                    finish();
-                }
-            }
-        });
-
-        showTitleView(false);
-
-    }
-
-    @OnClick({R.id.tv_add_node})
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.tv_add_node:
-                nodeListAdapter.addNode();
-                break;
-            default:
-                break;
-        }
     }
 
     @Override

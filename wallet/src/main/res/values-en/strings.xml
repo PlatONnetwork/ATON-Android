@@ -534,7 +534,7 @@
     <string name="validators_detail_yield">Yield</string>
     <string name="expected_annualized_rate">Yield</string>
     <string name="expected_annualized_rate_des">The expected annualized rate of the current validator, the Delegation rewards is distributed by the validator</string>
-    <string name="withdraw_tip">Input Amount (not less than 10 LAT)</string>
+    <string name="withdraw_tip">Input Amount (not less than %1$s LAT)</string>
     <string name="delegate_node">Note</string>
     <string name="delegate_node_des">The transaction has been successfully submitted and the delegated LAT can return to your account immediately.\nThe Invalid delegations has to be withdrawal all at once;\nIf the remaining delegations has been less than 10LAT, it will be automatically returned all.</string>
     <string name="delegations_title">Delegations</string>
@@ -559,7 +559,7 @@
 
     <string name="available_balance">Balance</string>
     <string name="locked_balance">Restricted balance</string>
-    <string name="delegate_amount_tips">The Amount cannot be less than 10 LAT</string>
+    <string name="delegate_amount_tips">The Amount cannot be less than %1$s LAT</string>
     <string name="insufficient_balance_unable_to_delegate">Insufficient balance, unable to delegate</string>
     <string name="the_validator_has_exited_and_cannot_be_delegated">The Validator has Exited and cannot be delegated</string>
     <string name="delegate_failed">Delegated Failed</string>
@@ -675,7 +675,7 @@
     <string name="web_url_common_delegate_problem">https://platon.zendesk.com/hc/en-us/articles/360037373194-Common-questions-about-PlatON-Delegators</string>
     <string name="web_url_privacy_policy">http://192.168.9.190:1000/aton-agreement/en-us/privacyAgreement.html</string>
 
-    <string name="withdraw_amount_tips">The Amount cannot be less than 10 LAT</string>
+    <string name="withdraw_amount_tips">The Amount cannot be less than %1$s LAT</string>
     <string name="unrecognized_content">Unrecognized content</string>
     <string name="no_delegation_information">No delegation information</string>
     <string name="newbaleyworld">NewBaleyworld</string>
@@ -694,5 +694,7 @@
     <string name="msg_privacy_policy">Privacy Policy</string>
 
     <string name="msg_undelegate_with_no_avaliable_balance">Wallet balance is 0, unable to delegate</string>
+    <string name="msg_reminder_threshold">Reminder threshold</string>
+    <string name="msg_resend_reminder">Resend reminder</string>
 </resources>
 

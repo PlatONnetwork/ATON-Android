@@ -286,6 +286,7 @@ public class AppFramework {
                             }
                         });
 
+                //修改transactionStatus 从string到int
                 schema.get("TransactionEntity")
                         .addField("txReceiptStatus_temp", Integer.class).setRequired("txReceiptStatus_temp", true)
                         .transform(new RealmObjectSchema.Function() {
@@ -297,61 +298,37 @@ public class AppFramework {
                         .removeField("txReceiptStatus")
                         .renameField("txReceiptStatus_temp", "txReceiptStatus");
 
+                //删除链ID为104的钱包
+                schema.get("WalletEntity")
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.getDynamicRealm().where("WalletEntity").equalTo("chainId", "104").findAll().deleteAllFromRealm();
+                            }
+                        });
 
+                //链id 103-->100
+                schema.get("WalletEntity")
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.getDynamicRealm().where("WalletEntity").equalTo("chainId", "103").findAll().setString("chainId", "100");
+                            }
+                        });
+
+                //增加VerifyNodeEntity
                 schema.create("VerifyNodeEntity")
                         .addField("nodeId", String.class, FieldAttribute.PRIMARY_KEY)
-                        .addField("ranking", Integer.class).setRequired("ranking", true)
+                        .addField("ranking", int.class)
                         .addField("name", String.class)
                         .addField("deposit", String.class)
                         .addField("url", String.class)
-                        .addField("ratePA", String.class)
+                        .addField("ratePA", long.class)
                         .addField("nodeStatus", String.class)
                         .addField("isInit", boolean.class);
 
-                schema.create("DelegateDetailEntity")
-                        .addField("nodeId", String.class)
-                        .addField("address", String.class)
-                        .addField("delegationBlockNum", String.class);
-
-                oldVersion++;
-
-//                personSchema
-//                        .addField("fullName", String.class, FieldAttribute.REQUIRED)
-//                        .transform(new RealmObjectSchema.Function() {
-//                            @Override
-//                            public void apply(DynamicRealmObject obj) {
-//                                obj.set("fullName", obj.getString("firstName") + " " + obj.getString("lastName"));
-//                            }
-//                        })
-//                        .removeField("firstName")
-//                        .removeField("lastName");
-//                oldVersion++;
-
-
-            } else if (oldVersion == 107) {
-                //删除节点详情移除功能相关的表
-                schema.remove("DelegateDetailEntity");
-                //删除节点地址的表
-                schema.get("NodeEntity")
-                        .transform(new RealmObjectSchema.Function() {
-                            @Override
-                            public void apply(DynamicRealmObject obj) {
-                                obj.getDynamicRealm().where("NodeEntity").findAll().deleteAllFromRealm();
-                            }
-                        });
-
-                //删除链ID为104的钱包
-                schema.get("walletEntity")
-                        .transform(new RealmObjectSchema.Function() {
-                            @Override
-                            public void apply(DynamicRealmObject obj) {
-                                obj.getDynamicRealm().where("walletEntity").equalTo("chainId", "104").findAll().deleteAllFromRealm();
-                            }
-                        });
-
                 oldVersion++;
             }
-
         }
     }
 }

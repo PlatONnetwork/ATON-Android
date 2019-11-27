@@ -25,7 +25,7 @@ public class DelegateContract {
 
         void setDelegateButtonState(boolean isClickable);
 
-        void showTips(boolean isShowTips);
+        void showTips(boolean isShowTips,String minDelegation);
 
         void showNodeInfo(DelegateDetail delegateDetail);
 

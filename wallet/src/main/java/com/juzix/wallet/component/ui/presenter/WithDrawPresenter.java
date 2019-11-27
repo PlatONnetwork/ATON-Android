@@ -2,9 +2,7 @@ package com.juzix.wallet.component.ui.presenter;
 
 import android.annotation.SuppressLint;
 import android.text.TextUtils;
-import android.util.Log;
 
-import com.jakewharton.rxbinding2.view.RxView;
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.ApiSingleObserver;
@@ -25,6 +23,7 @@ import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.DelegateDetail;
+import com.juzix.wallet.entity.DelegationValue;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionAuthorizationBaseData;
 import com.juzix.wallet.entity.TransactionAuthorizationData;
@@ -44,7 +43,6 @@ import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.tx.gas.GasProvider;
 import org.web3j.utils.Convert;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -98,13 +96,14 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     public void checkWithDrawAmount(String withdrawAmount) {
         //检查赎回的数量
         double amount = NumberParserUtils.parseDouble(withdrawAmount);
+        String minDelegationAmount = NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(minDelegation, "1E18"));
         if (TextUtils.isEmpty(withdrawAmount)) {
-            getView().showTips(false);
+            getView().showTips(false, minDelegationAmount);
         } else if (amount < NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(minDelegation, "1E18")))) {
             //按钮不可点击,并且下方提示
-            getView().showTips(true);
+            getView().showTips(true, minDelegationAmount);
         } else {
-            getView().showTips(false);
+            getView().showTips(false, minDelegationAmount);
         }
 
         updateWithDrawButtonState();
@@ -124,30 +123,26 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
         if (mDelegateDetail == null) {
             return;
         }
-        ServerUtils.getCommonApi().getWithDrawBalance(ApiRequestBody.newBuilder()
+        ServerUtils.getCommonApi().getDelegationValue(ApiRequestBody.newBuilder()
                 .put("addr", mDelegateDetail.getWalletAddress())
                 .put("nodeId", mDelegateDetail.getNodeId())
                 .build())
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(bindToLifecycle())
                 .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
-                .subscribe(new ApiSingleObserver<List<WithDrawBalance>>() {
+                .subscribe(new ApiSingleObserver<DelegationValue>() {
                     @Override
-                    public void onApiSuccess(List<WithDrawBalance> balanceList) {
+                    public void onApiSuccess(DelegationValue delegationValue) {
                         if (isViewAttached()) {
                             list.clear();
-                            list.addAll(balanceList);
+                            list.addAll(delegationValue.getWithDrawBalanceList());
 
-                            double releasedSum = 0; //待赎回
-                            double delegatedSum = 0;//已委托
-                            if (null != balanceList && balanceList.size() > 0) {
-                                for (WithDrawBalance balance : balanceList) {
-                                    delegatedSum += NumberParserUtils.parseDouble(balance.getShowDelegated());
-                                    releasedSum += NumberParserUtils.parseDouble(balance.getShowReleased());
-                                }
-                            }
+                            minDelegation = delegationValue.getMinDelegation();
 
-                            getView().showBalanceType(delegatedSum, releasedSum);
+                            double releasedSum = delegationValue.getReleasedSumAmount(); //待赎回
+                            double delegatedSum = delegationValue.getDelegatedSumAmount();//已委托
+
+                            getView().showBalanceType(delegatedSum, releasedSum, NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(minDelegation, "1E18")));
 
                             if (delegatedSum + releasedSum <= 0) {
                                 getView().finishDelayed();

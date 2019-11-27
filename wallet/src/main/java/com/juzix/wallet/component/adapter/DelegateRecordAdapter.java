@@ -33,14 +33,15 @@ public class DelegateRecordAdapter extends CommonAdapter<Transaction> {
 
     @Override
     protected void convert(Context context, ViewHolder viewHolder, Transaction item, int position) {
-        LinearLayout ll_record_shade =viewHolder.getView(R.id.ll_record_shade);
+
+        LinearLayout ll_record_shade = viewHolder.getView(R.id.ll_record_shade);
         ShadowDrawable.setShadowDrawable(ll_record_shade,
                 ContextCompat.getColor(context, R.color.color_ffffff),
                 DensityUtil.dp2px(context, 4),
                 ContextCompat.getColor(context, R.color.color_cc9ca7c2),
-                DensityUtil.dp2px(context, 5),
+                DensityUtil.dp2px(context, 10),
                 0,
-                DensityUtil.dp2px(context, 0));
+                DensityUtil.dp2px(context, 2));
 
         CircleImageView imageView = viewHolder.getView(R.id.iv_total_delegate);
         changeImageViewIcon(context, imageView, item);
