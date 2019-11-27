@@ -161,8 +161,8 @@ public class Constants {
     public interface DBName {
         //数据库名称
         String PORTAL = "portal";
-        //2019/5/15
-        int VERSION = 108;
+        //2019/11/27 0.7.4
+        int VERSION = 107;
     }
 
     public interface DelegateRecordType {

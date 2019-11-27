@@ -376,8 +376,8 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     }
 
     @Override
-    public void showTips(boolean isShow) {
-        inputError.setText(getString(R.string.delegate_amount_tips));
+    public void showTips(boolean isShow, String minDelegation) {
+        inputError.setText(getString(R.string.delegate_amount_tips, minDelegation));
         inputError.setVisibility(isShow && isCanDelegate ? View.VISIBLE : View.GONE);
     }
 
@@ -397,6 +397,9 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     }
 
     private void checkIsCanDelegate(DelegateHandle bean) {
+
+        et_amount.setHint(getString(R.string.withdraw_tip, NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(bean.getMinDelegation(), "1E18"))));
+
         if (!bean.isCanDelegation()) {
             all.setClickable(false);
             et_amount.setText("");
