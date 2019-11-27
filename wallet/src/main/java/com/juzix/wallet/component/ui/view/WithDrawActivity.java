@@ -98,6 +98,8 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     TextView etWalletAmount;//显示量级
     @BindView(R.id.v_tips)
     View v_tips;
+    @BindView(R.id.tv_delegate_tips)
+    TextView tvDelegateTips;
 
     private Unbinder unbinder;
     private PopupWindow mPopupWindow;
@@ -346,6 +348,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         mPopWindowAdapter.notifyDataSetChanged();
 
         withdrawAmount.setHint(getString(R.string.withdraw_tip, minDelegationAmount));
+        tvDelegateTips.setText(getString(R.string.delegate_node_des, minDelegationAmount));
 
         refreshData(released > 0 ? releasedWithDrawType : delegatedWithDrawType);
     }
