@@ -277,9 +277,6 @@ public class AppFramework {
                 oldVersion++;
             } else if (oldVersion == 106) {
 
-                schema.remove("SingleVoteEntity");
-                schema.remove("TicketEntity");
-
                 schema.get("NodeEntity")
                         .addField("chainId", String.class)
                         .transform(new RealmObjectSchema.Function() {
@@ -302,22 +299,33 @@ public class AppFramework {
                         .renameField("txReceiptStatus_temp", "txReceiptStatus");
 
                 //删除链ID为104的钱包
-                schema.get("walletEntity")
+                schema.get("WalletEntity")
                         .transform(new RealmObjectSchema.Function() {
                             @Override
                             public void apply(DynamicRealmObject obj) {
-                                obj.getDynamicRealm().where("walletEntity").equalTo("chainId", "104").findAll().deleteAllFromRealm();
+                                obj.getDynamicRealm().where("WalletEntity").equalTo("chainId", "104").findAll().deleteAllFromRealm();
                             }
                         });
 
                 //链id 103-->100
-                schema.get("walletEntity")
+                schema.get("WalletEntity")
                         .transform(new RealmObjectSchema.Function() {
                             @Override
                             public void apply(DynamicRealmObject obj) {
-                                obj.getDynamicRealm().where("walletEntity").equalTo("chainId", "103").findAll().setString("chainId", "100");
+                                obj.getDynamicRealm().where("WalletEntity").equalTo("chainId", "103").findAll().setString("chainId", "100");
                             }
                         });
+
+                //增加VerifyNodeEntity
+                schema.create("VerifyNodeEntity")
+                        .addField("nodeId", String.class, FieldAttribute.PRIMARY_KEY)
+                        .addField("ranking", int.class)
+                        .addField("name", String.class)
+                        .addField("deposit", String.class)
+                        .addField("url", String.class)
+                        .addField("ratePA", long.class)
+                        .addField("nodeStatus", String.class)
+                        .addField("isInit", boolean.class);
 
                 oldVersion++;
             }
