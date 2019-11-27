@@ -117,14 +117,15 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     @Override
     public void checkDelegateAmount(String delegateAmount) {
         double amount = NumberParserUtils.parseDouble(delegateAmount);
+        String minDelegationAmount = NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(minDelegation, "1E18"));
         //检查委托的数量
         if (TextUtils.isEmpty(delegateAmount)) {
-            getView().showTips(false);
+            getView().showTips(false, minDelegationAmount);
         } else if (amount < NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(minDelegation, "1E18")))) {
             //按钮不可点击,并且下方提示
-            getView().showTips(true);
+            getView().showTips(true, minDelegationAmount);
         } else {
-            getView().showTips(false);
+            getView().showTips(false, minDelegationAmount);
         }
         updateDelegateButtonState();
     }

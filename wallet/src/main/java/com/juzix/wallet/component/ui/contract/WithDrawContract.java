@@ -23,7 +23,7 @@ public class WithDrawContract {
 
         void setWithDrawButtonState(boolean isClickable);
 
-        void showTips(boolean isShow);
+        void showTips(boolean isShow,String minDelegationAmount);
 
         void showNodeInfo(DelegateDetail delegateDetail);
 
@@ -31,7 +31,7 @@ public class WithDrawContract {
          * @param delegated 已委托
          * @param released  待赎回
          */
-        void showBalanceType(double delegated,double released);
+        void showBalanceType(double delegated, double released,String minDelegationAmount);
 
         /**
          * @param transaction
@@ -52,12 +52,11 @@ public class WithDrawContract {
 
     public interface Presenter extends IPresenter<View> {
 
-
         void showWalletInfo();
 
         void updateWithDrawButtonState();
 
-        void  checkWithDrawAmount(String withdrawAmount);
+        void checkWithDrawAmount(String withdrawAmount);
 
         void getBalanceType();
 

@@ -321,8 +321,8 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     }
 
     @Override
-    public void showTips(boolean isShow) {
-        tips.setText(getString(R.string.withdraw_amount_tips));
+    public void showTips(boolean isShow, String minDelegationAmount) {
+        tips.setText(getString(R.string.withdraw_amount_tips, minDelegationAmount));
         tips.setVisibility(isShow ? View.VISIBLE : View.INVISIBLE);
     }
 
@@ -335,7 +335,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     }
 
     @Override
-    public void showBalanceType(double delegated, double released) {
+    public void showBalanceType(double delegated, double released, String minDelegationAmount) {
 
         WithDrawType delegatedWithDrawType = new WithDrawType(WithDrawPopWindowAdapter.TAG_DELEGATED, delegated);
         WithDrawType releasedWithDrawType = new WithDrawType(WithDrawPopWindowAdapter.TAG_RELEASED, released);
@@ -344,6 +344,8 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         list.add(delegatedWithDrawType);
         list.add(releasedWithDrawType);
         mPopWindowAdapter.notifyDataSetChanged();
+
+        withdrawAmount.setHint(getString(R.string.withdraw_tip, minDelegationAmount));
 
         refreshData(released > 0 ? releasedWithDrawType : delegatedWithDrawType);
     }

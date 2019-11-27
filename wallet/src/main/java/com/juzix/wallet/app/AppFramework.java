@@ -315,19 +315,6 @@ public class AppFramework {
 
                 oldVersion++;
 
-//                personSchema
-//                        .addField("fullName", String.class, FieldAttribute.REQUIRED)
-//                        .transform(new RealmObjectSchema.Function() {
-//                            @Override
-//                            public void apply(DynamicRealmObject obj) {
-//                                obj.set("fullName", obj.getString("firstName") + " " + obj.getString("lastName"));
-//                            }
-//                        })
-//                        .removeField("firstName")
-//                        .removeField("lastName");
-//                oldVersion++;
-
-
             } else if (oldVersion == 107) {
                 //删除节点详情移除功能相关的表
                 schema.remove("DelegateDetailEntity");

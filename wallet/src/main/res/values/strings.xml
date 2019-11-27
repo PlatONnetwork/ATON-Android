@@ -544,7 +544,7 @@
     <string name="validators_detail_yield">预计年化率</string>
     <string name="expected_annualized_rate">预计年化率</string>
     <string name="expected_annualized_rate_des">当前节点的预计年化率，具体委托收益由节点分配</string>
-    <string name="withdraw_tip">输入数量不能少于10LAT</string>
+    <string name="withdraw_tip">输入数量不能少于%1$sLAT</string>
     <string name="delegate_node">说明</string>
     <string name="delegate_node_des">赎回交易提交成功,委托的Token可立即到账;\n待赎回委托必须一次性全部赎回;\n赎回数量扣除后,已委托剩余数量少于10LAT时,自动赎回全部</string>
     <string name="delegations_title">委托</string>
@@ -577,7 +577,7 @@
 
     <string name="available_balance">可用余额</string>
     <string name="locked_balance">锁仓余额</string>
-    <string name="delegate_amount_tips">委托数量不能少于10LAT</string>
+    <string name="delegate_amount_tips">委托数量不能少于%1$sLAT</string>
     <string name="insufficient_balance_unable_to_delegate">余额不足，无法委托</string>
     <string name="the_validator_has_exited_and_cannot_be_delegated">委托节点已退出，无法委托</string>
     <string name="delegate_failed">委托失败</string>
@@ -688,7 +688,7 @@
     <string name="web_url_common_delegate_problem">https://platon.zendesk.com/hc/zh-cn/articles/360037373194-Common-questions-about-PlatON-Delegators</string>
     <string name="web_url_privacy_policy">http://192.168.9.190:1000/aton-agreement/zh-cn/privacyAgreement.html</string>
 
-    <string name="withdraw_amount_tips">赎回数量不能少于10LAT</string>
+    <string name="withdraw_amount_tips">赎回数量不能少于%1$sLAT</string>
     <string name="unrecognized_content">无法识别内容</string>
     <string name="no_delegation_information">暂无委托信息</string>
     <string name="newbaleyworld">新贝莱世界</string>

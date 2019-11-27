@@ -96,13 +96,14 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     public void checkWithDrawAmount(String withdrawAmount) {
         //检查赎回的数量
         double amount = NumberParserUtils.parseDouble(withdrawAmount);
+        String minDelegationAmount = NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(minDelegation, "1E18"));
         if (TextUtils.isEmpty(withdrawAmount)) {
-            getView().showTips(false);
+            getView().showTips(false, minDelegationAmount);
         } else if (amount < NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(minDelegation, "1E18")))) {
             //按钮不可点击,并且下方提示
-            getView().showTips(true);
+            getView().showTips(true, minDelegationAmount);
         } else {
-            getView().showTips(false);
+            getView().showTips(false, minDelegationAmount);
         }
 
         updateWithDrawButtonState();
@@ -141,7 +142,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                             double releasedSum = delegationValue.getReleasedSumAmount(); //待赎回
                             double delegatedSum = delegationValue.getDelegatedSumAmount();//已委托
 
-                            getView().showBalanceType(delegatedSum, releasedSum);
+                            getView().showBalanceType(delegatedSum, releasedSum, NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(minDelegation, "1E18")));
 
                             if (delegatedSum + releasedSum <= 0) {
                                 getView().finishDelayed();
