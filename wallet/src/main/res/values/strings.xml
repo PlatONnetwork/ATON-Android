@@ -546,7 +546,7 @@
     <string name="expected_annualized_rate_des">当前节点的预计年化率，具体委托收益由节点分配</string>
     <string name="withdraw_tip">输入数量不能少于%1$sLAT</string>
     <string name="delegate_node">说明</string>
-    <string name="delegate_node_des">赎回交易提交成功,委托的Token可立即到账;\n待赎回委托必须一次性全部赎回;\n赎回数量扣除后,已委托剩余数量少于10LAT时,自动赎回全部</string>
+    <string name="delegate_node_des">赎回交易提交成功,委托的Token可立即到账;\n待赎回委托必须一次性全部赎回;\n赎回数量扣除后,已委托剩余数量少于%1$sLAT时,自动赎回全部</string>
     <string name="delegations_title">委托</string>
     <string name="delegations_title_explain">委托的Token所有权永远归于委托人，用户可以随时赎回委托的Token。\n验证节点关联的操作地址和奖励接收地址不允许参与委托。</string>
     <string name="rewards_title">收益</string>

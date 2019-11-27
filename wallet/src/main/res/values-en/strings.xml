@@ -536,7 +536,7 @@
     <string name="expected_annualized_rate_des">The expected annualized rate of the current validator, the Delegation rewards is distributed by the validator</string>
     <string name="withdraw_tip">Input Amount (not less than %1$s LAT)</string>
     <string name="delegate_node">Note</string>
-    <string name="delegate_node_des">The transaction has been successfully submitted and the delegated LAT can return to your account immediately.\nThe Invalid delegations has to be withdrawal all at once;\nIf the remaining delegations has been less than 10LAT, it will be automatically returned all.</string>
+    <string name="delegate_node_des">The transaction has been successfully submitted and the delegated LAT can return to your account immediately.\nThe Invalid delegations has to be withdrawal all at once;\nIf the remaining delegations has been less than %1$s LAT, it will be automatically returned all.</string>
     <string name="delegations_title">Delegations</string>
     <string name="delegations_title_explain">The user keeps the delegate\'s Token ownership forever, and the user can withdraw the delegated token at any time.\nThe Validator\'s operator address and reward receiving address are not allowed for delegation.</string>
     <string name="rewards_title">Rewards</string>

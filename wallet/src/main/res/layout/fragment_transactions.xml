@@ -20,9 +20,7 @@
             android:scrollbars="vertical"
             tools:listitem="@layout/item_transaction_list" />
 
-        <include
-            layout="@layout/include_no_transaction"
-            android:visibility="gone" />
+        <include layout="@layout/include_no_transaction" />
 
     </FrameLayout>
 </android.support.v4.widget.NestedScrollView>

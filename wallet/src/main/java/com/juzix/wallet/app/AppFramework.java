@@ -31,8 +31,6 @@ import io.realm.RealmSchema;
  */
 public class AppFramework {
 
-    private final static String TAG = AppFramework.class.getSimpleName();
-
     private static final AppFramework APP_FRAMEWORK = new AppFramework();
 
     private Context mContext;
