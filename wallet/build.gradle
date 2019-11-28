@@ -22,7 +22,6 @@ android {
         targetSdkVersion rootProject.ext.android.targetSdkVersion
         versionName "${version_name}"
         versionCode Integer.parseInt(version_code)
-        buildConfigField("String", "BETA_COUNT", "\"${beta_count}\"")
         buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
         buildConfigField("String", "UM_APPKEY", "${UM_APPKEY}")
         buildConfigField("String", "BUGLY_APPID", "${BUGLY_APPID}")
@@ -111,7 +110,6 @@ android {
             multiDexEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
-            multiDexEnabled true
         }
 
         releaseJC {
@@ -148,32 +146,31 @@ android {
         }
     }
 
-//    applicationVariants.all { variant ->
-//        variant.outputs.all {
-//            def verName = android.defaultConfig.versionName
-//            def verCode = android.defaultConfig.versionCode
-//            def innerVer = beta_count
-//            def releaseTime = new Date().format("yyyyMMddHHmm")
-//            def gitVersion = getGitVersion();
-//
-//            def type = ""
-//            if (variant.buildType.name == "releaseC") {
-//                type = "c"
-//            } else if (variant.buildType.name == "releaseX") {
-//                type = "x_unjiagu"
-//            } else if (variant.buildType.name == "debug") {
-//                type = "debug"
-//                // 调试若使用实时时间戳会导致apk无法找到，因此，这里固定为0
-//                releaseTime = "0"
-//                gitVersion = "";
-//            }
-//            if (variant.flavorName != "wallet") {
-//                type = (type + "_" + variant.flavorName)
-//            }
-//
-//            outputFileName = "aton_android_v${verName}_${innerVer}_${releaseTime}_${verCode}_${type}_${gitVersion}.apk";
-//        }
-//    }
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            def verName = android.defaultConfig.versionName
+            def verCode = android.defaultConfig.versionCode
+            def releaseTime = new Date().format("yyyyMMddHHmm")
+            def gitVersion = getGitVersion();
+
+            def type = ""
+            if (variant.buildType.name == "releaseC") {
+                type = "c"
+            } else if (variant.buildType.name == "releaseX") {
+                type = "x_unjiagu"
+            } else if (variant.buildType.name == "debug") {
+                type = "debug"
+                // 调试若使用实时时间戳会导致apk无法找到，因此，这里固定为0
+                releaseTime = "0"
+                gitVersion = "";
+            }
+            if (variant.flavorName != "wallet") {
+                type = (type + "_" + variant.flavorName)
+            }
+
+            outputFileName = "aton_android_v${verName}_${releaseTime}_${verCode}_${type}_${gitVersion}.apk";
+        }
+    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -181,7 +178,7 @@ android {
 }
 
 def getGitVersion() {
-//    return 'git rev-parse --short HEAD'.execute().text.trim()
+    return 'git rev-parse --short HEAD'.execute().text.trim()
 }
 
 repositories {
