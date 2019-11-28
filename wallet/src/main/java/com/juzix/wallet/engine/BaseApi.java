@@ -13,6 +13,7 @@ import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionReceipt;
 import com.juzix.wallet.entity.VerifyNode;
 import com.juzix.wallet.entity.VerifyNodeDetail;
+import com.juzix.wallet.entity.VersionInfo;
 import com.juzix.wallet.entity.WithDrawBalance;
 
 import java.util.List;
@@ -31,12 +32,10 @@ public interface BaseApi {
     /**
      * 获取版本信息
      *
-     * @param url
      * @return
      */
-    @Headers("name: " + ServerUtils.HEADER_UPDATE_VERSION)
-    @GET
-    Single<String> getVersionInfo(@Url String url);
+    @GET("config/aton-update.json")
+    Single<Response<ApiResponse<VersionInfo>>> getVersionInfo();
 
     /**
      * 获取交易记录
@@ -46,14 +45,6 @@ public interface BaseApi {
      */
     @POST("app/v0700/transaction/list")
     Single<Response<ApiResponse<List<Transaction>>>> getTransactionList(@Body ApiRequestBody body);
-
-    /**
-     * 获取节点列表
-     *
-     * @return
-     */
-    @POST("app-{cid}/v0700/node/list")
-    Single<Response<ApiResponse<CandidateWrap>>> getCandidateList(@Path("cid") String cid);
 
     /**--------------v0.7.0---------------------*/
 
@@ -164,6 +155,7 @@ public interface BaseApi {
 
     /**
      * 获取app 配置
+     *
      * @return
      */
     @GET("config/config.json")

@@ -261,7 +261,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
         blocks.setText(nodeDetail.getBlockOutNumber() == 0 ? "--" : nodeDetail.getBlockOutNumber() + "");
         blockRate.setText(NumberParserUtils.parseDouble(nodeDetail.getBlockRate()) / 100 + "%");
 
-        introduction.setText(TextUtils.isEmpty(nodeDetail.getIntro()) ? "- -" : websiteUrl);
+        introduction.setText(TextUtils.isEmpty(nodeDetail.getIntro()) ? "- -" : nodeDetail.getIntro());
         webSite.setText(TextUtils.isEmpty(websiteUrl) ? "- -" : websiteUrl);//官网
         webSite.setTextColor(TextUtils.isEmpty(websiteUrl) ? ContextCompat.getColor(this, R.color.color_000000) : ContextCompat.getColor(this, R.color.color_105cfe));
 

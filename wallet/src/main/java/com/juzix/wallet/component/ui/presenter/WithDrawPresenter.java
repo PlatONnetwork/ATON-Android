@@ -78,6 +78,10 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
         }
     }
 
+    public double getMinDelegationAmount() {
+        return NumberParserUtils.parseDouble(BigDecimalUtil.div(minDelegation, "1E18"));
+    }
+
 
     @Override
     public void showWalletInfo() {
@@ -105,7 +109,6 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
         } else {
             getView().showTips(false, minDelegationAmount);
         }
-
         updateWithDrawButtonState();
     }
 
