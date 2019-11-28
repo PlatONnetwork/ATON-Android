@@ -48,7 +48,7 @@
 
             <TextView
                 style="@style/Text.f6f6f6.16"
-                android:drawableRight="@drawable/icon_import1"
+                android:drawableRight="@drawable/icon_import_wallet"
                 android:drawablePadding="8dp"
                 android:text="@string/importIndividualWallet"
                 android:textColor="@color/color_secondary_button_text" />
@@ -77,7 +77,7 @@
 
             <TextView
                 style="@style/Text.f6f6f6.16"
-                android:drawableRight="@drawable/icon_create1"
+                android:drawableRight="@drawable/icon_create_wallet"
                 android:drawablePadding="8dp"
                 android:text="@string/createIndividualWallet"
                 android:textColor="@color/color_main_button_text" />

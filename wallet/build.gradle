@@ -32,9 +32,9 @@ android {
         buildConfigField("String", "URL_MAIN_SERVER", "${URL_MAIN_SERVER}")
         buildConfigField("String", "URL_TEST_SERVER", "${URL_TEST_SERVER}")
         buildConfigField("String", "URL_DEVELOP_SERVER", "${URL_DEVELOP_SERVER}")
-        buildConfigField("String","ID_MAIN_CHAIN","${ID_MAIN_CHAIN}")
-        buildConfigField("String","ID_TEST_CHAIN","${ID_TEST_CHAIN}")
-        buildConfigField("String","ID_DEVELOP_CHAIN","${ID_DEVELOP_CHAIN}")
+        buildConfigField("String", "ID_MAIN_CHAIN", "${ID_MAIN_CHAIN}")
+        buildConfigField("String", "ID_TEST_CHAIN", "${ID_TEST_CHAIN}")
+        buildConfigField("String", "ID_DEVELOP_CHAIN", "${ID_DEVELOP_CHAIN}")
         renderscriptTargetApi 19
         renderscriptSupportModeEnabled true
 
@@ -96,9 +96,12 @@ android {
         debug {
             debuggable true
             signingConfig signingConfigs.debug
-            minifyEnabled false
+            shrinkResources true
+            minifyEnabled true
+            zipAlignEnabled true
+            multiDexEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField("String", "RELEASE_TYPE", "${releaseTypeX}")
+            buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
             multiDexEnabled true
             testCoverageEnabled true  //打开覆盖率统计开关
         }
@@ -106,7 +109,10 @@ android {
         releaseC {
             debuggable false
             signingConfig signingConfigs.releaseC
-            minifyEnabled false
+            shrinkResources true
+            minifyEnabled true
+            zipAlignEnabled true
+            multiDexEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
             multiDexEnabled true
@@ -115,30 +121,34 @@ android {
         releaseJC {
             debuggable false
             signingConfig signingConfigs.releaseJC
-            minifyEnabled false
+            shrinkResources true
+            minifyEnabled true
+            zipAlignEnabled true
+            multiDexEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
-            multiDexEnabled true
         }
 
         releaseX {
             debuggable false
             signingConfig signingConfigs.releaseX
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField("String", "RELEASE_TYPE", "${releaseTypeX}")
+            shrinkResources true
+            minifyEnabled true
             zipAlignEnabled true
             multiDexEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField("String", "RELEASE_TYPE", "${releaseTypeX}")
         }
 
         releaseJX {
             debuggable false
             signingConfig signingConfigs.releaseJX
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField("String", "RELEASE_TYPE", "${releaseTypeX}")
+            shrinkResources true
+            minifyEnabled true
             zipAlignEnabled true
             multiDexEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField("String", "RELEASE_TYPE", "${releaseTypeX}")
         }
     }
 
@@ -187,13 +197,13 @@ repositories {
 //下面jacoco插件的配置
 apply plugin: 'jacoco'
 
-jacoco{
-    toolVersion ="0.7.4+"
+jacoco {
+    toolVersion = "0.7.4+"
 }
 def coverageSourceDirs = [
         '../wallet/src/main/java']
 
-task jacocoTestReport(type:JacocoReport,dependsOn: "testDebugUnitTest") {
+task jacocoTestReport(type: JacocoReport, dependsOn: "testDebugUnitTest") {
     group = "Reporting"
 
     description = "Generate Jacoco coverage reports"

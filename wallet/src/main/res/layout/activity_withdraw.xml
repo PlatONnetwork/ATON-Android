@@ -358,16 +358,15 @@
             </LinearLayout>
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/tv_delegate_tips"
+                style="@style/Text.898c9e.14"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="20dp"
+                android:gravity="left"
                 android:lineSpacingExtra="2dp"
-                android:text="@string/delegate_node_des"
-                android:textColor="@color/color_898c9e"
-                android:textSize="14sp" />
+                android:text="@string/delegate_node_des" />
         </LinearLayout>
 
 

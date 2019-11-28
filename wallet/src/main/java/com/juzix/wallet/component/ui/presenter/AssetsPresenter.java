@@ -84,13 +84,6 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
                     public void accept(Throwable throwable) {
                         super.accept(throwable);
                         if (isViewAttached()) {
-                            WalletManager.getInstance().getTotal()
-                                    .subscribe(new Consumer<BigDecimal>() {
-                                        @Override
-                                        public void accept(BigDecimal bigDecimal) throws Exception {
-                                            getView().showTotalBalance(bigDecimal.toPlainString());
-                                        }
-                                    });
                             getView().finishRefresh();
                         }
                     }
