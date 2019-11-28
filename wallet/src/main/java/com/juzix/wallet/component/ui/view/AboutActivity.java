@@ -11,6 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
+import com.juzhen.framework.network.ApiResponse;
+import com.juzhen.framework.network.ApiSingleObserver;
 import com.juzhen.framework.util.AndroidUtil;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomObserver;
@@ -18,7 +20,7 @@ import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.dialog.CommonTipsDialogFragment;
 import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
-import com.juzix.wallet.engine.VersionManager;
+import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.VersionUpdate;
 import com.juzix.wallet.entity.VersionInfo;
 import com.juzix.wallet.entity.WebType;
@@ -117,17 +119,19 @@ public class AboutActivity extends BaseActivity {
     }
 
     private void checkVersion() {
-        VersionManager.getInstance().getVersion()
+        ServerUtils
+                .getCommonApi()
+                .getVersionInfo()
                 .compose(RxUtils.getSingleSchedulerTransformer())
-                .compose(RxUtils.bindToLifecycle(this))
-                .subscribe(new Consumer<VersionInfo>() {
+                .compose(LoadingTransformer.bindToSingleLifecycle(this))
+                .subscribe(new ApiSingleObserver<VersionInfo>() {
                     @Override
-                    public void accept(VersionInfo versionEntity) {
+                    public void onApiSuccess(VersionInfo versionInfo) {
                         String oldVersion = AndroidUtil.getVersionName(getContext()).toLowerCase();
                         if (!oldVersion.startsWith("v")) {
                             oldVersion = "v" + oldVersion;
                         }
-                        String newVersion = versionEntity.getVersion().toLowerCase();
+                        String newVersion = versionInfo.getVersion().toLowerCase();
                         if (!newVersion.startsWith("v")) {
                             newVersion = "v" + newVersion;
                         }
@@ -139,21 +143,28 @@ public class AboutActivity extends BaseActivity {
                             vNewMsg.setVisibility(View.GONE);
                         }
                     }
+
+                    @Override
+                    public void onApiFailure(ApiResponse response) {
+
+                    }
                 });
     }
 
     private void update() {
-        VersionManager.getInstance().getVersion()
+        ServerUtils
+                .getCommonApi()
+                .getVersionInfo()
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(LoadingTransformer.bindToSingleLifecycle(this))
-                .subscribe(new Consumer<VersionInfo>() {
+                .subscribe(new ApiSingleObserver<VersionInfo>() {
                     @Override
-                    public void accept(VersionInfo versionEntity) {
+                    public void onApiSuccess(VersionInfo versionInfo) {
                         String oldVersion = AndroidUtil.getVersionName(getContext()).toLowerCase();
                         if (!oldVersion.startsWith("v")) {
                             oldVersion = "v" + oldVersion;
                         }
-                        String newVersion = versionEntity.getVersion().toLowerCase();
+                        String newVersion = versionInfo.getVersion().toLowerCase();
                         if (!newVersion.startsWith("v")) {
                             newVersion = "v" + newVersion;
                         }
@@ -164,15 +175,20 @@ public class AboutActivity extends BaseActivity {
                             return;
                         }
 
-                        mVersionUpdate = new VersionUpdate(AboutActivity.this, versionEntity.getDownloadUrl(), versionEntity.getVersion(), false);
+                        mVersionUpdate = new VersionUpdate(AboutActivity.this, versionInfo.getDownloadUrl(), versionInfo.getVersion(), false);
 
                         tvUpdate.setText(string(R.string.latest_version, newVersion));
                         vNewMsg.setVisibility(View.VISIBLE);
-                        if (VersionManager.getInstance().isDownloading(versionEntity.getDownloadUrl())) {
-                            showLongToast(string(R.string.download_tips));
-                            return;
-                        }
-                        showUpdateVersionDialog(versionEntity);
+//                        if (VersionManager.getInstance().isDownloading(versionInfo.getDownloadUrl())) {
+//                            showLongToast(string(R.string.download_tips));
+//                            return;
+//                        }
+                        showUpdateVersionDialog(versionInfo);
+                    }
+
+                    @Override
+                    public void onApiFailure(ApiResponse response) {
+
                     }
                 });
     }
@@ -190,9 +206,9 @@ public class AboutActivity extends BaseActivity {
                         }
                         new RxPermissions(currentActivity())
                                 .requestEach(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                                .subscribe(new Consumer<Permission>() {
+                                .subscribe(new CustomObserver<Permission>() {
                                     @Override
-                                    public void accept(Permission permission) throws Exception {
+                                    public void accept(Permission permission){
                                         if (permission.granted && Manifest.permission.ACCESS_COARSE_LOCATION.equals(permission.name)) {
                                             mVersionUpdate.execute();
                                         }

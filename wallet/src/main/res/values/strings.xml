@@ -674,7 +674,7 @@
     <string name="action_open_browser">在浏览器中打开</string>
 
     <!--0.7.3.1-->
-    <string name="available_money">可用余额</string>
+    <string name="available_money">可委托余额</string>
     <string name="total_delegated">总委托</string>
     <string name="detail_delegated">已委托</string>
     <string name="detail_wait_undelegate">待赎回委托</string>

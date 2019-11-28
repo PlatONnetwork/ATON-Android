@@ -6,25 +6,24 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 
+import com.juzhen.framework.network.ApiResponse;
+import com.juzhen.framework.network.ApiSingleObserver;
 import com.juzhen.framework.util.AndroidUtil;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomObserver;
-import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.MainContract;
 import com.juzix.wallet.component.ui.dialog.CommonTipsDialogFragment;
 import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
 import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.config.AppSettings;
-import com.juzix.wallet.engine.VersionManager;
+import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.VersionUpdate;
 import com.juzix.wallet.entity.VersionInfo;
 import com.juzix.wallet.utils.DateUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
-
-import io.reactivex.functions.Consumer;
 
 public class MainPresenter extends BasePresenter<MainContract.View> implements MainContract.Presenter {
 
@@ -36,22 +35,29 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
 
     @Override
     public void checkVersion() {
-        VersionManager.getInstance().getVersion()
+        ServerUtils
+                .getCommonApi()
+                .getVersionInfo()
                 .compose(RxUtils.getSingleSchedulerTransformer())
-                .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
-                .subscribe(new Consumer<VersionInfo>() {
+                .subscribe(new ApiSingleObserver<VersionInfo>() {
+
                     @Override
-                    public void accept(VersionInfo versionInfo) {
+                    public void onApiSuccess(VersionInfo versionInfo) {
                         if (isViewAttached()) {
                             if (shouldUpdate(versionInfo)) {
                                 mVersionUpdate = new VersionUpdate(currentActivity(), versionInfo.getDownloadUrl(), versionInfo.getVersion(), false);
                                 //如果不是强制更新，则保存上次弹框时间
-                                if (!versionInfo.getAndroidVersionInfo().isForce()){
+                                if (!versionInfo.getAndroidVersionInfo().isForce()) {
                                     AppSettings.getInstance().setUpdateVersionTime(System.currentTimeMillis());
                                 }
                                 showUpdateVersionDialog(versionInfo);
                             }
                         }
+                    }
+
+                    @Override
+                    public void onApiFailure(ApiResponse response) {
+
                     }
                 });
     }

@@ -288,7 +288,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
             if (!TextUtils.isEmpty(s.toString()) && !TextUtils.equals(s.toString(), ".")) {
 
                 if (BigDecimalUtil.sub(delegateAmount.getText().toString().replaceAll(",", ""), s.toString()) > 0) {
-                    if (BigDecimalUtil.sub(delegateAmount.getText().toString().replaceAll(",", ""), s.toString()) < 10) {
+                    if (BigDecimalUtil.sub(delegateAmount.getText().toString().replaceAll(",", ""), s.toString()) < mPresenter.getMinDelegationAmount()) {
                         withdrawAmount.setText(delegateAmount.getText().toString().replaceAll(",", ""));
                         withdrawAmount.setSelection(delegateAmount.getText().toString().replaceAll(",", "").length());
                     }
