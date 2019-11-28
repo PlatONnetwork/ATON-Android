@@ -206,6 +206,7 @@ public class AddNewAddressActivity extends MVPBaseActivity<AddNewAddressPresente
     @Override
     public void showAddress(String address) {
         etAddress.setText(address);
+        etAddress.setSelection(address.length());
     }
 
     public static void actionStartWithExtraForResult(Context context, Address addressEntity) {

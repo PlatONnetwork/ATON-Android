@@ -62,7 +62,6 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
 
     @BindView(R.id.radio_group)
     RadioGroup radio_group;
-
     @BindView(R.id.btn_all)
     RadioButton all;
     @BindView(R.id.btn_active)

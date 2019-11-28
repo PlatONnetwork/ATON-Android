@@ -233,7 +233,7 @@
     <string name="transfer_amount_cannot_be_empty">Amount cannot be empty</string>
     <string name="transfer_amount_exceed_balance">Amount exceed balance</string>
     <string name="insufficient_balance">Insufficient balance payment fee</string>
-    <string name="send">Send</string>
+    <string name="sent">Sent</string>
     <string name="received">Received</string>
     <string name="receive_atp">Receive&#160;LAT</string>
     <string name="editNode">Edit Node</string>
@@ -481,7 +481,7 @@
     <string name="msg_trillion">trillion</string>
 
     <string name="delegated_to">Delegated To</string>
-    <string name="undelegated_from">UnDelegated From</string>
+    <string name="undelegated_from">Undelegated From</string>
     <string name="delegation_amount">Delegation Amount</string>
     <string name="withdrawal_amount">Withdrawal Amount</string>
     <string name="version">Version</string>

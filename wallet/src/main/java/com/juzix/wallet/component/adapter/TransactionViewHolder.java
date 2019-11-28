@@ -108,7 +108,7 @@ public class TransactionViewHolder extends BaseViewHolder<Transaction> {
     private String getTxTDesc(Transaction transaction, Context context, boolean isSender) {
         TransactionType transactionType = transaction.getTxType();
         if (transactionType == TransactionType.TRANSFER) {
-            return context.getResources().getString(isSender ? R.string.send : R.string.received);
+            return context.getResources().getString(isSender ? R.string.sent : R.string.received);
         } else {
             return context.getResources().getString(transactionType.getTxTypeDescRes());
         }
