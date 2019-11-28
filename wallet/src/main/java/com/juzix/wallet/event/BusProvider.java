@@ -44,10 +44,10 @@ public final class BusProvider {
 	private static final String TAG = "BusProvider";
 
 	private static EventBus getInstance() {
-		return BusProviderHodler.BUS;
+		return BusProviderHolder.BUS;
 	}
 
-	private static class BusProviderHodler {
+	private static class BusProviderHolder {
 		private static final EventBus BUS = EventBus.getDefault();
 	}
 

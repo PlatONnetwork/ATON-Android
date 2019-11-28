@@ -129,7 +129,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:layout_marginRight="5dp"
-            android:background="@drawable/icon_rank1"
+            android:background="@drawable/icon_rank_first"
             android:includeFontPadding="false"
             android:lines="1"
             android:paddingLeft="3dp"

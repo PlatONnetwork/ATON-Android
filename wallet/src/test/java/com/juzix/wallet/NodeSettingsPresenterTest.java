@@ -147,34 +147,34 @@ public class NodeSettingsPresenterTest {
         List<Node> removeNodeList = new ArrayList<>();
         List<Node> errorNodeList = new ArrayList<>();
         List<Node> normalNodeList = new ArrayList<>();
-        if (nodeList != null && !nodeList.isEmpty()) {
-            for (int i = 0; i < nodeList.size(); i++) {
-                Node nd = nodeList.get(i);
-                if (node.isDefaultNode()) {
-                    continue;
-                }
-
-                String nodeAddress = presenter.getView().getNodeAddress(node.getId());
-
-                if (TextUtils.isEmpty(nodeAddress)) {
-                    removeNodeList.add(node);
-                } else {
-                    Node nodeEntity = node.clone();
-                    String address = nodeAddress.trim();
-                    if (address.matches("^(http(s?)://)?((25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))\\.){3}(25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)):\\d{3,})") || address.matches("((25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))\\.){3}(25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)):\\d{3,})")) {
-                        if (address.matches("((25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))\\.){3}(25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)):\\d{3,})")) {
-                            nodeEntity.setNodeAddress("http://".concat(address));
-                        } else {
-                            nodeEntity.setNodeAddress(address);
-                        }
-                        normalNodeList.add(nodeEntity);
-                    } else {
-                        nodeEntity.setFormatCorrect(true);
-                        errorNodeList.add(nodeEntity);
-                    }
-                }
-            }
-        }
+//        if (nodeList != null && !nodeList.isEmpty()) {
+//            for (int i = 0; i < nodeList.size(); i++) {
+//                Node nd = nodeList.get(i);
+//                if (node.isDefaultNode()) {
+//                    continue;
+//                }
+//
+//                String nodeAddress = presenter.getView().getNodeAddress(node.getId());
+//
+//                if (TextUtils.isEmpty(nodeAddress)) {
+//                    removeNodeList.add(node);
+//                } else {
+//                    Node nodeEntity = node.clone();
+//                    String address = nodeAddress.trim();
+//                    if (address.matches("^(http(s?)://)?((25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))\\.){3}(25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)):\\d{3,})") || address.matches("((25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))\\.){3}(25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)):\\d{3,})")) {
+//                        if (address.matches("((25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))\\.){3}(25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)):\\d{3,})")) {
+//                            nodeEntity.setNodeAddress("http://".concat(address));
+//                        } else {
+//                            nodeEntity.setNodeAddress(address);
+//                        }
+//                        normalNodeList.add(nodeEntity);
+//                    } else {
+//                        nodeEntity.setFormatCorrect(true);
+//                        errorNodeList.add(nodeEntity);
+//                    }
+//                }
+//            }
+//        }
 
 //        if (errorNodeList.isEmpty()) {
 //            if (!removeNodeList.isEmpty()) {

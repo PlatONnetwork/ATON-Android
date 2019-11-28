@@ -5,7 +5,6 @@ import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.TypedValue;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -14,7 +13,6 @@ import com.juzix.wallet.App;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.adapter.base.ViewHolder;
-import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.entity.VerifyNode;
 import com.juzix.wallet.utils.BigDecimalUtil;
@@ -100,13 +98,13 @@ public class ValidatorsAdapter extends CommonAdapter<VerifyNode> {
 
     public void changeImageViewBg(TextView tv, int rank) {
         if (rank == 1) {
-            tv.setBackgroundResource(R.drawable.icon_rank1);
+            tv.setBackgroundResource(R.drawable.icon_rank_first);
         } else if (rank == 2) {
-            tv.setBackgroundResource(R.drawable.icon_rank2);
+            tv.setBackgroundResource(R.drawable.icon_rank_second);
         } else if (rank == 3) {
-            tv.setBackgroundResource(R.drawable.icon_rank3);
+            tv.setBackgroundResource(R.drawable.icon_rank_third);
         } else {
-            tv.setBackgroundResource(R.drawable.icon_rank4);
+            tv.setBackgroundResource(R.drawable.icon_rank_others);
         }
 
     }

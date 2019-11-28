@@ -13,6 +13,7 @@ import com.juzix.wallet.engine.DelegateManager;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.Web3jManager;
+import com.juzix.wallet.entity.DelegationValue;
 import com.juzix.wallet.entity.Node;
 import com.juzix.wallet.entity.WithDrawBalance;
 import com.juzix.wallet.rxjavatest.RxJavaTestSchedulerRule;
@@ -85,11 +86,11 @@ public class WithDrawActivityTest {
                 .put("addr", walletAddress)
                 .put("nodeId", nodeId)
                 .build())
-                .subscribe(new ApiSingleObserver<List<WithDrawBalance>>() {
+                .subscribe(new ApiSingleObserver<DelegationValue>() {
                     @Override
-                    public void onApiSuccess(List<WithDrawBalance> balanceList) {
+                    public void onApiSuccess(DelegationValue delegationValue) {
 //                        presenter.getView().showBalanceType();
-                        Log.d("result", "==============" + balanceList.toString());
+                        Log.d("result", "==============" + delegationValue.toString());
                     }
 
                     @Override

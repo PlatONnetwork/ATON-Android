@@ -410,7 +410,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
             if (isReceiver(queryAddressList)) {
                 return R.string.transfer;
             } else {
-                return R.string.send;
+                return R.string.sent;
             }
         } else {
             return R.string.received;
@@ -430,7 +430,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
             case TransferType.RECEIVE:
                 return R.string.received;
             default:
-                return R.string.send;
+                return R.string.sent;
         }
     }
 
