@@ -11,8 +11,6 @@ import okhttp3.Response;
 
 public class BaseUrlInterceptor implements Interceptor {
 
-    private final static String TAG = BaseUrlInterceptor.class.getSimpleName();
-
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();

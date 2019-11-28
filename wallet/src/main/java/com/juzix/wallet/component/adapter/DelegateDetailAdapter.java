@@ -74,6 +74,8 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
         holder.nodeAddress.setText(AddressFormatUtil.formatAddress(detail.getNodeId()));
         GlideUtils.loadRound(mContext, detail.getUrl(), holder.nodeIcon);
 
+        holder.nodeDetailLink.setVisibility(TextUtils.isEmpty(detail.getWebsite()) ? View.GONE : View.VISIBLE);
+
         TextView nodeState = holder.nodeState;
         showTextSpan(mContext, detail, nodeState);
         changeTextViewColorByState(holder.nodeState, detail.getNodeStatus());
@@ -98,7 +100,6 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
             holder.tv_show_delegate.setText(R.string.nav_delegate);
             holder.tv_show_withdraw.setText(R.string.node_withdraw_delegate);
         }
-
 
         RxView.clicks(holder.ll_withdraw)
                 .compose(RxUtils.getClickTransformer())
@@ -130,7 +131,7 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
                 });
 
 
-        RxView.clicks(holder.nodeName)
+        RxView.clicks(holder.nodeDetailLink)
                 .compose(RxUtils.getClickTransformer())
                 .subscribe(new Consumer<Object>() {
                     @Override
@@ -191,6 +192,8 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
         TextView nodeName;
         @BindView(R.id.node_address)
         TextView nodeAddress;
+        @BindView(R.id.iv_detail_node_link)
+        ImageView nodeDetailLink;
         @BindView(R.id.tv_node_state)
         TextView nodeState;
         //已委托
@@ -199,7 +202,6 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
         //待赎回委托
         @BindView(R.id.tv_node_withdraw_delegate)
         TextView tv_withdraw;
-
         @BindView(R.id.ll_delegate)
         LinearLayout ll_delegate;
         @BindView(R.id.ll_withdraw)

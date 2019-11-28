@@ -96,10 +96,6 @@ android {
         debug {
             debuggable true
             signingConfig signingConfigs.debug
-            shrinkResources true
-            minifyEnabled true
-            zipAlignEnabled true
-            multiDexEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
             multiDexEnabled true
