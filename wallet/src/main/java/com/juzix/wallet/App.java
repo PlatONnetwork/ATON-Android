@@ -14,6 +14,7 @@ import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.engine.WalletManager;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
+import com.umeng.socialize.PlatformConfig;
 
 import io.reactivex.functions.Consumer;
 import io.reactivex.plugins.RxJavaPlugins;
@@ -95,6 +96,7 @@ public class App extends CoreApp {
         }
         // 选用LEGACY_AUTO页面采集模式
         MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.LEGACY_MANUAL);
+        PlatformConfig.setSinaWeibo(BuildConfig.SINA_APPKEY, BuildConfig.SINA_APP_SECRET, BuildConfig.SINA_APP_REDIRECT_URL);
     }
 
     private ActivityLifecycleCallbacks mActivityLifecycleCallbacks = new ActivityLifecycleCallbacks() {

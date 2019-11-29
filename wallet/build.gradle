@@ -24,6 +24,9 @@ android {
         buildConfigField("String", "ID_MAIN_CHAIN", "${ID_MAIN_CHAIN}")
         buildConfigField("String", "ID_TEST_CHAIN", "${ID_TEST_CHAIN}")
         buildConfigField("String", "ID_DEVELOP_CHAIN", "${ID_DEVELOP_CHAIN}")
+        buildConfigField("String", "SINA_APPKEY", "${SINA_APPKEY}")
+        buildConfigField("String", "SINA_APP_SECRET", "${SINA_APP_SECRET}")
+        buildConfigField("String", "SINA_APP_REDIRECT_URL", "${SINA_APP_REDIRECT_URL}")
         renderscriptTargetApi 19
         renderscriptSupportModeEnabled true
 
@@ -84,7 +87,7 @@ android {
     buildTypes {
         debug {
             debuggable true
-            signingConfig signingConfigs.releaseC
+            signingConfig signingConfigs.debug
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
             multiDexEnabled true
