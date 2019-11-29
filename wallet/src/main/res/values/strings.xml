@@ -709,4 +709,9 @@
     <string name="msg_undelegate_with_no_avaliable_balance">可用余额为0，无法委托</string>
     <string name="msg_reminder_threshold">大额提醒</string>
     <string name="msg_resend_reminder">防重发提醒</string>
+    <string name="msg_not_installed">应用未安装</string>
+    <string name="facebook_app_id">559301874845515</string>
+    <string name="msg_share_success">分享成功</string>
+    <string name="msg_share_failed">分享失败</string>
+    <string name="msg_share_cancelled">分享已取消</string>
 </resources>

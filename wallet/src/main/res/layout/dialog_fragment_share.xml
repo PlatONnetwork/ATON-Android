@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:clipToPadding="false"
-    android:clipChildren="false"
     android:background="@drawable/bg_common_dialog_fragment"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     android:orientation="vertical">
 
     <TextView
@@ -27,7 +27,9 @@
         android:id="@+id/gridview"
         android:layout_width="match_parent"
         android:layout_height="210dp"
+        android:cacheColorHint="@color/color_00000000"
         android:gravity="center_horizontal"
+        android:listSelector="@color/color_00000000"
         android:numColumns="4"
         android:paddingTop="16dp"
         android:scrollbars="none"

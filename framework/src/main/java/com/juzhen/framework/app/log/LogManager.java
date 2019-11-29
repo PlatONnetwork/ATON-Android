@@ -30,8 +30,6 @@ public class LogManager {
 
 	private HashMap<String, String> nameParams;
 	
-	private boolean mEnableBugly = true;
-
 	private LogManager() {
 		loggers = new Hashtable<String, Logger>();
 		tagLoggerMap = new Hashtable<String, Logger>();
@@ -55,11 +53,6 @@ public class LogManager {
 
 	public void setNameParams(HashMap<String, String> params) {
 		this.nameParams = params;
-	}
-	
-	public boolean isEnableBugly() {
-		logD(TAG, "isEnableBugly " + mEnableBugly);
-		return mEnableBugly;
 	}
 
 	/**
@@ -194,12 +187,6 @@ public class LogManager {
 				} else if (content.equals("none")) {
 					Log.enable_console_log = false;
 					Log.enable_file_log = false;
-				}
-			} else if ("buglyEnable".equals(localName)) { 
-				if (content.equalsIgnoreCase("true")) {
-					mEnableBugly = true;
-				} else if (content.equalsIgnoreCase("false")){
-					mEnableBugly = false;
 				}
 			} else if ("logger".equals(localName)) {
 				// logger定义结束，添加一个log吧

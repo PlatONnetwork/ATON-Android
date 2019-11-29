@@ -12,7 +12,6 @@ import com.juzix.wallet.app.AppFramework;
 import com.juzix.wallet.component.ui.view.UnlockFigerprintActivity;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.engine.WalletManager;
-import com.tencent.bugly.crashreport.CrashReport;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
 
@@ -42,13 +41,9 @@ public class App extends CoreApp {
         context = this;
         //初始化友盟
         initUMConfigure();
-        initBugly();
         AppFramework.getAppFramework().initAppFramework(this);
         registerActivityLifecycleCallbacks(mActivityLifecycleCallbacks);
 
-    }
-    private void initBugly() {
-        CrashReport.initCrashReport(getApplicationContext(), BuildConfig.BUGLY_APPID, true);
     }
 
     @Override
