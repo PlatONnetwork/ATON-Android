@@ -3,11 +3,11 @@ package com.juzix.wallet.component.ui.dialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.juzix.wallet.R;
@@ -16,6 +16,7 @@ import com.juzix.wallet.component.adapter.CommonAdapter;
 import com.juzix.wallet.component.adapter.base.ViewHolder;
 import com.juzix.wallet.entity.ShareAppInfo;
 import com.juzix.wallet.utils.DensityUtil;
+import com.umeng.socialize.UMShareAPI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,8 @@ public class ShareDialogFragment extends BaseDialogFragment {
 
     Unbinder unbinder;
 
+    OnShareItemClickListener mShareItemClickListener;
+
     public static ShareDialogFragment newInstance(ArrayList<ShareAppInfo> shareAppInfos) {
         ShareDialogFragment dialogFragment = new ShareDialogFragment();
         Bundle bundle = new Bundle();
@@ -45,14 +48,19 @@ public class ShareDialogFragment extends BaseDialogFragment {
         return dialogFragment;
     }
 
+    public ShareDialogFragment setOnShareItemClickListener(OnShareItemClickListener shareItemClickListener) {
+        this.mShareItemClickListener = shareItemClickListener;
+        return this;
+    }
+
     @Override
     protected Dialog onCreateDialog(Dialog baseDialog) {
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_fragment_share, null, false);
         baseDialog.setContentView(contentView);
         setFullWidthEnable(true);
         setAnimation(R.style.Animation_slide_in_bottom);
-        setHorizontalMargin(DensityUtil.dp2px(getContext(),24));
-        setyOffset(DensityUtil.dp2px(getContext(),16));
+        setHorizontalMargin(DensityUtil.dp2px(getContext(), 24));
+        setyOffset(DensityUtil.dp2px(getContext(), 16));
         unbinder = ButterKnife.bind(this, contentView);
         initViews();
         return baseDialog;
@@ -73,9 +81,8 @@ public class ShareDialogFragment extends BaseDialogFragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ShareAppInfo shareAppInfo = (ShareAppInfo) parent.getAdapter().getItem(position);
-                if (shareAppInfo.actionStart(context)) {
-                    dismiss();
+                if (mShareItemClickListener != null){
+                    mShareItemClickListener.onShareItemClick(ShareDialogFragment.this,(ShareAppInfo) parent.getAdapter().getItem(position));
                 }
             }
         });
@@ -99,5 +106,10 @@ public class ShareDialogFragment extends BaseDialogFragment {
         if (unbinder != null) {
             unbinder.unbind();
         }
+    }
+
+    public interface OnShareItemClickListener {
+
+        void onShareItemClick(BaseDialogFragment fragment, ShareAppInfo shareAppInfo);
     }
 }

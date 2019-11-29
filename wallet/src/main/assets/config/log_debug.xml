@@ -17,5 +17,4 @@
             <tag>tag2</tag>
         </writetag>
     </logger>
-    <buglyEnable>false</buglyEnable>   <!--  true or false, true as default  -->
 </log>

@@ -16,7 +16,7 @@ import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.MVPBaseFragment;
 import com.juzix.wallet.component.ui.contract.ReceiveTransationContract;
-import com.juzix.wallet.component.ui.presenter.ReceiveTransationPresenter;
+import com.juzix.wallet.component.ui.presenter.ReceiveTransactionPresenter;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.event.Event;
@@ -35,7 +35,7 @@ import butterknife.Unbinder;
 /**
  * @author matrixelement
  */
-public class ReceiveTransactionFragment extends MVPBaseFragment<ReceiveTransationPresenter> implements ReceiveTransationContract.View{
+public class ReceiveTransactionFragment extends MVPBaseFragment<ReceiveTransactionPresenter> implements ReceiveTransationContract.View{
 
     @BindView(R.id.iv_wallet_address_qr_code)
     ImageView       ivWalletAddressQrCode;
@@ -55,8 +55,8 @@ public class ReceiveTransactionFragment extends MVPBaseFragment<ReceiveTransatio
     private Unbinder unbinder;
 
     @Override
-    protected ReceiveTransationPresenter createPresenter() {
-        return new ReceiveTransationPresenter(this);
+    protected ReceiveTransactionPresenter createPresenter() {
+        return new ReceiveTransactionPresenter(this);
     }
 
     @Override
