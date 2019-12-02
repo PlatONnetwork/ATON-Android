@@ -16,6 +16,8 @@ import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
 import com.umeng.socialize.PlatformConfig;
 
+import java.io.ObjectOutputStream;
+
 import io.reactivex.functions.Consumer;
 import io.reactivex.plugins.RxJavaPlugins;
 
@@ -24,7 +26,6 @@ import io.reactivex.plugins.RxJavaPlugins;
  */
 public class App extends CoreApp {
 
-    private final static String TAG = App.class.getSimpleName();
     private final static long MAX_TIMEINMILLS = 2 * 60 * 1000;
     private static Context context;
     private int mActivityAmount = 0;
@@ -44,7 +45,6 @@ public class App extends CoreApp {
         initUMConfigure();
         AppFramework.getAppFramework().initAppFramework(this);
         registerActivityLifecycleCallbacks(mActivityLifecycleCallbacks);
-
     }
 
     @Override

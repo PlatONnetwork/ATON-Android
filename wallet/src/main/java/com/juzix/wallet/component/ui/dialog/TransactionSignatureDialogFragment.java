@@ -252,7 +252,7 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
         boolean fromNotEquals = !TextUtils.equals(transactionAuthorizationBaseData.getFrom(), transactionSignatureData.getFrom());
 
         if (fromNotEquals) {
-            return CODE_WALLET_MISMATCH;
+            return CODE_INVALID_SIGNATURE;
         }
 
         boolean chainIdNotEquals = !TextUtils.equals(transactionAuthorizationBaseData.getChainId(), transactionSignatureData.getChainId());

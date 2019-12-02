@@ -16,6 +16,7 @@ import com.juzix.wallet.component.widget.PendingAnimationLayout;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionStatus;
 import com.juzix.wallet.entity.TransactionType;
+import com.juzix.wallet.entity.TransferType;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.StringUtil;
 
@@ -107,8 +108,9 @@ public class TransactionViewHolder extends BaseViewHolder<Transaction> {
 
     private String getTxTDesc(Transaction transaction, Context context, boolean isSender) {
         TransactionType transactionType = transaction.getTxType();
+        @TransferType int transferType = transaction.getTransferType(mQueryAddressList);
         if (transactionType == TransactionType.TRANSFER) {
-            return context.getResources().getString(isSender ? R.string.sent : R.string.received);
+            return context.getResources().getString(transferType == TransferType.TRANSFER ? R.string.transfer : isSender ? R.string.sent : R.string.received);
         } else {
             return context.getResources().getString(transactionType.getTxTypeDescRes());
         }
