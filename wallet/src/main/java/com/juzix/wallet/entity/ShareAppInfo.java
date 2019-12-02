@@ -1,12 +1,23 @@
 package com.juzix.wallet.entity;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.juzix.wallet.R;
+import com.juzix.wallet.utils.AppUtil;
+import com.juzix.wallet.utils.ToastUtil;
+import com.umeng.socialize.ShareAction;
+import com.umeng.socialize.UMShareAPI;
+import com.umeng.socialize.UMShareListener;
+import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.umeng.socialize.media.UMImage;
+
+import java.io.File;
 
 /**
  * @author matrixelement
@@ -24,6 +35,11 @@ public enum ShareAppInfo implements Parcelable {
             return R.string.wechat;
         }
 
+        @Override
+        public SHARE_MEDIA getShareMedia() {
+            return SHARE_MEDIA.WEIXIN;
+        }
+
     }, QQ("com.tencent.mobileqq") {
         @Override
         public int getIconRes() {
@@ -33,6 +49,11 @@ public enum ShareAppInfo implements Parcelable {
         @Override
         public int getTitleRes() {
             return R.string.qq;
+        }
+
+        @Override
+        public SHARE_MEDIA getShareMedia() {
+            return SHARE_MEDIA.QQ;
         }
 
     }, WEIBO("com.sina.weibo") {
@@ -46,6 +67,11 @@ public enum ShareAppInfo implements Parcelable {
             return R.string.weibo;
         }
 
+        @Override
+        public SHARE_MEDIA getShareMedia() {
+            return SHARE_MEDIA.SINA;
+        }
+
     }, FACEBOOK("com.facebook.katana") {
         @Override
         public int getIconRes() {
@@ -57,6 +83,11 @@ public enum ShareAppInfo implements Parcelable {
             return R.string.facebook;
         }
 
+        @Override
+        public SHARE_MEDIA getShareMedia() {
+            return SHARE_MEDIA.FACEBOOK;
+        }
+
     }, TWITTER("com.twitter.android") {
         @Override
         public int getIconRes() {
@@ -66,6 +97,11 @@ public enum ShareAppInfo implements Parcelable {
         @Override
         public int getTitleRes() {
             return R.string.twitter;
+        }
+
+        @Override
+        public SHARE_MEDIA getShareMedia() {
+            return SHARE_MEDIA.TWITTER;
         }
 
     };
@@ -102,6 +138,8 @@ public enum ShareAppInfo implements Parcelable {
 
     public abstract int getTitleRes();
 
+    public abstract SHARE_MEDIA getShareMedia();
+
     public boolean actionStart(Context context) {
         try {
             Intent intent = context.getPackageManager().getLaunchIntentForPackage(packageName);
@@ -111,6 +149,31 @@ public enum ShareAppInfo implements Parcelable {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public void share(Activity activity, Bitmap bitmap, UMShareListener umShareListener) {
+        SHARE_MEDIA shareMedia = getShareMedia();
+        if (isInstall(activity, shareMedia)) {
+            if (shareMedia == SHARE_MEDIA.QQ || shareMedia == SHARE_MEDIA.WEIXIN) {
+                actionStart(activity);
+            } else {
+                new ShareAction(activity).setPlatform(shareMedia).withMedia(new UMImage(activity, bitmap)).setCallback(umShareListener).share();
+            }
+        } else {
+            ToastUtil.showLongToast(activity, R.string.msg_not_installed);
+        }
+
+    }
+
+    public boolean isInstall(Activity activity, SHARE_MEDIA shareMedia) {
+
+        if (shareMedia == SHARE_MEDIA.QQ || shareMedia == SHARE_MEDIA.WEIXIN) {
+            return AppUtil.isInstall(activity, this);
+        } else {
+            return UMShareAPI.get(activity).isInstall(activity, shareMedia);
+        }
+
+
     }
 
 

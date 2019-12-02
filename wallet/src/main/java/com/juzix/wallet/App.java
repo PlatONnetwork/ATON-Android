@@ -12,9 +12,11 @@ import com.juzix.wallet.app.AppFramework;
 import com.juzix.wallet.component.ui.view.UnlockFigerprintActivity;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.engine.WalletManager;
-import com.tencent.bugly.crashreport.CrashReport;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
+import com.umeng.socialize.PlatformConfig;
+
+import java.io.ObjectOutputStream;
 
 import io.reactivex.functions.Consumer;
 import io.reactivex.plugins.RxJavaPlugins;
@@ -24,7 +26,6 @@ import io.reactivex.plugins.RxJavaPlugins;
  */
 public class App extends CoreApp {
 
-    private final static String TAG = App.class.getSimpleName();
     private final static long MAX_TIMEINMILLS = 2 * 60 * 1000;
     private static Context context;
     private int mActivityAmount = 0;
@@ -42,13 +43,8 @@ public class App extends CoreApp {
         context = this;
         //初始化友盟
         initUMConfigure();
-        initBugly();
         AppFramework.getAppFramework().initAppFramework(this);
         registerActivityLifecycleCallbacks(mActivityLifecycleCallbacks);
-
-    }
-    private void initBugly() {
-        CrashReport.initCrashReport(getApplicationContext(), BuildConfig.BUGLY_APPID, true);
     }
 
     @Override
@@ -100,6 +96,7 @@ public class App extends CoreApp {
         }
         // 选用LEGACY_AUTO页面采集模式
         MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.LEGACY_MANUAL);
+        PlatformConfig.setSinaWeibo(BuildConfig.SINA_APPKEY, BuildConfig.SINA_APP_SECRET, BuildConfig.SINA_APP_REDIRECT_URL);
     }
 
     private ActivityLifecycleCallbacks mActivityLifecycleCallbacks = new ActivityLifecycleCallbacks() {

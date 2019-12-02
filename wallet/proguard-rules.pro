@@ -18,7 +18,6 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
-
 -dontusemixedcaseclassnames
 -optimizationpasses 5
 -allowaccessmodification
@@ -127,9 +126,6 @@
 }
 -dontwarn com.juzix.wallet.event.Event
 
-# bugly.qq.com
--keep public class com.tencent.bugly.**{*;}
-
 #glide
 -keep public class * implements com.bumptech.glide.module.GlideModule
 -keep public class * extends com.bumptech.glide.module.AppGlideModule
@@ -236,3 +232,40 @@ rx.internal.util.atomic.LinkedQueueNode consumerNode;
     *;
 }
 -dontwarn com.juzhen.framework.network.**
+
+-dontpreverify
+-dontwarn com.umeng.**
+-dontwarn com.facebook.**
+-keep public class javax.**
+-keep public class android.webkit.**
+-dontwarn android.support.v4.**
+-keep enum com.facebook.**
+-keepattributes Exceptions,InnerClasses,Signature
+-keepattributes *Annotation*
+-keepattributes SourceFile,LineNumberTable
+
+-keep public interface com.facebook.**
+-keep public interface com.tencent.**
+-keep public interface com.umeng.socialize.**
+-keep public interface com.umeng.socialize.sensor.**
+-keep public interface com.umeng.scrshot.**
+
+-keep public class com.umeng.socialize.* {*;}
+
+-keep class com.facebook.**
+-keep class com.facebook.** { *; }
+-keep class com.umeng.scrshot.**
+-keep class com.umeng.socialize.sensor.**
+-keep class com.umeng.socialize.handler.**
+-keep class com.umeng.socialize.handler.*
+-keep class UMMoreHandler{*;}
+
+-keep class com.twitter.** { *; }
+
+-keep public class com.umeng.com.umeng.soexample.R$*{
+    public static final int *;
+}
+
+-keep class com.umeng.socialize.impl.ImageImpl {*;}
+-keep class com.sina.** {*;}
+-dontwarn com.sina.**

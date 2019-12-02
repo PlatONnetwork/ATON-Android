@@ -62,7 +62,7 @@ public class AppUtil {
      * @param pwd 密码
      * @return
      */
-    public static String getSha3Pwd(String pwd){
+    public static String getSha3Pwd(String pwd) {
         return Numeric.toHexStringNoPrefix(Hash.sha3(Numeric.hexStringToByteArray(AppUtil.toHexString(pwd.trim())))).toUpperCase();
     }
 
@@ -83,7 +83,7 @@ public class AppUtil {
      */
     public static String toHexString(String text) {
         StringBuilder builder = new StringBuilder();
-        int           len     = text.length();
+        int len = text.length();
         for (int i = 0; i < len; i++) {
             builder.append(Integer.toHexString(text.charAt(i)));
         }
@@ -114,5 +114,9 @@ public class AppUtil {
             }
         }
         return shareAppInfoList;
+    }
+
+    public static boolean isInstall(Context context, ShareAppInfo shareAppInfo) {
+        return getShareAppInfoList(context).contains(shareAppInfo);
     }
 }

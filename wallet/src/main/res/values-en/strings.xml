@@ -111,7 +111,7 @@
     <string name="msg_no_wallet">No Wallet yet.</string>
     <string name="msg_no_shared_wallet">There is no any Joint Wallet yet</string>
     <string name="msg_no_individual_wallet">There is no any Classic Wallet yet</string>
-    <string name="transactions">Transaction</string>
+    <string name="transactions">Transactions</string>
     <string name="me_transactions">Transactions</string>
     <string name="sendATP">Send</string>
     <string name="actionSendATP">NEXT</string>
@@ -651,7 +651,7 @@
     <string name="msg_transaction_signature_desc">Scan the OR code displayed on the cold wallet to get the transaction signature .</string>
     <string name="action_send_transaction">Finish</string>
     <string name="action_authorized_signature">Next</string>
-    <string name="msg_authorization_signature_desc">Scan the OR code to finish your authorization for the cold wallet.</string>
+    <string name="msg_authorization_signature_desc">Scan the OR code to finish your authorization for the observed wallet.</string>
     <string name="msg_wallet_mismatch">Wallet Mismatch</string>
     <string name="finish">Finish</string>
     <string name="msg_invalid_signature">Invalid Signature</string>
@@ -696,5 +696,9 @@
     <string name="msg_undelegate_with_no_avaliable_balance">Wallet balance is 0, unable to delegate</string>
     <string name="msg_reminder_threshold">Reminder threshold</string>
     <string name="msg_resend_reminder">Resend reminder</string>
+    <string name="msg_not_installed">Not installed</string>
+    <string name="msg_share_success">Share success</string>
+    <string name="msg_share_failed">Share failed</string>
+    <string name="msg_share_cancelled">Share cancelled</string>
 </resources>
 

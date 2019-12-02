@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 import android.text.TextUtils;
 
 import com.juzix.wallet.component.ui.contract.ReceiveTransationContract;
-import com.juzix.wallet.component.ui.presenter.ReceiveTransationPresenter;
+import com.juzix.wallet.component.ui.presenter.ReceiveTransactionPresenter;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.entity.Wallet;
@@ -38,7 +38,7 @@ import static org.mockito.Mockito.mock;
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 27, manifest = Config.NONE)
 public class ReceiveTransactionPresenterTest {
-    private ReceiveTransationPresenter presenter;
+    private ReceiveTransactionPresenter presenter;
     @Mock
     private ReceiveTransationContract.View view;
 
@@ -60,7 +60,7 @@ public class ReceiveTransactionPresenterTest {
         ShadowLog.stream = System.out;
         schedulerTestProvider = new SchedulerTestProvider();
         view = mock(ReceiveTransationContract.View.class);
-        presenter = new ReceiveTransationPresenter(view);
+        presenter = new ReceiveTransactionPresenter(view);
         presenter.attachView(view);
         appSettings.init(RuntimeEnvironment.application);
     }

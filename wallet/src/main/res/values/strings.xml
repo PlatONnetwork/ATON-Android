@@ -661,10 +661,10 @@
     <string name="msg_delegate_info">委托LAT</string>
     <string name="msg_withdraw_info">赎回LAT</string>
     <string name="title_transaction_signature">读取签名数据</string>
-    <string name="msg_transaction_signature_desc">扫描观察钱包页面的授权二维码，获取签名数据。</string>
+    <string name="msg_transaction_signature_desc">扫描冷钱包页面的授权二维码，获取签名数据。</string>
     <string name="action_send_transaction">发送交易</string>
     <string name="action_authorized_signature">授权签名</string>
-    <string name="msg_authorization_signature_desc">使用对应冷钱包扫描下方二维码，完成授权。</string>
+    <string name="msg_authorization_signature_desc">使用对应观察钱包扫描下方二维码，完成授权。</string>
     <string name="msg_wallet_mismatch">钱包不匹配</string>
     <string name="finish">完成</string>
     <string name="msg_invalid_signature">无效签名</string>
@@ -709,4 +709,9 @@
     <string name="msg_undelegate_with_no_avaliable_balance">可用余额为0，无法委托</string>
     <string name="msg_reminder_threshold">大额提醒</string>
     <string name="msg_resend_reminder">防重发提醒</string>
+    <string name="msg_not_installed">应用未安装</string>
+    <string name="facebook_app_id">559301874845515</string>
+    <string name="msg_share_success">分享成功</string>
+    <string name="msg_share_failed">分享失败</string>
+    <string name="msg_share_cancelled">分享已取消</string>
 </resources>
