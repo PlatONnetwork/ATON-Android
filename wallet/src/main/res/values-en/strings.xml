@@ -651,7 +651,7 @@
     <string name="msg_transaction_signature_desc">Scan the OR code displayed on the cold wallet to get the transaction signature .</string>
     <string name="action_send_transaction">Finish</string>
     <string name="action_authorized_signature">Next</string>
-    <string name="msg_authorization_signature_desc">Scan the OR code to finish your authorization for the cold wallet.</string>
+    <string name="msg_authorization_signature_desc">Scan the OR code to finish your authorization for the observed wallet.</string>
     <string name="msg_wallet_mismatch">Wallet Mismatch</string>
     <string name="finish">Finish</string>
     <string name="msg_invalid_signature">Invalid Signature</string>
