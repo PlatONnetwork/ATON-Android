@@ -130,9 +130,9 @@
                     style="@style/Text.898c9e.13"
                     android:layout_gravity="center_vertical"
                     android:ellipsize="middle"
-                    android:maxWidth="80dp"
+                    android:maxEms="6"
                     android:singleLine="true"
-                    tools:text="啊哈哈哈啊哈哈哈啊哈哈哈啊哈哈哈啊哈哈哈啊哈哈哈啊哈哈哈啊哈哈哈啊哈哈哈" />
+                    tools:text="啊哈哈哈啊哈哈哈啊哈哈哈啊啊哈哈哈啊哈哈哈啊哈哈哈啊" />
 
                 <TextView
                     android:id="@+id/tv_wallet_address"
