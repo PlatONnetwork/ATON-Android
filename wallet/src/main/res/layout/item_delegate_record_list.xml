@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center">
@@ -42,7 +43,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="3dp"
-                    android:text="委托节点名称"
+                    tools:text="委托节点名称"
                     android:textColor="@color/color_000000"
                     android:textSize="15sp"
                     android:textStyle="bold" />
@@ -51,7 +52,7 @@
                     android:id="@+id/tv_address_node"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="委托节点地址"
+                    tools:text="委托节点地址"
                     android:textColor="@color/color_61646e"
                     android:textSize="13sp" />
 
@@ -123,7 +124,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="2dp"
                     android:layout_toRightOf="@id/iv_wallet"
-                    android:text="123"
+                    tools:text="123"
                     android:textColor="@color/color_898c9e"
                     android:textSize="13sp" />
 
