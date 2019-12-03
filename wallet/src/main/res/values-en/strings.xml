@@ -272,7 +272,7 @@
     <string name="transfer_failed">Transfer failed</string>
     <string name="input_again">Input again</string>
     <string name="network_error">Network anomalies, please retry later</string>
-    <string name="walletExists">Wallet already exists</string>
+    <string name="walletExists">Existed Address</string>
     <string name="create_contract">Create Contract</string>
     <string name="payment_info">Payment Info</string>
     <string name="action_submit">Submit</string>
