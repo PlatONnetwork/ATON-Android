@@ -72,6 +72,8 @@ public class ImportPrivateKeyPresenter extends BasePresenter<ImportPrivateKeyCon
                     case WalletManager.CODE_ERROR_UNKNOW:
                         mHandler.sendEmptyMessage(MSG_PASSWORD_FAILED);
                         break;
+                    default:
+                        break;
                 }
             }
         }.start();

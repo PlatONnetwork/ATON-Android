@@ -244,15 +244,12 @@ public class WalletManager {
         return Single.create(new SingleOnSubscribe<String>() {
             @Override
             public void subscribe(SingleEmitter<String> emitter) throws Exception {
-                LogUtils.e("before createMnemonic " + System.currentTimeMillis() + " " + Thread.currentThread().getName());
                 String mnemonic = generateMnemonic();
                 if (JZWalletUtil.isValidMnemonic(mnemonic)) {
                     emitter.onSuccess(mnemonic);
                 } else {
                     emitter.onError(new CustomThrowable(CustomThrowable.CODE_ERROR_CREATE_WALLET_FAILED));
                 }
-
-                LogUtils.e("after createMnemonic " + System.currentTimeMillis() + " " + Thread.currentThread().getName());
             }
         });
     }
