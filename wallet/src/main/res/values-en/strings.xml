@@ -121,6 +121,8 @@
     <string name="voting">Voting</string>
     <string name="wallet_address">Wallet Address</string>
     <string name="amount">Amount</string>
+    <string name="delegate_amount">Amount</string>
+    <string name="withdraw_amount">Amount</string>
     <string name="submissionAmount">Amount</string>
     <string name="pay_wallet">From</string>
     <string name="change">Change</string>

@@ -150,6 +150,8 @@
     <string name="voting">投票</string>
     <string name="wallet_address">钱包地址</string>
     <string name="amount">数量</string>
+    <string name="delegate_amount">委托数量</string>
+    <string name="withdraw_amount">赎回数量</string>
     <string name="submissionAmount">交易数量</string>
     <string name="pay_wallet">支付钱包</string>
     <string name="change">切换钱包</string>
