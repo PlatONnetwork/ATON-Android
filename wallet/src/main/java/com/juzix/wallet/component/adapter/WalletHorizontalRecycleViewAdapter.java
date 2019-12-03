@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.widget.AutofitTextView;
@@ -95,7 +96,7 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
     private void setIndividualWalletView(final int position, final Wallet walletEntity, ViewHolder holder) {
         holder.rlItem.setVisibility(View.VISIBLE);
         holder.rlItem.findViewById(R.id.v_new_msg).setVisibility(View.GONE);
-        AutofitTextView tvName = holder.rlItem.findViewById(R.id.tv_item2_name);
+        TextView tvName = holder.rlItem.findViewById(R.id.tv_item2_name);
         ImageView ivIcon = holder.rlItem.findViewById(R.id.iv_item2_icon);
 //        ShadowDrawable.setShadowDrawable(holder.vShadow,
 //                ContextCompat.getColor(mContext, R.color.color_660051ff),
