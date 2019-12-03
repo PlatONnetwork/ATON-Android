@@ -150,6 +150,8 @@
     <string name="voting">投票</string>
     <string name="wallet_address">钱包地址</string>
     <string name="amount">数量</string>
+    <string name="delegate_amount">委托数量</string>
+    <string name="withdraw_amount">赎回数量</string>
     <string name="submissionAmount">交易数量</string>
     <string name="pay_wallet">支付钱包</string>
     <string name="change">切换钱包</string>
@@ -232,7 +234,7 @@
     <string name="amount_with_unit">%1$s&#160;LAT</string>
     <string name="transfer_amount_cannot_be_empty">转账金额不能为空</string>
     <string name="transfer_amount_exceed_balance">转账金额已超过余额</string>
-    <string name="insufficient_balance">钱包余额不足</string>
+    <string name="insufficient_balance">余额不足支付手续费，无法转账</string>
     <string name="sent">发送</string>
     <string name="received">接收</string>
     <string name="receive_atp">接收&#160;LAT</string>
