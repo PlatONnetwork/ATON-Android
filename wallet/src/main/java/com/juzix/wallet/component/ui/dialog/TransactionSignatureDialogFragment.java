@@ -187,8 +187,6 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
         transactionSignatureData = JSONUtil.parseObject(GZipUtil.unCompress(signature), TransactionSignatureData.class);
         if (transactionSignatureData != null && transactionSignatureData.getSignedDatas() != null && !transactionSignatureData.getSignedDatas().isEmpty() && NodeManager.getInstance().getChainId().equals(transactionSignatureData.getChainId())) {
             tvTransactionSignature.setText(getSignedMessage(transactionSignatureData));
-            RawTransaction rawTransaction = TransactionDecoder.decode(transactionSignatureData.getSignedDatas().get(0));
-            LogUtils.e(rawTransaction.toString());
         } else {
             ToastUtil.showLongToast(getContext(), R.string.msg_invalid_signature);
         }

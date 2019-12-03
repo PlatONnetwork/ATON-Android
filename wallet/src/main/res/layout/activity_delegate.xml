@@ -241,7 +241,7 @@
                     android:id="@+id/tv_transation_amount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/amount"
+                    android:text="@string/delegate_amount"
                     android:textColor="@color/color_61646e"
                     android:textSize="16sp" />
 

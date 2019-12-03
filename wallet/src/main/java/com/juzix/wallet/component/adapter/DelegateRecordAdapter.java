@@ -53,7 +53,7 @@ public class DelegateRecordAdapter extends CommonAdapter<Transaction> {
         TextView tv = viewHolder.getView(R.id.tv_state);
         changeTextStateAndColor(context, tv, item);
 
-        viewHolder.setText(R.id.tv_delegate_time, DateUtil.format(item.getTimestamp(), DateUtil.DATETIME_FORMAT_PATTERN2));
+        viewHolder.setText(R.id.tv_delegate_time, String.format("# %s", DateUtil.format(item.getTimestamp(), DateUtil.DATETIME_FORMAT_PATTERN2)));
 
         CircleImageView walletIcon = viewHolder.getView(R.id.iv_wallet);
         walletIcon.setImageResource(RUtils.drawable(item.getWalletIcon()));
