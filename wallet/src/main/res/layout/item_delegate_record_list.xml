@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -43,18 +44,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="3dp"
-                    tools:text="委托节点名称"
                     android:textColor="@color/color_000000"
                     android:textSize="15sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:text="委托节点名称" />
 
                 <TextView
                     android:id="@+id/tv_address_node"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="委托节点地址"
                     android:textColor="@color/color_61646e"
-                    android:textSize="13sp" />
+                    android:textSize="13sp"
+                    tools:text="委托节点地址" />
 
             </LinearLayout>
 
@@ -90,56 +91,57 @@
             </LinearLayout>
         </RelativeLayout>
 
-        <RelativeLayout
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="44dp">
+            android:layout_height="44dp"
+            android:orientation="horizontal"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
 
             <TextView
                 android:id="@+id/tv_delegate_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="15dp"
-                android:text="2019-06-17"
-                android:textColor="@color/color_898c9e"
-                android:textSize="13sp" />
+                style="@style/Text.898c9e.13"
+                android:layout_gravity="center_vertical"
+                tools:text="2019-06-17" />
+
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="15dp">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:orientation="horizontal">
+
+                <android.support.v4.widget.Space
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
 
                 <com.juzix.wallet.component.widget.CircleImageView
                     android:id="@+id/iv_wallet"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/icon_total_delegate" />
+                    android:layout_gravity="center_vertical"
+                    android:scaleType="centerCrop"
+                    tools:src="@drawable/avatar_14" />
 
                 <TextView
                     android:id="@+id/tv_wallet_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
-                    android:layout_toRightOf="@id/iv_wallet"
-                    tools:text="123"
-                    android:textColor="@color/color_898c9e"
-                    android:textSize="13sp" />
+                    style="@style/Text.898c9e.13"
+                    android:layout_gravity="center_vertical"
+                    android:ellipsize="middle"
+                    android:maxWidth="80dp"
+                    android:singleLine="true"
+                    tools:text="啊哈哈哈啊哈哈哈啊哈哈哈啊哈哈哈啊哈哈哈啊哈哈哈啊哈哈哈啊哈哈哈啊哈哈哈" />
 
                 <TextView
                     android:id="@+id/tv_wallet_address"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
-                    android:layout_toRightOf="@id/iv_wallet"
-                    android:text="dafsdfas"
-                    android:textColor="@color/color_898c9e"
-                    android:textSize="13sp" />
+                    style="@style/Text.898c9e.13"
+                    android:layout_gravity="center_vertical"
+                    tools:text="dafsdfas" />
             </LinearLayout>
 
-        </RelativeLayout>
+        </LinearLayout>
 
 
     </LinearLayout>
