@@ -716,4 +716,7 @@
     <string name="msg_share_success">分享成功</string>
     <string name="msg_share_failed">分享失败</string>
     <string name="msg_share_cancelled">分享已取消</string>
+
+    <string name="msg_large_transaction_reminder">发送数量超过%1$s LAT，确认是否继续发送？</string>
+    <string name="msg_resend_transaction_reminder">最近有一笔相同的发送记录，确认是否继续发送？</string>
 </resources>

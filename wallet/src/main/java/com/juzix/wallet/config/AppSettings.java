@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.engine.NodeManager;
+import com.juzix.wallet.utils.StringUtil;
 
 /**
  * @author matrixelement
@@ -14,7 +15,7 @@ public class AppSettings {
     /**
      * 默认大额提醒金额1000 LAT
      */
-    private static final long DEFAULT_REMINDER_THRESHOLD_AMOUNT = 1000L;
+    private static final String DEFAULT_REMINDER_THRESHOLD_AMOUNT = "1000";
     /**
      * 默认重发提醒开启
      */
@@ -93,12 +94,12 @@ public class AppSettings {
         setBooleanItem(Constants.Preference.KEY_RESEND_REMINDER, on);
     }
 
-    public long getReminderThresholdAmount() {
-        return getLongItem(Constants.Preference.KEY_REMINDER_THRESHOLD_AMOUNT, DEFAULT_REMINDER_THRESHOLD_AMOUNT);
+    public String getReminderThresholdAmount() {
+        return getStringItem(Constants.Preference.KEY_REMINDER_THRESHOLD_AMOUNT, DEFAULT_REMINDER_THRESHOLD_AMOUNT);
     }
 
-    public void setReminderThresholdAmount(long reminderThresholdAmount) {
-        setLongItem(Constants.Preference.KEY_REMINDER_THRESHOLD_AMOUNT, reminderThresholdAmount);
+    public void setReminderThresholdAmount(String reminderThresholdAmount) {
+        setStringItem(Constants.Preference.KEY_REMINDER_THRESHOLD_AMOUNT, reminderThresholdAmount);
     }
 
     public boolean getFaceTouchIdFlag() {

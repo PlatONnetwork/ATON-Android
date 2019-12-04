@@ -74,4 +74,12 @@
         <item>@drawable/icon_withdraw_delegate_cn</item>
     </array>
 
+    <string-array name="reminder_threshold_amount">
+        <item>100</item>
+        <item>1000</item>
+        <item>10000</item>
+        <item>100000</item>
+        <item>1000000</item>
+    </string-array>
+
 </resources>
