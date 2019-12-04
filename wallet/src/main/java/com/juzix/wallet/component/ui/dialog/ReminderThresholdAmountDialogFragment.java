@@ -6,13 +6,9 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.jakewharton.rxbinding2.view.RxView;
-import com.jakewharton.rxbinding2.widget.RxAbsListView;
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
-import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
@@ -22,9 +18,7 @@ import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindArray;
@@ -57,7 +51,7 @@ public class ReminderThresholdAmountDialogFragment extends BaseDialogFragment {
 
     @Override
     protected Dialog onCreateDialog(Dialog baseDialog) {
-        View contentView = LayoutInflater.from(context).inflate(R.layout.dialog_fragment_reminder_threhold_amount, null, false);
+        View contentView = LayoutInflater.from(context).inflate(R.layout.dialog_fragment_reminder_threshold_amount, null, false);
         baseDialog.setContentView(contentView);
         setFullWidthEnable(true);
         setGravity(Gravity.BOTTOM);

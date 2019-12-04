@@ -10,6 +10,10 @@ public class Constants {
         int TRANSACTION_STATUS_LOOP_TIME = 2000;
         //交易列表轮询时间
         int TRANSCTION_LIST_LOOP_TIME = 10000;
+        /**
+         * 重复交易超时时间
+         */
+        int TRANSACTION_TIMEOUT_WITH_MILLISECOND = 2 * 60 * 60 * 1000;
 
     }
 
@@ -161,8 +165,8 @@ public class Constants {
     public interface DBName {
         //数据库名称
         String PORTAL = "portal";
-        //2019/11/27 0.7.4
-        int VERSION = 107;
+        //2019/12/04 0.7.5
+        int VERSION = 108;
     }
 
     public interface DelegateRecordType {

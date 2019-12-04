@@ -17,6 +17,7 @@ import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.component.widget.ShadowDrawable;
+import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
@@ -61,12 +62,11 @@ public class SendTransactionDialogFragment extends BaseDialogFragment {
         return this;
     }
 
-    public static SendTransactionDialogFragment newInstance(String title, String amount, String confirmText, Map<String, String> map) {
+    public static SendTransactionDialogFragment newInstance(String title, String amount, Map<String, String> map) {
         SendTransactionDialogFragment dialogFragment = new SendTransactionDialogFragment();
         Bundle bundle = new Bundle();
         bundle.putString(Constants.Bundle.BUNDLE_TRANSFER_AMOUNT, amount);
         bundle.putString(Constants.Bundle.BUNDLE_TEXT, title);
-        bundle.putString(Constants.Bundle.BUNDLE_CONFIRM_TEXT, confirmText);
         bundle.putSerializable(Constants.Bundle.BUNDLE_MAP, (Serializable) map);
         dialogFragment.setArguments(bundle);
         return dialogFragment;
@@ -98,7 +98,7 @@ public class SendTransactionDialogFragment extends BaseDialogFragment {
 
         String title = getArguments().getString(Constants.Bundle.BUNDLE_TEXT);
         String amount = getArguments().getString(Constants.Bundle.BUNDLE_TRANSFER_AMOUNT);
-        String confirmText = getArguments().getString(Constants.Bundle.BUNDLE_CONFIRM_TEXT);
+        String confirmText = WalletManager.getInstance().getSelectedWallet().isObservedWallet() ? getString(R.string.next) : getString(R.string.action_send_transation);
 
         if (!TextUtils.isEmpty(title)){
             tvTitle.setText(title);
