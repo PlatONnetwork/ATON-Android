@@ -94,6 +94,7 @@ public class AppFramework {
 
         @Override
         public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
+
             RealmSchema schema = realm.getSchema();
 
             if (oldVersion == 106) {
@@ -160,15 +161,15 @@ public class AppFramework {
                     //0.6.2.0-->0.7.5.0 增加TransactionRecordEntity
                     schema.create("TransactionRecordEntity")
                             .addField("timeStamp", long.class, FieldAttribute.PRIMARY_KEY)
-                            .addField("from", int.class)
+                            .addField("from", String.class)
                             .addField("to", String.class)
                             .addField("value", String.class);
                 }
-            } else if (oldVersion == 107 && newVersion == 108) {
+            } else if (oldVersion == 107) {
                 //0.7.4.0-->0.7.5.0 增加TransactionRecordEntity
                 schema.create("TransactionRecordEntity")
                         .addField("timeStamp", long.class, FieldAttribute.PRIMARY_KEY)
-                        .addField("from", int.class)
+                        .addField("from", String.class)
                         .addField("to", String.class)
                         .addField("value", String.class);
             }

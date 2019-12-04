@@ -87,9 +87,9 @@ android {
     buildTypes {
         debug {
             debuggable true
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.releaseC
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
+            buildConfigField("String", "RELEASE_TYPE", "${releaseTypeX}")
             multiDexEnabled true
             testCoverageEnabled true  //打开覆盖率统计开关
         }
