@@ -702,5 +702,7 @@
     <string name="msg_share_success">Share success</string>
     <string name="msg_share_failed">Share failed</string>
     <string name="msg_share_cancelled">Share cancelled</string>
+
+    <string name="msg_large_transaction_reminder">Send more than %1$s LAT, Confirm sending?</string>
 </resources>
 

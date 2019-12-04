@@ -1,7 +1,11 @@
 package com.juzix.wallet.component.ui.presenter;
 
 import android.annotation.SuppressLint;
+import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.view.View;
 
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
@@ -15,12 +19,15 @@ import com.juzix.wallet.app.CustomThrowable;
 import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.SendTransationContract;
+import com.juzix.wallet.component.ui.dialog.CommonTipsDialogFragment;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
+import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
 import com.juzix.wallet.component.ui.dialog.SendTransactionDialogFragment;
 import com.juzix.wallet.component.ui.dialog.TransactionAuthorizationDialogFragment;
 import com.juzix.wallet.component.ui.dialog.TransactionSignatureDialogFragment;
 import com.juzix.wallet.component.ui.view.AssetsFragment;
 import com.juzix.wallet.component.ui.view.MainActivity;
+import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.db.entity.AddressEntity;
 import com.juzix.wallet.db.entity.WalletEntity;
 import com.juzix.wallet.db.sqlite.AddressDao;
@@ -39,6 +46,7 @@ import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
 import com.juzix.wallet.utils.RxUtils;
+import com.juzix.wallet.utils.StringUtil;
 import com.juzix.wallet.utils.ToastUtil;
 import com.trello.rxlifecycle2.android.FragmentEvent;
 
@@ -97,7 +105,6 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
 
     private String feeAmount;
     //刷新时间
-    private Disposable mDisposable;
     private Wallet walletEntity;
     private String toAddress;
 
@@ -123,10 +130,6 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
         walletEntity = WalletManager.getInstance().getSelectedWallet();
         if (walletEntity == null) {
             return;
-        }
-
-        if (mDisposable != null && !mDisposable.isDisposed()) {
-            mDisposable.dispose();
         }
 
         getAccountBalance(walletEntity.getPrefixAddress());
@@ -168,7 +171,6 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                     @Override
                     public void accept(BigInteger bigInteger) throws Exception {
                         if (isViewAttached()) {
-                            LogUtils.e("gasPrice 为：" + bigInteger.toString());
                             initGasPrice(bigInteger);
                             setDefaultProgress();
                             setDefaultFeeAmount();
@@ -258,33 +260,24 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                 return;
             }
 
-            String fromWallet = String.format("%s(%s)", walletEntity.getName(), AddressFormatUtil.formatTransactionAddress(walletEntity.getPrefixAddress()));
-            String fee = NumberParserUtils.getPrettyBalance(feeAmount);
-            String confirmText = WalletManager.getInstance().getSelectedWallet().isObservedWallet() ? string(R.string.next) : string(R.string.action_send_transation);
-
-            getWalletNameFromAddress(toAddress)
-                    .compose(RxUtils.getSingleSchedulerTransformer())
-                    .compose(bindToLifecycle())
-                    .subscribe(new Consumer<String>() {
-                        @Override
-                        public void accept(String s) throws Exception {
-                            if (isViewAttached()) {
-                                SendTransactionDialogFragment
-                                        .newInstance(string(R.string.send_transaction), NumberParserUtils.getPrettyBalance(transferAmount), confirmText, buildSendTransactionInfo(fromWallet, s, fee))
-                                        .setOnConfirmBtnClickListener(new SendTransactionDialogFragment.OnConfirmBtnClickListener() {
-                                            @Override
-                                            public void onConfirmBtnClick() {
-                                                if (WalletManager.getInstance().getSelectedWallet().isObservedWallet()) {
-                                                    showTransactionAuthorizationDialogFragment(BigDecimalUtil.mul(transferAmount, "1E18").toPlainString(), walletEntity.getPrefixAddress(), toAddress, gasLimit.toString(10), gasPrice.toString(10));
-                                                } else {
-                                                    showInputWalletPasswordDialogFragment(transferAmount, fee, toAddress);
-                                                }
-                                            }
-                                        })
-                                        .show(currentActivity().getSupportFragmentManager(), "sendTransaction");
+            if (BigDecimalUtil.isBigger(transferAmount, AppSettings.getInstance().getReminderThresholdAmount())) {
+                CommonTipsDialogFragment.createDialogWithTwoButton(ContextCompat.getDrawable(currentActivity(), R.drawable.icon_dialog_tips),
+                        string(R.string.msg_large_transaction_reminder, StringUtil.formatBalanceWithoutMinFraction(AppSettings.getInstance().getReminderThresholdAmount())),
+                        string(R.string.confirm), new OnDialogViewClickListener() {
+                            @Override
+                            public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
+                                sendTransaction(toAddress, transferAmount);
                             }
-                        }
-                    });
+                        }, string(R.string.cancel), new OnDialogViewClickListener() {
+                            @Override
+                            public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
+                                fragment.dismiss();
+                            }
+                        }).show(currentActivity().getSupportFragmentManager(), "showLargeTransactionReminderDialogFragment");
+            } else {
+                sendTransaction(toAddress, transferAmount);
+            }
+
         }
     }
 
@@ -333,6 +326,37 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
         } else {
             getView().setSaveAddressButtonEnable(false);
         }
+    }
+
+    private void sendTransaction(String toAddress, String transferAmount) {
+
+        String fromWallet = String.format("%s(%s)", walletEntity.getName(), AddressFormatUtil.formatTransactionAddress(walletEntity.getPrefixAddress()));
+        String fee = NumberParserUtils.getPrettyBalance(feeAmount);
+        String confirmText = WalletManager.getInstance().getSelectedWallet().isObservedWallet() ? string(R.string.next) : string(R.string.action_send_transation);
+
+        getWalletNameFromAddress(toAddress)
+                .compose(RxUtils.getSingleSchedulerTransformer())
+                .compose(bindToLifecycle())
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String s) throws Exception {
+                        if (isViewAttached()) {
+                            SendTransactionDialogFragment
+                                    .newInstance(string(R.string.send_transaction), NumberParserUtils.getPrettyBalance(transferAmount), confirmText, buildSendTransactionInfo(fromWallet, s, fee))
+                                    .setOnConfirmBtnClickListener(new SendTransactionDialogFragment.OnConfirmBtnClickListener() {
+                                        @Override
+                                        public void onConfirmBtnClick() {
+                                            if (WalletManager.getInstance().getSelectedWallet().isObservedWallet()) {
+                                                showTransactionAuthorizationDialogFragment(BigDecimalUtil.mul(transferAmount, "1E18").toPlainString(), walletEntity.getPrefixAddress(), toAddress, gasLimit.toString(10), gasPrice.toString(10));
+                                            } else {
+                                                showInputWalletPasswordDialogFragment(transferAmount, fee, toAddress);
+                                            }
+                                        }
+                                    })
+                                    .show(currentActivity().getSupportFragmentManager(), "sendTransaction");
+                        }
+                    }
+                });
     }
 
     /**

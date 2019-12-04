@@ -45,8 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:visibility="gone">
+            android:orientation="horizontal">
 
             <TextView
                 style="@style/Text.000.16"
@@ -70,8 +69,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:visibility="gone">
+            android:orientation="horizontal">
 
             <TextView
                 style="@style/Text.000.16"
@@ -86,7 +84,7 @@
                 android:id="@+id/tgb_resend_reminder"
                 android:layout_width="51dp"
                 android:layout_height="31dp"
-                app:tbAsDefaultOn="false"
+                app:tbAsDefaultOn="true"
                 app:tbOffColor="@color/color_ffffff"
                 app:tbOnColor="@color/color_4cd964" />
 

@@ -32,7 +32,6 @@
         android:paddingRight="16dp"
         android:showDividers="middle">
 
-
         <TextView
             android:id="@+id/tv_switch_chinese"
             style="@style/Text.000.16"
