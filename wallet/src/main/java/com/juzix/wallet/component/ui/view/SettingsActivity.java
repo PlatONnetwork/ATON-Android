@@ -17,10 +17,12 @@ import com.juzix.biometric.BiometricPromptCompat;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.BaseActivity;
+import com.juzix.wallet.component.ui.dialog.ReminderThresholdAmountDialogFragment;
 import com.juzix.wallet.component.widget.togglebutton.ToggleButton;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.utils.LanguageUtil;
 import com.juzix.wallet.utils.RxUtils;
+import com.juzix.wallet.utils.StringUtil;
 
 import java.util.Locale;
 
@@ -85,7 +87,7 @@ public class SettingsActivity extends BaseActivity {
             layoutFaceTouchId.setVisibility(View.VISIBLE);
         }
 
-        tvReminderThresholdAmount.setText(String.format("%d LAT", AppSettings.getInstance().getReminderThresholdAmount()));
+        tvReminderThresholdAmount.setText(getString(R.string.amount_with_unit, StringUtil.formatBalanceWithoutMinFraction(AppSettings.getInstance().getReminderThresholdAmount())));
 
         tgbSwitch.setOnToggleChanged(new ToggleButton.OnToggleChanged() {
             @Override
@@ -124,6 +126,24 @@ public class SettingsActivity extends BaseActivity {
                     @Override
                     public void accept(Object object) {
                         SwitchLanguageActivity.actionStart(getContext());
+                    }
+                });
+
+        RxView.clicks(layoutLargeTransactionReminder)
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        ReminderThresholdAmountDialogFragment.newInstance(AppSettings.getInstance().getReminderThresholdAmount())
+                                .setOnReminderThresholdAmountItemClickListener(new ReminderThresholdAmountDialogFragment.OnReminderThresholdAmountItemClickListener() {
+                                    @Override
+                                    public void onReminderThresholdAmountItemClick(String reminderThresholdAmount) {
+                                        AppSettings.getInstance().setReminderThresholdAmount(reminderThresholdAmount);
+                                        tvReminderThresholdAmount.setText(getString(R.string.amount_with_unit, StringUtil.formatBalanceWithoutMinFraction(reminderThresholdAmount)));
+                                    }
+                                })
+                                .show(getSupportFragmentManager(), "showReminderThresholdAmountDialogFragment");
                     }
                 });
 

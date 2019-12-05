@@ -13,6 +13,9 @@ import io.realm.RealmResults;
  */
 public class NodeDao {
 
+    private NodeDao() {
+    }
+
     public static boolean insertNode(NodeEntity nodeInfoEntity) {
 
         Realm realm = null;

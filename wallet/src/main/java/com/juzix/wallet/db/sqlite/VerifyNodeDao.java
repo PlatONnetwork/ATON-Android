@@ -11,6 +11,9 @@ import io.realm.Sort;
 
 public class VerifyNodeDao {
 
+    private VerifyNodeDao() {
+    }
+
     public static List<VerifyNodeEntity> getVerifyNodeDataByState(String state, int ranking) {
         List<VerifyNodeEntity> list = new ArrayList<>();
         Realm realm = null;

@@ -10,6 +10,10 @@ import io.realm.RealmResults;
 
 public class AddressDao {
 
+    private AddressDao(){
+
+    }
+
     public static List<AddressEntity> getAddressInfoList() {
         List<AddressEntity> list = new ArrayList<>();
         Realm realm = null;
