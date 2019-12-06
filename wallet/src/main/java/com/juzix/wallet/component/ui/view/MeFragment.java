@@ -15,6 +15,7 @@ import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.BaseFragment;
 import com.juzix.wallet.entity.WebType;
 import com.juzix.wallet.utils.RxUtils;
+import com.meituan.android.walle.WalleChannelReader;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -53,6 +54,7 @@ public class MeFragment extends BaseFragment {
     }
 
     private void init() {
+
         RxView.clicks(layoutWalletManage)
                 .compose(RxUtils.getClickTransformer())
                 .compose(RxUtils.bindToLifecycle(this))
