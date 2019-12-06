@@ -7,12 +7,15 @@ import android.content.Intent;
 import com.juzhen.framework.network.NetConnectivity;
 import com.juzhen.framework.network.NetState;
 import com.juzhen.framework.util.RUtils;
+import com.juzix.wallet.BuildConfig;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.config.JZAppConfigure;
+import com.juzix.wallet.engine.DeviceManager;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
+import com.meituan.android.walle.WalleChannelReader;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -58,12 +61,14 @@ public class AppFramework {
         NetConnectivity.getConnectivityManager().registerNetworkStateChange(new NetStateBroadcastReceiver());
         //初始化realm
         initRealm(context);
-        //初始化节点配置
-        NodeManager.getInstance().init();
-        //初始化RUtils
-        RUtils.init(context);
         //初始化偏好设置
         AppSettings.getInstance().init(context);
+        //初始化节点配置
+        NodeManager.getInstance().init();
+        //初始化DeviceManager
+        DeviceManager.getInstance().init(context, WalleChannelReader.getChannel(context));
+        //初始化RUtils
+        RUtils.init(context);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -310,7 +315,7 @@ public class AppFramework {
                         .transform(new RealmObjectSchema.Function() {
                             @Override
                             public void apply(DynamicRealmObject obj) {
-                                obj.getDynamicRealm().where("WalletEntity").equalTo("chainId", "103").findAll().setString("chainId", "100");
+                                obj.getDynamicRealm().where("WalletEntity").equalTo("chainId", "103").findAll().setString("chainId", BuildConfig.ID_MAIN_CHAIN);
                             }
                         });
 

@@ -51,7 +51,6 @@ android {
             storePassword "123456"
             keyAlias "wallet"
             keyPassword "123456"
-
             v2SigningEnabled false
         }
 
@@ -60,7 +59,6 @@ android {
             storePassword "123456"
             keyAlias "wallet"
             keyPassword "123456"
-
             v2SigningEnabled false
         }
 
@@ -69,7 +67,6 @@ android {
             storePassword "123456"
             keyAlias "wallet"
             keyPassword "123456"
-
             v2SigningEnabled false
         }
 
@@ -78,7 +75,6 @@ android {
             storePassword "123456"
             keyAlias "wallet"
             keyPassword "123456"
-
             v2SigningEnabled false
         }
     }
@@ -273,6 +269,7 @@ dependencies {
     implementation rootProject.ext.dependencies["junit"]
     implementation rootProject.ext.dependencies["twitter-core"]
     implementation rootProject.ext.dependencies["twitter-composer"]
+    implementation rootProject.ext.dependencies["walle"]
     //mockito
     testImplementation 'org.mockito:mockito-core:2.19.0'
     //powermock

@@ -60,9 +60,20 @@
         android:layout_height="20dp"
         android:layout_marginTop="5dp"
         android:background="@color/color_f9fbff"
-        android:paddingLeft="8dp"
         android:paddingRight="8dp">
 
+
+        <ImageView
+            android:id="@+id/iv_contract_to_tag"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_marginLeft="2dp"
+            android:src="@drawable/icon_contract_to_tag"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
 
         <ImageView
             android:id="@+id/iv_copy_to_address"
@@ -77,6 +88,7 @@
             android:id="@+id/tv_to_address"
             style="@style/Text.898c9e.12"
             android:layout_width="0dp"
+            android:layout_marginLeft="2dp"
             android:ellipsize="end"
             android:gravity="left|center_vertical"
             android:lines="1"
@@ -86,10 +98,11 @@
             app:autoSizeTextType="uniform"
             app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/iv_contract_to_tag"
             app:layout_constraintRight_toLeftOf="@id/iv_copy_to_address"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="ox2ce481566f3a19c04A206A72fF4" />
+            app:layout_goneMarginLeft="8dp"
+            tools:text="ox2ce481566f3a19c04A206A72fF4ox2ce481566f3a19c04A206A72fF4ox2ce481566f3a19c04A206A72fF4" />
 
 
     </android.support.constraint.ConstraintLayout>

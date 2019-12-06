@@ -12,8 +12,9 @@ buildscript {
 
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.2'
-        classpath 'io.realm:realm-gradle-plugin:5.8.0'
+        classpath 'io.realm:realm-gradle-plugin:6.0.1'
         classpath("org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6-rc1")
+        classpath 'com.meituan.android.walle:plugin:1.1.6'
     }
 
 }

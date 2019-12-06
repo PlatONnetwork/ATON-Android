@@ -126,7 +126,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
                     @Override
                     public void accept(Permission permission) {
                         if (isViewAttached()) {
-                            if (permission.granted && Manifest.permission.ACCESS_COARSE_LOCATION.equals(permission.name)) {
+                            if (permission.granted && Manifest.permission.WRITE_EXTERNAL_STORAGE.equals(permission.name)) {
                                 mVersionUpdate.execute();
                             }
                         }
