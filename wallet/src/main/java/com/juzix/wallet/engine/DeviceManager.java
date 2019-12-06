@@ -89,7 +89,7 @@ public class DeviceManager {
     }
 
     public String getChannel() {
-        return TextUtils.isEmpty(channel) ? "ruiqi" : channel;
+        return TextUtils.isEmpty(channel) ? "PlatONNetwork" : channel;
     }
 
     //获取版本名
