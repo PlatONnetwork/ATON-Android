@@ -9,6 +9,7 @@ import android.util.AttributeSet;
  * @author matrixelement
  */
 public class WrapContentLinearLayoutManager extends LinearLayoutManager {
+
     public WrapContentLinearLayoutManager(Context context) {
         super(context);
     }

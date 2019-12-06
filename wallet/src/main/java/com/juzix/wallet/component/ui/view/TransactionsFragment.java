@@ -16,6 +16,7 @@ import com.juzix.wallet.component.ui.base.BaseViewPageFragment;
 import com.juzix.wallet.component.ui.contract.TransactionsContract;
 import com.juzix.wallet.component.ui.presenter.TransactionsPresenter;
 import com.juzix.wallet.component.widget.CommonVerticalItemDecoration;
+import com.juzix.wallet.component.widget.WrapContentLinearLayoutManager;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
@@ -66,10 +67,10 @@ public class TransactionsFragment extends BaseViewPageFragment<TransactionsPrese
 
     private void initViews() {
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+        WrapContentLinearLayoutManager wrapContentLinearLayoutManager = new WrapContentLinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         mTransactionListAdapter = new TransactionListAdapter(getContext());
         listTransaction.addItemDecoration(new CommonVerticalItemDecoration(getContext(), R.drawable.bg_transation_list_divider));
-        listTransaction.setLayoutManager(linearLayoutManager);
+        listTransaction.setLayoutManager(wrapContentLinearLayoutManager);
         //解决数据加载完成后, 没有停留在顶部的问题
         listTransaction.setFocusable(false);
         listTransaction.setAdapter(mTransactionListAdapter);

@@ -52,7 +52,7 @@
                 android:layout_width="match_parent"
                 android:gravity="left|center_vertical"
                 android:textStyle="bold"
-                tools:text="Wallet name " />
+                tools:text="Wallet name Wallet name Wallet name Wallet name " />
 
             <TextView
                 android:id="@+id/tv_wallet_logo"

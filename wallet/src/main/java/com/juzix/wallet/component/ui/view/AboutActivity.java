@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -20,11 +21,13 @@ import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.dialog.CommonTipsDialogFragment;
 import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
+import com.juzix.wallet.engine.DeviceManager;
 import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.VersionUpdate;
 import com.juzix.wallet.entity.VersionInfo;
 import com.juzix.wallet.entity.WebType;
 import com.juzix.wallet.utils.RxUtils;
+import com.meituan.android.walle.WalleChannelReader;
 import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
@@ -48,6 +51,8 @@ public class AboutActivity extends BaseActivity {
     View vNewMsg;
     @BindView(R.id.tv_privacy_policy)
     TextView tvPrivacyPolicy;
+    @BindView(R.id.iv_logo)
+    ImageView ivLogo;
 
     private Unbinder unbinder;
     private VersionUpdate mVersionUpdate;
@@ -73,6 +78,16 @@ public class AboutActivity extends BaseActivity {
             versionName = "v" + versionName;
         vNewMsg.setVisibility(View.GONE);
         tvUpdate.setText(string(R.string.current_version, versionName));
+
+        RxView
+                .longClicks(ivLogo)
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        showLongToast(DeviceManager.getInstance().getChannel());
+                    }
+                });
 
         RxView.clicks(tvAboutUs)
                 .compose(RxUtils.getClickTransformer())
@@ -179,10 +194,7 @@ public class AboutActivity extends BaseActivity {
 
                         tvUpdate.setText(string(R.string.latest_version, newVersion));
                         vNewMsg.setVisibility(View.VISIBLE);
-//                        if (VersionManager.getInstance().isDownloading(versionInfo.getDownloadUrl())) {
-//                            showLongToast(string(R.string.download_tips));
-//                            return;
-//                        }
+
                         showUpdateVersionDialog(versionInfo);
                     }
 
@@ -208,8 +220,8 @@ public class AboutActivity extends BaseActivity {
                                 .requestEach(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                                 .subscribe(new CustomObserver<Permission>() {
                                     @Override
-                                    public void accept(Permission permission){
-                                        if (permission.granted && Manifest.permission.ACCESS_COARSE_LOCATION.equals(permission.name)) {
+                                    public void accept(Permission permission) {
+                                        if (permission.granted && Manifest.permission.WRITE_EXTERNAL_STORAGE.equals(permission.name)) {
                                             mVersionUpdate.execute();
                                         }
                                     }
