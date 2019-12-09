@@ -252,8 +252,6 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                         @Override
                         public void call(GasProvider gasProvider) {
                             gasLimit = gasProvider.getGasLimit();
-                            Log.d("gaslimit", "========getAllPrice========" + "limit" + gasLimit + "gasprice ========" + gasPrice);
-                            Log.d("gasprovide", "========getAllPrice======" + gasProvider.getGasLimit());
                             BigDecimal mul = BigDecimalUtil.mul(gasProvider.getGasLimit().toString(), gasPrice.toString());
                             feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(mul.toString(), "1E18"));
                             getView().showAllGasPrice(stakingAmountType, feeAmount);
