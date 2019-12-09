@@ -41,6 +41,7 @@ import com.juzix.wallet.utils.PhotoUtil;
 import com.juzix.wallet.utils.QRCodeDecoder;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.ToastUtil;
+import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.io.File;

@@ -1,5 +1,7 @@
 package com.juzix.wallet.engine;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.DownloadManager;
 import android.app.DownloadManager.Request;
 import android.content.BroadcastReceiver;
@@ -12,13 +14,20 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.FileProvider;
 import android.webkit.MimeTypeMap;
 
 import com.juzhen.framework.app.log.Log;
+import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.config.AppSettings;
+import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.ToastUtil;
+import com.tbruyelle.rxpermissions2.Permission;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.io.File;
 
@@ -136,9 +145,32 @@ public class VersionUpdate {
      * @param context
      */
     private void installProxy(Context context) {
+
         unregisterReceiver(context);
 
-        install(context, apkFilePath);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            //来判断应用是否有权限安装apk
+            boolean installAllowed = context.getPackageManager().canRequestPackageInstalls();
+            //有权限
+            if (installAllowed) {
+                //安装apk
+                install(context, apkFilePath);
+            } else {
+                new RxPermissions((FragmentActivity) mContext)
+                        .requestEach(Manifest.permission.REQUEST_INSTALL_PACKAGES)
+                        .subscribe(new CustomObserver<Object>() {
+                            @Override
+                            public void accept(Object object) {
+                                Permission permission = (Permission) object;
+                                if (permission.granted) {
+                                    install(context, apkFilePath);
+                                }
+                            }
+                        });
+            }
+        } else {
+            install(context, apkFilePath);
+        }
         if (isForceUpdate) {
             System.exit(0);
         }
@@ -168,17 +200,21 @@ public class VersionUpdate {
      * @return
      */
     private boolean install(Context context, String filePath) {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        File file = new File(filePath);
+
+        //7.0以上通过FileProvider
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            Uri contentUri = FileProvider.getUriForFile(context, "com.juzix.wallet.fileprovider", new File(filePath));
-            intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
-        } else {
-            intent.setDataAndType(Uri.fromFile(new File(filePath)), "application/vnd.android.package-archive");
+            Uri uri = FileProvider.getUriForFile(context, "com.juzix.wallet.fileprovider", new File(filePath));
+            Intent intent = new Intent(Intent.ACTION_VIEW).setDataAndType(uri, "application/vnd.android.package-archive");
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            context.startActivity(intent);
+        } else {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setDataAndType(Uri.fromFile(new File(filePath)), "application/vnd.android.package-archive");
+            context.startActivity(intent);
         }
-        context.startActivity(intent);
+
         return false;
     }
 
