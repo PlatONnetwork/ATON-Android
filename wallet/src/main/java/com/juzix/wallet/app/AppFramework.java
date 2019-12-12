@@ -98,188 +98,11 @@ public class AppFramework {
 
         @Override
         public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
+
             RealmSchema schema = realm.getSchema();
 
-            if (oldVersion == 104) {
-
-                schema.get("IndividualTransactionInfoEntity")
-                        .addField("completed", boolean.class)
-                        .addField("value", double.class)
-                        .addField("nodeAddress", String.class)
-                        .transform(new RealmObjectSchema.Function() {
-                            @Override
-                            public void apply(DynamicRealmObject obj) {
-                                obj.getDynamicRealm().where("IndividualTransactionInfoEntity").findAll().deleteAllFromRealm();
-                            }
-                        });
-
-                schema.get("IndividualWalletInfoEntity")
-                        .addField("mnemonic", String.class)
-                        .addField("nodeAddress", String.class)
-                        .transform(new RealmObjectSchema.Function() {
-                            @Override
-                            public void apply(DynamicRealmObject obj) {
-                                obj.set("nodeAddress", "https://test-amigo.platon.network/test");
-                            }
-                        });
-
-                schema.get("OwnerInfoEntity")
-                        .addField("nodeAddress", String.class)
-                        .transform(new RealmObjectSchema.Function() {
-                            @Override
-                            public void apply(DynamicRealmObject obj) {
-                                obj.getDynamicRealm().where("OwnerInfoEntity").findAll().deleteAllFromRealm();
-                            }
-                        });
-
-                schema.get("NodeInfoEntity")
-                        .transform(new RealmObjectSchema.Function() {
-                            @Override
-                            public void apply(DynamicRealmObject obj) {
-                                obj.getDynamicRealm().where("NodeInfoEntity").findAll().deleteAllFromRealm();
-                            }
-                        });
-
-                schema.get("RegionInfoEntity")
-                        .removeField("uuid")
-                        .addPrimaryKey("ip")
-                        .addField("nodeAddress", String.class)
-                        .transform(new RealmObjectSchema.Function() {
-                            @Override
-                            public void apply(DynamicRealmObject obj) {
-                                obj.getDynamicRealm().where("RegionInfoEntity").findAll().deleteAllFromRealm();
-                            }
-                        });
-
-                schema.get("SharedTransactionInfoEntity")
-                        .removeField("transactionResult")
-                        .addField("transactionResult", String.class)
-                        .addField("nodeAddress", String.class)
-                        .transform(new RealmObjectSchema.Function() {
-                            @Override
-                            public void apply(DynamicRealmObject obj) {
-                                obj.getDynamicRealm().where("SharedTransactionInfoEntity").findAll().deleteAllFromRealm();
-                            }
-                        });
-
-                schema.get("SharedWalletInfoEntity")
-                        .renameField("walletAddress", "creatorAddress")
-                        .addField("nodeAddress", String.class)
-                        .transform(new RealmObjectSchema.Function() {
-                            @Override
-                            public void apply(DynamicRealmObject obj) {
-                                obj.getDynamicRealm().where("SharedWalletInfoEntity").findAll().deleteAllFromRealm();
-                            }
-                        });
-
-                schema.get("SingleVoteInfoEntity")
-                        .removeField("avatar")
-                        .addField("nodeAddress", String.class)
-                        .transform(new RealmObjectSchema.Function() {
-                            @Override
-                            public void apply(DynamicRealmObject obj) {
-                                obj.getDynamicRealm().where("SingleVoteInfoEntity").findAll().deleteAllFromRealm();
-                            }
-                        });
-
-                schema.get("SharedWalletOwnerInfoEntity")
-                        .addField("nodeAddress", String.class)
-                        .transform(new RealmObjectSchema.Function() {
-                            @Override
-                            public void apply(DynamicRealmObject obj) {
-                                obj.getDynamicRealm().where("SharedWalletOwnerInfoEntity").findAll().deleteAllFromRealm();
-                            }
-                        });
-
-                schema.get("TicketInfoEntity")
-                        .addField("nodeAddress", String.class)
-                        .transform(new RealmObjectSchema.Function() {
-                            @Override
-                            public void apply(DynamicRealmObject obj) {
-                                obj.getDynamicRealm().where("TicketInfoEntity").findAll().deleteAllFromRealm();
-                            }
-                        });
-
-                schema.remove("TransactionInfoResult");
-
-                schema.create("CandidateInfoEntity")
-                        .addField("candidateId", String.class, FieldAttribute.PRIMARY_KEY)
-                        .addField("deposit", String.class)
-                        .addField("blockNumber", long.class)
-                        .addField("owner", String.class)
-                        .addField("txIndex", int.class)
-                        .addField("from", String.class)
-                        .addField("fee", int.class)
-                        .addField("host", String.class)
-                        .addField("port", String.class)
-                        .addField("txHash", String.class)
-                        .addField("extra", String.class)
-                        .addField("nodeAddress", String.class)
-                        .addField("candidateName", String.class);
-                oldVersion++;
-            } else if (oldVersion == 105) {
-                //删除联名钱包交易记录
-                schema.remove("SharedTransactionInfoEntity");
-                //删除联名钱包记录
-                schema.remove("SharedWalletInfoEntity");
-                //删除联名钱包SharedWalletOwnerInfoEntity
-                schema.remove("SharedWalletOwnerInfoEntity");
-                //删除节点数据
-                schema.remove("CandidateInfoEntity");
-                //删除区域信息数据
-                schema.remove("RegionInfoEntity");
-                //删除投票信息数据
-                schema.remove("SingleVoteInfoEntity");
-                //刪除票数据库
-                schema.remove("TicketInfoEntity");
-                //删除联名钱包OwnerInfoEntity
-                schema.remove("OwnerInfoEntity");
-                //增加普通钱包数据库字段
-                schema.get("IndividualTransactionInfoEntity")
-                        .removeField("uuid")
-                        .addPrimaryKey("hash")
-                        .removeField("completed")
-                        .removeField("memo")
-                        .addField("txType", String.class)
-                        .addField("txReceiptStatus", String.class)
-                        .addField("chainId", String.class)
-                        .addField("actualTxCost", String.class)
-                        .addField("txInfo", String.class)
-                        .transform(new RealmObjectSchema.Function() {
-                            @Override
-                            public void apply(DynamicRealmObject obj) {
-//                                obj.set("chainId", NodeManager.getInstance().getChainId(obj.get("nodeAddress")));
-                            }
-                        })
-                        .removeField("nodeAddress");
-
-                schema.get("IndividualWalletInfoEntity")
-                        .addField("chainId", String.class)
-                        .transform(new RealmObjectSchema.Function() {
-                            @Override
-                            public void apply(DynamicRealmObject obj) {
-//                                obj.set("chainId", NodeManager.getInstance().getChainId(obj.get("nodeAddress")));
-                            }
-                        })
-                        .removeField("nodeAddress");
-
-                //修改数据库名称
-                schema.rename("IndividualTransactionInfoEntity", "TransactionEntity");
-                schema.rename("IndividualWalletInfoEntity", "WalletEntity");
-                //todo数据库字段修改
-                schema.rename("AddressInfoEntity", "AddressEntity");
-                schema.rename("NodeInfoEntity", "NodeEntity");
-
-                schema.get("NodeEntity")
-                        .transform(new RealmObjectSchema.Function() {
-                            @Override
-                            public void apply(DynamicRealmObject obj) {
-                                obj.getDynamicRealm().where("NodeEntity").findAll().deleteAllFromRealm();
-                            }
-                        });
-                oldVersion++;
-            } else if (oldVersion == 106) {
-
+            if (oldVersion == 106) {
+                //0.6.2.0-->0.7.4.0或者0.7.4.1
                 schema.get("NodeEntity")
                         .addField("chainId", String.class)
                         .transform(new RealmObjectSchema.Function() {
@@ -291,7 +114,8 @@ public class AppFramework {
 
                 //修改transactionStatus 从string到int
                 schema.get("TransactionEntity")
-                        .addField("txReceiptStatus_temp", Integer.class).setRequired("txReceiptStatus_temp", true)
+                        .addField("txReceiptStatus_temp", Integer.class)
+                        .setRequired("txReceiptStatus_temp", true)
                         .transform(new RealmObjectSchema.Function() {
                             @Override
                             public void apply(DynamicRealmObject obj) {
@@ -306,7 +130,11 @@ public class AppFramework {
                         .transform(new RealmObjectSchema.Function() {
                             @Override
                             public void apply(DynamicRealmObject obj) {
-                                obj.getDynamicRealm().where("WalletEntity").equalTo("chainId", "104").findAll().deleteAllFromRealm();
+                                obj.getDynamicRealm()
+                                        .where("WalletEntity")
+                                        .equalTo("chainId", "104")
+                                        .findAll()
+                                        .deleteAllFromRealm();
                             }
                         });
 
@@ -315,7 +143,11 @@ public class AppFramework {
                         .transform(new RealmObjectSchema.Function() {
                             @Override
                             public void apply(DynamicRealmObject obj) {
-                                obj.getDynamicRealm().where("WalletEntity").equalTo("chainId", "103").findAll().setString("chainId", BuildConfig.ID_MAIN_CHAIN);
+                                obj.getDynamicRealm()
+                                        .where("WalletEntity")
+                                        .equalTo("chainId", "103")
+                                        .findAll()
+                                        .setString("chainId", BuildConfig.ID_MAIN_CHAIN);
                             }
                         });
 
