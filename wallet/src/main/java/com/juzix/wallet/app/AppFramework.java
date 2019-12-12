@@ -7,6 +7,7 @@ import android.content.Intent;
 import com.juzhen.framework.network.NetConnectivity;
 import com.juzhen.framework.network.NetState;
 import com.juzhen.framework.util.RUtils;
+import com.juzix.wallet.BuildConfig;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.config.JZAppConfigure;
 import com.juzix.wallet.engine.DeviceManager;
@@ -160,6 +161,8 @@ public class AppFramework {
                         .addField("ratePA", long.class)
                         .addField("nodeStatus", String.class)
                         .addField("isInit", boolean.class);
+
+                oldVersion++;
             }
         }
     }
