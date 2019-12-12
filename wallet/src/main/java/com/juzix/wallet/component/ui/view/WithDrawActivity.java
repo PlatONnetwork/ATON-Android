@@ -44,6 +44,7 @@ import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.entity.WithDrawType;
 import com.juzix.wallet.utils.AddressFormatUtil;
+import com.juzix.wallet.utils.AmountUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.GlideUtils;
@@ -189,7 +190,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
                             chooseType = WithDrawPopWindowAdapter.TAG_RELEASED; //已解除
                         }
 
-                        if (BigDecimalUtil.sub(freeAccount, withdrawFee) < 0) { //赎回时，自用金额必须大于手续费，才能赎回
+                        if (BigDecimalUtil.sub(freeAccount, withdrawFee).doubleValue() < 0) { //赎回时，自用金额必须大于手续费，才能赎回
                             ToastUtil.showLongToast(getContext(), R.string.withdraw_less_than_fee);
                             return;
                         }
@@ -286,8 +287,8 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
 
             if (!TextUtils.isEmpty(s.toString()) && !TextUtils.equals(s.toString(), ".")) {
 
-                if (BigDecimalUtil.sub(delegateAmount.getText().toString().replaceAll(",", ""), s.toString()) > 0) {
-                    if (BigDecimalUtil.sub(delegateAmount.getText().toString().replaceAll(",", ""), s.toString()) < mPresenter.getMinDelegationAmount()) {
+                if (BigDecimalUtil.sub(delegateAmount.getText().toString().replaceAll(",", ""), s.toString()).doubleValue() > 0) {
+                    if (BigDecimalUtil.sub(delegateAmount.getText().toString().replaceAll(",", ""), s.toString()).doubleValue() < mPresenter.getMinDelegationAmount()) {
                         withdrawAmount.setText(delegateAmount.getText().toString().replaceAll(",", ""));
                         withdrawAmount.setSelection(delegateAmount.getText().toString().replaceAll(",", "").length());
                     }
@@ -304,11 +305,11 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     };
 
     @Override
-    public void showSelectedWalletInfo(Wallet individualWalletEntity) {
-        walletName.setText(individualWalletEntity.getName());
-        walletAddress.setText(AddressFormatUtil.formatAddress(individualWalletEntity.getPrefixAddress()));
-        wallet_icon.setImageResource(RUtils.drawable(individualWalletEntity.getAvatar()));
-        freeAccount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(individualWalletEntity.getFreeBalance(), "1E18"));
+    public void showSelectedWalletInfo(Wallet wallet) {
+        walletName.setText(wallet.getName());
+        walletAddress.setText(AddressFormatUtil.formatAddress(wallet.getPrefixAddress()));
+        wallet_icon.setImageResource(RUtils.drawable(wallet.getAvatar()));
+        freeAccount = wallet.getFreeBalance();
     }
 
     @Override
@@ -378,7 +379,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     //显示手续费
     @Override
     public void showWithDrawGasPrice(String gas) {
-        fee.setText(string(R.string.amount_with_unit, gas));
+        fee.setText(string(R.string.amount_with_unit, AmountUtil.convertVonToLat(gas, 8)));
         withdrawFee = gas;
     }
 

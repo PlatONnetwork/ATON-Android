@@ -79,7 +79,7 @@ public class DelegateManager {
                 .timestamp(System.currentTimeMillis())
                 .txType(transactionType)
                 .value(Convert.toVon(amount, Convert.Unit.LAT).toBigInteger().toString())
-                .actualTxCost(Convert.toVon(feeAmount, Convert.Unit.LAT).toBigInteger().toString())
+                .actualTxCost(feeAmount)
                 .unDelegation(Convert.toVon(amount, Convert.Unit.LAT).toBigInteger().toString())
                 .nodeName(nodeName)
                 .nodeId(nodeId)
@@ -108,6 +108,18 @@ public class DelegateManager {
                 .toSingle();
     }
 
+    /** 赎回委托
+     * @param credentials
+     * @param to
+     * @param nodeId
+     * @param nodeName
+     * @param feeAmount
+     * @param stakingBlockNum
+     * @param amount
+     * @param transactionType
+     * @param GasProvider
+     * @return
+     */
     public Observable<Transaction> withdraw(Credentials credentials, String to, String nodeId, String nodeName, String feeAmount, String stakingBlockNum, String amount, String transactionType, GasProvider GasProvider) {
 
         return Single.fromCallable(new Callable<PlatonSendTransaction>() {

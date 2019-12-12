@@ -91,7 +91,7 @@ public class ManageWalletActivity extends MVPBaseActivity<ManageWalletPresenter>
         });
     }
 
-    @OnClick({R.id.rl_rename, R.id.rl_private_key, R.id.rl_keystore, R.id.rl_backup, R.id.tv_delete,R.id.iv_copy_wallet_address,R.id.rl_wallet_address})
+    @OnClick({R.id.rl_rename, R.id.rl_private_key, R.id.rl_keystore, R.id.rl_backup, R.id.tv_delete, R.id.iv_copy_wallet_address, R.id.rl_wallet_address})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.rl_rename:
@@ -114,13 +114,11 @@ public class ManageWalletActivity extends MVPBaseActivity<ManageWalletPresenter>
                 }
                 break;
             case R.id.iv_copy_wallet_address:
-                CommonUtil.copyTextToClipboard(this,tvAddress.getText().toString());
-                break;
             case R.id.rl_wallet_address:
-                CommonUtil.copyTextToClipboard(this,tvAddress.getText().toString());
+                CommonUtil.copyTextToClipboard(this, tvAddress.getText().toString());
                 break;
-
-
+            default:
+                break;
         }
     }
 
@@ -137,7 +135,6 @@ public class ManageWalletActivity extends MVPBaseActivity<ManageWalletPresenter>
         tvReName.setText(wallet.getName());
         tvAddress.setText(wallet.getPrefixAddress());
         if (TextUtils.isEmpty(wallet.getKey())) {
-            rename.setVisibility(View.GONE);
             llPrivateKey.setVisibility(View.GONE);
             llKeystore.setVisibility(View.GONE);
             llBackup.setVisibility(View.GONE);
@@ -183,7 +180,6 @@ public class ManageWalletActivity extends MVPBaseActivity<ManageWalletPresenter>
             }
         }).show(getSupportFragmentManager(), "showError");
     }
-
 
 
     @Override

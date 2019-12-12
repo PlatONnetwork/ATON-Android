@@ -34,8 +34,8 @@ public interface BaseApi {
      *
      * @return
      */
-    @GET("config/aton-update.json")
-    Single<Response<ApiResponse<VersionInfo>>> getVersionInfo();
+    @POST("app/v0700/config/checkUpdate")
+    Single<Response<ApiResponse<VersionInfo>>> getVersionInfo(@Body ApiRequestBody body);
 
     /**
      * 获取交易记录

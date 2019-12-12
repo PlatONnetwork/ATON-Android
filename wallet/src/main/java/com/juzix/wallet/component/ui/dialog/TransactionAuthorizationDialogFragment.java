@@ -56,7 +56,6 @@ public class TransactionAuthorizationDialogFragment extends BaseDialogFragment {
         setHorizontalMargin(DensityUtil.dp2px(getContext(), 14f));
         setyOffset(DensityUtil.dp2px(getContext(), 16f));
         setAnimation(R.style.Animation_slide_in_bottom);
-        setCancelable(false);
         unbinder = ButterKnife.bind(this, contentView);
         initViews();
         return baseDialog;

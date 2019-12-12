@@ -7,44 +7,55 @@ import com.alibaba.fastjson.annotation.JSONField;
  */
 public class VersionInfo {
 
-    @JSONField(name = "android")
-    private AndroidVersionInfo androidVersionInfo;
-    @JSONField(name = "ios")
-    private IosVersionInfo iosVersionInfo;
+    /**
+     * 是否需要升级 true 需要  false 不需要
+     */
+    private boolean isNeed;
+    /**
+     * 是否强制升级 true 需要  false 不需要
+     */
+    private boolean isForce;
+    /**
+     * 最新版本，用于显示
+     */
+    private String newVersion;
+    /**
+     * apk下载地址
+     */
+    private String url;
 
     public VersionInfo() {
-        super();
     }
 
-    public AndroidVersionInfo getAndroidVersionInfo() {
-        return androidVersionInfo;
+    public boolean isNeed() {
+        return isNeed;
     }
 
-    public void setAndroidVersionInfo(AndroidVersionInfo androidVersionInfo) {
-        this.androidVersionInfo = androidVersionInfo;
+    public void setNeed(boolean need) {
+        isNeed = need;
     }
 
-    public IosVersionInfo getIosVersionInfo() {
-        return iosVersionInfo;
+    public boolean isForce() {
+        return isForce;
     }
 
-    public void setIosVersionInfo(IosVersionInfo iosVersionInfo) {
-        this.iosVersionInfo = iosVersionInfo;
+    public void setForce(boolean force) {
+        isForce = force;
     }
 
-
-    public String getVersion() {
-        if (androidVersionInfo != null) {
-            return androidVersionInfo.getVersion();
-        }
-        return null;
+    public String getNewVersion() {
+        return newVersion;
     }
 
-    public String getDownloadUrl() {
-        if (androidVersionInfo != null) {
-            return androidVersionInfo.getDownloadUrl();
-        }
-        return null;
+    public void setNewVersion(String newVersion) {
+        this.newVersion = newVersion;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
 }
