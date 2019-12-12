@@ -19,13 +19,11 @@ public class DelegateContract {
 
         String getDelegateAmount();
 
-        String getChooseBalance();
-
         void showSelectedWalletInfo(Wallet individualWalletEntity);
 
         void setDelegateButtonState(boolean isClickable);
 
-        void showTips(boolean isShowTips,String minDelegation);
+        void showTips(boolean isShowTips, String minDelegation);
 
         void showNodeInfo(DelegateDetail delegateDetail);
 
@@ -35,21 +33,17 @@ public class DelegateContract {
         /**
          * @param transaction
          */
-        void transactionSuccessInfo(Transaction transaction);
-
+        void showTransactionSuccessInfo(Transaction transaction);
 
         /**
          * 显示手续费
          */
-        void showGasPrice(String gas);
-
-
-        void showGas(BigInteger integer);
+        void showFeeAmount(String gas);
 
         /**
          * 显示全部的手续费
          */
-        void showAllGasPrice(StakingAmountType stakingAmountType,String allPrice);
+        void showAllFeeAmount(StakingAmountType stakingAmountType, String delegateAmount, String feeAmount);
 
         /**
          * 获取手续费
@@ -68,7 +62,7 @@ public class DelegateContract {
 
         void submitDelegate(StakingAmountType type);
 
-        void checkIsCanDelegate(String walletAddress,String nodeAddress);
+        void checkIsCanDelegate(String walletAddress, String nodeAddress);
 
         void getGasPrice(StakingAmountType stakingAmountType);
 

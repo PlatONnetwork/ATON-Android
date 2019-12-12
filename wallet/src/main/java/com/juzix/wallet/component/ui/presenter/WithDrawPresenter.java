@@ -214,7 +214,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     }
 
     private String getFeeAmount(GasProvider gasProvider, String gasPrice) {
-        return NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(BigDecimalUtil.mul(gasProvider.getGasLimit().toString(10), gasPrice).toPlainString(), "1E18"));
+        return BigDecimalUtil.mul(gasProvider.getGasLimit().toString(10), gasPrice).toPlainString();
     }
 
     @SuppressLint("CheckResult")

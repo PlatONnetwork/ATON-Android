@@ -44,7 +44,6 @@ import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.component.widget.VerticalImageSpan;
 import com.juzix.wallet.config.AppSettings;
-import com.juzix.wallet.entity.AccountBalance;
 import com.juzix.wallet.entity.DelegateDetail;
 import com.juzix.wallet.entity.DelegateHandle;
 import com.juzix.wallet.entity.DelegateType;
@@ -52,6 +51,7 @@ import com.juzix.wallet.entity.GuideType;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.AddressFormatUtil;
+import com.juzix.wallet.utils.AmountUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.GlideUtils;
@@ -63,7 +63,6 @@ import com.juzix.wallet.utils.UMEventUtil;
 
 import org.web3j.platon.StakingAmountType;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -124,18 +123,15 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     TextView tv_lat_two;
 
     private Unbinder unbinder;
-    private String address;//钱包地址
     private StakingAmountType stakingAmountType;//选择的钱包类型（可用余额/锁仓余额）
-    private List<AccountBalance> balanceList = new ArrayList<>();
     private List<DelegateType> typeList = new ArrayList<>();
 
     private PopupWindow mPopupWindow;
     private ListView mPopListview;
     private DelegatePopAdapter mAdapter;
-    private String gasPrice;
     private boolean isAll = false;//是否点击的全部
-    private String delegate_fee;//手续费
-    private String free_account;//自由金额
+    private String feeAmount;//手续费
+    private String freeBalance;//自由金额
     private boolean isCanDelegate;//是否允许委托
 
     @Override
@@ -218,7 +214,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                     public void accept(Object o) {
                         UMEventUtil.onEventCount(DelegateActivity.this, Constants.UMEventID.DELEGATE);
                         //点击委托操作
-                        if (BigDecimalUtil.sub(free_account, delegate_fee) < 0) { //可用余额大于手续费才能委托
+                        if (BigDecimalUtil.sub(freeBalance, feeAmount).doubleValue() < 0) { //可用余额大于手续费才能委托
                             ToastUtil.showLongToast(getContext(), R.string.delegate_less_than_fee);
                             return;
                         }
@@ -266,8 +262,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     private void refreshData(DelegateType item) {
         stakingAmountType = item.getType() == "0" ? StakingAmountType.FREE_AMOUNT_TYPE : StakingAmountType.RESTRICTING_AMOUNT_TYPE;
         amountType.setText(TextUtils.equals(item.getType(), "0") ? getString(R.string.available_balance) : getString(R.string.locked_balance));
-        String number = StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(item.getAmount(), "1E18"))), false);
-        amount.setText(number);
+        amount.setText(StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(item.getAmount(), "1E18"))), false));
     }
 
     /**
@@ -328,7 +323,6 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     @Override
     public void showSelectedWalletInfo(Wallet individualWalletEntity) {
         stakingAmountType = StakingAmountType.FREE_AMOUNT_TYPE;
-        address = individualWalletEntity.getPrefixAddress();
         //显示钱包基本信息
         walletName.setText(individualWalletEntity.getName());
         walletAddress.setText(AddressFormatUtil.formatAddress(individualWalletEntity.getPrefixAddress()));//钱包地址
@@ -349,7 +343,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
             tv_lat_one.setVisibility(View.VISIBLE);
             amounChoose.setClickable(true);
         }
-        free_account = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(bean.getFree(), "1E18"));
+        freeBalance = bean.getFree();
 
     }
 
@@ -367,12 +361,6 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     @Override
     public String getDelegateAmount() {
         return et_amount.getText().toString().trim();
-    }
-
-    //获取选择的余额
-    @Override
-    public String getChooseBalance() {
-        return amount.getText().toString().replaceAll(",", "");
     }
 
     @Override
@@ -445,7 +433,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     }
 
     @Override
-    public void transactionSuccessInfo(Transaction transaction) {
+    public void showTransactionSuccessInfo(Transaction transaction) {
         finish();
         TransactionDetailActivity.actionStart(getContext(), transaction, Arrays.asList(transaction.getFrom()));
     }
@@ -453,60 +441,36 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     /**
      * 显示手续费
      *
-     * @param gas
+     * @param feeAmount
      */
     @Override
-    public void showGasPrice(String gas) {
+    public void showFeeAmount(String feeAmount) {
         if (!isAll) {
-            fee.setText(gas);
-        }
-        if (Double.valueOf(gas) > 0) {
-            tv_lat.setVisibility(View.VISIBLE);
-        } else {
-            tv_lat.setVisibility(View.GONE);
+            fee.setText(NumberParserUtils.getPrettyBalance(AmountUtil.convertVonToLat(feeAmount, 8)));
         }
         isAll = false;
-        delegate_fee = gas;
+        this.feeAmount = feeAmount;
     }
 
     /**
      * 点击所有获取到的手续费
      */
     @Override
-    public void showAllGasPrice(StakingAmountType stakingAmountType, String allPrice) {
-        fee.setText(allPrice);
-        if (NumberParserUtils.parseDouble(allPrice) > 0) {
-            tv_lat.setVisibility(View.VISIBLE);
+    public void showAllFeeAmount(StakingAmountType stakingAmountType, String delegateAmount, String feeAmount) {
+        fee.setText(AmountUtil.convertVonToLat(feeAmount, 8));
+        if (BigDecimalUtil.isBiggerThanZero(delegateAmount)) {
+            et_amount.setText(AmountUtil.convertVonToLat(delegateAmount, 8));
         } else {
-            tv_lat.setVisibility(View.GONE);
-        }
-        double balance = NumberParserUtils.parseDouble(amount.getText().toString().replace(",", ""));
-        double diff = stakingAmountType == StakingAmountType.FREE_AMOUNT_TYPE ? BigDecimalUtil.sub(balance, NumberParserUtils.parseDouble(allPrice)) : balance;// 剩余的余额和手续费相减
-        if (diff < 0) {
             et_amount.setText(BigDecimalUtil.parseString(0.00));
             ToastUtil.showLongToast(getContext(), R.string.delegate_less_than_fee);
-        } else {
-            et_amount.setText(BigDecimalUtil.parseString(diff));
         }
         et_amount.setSelection(et_amount.getText().toString().length());
-        delegate_fee = allPrice;
+        this.feeAmount = feeAmount;
     }
 
     @Override
     public String getFeeAmount() {
         return fee.getText().toString();
-    }
-
-    /**
-     * 获取到Gasprice
-     *
-     * @param integer
-     */
-    @Override
-    public void showGas(BigInteger integer) {
-        if (integer != null) {
-            gasPrice = integer.toString();
-        }
     }
 
     @Override
@@ -524,6 +488,14 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         TransactionSignatureDialogFragment dialogFragment = (TransactionSignatureDialogFragment) getSupportFragmentManager().findFragmentByTag(TransactionSignatureDialogFragment.TAG);
         if (dialogFragment != null) {
             dialogFragment.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (unbinder != null) {
+            unbinder.unbind();
         }
     }
 }

@@ -22,7 +22,6 @@ import com.juzix.wallet.component.ui.dialog.TransactionSignatureDialogFragment;
 import com.juzix.wallet.component.ui.view.AssetsFragment;
 import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.db.entity.AddressEntity;
-import com.juzix.wallet.db.entity.WalletEntity;
 import com.juzix.wallet.db.sqlite.AddressDao;
 import com.juzix.wallet.engine.AppConfigManager;
 import com.juzix.wallet.engine.NodeManager;
@@ -70,7 +69,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Predicate;
-import jnr.constants.platform.PRIO;
 
 
 /**
@@ -168,7 +166,6 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                     @Override
                     public void accept(BigInteger bigInteger) throws Exception {
                         if (isViewAttached()) {
-                            LogUtils.e("gasPrice 为：" + bigInteger.toString());
                             initGasPrice(bigInteger);
                             setDefaultProgress();
                             setDefaultFeeAmount();
@@ -184,7 +181,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
             if (BigDecimalUtil.isBigger(String.valueOf(feeAmount), BigDecimalUtil.div(walletEntity.getFreeBalance(), DEFAULT_EXCHANGE_RATE.toString(10)))) {
                 getView().setTransferAmount(0D);
             } else {
-                getView().setTransferAmount(BigDecimalUtil.sub(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(walletEntity.getFreeBalance(), DEFAULT_EXCHANGE_RATE.toString(10))), String.valueOf(feeAmount)));
+                getView().setTransferAmount(BigDecimalUtil.sub(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(walletEntity.getFreeBalance(), DEFAULT_EXCHANGE_RATE.toString(10))), String.valueOf(feeAmount)).doubleValue());
             }
         }
     }

@@ -105,12 +105,12 @@ public class BigDecimalUtil {
      * @param v2 减数
      * @return 两个参数的差
      */
-    public static double sub(String v1, String v2) {
-        double result = 0D;
+    public static BigDecimal sub(String v1, String v2) {
+        BigDecimal result = BigDecimal.ZERO;
         try {
             BigDecimal b1 = new BigDecimal(v1);
             BigDecimal b2 = new BigDecimal(v2);
-            result = b1.subtract(b2).doubleValue();
+            result = b1.subtract(b2);
         } catch (Exception e) {
             e.printStackTrace();
         }
