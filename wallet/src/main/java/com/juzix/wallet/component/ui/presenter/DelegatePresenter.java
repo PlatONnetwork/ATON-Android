@@ -185,7 +185,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     @SuppressLint("CheckResult")
     @Override
     public void getGas() {
-        DelegateManager.getInstance().getGasPrice()
+        Web3jManager.getInstance().getContractGasPrice()
                 .compose(RxUtils.bindToLifecycle(getView()))
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .subscribe(new Consumer<BigInteger>() {

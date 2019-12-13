@@ -137,6 +137,11 @@ public class Web3jManager {
         }
     }
 
+    /**
+     * 获取转账的gasPrice
+     *
+     * @return
+     */
     public Single<BigInteger> getGasPrice() {
         return Single
                 .fromCallable(new Callable<BigInteger>() {
@@ -156,6 +161,34 @@ public class Web3jManager {
                     @Override
                     public BigInteger apply(BigInteger bigInteger) throws Exception {
                         return getProcessedGasPrice(bigInteger);
+                    }
+                });
+    }
+
+    /**
+     * 获取委托的gasPrice
+     *
+     * @return
+     */
+    public Single<BigInteger> getContractGasPrice() {
+        return Single
+                .fromCallable(new Callable<BigInteger>() {
+                    @Override
+                    public BigInteger call() {
+                        BigInteger gasPrice = DefaultGasProvider.GAS_PRICE;
+                        try {
+                            PlatonGasPrice platonGasPrice = Web3jManager.getInstance().getWeb3j().platonGasPrice().send();
+                            gasPrice = platonGasPrice.getGasPrice();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        return gasPrice;
+                    }
+                }).onErrorReturnItem(DefaultGasProvider.GAS_PRICE)
+                .map(new Function<BigInteger, BigInteger>() {
+                    @Override
+                    public BigInteger apply(BigInteger bigInteger) throws Exception {
+                        return getProcessedGasPrice(bigInteger).max(new BigInteger(AppConfigManager.getInstance().getMinGasPrice()));
                     }
                 });
     }
@@ -193,7 +226,7 @@ public class Web3jManager {
         if (bigDecimal.compareTo(resultBigDecimal) == 1) {
             resultBigDecimal = resultBigDecimal.add(BigDecimal.ONE);
         }
-        return resultBigDecimal.multiply(BigDecimal.valueOf(10).pow(10)).toBigInteger().max(new BigInteger(AppConfigManager.getInstance().getMinGasPrice()));
+        return resultBigDecimal.multiply(BigDecimal.valueOf(10).pow(10)).toBigInteger();
     }
 
     private static class InstanceHolder {
