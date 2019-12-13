@@ -8,6 +8,7 @@ import android.support.annotation.StringDef;
 import android.support.annotation.StringRes;
 import android.text.TextUtils;
 
+import com.juzix.wallet.BuildConfig;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.utils.MD5Utils;
 import com.juzix.wallet.utils.SystemUtil;
@@ -98,7 +99,7 @@ public class DeviceManager {
     }
 
     public String getChannel() {
-        return TextUtils.isEmpty(channel) ? Channel.PLATON_NETWORK : channel;
+        return TextUtils.isEmpty(channel) ? BuildConfig.CHANNEL : channel;
     }
 
     public boolean isGooglePlayChannel() {

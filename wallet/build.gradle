@@ -27,6 +27,7 @@ android {
         buildConfigField("String", "SINA_APPKEY", "${SINA_APPKEY}")
         buildConfigField("String", "SINA_APP_SECRET", "${SINA_APP_SECRET}")
         buildConfigField("String", "SINA_APP_REDIRECT_URL", "${SINA_APP_REDIRECT_URL}")
+        buildConfigField "String" , "CHANNEL" , '"PlatONNetwork"'
         renderscriptTargetApi 19
         renderscriptSupportModeEnabled true
 
@@ -78,7 +79,6 @@ android {
             v2SigningEnabled false
         }
     }
-
 
     buildTypes {
         debug {
@@ -132,6 +132,20 @@ android {
             multiDexEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeX}")
+        }
+
+        flavorDimensions "channel"
+
+        productFlavors {
+
+            PlatONNetwork {
+                buildConfigField "String" , "CHANNEL" , '"PlatONNetwork"'
+            }
+
+            GooglePlay {
+                buildConfigField "String" , "CHANNEL" , '"GooglePlay"'
+            }
+
         }
     }
 
