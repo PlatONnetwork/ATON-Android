@@ -193,7 +193,7 @@ public class Web3jManager {
         if (bigDecimal.compareTo(resultBigDecimal) == 1) {
             resultBigDecimal = resultBigDecimal.add(BigDecimal.ONE);
         }
-        return resultBigDecimal.multiply(BigDecimal.valueOf(10).pow(10)).toBigInteger();
+        return resultBigDecimal.multiply(BigDecimal.valueOf(10).pow(10)).toBigInteger().max(new BigInteger(AppConfigManager.getInstance().getMinGasPrice()));
     }
 
     private static class InstanceHolder {

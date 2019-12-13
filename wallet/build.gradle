@@ -42,7 +42,6 @@ android {
 
     signingConfigs {
 
-
         debug {
             storeFile file('../extras/debug.keystore')
         }

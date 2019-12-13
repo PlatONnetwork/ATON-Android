@@ -62,7 +62,6 @@ public class AboutActivity extends BaseActivity {
     ImageView ivLogo;
 
     private Unbinder unbinder;
-    private VersionUpdate mVersionUpdate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
