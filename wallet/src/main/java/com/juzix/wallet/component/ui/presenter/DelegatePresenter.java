@@ -249,6 +249,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                         public Pair<GasProvider, BigInteger> call(GasProvider gasProvider) {
                             String feeAmount = getFeeAmount(gasPrice, gasProvider.getGasLimit());
                             BigInteger delegateAmount = BigDecimalUtil.sub(Convert.toVon(amount, Convert.Unit.LAT).toBigInteger().toString(10), feeAmount).toBigInteger();
+                            delegateAmount = delegateAmount.compareTo(BigInteger.ZERO) == 1 ? delegateAmount : BigInteger.ZERO;
                             return new Pair<GasProvider, BigInteger>(org.web3j.platon.contracts.DelegateContract
                                     .load(Web3jManager.getInstance().getWeb3j())
                                     .getDelegateGasProvider(mDelegateDetail.getNodeId(), stakingAmountType, delegateAmount)
