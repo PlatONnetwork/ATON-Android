@@ -119,11 +119,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
                     public void accept(Permission permission) {
                         if (isViewAttached()) {
                             if (permission.granted && Manifest.permission.WRITE_EXTERNAL_STORAGE.equals(permission.name)) {
-                                if (DeviceManager.getInstance().isGooglePlayChannel()) {
-                                    AndroidUtil.launchGooglePlayAppDetail(currentActivity());
-                                } else {
-                                    new VersionUpdate(currentActivity(), versionInfo.getUrl(), versionInfo.getNewVersion(), false).execute();
-                                }
+                                new VersionUpdate(currentActivity(), versionInfo.getUrl(), versionInfo.getNewVersion(), false).execute();
                             }
                         }
                     }
