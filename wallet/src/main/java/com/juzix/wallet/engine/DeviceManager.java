@@ -119,13 +119,11 @@ public class DeviceManager {
     //通过PackageInfo得到的想要启动的应用的包名
     private static PackageInfo getPackageInfo(Context context) {
         PackageInfo pInfo = null;
-
         try {
             //通过PackageManager可以得到PackageInfo
             PackageManager pManager = context.getPackageManager();
             pInfo = pManager.getPackageInfo(context.getPackageName(),
                     PackageManager.GET_CONFIGURATIONS);
-
             return pInfo;
         } catch (Exception e) {
             e.printStackTrace();

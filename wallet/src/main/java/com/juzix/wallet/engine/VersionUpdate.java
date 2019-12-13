@@ -171,7 +171,8 @@ public class VersionUpdate {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         File file = new File(filePath);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             Uri contentUri = FileProvider.getUriForFile(context, "com.juzix.wallet.fileprovider", new File(filePath));
             intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
         } else {
