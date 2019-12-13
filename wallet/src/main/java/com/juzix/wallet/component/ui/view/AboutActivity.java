@@ -93,19 +93,6 @@ public class AboutActivity extends BaseActivity {
                     @Override
                     public void accept(Object o) {
                         showLongToast(DeviceManager.getInstance().getChannel());
-
-                        ActivityCompat.requestPermissions(AboutActivity.this, new String[]{Manifest.permission.REQUEST_INSTALL_PACKAGES}, 6666);
-
-//
-//                        new RxPermissions(AboutActivity.this)
-//                                .requestEach(Manifest.permission.REQUEST_INSTALL_PACKAGES)
-//                                .subscribe(new CustomObserver<Object>() {
-//                                    @Override
-//                                    public void accept(Object object) {
-//                                        Permission permission = (Permission) object;
-//                                        showLongToast(permission.granted+"");
-//                                    }
-//                                });
                     }
                 });
 
