@@ -63,7 +63,7 @@ public class BackupMnemonicPhraseActivity extends BaseActivity {
             }
         });
 
-        mCtb.setRightDrawableClickListener(new View.OnClickListener() {
+        mCtb.setLeftTitleClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 exit();

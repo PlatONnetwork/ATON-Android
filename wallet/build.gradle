@@ -30,6 +30,7 @@ android {
         buildConfigField "String" , "CHANNEL" , '"PlatONNetwork"'
         renderscriptTargetApi 19
         renderscriptSupportModeEnabled true
+        resConfigs "zh","en"
 
         ndk {
             abiFilters "armeabi-v7a"
