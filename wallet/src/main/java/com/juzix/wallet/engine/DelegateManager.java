@@ -153,19 +153,4 @@ public class DelegateManager {
 
     }
 
-    /**
-     * 获取gasprice
-     */
-    public Single<BigInteger> getGasPrice() {
-        return Single
-                .fromCallable(new Callable<BigInteger>() {
-                    @Override
-                    public BigInteger call() throws Exception {
-                        return Web3jManager.getInstance().getWeb3j().platonGasPrice().send().getGasPrice();
-                    }
-                })
-                .onErrorReturnItem(DefaultGasProvider.GAS_PRICE);
-    }
-
-
 }

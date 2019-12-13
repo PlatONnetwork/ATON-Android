@@ -165,9 +165,10 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     /**
      * 获取
      */
+    @SuppressLint("CheckResult")
     @Override
     public void getGas() {
-        DelegateManager.getInstance().getGasPrice()
+        Web3jManager.getInstance().getContractGasPrice()
                 .compose(RxUtils.bindToLifecycle(getView()))
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .subscribe(new Consumer<BigInteger>() {
