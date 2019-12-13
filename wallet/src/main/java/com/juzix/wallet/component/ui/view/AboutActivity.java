@@ -178,13 +178,13 @@ public class AboutActivity extends BaseActivity {
                         if (versionInfo.isNeed()) {
                             tvUpdate.setText(string(R.string.latest_version, versionInfo.getNewVersion()));
                             vNewMsg.setVisibility(View.VISIBLE);
+
+                            showUpdateVersionDialog(versionInfo);
                         } else {
                             tvUpdate.setText(string(R.string.current_version, BuildConfig.VERSION_NAME));
                             vNewMsg.setVisibility(View.GONE);
                             showLongToast(string(R.string.latest_version_tips));
                         }
-
-                        showUpdateVersionDialog(versionInfo);
                     }
 
                     @Override
