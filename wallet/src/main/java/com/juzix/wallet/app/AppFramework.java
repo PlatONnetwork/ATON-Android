@@ -178,6 +178,18 @@ public class AppFramework {
                             }
                         });
 
+                schema.get("NodeEntity")
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.getDynamicRealm()
+                                        .where("NodeEntity")
+                                        .equalTo("chainId", "97")
+                                        .findAll()
+                                        .setString("chainId", BuildConfig.ID_MAIN_CHAIN);
+                            }
+                        });
+
                 oldVersion++;
             }
 
