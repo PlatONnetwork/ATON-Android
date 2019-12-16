@@ -220,13 +220,8 @@ public class Web3jManager {
      * @return
      */
     private BigInteger getProcessedGasPrice(BigInteger oldGasPrice) {
-        BigDecimal bigDecimal = new BigDecimal(oldGasPrice).divide(BigDecimal.valueOf(10).pow(10));
-        BigDecimal resultBigDecimal = bigDecimal.setScale(0, BigDecimal.ROUND_DOWN);
-        //有小数位
-        if (bigDecimal.compareTo(resultBigDecimal) == 1) {
-            resultBigDecimal = resultBigDecimal.add(BigDecimal.ONE);
-        }
-        return resultBigDecimal.multiply(BigDecimal.valueOf(10).pow(10)).toBigInteger();
+        BigDecimal bigDecimal = new BigDecimal(oldGasPrice).divide(BigDecimal.valueOf(10).pow(10), RoundingMode.HALF_UP);
+        return bigDecimal.multiply(BigDecimal.valueOf(10).pow(10)).toBigInteger();
     }
 
     private static class InstanceHolder {

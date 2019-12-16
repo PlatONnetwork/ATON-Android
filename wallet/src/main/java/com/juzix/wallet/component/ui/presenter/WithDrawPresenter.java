@@ -175,7 +175,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                     @Override
                     public void accept(BigInteger bigInteger) throws Exception {
                         if (isViewAttached()) {
-                            WithDrawPresenter.this.gasPrice = gasPrice;
+                            WithDrawPresenter.this.gasPrice = bigInteger;
                             getView().showGas(gasPrice);
                         }
                     }
