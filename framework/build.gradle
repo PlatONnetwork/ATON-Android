@@ -26,6 +26,12 @@ android {
         releaseJX {
 
         }
+        releaseTX {
+
+        }
+        releaseJTX {
+
+        }
 
         flavorDimensions "channel"
 

@@ -138,7 +138,7 @@ public class AppFramework {
                             }
                         });
 
-                //链id 103-->100
+                //链id 103-->97或者103-->96
                 schema.get("WalletEntity")
                         .transform(new RealmObjectSchema.Function() {
                             @Override
@@ -147,7 +147,7 @@ public class AppFramework {
                                         .where("WalletEntity")
                                         .equalTo("chainId", "103")
                                         .findAll()
-                                        .setString("chainId", BuildConfig.ID_MAIN_CHAIN);
+                                        .setString("chainId", newVersion == 108 ? BuildConfig.ID_MAIN_CHAIN : BuildConfig.ID_TEST_MAIN_CHAIN);
                             }
                         });
 
@@ -163,8 +163,26 @@ public class AppFramework {
                         .addField("isInit", boolean.class);
 
                 oldVersion++;
+
+            } else if (oldVersion == 107) {
+                //0.7.4.0升级到0.7.4.1,链id 97--->96
+                schema.get("WalletEntity")
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.getDynamicRealm()
+                                        .where("WalletEntity")
+                                        .equalTo("chainId", "97")
+                                        .findAll()
+                                        .setString("chainId", BuildConfig.ID_MAIN_CHAIN);
+                            }
+                        });
+
+                oldVersion++;
             }
+
         }
+
     }
 }
 
