@@ -25,8 +25,7 @@ import com.just.agentweb.WebChromeClient;
 import com.just.agentweb.WebViewClient;
 
 /**
- * Created by will12190 on 2019/4/27
- * Email:will12190@hotmail.com
+ *
  */
 public abstract class BaseAgentWebActivity extends BaseActivity {
 
@@ -230,6 +229,7 @@ public abstract class BaseAgentWebActivity extends BaseActivity {
                 super.onReceivedTitle(view, title);
                 setTitle(view, title);
             }
+
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 super.onProgressChanged(view, newProgress);
