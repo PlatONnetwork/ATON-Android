@@ -161,7 +161,6 @@ public class AppFramework {
                         .addField("ratePA", long.class)
                         .addField("nodeStatus", String.class)
                         .addField("isInit", boolean.class);
-
                 oldVersion++;
 
             } else if (oldVersion == 107) {
@@ -189,8 +188,25 @@ public class AppFramework {
                                         .setString("chainId", BuildConfig.ID_MAIN_CHAIN);
                             }
                         });
-
+              
+                if (newVersion == 108) {
+                    //0.6.2.0-->0.7.5.0 增加TransactionRecordEntity
+                    schema.create("TransactionRecordEntity")
+                            .addField("timeStamp", long.class, FieldAttribute.PRIMARY_KEY)
+                            .addField("from", String.class)
+                            .addField("to", String.class)
+                            .addField("value", String.class);
+                }
+              
                 oldVersion++;
+              
+            } else if (oldVersion == 107) {
+                //0.7.4.0-->0.7.5.0 增加TransactionRecordEntity
+                schema.create("TransactionRecordEntity")
+                        .addField("timeStamp", long.class, FieldAttribute.PRIMARY_KEY)
+                        .addField("from", String.class)
+                        .addField("to", String.class)
+                        .addField("value", String.class);
             }
 
         }

@@ -86,7 +86,7 @@ android {
     buildTypes {
         debug {
             debuggable true
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.releaseC
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeX}")
             multiDexEnabled true
@@ -182,9 +182,9 @@ android {
             def gitVersion = getGitVersion();
 
             def type = ""
-            if (variant.buildType.name == "releaseC") {
+            if (variant.buildType.name == "releaseC" || variant.buildType.name == "releaseJC") {
                 type = "c"
-            } else if (variant.buildType.name == "releaseX") {
+            } else if (variant.buildType.name == "releaseX" || variant.buildType.name == "releaseJX") {
                 type = "x_unjiagu"
             } else if (variant.buildType.name == "debug") {
                 type = "debug"

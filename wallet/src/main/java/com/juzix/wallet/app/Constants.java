@@ -10,6 +10,10 @@ public class Constants {
         int TRANSACTION_STATUS_LOOP_TIME = 2000;
         //交易列表轮询时间
         int TRANSCTION_LIST_LOOP_TIME = 10000;
+        /**
+         * 重复交易超时时间
+         */
+        int TRANSACTION_TIMEOUT_WITH_MILLISECOND = 2 * 60 * 60 * 1000;
 
     }
 

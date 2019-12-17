@@ -12,6 +12,9 @@ import io.realm.Sort;
 
 public class WalletDao {
 
+    private WalletDao() {
+    }
+
     /**
      * 获取钱包列表，根据updateTime升序
      * updateTime是指钱更新信息的时间

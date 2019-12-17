@@ -130,6 +130,17 @@ public class StringUtil {
         return decimalFormat.format(new BigDecimal(NumberParserUtils.getPrettyNumber(price, 8)));
     }
 
+    /**
+     * 字符串数字显示按千分位显示
+     */
+    public static String formatBalanceWithoutMinFraction(String price) {
+        DecimalFormat decimalFormat = new DecimalFormat();
+        decimalFormat.setMaximumFractionDigits(8);//设置最大的小数位数
+        decimalFormat.setMinimumFractionDigits(0);
+        decimalFormat.setGroupingSize(3);//设置分组大小，也就是显示逗号的位置
+        return decimalFormat.format(new BigDecimal(NumberParserUtils.getPrettyNumber(price, 8)));
+    }
+
 
     /**
      * 获取转账金额的数量级描述

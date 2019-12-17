@@ -15,6 +15,9 @@ import io.realm.Sort;
  */
 public class TransactionDao {
 
+    private TransactionDao() {
+    }
+
     public static boolean insertTransaction(TransactionEntity transactionEntity) {
         Realm realm = null;
         try {
