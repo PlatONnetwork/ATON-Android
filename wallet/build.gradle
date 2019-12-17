@@ -13,22 +13,27 @@ android {
         targetSdkVersion rootProject.ext.android.targetSdkVersion
         versionName "${version_name}"
         versionCode Integer.parseInt(version_code)
+        buildConfigField("int", "INNER_VERSION_NAME", "${inner_version_name}")
         buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
         buildConfigField("String", "UM_APPKEY", "${UM_APPKEY}")
         buildConfigField("String", "URL_SERVICE_AGREEMENT", "${URL_SERVICE_AGREEMENT}")
         buildConfigField("String", "URL_SUPPORT_FEEDBACK", "${URL_SUPPORT_FEEDBACK}")
         buildConfigField("String", "URL_PLATON_NETWORK", "${URL_PLATON_NETWORK}")
         buildConfigField("String", "URL_MAIN_SERVER", "${URL_MAIN_SERVER}")
+        buildConfigField("String", "URL_TEST_MAIN_SERVER", "${URL_TEST_MAIN_SERVER}")
         buildConfigField("String", "URL_TEST_SERVER", "${URL_TEST_SERVER}")
         buildConfigField("String", "URL_DEVELOP_SERVER", "${URL_DEVELOP_SERVER}")
+        buildConfigField("String", "ID_TEST_MAIN_CHAIN", "${ID_TEST_MAIN_CHAIN}")
         buildConfigField("String", "ID_MAIN_CHAIN", "${ID_MAIN_CHAIN}")
         buildConfigField("String", "ID_TEST_CHAIN", "${ID_TEST_CHAIN}")
         buildConfigField("String", "ID_DEVELOP_CHAIN", "${ID_DEVELOP_CHAIN}")
         buildConfigField("String", "SINA_APPKEY", "${SINA_APPKEY}")
         buildConfigField("String", "SINA_APP_SECRET", "${SINA_APP_SECRET}")
         buildConfigField("String", "SINA_APP_REDIRECT_URL", "${SINA_APP_REDIRECT_URL}")
+        buildConfigField "String", "CHANNEL", '"PlatONNetwork"'
         renderscriptTargetApi 19
         renderscriptSupportModeEnabled true
+        resConfigs "zh", "en"
 
         ndk {
             abiFilters "armeabi-v7a"
@@ -40,7 +45,6 @@ android {
     }
 
     signingConfigs {
-
 
         debug {
             storeFile file('../extras/debug.keystore')
@@ -78,7 +82,6 @@ android {
             v2SigningEnabled false
         }
     }
-
 
     buildTypes {
         debug {
@@ -133,6 +136,42 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeX}")
         }
+
+        releaseTX {
+            debuggable false
+            signingConfig signingConfigs.releaseX
+            shrinkResources true
+            minifyEnabled true
+            zipAlignEnabled true
+            multiDexEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField("String", "RELEASE_TYPE", "${releaseTypeX}")
+        }
+
+        releaseJTX {
+            debuggable false
+            signingConfig signingConfigs.releaseJX
+            shrinkResources true
+            minifyEnabled true
+            zipAlignEnabled true
+            multiDexEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField("String", "RELEASE_TYPE", "${releaseTypeTX}")
+        }
+
+        flavorDimensions "channel"
+
+        productFlavors {
+
+            PlatONNetwork {
+                buildConfigField "String", "CHANNEL", '"PlatONNetwork"'
+            }
+
+            GooglePlay {
+                buildConfigField "String", "CHANNEL", '"GooglePlay"'
+            }
+
+        }
     }
 
     applicationVariants.all { variant ->
@@ -157,7 +196,7 @@ android {
                 type = (type + "_" + variant.flavorName)
             }
 
-            outputFileName = "aton_android_v${verName}_${releaseTime}_${verCode}_${type}_${gitVersion}.apk";
+            outputFileName = "aton_android_v${verName}.${inner_version_name}_${releaseTime}_${verCode}_${type}_${gitVersion}.apk";
         }
     }
     compileOptions {

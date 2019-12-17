@@ -6,9 +6,11 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 
+import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.ApiSingleObserver;
 import com.juzhen.framework.util.AndroidUtil;
+import com.juzix.wallet.BuildConfig;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.BasePresenter;
@@ -17,6 +19,7 @@ import com.juzix.wallet.component.ui.dialog.CommonTipsDialogFragment;
 import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
 import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.config.AppSettings;
+import com.juzix.wallet.engine.DeviceManager;
 import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.VersionUpdate;
 import com.juzix.wallet.entity.VersionInfo;
@@ -27,8 +30,6 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 
 public class MainPresenter extends BasePresenter<MainContract.View> implements MainContract.Presenter {
 
-    private VersionUpdate mVersionUpdate;
-
     public MainPresenter(MainContract.View view) {
         super(view);
     }
@@ -37,7 +38,11 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
     public void checkVersion() {
         ServerUtils
                 .getCommonApi()
-                .getVersionInfo()
+                .getVersionInfo(ApiRequestBody.newBuilder()
+                        .put("versionCode", BuildConfig.VERSION_CODE)
+                        .put("deviceType", DeviceManager.getInstance().getOS())
+                        .put("channelCode", DeviceManager.getInstance().getChannel())
+                        .build())
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .subscribe(new ApiSingleObserver<VersionInfo>() {
 
@@ -45,9 +50,8 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
                     public void onApiSuccess(VersionInfo versionInfo) {
                         if (isViewAttached()) {
                             if (shouldUpdate(versionInfo)) {
-                                mVersionUpdate = new VersionUpdate(currentActivity(), versionInfo.getDownloadUrl(), versionInfo.getVersion(), false);
                                 //如果不是强制更新，则保存上次弹框时间
-                                if (!versionInfo.getAndroidVersionInfo().isForce()) {
+                                if (!versionInfo.isForce()) {
                                     AppSettings.getInstance().setUpdateVersionTime(System.currentTimeMillis());
                                 }
                                 showUpdateVersionDialog(versionInfo);
@@ -63,46 +67,34 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
     }
 
     private boolean shouldUpdate(VersionInfo versionInfo) {
-        String oldVersion = AndroidUtil.getVersionName(getContext()).toLowerCase();
-        if (!oldVersion.startsWith("v")) {
-            oldVersion = "v" + oldVersion;
-        }
-        String newVersion = versionInfo.getVersion().toLowerCase();
-        if (!newVersion.startsWith("v")) {
-            newVersion = "v" + newVersion;
-        }
-
         long lastUpdateTime = AppSettings.getInstance().getUpdateVersionTime();
-        boolean shouldUpdate = oldVersion.compareTo(newVersion) < 0;
-        boolean isForce = versionInfo.getAndroidVersionInfo().isForce();
         boolean shouldShowUpdateDialog = !(lastUpdateTime != 0 && DateUtil.isToday(lastUpdateTime));
-
-        return (shouldUpdate && isForce) || (shouldUpdate && shouldShowUpdateDialog);
+        return (versionInfo.isNeed() && versionInfo.isForce()) || (versionInfo.isNeed() && shouldShowUpdateDialog);
     }
 
     private void showUpdateVersionDialog(VersionInfo versionInfo) {
         CommonTipsDialogFragment.createDialogWithTitleAndTwoButton(ContextCompat.getDrawable(getContext(), R.drawable.icon_dialog_tips),
                 string(R.string.version_update),
-                string(R.string.version_update_tips, versionInfo.getAndroidVersionInfo().getVersion()),
+                string(R.string.version_update_tips, versionInfo.getNewVersion()),
                 string(R.string.update_now), new OnDialogViewClickListener() {
                     @Override
                     public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
                         if (fragment != null) {
                             fragment.dismiss();
                         }
-                        requestPermission();
+                        requestPermission(versionInfo);
                     }
                 },
                 string(R.string.not_now), new OnDialogViewClickListener() {
                     @Override
                     public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
-                        if (versionInfo.getAndroidVersionInfo().isForce()) {
+                        if (versionInfo.isForce()) {
                             CommonTipsDialogFragment.createDialogWithTwoButton(ContextCompat.getDrawable(getContext(), R.drawable.icon_dialog_tips), "退出应用?", "取消", new OnDialogViewClickListener() {
                                 @Override
                                 public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
                                     showUpdateVersionDialog(versionInfo);
                                 }
-                            }, "确认", new OnDialogViewClickListener() {
+                            }, string(R.string.confirm), new OnDialogViewClickListener() {
                                 @Override
                                 public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
                                     if (isViewAttached()) {
@@ -115,10 +107,10 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
                             fragment.dismiss();
                         }
                     }
-                }, !versionInfo.getAndroidVersionInfo().isForce()).show(currentActivity().getSupportFragmentManager(), "showTips");
+                }, !versionInfo.isForce()).show(currentActivity().getSupportFragmentManager(), "showTips");
     }
 
-    private void requestPermission() {
+    private void requestPermission(VersionInfo versionInfo) {
 
         new RxPermissions(currentActivity())
                 .requestEach(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -127,7 +119,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
                     public void accept(Permission permission) {
                         if (isViewAttached()) {
                             if (permission.granted && Manifest.permission.WRITE_EXTERNAL_STORAGE.equals(permission.name)) {
-                                mVersionUpdate.execute();
+                                new VersionUpdate(currentActivity(), versionInfo.getUrl(), versionInfo.getNewVersion(), false).execute();
                             }
                         }
                     }

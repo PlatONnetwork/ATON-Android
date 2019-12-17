@@ -102,7 +102,7 @@ public class AppFramework {
             RealmSchema schema = realm.getSchema();
 
             if (oldVersion == 106) {
-                //0.6.2.0-->0.7.4.0
+                //0.6.2.0-->0.7.4.0或者0.7.4.1
                 schema.get("NodeEntity")
                         .addField("chainId", String.class)
                         .transform(new RealmObjectSchema.Function() {
@@ -138,7 +138,7 @@ public class AppFramework {
                             }
                         });
 
-                //链id 103-->100
+                //链id 103-->97或者103-->96
                 schema.get("WalletEntity")
                         .transform(new RealmObjectSchema.Function() {
                             @Override
@@ -147,7 +147,7 @@ public class AppFramework {
                                         .where("WalletEntity")
                                         .equalTo("chainId", "103")
                                         .findAll()
-                                        .setString("chainId", BuildConfig.ID_MAIN_CHAIN);
+                                        .setString("chainId", newVersion == 108 ? BuildConfig.ID_MAIN_CHAIN : BuildConfig.ID_TEST_MAIN_CHAIN);
                             }
                         });
 
@@ -161,6 +161,34 @@ public class AppFramework {
                         .addField("ratePA", long.class)
                         .addField("nodeStatus", String.class)
                         .addField("isInit", boolean.class);
+                oldVersion++;
+
+            } else if (oldVersion == 107) {
+                //0.7.4.0升级到0.7.4.1,链id 97--->96
+                schema.get("WalletEntity")
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.getDynamicRealm()
+                                        .where("WalletEntity")
+                                        .equalTo("chainId", "97")
+                                        .findAll()
+                                        .setString("chainId", BuildConfig.ID_MAIN_CHAIN);
+                            }
+                        });
+
+                schema.get("NodeEntity")
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.getDynamicRealm()
+                                        .where("NodeEntity")
+                                        .equalTo("chainId", "97")
+                                        .findAll()
+                                        .setString("chainId", BuildConfig.ID_MAIN_CHAIN);
+                            }
+                        });
+              
                 if (newVersion == 108) {
                     //0.6.2.0-->0.7.5.0 增加TransactionRecordEntity
                     schema.create("TransactionRecordEntity")
@@ -169,6 +197,9 @@ public class AppFramework {
                             .addField("to", String.class)
                             .addField("value", String.class);
                 }
+              
+                oldVersion++;
+              
             } else if (oldVersion == 107) {
                 //0.7.4.0-->0.7.5.0 增加TransactionRecordEntity
                 schema.create("TransactionRecordEntity")
@@ -177,7 +208,9 @@ public class AppFramework {
                         .addField("to", String.class)
                         .addField("value", String.class);
             }
+
         }
+
     }
 }
 

@@ -4,8 +4,11 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.provider.Settings;
+import android.support.annotation.StringDef;
+import android.support.annotation.StringRes;
 import android.text.TextUtils;
 
+import com.juzix.wallet.BuildConfig;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.utils.MD5Utils;
 import com.juzix.wallet.utils.SystemUtil;
@@ -20,10 +23,17 @@ import java.util.UUID;
  */
 public class DeviceManager {
 
-
     private String OS;
     private String deviceID;
     private String channel;
+
+    @StringDef({Channel.GOOGLE_PLAY, Channel.PLATON_NETWORK})
+    public @interface Channel {
+
+        String GOOGLE_PLAY = "GooglePlay";
+
+        String PLATON_NETWORK = "PlatONNetwork";
+    }
 
     private static final class Singleton {
         private static final DeviceManager DEVICE_MANAGER = new DeviceManager();
@@ -89,7 +99,11 @@ public class DeviceManager {
     }
 
     public String getChannel() {
-        return TextUtils.isEmpty(channel) ? "PlatONNetwork" : channel;
+        return TextUtils.isEmpty(channel) ? BuildConfig.CHANNEL : channel;
+    }
+
+    public boolean isGooglePlayChannel() {
+        return Channel.GOOGLE_PLAY.equals(getChannel());
     }
 
     //获取版本名
@@ -105,13 +119,11 @@ public class DeviceManager {
     //通过PackageInfo得到的想要启动的应用的包名
     private static PackageInfo getPackageInfo(Context context) {
         PackageInfo pInfo = null;
-
         try {
             //通过PackageManager可以得到PackageInfo
             PackageManager pManager = context.getPackageManager();
             pInfo = pManager.getPackageInfo(context.getPackageName(),
                     PackageManager.GET_CONFIGURATIONS);
-
             return pInfo;
         } catch (Exception e) {
             e.printStackTrace();

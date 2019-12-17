@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 
 android {
+
     compileSdkVersion rootProject.ext.android.compileSdkVersion
 
     defaultConfig {
@@ -23,6 +24,25 @@ android {
         }
         releaseJX {
 
+        }
+        releaseTX {
+
+        }
+        releaseJTX {
+
+        }
+
+        flavorDimensions "channel"
+
+        productFlavors {
+
+            PlatONNetwork {
+
+            }
+
+            GooglePlay {
+
+            }
         }
     }
 }

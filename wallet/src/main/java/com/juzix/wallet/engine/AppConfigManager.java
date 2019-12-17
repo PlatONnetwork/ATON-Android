@@ -10,7 +10,7 @@ import com.juzix.wallet.utils.RxUtils;
 
 public class AppConfigManager {
 
-    private final static String DEFAULT_MIN_GASPRICE = "1000000000";
+    private final static String DEFAULT_MIN_GASPRICE = "10000000000";
     private final static String DEFAULT_MIN_DELEGATION = "10000000000000000000";
     private final static String DEFAULT_TIMEOUT = String.valueOf(24 * 60 * 60);
 

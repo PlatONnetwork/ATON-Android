@@ -142,7 +142,7 @@ public class DelegateActivityTest {
                 .subscribe(new Subscriber<BigInteger>() {
                     @Override
                     public void onNext(BigInteger integer) {
-//                        view.showGasPrice(integer.toString());
+//                        view.showFeeAmount(integer.toString());
                         System.out.println(integer);
                         assertNotNull(integer);
                     }
