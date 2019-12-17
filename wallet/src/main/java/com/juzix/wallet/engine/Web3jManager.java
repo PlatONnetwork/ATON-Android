@@ -25,9 +25,11 @@ import org.web3j.utils.Convert;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Single;
+import io.reactivex.functions.Function;
 
 public class Web3jManager {
 
@@ -135,11 +137,16 @@ public class Web3jManager {
         }
     }
 
+    /**
+     * 获取转账的gasPrice
+     *
+     * @return
+     */
     public Single<BigInteger> getGasPrice() {
         return Single
                 .fromCallable(new Callable<BigInteger>() {
                     @Override
-                    public BigInteger call(){
+                    public BigInteger call() {
                         BigInteger gasPrice = DefaultGasProvider.GAS_PRICE;
                         try {
                             PlatonGasPrice platonGasPrice = Web3jManager.getInstance().getWeb3j().platonGasPrice().send();
@@ -149,7 +156,41 @@ public class Web3jManager {
                         }
                         return gasPrice;
                     }
-                }).onErrorReturnItem(DefaultGasProvider.GAS_PRICE);
+                }).onErrorReturnItem(DefaultGasProvider.GAS_PRICE)
+                .map(new Function<BigInteger, BigInteger>() {
+                    @Override
+                    public BigInteger apply(BigInteger bigInteger) throws Exception {
+                        return getProcessedGasPrice(bigInteger);
+                    }
+                });
+    }
+
+    /**
+     * 获取委托的gasPrice
+     *
+     * @return
+     */
+    public Single<BigInteger> getContractGasPrice() {
+        return Single
+                .fromCallable(new Callable<BigInteger>() {
+                    @Override
+                    public BigInteger call() {
+                        BigInteger gasPrice = DefaultGasProvider.GAS_PRICE;
+                        try {
+                            PlatonGasPrice platonGasPrice = Web3jManager.getInstance().getWeb3j().platonGasPrice().send();
+                            gasPrice = platonGasPrice.getGasPrice();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        return gasPrice;
+                    }
+                }).onErrorReturnItem(DefaultGasProvider.GAS_PRICE)
+                .map(new Function<BigInteger, BigInteger>() {
+                    @Override
+                    public BigInteger apply(BigInteger bigInteger) throws Exception {
+                        return getProcessedGasPrice(bigInteger).max(new BigInteger(AppConfigManager.getInstance().getMinGasPrice()));
+                    }
+                });
     }
 
 
@@ -170,6 +211,17 @@ public class Web3jManager {
         }
 
         return transactionReceipt;
+    }
+
+    /**
+     * 获取处理过的gasPrice，保证后面10位为0
+     *
+     * @param oldGasPrice
+     * @return
+     */
+    private BigInteger getProcessedGasPrice(BigInteger oldGasPrice) {
+        BigDecimal bigDecimal = new BigDecimal(oldGasPrice).divide(BigDecimal.valueOf(10).pow(10), RoundingMode.HALF_UP);
+        return bigDecimal.multiply(BigDecimal.valueOf(10).pow(10)).toBigInteger();
     }
 
     private static class InstanceHolder {

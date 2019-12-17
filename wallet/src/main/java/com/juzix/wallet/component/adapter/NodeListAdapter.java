@@ -124,7 +124,7 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
     }
 
     private String getNodeName(Node node) {
-        if (BuildConfig.URL_MAIN_SERVER.equals(node.getNodeAddress())) {
+        if (BuildConfig.URL_MAIN_SERVER.equals(node.getNodeAddress()) || BuildConfig.URL_TEST_MAIN_SERVER.equals(node.getNodeAddress())) {
             return activity.getString(R.string.newbaleyworld);
         }
         return "";

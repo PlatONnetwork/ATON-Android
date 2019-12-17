@@ -5,18 +5,24 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.multidex.MultiDex;
 
 import com.juzhen.framework.app.CoreApp;
 import com.juzix.wallet.app.AppFramework;
 import com.juzix.wallet.component.ui.view.UnlockFigerprintActivity;
 import com.juzix.wallet.config.AppSettings;
+import com.juzix.wallet.engine.DeviceManager;
 import com.juzix.wallet.engine.WalletManager;
+import com.meituan.android.walle.WalleChannelReader;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
 import com.umeng.socialize.PlatformConfig;
 
-import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 
 import io.reactivex.functions.Consumer;
 import io.reactivex.plugins.RxJavaPlugins;
@@ -41,9 +47,9 @@ public class App extends CoreApp {
             }
         });
         context = this;
+        AppFramework.getAppFramework().initAppFramework(this);
         //初始化友盟
         initUMConfigure();
-        AppFramework.getAppFramework().initAppFramework(this);
         registerActivityLifecycleCallbacks(mActivityLifecycleCallbacks);
     }
 
@@ -90,7 +96,7 @@ public class App extends CoreApp {
     }
 
     private void initUMConfigure() {
-        UMConfigure.init(this, BuildConfig.UM_APPKEY, "Umeng", UMConfigure.DEVICE_TYPE_PHONE, null);
+        UMConfigure.init(this, BuildConfig.UM_APPKEY, DeviceManager.getInstance().getChannel(), UMConfigure.DEVICE_TYPE_PHONE, null);
         if (BuildConfig.DEBUG) {
             UMConfigure.setLogEnabled(true);
         }

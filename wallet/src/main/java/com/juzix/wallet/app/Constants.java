@@ -165,7 +165,7 @@ public class Constants {
     public interface DBName {
         //数据库名称
         String PORTAL = "portal";
-        //2019/12/04 0.7.5
+        //2019/12/16 0.7.4.1
         int VERSION = 108;
     }
 

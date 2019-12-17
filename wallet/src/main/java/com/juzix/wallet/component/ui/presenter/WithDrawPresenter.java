@@ -165,16 +165,17 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     /**
      * 获取
      */
+    @SuppressLint("CheckResult")
     @Override
     public void getGas() {
-        DelegateManager.getInstance().getGasPrice()
+        Web3jManager.getInstance().getContractGasPrice()
                 .compose(RxUtils.bindToLifecycle(getView()))
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .subscribe(new Consumer<BigInteger>() {
                     @Override
                     public void accept(BigInteger bigInteger) throws Exception {
                         if (isViewAttached()) {
-                            WithDrawPresenter.this.gasPrice = gasPrice;
+                            WithDrawPresenter.this.gasPrice = bigInteger;
                             getView().showGas(gasPrice);
                         }
                     }
@@ -214,7 +215,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     }
 
     private String getFeeAmount(GasProvider gasProvider, String gasPrice) {
-        return NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(BigDecimalUtil.mul(gasProvider.getGasLimit().toString(10), gasPrice).toPlainString(), "1E18"));
+        return BigDecimalUtil.mul(gasProvider.getGasLimit().toString(10), gasPrice).toPlainString();
     }
 
     @SuppressLint("CheckResult")

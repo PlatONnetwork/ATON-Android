@@ -3,6 +3,8 @@ package com.juzhen.framework.util;
 import android.text.TextUtils;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.IllegalFormatCodePointException;
 
 /**
  * 数字转化
@@ -10,6 +12,8 @@ import java.math.BigDecimal;
  * @author ziv
  */
 public class NumberParserUtils {
+
+    private final static BigDecimal VALUE_1E10 = BigDecimal.valueOf(10000000000L);
 
     private NumberParserUtils() {
 
@@ -319,4 +323,33 @@ public class NumberParserUtils {
 
         return bigDecimalStr;
     }
+
+    /**
+     * 处理余额，最多保留八位小数，多余部分截断显示
+     *
+     * @param value
+     * @param maxDigit
+     * @return
+     */
+    public static String getPrettyBalance(String value, int maxDigit) {
+
+        if (TextUtils.isEmpty(value)) {
+            return BigDecimal.ZERO.toPlainString();
+        }
+
+        if (maxDigit < 0) {
+            throw new RuntimeException("unsupported scale");
+        }
+
+        try {
+            //value除以10的10次方然后取整就是保留八位小数截断显示的值。因为value是真实值乘以10的18次方后的值
+            BigDecimal bigDecimal = new BigDecimal(value).divide(new BigDecimal(10).pow(18 - maxDigit));
+            bigDecimal = bigDecimal.setScale(0, BigDecimal.ROUND_DOWN);
+            return bigDecimal.multiply(new BigDecimal(10).pow(18 - maxDigit)).stripTrailingZeros().toPlainString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return BigDecimal.ZERO.toPlainString();
+    }
+
 }

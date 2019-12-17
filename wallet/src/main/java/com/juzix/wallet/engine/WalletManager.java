@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import com.juzhen.framework.network.ApiErrorCode;
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
-import com.juzhen.framework.util.LogUtils;
 import com.juzix.wallet.app.CustomThrowable;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.db.entity.WalletEntity;
@@ -14,6 +13,7 @@ import com.juzix.wallet.entity.AccountBalance;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
+import com.juzix.wallet.utils.AmountUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
 
@@ -313,7 +313,7 @@ public class WalletManager {
         mWallet.setChainId(NodeManager.getInstance().getChainId());
         mWallet.setCreateTime(System.currentTimeMillis());
         mWallet.setUpdateTime(System.currentTimeMillis());
-        mWallet.setName(String.format("%s-%d", "LAT-Wallet", AppSettings.getInstance().getWalletNameSequence(NodeManager.getInstance().getChainId())));
+        mWallet.setName(String.format("%s%d", "Wallet", AppSettings.getInstance().getWalletNameSequence(NodeManager.getInstance().getChainId())));
         mWalletList.add(mWallet);
         WalletDao.insertWalletInfo(mWallet.buildWalletInfoEntity());
         AppSettings.getInstance().setOperateMenuFlag(false);
@@ -522,8 +522,6 @@ public class WalletManager {
                     @Override
                     public ObservableSource<BigDecimal> apply(Long aLong) throws Exception {
                         List<String> walletAddress = WalletManager.getInstance().getAddressList();
-
-                        LogUtils.e(walletAddress.size() + "");
                         return ServerUtils
                                 .getCommonApi()
                                 .getAccountBalance(ApiRequestBody.newBuilder()
@@ -537,6 +535,15 @@ public class WalletManager {
                                             return Flowable.fromIterable(apiResponseResponse.body().getData());
                                         }
                                         return Flowable.error(new Throwable());
+                                    }
+                                })
+                                .map(new Function<AccountBalance, AccountBalance>() {
+                                    @Override
+                                    public AccountBalance apply(AccountBalance accountBalance) throws Exception {
+                                        //保留小数点后8位，截断
+                                        accountBalance.setFree(AmountUtil.getPrettyBalance(accountBalance.getFree(), 8));
+                                        accountBalance.setLock(AmountUtil.getPrettyBalance(accountBalance.getLock(), 8));
+                                        return accountBalance;
                                     }
                                 })
                                 .doOnNext(new Consumer<AccountBalance>() {
@@ -562,7 +569,6 @@ public class WalletManager {
                                     @Override
                                     public void accept(BigDecimal sumAccountBalance) throws Exception {
                                         if (!sumAccountBalance.equals(mSumAccountBalance)) {
-                                            LogUtils.e("钱包总余额已改变。。。");
                                             EventBus.getDefault().post(new Event.SumAccountBalanceChanged());
                                         }
                                         setSumAccountBalance(sumAccountBalance);

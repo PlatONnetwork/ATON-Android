@@ -33,6 +33,7 @@ import com.juzix.wallet.entity.GuideType;
 import com.juzix.wallet.entity.WebType;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
+import com.juzix.wallet.utils.AmountUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.LanguageUtil;
 import com.juzix.wallet.utils.RxUtils;
@@ -45,12 +46,16 @@ import com.umeng.analytics.MobclickAgent;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import io.reactivex.Flowable;
+import io.reactivex.functions.BiFunction;
+import io.reactivex.functions.Function;
 
 
 /**
@@ -228,12 +233,34 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
     }
 
     private void showTotal(List<DelegateInfo> list) {
-        double total = 0;
-        for (DelegateInfo info : list) {
-            total += NumberParserUtils.parseDouble(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(info.getDelegated(), "1E18"))));
-        }
 
-        tv_total_delegate.setText(total > 0 ? getString(R.string.amount_with_unit, StringUtil.formatBalance(total, false)) : "— —");
+        BigDecimal totalDelegateAmount = getTotalDelegateAmount(list);
+
+        tv_total_delegate.setText(totalDelegateAmount.compareTo(BigDecimal.ZERO) > 0 ? getString(R.string.amount_with_unit, StringUtil.formatBalance(AmountUtil.convertVonToLat(totalDelegateAmount.toPlainString(), 8), false)) : "— —");
+    }
+
+    private BigDecimal getTotalDelegateAmount(List<DelegateInfo> list) {
+
+        return Flowable.fromIterable(list)
+                .map(new Function<DelegateInfo, String>() {
+                    @Override
+                    public String apply(DelegateInfo delegateInfo) throws Exception {
+                        return delegateInfo.getDelegated();
+                    }
+                })
+                .map(new Function<String, BigDecimal>() {
+                    @Override
+                    public BigDecimal apply(String s) throws Exception {
+                        return BigDecimalUtil.toBigDecimal(s);
+                    }
+                })
+                .reduce(new BiFunction<BigDecimal, BigDecimal, BigDecimal>() {
+                    @Override
+                    public BigDecimal apply(BigDecimal bigDecimal, BigDecimal bigDecimal2) throws Exception {
+                        return bigDecimal.add(bigDecimal2);
+                    }
+                })
+                .blockingGet();
     }
 
 
@@ -255,11 +282,13 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
         }
 
     }
+
     //接收tab切换到当前页面的时候，刷新
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void refreshTabChange(Event.UpdateTabChangeEvent event) {
         refreshLayout.autoRefresh();
     }
+
     @Override
     public void onTabHidden() {
         super.onTabHidden();
