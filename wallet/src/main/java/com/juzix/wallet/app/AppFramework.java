@@ -125,8 +125,11 @@ public class AppFramework {
                         .removeField("txReceiptStatus")
                         .renameField("txReceiptStatus_temp", "txReceiptStatus");
 
-                //删除链ID为104的钱包
+                //增加backedUp 0.7.5
+                //删除链ID为104的钱包 0.7.4.0
+                //链id 103-->95或者103-->96 0.7.4.1
                 schema.get("WalletEntity")
+                        .addField("backedUp", boolean.class)
                         .transform(new RealmObjectSchema.Function() {
                             @Override
                             public void apply(DynamicRealmObject obj) {
@@ -136,10 +139,7 @@ public class AppFramework {
                                         .findAll()
                                         .deleteAllFromRealm();
                             }
-                        });
-
-                //链id 103-->97或者103-->96
-                schema.get("WalletEntity")
+                        })
                         .transform(new RealmObjectSchema.Function() {
                             @Override
                             public void apply(DynamicRealmObject obj) {
@@ -147,7 +147,7 @@ public class AppFramework {
                                         .where("WalletEntity")
                                         .equalTo("chainId", "103")
                                         .findAll()
-                                        .setString("chainId", newVersion == 109 ? BuildConfig.ID_MAIN_CHAIN : BuildConfig.ID_TEST_MAIN_CHAIN);
+                                        .setString("chainId", BuildConfig.ID_MAIN_CHAIN);
                             }
                         });
 
@@ -174,6 +174,7 @@ public class AppFramework {
             } else if (oldVersion == 107) {
                 //0.7.4.0升级到0.7.5.0,链id 97--->96
                 schema.get("WalletEntity")
+                        .addField("backedUp", boolean.class)
                         .transform(new RealmObjectSchema.Function() {
                             @Override
                             public void apply(DynamicRealmObject obj) {
@@ -221,6 +222,32 @@ public class AppFramework {
                 //增加isConsensus
                 schema.get("VerifyNodeEntity")
                         .addField("isConsensus", boolean.class);
+
+                schema.get("NodeEntity")
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.getDynamicRealm()
+                                        .where("NodeEntity")
+                                        .equalTo("chainId", "96")
+                                        .findAll()
+                                        .setString("chainId", BuildConfig.ID_MAIN_CHAIN);
+                            }
+                        });
+
+                //0.7.4.0升级到0.7.5.0,链id 96--->95
+                schema.get("WalletEntity")
+                        .addField("backedUp", boolean.class)
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.getDynamicRealm()
+                                        .where("WalletEntity")
+                                        .equalTo("chainId", "96")
+                                        .findAll()
+                                        .setString("chainId", BuildConfig.ID_MAIN_CHAIN);
+                            }
+                        });
 
                 oldVersion++;
 

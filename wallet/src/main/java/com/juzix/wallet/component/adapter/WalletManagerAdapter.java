@@ -53,13 +53,13 @@ public class WalletManagerAdapter extends RecyclerView.Adapter<WalletManagerAdap
     public void onBindViewHolder(final ViewHolder viewHolder, int position) {
         final Wallet item = mWalletList.get(position);
         int resId = RUtils.drawable(item.getAvatar());
-        if (resId < 0){
+        if (resId < 0) {
             resId = R.drawable.avatar_15;
         }
         viewHolder.ivWalletAvatar.setImageResource(resId);
         viewHolder.tvwalletName.setText(item.getName());
         viewHolder.tvWalletAddress.setText(AddressFormatUtil.formatAddress(item.getPrefixAddress()));
-        viewHolder.tvWalletBackup.setVisibility(!TextUtils.isEmpty(item.getMnemonic()) ? View.VISIBLE : View.GONE);
+        viewHolder.tvWalletBackup.setVisibility(item.isBackedUp() ? View.GONE : View.VISIBLE);
 
         if (TextUtils.isEmpty(item.getKey())) {//观察钱包
             viewHolder.tv_wallet_logo.setVisibility(View.VISIBLE);

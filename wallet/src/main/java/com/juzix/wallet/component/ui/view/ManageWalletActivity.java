@@ -137,13 +137,8 @@ public class ManageWalletActivity extends MVPBaseActivity<ManageWalletPresenter>
         if (TextUtils.isEmpty(wallet.getKey())) {
             llPrivateKey.setVisibility(View.GONE);
             llKeystore.setVisibility(View.GONE);
-            llBackup.setVisibility(View.GONE);
         }
     }
-//    @Override
-//    public void showWalletAddress(String address) {
-//        tvAddress.setText(AddressFormatUtil.formatAddress(address));
-//    }
 
     @Override
     public void showModifyNameDialog(String name) {

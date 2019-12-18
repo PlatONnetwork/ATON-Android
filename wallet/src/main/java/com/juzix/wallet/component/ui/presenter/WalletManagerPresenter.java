@@ -26,8 +26,6 @@ import io.reactivex.schedulers.Schedulers;
  */
 public class WalletManagerPresenter extends BasePresenter<WalletManagerContract.View> implements WalletManagerContract.Presenter {
 
-    private final static String TAG = WalletManagerPresenter.class.getSimpleName();
-
     private ArrayList<Wallet> mWalletList = new ArrayList<>();
 
     public WalletManagerPresenter(WalletManagerContract.View view) {
