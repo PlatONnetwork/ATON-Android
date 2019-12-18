@@ -52,12 +52,16 @@ public class VerifyNode implements Parcelable {
      */
     private boolean isInit;
 
+    /**
+     * 是否共识中
+     */
+    private boolean isConsensus;
 
     public VerifyNode() {
 
     }
 
-    public VerifyNode(String nodeId, int ranking, String name, String deposit, String url, String ratePA, String nodeStatus, boolean isInit) {
+    public VerifyNode(String nodeId, int ranking, String name, String deposit, String url, String ratePA, String nodeStatus, boolean isInit, boolean isConsensus) {
         this.nodeId = nodeId;
         this.ranking = ranking;
         this.name = name;
@@ -66,6 +70,7 @@ public class VerifyNode implements Parcelable {
         this.ratePA = ratePA;
         this.nodeStatus = nodeStatus;
         this.isInit = isInit;
+        this.isConsensus = isConsensus;
     }
 
     public VerifyNode(Builder builder) {
@@ -77,6 +82,7 @@ public class VerifyNode implements Parcelable {
         this.name = builder.name;
         this.ratePA = builder.ratePA;
         this.isInit = builder.isInit;
+        this.isConsensus = builder.isConsensus;
     }
 
 
@@ -149,6 +155,13 @@ public class VerifyNode implements Parcelable {
         this.ratePA = ratePA;
     }
 
+    public boolean isConsensus() {
+        return isConsensus;
+    }
+
+    public void setConsensus(boolean consensus) {
+        isConsensus = consensus;
+    }
 
     protected VerifyNode(Parcel in) {
         nodeId = in.readString();
@@ -158,6 +171,8 @@ public class VerifyNode implements Parcelable {
         url = in.readString();
         nodeStatus = in.readString();
         ratePA = in.readString();
+        isInit = in.readByte() != 0;
+        isConsensus = in.readByte() != 0;
     }
 
 
@@ -182,6 +197,8 @@ public class VerifyNode implements Parcelable {
         dest.writeString(url);
         dest.writeString(nodeStatus);
         dest.writeString(ratePA);
+        dest.writeByte((byte) (isInit ? 1 : 0));
+        dest.writeByte((byte) (isConsensus ? 1 : 0));
     }
 
     @Override
@@ -199,6 +216,7 @@ public class VerifyNode implements Parcelable {
         private String ratePA;
         private String nodeStatus;
         private boolean isInit;
+        private boolean isConsensus;
 
         public Builder nodeId(String nodeId) {
             this.nodeId = nodeId;
@@ -240,6 +258,11 @@ public class VerifyNode implements Parcelable {
             return this;
         }
 
+        public Builder isConsensus(boolean isConsensus) {
+            this.isConsensus = isConsensus;
+            return this;
+        }
+
         public VerifyNode build() {
             return new VerifyNode(this);
         }
@@ -256,6 +279,7 @@ public class VerifyNode implements Parcelable {
                 .url(url)
                 .nodeStatus(nodeStatus)
                 .isInit(isInit)
+                .isConsensus(isConsensus)
                 .build();
     }
 

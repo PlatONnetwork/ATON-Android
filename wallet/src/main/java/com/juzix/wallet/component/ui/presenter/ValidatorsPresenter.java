@@ -94,7 +94,6 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
     @Override
     public void loadDataFromDB(String sortType, String state, int ranking) {
         loadVerifyNodeDataFromDB(sortType, state, ranking);
-
     }
 
     private void loadVerifyNodeDataFromDB(String soryType, String state, int ranking) {
@@ -116,7 +115,7 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
                     @Override
                     public VerifyNode apply(VerifyNodeEntity entity) throws Exception {
                         //转换对象并赋值
-                        return new VerifyNode(entity.getNodeId(), entity.getRanking(), entity.getName(), entity.getDeposit(), entity.getUrl(), String.valueOf(entity.getRatePA()), entity.getNodeStatus(), entity.isInit());
+                        return new VerifyNode(entity.getNodeId(), entity.getRanking(), entity.getName(), entity.getDeposit(), entity.getUrl(), String.valueOf(entity.getRatePA()), entity.getNodeStatus(), entity.isInit(), entity.isConsensus());
                     }
                 })
                         .toList()
@@ -144,7 +143,7 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
                             @Override
                             public VerifyNode apply(VerifyNodeEntity entity) throws Exception {
                                 //转换对象并赋值
-                                return new VerifyNode(entity.getNodeId(), entity.getRanking(), entity.getName(), entity.getDeposit(), entity.getUrl(), String.valueOf(entity.getRatePA()), entity.getNodeStatus(), entity.isInit());
+                                return new VerifyNode(entity.getNodeId(), entity.getRanking(), entity.getName(), entity.getDeposit(), entity.getUrl(), String.valueOf(entity.getRatePA()), entity.getNodeStatus(), entity.isInit(), entity.isConsensus());
                             }
                         })
                         .toList()
@@ -180,7 +179,7 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
                     @Override
                     public VerifyNode apply(VerifyNodeEntity entity) throws Exception {
                         //转换对象并赋值
-                        return new VerifyNode(entity.getNodeId(), entity.getRanking(), entity.getName(), entity.getDeposit(), entity.getUrl(), String.valueOf(entity.getRatePA()), entity.getNodeStatus(), entity.isInit());
+                        return new VerifyNode(entity.getNodeId(), entity.getRanking(), entity.getName(), entity.getDeposit(), entity.getUrl(), String.valueOf(entity.getRatePA()), entity.getNodeStatus(), entity.isInit(), entity.isConsensus());
                     }
                 })
                         .toList()
@@ -216,7 +215,7 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
                     @Override
                     public VerifyNode apply(VerifyNodeEntity entity) throws Exception {
                         //转换对象并赋值
-                        return new VerifyNode(entity.getNodeId(), entity.getRanking(), entity.getName(), entity.getDeposit(), entity.getUrl(), String.valueOf(entity.getRatePA()), entity.getNodeStatus(), entity.isInit());
+                        return new VerifyNode(entity.getNodeId(), entity.getRanking(), entity.getName(), entity.getDeposit(), entity.getUrl(), String.valueOf(entity.getRatePA()), entity.getNodeStatus(), entity.isInit(), entity.isConsensus());
                     }
                 })
                         .toList()

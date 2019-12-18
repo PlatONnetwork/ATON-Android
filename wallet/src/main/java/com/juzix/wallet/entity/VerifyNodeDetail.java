@@ -84,10 +84,15 @@ public class VerifyNodeDetail implements Parcelable {
      * 是否为链初始化时内置的候选人
      */
     private boolean isInit;
+    /**
+     * 是否共识中
+     */
+    private boolean isConsensus;
 
-    public  VerifyNodeDetail(){
+    public VerifyNodeDetail() {
 
     }
+
     protected VerifyNodeDetail(Parcel in) {
         deposit = in.readString();
         name = in.readString();
@@ -102,6 +107,8 @@ public class VerifyNodeDetail implements Parcelable {
         blockOutNumber = in.readInt();
         blockRate = in.readString();
         ratePA = in.readString();
+        isInit = in.readByte() != 0;
+        isConsensus = in.readByte() != 0;
     }
 
     @Override
@@ -119,6 +126,8 @@ public class VerifyNodeDetail implements Parcelable {
         dest.writeInt(blockOutNumber);
         dest.writeString(blockRate);
         dest.writeString(ratePA);
+        dest.writeByte((byte) (isInit ? 1 : 0));
+        dest.writeByte((byte) (isConsensus ? 1 : 0));
     }
 
     @Override
@@ -248,6 +257,14 @@ public class VerifyNodeDetail implements Parcelable {
 
     public void setInit(boolean init) {
         isInit = init;
+    }
+
+    public boolean isConsensus() {
+        return isConsensus;
+    }
+
+    public void setConsensus(boolean consensus) {
+        isConsensus = consensus;
     }
 }
 

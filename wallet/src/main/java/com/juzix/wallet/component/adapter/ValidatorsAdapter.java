@@ -69,7 +69,7 @@ public class ValidatorsAdapter extends CommonAdapter<VerifyNode> {
     private void showState(Context context, VerifyNode item, TextView tv_status) {
         if (Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage())) { //中文环境下
             if (TextUtils.equals(item.getNodeStatus(), ACTIVE)) {
-                tv_status.setText(R.string.validators_active);
+                tv_status.setText(item.isConsensus() ? R.string.validators_verifying : R.string.validators_active);
             } else {
                 tv_status.setText(R.string.validators_candidate);
             }
