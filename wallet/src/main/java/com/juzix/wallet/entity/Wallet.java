@@ -50,6 +50,11 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
      */
     protected String chainId;
 
+    /**
+     * 是否已经备份了
+     */
+    protected boolean backedUp;
+
     protected AccountBalance accountBalance;
 
     public Wallet() {
@@ -67,6 +72,7 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
         keystorePath = in.readString();
         mnemonic = in.readString();
         chainId = in.readString();
+        backedUp = in.readByte() != 0;
         accountBalance = in.readParcelable(AccountBalance.class.getClassLoader());
     }
 
@@ -81,7 +87,8 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
         this.keystorePath = builder.keystorePath;
         this.mnemonic = builder.mnemonic;
         this.chainId = builder.chainId;
-        accountBalance = builder.accountBalance;
+        this.backedUp = builder.backedUp;
+        this.accountBalance = builder.accountBalance;
     }
 
     @Override
@@ -96,6 +103,7 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
         dest.writeString(keystorePath);
         dest.writeString(mnemonic);
         dest.writeString(chainId);
+        dest.writeByte((byte) (backedUp ? 1 : 0));
         dest.writeParcelable(accountBalance, flags);
     }
 
@@ -229,6 +237,14 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
         return accountBalance == null ? "0" : accountBalance.getLock();
     }
 
+    public boolean isBackedUp() {
+        return backedUp;
+    }
+
+    public void setBackedUp(boolean backedUp) {
+        this.backedUp = backedUp;
+    }
+
     public String getAddressWithoutPrefix() {
         if (!TextUtils.isEmpty(address)) {
             if (address.startsWith("0x")) {
@@ -261,15 +277,6 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
         }
     }
 
-    /**
-     * 是否需要备份，判断提交是，助记词是否为空，为空说明已经备份过了
-     *
-     * @return
-     */
-    public boolean isNeedBackup() {
-        return !TextUtils.isEmpty(mnemonic);
-    }
-
     @Override
     public String toString() {
         return "Wallet{" +
@@ -279,7 +286,12 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 ", avatar='" + avatar + '\'' +
+                ", key='" + key + '\'' +
+                ", keystorePath='" + keystorePath + '\'' +
+                ", mnemonic='" + mnemonic + '\'' +
                 ", chainId='" + chainId + '\'' +
+                ", backedUp=" + backedUp +
+                ", accountBalance=" + accountBalance +
                 '}';
     }
 
@@ -305,7 +317,9 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
                 .updateTime(getUpdateTime())
                 .avatar(getAvatar())
                 .mnemonic(getMnemonic())
-                .chainId(getChainId()).build();
+                .chainId(getChainId())
+                .backedUp(isBackedUp())
+                .build();
     }
 
     @Override
@@ -319,6 +333,7 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
 
     /**
      * 是否是观察者钱包
+     *
      * @return
      */
     public boolean isObservedWallet() {
@@ -336,6 +351,7 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
         private String keystorePath;
         private String mnemonic;
         private String chainId;
+        protected boolean backedUp;
         private AccountBalance accountBalance;
 
         public Builder uuid(String uuid) {
@@ -385,6 +401,11 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
 
         public Builder chainId(String chainId) {
             this.chainId = chainId;
+            return this;
+        }
+
+        public Builder backedUp(boolean backedUp) {
+            this.backedUp = backedUp;
             return this;
         }
 

@@ -49,6 +49,10 @@ public class WalletEntity extends RealmObject {
      * 节点地址
      */
     private String chainId;
+    /**
+     * 是否已备份
+     */
+    private boolean backedUp;
 
     public WalletEntity() {
 
@@ -65,6 +69,7 @@ public class WalletEntity extends RealmObject {
         setAvatar(builder.avatar);
         setMnemonic(builder.mnemonic);
         setChainId(builder.chainId);
+        setBackedUp(builder.backedUp);
     }
 
     public String getAvatar() {
@@ -147,6 +152,14 @@ public class WalletEntity extends RealmObject {
         this.chainId = chainId;
     }
 
+    public boolean isBackedUp() {
+        return backedUp;
+    }
+
+    public void setBackedUp(boolean backedUp) {
+        this.backedUp = backedUp;
+    }
+
     public static final class Builder {
         private String uuid;
         private String keyJson;
@@ -158,6 +171,7 @@ public class WalletEntity extends RealmObject {
         private String avatar;
         private String mnemonic;
         private String chainId;
+        private boolean backedUp;
 
         public Builder() {
         }
@@ -212,6 +226,11 @@ public class WalletEntity extends RealmObject {
             return this;
         }
 
+        public Builder backedUp(boolean val) {
+            backedUp = val;
+            return this;
+        }
+
         public WalletEntity build() {
             return new WalletEntity(this);
         }
@@ -229,12 +248,13 @@ public class WalletEntity extends RealmObject {
                 .avatar(avatar)
                 .mnemonic(mnemonic)
                 .chainId(chainId)
+                .backedUp(backedUp)
                 .build();
     }
 
     @Override
     public String toString() {
-        return "IndividualWalletInfoEntity{" +
+        return "WalletEntity{" +
                 "uuid='" + uuid + '\'' +
                 ", keyJson='" + keyJson + '\'' +
                 ", name='" + name + '\'' +
@@ -245,6 +265,7 @@ public class WalletEntity extends RealmObject {
                 ", avatar='" + avatar + '\'' +
                 ", mnemonic='" + mnemonic + '\'' +
                 ", chainId='" + chainId + '\'' +
+                ", backedUp=" + backedUp +
                 '}';
     }
 }

@@ -597,7 +597,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
     @Override
     public void showWalletInfo(Wallet wallet) {
-        tvBackup.setVisibility(wallet.isNeedBackup() ? View.VISIBLE : View.GONE);
+        tvBackup.setVisibility(wallet.isBackedUp() ? View.GONE : View.VISIBLE);
         int resId = RUtils.drawable(wallet.getAvatar());
         if (resId < 0) {
             resId = R.drawable.avatar_15;

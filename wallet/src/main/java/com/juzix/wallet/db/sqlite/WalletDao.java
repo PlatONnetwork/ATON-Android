@@ -135,6 +135,33 @@ public class WalletDao {
         return false;
     }
 
+    public static boolean updateBackedUpWithUuid(String uuid, boolean backedUp) {
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            realm.where(WalletEntity.class)
+                    .beginGroup()
+                    .equalTo("uuid", uuid)
+                    .and()
+                    .equalTo("chainId", NodeManager.getInstance().getChainId())
+                    .endGroup()
+                    .findFirst()
+                    .setBackedUp(backedUp);
+            realm.commitTransaction();
+            return true;
+        } catch (Exception e) {
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return false;
+    }
+
     public static boolean updateMnemonicWithUuid(String uuid, String mnemonic) {
         Realm realm = null;
         try {

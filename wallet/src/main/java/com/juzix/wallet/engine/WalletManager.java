@@ -398,19 +398,17 @@ public class WalletManager {
         }
     }
 
-    public boolean emptyMnemonic(String mnenonic) {
-        String uuid = "";
-        for (Wallet walletEntity : mWalletList) {
-            if (mnenonic.equals(walletEntity.getMnemonic())) {
-                walletEntity.setMnemonic("");
-                uuid = walletEntity.getUuid();
-                break;
-            }
-        }
+    public boolean updateBackedUpWithUuid(String uuid, boolean backedUp) {
         if (TextUtils.isEmpty(uuid)) {
             return false;
         }
-        return WalletDao.updateMnemonicWithUuid(uuid, "");
+        for (Wallet walletEntity : mWalletList) {
+            if (uuid.equals(walletEntity.getUuid())) {
+                walletEntity.setBackedUp(backedUp);
+                break;
+            }
+        }
+        return WalletDao.updateBackedUpWithUuid(uuid, backedUp);
     }
 
     public boolean updateWalletName(Wallet wallet, String newName) {
