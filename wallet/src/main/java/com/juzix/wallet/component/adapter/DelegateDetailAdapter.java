@@ -147,7 +147,7 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
     private void showTextSpan(Context mContext, DelegateDetail detail, TextView nodeState) {
         if (Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage())) { //中文环境下
             if (TextUtils.equals(detail.getNodeStatus(), ACTIVE)) {
-                nodeState.setText(R.string.validators_active);
+                nodeState.setText(detail.isConsensus() ? R.string.validators_verifying : R.string.validators_active);
             } else if (TextUtils.equals(detail.getNodeStatus(), CANDIDATE)) {
                 nodeState.setText(R.string.validators_candidate);
             } else if (TextUtils.equals(detail.getNodeStatus(), EXITED)) {

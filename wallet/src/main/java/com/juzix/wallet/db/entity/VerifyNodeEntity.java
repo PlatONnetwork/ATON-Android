@@ -51,6 +51,10 @@ public class VerifyNodeEntity extends RealmObject {
      * 是否为链初始化时内置的候选人
      */
     private boolean isInit;
+    /**
+     * 是否共识中
+     */
+    private boolean isConsensus;
 
     public VerifyNodeEntity() {
 
@@ -65,6 +69,7 @@ public class VerifyNodeEntity extends RealmObject {
         this.ratePA = builder.ratePA;
         this.url = builder.url;
         this.isInit = builder.isInit;
+        this.isConsensus = builder.isConsensus;
     }
 
     public boolean isInit() {
@@ -131,6 +136,14 @@ public class VerifyNodeEntity extends RealmObject {
         this.nodeStatus = nodeStatus;
     }
 
+    public boolean isConsensus() {
+        return isConsensus;
+    }
+
+    public void setConsensus(boolean consensus) {
+        isConsensus = consensus;
+    }
+
     public static final class Builder {
         private String nodeId;
         private int ranking;
@@ -140,6 +153,7 @@ public class VerifyNodeEntity extends RealmObject {
         private long ratePA;
         private String nodeStatus;
         private boolean isInit;
+        private boolean isConsensus;
 
         public Builder() {
 
@@ -186,6 +200,11 @@ public class VerifyNodeEntity extends RealmObject {
             return this;
         }
 
+        public Builder isConsensus(boolean isConsensus) {
+            this.isConsensus = isConsensus;
+            return this;
+        }
+
         public VerifyNodeEntity build() {
             return new VerifyNodeEntity(this);
         }
@@ -203,6 +222,7 @@ public class VerifyNodeEntity extends RealmObject {
                 .ratePA(String.valueOf(ratePA))
                 .url(url)
                 .isInit(isInit)
+                .isConsensus(isConsensus)
                 .build();
     }
 

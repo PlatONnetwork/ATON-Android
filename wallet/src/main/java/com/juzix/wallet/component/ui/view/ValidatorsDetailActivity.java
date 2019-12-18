@@ -231,7 +231,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
         nodeAddress.setText(AddressFormatUtil.formatAddress(nodeDetail.getNodeId()));
 
         if (TextUtils.equals(nodeDetail.getNodeStatus(), STATE_ACTIVE)) {
-            nodeState.setText(getString(R.string.validators_state_active));
+            nodeState.setText(nodeDetail.isConsensus() ? getString(R.string.validators_verifying) : getString(R.string.validators_state_active));
         } else if (TextUtils.equals(nodeDetail.getNodeStatus(), STATE_CANDIDATE)) {
             nodeState.setText(getString(R.string.validators_state_candidate));
         } else if (TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITED)) {

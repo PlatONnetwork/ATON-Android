@@ -37,7 +37,7 @@ public class DelegateDetail implements Parcelable {
     private String walletAddress;
 
     /**
-     *是否为链初始化时内置的候选人
+     * 是否为链初始化时内置的候选人
      * 0.7.3 新增字段
      */
     private boolean isInit;
@@ -46,6 +46,10 @@ public class DelegateDetail implements Parcelable {
      * 已委托  单位von
      */
     private String delegated;
+    /**
+     * 0.7.5新增字段
+     */
+    private boolean isConsensus;
 
     public DelegateDetail() {
 
@@ -123,6 +127,14 @@ public class DelegateDetail implements Parcelable {
         isInit = init;
     }
 
+    public boolean isConsensus() {
+        return isConsensus;
+    }
+
+    public void setConsensus(boolean consensus) {
+        isConsensus = consensus;
+    }
+
     protected DelegateDetail(Parcel in) {
         nodeId = in.readString();
         nodeName = in.readString();
@@ -131,7 +143,9 @@ public class DelegateDetail implements Parcelable {
         url = in.readString();
         released = in.readString();
         walletAddress = in.readString();
-        delegated =in.readString();
+        delegated = in.readString();
+        isInit = in.readByte() != 0;
+        isConsensus = in.readByte() != 0;
     }
 
     @Override
@@ -144,6 +158,8 @@ public class DelegateDetail implements Parcelable {
         dest.writeString(released);
         dest.writeString(walletAddress);
         dest.writeString(delegated);
+        dest.writeByte((byte) (isInit ? 1 : 0));
+        dest.writeByte((byte) (isConsensus ? 1 : 0));
     }
 
     @Override

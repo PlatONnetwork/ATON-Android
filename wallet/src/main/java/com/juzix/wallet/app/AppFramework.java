@@ -147,11 +147,11 @@ public class AppFramework {
                                         .where("WalletEntity")
                                         .equalTo("chainId", "103")
                                         .findAll()
-                                        .setString("chainId", newVersion == 108 ? BuildConfig.ID_MAIN_CHAIN : BuildConfig.ID_TEST_MAIN_CHAIN);
+                                        .setString("chainId", newVersion == 109 ? BuildConfig.ID_MAIN_CHAIN : BuildConfig.ID_TEST_MAIN_CHAIN);
                             }
                         });
 
-                //增加VerifyNodeEntity
+                //增加VerifyNodeEntity,0.7.5增加isConsensus
                 schema.create("VerifyNodeEntity")
                         .addField("nodeId", String.class, FieldAttribute.PRIMARY_KEY)
                         .addField("ranking", int.class)
@@ -160,7 +160,8 @@ public class AppFramework {
                         .addField("url", String.class)
                         .addField("ratePA", long.class)
                         .addField("nodeStatus", String.class)
-                        .addField("isInit", boolean.class);
+                        .addField("isInit", boolean.class)
+                        .addField("isConsensus", boolean.class);
 
                 schema.create("TransactionRecordEntity")
                         .addField("timeStamp", long.class, FieldAttribute.PRIMARY_KEY)
@@ -203,6 +204,10 @@ public class AppFramework {
                         .addField("to", String.class)
                         .addField("value", String.class);
 
+                //增加isConsensus
+                schema.get("VerifyNodeEntity")
+                        .addField("isConsensus", boolean.class);
+
                 oldVersion++;
 
             } else if (oldVersion == 108) {
@@ -212,6 +217,13 @@ public class AppFramework {
                         .addField("from", String.class)
                         .addField("to", String.class)
                         .addField("value", String.class);
+
+                //增加isConsensus
+                schema.get("VerifyNodeEntity")
+                        .addField("isConsensus", boolean.class);
+
+                oldVersion++;
+
             }
 
         }

@@ -531,6 +531,7 @@
     <string name="validators_rank">排名</string>
     <string name="validators_all">所有</string>
     <string name="validators_active">活跃中</string>
+    <string name="validators_verifying">共识中</string>
     <string name="validators_candidate">候选中</string>
     <string name="validators_detail">节点详情</string>
     <string name="total_staked">总质押(LAT)</string>

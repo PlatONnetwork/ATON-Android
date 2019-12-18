@@ -521,6 +521,7 @@
     <string name="validators_rank">RANK</string>
     <string name="validators_all">All</string>
     <string name="validators_active">Active</string>
+    <string name="validators_verifying">Verifying</string>
     <string name="validators_candidate">Candidate</string>
     <string name="validators_detail">Validator Details</string>
     <string name="total_staked">Total Staked(LAT)</string>
