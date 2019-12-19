@@ -20,7 +20,7 @@ public class ExportKeystoreFragment extends BaseFragment implements View.OnClick
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_export_keystore, container, false);
-        ((TextView)view.findViewById(R.id.tv_keystore)).setText(getActivity().getIntent().getStringExtra(Constants.Extra.EXTRA_PASSWORD));
+        ((TextView) view.findViewById(R.id.tv_keystore)).setText(getActivity().getIntent().getStringExtra(Constants.Extra.EXTRA_PASSWORD));
         view.findViewById(R.id.btn_copy).setOnClickListener(this);
         return view;
     }
@@ -34,6 +34,8 @@ public class ExportKeystoreFragment extends BaseFragment implements View.OnClick
                 ClipData clipData = ClipData.newPlainText("text", activity.getIntent().getStringExtra(Constants.Extra.EXTRA_PASSWORD));
                 cm.setPrimaryClip(clipData);
                 showLongToast(string(R.string.textCopiedTips));
+                break;
+            default:
                 break;
         }
     }

@@ -43,7 +43,8 @@ public class ExportKeystoreQRCodeFragment extends BaseFragment {
         mQrCodeIv = view.findViewById(R.id.iv_qrcode);
 
         String qrCodeData = getActivity().getIntent().getStringExtra(Constants.Extra.EXTRA_PASSWORD);
-        int size = DensityUtil.dp2px(getActivity(), 250f);
+
+        int size = CommonUtil.getScreenWidth(getActivity()) - DensityUtil.dp2px(getActivity(), 92f);
 
         RxView
                 .clicks(mCopyShadowButton)
