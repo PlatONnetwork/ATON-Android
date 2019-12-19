@@ -20,7 +20,7 @@ public class ImportKeystorePresenter extends BasePresenter<ImportKeystoreContrac
 
     @Override
     public void init() {
-        if (isViewAttached()){
+        if (isViewAttached()) {
             getView().showQRCode(getView().getKeystoreFromIntent());
         }
     }
@@ -70,6 +70,8 @@ public class ImportKeystorePresenter extends BasePresenter<ImportKeystoreContrac
                     case WalletManager.CODE_ERROR_UNKNOW:
                         mHandler.sendEmptyMessage(MSG_PASSWORD_FAILED);
                         break;
+                    default:
+                        break;
                 }
             }
         }.start();
@@ -106,6 +108,8 @@ public class ImportKeystorePresenter extends BasePresenter<ImportKeystoreContrac
                 case MSG_WALLET_EXISTS:
                     dismissLoadingDialogImmediately();
                     showLongToast(string(R.string.walletExists));
+                    break;
+                default:
                     break;
             }
         }

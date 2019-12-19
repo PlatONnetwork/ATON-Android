@@ -82,7 +82,7 @@ public class DelegateRecordAdapter extends CommonAdapter<Transaction> {
                     tv.setTextColor(ContextCompat.getColorStateList(context, R.color.color_19a20e));
                     tv.setText(context.getString(R.string.delegate_state_success));
                 } else if (model.getTxReceiptStatus() == TransactionStatus.PENDING) {
-                    tv.setTextColor(ContextCompat.getColorStateList(context, R.color.color_4a90e2));
+                    tv.setTextColor(ContextCompat.getColorStateList(context, R.color.color_616464));
                     tv.setText(context.getString(R.string.delegate_pending));
                 } else {
                     tv.setTextColor(ContextCompat.getColorStateList(context, R.color.color_f5302c));
@@ -96,7 +96,7 @@ public class DelegateRecordAdapter extends CommonAdapter<Transaction> {
                     tv.setTextColor(ContextCompat.getColorStateList(context, R.color.color_19a20e));
                     tv.setText(context.getString(R.string.withdraw_success));
                 } else if (model.getTxReceiptStatus() == TransactionStatus.PENDING) {
-                    tv.setTextColor(ContextCompat.getColorStateList(context, R.color.color_4a90e2));
+                    tv.setTextColor(ContextCompat.getColorStateList(context, R.color.color_616464));
                     tv.setText(context.getString(R.string.withdraw_pending));
                 } else {
                     tv.setTextColor(ContextCompat.getColorStateList(context, R.color.color_f5302c));

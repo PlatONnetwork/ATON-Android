@@ -78,7 +78,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginBottom="6dp"
                 android:text="active"
-                android:textColor="@color/color_4a90e2"
+                android:textColor="@color/color_616464"
                 android:textSize="13sp" />
 
         </RelativeLayout>

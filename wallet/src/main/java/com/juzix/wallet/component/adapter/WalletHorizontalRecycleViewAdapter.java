@@ -13,7 +13,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.juzix.wallet.R;
-import com.juzix.wallet.component.widget.AutofitTextView;
 import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.netlistener.NetworkType;
@@ -114,9 +113,9 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
                 ivIcon.setImageResource(R.drawable.icon_assets_cold_h);
                 tvName.setTextColor(ContextCompat.getColor(mContext, R.color.color_ffffff));
                 ShadowDrawable.setShadowDrawable(holder.vShadow,
-                        ContextCompat.getColor(mContext, R.color.color_B3FA9100),
+                        ContextCompat.getColor(mContext, R.color.color_b3fa9100),
                         mShapeRadius,
-                        ContextCompat.getColor(mContext, R.color.color_B3FA9100),
+                        ContextCompat.getColor(mContext, R.color.color_b3fa9100),
                         mShadowRadius,
                         0,
                         0);
@@ -142,9 +141,9 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
                     ivIcon.setImageResource(R.drawable.icon_assets_observed_h);
                     tvName.setTextColor(ContextCompat.getColor(mContext, R.color.color_ffffff));
                     ShadowDrawable.setShadowDrawable(holder.vShadow,
-                        ContextCompat.getColor(mContext, R.color.color_B3858585),
+                        ContextCompat.getColor(mContext, R.color.color_b3858585),
                         mShapeRadius,
-                        ContextCompat.getColor(mContext, R.color.color_B3858585),
+                        ContextCompat.getColor(mContext, R.color.color_b3858585),
                         mShadowRadius,
                         0,
                         0);
