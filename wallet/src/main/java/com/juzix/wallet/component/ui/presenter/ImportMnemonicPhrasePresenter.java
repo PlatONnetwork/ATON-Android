@@ -84,6 +84,8 @@ public class ImportMnemonicPhrasePresenter extends BasePresenter<ImportMnemonicP
                     case WalletManager.CODE_ERROR_UNKNOW:
                         mHandler.sendEmptyMessage(MSG_PASSWORD_FAILED);
                         break;
+                    default:
+                        break;
                 }
             }
         }.start();
@@ -120,6 +122,8 @@ public class ImportMnemonicPhrasePresenter extends BasePresenter<ImportMnemonicP
                 case MSG_WALLET_EXISTS:
                     dismissLoadingDialogImmediately();
                     showLongToast(string(R.string.walletExists));
+                    break;
+                default:
                     break;
             }
         }

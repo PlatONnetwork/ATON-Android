@@ -13,6 +13,7 @@ import com.juzix.wallet.App;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.adapter.base.ViewHolder;
+import com.juzix.wallet.component.widget.RoundedTextView;
 import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.entity.VerifyNode;
 import com.juzix.wallet.utils.BigDecimalUtil;
@@ -26,9 +27,9 @@ import java.util.List;
 import java.util.Locale;
 
 public class ValidatorsAdapter extends CommonAdapter<VerifyNode> {
+
     private static final String ACTIVE = "Active";
     private static final String CANDIDATE = "Candidate";
-
 
     public ValidatorsAdapter(int layoutId, List<VerifyNode> datas) {
         super(layoutId, datas);
@@ -50,8 +51,8 @@ public class ValidatorsAdapter extends CommonAdapter<VerifyNode> {
 
         GlideUtils.loadRound(context, item.getUrl(), viewHolder.getView(R.id.iv_url));
         viewHolder.setText(R.id.tv_validators_node_name, item.getName());
-        TextView tv_status = viewHolder.getView(R.id.tv_validators_node_state);
-        showState(context, item, tv_status);
+        RoundedTextView tv_status = viewHolder.getView(R.id.tv_validators_node_state);
+        showState(item, tv_status);
 
         TextView tv_yield = viewHolder.getView(R.id.tv_yield);
         isShowRA(item, tv_yield);
@@ -61,19 +62,17 @@ public class ValidatorsAdapter extends CommonAdapter<VerifyNode> {
         tv.setText(String.format("%d", item.getRanking()));
         changeTextFontSize(tv, item);
         changeImageViewBg(tv, item.getRanking());
-        TextView tv_state = viewHolder.getView(R.id.tv_validators_node_state);
-        changeTextBgAndTextColor(context, tv_state, item.getNodeStatus());
+        changeTextBgAndTextColor(tv_status, item);
 
     }
 
-    private void showState(Context context, VerifyNode item, TextView tv_status) {
+    private void showState(VerifyNode item, RoundedTextView tv_status) {
         if (Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage())) { //中文环境下
             if (TextUtils.equals(item.getNodeStatus(), ACTIVE)) {
                 tv_status.setText(item.isConsensus() ? R.string.validators_verifying : R.string.validators_active);
             } else {
                 tv_status.setText(R.string.validators_candidate);
             }
-
         } else {
             tv_status.setText(item.getNodeStatus());
         }
@@ -111,15 +110,15 @@ public class ValidatorsAdapter extends CommonAdapter<VerifyNode> {
 
     }
 
-    public void changeTextBgAndTextColor(Context context, TextView textView, String state) {
-        switch (state) {
+    public void changeTextBgAndTextColor(RoundedTextView textView, VerifyNode verifyNode) {
+        switch (verifyNode.getNodeStatus()) {
             case ACTIVE:
-                textView.setTextColor(ContextCompat.getColorStateList(context, R.color.color_4A90E2));
-                textView.setBackgroundResource(R.drawable.bg_validators_state);
+                textView.setRoundedBorderColor(ContextCompat.getColor(textView.getContext(), verifyNode.isConsensus() ? R.color.color_f79d10 : R.color.color_4a90e2));
+                textView.setTextColor(ContextCompat.getColor(textView.getContext(), verifyNode.isConsensus() ? R.color.color_f79d10 : R.color.color_4a90e2));
                 break;
             case CANDIDATE:
-                textView.setTextColor(ContextCompat.getColorStateList(context, R.color.color_19a20e));
-                textView.setBackgroundResource(R.drawable.bg_validators_cadidate);
+                textView.setRoundedBorderColor(ContextCompat.getColor(textView.getContext(), R.color.color_19a20e));
+                textView.setTextColor(ContextCompat.getColor(textView.getContext(), R.color.color_19a20e));
                 break;
             default:
                 break;

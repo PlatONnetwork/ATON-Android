@@ -39,7 +39,7 @@ public class ManageWalletPresenter extends BasePresenter<ManageWalletContract.Vi
     }
 
     @Override
-    public void showIndividualWalletInfo() {
+    public void showWalletInfo() {
         if (mWalletEntity != null && isViewAttached()) {
             List<Wallet> walletList = WalletManager.getInstance().getWalletList();
             for (Wallet walletEntity : walletList) {
@@ -47,13 +47,7 @@ public class ManageWalletPresenter extends BasePresenter<ManageWalletContract.Vi
                     mWalletEntity = walletEntity;
                 }
             }
-//            getView().showWalletName(mWalletEntity.getName());
-//            getView().showWalletAddress(mWalletEntity.getPrefixAddress());
-//            getView().showWalletAvatar(mWalletEntity.getAvatar());
             getView().showWalletInfo(mWalletEntity);
-            boolean hasBackup = TextUtils.isEmpty(mWalletEntity.getMnemonic());
-            getView().enableBackup(!hasBackup);
-            getView().enableDelete(hasBackup);
         }
     }
 
@@ -78,8 +72,9 @@ public class ManageWalletPresenter extends BasePresenter<ManageWalletContract.Vi
             public void confirm() {
                 deleteWallet();
             }
-        }).show(currentActivity().getSupportFragmentManager(),"deleteObserverWallet");
+        }).show(currentActivity().getSupportFragmentManager(), "deleteObserverWallet");
     }
+
     @Override
     public void deleteWallet() {
         Single
