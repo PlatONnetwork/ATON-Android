@@ -19,7 +19,7 @@ android {
         releaseJC{
 
         }
-        releaseOC{
+        releaseJOC{
 
         }
         releaseX {

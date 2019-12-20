@@ -116,7 +116,7 @@ android {
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
         }
 
-        releaseOC {
+        releaseJOC {
             debuggable false
             signingConfig signingConfigs.releaseJC
             shrinkResources true
