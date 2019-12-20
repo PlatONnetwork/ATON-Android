@@ -120,8 +120,7 @@ public class DelegateActivityTest {
 
     @Test
     public void testGetGas() {
-        DelegateManager delegateManager = DelegateManager.getInstance();
-        delegateManager.getGasPrice()
+        Web3jManager.getInstance().getGasPrice()
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .subscribe(new Consumer<BigInteger>() {
                     @Override
