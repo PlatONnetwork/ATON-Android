@@ -110,6 +110,8 @@ public class NodeManager {
         if (TextUtils.isEmpty(getCurNode().getChainId())) {
             if (BuildConfig.RELEASE_TYPE.equals("server.typeC")) {
                 return BuildConfig.ID_TEST_CHAIN;
+            } else if (BuildConfig.RELEASE_TYPE.equals("server.typeOC")) {
+                return BuildConfig.ID_TEST_CHAIN;
             } else if (BuildConfig.RELEASE_TYPE.equals("server.typeTX")) {
                 return BuildConfig.ID_TEST_MAIN_CHAIN;
             } else {
@@ -173,6 +175,14 @@ public class NodeManager {
                     .isDefaultNode(true)
                     .isChecked(true)
                     .chainId(BuildConfig.ID_MAIN_CHAIN)
+                    .build());
+        } else if (BuildConfig.RELEASE_TYPE.equals("server.typeOC")) {
+            nodeInfoEntityList.add(new Node.Builder()
+                    .id(UUID.randomUUID().hashCode())
+                    .nodeAddress(BuildConfig.URL_TEST_OUTER_SERVER)
+                    .isDefaultNode(true)
+                    .isChecked(true)
+                    .chainId(BuildConfig.ID_TEST_CHAIN)
                     .build());
         } else if (BuildConfig.RELEASE_TYPE.equals("server.typeTX")) {
             nodeInfoEntityList.add(new Node.Builder()

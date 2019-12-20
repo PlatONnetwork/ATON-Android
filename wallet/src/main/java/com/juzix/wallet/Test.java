@@ -18,7 +18,6 @@ public class Test {
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-
             }
         });
 
