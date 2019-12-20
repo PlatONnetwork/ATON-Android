@@ -22,6 +22,7 @@ android {
         buildConfigField("String", "URL_MAIN_SERVER", "${URL_MAIN_SERVER}")
         buildConfigField("String", "URL_TEST_MAIN_SERVER", "${URL_TEST_MAIN_SERVER}")
         buildConfigField("String", "URL_TEST_SERVER", "${URL_TEST_SERVER}")
+        buildConfigField("String", "URL_TEST_OUTER_SERVER", "${URL_TEST_OUTER_SERVER}")
         buildConfigField("String", "URL_DEVELOP_SERVER", "${URL_DEVELOP_SERVER}")
         buildConfigField("String", "ID_TEST_MAIN_CHAIN", "${ID_TEST_MAIN_CHAIN}")
         buildConfigField("String", "ID_MAIN_CHAIN", "${ID_MAIN_CHAIN}")
@@ -115,6 +116,17 @@ android {
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
         }
 
+        releaseOC {
+            debuggable false
+            signingConfig signingConfigs.releaseJC
+            shrinkResources true
+            minifyEnabled true
+            zipAlignEnabled true
+            multiDexEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField("String", "RELEASE_TYPE", "${releaseTypeOC}")
+        }
+
         releaseX {
             debuggable false
             signingConfig signingConfigs.releaseX
@@ -182,7 +194,7 @@ android {
             def gitVersion = getGitVersion();
 
             def type = ""
-            if (variant.buildType.name == "releaseC" || variant.buildType.name == "releaseJC") {
+            if (variant.buildType.name == "releaseC" || variant.buildType.name == "releaseJC" || variant.buildType.name == "releaseOC") {
                 type = "c"
             } else if (variant.buildType.name == "releaseX" || variant.buildType.name == "releaseJX") {
                 type = "x_unjiagu"
