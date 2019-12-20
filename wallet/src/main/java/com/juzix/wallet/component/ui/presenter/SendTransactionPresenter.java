@@ -336,7 +336,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     private void sendTransaction(String toAddress, String transferAmount) {
 
 
-        TransactionRecordEntity transactionRecordEntity = new TransactionRecordEntity(System.currentTimeMillis(), walletEntity.getPrefixAddress(), toAddress, transferAmount);
+        TransactionRecordEntity transactionRecordEntity = new TransactionRecordEntity(System.currentTimeMillis(), walletEntity.getPrefixAddress(), toAddress, transferAmount,NodeManager.getInstance().getChainId());
 
         if (AppSettings.getInstance().getResendReminder()) {
             Single

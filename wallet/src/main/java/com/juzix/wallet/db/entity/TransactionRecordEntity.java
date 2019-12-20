@@ -21,14 +21,17 @@ public class TransactionRecordEntity extends RealmObject {
 
     private String value;
 
+    private String chainId;
+
     public TransactionRecordEntity() {
     }
 
-    public TransactionRecordEntity(long timeStamp, String from, String to, String value) {
+    public TransactionRecordEntity(long timeStamp, String from, String to, String value, String chainId) {
         this.timeStamp = timeStamp;
         this.from = from;
         this.to = to;
         this.value = value;
+        this.chainId = chainId;
     }
 
     public long getTimeStamp() {
@@ -63,6 +66,14 @@ public class TransactionRecordEntity extends RealmObject {
         this.value = value;
     }
 
+    public String getChainId() {
+        return chainId;
+    }
+
+    public void setChainId(String chainId) {
+        this.chainId = chainId;
+    }
+
     @Override
     public int hashCode() {
         int hashCode = 17;
@@ -70,6 +81,7 @@ public class TransactionRecordEntity extends RealmObject {
         hashCode = hashCode * 31 + (TextUtils.isEmpty(from) ? 0 : from.hashCode());
         hashCode = hashCode * 31 + (TextUtils.isEmpty(to) ? 0 : to.hashCode());
         hashCode = hashCode * 31 + (TextUtils.isEmpty(value) ? 0 : value.hashCode());
+        hashCode = hashCode * 31 + (TextUtils.isEmpty(chainId) ? 0 : chainId.hashCode());
         return hashCode;
     }
 
@@ -83,7 +95,8 @@ public class TransactionRecordEntity extends RealmObject {
             return !TextUtils.isEmpty(from) && from.equals(transactionRecordEntity.getFrom())
                     && !TextUtils.isEmpty(to) && to.equals(transactionRecordEntity.getTo())
                     && !TextUtils.isEmpty(value) && NumberParserUtils.getPrettyNumber(value, 2).equals(NumberParserUtils.getPrettyNumber(transactionRecordEntity.getValue(), 2))
-                    && Math.abs(BigDecimalUtil.sub(timeStamp, transactionRecordEntity.getTimeStamp())) < Constants.Common.TRANSACTION_TIMEOUT_WITH_MILLISECOND;
+                    && Math.abs(BigDecimalUtil.sub(timeStamp, transactionRecordEntity.getTimeStamp())) < Constants.Common.TRANSACTION_TIMEOUT_WITH_MILLISECOND
+                    && !TextUtils.isEmpty(chainId) && chainId.equals(transactionRecordEntity.getChainId());
         }
         return super.equals(obj);
     }
