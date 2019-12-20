@@ -15,6 +15,7 @@ import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
+import com.juzix.wallet.utils.StringUtil;
 import com.meituan.android.walle.WalleChannelReader;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -167,7 +168,8 @@ public class AppFramework {
                         .addField("timeStamp", long.class, FieldAttribute.PRIMARY_KEY)
                         .addField("from", String.class)
                         .addField("to", String.class)
-                        .addField("value", String.class);
+                        .addField("value", String.class)
+                        .addField("chainId", String.class);
 
                 oldVersion++;
 
@@ -203,7 +205,8 @@ public class AppFramework {
                         .addField("timeStamp", long.class, FieldAttribute.PRIMARY_KEY)
                         .addField("from", String.class)
                         .addField("to", String.class)
-                        .addField("value", String.class);
+                        .addField("value", String.class)
+                        .addField("chainId", String.class);
 
                 //增加isConsensus
                 schema.get("VerifyNodeEntity")
@@ -217,7 +220,8 @@ public class AppFramework {
                         .addField("timeStamp", long.class, FieldAttribute.PRIMARY_KEY)
                         .addField("from", String.class)
                         .addField("to", String.class)
-                        .addField("value", String.class);
+                        .addField("value", String.class)
+                        .addField("chainId", String.class);
 
                 //增加isConsensus
                 schema.get("VerifyNodeEntity")

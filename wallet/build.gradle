@@ -194,9 +194,11 @@ android {
             def gitVersion = getGitVersion();
 
             def type = ""
-            if (variant.buildType.name == "releaseC" || variant.buildType.name == "releaseJC" || variant.buildType.name == "releaseOC") {
+            if (variant.buildType.name == "releaseC" || variant.buildType.name == "releaseJC") {
                 type = "c"
-            } else if (variant.buildType.name == "releaseX" || variant.buildType.name == "releaseJX") {
+            } else if (variant.buildType.name == "releaseOC") {
+                type = "oc"
+            } else if (variant.buildType.name == "releaseX" || variant.buildType.name == "releaseJX" || variant.buildType.name == "releaseJTX") {
                 type = "x_unjiagu"
             } else if (variant.buildType.name == "debug") {
                 type = "debug"
@@ -204,9 +206,7 @@ android {
                 releaseTime = "0"
                 gitVersion = "";
             }
-            if (variant.flavorName != "wallet") {
-                type = (type + "_" + variant.flavorName)
-            }
+            type = (type + "_" + variant.flavorName)
 
             outputFileName = "aton_android_v${verName}.${inner_version_name}_${releaseTime}_${verCode}_${type}_${gitVersion}.apk";
         }
