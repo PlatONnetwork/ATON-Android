@@ -157,7 +157,11 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
             }
 
         } else {
-            nodeState.setText(detail.getNodeStatus());
+            if (TextUtils.equals(detail.getNodeStatus(), ACTIVE)) {
+                nodeState.setText(detail.isConsensus() ? R.string.validators_verifying : R.string.validators_active);
+            } else {
+                nodeState.setText(detail.getNodeStatus());
+            }
         }
     }
 

@@ -74,7 +74,11 @@ public class ValidatorsAdapter extends CommonAdapter<VerifyNode> {
                 tv_status.setText(R.string.validators_candidate);
             }
         } else {
-            tv_status.setText(item.getNodeStatus());
+            if (TextUtils.equals(item.getNodeStatus(), ACTIVE)) {
+                tv_status.setText(item.isConsensus() ? R.string.validators_verifying : R.string.validators_active);
+            } else {
+                tv_status.setText(item.getNodeStatus());
+            }
         }
     }
 
