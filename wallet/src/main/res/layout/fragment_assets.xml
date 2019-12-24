@@ -11,7 +11,7 @@
     <com.scwang.smartrefresh.layout.header.ClassicsHeader
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:srlTextUpdate="yyyy-MM-dd HH:mm"/>
+        app:srlTextUpdate="yyyy-MM-dd HH:mm" />
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -69,16 +69,16 @@
                     android:id="@+id/tv_restricted_amount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
                     android:layout_alignBaseline="@id/tv_wallet_amount"
                     android:layout_marginLeft="2dp"
                     android:layout_toRightOf="@id/tv_wallet_amount"
-                    android:autoSizeMaxTextSize="13sp"
-                    android:autoSizeMinTextSize="10sp"
-                    android:autoSizeTextType="uniform"
                     android:drawablePadding="2dp"
+                    android:gravity="center_vertical"
                     android:includeFontPadding="false"
                     android:lines="1"
+                    app:autoSizeMaxTextSize="13sp"
+                    app:autoSizeMinTextSize="10sp"
+                    app:autoSizeTextType="uniform"
                     tools:text="(&#160;&#160;Restricted:&#160;%1$s&#160;LAT)" />
 
                 <TextView
@@ -111,18 +111,18 @@
         </android.support.design.widget.AppBarLayout>
 
 
-            <FrameLayout
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <com.juzix.wallet.component.widget.ViewPagerSlide
+                android:id="@+id/vp_content"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+                android:layout_height="match_parent" />
 
-                <com.juzix.wallet.component.widget.ViewPagerSlide
-                    android:id="@+id/vp_content"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-                <include layout="@layout/layout_wallet_list_empty" />
-            </FrameLayout>
+            <include layout="@layout/layout_wallet_list_empty" />
+        </FrameLayout>
 
     </android.support.design.widget.CoordinatorLayout>
 
