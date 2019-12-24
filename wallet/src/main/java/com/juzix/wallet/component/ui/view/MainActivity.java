@@ -3,6 +3,7 @@ package com.juzix.wallet.component.ui.view;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Process;
 import android.support.v4.app.FragmentManager;
