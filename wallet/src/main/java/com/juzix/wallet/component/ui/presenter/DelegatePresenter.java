@@ -70,7 +70,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
     private String feeAmount;
     //调web3j获取gasprice
-    private BigInteger gasPrice;
+    private BigInteger gasPrice = BigIntegerUtil.toBigInteger(AppConfigManager.getInstance().getMinGasPrice());
     private BigInteger gasLimit;
     private boolean isAll = false;//是否点击全部
 
