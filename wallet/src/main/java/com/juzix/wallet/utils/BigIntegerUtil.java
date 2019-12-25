@@ -17,4 +17,11 @@ public class BigIntegerUtil {
         }
         return BigInteger.ZERO;
     }
+
+    public static String toString(BigInteger bigInteger) {
+        if (bigInteger == null) {
+            return BigInteger.ZERO.toString(10);
+        }
+        return bigInteger.toString(10);
+    }
 }
