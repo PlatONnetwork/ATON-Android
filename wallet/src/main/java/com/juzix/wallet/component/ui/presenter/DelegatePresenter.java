@@ -10,6 +10,7 @@ import com.juzhen.framework.network.ApiSingleObserver;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomObserver;
+import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.DelegateContract;
 import com.juzix.wallet.component.ui.dialog.DelegateSelectWalletDialogFragment;
@@ -163,6 +164,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                 .build())
                 .compose(RxUtils.bindToLifecycle(getView()))
                 .compose(RxUtils.getSingleSchedulerTransformer())
+                .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
                 .subscribe(new ApiSingleObserver<DelegateHandle>() {
                     @Override
                     public void onApiSuccess(DelegateHandle delegateHandle) {
@@ -177,7 +179,9 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
                     @Override
                     public void onApiFailure(ApiResponse response) {
-
+                        if (isViewAttached()) {
+                            getView().showIsCanDelegate(DelegateHandle.getNullInstance());
+                        }
                     }
                 });
     }
