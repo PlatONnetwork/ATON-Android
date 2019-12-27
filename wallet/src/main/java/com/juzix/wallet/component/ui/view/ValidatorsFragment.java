@@ -110,11 +110,12 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
         View view = inflater.inflate(R.layout.fragment_validators, container, false);
         unbinder = ButterKnife.bind(this, view);
         EventPublisher.getInstance().register(this);
-        initView(view);
+        initView();
         return view;
     }
 
-    private void initView(View view) {
+    private void initView() {
+
         changeBtnState(R.id.btn_all);
 
         refreshLayout.setRefreshHeader(new CustomRefreshHeader(getContext()));
@@ -186,6 +187,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
     }
 
     private void initPullRefreshListener() {
+
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
@@ -217,8 +219,24 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
     public void onResume() {
         MobclickAgent.onPageStart(Constants.UMPages.VERIFY_NODE);
         super.onResume();
-        Log.d("ValidatorsFragment", "=============" + "onresume");
-        mPresenter.loadValidatorsData(rankType, nodeState, -1);
+        if (TextUtils.equals(nodeState, Constants.ValidatorsType.ALL_VALIDATORS)) {
+            rank = allLastRank;
+        } else if (TextUtils.equals(nodeState, Constants.ValidatorsType.ACTIVE_VALIDATORS)) {
+            rank = activeLastRank;
+        } else {
+            rank = candidateLastRank;
+        }
+        mPresenter.loadValidatorsData(rankType, nodeState, getLastNodeRank());
+    }
+
+    private int getLastNodeRank() {
+        if (TextUtils.equals(nodeState, Constants.ValidatorsType.ALL_VALIDATORS)) {
+            return allLastRank;
+        } else if (TextUtils.equals(nodeState, Constants.ValidatorsType.ACTIVE_VALIDATORS)) {
+            return activeLastRank;
+        } else {
+            return candidateLastRank;
+        }
     }
 
     @Override
@@ -325,7 +343,6 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
             if (TextUtils.equals(rankType, Constants.ValidatorsType.VALIDATORS_RANK)) {
                 activeLastRank = nodeList.get(nodeList.size() - 1).getRanking();
             } else {
-
                 activeLastRank = NumberParserUtils.parseInt(nodeList.get(nodeList.size() - 1).getRatePA());
             }
 

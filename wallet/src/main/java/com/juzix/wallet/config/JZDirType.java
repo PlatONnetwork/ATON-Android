@@ -25,5 +25,4 @@ public class JZDirType extends DirType {
      * user目录
      */
     public static final String user  = "user";
-//    public static final String	cache	= "cache";
 }

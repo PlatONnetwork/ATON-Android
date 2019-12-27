@@ -15,8 +15,6 @@ import java.util.TimerTask;
  */
 public class LoopService extends Service {
 
-    private final static String TAG = LoopService.class.getSimpleName();
-
     public static final String ACTION = "com.juzix.wallet.component.service.LoopService";
     /**
      * 轮询时间
