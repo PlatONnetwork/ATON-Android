@@ -288,6 +288,8 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
                 all.setTextColor(getResources().getColor(R.color.color_000000));
                 active.setTextColor(getResources().getColor(R.color.color_000000));
                 break;
+            default:
+                break;
         }
     }
 
