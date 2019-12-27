@@ -219,8 +219,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
     public void onResume() {
         MobclickAgent.onPageStart(Constants.UMPages.VERIFY_NODE);
         super.onResume();
-        isLoadMore = false;
-        mPresenter.loadValidatorsData(rankType, nodeState, -1);
+        refreshLayout.autoRefresh();
     }
 
     private int getLastNodeRank() {
