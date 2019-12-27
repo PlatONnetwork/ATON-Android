@@ -168,9 +168,9 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
         tabhost.setCurrentTab(mCurIndex);
         int subIndex = -1;
         if (intent.hasExtra(Constants.Extra.EXTRA_WALLET_SUB_INDEX)) {
-            subIndex = intent.getIntExtra(Constants.Extra.EXTRA_WALLET_SUB_INDEX, AssetsFragment.TAB1);
+            subIndex = intent.getIntExtra(Constants.Extra.EXTRA_WALLET_SUB_INDEX, AssetsFragment.MainTab.TRANSACTION_LIST);
         }
-        if (mCurIndex == TAB_PROPERTY && subIndex == AssetsFragment.TAB1) {
+        if (mCurIndex == TAB_PROPERTY && subIndex == AssetsFragment.MainTab.TRANSACTION_LIST) {
             AssetsFragment fragment = (AssetsFragment) fragmentManager.findFragmentByTag(TAG_PROPERTY);
             fragment.showCurrentItem(subIndex);
         }

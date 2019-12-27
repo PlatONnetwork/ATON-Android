@@ -311,7 +311,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     @Override
     public void updateAssetsTab(int tabIndex) {
         if (isViewAttached()) {
-            if (tabIndex != AssetsFragment.TAB2) {
+            if (tabIndex != AssetsFragment.MainTab.SEND_TRANSACTION) {
                 getView().resetView(feeAmount);
             } else {
                 getGasPrice();
@@ -523,7 +523,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                     public void accept(Long aLong) throws Exception {
                         if (isViewAttached()) {
                             getView().resetView(feeAmount);
-                            MainActivity.actionStart(getContext(), MainActivity.TAB_PROPERTY, AssetsFragment.TAB1);
+                            MainActivity.actionStart(getContext(), MainActivity.TAB_PROPERTY, AssetsFragment.MainTab.TRANSACTION_LIST);
                         }
                     }
                 });
