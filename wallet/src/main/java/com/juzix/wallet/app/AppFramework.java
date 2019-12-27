@@ -15,7 +15,6 @@ import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
-import com.juzix.wallet.utils.StringUtil;
 import com.meituan.android.walle.WalleChannelReader;
 
 import org.greenrobot.eventbus.Subscribe;
