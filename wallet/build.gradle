@@ -35,7 +35,7 @@ android {
         resConfigs "zh", "en"
 
         ndk {
-            abiFilters "armeabi-v7a"
+            abiFilters "armeabi-v7a","armeabi","x86"
         }
     }
 
