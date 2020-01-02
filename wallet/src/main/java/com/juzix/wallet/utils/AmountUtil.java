@@ -91,4 +91,14 @@ public class AmountUtil {
     public static String convertVonToLat(String value, int max) {
         return NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(value, VALUE_1E18), max);
     }
+
+    /**
+     * von to lat  value除以10的18次方，默认保留小数点后八位
+     *
+     * @param value
+     * @return
+     */
+    public static String convertVonToLat(String value) {
+        return NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(value, VALUE_1E18), 8);
+    }
 }
