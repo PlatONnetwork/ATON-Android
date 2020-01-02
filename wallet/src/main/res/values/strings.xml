@@ -463,6 +463,7 @@
     <string name="candidate_apply_withdraw">减持质押</string>
     <string name="candidate_withdraw">提取质押</string>
     <string name="unknown">其他</string>
+    <string name="claim_rewards">领取奖励</string>
 
 
     <!--刷新header和footer-->
@@ -506,6 +507,8 @@
     <string name="proposal_type">提案类型</string>
     <string name="restricted_account">锁仓地址</string>
     <string name="restricted_amount">锁仓数量</string>
+    <string name="claim_wallet">领取钱包</string>
+    <string name="reward_amount">领取数量</string>
     <string name="double_signing">区块双签</string>
     <string name="nav_delegate">委托</string>
     <string name="total_delegate_title">总计委托</string>
@@ -720,4 +723,6 @@
 
     <string name="msg_large_transaction_reminder">发送数量超过%1$s LAT，确认是否继续发送？</string>
     <string name="msg_resend_transaction_reminder">最近有一笔相同的发送记录，确认是否继续发送？</string>
+
+
 </resources>

@@ -465,6 +465,7 @@
     <string name="candidate_apply_withdraw">candidateApplyWithdraw</string>
     <string name="candidate_withdraw">candidateWithdraw</string>
     <string name="unknown">unknown</string>
+    <string name="claim_rewards">ClaimRewards</string>
     <!--Aton0.7.0 -->
     <string name="guide_tips">Have a wallet? Import using keystore, mnemonic phrase, private key.</string>
     <string name="restricted_amount_with_unit">(&#160;&#160;Restricted:&#160;%1$s&#160;LAT)</string>
@@ -497,6 +498,8 @@
     <string name="proposal_type">Proposal Type</string>
     <string name="restricted_account">Restricted Account</string>
     <string name="restricted_amount">Restricted Amount</string>
+    <string name="claim_wallet">Claim Wallet</string>
+    <string name="reward_amount">Reward amount</string>
     <string name="double_signing">Double Signing</string>
 
     <string name="nav_delegate">Delegate</string>
