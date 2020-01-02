@@ -77,8 +77,8 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
         holder.nodeDetailLink.setVisibility(TextUtils.isEmpty(detail.getWebsite()) ? View.GONE : View.VISIBLE);
 
         TextView nodeState = holder.nodeState;
-        showTextSpan(mContext, detail, nodeState);
-        changeTextViewColorByState(holder.nodeState, detail.getNodeStatus());
+        showTextSpan(detail, nodeState);
+        changeTextViewColorByState(holder.nodeState, detail);
 
         holder.tv_delegated.setText(TextUtils.equals(detail.getDelegated(), "0") ? "- -" : StringUtil.formatBalance(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getDelegated(), "1E18"))));
         holder.tv_withdraw.setText(TextUtils.equals(detail.getReleased(), "0") ? "- -" : StringUtil.formatBalance(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(detail.getReleased(), "1E18"))));
@@ -144,10 +144,10 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
 
     }
 
-    private void showTextSpan(Context mContext, DelegateDetail detail, TextView nodeState) {
+    private void showTextSpan(DelegateDetail detail, TextView nodeState) {
         if (Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage())) { //中文环境下
             if (TextUtils.equals(detail.getNodeStatus(), ACTIVE)) {
-                nodeState.setText(R.string.validators_active);
+                nodeState.setText(detail.isConsensus() ? R.string.validators_verifying : R.string.validators_active);
             } else if (TextUtils.equals(detail.getNodeStatus(), CANDIDATE)) {
                 nodeState.setText(R.string.validators_candidate);
             } else if (TextUtils.equals(detail.getNodeStatus(), EXITED)) {
@@ -157,7 +157,11 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
             }
 
         } else {
-            nodeState.setText(detail.getNodeStatus());
+            if (TextUtils.equals(detail.getNodeStatus(), ACTIVE)) {
+                nodeState.setText(detail.isConsensus() ? R.string.validators_verifying : R.string.validators_active);
+            } else {
+                nodeState.setText(detail.getNodeStatus());
+            }
         }
     }
 
@@ -224,10 +228,10 @@ public class DelegateDetailAdapter extends RecyclerView.Adapter<DelegateDetailAd
     }
 
 
-    public void changeTextViewColorByState(TextView tv, String nodeStatus) {
-        switch (nodeStatus) {
+    public void changeTextViewColorByState(TextView tv, DelegateDetail delegateDetail) {
+        switch (delegateDetail.getNodeStatus()) {
             case "Active":
-                tv.setTextColor(ContextCompat.getColorStateList(mContext, R.color.color_4A90E2));
+                tv.setTextColor(ContextCompat.getColorStateList(mContext, delegateDetail.isConsensus() ? R.color.color_f79d10 : R.color.color_4a90e2));
                 break;
             case "Candidate":
                 tv.setTextColor(ContextCompat.getColorStateList(mContext, R.color.color_19a20e));

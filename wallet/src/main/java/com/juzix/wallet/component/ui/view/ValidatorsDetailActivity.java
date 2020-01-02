@@ -25,11 +25,13 @@ import com.juzix.wallet.component.ui.dialog.DelegateTipsDialog;
 import com.juzix.wallet.component.ui.presenter.ValidatorsDetailPresenter;
 import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.component.widget.CommonTitleBar;
+import com.juzix.wallet.component.widget.RoundedTextView;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.component.widget.VerticalImageSpan;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.DelegateDetail;
+import com.juzix.wallet.entity.VerifyNode;
 import com.juzix.wallet.entity.VerifyNodeDetail;
 import com.juzix.wallet.entity.WebType;
 import com.juzix.wallet.event.Event;
@@ -60,7 +62,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
     @BindView(R.id.tv_detail_node_name)
     TextView nodeName;
     @BindView(R.id.tv_detail_node_state)
-    TextView nodeState;
+    RoundedTextView nodeState;
     @BindView(R.id.iv_detail_node_link)
     ImageView nodeLink;
     @BindView(R.id.tv_detail_node_address)
@@ -231,7 +233,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
         nodeAddress.setText(AddressFormatUtil.formatAddress(nodeDetail.getNodeId()));
 
         if (TextUtils.equals(nodeDetail.getNodeStatus(), STATE_ACTIVE)) {
-            nodeState.setText(getString(R.string.validators_state_active));
+            nodeState.setText(nodeDetail.isConsensus() ? getString(R.string.validators_verifying) : getString(R.string.validators_state_active));
         } else if (TextUtils.equals(nodeDetail.getNodeStatus(), STATE_CANDIDATE)) {
             nodeState.setText(getString(R.string.validators_state_candidate));
         } else if (TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITED)) {
@@ -239,6 +241,8 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
         } else {
             nodeState.setText(getString(R.string.validators_state_exiting));
         }
+
+        changeTextBgAndTextColor(nodeState, nodeDetail);
 
         rate.setText(nodeDetail.isInit() ? "- -" : String.format("%s%%", StringUtil.formatBalance(BigDecimalUtil.div(nodeDetail.getRatePA(), "100"))));
 
@@ -287,6 +291,30 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
         noNetworkLayout.setVisibility(View.GONE);
         ll_guide.setVisibility(View.VISIBLE);
         nodeLink.setVisibility(TextUtils.isEmpty(websiteUrl) ? View.GONE : View.VISIBLE);
+
+    }
+
+    private void changeTextBgAndTextColor(RoundedTextView textView, VerifyNodeDetail verifyNodeDetail) {
+        switch (verifyNodeDetail.getNodeStatus()) {
+            case STATE_ACTIVE:
+                textView.setRoundedBorderColor(ContextCompat.getColor(textView.getContext(), verifyNodeDetail.isConsensus() ? R.color.color_f79d10 : R.color.color_4a90e2));
+                textView.setTextColor(ContextCompat.getColor(textView.getContext(), verifyNodeDetail.isConsensus() ? R.color.color_f79d10 : R.color.color_4a90e2));
+                break;
+            case STATE_CANDIDATE:
+                textView.setRoundedBorderColor(ContextCompat.getColor(textView.getContext(), R.color.color_19a20e));
+                textView.setTextColor(ContextCompat.getColor(textView.getContext(), R.color.color_19a20e));
+                break;
+            case STATE_EXITED:
+                textView.setRoundedBorderColor(ContextCompat.getColor(textView.getContext(), R.color.color_9eabbe));
+                textView.setTextColor(ContextCompat.getColor(textView.getContext(), R.color.color_9eabbe));
+                break;
+            case STATE_EXITING:
+                textView.setRoundedBorderColor(ContextCompat.getColor(textView.getContext(), R.color.color_525768));
+                textView.setTextColor(ContextCompat.getColor(textView.getContext(), R.color.color_525768));
+                break;
+            default:
+                break;
+        }
 
     }
 

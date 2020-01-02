@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -94,9 +95,20 @@ import butterknife.Unbinder;
  */
 public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements AssetsContract.View {
 
-    public static final int TAB1 = 0;
-    public static final int TAB2 = 1;
-    public static final int TAB3 = 2;
+
+    @IntDef({
+            MainTab.TRANSACTION_LIST,
+            MainTab.SEND_TRANSACTION,
+            MainTab.RECEIVE_TRANSACTION
+    })
+    public @interface MainTab {
+
+        int TRANSACTION_LIST = 0;
+
+        int SEND_TRANSACTION = 1;
+
+        int RECEIVE_TRANSACTION = 2;
+    }
 
     @BindView(R.id.app_bar_layout)
     AppBarLayout appBarLayout;
@@ -307,19 +319,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
             @Override
             public void onPageSelected(int position) {
-                switch (position) {
-                    case 0:
-                        EventPublisher.getInstance().sendUpdateAssetsTabEvent(TAB1);
-                        break;
-                    case 1:
-                        EventPublisher.getInstance().sendUpdateAssetsTabEvent(TAB2);
-                        break;
-                    case 2:
-                        EventPublisher.getInstance().sendUpdateAssetsTabEvent(TAB3);
-                        break;
-                    default:
-                        break;
-                }
+                EventPublisher.getInstance().sendUpdateAssetsTabEvent(position);
             }
 
             @Override
@@ -533,22 +533,22 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
     private List<BaseFragment> getFragments(Wallet walletEntity) {
         List<BaseFragment> list = new ArrayList<>();
-        list.add(getFragment(TAB1, walletEntity));
-        list.add(getFragment(TAB2, walletEntity));
-        list.add(getFragment(TAB3, walletEntity));
+        list.add(getFragment(MainTab.TRANSACTION_LIST, walletEntity));
+        list.add(getFragment(MainTab.SEND_TRANSACTION, walletEntity));
+        list.add(getFragment(MainTab.RECEIVE_TRANSACTION, walletEntity));
         return list;
     }
 
-    private BaseFragment getFragment(int tab, Wallet walletEntity) {
+    private BaseFragment getFragment(@MainTab int tab, Wallet walletEntity) {
         BaseFragment fragment = null;
         switch (tab) {
-            case TAB1:
+            case MainTab.TRANSACTION_LIST:
                 fragment = new TransactionsFragment();
                 break;
-            case TAB2:
+            case MainTab.SEND_TRANSACTION:
                 fragment = new SendTransactionFragment();
                 break;
-            case TAB3:
+            case MainTab.RECEIVE_TRANSACTION:
                 fragment = new ReceiveTransactionFragment();
                 break;
             default:
@@ -575,8 +575,8 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         tvWalletAmount.setText(string(R.string.amount_with_unit, StringUtil.formatBalance(BigDecimalUtil.div(balance, "1E18"), false)));
         tvWalletAmount.setTransformationMethod(AppSettings.getInstance().getShowAssetsFlag() ? HideReturnsTransformationMethod.getInstance() : new AmountTransformationMethod(tvWalletAmount.getText().toString()));
 
-        if (vpContent.getCurrentItem() == TAB2) {
-            SendTransactionFragment sendTransactionFragment = (SendTransactionFragment) mTabAdapter.getItem(TAB2);
+        if (vpContent.getCurrentItem() == MainTab.SEND_TRANSACTION) {
+            SendTransactionFragment sendTransactionFragment = (SendTransactionFragment) mTabAdapter.getItem(MainTab.SEND_TRANSACTION);
             if (sendTransactionFragment != null) {
                 sendTransactionFragment.updateWalletBalance(balance);
             }
@@ -597,7 +597,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
     @Override
     public void showWalletInfo(Wallet wallet) {
-        tvBackup.setVisibility(wallet.isNeedBackup() ? View.VISIBLE : View.GONE);
+        tvBackup.setVisibility(wallet.isBackedUp() ? View.GONE : View.VISIBLE);
         int resId = RUtils.drawable(wallet.getAvatar());
         if (resId < 0) {
             resId = R.drawable.avatar_15;

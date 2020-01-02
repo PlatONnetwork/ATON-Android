@@ -18,25 +18,17 @@ public class ManageWalletContract {
 
         void showWalletName(String name);
 
-//        void showWalletAddress(String address);
-
         void showErrorDialog(String title, String content, int type, Wallet walletEntity);
-
-//        void showWalletAvatar(String avatar);
 
         void showModifyNameDialog(String name);
 
         void showPasswordDialog(int type, Wallet walletEntity);
 
-        void enableBackup(boolean enabled);
-
-        void enableDelete(boolean enabled);
-
         void showWalletInfo(Wallet wallet);
     }
 
     public interface Presenter extends IPresenter<View> {
-        void showIndividualWalletInfo();
+        void showWalletInfo();
 
         void validPassword(int type, Credentials credentials);
 

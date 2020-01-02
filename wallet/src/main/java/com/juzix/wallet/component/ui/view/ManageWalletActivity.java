@@ -66,7 +66,6 @@ public class ManageWalletActivity extends MVPBaseActivity<ManageWalletPresenter>
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manager_wallet);
         unbinder = ButterKnife.bind(this);
-        initView();
     }
 
     @Override
@@ -77,18 +76,7 @@ public class ManageWalletActivity extends MVPBaseActivity<ManageWalletPresenter>
     @Override
     protected void onResume() {
         super.onResume();
-        mPresenter.showIndividualWalletInfo();
-    }
-
-    private void initView() {
-        commonTitleBar.setLeftDrawableClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideSoftInput();
-                finish();
-
-            }
-        });
+        mPresenter.showWalletInfo();
     }
 
     @OnClick({R.id.rl_rename, R.id.rl_private_key, R.id.rl_keystore, R.id.rl_backup, R.id.tv_delete, R.id.iv_copy_wallet_address, R.id.rl_wallet_address})
@@ -137,13 +125,11 @@ public class ManageWalletActivity extends MVPBaseActivity<ManageWalletPresenter>
         if (TextUtils.isEmpty(wallet.getKey())) {
             llPrivateKey.setVisibility(View.GONE);
             llKeystore.setVisibility(View.GONE);
-            llBackup.setVisibility(View.GONE);
         }
+        tvDelete.setVisibility(wallet.isBackedUp() ? View.VISIBLE : View.GONE);
+        llBackup.setVisibility(TextUtils.isEmpty(wallet.getMnemonic()) ? View.GONE : View.VISIBLE);
+
     }
-//    @Override
-//    public void showWalletAddress(String address) {
-//        tvAddress.setText(AddressFormatUtil.formatAddress(address));
-//    }
 
     @Override
     public void showModifyNameDialog(String name) {
@@ -190,16 +176,6 @@ public class ManageWalletActivity extends MVPBaseActivity<ManageWalletPresenter>
                 mPresenter.validPassword(type, credentials);
             }
         }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
-    }
-
-    @Override
-    public void enableBackup(boolean enabled) {
-        llBackup.setVisibility(enabled ? View.VISIBLE : View.GONE);
-    }
-
-    @Override
-    public void enableDelete(boolean enabled) {
-        tvDelete.setVisibility(enabled ? View.VISIBLE : View.GONE);
     }
 
     @Override

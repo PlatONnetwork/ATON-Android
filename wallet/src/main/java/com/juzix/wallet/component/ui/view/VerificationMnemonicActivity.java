@@ -29,6 +29,7 @@ import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.DensityUtil;
 
 import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -124,14 +125,14 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
         return super.onKeyDown(keyCode, event);
     }
 
-    private void exit(){
+    private void exit() {
         CommonTipsDialogFragment.createDialogWithTwoButton(ContextCompat.getDrawable(getContext(), R.drawable.icon_dialog_tips),
                 string(R.string.backup_exit_tips),
                 string(R.string.yes),
                 new OnDialogViewClickListener() {
                     @Override
                     public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
-                        if (fragment != null){
+                        if (fragment != null) {
                             fragment.dismiss();
                         }
                         if (getIntent().getIntExtra(Constants.Extra.EXTRA_TYPE, 0) == 0) {
@@ -139,7 +140,7 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
                         }
                         VerificationMnemonicActivity.this.finish();
                     }
-                },string(R.string.no),
+                }, string(R.string.no),
                 new OnDialogViewClickListener() {
                     @Override
                     public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
@@ -152,14 +153,14 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
 
 
     private void initView() {
-        ((CommonTitleBar)findViewById(R.id.commonTitleBar)).setLeftDrawableClickListener(new View.OnClickListener() {
+        ((CommonTitleBar) findViewById(R.id.commonTitleBar)).setLeftDrawableClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               exit();
+                exit();
             }
         });
 
-        ((CommonTitleBar)findViewById(R.id.commonTitleBar)).setLeftTitleClickListener(new View.OnClickListener() {
+        ((CommonTitleBar) findViewById(R.id.commonTitleBar)).setLeftTitleClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 exit();
@@ -174,7 +175,7 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
     public void showBottomList(ArrayList<VerificationMnemonicContract.DataEntity> list) {
         FlexboxLayout flAll = findViewById(R.id.fl_all);
         flAll.removeAllViews();
-        for (int i = 0;i < list.size();i++){
+        for (int i = 0; i < list.size(); i++) {
             VerificationMnemonicContract.DataEntity dataEntity = list.get(i);
             flAll.addView(createAllItemView(i, dataEntity));
         }
@@ -182,21 +183,21 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
 
     @Override
     public void showTopList(VerificationMnemonicContract.DataEntity[] list) {
-        for (int i  = 0; i < list.length; i++){
+        for (int i = 0; i < list.length; i++) {
             setCheckedView(i, list[i]);
         }
     }
 
-    private TextView createAllItemView(int position, VerificationMnemonicContract.DataEntity dataEntity){
+    private TextView createAllItemView(int position, VerificationMnemonicContract.DataEntity dataEntity) {
         TextView textView = new TextView(this);
         textView.setText(dataEntity.getMnemonic());
         textView.setGravity(Gravity.CENTER);
         textView.setAllCaps(false);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-        if (!dataEntity.isChecked()){
+        if (!dataEntity.isChecked()) {
             textView.setBackgroundResource(R.drawable.bg_shape_verify_mnemonic_n);
             textView.setTextColor(ContextCompat.getColor(this, R.color.color_316def));
-        }else {
+        } else {
             textView.setBackgroundResource(R.drawable.bg_shape_verify_mnemonic_h);
             textView.setTextColor(ContextCompat.getColor(this, R.color.color_b6bbd0));
         }
@@ -219,7 +220,7 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
         return textView;
     }
 
-    private void addMnemonicListener(){
+    private void addMnemonicListener() {
         mTvMnemonic1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -333,6 +334,8 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
             case 11:
                 mTvMnemonic12.setText(mnemonic);
                 break;
+            default:
+                break;
         }
     }
 
@@ -344,6 +347,8 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
                 break;
             case R.id.btn_empty:
                 mPresenter.emptyChecked();
+                break;
+            default:
                 break;
         }
     }

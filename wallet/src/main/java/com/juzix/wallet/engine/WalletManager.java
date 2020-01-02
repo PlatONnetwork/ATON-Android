@@ -285,6 +285,7 @@ public class WalletManager {
                     return CODE_ERROR_WALLET_EXISTS;
                 }
             }
+            entity.setBackedUp(true);
             entity.setMnemonic("");
             entity.setChainId(NodeManager.getInstance().getChainId());
             mWalletList.add(entity);
@@ -310,6 +311,7 @@ public class WalletManager {
                 return CODE_ERROR_WALLET_EXISTS;
             }
         }
+        mWallet.setBackedUp(true);
         mWallet.setChainId(NodeManager.getInstance().getChainId());
         mWallet.setCreateTime(System.currentTimeMillis());
         mWallet.setUpdateTime(System.currentTimeMillis());
@@ -340,6 +342,7 @@ public class WalletManager {
                     return CODE_ERROR_WALLET_EXISTS;
                 }
             }
+            entity.setBackedUp(true);
             entity.setMnemonic("");
             entity.setChainId(NodeManager.getInstance().getChainId());
             mWalletList.add(entity);
@@ -387,7 +390,8 @@ public class WalletManager {
                     return CODE_ERROR_WALLET_EXISTS;
                 }
             }
-            entity.setMnemonic("");
+            entity.setBackedUp(true);
+            entity.setMnemonic(JZWalletUtil.encryptMnemonic(entity.getKey(), mnemonic, password));
             entity.setChainId(NodeManager.getInstance().getChainId());
             mWalletList.add(entity);
             WalletDao.insertWalletInfo(entity.buildWalletInfoEntity());
@@ -398,19 +402,17 @@ public class WalletManager {
         }
     }
 
-    public boolean emptyMnemonic(String mnenonic) {
-        String uuid = "";
-        for (Wallet walletEntity : mWalletList) {
-            if (mnenonic.equals(walletEntity.getMnemonic())) {
-                walletEntity.setMnemonic("");
-                uuid = walletEntity.getUuid();
-                break;
-            }
-        }
+    public boolean updateBackedUpWithUuid(String uuid, boolean backedUp) {
         if (TextUtils.isEmpty(uuid)) {
             return false;
         }
-        return WalletDao.updateMnemonicWithUuid(uuid, "");
+        for (Wallet walletEntity : mWalletList) {
+            if (uuid.equals(walletEntity.getUuid())) {
+                walletEntity.setBackedUp(backedUp);
+                break;
+            }
+        }
+        return WalletDao.updateBackedUpWithUuid(uuid, backedUp);
     }
 
     public boolean updateWalletName(Wallet wallet, String newName) {

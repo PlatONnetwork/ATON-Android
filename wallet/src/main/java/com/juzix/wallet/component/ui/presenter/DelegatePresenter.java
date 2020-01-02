@@ -10,6 +10,7 @@ import com.juzhen.framework.network.ApiSingleObserver;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomObserver;
+import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.DelegateContract;
 import com.juzix.wallet.component.ui.dialog.DelegateSelectWalletDialogFragment;
@@ -69,7 +70,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
     private String feeAmount;
     //调web3j获取gasprice
-    private BigInteger gasPrice;
+    private BigInteger gasPrice = BigIntegerUtil.toBigInteger(AppConfigManager.getInstance().getMinGasPrice());
     private BigInteger gasLimit;
     private boolean isAll = false;//是否点击全部
 
@@ -163,6 +164,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                 .build())
                 .compose(RxUtils.bindToLifecycle(getView()))
                 .compose(RxUtils.getSingleSchedulerTransformer())
+                .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
                 .subscribe(new ApiSingleObserver<DelegateHandle>() {
                     @Override
                     public void onApiSuccess(DelegateHandle delegateHandle) {
@@ -177,7 +179,9 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
                     @Override
                     public void onApiFailure(ApiResponse response) {
-
+                        if (isViewAttached()) {
+                            getView().showIsCanDelegate(DelegateHandle.getNullInstance());
+                        }
                     }
                 });
     }
@@ -224,7 +228,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                             @Override
                             public void call(GasProvider gasProvider) {
                                 gasLimit = gasProvider.getGasLimit();
-                                feeAmount = getFeeAmount(gasPrice, gasProvider.getGasLimit());
+                                feeAmount = getFeeAmount(gasPrice, gasLimit);
                                 getView().showFeeAmount(feeAmount);
                             }
                         });
@@ -264,7 +268,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                         public void call(Pair<GasProvider, BigInteger> pair) {
                             gasLimit = pair.first.getGasLimit();
                             feeAmount = getFeeAmount(gasPrice, gasLimit);
-                            getView().showAllFeeAmount(stakingAmountType, pair.second.toString(10), feeAmount);
+                            getView().showAllFeeAmount(stakingAmountType, BigIntegerUtil.toString(pair.second), feeAmount);
                         }
                     });
         }
@@ -282,7 +286,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
      * @return
      */
     private String getFeeAmount(BigInteger gasPrice, BigInteger gasLimit) {
-        return BigDecimalUtil.mul(gasLimit.toString(10), gasPrice.toString(10)).toPlainString();
+        return BigDecimalUtil.mul(BigIntegerUtil.toString(gasPrice), BigIntegerUtil.toString(gasLimit)).toPlainString();
     }
 
     /**
@@ -293,7 +297,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
      * @return
      */
     private BigInteger getGasPrice(String feeAmount, BigInteger gasLimit) {
-        return BigIntegerUtil.toBigInteger(BigDecimalUtil.div(AmountUtil.getPrettyFee(feeAmount, 8), gasLimit.toString(10)));
+        return BigIntegerUtil.toBigInteger(BigDecimalUtil.div(AmountUtil.getPrettyFee(feeAmount, 8), BigIntegerUtil.toString(gasLimit)));
     }
 
     /**

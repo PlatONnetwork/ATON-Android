@@ -260,6 +260,8 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
                         return bigDecimal.add(bigDecimal2);
                     }
                 })
+                .defaultIfEmpty(BigDecimal.ZERO)
+                .onErrorReturnItem(BigDecimal.ZERO)
                 .blockingGet();
     }
 

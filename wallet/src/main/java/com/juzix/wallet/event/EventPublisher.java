@@ -3,6 +3,7 @@ package com.juzix.wallet.event;
 import android.content.Context;
 
 import com.juzhen.framework.network.NetState;
+import com.juzix.wallet.component.ui.view.AssetsFragment;
 import com.juzix.wallet.entity.Node;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.Wallet;
@@ -60,7 +61,7 @@ public class EventPublisher {
         BusProvider.post(new Event.UpdateWalletListEvent());
     }
 
-    public void sendUpdateAssetsTabEvent(int tabIndex) {
+    public void sendUpdateAssetsTabEvent(@AssetsFragment.MainTab int tabIndex) {
         BusProvider.post(new Event.UpdateAssetsTabEvent(tabIndex));
     }
 

@@ -521,6 +521,7 @@
     <string name="validators_rank">RANK</string>
     <string name="validators_all">All</string>
     <string name="validators_active">Active</string>
+    <string name="validators_verifying">Verifying</string>
     <string name="validators_candidate">Candidate</string>
     <string name="validators_detail">Validator Details</string>
     <string name="total_staked">Total Staked(LAT)</string>
@@ -672,7 +673,7 @@
     <string name="web_url_web_portals">https://www.platon.network</string>
     <string name="web_url_faq">https://platon.zendesk.com/hc/en-us/categories/360002174434</string>
     <string name="web_url_tutorial">https://platon.zendesk.com/hc/en-us/categories/360002193633</string>
-    <string name="web_url_agreement">https://platon.zendesk.com/hc/en-us/categories/360002174434</string>
+    <string name="web_url_agreement">http://192.168.9.190:1000/aton-agreement/en-us/agreement.html</string>
     <string name="web_url_support_feedback">https://platon.zendesk.com/hc/en-us</string>
     <string name="web_url_common_delegate_problem">https://platon.zendesk.com/hc/en-us/articles/360037373194-Common-questions-about-PlatON-Delegators</string>
     <string name="web_url_privacy_policy">http://192.168.9.190:1000/aton-agreement/en-us/privacyAgreement.html</string>

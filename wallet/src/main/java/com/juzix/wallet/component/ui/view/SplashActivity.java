@@ -12,10 +12,16 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowInsets;
 
+import com.juzix.wallet.App;
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.engine.WalletManager;
+import com.juzix.wallet.entity.WebType;
+import com.juzix.wallet.utils.LanguageUtil;
+
+import java.util.Locale;
 
 public class SplashActivity extends BaseActivity {
 
@@ -58,18 +64,11 @@ public class SplashActivity extends BaseActivity {
         mDecorView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                //todo 暂时注释掉
-//                if (AppSettings.getInstance().isFirstEnter()) {
-//                    String  url = null;
-//                    if(Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage())){
-//                        url = Constants.WEBURL.WEB_URL_AGREEMENT_ZH;
-//                    }else {
-//                        url = Constants.WEBURL.WEB_URL_AGREEMENT_EN;
-//                    }
-//                    CommonHybridActivity.actionStart(SplashActivity.this, url, WebType.WEB_TYPE_AGREEMENT);
-//                    SplashActivity.this.finish();
-//                    return;
-//                }
+                if (AppSettings.getInstance().isFirstEnter()) {
+                    CommonHybridActivity.actionStart(SplashActivity.this, getResources().getString(R.string.web_url_agreement), WebType.WEB_TYPE_AGREEMENT);
+                    SplashActivity.this.finish();
+                    return;
+                }
 
                 if (AppSettings.getInstance().getOperateMenuFlag()) {
                     OperateMenuActivity.actionStart(SplashActivity.this);

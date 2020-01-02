@@ -16,12 +16,11 @@ android {
         buildConfigField("int", "INNER_VERSION_NAME", "${inner_version_name}")
         buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
         buildConfigField("String", "UM_APPKEY", "${UM_APPKEY}")
-        buildConfigField("String", "URL_SERVICE_AGREEMENT", "${URL_SERVICE_AGREEMENT}")
-        buildConfigField("String", "URL_SUPPORT_FEEDBACK", "${URL_SUPPORT_FEEDBACK}")
         buildConfigField("String", "URL_PLATON_NETWORK", "${URL_PLATON_NETWORK}")
         buildConfigField("String", "URL_MAIN_SERVER", "${URL_MAIN_SERVER}")
         buildConfigField("String", "URL_TEST_MAIN_SERVER", "${URL_TEST_MAIN_SERVER}")
         buildConfigField("String", "URL_TEST_SERVER", "${URL_TEST_SERVER}")
+        buildConfigField("String", "URL_TEST_OUTER_SERVER", "${URL_TEST_OUTER_SERVER}")
         buildConfigField("String", "URL_DEVELOP_SERVER", "${URL_DEVELOP_SERVER}")
         buildConfigField("String", "ID_TEST_MAIN_CHAIN", "${ID_TEST_MAIN_CHAIN}")
         buildConfigField("String", "ID_MAIN_CHAIN", "${ID_MAIN_CHAIN}")
@@ -88,7 +87,7 @@ android {
             debuggable true
             signingConfig signingConfigs.releaseC
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField("String", "RELEASE_TYPE", "${releaseTypeX}")
+            buildConfigField("String", "RELEASE_TYPE", "${releaseTypeTX}")
             multiDexEnabled true
             testCoverageEnabled true  //打开覆盖率统计开关
         }
@@ -113,6 +112,17 @@ android {
             multiDexEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
+        }
+
+        releaseJOC {
+            debuggable false
+            signingConfig signingConfigs.releaseJC
+            shrinkResources true
+            minifyEnabled true
+            zipAlignEnabled true
+            multiDexEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField("String", "RELEASE_TYPE", "${releaseTypeOC}")
         }
 
         releaseX {
@@ -145,7 +155,7 @@ android {
             zipAlignEnabled true
             multiDexEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField("String", "RELEASE_TYPE", "${releaseTypeX}")
+            buildConfigField("String", "RELEASE_TYPE", "${releaseTypeTX}")
         }
 
         releaseJTX {
@@ -184,7 +194,9 @@ android {
             def type = ""
             if (variant.buildType.name == "releaseC" || variant.buildType.name == "releaseJC") {
                 type = "c"
-            } else if (variant.buildType.name == "releaseX" || variant.buildType.name == "releaseJX") {
+            } else if (variant.buildType.name == "releaseOC") {
+                type = "oc"
+            } else if (variant.buildType.name == "releaseX" || variant.buildType.name == "releaseJX" || variant.buildType.name == "releaseJTX") {
                 type = "x_unjiagu"
             } else if (variant.buildType.name == "debug") {
                 type = "debug"
@@ -192,9 +204,7 @@ android {
                 releaseTime = "0"
                 gitVersion = "";
             }
-            if (variant.flavorName != "wallet") {
-                type = (type + "_" + variant.flavorName)
-            }
+            type = (type + "_" + variant.flavorName)
 
             outputFileName = "aton_android_v${verName}.${inner_version_name}_${releaseTime}_${verCode}_${type}_${gitVersion}.apk";
         }

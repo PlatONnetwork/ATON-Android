@@ -3,18 +3,26 @@ package com.juzix.wallet.entity;
 import android.content.Context;
 
 import com.juzix.wallet.R;
+import com.juzix.wallet.engine.AppConfigManager;
+
+import java.math.BigInteger;
 
 /**
  * 委托操作的判断
  */
-public class DelegateHandle {
+public class DelegateHandle implements Nullable {
     private boolean canDelegation;
     private String message;
     private String free;
     private String lock;
     private String minDelegation;
 
+    public static DelegateHandle getNullInstance() {
+        return NullDelegateHandle.getInstance();
+    }
+
     public DelegateHandle() {
+
     }
 
 
@@ -75,6 +83,11 @@ public class DelegateHandle {
             default:
                 return "";
         }
+    }
+
+    @Override
+    public boolean isNull() {
+        return false;
     }
 }
 

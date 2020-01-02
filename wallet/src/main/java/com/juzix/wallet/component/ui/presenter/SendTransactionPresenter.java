@@ -82,6 +82,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Predicate;
+import io.reactivex.schedulers.Schedulers;
 
 
 /**
@@ -263,7 +264,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                 return;
             }
 
-            if (BigDecimalUtil.isBigger(transferAmount, AppSettings.getInstance().getReminderThresholdAmount())) {
+            if (BigDecimalUtil.isNotSmaller(transferAmount, AppSettings.getInstance().getReminderThresholdAmount())) {
                 CommonTipsDialogFragment.createDialogWithTwoButton(ContextCompat.getDrawable(currentActivity(), R.drawable.icon_dialog_tips),
                         string(R.string.msg_large_transaction_reminder, StringUtil.formatBalanceWithoutMinFraction(AppSettings.getInstance().getReminderThresholdAmount())),
                         string(R.string.confirm), new OnDialogViewClickListener() {
@@ -310,7 +311,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     @Override
     public void updateAssetsTab(int tabIndex) {
         if (isViewAttached()) {
-            if (tabIndex != AssetsFragment.TAB2) {
+            if (tabIndex != AssetsFragment.MainTab.SEND_TRANSACTION) {
                 getView().resetView(feeAmount);
             } else {
                 getGasPrice();
@@ -335,7 +336,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     private void sendTransaction(String toAddress, String transferAmount) {
 
 
-        TransactionRecordEntity transactionRecordEntity = new TransactionRecordEntity(System.currentTimeMillis(), walletEntity.getPrefixAddress(), toAddress, transferAmount);
+        TransactionRecordEntity transactionRecordEntity = new TransactionRecordEntity(System.currentTimeMillis(), walletEntity.getPrefixAddress(), toAddress, transferAmount,NodeManager.getInstance().getChainId());
 
         if (AppSettings.getInstance().getResendReminder()) {
             Single
@@ -522,7 +523,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                     public void accept(Long aLong) throws Exception {
                         if (isViewAttached()) {
                             getView().resetView(feeAmount);
-                            MainActivity.actionStart(getContext(), MainActivity.TAB_PROPERTY, AssetsFragment.TAB1);
+                            MainActivity.actionStart(getContext(), MainActivity.TAB_PROPERTY, AssetsFragment.MainTab.TRANSACTION_LIST);
                         }
                     }
                 });
