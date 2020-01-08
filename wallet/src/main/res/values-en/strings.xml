@@ -709,5 +709,20 @@
 
     <string name="msg_large_transaction_reminder">Send more than %1$s LAT, Confirm sending?</string>
     <string name="msg_resend_transaction_reminder">Have the same send transaction within 2 hours, Confirm sending？</string>
+    <string name="msg_total_delegated_lat">Total Delegated(LAT)</string>
+    <string name="msg_unclaimed_reward">Unclaimed Reward</string>
+    <string name="msg_total_reward">Total Reward</string>
+    <string name="msg_delegation_rec">Delegation Rec</string>
+    <string name="msg_claim_rec">Claim Rec</string>
+    <string name="msg_claim_reward">Claim</string>
+
+    <string name="msg_no_delegated_data_tips">View all validators,Delegate</string>
+    <string name="msg_delegate">Delegate</string>
+
+    <string name="msg_claim_record">Claim Record</string>
+    <string name="msg_claim_rewards">Claim Rewards</string>
+    <string name="msg_claim_reward_tips">Estimated reward, subject to actual receipt</string>
+    <string name="msg_claim_wallet">Claim Wallet</string>
+
 </resources>
 

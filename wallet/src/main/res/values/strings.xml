@@ -723,6 +723,19 @@
 
     <string name="msg_large_transaction_reminder">发送数量超过%1$s LAT，确认是否继续发送？</string>
     <string name="msg_resend_transaction_reminder">最近有一笔相同的发送记录，确认是否继续发送？</string>
+    <string name="msg_total_delegated_lat">总计委托(LAT)</string>
+    <string name="msg_unclaimed_reward">待领取奖励</string>
+    <string name="msg_total_reward">累计奖励</string>
+    <string name="msg_delegation_rec">委托记录</string>
+    <string name="msg_claim_rec">领取记录</string>
+    <string name="msg_claim_reward">领取</string>
 
+    <string name="msg_no_delegated_data_tips">查看验证节点，参与委托</string>
+    <string name="msg_delegate">参与委托</string>
+
+    <string name="msg_claim_record">委托记录</string>
+    <string name="msg_claim_rewards">领取奖励</string>
+    <string name="msg_claim_reward_tips">预估奖励，以实际到账为准</string>
+    <string name="msg_claim_wallet">领取钱包</string>
 
 </resources>

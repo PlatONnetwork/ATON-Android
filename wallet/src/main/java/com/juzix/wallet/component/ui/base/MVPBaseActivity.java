@@ -2,6 +2,8 @@ package com.juzix.wallet.component.ui.base;
 
 import android.os.Bundle;
 
+import java.util.HashMap;
+
 /**
  * @author matrixelement
  */

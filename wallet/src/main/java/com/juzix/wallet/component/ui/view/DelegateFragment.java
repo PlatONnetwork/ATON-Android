@@ -1,6 +1,7 @@
 package com.juzix.wallet.component.ui.view;
 
 import android.os.Bundle;
+import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
@@ -28,7 +29,18 @@ import java.util.ArrayList;
  * 委托模块
  */
 public class DelegateFragment extends BaseFragment {
+
+    @IntDef({
+            DelegateTab.MY_DELEGATE_TAB,
+            DelegateTab.VALIDATORS_TAB
+    })
+    public @interface DelegateTab {
+        int MY_DELEGATE_TAB = 0;
+        int VALIDATORS_TAB = 1;
+    }
+
     private ViewPagerSlide vpContent;
+
     private CustomTabLayout stbBar;
 
     @Nullable
@@ -37,6 +49,10 @@ public class DelegateFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_delegate, container, false);
         initView(view);
         return view;
+    }
+
+    public void setCurrentTab(@DelegateTab int delegateTab) {
+        vpContent.setCurrentItem(delegateTab);
     }
 
     private void initView(View view) {

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_send_transaction_dialog_fragment"
+    android:paddingTop="16dp"
+    android:paddingBottom="12dp">
+
+    <TextView
+        android:id="@+id/tv_claim_rewards_title"
+        style="@style/Text.000.16"
+        android:text="@string/msg_claim_rewards"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/view_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@color/color_e4e7f3"
+        app:layout_constraintTop_toBottomOf="@id/tv_claim_rewards_title" />
+
+    <TextView
+        android:id="@+id/tv_claim_rewards_amount"
+        style="@style/Text.105cfe.22"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_divider"
+        tools:text="1,236,253.20235445" />
+
+    <TextView
+        android:id="@+id/tv_claim_rewards_tips"
+        style="@style/Text.898c9e.12"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginRight="16dp"
+        android:text="@string/msg_claim_reward_tips"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_claim_rewards_amount" />
+
+    <TextView
+        android:id="@+id/tv_fee_amount_title"
+        style="@style/Text.61646e.14"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/fee"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_claim_rewards_tips" />
+
+    <TextView
+        android:id="@+id/tv_fee_amount"
+        style="@style/Text.000.14"
+        android:layout_marginTop="24dp"
+        android:layout_marginRight="16dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_claim_rewards_tips"
+        tools:text="0.00035 LAT" />
+
+    <TextView
+        style="@style/Text.61646e.14"
+        android:layout_marginTop="16dp"
+        android:text="@string/msg_claim_wallet"
+        app:layout_constraintLeft_toLeftOf="@id/tv_fee_amount_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_fee_amount_title" />
+
+    <TextView
+        android:id="@+id/tv_claim_wallet"
+        style="@style/Text.000.14"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        android:textStyle="bold"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_fee_amount"
+        tools:text="wallste1" />
+
+    <TextView
+        android:id="@+id/tv_balance_amount"
+        style="@style/Text.000.13"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginRight="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_claim_wallet"
+        tools:text="Balance:0.00035 LAT" />
+
+    <com.juzix.wallet.component.widget.ShadowButton
+        android:id="@+id/sbtn_confirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="18dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginRight="18dp"
+        android:paddingLeft="6dp"
+        android:paddingTop="4dp"
+        android:paddingRight="6dp"
+        android:paddingBottom="8dp"
+        app:enabled="false"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_balance_amount"
+        app:text="@string/confirm"
+        app:textAppearance="@style/MainButtonStyle"
+        app:textBackground="@drawable/bg_main_button" />
+
+
+</android.support.constraint.ConstraintLayout>

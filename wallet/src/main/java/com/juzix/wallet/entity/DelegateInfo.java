@@ -21,15 +21,19 @@ public class DelegateInfo implements Parcelable {
     private String walletIcon;
 
     /**
-     * 可委托金额  单位von   1LAT(ETH)=1000000000000000000von(wei)
+     * 累计的奖励  单位von   1LAT(ETH)=1000000000000000000von(wei)
      */
-    private String availableDelegationBalance;
+    private String cumulativeReward;
+
+    /**
+     * 待领取的奖励，单位von
+     */
+    private String withdrawReward;
 
     /**
      * 总委托  单位von   1LAT(ETH)=1000000000000000000von(wei)
      */
     private String delegated;
-
 
 
     public DelegateInfo() {
@@ -40,7 +44,8 @@ public class DelegateInfo implements Parcelable {
         walletName = in.readString();
         walletAddress = in.readString();
         walletIcon = in.readString();
-        availableDelegationBalance =in.readString();
+        cumulativeReward =in.readString();
+        withdrawReward = in.readString();
         delegated = in.readString();
     }
 
@@ -49,7 +54,8 @@ public class DelegateInfo implements Parcelable {
         dest.writeString(walletName);
         dest.writeString(walletAddress);
         dest.writeString(walletIcon);
-        dest.writeString(availableDelegationBalance);
+        dest.writeString(cumulativeReward);
+        dest.writeString(withdrawReward);
         dest.writeString(delegated);
     }
 
@@ -102,11 +108,19 @@ public class DelegateInfo implements Parcelable {
         this.walletIcon = walletIcon;
     }
 
-    public String getAvailableDelegationBalance() {
-        return availableDelegationBalance;
+    public String getCumulativeReward() {
+        return cumulativeReward;
     }
 
-    public void setAvailableDelegationBalance(String availableDelegationBalance) {
-        this.availableDelegationBalance = availableDelegationBalance;
+    public void setCumulativeReward(String cumulativeReward) {
+        this.cumulativeReward = cumulativeReward;
+    }
+
+    public String getWithdrawReward() {
+        return withdrawReward;
+    }
+
+    public void setWithdrawReward(String withdrawReward) {
+        this.withdrawReward = withdrawReward;
     }
 }

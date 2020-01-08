@@ -1,5 +1,6 @@
 package com.juzix.wallet.component.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -15,14 +16,15 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.widget.CircleImageView;
+import com.juzix.wallet.component.widget.RoundedTextView;
 import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.entity.DelegateInfo;
 import com.juzix.wallet.utils.AddressFormatUtil;
+import com.juzix.wallet.utils.AmountUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
-
 
 
 import java.util.List;
@@ -40,10 +42,6 @@ public class MyDelegateAdapter extends RecyclerView.Adapter<MyDelegateAdapter.Vi
 
     private OnItemClickListener mOnItemClickListener;
 
-    public MyDelegateAdapter(List<DelegateInfo> infoList) {
-        this.infoList = infoList;
-    }
-
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.mOnItemClickListener = onItemClickListener;
     }
@@ -55,30 +53,60 @@ public class MyDelegateAdapter extends RecyclerView.Adapter<MyDelegateAdapter.Vi
         return new ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_my_delegate_list, parent, false));
     }
 
+    @SuppressLint("CheckResult")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+
         ShadowDrawable.setShadowDrawable(holder.item,
                 ContextCompat.getColor(mContext, R.color.color_ffffff),
                 DensityUtil.dp2px(mContext, 4),
                 ContextCompat.getColor(mContext, R.color.color_cc9ca7c2),
-                DensityUtil.dp2px(mContext, 5),
+                DensityUtil.dp2px(mContext, 10),
                 0,
                 DensityUtil.dp2px(mContext, 2));
-        DelegateInfo info = infoList.get(position);
-        holder.walletIcon.setImageResource(RUtils.drawable(info.getWalletIcon()));
-        holder.walletName.setText(info.getWalletName());
-        holder.walletAddress.setText(AddressFormatUtil.formatAddress(info.getWalletAddress()));
-        //转换的数据
-        holder.available_balance.setText(TextUtils.equals(info.getAvailableDelegationBalance(),"0") ? "— —" :StringUtil.formatBalance(BigDecimalUtil.div(info.getAvailableDelegationBalance(), "1E18"))); // StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(info.getAvailableDelegationBalance(), "1E18"))), false)
-        holder.totalDelegated.setText(TextUtils.equals(info.getDelegated(),"0") ? "— —" : StringUtil.formatBalance(BigDecimalUtil.div(info.getDelegated(), "1E18")));//StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(info.getDelegated(), "1E18"))), false)
 
-        RxView.clicks(holder.itemView)
+        DelegateInfo info = infoList.get(position);
+        holder.walletAvatarIv.setImageResource(RUtils.drawable(info.getWalletIcon()));
+        holder.walletNameTv.setText(info.getWalletName());
+        holder.walletAddressTv.setText(AddressFormatUtil.formatAddress(info.getWalletAddress()));
+        holder.unclaimedRewardAmountTv.setText(AmountUtil.formatAmountText(info.getDelegated()));
+        holder.totalRewardAmountTv.setText(AmountUtil.formatAmountText(info.getCumulativeReward()));
+        holder.delegatedAmountTv.setText(AmountUtil.formatAmountText(info.getDelegated()));
+        holder.unclaimedRewardAmountTv.setText(AmountUtil.formatAmountText(info.getWithdrawReward()));
+        holder.claimRewardRtv.setVisibility(BigDecimalUtil.isBiggerThanZero(info.getWithdrawReward()) ? View.VISIBLE : View.GONE);
+
+        RxView
+                .clicks(holder.itemView)
                 .compose(RxUtils.getClickTransformer())
                 .subscribe(new Consumer<Object>() {
                     @Override
                     public void accept(Object o) {
                         if (mOnItemClickListener != null) {
                             mOnItemClickListener.onItemClick(info);
+                        }
+                    }
+                });
+        RxView
+                .clicks(holder.delegateDetailTv)
+                .compose(RxUtils.getClickTransformer())
+                .subscribe(new Consumer<Object>() {
+                    @Override
+                    public void accept(Object o) throws Exception {
+                        if (mOnItemClickListener != null) {
+                            mOnItemClickListener.onItemClick(info);
+                        }
+                    }
+                });
+
+        RxView
+                .clicks(holder.claimRewardRtv)
+                .compose(RxUtils.getClickTransformer())
+                .subscribe(new Consumer<Object>() {
+
+                    @Override
+                    public void accept(Object o) throws Exception {
+                        if (mOnItemClickListener != null) {
+                            mOnItemClickListener.onClaimRewardClick();
                         }
                     }
                 });
@@ -89,7 +117,6 @@ public class MyDelegateAdapter extends RecyclerView.Adapter<MyDelegateAdapter.Vi
     public void notifyDataChanged(List<DelegateInfo> list) {
         this.infoList = list;
         notifyDataSetChanged();
-
     }
 
     public void notifyItemDataChanged(int positon, DelegateInfo info) {
@@ -108,18 +135,25 @@ public class MyDelegateAdapter extends RecyclerView.Adapter<MyDelegateAdapter.Vi
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.iv_total_delegate)
-        CircleImageView walletIcon;
-        @BindView(R.id.tv_item_wallet_name)
-        TextView walletName;
-        @BindView(R.id.tv_item_wallet_address)
-        TextView walletAddress;
-        @BindView(R.id.tv_item_available_balance)
-        TextView available_balance;
-        @BindView(R.id.tv_item_delegate)
-        TextView totalDelegated;
+
         @BindView(R.id.ll_item)
         LinearLayout item;
+        @BindView(R.id.iv_wallet_avatar)
+        CircleImageView walletAvatarIv;
+        @BindView(R.id.tv_wallet_name)
+        TextView walletNameTv;
+        @BindView(R.id.tv_wallet_address)
+        TextView walletAddressTv;
+        @BindView(R.id.tv_delegate_detail)
+        TextView delegateDetailTv;
+        @BindView(R.id.tv_delegated_amount)
+        TextView delegatedAmountTv;
+        @BindView(R.id.tv_total_reward_amount)
+        TextView totalRewardAmountTv;
+        @BindView(R.id.tv_unclaimed_reward_amount)
+        TextView unclaimedRewardAmountTv;
+        @BindView(R.id.rtv_claim_reward)
+        RoundedTextView claimRewardRtv;
 
         public ViewHolder(View view) {
             super(view);
@@ -128,7 +162,12 @@ public class MyDelegateAdapter extends RecyclerView.Adapter<MyDelegateAdapter.Vi
     }
 
     public interface OnItemClickListener {
+
         void onItemClick(DelegateInfo delegateInfo);
 
+        /**
+         * 领取奖励
+         */
+        void onClaimRewardClick();
     }
 }

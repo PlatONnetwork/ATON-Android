@@ -5,6 +5,7 @@ import com.juzhen.framework.network.ApiResponse;
 import com.juzix.wallet.entity.AccountBalance;
 import com.juzix.wallet.entity.AppConfig;
 import com.juzix.wallet.entity.CandidateWrap;
+import com.juzix.wallet.entity.ClaimRewardRecord;
 import com.juzix.wallet.entity.DelegateDetail;
 import com.juzix.wallet.entity.DelegateHandle;
 import com.juzix.wallet.entity.DelegateInfo;
@@ -74,7 +75,7 @@ public interface BaseApi {
      *            ]
      * @return
      */
-    @POST("app/v0700/node/listDelegateGroupByAddr")
+    @POST("app/v0760/node/listDelegateGroupByAddr")
     Single<Response<ApiResponse<List<DelegateInfo>>>> getMyDelegateList(@Body ApiRequestBody body);
 
 
@@ -160,4 +161,13 @@ public interface BaseApi {
      */
     @GET("config/config.json")
     Single<Response<ApiResponse<AppConfig>>> getAppConfig();
+
+
+    /**
+     * 查询领取奖励记录
+     *
+     * @return
+     */
+    @POST("app/v0760/transaction/getRewardTransactions")
+    Single<Response<ApiResponse<List<ClaimRewardRecord>>>> getRewardTransactions(@Body ApiRequestBody body);
 }

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="33dp"
+    android:paddingTop="20dp"
+    android:paddingRight="33dp"
+    android:paddingBottom="20dp">
+
+    <LinearLayout
+        android:id="@+id/ll_problem"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_weight="1"
+        android:background="@drawable/bg_delegate_textview"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/Text.105cfe.14"
+            android:drawableLeft="@drawable/icon_problem"
+            android:drawablePadding="5dp"
+            android:text="@string/frequently_asked_questions" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_tutorial"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="30dp"
+        android:layout_weight="1"
+        android:background="@drawable/bg_delegate_textview"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/Text.105cfe.14"
+            android:drawablePadding="5dp"
+            android:text="@string/tutorial" />
+    </LinearLayout>
+
+</LinearLayout>

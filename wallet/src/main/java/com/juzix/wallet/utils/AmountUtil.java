@@ -101,4 +101,14 @@ public class AmountUtil {
     public static String convertVonToLat(String value) {
         return NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(value, VALUE_1E18), 8);
     }
+
+    /**
+     * 格式化金额文本
+     *
+     * @param amount
+     * @return
+     */
+    public static String formatAmountText(String amount) {
+        return BigDecimalUtil.isBiggerThanZero(amount) ? StringUtil.formatBalance(BigDecimalUtil.div(amount, VALUE_1E18)) : "— —";
+    }
 }

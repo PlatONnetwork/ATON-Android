@@ -1,22 +1,23 @@
 package com.juzix.wallet.component.ui.view;
 
 import android.os.Bundle;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.view.ViewPager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
+import android.text.TextPaint;
+import android.text.style.ClickableSpan;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
-import com.juzhen.framework.util.NumberParserUtils;
-import com.juzix.wallet.App;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
@@ -27,6 +28,7 @@ import com.juzix.wallet.component.ui.dialog.BaseDialogFragment;
 import com.juzix.wallet.component.ui.dialog.CommonGuideDialogFragment;
 import com.juzix.wallet.component.ui.presenter.MyDelegatePresenter;
 import com.juzix.wallet.component.widget.CustomRefreshHeader;
+import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.entity.DelegateInfo;
 import com.juzix.wallet.entity.GuideType;
@@ -35,9 +37,9 @@ import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.AmountUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
-import com.juzix.wallet.utils.LanguageUtil;
+import com.juzix.wallet.utils.CommonTextUtils;
+import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.RxUtils;
-import com.juzix.wallet.utils.StringUtil;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -46,16 +48,14 @@ import com.umeng.analytics.MobclickAgent;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Locale;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.reactivex.Flowable;
 import io.reactivex.functions.BiFunction;
-import io.reactivex.functions.Function;
 
 
 /**
@@ -64,32 +64,57 @@ import io.reactivex.functions.Function;
 
 public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> implements MyDelegateContract.View {
 
-    private Unbinder unbinder;
+    @IntDef({
+            TotalAmountType.TOTAL_DELEGATED,
+            TotalAmountType.TOTAL_REWARD,
+            TotalAmountType.TOTAL_UNCLAIMED_REWARD
+    })
+    public @interface TotalAmountType {
+        /**
+         * 累计委托
+         */
+        int TOTAL_DELEGATED = 0;
+        /**
+         * 累计提取奖励
+         */
+        int TOTAL_REWARD = 1;
+        /**
+         * 累计未提取的奖励
+         */
+        int TOTAL_UNCLAIMED_REWARD = 2;
+    }
 
-    @BindView(R.id.refreshLayout)
+    @BindView(R.id.layout_refresh)
     SmartRefreshLayout refreshLayout;
-    @BindView(R.id.iv_total_delegate)
-    ImageView iconDelegate;
-    @BindView(R.id.tv_total_delegate)
-    TextView tv_total_delegate;
-    @BindView(R.id.tv_delegate_record)
-    TextView tv_delegate_record;
+    @BindView(R.id.tv_total_delegated_amount)
+    TextView totalDelegatedAmountTv;
+    @BindView(R.id.tv_total_unclaimed_reward_amount)
+    TextView totalUnclaimedRewardAmountTv;
+    @BindView(R.id.tv_total_reward_amount)
+    TextView totalRewardAmountTv;
+    @BindView(R.id.tv_delegation_rec)
+    TextView delegationRecTv;
+    @BindView(R.id.tv_claim_rec)
+    TextView claimRecTv;
     @BindView(R.id.ll_no_data)
-    LinearLayout ll_no_data;
-    @BindView(R.id.list_delegate)
-    RecyclerView list_delegate;
-    @BindView(R.id.ll_problem)
-    LinearLayout ll_problem;
-    @BindView(R.id.ll_tutorial)
-    LinearLayout ll_tutorial;
-    @BindView(R.id.ll_guide)
-    LinearLayout ll_guide;
+    LinearLayout noDataLl;
     @BindView(R.id.tv_no_data_tips)
-    TextView tv_no_data_tips;
+    TextView noDataTipsTv;
+    @BindView(R.id.list_my_delegate)
+    RecyclerView myDelegateList;
+    @BindView(R.id.ll_problem)
+    LinearLayout problemLl;
+    @BindView(R.id.ll_tutorial)
+    LinearLayout tutorialLl;
+    @BindString(R.string.msg_no_delegated_data_tips)
+    String noDelegatedDataTipsMsg;
+    @BindString(R.string.msg_delegate)
+    String delegateMsg;
+    @BindView(R.id.layout_my_delegate_top)
+    FrameLayout myDelegateTopLayout;
 
+    private Unbinder unbinder;
     private MyDelegateAdapter mMyDelegateAdapter;
-    private LinearLayoutManager layoutManager;
-    List<DelegateInfo> datalist;
 
     @Override
     protected MyDelegatePresenter createPresenter() {
@@ -110,24 +135,53 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
         return view;
     }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initClickListener();
-    }
 
-    private void initClickListener() {
+    private void initViews() {
 
-        RxView.clicks(tv_delegate_record)
+        ShadowDrawable.setShadowDrawable(myDelegateTopLayout,
+                DensityUtil.dp2px(getContext(), 4),
+                ContextCompat.getColor(getContext(), R.color.color_cc9ca7c2),
+                DensityUtil.dp2px(getContext(), 10),
+                0,
+                DensityUtil.dp2px(getContext(), 2));
+
+        CommonTextUtils.richText(noDataTipsTv, noDelegatedDataTipsMsg, delegateMsg, new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View widget) {
+                ((DelegateFragment) getParentFragment()).setCurrentTab(DelegateFragment.DelegateTab.VALIDATORS_TAB);
+            }
+
+            @Override
+            public void updateDrawState(@NonNull TextPaint ds) {
+                ds.setFakeBoldText(true);
+                ds.setColor(getResources().getColor(R.color.color_105cfe));
+            }
+        });
+        refreshLayout.setRefreshHeader(new CustomRefreshHeader(getContext()));
+        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                mPresenter.loadMyDelegateData();
+            }
+        });
+        mMyDelegateAdapter = new MyDelegateAdapter();
+        myDelegateList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        myDelegateList.setAdapter(mMyDelegateAdapter);
+        mMyDelegateAdapter.setOnItemClickListener(new MyDelegateAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(DelegateInfo delegateInfo) {
+                DelegateDetailActivity.actionStart(getContext(), delegateInfo);
+            }
+
+            @Override
+            public void onClaimRewardClick() {
+
+            }
+        });
+
+        RxView
+                .clicks(problemLl)
                 .compose(RxUtils.bindToLifecycle(this))
-                .compose(RxUtils.getClickTransformer())
-                .subscribe(new CustomObserver<Object>() {
-                    @Override
-                    public void accept(Object o) {
-                        DelegateRecordActivity.actionStart(getContext());
-                    }
-                });
-        RxView.clicks(ll_problem).compose(RxUtils.bindToLifecycle(this))
                 .compose(RxUtils.getClickTransformer())
                 .subscribe(new CustomObserver<Object>() {
                     @Override
@@ -136,7 +190,9 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
                     }
                 });
 
-        RxView.clicks(ll_tutorial).compose(RxUtils.bindToLifecycle(this))
+        RxView
+                .clicks(tutorialLl)
+                .compose(RxUtils.bindToLifecycle(this))
                 .compose(RxUtils.getClickTransformer())
                 .subscribe(new CustomObserver<Object>() {
                     @Override
@@ -145,42 +201,28 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
                     }
                 });
 
-        RxView.clicks(ll_no_data).compose(RxUtils.bindToLifecycle(this))
+        RxView
+                .clicks(delegationRecTv)
+                .compose(RxUtils.bindToLifecycle(this))
                 .compose(RxUtils.getClickTransformer())
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        //没数据，跳转到验证节点页面
-                        DelegateFragment delegateFragment = (DelegateFragment) MyDelegateFragment.this.getParentFragment();
-                        delegateFragment.setFragment2Fragment(new DelegateFragment.Fragment2Fragment() {
-                            @Override
-                            public void gotoFragment(ViewPager viewPager) {
-                                viewPager.setCurrentItem(1);
-                            }
-                        });
-                        delegateFragment.forSkip();
+                        DelegateRecordActivity.actionStart(currentActivity());
                     }
                 });
 
-    }
+        RxView
+                .clicks(claimRecTv)
+                .compose(RxUtils.bindToLifecycle(this))
+                .compose(RxUtils.getClickTransformer())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        ClaimRewardRecordActivity.actionStart(currentActivity());
+                    }
+                });
 
-
-    private void initViews() {
-        initColor();
-        initRefreshView();
-        layoutManager = new LinearLayoutManager(getContext());
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mMyDelegateAdapter = new MyDelegateAdapter(datalist);
-        list_delegate.setLayoutManager(layoutManager);
-        list_delegate.setAdapter(mMyDelegateAdapter);
-
-        list_delegate.setEnabled(true);
-        mMyDelegateAdapter.setOnItemClickListener(new MyDelegateAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(DelegateInfo delegateInfo) {
-                DelegateDetailActivity.actionStart(getContext(), delegateInfo);
-            }
-        });
         initGuide();
     }
 
@@ -195,84 +237,36 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
         }
     }
 
-    private void initColor() {
-        String str = null;
-        if (Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage())) {
-            str = "<font color='#61646E'>查看验证节点，</font>"
-                    + "<font color= '#105CFE'>参与委托</font>";
-        } else {
-            str = "<font color='#61646E'>View all validators,</font>"
-                    + "<font color= '#105CFE'>Delegate</font>";
-        }
-
-        tv_no_data_tips.setText(Html.fromHtml(str));
-    }
-
-    private void initRefreshView() {
-        refreshLayout.setRefreshHeader(new CustomRefreshHeader(getContext()));
-        refreshLayout.setEnableLoadMore(false);//禁止上拉加载更多
-        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
-            @Override
-            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                mPresenter.loadMyDelegateData();
-            }
-        });
-    }
-
 
     @Override
     public void showMyDelegateData(List<DelegateInfo> list) {
-        if (list != null && list.size() > 0) {
-            ll_no_data.setVisibility(View.GONE);
-        } else {
-            ll_no_data.setVisibility(View.VISIBLE);
-        }
+        refreshLayout.finishRefresh();
+        noDataLl.setVisibility(list != null && list.size() > 0 ? View.GONE : View.VISIBLE);
         mMyDelegateAdapter.notifyDataChanged(list);
-        showTotal(list);
-        refreshLayout.finishRefresh();
+        SparseArray<String> totalAmountArray = getTotalAmountArray(list);
+        totalDelegatedAmountTv.setText(AmountUtil.formatAmountText(totalAmountArray.get(TotalAmountType.TOTAL_DELEGATED)));
+        totalRewardAmountTv.setText(AmountUtil.formatAmountText(totalAmountArray.get(TotalAmountType.TOTAL_REWARD)));
+        totalUnclaimedRewardAmountTv.setText(AmountUtil.formatAmountText(totalAmountArray.get(TotalAmountType.TOTAL_UNCLAIMED_REWARD)));
     }
 
-    private void showTotal(List<DelegateInfo> list) {
+    private SparseArray<String> getTotalAmountArray(List<DelegateInfo> list) {
 
-        BigDecimal totalDelegateAmount = getTotalDelegateAmount(list);
+        if (list == null || list.isEmpty()) {
+            return new SparseArray<>(0);
+        }
 
-        tv_total_delegate.setText(totalDelegateAmount.compareTo(BigDecimal.ZERO) > 0 ? getString(R.string.amount_with_unit, StringUtil.formatBalance(AmountUtil.convertVonToLat(totalDelegateAmount.toPlainString(), 8), false)) : "— —");
-    }
-
-    private BigDecimal getTotalDelegateAmount(List<DelegateInfo> list) {
-
-        return Flowable.fromIterable(list)
-                .map(new Function<DelegateInfo, String>() {
+        return Flowable
+                .fromIterable(list)
+                .reduce(new SparseArray<String>(3), new BiFunction<SparseArray<String>, DelegateInfo, SparseArray<String>>() {
                     @Override
-                    public String apply(DelegateInfo delegateInfo) throws Exception {
-                        return delegateInfo.getDelegated();
+                    public SparseArray<String> apply(SparseArray<String> bigDecimalSparseArray, DelegateInfo delegateInfo) throws Exception {
+                        bigDecimalSparseArray.put(TotalAmountType.TOTAL_DELEGATED, BigDecimalUtil.add(bigDecimalSparseArray.get(TotalAmountType.TOTAL_DELEGATED), delegateInfo.getDelegated()).toPlainString());
+                        bigDecimalSparseArray.put(TotalAmountType.TOTAL_REWARD, BigDecimalUtil.add(bigDecimalSparseArray.get(TotalAmountType.TOTAL_REWARD), delegateInfo.getCumulativeReward()).toPlainString());
+                        bigDecimalSparseArray.put(TotalAmountType.TOTAL_UNCLAIMED_REWARD, BigDecimalUtil.add(bigDecimalSparseArray.get(TotalAmountType.TOTAL_UNCLAIMED_REWARD), delegateInfo.getWithdrawReward()).toPlainString());
+                        return bigDecimalSparseArray;
                     }
                 })
-                .map(new Function<String, BigDecimal>() {
-                    @Override
-                    public BigDecimal apply(String s) throws Exception {
-                        return BigDecimalUtil.toBigDecimal(s);
-                    }
-                })
-                .reduce(new BiFunction<BigDecimal, BigDecimal, BigDecimal>() {
-                    @Override
-                    public BigDecimal apply(BigDecimal bigDecimal, BigDecimal bigDecimal2) throws Exception {
-                        return bigDecimal.add(bigDecimal2);
-                    }
-                })
-                .defaultIfEmpty(BigDecimal.ZERO)
-                .onErrorReturnItem(BigDecimal.ZERO)
                 .blockingGet();
-    }
-
-
-    @Override
-    public void showMyDelegateDataFailed() {
-        ll_no_data.setVisibility(View.VISIBLE);
-        tv_total_delegate.setText("--");
-        refreshLayout.finishRefresh();
-//        mMyDelegateAdapter.notifyDataSetChanged();
-        mMyDelegateAdapter.notifyDataChanged(null);
     }
 
 

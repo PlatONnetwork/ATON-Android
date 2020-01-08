@@ -9,11 +9,8 @@ import java.util.List;
 public class MyDelegateContract {
 
     public interface View extends IView {
+
         void showMyDelegateData(List<DelegateInfo> list);
-
-        void showMyDelegateDataFailed();
-
-
     }
 
     public interface Presenter extends IPresenter<View> {
