@@ -19,6 +19,8 @@ import com.juzhen.framework.util.LogUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
+import com.juzix.wallet.app.LoadingTransformer;
+import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.view.ScanQRCodeActivity;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.db.sqlite.AddressDao;
@@ -176,6 +178,8 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
                     @Override
                     public void accept(Object o) {
 
+                        sbtnSendTransaction.setEnabled(false);
+
                         int result = checkSignature(transactionAuthorizationData);
 
                         if (result == CODE_INVALID_SIGNATURE) {
@@ -235,6 +239,7 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
                 .takeLast(1)
                 .compose(RxUtils.getFlowableSchedulerTransformer())
                 .compose(bindToLifecycle())
+                .compose(LoadingTransformer.bindToFlowableLifecycle((BaseActivity) getActivity()))
                 .subscribe(new Consumer<PlatonSendTransaction>() {
                     @Override
                     public void accept(PlatonSendTransaction platonSendTransaction) throws Exception {
@@ -250,6 +255,9 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
+
+                        sbtnSendTransaction.setEnabled(true);
+
                         if (transactionSignatureData.getFunctionType() == FunctionType.TRANSFER) {
                             ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.transfer_failed));
                         } else if (transactionSignatureData.getFunctionType() == FunctionType.DELEGATE_FUNC_TYPE) {
