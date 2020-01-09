@@ -53,7 +53,6 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
      * @param sequence  加载更多序号
      */
     private void getValidatorsData(String sortType, String nodeState, int sequence) {
-        Log.d("ValidatorsPresenter", "=========nodeState=" + nodeState + "==============rank=" + sequence + "===============sortType=" + sortType);
         ServerUtils.getCommonApi().getVerifyNodeList()
                 .compose(bindUntilEvent(FragmentEvent.STOP))
                 .compose(RxUtils.getSingleSchedulerTransformer())
@@ -61,21 +60,7 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
                     @Override
                     public void onApiSuccess(List<VerifyNode> nodeList) {
                         if (isViewAttached()) {
-
-                            deleteVerifyNodeList()
-                                    .flatMap(new Function<Boolean, SingleSource<Boolean>>() {
-                                        @Override
-                                        public SingleSource<Boolean> apply(Boolean aBoolean) throws Exception {
-                                            return ValidatorsService.insertVerifyNodeList(nodeList);
-                                        }
-                                    })
-                                    .compose(RxUtils.getSingleSchedulerTransformer())
-                                    .subscribe(new Consumer<Boolean>() {
-                                        @Override
-                                        public void accept(Boolean aBoolean) throws Exception {
-                                            loadDataFromDB(sortType, nodeState, sequence);
-                                        }
-                                    });
+                            getView().showValidatorsDataOnAll(nodeList);
                         }
 
                     }

@@ -723,6 +723,8 @@
     <string name="msg_claim_rewards">Claim Rewards</string>
     <string name="msg_claim_reward_tips">Estimated reward, subject to actual receipt</string>
     <string name="msg_claim_wallet">Claim Wallet</string>
+    <string name="hint_search_validator">Search by validator name</string>
+    <string name="msg_hide">Hide</string>
 
 </resources>
 

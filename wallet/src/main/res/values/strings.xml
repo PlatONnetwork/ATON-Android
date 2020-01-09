@@ -737,5 +737,7 @@
     <string name="msg_claim_rewards">领取奖励</string>
     <string name="msg_claim_reward_tips">预估奖励，以实际到账为准</string>
     <string name="msg_claim_wallet">领取钱包</string>
+    <string name="hint_search_validator">输入节点名称查询</string>
+    <string name="msg_hide">隐藏</string>
 
 </resources>

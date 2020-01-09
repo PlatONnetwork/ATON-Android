@@ -425,6 +425,10 @@
         <item name="android:textSize">9sp</item>
     </style>
 
+    <style name="Text.898c9e.11">
+        <item name="android:textSize">11sp</item>
+    </style>
+
     <style name="Text.898c9e.12">
         <item name="android:textSize">12sp</item>
     </style>

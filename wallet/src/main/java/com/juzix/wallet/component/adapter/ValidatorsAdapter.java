@@ -39,13 +39,11 @@ public class ValidatorsAdapter extends CommonAdapter<VerifyNode> {
     @Override
     protected void convert(Context context, ViewHolder viewHolder, VerifyNode item, int position) {
 
-        RelativeLayout rl_shade = viewHolder.getView(R.id.rl_shade);
-
-        ShadowDrawable.setShadowDrawable(rl_shade,
+        ShadowDrawable.setShadowDrawable(viewHolder.getView(R.id.rl_shade),
                 ContextCompat.getColor(context, R.color.color_ffffff),
                 DensityUtil.dp2px(context, 4),
                 ContextCompat.getColor(context, R.color.color_cc9ca7c2),
-                DensityUtil.dp2px(context, 5),
+                DensityUtil.dp2px(context, 8),
                 0,
                 DensityUtil.dp2px(context, 0));
 

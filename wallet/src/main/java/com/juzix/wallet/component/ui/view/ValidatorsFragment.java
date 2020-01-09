@@ -4,12 +4,15 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -19,6 +22,8 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
+import com.jakewharton.rxbinding2.widget.RxTextView;
+import com.jakewharton.rxbinding2.widget.TextViewEditorActionEvent;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
@@ -29,6 +34,7 @@ import com.juzix.wallet.component.ui.contract.ValidatorsContract;
 import com.juzix.wallet.component.ui.dialog.BaseDialogFragment;
 import com.juzix.wallet.component.ui.dialog.CommonGuideDialogFragment;
 import com.juzix.wallet.component.ui.presenter.ValidatorsPresenter;
+import com.juzix.wallet.component.widget.ClearEditText;
 import com.juzix.wallet.component.widget.CustomRefreshFooter;
 import com.juzix.wallet.component.widget.CustomRefreshHeader;
 import com.juzix.wallet.config.AppSettings;
@@ -37,6 +43,7 @@ import com.juzix.wallet.entity.VerifyNode;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.RxUtils;
+import com.juzix.wallet.utils.ToastUtil;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
@@ -53,6 +60,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Predicate;
 
 /**
  * 验证节点页面
@@ -80,6 +89,14 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
     ImageView searchIv;
     @BindView(R.id.iv_rank)
     ImageView rankIv;
+    @BindView(R.id.et_search)
+    EditText searchEt;
+    @BindView(R.id.layout_search)
+    ConstraintLayout searchLayout;
+    @BindView(R.id.tv_hide_search)
+    TextView hideSearchTv;
+    @BindView(R.id.iv_clear)
+    ImageView clearIv;
 
     private String rankType;
     private String nodeState;//tab类型（所有/活跃中/候选中）
@@ -118,12 +135,6 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
 
     private void initView() {
 
-        changeBtnState(R.id.btn_all);
-
-        refreshLayout.setRefreshHeader(new CustomRefreshHeader(getContext()));
-        refreshLayout.setRefreshFooter(new CustomRefreshFooter(getContext()));
-        refreshLayout.setEnableLoadMore(true);//启用上拉加载功能
-        refreshLayout.setEnableAutoLoadMore(false);
         mValidatorsAdapter = new ValidatorsAdapter(R.layout.item_validators_list, null);
         rlv_list.setEmptyView(mNoDataLayout);
         rlv_list.setAdapter(mValidatorsAdapter);
@@ -157,7 +168,6 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
                     }
                 });
 
-
         RxView
                 .clicks(searchIv)
                 .compose(RxUtils.getClickTransformer())
@@ -165,7 +175,43 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
+                        searchLayout.setVisibility(View.VISIBLE);
+                    }
+                });
 
+        RxView
+                .clicks(hideSearchTv)
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        searchLayout.setVisibility(View.GONE);
+                    }
+                });
+
+        RxTextView
+                .textChanges(searchEt)
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<CharSequence>() {
+                    @Override
+                    public void accept(CharSequence charSequence) {
+                        clearIv.setVisibility(TextUtils.isEmpty(charSequence) ? View.GONE : View.VISIBLE);
+                    }
+                });
+
+        RxTextView
+                .editorActionEvents(searchEt, new Predicate<TextViewEditorActionEvent>() {
+                    @Override
+                    public boolean test(TextViewEditorActionEvent textViewEditorActionEvent) throws Exception {
+                        return textViewEditorActionEvent.actionId() == EditorInfo.IME_ACTION_SEARCH;
+                    }
+                })
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<TextViewEditorActionEvent>() {
+                    @Override
+                    public void accept(TextViewEditorActionEvent textViewEditorActionEvent) {
+                        ToastUtil.showLongToast(currentActivity(), "开始搜索。。。。。");
                     }
                 });
 

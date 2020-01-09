@@ -59,7 +59,6 @@ public class TransactionManager {
     }
 
     public Wallet getBalanceByAddress(Wallet walletEntity) {
-//        walletEntity.setBalance(Web3jManager.getInstance().getBalance(walletEntity.getPrefixAddress()));
         return walletEntity;
     }
 
