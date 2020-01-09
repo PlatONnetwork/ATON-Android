@@ -32,6 +32,7 @@
             style="@style/Text.f9fbff.22"
             android:layout_marginTop="4dp"
             android:lines="1"
+            android:text="— —"
             app:autoSizeTextType="uniform"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_total_delegated"
@@ -49,6 +50,7 @@
             android:id="@+id/tv_total_unclaimed_reward_amount"
             style="@style/Text.f9fbff.14"
             android:layout_marginTop="4dp"
+            android:text="— —"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_unclaimed_reward"
             tools:text="24,154,224.12534256" />
@@ -65,6 +67,7 @@
             android:id="@+id/tv_total_reward_amount"
             style="@style/Text.f9fbff.14"
             android:layout_marginTop="4dp"
+            android:text="— —"
             app:layout_constraintLeft_toLeftOf="@id/tv_total_reward"
             app:layout_constraintTop_toBottomOf="@id/tv_total_reward"
             tools:text="24,154,224.12534256" />
@@ -85,6 +88,7 @@
             android:drawablePadding="5dp"
             android:text="@string/msg_delegation_rec"
             app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintHorizontal_weight="1"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/tv_horizontal_divider"
             app:layout_constraintTop_toBottomOf="@id/tv_vertical_divider" />

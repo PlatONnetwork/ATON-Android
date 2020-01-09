@@ -21,6 +21,8 @@ public class ClaimRewardRecord {
     @JSONField(name = "item")
     private List<ClaimReward> claimRewardList;
 
+    private boolean expanded;
+
     public ClaimRewardRecord() {
     }
 
@@ -78,5 +80,13 @@ public class ClaimRewardRecord {
 
     public void setWalletName(String walletName) {
         this.walletName = walletName;
+    }
+
+    public boolean isExpanded() {
+        return expanded;
+    }
+
+    public void setExpanded(boolean expanded) {
+        this.expanded = expanded;
     }
 }

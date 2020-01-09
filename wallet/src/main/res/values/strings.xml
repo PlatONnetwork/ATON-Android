@@ -689,10 +689,10 @@
     <string name="web_url_web_portals">https://www.platon.network</string>
     <string name="web_url_faq">https://platon.zendesk.com/hc/zh-cn/categories/360002174434</string>
     <string name="web_url_tutorial">https://platon.zendesk.com/hc/zh-cn/categories/360002193633</string>
-    <string name="web_url_agreement">http://192.168.9.190:1000/aton-agreement/zh-cn/agreement.html</string>
+    <string name="web_url_agreement">https://aton.main.platon.network/aton-agreement/zh-cn/agreement.html</string>
     <string name="web_url_support_feedback">https://platon.zendesk.com/hc/zh-cn</string>
     <string name="web_url_common_delegate_problem">https://platon.zendesk.com/hc/zh-cn/articles/360037373194-Common-questions-about-PlatON-Delegators</string>
-    <string name="web_url_privacy_policy">http://192.168.9.190:1000/aton-agreement/zh-cn/privacyAgreement.html</string>
+    <string name="web_url_privacy_policy">https://aton.main.platon.network/aton-agreement/zh-cn/privacyAgreement.html</string>
 
     <string name="withdraw_amount_tips">赎回数量不能少于%1$sLAT</string>
     <string name="unrecognized_content">无法识别内容</string>
@@ -733,7 +733,7 @@
     <string name="msg_no_delegated_data_tips">查看验证节点，参与委托</string>
     <string name="msg_delegate">参与委托</string>
 
-    <string name="msg_claim_record">委托记录</string>
+    <string name="msg_claim_record">领取奖励</string>
     <string name="msg_claim_rewards">领取奖励</string>
     <string name="msg_claim_reward_tips">预估奖励，以实际到账为准</string>
     <string name="msg_claim_wallet">领取钱包</string>

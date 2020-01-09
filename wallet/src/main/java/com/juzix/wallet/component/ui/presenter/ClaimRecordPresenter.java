@@ -5,6 +5,7 @@ import android.app.Activity;
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.ApiSingleObserver;
+import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.ClaimRecordContract;
 import com.juzix.wallet.engine.ServerUtils;
@@ -39,6 +40,7 @@ public class ClaimRecordPresenter extends BasePresenter<ClaimRecordContract.View
                         .build())
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(RxUtils.bindToLifecycle(getView()))
+                .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
                 .subscribe(new ApiSingleObserver<List<ClaimRewardRecord>>() {
                     @Override
                     public void onApiSuccess(List<ClaimRewardRecord> claimRewardRecords) {

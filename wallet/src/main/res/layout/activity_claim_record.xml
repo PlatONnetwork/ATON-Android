@@ -4,8 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipToPadding="true"
-    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
     <LinearLayout
@@ -30,9 +28,13 @@
         android:layout_height="match_parent"
         app:srlEnableLoadMoreWhenContentNotFull="false">
 
+        <com.scwang.smartrefresh.layout.header.ClassicsHeader
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/list_claim_record"
@@ -45,10 +47,12 @@
 
             <include
                 android:id="@+id/layout_empty"
-                layout="@layout/include_no_delegate_record"
-                android:visibility="gone"
-                tools:visibility="visible" />
+                layout="@layout/include_no_delegate_record" />
         </FrameLayout>
+
+        <com.scwang.smartrefresh.layout.footer.ClassicsFooter
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 

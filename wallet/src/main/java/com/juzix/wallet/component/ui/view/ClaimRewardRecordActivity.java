@@ -49,9 +49,14 @@ public class ClaimRewardRecordActivity extends MVPBaseActivity<ClaimRecordPresen
         initViews();
     }
 
+    @Override
+    protected boolean immersiveBarViewEnabled() {
+        return true;
+    }
+
     private void initViews() {
 
-        mClaimRewardRecordAdapter = new ClaimRewardRecordAdapter(this, null, R.layout.item_claim_record);
+        mClaimRewardRecordAdapter = new ClaimRewardRecordAdapter();
 
         layoutRefresh.setOnRefreshListener(new OnRefreshListener() {
             @Override
@@ -69,6 +74,8 @@ public class ClaimRewardRecordActivity extends MVPBaseActivity<ClaimRecordPresen
 
         listClaimRecord.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         listClaimRecord.setAdapter(mClaimRewardRecordAdapter);
+
+        layoutRefresh.autoRefresh();
     }
 
     @Override

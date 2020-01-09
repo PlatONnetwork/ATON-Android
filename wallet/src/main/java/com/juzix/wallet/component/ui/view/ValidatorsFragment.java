@@ -10,12 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
@@ -56,7 +58,7 @@ import butterknife.Unbinder;
  * 验证节点页面
  */
 
-public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> implements ValidatorsContract.View, OnClickListener {
+public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> implements ValidatorsContract.View {
 
     private Unbinder unbinder;
 
@@ -68,16 +70,16 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
     RadioButton active;
     @BindView(R.id.btn_candidate)
     RadioButton candidate;
-    @BindView(R.id.tv_rank)
-    TextView tv_rank;
     @BindView(R.id.refreshLayout)
     SmartRefreshLayout refreshLayout;
     @BindView(R.id.rlv_list)
     ListView rlv_list;
-    @BindView(R.id.layout_rank)
-    LinearLayout rankLayout;
     @BindView(R.id.layout_no_data)
     LinearLayout mNoDataLayout;
+    @BindView(R.id.iv_search)
+    ImageView searchIv;
+    @BindView(R.id.iv_rank)
+    ImageView rankIv;
 
     private String rankType;
     private String nodeState;//tab类型（所有/活跃中/候选中）
@@ -126,8 +128,6 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
         rlv_list.setEmptyView(mNoDataLayout);
         rlv_list.setAdapter(mValidatorsAdapter);
 
-        //默认初始化值
-        tv_rank.setText(getString(R.string.validators_rank));
         rankType = Constants.ValidatorsType.VALIDATORS_RANK;
         nodeState = Constants.ValidatorsType.ALL_VALIDATORS;
         mPresenter.loadValidatorsData(rankType, nodeState, -1);
@@ -145,6 +145,30 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
                         ValidatorsDetailActivity.actionStart(getContext(), verifyNode.getNodeId());
                     }
                 });
+
+        RxView
+                .clicks(rankIv)
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+
+                    }
+                });
+
+
+        RxView
+                .clicks(searchIv)
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+
+                    }
+                });
+
     }
 
     private void initCheckedListener() {
@@ -237,32 +261,6 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
         MobclickAgent.onPageEnd(Constants.UMPages.VERIFY_NODE);
         super.onPause();
     }
-
-    @OnClick({R.id.layout_rank})
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.layout_rank:
-                if (TextUtils.equals(rankType, Constants.ValidatorsType.VALIDATORS_RANK)) {
-                    tv_rank.setText(getString(R.string.validators_detail_yield));
-                    rankType = Constants.ValidatorsType.VALIDATORS_YIELD;
-                } else {
-                    tv_rank.setText(getString(R.string.validators_rank));
-                    rankType = Constants.ValidatorsType.VALIDATORS_RANK;
-                }
-                allList.clear();
-                activeList.clear();
-                candidateList.clear();
-                //按排名操作
-                //这里不再调用接口，直接从数据库去拿数据
-                mPresenter.loadDataFromDB(rankType, nodeState, -1);
-                break;
-            default:
-                break;
-        }
-
-
-    }
-
 
     public void changeBtnState(int id) {
         switch (id) {

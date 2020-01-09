@@ -65,7 +65,7 @@ public class SplashActivity extends BaseActivity {
             @Override
             public void run() {
                 if (AppSettings.getInstance().isFirstEnter()) {
-                    CommonHybridActivity.actionStart(SplashActivity.this, getResources().getString(R.string.web_url_agreement), WebType.WEB_TYPE_AGREEMENT);
+                    CommonHybridActivity.actionStart(SplashActivity.this, getResources().getString(R.string.web_url_privacy_policy), WebType.WEB_TYPE_AGREEMENT);
                     SplashActivity.this.finish();
                     return;
                 }

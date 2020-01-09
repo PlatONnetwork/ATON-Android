@@ -1,5 +1,6 @@
 package com.juzix.wallet.component.adapter;
 
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
@@ -18,7 +19,8 @@ public class ClaimRewardRecordDiffCallback extends BaseDiffCallback<ClaimRewardR
 
     public final static String KEY_CLAIM_REWARD_ADDRESS = "key_claim_reward_address";
     public final static String KEY_CLAIM_REWARD_AMOUNT = "key_claim_reward_amount";
-    public final static String KEY_CLAIM_REWARD_LIST = "key_claim_reward";
+    public final static String KEY_CLAIM_REWARD_LIST = "key_claim_reward_list";
+    public final static String KEY_CLAIM_REWARD_EXPANDED = "key_claim_reward_expanded";
 
     public ClaimRewardRecordDiffCallback(List<ClaimRewardRecord> oldList, List<ClaimRewardRecord> newList) {
         super(oldList, newList);
@@ -40,6 +42,10 @@ public class ClaimRewardRecordDiffCallback extends BaseDiffCallback<ClaimRewardR
         }
 
         if (!TextUtils.equals(oldClaimRewardRecord.getTotalReward(), newClaimRewardRecord.getTotalReward())) {
+            return false;
+        }
+
+        if (oldClaimRewardRecord.isExpanded() != newClaimRewardRecord.isExpanded()) {
             return false;
         }
 
@@ -75,6 +81,10 @@ public class ClaimRewardRecordDiffCallback extends BaseDiffCallback<ClaimRewardR
 
         if (!TextUtils.equals(oldClaimRewardRecord.getTotalReward(), newClaimRewardRecord.getTotalReward())) {
             bundle.putString(KEY_CLAIM_REWARD_AMOUNT, newClaimRewardRecord.getTotalReward());
+        }
+
+        if (oldClaimRewardRecord.isExpanded() != newClaimRewardRecord.isExpanded()) {
+            bundle.putBoolean(KEY_CLAIM_REWARD_EXPANDED, newClaimRewardRecord.isExpanded());
         }
 
         List<ClaimReward> oldClaimRewardList = oldClaimRewardRecord.getClaimRewardList();
