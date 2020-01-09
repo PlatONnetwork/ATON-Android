@@ -1,11 +1,13 @@
 package com.juzix.wallet.component.ui.dialog;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -41,11 +43,15 @@ import com.juzix.wallet.utils.ToastUtil;
 import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
+import org.reactivestreams.Publisher;
+import org.web3j.abi.datatypes.Bool;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionDecoder;
 import org.web3j.platon.FunctionType;
 import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
+import org.web3j.protocol.core.methods.response.PlatonTransaction;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -54,6 +60,9 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
+import io.reactivex.SingleObserver;
+import io.reactivex.SingleSource;
+import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
@@ -200,14 +209,27 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
         }
     }
 
+    @SuppressLint("CheckResult")
     private void sendTransaction(TransactionSignatureData transactionSignatureData, TransactionAuthorizationDetail transactionAuthorizationDetail) {
 
-        Flowable
-                .fromIterable(transactionSignatureData.getSignedDatas())
-                .map(new Function<String, PlatonSendTransaction>() {
+        getSendTransactionResult()
+                .filter(new Predicate<Pair<Boolean, List<PlatonSendTransaction>>>() {
                     @Override
-                    public PlatonSendTransaction apply(String signedMessage) throws Exception {
-                        return TransactionManager.getInstance().sendTransactionReturnPlatonSendTransaction(signedMessage);
+                    public boolean test(Pair<Boolean, List<PlatonSendTransaction>> booleanListPair) throws Exception {
+                        return booleanListPair.first;
+                    }
+                })
+                .switchIfEmpty(new SingleSource<Pair<Boolean, List<PlatonSendTransaction>>>() {
+                    @Override
+                    public void subscribe(SingleObserver<? super Pair<Boolean, List<PlatonSendTransaction>>> observer) {
+                        observer.onError(new Throwable());
+                    }
+                })
+                .toFlowable()
+                .flatMap(new Function<Pair<Boolean, List<PlatonSendTransaction>>, Publisher<PlatonSendTransaction>>() {
+                    @Override
+                    public Publisher<PlatonSendTransaction> apply(Pair<Boolean, List<PlatonSendTransaction>> booleanListPair) throws Exception {
+                        return Flowable.fromIterable(booleanListPair.second);
                     }
                 })
                 .takeLast(1)
@@ -238,6 +260,52 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
                     }
                 });
     }
+
+    private Single<List<PlatonSendTransaction>> getSendTransactionResultList() {
+        return Flowable
+                .fromIterable(transactionSignatureData.getSignedDatas())
+                .map(new Function<String, PlatonSendTransaction>() {
+                    @Override
+                    public PlatonSendTransaction apply(String signedMessage) throws Exception {
+                        return TransactionManager.getInstance().sendTransactionReturnPlatonSendTransaction(signedMessage);
+                    }
+                })
+                .toList();
+    }
+
+    private Single<Pair<Boolean, List<PlatonSendTransaction>>> getSendTransactionResult() {
+
+        return Flowable
+                .fromIterable(transactionSignatureData.getSignedDatas())
+                .map(new Function<String, PlatonSendTransaction>() {
+                    @Override
+                    public PlatonSendTransaction apply(String signedMessage) throws Exception {
+                        return TransactionManager.getInstance().sendTransactionReturnPlatonSendTransaction(signedMessage);
+                    }
+                })
+                .toList()
+                .map(new Function<List<PlatonSendTransaction>, Pair<Boolean, List<PlatonSendTransaction>>>() {
+                    @Override
+                    public Pair<Boolean, List<PlatonSendTransaction>> apply(List<PlatonSendTransaction> platonSendTransactions) throws Exception {
+                        return new Pair<Boolean, List<PlatonSendTransaction>>(getSendTransactionResult(platonSendTransactions), platonSendTransactions);
+                    }
+                });
+    }
+
+    private boolean getSendTransactionResult(List<PlatonSendTransaction> platonSendTransactions) {
+        boolean succeed = false;
+
+        for (PlatonSendTransaction platonSendTransaction : platonSendTransactions) {
+            if (!TextUtils.isEmpty(platonSendTransaction.getTransactionHash())) {
+                succeed = true;
+                break;
+            }
+            continue;
+        }
+
+        return succeed;
+    }
+
 
     private int checkSignature(TransactionAuthorizationData transactionAuthorizationData) {
 
