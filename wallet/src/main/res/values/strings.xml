@@ -539,7 +539,7 @@
     <string name="validators_detail">节点详情</string>
     <string name="total_staked">总质押(LAT)</string>
     <string name="delegations">接受委托(LAT)</string>
-    <string name="delegators">委托者</string>
+    <string name="delegators">委托者数</string>
     <string name="slash">处罚次数</string>
     <string name="blocks">已出块数</string>
     <string name="block_rate">出块率</string>

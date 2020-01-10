@@ -78,7 +78,7 @@ public class VerifyNodeDetail implements Parcelable {
     /**
      * 预计年化率
      */
-    private String ratePA;
+    private String delegatedRatePA;
 
     /**
      * 是否为链初始化时内置的候选人
@@ -88,6 +88,15 @@ public class VerifyNodeDetail implements Parcelable {
      * 是否共识中
      */
     private boolean isConsensus;
+
+    /**
+     * 委托奖励比例 乘以10000
+     */
+    private String delegatedRewardPer;
+    /**
+     * 节点累计的奖励  单位von   1LAT(ETH)=1000000000000000000von(wei)
+     */
+    private String cumulativeReward;
 
     public VerifyNodeDetail() {
 
@@ -106,9 +115,11 @@ public class VerifyNodeDetail implements Parcelable {
         delegate = in.readString();
         blockOutNumber = in.readInt();
         blockRate = in.readString();
-        ratePA = in.readString();
+        delegatedRatePA = in.readString();
         isInit = in.readByte() != 0;
         isConsensus = in.readByte() != 0;
+        delegatedRewardPer = in.readString();
+        cumulativeReward = in.readString();
     }
 
     @Override
@@ -125,9 +136,11 @@ public class VerifyNodeDetail implements Parcelable {
         dest.writeString(delegate);
         dest.writeInt(blockOutNumber);
         dest.writeString(blockRate);
-        dest.writeString(ratePA);
+        dest.writeString(delegatedRatePA);
         dest.writeByte((byte) (isInit ? 1 : 0));
         dest.writeByte((byte) (isConsensus ? 1 : 0));
+        dest.writeString(delegatedRewardPer);
+        dest.writeString(cumulativeReward);
     }
 
     @Override
@@ -243,12 +256,28 @@ public class VerifyNodeDetail implements Parcelable {
         this.delegateSum = delegateSum;
     }
 
-    public String getRatePA() {
-        return ratePA;
+    public String getDelegatedRatePA() {
+        return delegatedRatePA;
     }
 
-    public void setRatePA(String ratePA) {
-        this.ratePA = ratePA;
+    public void setDelegatedRatePA(String delegatedRatePA) {
+        this.delegatedRatePA = delegatedRatePA;
+    }
+
+    public String getDelegatedRewardPer() {
+        return delegatedRewardPer;
+    }
+
+    public void setDelegatedRewardPer(String delegatedRewardPer) {
+        this.delegatedRewardPer = delegatedRewardPer;
+    }
+
+    public String getCumulativeReward() {
+        return cumulativeReward;
+    }
+
+    public void setCumulativeReward(String cumulativeReward) {
+        this.cumulativeReward = cumulativeReward;
     }
 
     public boolean isInit() {

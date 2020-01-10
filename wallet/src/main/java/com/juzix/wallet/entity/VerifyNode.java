@@ -30,7 +30,8 @@ public class VerifyNode implements Parcelable {
      * Active —— 活跃中
      * Candidate —— 候选中
      */
-    private String nodeStatus;
+    private @NodeStatus
+    String nodeStatus;
     /**
      * 是否为链初始化时内置的候选人
      */

@@ -24,21 +24,17 @@ import com.juzix.wallet.component.ui.contract.ValidatorsDetailContract;
 import com.juzix.wallet.component.ui.dialog.DelegateTipsDialog;
 import com.juzix.wallet.component.ui.presenter.ValidatorsDetailPresenter;
 import com.juzix.wallet.component.widget.CircleImageView;
-import com.juzix.wallet.component.widget.CommonTitleBar;
 import com.juzix.wallet.component.widget.RoundedTextView;
 import com.juzix.wallet.component.widget.ShadowButton;
-import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.component.widget.VerticalImageSpan;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.DelegateDetail;
-import com.juzix.wallet.entity.VerifyNode;
 import com.juzix.wallet.entity.VerifyNodeDetail;
 import com.juzix.wallet.entity.WebType;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
-import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.GlideUtils;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
@@ -53,57 +49,67 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPresenter> implements ValidatorsDetailContract.View {
-    private Unbinder unbinder;
-
-    @BindView(R.id.commonTitleBar)
-    CommonTitleBar titleBar;
-    @BindView(R.id.iv_url)
-    CircleImageView iv_url;
-    @BindView(R.id.tv_detail_node_name)
-    TextView nodeName;
-    @BindView(R.id.tv_detail_node_state)
-    RoundedTextView nodeState;
-    @BindView(R.id.iv_detail_node_link)
-    ImageView nodeLink;
-    @BindView(R.id.tv_detail_node_address)
-    TextView nodeAddress;
-    @BindView(R.id.tv_detail_rate)
-    TextView rate;
-    @BindView(R.id.tv_total_staked)
-    TextView totalStaked;
-    @BindView(R.id.tv_delegations)
-    TextView delegation;
-    @BindView(R.id.tv_delegators)
-    TextView delegators;
-    @BindView(R.id.tv_slash)
-    TextView slash;
-    @BindView(R.id.tv_blocks)
-    TextView blocks;
-    @BindView(R.id.tv_block_rate)
-    TextView blockRate;
-    @BindView(R.id.tv_detail_introduction)
-    TextView introduction;
-    @BindView(R.id.tv_detail_website)
-    TextView webSite;
-    @BindView(R.id.sbtn_delegate)
-    ShadowButton delegate;
-    @BindView(R.id.tv_no_delegate_tips)
-    TextView tips;
-    @BindView(R.id.ll_shade)
-    LinearLayout ll_shade;
-    @BindView(R.id.layout_no_network)
-    LinearLayout noNetworkLayout;
-    @BindView(R.id.sv_content)
-    ScrollView contentSV;
-    @BindView(R.id.ll_guide)
-    LinearLayout ll_guide;
-    @BindView(R.id.tv_refresh)
-    TextView refreshTv;
 
     public static final String STATE_ACTIVE = "Active";
     public static final String STATE_CANDIDATE = "Candidate";
     public static final String STATE_EXITING = "Exiting";
     public static final String STATE_EXITED = "Exited";
+
+    @BindView(R.id.ll_title_bar)
+    LinearLayout llTitleBar;
+    @BindView(R.id.civ_wallet_avatar)
+    CircleImageView civWalletAvatar;
+    @BindView(R.id.tv_detail_node_name)
+    TextView tvDetailNodeName;
+    @BindView(R.id.tv_detail_node_state)
+    RoundedTextView tvDetailNodeState;
+    @BindView(R.id.iv_detail_node_link)
+    ImageView ivDetailNodeLink;
+    @BindView(R.id.tv_detail_node_address)
+    TextView tvDetailNodeAddress;
+    @BindView(R.id.tv_total_staked)
+    TextView tvTotalStaked;
+    @BindView(R.id.tv_total_staked_amount)
+    TextView tvTotalStakedAmount;
+    @BindView(R.id.tv_delegated)
+    TextView tvDelegated;
+    @BindView(R.id.tv_delegated_amount)
+    TextView tvDelegatedAmount;
+    @BindView(R.id.tv_delegators)
+    TextView tvDelegators;
+    @BindView(R.id.tv_delegators_count)
+    TextView tvDelegatorsCount;
+    @BindView(R.id.tv_blocks)
+    TextView tvBlocks;
+    @BindView(R.id.tv_blocks_number)
+    TextView tvBlocksNumber;
+    @BindView(R.id.tv_blocks_rate)
+    TextView tvBlocksRate;
+    @BindView(R.id.tv_blocks_rate_number)
+    TextView tvBlocksRateNumber;
+    @BindView(R.id.tv_slash)
+    TextView tvSlash;
+    @BindView(R.id.tv_slash_count)
+    TextView tvSlashCount;
+    @BindView(R.id.tv_detail_introduction)
+    TextView tvDetailIntroduction;
+    @BindView(R.id.tv_detail_website)
+    TextView tvDetailWebsite;
+    @BindView(R.id.sv_content)
+    ScrollView svContent;
+    @BindView(R.id.sbtn_delegate)
+    ShadowButton sbtnDelegate;
+    @BindView(R.id.tv_no_delegate_tips)
+    TextView tvNoDelegateTips;
+    @BindView(R.id.ll_guide)
+    LinearLayout llGuide;
+    @BindView(R.id.tv_refresh)
+    TextView tvRefresh;
+    @BindView(R.id.layout_no_network)
+    LinearLayout layoutNoNetwork;
+
+    private Unbinder unbinder;
+
     private String websiteUrl;
     private String mNodeAddress;
     private String mNodeName;
@@ -125,6 +131,11 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
     }
 
     @Override
+    protected boolean immersiveBarViewEnabled() {
+        return true;
+    }
+
+    @Override
     public void onResume() {
         mPresenter.loadValidatorsDetailData();
         MobclickAgent.onPageStart(Constants.UMPages.NODE_DETAIL);
@@ -138,39 +149,6 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
     }
 
     private void initView() {
-        ShadowDrawable.setShadowDrawable(ll_shade,
-                ContextCompat.getColor(this, R.color.color_ffffff),
-                DensityUtil.dp2px(this, 4),
-                ContextCompat.getColor(this, R.color.color_cc9ca7c2),
-                DensityUtil.dp2px(this, 10),
-                0,
-                DensityUtil.dp2px(this, 2));
-
-        titleBar.setRightDrawable(R.drawable.icon_tips);
-        titleBar.setRightDrawableClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //弹出tips
-                DelegateTipsDialog.createWithTitleAndContentDialog(null, null,
-                        null, null, string(R.string.expected_annualized_rate), string(R.string.expected_annualized_rate_des)).show(getSupportFragmentManager(), "validatorstip");
-            }
-        });
-        clickViewListener();
-
-    }
-
-    public static void actionStart(Context context, String nodeId) {
-        Intent intent = new Intent(context, ValidatorsDetailActivity.class);
-        intent.putExtra(Constants.ValidatorsType.VALIDATORS_NODEID, nodeId);
-        context.startActivity(intent);
-    }
-
-    @Override
-    public String getNodeIdFromIntent() {
-        return getIntent().getStringExtra(Constants.ValidatorsType.VALIDATORS_NODEID);
-    }
-
-    public void clickViewListener() {
 
         RxView.clicks(delegate)
                 .compose(RxUtils.bindToLifecycle(this))
@@ -218,6 +196,12 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
                     }
                 });
 
+    }
+
+
+    @Override
+    public String getNodeIdFromIntent() {
+        return getIntent().getStringExtra(Constants.ValidatorsType.VALIDATORS_NODEID);
     }
 
     @Override
@@ -349,12 +333,6 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
         }
     }
 
-    @Override
-    protected boolean immersiveBarViewEnabled() {
-        return true;
-    }
-
-
     /**
      * event事件，刷新的操作
      *
@@ -366,12 +344,6 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
         mPresenter.loadValidatorsDetailData();
     }
 
-
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void updatePageEvent(Event.UpdateRefreshPageEvent event) {
-//        mPresenter.loadValidatorsDetailData();
-//    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -379,5 +351,11 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
         if (unbinder != null) {
             unbinder.unbind();
         }
+    }
+
+    public static void actionStart(Context context, String nodeId) {
+        Intent intent = new Intent(context, ValidatorsDetailActivity.class);
+        intent.putExtra(Constants.ValidatorsType.VALIDATORS_NODEID, nodeId);
+        context.startActivity(intent);
     }
 }

@@ -23,6 +23,10 @@
         <item name="android:textColor">@color/color_f9fbff</item>
     </style>
 
+    <style name="Text.f9fbff.11">
+        <item name="android:textSize">11sp</item>
+    </style>
+
     <style name="Text.f9fbff.13">
         <item name="android:textSize">13sp</item>
     </style>
@@ -439,6 +443,10 @@
 
     <style name="Text.898c9e.14">
         <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="Text.898c9e.15">
+        <item name="android:textSize">15sp</item>
     </style>
 
     <style name="Text.898c9e.16">

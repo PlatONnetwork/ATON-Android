@@ -161,6 +161,8 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
 
     private void initView() {
 
+        changeBtnState(R.id.btn_all);
+
         mValidatorsAdapter = new ValidatorsAdapter(R.layout.item_validators_list, null);
         validatorsList.setEmptyView(mNoDataLayout);
         validatorsList.setAdapter(mValidatorsAdapter);
