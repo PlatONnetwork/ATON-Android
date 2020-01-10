@@ -86,7 +86,6 @@ public class ValidatorsAdapter extends CommonAdapter<VerifyNode> {
         } else {
             tv_yield.setText("- -");
         }
-
     }
 
     private void changeTextFontSize(TextView tv, VerifyNode item) {
@@ -109,7 +108,6 @@ public class ValidatorsAdapter extends CommonAdapter<VerifyNode> {
         } else {
             tv.setBackgroundResource(R.drawable.icon_rank_others);
         }
-
     }
 
     public void changeTextBgAndTextColor(RoundedTextView textView, VerifyNode verifyNode) {
@@ -125,7 +123,6 @@ public class ValidatorsAdapter extends CommonAdapter<VerifyNode> {
             default:
                 break;
         }
-
     }
 
 

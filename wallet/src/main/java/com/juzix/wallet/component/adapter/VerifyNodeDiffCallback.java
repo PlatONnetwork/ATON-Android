@@ -39,7 +39,7 @@ public class VerifyNodeDiffCallback extends BaseDiffCallback<VerifyNode> {
     /**
      * 节点状态
      */
-    public final static String KEY_NODESTATUS = "key_nodeStatus";
+    public final static String KEY_NODE_STATUS_DESC = "key_node_status_desc";
 
     public VerifyNodeDiffCallback(List<VerifyNode> oldList, List<VerifyNode> newList) {
         super(oldList, newList);
@@ -76,16 +76,13 @@ public class VerifyNodeDiffCallback extends BaseDiffCallback<VerifyNode> {
             return false;
         }
 
-
-        if (!oldVerifyNode.getDelegatedRatePA().equals(newVerifyNode.getDelegatedRatePA())) {
+        if (oldVerifyNode.getNodeStatusDescRes() != newVerifyNode.getNodeStatusDescRes()) {
             return false;
         }
 
-        if (!oldVerifyNode.getNodeStatus().equals(newVerifyNode.getNodeStatus())) {
+        if (!TextUtils.equals(oldVerifyNode.getShowDelegatedRatePA(), newVerifyNode.getShowDelegatedRatePA())) {
             return false;
         }
-
-
         return true;
     }
 
@@ -114,18 +111,17 @@ public class VerifyNodeDiffCallback extends BaseDiffCallback<VerifyNode> {
         }
 
         if (!TextUtils.equals(oldVerifyNode.getUrl(), newVerifyNode.getUrl())) {
-            bundle.putString(KEY_DELEGATOR_NUMBER, newVerifyNode.getDelegate());
+            bundle.putString(KEY_URL, newVerifyNode.getUrl());
         }
 
 
-        if (!oldVerifyNode.getDelegatedRatePA().equals(newVerifyNode.getDelegatedRatePA())) {
-            bundle.putString(KEY_RATEPA, newVerifyNode.getDelegatedRatePA());
+        if (oldVerifyNode.getNodeStatusDescRes() != newVerifyNode.getNodeStatusDescRes()) {
+            bundle.putInt(KEY_NODE_STATUS_DESC, newVerifyNode.getNodeStatusDescRes());
         }
 
-        if (!oldVerifyNode.getNodeStatus().equals(newVerifyNode.getNodeStatus())) {
-            bundle.putString(KEY_NODESTATUS, newVerifyNode.getNodeStatus());
+        if (!TextUtils.equals(oldVerifyNode.getShowDelegatedRatePA(), newVerifyNode.getShowDelegatedRatePA())) {
+            bundle.putString(KEY_RATEPA, newVerifyNode.getShowDelegatedRatePA());
         }
-
 
         return bundle;
     }

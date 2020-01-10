@@ -2,17 +2,23 @@ package com.juzix.wallet.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import com.juzhen.framework.util.NumberParserUtils;
+import com.juzix.wallet.R;
+import java.text.NumberFormat;
 
 public class VerifyNode implements Parcelable {
+
 
     /**
      * 节点ID
      */
     private String nodeId;
+
     /**
      * 质押排名
      */
     private int ranking;
+
     /**
      * 节点名称
      */
@@ -21,6 +27,7 @@ public class VerifyNode implements Parcelable {
      * 节点头像
      */
     private String url;
+
     /**
      * 预计年化率
      */
@@ -32,16 +39,19 @@ public class VerifyNode implements Parcelable {
      */
     private @NodeStatus
     String nodeStatus;
+
     /**
      * 是否为链初始化时内置的候选人
      */
     private boolean isInit;
+
     /**
      * 是否共识中
      */
     private boolean isConsensus;
+
     /**
-     * 委托量
+     * 总押金
      */
     private String delegateSum;
     /**
@@ -52,7 +62,6 @@ public class VerifyNode implements Parcelable {
     public VerifyNode() {
 
     }
-
 
     protected VerifyNode(Parcel in) {
         nodeId = in.readString();
@@ -67,6 +76,25 @@ public class VerifyNode implements Parcelable {
         delegate = in.readString();
     }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(nodeId);
+        dest.writeInt(ranking);
+        dest.writeString(name);
+        dest.writeString(url);
+        dest.writeString(delegatedRatePA);
+        dest.writeString(nodeStatus);
+        dest.writeByte((byte) (isInit ? 1 : 0));
+        dest.writeByte((byte) (isConsensus ? 1 : 0));
+        dest.writeString(delegateSum);
+        dest.writeString(delegate);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
     public static final Creator<VerifyNode> CREATOR = new Creator<VerifyNode>() {
         @Override
         public VerifyNode createFromParcel(Parcel in) {
@@ -78,14 +106,6 @@ public class VerifyNode implements Parcelable {
             return new VerifyNode[size];
         }
     };
-
-    public boolean isInit() {
-        return isInit;
-    }
-
-    public void setInit(boolean init) {
-        isInit = init;
-    }
 
     public String getNodeId() {
         return nodeId;
@@ -119,6 +139,13 @@ public class VerifyNode implements Parcelable {
         this.url = url;
     }
 
+    public String getDelegatedRatePA() {
+        return delegatedRatePA;
+    }
+
+    public void setDelegatedRatePA(String delegatedRatePA) {
+        this.delegatedRatePA = delegatedRatePA;
+    }
 
     public String getNodeStatus() {
         return nodeStatus;
@@ -128,6 +155,13 @@ public class VerifyNode implements Parcelable {
         this.nodeStatus = nodeStatus;
     }
 
+    public boolean isInit() {
+        return isInit;
+    }
+
+    public void setInit(boolean init) {
+        isInit = init;
+    }
 
     public boolean isConsensus() {
         return isConsensus;
@@ -135,14 +169,6 @@ public class VerifyNode implements Parcelable {
 
     public void setConsensus(boolean consensus) {
         isConsensus = consensus;
-    }
-
-    public String getDelegatedRatePA() {
-        return delegatedRatePA;
-    }
-
-    public void setDelegatedRatePA(String delegatedRatePA) {
-        this.delegatedRatePA = delegatedRatePA;
     }
 
     public String getDelegateSum() {
@@ -161,22 +187,24 @@ public class VerifyNode implements Parcelable {
         this.delegate = delegate;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public int getNodeStatusDescRes() {
+
+        switch (nodeStatus) {
+            case NodeStatus.ACTIVE:
+                return isConsensus ? R.string.validators_verifying : R.string.validators_active;
+            case NodeStatus.CANDIDATE:
+                return R.string.validators_candidate;
+            case NodeStatus.EXITING:
+                return R.string.validators_state_exiting;
+            case NodeStatus.EXITED:
+                return R.string.validators_state_exited;
+            default:
+                return -1;
+        }
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(nodeId);
-        dest.writeInt(ranking);
-        dest.writeString(name);
-        dest.writeString(url);
-        dest.writeString(delegatedRatePA);
-        dest.writeString(nodeStatus);
-        dest.writeByte((byte) (isInit ? 1 : 0));
-        dest.writeByte((byte) (isConsensus ? 1 : 0));
-        dest.writeString(delegateSum);
-        dest.writeString(delegate);
+    public String getShowDelegatedRatePA() {
+        //todo 待重构
+        return isInit ? null : NumberFormat.getInstance().format(((NumberParserUtils.parseDouble(delegatedRatePA)) / 100)) + "%";
     }
 }
