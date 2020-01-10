@@ -2,9 +2,11 @@ package com.juzix.wallet.component.ui.view;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,10 +31,13 @@ import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.adapter.ValidatorsAdapter;
+import com.juzix.wallet.component.ui.OnItemClickListener;
+import com.juzix.wallet.component.ui.SortType;
 import com.juzix.wallet.component.ui.base.MVPBaseFragment;
 import com.juzix.wallet.component.ui.contract.ValidatorsContract;
 import com.juzix.wallet.component.ui.dialog.BaseDialogFragment;
 import com.juzix.wallet.component.ui.dialog.CommonGuideDialogFragment;
+import com.juzix.wallet.component.ui.dialog.SelectSortTypeDialogFragment;
 import com.juzix.wallet.component.ui.presenter.ValidatorsPresenter;
 import com.juzix.wallet.component.widget.ClearEditText;
 import com.juzix.wallet.component.widget.CustomRefreshFooter;
@@ -69,7 +74,26 @@ import io.reactivex.functions.Predicate;
 
 public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> implements ValidatorsContract.View {
 
-    private Unbinder unbinder;
+
+    @IntDef({
+            Tab.ALL,
+            Tab.ACTIVE,
+            Tab.CANDIDATE
+    })
+    public @interface Tab {
+        /**
+         * 所有
+         */
+        int ALL = 0;
+        /**
+         * 活跃中
+         */
+        int ACTIVE = 1;
+        /**
+         * 候选中
+         */
+        int CANDIDATE = 2;
+    }
 
     @BindView(R.id.radio_group)
     RadioGroup radio_group;
@@ -81,8 +105,8 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
     RadioButton candidate;
     @BindView(R.id.refreshLayout)
     SmartRefreshLayout refreshLayout;
-    @BindView(R.id.rlv_list)
-    ListView rlv_list;
+    @BindView(R.id.list_validators)
+    RecyclerView validatorsList;
     @BindView(R.id.layout_no_data)
     LinearLayout mNoDataLayout;
     @BindView(R.id.iv_search)
@@ -98,8 +122,10 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
     @BindView(R.id.iv_clear)
     ImageView clearIv;
 
-    private String rankType;
-    private String nodeState;//tab类型（所有/活跃中/候选中）
+    private Unbinder unbinder;
+
+    private SortType mSortType = SortType.SORTED_BY_NODE_RANKINGS;
+    private int mTab = Tab.ALL;
 
     private List<VerifyNode> allList = new ArrayList<>();
     private List<VerifyNode> activeList = new ArrayList<>();
@@ -136,24 +162,44 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
     private void initView() {
 
         mValidatorsAdapter = new ValidatorsAdapter(R.layout.item_validators_list, null);
-        rlv_list.setEmptyView(mNoDataLayout);
-        rlv_list.setAdapter(mValidatorsAdapter);
+        validatorsList.setEmptyView(mNoDataLayout);
+        validatorsList.setAdapter(mValidatorsAdapter);
 
-        rankType = Constants.ValidatorsType.VALIDATORS_RANK;
-        nodeState = Constants.ValidatorsType.ALL_VALIDATORS;
         mPresenter.loadValidatorsData(rankType, nodeState, -1);
 
-        initPullRefreshListener();
         initCheckedListener();
 
-        RxAdapterView.itemClicks(rlv_list)
+        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                mPresenter.loadValidatorsData(rankType, nodeState, -1);
+
+            }
+        });
+
+        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+                //加载更多
+                if (TextUtils.equals(nodeState, Constants.ValidatorsType.ALL_VALIDATORS)) {
+                    rank = allLastRank;
+                } else if (TextUtils.equals(nodeState, Constants.ValidatorsType.ACTIVE_VALIDATORS)) {
+                    rank = activeLastRank;
+                } else {
+                    rank = candidateLastRank;
+                }
+                mPresenter.loadDataFromDB(rankType, nodeState, rank);
+
+            }
+        });
+
+        RxAdapterView.itemClicks(validatorsList)
                 .compose(RxUtils.getClickTransformer())
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Integer>() {
                     @Override
                     public void accept(Integer position) {
-                        VerifyNode verifyNode = mValidatorsAdapter.getItem(position);
-                        ValidatorsDetailActivity.actionStart(getContext(), verifyNode.getNodeId());
+                        ValidatorsDetailActivity.actionStart(getContext(), mValidatorsAdapter.getItem(position).getNodeId());
                     }
                 });
 
@@ -164,7 +210,16 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
+                        SelectSortTypeDialogFragment
+                                .newInstance()
+                                .setOnItemClickListener(new OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(Object o) {
 
+                                    }
+                                })
+                                .show(getActivity()
+                                        .getSupportFragmentManager(), "showSelectSortTypeDialogFragment");
                     }
                 });
 
@@ -256,34 +311,6 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
         });
     }
 
-    private void initPullRefreshListener() {
-
-        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
-            @Override
-            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                isLoadMore = false;
-                mPresenter.loadValidatorsData(rankType, nodeState, -1);
-
-            }
-        });
-
-        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
-            @Override
-            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-                //加载更多
-                isLoadMore = true;
-                if (TextUtils.equals(nodeState, Constants.ValidatorsType.ALL_VALIDATORS)) {
-                    rank = allLastRank;
-                } else if (TextUtils.equals(nodeState, Constants.ValidatorsType.ACTIVE_VALIDATORS)) {
-                    rank = activeLastRank;
-                } else {
-                    rank = candidateLastRank;
-                }
-                mPresenter.loadDataFromDB(rankType, nodeState, rank);
-
-            }
-        });
-    }
 
     @Override
     public void onResume() {

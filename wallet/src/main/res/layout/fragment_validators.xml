@@ -181,14 +181,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <ListView
-                    android:id="@+id/rlv_list"
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/list_validators"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:clipChildren="false"
                     android:clipToPadding="false"
-                    android:divider="@null"
-                    android:listSelector="@android:color/transparent"
                     tools:listitem="@layout/item_validators_list" />
 
                 <include layout="@layout/include_no_validators" />

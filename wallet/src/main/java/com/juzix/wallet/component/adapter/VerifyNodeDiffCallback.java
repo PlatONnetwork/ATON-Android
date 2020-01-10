@@ -2,6 +2,7 @@ package com.juzix.wallet.component.adapter;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.entity.VerifyNode;
@@ -10,19 +11,35 @@ import java.util.List;
 
 public class VerifyNodeDiffCallback extends BaseDiffCallback<VerifyNode> {
 
+    /**
+     * 节点排名
+     */
     public final static String KEY_RANKING = "key_ranking";
-
+    /**
+     * 节点名称
+     */
     public final static String KEY_NAME = "key_name";
-
+    /**
+     * 节点委托数量
+     */
     public final static String KEY_DEPOSIT = "key_deposit";
+    /**
+     * 节点委托者数
+     */
+    public final static String KEY_DELEGATOR_NUMBER = "key_delegator_number";
 
+    /**
+     * 节点头像
+     */
     public final static String KEY_URL = "key_url";
-
+    /**
+     * 节点收益率
+     */
     public final static String KEY_RATEPA = "key_ratePA";
-
+    /**
+     * 节点状态
+     */
     public final static String KEY_NODESTATUS = "key_nodeStatus";
-
-    public final static String KEY_ISINIT = "key_isInit";
 
     public VerifyNodeDiffCallback(List<VerifyNode> oldList, List<VerifyNode> newList) {
         super(oldList, newList);
@@ -43,25 +60,24 @@ public class VerifyNodeDiffCallback extends BaseDiffCallback<VerifyNode> {
             return false;
         }
 
-        if (!oldVerifyNode.getName().equals(newVerifyNode.getName())) {
+        if (!TextUtils.equals(oldVerifyNode.getName(), newVerifyNode.getName())) {
             return false;
         }
 
-        if (!oldVerifyNode.getDeposit().equals(newVerifyNode.getName())) {
+        if (!oldVerifyNode.getDelegateSum().equals(newVerifyNode.getDelegateSum())) {
             return false;
         }
 
-        if (oldVerifyNode.getUrl() != null) {
-            if (!oldVerifyNode.getUrl().equals(newVerifyNode.getUrl())) {
-                return false;
-            }
-        } else {
-            if (newVerifyNode.getUrl() != null) {
-                return false;
-            }
+        if (!TextUtils.equals(oldVerifyNode.getDelegate(), newVerifyNode.getDelegate())) {
+            return false;
         }
 
-        if (!oldVerifyNode.getRatePA().equals(newVerifyNode.getRatePA())) {
+        if (!TextUtils.equals(oldVerifyNode.getUrl(), newVerifyNode.getUrl())) {
+            return false;
+        }
+
+
+        if (!oldVerifyNode.getDelegatedRatePA().equals(newVerifyNode.getDelegatedRatePA())) {
             return false;
         }
 
@@ -69,9 +85,6 @@ public class VerifyNodeDiffCallback extends BaseDiffCallback<VerifyNode> {
             return false;
         }
 
-        if (oldVerifyNode.isInit() != newVerifyNode.isInit()) {
-            return false;
-        }
 
         return true;
     }
@@ -92,31 +105,27 @@ public class VerifyNodeDiffCallback extends BaseDiffCallback<VerifyNode> {
             bundle.putString(KEY_NAME, newVerifyNode.getName());
         }
 
-        if (!oldVerifyNode.getDeposit().equals(newVerifyNode.getName())) {
-            bundle.putString(KEY_DEPOSIT, newVerifyNode.getDeposit());
+        if (!oldVerifyNode.getDelegateSum().equals(newVerifyNode.getName())) {
+            bundle.putString(KEY_DEPOSIT, newVerifyNode.getDelegateSum());
         }
 
-        if (oldVerifyNode.getUrl() != null) {
-            if (!oldVerifyNode.getUrl().equals(newVerifyNode.getUrl())) {
-                bundle.putString(KEY_URL, newVerifyNode.getUrl());
-            }
-        } else {
-            if (newVerifyNode.getUrl() != null) {
-                bundle.putString(KEY_URL, newVerifyNode.getUrl());
-            }
+        if (!TextUtils.equals(oldVerifyNode.getDelegate(), newVerifyNode.getDelegate())) {
+            bundle.putString(KEY_DELEGATOR_NUMBER, newVerifyNode.getDelegate());
         }
 
-        if (!oldVerifyNode.getRatePA().equals(newVerifyNode.getRatePA())) {
-            bundle.putString(KEY_RATEPA, newVerifyNode.getRatePA());
+        if (!TextUtils.equals(oldVerifyNode.getUrl(), newVerifyNode.getUrl())) {
+            bundle.putString(KEY_DELEGATOR_NUMBER, newVerifyNode.getDelegate());
+        }
+
+
+        if (!oldVerifyNode.getDelegatedRatePA().equals(newVerifyNode.getDelegatedRatePA())) {
+            bundle.putString(KEY_RATEPA, newVerifyNode.getDelegatedRatePA());
         }
 
         if (!oldVerifyNode.getNodeStatus().equals(newVerifyNode.getNodeStatus())) {
             bundle.putString(KEY_NODESTATUS, newVerifyNode.getNodeStatus());
         }
 
-        if (oldVerifyNode.isInit() != newVerifyNode.isInit()) {
-            bundle.putBoolean(KEY_ISINIT, newVerifyNode.isInit());
-        }
 
         return bundle;
     }

@@ -7,6 +7,7 @@ import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.ApiSingleObserver;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.app.Constants;
+import com.juzix.wallet.component.ui.SortType;
 import com.juzix.wallet.component.ui.base.BaseFragment;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.ValidatorsContract;
@@ -35,8 +36,34 @@ import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 
 public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> implements ValidatorsContract.Presenter {
+
+    private List<VerifyNode> mVerifyNodeList;
+
     public ValidatorsPresenter(ValidatorsContract.View view) {
         super(view);
+    }
+
+    @Override
+    public void loadValidatorsData(int tab, SortType sortType, String keywords) {
+        ServerUtils.getCommonApi().getVerifyNodeList()
+                .compose(bindUntilEvent(FragmentEvent.STOP))
+                .compose(RxUtils.getSingleSchedulerTransformer())
+                .subscribe(new ApiSingleObserver<List<VerifyNode>>() {
+                    @Override
+                    public void onApiSuccess(List<VerifyNode> nodeList) {
+                        if (isViewAttached()) {
+                            getView().showValidatorsDataOnAll(nodeList);
+                        }
+
+                    }
+
+                    @Override
+                    public void onApiFailure(ApiResponse response) {
+                        if (isViewAttached()) {
+                            getView().showValidatorsFailed();
+                        }
+                    }
+                });
     }
 
     @Override
@@ -52,7 +79,7 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
      * @param nodeState
      * @param sequence  加载更多序号
      */
-    private void getValidatorsData(String sortType, String nodeState, int sequence) {
+    private void getValidatorsData(String nodeState, SortType sortType, int sequence) {
         ServerUtils.getCommonApi().getVerifyNodeList()
                 .compose(bindUntilEvent(FragmentEvent.STOP))
                 .compose(RxUtils.getSingleSchedulerTransformer())
@@ -251,26 +278,6 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
                 return VerifyNodeDao.deleteVerifyNode();
             }
         });
-    }
-
-    public List<VerifyNode> sort(List<VerifyNode> verifyNodeList) {
-
-        Collections.sort(verifyNodeList, new Comparator<VerifyNode>() {
-            @Override
-            public int compare(VerifyNode o1, VerifyNode o2) {
-                int compare = Integer.compare(NumberParserUtils.parseInt(o2.getRatePA()), NumberParserUtils.parseInt(o1.getRatePA()));
-                if (compare != 0) {
-                    return compare;
-                }
-                compare = Integer.compare(o1.getRanking(), o2.getRanking());
-                if (compare != 0) {
-                    return compare;
-                }
-                return 0;
-            }
-        });
-
-        return verifyNodeList;
     }
 
 }

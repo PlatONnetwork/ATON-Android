@@ -9,7 +9,7 @@
     android:padding="8dp">
 
     <com.juzix.wallet.component.widget.CircleImageView
-        android:id="@+id/iv_url"
+        android:id="@+id/civ_node_avatar"
         android:layout_width="42dp"
         android:layout_height="42dp"
         android:layout_marginLeft="13dp"
@@ -19,36 +19,36 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tv_validators_node_name"
+        android:id="@+id/tv_node_name"
         style="@style/Text.000.15"
         android:layout_marginLeft="13dp"
         android:layout_marginRight="6dp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/tv_staked_money"
-        app:layout_constraintLeft_toRightOf="@id/iv_url"
+        app:layout_constraintBottom_toTopOf="@+id/tv_node_delegated_amount"
+        app:layout_constraintLeft_toRightOf="@id/civ_node_avatar"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
         tools:text="jiang" />
 
 
     <TextView
-        android:id="@+id/tv_staked_money"
+        android:id="@+id/tv_node_delegated_amount"
         style="@style/Text.000.13"
         android:layout_marginTop="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="@id/tv_validators_node_name"
-        app:layout_constraintTop_toBottomOf="@id/tv_validators_node_name"
+        app:layout_constraintLeft_toLeftOf="@id/tv_node_name"
+        app:layout_constraintTop_toBottomOf="@id/tv_node_name"
         tools:text="总质押 1644848.10552" />
 
     <com.juzix.wallet.component.widget.RoundedTextView
-        android:id="@+id/tv_validators_node_state"
+        android:id="@+id/rtv_node_state"
         style="@style/Text.4a90e2.11"
         android:layout_height="16dp"
         android:layout_marginLeft="7dp"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
-        app:layout_constraintBaseline_toBaselineOf="@id/tv_validators_node_name"
-        app:layout_constraintLeft_toRightOf="@id/tv_validators_node_name"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_node_name"
+        app:layout_constraintLeft_toRightOf="@id/tv_node_name"
         app:rtv_background_color="@color/color_ffffff"
         app:rtv_border_color="@color/color_4a90e2"
         app:rtv_border_width="1dp"
@@ -56,7 +56,7 @@
         tools:text="active" />
 
     <TextView
-        android:id="@+id/tv_yield"
+        android:id="@+id/tv_annual_yield"
         style="@style/Text.105cfe.17"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/tv_yield_msg"
@@ -72,11 +72,10 @@
         android:text="@string/validators_yield"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_yield" />
-
+        app:layout_constraintTop_toBottomOf="@id/tv_annual_yield" />
 
     <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/tv_validators_rank"
+        android:id="@+id/tv_node_rank"
         style="@style/Text.fff.11"
         android:layout_width="20dp"
         android:layout_height="20dp"

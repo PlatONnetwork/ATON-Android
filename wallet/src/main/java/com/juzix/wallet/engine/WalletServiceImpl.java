@@ -39,7 +39,9 @@ class WalletServiceImpl implements WalletService {
         try {
             long time = System.currentTimeMillis();
             String filename = JZWalletUtil.getWalletFileName(Numeric.toHexStringNoPrefix(ecKeyPair.getPublicKey()));
-            WalletFile walletFile = org.web3j.crypto.Wallet.createLight(password, ecKeyPair);
+            long time = System.currentTimeMillis();
+            WalletFile walletFile = org.web3j.crypto.Wallet.create(password, ecKeyPair, 262144, 1);
+            LogUtils.e("创建钱包花的时间为：" + (System.currentTimeMillis() - time));
             if (walletFile == null) {
                 return null;
             }
@@ -84,7 +86,9 @@ class WalletServiceImpl implements WalletService {
     @Override
     public Wallet importKeystore(String store, String name, String password) {
         try {
+            long time = System.currentTimeMillis();
             ECKeyPair ecKeyPair = JZWalletUtil.decrypt(store, password);
+            LogUtils.e("解析keystore的时间为：" + (System.currentTimeMillis() - time));
             if (ecKeyPair == null) {
                 return null;
             }

@@ -1,7 +1,11 @@
 package com.juzix.wallet.component.ui.contract;
 
+import android.support.annotation.IntDef;
+
+import com.juzix.wallet.component.ui.SortType;
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
+import com.juzix.wallet.component.ui.view.ValidatorsFragment;
 import com.juzix.wallet.entity.VerifyNode;
 
 import java.util.List;
@@ -21,9 +25,7 @@ public class ValidatorsContract {
 
     public interface Presenter extends IPresenter<View> {
 
-        void loadValidatorsData(String sortType, String nodeState, int ranking);
-
-        void loadDataFromDB(String sortType,String state, int ranking);
+        void loadValidatorsData(@ValidatorsFragment.Tab int tab, SortType sortType, String keywords);
 
     }
 

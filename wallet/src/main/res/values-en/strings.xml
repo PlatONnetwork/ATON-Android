@@ -725,6 +725,12 @@
     <string name="msg_claim_wallet">Claim Wallet</string>
     <string name="hint_search_validator">Search by validator name</string>
     <string name="msg_hide">Hide</string>
+    <string name="msg_sort">Sort</string>
+
+    <string name="msg_node_rankings">Rank</string>
+    <string name="msg_delegated_amount">Delegated</string>
+    <string name="msg_delegator_number">Delegators</string>
+    <string name="msg_annual_yield">Expected delegation annualized yield</string>
 
 </resources>
 

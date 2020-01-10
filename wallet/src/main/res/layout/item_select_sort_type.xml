@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    android:gravity="center_vertical">
+
+
+    <ImageView
+        android:id="@+id/iv_selected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/icon_hook_m" />
+
+    <TextView
+        android:id="@+id/tv_sort_type"
+        style="@style/Text.000000.15"
+        android:textStyle="bold"
+        tools:text="Wallet name" />
+
+
+</RelativeLayout>
