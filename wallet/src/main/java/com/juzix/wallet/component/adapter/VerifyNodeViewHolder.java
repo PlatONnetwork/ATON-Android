@@ -5,12 +5,14 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatTextView;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.adapter.base.BaseViewHolder;
 import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.component.widget.RoundedTextView;
@@ -68,8 +70,12 @@ public class VerifyNodeViewHolder extends BaseViewHolder<VerifyNode> {
         if (nodeStatusDescRes != -1) {
             mNodeStateRtv.setText(nodeStatusDescRes);
         }
+        mNodeStateRtv.setBackgroundResource(getNodeStatusTextBackgroundResourse(data.getNodeStatus(), data.isConsensus()));
+        mNodeStateRtv.setTextColor(getNodeStatusTextAndBorderColor(data.getNodeStatus(), data.isConsensus()));
+        mNodeStateRtv.setRoundedBorderColor(getNodeStatusTextAndBorderColor(data.getNodeStatus(), data.isConsensus()));
         mNodeRankTv.setText(data.getRanking());
         mNodeRankTv.setBackgroundResource(getRankBackground(NumberParserUtils.parseInt(data.getRanking())));
+        mNodeRankTv.setTextSize(getRankTextSize(data.getRanking()));
         mAnnualYieldTv.setText(data.getShowDelegatedRatePA());
 
     }
@@ -130,6 +136,10 @@ public class VerifyNodeViewHolder extends BaseViewHolder<VerifyNode> {
         }
     }
 
+    private int getRankTextSize(int rank) {
+        return rank >= 1000 ? 10 : 11;
+    }
+
     private int getNodeStatusTextAndBorderColor(String nodeStatus, boolean isConsensus) {
         if (TextUtils.equals(NodeStatus.ACTIVE, nodeStatus)) {
             return isConsensus ? R.color.color_f79d10 : R.color.color_4a90e2;
@@ -138,7 +148,7 @@ public class VerifyNodeViewHolder extends BaseViewHolder<VerifyNode> {
         }
     }
 
-    private int getNodeStatusTextBackground(String nodeStatus, boolean isConsensus) {
+    private int getNodeStatusTextBackgroundResourse(String nodeStatus, boolean isConsensus) {
         if (TextUtils.equals(NodeStatus.ACTIVE, nodeStatus)) {
             return isConsensus ? R.color.color_f79d10 : R.color.color_4a90e2;
         } else {

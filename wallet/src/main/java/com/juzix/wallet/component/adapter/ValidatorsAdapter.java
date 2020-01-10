@@ -2,9 +2,13 @@ package com.juzix.wallet.component.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.TypedValue;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -12,7 +16,9 @@ import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.App;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
+import com.juzix.wallet.component.adapter.base.BaseViewHolder;
 import com.juzix.wallet.component.adapter.base.ViewHolder;
+import com.juzix.wallet.component.ui.OnItemClickListener;
 import com.juzix.wallet.component.widget.RoundedTextView;
 import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.entity.VerifyNode;
@@ -26,104 +32,53 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
-public class ValidatorsAdapter extends CommonAdapter<VerifyNode> {
+public class ValidatorsAdapter extends RecyclerView.Adapter<BaseViewHolder<VerifyNode>> {
 
-    private static final String ACTIVE = "Active";
-    private static final String CANDIDATE = "Candidate";
+    private List<VerifyNode> mVerifyNodeList;
+    private OnItemClickListener mItemClickListener;
 
-    public ValidatorsAdapter(int layoutId, List<VerifyNode> datas) {
-        super(layoutId, datas);
+    public void setDatas(List<VerifyNode> verifyNodeList) {
+        this.mVerifyNodeList = verifyNodeList;
     }
 
-    @SuppressLint("StringFormatInvalid")
+    public void setOnItemClickListener(OnItemClickListener itemClickListener) {
+        this.mItemClickListener = itemClickListener;
+    }
+
+
+    @NonNull
     @Override
-    protected void convert(Context context, ViewHolder viewHolder, VerifyNode item, int position) {
-
-        ShadowDrawable.setShadowDrawable(viewHolder.getView(R.id.rl_shade),
-                ContextCompat.getColor(context, R.color.color_ffffff),
-                DensityUtil.dp2px(context, 4),
-                ContextCompat.getColor(context, R.color.color_cc9ca7c2),
-                DensityUtil.dp2px(context, 8),
-                0,
-                DensityUtil.dp2px(context, 0));
-
-        GlideUtils.loadRound(context, item.getUrl(), viewHolder.getView(R.id.iv_url));
-        viewHolder.setText(R.id.tv_validators_node_name, item.getName());
-        RoundedTextView tv_status = viewHolder.getView(R.id.tv_validators_node_state);
-        showState(item, tv_status);
-
-        TextView tv_yield = viewHolder.getView(R.id.tv_yield);
-        isShowRA(item, tv_yield);
-
-        viewHolder.setText(R.id.tv_staked_money, context.getString(R.string.amount_with_unit, StringUtil.formatBalance(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(item.getDeposit(), "1E18")))));
-        TextView tv = viewHolder.getView(R.id.tv_validators_rank);
-        tv.setText(String.format("%d", item.getRanking()));
-        changeTextFontSize(tv, item);
-        changeImageViewBg(tv, item.getRanking());
-        changeTextBgAndTextColor(tv_status, item);
-
+    public BaseViewHolder<VerifyNode> onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        return new VerifyNodeViewHolder(R.layout.item_validators_list, viewGroup);
     }
 
-    private void showState(VerifyNode item, RoundedTextView tv_status) {
-        if (Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(App.getContext()).getLanguage())) { //中文环境下
-            if (TextUtils.equals(item.getNodeStatus(), ACTIVE)) {
-                tv_status.setText(item.isConsensus() ? R.string.validators_verifying : R.string.validators_active);
-            } else {
-                tv_status.setText(R.string.validators_candidate);
+    @Override
+    public void onBindViewHolder(@NonNull BaseViewHolder<VerifyNode> holder, int position) {
+        holder.refreshData(mVerifyNodeList.get(position), position);
+        holder.setOnItemClickListener(new BaseViewHolder.OnItemClickListener<VerifyNode>() {
+            @Override
+            public void onItemClick(VerifyNode verifyNode) {
+                if (mItemClickListener != null) {
+                    mItemClickListener.onItemClick(verifyNode);
+                }
             }
+        });
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull BaseViewHolder<VerifyNode> holder, int position, @NonNull List<Object> payloads) {
+        if (payloads.isEmpty()) {
+            super.onBindViewHolder(holder, position, payloads);
         } else {
-            if (TextUtils.equals(item.getNodeStatus(), ACTIVE)) {
-                tv_status.setText(item.isConsensus() ? R.string.validators_verifying : R.string.validators_active);
-            } else {
-                tv_status.setText(item.getNodeStatus());
-            }
+            holder.updateItem((Bundle) payloads.get(0));
         }
     }
 
-    private void isShowRA(VerifyNode item, TextView tv_yield) {
-        if (!item.isInit()) {
-            tv_yield.setText(NumberFormat.getInstance().format(((NumberParserUtils.parseDouble(item.getRatePA())) / 100)) + "%");
-        } else {
-            tv_yield.setText("- -");
+    @Override
+    public int getItemCount() {
+        if (mVerifyNodeList != null) {
+            return mVerifyNodeList.size();
         }
+        return 0;
     }
-
-    private void changeTextFontSize(TextView tv, VerifyNode item) {
-        if (item.getRanking() >= Constants.Magnitudes.THOUSAND) {
-            tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
-            tv.setPadding(0, 0, 0, 0);
-        } else {
-            tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 11);
-        }
-
-    }
-
-    public void changeImageViewBg(TextView tv, int rank) {
-        if (rank == 1) {
-            tv.setBackgroundResource(R.drawable.icon_rank_first);
-        } else if (rank == 2) {
-            tv.setBackgroundResource(R.drawable.icon_rank_second);
-        } else if (rank == 3) {
-            tv.setBackgroundResource(R.drawable.icon_rank_third);
-        } else {
-            tv.setBackgroundResource(R.drawable.icon_rank_others);
-        }
-    }
-
-    public void changeTextBgAndTextColor(RoundedTextView textView, VerifyNode verifyNode) {
-        switch (verifyNode.getNodeStatus()) {
-            case ACTIVE:
-                textView.setRoundedBorderColor(ContextCompat.getColor(textView.getContext(), verifyNode.isConsensus() ? R.color.color_f79d10 : R.color.color_4a90e2));
-                textView.setTextColor(ContextCompat.getColor(textView.getContext(), verifyNode.isConsensus() ? R.color.color_f79d10 : R.color.color_4a90e2));
-                break;
-            case CANDIDATE:
-                textView.setRoundedBorderColor(ContextCompat.getColor(textView.getContext(), R.color.color_19a20e));
-                textView.setTextColor(ContextCompat.getColor(textView.getContext(), R.color.color_19a20e));
-                break;
-            default:
-                break;
-        }
-    }
-
-
 }

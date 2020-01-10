@@ -8,22 +8,20 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
+import com.jakewharton.rxbinding2.widget.RxRadioGroup;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.jakewharton.rxbinding2.widget.TextViewEditorActionEvent;
 import com.juzhen.framework.util.NumberParserUtils;
@@ -39,11 +37,9 @@ import com.juzix.wallet.component.ui.dialog.BaseDialogFragment;
 import com.juzix.wallet.component.ui.dialog.CommonGuideDialogFragment;
 import com.juzix.wallet.component.ui.dialog.SelectSortTypeDialogFragment;
 import com.juzix.wallet.component.ui.presenter.ValidatorsPresenter;
-import com.juzix.wallet.component.widget.ClearEditText;
-import com.juzix.wallet.component.widget.CustomRefreshFooter;
-import com.juzix.wallet.component.widget.CustomRefreshHeader;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.entity.GuideType;
+import com.juzix.wallet.entity.NodeStatus;
 import com.juzix.wallet.entity.VerifyNode;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
@@ -63,9 +59,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Predicate;
 
 /**
@@ -96,13 +90,13 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
     }
 
     @BindView(R.id.radio_group)
-    RadioGroup radio_group;
+    RadioGroup radioGroup;
     @BindView(R.id.btn_all)
-    RadioButton all;
+    RadioButton allBtn;
     @BindView(R.id.btn_active)
-    RadioButton active;
+    RadioButton activeBtn;
     @BindView(R.id.btn_candidate)
-    RadioButton candidate;
+    RadioButton candidateBtn;
     @BindView(R.id.refreshLayout)
     SmartRefreshLayout refreshLayout;
     @BindView(R.id.list_validators)
@@ -161,49 +155,32 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
 
     private void initView() {
 
-        changeBtnState(R.id.btn_all);
-
-        mValidatorsAdapter = new ValidatorsAdapter(R.layout.item_validators_list, null);
-        validatorsList.setEmptyView(mNoDataLayout);
+        mValidatorsAdapter = new ValidatorsAdapter();
         validatorsList.setAdapter(mValidatorsAdapter);
 
-        mPresenter.loadValidatorsData(rankType, nodeState, -1);
-
-        initCheckedListener();
+        RxRadioGroup
+                .checkedChanges(radioGroup)
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Integer>() {
+                    @Override
+                    public void accept(Integer id) {
+                        tabStateChanged(id);
+                    }
+                });
 
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                mPresenter.loadValidatorsData(rankType, nodeState, -1);
-
+                mPresenter.loadValidatorsData(mTab, mSortType, searchEt.getText().toString().trim());
             }
         });
 
-        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+        mValidatorsAdapter.setOnItemClickListener(new OnItemClickListener<VerifyNode>() {
             @Override
-            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-                //加载更多
-                if (TextUtils.equals(nodeState, Constants.ValidatorsType.ALL_VALIDATORS)) {
-                    rank = allLastRank;
-                } else if (TextUtils.equals(nodeState, Constants.ValidatorsType.ACTIVE_VALIDATORS)) {
-                    rank = activeLastRank;
-                } else {
-                    rank = candidateLastRank;
-                }
-                mPresenter.loadDataFromDB(rankType, nodeState, rank);
-
+            public void onItemClick(VerifyNode verifyNode) {
+                ValidatorsDetailActivity.actionStart(getContext(), verifyNode.getNodeId());
             }
         });
-
-        RxAdapterView.itemClicks(validatorsList)
-                .compose(RxUtils.getClickTransformer())
-                .compose(RxUtils.bindToLifecycle(this))
-                .subscribe(new CustomObserver<Integer>() {
-                    @Override
-                    public void accept(Integer position) {
-                        ValidatorsDetailActivity.actionStart(getContext(), mValidatorsAdapter.getItem(position).getNodeId());
-                    }
-                });
 
         RxView
                 .clicks(rankIv)
@@ -214,10 +191,10 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
                     public void accept(Object o) {
                         SelectSortTypeDialogFragment
                                 .newInstance()
-                                .setOnItemClickListener(new OnItemClickListener() {
+                                .setOnItemClickListener(new OnItemClickListener<SortType>() {
                                     @Override
-                                    public void onItemClick(Object o) {
-
+                                    public void onItemClick(SortType sortType) {
+                                        mSortType = sortType;
                                     }
                                 })
                                 .show(getActivity()
@@ -274,46 +251,6 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
 
     }
 
-    private void initCheckedListener() {
-        radio_group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int id) {
-
-                switch (id) {
-                    case R.id.btn_all:
-                        changeBtnState(id);
-                        nodeState = Constants.ValidatorsType.ALL_VALIDATORS;
-                        if (allList.size() == 0) {
-                            mPresenter.loadDataFromDB(rankType, nodeState, -1);
-                        }
-                        mValidatorsAdapter.notifyDataChanged(allList);
-                        break;
-                    case R.id.btn_active:
-                        changeBtnState(id);
-                        nodeState = Constants.ValidatorsType.ACTIVE_VALIDATORS;
-                        if (activeList.size() == 0) {
-                            mPresenter.loadDataFromDB(rankType, nodeState, -1);
-                        }
-                        mValidatorsAdapter.notifyDataChanged(activeList);
-                        break;
-                    case R.id.btn_candidate:
-                        changeBtnState(id);
-                        nodeState = Constants.ValidatorsType.CANDIDATE_VALIDATORS;
-                        if (candidateList.size() == 0) {
-                            mPresenter.loadDataFromDB(rankType, nodeState, -1);
-                        }
-                        mValidatorsAdapter.notifyDataChanged(candidateList);
-                        break;
-                    default:
-                        break;
-                }
-
-
-            }
-        });
-    }
-
-
     @Override
     public void onResume() {
         MobclickAgent.onPageStart(Constants.UMPages.VERIFY_NODE);
@@ -321,15 +258,6 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
         refreshLayout.autoRefresh();
     }
 
-    private int getLastNodeRank() {
-        if (TextUtils.equals(nodeState, Constants.ValidatorsType.ALL_VALIDATORS)) {
-            return allLastRank;
-        } else if (TextUtils.equals(nodeState, Constants.ValidatorsType.ACTIVE_VALIDATORS)) {
-            return activeLastRank;
-        } else {
-            return candidateLastRank;
-        }
-    }
 
     @Override
     public void onPause() {
@@ -337,40 +265,45 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
         super.onPause();
     }
 
-    public void changeBtnState(int id) {
-        switch (id) {
-            case R.id.btn_all:
-                all.setBackgroundResource(R.drawable.bg_delegate_textview_choosed);
-                active.setBackgroundResource(R.drawable.bg_delegate_textview_unchoosed);
-                candidate.setBackgroundResource(R.drawable.bg_delegate_textview_unchoosed);
-                all.setTextColor(getResources().getColor(R.color.color_ffffff));
-                all.setTypeface(Typeface.DEFAULT_BOLD);
-                active.setTypeface(Typeface.DEFAULT);
-                candidate.setTypeface(Typeface.DEFAULT);
-                active.setTextColor(getResources().getColor(R.color.color_000000));
-                candidate.setTextColor(getResources().getColor(R.color.color_000000));
+    private void tabStateChanged(@Tab int tab) {
+
+    }
+
+    public void tabCheckedChanged(@Tab int tab) {
+
+        switch (tab) {
+            case Tab.ALL:
+                allBtn.setBackgroundResource(R.drawable.bg_delegate_textview_choosed);
+                activeBtn.setBackgroundResource(R.drawable.bg_delegate_textview_unchoosed);
+                candidateBtn.setBackgroundResource(R.drawable.bg_delegate_textview_unchoosed);
+                allBtn.setTextColor(getResources().getColor(R.color.color_ffffff));
+                allBtn.setTypeface(Typeface.DEFAULT_BOLD);
+                activeBtn.setTypeface(Typeface.DEFAULT);
+                candidateBtn.setTypeface(Typeface.DEFAULT);
+                activeBtn.setTextColor(getResources().getColor(R.color.color_000000));
+                candidateBtn.setTextColor(getResources().getColor(R.color.color_000000));
                 break;
-            case R.id.btn_active:
-                active.setBackgroundResource(R.drawable.bg_delegate_textview_choosed);
-                candidate.setBackgroundResource(R.drawable.bg_delegate_textview_unchoosed);
-                all.setBackgroundResource(R.drawable.bg_delegate_textview_unchoosed);
-                all.setTypeface(Typeface.DEFAULT);
-                active.setTypeface(Typeface.DEFAULT_BOLD);
-                candidate.setTypeface(Typeface.DEFAULT);
-                active.setTextColor(getResources().getColor(R.color.color_ffffff));
-                all.setTextColor(getResources().getColor(R.color.color_000000));
-                candidate.setTextColor(getResources().getColor(R.color.color_000000));
+            case Tab.ACTIVE:
+                activeBtn.setBackgroundResource(R.drawable.bg_delegate_textview_choosed);
+                candidateBtn.setBackgroundResource(R.drawable.bg_delegate_textview_unchoosed);
+                allBtn.setBackgroundResource(R.drawable.bg_delegate_textview_unchoosed);
+                allBtn.setTypeface(Typeface.DEFAULT);
+                activeBtn.setTypeface(Typeface.DEFAULT_BOLD);
+                candidateBtn.setTypeface(Typeface.DEFAULT);
+                activeBtn.setTextColor(getResources().getColor(R.color.color_ffffff));
+                allBtn.setTextColor(getResources().getColor(R.color.color_000000));
+                candidateBtn.setTextColor(getResources().getColor(R.color.color_000000));
                 break;
-            case R.id.btn_candidate:
-                candidate.setBackgroundResource(R.drawable.bg_delegate_textview_choosed);
-                all.setBackgroundResource(R.drawable.bg_delegate_textview_unchoosed);
-                active.setBackgroundResource(R.drawable.bg_delegate_textview_unchoosed);
-                all.setTypeface(Typeface.DEFAULT);
-                active.setTypeface(Typeface.DEFAULT);
-                candidate.setTypeface(Typeface.DEFAULT_BOLD);
-                candidate.setTextColor(getResources().getColor(R.color.color_ffffff));
-                all.setTextColor(getResources().getColor(R.color.color_000000));
-                active.setTextColor(getResources().getColor(R.color.color_000000));
+            case Tab.CANDIDATE:
+                candidateBtn.setBackgroundResource(R.drawable.bg_delegate_textview_choosed);
+                allBtn.setBackgroundResource(R.drawable.bg_delegate_textview_unchoosed);
+                activeBtn.setBackgroundResource(R.drawable.bg_delegate_textview_unchoosed);
+                allBtn.setTypeface(Typeface.DEFAULT);
+                activeBtn.setTypeface(Typeface.DEFAULT);
+                candidateBtn.setTypeface(Typeface.DEFAULT_BOLD);
+                candidateBtn.setTextColor(getResources().getColor(R.color.color_ffffff));
+                allBtn.setTextColor(getResources().getColor(R.color.color_000000));
+                activeBtn.setTextColor(getResources().getColor(R.color.color_000000));
                 break;
             default:
                 break;
