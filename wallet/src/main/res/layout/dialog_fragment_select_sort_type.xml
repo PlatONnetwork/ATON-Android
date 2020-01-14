@@ -9,24 +9,22 @@
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:paddingLeft="26dp"
-    android:paddingTop="24dp"
     android:paddingRight="26dp"
-    android:paddingBottom="12dp"
     android:showDividers="middle">
 
     <TextView
         style="@style/Text.000000.16"
-        android:paddingBottom="16dp"
+        android:layout_height="48dp"
         android:text="@string/msg_sort"
         android:textStyle="bold" />
 
     <ListView
         android:id="@+id/list_sort_type"
         style="@style/List_common_style"
-        android:layout_height="217dp"
+        android:layout_height="195dp"
         android:choiceMode="singleChoice"
         android:divider="@drawable/bg_select_wallet_list_divider"
         android:dividerHeight="1dp"
-        tools:listitem="@layout/item_select_wallet_list" />
+        tools:listitem="@layout/item_select_sort_type" />
 
 </LinearLayout>

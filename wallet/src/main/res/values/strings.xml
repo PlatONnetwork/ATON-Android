@@ -745,6 +745,9 @@
     <string name="msg_node_rankings">节点排名</string>
     <string name="msg_delegated_amount">接受委托量</string>
     <string name="msg_delegator_number">委托者数</string>
-    <string name="msg_annual_yield">预计委托年化收益率</string>
+    <string name="msg_annual_yield">预计委托收益率</string>
+    <string name="msg_annual_reward_ratio">预计年化收益率</string>
+    <string name="msg_total_delegate_reward">累计委托奖励</string>
+    <string name="msg_avaliable_balance">可委托余额</string>
 
 </resources>

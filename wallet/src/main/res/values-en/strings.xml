@@ -731,6 +731,10 @@
     <string name="msg_delegated_amount">Delegated</string>
     <string name="msg_delegator_number">Delegators</string>
     <string name="msg_annual_yield">Expected delegation annualized yield</string>
+    <string name="msg_annual_reward_ratio">Reward Ratio</string>
+    <string name="msg_total_delegate_reward">Total Reward</string>
+    <string name="msg_delegate_reward_ratio">Yield</string>
+    <string name="msg_avaliable_balance">Avaliable Balance</string>
 
 </resources>
 

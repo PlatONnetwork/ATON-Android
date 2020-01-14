@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
+import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
@@ -244,7 +245,8 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
         noDataLl.setVisibility(list != null && list.size() > 0 ? View.GONE : View.VISIBLE);
         mMyDelegateAdapter.notifyDataChanged(list);
         SparseArray<String> totalAmountArray = getTotalAmountArray(list);
-        totalDelegatedAmountTv.setText(AmountUtil.formatAmountText(totalAmountArray.get(TotalAmountType.TOTAL_DELEGATED)));
+        totalDelegatedAmountTv.setText(CommonTextUtils.getPriceTextWithBold(AmountUtil.formatAmountText(totalAmountArray.get(TotalAmountType.TOTAL_DELEGATED)),
+                ContextCompat.getColor(currentActivity(), R.color.color_f9fbff), ContextCompat.getColor(currentActivity(), R.color.color_f9fbff), DensityUtil.sp2px(currentActivity(), 12), DensityUtil.sp2px(currentActivity(), 22)));
         totalRewardAmountTv.setText(AmountUtil.formatAmountText(totalAmountArray.get(TotalAmountType.TOTAL_REWARD)));
         totalUnclaimedRewardAmountTv.setText(AmountUtil.formatAmountText(totalAmountArray.get(TotalAmountType.TOTAL_UNCLAIMED_REWARD)));
     }

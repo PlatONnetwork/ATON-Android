@@ -13,6 +13,7 @@ import android.widget.ListView;
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.adapter.CommonAdapter;
 import com.juzix.wallet.component.adapter.base.ViewHolder;
 import com.juzix.wallet.component.ui.OnItemClickListener;
@@ -38,8 +39,11 @@ public class SelectSortTypeDialogFragment extends BaseDialogFragment {
     private Unbinder unbinder;
     private OnItemClickListener mItemClickListener;
 
-    public static SelectSortTypeDialogFragment newInstance() {
+    public static SelectSortTypeDialogFragment newInstance(SortType sortType) {
         SelectSortTypeDialogFragment dialogFragment = new SelectSortTypeDialogFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(Constants.Bundle.BUNDLE_DATA, sortType);
+        dialogFragment.setArguments(bundle);
         return dialogFragment;
     }
 
@@ -65,9 +69,14 @@ public class SelectSortTypeDialogFragment extends BaseDialogFragment {
 
     private void initViews() {
 
+
+        SortType sortType = getArguments().getParcelable(Constants.Bundle.BUNDLE_DATA);
+
         SortTypeAdapter sortTypeAdapter = new SortTypeAdapter(R.layout.item_select_sort_type, Arrays.asList(SortType.values()), listSortType);
 
         listSortType.setAdapter(sortTypeAdapter);
+
+        listSortType.setItemChecked(Arrays.asList(SortType.values()).indexOf(sortType), true);
 
         RxAdapterView.itemClicks(listSortType)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)

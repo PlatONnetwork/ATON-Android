@@ -2,10 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_item_parent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_mydelegate_item"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingLeft="10dp"
+    android:paddingTop="8dp"
+    android:paddingRight="10dp"
+    android:paddingBottom="12dp">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"

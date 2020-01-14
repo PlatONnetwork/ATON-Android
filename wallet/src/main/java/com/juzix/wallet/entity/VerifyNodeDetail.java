@@ -2,6 +2,9 @@ package com.juzix.wallet.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
+
+import com.juzix.wallet.R;
 
 public class VerifyNodeDetail implements Parcelable {
 
@@ -97,6 +100,10 @@ public class VerifyNodeDetail implements Parcelable {
      * 节点累计的奖励  单位von   1LAT(ETH)=1000000000000000000von(wei)
      */
     private String cumulativeReward;
+    /**
+     * 当前周期委托年化率和上个周期委托年化率比较 0: 相对  1: 大于  -1：小于
+     */
+    private String delegatedRatePATrend;
 
     public VerifyNodeDetail() {
 
@@ -120,6 +127,7 @@ public class VerifyNodeDetail implements Parcelable {
         isConsensus = in.readByte() != 0;
         delegatedRewardPer = in.readString();
         cumulativeReward = in.readString();
+        delegatedRatePATrend = in.readString();
     }
 
     @Override
@@ -141,6 +149,7 @@ public class VerifyNodeDetail implements Parcelable {
         dest.writeByte((byte) (isConsensus ? 1 : 0));
         dest.writeString(delegatedRewardPer);
         dest.writeString(cumulativeReward);
+        dest.writeString(delegatedRatePATrend);
     }
 
     @Override
@@ -294,6 +303,36 @@ public class VerifyNodeDetail implements Parcelable {
 
     public void setConsensus(boolean consensus) {
         isConsensus = consensus;
+    }
+
+    public String getDelegatedRatePATrend() {
+        return delegatedRatePATrend;
+    }
+
+    public void setDelegatedRatePATrend(String delegatedRatePATrend) {
+        this.delegatedRatePATrend = delegatedRatePATrend;
+    }
+
+    public int getNodeStatusDescRes() {
+
+        switch (nodeStatus) {
+            case NodeStatus.ACTIVE:
+                return isConsensus ? R.string.validators_verifying : R.string.validators_active;
+            case NodeStatus.CANDIDATE:
+                return R.string.validators_state_candidate;
+            case NodeStatus.EXITING:
+                return R.string.validators_state_exiting;
+            default:
+                return R.string.validators_state_exited;
+        }
+    }
+
+    public boolean isDelegatedRatePATrendRose() {
+        return "1".equals(delegatedRatePATrend);
+    }
+
+    public boolean isShowDelegatedRatePATrend() {
+        return !"0".equals(delegatedRatePATrend);
     }
 }
 

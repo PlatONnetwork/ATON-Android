@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 public class AmountUtil {
 
     private final static String VALUE_1E18 = "1e18";
+    private final static String VALUE_1E2 = "1e2";
 
     private AmountUtil() {
 

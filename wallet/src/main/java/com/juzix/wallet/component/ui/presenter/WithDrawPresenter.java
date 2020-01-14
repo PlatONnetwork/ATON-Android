@@ -22,7 +22,8 @@ import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.Web3jManager;
-import com.juzix.wallet.entity.DelegateDetail;
+import com.juzix.wallet.entity.DelegateItemInfo;
+import com.juzix.wallet.entity.DelegateNodeDetail;
 import com.juzix.wallet.entity.DelegationValue;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionAuthorizationBaseData;
@@ -52,13 +53,14 @@ import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
+import jnr.ffi.annotations.Delegate;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> implements WithDrawContract.Presenter {
 
-    private DelegateDetail mDelegateDetail;
+    private DelegateItemInfo mDelegateDetail;
     private Wallet mWallet;
 
     private List<WithDrawBalance> list = new ArrayList<>();

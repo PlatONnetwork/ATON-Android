@@ -3,6 +3,7 @@ package com.juzix.wallet.entity;
 import android.support.annotation.StringDef;
 
 @StringDef({
+        NodeStatus.ALL,
         NodeStatus.ACTIVE,
         NodeStatus.CANDIDATE,
         NodeStatus.EXITING,
@@ -10,6 +11,10 @@ import android.support.annotation.StringDef;
 })
 public @interface NodeStatus {
 
+    /**
+     * 所有类型
+     */
+    String ALL = "All";
     /**
      * 活跃中
      */

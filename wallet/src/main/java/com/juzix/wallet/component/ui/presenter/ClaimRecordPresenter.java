@@ -8,16 +8,29 @@ import com.juzhen.framework.network.ApiSingleObserver;
 import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.ClaimRecordContract;
+import com.juzix.wallet.engine.Optional;
 import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.ClaimRewardRecord;
+import com.juzix.wallet.entity.DelegateInfo;
 import com.juzix.wallet.utils.RxUtils;
+
+import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Flowable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
+import retrofit2.Response;
+
 public class ClaimRecordPresenter extends BasePresenter<ClaimRecordContract.View> implements ClaimRecordContract.Presenter {
 
+    private Disposable mDisposable;
     private List<ClaimRewardRecord> mOldClaimRewardRecordList;
 
 
@@ -30,20 +43,54 @@ public class ClaimRecordPresenter extends BasePresenter<ClaimRecordContract.View
 
         boolean isLoadMore = Direction.DIRECTION_OLD.equals(direction);
 
-        ServerUtils
+        mDisposable = ServerUtils
                 .getCommonApi()
                 .getRewardTransactions(ApiRequestBody.newBuilder()
-                        .put("walletAddrs", WalletManager.getInstance().getWalletList())
+                        .put("walletAddrs", WalletManager.getInstance().getAddressList())
                         .put("beginSequence", getBeginSequence(direction))
                         .put("listSize", 10)
                         .put("direction", direction)
                         .build())
+                .map(new Function<Response<ApiResponse<List<ClaimRewardRecord>>>, Optional<List<ClaimRewardRecord>>>() {
+                    @Override
+                    public Optional<List<ClaimRewardRecord>> apply(Response<ApiResponse<List<ClaimRewardRecord>>> apiResponseResponse) throws Exception {
+                        return apiResponseResponse != null && apiResponseResponse.isSuccessful() && apiResponseResponse.body() != null ? new Optional<List<ClaimRewardRecord>>(apiResponseResponse.body().getData()) : new Optional<List<ClaimRewardRecord>>(null);
+                    }
+                })
+                .toFlowable()
+                .filter(new Predicate<Optional<List<ClaimRewardRecord>>>() {
+                    @Override
+                    public boolean test(Optional<List<ClaimRewardRecord>> listOptional) throws Exception {
+                        return !listOptional.isEmpty();
+                    }
+                })
+                .switchIfEmpty(new Publisher<Optional<List<ClaimRewardRecord>>>() {
+                    @Override
+                    public void subscribe(Subscriber<? super Optional<List<ClaimRewardRecord>>> s) {
+                        s.onError(new Throwable());
+                    }
+                })
+                .flatMap(new Function<Optional<List<ClaimRewardRecord>>, Publisher<ClaimRewardRecord>>() {
+                    @Override
+                    public Publisher<ClaimRewardRecord> apply(Optional<List<ClaimRewardRecord>> listOptional) throws Exception {
+                        return Flowable.fromIterable(listOptional.get());
+                    }
+                })
+                .map(new Function<ClaimRewardRecord, ClaimRewardRecord>() {
+                    @Override
+                    public ClaimRewardRecord apply(ClaimRewardRecord claimRewardRecord) throws Exception {
+                        claimRewardRecord.setWalletAvatar(WalletManager.getInstance().getWalletIconByWalletAddress(claimRewardRecord.getAddress()));
+                        claimRewardRecord.setWalletName(WalletManager.getInstance().getWalletNameByWalletAddress(claimRewardRecord.getAddress()));
+                        return claimRewardRecord;
+                    }
+                })
+                .toList()
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(RxUtils.bindToLifecycle(getView()))
                 .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
-                .subscribe(new ApiSingleObserver<List<ClaimRewardRecord>>() {
+                .subscribe(new Consumer<List<ClaimRewardRecord>>() {
                     @Override
-                    public void onApiSuccess(List<ClaimRewardRecord> claimRewardRecords) {
+                    public void accept(List<ClaimRewardRecord> claimRewardRecords) throws Exception {
                         if (isViewAttached()) {
                             //新数据
                             List<ClaimRewardRecord> newList = getNewList(mOldClaimRewardRecordList, claimRewardRecords, isLoadMore);
@@ -59,9 +106,9 @@ public class ClaimRecordPresenter extends BasePresenter<ClaimRecordContract.View
                             }
                         }
                     }
-
+                }, new Consumer<Throwable>() {
                     @Override
-                    public void onApiFailure(ApiResponse response) {
+                    public void accept(Throwable throwable) throws Exception {
                         if (isViewAttached()) {
                             if (isLoadMore) {
                                 getView().finishLoadMore();
@@ -71,7 +118,14 @@ public class ClaimRecordPresenter extends BasePresenter<ClaimRecordContract.View
                         }
                     }
                 });
+    }
 
+    @Override
+    public void detachView() {
+        super.detachView();
+        if (mDisposable != null && !mDisposable.isDisposed()) {
+            mDisposable.dispose();
+        }
     }
 
     private long getBeginSequence(@Direction String direction) {

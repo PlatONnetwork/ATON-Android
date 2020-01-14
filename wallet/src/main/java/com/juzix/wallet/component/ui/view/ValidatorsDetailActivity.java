@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.constraint.Group;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatTextView;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -28,12 +30,13 @@ import com.juzix.wallet.component.widget.RoundedTextView;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.component.widget.VerticalImageSpan;
 import com.juzix.wallet.engine.WalletManager;
-import com.juzix.wallet.entity.DelegateDetail;
+import com.juzix.wallet.entity.NodeStatus;
 import com.juzix.wallet.entity.VerifyNodeDetail;
 import com.juzix.wallet.entity.WebType;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.AddressFormatUtil;
+import com.juzix.wallet.utils.AmountUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.GlideUtils;
 import com.juzix.wallet.utils.RxUtils;
@@ -50,19 +53,12 @@ import butterknife.Unbinder;
 
 public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPresenter> implements ValidatorsDetailContract.View {
 
-    public static final String STATE_ACTIVE = "Active";
-    public static final String STATE_CANDIDATE = "Candidate";
-    public static final String STATE_EXITING = "Exiting";
-    public static final String STATE_EXITED = "Exited";
-
-    @BindView(R.id.ll_title_bar)
-    LinearLayout llTitleBar;
     @BindView(R.id.civ_wallet_avatar)
     CircleImageView civWalletAvatar;
     @BindView(R.id.tv_detail_node_name)
     TextView tvDetailNodeName;
-    @BindView(R.id.tv_detail_node_state)
-    RoundedTextView tvDetailNodeState;
+    @BindView(R.id.rtv_detail_node_state)
+    RoundedTextView rtvDetailNodeState;
     @BindView(R.id.iv_detail_node_link)
     ImageView ivDetailNodeLink;
     @BindView(R.id.tv_detail_node_address)
@@ -73,8 +69,8 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
     TextView tvTotalStakedAmount;
     @BindView(R.id.tv_delegated)
     TextView tvDelegated;
-    @BindView(R.id.tv_delegated_amount)
-    TextView tvDelegatedAmount;
+    @BindView(R.id.tv_total_delegated_amount)
+    TextView tvTotalDelegatedAmount;
     @BindView(R.id.tv_delegators)
     TextView tvDelegators;
     @BindView(R.id.tv_delegators_count)
@@ -107,13 +103,18 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
     TextView tvRefresh;
     @BindView(R.id.layout_no_network)
     LinearLayout layoutNoNetwork;
+    @BindView(R.id.tv_annual_reward_ratio_amount)
+    AppCompatTextView tvAnnualRewardRatioAmount;
+    @BindView(R.id.tv_total_reward_amount)
+    TextView tvTotalRewardAmount;
+    @BindView(R.id.tv_delegate_reward_ratio_amount)
+    TextView tvDelegateRewardRatioAmount;
+    @BindView(R.id.tv_annual_reward_ratio)
+    TextView tvAnnualRewardRatio;
+    @BindView(R.id.group)
+    Group group;
 
     private Unbinder unbinder;
-
-    private String websiteUrl;
-    private String mNodeAddress;
-    private String mNodeName;
-    private String mNodeIcon;
 
     @Override
     protected ValidatorsDetailPresenter createPresenter() {
@@ -150,43 +151,37 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
 
     private void initView() {
 
-        RxView.clicks(delegate)
-                .compose(RxUtils.bindToLifecycle(this))
-                .compose(RxUtils.getClickTransformer())
-                .subscribe(new CustomObserver<Object>() {
-
-                    @Override
-                    public void accept(Object o) {
-                        //点击委托不需要做任何判断，跳转就行
-                        DelegateDetail delegateDetail = new DelegateDetail();
-                        delegateDetail.setNodeName(mNodeName);
-                        delegateDetail.setNodeId(mNodeAddress);
-                        delegateDetail.setUrl(mNodeIcon);
-                        DelegateActivity.actionStart(getContext(), delegateDetail);
-                    }
-                });
-
-        RxView.clicks(webSite)
+        RxView.clicks(sbtnDelegate)
                 .compose(RxUtils.bindToLifecycle(this))
                 .compose(RxUtils.getClickTransformer())
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        CommonHybridActivity.actionStart(getContext(), webSite.getText().toString(), WebType.WEB_TYPE_COMMON);
+                        DelegateActivity.actionStart(getContext(), mPresenter.getDelegateDetail());
                     }
                 });
 
-        RxView.clicks(nodeLink)
+        RxView.clicks(tvDetailWebsite)
                 .compose(RxUtils.bindToLifecycle(this))
                 .compose(RxUtils.getClickTransformer())
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        CommonHybridActivity.actionStart(getContext(), websiteUrl, WebType.WEB_TYPE_NODE_DETAIL);
+                        CommonHybridActivity.actionStart(getContext(), tvDetailWebsite.getText().toString(), WebType.WEB_TYPE_COMMON);
                     }
                 });
 
-        RxView.clicks(refreshTv)
+        RxView.clicks(ivDetailNodeLink)
+                .compose(RxUtils.bindToLifecycle(this))
+                .compose(RxUtils.getClickTransformer())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        CommonHybridActivity.actionStart(getContext(), tvDetailWebsite.getText().toString(), WebType.WEB_TYPE_NODE_DETAIL);
+                    }
+                });
+
+        RxView.clicks(tvRefresh)
                 .compose(RxUtils.bindToLifecycle(this))
                 .compose(RxUtils.getClickTransformer())
                 .subscribe(new CustomObserver<Object>() {
@@ -195,6 +190,20 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
                         mPresenter.loadValidatorsDetailData();
                     }
                 });
+
+        RxView.clicks(tvAnnualRewardRatio)
+                .compose(RxUtils.bindToLifecycle(this))
+                .compose(RxUtils.getClickTransformer())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        //弹出tips
+                        DelegateTipsDialog.createWithTitleAndContentDialog(null, null,
+                                null, null, string(R.string.expected_annualized_rate), string(R.string.expected_annualized_rate_des)).show(getSupportFragmentManager(), "validatorstip");
+                    }
+                });
+
+        mPresenter.loadValidatorsDetailData();
 
     }
 
@@ -206,118 +215,126 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
 
     @Override
     public void showValidatorsDetailData(VerifyNodeDetail nodeDetail) {
-        nodeState.setVisibility(View.VISIBLE);
-        websiteUrl = nodeDetail.getWebsite();
-        mNodeAddress = nodeDetail.getNodeId();
-        mNodeName = nodeDetail.getName();
-        mNodeIcon = nodeDetail.getUrl();
 
-        GlideUtils.loadRound(this, nodeDetail.getUrl(), iv_url);
-        nodeName.setText(nodeDetail.getName());
-        nodeAddress.setText(AddressFormatUtil.formatAddress(nodeDetail.getNodeId()));
+        if (nodeDetail != null) {
 
-        if (TextUtils.equals(nodeDetail.getNodeStatus(), STATE_ACTIVE)) {
-            nodeState.setText(nodeDetail.isConsensus() ? getString(R.string.validators_verifying) : getString(R.string.validators_state_active));
-        } else if (TextUtils.equals(nodeDetail.getNodeStatus(), STATE_CANDIDATE)) {
-            nodeState.setText(getString(R.string.validators_state_candidate));
-        } else if (TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITED)) {
-            nodeState.setText(getString(R.string.validators_state_exited));
-        } else {
-            nodeState.setText(getString(R.string.validators_state_exiting));
+            GlideUtils.loadRound(this, nodeDetail.getUrl(), civWalletAvatar);
+
+            tvDetailNodeName.setText(nodeDetail.getName());
+            tvDetailNodeAddress.setText(AddressFormatUtil.formatAddress(nodeDetail.getNodeId()));
+
+            rtvDetailNodeState.setText(getResources().getString(nodeDetail.getNodeStatusDescRes()));
+            rtvDetailNodeState.setTextColor(ContextCompat.getColor(this, getNodeStatusTextAndBorderColor(nodeDetail.getNodeStatus(), nodeDetail.isConsensus())));
+            rtvDetailNodeState.setRoundedBorderColor(ContextCompat.getColor(this, getNodeStatusTextAndBorderColor(nodeDetail.getNodeStatus(), nodeDetail.isConsensus())));
+
+            tvDelegateRewardRatioAmount.setText(String.format("%s%%", NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(nodeDetail.getDelegatedRatePA(), "100"), 8)));
+            Drawable delegatedRatePATrend = nodeDetail.isShowDelegatedRatePATrend() ? nodeDetail.isDelegatedRatePATrendRose() ? ContextCompat.getDrawable(this, R.drawable.icon_rose) : ContextCompat.getDrawable(this, R.drawable.icon_fell) : null;
+            tvDelegateRewardRatioAmount.setCompoundDrawablesWithIntrinsicBounds(delegatedRatePATrend, null, null, null);
+            tvAnnualRewardRatioAmount.setText(String.format("%s%%", NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(nodeDetail.getDelegatedRewardPer(), "100"), 8)));
+            tvTotalRewardAmount.setText(string(R.string.amount_with_unit, AmountUtil.convertVonToLat(nodeDetail.getCumulativeReward())));
+
+            tvTotalStakedAmount.setText(AmountUtil.formatAmountText(nodeDetail.getDeposit())); //总质押
+            tvTotalDelegatedAmount.setText(AmountUtil.formatAmountText(nodeDetail.getDelegateSum()));
+
+            tvDelegatorsCount.setText(getCommonFormatText(nodeDetail.getDelegate()));
+            tvSlashCount.setText(StringUtil.formatBalance(String.valueOf(nodeDetail.getPunishNumber())));
+            tvBlocksNumber.setText(nodeDetail.getBlockOutNumber() == 0 ? "--" : StringUtil.formatBalance(String.valueOf(nodeDetail.getBlockOutNumber())));
+            tvBlocksRateNumber.setText(String.format("%s%%", NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(nodeDetail.getBlockRate(), "100"), 8)));
+
+            tvDetailIntroduction.setText(getCommonFormatText(nodeDetail.getIntro()));
+            tvDetailWebsite.setText(getCommonFormatText(nodeDetail.getWebsite()));//官网
+            tvDetailWebsite.setTextColor(TextUtils.isEmpty(nodeDetail.getWebsite()) ? ContextCompat.getColor(this, R.color.color_000000) : ContextCompat.getColor(this, R.color.color_105cfe));
+
+            ivDetailNodeLink.setVisibility(TextUtils.isEmpty(nodeDetail.getWebsite()) ? View.GONE : View.VISIBLE);
+
+            tvNoDelegateTips.setText(getDelegateTips(nodeDetail));
+            tvNoDelegateTips.setVisibility(getTipsVisibility(nodeDetail));
+            sbtnDelegate.setEnabled(isDelegateBtnEnable(nodeDetail));
+
+            group.setVisibility(nodeDetail.isInit() ? View.GONE : View.VISIBLE);
         }
 
-        changeTextBgAndTextColor(nodeState, nodeDetail);
-
-        rate.setText(nodeDetail.isInit() ? "- -" : String.format("%s%%", StringUtil.formatBalance(BigDecimalUtil.div(nodeDetail.getRatePA(), "100"))));
-
-        if (TextUtils.isEmpty(nodeDetail.getDeposit())) {
-            totalStaked.setText("- -");
-        } else {
-            totalStaked.setText(StringUtil.formatBalance(NumberParserUtils.parseDouble
-                    (NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(nodeDetail.getDeposit(), "1E18"))), false)); //总质押
-        }
-
-        if (TextUtils.isEmpty(nodeDetail.getDelegateSum())) {
-            delegation.setText("- -");
-        } else {
-            delegation.setText(StringUtil.formatBalance(NumberParserUtils.parseDouble
-                    (NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(nodeDetail.getDelegateSum(), "1E18"))), false)); // //接受委托
-        }
-
-        delegators.setText(nodeDetail.getDelegate());
-        slash.setText(nodeDetail.getPunishNumber() + "");  //处罚次数
-        blocks.setText(nodeDetail.getBlockOutNumber() == 0 ? "--" : nodeDetail.getBlockOutNumber() + "");
-        blockRate.setText(NumberParserUtils.parseDouble(nodeDetail.getBlockRate()) / 100 + "%");
-
-        introduction.setText(TextUtils.isEmpty(nodeDetail.getIntro()) ? "- -" : nodeDetail.getIntro());
-        webSite.setText(TextUtils.isEmpty(websiteUrl) ? "- -" : websiteUrl);//官网
-        webSite.setTextColor(TextUtils.isEmpty(websiteUrl) ? ContextCompat.getColor(this, R.color.color_000000) : ContextCompat.getColor(this, R.color.color_105cfe));
-
-        if (TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITING) || TextUtils.equals(nodeDetail.getNodeStatus(), STATE_EXITED)) {
-            //b.节点退出中或已退出
-            tips.setVisibility(View.VISIBLE);
-            setImageIconForText(tips, getString(R.string.the_validator_has_exited_and_cannot_be_delegated));
-            delegate.setEnabled(false);
-        } else if (nodeDetail.isInit()) { //c.节点状态为初始化验证人（收益地址为激励池地址的验证人）
-            tips.setVisibility(View.VISIBLE);
-            setImageIconForText(tips, getString(R.string.validators_details_tips));
-            delegate.setEnabled(false);
-        } else if (WalletManager.getInstance().getAddressList().isEmpty()) { // a.客户端本地没有钱包
-            tips.setVisibility(View.VISIBLE);
-            setImageIconForText(tips, getString(R.string.tips_no_wallet));
-            delegate.setEnabled(false);
-        } else {
-            delegate.setEnabled(true);
-            tips.setVisibility(View.GONE);
-        }
-
-        contentSV.setVisibility(View.VISIBLE);
-        noNetworkLayout.setVisibility(View.GONE);
-        ll_guide.setVisibility(View.VISIBLE);
-        nodeLink.setVisibility(TextUtils.isEmpty(websiteUrl) ? View.GONE : View.VISIBLE);
+        svContent.setVisibility(nodeDetail != null ? View.VISIBLE : View.GONE);
+        layoutNoNetwork.setVisibility(nodeDetail != null ? View.GONE : View.VISIBLE);
+        llGuide.setVisibility(nodeDetail != null ? View.VISIBLE : View.GONE);
 
     }
 
-    private void changeTextBgAndTextColor(RoundedTextView textView, VerifyNodeDetail verifyNodeDetail) {
-        switch (verifyNodeDetail.getNodeStatus()) {
-            case STATE_ACTIVE:
-                textView.setRoundedBorderColor(ContextCompat.getColor(textView.getContext(), verifyNodeDetail.isConsensus() ? R.color.color_f79d10 : R.color.color_4a90e2));
-                textView.setTextColor(ContextCompat.getColor(textView.getContext(), verifyNodeDetail.isConsensus() ? R.color.color_f79d10 : R.color.color_4a90e2));
-                break;
-            case STATE_CANDIDATE:
-                textView.setRoundedBorderColor(ContextCompat.getColor(textView.getContext(), R.color.color_19a20e));
-                textView.setTextColor(ContextCompat.getColor(textView.getContext(), R.color.color_19a20e));
-                break;
-            case STATE_EXITED:
-                textView.setRoundedBorderColor(ContextCompat.getColor(textView.getContext(), R.color.color_9eabbe));
-                textView.setTextColor(ContextCompat.getColor(textView.getContext(), R.color.color_9eabbe));
-                break;
-            case STATE_EXITING:
-                textView.setRoundedBorderColor(ContextCompat.getColor(textView.getContext(), R.color.color_525768));
-                textView.setTextColor(ContextCompat.getColor(textView.getContext(), R.color.color_525768));
-                break;
+    private String getCommonFormatText(String text) {
+        return TextUtils.isEmpty(text) ? "- -" : text;
+    }
+
+    private int getTipsVisibility(VerifyNodeDetail nodeDetail) {
+
+        //节点是否退出
+        boolean isNodeExit = TextUtils.equals(NodeStatus.EXITED, nodeDetail.getNodeStatus()) || TextUtils.equals(NodeStatus.EXITING, nodeDetail.getNodeStatus());
+        //节点状态是否为初始化验证人（收益地址为激励池地址的验证人）
+        boolean isInit = nodeDetail.isInit();
+        //客户端钱包列表是否为空
+        boolean isWalletAddressListEmpty = WalletManager.getInstance().getAddressList().isEmpty();
+
+        return isNodeExit || isInit || isWalletAddressListEmpty ? View.VISIBLE : View.GONE;
+
+    }
+
+    private boolean isDelegateBtnEnable(VerifyNodeDetail nodeDetail) {
+
+        //节点是否退出
+        boolean isNodeExit = TextUtils.equals(NodeStatus.EXITED, nodeDetail.getNodeStatus()) || TextUtils.equals(NodeStatus.EXITING, nodeDetail.getNodeStatus());
+        //节点状态是否为初始化验证人（收益地址为激励池地址的验证人）
+        boolean isInit = nodeDetail.isInit();
+        //客户端钱包列表是否为空
+        boolean isWalletAddressListEmpty = WalletManager.getInstance().getAddressList().isEmpty();
+
+        return isNodeExit || isInit || isWalletAddressListEmpty ? false : true;
+    }
+
+    private SpannableString getDelegateTips(VerifyNodeDetail nodeDetail) {
+        //节点是否退出
+        boolean isNodeExit = TextUtils.equals(NodeStatus.EXITED, nodeDetail.getNodeStatus()) || TextUtils.equals(NodeStatus.EXITING, nodeDetail.getNodeStatus());
+        //节点状态是否为初始化验证人（收益地址为激励池地址的验证人）
+        boolean isInit = nodeDetail.isInit();
+        //客户端钱包列表是否为空
+        boolean isWalletAddressListEmpty = WalletManager.getInstance().getAddressList().isEmpty();
+
+        String delegateTips = "";
+
+        if (isNodeExit) {
+            delegateTips = getString(R.string.the_validator_has_exited_and_cannot_be_delegated);
+        }
+
+        if (isInit) {
+            delegateTips = getString(R.string.validators_details_tips);
+        }
+
+        if (isWalletAddressListEmpty) {
+            delegateTips = getString(R.string.tips_no_wallet);
+        }
+
+
+        SpannableString spannableString = new SpannableString(delegateTips);
+        if (!TextUtils.isEmpty(delegateTips)) {
+            Drawable drawable = getResources().getDrawable(R.drawable.icon_no_delegate_tips);
+            drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+            spannableString.setSpan(new VerticalImageSpan(drawable), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+        return spannableString;
+    }
+
+
+    private int getNodeStatusTextAndBorderColor(@NodeStatus String nodeStatus, boolean isConsensus) {
+        switch (nodeStatus) {
+            case NodeStatus.ACTIVE:
+                return isConsensus ? R.color.color_f79d10 : R.color.color_4a90e2;
+            case NodeStatus.CANDIDATE:
+                return R.color.color_19a20e;
+            case NodeStatus.EXITED:
+                return R.color.color_9eabbe;
             default:
-                break;
+                return R.color.color_525768;
         }
 
-    }
-
-    public void setImageIconForText(TextView textView, String content) {
-        SpannableString spannableString = new SpannableString("  " + content);
-        Drawable drawable = getResources().getDrawable(R.drawable.icon_no_delegate_tips);
-        drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-        spannableString.setSpan(new VerticalImageSpan(drawable), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        textView.setText(spannableString);
-    }
-
-    @Override
-    public void showValidatorsDetailFailed() {
-        nodeState.setVisibility(View.GONE);
-        tips.setVisibility(View.GONE);
-
-        contentSV.setVisibility(View.GONE);
-        noNetworkLayout.setVisibility(View.VISIBLE);
-        ll_guide.setVisibility(View.GONE);
     }
 
     @Override
@@ -325,11 +342,11 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
         if (!isCanDelegate) {//表示不能委托
             ToastUtil.showLongToast(getContext(), R.string.tips_no_wallet);
         } else {
-            DelegateDetail delegateDetail = new DelegateDetail();
-            delegateDetail.setNodeName(mNodeName);
-            delegateDetail.setNodeId(mNodeAddress);
-            delegateDetail.setUrl(mNodeIcon);
-            DelegateActivity.actionStart(getContext(), delegateDetail);
+//            DelegateDetail delegateDetail = new DelegateDetail();
+//            delegateDetail.setNodeName(mNodeName);
+//            delegateDetail.setNodeId(mNodeAddress);
+//            delegateDetail.setUrl(mNodeIcon);
+//            DelegateActivity.actionStart(getContext(), delegateDetail);
         }
     }
 

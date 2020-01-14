@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.CharacterStyle;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.widget.TextView;
 
@@ -134,18 +135,20 @@ public class CommonTextUtils {
      * @param bigTextSize
      * @return
      */
-    public static SpannableString getPriceTextWithBold(String text, float smallTextSize, float bigTextSize) {
+    public static SpannableString getPriceTextWithBold(String text, int smallTextColor, int bigTextColor, float smallTextSize, float bigTextSize) {
         SpannableString spannableString = new SpannableString(text);
         if (TextUtils.isEmpty(text)) {
             return spannableString;
         }
 
         int length = text.length();
-        int index = text.indexOf("¥") == -1 ? length : text.indexOf("¥");
-        spannableString.setSpan(new AbsoluteSizeSpan((int) smallTextSize, false), index, index + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        spannableString.setSpan(new AbsoluteSizeSpan((int) bigTextSize, false), index + 1, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        spannableString.setSpan(new StyleSpan(Typeface.NORMAL), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        spannableString.setSpan(new StyleSpan(Typeface.BOLD), index + 1, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        int index = text.contains(".") ? text.indexOf(".") : length;
+        spannableString.setSpan(new AbsoluteSizeSpan((int) bigTextSize, false), 0, index, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(new AbsoluteSizeSpan((int) smallTextSize, false), index + 1, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(new ForegroundColorSpan(bigTextColor), 0, index, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(new ForegroundColorSpan(smallTextColor), index + 1, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(new StyleSpan(Typeface.BOLD), 0, index, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(new StyleSpan(Typeface.NORMAL), index + 1, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         return spannableString;
     }

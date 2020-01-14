@@ -23,7 +23,8 @@ import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.Web3jManager;
-import com.juzix.wallet.entity.DelegateDetail;
+import com.juzix.wallet.entity.DelegateItemInfo;
+import com.juzix.wallet.entity.DelegateNodeDetail;
 import com.juzix.wallet.entity.DelegateHandle;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionAuthorizationBaseData;
@@ -66,7 +67,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     private final static BigInteger DEFAULT_EXCHANGE_RATE = BigInteger.valueOf(1000000000000000000L);
 
     private Wallet mWallet;
-    private DelegateDetail mDelegateDetail;
+    private DelegateItemInfo mDelegateDetail;
 
     private String feeAmount;
     //调web3j获取gasprice
@@ -145,7 +146,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
     }
 
-    private Wallet getDefaultWallet(DelegateDetail delegateDetail) {
+    private Wallet getDefaultWallet(DelegateItemInfo delegateDetail) {
         if (delegateDetail != null && !TextUtils.isEmpty(delegateDetail.getWalletAddress())) {
             return WalletManager.getInstance().getWalletEntityByWalletAddress(delegateDetail.getWalletAddress());
         } else {

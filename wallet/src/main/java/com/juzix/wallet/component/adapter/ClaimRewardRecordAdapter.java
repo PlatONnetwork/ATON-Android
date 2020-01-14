@@ -38,6 +38,12 @@ public class ClaimRewardRecordAdapter extends RecyclerView.Adapter<BaseViewHolde
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder<ClaimRewardRecord> claimRewardRecordBaseViewHolder, int position) {
         claimRewardRecordBaseViewHolder.refreshData(mClaimRewardRecordList.get(position), position);
+        claimRewardRecordBaseViewHolder.setOnItemClickListener(new BaseViewHolder.OnItemClickListener<ClaimRewardRecord>() {
+            @Override
+            public void onItemClick(ClaimRewardRecord claimRewardRecord) {
+                notifyItemSpreadChanged(position, !claimRewardRecord.isExpanded());
+            }
+        });
     }
 
     @Override
@@ -55,5 +61,18 @@ public class ClaimRewardRecordAdapter extends RecyclerView.Adapter<BaseViewHolde
             return mClaimRewardRecordList.size();
         }
         return 0;
+    }
+
+    private void notifyItemSpreadChanged(int position, boolean spread) {
+        if (position == -1 || position > getItemCount()) {
+            return;
+        }
+
+        ClaimRewardRecord claimRewardRecord = mClaimRewardRecordList.get(position);
+        claimRewardRecord.setExpanded(spread);
+
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(ClaimRewardRecordDiffCallback.KEY_CLAIM_REWARD_EXPANDED, claimRewardRecord.isExpanded());
+        notifyItemChanged(position, bundle);
     }
 }

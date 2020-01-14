@@ -185,11 +185,13 @@
                     android:id="@+id/list_validators"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:clipChildren="false"
-                    android:clipToPadding="false"
                     tools:listitem="@layout/item_validators_list" />
 
-                <include layout="@layout/include_no_validators" />
+                <include
+                    layout="@layout/include_no_validators"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone" />
 
             </FrameLayout>
 

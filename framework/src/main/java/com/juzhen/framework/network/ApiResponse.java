@@ -25,6 +25,7 @@ public class ApiResponse<T> {
 
     }
 
+
     public ApiResponse(ApiErrorCode apiErrorCode, T d) {
         result = apiErrorCode;
         data = d;

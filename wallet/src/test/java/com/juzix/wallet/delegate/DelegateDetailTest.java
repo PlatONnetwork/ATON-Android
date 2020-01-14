@@ -12,7 +12,7 @@ import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.entity.AccountBalance;
-import com.juzix.wallet.entity.DelegateDetail;
+import com.juzix.wallet.entity.DelegateNodeDetail;
 import com.juzix.wallet.entity.Node;
 import com.juzix.wallet.rxjavatest.RxJavaTestSchedulerRule;
 
@@ -80,9 +80,9 @@ public class DelegateDetailTest {
         ServerUtils.getCommonApi().getDelegateDetailList(ApiRequestBody.newBuilder()
                 .put("addr", walletAddress)
                 .build())
-                .subscribe(new ApiSingleObserver<List<DelegateDetail>>() {
+                .subscribe(new ApiSingleObserver<List<DelegateNodeDetail>>() {
                     @Override
-                    public void onApiSuccess(List<DelegateDetail> delegateDetails) {
+                    public void onApiSuccess(List<DelegateNodeDetail> delegateDetails) {
 //                        Log.debug("reuslt", "-------------->" + delegateDetails.size() + "" + delegateDetails.toString());
                         presenter.getView().showDelegateDetailData(delegateDetails);
                     }
@@ -96,7 +96,7 @@ public class DelegateDetailTest {
 
     @Test
     public void testMoveOut() {
-        DelegateDetail delegateDetail = mock(DelegateDetail.class);
+        DelegateNodeDetail delegateDetail = mock(DelegateNodeDetail.class);
         delegateDetail.setWalletAddress("0xjfaskfjaskfa46545");
         delegateDetail.setNodeId("0x546a46ad4f5a65safa645");
         delegateDetail.setNodeName("node-123");
@@ -132,9 +132,9 @@ public class DelegateDetailTest {
 
     @Test
     public void testSetWalletAddress() {
-        List<DelegateDetail> detailList = new ArrayList<>();
+        List<DelegateNodeDetail> detailList = new ArrayList<>();
 
-        DelegateDetail delegateDetail = new DelegateDetail();
+        DelegateNodeDetail delegateDetail = new DelegateNodeDetail();
         delegateDetail.setNodeId("0x546a46ad4f5a65safa645");
         delegateDetail.setNodeName("node-1");
         delegateDetail.setNodeStatus("Active");
@@ -143,7 +143,7 @@ public class DelegateDetailTest {
         delegateDetail.setDelegated("546800000000000000000");
         detailList.add(delegateDetail);
 
-        DelegateDetail delegateDetail2 = new DelegateDetail();
+        DelegateNodeDetail delegateDetail2 = new DelegateNodeDetail();
         delegateDetail.setNodeId("0x546a46ad4f5a65safa645");
         delegateDetail.setNodeName("node-2");
         delegateDetail.setNodeStatus("Active");
@@ -153,7 +153,7 @@ public class DelegateDetailTest {
         detailList.add(delegateDetail2);
 
 
-        DelegateDetail delegateDetail3 = new DelegateDetail();
+        DelegateNodeDetail delegateDetail3 = new DelegateNodeDetail();
         delegateDetail.setNodeId("0x546a46ad4f5a65safa645");
         delegateDetail.setNodeName("node-3");
         delegateDetail.setNodeStatus("Active");
@@ -162,16 +162,16 @@ public class DelegateDetailTest {
         delegateDetail.setDelegated("546800000000000000000");
         detailList.add(delegateDetail3);
 
-        List<DelegateDetail> list = Flowable.fromIterable(detailList)
-                .map(new Function<DelegateDetail, DelegateDetail>() {
+        List<DelegateNodeDetail> list = Flowable.fromIterable(detailList)
+                .map(new Function<DelegateNodeDetail, DelegateNodeDetail>() {
                     @Override
-                    public DelegateDetail apply(DelegateDetail delegateDetail) throws Exception {
+                    public DelegateNodeDetail apply(DelegateNodeDetail delegateDetail) throws Exception {
                         delegateDetail.setWalletAddress("0x564fa54fa65s4da65465af"); //给每个对象赋值钱包地址
                         return delegateDetail;
                     }
                 }).toList().blockingGet();
 
-        for (DelegateDetail detail : list) {
+        for (DelegateNodeDetail detail : list) {
             System.out.println(detail.getWalletAddress());
         }
 

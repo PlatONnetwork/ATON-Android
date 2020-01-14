@@ -2,20 +2,19 @@ package com.juzix.wallet.component.ui.contract;
 
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
-import com.juzix.wallet.entity.DelegateDetail;
+import com.juzix.wallet.entity.DelegateItemInfo;
+import com.juzix.wallet.entity.DelegateNodeDetail;
 import com.juzix.wallet.entity.DelegateHandle;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.Wallet;
 
 import org.web3j.platon.StakingAmountType;
 
-import java.math.BigInteger;
-
 public class DelegateContract {
 
     public interface View extends IView {
 
-        DelegateDetail getDelegateDetailFromIntent();
+        DelegateItemInfo getDelegateDetailFromIntent();
 
         String getDelegateAmount();
 
@@ -25,8 +24,7 @@ public class DelegateContract {
 
         void showTips(boolean isShowTips, String minDelegation);
 
-        void showNodeInfo(DelegateDetail delegateDetail);
-
+        void showNodeInfo(DelegateItemInfo delegateDetail);
 
         void showIsCanDelegate(DelegateHandle bean);
 

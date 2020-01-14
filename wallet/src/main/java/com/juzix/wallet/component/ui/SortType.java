@@ -1,9 +1,13 @@
 package com.juzix.wallet.component.ui;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.App;
 import com.juzix.wallet.R;
 import com.juzix.wallet.entity.Candidate;
+import com.juzix.wallet.entity.DelegateInfo;
 import com.juzix.wallet.entity.VerifyNode;
 import com.juzix.wallet.utils.LanguageUtil;
 
@@ -14,7 +18,7 @@ import java.util.Locale;
  * @author matrixelement
  */
 
-public enum SortType {
+public enum SortType implements Parcelable {
 
     SORTED_BY_NODE_RANKINGS {
         @Override
@@ -61,6 +65,28 @@ public enum SortType {
         }
     };
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(ordinal());
+    }
+
+    public static final Creator<SortType> CREATOR = new Creator<SortType>() {
+        @Override
+        public SortType createFromParcel(Parcel in) {
+            return SortType.values()[in.readInt()];
+        }
+
+        @Override
+        public SortType[] newArray(int size) {
+            return new SortType[size];
+        }
+    };
+
     public abstract Comparator<VerifyNode> getComparator();
 
     public abstract int getTextRes();
@@ -69,7 +95,7 @@ public enum SortType {
 
         @Override
         public int compare(VerifyNode o1, VerifyNode o2) {
-            return Long.compare(NumberParserUtils.parseLong(o1.getRanking()), NumberParserUtils.parseLong(o2.getRanking()));
+            return Integer.compare(o1.getRanking(), o2.getRanking());
         }
     }
 

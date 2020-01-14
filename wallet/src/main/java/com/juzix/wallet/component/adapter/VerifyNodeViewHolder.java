@@ -19,10 +19,13 @@ import com.juzix.wallet.component.widget.RoundedTextView;
 import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.entity.NodeStatus;
 import com.juzix.wallet.entity.VerifyNode;
+import com.juzix.wallet.utils.AmountUtil;
 import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.GlideUtils;
+import com.juzix.wallet.utils.StringUtil;
 
 import java.text.NumberFormat;
+import java.util.HashMap;
 
 
 public class VerifyNodeViewHolder extends BaseViewHolder<VerifyNode> {
@@ -30,7 +33,7 @@ public class VerifyNodeViewHolder extends BaseViewHolder<VerifyNode> {
     private ConstraintLayout mShadeCl;
     private CircleImageView mNodeAvatarCiv;
     private TextView mNodeNameTv;
-    private TextView mModeDelegatedAmount;
+    private TextView mNodeDelegatedAmount;
     private RoundedTextView mNodeStateRtv;
     private TextView mAnnualYieldTv;
     private AppCompatTextView mNodeRankTv;
@@ -42,13 +45,13 @@ public class VerifyNodeViewHolder extends BaseViewHolder<VerifyNode> {
 
     public VerifyNodeViewHolder(int viewId, ViewGroup parent) {
         super(viewId, parent);
-        mShadeCl = parent.findViewById(R.id.cl_shade);
-        mNodeAvatarCiv = parent.findViewById(R.id.civ_node_avatar);
-        mNodeNameTv = parent.findViewById(R.id.civ_node_avatar);
-        mModeDelegatedAmount = parent.findViewById(R.id.civ_node_avatar);
-        mNodeStateRtv = parent.findViewById(R.id.civ_node_avatar);
-        mAnnualYieldTv = parent.findViewById(R.id.civ_node_avatar);
-        mNodeRankTv = parent.findViewById(R.id.tv_node_rank);
+        mShadeCl = itemView.findViewById(R.id.cl_shade);
+        mNodeAvatarCiv = itemView.findViewById(R.id.civ_node_avatar);
+        mNodeNameTv = itemView.findViewById(R.id.tv_node_name);
+        mNodeDelegatedAmount = itemView.findViewById(R.id.tv_delegated_amount);
+        mNodeStateRtv = itemView.findViewById(R.id.rtv_node_state);
+        mAnnualYieldTv = itemView.findViewById(R.id.tv_annual_yield);
+        mNodeRankTv = itemView.findViewById(R.id.tv_node_rank);
     }
 
     @Override
@@ -65,15 +68,14 @@ public class VerifyNodeViewHolder extends BaseViewHolder<VerifyNode> {
 
         GlideUtils.loadRound(mContext, data.getUrl(), mNodeAvatarCiv);
         mNodeNameTv.setText(data.getName());
-        mModeDelegatedAmount.setText(data.getDelegateSum());
+        mNodeDelegatedAmount.setText(String.format("%s%s", mContext.getResources().getString(R.string.amount_with_unit, AmountUtil.convertVonToLat(data.getDelegateSum())), StringUtil.formatBalance(data.getDelegate())));
         int nodeStatusDescRes = data.getNodeStatusDescRes();
         if (nodeStatusDescRes != -1) {
             mNodeStateRtv.setText(nodeStatusDescRes);
         }
-        mNodeStateRtv.setBackgroundResource(getNodeStatusTextBackgroundResourse(data.getNodeStatus(), data.isConsensus()));
         mNodeStateRtv.setTextColor(getNodeStatusTextAndBorderColor(data.getNodeStatus(), data.isConsensus()));
         mNodeStateRtv.setRoundedBorderColor(getNodeStatusTextAndBorderColor(data.getNodeStatus(), data.isConsensus()));
-        mNodeRankTv.setText(data.getRanking());
+        mNodeRankTv.setText(String.valueOf(data.getRanking()));
         mNodeRankTv.setBackgroundResource(getRankBackground(NumberParserUtils.parseInt(data.getRanking())));
         mNodeRankTv.setTextSize(getRankTextSize(data.getRanking()));
         mAnnualYieldTv.setText(data.getShowDelegatedRatePA());
@@ -94,12 +96,11 @@ public class VerifyNodeViewHolder extends BaseViewHolder<VerifyNode> {
                     String nodeName = bundle.getString(key);
                     mNodeNameTv.setText(nodeName);
                     break;
-                case VerifyNodeDiffCallback.KEY_DEPOSIT:
-                    String deposit = bundle.getString(key);
-                    mModeDelegatedAmount.setText(deposit);
-                    break;
-                case VerifyNodeDiffCallback.KEY_DELEGATOR_NUMBER:
-                    String delegatorNumber = bundle.getString(key);
+                case VerifyNodeDiffCallback.KEY_DEPOSIT_DELEGATOR_NUMBER:
+                    HashMap<String, String> map = new HashMap<>();
+                    String deposit = map.get(VerifyNodeDiffCallback.KEY_DEPOSIT);
+                    String delegatorNumber = map.get(VerifyNodeDiffCallback.KEY_DELEGATOR_NUMBER);
+                    mNodeDelegatedAmount.setText(String.format("%s%s", mContext.getResources().getString(R.string.amount_with_unit, AmountUtil.convertVonToLat(deposit)), StringUtil.formatBalance(delegatorNumber)));
                     break;
                 case VerifyNodeDiffCallback.KEY_URL:
                     String url = bundle.getString(key);

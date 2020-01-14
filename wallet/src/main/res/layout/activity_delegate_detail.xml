@@ -34,52 +34,80 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <RelativeLayout
+            <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/color_ffffff"
-                android:orientation="horizontal"
-                android:paddingTop="15dp"
-                android:paddingBottom="11dp">
+                android:layout_height="154dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/bg_validators_detail"
+                android:padding="20dp">
 
                 <com.juzix.wallet.component.widget.CircleImageView
-                    android:id="@+id/iv_wallet_icon"
+                    android:id="@+id/civ_wallet_avatar"
                     android:layout_width="42dp"
                     android:layout_height="42dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="13dp"
-                    tools:src="@drawable/icon_tips" />
+                    android:scaleType="centerCrop"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:src="@drawable/avatar_14" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
+                <TextView
+                    android:id="@+id/tv_wallet_name"
+                    style="@style/Text.fff.16"
                     android:layout_marginLeft="3dp"
-                    android:layout_toRightOf="@id/iv_wallet_icon"
-                    android:orientation="vertical">
+                    android:includeFontPadding="false"
+                    android:textStyle="bold"
+                    app:layout_constraintLeft_toRightOf="@id/civ_wallet_avatar"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Jiang" />
 
-                    <TextView
-                        android:id="@+id/tv_wallet_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        tools:text="钱包名称"
-                        android:textColor="@color/color_000000"
-                        android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/tv_wallet_address"
+                    style="@style/Text.fff.13"
+                    android:layout_marginTop="5dp"
+                    app:layout_constraintLeft_toLeftOf="@id/tv_wallet_name"
+                    app:layout_constraintTop_toBottomOf="@id/tv_wallet_name"
+                    tools:text="0xs7e4dade....4deadedwda" />
 
-                    <TextView
-                        android:id="@+id/tv_wallet_address"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        tools:text="aadskfajskdfjaks"
-                        android:textColor="@color/color_898c9e"
-                        android:textSize="13sp" />
+                <TextView
+                    android:id="@+id/tv_avaliable_balance"
+                    style="@style/Text.f9fbff.13"
+                    android:layout_marginTop="30dp"
+                    android:text="@string/msg_avaliable_balance"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_wallet_address" />
 
-                </LinearLayout>
+                <TextView
+                    android:id="@+id/tv_avaliable_balance_amount"
+                    style="@style/Text.f9fbff.14"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/msg_avaliable_balance"
+                    app:layout_constraintLeft_toLeftOf="@id/tv_avaliable_balance"
+                    app:layout_constraintTop_toBottomOf="@id/tv_avaliable_balance"
+                    tools:text="1,555.03967879" />
 
-            </RelativeLayout>
 
-            <RelativeLayout
+                <TextView
+                    android:id="@+id/tv_total_delegated"
+                    style="@style/Text.f9fbff.13"
+                    android:text="@string/total_delegated"
+                    app:layout_constraintLeft_toRightOf="@id/tv_avaliable_balance"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/tv_avaliable_balance" />
+
+                <TextView
+                    android:id="@+id/tv_total_delegated_amount"
+                    style="@style/Text.f9fbff.14"
+                    android:layout_marginTop="4dp"
+                    app:layout_constraintLeft_toLeftOf="@id/tv_total_delegated"
+                    app:layout_constraintTop_toBottomOf="@id/tv_total_delegated"
+                    tools:text="1,555.03967879" />
+
+            </android.support.constraint.ConstraintLayout>
+
+
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -87,6 +115,7 @@
                     android:id="@+id/rlv_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:paddingTop="8dp"
                     tools:itemCount="5"
                     tools:listitem="@layout/item_delegate_detail_list" />
 
@@ -114,7 +143,7 @@
                         android:textSize="16sp" />
                 </LinearLayout>
 
-            </RelativeLayout>
+            </FrameLayout>
 
 
         </LinearLayout>

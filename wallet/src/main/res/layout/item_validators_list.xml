@@ -12,7 +12,7 @@
         android:id="@+id/civ_node_avatar"
         android:layout_width="42dp"
         android:layout_height="42dp"
-        android:layout_marginLeft="13dp"
+        android:layout_marginLeft="3dp"
         android:padding="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -21,24 +21,38 @@
     <TextView
         android:id="@+id/tv_node_name"
         style="@style/Text.000.15"
-        android:layout_marginLeft="13dp"
-        android:layout_marginRight="6dp"
+        android:layout_marginLeft="3dp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/tv_node_delegated_amount"
+        app:layout_constraintBottom_toTopOf="@+id/layout_delegated_info"
         app:layout_constraintLeft_toRightOf="@id/civ_node_avatar"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
         tools:text="jiang" />
 
 
-    <TextView
-        android:id="@+id/tv_node_delegated_amount"
-        style="@style/Text.000.13"
+    <LinearLayout
+        android:id="@+id/layout_delegated_info"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
+        android:orientation="horizontal"
+        app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="@id/tv_node_name"
-        app:layout_constraintTop_toBottomOf="@id/tv_node_name"
-        tools:text="总质押 1644848.10552" />
+        app:layout_constraintTop_toBottomOf="@id/tv_node_name">
+
+        <TextView
+            style="@style/Text.61646e"
+            android:text="@string/delegated" />
+
+        <TextView
+            android:id="@+id/tv_delegated_amount"
+            style="@style/Text.000.13"
+            android:layout_marginLeft="7dp"
+            tools:text="1644848.10552" />
+
+
+    </LinearLayout>
 
     <com.juzix.wallet.component.widget.RoundedTextView
         android:id="@+id/rtv_node_state"

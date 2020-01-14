@@ -43,6 +43,11 @@
         <item name="android:textSize">11sp</item>
     </style>
 
+
+    <style name="Text.4a90e2.13">
+        <item name="android:textSize">13sp</item>
+    </style>
+
     <style name="Text.ff6b00.12">
         <item name="android:textSize">12sp</item>
     </style>

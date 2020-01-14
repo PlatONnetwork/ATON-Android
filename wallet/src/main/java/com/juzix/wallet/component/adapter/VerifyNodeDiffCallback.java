@@ -3,11 +3,14 @@ package com.juzix.wallet.component.adapter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Pair;
 
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.entity.VerifyNode;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class VerifyNodeDiffCallback extends BaseDiffCallback<VerifyNode> {
 
@@ -20,10 +23,15 @@ public class VerifyNodeDiffCallback extends BaseDiffCallback<VerifyNode> {
      */
     public final static String KEY_NAME = "key_name";
     /**
+     * 节点委托数量以及节点委托者数
+     */
+    public final static String KEY_DEPOSIT_DELEGATOR_NUMBER = "key_deposit_delegator_number";
+    /**
      * 节点委托数量
      */
     public final static String KEY_DEPOSIT = "key_deposit";
     /**
+     * /**
      * 节点委托者数
      */
     public final static String KEY_DELEGATOR_NUMBER = "key_delegator_number";
@@ -102,12 +110,11 @@ public class VerifyNodeDiffCallback extends BaseDiffCallback<VerifyNode> {
             bundle.putString(KEY_NAME, newVerifyNode.getName());
         }
 
-        if (!oldVerifyNode.getDelegateSum().equals(newVerifyNode.getName())) {
-            bundle.putString(KEY_DEPOSIT, newVerifyNode.getDelegateSum());
-        }
-
-        if (!TextUtils.equals(oldVerifyNode.getDelegate(), newVerifyNode.getDelegate())) {
-            bundle.putString(KEY_DELEGATOR_NUMBER, newVerifyNode.getDelegate());
+        if (!oldVerifyNode.getDelegateSum().equals(newVerifyNode.getDelegateSum()) || !TextUtils.equals(oldVerifyNode.getDelegate(), newVerifyNode.getDelegate())) {
+            HashMap<String, String> map = new HashMap<>();
+            map.put(KEY_DELEGATOR_NUMBER, newVerifyNode.getDelegate());
+            map.put(KEY_DEPOSIT, newVerifyNode.getDelegateSum());
+            bundle.putSerializable(KEY_DEPOSIT_DELEGATOR_NUMBER, map);
         }
 
         if (!TextUtils.equals(oldVerifyNode.getUrl(), newVerifyNode.getUrl())) {
@@ -123,6 +130,6 @@ public class VerifyNodeDiffCallback extends BaseDiffCallback<VerifyNode> {
             bundle.putString(KEY_RATEPA, newVerifyNode.getShowDelegatedRatePA());
         }
 
-        return bundle;
+        return bundle.isEmpty() ? null : bundle;
     }
 }
