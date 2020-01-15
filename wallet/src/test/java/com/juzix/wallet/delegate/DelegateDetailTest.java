@@ -76,35 +76,35 @@ public class DelegateDetailTest {
 
     @Test
     public void testDelegateDetailRequestData() {
-        String walletAddress = "0x4ded81199608adb765fb2fe029bbfdf57f538be8";
-        ServerUtils.getCommonApi().getDelegateDetailList(ApiRequestBody.newBuilder()
-                .put("addr", walletAddress)
-                .build())
-                .subscribe(new ApiSingleObserver<List<DelegateNodeDetail>>() {
-                    @Override
-                    public void onApiSuccess(List<DelegateNodeDetail> delegateDetails) {
-//                        Log.debug("reuslt", "-------------->" + delegateDetails.size() + "" + delegateDetails.toString());
-                        presenter.getView().showDelegateDetailData(delegateDetails);
-                    }
-
-                    @Override
-                    public void onApiFailure(ApiResponse response) {
-
-                    }
-                });
+//        String walletAddress = "0x4ded81199608adb765fb2fe029bbfdf57f538be8";
+//        ServerUtils.getCommonApi().getDelegateDetailList(ApiRequestBody.newBuilder()
+//                .put("addr", walletAddress)
+//                .build())
+//                .subscribe(new ApiSingleObserver<List<DelegateNodeDetail>>() {
+//                    @Override
+//                    public void onApiSuccess(List<DelegateNodeDetail> delegateDetails) {
+////                        Log.debug("reuslt", "-------------->" + delegateDetails.size() + "" + delegateDetails.toString());
+//                        presenter.getView().showDelegateDetailData(delegateDetails);
+//                    }
+//
+//                    @Override
+//                    public void onApiFailure(ApiResponse response) {
+//
+//                    }
+//                });
     }
 
     @Test
     public void testMoveOut() {
-        DelegateNodeDetail delegateDetail = mock(DelegateNodeDetail.class);
-        delegateDetail.setWalletAddress("0xjfaskfjaskfa46545");
-        delegateDetail.setNodeId("0x546a46ad4f5a65safa645");
-        delegateDetail.setNodeName("node-123");
-        delegateDetail.setNodeStatus("Active");
-        delegateDetail.setReleased("134000000000000000000");
-        delegateDetail.setDelegated("5238855000000000000000000");
-        delegateDetail.setUrl("www.baidu.com");
-        assertNotNull(delegateDetail);
+//        DelegateNodeDetail delegateDetail = mock(DelegateNodeDetail.class);
+//        delegateDetail.setWalletAddress("0xjfaskfjaskfa46545");
+//        delegateDetail.setNodeId("0x546a46ad4f5a65safa645");
+//        delegateDetail.setNodeName("node-123");
+//        delegateDetail.setNodeStatus("Active");
+//        delegateDetail.setReleased("134000000000000000000");
+//        delegateDetail.setDelegated("5238855000000000000000000");
+//        delegateDetail.setUrl("www.baidu.com");
+//        assertNotNull(delegateDetail);
 //        presenter.moveOut(delegateDetail);
 
     }
@@ -132,48 +132,48 @@ public class DelegateDetailTest {
 
     @Test
     public void testSetWalletAddress() {
-        List<DelegateNodeDetail> detailList = new ArrayList<>();
-
-        DelegateNodeDetail delegateDetail = new DelegateNodeDetail();
-        delegateDetail.setNodeId("0x546a46ad4f5a65safa645");
-        delegateDetail.setNodeName("node-1");
-        delegateDetail.setNodeStatus("Active");
-        delegateDetail.setReleased("134000000000000000000");
-        delegateDetail.setUrl("www.baidu.com");
-        delegateDetail.setDelegated("546800000000000000000");
-        detailList.add(delegateDetail);
-
-        DelegateNodeDetail delegateDetail2 = new DelegateNodeDetail();
-        delegateDetail.setNodeId("0x546a46ad4f5a65safa645");
-        delegateDetail.setNodeName("node-2");
-        delegateDetail.setNodeStatus("Active");
-        delegateDetail.setReleased("134000000000000000000");
-        delegateDetail.setUrl("www.baidu.com");
-        delegateDetail.setDelegated("546800000000000000000");
-        detailList.add(delegateDetail2);
-
-
-        DelegateNodeDetail delegateDetail3 = new DelegateNodeDetail();
-        delegateDetail.setNodeId("0x546a46ad4f5a65safa645");
-        delegateDetail.setNodeName("node-3");
-        delegateDetail.setNodeStatus("Active");
-        delegateDetail.setReleased("134000000000000000000");
-        delegateDetail.setUrl("www.baidu.com");
-        delegateDetail.setDelegated("546800000000000000000");
-        detailList.add(delegateDetail3);
-
-        List<DelegateNodeDetail> list = Flowable.fromIterable(detailList)
-                .map(new Function<DelegateNodeDetail, DelegateNodeDetail>() {
-                    @Override
-                    public DelegateNodeDetail apply(DelegateNodeDetail delegateDetail) throws Exception {
-                        delegateDetail.setWalletAddress("0x564fa54fa65s4da65465af"); //给每个对象赋值钱包地址
-                        return delegateDetail;
-                    }
-                }).toList().blockingGet();
-
-        for (DelegateNodeDetail detail : list) {
-            System.out.println(detail.getWalletAddress());
-        }
+//        List<DelegateNodeDetail> detailList = new ArrayList<>();
+//
+//        DelegateNodeDetail delegateDetail = new DelegateNodeDetail();
+//        delegateDetail.setNodeId("0x546a46ad4f5a65safa645");
+//        delegateDetail.setNodeName("node-1");
+//        delegateDetail.setNodeStatus("Active");
+//        delegateDetail.setReleased("134000000000000000000");
+//        delegateDetail.setUrl("www.baidu.com");
+//        delegateDetail.setDelegated("546800000000000000000");
+//        detailList.add(delegateDetail);
+//
+//        DelegateNodeDetail delegateDetail2 = new DelegateNodeDetail();
+//        delegateDetail.setNodeId("0x546a46ad4f5a65safa645");
+//        delegateDetail.setNodeName("node-2");
+//        delegateDetail.setNodeStatus("Active");
+//        delegateDetail.setReleased("134000000000000000000");
+//        delegateDetail.setUrl("www.baidu.com");
+//        delegateDetail.setDelegated("546800000000000000000");
+//        detailList.add(delegateDetail2);
+//
+//
+//        DelegateNodeDetail delegateDetail3 = new DelegateNodeDetail();
+//        delegateDetail.setNodeId("0x546a46ad4f5a65safa645");
+//        delegateDetail.setNodeName("node-3");
+//        delegateDetail.setNodeStatus("Active");
+//        delegateDetail.setReleased("134000000000000000000");
+//        delegateDetail.setUrl("www.baidu.com");
+//        delegateDetail.setDelegated("546800000000000000000");
+//        detailList.add(delegateDetail3);
+//
+//        List<DelegateNodeDetail> list = Flowable.fromIterable(detailList)
+//                .map(new Function<DelegateNodeDetail, DelegateNodeDetail>() {
+//                    @Override
+//                    public DelegateNodeDetail apply(DelegateNodeDetail delegateDetail) throws Exception {
+//                        delegateDetail.setWalletAddress("0x564fa54fa65s4da65465af"); //给每个对象赋值钱包地址
+//                        return delegateDetail;
+//                    }
+//                }).toList().blockingGet();
+//
+//        for (DelegateNodeDetail detail : list) {
+//            System.out.println(detail.getWalletAddress());
+//        }
 
     }
 
