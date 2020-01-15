@@ -640,6 +640,7 @@
     <string name="delegate_risk_tips">Validators would be punished for double signing or low block rate. It would indirectly affect your reward. Please select qualified validators.</string>
     <string name="recipient_wallet_address">Recipient</string>
     <string name="delegate_less_than_fee">Insufficient balance payment fee</string>
+    <string name="claim_reward_less_than_fee">Insufficient balance payment fee</string>
     <string name="cold_wallet">Cold</string>
     <string name="observed_wallet">Observed</string>
 

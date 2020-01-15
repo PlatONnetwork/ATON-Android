@@ -157,6 +157,7 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                 .setFeeAmount(BigDecimalUtil.mul(gasProvider.getGasPrice().toString(10), gasProvider.getGasLimit().toString(10)).toPlainString())
                 .setClaimRewardAmount(delegateInfo.getWithdrawReward())
                 .setFromWalletName(delegateInfo.getWalletName())
+                .setFromWalletAddress(delegateInfo.getWalletAddress())
                 .setAvaliableBalanceAmount(WalletManager.getInstance().getWalletByAddress(delegateInfo.getWalletAddress()).getFreeBalance())
                 .build();
         ClaimRewardsDialogFragment.newInstance(claimRewardInfo).setOnConfirmBtnClickListener(new ClaimRewardsDialogFragment.OnConfirmBtnClickListener() {
@@ -185,6 +186,7 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                         }
                     }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
                 }
+
             }
         }).show(currentActivity().getSupportFragmentManager(), "showClaimRewardsDialog");
     }

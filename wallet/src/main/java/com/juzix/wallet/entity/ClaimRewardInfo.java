@@ -13,11 +13,14 @@ public class ClaimRewardInfo implements Parcelable {
 
     private String fromWalletName;
 
+    private String fromWalletAddress;
+
     protected ClaimRewardInfo(Parcel in) {
         claimRewardAmount = in.readString();
         avaliableBalanceAmount = in.readString();
         feeAmount = in.readString();
         fromWalletName = in.readString();
+        fromWalletAddress = in.readString();
     }
 
     public ClaimRewardInfo(Builder builder) {
@@ -25,6 +28,7 @@ public class ClaimRewardInfo implements Parcelable {
         this.avaliableBalanceAmount = builder.avaliableBalanceAmount;
         this.feeAmount = builder.feeAmount;
         this.fromWalletName = builder.fromWalletName;
+        this.fromWalletAddress = builder.fromWalletAddress;
     }
 
     @Override
@@ -33,6 +37,7 @@ public class ClaimRewardInfo implements Parcelable {
         dest.writeString(avaliableBalanceAmount);
         dest.writeString(feeAmount);
         dest.writeString(fromWalletName);
+        dest.writeString(fromWalletAddress);
     }
 
     @Override
@@ -84,12 +89,20 @@ public class ClaimRewardInfo implements Parcelable {
         this.fromWalletName = fromWalletName;
     }
 
+    public String getFromWalletAddress() {
+        return fromWalletAddress;
+    }
 
-   public static final class Builder {
+    public void setFromWalletAddress(String fromWalletAddress) {
+        this.fromWalletAddress = fromWalletAddress;
+    }
+
+    public static final class Builder {
         private String claimRewardAmount;
         private String avaliableBalanceAmount;
         private String feeAmount;
         private String fromWalletName;
+        private String fromWalletAddress;
 
         public Builder setClaimRewardAmount(String claimRewardAmount) {
             this.claimRewardAmount = claimRewardAmount;
@@ -108,6 +121,11 @@ public class ClaimRewardInfo implements Parcelable {
 
         public Builder setFromWalletName(String fromWalletName) {
             this.fromWalletName = fromWalletName;
+            return this;
+        }
+
+        public Builder setFromWalletAddress(String fromWalletAddress) {
+            this.fromWalletAddress = fromWalletAddress;
             return this;
         }
 
