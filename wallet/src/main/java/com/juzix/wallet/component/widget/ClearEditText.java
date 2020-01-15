@@ -105,7 +105,7 @@ public class ClearEditText extends AppCompatEditText {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.setDrawFilter(new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG));//抗锯齿
-        drawSearch(canvas);
+//        drawSearch(canvas);
 
         if (mAnimator_visible.isRunning()) {
             float scale = (float) mAnimator_visible.getAnimatedValue();

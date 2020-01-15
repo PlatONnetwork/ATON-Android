@@ -21,7 +21,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
-import com.juzhen.framework.util.NumberParserUtils;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
@@ -38,7 +37,8 @@ import com.juzix.wallet.component.widget.PointLengthFilter;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.config.AppSettings;
-import com.juzix.wallet.entity.DelegateDetail;
+import com.juzix.wallet.entity.DelegateItemInfo;
+import com.juzix.wallet.entity.DelegateNodeDetail;
 import com.juzix.wallet.entity.GuideType;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.Wallet;
@@ -124,7 +124,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         initView();
         //初始化请求数据
         mPresenter.showWalletInfo();
-        mPresenter.getGas();
+        mPresenter.getBalanceType();
     }
 
     private void initView() {
@@ -330,7 +330,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
 
     //显示节点基本信息
     @Override
-    public void showNodeInfo(DelegateDetail delegateDetail) {
+    public void showNodeInfo(DelegateItemInfo delegateDetail) {
         GlideUtils.loadRound(getContext(), delegateDetail.getUrl(), node_icon);
         nodeName.setText(delegateDetail.getNodeName());
         nodeAddress.setText(AddressFormatUtil.formatAddress(delegateDetail.getNodeId()));
@@ -354,7 +354,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     }
 
     @Override
-    public DelegateDetail getDelegateDetailFromIntent() {
+    public DelegateItemInfo getDelegateDetailFromIntent() {
         return getIntent().getParcelableExtra(Constants.Extra.EXTRA_DELEGATE_DETAIL);
     }
 
@@ -385,10 +385,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
 
     @Override
     public void showGas(BigInteger bigInteger) {
-
         gasPrice = bigInteger.toString();
-
-        mPresenter.getBalanceType();
     }
 
     @Override
@@ -428,7 +425,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         }
     }
 
-    public static void actionStart(Context context, DelegateDetail delegateDetail) {
+    public static void actionStart(Context context, DelegateItemInfo delegateDetail) {
         Intent intent = new Intent(context, WithDrawActivity.class);
         intent.putExtra(Constants.Extra.EXTRA_DELEGATE_DETAIL, delegateDetail);
         context.startActivity(intent);

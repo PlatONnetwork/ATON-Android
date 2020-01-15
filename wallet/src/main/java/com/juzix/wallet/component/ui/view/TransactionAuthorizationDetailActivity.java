@@ -1,5 +1,6 @@
 package com.juzix.wallet.component.ui.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,8 +22,10 @@ import com.juzix.wallet.db.sqlite.WalletDao;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.TransactionAuthorizationData;
 import com.juzix.wallet.entity.TransactionAuthorizationDetail;
+import com.juzix.wallet.entity.TransactionSignatureData;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.AddressFormatUtil;
+import com.juzix.wallet.utils.AmountUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
@@ -84,13 +87,13 @@ public class TransactionAuthorizationDetailActivity extends BaseActivity {
 
         TransactionAuthorizationDetail transactionAuthorizationDetail = transactionAuthorizationData.getTransactionAuthorizationDetail();
 
-        tvSenderTitle.setText(getResources().getString(R.string.msg_operator_address));
+        tvSenderTitle.setText(getSenderTitleRes(transactionAuthorizationDetail.getFunctionType()));
         tvRecipientTitle.setText(getRecipientInfoRes(transactionAuthorizationDetail.getFunctionType()));
         tvTxnInfo.setText(string(getTxnInfoRes(transactionAuthorizationDetail.getFunctionType())));
-        tvAmount.setText(StringUtil.formatBalance(BigDecimalUtil.div(transactionAuthorizationDetail.getAmount(), "1E18")));
+        tvAmount.setText(StringUtil.formatBalance(AmountUtil.convertVonToLat(transactionAuthorizationDetail.getAmount())));
         tvSender.setText(getFormatName(transactionAuthorizationDetail.getSender(), null));
         tvRecipient.setText(getReceiverName(transactionAuthorizationDetail));
-        tvFee.setText(string(R.string.amount_with_unit, NumberParserUtils.getPrettyBalance(new BigDecimal(transactionAuthorizationDetail.getFee()).divide(new BigDecimal("1E18")).toPlainString())));
+        tvFee.setText(string(R.string.amount_with_unit, NumberParserUtils.getPrettyBalance(AmountUtil.convertVonToLat(transactionAuthorizationDetail.getFee()))));
 
         RxView
                 .clicks(sbtnNext)
@@ -99,32 +102,41 @@ public class TransactionAuthorizationDetailActivity extends BaseActivity {
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        Single
-                                .fromCallable(new Callable<Wallet>() {
-                                    @Override
-                                    public Wallet call() throws Exception {
-                                        return WalletManager.getInstance().getWalletByAddress(transactionAuthorizationDetail.getSender());
-                                    }
-                                })
-                                .compose(RxUtils.getSingleSchedulerTransformer())
-                                .compose(bindToLifecycle())
-                                .subscribe(new Consumer<Wallet>() {
-                                    @Override
-                                    public void accept(Wallet wallet) throws Exception {
-                                        InputWalletPasswordDialogFragment.newInstance(wallet).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
-                                            @Override
-                                            public void onWalletPasswordCorrect(Credentials credentials) {
-                                                AuthorizationSignatureDialogFragment.newInstance(transactionAuthorizationData.toTransactionSignatureData(credentials).toJSONString()).show(getSupportFragmentManager(), "showAuthorizationSignatureDialog");
-                                            }
-                                        }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
-                                    }
+                        checkAndShowAuthorizationSignatureDialog(transactionAuthorizationData);
+                    }
+                });
+    }
 
-                                }, new Consumer<Throwable>() {
-                                    @Override
-                                    public void accept(Throwable throwable) throws Exception {
-                                        showLongToast(R.string.msg_wallet_mismatch);
-                                    }
-                                });
+    @SuppressLint("CheckResult")
+    private void checkAndShowAuthorizationSignatureDialog(TransactionAuthorizationData transactionAuthorizationData) {
+        Single
+                .fromCallable(new Callable<Wallet>() {
+                    @Override
+                    public Wallet call() throws Exception {
+                        return WalletManager.getInstance().getWalletByAddress(transactionAuthorizationData.getTransactionAuthorizationDetail().getSender());
+                    }
+                })
+                .compose(RxUtils.getSingleSchedulerTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new Consumer<Wallet>() {
+                    @Override
+                    public void accept(Wallet wallet) throws Exception {
+                        if (TextUtils.isEmpty(wallet.getKey())) {
+                            showLongToast(R.string.msg_keystore_nor_exist);
+                        } else {
+                            InputWalletPasswordDialogFragment.newInstance(wallet).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
+                                @Override
+                                public void onWalletPasswordCorrect(Credentials credentials) {
+                                    AuthorizationSignatureDialogFragment.newInstance(transactionAuthorizationData.toTransactionSignatureData(credentials).toJSONString()).show(getSupportFragmentManager(), "showAuthorizationSignatureDialog");
+                                }
+                            }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
+                        }
+                    }
+
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        showLongToast(R.string.msg_wallet_mismatch);
                     }
                 });
     }
@@ -135,6 +147,8 @@ public class TransactionAuthorizationDetailActivity extends BaseActivity {
                 return R.string.delegate;
             case FunctionType.WITHDREW_DELEGATE_FUNC_TYPE:
                 return R.string.undelegate;
+            case FunctionType.WITHDRAW_DELEGATE_REWARD_FUNC_TYPE:
+                return R.string.msg_claim_rewards;
             default:
                 return R.string.transfer;
         }
@@ -150,6 +164,15 @@ public class TransactionAuthorizationDetailActivity extends BaseActivity {
             default:
                 return R.string.msg_recipient;
         }
+    }
+
+    private @StringRes
+    int getSenderTitleRes(int functionType) {
+        if (functionType == FunctionType.DELEGATE_FUNC_TYPE || functionType == FunctionType.WITHDREW_DELEGATE_FUNC_TYPE) {
+            return R.string.msg_operator_address;
+        }
+
+        return R.string.msg_sender;
     }
 
     private String getFormatName(String prefixAddress, String nodeName) {

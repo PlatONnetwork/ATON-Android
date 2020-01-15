@@ -1,291 +1,100 @@
 package com.juzix.wallet.component.ui.presenter;
 
 import android.text.TextUtils;
-import android.util.Log;
 
+import com.juzhen.framework.network.ApiErrorCode;
 import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.ApiSingleObserver;
-import com.juzhen.framework.util.NumberParserUtils;
-import com.juzix.wallet.app.Constants;
-import com.juzix.wallet.component.ui.base.BaseFragment;
+import com.juzix.wallet.app.LoadingTransformer;
+import com.juzix.wallet.component.ui.SortType;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.ValidatorsContract;
-import com.juzix.wallet.db.entity.VerifyNodeEntity;
-import com.juzix.wallet.db.sqlite.VerifyNodeDao;
 import com.juzix.wallet.engine.ServerUtils;
-import com.juzix.wallet.engine.ValidatorsService;
+import com.juzix.wallet.entity.NodeStatus;
 import com.juzix.wallet.entity.VerifyNode;
 import com.juzix.wallet.utils.RxUtils;
 import com.trello.rxlifecycle2.android.FragmentEvent;
 
+import org.reactivestreams.Publisher;
 
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Flowable;
 import io.reactivex.Single;
-import io.reactivex.SingleSource;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.BiConsumer;
-import io.reactivex.functions.Consumer;
+import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
-import io.reactivex.schedulers.Schedulers;
+import retrofit2.Response;
+
 
 public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> implements ValidatorsContract.Presenter {
+
+    private List<VerifyNode> mVerifyNodeList = new ArrayList<>();
+    private List<VerifyNode> mOldVerifyNodeList = new ArrayList<>();
+
     public ValidatorsPresenter(ValidatorsContract.View view) {
         super(view);
     }
 
     @Override
-    public void loadValidatorsData(String sortType, String nodeState, int rank) {
-        getValidatorsData(sortType, nodeState, rank);
-    }
+    public void loadValidatorsData(@NodeStatus String nodeStatus, SortType sortType, String keywords, boolean isRefresh) {
 
-
-    /**
-     * 刷新调用的方法
-     *
-     * @param sortType  排序类型 (年化率/排名)
-     * @param nodeState
-     * @param sequence  加载更多序号
-     */
-    private void getValidatorsData(String sortType, String nodeState, int sequence) {
-        Log.d("ValidatorsPresenter", "=========nodeState=" + nodeState + "==============rank=" + sequence + "===============sortType=" + sortType);
-        ServerUtils.getCommonApi().getVerifyNodeList()
+        getVerifyNodeList(mVerifyNodeList, isRefresh)
                 .compose(bindUntilEvent(FragmentEvent.STOP))
                 .compose(RxUtils.getSingleSchedulerTransformer())
+                .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
                 .subscribe(new ApiSingleObserver<List<VerifyNode>>() {
                     @Override
                     public void onApiSuccess(List<VerifyNode> nodeList) {
                         if (isViewAttached()) {
-
-                            deleteVerifyNodeList()
-                                    .flatMap(new Function<Boolean, SingleSource<Boolean>>() {
-                                        @Override
-                                        public SingleSource<Boolean> apply(Boolean aBoolean) throws Exception {
-                                            return ValidatorsService.insertVerifyNodeList(nodeList);
-                                        }
-                                    })
-                                    .compose(RxUtils.getSingleSchedulerTransformer())
-                                    .subscribe(new Consumer<Boolean>() {
-                                        @Override
-                                        public void accept(Boolean aBoolean) throws Exception {
-                                            loadDataFromDB(sortType, nodeState, sequence);
-                                        }
-                                    });
+                            List<VerifyNode> newVerifyNodeList = getVerifyNodeList(nodeList, nodeStatus, sortType, keywords);
+                            getView().loadValidatorsDataResult(mOldVerifyNodeList, newVerifyNodeList);
+                            mOldVerifyNodeList = newVerifyNodeList;
+                            mVerifyNodeList = nodeList;
                         }
-
                     }
 
                     @Override
                     public void onApiFailure(ApiResponse response) {
                         if (isViewAttached()) {
-                            getView().showValidatorsFailed();
+                            List<VerifyNode> oldVerifyNodeList = getVerifyNodeList(mVerifyNodeList, nodeStatus, sortType, keywords);
+                            getView().loadValidatorsDataResult(oldVerifyNodeList, null);
                         }
                     }
                 });
-
     }
 
-
-    @Override
-    public void loadDataFromDB(String sortType, String state, int ranking) {
-        loadVerifyNodeDataFromDB(sortType, state, ranking);
+    private Single<Response<ApiResponse<List<VerifyNode>>>> getVerifyNodeList(List<VerifyNode> verifyNodeList, boolean isRefresh) {
+        return isRefresh || verifyNodeList.isEmpty() ? ServerUtils.getCommonApi().getVerifyNodeList() : Single.just(Response.success(new ApiResponse<List<VerifyNode>>(ApiErrorCode.SUCCESS, verifyNodeList)));
     }
-
-    private void loadVerifyNodeDataFromDB(String sortType, String state, int ranking) {
-        //从数据库读取数据，并更新UI
-        if (TextUtils.equals(state, Constants.ValidatorsType.ALL_VALIDATORS)) {
-            //在加一个判断
-            if (TextUtils.equals(sortType, Constants.ValidatorsType.VALIDATORS_RANK)) {   //（在所有tab）按排序操作
-                //(在所有页签)
-                Flowable
-                        .fromIterable(VerifyNodeDao.getVerifyNodeByAll(ranking))
-                        .filter(new Predicate<VerifyNodeEntity>() {
-                            @Override
-                            public boolean test(VerifyNodeEntity entity) throws Exception {
-                                return entity != null;
-                            }
-                        })
-                        .compose(((BaseFragment) getView()).bindToLifecycle()).map(new Function<VerifyNodeEntity, VerifyNode>() {
-
-                    @Override
-                    public VerifyNode apply(VerifyNodeEntity entity) throws Exception {
-                        //转换对象并赋值
-                        return new VerifyNode(entity.getNodeId(), entity.getRanking(), entity.getName(), entity.getDeposit(), entity.getUrl(), String.valueOf(entity.getRatePA()), entity.getNodeStatus(), entity.isInit(), entity.isConsensus());
-                    }
-                })
-                        .toList()
-                        .compose(RxUtils.getSingleSchedulerTransformer())
-                        .subscribe(new BiConsumer<List<VerifyNode>, Throwable>() {
-                            @Override
-                            public void accept(List<VerifyNode> nodeList, Throwable throwable) throws Exception {
-                                if (isViewAttached()) {
-                                    getView().showValidatorsDataOnAll(nodeList);
-                                }
-                            }
-                        });
-
-            } else {
-                //(在所有页签)(按年化率操作)
-                Flowable
-                        .fromIterable(VerifyNodeDao.getVerifyNodeAllByRate(ranking))
-                        .filter(new Predicate<VerifyNodeEntity>() {
-                            @Override
-                            public boolean test(VerifyNodeEntity entity) throws Exception {
-                                return entity != null;
-                            }
-                        })
-                        .map(new Function<VerifyNodeEntity, VerifyNode>() {
-                            @Override
-                            public VerifyNode apply(VerifyNodeEntity entity) throws Exception {
-                                //转换对象并赋值
-                                return new VerifyNode(entity.getNodeId(), entity.getRanking(), entity.getName(), entity.getDeposit(), entity.getUrl(), String.valueOf(entity.getRatePA()), entity.getNodeStatus(), entity.isInit(), entity.isConsensus());
-                            }
-                        })
-                        .toList()
-                        .compose(((BaseFragment) getView()).bindToLifecycle())
-                        .compose(RxUtils.getSingleSchedulerTransformer())
-                        .subscribe(new BiConsumer<List<VerifyNode>, Throwable>() {
-                            @Override
-                            public void accept(List<VerifyNode> nodeList, Throwable throwable) throws Exception {
-                                if (isViewAttached()) {
-
-                                    getView().showValidatorsDataOnAll(sort(nodeList));
-                                }
-                            }
-                        });
-
-            }
-
-
-        } else {
-            //在活跃或者候选中状态
-            //在加一个判断
-            if (TextUtils.equals(sortType, Constants.ValidatorsType.VALIDATORS_RANK)) {   //按排序操作
-                Flowable
-                        .fromIterable(VerifyNodeDao.getVerifyNodeDataByState(state, ranking))
-                        .filter(new Predicate<VerifyNodeEntity>() {
-                            @Override
-                            public boolean test(VerifyNodeEntity entity) throws Exception {
-                                return entity != null;
-                            }
-                        })
-                        .compose(((BaseFragment) getView()).bindToLifecycle()).map(new Function<VerifyNodeEntity, VerifyNode>() {
-
-                    @Override
-                    public VerifyNode apply(VerifyNodeEntity entity) throws Exception {
-                        //转换对象并赋值
-                        return new VerifyNode(entity.getNodeId(), entity.getRanking(), entity.getName(), entity.getDeposit(), entity.getUrl(), String.valueOf(entity.getRatePA()), entity.getNodeStatus(), entity.isInit(), entity.isConsensus());
-                    }
-                })
-                        .toList()
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new BiConsumer<List<VerifyNode>, Throwable>() {
-                            @Override
-                            public void accept(List<VerifyNode> nodeList, Throwable throwable) throws Exception {
-                                if (isViewAttached()) {
-                                    if (TextUtils.equals(state, Constants.ValidatorsType.ACTIVE_VALIDATORS)) {
-                                        getView().showValidatorsDataOnActive(nodeList);
-
-                                    } else {
-                                        getView().showValidatorsDataOnCadidate(nodeList);
-                                    }
-
-                                }
-                            }
-                        });
-
-            } else { //按年化率操作
-
-                Flowable
-                        .fromIterable(VerifyNodeDao.getVerifyNodeByStateAndRate(state, ranking))
-                        .filter(new Predicate<VerifyNodeEntity>() {
-                            @Override
-                            public boolean test(VerifyNodeEntity entity) throws Exception {
-                                return entity != null;
-                            }
-                        })
-                        .compose(((BaseFragment) getView()).bindToLifecycle()).map(new Function<VerifyNodeEntity, VerifyNode>() {
-
-                    @Override
-                    public VerifyNode apply(VerifyNodeEntity entity) throws Exception {
-                        //转换对象并赋值
-                        return new VerifyNode(entity.getNodeId(), entity.getRanking(), entity.getName(), entity.getDeposit(), entity.getUrl(), String.valueOf(entity.getRatePA()), entity.getNodeStatus(), entity.isInit(), entity.isConsensus());
-                    }
-                })
-                        .toList()
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new BiConsumer<List<VerifyNode>, Throwable>() {
-                            @Override
-                            public void accept(List<VerifyNode> nodeList, Throwable throwable) throws Exception {
-                                if (isViewAttached()) {
-                                    if (TextUtils.equals(state, Constants.ValidatorsType.ACTIVE_VALIDATORS)) {
-                                        getView().showValidatorsDataOnActive(sort(nodeList));
-
-                                    } else {
-                                        getView().showValidatorsDataOnCadidate(sort(nodeList));
-                                    }
-
-                                }
-                            }
-                        });
-
-
-            }
-
-
-        }
-    }
-
 
     /**
-     * 下面三个方法是增删查
-     *
+     * @param allVerifyNodeList 所有节点列表
+     * @param nodeStatus        节点状态，活跃中的节点包含共识中的节点
+     * @param sortType          排序类型
+     * @param keywords          搜索关键字
      * @return
      */
-    public List<VerifyNodeEntity> getNodeList() {
-        return Single.fromCallable(new Callable<List<VerifyNodeEntity>>() {
-            @Override
-            public List<VerifyNodeEntity> call() throws Exception {
-                return VerifyNodeDao.getVerifyNodeList();
-            }
-        }).subscribeOn(Schedulers.io())
+    private List<VerifyNode> getVerifyNodeList(List<VerifyNode> allVerifyNodeList, @NodeStatus String nodeStatus, SortType sortType, String keywords) {
+
+        List<VerifyNode> verifyNodeList = new ArrayList<>();
+
+        if (allVerifyNodeList == null || allVerifyNodeList.isEmpty()) {
+            return verifyNodeList;
+        }
+
+        return Flowable.fromIterable(allVerifyNodeList)
+                .filter(new Predicate<VerifyNode>() {
+                    @Override
+                    public boolean test(VerifyNode verifyNode) throws Exception {
+                        return (TextUtils.equals(nodeStatus, NodeStatus.ALL) || TextUtils.equals(nodeStatus, verifyNode.getNodeStatus())) && !TextUtils.isEmpty(verifyNode.getName()) && verifyNode.getName().contains(keywords);
+                    }
+                })
+                .toSortedList(sortType.getComparator())
                 .blockingGet();
-    }
 
-    public Single<Boolean> deleteVerifyNodeList() {
-        return Single.fromCallable(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return VerifyNodeDao.deleteVerifyNode();
-            }
-        });
-    }
-
-    public List<VerifyNode> sort(List<VerifyNode> verifyNodeList) {
-
-        Collections.sort(verifyNodeList, new Comparator<VerifyNode>() {
-            @Override
-            public int compare(VerifyNode o1, VerifyNode o2) {
-                int compare = Integer.compare(NumberParserUtils.parseInt(o2.getRatePA()), NumberParserUtils.parseInt(o1.getRatePA()));
-                if (compare != 0) {
-                    return compare;
-                }
-                compare = Integer.compare(o1.getRanking(), o2.getRanking());
-                if (compare != 0) {
-                    return compare;
-                }
-                return 0;
-            }
-        });
-
-        return verifyNodeList;
     }
 
 }

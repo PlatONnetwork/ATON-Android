@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="70dp"
@@ -10,9 +11,10 @@
         android:id="@+id/layout_transaction_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.juzix.wallet.component.widget.PendingAnimationLayout
             android:id="@+id/layout_pending"
@@ -28,38 +30,44 @@
     </LinearLayout>
 
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tv_transaction_amount"
         style="@style/Text.000.14"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
+        android:layout_width="0dp"
+        android:layout_marginLeft="12dp"
+        android:autoSizeTextType="uniform"
+        android:gravity="right"
+        android:lines="1"
         android:textStyle="bold"
-        tools:text="-10.00" />
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/tv_transaction_time"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="-10.0010.0010.0010.0010.0010.0010.0010.0010.0010.0010.0010.0010.0010.0010.0010.0010.0010.00" />
 
     <TextView
         android:id="@+id/tv_transaction_status"
         style="@style/Text.000.14"
-        android:layout_alignParentTop="true"
         android:layout_marginLeft="10dp"
-        android:layout_toLeftOf="@id/tv_transaction_amount"
-        android:layout_toRightOf="@id/layout_transaction_status"
         android:ellipsize="middle"
         android:gravity="center_vertical|left"
         android:maxLength="23"
         android:singleLine="true"
         android:textStyle="bold"
+        app:layout_constraintLeft_toRightOf="@id/layout_transaction_status"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="Send" />
 
 
     <TextView
         android:id="@+id/tv_transaction_time"
         style="@style/Text.61646e.12"
-        android:layout_alignLeft="@id/tv_transaction_status"
-        android:layout_alignParentBottom="true"
-        android:layout_marginRight="95dp"
         android:ellipsize="middle"
         android:gravity="center_vertical|left"
         android:singleLine="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/tv_transaction_status"
         tools:text="2018-03-21 13:23" />
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

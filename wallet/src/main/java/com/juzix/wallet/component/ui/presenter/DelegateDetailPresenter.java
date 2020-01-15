@@ -8,7 +8,9 @@ import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.DelegateDetailContract;
 import com.juzix.wallet.engine.ServerUtils;
-import com.juzix.wallet.entity.DelegateDetail;
+import com.juzix.wallet.entity.ClaimRewardRecord;
+import com.juzix.wallet.entity.DelegateItemInfo;
+import com.juzix.wallet.entity.DelegateNodeDetail;
 import com.juzix.wallet.entity.DelegateInfo;
 import com.juzix.wallet.utils.RxUtils;
 
@@ -20,67 +22,56 @@ import io.reactivex.functions.Function;
 
 public class DelegateDetailPresenter extends BasePresenter<DelegateDetailContract.View> implements DelegateDetailContract.Presenter {
 
-    private DelegateInfo mDelegateInfo;
-    private List<DelegateDetail> mDelegateDetailList;
+    private DelegateNodeDetail mDelegateNodeDetail;
 
     public DelegateDetailPresenter(DelegateDetailContract.View view) {
         super(view);
-        mDelegateInfo = view.getDelegateInfoFromIntent();
-    }
 
+    }
 
     @Override
     public void loadDelegateDetailData() {
         if (isViewAttached()) {
-            if (mDelegateInfo != null) {
-                getView().showWalletInfo(mDelegateInfo);
-                getDelegateDetailData();
+            DelegateInfo delegateInfo = getView().getDelegateInfoFromIntent();
+            if (delegateInfo != null) {
+                getView().showWalletInfo(delegateInfo);
+                getDelegateDetailData(delegateInfo);
             }
         }
     }
 
-    private void getDelegateDetailData() {
+    private void getDelegateDetailData(DelegateInfo delegateInfo) {
         ServerUtils.getCommonApi().getDelegateDetailList(ApiRequestBody.newBuilder()
-                .put("addr", mDelegateInfo.getWalletAddress())
+                .put("addr", delegateInfo.getWalletAddress())
                 .build())
                 .compose(RxUtils.bindToLifecycle(getView()))
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
-                .subscribe(new ApiSingleObserver<List<DelegateDetail>>() {
+                .subscribe(new ApiSingleObserver<DelegateNodeDetail>() {
                     @Override
-                    public void onApiSuccess(List<DelegateDetail> detailList) {
+                    public void onApiSuccess(DelegateNodeDetail delegateNodeDetail) {
                         if (isViewAttached()) {
-                            mDelegateDetailList = detailList;
-                            getView().showDelegateDetailData(setWalletAddress(detailList));
+                            getView().showDelegateDetailData(getDelegateItemInfoList(), delegateNodeDetail.getDelegateItemInfoList());
+                            getView().showWalletDelegatedInfo(delegateNodeDetail.getAvailableDelegationBalance(), delegateNodeDetail.getDelegated());
+                            mDelegateNodeDetail = delegateNodeDetail;
                         }
                     }
 
                     @Override
                     public void onApiFailure(ApiResponse response) {
                         if (isViewAttached()) {
-                            getView().showDelegateDetailData(setWalletAddress(mDelegateDetailList));
+                            getView().showDelegateDetailData(getDelegateItemInfoList(), null);
                         }
                     }
                 });
     }
 
-    public List<DelegateDetail> setWalletAddress(List<DelegateDetail> detailList) {
-        if (detailList == null || detailList.isEmpty()) {
+    private List<DelegateItemInfo> getDelegateItemInfoList() {
+        if (mDelegateNodeDetail == null) {
             return new ArrayList<>();
         }
 
-        return Flowable
-                .fromIterable(detailList)
-                .map(new Function<DelegateDetail, DelegateDetail>() {
-                    @Override
-                    public DelegateDetail apply(DelegateDetail detail) throws Exception {
-                        detail.setWalletAddress(mDelegateInfo.getWalletAddress());
-                        return detail;
-                    }
-                })
-                .toList()
-                .blockingGet();
-
+        return mDelegateNodeDetail.getDelegateItemInfoList();
     }
 
 }

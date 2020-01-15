@@ -44,7 +44,7 @@ import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.component.widget.VerticalImageSpan;
 import com.juzix.wallet.config.AppSettings;
-import com.juzix.wallet.entity.DelegateDetail;
+import com.juzix.wallet.entity.DelegateItemInfo;
 import com.juzix.wallet.entity.DelegateHandle;
 import com.juzix.wallet.entity.DelegateType;
 import com.juzix.wallet.entity.GuideType;
@@ -293,7 +293,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
             inputTips.setVisibility(TextUtils.isEmpty(amountMagnitudes) ? View.GONE : View.VISIBLE);
             v_tips.setVisibility(TextUtils.isEmpty(amountMagnitudes) ? View.GONE : View.VISIBLE);
 
-            mPresenter.getGasPrice(stakingAmountType); //获取手续费
+            mPresenter.getGasProvider(stakingAmountType); //获取手续费
         }
 
         @Override
@@ -302,7 +302,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         }
     };
 
-    public static void actionStart(Context context, DelegateDetail delegateDetail) {
+    public static void actionStart(Context context, DelegateItemInfo delegateDetail) {
         Intent intent = new Intent(context, DelegateActivity.class);
         intent.putExtra(Constants.Extra.EXTRA_DELEGATE_DETAIL, delegateDetail);
         context.startActivity(intent);
@@ -312,7 +312,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
      * 显示节点基本信息
      */
     @Override
-    public void showNodeInfo(DelegateDetail delegateDetail) {
+    public void showNodeInfo(DelegateItemInfo delegateDetail) {
         //显示节点基本信息
         GlideUtils.loadRound(getContext(), delegateDetail.getUrl(), nodeIcon);
         nodeName.setText(delegateDetail.getNodeName());
@@ -353,7 +353,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     }
 
     @Override
-    public DelegateDetail getDelegateDetailFromIntent() {
+    public DelegateItemInfo getDelegateDetailFromIntent() {
         return getIntent().getParcelableExtra(Constants.Extra.EXTRA_DELEGATE_DETAIL);
     }
 

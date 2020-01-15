@@ -302,6 +302,10 @@ public class NumberParserUtils {
 
     public static String getPrettyNumber(String value, int maxDigit) {
 
+        if (TextUtils.isEmpty(value)) {
+            return "0";
+        }
+
         String bigDecimalStr = null;
         try {//当number==NaN，会throw "Infinity or NaN",所以要catch
             // TODO: 2018/11/6 判断是否为0

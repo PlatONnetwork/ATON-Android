@@ -3,7 +3,10 @@ package com.juzix.wallet.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class DelegateDetail implements Parcelable {
+import com.juzix.wallet.R;
+
+public class DelegateItemInfo implements Parcelable {
+
     /**
      * 投票节点Id（节点地址 ）
      */
@@ -28,7 +31,8 @@ public class DelegateDetail implements Parcelable {
      * Exiting —— 退出中
      * Exited —— 已退出
      */
-    private String nodeStatus;
+    private @NodeStatus
+    String nodeStatus;
     /**
      * 已解除委托
      */
@@ -50,10 +54,39 @@ public class DelegateDetail implements Parcelable {
      * 0.7.5新增字段
      */
     private boolean isConsensus;
+    /**
+     * 待领取的奖励
+     */
+    private String withdrawReward;
 
-    public DelegateDetail() {
-
+    public DelegateItemInfo() {
     }
+
+    protected DelegateItemInfo(Parcel in) {
+        nodeId = in.readString();
+        nodeName = in.readString();
+        website = in.readString();
+        url = in.readString();
+        nodeStatus = in.readString();
+        released = in.readString();
+        walletAddress = in.readString();
+        isInit = in.readByte() != 0;
+        delegated = in.readString();
+        isConsensus = in.readByte() != 0;
+        withdrawReward = in.readString();
+    }
+
+    public static final Creator<DelegateItemInfo> CREATOR = new Creator<DelegateItemInfo>() {
+        @Override
+        public DelegateItemInfo createFromParcel(Parcel in) {
+            return new DelegateItemInfo(in);
+        }
+
+        @Override
+        public DelegateItemInfo[] newArray(int size) {
+            return new DelegateItemInfo[size];
+        }
+    };
 
     public String getNodeId() {
         return nodeId;
@@ -95,14 +128,6 @@ public class DelegateDetail implements Parcelable {
         this.nodeStatus = nodeStatus;
     }
 
-    public String getDelegated() {
-        return delegated;
-    }
-
-    public void setDelegated(String delegated) {
-        this.delegated = delegated;
-    }
-
     public String getReleased() {
         return released;
     }
@@ -127,6 +152,14 @@ public class DelegateDetail implements Parcelable {
         isInit = init;
     }
 
+    public String getDelegated() {
+        return delegated;
+    }
+
+    public void setDelegated(String delegated) {
+        this.delegated = delegated;
+    }
+
     public boolean isConsensus() {
         return isConsensus;
     }
@@ -135,31 +168,12 @@ public class DelegateDetail implements Parcelable {
         isConsensus = consensus;
     }
 
-    protected DelegateDetail(Parcel in) {
-        nodeId = in.readString();
-        nodeName = in.readString();
-        website = in.readString();
-        nodeStatus = in.readString();
-        url = in.readString();
-        released = in.readString();
-        walletAddress = in.readString();
-        delegated = in.readString();
-        isInit = in.readByte() != 0;
-        isConsensus = in.readByte() != 0;
+    public String getWithdrawReward() {
+        return withdrawReward;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(nodeId);
-        dest.writeString(nodeName);
-        dest.writeString(nodeStatus);
-        dest.writeString(website);
-        dest.writeString(url);
-        dest.writeString(released);
-        dest.writeString(walletAddress);
-        dest.writeString(delegated);
-        dest.writeByte((byte) (isInit ? 1 : 0));
-        dest.writeByte((byte) (isConsensus ? 1 : 0));
+    public void setWithdrawReward(String withdrawReward) {
+        this.withdrawReward = withdrawReward;
     }
 
     @Override
@@ -167,15 +181,33 @@ public class DelegateDetail implements Parcelable {
         return 0;
     }
 
-    public static final Creator<DelegateDetail> CREATOR = new Creator<DelegateDetail>() {
-        @Override
-        public DelegateDetail createFromParcel(Parcel in) {
-            return new DelegateDetail(in);
-        }
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(nodeId);
+        dest.writeString(nodeName);
+        dest.writeString(website);
+        dest.writeString(url);
+        dest.writeString(nodeStatus);
+        dest.writeString(released);
+        dest.writeString(walletAddress);
+        dest.writeByte((byte) (isInit ? 1 : 0));
+        dest.writeString(delegated);
+        dest.writeByte((byte) (isConsensus ? 1 : 0));
+        dest.writeString(withdrawReward);
+    }
 
-        @Override
-        public DelegateDetail[] newArray(int size) {
-            return new DelegateDetail[size];
+
+    public int getNodeStatusDescRes() {
+
+        switch (nodeStatus) {
+            case NodeStatus.CANDIDATE:
+                return R.string.validators_candidate;
+            case NodeStatus.EXITING:
+                return R.string.validators_state_exiting;
+            case NodeStatus.EXITED:
+                return R.string.validators_state_exited;
+            default:
+                return isConsensus ? R.string.validators_verifying : R.string.validators_active;
         }
-    };
+    }
 }

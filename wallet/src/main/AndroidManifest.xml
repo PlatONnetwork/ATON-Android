@@ -186,6 +186,11 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".component.ui.view.ClaimRewardRecordActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name="com.umeng.socialize.media.WBShareCallBackActivity"
             android:configChanges="keyboardHidden|orientation"
             android:exported="false"

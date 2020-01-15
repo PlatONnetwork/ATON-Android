@@ -54,8 +54,8 @@ public class BigDecimalUtil {
     public static BigDecimal add(String v1, String v2) {
         BigDecimal result = BigDecimal.ZERO;
         try {
-            BigDecimal b1 = new BigDecimal(v1);
-            BigDecimal b2 = new BigDecimal(v2);
+            BigDecimal b1 = toBigDecimal(v1);
+            BigDecimal b2 = toBigDecimal(v2);
             result = b1.add(b2);
         } catch (Exception e) {
             e.printStackTrace();
@@ -108,8 +108,8 @@ public class BigDecimalUtil {
     public static BigDecimal sub(String v1, String v2) {
         BigDecimal result = BigDecimal.ZERO;
         try {
-            BigDecimal b1 = new BigDecimal(v1);
-            BigDecimal b2 = new BigDecimal(v2);
+            BigDecimal b1 = toBigDecimal(v1);
+            BigDecimal b2 = toBigDecimal(v2);
             result = b1.subtract(b2);
         } catch (Exception e) {
             e.printStackTrace();
@@ -149,8 +149,8 @@ public class BigDecimalUtil {
             return result;
         }
         try {
-            BigDecimal b1 = new BigDecimal(v1);
-            BigDecimal b2 = new BigDecimal(v2);
+            BigDecimal b1 = toBigDecimal(v1);
+            BigDecimal b2 = toBigDecimal(v2);
             result = b1.multiply(b2);
         } catch (Exception e) {
             e.printStackTrace();
@@ -205,8 +205,8 @@ public class BigDecimalUtil {
     public static String div(String v1, String v2, int scale) {
         String result = BigDecimal.ZERO.toPlainString();
         try {
-            BigDecimal b1 = new BigDecimal(v1);
-            BigDecimal b2 = new BigDecimal(v2);
+            BigDecimal b1 = toBigDecimal(v1);
+            BigDecimal b2 = toBigDecimal(v2);
             result = b1.divide(b2, scale, BigDecimal.ROUND_FLOOR).toPlainString();
         } catch (Exception e) {
             e.printStackTrace();
@@ -225,8 +225,8 @@ public class BigDecimalUtil {
     public static String div(String v1, String v2, int scale, int roundingMode) {
         String result = BigDecimal.ZERO.toPlainString();
         try {
-            BigDecimal b1 = new BigDecimal(v1);
-            BigDecimal b2 = new BigDecimal(v2);
+            BigDecimal b1 = toBigDecimal(v1);
+            BigDecimal b2 = toBigDecimal(v2);
             result = b1.divide(b2, scale, roundingMode).toPlainString();
         } catch (Exception e) {
             e.printStackTrace();

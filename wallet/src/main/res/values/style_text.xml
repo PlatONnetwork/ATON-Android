@@ -19,8 +19,33 @@
         <item name="android:textColor">@color/color_4a90e2</item>
     </style>
 
+    <style name="Text.f9fbff">
+        <item name="android:textColor">@color/color_f9fbff</item>
+    </style>
+
+    <style name="Text.f9fbff.11">
+        <item name="android:textSize">11sp</item>
+    </style>
+
+    <style name="Text.f9fbff.13">
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="Text.f9fbff.14">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="Text.f9fbff.22">
+        <item name="android:textSize">22sp</item>
+    </style>
+
     <style name="Text.4a90e2.11">
         <item name="android:textSize">11sp</item>
+    </style>
+
+
+    <style name="Text.4a90e2.13">
+        <item name="android:textSize">13sp</item>
     </style>
 
     <style name="Text.ff6b00.12">
@@ -409,6 +434,10 @@
         <item name="android:textSize">9sp</item>
     </style>
 
+    <style name="Text.898c9e.11">
+        <item name="android:textSize">11sp</item>
+    </style>
+
     <style name="Text.898c9e.12">
         <item name="android:textSize">12sp</item>
     </style>
@@ -419,6 +448,10 @@
 
     <style name="Text.898c9e.14">
         <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="Text.898c9e.15">
+        <item name="android:textSize">15sp</item>
     </style>
 
     <style name="Text.898c9e.16">
@@ -451,6 +484,10 @@
 
     <style name="Text.105cfe.17">
         <item name="android:textSize">17sp</item>
+    </style>
+
+    <style name="Text.105cfe.22">
+        <item name="android:textSize">22sp</item>
     </style>
 
     <style name="Text.105cfe.24">

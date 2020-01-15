@@ -1,5 +1,6 @@
 package com.juzix.wallet.engine;
 
+import com.juzhen.framework.util.LogUtils;
 import com.juzix.wallet.App;
 import com.juzix.wallet.R;
 import com.juzix.wallet.entity.Wallet;
@@ -36,12 +37,12 @@ class WalletServiceImpl implements WalletService {
 
     private Wallet generateWallet(ECKeyPair ecKeyPair, String name, String password) {
         try {
+            long time = System.currentTimeMillis();
             String filename = JZWalletUtil.getWalletFileName(Numeric.toHexStringNoPrefix(ecKeyPair.getPublicKey()));
             WalletFile walletFile = org.web3j.crypto.Wallet.createLight(password, ecKeyPair);
             if (walletFile == null) {
                 return null;
             }
-            long time = System.currentTimeMillis();
             return new Wallet.Builder()
                     .uuid(walletFile.getId())
                     .key(JZWalletUtil.writeWalletFileAsString(walletFile))
@@ -83,7 +84,9 @@ class WalletServiceImpl implements WalletService {
     @Override
     public Wallet importKeystore(String store, String name, String password) {
         try {
+            long time = System.currentTimeMillis();
             ECKeyPair ecKeyPair = JZWalletUtil.decrypt(store, password);
+            LogUtils.e("解析keystore的时间为：" + (System.currentTimeMillis() - time));
             if (ecKeyPair == null) {
                 return null;
             }

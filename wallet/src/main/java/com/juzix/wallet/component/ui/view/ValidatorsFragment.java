@@ -2,39 +2,52 @@ package com.juzix.wallet.component.ui.view;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
+import android.support.v7.util.DiffUtil;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
+import com.jakewharton.rxbinding2.widget.RxRadioGroup;
+import com.jakewharton.rxbinding2.widget.RxTextView;
+import com.jakewharton.rxbinding2.widget.TextViewEditorActionEvent;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.adapter.ValidatorsAdapter;
+import com.juzix.wallet.component.adapter.VerifyNodeDiffCallback;
+import com.juzix.wallet.component.ui.OnItemClickListener;
+import com.juzix.wallet.component.ui.SortType;
 import com.juzix.wallet.component.ui.base.MVPBaseFragment;
 import com.juzix.wallet.component.ui.contract.ValidatorsContract;
 import com.juzix.wallet.component.ui.dialog.BaseDialogFragment;
 import com.juzix.wallet.component.ui.dialog.CommonGuideDialogFragment;
+import com.juzix.wallet.component.ui.dialog.SelectSortTypeDialogFragment;
 import com.juzix.wallet.component.ui.presenter.ValidatorsPresenter;
-import com.juzix.wallet.component.widget.CustomRefreshFooter;
-import com.juzix.wallet.component.widget.CustomRefreshHeader;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.entity.GuideType;
+import com.juzix.wallet.entity.NodeStatus;
 import com.juzix.wallet.entity.VerifyNode;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.RxUtils;
+import com.juzix.wallet.utils.ToastUtil;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
@@ -49,49 +62,68 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Predicate;
 
 /**
  * 验证节点页面
  */
 
-public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> implements ValidatorsContract.View, OnClickListener {
+public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> implements ValidatorsContract.View {
+
+    @IntDef({
+            Tab.ALL,
+            Tab.ACTIVE,
+            Tab.CANDIDATE
+    })
+    public @interface Tab {
+        /**
+         * 所有
+         */
+        int ALL = 0;
+        /**
+         * 活跃中
+         */
+        int ACTIVE = 1;
+        /**
+         * 候选中
+         */
+        int CANDIDATE = 2;
+    }
+
+    @BindView(R.id.radio_group)
+    RadioGroup radioGroup;
+    @BindView(R.id.btn_all)
+    RadioButton allBtn;
+    @BindView(R.id.btn_active)
+    RadioButton activeBtn;
+    @BindView(R.id.btn_candidate)
+    RadioButton candidateBtn;
+    @BindView(R.id.refreshLayout)
+    SmartRefreshLayout refreshLayout;
+    @BindView(R.id.list_validators)
+    RecyclerView validatorsList;
+    @BindView(R.id.layout_no_data)
+    LinearLayout noDataLayout;
+    @BindView(R.id.iv_search)
+    ImageView searchIv;
+    @BindView(R.id.iv_rank)
+    ImageView rankIv;
+    @BindView(R.id.et_search)
+    EditText searchEt;
+    @BindView(R.id.layout_search)
+    ConstraintLayout searchLayout;
+    @BindView(R.id.tv_hide_search)
+    TextView hideSearchTv;
+    @BindView(R.id.iv_clear)
+    ImageView clearIv;
 
     private Unbinder unbinder;
 
-    @BindView(R.id.radio_group)
-    RadioGroup radio_group;
-    @BindView(R.id.btn_all)
-    RadioButton all;
-    @BindView(R.id.btn_active)
-    RadioButton active;
-    @BindView(R.id.btn_candidate)
-    RadioButton candidate;
-    @BindView(R.id.tv_rank)
-    TextView tv_rank;
-    @BindView(R.id.refreshLayout)
-    SmartRefreshLayout refreshLayout;
-    @BindView(R.id.rlv_list)
-    ListView rlv_list;
-    @BindView(R.id.layout_rank)
-    LinearLayout rankLayout;
-    @BindView(R.id.layout_no_data)
-    LinearLayout mNoDataLayout;
+    private SortType mSortType = SortType.SORTED_BY_NODE_RANKINGS;
+    private int mTab = Tab.ALL;
 
-    private String rankType;
-    private String nodeState;//tab类型（所有/活跃中/候选中）
-
-    private List<VerifyNode> allList = new ArrayList<>();
-    private List<VerifyNode> activeList = new ArrayList<>();
-    private List<VerifyNode> candidateList = new ArrayList<>();
-
-    private int allLastRank = 0;
-    private int activeLastRank = 0;
-    private int candidateLastRank = 0;
-    private boolean isLoadMore = false;
-
-    private int rank = 0;
     private ValidatorsAdapter mValidatorsAdapter;
 
     @Override
@@ -102,7 +134,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
 
     @Override
     protected void onFragmentPageStart() {
-
+        refreshLayout.autoRefresh();
     }
 
     @Override
@@ -116,121 +148,159 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
 
     private void initView() {
 
-        changeBtnState(R.id.btn_all);
+        mValidatorsAdapter = new ValidatorsAdapter();
+        validatorsList.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false));
+        validatorsList.setAdapter(mValidatorsAdapter);
 
-        refreshLayout.setRefreshHeader(new CustomRefreshHeader(getContext()));
-        refreshLayout.setRefreshFooter(new CustomRefreshFooter(getContext()));
-        refreshLayout.setEnableLoadMore(true);//启用上拉加载功能
-        refreshLayout.setEnableAutoLoadMore(false);
-        mValidatorsAdapter = new ValidatorsAdapter(R.layout.item_validators_list, null);
-        rlv_list.setEmptyView(mNoDataLayout);
-        rlv_list.setAdapter(mValidatorsAdapter);
-
-        //默认初始化值
-        tv_rank.setText(getString(R.string.validators_rank));
-        rankType = Constants.ValidatorsType.VALIDATORS_RANK;
-        nodeState = Constants.ValidatorsType.ALL_VALIDATORS;
-        mPresenter.loadValidatorsData(rankType, nodeState, -1);
-
-        initPullRefreshListener();
-        initCheckedListener();
-
-        RxAdapterView.itemClicks(rlv_list)
-                .compose(RxUtils.getClickTransformer())
+        RxRadioGroup
+                .checkedChanges(radioGroup)
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Integer>() {
                     @Override
-                    public void accept(Integer position) {
-                        VerifyNode verifyNode = mValidatorsAdapter.getItem(position);
-                        ValidatorsDetailActivity.actionStart(getContext(), verifyNode.getNodeId());
+                    public void accept(Integer id) {
+                        tabStateChanged(getTabById(id));
                     }
                 });
-    }
-
-    private void initCheckedListener() {
-        radio_group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int id) {
-
-                switch (id) {
-                    case R.id.btn_all:
-                        changeBtnState(id);
-                        nodeState = Constants.ValidatorsType.ALL_VALIDATORS;
-                        if (allList.size() == 0) {
-                            mPresenter.loadDataFromDB(rankType, nodeState, -1);
-                        }
-                        mValidatorsAdapter.notifyDataChanged(allList);
-                        break;
-                    case R.id.btn_active:
-                        changeBtnState(id);
-                        nodeState = Constants.ValidatorsType.ACTIVE_VALIDATORS;
-                        if (activeList.size() == 0) {
-                            mPresenter.loadDataFromDB(rankType, nodeState, -1);
-                        }
-                        mValidatorsAdapter.notifyDataChanged(activeList);
-                        break;
-                    case R.id.btn_candidate:
-                        changeBtnState(id);
-                        nodeState = Constants.ValidatorsType.CANDIDATE_VALIDATORS;
-                        if (candidateList.size() == 0) {
-                            mPresenter.loadDataFromDB(rankType, nodeState, -1);
-                        }
-                        mValidatorsAdapter.notifyDataChanged(candidateList);
-                        break;
-                    default:
-                        break;
-                }
-
-
-            }
-        });
-    }
-
-    private void initPullRefreshListener() {
 
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                isLoadMore = false;
-                mPresenter.loadValidatorsData(rankType, nodeState, -1);
-
+                mPresenter.loadValidatorsData(getNodeStatusByTab(mTab), mSortType, searchEt.getText().toString().trim(), true);
             }
         });
 
-        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+        mValidatorsAdapter.setOnItemClickListener(new OnItemClickListener<VerifyNode>() {
             @Override
-            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-                //加载更多
-                isLoadMore = true;
-                if (TextUtils.equals(nodeState, Constants.ValidatorsType.ALL_VALIDATORS)) {
-                    rank = allLastRank;
-                } else if (TextUtils.equals(nodeState, Constants.ValidatorsType.ACTIVE_VALIDATORS)) {
-                    rank = activeLastRank;
-                } else {
-                    rank = candidateLastRank;
-                }
-                mPresenter.loadDataFromDB(rankType, nodeState, rank);
-
+            public void onItemClick(VerifyNode verifyNode) {
+                ValidatorsDetailActivity.actionStart(getContext(), verifyNode.getNodeId());
             }
         });
+
+        RxView
+                .clicks(rankIv)
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        SelectSortTypeDialogFragment
+                                .newInstance(mSortType)
+                                .setOnItemClickListener(new OnItemClickListener<SortType>() {
+                                    @Override
+                                    public void onItemClick(SortType sortType) {
+                                        mSortType = sortType;
+                                        mPresenter.loadValidatorsData(getNodeStatusByTab(mTab), mSortType, searchEt.getText().toString().trim(), false);
+                                    }
+                                })
+                                .show(getActivity()
+                                        .getSupportFragmentManager(), "showSelectSortTypeDialogFragment");
+                    }
+                });
+
+        RxView
+                .clicks(searchIv)
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        searchLayout.setVisibility(View.VISIBLE);
+                    }
+                });
+
+        RxView
+                .clicks(hideSearchTv)
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        searchLayout.setVisibility(View.GONE);
+                        searchEt.setText("");
+                    }
+                });
+
+        RxTextView
+                .textChanges(searchEt)
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<CharSequence>() {
+                    @Override
+                    public void accept(CharSequence charSequence) {
+                        clearIv.setVisibility(TextUtils.isEmpty(charSequence) ? View.GONE : View.VISIBLE);
+                    }
+                });
+
+        RxView
+                .clicks(clearIv)
+                .compose(RxUtils.bindToLifecycle(this))
+                .compose(RxUtils.getClickTransformer())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        searchEt.setText("");
+                        mPresenter.loadValidatorsData(getNodeStatusByTab(mTab), mSortType, searchEt.getText().toString().trim(), false);
+                    }
+                });
+
+        RxTextView
+                .editorActionEvents(searchEt, new Predicate<TextViewEditorActionEvent>() {
+                    @Override
+                    public boolean test(TextViewEditorActionEvent textViewEditorActionEvent) throws Exception {
+                        return textViewEditorActionEvent.actionId() == EditorInfo.IME_ACTION_SEARCH;
+                    }
+                })
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<TextViewEditorActionEvent>() {
+                    @Override
+                    public void accept(TextViewEditorActionEvent textViewEditorActionEvent) {
+                        mPresenter.loadValidatorsData(getNodeStatusByTab(mTab), mSortType, searchEt.getText().toString().trim(), false);
+                    }
+                });
+
+        tabStateChanged(mTab);
+
     }
 
-    @Override
-    public void onResume() {
-        MobclickAgent.onPageStart(Constants.UMPages.VERIFY_NODE);
-        super.onResume();
-        refreshLayout.autoRefresh();
+    private @NodeStatus
+    String getNodeStatusByTab(@Tab int tab) {
+
+        switch (tab) {
+            case Tab.ACTIVE:
+                return NodeStatus.ACTIVE;
+            case Tab.CANDIDATE:
+                return NodeStatus.CANDIDATE;
+            default:
+                return NodeStatus.ALL;
+
+        }
+
     }
 
-    private int getLastNodeRank() {
-        if (TextUtils.equals(nodeState, Constants.ValidatorsType.ALL_VALIDATORS)) {
-            return allLastRank;
-        } else if (TextUtils.equals(nodeState, Constants.ValidatorsType.ACTIVE_VALIDATORS)) {
-            return activeLastRank;
-        } else {
-            return candidateLastRank;
+    private void tabStateChanged(@Tab int tab) {
+        mTab = tab;
+        mPresenter.loadValidatorsData(getNodeStatusByTab(mTab), mSortType, searchEt.getText().toString().trim(), false);
+        tabCheckedChanged(tab);
+    }
+
+    private @Tab
+    int getTabById(int id) {
+        switch (id) {
+            case R.id.btn_active:
+                return Tab.ACTIVE;
+            case R.id.btn_candidate:
+                return Tab.CANDIDATE;
+            default:
+                return Tab.ALL;
         }
     }
+
+//    @Override
+//    public void onResume() {
+//        MobclickAgent.onPageStart(Constants.UMPages.VERIFY_NODE);
+//        super.onResume();
+//        refreshLayout.autoRefresh();
+//    }
+
 
     @Override
     public void onPause() {
@@ -238,149 +308,55 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
         super.onPause();
     }
 
-    @OnClick({R.id.layout_rank})
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.layout_rank:
-                if (TextUtils.equals(rankType, Constants.ValidatorsType.VALIDATORS_RANK)) {
-                    tv_rank.setText(getString(R.string.validators_detail_yield));
-                    rankType = Constants.ValidatorsType.VALIDATORS_YIELD;
-                } else {
-                    tv_rank.setText(getString(R.string.validators_rank));
-                    rankType = Constants.ValidatorsType.VALIDATORS_RANK;
-                }
-                allList.clear();
-                activeList.clear();
-                candidateList.clear();
-                //按排名操作
-                //这里不再调用接口，直接从数据库去拿数据
-                mPresenter.loadDataFromDB(rankType, nodeState, -1);
+    @Override
+    public void loadValidatorsDataResult(List<VerifyNode> oldVerifyNodeList, List<VerifyNode> newVerifyNodeList) {
+        refreshLayout.finishRefresh();
+        noDataLayout.setVisibility(newVerifyNodeList == null || newVerifyNodeList.isEmpty() ? View.VISIBLE : View.GONE);
+        VerifyNodeDiffCallback diffCallback = new VerifyNodeDiffCallback(oldVerifyNodeList, newVerifyNodeList);
+        mValidatorsAdapter.setDatas(newVerifyNodeList);
+        DiffUtil.calculateDiff(diffCallback, true).dispatchUpdatesTo(mValidatorsAdapter);
+    }
+
+
+    public void tabCheckedChanged(@Tab int tab) {
+
+        switch (tab) {
+            case Tab.ALL:
+                allBtn.setBackgroundResource(R.drawable.bg_delegate_textview_choosed);
+                activeBtn.setBackgroundResource(R.drawable.bg_delegate_textview_unchoosed);
+                candidateBtn.setBackgroundResource(R.drawable.bg_delegate_textview_unchoosed);
+                allBtn.setTextColor(getResources().getColor(R.color.color_ffffff));
+                allBtn.setTypeface(Typeface.DEFAULT_BOLD);
+                activeBtn.setTypeface(Typeface.DEFAULT);
+                candidateBtn.setTypeface(Typeface.DEFAULT);
+                activeBtn.setTextColor(getResources().getColor(R.color.color_000000));
+                candidateBtn.setTextColor(getResources().getColor(R.color.color_000000));
+                break;
+            case Tab.ACTIVE:
+                activeBtn.setBackgroundResource(R.drawable.bg_delegate_textview_choosed);
+                candidateBtn.setBackgroundResource(R.drawable.bg_delegate_textview_unchoosed);
+                allBtn.setBackgroundResource(R.drawable.bg_delegate_textview_unchoosed);
+                allBtn.setTypeface(Typeface.DEFAULT);
+                activeBtn.setTypeface(Typeface.DEFAULT_BOLD);
+                candidateBtn.setTypeface(Typeface.DEFAULT);
+                activeBtn.setTextColor(getResources().getColor(R.color.color_ffffff));
+                allBtn.setTextColor(getResources().getColor(R.color.color_000000));
+                candidateBtn.setTextColor(getResources().getColor(R.color.color_000000));
+                break;
+            case Tab.CANDIDATE:
+                candidateBtn.setBackgroundResource(R.drawable.bg_delegate_textview_choosed);
+                allBtn.setBackgroundResource(R.drawable.bg_delegate_textview_unchoosed);
+                activeBtn.setBackgroundResource(R.drawable.bg_delegate_textview_unchoosed);
+                allBtn.setTypeface(Typeface.DEFAULT);
+                activeBtn.setTypeface(Typeface.DEFAULT);
+                candidateBtn.setTypeface(Typeface.DEFAULT_BOLD);
+                candidateBtn.setTextColor(getResources().getColor(R.color.color_ffffff));
+                allBtn.setTextColor(getResources().getColor(R.color.color_000000));
+                activeBtn.setTextColor(getResources().getColor(R.color.color_000000));
                 break;
             default:
                 break;
         }
-
-
-    }
-
-
-    public void changeBtnState(int id) {
-        switch (id) {
-            case R.id.btn_all:
-                all.setBackgroundResource(R.drawable.bg_delegate_textview_choosed);
-                active.setBackgroundResource(R.drawable.bg_delegate_textview_unchoosed);
-                candidate.setBackgroundResource(R.drawable.bg_delegate_textview_unchoosed);
-                all.setTextColor(getResources().getColor(R.color.color_ffffff));
-                all.setTypeface(Typeface.DEFAULT_BOLD);
-                active.setTypeface(Typeface.DEFAULT);
-                candidate.setTypeface(Typeface.DEFAULT);
-                active.setTextColor(getResources().getColor(R.color.color_000000));
-                candidate.setTextColor(getResources().getColor(R.color.color_000000));
-                break;
-            case R.id.btn_active:
-                active.setBackgroundResource(R.drawable.bg_delegate_textview_choosed);
-                candidate.setBackgroundResource(R.drawable.bg_delegate_textview_unchoosed);
-                all.setBackgroundResource(R.drawable.bg_delegate_textview_unchoosed);
-                all.setTypeface(Typeface.DEFAULT);
-                active.setTypeface(Typeface.DEFAULT_BOLD);
-                candidate.setTypeface(Typeface.DEFAULT);
-                active.setTextColor(getResources().getColor(R.color.color_ffffff));
-                all.setTextColor(getResources().getColor(R.color.color_000000));
-                candidate.setTextColor(getResources().getColor(R.color.color_000000));
-                break;
-            case R.id.btn_candidate:
-                candidate.setBackgroundResource(R.drawable.bg_delegate_textview_choosed);
-                all.setBackgroundResource(R.drawable.bg_delegate_textview_unchoosed);
-                active.setBackgroundResource(R.drawable.bg_delegate_textview_unchoosed);
-                all.setTypeface(Typeface.DEFAULT);
-                active.setTypeface(Typeface.DEFAULT);
-                candidate.setTypeface(Typeface.DEFAULT_BOLD);
-                candidate.setTextColor(getResources().getColor(R.color.color_ffffff));
-                all.setTextColor(getResources().getColor(R.color.color_000000));
-                active.setTextColor(getResources().getColor(R.color.color_000000));
-                break;
-            default:
-                break;
-        }
-    }
-
-
-    @Override
-    public void showValidatorsDataOnAll(List<VerifyNode> nodeList) {
-        if (nodeList.size() > 0) {
-            //加一个判断
-            if (TextUtils.equals(rankType, Constants.ValidatorsType.VALIDATORS_RANK)) {
-                allLastRank = nodeList.get(nodeList.size() - 1).getRanking();
-            } else {
-                allLastRank = NumberParserUtils.parseInt(nodeList.get(nodeList.size() - 1).getRatePA());
-            }
-
-        }
-
-        if (isLoadMore) {
-            allList.addAll(nodeList);
-        } else {
-            allList.clear();
-            allList.addAll(nodeList);
-        }
-        refreshLayout.finishRefresh();
-        refreshLayout.finishLoadMore();
-        mValidatorsAdapter.notifyDataChanged(allList);
-
-    }
-
-    @Override
-    public void showValidatorsDataOnActive(List<VerifyNode> nodeList) {
-        if (nodeList.size() > 0) {
-            //加一个判断
-            if (TextUtils.equals(rankType, Constants.ValidatorsType.VALIDATORS_RANK)) {
-                activeLastRank = nodeList.get(nodeList.size() - 1).getRanking();
-            } else {
-                activeLastRank = NumberParserUtils.parseInt(nodeList.get(nodeList.size() - 1).getRatePA());
-            }
-
-
-        }
-        if (isLoadMore) {
-            activeList.addAll(nodeList);
-        } else {
-            activeList.clear();
-            activeList.addAll(nodeList);
-        }
-
-        refreshLayout.finishRefresh();
-        refreshLayout.finishLoadMore();
-        mValidatorsAdapter.notifyDataChanged(activeList);
-
-    }
-
-    @Override
-    public void showValidatorsDataOnCadidate(List<VerifyNode> nodeList) {
-        if (nodeList.size() > 0) {
-            //加一个判断
-            if (TextUtils.equals(rankType, Constants.ValidatorsType.VALIDATORS_RANK)) {
-                candidateLastRank = nodeList.get(nodeList.size() - 1).getRanking();
-            } else {
-                candidateLastRank = NumberParserUtils.parseInt(nodeList.get(nodeList.size() - 1).getRatePA());
-            }
-//            candidateLastRank = nodeList.get(nodeList.size() - 1).getRanking();
-        }
-        if (isLoadMore) {
-            candidateList.addAll(nodeList);
-        } else {
-            candidateList.clear();
-            candidateList.addAll(nodeList);
-        }
-
-        refreshLayout.finishRefresh();
-        refreshLayout.finishLoadMore();
-        mValidatorsAdapter.notifyDataChanged(candidateList);
-    }
-
-    @Override
-    public void showValidatorsFailed() {
-        refreshLayout.finishRefresh();
-        refreshLayout.finishLoadMore();
     }
 
     //接收event事件然后刷新

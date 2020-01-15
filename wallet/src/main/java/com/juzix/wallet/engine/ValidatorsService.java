@@ -31,28 +31,28 @@ public class ValidatorsService {
     }
 
 
-    /**
-     * 插入列表
-     *
-     * @param entityList
-     * @return
-     */
-    public static Single<Boolean> insertVerifyNodeList(List<VerifyNode> entityList) {
-        return Flowable.fromIterable(entityList)
-                .map(new Function<VerifyNode, VerifyNodeEntity>() {
-                    @Override
-                    public VerifyNodeEntity apply(VerifyNode verifyNode) throws Exception {
-                        return verifyNode.toVerifyNodeEntity();
-                    }
-                }).toList()
-                .map(new Function<List<VerifyNodeEntity>, Boolean>() {
-                    @Override
-                    public Boolean apply(List<VerifyNodeEntity> entityList) throws Exception {
-                        return VerifyNodeDao.insertVerifyNodeList(entityList);
-                    }
-                });
-
-    }
+//    /**
+//     * 插入列表
+//     *
+//     * @param entityList
+//     * @return
+//     */
+//    public static Single<Boolean> insertVerifyNodeList(List<VerifyNode> entityList) {
+//        return Flowable.fromIterable(entityList)
+//                .map(new Function<VerifyNode, VerifyNodeEntity>() {
+//                    @Override
+//                    public VerifyNodeEntity apply(VerifyNode verifyNode) throws Exception {
+//                        return verifyNode.toVerifyNodeEntity();
+//                    }
+//                }).toList()
+//                .map(new Function<List<VerifyNodeEntity>, Boolean>() {
+//                    @Override
+//                    public Boolean apply(List<VerifyNodeEntity> entityList) throws Exception {
+//                        return VerifyNodeDao.insertVerifyNodeList(entityList);
+//                    }
+//                });
+//
+//    }
 
 
 }

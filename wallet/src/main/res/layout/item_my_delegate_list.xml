@@ -2,161 +2,188 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="center">
+    android:background="@drawable/bg_mydelegate_item"
+    android:orientation="vertical"
+    android:paddingLeft="10dp"
+    android:paddingTop="8dp"
+    android:paddingRight="10dp"
+    android:paddingBottom="12dp">
 
-
-    <LinearLayout
-        android:id="@+id/ll_item"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginRight="5dp"
-        android:background="@drawable/bg_mydelegate_item"
-        android:orientation="vertical">
+        android:layout_height="60dp"
+        android:background="@drawable/icon_my_delegate_item_bg">
 
-        <RelativeLayout
+        <com.juzix.wallet.component.widget.CircleImageView
+            android:id="@+id/iv_wallet_avatar"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_marginLeft="3dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/icon_total_delegate" />
+
+        <TextView
+            android:id="@+id/tv_wallet_name"
+            style="@style/Text.000.15"
+            android:layout_width="0dp"
+            android:layout_marginLeft="3dp"
+            android:ellipsize="middle"
+            android:gravity="left|center_vertical"
+            android:singleLine="true"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toTopOf="@+id/space"
+            app:layout_constraintLeft_toRightOf="@id/iv_wallet_avatar"
+            app:layout_constraintRight_toLeftOf="@+id/tv_delegate_detail"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="钱包名称钱包" />
+
+        <Space
+            android:id="@+id/space"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:background="@drawable/icon_my_delegate_item_bg">
+            android:layout_height="3dp"
+            app:layout_constraintBottom_toTopOf="@+id/tv_wallet_address"
+            app:layout_constraintLeft_toLeftOf="@id/tv_wallet_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_wallet_name" />
 
-            <com.juzix.wallet.component.widget.CircleImageView
-                android:id="@+id/iv_total_delegate"
-                android:layout_width="42dp"
-                android:layout_height="42dp"
-                android:layout_marginLeft="3dp"
-                android:layout_marginTop="11dp"
-                android:layout_marginBottom="7dp"
-                android:layout_centerVertical="true"
-                android:src="@drawable/icon_total_delegate" />
+        <TextView
+            android:id="@+id/tv_wallet_address"
+            style="@style/Text.61646e.13"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="@id/tv_wallet_name"
+            app:layout_constraintTop_toBottomOf="@id/space"
+            tools:text="0xfasafasdfa56465" />
 
-            <LinearLayout
-                android:id="@+id/ll_wallet_info"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@id/iv_total_delegate"
-                android:layout_toRightOf="@id/iv_total_delegate"
-                android:orientation="vertical">
+        <TextView
+            android:id="@+id/tv_delegate_detail"
+            style="@style/Text.105cfe.13"
+            android:layout_marginRight="10dp"
+            android:drawableRight="@drawable/icon_right"
+            android:drawablePadding="2dp"
+            android:text="@string/details"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/tv_item_wallet_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="钱包名称"
-                    android:textColor="@color/color_000000"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/tv_item_wallet_address"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="7dp"
-                    android:layout_marginBottom="12dp"
-                    android:textColor="@color/color_61646e"
-                    tools:text="0xfasafasdfa56465"
-                    android:textSize="13sp" />
-
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerInParent="true"
-                android:layout_marginRight="10dp"
-                android:drawableRight="@drawable/icon_right"
-                android:drawablePadding="3dp"
-                android:gravity="center"
-                android:textSize="13sp"
-                android:textColor="@color/color_105cfe"
-                android:text="@string/details" />
+    </android.support.constraint.ConstraintLayout>
 
 
-        </RelativeLayout>
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="12dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="14dp">
+
+        <TextView
+            android:id="@+id/tv_delegated"
+            style="@style/Text.898c9e.12"
+            android:layout_width="0dp"
+            android:gravity="center_vertical|left"
+            android:text="@string/available_money"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/tv_total_reward"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_delegated_amount"
+            style="@style/Text.000.14"
+            android:layout_width="0dp"
+            android:layout_marginTop="7dp"
+            android:gravity="center_vertical|left"
+            android:lines="1"
+            android:textStyle="bold"
+            app:autoSizeTextType="uniform"
+            app:layout_constraintLeft_toLeftOf="@id/tv_delegated"
+            app:layout_constraintRight_toRightOf="@id/tv_delegated"
+            app:layout_constraintTop_toBottomOf="@id/tv_delegated"
+            tools:text="1,555.033678790336" />
+
+        <TextView
+            android:id="@+id/tv_total_reward"
+            style="@style/Text.898c9e.12"
+            android:layout_width="0dp"
+            android:gravity="center_vertical|left"
+            android:text="@string/msg_total_reward"
+            app:layout_constraintLeft_toRightOf="@id/tv_delegated"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_total_reward_amount"
+            style="@style/Text.000.14"
+            android:layout_width="0dp"
+            android:gravity="center_vertical|left"
+            android:lines="1"
+            android:textStyle="bold"
+            app:autoSizeTextType="uniform"
+            app:layout_constraintLeft_toLeftOf="@id/tv_total_reward"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_delegated_amount"
+            tools:text="1,555.033678799" />
+
+
+        <TextView
+            android:id="@+id/tv_unclaimed_reward"
+            style="@style/Text.898c9e.12"
+            android:layout_width="0dp"
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical|left"
+            android:text="@string/msg_unclaimed_reward"
+            app:layout_constraintLeft_toLeftOf="@id/tv_delegated_amount"
+            app:layout_constraintTop_toBottomOf="@id/tv_delegated_amount" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_unclaimed_reward_amount"
+            style="@style/Text.000.14"
+            android:layout_width="0dp"
+            android:layout_marginTop="7dp"
+            android:gravity="center_vertical|left"
+            android:lines="1"
+            android:textStyle="bold"
+            app:autoSizeTextType="uniform"
+            app:layout_constraintLeft_toLeftOf="@id/tv_unclaimed_reward"
+            app:layout_constraintTop_toBottomOf="@id/tv_unclaimed_reward"
+            app:layout_constraintWidth_percent="0.5"
+            tools:text="1,555.033678799" />
+
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:id="@+id/layout_claim_reward"
+            android:layout_width="67dp"
+            android:layout_height="28dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/shape_reclaim_reward_bg"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="@id/tv_unclaimed_reward_amount"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_unclaimed_reward_amount">
 
-            <LinearLayout
-                android:id="@+id/ll_left"
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/tv_claim_reward"
+                style="@style/Text.105cfe.13"
+                android:text="@string/msg_claim_reward"
+                android:visibility="gone" />
+
+            <com.juzix.wallet.component.widget.PendingClaimRewardAnimationLayout
+                android:id="@+id/layout_claim_reward_animation"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="17dp"
-                android:orientation="vertical"
-                android:layout_weight="1">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:layout_marginBottom="9dp"
-                    android:text="@string/available_money"
-                    android:textColor="@color/color_898c9e"
-                    android:textSize="12sp" />
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/tv_item_available_balance"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="15dp"
-                    android:textColor="@color/color_000000"
-                    android:textStyle="bold"
-                    android:textSize="14sp"
-                    app:autoSizeMaxTextSize="14sp"
-                    app:autoSizeMinTextSize="10sp"
-                    app:autoSizeTextType="uniform"
-                    android:gravity="center"
-                    android:layout_gravity="center|left"
-                    android:lines="1"
-                    tools:text="16545455454645464555455454.645"
-                    />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:orientation="vertical"
-                android:layout_marginLeft="10dp"
-                android:layout_weight="1">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:layout_marginBottom="9dp"
-                    android:text="@string/total_delegated"
-                    android:textColor="@color/color_898c9e"
-                    android:textSize="12sp" />
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/tv_item_delegate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="15dp"
-                    android:textColor="@color/color_000000"
-                    android:textStyle="bold"
-                    android:lines="1"
-                    android:textSize="14sp"
-                    app:autoSizeMaxTextSize="14sp"
-                    app:autoSizeMinTextSize="10sp"
-                    app:autoSizeTextType="uniform"
-                    android:includeFontPadding="false"
-                    android:gravity="center_vertical"
-                    android:layout_gravity="left|center"
-                    tools:text="1654545465465.645"/>
-            </LinearLayout>
+                tools:visibility="gone" />
 
         </LinearLayout>
 
 
-    </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
 
 
 </LinearLayout>
+
+

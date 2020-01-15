@@ -50,5 +50,4 @@
         app:layout_goneMarginTop="0dp"
         tools:text="http://192.168.9.190:1000/rpc(chainId:99)" />
 
-
 </android.support.constraint.ConstraintLayout>

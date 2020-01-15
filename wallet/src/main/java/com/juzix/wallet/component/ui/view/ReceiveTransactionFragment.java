@@ -3,6 +3,7 @@ package com.juzix.wallet.component.ui.view;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.juzhen.framework.util.RUtils;
+import com.juzix.wallet.BuildConfig;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
@@ -18,6 +20,8 @@ import com.juzix.wallet.component.ui.base.MVPBaseFragment;
 import com.juzix.wallet.component.ui.contract.ReceiveTransationContract;
 import com.juzix.wallet.component.ui.presenter.ReceiveTransactionPresenter;
 import com.juzix.wallet.component.widget.ShadowButton;
+import com.juzix.wallet.engine.NodeManager;
+import com.juzix.wallet.entity.Node;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
@@ -35,23 +39,21 @@ import butterknife.Unbinder;
 /**
  * @author matrixelement
  */
-public class ReceiveTransactionFragment extends MVPBaseFragment<ReceiveTransactionPresenter> implements ReceiveTransationContract.View{
+public class ReceiveTransactionFragment extends MVPBaseFragment<ReceiveTransactionPresenter> implements ReceiveTransationContract.View {
 
     @BindView(R.id.iv_wallet_address_qr_code)
-    ImageView       ivWalletAddressQrCode;
+    ImageView ivWalletAddressQrCode;
     @BindView(R.id.iv_avatar)
     ImageView shareWalletAvatar;
     @BindView(R.id.tv_address)
     TextView tvAddress;
     @BindView(R.id.sbtn_save)
-    ShadowButton    btnSave;
-    @BindString(R.string.warning)
-    String          warning;
-    @BindString(R.string.understood)
-    String          understood;
-    @BindString(R.string.test_node_warn)
-    String          testNodeWarn;
-    private View  rootView;
+    ShadowButton btnSave;
+    @BindView(R.id.fl_share)
+    View view;
+    @BindView(R.id.tv_network_tips)
+    TextView tvNetworkTips;
+
     private Unbinder unbinder;
 
     @Override
@@ -66,7 +68,7 @@ public class ReceiveTransactionFragment extends MVPBaseFragment<ReceiveTransacti
 
     @Override
     protected View onCreateFragmentPage(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_receive_transaction, container, false);
+        View rootView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_receive_transaction, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         EventPublisher.getInstance().register(this);
         initViews();
@@ -74,24 +76,39 @@ public class ReceiveTransactionFragment extends MVPBaseFragment<ReceiveTransacti
     }
 
     private void initViews() {
+
+        tvNetworkTips.setText(string(R.string.msg_network_tips, getNodeName(NodeManager.getInstance().getCurNode())));
+
         RxView.clicks(btnSave)
                 .compose(RxUtils.getClickTransformer())
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<Object>() {
                     @Override
-                    public void accept(Object object)  {
+                    public void accept(Object object) {
                         mPresenter.shareView();
+                    }
+                });
+
+        RxView.clicks(tvAddress)
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        mPresenter.copy();
                     }
                 });
     }
 
-    @OnClick({R.id.tv_address})
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.tv_address:
-                mPresenter.copy();
-                break;
+    private String getNodeName(Node node) {
+        if (BuildConfig.URL_MAIN_SERVER.equals(node.getNodeAddress()) || BuildConfig.URL_TEST_MAIN_SERVER.equals(node.getNodeAddress())) {
+            return string(R.string.newbaleyworld);
+        } else if (TextUtils.equals(BuildConfig.URL_TEST_SERVER, node.getNodeAddress())) {
+            return string(R.string.test_net);
+        } else if (TextUtils.equals(BuildConfig.URL_DEVELOP_SERVER, node.getNodeAddress())) {
+            return string(R.string.develop_net);
         }
+        return "";
     }
 
     @Override
@@ -102,7 +119,7 @@ public class ReceiveTransactionFragment extends MVPBaseFragment<ReceiveTransacti
     @Override
     public void setWalletInfo(Wallet entity) {
         int resId = RUtils.drawable(entity.getAvatar());
-        if (resId < 0){
+        if (resId < 0) {
             resId = R.drawable.avatar_15;
         }
         shareWalletAvatar.setImageResource(resId);
@@ -116,7 +133,6 @@ public class ReceiveTransactionFragment extends MVPBaseFragment<ReceiveTransacti
 
     @Override
     public android.view.View shareView(String name, String address, Bitmap bitmap) {
-        View view = rootView.findViewById(R.id.fl_share);
         ((TextView) view.findViewById(R.id.tv_share_wallet_name)).setText(name);
         ((TextView) view.findViewById(R.id.tv_share_wallet_address)).setText(address);
         ((ImageView) view.findViewById(R.id.iv_share_qrcode)).setImageBitmap(bitmap);

@@ -22,7 +22,7 @@ import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.Web3jManager;
-import com.juzix.wallet.entity.DelegateDetail;
+import com.juzix.wallet.entity.DelegateItemInfo;
 import com.juzix.wallet.entity.DelegationValue;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionAuthorizationBaseData;
@@ -37,43 +37,44 @@ import com.juzix.wallet.utils.ToastUtil;
 import org.web3j.crypto.Credentials;
 import org.web3j.platon.ContractAddress;
 import org.web3j.platon.FunctionType;
-import org.web3j.platon.contracts.DelegateContract;
-import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.tx.gas.GasProvider;
-import org.web3j.utils.Convert;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
+import io.reactivex.SingleSource;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
+import io.reactivex.schedulers.Schedulers;
+import retrofit2.Response;
 
 public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> implements WithDrawContract.Presenter {
 
-    private DelegateDetail mDelegateDetail;
+    private DelegateItemInfo mDelegateDetail;
     private Wallet mWallet;
 
     private List<WithDrawBalance> list = new ArrayList<>();
 
     private int tag;
     private String feeAmount;
-    private BigInteger gasPrice = DefaultGasProvider.GAS_PRICE; //调web3j获取gasprice
-    private BigInteger gasLimit = DefaultGasProvider.GAS_LIMIT;
+    private GasProvider mGasProvider = new DefaultGasProvider();
 
     private String minDelegation = AppConfigManager.getInstance().getMinDelegation();
 
     public WithDrawPresenter(WithDrawContract.View view) {
         super(view);
         mDelegateDetail = view.getDelegateDetailFromIntent();
-        if (mDelegateDetail != null) {
+        if (TextUtils.isEmpty(mDelegateDetail.getWalletAddress())) {
+            mWallet = sortByFreeAccountAndCreateTime(WalletManager.getInstance().getWalletList()).get(0);
+        } else {
             mWallet = WalletManager.getInstance().getWalletEntityByWalletAddress(mDelegateDetail.getWalletAddress());
         }
     }
@@ -127,60 +128,60 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
             return;
         }
         ServerUtils.getCommonApi().getDelegationValue(ApiRequestBody.newBuilder()
-                .put("addr", mDelegateDetail.getWalletAddress())
+                .put("addr", mWallet.getPrefixAddress())
                 .put("nodeId", mDelegateDetail.getNodeId())
                 .build())
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(bindToLifecycle())
                 .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
-                .subscribe(new ApiSingleObserver<DelegationValue>() {
+                .map(new Function<Response<ApiResponse<DelegationValue>>, DelegationValue>() {
+
                     @Override
-                    public void onApiSuccess(DelegationValue delegationValue) {
-                        if (isViewAttached()) {
-                            list.clear();
-                            list.addAll(delegationValue.getWithDrawBalanceList());
-
-                            minDelegation = delegationValue.getMinDelegation();
-
-                            double releasedSum = delegationValue.getReleasedSumAmount(); //待赎回
-                            double delegatedSum = delegationValue.getDelegatedSumAmount();//已委托
-
-                            getView().showBalanceType(delegatedSum, releasedSum, NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(minDelegation, "1E18")));
-
-                            if (delegatedSum + releasedSum <= 0) {
-                                getView().finishDelayed();
-                            }
-
-                        }
-
+                    public DelegationValue apply(Response<ApiResponse<DelegationValue>> apiResponseResponse) throws Exception {
+                        return apiResponseResponse != null && apiResponseResponse.isSuccessful() ? apiResponseResponse.body().getData() : null;
                     }
-
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSuccess(new Consumer<DelegationValue>() {
                     @Override
-                    public void onApiFailure(ApiResponse response) {
+                    public void accept(DelegationValue delegationValue) throws Exception {
+                        list.clear();
+                        list.addAll(delegationValue.getWithDrawBalanceList());
 
-                    }
-                });
-    }
+                        minDelegation = delegationValue.getMinDelegation();
 
-    /**
-     * 获取
-     */
-    @SuppressLint("CheckResult")
-    @Override
-    public void getGas() {
-        Web3jManager.getInstance().getContractGasPrice()
-                .compose(RxUtils.bindToLifecycle(getView()))
-                .compose(RxUtils.getSingleSchedulerTransformer())
-                .subscribe(new Consumer<BigInteger>() {
-                    @Override
-                    public void accept(BigInteger bigInteger) throws Exception {
-                        if (isViewAttached()) {
-                            WithDrawPresenter.this.gasPrice = bigInteger;
-                            getView().showGas(gasPrice);
+                        double releasedSum = delegationValue.getReleasedSumAmount(); //待赎回
+                        double delegatedSum = delegationValue.getDelegatedSumAmount();//已委托
+
+                        getView().showBalanceType(delegatedSum, releasedSum, NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(minDelegation, "1E18")));
+
+                        if (delegatedSum + releasedSum <= 0) {
+                            getView().finishDelayed();
                         }
                     }
-                });
-
+                })
+                .observeOn(Schedulers.io())
+                .flatMap(new Function<DelegationValue, SingleSource<Response<ApiResponse<com.juzix.wallet.entity.GasProvider>>>>() {
+                    @Override
+                    public SingleSource<Response<ApiResponse<com.juzix.wallet.entity.GasProvider>>> apply(DelegationValue delegationValue) throws Exception {
+                        return ServerUtils.getCommonApi().getGasProvider(ApiRequestBody.newBuilder()
+                                .put("from", mDelegateDetail.getWalletAddress())
+                                .put("txType", FunctionType.WITHDREW_DELEGATE_FUNC_TYPE)
+                                .put("nodeId", mDelegateDetail.getNodeId())
+                                .put("stakingBlockNum", delegationValue.getWithDrawBalanceList().get(0).getStakingBlockNum())
+                                .build());
+                    }
+                })
+                .subscribe(new ApiSingleObserver<com.juzix.wallet.entity.GasProvider>() {
+                    @Override
+                    public void onApiSuccess(com.juzix.wallet.entity.GasProvider gasProvider) {
+                        if (isViewAttached()) {
+                            mGasProvider = gasProvider.toSdkGasProvider();
+                            getView().showGas(mGasProvider.getGasPrice());
+                        }
+                    }
+                })
+        ;
     }
 
 
@@ -199,23 +200,39 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
             return;
         }
 
-        DelegateContract
-                .load(Web3jManager.getInstance().getWeb3j())
-                .getUnDelegateGasProvider(mDelegateDetail.getNodeId(), new BigInteger(list.get(0).getStakingBlockNum()), Convert.toVon(input, Convert.Unit.LAT).toBigInteger())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<GasProvider>() {
-                    @Override
-                    public void call(GasProvider gasProvider) {
-                        gasLimit = gasProvider.getGasLimit();
-                        feeAmount = getFeeAmount(gasProvider, gasPrice);
-                        getView().showWithDrawGasPrice(feeAmount);
-                    }
-                });
+        feeAmount = getFeeAmount(mGasProvider);
+        getView().showWithDrawGasPrice(feeAmount);
     }
 
-    private String getFeeAmount(GasProvider gasProvider, String gasPrice) {
-        return BigDecimalUtil.mul(gasProvider.getGasLimit().toString(10), gasPrice).toPlainString();
+    private Wallet getDefaultWallet(DelegateItemInfo delegateDetail) {
+        if (delegateDetail != null && !TextUtils.isEmpty(delegateDetail.getWalletAddress())) {
+            return WalletManager.getInstance().getWalletEntityByWalletAddress(delegateDetail.getWalletAddress());
+        } else {
+            return sortByFreeAccountAndCreateTime(WalletManager.getInstance().getWalletList()).get(0);
+        }
+    }
+
+    private List<Wallet> sortByFreeAccountAndCreateTime(List<Wallet> walletList) {
+        Collections.sort(walletList, new Comparator<Wallet>() {
+            @Override
+            public int compare(Wallet o1, Wallet o2) {
+                int compare = Double.compare(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(o2.getFreeBalance(), "1E18"))), NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(o1.getFreeBalance(), "1E18"))));
+                if (compare != 0) {
+                    return compare;
+                }
+                compare = Long.compare(o1.getCreateTime(), o2.getCreateTime());
+                if (compare != 0) {
+                    return compare;
+                }
+                return 0;
+            }
+        });
+
+        return walletList;
+    }
+
+    private String getFeeAmount(GasProvider gasProvider) {
+        return BigDecimalUtil.mul(gasProvider.getGasLimit().toString(10), gasProvider.getGasPrice().toString(10)).toPlainString();
     }
 
     @SuppressLint("CheckResult")
@@ -234,7 +251,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
             }
 
             if (mWallet.isObservedWallet()) {
-                showTransactionAuthorizationDialogFragment(mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), getView().getInputAmount(), mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, gasLimit.toString(10), gasPrice.toString(10), type);
+                showTransactionAuthorizationDialogFragment(mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), getView().getInputAmount(), mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, mGasProvider.getGasLimit().toString(10), mGasProvider.getGasPrice().toString(10), type);
             } else {
                 InputWalletPasswordDialogFragment
                         .newInstance(mWallet)
@@ -285,8 +302,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     //操作赎回
     @SuppressLint("CheckResult")
     public void withdraw(Credentials credentials, String nodeId, String nodeName, String blockNum, String withdrawAmount, String type) {
-        GasProvider gasProvider = new ContractGasProvider(gasPrice, gasLimit);
-        DelegateManager.getInstance().withdraw(credentials, ContractAddress.DELEGATE_CONTRACT_ADDRESS, nodeId, nodeName, feeAmount, blockNum, withdrawAmount, String.valueOf(TransactionType.UNDELEGATE.getTxTypeValue()), gasProvider)
+        DelegateManager.getInstance().withdrawDelegate(credentials, ContractAddress.DELEGATE_CONTRACT_ADDRESS, nodeId, nodeName, feeAmount, blockNum, withdrawAmount, String.valueOf(TransactionType.UNDELEGATE.getTxTypeValue()), mGasProvider)
                 .compose(RxUtils.getSchedulerTransformer())
                 .compose(RxUtils.getLoadingTransformer(currentActivity()))
                 .subscribe(new CustomObserver<Transaction>() {

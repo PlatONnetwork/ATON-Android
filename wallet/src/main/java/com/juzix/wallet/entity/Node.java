@@ -46,7 +46,7 @@ public class Node implements Cloneable, Nullable {
     }
 
     public NodeEntity createNodeInfo() {
-        return new NodeEntity(id, nodeAddress, isDefaultNode, isChecked, isMainNetworkNode,chainId);
+        return new NodeEntity(id, nodeAddress, isDefaultNode, isChecked, isMainNetworkNode, chainId);
     }
 
     public String getNodeAddress() {
@@ -183,7 +183,7 @@ public class Node implements Cloneable, Nullable {
             return this;
         }
 
-        public Builder chainId(String val){
+        public Builder chainId(String val) {
             chainId = val;
             return this;
         }

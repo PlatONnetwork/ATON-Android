@@ -604,8 +604,6 @@ public class CustomTabLayout  extends HorizontalScrollView {
                 scrollToTab(position, 0);
             }
 
-
-
             for (int i = 0, size = tabStrip.getChildCount(); i < size; i++) {
                 tabStrip.getChildAt(i).setSelected(position == i);
                 if (i == position) {

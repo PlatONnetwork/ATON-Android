@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 public class AmountUtil {
 
     private final static String VALUE_1E18 = "1e18";
+    private final static String VALUE_1E2 = "1e2";
 
     private AmountUtil() {
 
@@ -90,5 +91,25 @@ public class AmountUtil {
      */
     public static String convertVonToLat(String value, int max) {
         return NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(value, VALUE_1E18), max);
+    }
+
+    /**
+     * von to lat  value除以10的18次方，默认保留小数点后八位
+     *
+     * @param value
+     * @return
+     */
+    public static String convertVonToLat(String value) {
+        return NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(value, VALUE_1E18), 8);
+    }
+
+    /**
+     * 格式化金额文本
+     *
+     * @param amount
+     * @return
+     */
+    public static String formatAmountText(String amount) {
+        return BigDecimalUtil.isBiggerThanZero(amount) ? StringUtil.formatBalance(BigDecimalUtil.div(amount, VALUE_1E18)) : "— —";
     }
 }

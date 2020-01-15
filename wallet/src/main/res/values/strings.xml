@@ -180,6 +180,7 @@
     <string name="help">帮助</string>
     <string name="about">关于</string>
     <string name="aboutUs">关于我们</string>
+    <string name="service_agreement">服务协议</string>
     <string name="official_community">官方社区</string>
     <string name="add_shared_wallet">添加联名钱包</string>
     <string name="add">添加</string>
@@ -463,6 +464,7 @@
     <string name="candidate_apply_withdraw">减持质押</string>
     <string name="candidate_withdraw">提取质押</string>
     <string name="unknown">其他</string>
+    <string name="claim_rewards">领取奖励</string>
 
 
     <!--刷新header和footer-->
@@ -506,6 +508,8 @@
     <string name="proposal_type">提案类型</string>
     <string name="restricted_account">锁仓地址</string>
     <string name="restricted_amount">锁仓数量</string>
+    <string name="claim_wallet">领取钱包</string>
+    <string name="reward_amount">领取数量</string>
     <string name="double_signing">区块双签</string>
     <string name="nav_delegate">委托</string>
     <string name="total_delegate_title">总计委托</string>
@@ -536,7 +540,7 @@
     <string name="validators_detail">节点详情</string>
     <string name="total_staked">总质押(LAT)</string>
     <string name="delegations">接受委托(LAT)</string>
-    <string name="delegators">委托者</string>
+    <string name="delegators">委托者数</string>
     <string name="slash">处罚次数</string>
     <string name="blocks">已出块数</string>
     <string name="block_rate">出块率</string>
@@ -686,15 +690,17 @@
     <string name="web_url_web_portals">https://www.platon.network</string>
     <string name="web_url_faq">https://platon.zendesk.com/hc/zh-cn/categories/360002174434</string>
     <string name="web_url_tutorial">https://platon.zendesk.com/hc/zh-cn/categories/360002193633</string>
-    <string name="web_url_agreement">http://192.168.9.190:1000/aton-agreement/zh-cn/agreement.html</string>
+    <string name="web_url_agreement">%1$s/aton-agreement/zh-cn/v0760/agreement.html</string>
     <string name="web_url_support_feedback">https://platon.zendesk.com/hc/zh-cn</string>
     <string name="web_url_common_delegate_problem">https://platon.zendesk.com/hc/zh-cn/articles/360037373194-Common-questions-about-PlatON-Delegators</string>
-    <string name="web_url_privacy_policy">http://192.168.9.190:1000/aton-agreement/zh-cn/privacyAgreement.html</string>
+    <string name="web_url_privacy_policy">%1$s/aton-agreement/zh-cn/privacyAgreement.html</string>
 
     <string name="withdraw_amount_tips">赎回数量不能少于%1$sLAT</string>
     <string name="unrecognized_content">无法识别内容</string>
     <string name="no_delegation_information">暂无委托信息</string>
     <string name="newbaleyworld">新贝莱世界</string>
+    <string name="test_net">测试网络</string>
+    <string name="develop_net">开发网络</string>
 
     <string name="msg_scan_qrcode">请对准二维码，耐心等待.</string>
     <string name="action_refresh">刷新</string>
@@ -711,7 +717,7 @@
 
     <string name="msg_undelegate_with_no_avaliable_balance">可用余额为0，无法委托</string>
     <string name="msg_reminder_threshold">大额提醒</string>
-    <string name="msg_resend_reminder">防重发提醒</string>
+    <string name="msg_resend_reminder">重复交易提醒</string>
     <string name="msg_not_installed">应用未安装</string>
     <string name="facebook_app_id">559301874845515</string>
     <string name="msg_share_success">分享成功</string>
@@ -720,4 +726,36 @@
 
     <string name="msg_large_transaction_reminder">发送数量超过%1$s LAT，确认是否继续发送？</string>
     <string name="msg_resend_transaction_reminder">最近有一笔相同的发送记录，确认是否继续发送？</string>
+    <string name="msg_total_delegated_lat">总计委托(LAT)</string>
+    <string name="msg_unclaimed_reward">待领取奖励</string>
+    <string name="msg_total_reward">累计奖励</string>
+    <string name="msg_delegation_rec">委托记录</string>
+    <string name="msg_claim_rec">领取记录</string>
+    <string name="msg_claim_reward">领取</string>
+
+    <string name="msg_no_delegated_data_tips">查看验证节点，参与委托</string>
+    <string name="msg_delegate">参与委托</string>
+
+    <string name="msg_claim_record">领取奖励</string>
+    <string name="msg_claim_rewards">领取奖励</string>
+    <string name="msg_claim_reward_tips">预估奖励，以实际到账为准</string>
+    <string name="msg_claim_wallet">领取钱包</string>
+    <string name="hint_search_validator">输入节点名称查询</string>
+    <string name="msg_hide">隐藏</string>
+    <string name="msg_sort">排序</string>
+
+    <string name="msg_node_rankings">节点排名</string>
+    <string name="msg_delegated_amount">接受委托量</string>
+    <string name="msg_delegator_number">委托者数</string>
+    <string name="msg_annual_yield">预计委托收益率</string>
+    <string name="msg_annual_reward_ratio">预计年化收益率</string>
+    <string name="msg_total_delegate_reward">累计委托奖励</string>
+    <string name="msg_delegate_balance">可委托余额</string>
+
+    <string name="msg_network_tips">当前%1$s网络，切勿将其他网络LAT转入到当前地址</string>
+
+    <string name="msg_avaliable_balance">可用余额：%1$s LAT</string>
+
+    <string name="msg_keystore_nor_exist">签名钱包密钥不存在</string>
+
 </resources>

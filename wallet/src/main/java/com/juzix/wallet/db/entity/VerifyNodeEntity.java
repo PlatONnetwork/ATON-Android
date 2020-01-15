@@ -212,19 +212,19 @@ public class VerifyNodeEntity extends RealmObject {
 
     }
 
-    public VerifyNode buildVerifyNodeEntity() {
-        return new VerifyNode.Builder()
-                .name(name)
-                .deposit(deposit)
-                .nodeId(nodeId)
-                .nodeStatus(nodeStatus)
-                .ranking(ranking)
-                .ratePA(String.valueOf(ratePA))
-                .url(url)
-                .isInit(isInit)
-                .isConsensus(isConsensus)
-                .build();
-    }
+//    public VerifyNode buildVerifyNodeEntity() {
+//        return new VerifyNode.Builder()
+//                .name(name)
+//                .deposit(deposit)
+//                .nodeId(nodeId)
+//                .nodeStatus(nodeStatus)
+//                .ranking(ranking)
+//                .ratePA(String.valueOf(ratePA))
+//                .url(url)
+//                .isInit(isInit)
+//                .isConsensus(isConsensus)
+//                .build();
+//    }
 
 
 }
