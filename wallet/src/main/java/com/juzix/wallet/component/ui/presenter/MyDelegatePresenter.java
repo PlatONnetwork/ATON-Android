@@ -162,32 +162,28 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
         ClaimRewardsDialogFragment.newInstance(claimRewardInfo).setOnConfirmBtnClickListener(new ClaimRewardsDialogFragment.OnConfirmBtnClickListener() {
             @Override
             public void onConfirmBtnClick() {
-                if (BigDecimalUtil.isNotSmaller(WalletManager.getInstance().getWalletByAddress(delegateInfo.getWalletAddress()).getFreeBalance(), claimRewardInfo.getFeeAmount())) {
-                    if (delegateInfo.isObservedWallet()) {
-                        showTransactionAuthorizationDialogFragment(delegateInfo.getWithdrawReward(), delegateInfo.getWalletAddress(), gasProvider, position);
-                    } else {
-                        InputWalletPasswordDialogFragment.newInstance(WalletManager.getInstance().getWalletByAddress(delegateInfo.getWalletAddress())).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
-                            @Override
-                            public void onWalletPasswordCorrect(Credentials credentials) {
-                                DelegateManager.getInstance()
-                                        .withdrawDelegateReward(credentials, claimRewardInfo.getFeeAmount(), AmountUtil.convertVonToLat(delegateInfo.getWithdrawReward()), gasProvider)
-                                        .compose(RxUtils.bindToLifecycle(currentActivity()))
-                                        .compose(RxUtils.getSchedulerTransformer())
-                                        .compose(RxUtils.getLoadingTransformer(currentActivity()))
-                                        .subscribe(new CustomObserver<Transaction>() {
-                                            @Override
-                                            public void accept(Transaction transaction) {
-                                                if (isViewAttached()) {
-                                                    getView().notifyItemChanged(true, position);
-                                                }
-                                            }
-                                        });
-
-                            }
-                        }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
-                    }
+                if (delegateInfo.isObservedWallet()) {
+                    showTransactionAuthorizationDialogFragment(delegateInfo.getWithdrawReward(), delegateInfo.getWalletAddress(), gasProvider, position);
                 } else {
-                    showLongToast(R.string.claim_reward_less_than_fee);
+                    InputWalletPasswordDialogFragment.newInstance(WalletManager.getInstance().getWalletByAddress(delegateInfo.getWalletAddress())).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
+                        @Override
+                        public void onWalletPasswordCorrect(Credentials credentials) {
+                            DelegateManager.getInstance()
+                                    .withdrawDelegateReward(credentials, claimRewardInfo.getFeeAmount(), AmountUtil.convertVonToLat(delegateInfo.getWithdrawReward()), gasProvider)
+                                    .compose(RxUtils.bindToLifecycle(currentActivity()))
+                                    .compose(RxUtils.getSchedulerTransformer())
+                                    .compose(RxUtils.getLoadingTransformer(currentActivity()))
+                                    .subscribe(new CustomObserver<Transaction>() {
+                                        @Override
+                                        public void accept(Transaction transaction) {
+                                            if (isViewAttached()) {
+                                                getView().notifyItemChanged(true, position);
+                                            }
+                                        }
+                                    });
+
+                        }
+                    }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
                 }
 
             }

@@ -13,8 +13,10 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.widget.ShadowButton;
+import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.ClaimRewardInfo;
 import com.juzix.wallet.utils.AmountUtil;
+import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.CommonTextUtils;
 import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.RxUtils;
@@ -81,6 +83,8 @@ public class ClaimRewardsDialogFragment extends BaseDialogFragment {
         tvBalanceAmount.setText(getString(R.string.msg_avaliable_balance, AmountUtil.formatAmountText(claimRewardInfo.getAvaliableBalanceAmount())));
 
         tvClaimWallet.setText(claimRewardInfo.getFromWalletName());
+
+        sbtnConfirm.setEnabled(BigDecimalUtil.isNotSmaller(WalletManager.getInstance().getWalletByAddress(claimRewardInfo.getFromWalletAddress()).getFreeBalance(), claimRewardInfo.getFeeAmount()));
 
         mDisposable = RxView.clicks(sbtnConfirm)
                 .compose(bindToLifecycle())
