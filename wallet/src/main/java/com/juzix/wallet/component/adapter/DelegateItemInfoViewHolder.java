@@ -58,8 +58,8 @@ public class DelegateItemInfoViewHolder extends BaseViewHolder<DelegateItemInfo>
         mDelegatedAmountTv = itemView.findViewById(R.id.tv_delegated_amount);
         mUndelegatedAmount = itemView.findViewById(R.id.tv_undelegated_amount);
         mUnclaimedRewardAmountTv = itemView.findViewById(R.id.tv_unclaimed_reward_amount);
-        mDelegateLayout = itemView.findViewById(R.id.tv_delegate);
-        mUnDelegateLayout = itemView.findViewById(R.id.tv_undelegate);
+        mDelegateLayout = itemView.findViewById(R.id.layout_delegate);
+        mUnDelegateLayout = itemView.findViewById(R.id.layout_undelegate);
         mNodeLinkIv = itemView.findViewById(R.id.iv_node_link);
         mItemParentLayout = itemView.findViewById(R.id.layout_item_parent);
         mUndelegatedTv = itemView.findViewById(R.id.tv_undelegated);

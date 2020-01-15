@@ -37,8 +37,9 @@
                     android:layout_marginBottom="12dp"
                     android:drawableLeft="@drawable/icon_no_delegate_tips"
                     android:drawablePadding="4dp"
+                    android:includeFontPadding="false"
                     android:maxLines="2"
-                    tools:text="You are on the xxxx Network. Never transfer other network LATs to this address." />
+                    tools:text="You are on the xxxx Network." />
 
                 <TextView
                     android:id="@+id/tv_address"
