@@ -153,20 +153,33 @@
             app:layout_constraintWidth_percent="0.5"
             tools:text="1,555.033678799" />
 
-        <com.juzix.wallet.component.widget.RoundedTextView
-            android:id="@+id/rtv_claim_reward"
-            style="@style/Text.105cfe.13"
-            android:layout_width="68dp"
+
+        <LinearLayout
+            android:id="@+id/layout_claim_reward"
+            android:layout_width="67dp"
             android:layout_height="28dp"
             android:layout_marginRight="10dp"
-            android:text="@string/msg_claim_reward"
+            android:background="@drawable/shape_reclaim_reward_bg"
+            android:gravity="center"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="@id/tv_unclaimed_reward_amount"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tv_unclaimed_reward_amount"
-            app:rtv_background_color="@color/color_ffffff"
-            app:rtv_border_color="@color/color_105cfe"
-            app:rtv_border_width="1dp"
-            app:rtv_corner_radius="14dp" />
+            app:layout_constraintTop_toTopOf="@id/tv_unclaimed_reward_amount">
+
+            <TextView
+                android:id="@+id/tv_claim_reward"
+                style="@style/Text.105cfe.13"
+                android:text="@string/msg_claim_reward"
+                android:visibility="gone" />
+
+            <com.juzix.wallet.component.widget.PendingClaimRewardAnimationLayout
+                android:id="@+id/layout_claim_reward_animation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:visibility="gone" />
+
+        </LinearLayout>
+
 
     </android.support.constraint.ConstraintLayout>
 

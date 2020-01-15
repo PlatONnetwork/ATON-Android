@@ -74,7 +74,7 @@
                     android:id="@+id/tv_avaliable_balance"
                     style="@style/Text.f9fbff.13"
                     android:layout_marginTop="30dp"
-                    android:text="@string/msg_avaliable_balance"
+                    android:text="@string/msg_delegate_balance"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_wallet_address" />
 
@@ -82,7 +82,7 @@
                     android:id="@+id/tv_avaliable_balance_amount"
                     style="@style/Text.f9fbff.14"
                     android:layout_marginTop="4dp"
-                    android:text="@string/msg_avaliable_balance"
+                    android:text="@string/msg_delegate_balance"
                     app:layout_constraintLeft_toLeftOf="@id/tv_avaliable_balance"
                     app:layout_constraintTop_toBottomOf="@id/tv_avaliable_balance"
                     tools:text="1,555.03967879" />

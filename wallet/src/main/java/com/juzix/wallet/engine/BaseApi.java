@@ -9,6 +9,7 @@ import com.juzix.wallet.entity.DelegateNodeDetail;
 import com.juzix.wallet.entity.DelegateHandle;
 import com.juzix.wallet.entity.DelegateInfo;
 import com.juzix.wallet.entity.DelegationValue;
+import com.juzix.wallet.entity.GasProvider;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionReceipt;
 import com.juzix.wallet.entity.VerifyNode;
@@ -164,4 +165,13 @@ public interface BaseApi {
      */
     @POST("app/v0760/transaction/getRewardTransactions")
     Single<Response<ApiResponse<List<ClaimRewardRecord>>>> getRewardTransactions(@Body ApiRequestBody body);
+
+    /**
+     * 估算gas,支持委托、赎回委托、领取奖励交易类型
+     *
+     * @param body
+     * @return
+     */
+    @POST("app/v0760//transaction/estimateGas")
+    Single<Response<ApiResponse<GasProvider>>> getGasProvider(@Body ApiRequestBody body);
 }

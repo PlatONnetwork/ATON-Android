@@ -180,6 +180,31 @@ public class WalletManager {
         return "";
     }
 
+    public boolean isObservedWallet(String walletAddress) {
+
+        if (mWalletList.isEmpty()) {
+            return false;
+        }
+
+        return Flowable
+                .fromIterable(mWalletList)
+                .filter(new Predicate<Wallet>() {
+                    @Override
+                    public boolean test(Wallet wallet) throws Exception {
+                        return wallet.getPrefixAddress().equalsIgnoreCase(walletAddress);
+                    }
+                })
+                .map(new Function<Wallet, Boolean>() {
+                    @Override
+                    public Boolean apply(Wallet wallet) throws Exception {
+                        return wallet.isObservedWallet();
+                    }
+                })
+                .defaultIfEmpty(false)
+                .blockingFirst();
+
+    }
+
     /**
      * 获取钱包头像
      */

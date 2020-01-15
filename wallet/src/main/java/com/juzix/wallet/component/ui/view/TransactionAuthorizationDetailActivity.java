@@ -143,6 +143,8 @@ public class TransactionAuthorizationDetailActivity extends BaseActivity {
                 return R.string.delegate;
             case FunctionType.WITHDREW_DELEGATE_FUNC_TYPE:
                 return R.string.undelegate;
+            case FunctionType.WITHDRAW_DELEGATE_REWARD_FUNC_TYPE:
+                return R.string.msg_claim_rewards;
             default:
                 return R.string.transfer;
         }

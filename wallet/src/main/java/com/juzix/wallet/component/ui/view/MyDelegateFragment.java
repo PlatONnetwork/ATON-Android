@@ -31,7 +31,9 @@ import com.juzix.wallet.component.ui.presenter.MyDelegatePresenter;
 import com.juzix.wallet.component.widget.CustomRefreshHeader;
 import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.config.AppSettings;
+import com.juzix.wallet.entity.ClaimRewardInfo;
 import com.juzix.wallet.entity.DelegateInfo;
+import com.juzix.wallet.entity.DelegateItemInfo;
 import com.juzix.wallet.entity.GuideType;
 import com.juzix.wallet.entity.WebType;
 import com.juzix.wallet.event.Event;
@@ -175,8 +177,8 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
             }
 
             @Override
-            public void onClaimRewardClick() {
-
+            public void onClaimRewardClick(DelegateInfo delegateInfo, int position) {
+                mPresenter.withdrawDelegateReward(delegateInfo, position);
             }
         });
 
@@ -251,6 +253,11 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
         totalUnclaimedRewardAmountTv.setText(AmountUtil.formatAmountText(totalAmountArray.get(TotalAmountType.TOTAL_UNCLAIMED_REWARD)));
     }
 
+    @Override
+    public void notifyItemChanged(boolean isPending, int position) {
+        mMyDelegateAdapter.notifyItemDataChanged(isPending, position);
+    }
+
     private SparseArray<String> getTotalAmountArray(List<DelegateInfo> list) {
 
         if (list == null || list.isEmpty()) {
@@ -306,6 +313,12 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
         } else {
             AppSettings.getInstance().setMydelegateTab(false);
         }
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdateTransactionEvent(Event.UpdateTransactionEvent event) {
+        mPresenter.loadMyDelegateData();
     }
 
     @Override

@@ -89,7 +89,9 @@ public abstract class ApiSingleObserver<T> extends AtomicReference<Disposable> i
 
     public abstract void onApiSuccess(T t);
 
-    public abstract void onApiFailure(ApiResponse response);
+    public void onApiFailure(ApiResponse response) {
+
+    }
 
     @Override
     public void dispose() {

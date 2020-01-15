@@ -3,7 +3,7 @@ package com.juzix.wallet.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class DelegateInfo implements Parcelable {
+public class DelegateInfo implements Parcelable, Cloneable {
     /**
      * 钱包名称
      */
@@ -35,6 +35,15 @@ public class DelegateInfo implements Parcelable {
      */
     private String delegated;
 
+    /**
+     * 是否正在pending
+     */
+    private boolean isPending;
+
+    /**
+     * 是否是观察者钱包
+     */
+    private boolean isObservedWallet;
 
     public DelegateInfo() {
 
@@ -44,9 +53,11 @@ public class DelegateInfo implements Parcelable {
         walletName = in.readString();
         walletAddress = in.readString();
         walletIcon = in.readString();
-        cumulativeReward =in.readString();
+        cumulativeReward = in.readString();
         withdrawReward = in.readString();
         delegated = in.readString();
+        isPending = in.readByte() != 0;
+        isObservedWallet = in.readByte() != 0;
     }
 
     @Override
@@ -57,6 +68,8 @@ public class DelegateInfo implements Parcelable {
         dest.writeString(cumulativeReward);
         dest.writeString(withdrawReward);
         dest.writeString(delegated);
+        dest.writeByte((byte) (isPending ? 1 : 0));
+        dest.writeByte((byte) (isObservedWallet ? 1 : 0));
     }
 
     @Override
@@ -122,5 +135,32 @@ public class DelegateInfo implements Parcelable {
 
     public void setWithdrawReward(String withdrawReward) {
         this.withdrawReward = withdrawReward;
+    }
+
+    public boolean isPending() {
+        return isPending;
+    }
+
+    public void setPending(boolean pending) {
+        isPending = pending;
+    }
+
+    public boolean isObservedWallet() {
+        return isObservedWallet;
+    }
+
+    public void setObservedWallet(boolean observedWallet) {
+        isObservedWallet = observedWallet;
+    }
+
+    @Override
+    public DelegateInfo clone() {
+        DelegateInfo delegateInfo = null;
+        try {
+            delegateInfo = (DelegateInfo) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return delegateInfo;
     }
 }

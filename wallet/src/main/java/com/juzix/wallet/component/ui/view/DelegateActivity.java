@@ -45,7 +45,6 @@ import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.component.widget.VerticalImageSpan;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.entity.DelegateItemInfo;
-import com.juzix.wallet.entity.DelegateNodeDetail;
 import com.juzix.wallet.entity.DelegateHandle;
 import com.juzix.wallet.entity.DelegateType;
 import com.juzix.wallet.entity.GuideType;
@@ -294,7 +293,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
             inputTips.setVisibility(TextUtils.isEmpty(amountMagnitudes) ? View.GONE : View.VISIBLE);
             v_tips.setVisibility(TextUtils.isEmpty(amountMagnitudes) ? View.GONE : View.VISIBLE);
 
-            mPresenter.getGasPrice(stakingAmountType); //获取手续费
+            mPresenter.getGasProvider(stakingAmountType); //获取手续费
         }
 
         @Override

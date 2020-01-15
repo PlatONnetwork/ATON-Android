@@ -3,6 +3,7 @@ package com.juzix.wallet.engine;
 import android.text.TextUtils;
 
 import com.juzix.wallet.BuildConfig;
+import com.juzix.wallet.R;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.entity.Node;
 import com.juzix.wallet.event.EventPublisher;
@@ -147,6 +148,7 @@ public class NodeManager {
     public Single<Boolean> updateNode(Node nodeEntity, boolean isChecked) {
         return nodeService.updateNode(nodeEntity.getId(), isChecked);
     }
+
 
     private List<Node> buildDefaultNodeList() {
 

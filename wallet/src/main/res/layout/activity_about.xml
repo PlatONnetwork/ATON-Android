@@ -53,6 +53,15 @@
             android:showDividers="middle">
 
             <TextView
+                android:id="@+id/tv_service_agreement"
+                style="@style/Text.000.16"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:drawableRight="@drawable/icon_right_arrow"
+                android:gravity="center_vertical|left"
+                android:text="@string/service_agreement" />
+
+            <TextView
                 android:id="@+id/tv_privacy_policy"
                 style="@style/Text.000.16"
                 android:layout_width="match_parent"

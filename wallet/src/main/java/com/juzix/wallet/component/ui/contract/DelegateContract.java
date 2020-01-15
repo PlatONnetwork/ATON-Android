@@ -62,7 +62,7 @@ public class DelegateContract {
 
         void checkIsCanDelegate(String walletAddress, String nodeAddress);
 
-        void getGasPrice(StakingAmountType stakingAmountType);
+        void getGasProvider(StakingAmountType stakingAmountType);
 
         void getGas();
 

@@ -106,7 +106,6 @@
         android:paddingTop="4dp"
         android:paddingRight="6dp"
         android:paddingBottom="8dp"
-        app:enabled="false"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_balance_amount"

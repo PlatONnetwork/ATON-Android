@@ -10,15 +10,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <include
-            layout="@layout/include_share_content" />
+        <include layout="@layout/include_share_content" />
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/color_f9fbff"
             android:paddingLeft="16dp"
-            android:paddingTop="14dp"
+            android:paddingTop="16dp"
             android:paddingRight="16dp">
 
             <LinearLayout
@@ -32,19 +31,23 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <LinearLayout
+                <TextView
+                    android:id="@+id/tv_network_tips"
+                    style="@style/Text.ff6b00.12"
+                    android:layout_marginBottom="12dp"
+                    android:drawableLeft="@drawable/icon_no_delegate_tips"
+                    android:drawablePadding="4dp"
+                    android:maxLines="2"
+                    tools:text="You are on the xxxx Network. Never transfer other network LATs to this address." />
+
+                <TextView
+                    android:id="@+id/tv_address"
+                    style="@style/Text.898c9e.12"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/tv_address"
-                        style="@style/Text.898c9e.12"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal" />
-                </LinearLayout>
+                    android:gravity="center_horizontal"
+                    tools:text="0x3ofg449Gf3lw4ghy330443020fdg4o4f8mdf3slKF" />
 
                 <TextView
                     android:id="@+id/tv_transation_type"

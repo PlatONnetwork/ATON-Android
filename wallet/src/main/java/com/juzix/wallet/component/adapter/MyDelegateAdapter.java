@@ -15,7 +15,9 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.widget.CircleImageView;
+import com.juzix.wallet.component.widget.PendingClaimRewardAnimationLayout;
 import com.juzix.wallet.component.widget.RoundedTextView;
 import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.entity.DelegateInfo;
@@ -73,7 +75,9 @@ public class MyDelegateAdapter extends RecyclerView.Adapter<MyDelegateAdapter.Vi
         holder.totalRewardAmountTv.setText(AmountUtil.formatAmountText(info.getCumulativeReward()));
         holder.delegatedAmountTv.setText(AmountUtil.formatAmountText(info.getDelegated()));
         holder.unclaimedRewardAmountTv.setText(AmountUtil.formatAmountText(info.getWithdrawReward()));
-        holder.claimRewardRtv.setVisibility(BigDecimalUtil.isBiggerThanZero(info.getWithdrawReward()) ? View.VISIBLE : View.GONE);
+        holder.claimRewardLayout.setVisibility(BigDecimalUtil.isBiggerThanZero(info.getWithdrawReward()) ? View.VISIBLE : View.GONE);
+        holder.claimRewardRtv.setVisibility(info.isPending() ? View.GONE : View.VISIBLE);
+        holder.pendingClaimRewardAnimationLayout.setVisibility(info.isPending() ? View.VISIBLE : View.GONE);
 
         RxView
                 .clicks(holder.itemView)
@@ -106,7 +110,7 @@ public class MyDelegateAdapter extends RecyclerView.Adapter<MyDelegateAdapter.Vi
                     @Override
                     public void accept(Object o) throws Exception {
                         if (mOnItemClickListener != null) {
-                            mOnItemClickListener.onClaimRewardClick();
+                            mOnItemClickListener.onClaimRewardClick(info, position);
                         }
                     }
                 });
@@ -114,16 +118,32 @@ public class MyDelegateAdapter extends RecyclerView.Adapter<MyDelegateAdapter.Vi
 
     }
 
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull List<Object> payloads) {
+        if (payloads.isEmpty()) {
+            super.onBindViewHolder(holder, position, payloads);
+        } else {
+            DelegateInfo delegateInfo = (DelegateInfo) payloads.get(0);
+            holder.claimRewardRtv.setVisibility(delegateInfo.isPending() ? View.GONE : View.VISIBLE);
+            holder.pendingClaimRewardAnimationLayout.setVisibility(delegateInfo.isPending() ? View.VISIBLE : View.GONE);
+        }
+    }
+
     public void notifyDataChanged(List<DelegateInfo> list) {
         this.infoList = list;
         notifyDataSetChanged();
     }
 
-    public void notifyItemDataChanged(int positon, DelegateInfo info) {
-        if (info == null) {
+    public void notifyItemDataChanged(boolean isPending, int position) {
+        if (position > getItemCount()) {
             return;
         }
-        notifyItemChanged(positon, info);
+
+        DelegateInfo info = infoList.get(position);
+
+        info.setPending(isPending);
+
+        notifyItemChanged(position, info);
     }
 
     @Override
@@ -152,8 +172,12 @@ public class MyDelegateAdapter extends RecyclerView.Adapter<MyDelegateAdapter.Vi
         TextView totalRewardAmountTv;
         @BindView(R.id.tv_unclaimed_reward_amount)
         TextView unclaimedRewardAmountTv;
-        @BindView(R.id.rtv_claim_reward)
-        RoundedTextView claimRewardRtv;
+        @BindView(R.id.tv_claim_reward)
+        TextView claimRewardRtv;
+        @BindView(R.id.layout_claim_reward_animation)
+        PendingClaimRewardAnimationLayout pendingClaimRewardAnimationLayout;
+        @BindView(R.id.layout_claim_reward)
+        LinearLayout claimRewardLayout;
 
         public ViewHolder(View view) {
             super(view);
@@ -168,6 +192,6 @@ public class MyDelegateAdapter extends RecyclerView.Adapter<MyDelegateAdapter.Vi
         /**
          * 领取奖励
          */
-        void onClaimRewardClick();
+        void onClaimRewardClick(DelegateInfo delegateInfo, int position);
     }
 }

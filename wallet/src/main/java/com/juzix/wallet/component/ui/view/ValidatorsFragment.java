@@ -230,6 +230,18 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
                     }
                 });
 
+        RxView
+                .clicks(clearIv)
+                .compose(RxUtils.bindToLifecycle(this))
+                .compose(RxUtils.getClickTransformer())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        searchEt.setText("");
+                        mPresenter.loadValidatorsData(getNodeStatusByTab(mTab), mSortType, searchEt.getText().toString().trim(), false);
+                    }
+                });
+
         RxTextView
                 .editorActionEvents(searchEt, new Predicate<TextViewEditorActionEvent>() {
                     @Override

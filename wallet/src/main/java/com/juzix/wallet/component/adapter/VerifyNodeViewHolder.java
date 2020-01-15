@@ -68,7 +68,7 @@ public class VerifyNodeViewHolder extends BaseViewHolder<VerifyNode> {
 
         GlideUtils.loadRound(mContext, data.getUrl(), mNodeAvatarCiv);
         mNodeNameTv.setText(data.getName());
-        mNodeDelegatedAmount.setText(String.format("%s%s", mContext.getResources().getString(R.string.amount_with_unit, AmountUtil.convertVonToLat(data.getDelegateSum())), StringUtil.formatBalance(data.getDelegate())));
+        mNodeDelegatedAmount.setText(String.format("%s / %s", mContext.getResources().getString(R.string.amount_with_unit, AmountUtil.convertVonToLat(data.getDelegateSum())), StringUtil.formatBalance(data.getDelegate())));
         int nodeStatusDescRes = data.getNodeStatusDescRes();
         if (nodeStatusDescRes != -1) {
             mNodeStateRtv.setText(nodeStatusDescRes);
@@ -100,7 +100,7 @@ public class VerifyNodeViewHolder extends BaseViewHolder<VerifyNode> {
                     HashMap<String, String> map = new HashMap<>();
                     String deposit = map.get(VerifyNodeDiffCallback.KEY_DEPOSIT);
                     String delegatorNumber = map.get(VerifyNodeDiffCallback.KEY_DELEGATOR_NUMBER);
-                    mNodeDelegatedAmount.setText(String.format("%s%s", mContext.getResources().getString(R.string.amount_with_unit, AmountUtil.convertVonToLat(deposit)), StringUtil.formatBalance(delegatorNumber)));
+                    mNodeDelegatedAmount.setText(String.format("%s / %s", mContext.getResources().getString(R.string.amount_with_unit, AmountUtil.convertVonToLat(deposit)), StringUtil.formatBalance(delegatorNumber)));
                     break;
                 case VerifyNodeDiffCallback.KEY_URL:
                     String url = bundle.getString(key);
