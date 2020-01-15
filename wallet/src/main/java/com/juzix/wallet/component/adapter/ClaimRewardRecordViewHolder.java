@@ -70,6 +70,7 @@ public class ClaimRewardRecordViewHolder extends BaseViewHolder<ClaimRewardRecor
         mWalletAddressTv.setText(AddressFormatUtil.formatAddress(data.getAddress()));
         mClaimRewardTimeTv.setText(String.format("#%s", DateUtil.format(data.getTimestamp(), DateUtil.DATETIME_FORMAT_PATTERN)));
         mSpreadIv.setImageResource(data.isExpanded() ? R.drawable.icon_pull_up_blue : R.drawable.icon_drop_down_blue);
+        mSpreadIv.setVisibility(data.getClaimRewardList() == null || data.getClaimRewardList().isEmpty() ? View.GONE : View.VISIBLE);
 
         if (mClaimRecordDetailListLayout.getChildCount() > 0) {
             mClaimRecordDetailListLayout.removeAllViews();

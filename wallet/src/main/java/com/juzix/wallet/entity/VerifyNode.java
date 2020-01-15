@@ -2,8 +2,11 @@ package com.juzix.wallet.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
+import com.juzix.wallet.utils.BigDecimalUtil;
+
 import java.text.NumberFormat;
 
 public class VerifyNode implements Parcelable {
@@ -204,7 +207,6 @@ public class VerifyNode implements Parcelable {
     }
 
     public String getShowDelegatedRatePA() {
-        //todo 待重构
-        return isInit ? null : NumberFormat.getInstance().format(((NumberParserUtils.parseDouble(delegatedRatePA)) / 100)) + "%";
+        return isInit ? "--" : String.format("%s%%", NumberParserUtils.parseStringWithoutTwoDecimals(delegatedRatePA));
     }
 }

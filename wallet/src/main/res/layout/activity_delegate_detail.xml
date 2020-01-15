@@ -82,7 +82,7 @@
                     android:id="@+id/tv_avaliable_balance_amount"
                     style="@style/Text.f9fbff.14"
                     android:layout_marginTop="4dp"
-                    android:text="@string/msg_delegate_balance"
+                    android:text="— —"
                     app:layout_constraintLeft_toLeftOf="@id/tv_avaliable_balance"
                     app:layout_constraintTop_toBottomOf="@id/tv_avaliable_balance"
                     tools:text="1,555.03967879" />
@@ -100,6 +100,7 @@
                     android:id="@+id/tv_total_delegated_amount"
                     style="@style/Text.f9fbff.14"
                     android:layout_marginTop="4dp"
+                    android:text="— —"
                     app:layout_constraintLeft_toLeftOf="@id/tv_total_delegated"
                     app:layout_constraintTop_toBottomOf="@id/tv_total_delegated"
                     tools:text="1,555.03967879" />

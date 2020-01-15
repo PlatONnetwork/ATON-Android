@@ -42,12 +42,19 @@ import org.web3j.tx.gas.GasProvider;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
+import io.reactivex.SingleSource;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
+import retrofit2.Response;
 
 public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> implements WithDrawContract.Presenter {
 
@@ -65,7 +72,9 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     public WithDrawPresenter(WithDrawContract.View view) {
         super(view);
         mDelegateDetail = view.getDelegateDetailFromIntent();
-        if (mDelegateDetail != null) {
+        if (TextUtils.isEmpty(mDelegateDetail.getWalletAddress())) {
+            mWallet = sortByFreeAccountAndCreateTime(WalletManager.getInstance().getWalletList()).get(0);
+        } else {
             mWallet = WalletManager.getInstance().getWalletEntityByWalletAddress(mDelegateDetail.getWalletAddress());
         }
     }
@@ -119,65 +128,60 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
             return;
         }
         ServerUtils.getCommonApi().getDelegationValue(ApiRequestBody.newBuilder()
-                .put("addr", mDelegateDetail.getWalletAddress())
+                .put("addr", mWallet.getPrefixAddress())
                 .put("nodeId", mDelegateDetail.getNodeId())
                 .build())
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(bindToLifecycle())
                 .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
-                .subscribe(new ApiSingleObserver<DelegationValue>() {
+                .map(new Function<Response<ApiResponse<DelegationValue>>, DelegationValue>() {
+
                     @Override
-                    public void onApiSuccess(DelegationValue delegationValue) {
-                        if (isViewAttached()) {
-                            list.clear();
-                            list.addAll(delegationValue.getWithDrawBalanceList());
+                    public DelegationValue apply(Response<ApiResponse<DelegationValue>> apiResponseResponse) throws Exception {
+                        return apiResponseResponse != null && apiResponseResponse.isSuccessful() ? apiResponseResponse.body().getData() : null;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSuccess(new Consumer<DelegationValue>() {
+                    @Override
+                    public void accept(DelegationValue delegationValue) throws Exception {
+                        list.clear();
+                        list.addAll(delegationValue.getWithDrawBalanceList());
 
-                            minDelegation = delegationValue.getMinDelegation();
+                        minDelegation = delegationValue.getMinDelegation();
 
-                            double releasedSum = delegationValue.getReleasedSumAmount(); //待赎回
-                            double delegatedSum = delegationValue.getDelegatedSumAmount();//已委托
+                        double releasedSum = delegationValue.getReleasedSumAmount(); //待赎回
+                        double delegatedSum = delegationValue.getDelegatedSumAmount();//已委托
 
-                            getView().showBalanceType(delegatedSum, releasedSum, NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(minDelegation, "1E18")));
+                        getView().showBalanceType(delegatedSum, releasedSum, NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(minDelegation, "1E18")));
 
-                            if (delegatedSum + releasedSum <= 0) {
-                                getView().finishDelayed();
-                            }
-
+                        if (delegatedSum + releasedSum <= 0) {
+                            getView().finishDelayed();
                         }
-
                     }
-
+                })
+                .observeOn(Schedulers.io())
+                .flatMap(new Function<DelegationValue, SingleSource<Response<ApiResponse<com.juzix.wallet.entity.GasProvider>>>>() {
                     @Override
-                    public void onApiFailure(ApiResponse response) {
-
+                    public SingleSource<Response<ApiResponse<com.juzix.wallet.entity.GasProvider>>> apply(DelegationValue delegationValue) throws Exception {
+                        return ServerUtils.getCommonApi().getGasProvider(ApiRequestBody.newBuilder()
+                                .put("from", mDelegateDetail.getWalletAddress())
+                                .put("txType", FunctionType.WITHDREW_DELEGATE_FUNC_TYPE)
+                                .put("nodeId", mDelegateDetail.getNodeId())
+                                .put("stakingBlockNum", delegationValue.getWithDrawBalanceList().get(0).getStakingBlockNum())
+                                .build());
                     }
-                });
-    }
-
-    /**
-     * 获取
-     */
-    @SuppressLint("CheckResult")
-    @Override
-    public void getGas() {
-
-        ServerUtils.getCommonApi().getGasProvider(ApiRequestBody.newBuilder()
-                .put("from", mWallet.getPrefixAddress())
-                .put("txType", FunctionType.WITHDREW_DELEGATE_FUNC_TYPE)
-                .put("nodeId", mDelegateDetail.getNodeId())
-                .put("stakingBlockNum", 100)
-                .build())
-                .compose(RxUtils.bindToLifecycle(currentActivity()))
-                .compose(RxUtils.getSingleSchedulerTransformer())
-                .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
+                })
                 .subscribe(new ApiSingleObserver<com.juzix.wallet.entity.GasProvider>() {
                     @Override
                     public void onApiSuccess(com.juzix.wallet.entity.GasProvider gasProvider) {
                         if (isViewAttached()) {
                             mGasProvider = gasProvider.toSdkGasProvider();
+                            getView().showGas(mGasProvider.getGasPrice());
                         }
                     }
-                });
+                })
+        ;
     }
 
 
@@ -198,6 +202,33 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
 
         feeAmount = getFeeAmount(mGasProvider);
         getView().showWithDrawGasPrice(feeAmount);
+    }
+
+    private Wallet getDefaultWallet(DelegateItemInfo delegateDetail) {
+        if (delegateDetail != null && !TextUtils.isEmpty(delegateDetail.getWalletAddress())) {
+            return WalletManager.getInstance().getWalletEntityByWalletAddress(delegateDetail.getWalletAddress());
+        } else {
+            return sortByFreeAccountAndCreateTime(WalletManager.getInstance().getWalletList()).get(0);
+        }
+    }
+
+    private List<Wallet> sortByFreeAccountAndCreateTime(List<Wallet> walletList) {
+        Collections.sort(walletList, new Comparator<Wallet>() {
+            @Override
+            public int compare(Wallet o1, Wallet o2) {
+                int compare = Double.compare(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(o2.getFreeBalance(), "1E18"))), NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(o1.getFreeBalance(), "1E18"))));
+                if (compare != 0) {
+                    return compare;
+                }
+                compare = Long.compare(o1.getCreateTime(), o2.getCreateTime());
+                if (compare != 0) {
+                    return compare;
+                }
+                return 0;
+            }
+        });
+
+        return walletList;
     }
 
     private String getFeeAmount(GasProvider gasProvider) {

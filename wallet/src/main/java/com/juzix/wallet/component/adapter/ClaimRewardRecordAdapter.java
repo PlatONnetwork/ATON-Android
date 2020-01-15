@@ -41,7 +41,9 @@ public class ClaimRewardRecordAdapter extends RecyclerView.Adapter<BaseViewHolde
         claimRewardRecordBaseViewHolder.setOnItemClickListener(new BaseViewHolder.OnItemClickListener<ClaimRewardRecord>() {
             @Override
             public void onItemClick(ClaimRewardRecord claimRewardRecord) {
-                notifyItemSpreadChanged(position, !claimRewardRecord.isExpanded());
+                if (mClaimRewardRecordList.get(position).getClaimRewardList() != null && !mClaimRewardRecordList.get(position).getClaimRewardList().isEmpty()) {
+                    notifyItemSpreadChanged(position, !claimRewardRecord.isExpanded());
+                }
             }
         });
     }

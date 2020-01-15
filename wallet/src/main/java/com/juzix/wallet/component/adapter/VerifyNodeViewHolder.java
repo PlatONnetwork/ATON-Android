@@ -73,8 +73,8 @@ public class VerifyNodeViewHolder extends BaseViewHolder<VerifyNode> {
         if (nodeStatusDescRes != -1) {
             mNodeStateRtv.setText(nodeStatusDescRes);
         }
-        mNodeStateRtv.setTextColor(getNodeStatusTextAndBorderColor(data.getNodeStatus(), data.isConsensus()));
-        mNodeStateRtv.setRoundedBorderColor(getNodeStatusTextAndBorderColor(data.getNodeStatus(), data.isConsensus()));
+        mNodeStateRtv.setTextColor(ContextCompat.getColor(mContext, getNodeStatusTextAndBorderColor(data.getNodeStatus(), data.isConsensus())));
+        mNodeStateRtv.setRoundedBorderColor(ContextCompat.getColor(mContext, getNodeStatusTextAndBorderColor(data.getNodeStatus(), data.isConsensus())));
         mNodeRankTv.setText(String.valueOf(data.getRanking()));
         mNodeRankTv.setBackgroundResource(getRankBackground(NumberParserUtils.parseInt(data.getRanking())));
         mNodeRankTv.setTextSize(getRankTextSize(data.getRanking()));

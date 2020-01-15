@@ -121,12 +121,16 @@ public class TransactionAuthorizationDetailActivity extends BaseActivity {
                 .subscribe(new Consumer<Wallet>() {
                     @Override
                     public void accept(Wallet wallet) throws Exception {
-                        InputWalletPasswordDialogFragment.newInstance(wallet).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
-                            @Override
-                            public void onWalletPasswordCorrect(Credentials credentials) {
-                                AuthorizationSignatureDialogFragment.newInstance(transactionAuthorizationData.toTransactionSignatureData(credentials).toJSONString()).show(getSupportFragmentManager(), "showAuthorizationSignatureDialog");
-                            }
-                        }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
+                        if (TextUtils.isEmpty(wallet.getKey())) {
+                            showLongToast(R.string.msg_keystore_nor_exist);
+                        } else {
+                            InputWalletPasswordDialogFragment.newInstance(wallet).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
+                                @Override
+                                public void onWalletPasswordCorrect(Credentials credentials) {
+                                    AuthorizationSignatureDialogFragment.newInstance(transactionAuthorizationData.toTransactionSignatureData(credentials).toJSONString()).show(getSupportFragmentManager(), "showAuthorizationSignatureDialog");
+                                }
+                            }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
+                        }
                     }
 
                 }, new Consumer<Throwable>() {

@@ -690,10 +690,10 @@
     <string name="web_url_web_portals">https://www.platon.network</string>
     <string name="web_url_faq">https://platon.zendesk.com/hc/zh-cn/categories/360002174434</string>
     <string name="web_url_tutorial">https://platon.zendesk.com/hc/zh-cn/categories/360002193633</string>
-    <string name="web_url_agreement">%1$s/app/v0760/aton-agreement/zh-cn/agreement.html</string>
+    <string name="web_url_agreement">%1$s/aton-agreement/zh-cn/v0760/agreement.html</string>
     <string name="web_url_support_feedback">https://platon.zendesk.com/hc/zh-cn</string>
     <string name="web_url_common_delegate_problem">https://platon.zendesk.com/hc/zh-cn/articles/360037373194-Common-questions-about-PlatON-Delegators</string>
-    <string name="web_url_privacy_policy">%1$s/aton-agreement/en-us/zh-cn/privacyAgreement.html</string>
+    <string name="web_url_privacy_policy">%1$s/aton-agreement/zh-cn/privacyAgreement.html</string>
 
     <string name="withdraw_amount_tips">赎回数量不能少于%1$sLAT</string>
     <string name="unrecognized_content">无法识别内容</string>
@@ -755,5 +755,7 @@
     <string name="msg_network_tips">当前%1$s网络，切勿将其他网络LAT转入到当前地址</string>
 
     <string name="msg_avaliable_balance">可用余额：%1$s LAT</string>
+
+    <string name="msg_keystore_nor_exist">签名钱包密钥不存在</string>
 
 </resources>

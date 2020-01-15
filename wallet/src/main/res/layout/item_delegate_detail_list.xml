@@ -2,9 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_item_parent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/layout_item_parent"
     android:background="@drawable/bg_mydelegate_item"
     android:orientation="vertical"
     android:paddingLeft="10dp"
@@ -176,44 +176,60 @@
         android:layout_marginTop="15dp"
         android:background="@color/color_e4e7f3" />
 
-    <android.support.constraint.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp">
+        android:layout_height="40dp"
+        android:divider="@drawable/divider_delegate_undelegate"
+        android:dividerPadding="14dp"
+        android:orientation="horizontal"
+        android:showDividers="middle">
 
-        <TextView
-            android:id="@+id/tv_delegate"
-            style="@style/Text.000.14"
+
+        <LinearLayout
+            android:id="@+id/layout_delegate"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:drawableLeft="@drawable/icon_detail_delegate"
-            android:drawablePadding="4dp"
-            android:text="@string/delegate"
-            android:textStyle="bold"
-            app:layout_constraintHorizontal_chainStyle="spread"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/view_divider" />
+            android:layout_weight="1"
+            android:background="@drawable/selector_delegate"
+            android:gravity="center"
+            android:orientation="horizontal">
 
-        <View
-            android:id="@+id/view_divider"
-            android:layout_width="1dp"
-            android:layout_height="12dp"
-            android:background="@color/color_e4e7f3"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/tv_delegate"
-            app:layout_constraintRight_toLeftOf="@id/tv_undelegate"
-            app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/tv_delegate"
+                style="@style/Text.000.14"
+                android:drawableLeft="@drawable/icon_detail_delegate"
+                android:drawablePadding="4dp"
+                android:text="@string/delegate"
+                android:textStyle="bold"
+                app:layout_constraintHorizontal_chainStyle="spread"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/view_divider" />
 
-        <TextView
-            android:id="@+id/tv_undelegate"
-            style="@style/Text.000.14"
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/layout_undelegate"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:drawableLeft="@drawable/icon_detail_undelegate"
-            android:drawablePadding="4dp"
-            android:text="@string/undelegate"
-            android:textStyle="bold"
-            app:layout_constraintLeft_toRightOf="@id/view_divider"
-            app:layout_constraintRight_toRightOf="parent" />
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal">
 
-    </android.support.constraint.ConstraintLayout>
+            <TextView
+                android:id="@+id/tv_undelegate"
+                style="@style/Text.000.14"
+                android:layout_height="match_parent"
+                android:drawableLeft="@drawable/icon_detail_undelegate"
+                android:drawablePadding="4dp"
+                android:text="@string/undelegate"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toRightOf="@id/view_divider"
+                app:layout_constraintRight_toRightOf="parent" />
+        </LinearLayout>
+
+
+    </LinearLayout>
 
 
 </LinearLayout>

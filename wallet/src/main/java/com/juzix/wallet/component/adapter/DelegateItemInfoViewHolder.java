@@ -2,12 +2,14 @@ package com.juzix.wallet.component.adapter;
 
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.adapter.base.BaseViewHolder;
 import com.juzix.wallet.component.ui.base.BaseActivity;
@@ -23,6 +25,7 @@ import com.juzix.wallet.entity.NodeStatus;
 import com.juzix.wallet.entity.WebType;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.AmountUtil;
+import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.GlideUtils;
 
@@ -37,11 +40,12 @@ public class DelegateItemInfoViewHolder extends BaseViewHolder<DelegateItemInfo>
     private TextView mDelegatedAmountTv;
     private TextView mUndelegatedAmount;
     private TextView mUnclaimedRewardAmountTv;
-    private TextView mDelegateTv;
-    private TextView mUnDelegateTv;
+    private LinearLayout mDelegateLayout;
+    private LinearLayout mUnDelegateLayout;
     private ImageView mNodeLinkIv;
     private LinearLayout mItemParentLayout;
     private TextView mUndelegatedTv;
+    private LinearLayout mUnclaimRewardLayout;
 
 
     public DelegateItemInfoViewHolder(int viewId, ViewGroup parent) {
@@ -54,11 +58,12 @@ public class DelegateItemInfoViewHolder extends BaseViewHolder<DelegateItemInfo>
         mDelegatedAmountTv = itemView.findViewById(R.id.tv_delegated_amount);
         mUndelegatedAmount = itemView.findViewById(R.id.tv_undelegated_amount);
         mUnclaimedRewardAmountTv = itemView.findViewById(R.id.tv_unclaimed_reward_amount);
-        mDelegateTv = itemView.findViewById(R.id.tv_delegate);
-        mUnDelegateTv = itemView.findViewById(R.id.tv_undelegate);
+        mDelegateLayout = itemView.findViewById(R.id.tv_delegate);
+        mUnDelegateLayout = itemView.findViewById(R.id.tv_undelegate);
         mNodeLinkIv = itemView.findViewById(R.id.iv_node_link);
         mItemParentLayout = itemView.findViewById(R.id.layout_item_parent);
         mUndelegatedTv = itemView.findViewById(R.id.tv_undelegated);
+        mUnclaimRewardLayout = itemView.findViewById(R.id.layout_unclaim_reward);
     }
 
 
@@ -82,15 +87,18 @@ public class DelegateItemInfoViewHolder extends BaseViewHolder<DelegateItemInfo>
         mDelegatedAmountTv.setText(AmountUtil.formatAmountText(data.getDelegated()));
         mUndelegatedAmount.setText(AmountUtil.formatAmountText(data.getReleased()));
         mUnclaimedRewardAmountTv.setText(AmountUtil.formatAmountText(data.getWithdrawReward()));
+        mUnclaimRewardLayout.setVisibility(BigDecimalUtil.isBiggerThanZero(data.getWithdrawReward()) ? View.VISIBLE : View.GONE);
 
-        mDelegateTv.setOnClickListener(new View.OnClickListener() {
+        mDelegateLayout.setEnabled(isDelegateBtnEnabled(data));
+
+        mDelegateLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DelegateActivity.actionStart(mContext, data);
             }
         });
 
-        mUnDelegateTv.setOnClickListener(new View.OnClickListener() {
+        mUnDelegateLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 WithDrawActivity.actionStart(mContext, data);
@@ -154,5 +162,9 @@ public class DelegateItemInfoViewHolder extends BaseViewHolder<DelegateItemInfo>
             default:
                 return ContextCompat.getColor(mContext, isConsensus ? R.color.color_f79d10 : R.color.color_4a90e2);
         }
+    }
+
+    private boolean isDelegateBtnEnabled(DelegateItemInfo data) {
+        return !(TextUtils.equals(data.getNodeStatus(), NodeStatus.EXITED) || TextUtils.equals(data.getNodeStatus(), NodeStatus.EXITING) || data.isInit());
     }
 }

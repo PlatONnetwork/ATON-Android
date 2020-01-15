@@ -65,8 +65,6 @@ public class WithDrawContract {
 
         void getWithDrawGasPrice(String gasPrice);
 
-        void getGas();
-
     }
 
 }

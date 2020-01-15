@@ -124,7 +124,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         initView();
         //初始化请求数据
         mPresenter.showWalletInfo();
-        mPresenter.getGas();
+        mPresenter.getBalanceType();
     }
 
     private void initView() {
@@ -385,10 +385,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
 
     @Override
     public void showGas(BigInteger bigInteger) {
-
         gasPrice = bigInteger.toString();
-
-        mPresenter.getBalanceType();
     }
 
     @Override
