@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -21,6 +21,7 @@
             android:text="@string/importPrivateKeyResume"
             android:textColor="@color/color_61646e"
             android:textSize="12sp" />
+
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -38,6 +39,7 @@
                 android:textColor="@color/color_000000"
                 android:textColorHint="@color/color_b6bbd0"
                 android:textSize="13sp" />
+
             <Button
                 android:id="@+id/btn_paste"
                 android:layout_width="48dp"
@@ -58,27 +60,27 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Name can't be empty !"
-            android:textSize="12sp"
             android:textColor="@color/color_f5302c"
+            android:textSize="12sp"
             android:visibility="gone" />
 
         <TextView
             style="@style/Text.61646e.16"
-            android:layout_marginTop="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/name"/>
+            android:layout_marginTop="16dp"
+            android:text="@string/name" />
 
         <EditText
             android:id="@+id/et_name"
+            style="@style/Text.000.13"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginTop="12dp"
             android:background="@drawable/bg_edittext_underline"
+            android:gravity="left|center_vertical"
             android:hint="@string/nameOfWallet"
-            android:textColor="@color/color_000000"
-            android:textColorHint="@color/color_b6bbd0"
-            android:textSize="13sp" />
+            android:textColorHint="@color/color_b6bbd0" />
 
         <TextView
             android:id="@+id/tv_name_error"
@@ -86,60 +88,67 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Name can't be empty !"
-            android:textSize="12sp"
             android:textColor="@color/color_f5302c"
+            android:textSize="12sp"
             android:visibility="gone" />
+
         <TextView
             style="@style/Text.61646e.16"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="@string/password"/>
+            android:text="@string/password" />
+
         <FrameLayout
-            android:layout_marginTop="12dp"
             android:layout_width="match_parent"
-            android:layout_height="40dp">
+            android:layout_height="40dp"
+            android:layout_marginTop="12dp">
+
             <EditText
                 android:id="@+id/et_password"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingRight="25dp"
                 android:background="@drawable/bg_edittext_underline"
                 android:digits="@string/inputDigits"
                 android:hint="@string/setPassword"
+                android:paddingRight="25dp"
                 android:textColor="@color/color_000000"
                 android:textColorHint="@color/color_b6bbd0"
-                android:textSize="13sp"/>
+                android:textSize="13sp" />
 
             <ImageView
                 android:id="@+id/iv_password_eyes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/icon_close_eyes"
-                android:layout_gravity="center_vertical|right"/>
+                android:layout_gravity="center_vertical|right"
+                android:src="@drawable/icon_close_eyes" />
         </FrameLayout>
+
         <FrameLayout
-            android:layout_marginTop="12dp"
             android:layout_width="match_parent"
-            android:layout_height="40dp">
+            android:layout_height="40dp"
+            android:layout_marginTop="12dp">
+
             <EditText
                 android:id="@+id/et_repeat_password"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingRight="25dp"
                 android:background="@drawable/bg_edittext_underline"
                 android:digits="@string/inputDigits"
                 android:hint="@string/repeatPassword"
+                android:paddingRight="25dp"
                 android:textColor="@color/color_000000"
                 android:textColorHint="@color/color_b6bbd0"
-                android:textSize="13sp"/>
+                android:textSize="13sp" />
+
             <ImageView
                 android:id="@+id/iv_repeat_password_eyes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/icon_close_eyes"
-                android:layout_gravity="center_vertical|right"/>
+                android:layout_gravity="center_vertical|right"
+                android:src="@drawable/icon_close_eyes" />
         </FrameLayout>
+
         <LinearLayout
             android:id="@+id/layout_password_strength"
             android:layout_width="match_parent"
@@ -161,7 +170,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="2dp"
-                    android:background="@color/color_00000000"/>
+                    android:background="@color/color_00000000" />
 
                 <View
                     android:id="@+id/v_line2"
@@ -169,7 +178,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="2dp"
-                    android:background="@color/color_00000000"/>
+                    android:background="@color/color_00000000" />
 
                 <View
                     android:id="@+id/v_line3"
@@ -177,14 +186,14 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="2dp"
-                    android:background="@color/color_00000000"/>
+                    android:background="@color/color_00000000" />
 
                 <View
                     android:id="@+id/v_line4"
                     android:layout_width="23dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:background="@color/color_00000000"/>
+                    android:background="@color/color_00000000" />
 
             </LinearLayout>
 
@@ -195,7 +204,7 @@
                 android:layout_gravity="center_vertical"
                 android:text="@string/strength"
                 android:textColor="@color/color_ff9000"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
         </LinearLayout>
 
         <TextView
@@ -204,8 +213,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Name can't be empty !"
-            android:textSize="12sp"
             android:textColor="@color/color_f5302c"
+            android:textSize="12sp"
             android:visibility="gone" />
 
         <TextView
