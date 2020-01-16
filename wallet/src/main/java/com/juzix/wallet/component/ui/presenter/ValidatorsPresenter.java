@@ -44,7 +44,6 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
         getVerifyNodeList(mVerifyNodeList, isRefresh)
                 .compose(bindUntilEvent(FragmentEvent.STOP))
                 .compose(RxUtils.getSingleSchedulerTransformer())
-                .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
                 .subscribe(new ApiSingleObserver<List<VerifyNode>>() {
                     @Override
                     public void onApiSuccess(List<VerifyNode> nodeList) {

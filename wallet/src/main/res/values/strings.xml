@@ -738,7 +738,7 @@
     <string name="msg_no_delegated_data_tips">查看验证节点，参与委托</string>
     <string name="msg_delegate">参与委托</string>
 
-    <string name="msg_claim_record">领取奖励</string>
+    <string name="msg_claim_record">领取记录</string>
     <string name="msg_claim_rewards">领取奖励</string>
     <string name="msg_claim_reward_tips">预估奖励，以实际到账为准</string>
     <string name="msg_claim_wallet">领取钱包</string>

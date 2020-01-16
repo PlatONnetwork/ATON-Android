@@ -65,7 +65,7 @@ public class ClaimRewardRecordViewHolder extends BaseViewHolder<ClaimRewardRecor
 
 
         mWalletAvatarCiv.setImageResource(RUtils.drawable(data.getWalletAvatar()));
-        mClaimRewardAmountTv.setText(mContext.getString(R.string.amount_with_unit, AmountUtil.formatAmountText(data.getTotalReward())));
+        mClaimRewardAmountTv.setText(String.format("%s%s", "+", mContext.getString(R.string.amount_with_unit, AmountUtil.formatAmountText(data.getTotalReward()))));
         mWalletNameTv.setText(data.getWalletName());
         mWalletAddressTv.setText(AddressFormatUtil.formatAddress(data.getAddress()));
         mClaimRewardTimeTv.setText(String.format("#%s", DateUtil.format(data.getTimestamp(), DateUtil.DATETIME_FORMAT_PATTERN)));
