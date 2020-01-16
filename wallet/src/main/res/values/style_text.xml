@@ -518,6 +518,10 @@
         <item name="android:textSize">14sp</item>
     </style>
 
+    <style name="Text.b6bbd0.15">
+        <item name="android:textSize">15sp</item>
+    </style>
+
     <style name="Text.dee1ec">
         <item name="android:textColor">@color/color_dee1ec</item>
     </style>
