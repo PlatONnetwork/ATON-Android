@@ -5,7 +5,7 @@
     <item>
         <shape android:shape="rectangle">
             <size
-                android:width="7dp"
+                android:width="10dp"
                 android:height="6dp" />
             <solid android:color="@color/color_108ee9" />
         </shape>
@@ -14,10 +14,10 @@
     <!-- This rectangle for the left side -->
     <!-- Its color should be the same as layout's background -->
     <item
-        android:bottom="-8dp"
-        android:left="-8dp"
-        android:right="8dp"
-        android:top="-8dp">
+        android:bottom="-10dp"
+        android:left="-10dp"
+        android:right="10dp"
+        android:top="-10dp">
         <rotate android:fromDegrees="45">
             <shape android:shape="rectangle">
                 <solid android:color="@color/color_ffffff" />
@@ -28,10 +28,10 @@
     <!-- This rectangle for the right side -->
     <!-- Their color should be the same as layout's background -->
     <item
-        android:bottom="-8dp"
-        android:left="8dp"
-        android:right="-8dp"
-        android:top="-8dp">
+        android:bottom="-10dp"
+        android:left="10dp"
+        android:right="-10dp"
+        android:top="-10dp">
         <rotate android:fromDegrees="45">
             <shape android:shape="rectangle">
                 <solid android:color="@color/color_ffffff" />

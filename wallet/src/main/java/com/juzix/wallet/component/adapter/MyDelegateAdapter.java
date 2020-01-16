@@ -76,6 +76,7 @@ public class MyDelegateAdapter extends RecyclerView.Adapter<MyDelegateAdapter.Vi
         holder.delegatedAmountTv.setText(AmountUtil.formatAmountText(info.getDelegated()));
         holder.unclaimedRewardAmountTv.setText(AmountUtil.formatAmountText(info.getWithdrawReward()));
         holder.claimRewardLayout.setVisibility(BigDecimalUtil.isBiggerThanZero(info.getWithdrawReward()) ? View.VISIBLE : View.GONE);
+        holder.claimRewardLayout.setEnabled(!info.isPending());
         holder.claimRewardRtv.setVisibility(info.isPending() ? View.GONE : View.VISIBLE);
         holder.pendingClaimRewardAnimationLayout.setVisibility(info.isPending() ? View.VISIBLE : View.GONE);
 
@@ -103,7 +104,7 @@ public class MyDelegateAdapter extends RecyclerView.Adapter<MyDelegateAdapter.Vi
                 });
 
         RxView
-                .clicks(holder.claimRewardRtv)
+                .clicks(holder.claimRewardLayout)
                 .compose(RxUtils.getClickTransformer())
                 .subscribe(new Consumer<Object>() {
 
@@ -125,6 +126,7 @@ public class MyDelegateAdapter extends RecyclerView.Adapter<MyDelegateAdapter.Vi
         } else {
             DelegateInfo delegateInfo = (DelegateInfo) payloads.get(0);
             holder.claimRewardRtv.setVisibility(delegateInfo.isPending() ? View.GONE : View.VISIBLE);
+            holder.claimRewardLayout.setEnabled(!delegateInfo.isPending());
             holder.pendingClaimRewardAnimationLayout.setVisibility(delegateInfo.isPending() ? View.VISIBLE : View.GONE);
         }
     }
@@ -142,6 +144,8 @@ public class MyDelegateAdapter extends RecyclerView.Adapter<MyDelegateAdapter.Vi
         DelegateInfo info = infoList.get(position);
 
         info.setPending(isPending);
+
+        infoList.set(position, info);
 
         notifyItemChanged(position, info);
     }

@@ -588,6 +588,7 @@
     <string name="insufficient_balance_unable_to_delegate">余额不足，无法委托</string>
     <string name="the_validator_has_exited_and_cannot_be_delegated">委托节点已退出，无法委托</string>
     <string name="delegate_failed">委托失败</string>
+    <string name="claim_reward_failed">领取奖励失败</string>
     <string name="delegate_success">委托成功</string>
 
 

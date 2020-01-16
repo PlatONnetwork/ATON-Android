@@ -39,7 +39,6 @@ public class PendingClaimRewardAnimationLayout extends LinearLayout {
         setOrientation(HORIZONTAL);
         setShowDividers(SHOW_DIVIDER_MIDDLE);
         setGravity(Gravity.CENTER);
-        setBackgroundResource(R.drawable.shape_claim_reward_pending);
         addView(buildView(context));
         addView(buildView(context));
         addView(buildView(context));
@@ -68,7 +67,7 @@ public class PendingClaimRewardAnimationLayout extends LinearLayout {
     }
 
     private TextView buildView(Context context) {
-        int childWidth = DensityUtil.dp2px(context, 7f);
+        int childWidth = DensityUtil.dp2px(context, 10f);
         int childHeight = DensityUtil.dp2px(context, 6f);
         TextView textView = new TextView(context);
         textView.setLayoutParams(new LayoutParams(childWidth, childHeight));
