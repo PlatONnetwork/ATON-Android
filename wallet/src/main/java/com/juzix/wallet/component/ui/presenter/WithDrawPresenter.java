@@ -135,7 +135,6 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                 .compose(bindToLifecycle())
                 .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
                 .map(new Function<Response<ApiResponse<DelegationValue>>, DelegationValue>() {
-
                     @Override
                     public DelegationValue apply(Response<ApiResponse<DelegationValue>> apiResponseResponse) throws Exception {
                         return apiResponseResponse != null && apiResponseResponse.isSuccessful() ? apiResponseResponse.body().getData() : null;

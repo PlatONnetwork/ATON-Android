@@ -15,11 +15,14 @@ import com.juzix.wallet.component.ui.dialog.ClaimRewardsDialogFragment;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.dialog.TransactionAuthorizationDialogFragment;
 import com.juzix.wallet.component.ui.dialog.TransactionSignatureDialogFragment;
+import com.juzix.wallet.db.entity.TransactionEntity;
 import com.juzix.wallet.db.entity.TransactionRecordEntity;
+import com.juzix.wallet.db.sqlite.TransactionDao;
 import com.juzix.wallet.engine.DelegateManager;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.Optional;
 import com.juzix.wallet.engine.ServerUtils;
+import com.juzix.wallet.engine.TransactionManager;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.ClaimReward;
@@ -29,6 +32,7 @@ import com.juzix.wallet.entity.GasProvider;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionAuthorizationBaseData;
 import com.juzix.wallet.entity.TransactionAuthorizationData;
+import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.utils.AmountUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.RxUtils;
@@ -109,6 +113,11 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                         delegateInfo.setWalletIcon(WalletManager.getInstance().getWalletIconByWalletAddress(delegateInfo.getWalletAddress()));
                         delegateInfo.setWalletName(WalletManager.getInstance().getWalletNameByWalletAddress(delegateInfo.getWalletAddress()));
                         delegateInfo.setObservedWallet(WalletManager.getInstance().isObservedWallet(delegateInfo.getWalletAddress()));
+                        TransactionEntity transactionEntity = TransactionDao.getTransaction(delegateInfo.getWalletAddress(), String.valueOf(TransactionType.CLAIM_REWARDS.getTxTypeValue()));
+                        if (transactionEntity != null) {
+                            delegateInfo.setPending(true);
+                            TransactionManager.getInstance().getTransactionByLoop(transactionEntity.toTransaction());
+                        }
                         return delegateInfo;
                     }
                 })
@@ -179,6 +188,14 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                                         public void accept(Transaction transaction) {
                                             if (isViewAttached()) {
                                                 getView().notifyItemChanged(true, position);
+                                            }
+                                        }
+
+                                        @Override
+                                        public void accept(Throwable throwable) {
+                                            super.accept(throwable);
+                                            if (isViewAttached()) {
+                                                showLongToast(R.string.claim_reward_failed);
                                             }
                                         }
                                     });

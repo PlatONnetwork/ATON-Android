@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmObject;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
@@ -134,5 +135,28 @@ public class TransactionDao {
             }
         }
         return list;
+    }
+
+    public static TransactionEntity getTransaction(String from, String txType) {
+        TransactionEntity transactionEntity = null;
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            RealmObject realmObject = realm.where(TransactionEntity.class)
+                    .equalTo("from", from)
+                    .equalTo("txType", txType)
+                    .equalTo("chainId", NodeManager.getInstance().getChainId())
+                    .findFirst();
+            if (realmObject != null) {
+                transactionEntity = (TransactionEntity) realm.copyFromRealm(realmObject);
+            }
+        } catch (Exception exp) {
+            exp.printStackTrace();
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return transactionEntity;
     }
 }

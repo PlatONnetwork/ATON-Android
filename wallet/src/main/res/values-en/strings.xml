@@ -570,6 +570,7 @@
     <string name="insufficient_balance_unable_to_delegate">Insufficient balance, unable to delegate</string>
     <string name="the_validator_has_exited_and_cannot_be_delegated">The Validator has Exited and cannot be delegated</string>
     <string name="delegate_failed">Delegated Failed</string>
+    <string name="claim_reward_failed">Claim Reward Failed</string>
     <string name="delegate_success">Delegated Success</string>
 
     <!--委托的状态-->
