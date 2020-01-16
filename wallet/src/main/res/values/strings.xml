@@ -624,7 +624,7 @@
     <string name="withdraw_operation_tips">超出可赎回数量，无法提交</string>
 
     <string name="action_continue">继续</string>
-    <string name="msg_agree_agreement">I have read and agree to the above agreement</string>
+    <string name="msg_agree_agreement">我已阅读并同意上述条款</string>
 
     <!--委托不可操作提示-->
     <string name="delegate_no_click">请先赎回"已解除委托"</string>
