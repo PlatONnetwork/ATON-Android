@@ -79,7 +79,11 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     public DelegatePresenter(DelegateContract.View view) {
         super(view);
         mDelegateDetail = view.getDelegateDetailFromIntent();
-        mWallet = getDefaultWallet(mDelegateDetail);
+        if (TextUtils.isEmpty(mDelegateDetail.getWalletAddress())){
+            mWallet = WalletManager.getInstance().getFirstSortedWallet();
+        }else{
+            mWallet = WalletManager.getInstance().getWalletEntityByWalletAddress(mDelegateDetail.getWalletAddress());
+        }
     }
 
     @Override
@@ -143,14 +147,6 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
             getView().setDelegateButtonState(isAmountValid);
         }
 
-    }
-
-    private Wallet getDefaultWallet(DelegateItemInfo delegateDetail) {
-        if (delegateDetail != null && !TextUtils.isEmpty(delegateDetail.getWalletAddress())) {
-            return WalletManager.getInstance().getWalletEntityByWalletAddress(delegateDetail.getWalletAddress());
-        } else {
-            return sortByFreeAccountAndCreateTime(WalletManager.getInstance().getWalletList()).get(0);
-        }
     }
 
     /**
@@ -451,24 +447,5 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                         }
                     }
                 });
-    }
-
-    private List<Wallet> sortByFreeAccountAndCreateTime(List<Wallet> walletList) {
-        Collections.sort(walletList, new Comparator<Wallet>() {
-            @Override
-            public int compare(Wallet o1, Wallet o2) {
-                int compare = Double.compare(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(o2.getFreeBalance(), "1E18"))), NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(o1.getFreeBalance(), "1E18"))));
-                if (compare != 0) {
-                    return compare;
-                }
-                compare = Long.compare(o1.getCreateTime(), o2.getCreateTime());
-                if (compare != 0) {
-                    return compare;
-                }
-                return 0;
-            }
-        });
-
-        return walletList;
     }
 }

@@ -73,7 +73,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
         super(view);
         mDelegateDetail = view.getDelegateDetailFromIntent();
         if (TextUtils.isEmpty(mDelegateDetail.getWalletAddress())) {
-            mWallet = sortByFreeAccountAndCreateTime(WalletManager.getInstance().getWalletList()).get(0);
+            mWallet = WalletManager.getInstance().getFirstSortedWallet();
         } else {
             mWallet = WalletManager.getInstance().getWalletEntityByWalletAddress(mDelegateDetail.getWalletAddress());
         }
@@ -201,33 +201,6 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
 
         feeAmount = getFeeAmount(mGasProvider);
         getView().showWithDrawGasPrice(feeAmount);
-    }
-
-    private Wallet getDefaultWallet(DelegateItemInfo delegateDetail) {
-        if (delegateDetail != null && !TextUtils.isEmpty(delegateDetail.getWalletAddress())) {
-            return WalletManager.getInstance().getWalletEntityByWalletAddress(delegateDetail.getWalletAddress());
-        } else {
-            return sortByFreeAccountAndCreateTime(WalletManager.getInstance().getWalletList()).get(0);
-        }
-    }
-
-    private List<Wallet> sortByFreeAccountAndCreateTime(List<Wallet> walletList) {
-        Collections.sort(walletList, new Comparator<Wallet>() {
-            @Override
-            public int compare(Wallet o1, Wallet o2) {
-                int compare = Double.compare(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(o2.getFreeBalance(), "1E18"))), NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(o1.getFreeBalance(), "1E18"))));
-                if (compare != 0) {
-                    return compare;
-                }
-                compare = Long.compare(o1.getCreateTime(), o2.getCreateTime());
-                if (compare != 0) {
-                    return compare;
-                }
-                return 0;
-            }
-        });
-
-        return walletList;
     }
 
     private String getFeeAmount(GasProvider gasProvider) {
