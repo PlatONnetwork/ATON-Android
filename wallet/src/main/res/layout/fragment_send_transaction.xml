@@ -53,6 +53,7 @@
                     android:ellipsize="end"
                     android:gravity="center_vertical|left"
                     android:hint="@string/inputWalletAddress"
+                    android:imeOptions="actionNext"
                     android:paddingRight="48dp"
                     android:singleLine="true"
                     android:textColorHint="@color/color_b6bbd0" />
@@ -110,8 +111,8 @@
                     android:layout_width="1dp"
                     android:layout_height="15dp"
                     android:layout_below="@id/tv_transation_amount"
-                    android:background="@drawable/bg_amount_magnitudes"
                     android:layout_marginLeft="6dp"
+                    android:background="@drawable/bg_amount_magnitudes"
                     tools:visibility="visible" />
 
                 <TextView
@@ -139,9 +140,10 @@
                     android:ellipsize="end"
                     android:gravity="center_vertical|left"
                     android:hint="@string/inputSendAmount"
+                    android:imeOptions="actionNext"
                     android:inputType="numberDecimal"
-                    android:lines="1"
                     android:paddingRight="40dp"
+                    android:singleLine="true"
                     android:textColorHint="@color/color_b6bbd0" />
 
                 <TextView
@@ -200,10 +202,10 @@
                 android:layout_marginTop="14dp"
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
-                app:bsb_max="1"
                 app:bsb_auto_adjust_section_mark="false"
                 app:bsb_colors="#ff28ADFF_#ff2092FF_#ff1877FE_#ff105CFE"
                 app:bsb_hide_bubble="true"
+                app:bsb_max="1"
                 app:bsb_second_track_color="@color/color_105cfe"
                 app:bsb_second_track_size="2dp"
                 app:bsb_section_count="1"

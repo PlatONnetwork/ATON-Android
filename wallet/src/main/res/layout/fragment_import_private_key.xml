@@ -34,8 +34,10 @@
                 android:background="@color/color_f0f1f5"
                 android:gravity="left|top"
                 android:hint="@string/inputPrivateKeyTips"
+                android:imeOptions="actionNext"
                 android:minHeight="130dp"
                 android:padding="10dp"
+                android:singleLine="true"
                 android:textColor="@color/color_000000"
                 android:textColorHint="@color/color_b6bbd0"
                 android:textSize="13sp" />
@@ -80,7 +82,9 @@
             android:background="@drawable/bg_edittext_underline"
             android:gravity="left|center_vertical"
             android:hint="@string/nameOfWallet"
+            android:imeOptions="actionNext"
             android:maxLength="12"
+            android:singleLine="true"
             android:textColorHint="@color/color_b6bbd0" />
 
         <TextView
@@ -112,7 +116,9 @@
                 android:background="@drawable/bg_edittext_underline"
                 android:digits="@string/inputDigits"
                 android:hint="@string/setPassword"
+                android:imeOptions="actionNext"
                 android:paddingRight="25dp"
+                android:singleLine="true"
                 android:textColor="@color/color_000000"
                 android:textColorHint="@color/color_b6bbd0"
                 android:textSize="13sp" />
@@ -137,7 +143,9 @@
                 android:background="@drawable/bg_edittext_underline"
                 android:digits="@string/inputDigits"
                 android:hint="@string/repeatPassword"
+                android:imeOptions="actionNext"
                 android:paddingRight="25dp"
+                android:singleLine="true"
                 android:textColor="@color/color_000000"
                 android:textColorHint="@color/color_b6bbd0"
                 android:textSize="13sp" />

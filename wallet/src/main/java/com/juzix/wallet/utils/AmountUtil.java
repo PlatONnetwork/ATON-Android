@@ -100,7 +100,7 @@ public class AmountUtil {
      * @return
      */
     public static String convertVonToLat(String value) {
-        return NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(value, VALUE_1E18), 8);
+        return NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(value, VALUE_1E18));
     }
 
     /**
