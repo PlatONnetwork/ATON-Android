@@ -19,6 +19,12 @@ public class DelegateNodeDetail implements Parcelable {
     public DelegateNodeDetail() {
     }
 
+    public DelegateNodeDetail(String availableDelegationBalance, String delegated, List<DelegateItemInfo> delegateItemInfoList) {
+        this.availableDelegationBalance = availableDelegationBalance;
+        this.delegated = delegated;
+        this.delegateItemInfoList = delegateItemInfoList;
+    }
+
     protected DelegateNodeDetail(Parcel in) {
         availableDelegationBalance = in.readString();
         delegated = in.readString();

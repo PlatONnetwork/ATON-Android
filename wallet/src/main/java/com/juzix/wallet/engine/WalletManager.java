@@ -22,6 +22,8 @@ import org.reactivestreams.Publisher;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -646,6 +648,58 @@ public class WalletManager {
                         return balance1.add(balance2);
                     }
                 }).toObservable();
+    }
+
+
+    /**
+     * 一级排序按照可用余额从大到小排序，二级排序按照钱包创建时间从旧到新排序
+     * 默认选中的钱包：按照钱包列表排序规则第一位的钱包
+     *
+     * @return
+     */
+    public Wallet getFirstSortedWallet() {
+        if (mWalletList.isEmpty()) {
+            return Wallet.getNullInstance();
+        }
+
+        Collections.sort(mWalletList, new BalanceComparator());
+
+        Wallet wallet = getWalletByBalanceBiggerThanZero();
+
+        if (wallet.isNull()) {
+            Collections.sort(mWalletList, new CreateTimeComparator());
+            wallet = mWalletList.get(0);
+        }
+        return wallet;
+    }
+
+    private Wallet getWalletByBalanceBiggerThanZero() {
+        return Flowable
+                .fromIterable(mWalletList)
+                .filter(new Predicate<Wallet>() {
+                    @Override
+                    public boolean test(Wallet wallet) throws Exception {
+                        return BigDecimalUtil.isBiggerThanZero(wallet.getFreeBalance());
+                    }
+                })
+                .defaultIfEmpty(Wallet.getNullInstance())
+                .blockingFirst();
+    }
+
+    static class BalanceComparator implements Comparator<Wallet> {
+
+        @Override
+        public int compare(Wallet o1, Wallet o2) {
+            return BigDecimalUtil.isBigger(o1.getFreeBalance(), o2.getFreeBalance()) ? -1 : 1;
+        }
+    }
+
+    static class CreateTimeComparator implements Comparator<Wallet> {
+
+        @Override
+        public int compare(Wallet o1, Wallet o2) {
+            return Long.compare(o1.getCreateTime(), o2.getCreateTime());
+        }
     }
 
 }

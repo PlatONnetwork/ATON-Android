@@ -131,10 +131,12 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
     public void showDelegateDetailData(List<DelegateItemInfo> oldDelegateItemInfoList, List<DelegateItemInfo> newDelegateItemInfoList) {
         refreshLayout.finishRefresh();
         llNoData.setVisibility(newDelegateItemInfoList == null || newDelegateItemInfoList.isEmpty() ? View.VISIBLE : View.GONE);
+        mDetailAdapter.setDatas(newDelegateItemInfoList);
         if (newDelegateItemInfoList != null && !newDelegateItemInfoList.isEmpty()) {
-            mDetailAdapter.setDatas(newDelegateItemInfoList);
             DelegateItemInfoDiffCallback diffCallback = new DelegateItemInfoDiffCallback(oldDelegateItemInfoList, newDelegateItemInfoList);
             DiffUtil.calculateDiff(diffCallback, true).dispatchUpdatesTo(mDetailAdapter);
+        } else {
+            mDetailAdapter.notifyDataSetChanged();
         }
     }
 

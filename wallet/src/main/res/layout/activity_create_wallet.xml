@@ -49,8 +49,9 @@
                 android:layout_marginTop="12dp"
                 android:layout_marginRight="16dp"
                 android:background="@drawable/bg_edittext_underline"
+                android:gravity="left|center_vertical"
                 android:hint="@string/nameOfWallet"
-                android:maxEms="12"
+                android:maxLength="12"
                 android:textColorHint="@color/color_b6bbd0" />
 
             <TextView
