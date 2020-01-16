@@ -21,7 +21,9 @@ import java.util.Random;
 
 class WalletServiceImpl implements WalletService {
 
-    static final String PATH = "M/44H/206H/0H/0";
+    private static final String PATH = "M/44H/206H/0H/0";
+    private static final int N_STANDARD = 16384;
+    private static final int P_STANDARD = 1;
 
     private WalletServiceImpl() {
     }
@@ -39,7 +41,7 @@ class WalletServiceImpl implements WalletService {
         try {
             long time = System.currentTimeMillis();
             String filename = JZWalletUtil.getWalletFileName(Numeric.toHexStringNoPrefix(ecKeyPair.getPublicKey()));
-            WalletFile walletFile = org.web3j.crypto.Wallet.createLight(password, ecKeyPair);
+            WalletFile walletFile = org.web3j.crypto.Wallet.create(password, ecKeyPair, N_STANDARD, P_STANDARD);
             if (walletFile == null) {
                 return null;
             }
