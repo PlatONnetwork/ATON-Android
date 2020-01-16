@@ -227,10 +227,10 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
             rtvDetailNodeState.setTextColor(ContextCompat.getColor(this, getNodeStatusTextAndBorderColor(nodeDetail.getNodeStatus(), nodeDetail.isConsensus())));
             rtvDetailNodeState.setRoundedBorderColor(ContextCompat.getColor(this, getNodeStatusTextAndBorderColor(nodeDetail.getNodeStatus(), nodeDetail.isConsensus())));
 
-            tvDelegateRewardRatioAmount.setText(String.format("%s%%", NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(nodeDetail.getDelegatedRatePA(), "100"), 8)));
+            tvDelegateRewardRatioAmount.setText(String.format("%s%%", NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(nodeDetail.getDelegatedRatePA(), "100"))));
             Drawable delegatedRatePATrend = nodeDetail.isShowDelegatedRatePATrend() ? nodeDetail.isDelegatedRatePATrendRose() ? ContextCompat.getDrawable(this, R.drawable.icon_rose) : ContextCompat.getDrawable(this, R.drawable.icon_fell) : null;
             tvDelegateRewardRatioAmount.setCompoundDrawablesWithIntrinsicBounds(delegatedRatePATrend, null, null, null);
-            tvAnnualRewardRatioAmount.setText(String.format("%s%%", NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(nodeDetail.getDelegatedRewardPer(), "100"), 8)));
+            tvAnnualRewardRatioAmount.setText(String.format("%s%%", NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(nodeDetail.getDelegatedRewardPer(), "100"))));
             tvTotalRewardAmount.setText(string(R.string.amount_with_unit, AmountUtil.convertVonToLat(nodeDetail.getCumulativeReward())));
 
             tvTotalStakedAmount.setText(AmountUtil.formatAmountText(nodeDetail.getDeposit())); //总质押
@@ -239,7 +239,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
             tvDelegatorsCount.setText(getCommonFormatText(nodeDetail.getDelegate()));
             tvSlashCount.setText(StringUtil.formatBalance(String.valueOf(nodeDetail.getPunishNumber())));
             tvBlocksNumber.setText(nodeDetail.getBlockOutNumber() == 0 ? "--" : StringUtil.formatBalance(String.valueOf(nodeDetail.getBlockOutNumber())));
-            tvBlocksRateNumber.setText(String.format("%s%%", NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(nodeDetail.getBlockRate(), "100"), 8)));
+            tvBlocksRateNumber.setText(String.format("%s%%", NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(nodeDetail.getBlockRate(), "100"))));
 
             tvDetailIntroduction.setText(getCommonFormatText(nodeDetail.getIntro()));
             tvDetailWebsite.setText(getCommonFormatText(nodeDetail.getWebsite()));//官网
