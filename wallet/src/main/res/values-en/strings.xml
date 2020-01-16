@@ -746,6 +746,7 @@
     <string name="msg_avaliable_balance">Balance：%1$s LAT</string>
 
     <string name="msg_keystore_nor_exist">Wallet keystore does not exist</string>
+    <string name="msg_delegated">Delegated</string>
 
 </resources>
 

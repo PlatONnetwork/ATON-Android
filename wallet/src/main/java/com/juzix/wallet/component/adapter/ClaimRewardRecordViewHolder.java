@@ -119,7 +119,7 @@ public class ClaimRewardRecordViewHolder extends BaseViewHolder<ClaimRewardRecor
     private View buildClaimRewardView(Context context, ClaimReward claimReward) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_claim_record_detail, null);
         ((TextView) view.findViewById(R.id.tv_node_name)).setText(claimReward.getNodeName());
-        ((TextView) view.findViewById(R.id.tv_claim_amount)).setText(String.format("%s%s", "+", AmountUtil.formatAmountText(claimReward.getReward())));
+        ((TextView) view.findViewById(R.id.tv_claim_amount)).setText(String.format("%s%s", "+", context.getResources().getString(R.string.amount_with_unit, AmountUtil.formatAmountText(claimReward.getReward()))));
         return view;
     }
 }

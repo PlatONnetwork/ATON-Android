@@ -759,5 +759,6 @@
     <string name="msg_avaliable_balance">可用余额：%1$s LAT</string>
 
     <string name="msg_keystore_nor_exist">签名钱包密钥不存在</string>
+    <string name="msg_delegated">总委托</string>
 
 </resources>
