@@ -289,9 +289,8 @@
             android:layout_marginTop="8dp"
             android:background="@drawable/bg_edittext_underline"
             android:hint="@string/nameOfWallet"
-            android:textColor="@color/color_000000"
-            android:textColorHint="@color/color_b6bbd0"
-            android:textSize="13sp" />
+            style="@style/Text.000.13"
+            android:textColorHint="@color/color_b6bbd0" />
 
         <TextView
             android:id="@+id/tv_name_error"
