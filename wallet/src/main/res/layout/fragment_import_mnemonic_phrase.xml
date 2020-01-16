@@ -287,6 +287,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginTop="8dp"
+            android:gravity="left|center_vertical"
             android:background="@drawable/bg_edittext_underline"
             android:hint="@string/nameOfWallet"
             style="@style/Text.000.13"
