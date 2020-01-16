@@ -85,7 +85,7 @@
             style="@style/Text.898c9e.12"
             android:layout_width="0dp"
             android:gravity="center_vertical|left"
-            android:text="@string/available_money"
+            android:text="@string/msg_delegated"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/tv_total_reward"
