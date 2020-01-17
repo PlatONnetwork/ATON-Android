@@ -25,4 +25,9 @@ public class BigIntegerUtil {
         return bigInteger.toString(10);
     }
 
+    public static String mul(BigInteger aValue, BigInteger bValue) {
+
+        return aValue != null && bValue != null ? aValue.multiply(bValue).toString(10) : BigInteger.ZERO.toString(10);
+    }
+
 }
