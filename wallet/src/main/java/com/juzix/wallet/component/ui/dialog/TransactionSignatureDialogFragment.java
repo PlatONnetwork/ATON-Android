@@ -28,6 +28,7 @@ import com.juzix.wallet.db.sqlite.TransactionDao;
 import com.juzix.wallet.db.sqlite.WalletDao;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.TransactionManager;
+import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionAuthorizationBaseData;
 import com.juzix.wallet.entity.TransactionAuthorizationData;
@@ -35,6 +36,7 @@ import com.juzix.wallet.entity.TransactionAuthorizationDetail;
 import com.juzix.wallet.entity.TransactionSignatureData;
 import com.juzix.wallet.entity.TransactionStatus;
 import com.juzix.wallet.entity.TransactionType;
+import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.DensityUtil;
@@ -317,27 +319,58 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
 
     private int checkSignature(TransactionAuthorizationData transactionAuthorizationData) {
 
+        //发送地址是否有效
+        boolean isFromAddressValid = checkFromAddress(transactionAuthorizationData);
+
+        if (!isFromAddressValid) {
+            return CODE_WALLET_MISMATCH;
+        }
+        //链id是否有效
+        boolean isChainIdValid = checkChainId(transactionAuthorizationData);
+        //交易类型是否有效
+        boolean isFunctionTypeValid = checkFunctionType(transactionAuthorizationData);
+
+        if (!isChainIdValid || !isFunctionTypeValid) {
+            return CODE_WALLET_MISMATCH;
+        }
+
+
         if (transactionAuthorizationData == null) {
             return CODE_INVALID_SIGNATURE;
         }
 
+        return CODE_VALID_SIGNATURE;
+    }
+
+    private boolean checkFromAddress(TransactionAuthorizationData transactionAuthorizationData) {
+        if (transactionAuthorizationData == null) {
+            Wallet wallet = WalletManager.getInstance().getWalletByAddress(transactionSignatureData.getFrom());
+            return !TextUtils.isEmpty(wallet.getKey());
+        }
+
         TransactionAuthorizationBaseData transactionAuthorizationBaseData = transactionAuthorizationData.getBaseDataList().get(0);
 
-        boolean fromNotEquals = !TextUtils.equals(transactionAuthorizationBaseData.getFrom(), transactionSignatureData.getFrom());
+        return TextUtils.equals(transactionAuthorizationBaseData.getFrom(), transactionSignatureData.getFrom());
+    }
 
-        if (fromNotEquals) {
-            return CODE_WALLET_MISMATCH;
+    private boolean checkChainId(TransactionAuthorizationData transactionAuthorizationData) {
+        if (transactionAuthorizationData == null) {
+            return TextUtils.equals(NodeManager.getInstance().getChainId(), transactionSignatureData.getChainId());
         }
 
-        boolean chainIdNotEquals = !TextUtils.equals(transactionAuthorizationBaseData.getChainId(), transactionSignatureData.getChainId());
-        boolean timestampNotEquals = transactionAuthorizationData.getTimestamp() != transactionSignatureData.getTimestamp();
-        boolean functionTypeNotEquals = transactionAuthorizationBaseData.getFunctionType() != transactionSignatureData.getFunctionType();
+        TransactionAuthorizationBaseData transactionAuthorizationBaseData = transactionAuthorizationData.getBaseDataList().get(0);
+        return !TextUtils.equals(transactionAuthorizationBaseData.getChainId(), transactionSignatureData.getChainId());
+    }
 
-        if (chainIdNotEquals || timestampNotEquals || functionTypeNotEquals) {
-            return CODE_INVALID_SIGNATURE;
+    private boolean checkFunctionType(TransactionAuthorizationData transactionAuthorizationData) {
+
+        if (transactionAuthorizationData == null) {
+            return true;
         }
 
-        return CODE_VALID_SIGNATURE;
+        TransactionAuthorizationBaseData transactionAuthorizationBaseData = transactionAuthorizationData.getBaseDataList().get(0);
+
+        return transactionAuthorizationBaseData.getFunctionType() == transactionSignatureData.getFunctionType();
     }
 
     private void afterSendTransactionSucceed(PlatonSendTransaction platonSendTransaction, TransactionAuthorizationDetail transactionAuthorizationDetail) {
