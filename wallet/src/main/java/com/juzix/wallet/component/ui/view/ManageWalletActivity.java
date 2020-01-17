@@ -170,7 +170,7 @@ public class ManageWalletActivity extends MVPBaseActivity<ManageWalletPresenter>
 
     @Override
     public void showPasswordDialog(int type, Wallet walletEntity) {
-        InputWalletPasswordDialogFragment.newInstance(walletEntity).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
+        InputWalletPasswordDialogFragment.newInstance(walletEntity, type == TYPE_DELETE_WALLET ? string(R.string.msg_delete_wallet) : null).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
             @Override
             public void onWalletPasswordCorrect(Credentials credentials) {
                 mPresenter.validPassword(type, credentials);

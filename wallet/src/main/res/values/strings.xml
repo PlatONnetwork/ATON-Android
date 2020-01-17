@@ -88,6 +88,7 @@
     <string name="backupWalletResume">助记词由12个常见英文单词组成，如果泄露，无需密码即可获取钱包资产。请将助记词抄写在纸上并保存在安全的地方，不要保存在网上以免被不法分子盗取。</string>
     <string name="startBackup">开始备份</string>
     <string name="InputWalletPassword">请输入密码进行确认</string>
+    <string name="msg_delete_wallet">请输入钱包密码进行删除确认</string>
     <string name="cancel">取消</string>
     <string name="confirm">确认</string>
     <string name="yes">确认</string>
