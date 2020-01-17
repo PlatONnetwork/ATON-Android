@@ -460,43 +460,6 @@
                 android:textSize="14sp" />
 
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="11dp"
-                android:orientation="horizontal">
-
-                <View
-                    android:layout_width="2dp"
-                    android:layout_height="14dp"
-                    android:layout_gravity="center_vertical"
-                    android:background="@drawable/bg_amount_magnitudes" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:text="@string/risk_title"
-                    android:textColor="@color/color_000000"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="20dp"
-                android:lineSpacingExtra="2dp"
-                android:text="@string/delegate_risk_tips"
-                android:textColor="@color/color_898c9e"
-                android:textSize="14sp" />
-
         </LinearLayout>
 
 

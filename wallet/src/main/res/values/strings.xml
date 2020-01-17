@@ -552,11 +552,11 @@
     <string name="expected_annualized_rate_des">当前节点的预计年化率，具体委托收益由节点分配</string>
     <string name="withdraw_tip">输入数量不能少于%1$sLAT</string>
     <string name="delegate_node">说明</string>
-    <string name="delegate_node_des">赎回交易提交成功,委托的Token可立即到账;\n待赎回委托必须一次性全部赎回;\n赎回数量扣除后,已委托剩余数量少于%1$sLAT时,自动赎回全部</string>
+    <string name="delegate_node_des">赎回交易提交成功，委托的Token可立即到账；\n待赎回委托必须一次性全部赎回；\n赎回数量扣除后，已委托剩余数量少于10LAT时，自动赎回全部。</string>
     <string name="delegations_title">委托</string>
-    <string name="delegations_title_explain">委托的Token所有权永远归于委托人，用户可以随时赎回委托的Token。\n验证节点关联的操作地址和奖励接收地址不允许参与委托。</string>
+    <string name="delegations_title_explain">委托的Token可以随时赎回。\n验证节点关联的操作地址不允许参与委托。</string>
     <string name="rewards_title">收益</string>
-    <string name="rewards_title_explain">委托收益来自节点的收益分配，节点收益主要有出块奖励、质押奖励和区块手续费奖励。具体如何分配请查看各节点官网说明。</string>
+    <string name="rewards_title_explain">委托至少锁定一个周期（10750区块）才有收益。根据节点设置的委托奖励比例对节点获得的收益进行分配。节点收益包含出块奖励和质押奖励。</string>
     <string name="risk_title">风险</string>
     <string name="risk_title_explain">委托没有任何风险。</string>
     <string name="node_locked_delegate">已锁定委托</string>
@@ -565,7 +565,7 @@
     <string name="node_undelegating">赎回中委托</string>
     <string name="node_move_out">移除列表</string>
     <string name="node_withdraw_delegate">赎回委托</string>
-    <string name="validators_yield">预计年化率</string>
+    <string name="validators_yield">预计收益率</string>
     <string name="validators_staked">总质押</string>
 
     <string name="upgrade_proposal">升级提案 </string>
@@ -748,7 +748,7 @@
     <string name="msg_node_rankings">节点排名</string>
     <string name="msg_delegated_amount">接受委托量</string>
     <string name="msg_delegator_number">委托者数</string>
-    <string name="msg_annual_yield">预计委托收益率</string>
+    <string name="msg_annual_yield">预计委托年化收益率</string>
     <string name="msg_annual_delegate_yield">预计委托收益率</string>
     <string name="msg_delegate_reward_ratio">委托奖励比例</string>
     <string name="msg_total_delegate_reward">累计委托奖励</string>
