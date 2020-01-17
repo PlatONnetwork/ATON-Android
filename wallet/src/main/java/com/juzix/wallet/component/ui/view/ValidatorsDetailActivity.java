@@ -330,7 +330,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
         if (!TextUtils.isEmpty(delegateTips)) {
             Drawable drawable = getResources().getDrawable(R.drawable.icon_no_delegate_tips);
             drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-            spannableString.setSpan(new VerticalImageSpan(drawable), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannableString.setSpan(new VerticalImageSpan(drawable), 0, 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         }
 
         return spannableString;
