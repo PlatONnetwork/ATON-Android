@@ -49,6 +49,10 @@ public class VerifyNodeDiffCallback extends BaseDiffCallback<VerifyNode> {
      */
     public final static String KEY_NODE_STATUS_DESC = "key_node_status_desc";
 
+    public final static String KEY_NODE_STATUS = "key_node_status";
+
+    public final static String KEY_CONSENSUS = "key_consensus";
+
     public VerifyNodeDiffCallback(List<VerifyNode> oldList, List<VerifyNode> newList) {
         super(oldList, newList);
     }
@@ -84,13 +88,18 @@ public class VerifyNodeDiffCallback extends BaseDiffCallback<VerifyNode> {
             return false;
         }
 
-        if (oldVerifyNode.getNodeStatusDescRes() != newVerifyNode.getNodeStatusDescRes()) {
-            return false;
-        }
-
         if (!TextUtils.equals(oldVerifyNode.getShowDelegatedRatePA(), newVerifyNode.getShowDelegatedRatePA())) {
             return false;
         }
+
+        if (oldVerifyNode.isConsensus() != newVerifyNode.isConsensus()) {
+            return false;
+        }
+
+        if (!TextUtils.equals(oldVerifyNode.getNodeStatus(), newVerifyNode.getNodeStatus())) {
+            return false;
+        }
+
         return true;
     }
 
@@ -111,7 +120,7 @@ public class VerifyNodeDiffCallback extends BaseDiffCallback<VerifyNode> {
         }
 
         if (!oldVerifyNode.getDelegateSum().equals(newVerifyNode.getDelegateSum()) || !TextUtils.equals(oldVerifyNode.getDelegate(), newVerifyNode.getDelegate())) {
-            HashMap<String, String> map = new HashMap<>();
+            HashMap<String, Object> map = new HashMap<>();
             map.put(KEY_DELEGATOR_NUMBER, newVerifyNode.getDelegate());
             map.put(KEY_DEPOSIT, newVerifyNode.getDelegateSum());
             bundle.putSerializable(KEY_DEPOSIT_DELEGATOR_NUMBER, map);
@@ -121,13 +130,16 @@ public class VerifyNodeDiffCallback extends BaseDiffCallback<VerifyNode> {
             bundle.putString(KEY_URL, newVerifyNode.getUrl());
         }
 
-
-        if (oldVerifyNode.getNodeStatusDescRes() != newVerifyNode.getNodeStatusDescRes()) {
-            bundle.putInt(KEY_NODE_STATUS_DESC, newVerifyNode.getNodeStatusDescRes());
-        }
-
         if (!TextUtils.equals(oldVerifyNode.getShowDelegatedRatePA(), newVerifyNode.getShowDelegatedRatePA())) {
             bundle.putString(KEY_RATEPA, newVerifyNode.getShowDelegatedRatePA());
+        }
+
+
+        if (oldVerifyNode.isConsensus() != newVerifyNode.isConsensus() || !TextUtils.equals(oldVerifyNode.getNodeStatus(), newVerifyNode.getNodeStatus())) {
+            HashMap<String, Object> map = new HashMap<>();
+            map.put(KEY_NODE_STATUS, newVerifyNode.getNodeStatus());
+            map.put(KEY_CONSENSUS, newVerifyNode.isConsensus());
+            bundle.putSerializable(KEY_NODE_STATUS_DESC, map);
         }
 
         return bundle.isEmpty() ? null : bundle;

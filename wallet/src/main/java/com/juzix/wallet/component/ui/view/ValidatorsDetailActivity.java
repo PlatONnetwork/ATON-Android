@@ -103,14 +103,16 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
     TextView tvRefresh;
     @BindView(R.id.layout_no_network)
     LinearLayout layoutNoNetwork;
-    @BindView(R.id.tv_annual_reward_ratio_amount)
-    AppCompatTextView tvAnnualRewardRatioAmount;
+    @BindView(R.id.tv_delegate_reward_ratio_amount)
+    AppCompatTextView tvDelegateRewardRatioAmount;
     @BindView(R.id.tv_total_reward_amount)
     TextView tvTotalRewardAmount;
-    @BindView(R.id.tv_delegate_reward_ratio_amount)
-    TextView tvDelegateRewardRatioAmount;
-    @BindView(R.id.tv_annual_reward_ratio)
-    TextView tvAnnualRewardRatio;
+    @BindView(R.id.tv_delegate_yield_amount)
+    TextView tvDelegateYieldAmount;
+    @BindView(R.id.tv_delegate_reward_ratio)
+    TextView tvDelegateRewardRatio;
+    @BindView(R.id.layout_delegate_yield)
+    LinearLayout layoutDelegateYield;
     @BindView(R.id.group)
     Group group;
 
@@ -191,7 +193,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
                     }
                 });
 
-        RxView.clicks(tvAnnualRewardRatio)
+        RxView.clicks(tvDelegateRewardRatio)
                 .compose(RxUtils.bindToLifecycle(this))
                 .compose(RxUtils.getClickTransformer())
                 .subscribe(new CustomObserver<Object>() {
@@ -199,7 +201,19 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
                     public void accept(Object o) {
                         //弹出tips
                         DelegateTipsDialog.createWithTitleAndContentDialog(null, null,
-                                null, null, string(R.string.expected_annualized_rate), string(R.string.expected_annualized_rate_des)).show(getSupportFragmentManager(), "validatorstip");
+                                null, null, string(R.string.msg_delegation_reward_ratio), string(R.string.msg_delegation_reward_ratio_tips)).show(getSupportFragmentManager(), "validatorstip");
+                    }
+                });
+
+        RxView.clicks(layoutDelegateYield)
+                .compose(RxUtils.bindToLifecycle(this))
+                .compose(RxUtils.getClickTransformer())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        //弹出tips
+                        DelegateTipsDialog.createWithTitleAndContentDialog(null, null,
+                                null, null, string(R.string.msg_delegation_annual_yield), string(R.string.msg_delegation_annual_yield_tips)).show(getSupportFragmentManager(), "validatorstip");
                     }
                 });
 
@@ -227,10 +241,10 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
             rtvDetailNodeState.setTextColor(ContextCompat.getColor(this, getNodeStatusTextAndBorderColor(nodeDetail.getNodeStatus(), nodeDetail.isConsensus())));
             rtvDetailNodeState.setRoundedBorderColor(ContextCompat.getColor(this, getNodeStatusTextAndBorderColor(nodeDetail.getNodeStatus(), nodeDetail.isConsensus())));
 
-            tvDelegateRewardRatioAmount.setText(String.format("%s%%", NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(nodeDetail.getDelegatedRatePA(), "100"))));
+            tvDelegateYieldAmount.setText(String.format("%s%%", NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(nodeDetail.getDelegatedRatePA(), "100"))));
             Drawable delegatedRatePATrend = nodeDetail.isShowDelegatedRatePATrend() ? nodeDetail.isDelegatedRatePATrendRose() ? ContextCompat.getDrawable(this, R.drawable.icon_rose) : ContextCompat.getDrawable(this, R.drawable.icon_fell) : null;
-            tvDelegateRewardRatioAmount.setCompoundDrawablesWithIntrinsicBounds(delegatedRatePATrend, null, null, null);
-            tvAnnualRewardRatioAmount.setText(String.format("%s%%", NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(nodeDetail.getDelegatedRewardPer(), "100"))));
+            tvDelegateYieldAmount.setCompoundDrawablesWithIntrinsicBounds(delegatedRatePATrend, null, null, null);
+            tvDelegateRewardRatioAmount.setText(String.format("%s%%", NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(nodeDetail.getDelegatedRewardPer(), "100"))));
             tvTotalRewardAmount.setText(string(R.string.amount_with_unit, AmountUtil.convertVonToLat(nodeDetail.getCumulativeReward())));
 
             tvTotalStakedAmount.setText(AmountUtil.formatAmountText(nodeDetail.getDeposit())); //总质押

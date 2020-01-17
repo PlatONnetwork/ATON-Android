@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.juzhen.framework.util.MapUtils;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
@@ -69,10 +70,7 @@ public class VerifyNodeViewHolder extends BaseViewHolder<VerifyNode> {
         GlideUtils.loadRound(mContext, data.getUrl(), mNodeAvatarCiv);
         mNodeNameTv.setText(data.getName());
         mNodeDelegatedAmount.setText(String.format("%s / %s", mContext.getResources().getString(R.string.amount_with_unit, AmountUtil.convertVonToLat(data.getDelegateSum())), StringUtil.formatBalance(data.getDelegate())));
-        int nodeStatusDescRes = data.getNodeStatusDescRes();
-        if (nodeStatusDescRes != -1) {
-            mNodeStateRtv.setText(nodeStatusDescRes);
-        }
+        mNodeStateRtv.setText(mContext.getString(getNodeStatusDescRes(data.getNodeStatus(), data.isConsensus())));
         mNodeStateRtv.setTextColor(ContextCompat.getColor(mContext, getNodeStatusTextAndBorderColor(data.getNodeStatus(), data.isConsensus())));
         mNodeStateRtv.setRoundedBorderColor(ContextCompat.getColor(mContext, getNodeStatusTextAndBorderColor(data.getNodeStatus(), data.isConsensus())));
         mNodeRankTv.setText(String.valueOf(data.getRanking()));
@@ -98,9 +96,9 @@ public class VerifyNodeViewHolder extends BaseViewHolder<VerifyNode> {
                     mNodeNameTv.setText(nodeName);
                     break;
                 case VerifyNodeDiffCallback.KEY_DEPOSIT_DELEGATOR_NUMBER:
-                    HashMap<String, String> map = (HashMap<String, String>) bundle.getSerializable(key);
-                    String deposit = map.get(VerifyNodeDiffCallback.KEY_DEPOSIT);
-                    String delegatorNumber = map.get(VerifyNodeDiffCallback.KEY_DELEGATOR_NUMBER);
+                    HashMap<String, Object> map = (HashMap<String, Object>) bundle.getSerializable(key);
+                    String deposit = MapUtils.getString(map, VerifyNodeDiffCallback.KEY_DEPOSIT);
+                    String delegatorNumber = MapUtils.getString(map, VerifyNodeDiffCallback.KEY_DELEGATOR_NUMBER);
                     mNodeDelegatedAmount.setText(String.format("%s / %s", mContext.getResources().getString(R.string.amount_with_unit, AmountUtil.convertVonToLat(deposit)), StringUtil.formatBalance(delegatorNumber)));
                     break;
                 case VerifyNodeDiffCallback.KEY_URL:
@@ -109,13 +107,15 @@ public class VerifyNodeViewHolder extends BaseViewHolder<VerifyNode> {
                     break;
                 case VerifyNodeDiffCallback.KEY_RATEPA:
                     String ratePA = bundle.getString(key);
-                    mNodeRankTv.setText(ratePA);
+                    mAnnualYieldTv.setText(ratePA);
                     break;
                 case VerifyNodeDiffCallback.KEY_NODE_STATUS_DESC:
-                    int nodeStatusDescRes = bundle.getInt(key);
-                    if (nodeStatusDescRes != -1) {
-                        mNodeStateRtv.setText(nodeStatusDescRes);
-                    }
+                    HashMap<String, Object> hashMap = (HashMap<String, Object>) bundle.getSerializable(key);
+                    String nodeStatus = MapUtils.getString(hashMap, VerifyNodeDiffCallback.KEY_NODE_STATUS);
+                    boolean isConsensus = MapUtils.getBoolean(hashMap, VerifyNodeDiffCallback.KEY_CONSENSUS);
+                    mNodeStateRtv.setText(getNodeStatusDescRes(nodeStatus, isConsensus));
+                    mNodeStateRtv.setTextColor(ContextCompat.getColor(mContext, getNodeStatusTextAndBorderColor(nodeStatus, isConsensus)));
+                    mNodeStateRtv.setRoundedBorderColor(ContextCompat.getColor(mContext, getNodeStatusTextAndBorderColor(nodeStatus, isConsensus)));
                     break;
                 default:
                     break;
@@ -155,6 +155,23 @@ public class VerifyNodeViewHolder extends BaseViewHolder<VerifyNode> {
             return isConsensus ? R.color.color_f79d10 : R.color.color_4a90e2;
         } else {
             return R.color.color_19a20e;
+        }
+    }
+
+
+    private int getNodeStatusDescRes(@NodeStatus String nodeStatus, boolean isConsensus) {
+
+        switch (nodeStatus) {
+            case NodeStatus.ACTIVE:
+                return isConsensus ? R.string.validators_verifying : R.string.validators_active;
+            case NodeStatus.CANDIDATE:
+                return R.string.validators_candidate;
+            case NodeStatus.EXITING:
+                return R.string.validators_state_exiting;
+            case NodeStatus.EXITED:
+                return R.string.validators_state_exited;
+            default:
+                return R.string.unknown;
         }
     }
 }

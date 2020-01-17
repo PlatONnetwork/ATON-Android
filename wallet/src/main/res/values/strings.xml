@@ -398,8 +398,6 @@
     <string name="no_data">暂无数据</string>
     <string name="voteLimitFailed">投票数超出票池限制</string>
     <string name="voteFor">投票给</string>
-    <string name="unknownRegion">*未知</string>
-    <string name="unknownRegionEn">*Unknown</string>
     <string name="voteTicketInsufficientBalanceTips">钱包余额不足，无法进行投票</string>
     <string name="voteTicketCreateWalletTips">请先创建钱包</string>
     <string name="paste">粘贴</string>
@@ -464,7 +462,7 @@
     <string name="candidate_deposit">质押</string>
     <string name="candidate_apply_withdraw">减持质押</string>
     <string name="candidate_withdraw">提取质押</string>
-    <string name="unknown">其他</string>
+    <string name="unknown">未知</string>
     <string name="claim_rewards">领取奖励</string>
 
 
@@ -751,7 +749,8 @@
     <string name="msg_delegated_amount">接受委托量</string>
     <string name="msg_delegator_number">委托者数</string>
     <string name="msg_annual_yield">预计委托收益率</string>
-    <string name="msg_annual_reward_ratio">预计年化收益率</string>
+    <string name="msg_annual_delegate_yield">预计委托收益率</string>
+    <string name="msg_delegate_reward_ratio">委托奖励比例</string>
     <string name="msg_total_delegate_reward">累计委托奖励</string>
     <string name="msg_delegate_balance">可委托余额</string>
 
@@ -761,5 +760,10 @@
 
     <string name="msg_keystore_nor_exist">签名钱包密钥不存在</string>
     <string name="msg_delegated">总委托</string>
+
+    <string name="msg_delegation_reward_ratio">委托奖励比例:</string>
+    <string name="msg_delegation_reward_ratio_tips">节点收益(出块奖励，质押奖励)分配给委托者的奖励比例</string>
+    <string name="msg_delegation_annual_yield">预计委托年化收益率：</string>
+    <string name="msg_delegation_annual_yield_tips">近4个结算周期每份额委托净收益折合成的年化收益率，仅做参考。</string>
 
 </resources>
