@@ -476,7 +476,7 @@ public class WalletManager {
                 return walletEntity;
             }
         }
-        return null;
+        return Wallet.getNullInstance();
     }
 
     public boolean deleteWallet(Wallet wallet) {

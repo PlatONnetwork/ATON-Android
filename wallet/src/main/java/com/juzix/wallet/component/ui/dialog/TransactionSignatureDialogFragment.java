@@ -28,6 +28,7 @@ import com.juzix.wallet.db.sqlite.TransactionDao;
 import com.juzix.wallet.db.sqlite.WalletDao;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.TransactionManager;
+import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionAuthorizationBaseData;
 import com.juzix.wallet.entity.TransactionAuthorizationData;
@@ -35,8 +36,11 @@ import com.juzix.wallet.entity.TransactionAuthorizationDetail;
 import com.juzix.wallet.entity.TransactionSignatureData;
 import com.juzix.wallet.entity.TransactionStatus;
 import com.juzix.wallet.entity.TransactionType;
+import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.AddressFormatUtil;
+import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.BigIntegerUtil;
 import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.GZipUtil;
 import com.juzix.wallet.utils.JSONUtil;
@@ -178,8 +182,6 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
                     @Override
                     public void accept(Object o) {
 
-                        sbtnSendTransaction.setEnabled(false);
-
                         int result = checkSignature(transactionAuthorizationData);
 
                         if (result == CODE_INVALID_SIGNATURE) {
@@ -187,7 +189,8 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
                         } else if (result == CODE_WALLET_MISMATCH) {
                             ToastUtil.showLongToast(getContext(), R.string.msg_wallet_mismatch);
                         } else {
-                            sendTransaction(transactionSignatureData, transactionAuthorizationData.getTransactionAuthorizationDetail());
+                            sbtnSendTransaction.setEnabled(false);
+                            sendTransaction(transactionSignatureData, transactionAuthorizationData);
                         }
                     }
                 });
@@ -214,7 +217,7 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
     }
 
     @SuppressLint("CheckResult")
-    private void sendTransaction(TransactionSignatureData transactionSignatureData, TransactionAuthorizationDetail transactionAuthorizationDetail) {
+    private void sendTransaction(TransactionSignatureData transactionSignatureData, TransactionAuthorizationData transactionAuthorizationData) {
 
         getSendTransactionResult()
                 .filter(new Predicate<Pair<Boolean, List<PlatonSendTransaction>>>() {
@@ -250,7 +253,7 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
                         } else if (transactionSignatureData.getFunctionType() == FunctionType.WITHDREW_DELEGATE_FUNC_TYPE) {
                             ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.withdraw_success));
                         }
-                        afterSendTransactionSucceed(platonSendTransaction, transactionAuthorizationDetail);
+                        afterSendTransactionSucceed(platonSendTransaction, transactionAuthorizationData);
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -317,33 +320,60 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
 
     private int checkSignature(TransactionAuthorizationData transactionAuthorizationData) {
 
-        if (transactionAuthorizationData == null) {
-            return CODE_INVALID_SIGNATURE;
-        }
+        //发送地址是否有效
+        boolean isFromAddressValid = checkFromAddress(transactionAuthorizationData);
 
-        TransactionAuthorizationBaseData transactionAuthorizationBaseData = transactionAuthorizationData.getBaseDataList().get(0);
-
-        boolean fromNotEquals = !TextUtils.equals(transactionAuthorizationBaseData.getFrom(), transactionSignatureData.getFrom());
-
-        if (fromNotEquals) {
+        if (!isFromAddressValid) {
             return CODE_WALLET_MISMATCH;
         }
+        //链id是否有效
+        boolean isChainIdValid = checkChainId(transactionAuthorizationData);
+        //交易类型是否有效
+        boolean isFunctionTypeValid = checkFunctionType(transactionAuthorizationData);
 
-        boolean chainIdNotEquals = !TextUtils.equals(transactionAuthorizationBaseData.getChainId(), transactionSignatureData.getChainId());
-        boolean timestampNotEquals = transactionAuthorizationData.getTimestamp() != transactionSignatureData.getTimestamp();
-        boolean functionTypeNotEquals = transactionAuthorizationBaseData.getFunctionType() != transactionSignatureData.getFunctionType();
-
-        if (chainIdNotEquals || timestampNotEquals || functionTypeNotEquals) {
-            return CODE_INVALID_SIGNATURE;
+        if (!isChainIdValid || !isFunctionTypeValid) {
+            return CODE_WALLET_MISMATCH;
         }
 
         return CODE_VALID_SIGNATURE;
     }
 
-    private void afterSendTransactionSucceed(PlatonSendTransaction platonSendTransaction, TransactionAuthorizationDetail transactionAuthorizationDetail) {
+    private boolean checkFromAddress(TransactionAuthorizationData transactionAuthorizationData) {
+
+        if (transactionAuthorizationData == null) {
+            Wallet wallet = WalletManager.getInstance().getWalletByAddress(transactionSignatureData.getFrom());
+            return !wallet.isNull();
+        }
+
+        TransactionAuthorizationBaseData transactionAuthorizationBaseData = transactionAuthorizationData.getBaseDataList().get(0);
+
+        return TextUtils.equals(transactionAuthorizationBaseData.getFrom(), transactionSignatureData.getFrom());
+    }
+
+    private boolean checkChainId(TransactionAuthorizationData transactionAuthorizationData) {
+        if (transactionAuthorizationData == null) {
+            return TextUtils.equals(NodeManager.getInstance().getChainId(), transactionSignatureData.getChainId());
+        }
+
+        TransactionAuthorizationBaseData transactionAuthorizationBaseData = transactionAuthorizationData.getBaseDataList().get(0);
+        return TextUtils.equals(transactionAuthorizationBaseData.getChainId(), transactionSignatureData.getChainId());
+    }
+
+    private boolean checkFunctionType(TransactionAuthorizationData transactionAuthorizationData) {
+
+        if (transactionAuthorizationData == null) {
+            return true;
+        }
+
+        TransactionAuthorizationBaseData transactionAuthorizationBaseData = transactionAuthorizationData.getBaseDataList().get(0);
+
+        return transactionAuthorizationBaseData.getFunctionType() == transactionSignatureData.getFunctionType();
+    }
+
+    private void afterSendTransactionSucceed(PlatonSendTransaction platonSendTransaction, TransactionAuthorizationData transactionAuthorizationData) {
         dismiss();
         List<String> signedDatas = transactionSignatureData.getSignedDatas();
-        Transaction transaction = buildTransaction(transactionAuthorizationDetail, platonSendTransaction.getTransactionHash(), signedDatas.get(signedDatas.size() - 1));
+        Transaction transaction = buildTransaction(transactionAuthorizationData, platonSendTransaction.getTransactionHash(), signedDatas.get(signedDatas.size() - 1));
         if (transactionSignatureData.getFunctionType() == FunctionType.TRANSFER) {
             //跳转至交易记录页签
             transaction.setTxType(String.valueOf(TransactionType.TRANSFER.getTxTypeValue()));
@@ -398,21 +428,23 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
     }
 
 
-    private Transaction buildTransaction(TransactionAuthorizationDetail transactionAuthorizationDetail, String hash, String signedMessage) {
+    private Transaction buildTransaction(TransactionAuthorizationData transactionAuthorizationData, String hash, String signedMessage) {
         RawTransaction rawTransaction = TransactionDecoder.decode(signedMessage);
+        String nodeName = transactionAuthorizationData != null && transactionAuthorizationData.getTransactionAuthorizationDetail() != null ? transactionAuthorizationData.getTransactionAuthorizationDetail().getNodeName() : "--";
+        String nodeId = transactionAuthorizationData != null && transactionAuthorizationData.getTransactionAuthorizationDetail() != null ? transactionAuthorizationData.getTransactionAuthorizationDetail().getNodeName() : "--";
         return new Transaction.Builder()
                 .hash(hash)
                 .from(transactionSignatureData.getFrom())
                 .to(rawTransaction.getTo())
                 .senderWalletName(getSenderName(transactionSignatureData.getFrom()))
-                .value(transactionAuthorizationDetail.getAmount())
+                .value(rawTransaction.getValue().toString(10))
                 .chainId(transactionSignatureData.getChainId())
                 .timestamp(System.currentTimeMillis())
                 .txReceiptStatus(TransactionStatus.PENDING.ordinal())
-                .actualTxCost(transactionAuthorizationDetail.getFee())
-                .unDelegation(transactionAuthorizationDetail.getAmount())
-                .nodeName(transactionAuthorizationDetail.getNodeName())
-                .nodeId(transactionAuthorizationDetail.getNodeId())
+                .actualTxCost(BigIntegerUtil.mul(rawTransaction.getGasLimit(), rawTransaction.getGasPrice()))
+                .unDelegation(rawTransaction.getValue().toString(10))
+                .nodeName(nodeName)
+                .nodeId(nodeId)
                 .build();
     }
 
