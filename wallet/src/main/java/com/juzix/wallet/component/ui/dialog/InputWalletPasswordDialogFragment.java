@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,15 +53,27 @@ public class InputWalletPasswordDialogFragment extends BaseDialogFragment {
     TextView textCancel;
     @BindView(R.id.layout_content)
     LinearLayout layoutContent;
+    @BindView(R.id.text_title)
+    TextView tvTitle;
 
     private Unbinder unbinder;
     private OnWalletCorrectListener mCorrectListener;
     private OnWalletPasswordCorrectListener mListener;
 
-    public static InputWalletPasswordDialogFragment newInstance(Wallet walletEntity) {
+
+    public static InputWalletPasswordDialogFragment newInstance(Wallet wallet) {
         InputWalletPasswordDialogFragment dialogFragment = new InputWalletPasswordDialogFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable(Constants.Bundle.BUNDLE_WALLET, walletEntity);
+        bundle.putParcelable(Constants.Bundle.BUNDLE_WALLET, wallet);
+        dialogFragment.setArguments(bundle);
+        return dialogFragment;
+    }
+
+    public static InputWalletPasswordDialogFragment newInstance(Wallet wallet, String title) {
+        InputWalletPasswordDialogFragment dialogFragment = new InputWalletPasswordDialogFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(Constants.Bundle.BUNDLE_WALLET, wallet);
+        bundle.putString(Constants.Bundle.BUNDLE_TEXT, title);
         dialogFragment.setArguments(bundle);
         return dialogFragment;
     }
@@ -88,7 +101,8 @@ public class InputWalletPasswordDialogFragment extends BaseDialogFragment {
 
     private void initViews() {
 
-        Wallet walletEntity = getArguments().getParcelable(Constants.Bundle.BUNDLE_WALLET);
+        Wallet wallet = getArguments().getParcelable(Constants.Bundle.BUNDLE_WALLET);
+        String title = getArguments().getString(Constants.Bundle.BUNDLE_TEXT);
 
         ShadowDrawable.setShadowDrawable(layoutContent,
                 ContextCompat.getColor(context, R.color.color_ffffff),
@@ -98,7 +112,11 @@ public class InputWalletPasswordDialogFragment extends BaseDialogFragment {
                 0,
                 DensityUtil.dp2px(context, 2f));
 
-        textWalletName.setText(walletEntity.getName());
+        textWalletName.setText(wallet.getName());
+
+        if (!TextUtils.isEmpty(title)) {
+            tvTitle.setText(title);
+        }
 
         RxTextView.textChanges(etPassword)
                 .compose(bindToLifecycle())
@@ -128,7 +146,7 @@ public class InputWalletPasswordDialogFragment extends BaseDialogFragment {
                         Single.fromCallable(new Callable<Credentials>() {
                             @Override
                             public Credentials call() throws Exception {
-                                return JZWalletUtil.getCredentials(getPassword(), walletEntity.getKey());
+                                return JZWalletUtil.getCredentials(getPassword(), wallet.getKey());
                             }
                         })
                                 .compose(bindToLifecycle())

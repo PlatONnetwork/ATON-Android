@@ -88,6 +88,7 @@
     <string name="backupWalletResume">Mnemonic phrase consist of 12 common English words converted from 64-bit private key by algorithm. Please write down the words on paper and keep them in a safe place. </string>
     <string name="startBackup">Start to backup</string>
     <string name="InputWalletPassword">Input wallet password</string>
+    <string name="msg_delete_wallet">Enter wallet password to confirm deletion</string>
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
     <string name="yes">Yes</string>
