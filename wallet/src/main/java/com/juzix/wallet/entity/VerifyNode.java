@@ -207,6 +207,6 @@ public class VerifyNode implements Parcelable {
     }
 
     public String getShowDelegatedRatePA() {
-        return isInit ? "--" : String.format("%s%%", NumberParserUtils.getPrettyBalance(delegatedRatePA));
+        return isInit ? "--" : String.format("%s%%", NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(delegatedRatePA, "100")));
     }
 }

@@ -88,8 +88,9 @@ public class VerifyNodeViewHolder extends BaseViewHolder<VerifyNode> {
         for (String key : bundle.keySet()) {
             switch (key) {
                 case VerifyNodeDiffCallback.KEY_RANKING:
-                    String ranking = bundle.getString(key);
-                    mNodeRankTv.setText(ranking);
+                    int ranking = bundle.getInt(key);
+                    mNodeRankTv.setText(String.valueOf(ranking));
+                    mNodeRankTv.setTextSize(getRankTextSize(ranking));
                     mNodeRankTv.setBackgroundResource(getRankBackground(NumberParserUtils.parseInt(ranking)));
                     break;
                 case VerifyNodeDiffCallback.KEY_NAME:

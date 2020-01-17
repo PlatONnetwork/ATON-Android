@@ -312,9 +312,13 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
     public void loadValidatorsDataResult(List<VerifyNode> oldVerifyNodeList, List<VerifyNode> newVerifyNodeList) {
         refreshLayout.finishRefresh();
         noDataLayout.setVisibility(newVerifyNodeList == null || newVerifyNodeList.isEmpty() ? View.VISIBLE : View.GONE);
-        VerifyNodeDiffCallback diffCallback = new VerifyNodeDiffCallback(oldVerifyNodeList, newVerifyNodeList);
         mValidatorsAdapter.setDatas(newVerifyNodeList);
-        DiffUtil.calculateDiff(diffCallback, true).dispatchUpdatesTo(mValidatorsAdapter);
+        if (newVerifyNodeList == null || newVerifyNodeList.isEmpty()) {
+            mValidatorsAdapter.notifyDataSetChanged();
+        } else {
+            VerifyNodeDiffCallback diffCallback = new VerifyNodeDiffCallback(oldVerifyNodeList, newVerifyNodeList);
+            DiffUtil.calculateDiff(diffCallback, true).dispatchUpdatesTo(mValidatorsAdapter);
+        }
     }
 
 
