@@ -190,21 +190,6 @@ public class VerifyNode implements Parcelable {
         this.delegate = delegate;
     }
 
-    public int getNodeStatusDescRes() {
-
-        switch (nodeStatus) {
-            case NodeStatus.ACTIVE:
-                return isConsensus ? R.string.validators_verifying : R.string.validators_active;
-            case NodeStatus.CANDIDATE:
-                return R.string.validators_candidate;
-            case NodeStatus.EXITING:
-                return R.string.validators_state_exiting;
-            case NodeStatus.EXITED:
-                return R.string.validators_state_exited;
-            default:
-                return -1;
-        }
-    }
 
     public String getShowDelegatedRatePA() {
         return isInit ? "--" : String.format("%s%%", NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(delegatedRatePA, "100")));

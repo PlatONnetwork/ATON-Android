@@ -398,8 +398,6 @@
     <string name="no_data">No Data</string>
     <string name="voteLimitFailed">Votes exceed the limit of the ticket poo</string>
     <string name="voteFor">Vote for</string>
-    <string name="unknownRegion">*Unknown</string>
-    <string name="unknownRegionEn">*Unknown</string>
     <string name="voteTicketInsufficientBalanceTips">Insufficient balance to vote</string>
     <string name="voteTicketCreateWalletTips">Please create a wallet first</string>
     <string name="paste">Paste</string>
@@ -737,9 +735,9 @@
     <string name="msg_delegated_amount">Delegated</string>
     <string name="msg_delegator_number">Delegators</string>
     <string name="msg_annual_yield">Yield</string>
-    <string name="msg_annual_reward_ratio">Reward Ratio</string>
+    <string name="msg_annual_delegate_yield">Yield</string>
     <string name="msg_total_delegate_reward">Total Reward</string>
-    <string name="msg_delegate_reward_ratio">Yield</string>
+    <string name="msg_delegate_reward_ratio">Reward Ratio</string>
     <string name="msg_delegate_balance">Avaliable Balance</string>
 
     <string name="msg_network_tips">You are on the %1$s Network. Never transfer other network LATs to this address.</string>
@@ -748,6 +746,10 @@
 
     <string name="msg_keystore_nor_exist">Wallet keystore does not exist</string>
     <string name="msg_delegated">Delegated</string>
+    <string name="msg_delegation_reward_ratio">Delegation reward ratio:</string>
+    <string name="msg_delegation_reward_ratio_tips">Proportion of rewards distributed by the node to the delegators</string>
+    <string name="msg_delegation_annual_yield">Expected delegation annualized yield:</string>
+    <string name="msg_delegation_annual_yield_tips">Annualized rate of return for each delegated net income in the last 4 epochs，For reference only！</string>
 
 </resources>
 
