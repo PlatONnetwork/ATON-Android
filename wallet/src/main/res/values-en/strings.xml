@@ -715,6 +715,7 @@
     <string name="msg_resend_transaction_reminder">Have the same send transaction within 2 hours, Confirm sending？</string>
     <string name="msg_total_delegated_lat">Total Delegated(LAT)</string>
     <string name="msg_unclaimed_reward">Unclaimed Reward</string>
+    <string name="msg_avaliable_claimed_reward">Unclaimed Reward</string>
     <string name="msg_total_reward">Total Reward</string>
     <string name="msg_delegation_rec">Delegation Rec</string>
     <string name="msg_claim_rec">Claim Rec</string>

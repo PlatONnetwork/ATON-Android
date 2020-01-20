@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.juzhen.framework.util.NumberParserUtils;
+import com.juzhen.framework.util.MapUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.adapter.base.BaseViewHolder;
 import com.juzix.wallet.component.ui.base.BaseActivity;
@@ -20,7 +20,6 @@ import com.juzix.wallet.component.ui.view.WithDrawActivity;
 import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.entity.DelegateItemInfo;
-import com.juzix.wallet.entity.DelegateNodeDetail;
 import com.juzix.wallet.entity.NodeStatus;
 import com.juzix.wallet.entity.WebType;
 import com.juzix.wallet.utils.AddressFormatUtil;
@@ -29,7 +28,7 @@ import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.GlideUtils;
 
-import org.w3c.dom.Text;
+import java.util.HashMap;
 
 public class DelegateItemInfoViewHolder extends BaseViewHolder<DelegateItemInfo> {
 
@@ -89,7 +88,7 @@ public class DelegateItemInfoViewHolder extends BaseViewHolder<DelegateItemInfo>
         mUnclaimedRewardAmountTv.setText(AmountUtil.formatAmountText(data.getWithdrawReward()));
         mUnclaimRewardLayout.setVisibility(BigDecimalUtil.isBiggerThanZero(data.getWithdrawReward()) ? View.VISIBLE : View.GONE);
 
-        mDelegateLayout.setEnabled(isDelegateBtnEnabled(data));
+        mDelegateLayout.setEnabled(isDelegateBtnEnabled(data.getNodeStatus(), data.isInit()));
 
         mDelegateLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,8 +132,18 @@ public class DelegateItemInfoViewHolder extends BaseViewHolder<DelegateItemInfo>
                 case DelegateItemInfoDiffCallback.KEY_URL:
                     GlideUtils.loadImage(mContext, bundle.getString(key), mWalletAvatarCiv);
                     break;
-                case DelegateItemInfoDiffCallback.KEY_NODE_STAUS:
-                    mNodeNameTv.setText(mContext.getResources().getString(bundle.getInt(key)));
+                case DelegateItemInfoDiffCallback.KEY_NODE_STATUS_AND_CONSENSUS:
+                    HashMap<String, Object> map = (HashMap<String, Object>) bundle.getSerializable(key);
+                    String nodeStatus = MapUtils.getString(map, DelegateItemInfoDiffCallback.KEY_NODE_STATUS);
+                    boolean isConsensus = MapUtils.getBoolean(map, DelegateItemInfoDiffCallback.KEY_CONSENSUS);
+                    mNodeStatusTv.setText(getNodeStatusDescRes(nodeStatus, isConsensus));
+                    mNodeStatusTv.setTextColor(getNodeStatusTextColor(nodeStatus, isConsensus));
+                    break;
+                case DelegateItemInfoDiffCallback.KEY_NODE_STATUS_AND_INIT:
+                    HashMap<String, Object> hashMap = (HashMap<String, Object>) bundle.getSerializable(key);
+                    String status = MapUtils.getString(hashMap, DelegateItemInfoDiffCallback.KEY_NODE_STATUS);
+                    boolean isInit = MapUtils.getBoolean(hashMap, DelegateItemInfoDiffCallback.KEY_INIT);
+                    mDelegateLayout.setEnabled(isDelegateBtnEnabled(status, isInit));
                     break;
                 case DelegateItemInfoDiffCallback.KEY_DELEGATED:
                     mDelegatedAmountTv.setText(AmountUtil.formatAmountText(bundle.getString(key)));
@@ -164,7 +173,21 @@ public class DelegateItemInfoViewHolder extends BaseViewHolder<DelegateItemInfo>
         }
     }
 
-    private boolean isDelegateBtnEnabled(DelegateItemInfo data) {
-        return !(TextUtils.equals(data.getNodeStatus(), NodeStatus.EXITED) || TextUtils.equals(data.getNodeStatus(), NodeStatus.EXITING) || data.isInit());
+    public int getNodeStatusDescRes(@NodeStatus String nodeStatus, boolean isConsensus) {
+
+        switch (nodeStatus) {
+            case NodeStatus.CANDIDATE:
+                return R.string.validators_candidate;
+            case NodeStatus.EXITING:
+                return R.string.validators_state_exiting;
+            case NodeStatus.EXITED:
+                return R.string.validators_state_exited;
+            default:
+                return isConsensus ? R.string.validators_verifying : R.string.validators_active;
+        }
+    }
+
+    private boolean isDelegateBtnEnabled(@NodeStatus String nodeStatus, boolean isInit) {
+        return !(TextUtils.equals(nodeStatus, NodeStatus.EXITED) || TextUtils.equals(nodeStatus, NodeStatus.EXITING) || isInit);
     }
 }
