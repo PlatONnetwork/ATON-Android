@@ -99,7 +99,7 @@
                     tools:src="@drawable/avatar_14" />
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="3dp"
@@ -117,11 +117,15 @@
                         android:textStyle="bold"
                         tools:text="钱包名称" />
 
-                    <TextView
+                    <android.support.v7.widget.AppCompatTextView
                         android:id="@+id/tv_withdraw_wallet_balance"
                         style="@style/Text.61646e.13"
+                        android:layout_width="match_parent"
                         android:layout_marginTop="8dp"
-                        tools:text="@string/msg_avaliable_balance" />
+                        android:gravity="center_vertical|left"
+                        android:lines="1"
+                        app:autoSizeTextType="uniform"
+                        tools:text="@string/msg_balance_with_unit" />
 
                 </LinearLayout>
 

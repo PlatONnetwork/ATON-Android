@@ -110,6 +110,6 @@ public class AmountUtil {
      * @return
      */
     public static String formatAmountText(String amount) {
-        return BigDecimalUtil.isBiggerThanZero(amount) ? StringUtil.formatBalance(BigDecimalUtil.div(amount, VALUE_1E18)) : "— —";
+        return TextUtils.isEmpty(amount) ? "— —" : StringUtil.formatBalance(BigDecimalUtil.div(amount, VALUE_1E18));
     }
 }
