@@ -303,7 +303,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
         return isNodeExit || isInit || isWalletAddressListEmpty ? false : true;
     }
 
-    private SpannableString getDelegateTips(VerifyNodeDetail nodeDetail) {
+    private String getDelegateTips(VerifyNodeDetail nodeDetail) {
         //节点是否退出
         boolean isNodeExit = TextUtils.equals(NodeStatus.EXITED, nodeDetail.getNodeStatus()) || TextUtils.equals(NodeStatus.EXITING, nodeDetail.getNodeStatus());
         //节点状态是否为初始化验证人（收益地址为激励池地址的验证人）
@@ -325,15 +325,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
             delegateTips = getString(R.string.tips_no_wallet);
         }
 
-
-        SpannableString spannableString = new SpannableString(delegateTips);
-        if (!TextUtils.isEmpty(delegateTips)) {
-            Drawable drawable = getResources().getDrawable(R.drawable.icon_no_delegate_tips);
-            drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-            spannableString.setSpan(new VerticalImageSpan(drawable), 0, 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-        }
-
-        return spannableString;
+        return delegateTips;
     }
 
 

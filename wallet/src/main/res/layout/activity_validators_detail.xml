@@ -374,6 +374,8 @@
             style="@style/Text.ff6b00.12"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
+            android:drawablePadding="2dp"
+            android:drawableLeft="@drawable/icon_no_delegate_tips"
             android:text="@string/validators_details_tips"
             android:visibility="visible" />
 

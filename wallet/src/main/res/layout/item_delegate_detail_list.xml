@@ -156,7 +156,7 @@
 
             <TextView
                 style="@style/Text.898c9e.12"
-                android:text="@string/msg_unclaimed_reward" />
+                android:text="@string/msg_avaliable_claimed_reward" />
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/tv_unclaimed_reward_amount"
