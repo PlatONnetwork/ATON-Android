@@ -294,12 +294,11 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
         }
     }
 
-//    @Override
-//    public void onResume() {
-//        MobclickAgent.onPageStart(Constants.UMPages.VERIFY_NODE);
-//        super.onResume();
-//        refreshLayout.autoRefresh();
-//    }
+    @Override
+    public void onResume() {
+        MobclickAgent.onPageStart(Constants.UMPages.VERIFY_NODE);
+        super.onResume();
+    }
 
 
     @Override

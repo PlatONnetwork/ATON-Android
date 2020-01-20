@@ -168,7 +168,7 @@
             android:layout_height="0dp"
             android:layout_marginTop="6dp"
             android:background="@color/color_f9fbff"
-            app:layout_constrainedHeight="true"
+            android:focusable="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/layout_search"
             app:layout_goneMarginTop="16dp"

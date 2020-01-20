@@ -95,7 +95,8 @@
                     android:layout_height="42dp"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="3dp"
-                    android:layout_marginTop="10dp" />
+                    android:layout_marginTop="10dp"
+                    tools:src="@drawable/avatar_14" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -117,12 +118,10 @@
                         tools:text="钱包名称" />
 
                     <TextView
-                        android:id="@+id/tv_withdraw_wallet_address"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_withdraw_wallet_balance"
+                        style="@style/Text.61646e.13"
                         android:layout_marginTop="8dp"
-                        android:textColor="@color/color_898c9e"
-                        android:textSize="13sp" />
+                        tools:text="@string/msg_avaliable_balance" />
 
                 </LinearLayout>
 
@@ -365,7 +364,7 @@
                 android:layout_marginBottom="20dp"
                 android:gravity="left"
                 android:lineSpacingExtra="2dp"
-                android:text="@string/delegate_node_des" />
+                android:text="@string/withdraw_title_explain" />
         </LinearLayout>
 
 
