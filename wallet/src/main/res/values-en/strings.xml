@@ -545,8 +545,9 @@
     <string name="delegate_node_des">The delegations will be locked for at least one epoch(10750 blocks) to gain. According to the delegated reward ratio set by the nodes, the profits obtained by the nodes are distributed. Node benefits include block rewards and staking rewards.</string>
     <string name="delegations_title">Delegations</string>
     <string name="delegations_title_explain">The user can withdraw the delegated token at any time.The Validator\'s operator address are not allowed for delegation.</string>
+    <string name="withdraw_title_explain">The transaction has been successfully submitted and the delegated LAT can return to your account immediately.\nThe Invalid delegations has to be withdrawal all at once;\nIf the remaining delegations has been less than %1$sLAT, it will be automatically returned all.</string>
     <string name="rewards_title">Rewards</string>
-    <string name="rewards_title_explain">The transaction has been successfully submitted and the delegated LAT can return to your account immediately.\nThe Invalid delegations has to be withdrawal all at once;\nIf the remaining delegations has been less than %1$sLAT, it will be automatically returned all.</string>
+    <string name="rewards_title_explain">The delegations will be locked for at least one epoch(10750 blocks) to gain. According to the delegated reward ratio set by the nodes, the profits obtained by the nodes are distributed. Node benefits include block rewards and staking rewards.</string>
     <string name="risk_title">Risk</string>
     <string name="risk_title_explain">No risk.</string>
     <string name="node_locked_delegate">Locked delegate</string>
@@ -742,6 +743,7 @@
     <string name="msg_network_tips">You are on the %1$s Network. Never transfer other network LATs to this address.</string>
 
     <string name="msg_avaliable_balance">Balance：%1$s LAT</string>
+    <string name="msg_balance_with_unit">Balance：%1$s LAT</string>
 
     <string name="msg_keystore_nor_exist">Wallet keystore does not exist</string>
     <string name="msg_delegated">Delegated</string>
