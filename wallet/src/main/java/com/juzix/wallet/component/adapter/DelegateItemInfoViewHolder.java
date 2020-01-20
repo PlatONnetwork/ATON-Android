@@ -25,8 +25,10 @@ import com.juzix.wallet.entity.WebType;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.AmountUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.BigIntegerUtil;
 import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.GlideUtils;
+import com.juzix.wallet.utils.ToastUtil;
 
 import java.util.HashMap;
 
@@ -93,7 +95,11 @@ public class DelegateItemInfoViewHolder extends BaseViewHolder<DelegateItemInfo>
         mDelegateLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DelegateActivity.actionStart(mContext, data);
+                if (BigDecimalUtil.isBiggerThanZero(data.getReleased())) {
+                    ToastUtil.showLongToast(mContext, R.string.delegate_no_click);
+                } else {
+                    DelegateActivity.actionStart(mContext, data);
+                }
             }
         });
 
