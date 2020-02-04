@@ -50,7 +50,7 @@ public class BackupMnemonicPhraseActivity extends BaseActivity {
         return super.onKeyDown(keyCode, event);
     }
 
-    @SuppressWarnings("all")
+    @SuppressWarnings("allBtn")
     private void initView() {
 
         mCtb = findViewById(R.id.commonTitleBar);

@@ -88,6 +88,7 @@
     <string name="backupWalletResume">Mnemonic phrase consist of 12 common English words converted from 64-bit private key by algorithm. Please write down the words on paper and keep them in a safe place. </string>
     <string name="startBackup">Start to backup</string>
     <string name="InputWalletPassword">Input wallet password</string>
+    <string name="msg_delete_wallet">Enter wallet password to confirm deletion</string>
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
     <string name="yes">Yes</string>
@@ -150,6 +151,7 @@
     <string name="help">Help</string>
     <string name="about">About</string>
     <string name="aboutUs">About Us</string>
+    <string name="service_agreement">Service Agreement</string>
     <string name="official_community">Official Community</string>
     <string name="add_shared_wallet">Add Joint Wallet</string>
     <string name="add">Add</string>
@@ -396,8 +398,6 @@
     <string name="no_data">No Data</string>
     <string name="voteLimitFailed">Votes exceed the limit of the ticket poo</string>
     <string name="voteFor">Vote for</string>
-    <string name="unknownRegion">*Unknown</string>
-    <string name="unknownRegionEn">*Unknown</string>
     <string name="voteTicketInsufficientBalanceTips">Insufficient balance to vote</string>
     <string name="voteTicketCreateWalletTips">Please create a wallet first</string>
     <string name="paste">Paste</string>
@@ -465,6 +465,7 @@
     <string name="candidate_apply_withdraw">candidateApplyWithdraw</string>
     <string name="candidate_withdraw">candidateWithdraw</string>
     <string name="unknown">unknown</string>
+    <string name="claim_rewards">ClaimRewards</string>
     <!--Aton0.7.0 -->
     <string name="guide_tips">Have a wallet? Import using keystore, mnemonic phrase, private key.</string>
     <string name="restricted_amount_with_unit">(&#160;&#160;Restricted:&#160;%1$s&#160;LAT)</string>
@@ -497,6 +498,8 @@
     <string name="proposal_type">Proposal Type</string>
     <string name="restricted_account">Restricted Account</string>
     <string name="restricted_amount">Restricted Amount</string>
+    <string name="claim_wallet">Claim Wallet</string>
+    <string name="reward_amount">Reward amount</string>
     <string name="double_signing">Double Signing</string>
 
     <string name="nav_delegate">Delegate</string>
@@ -539,11 +542,12 @@
     <string name="expected_annualized_rate_des">The expected annualized rate of the current validator, the Delegation rewards is distributed by the validator</string>
     <string name="withdraw_tip">Input Amount (not less than %1$s LAT)</string>
     <string name="delegate_node">Note</string>
-    <string name="delegate_node_des">The transaction has been successfully submitted and the delegated LAT can return to your account immediately.\nThe Invalid delegations has to be withdrawal all at once;\nIf the remaining delegations has been less than %1$s LAT, it will be automatically returned all.</string>
+    <string name="delegate_node_des">The delegations will be locked for at least one epoch(10750 blocks) to gain. According to the delegated reward ratio set by the nodes, the profits obtained by the nodes are distributed. Node benefits include block rewards and staking rewards.</string>
     <string name="delegations_title">Delegations</string>
-    <string name="delegations_title_explain">The user keeps the delegate\'s Token ownership forever, and the user can withdraw the delegated token at any time.\nThe Validator\'s operator address and reward receiving address are not allowed for delegation.</string>
+    <string name="delegations_title_explain">The user can withdraw the delegated token at any time.The Validator\'s operator address are not allowed for delegation.</string>
+    <string name="withdraw_title_explain">The transaction has been successfully submitted and the delegated LAT can return to your account immediately.\nThe Invalid delegations has to be withdrawal all at once;\nIf the remaining delegations has been less than %1$sLAT, it will be automatically returned all.</string>
     <string name="rewards_title">Rewards</string>
-    <string name="rewards_title_explain">Delegation rewards come from validation block\nreward, staking reward and transaction fees. Reward\nassigned by validator. For details on how to assign,\nplease see the official website description of each validator.</string>
+    <string name="rewards_title_explain">The delegations will be locked for at least one epoch(10750 blocks) to gain. According to the delegated reward ratio set by the nodes, the profits obtained by the nodes are distributed. Node benefits include block rewards and staking rewards.</string>
     <string name="risk_title">Risk</string>
     <string name="risk_title_explain">No risk.</string>
     <string name="node_locked_delegate">Locked delegate</string>
@@ -559,13 +563,13 @@
     <string name="group_secretary">Group Secretary：PlatON-Alita</string>
     <string name="official_account">Official Account：PlatON_network</string>
 
-
     <string name="available_balance">Balance</string>
     <string name="locked_balance">Restricted balance</string>
     <string name="delegate_amount_tips">The Amount cannot be less than %1$s LAT</string>
     <string name="insufficient_balance_unable_to_delegate">Insufficient balance, unable to delegate</string>
     <string name="the_validator_has_exited_and_cannot_be_delegated">The Validator has Exited and cannot be delegated</string>
     <string name="delegate_failed">Delegated Failed</string>
+    <string name="claim_reward_failed">Claim Reward Failed</string>
     <string name="delegate_success">Delegated Success</string>
 
     <!--委托的状态-->
@@ -636,6 +640,7 @@
     <string name="delegate_risk_tips">Validators would be punished for double signing or low block rate. It would indirectly affect your reward. Please select qualified validators.</string>
     <string name="recipient_wallet_address">Recipient</string>
     <string name="delegate_less_than_fee">Insufficient balance payment fee</string>
+    <string name="claim_reward_less_than_fee">Insufficient balance payment fee</string>
     <string name="cold_wallet">Cold</string>
     <string name="observed_wallet">Observed</string>
 
@@ -673,15 +678,17 @@
     <string name="web_url_web_portals">https://www.platon.network</string>
     <string name="web_url_faq">https://platon.zendesk.com/hc/en-us/categories/360002174434</string>
     <string name="web_url_tutorial">https://platon.zendesk.com/hc/en-us/categories/360002193633</string>
-    <string name="web_url_agreement">https://aton.main.platon.network/aton-agreement/en-us/agreement.html</string>
+    <string name="web_url_agreement">%1$s/aton-agreement/en-us/v0760/agreement.html </string>
     <string name="web_url_support_feedback">https://platon.zendesk.com/hc/en-us</string>
     <string name="web_url_common_delegate_problem">https://platon.zendesk.com/hc/en-us/articles/360037373194-Common-questions-about-PlatON-Delegators</string>
-    <string name="web_url_privacy_policy">https://aton.main.platon.network/aton-agreement/en-us/privacyAgreement.html</string>
+    <string name="web_url_privacy_policy">%1$s/aton-agreement/en-us/privacyAgreement.html</string>
 
     <string name="withdraw_amount_tips">The Amount cannot be less than %1$s LAT</string>
     <string name="unrecognized_content">Unrecognized content</string>
     <string name="no_delegation_information">No delegation information</string>
     <string name="newbaleyworld">NewBaleyworld</string>
+    <string name="test_net">testnet</string>
+    <string name="develop_net">developnet</string>
 
     <string name="msg_scan_qrcode">Please aim at the QR code and wait patiently.</string>
     <string name="action_refresh">Refresh</string>
@@ -706,5 +713,45 @@
 
     <string name="msg_large_transaction_reminder">Send more than %1$s LAT, Confirm sending?</string>
     <string name="msg_resend_transaction_reminder">Have the same send transaction within 2 hours, Confirm sending？</string>
+    <string name="msg_total_delegated_lat">Total Delegated(LAT)</string>
+    <string name="msg_unclaimed_reward">Unclaimed Reward</string>
+    <string name="msg_avaliable_claimed_reward">Unclaimed Reward</string>
+    <string name="msg_total_reward">Total Reward</string>
+    <string name="msg_delegation_rec">Delegation Rec</string>
+    <string name="msg_claim_rec">Claim Rec</string>
+    <string name="msg_claim_reward">Claim</string>
+
+    <string name="msg_no_delegated_data_tips">View all validators,Delegate</string>
+    <string name="msg_delegate">Delegate</string>
+
+    <string name="msg_claim_record">Claim Record</string>
+    <string name="msg_claim_rewards">Claim Rewards</string>
+    <string name="msg_claim_reward_tips">Estimated reward, subject to actual receipt</string>
+    <string name="msg_claim_wallet">Claim Wallet</string>
+    <string name="hint_search_validator">Search by validator name</string>
+    <string name="msg_hide">Hide</string>
+    <string name="msg_sort">Sort</string>
+
+    <string name="msg_node_rankings">Rank</string>
+    <string name="msg_delegated_amount">Delegated</string>
+    <string name="msg_delegator_number">Delegators</string>
+    <string name="msg_annual_yield">Expected delegation annualized yield</string>
+    <string name="msg_annual_delegate_yield">Yield</string>
+    <string name="msg_total_delegate_reward">Total Reward</string>
+    <string name="msg_delegate_reward_ratio">Reward Ratio</string>
+    <string name="msg_delegate_balance">Avaliable Balance</string>
+
+    <string name="msg_network_tips">You are on the %1$s Network. Never transfer other network LATs to this address.</string>
+
+    <string name="msg_avaliable_balance">Balance：%1$s LAT</string>
+    <string name="msg_balance_with_unit">Balance：%1$s LAT</string>
+
+    <string name="msg_keystore_nor_exist">Wallet keystore does not exist</string>
+    <string name="msg_delegated">Delegated</string>
+    <string name="msg_delegation_reward_ratio">Delegation reward ratio:</string>
+    <string name="msg_delegation_reward_ratio_tips">Proportion of rewards distributed by the node to the delegators</string>
+    <string name="msg_delegation_annual_yield">Expected delegation annualized yield:</string>
+    <string name="msg_delegation_annual_yield_tips">Annualized rate of return for each delegated net income in the last 4 epochs，For reference only！</string>
+
 </resources>
 

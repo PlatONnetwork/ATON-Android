@@ -177,6 +177,10 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
      * 质押金额 txType = 1003(退回数量)
      */
     private String stakingValue;
+    /**
+     * 领取数量 单位von   1LAT(ETH)=1000000000000000000von(wei)
+     */
+    private String totalReward;
 
 
     public Transaction() {
@@ -213,6 +217,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         walletName = in.readString();
         unDelegation = in.readString();
         stakingValue = in.readString();
+        totalReward = in.readString();
     }
 
     public Transaction(Builder builder) {
@@ -246,6 +251,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         this.walletName = builder.walletName;
         this.unDelegation = builder.unDelegation;
         this.stakingValue = builder.stakingValue;
+        this.totalReward = builder.totalReward;
     }
 
     @Override
@@ -280,6 +286,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         dest.writeString(walletName);
         dest.writeString(unDelegation);
         dest.writeString(stakingValue);
+        dest.writeString(totalReward);
     }
 
     @Override
@@ -558,6 +565,14 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         return value;
     }
 
+    public String getTotalReward() {
+        return totalReward;
+    }
+
+    public void setTotalReward(String totalReward) {
+        this.totalReward = totalReward;
+    }
+
     public String getShowValue() {
         switch (getTxType()) {
             case TRANSFER:
@@ -569,12 +584,15 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
             case EXIT_VALIDATOR:
                 return NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(stakingValue, "1E18"));
             case UNDELEGATE:
-                return NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(unDelegation, "1E18"));
+                return NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(value, "1E18"));
             default:
                 return NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(value, "1E18"));
 
         }
+    }
 
+    public String getShowTotalReward() {
+        return NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(totalReward, "1E18"));
     }
 
     public void setValue(String value) {
@@ -817,6 +835,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         private String walletName;
         private String unDelegation;
         private String stakingValue;
+        private String totalReward;
 
         public Builder hash(String hash) {
             this.hash = hash;
@@ -973,6 +992,11 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
             return this;
         }
 
+        public Builder totalReward(String totalReward) {
+            this.totalReward = totalReward;
+            return this;
+        }
+
         public Transaction build() {
             return new Transaction(this);
         }
@@ -1011,6 +1035,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
                 ", walletName='" + walletName + '\'' +
                 ", unDelegation='" + unDelegation + '\'' +
                 ", stakingValue='" + stakingValue + '\'' +
+                ", totalReward='" + totalReward + '\'' +
                 '}';
     }
 

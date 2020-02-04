@@ -13,10 +13,12 @@ import android.view.Window;
 import android.view.WindowInsets;
 
 import com.juzix.wallet.App;
+import com.juzix.wallet.BuildConfig;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.config.AppSettings;
+import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.WebType;
 import com.juzix.wallet.utils.LanguageUtil;
@@ -65,7 +67,7 @@ public class SplashActivity extends BaseActivity {
             @Override
             public void run() {
                 if (AppSettings.getInstance().isFirstEnter()) {
-                    CommonHybridActivity.actionStart(SplashActivity.this, getResources().getString(R.string.web_url_privacy_policy), WebType.WEB_TYPE_AGREEMENT);
+                    CommonHybridActivity.actionStart(SplashActivity.this, getResources().getString(R.string.web_url_agreement, NodeManager.getInstance().getCurNodeAddress()), WebType.WEB_TYPE_AGREEMENT);
                     SplashActivity.this.finish();
                     return;
                 }

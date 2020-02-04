@@ -1,206 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.scwang.smartrefresh.layout.SmartRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_refresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_f9fbff">
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    app:srlEnableLoadMore="false">
 
-
-    <com.scwang.smartrefresh.layout.SmartRefreshLayout
-        android:id="@+id/refreshLayout"
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingTop="2dp">
 
-            <RelativeLayout
+            <include layout="@layout/include_total_delegated" />
+
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/color_ffffff"
-                android:paddingLeft="13dp"
-                android:paddingTop="26dp"
-                android:paddingRight="16dp"
-                android:gravity="center"
-                android:paddingBottom="16dp">
+                android:layout_height="wrap_content">
 
-                <ImageView
-                    android:id="@+id/iv_total_delegate"
-                    android:layout_width="42dp"
-                    android:layout_height="42dp"
-                    android:layout_marginRight="3dp"
-                    android:src="@drawable/icon_total_delegate" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignTop="@id/iv_total_delegate"
-                    android:layout_centerVertical="true"
-                    android:layout_toRightOf="@id/iv_total_delegate"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/total_delegate_title"
-                        android:textColor="@color/color_000000"
-                        android:textSize="16sp" />
-
-                    <TextView
-                        android:id="@+id/tv_total_delegate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="7dp"
-                        android:textColor="@color/color_000000"
-                        tools:text="151651615516545133"
-                        android:textSize="14sp" />
-
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/tv_delegate_record"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:drawableLeft="@drawable/icon_delegate_record"
-                    android:drawablePadding="3dp"
-                    android:text="@string/delegate_record"
-                    android:textColor="@color/color_105cfe"
-                    android:textSize="13sp" />
-
-            </RelativeLayout>
-
-
-            <android.support.v4.widget.NestedScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fillViewport="true">
-
-                <LinearLayout
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/list_my_delegate"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content"
+                    tools:listitem="@layout/item_my_delegate_list"
+                    tools:visibility="visible" />
 
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                <include layout="@layout/include_my_delegate_empty" />
 
-                        <LinearLayout
-                            android:id="@+id/ll_no_data"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:gravity="center"
-                            android:orientation="vertical"
-                            android:layout_marginTop="90dp"
-                            android:visibility="gone">
+            </FrameLayout>
 
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="22dp"
-                                android:src="@drawable/icon_delegate_no_data" />
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
 
-                            <TextView
-                                android:id="@+id/tv_no_data_tips"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/delegate_no_data"
-                                android:textColor="@color/color_61646e"
-                                android:textSize="16sp" />
-                        </LinearLayout>
-
-                        <android.support.v7.widget.RecyclerView
-                            android:id="@+id/list_delegate"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-                    </RelativeLayout>
-
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-                    </LinearLayout>
-
-
-                    <LinearLayout
-                        android:id="@+id/ll_guide"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_marginLeft="32dp"
-                        android:layout_marginRight="32dp"
-                        android:layout_marginBottom="21dp"
-                        android:orientation="horizontal"
-                        android:visibility="visible">
-
-                        <LinearLayout
-                            android:id="@+id/ll_problem"
-                            android:layout_width="0dp"
-                            android:layout_height="40dp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginRight="15dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/bg_delegate_textview"
-                            android:gravity="center"
-                            android:orientation="horizontal">
-
-                            <ImageView
-                                android:layout_width="22dp"
-                                android:layout_height="22dp"
-                                android:layout_marginRight="5dp"
-                                android:src="@drawable/icon_problem" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/frequently_asked_questions"
-                                android:textColor="@color/color_105cfe"
-                                android:textSize="14sp" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/ll_tutorial"
-                            android:layout_width="0dp"
-                            android:layout_height="40dp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginLeft="15dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/bg_delegate_textview"
-                            android:gravity="center"
-                            android:orientation="horizontal">
-
-                            <ImageView
-                                android:layout_width="22dp"
-                                android:layout_height="22dp"
-                                android:layout_marginRight="5dp"
-                                android:src="@drawable/icon_tutorial" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/tutorial"
-                                android:textColor="@color/color_105cfe"
-                                android:textSize="14sp" />
-                        </LinearLayout>
-                    </LinearLayout>
-
-
-                </LinearLayout>
-
-
-            </android.support.v4.widget.NestedScrollView>
-
+            <include layout="@layout/include_my_delegate_bottom" />
 
         </LinearLayout>
 
+    </android.support.v4.widget.NestedScrollView>
 
-    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
+</com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
 
-</RelativeLayout>

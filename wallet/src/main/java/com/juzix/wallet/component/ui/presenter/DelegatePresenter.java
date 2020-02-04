@@ -23,7 +23,8 @@ import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.Web3jManager;
-import com.juzix.wallet.entity.DelegateDetail;
+import com.juzix.wallet.entity.DelegateItemInfo;
+import com.juzix.wallet.entity.DelegateNodeDetail;
 import com.juzix.wallet.entity.DelegateHandle;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionAuthorizationBaseData;
@@ -41,6 +42,7 @@ import org.web3j.platon.ContractAddress;
 import org.web3j.platon.FunctionType;
 import org.web3j.platon.StakingAmountType;
 import org.web3j.tx.gas.ContractGasProvider;
+import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.tx.gas.GasProvider;
 import org.web3j.utils.Convert;
 
@@ -66,12 +68,10 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     private final static BigInteger DEFAULT_EXCHANGE_RATE = BigInteger.valueOf(1000000000000000000L);
 
     private Wallet mWallet;
-    private DelegateDetail mDelegateDetail;
+    private DelegateItemInfo mDelegateDetail;
 
     private String feeAmount;
-    //调web3j获取gasprice
-    private BigInteger gasPrice = BigIntegerUtil.toBigInteger(AppConfigManager.getInstance().getMinGasPrice());
-    private BigInteger gasLimit;
+    private GasProvider mGasProvider = new DefaultGasProvider();
     private boolean isAll = false;//是否点击全部
 
     private String minDelegation = AppConfigManager.getInstance().getMinDelegation();
@@ -79,7 +79,11 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     public DelegatePresenter(DelegateContract.View view) {
         super(view);
         mDelegateDetail = view.getDelegateDetailFromIntent();
-        mWallet = getDefaultWallet(mDelegateDetail);
+        if (TextUtils.isEmpty(mDelegateDetail.getWalletAddress())){
+            mWallet = WalletManager.getInstance().getFirstSortedWallet();
+        }else{
+            mWallet = WalletManager.getInstance().getWalletEntityByWalletAddress(mDelegateDetail.getWalletAddress());
+        }
     }
 
     @Override
@@ -145,14 +149,6 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
     }
 
-    private Wallet getDefaultWallet(DelegateDetail delegateDetail) {
-        if (delegateDetail != null && !TextUtils.isEmpty(delegateDetail.getWalletAddress())) {
-            return WalletManager.getInstance().getWalletEntityByWalletAddress(delegateDetail.getWalletAddress());
-        } else {
-            return sortByFreeAccountAndCreateTime(WalletManager.getInstance().getWalletList()).get(0);
-        }
-    }
-
     /**
      * 检测是否可以委托
      */
@@ -189,14 +185,20 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     @SuppressLint("CheckResult")
     @Override
     public void getGas() {
-        Web3jManager.getInstance().getContractGasPrice()
+
+        ServerUtils.getCommonApi().getGasProvider(ApiRequestBody.newBuilder()
+                .put("from", mWallet.getPrefixAddress())
+                .put("txType", FunctionType.DELEGATE_FUNC_TYPE)
+                .put("nodeId", mDelegateDetail.getNodeId())
+                .build())
                 .compose(RxUtils.bindToLifecycle(getView()))
                 .compose(RxUtils.getSingleSchedulerTransformer())
-                .subscribe(new Consumer<BigInteger>() {
+                .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
+                .subscribe(new ApiSingleObserver<com.juzix.wallet.entity.GasProvider>() {
                     @Override
-                    public void accept(BigInteger gasPrice) throws Exception {
+                    public void onApiSuccess(com.juzix.wallet.entity.GasProvider gasProvider) {
                         if (isViewAttached()) {
-                            DelegatePresenter.this.gasPrice = gasPrice;
+                            mGasProvider = gasProvider.toSdkGasProvider();
                         }
                     }
                 });
@@ -205,7 +207,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     //获取手续费
     @SuppressLint("CheckResult")
     @Override
-    public void getGasPrice(StakingAmountType stakingAmountType) {
+    public void getGasProvider(StakingAmountType stakingAmountType) {
 
         String inputAmount = getView().getDelegateAmount();//输入的数量
 
@@ -221,17 +223,8 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
         if (mDelegateDetail != null && !TextUtils.isEmpty(mDelegateDetail.getNodeId())) {
             if (!isAll) {
-                org.web3j.platon.contracts.DelegateContract
-                        .load(Web3jManager.getInstance().getWeb3j())
-                        .getDelegateGasProvider(mDelegateDetail.getNodeId(), stakingAmountType, Convert.toVon(inputAmount, Convert.Unit.LAT).toBigInteger())
-                        .subscribe(new Action1<GasProvider>() {
-                            @Override
-                            public void call(GasProvider gasProvider) {
-                                gasLimit = gasProvider.getGasLimit();
-                                feeAmount = getFeeAmount(gasPrice, gasLimit);
-                                getView().showFeeAmount(feeAmount);
-                            }
-                        });
+                feeAmount = getFeeAmount(mGasProvider.getGasPrice(), mGasProvider.getGasLimit());
+                getView().showFeeAmount(feeAmount);
             } else {
                 isAll = false;
             }
@@ -244,33 +237,9 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     public void getAllPrice(StakingAmountType stakingAmountType, String amount) {
         isAll = true;
         if (mDelegateDetail != null) {
-            String preDelegateAmount = stakingAmountType == StakingAmountType.FREE_AMOUNT_TYPE ? Convert.toVon(amount, Convert.Unit.LAT).toBigInteger().toString(10).replaceAll("0", "1") : Convert.toVon(amount, Convert.Unit.LAT).toBigInteger().toString();
-            org.web3j.platon.contracts.DelegateContract
-                    .load(Web3jManager.getInstance().getWeb3j())
-                    .getDelegateGasProvider(mDelegateDetail.getNodeId(), stakingAmountType, new BigInteger(preDelegateAmount))
-                    .map(new Func1<GasProvider, Pair<GasProvider, BigInteger>>() {
-                        @Override
-                        public Pair<GasProvider, BigInteger> call(GasProvider gasProvider) {
-                            String feeAmount = getFeeAmount(gasPrice, gasProvider.getGasLimit());
-                            BigInteger delegateAmount = stakingAmountType == StakingAmountType.FREE_AMOUNT_TYPE ? BigDecimalUtil.sub(Convert.toVon(amount, Convert.Unit.LAT).toBigInteger().toString(10), feeAmount).toBigInteger() : Convert.toVon(amount, Convert.Unit.LAT).toBigInteger();
-                            delegateAmount = delegateAmount.compareTo(BigInteger.ZERO) == 1 ? delegateAmount : BigInteger.ZERO;
-                            return new Pair<GasProvider, BigInteger>(org.web3j.platon.contracts.DelegateContract
-                                    .load(Web3jManager.getInstance().getWeb3j())
-                                    .getDelegateGasProvider(mDelegateDetail.getNodeId(), stakingAmountType, delegateAmount)
-                                    .toBlocking()
-                                    .first(), delegateAmount);
-                        }
-                    })
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Action1<Pair<GasProvider, BigInteger>>() {
-                        @Override
-                        public void call(Pair<GasProvider, BigInteger> pair) {
-                            gasLimit = pair.first.getGasLimit();
-                            feeAmount = getFeeAmount(gasPrice, gasLimit);
-                            getView().showAllFeeAmount(stakingAmountType, BigIntegerUtil.toString(pair.second), feeAmount);
-                        }
-                    });
+            String feeAmount = getFeeAmount(mGasProvider.getGasPrice(), mGasProvider.getGasLimit());
+            BigInteger delegateAmount = stakingAmountType == StakingAmountType.FREE_AMOUNT_TYPE ? BigDecimalUtil.sub(Convert.toVon(amount, Convert.Unit.LAT).toBigInteger().toString(10), feeAmount).toBigInteger() : Convert.toVon(amount, Convert.Unit.LAT).toBigInteger();
+            getView().showAllFeeAmount(stakingAmountType, BigIntegerUtil.toString(delegateAmount), feeAmount);
         }
     }
 
@@ -352,7 +321,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                                     showLongToast(errMsg);
                                 } else {
                                     if (mWallet.isObservedWallet()) {
-                                        showTransactionAuthorizationDialogFragment(mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), stakingAmountType, getView().getDelegateAmount(), mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, gasLimit.toString(10), gasPrice.toString(10));
+                                        showTransactionAuthorizationDialogFragment(mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), stakingAmountType, getView().getDelegateAmount(), mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, mGasProvider.getGasLimit().toString(10), mGasProvider.getGasPrice().toString(10));
                                     } else {
                                         showInputPasswordDialogFragment(getView().getDelegateAmount(), mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), stakingAmountType);
                                     }
@@ -386,8 +355,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     @SuppressLint("CheckResult")
     private void delegate(Credentials credentials, String inputAmount, String nodeId, String nodeName, StakingAmountType stakingAmountType) {
         //这里调用新的方法，传入GasProvider
-        GasProvider gasProvider = new ContractGasProvider(gasPrice, gasLimit);
-        DelegateManager.getInstance().delegate(credentials, ContractAddress.DELEGATE_CONTRACT_ADDRESS, inputAmount, nodeId, nodeName, feeAmount, String.valueOf(TransactionType.DELEGATE.getTxTypeValue()), stakingAmountType, gasProvider)
+        DelegateManager.getInstance().delegate(credentials, ContractAddress.DELEGATE_CONTRACT_ADDRESS, inputAmount, nodeId, nodeName, feeAmount, String.valueOf(TransactionType.DELEGATE.getTxTypeValue()), stakingAmountType, mGasProvider)
                 .compose(RxUtils.getSchedulerTransformer())
                 .compose(RxUtils.getLoadingTransformer(currentActivity()))
                 .subscribe(new Consumer<Transaction>() {
@@ -479,24 +447,5 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                         }
                     }
                 });
-    }
-
-    private List<Wallet> sortByFreeAccountAndCreateTime(List<Wallet> walletList) {
-        Collections.sort(walletList, new Comparator<Wallet>() {
-            @Override
-            public int compare(Wallet o1, Wallet o2) {
-                int compare = Double.compare(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(o2.getFreeBalance(), "1E18"))), NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(o1.getFreeBalance(), "1E18"))));
-                if (compare != 0) {
-                    return compare;
-                }
-                compare = Long.compare(o1.getCreateTime(), o2.getCreateTime());
-                if (compare != 0) {
-                    return compare;
-                }
-                return 0;
-            }
-        });
-
-        return walletList;
     }
 }

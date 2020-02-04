@@ -287,11 +287,12 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginTop="8dp"
+            android:gravity="left|center_vertical"
             android:background="@drawable/bg_edittext_underline"
             android:hint="@string/nameOfWallet"
-            android:textColor="@color/color_000000"
-            android:textColorHint="@color/color_b6bbd0"
-            android:textSize="13sp" />
+            android:maxLength="12"
+            style="@style/Text.000.13"
+            android:textColorHint="@color/color_b6bbd0" />
 
         <TextView
             android:id="@+id/tv_name_error"
@@ -320,7 +321,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/bg_edittext_underline"
-                android:digits="@string/inputDigits"
+                android:inputType="textPassword"
                 android:hint="@string/setPassword"
                 android:paddingRight="25dp"
                 android:textColor="@color/color_000000"
@@ -345,7 +346,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/bg_edittext_underline"
-                android:digits="@string/inputDigits"
+                android:inputType="textPassword"
                 android:hint="@string/repeatPassword"
                 android:paddingRight="25dp"
                 android:textColor="@color/color_000000"

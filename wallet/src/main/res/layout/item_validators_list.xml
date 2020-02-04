@@ -1,144 +1,109 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?><!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_shade"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center">
+    android:layout_height="80dp"
+    android:background="@drawable/bg_validators_item"
+    android:padding="8dp">
 
-    <RelativeLayout
-        android:id="@+id/rl_shade"
-        android:layout_width="match_parent"
+    <com.juzix.wallet.component.widget.CircleImageView
+        android:id="@+id/civ_node_avatar"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_marginLeft="3dp"
+        android:padding="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_node_name"
+        style="@style/Text.000.15"
+        android:layout_marginLeft="3dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/layout_delegated_info"
+        app:layout_constraintLeft_toRightOf="@id/civ_node_avatar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="jiang" />
+
+
+    <LinearLayout
+        android:id="@+id/layout_delegated_info"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginRight="10dp"
-        android:background="@drawable/bg_validators_item"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp">
+        android:layout_marginTop="6dp"
+        android:orientation="horizontal"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/tv_node_name"
+        app:layout_constraintTop_toBottomOf="@id/tv_node_name">
 
-        <com.juzix.wallet.component.widget.CircleImageView
-            android:id="@+id/iv_url"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:layout_marginLeft="13dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="3dp"
-            android:layout_marginBottom="18dp"
-            android:padding="5dp" />
+        <TextView
+            style="@style/Text.61646e"
+            android:text="@string/delegated" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_toRightOf="@id/iv_url"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/tv_validators_node_name"
-                    style="@style/Text.000.15"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="6dp"
-                    android:textStyle="bold"
-                    tools:text="jiang" />
-
-                <com.juzix.wallet.component.widget.RoundedTextView
-                    android:id="@+id/tv_validators_node_state"
-                    style="@style/Text.4a90e2.11"
-                    android:layout_width="wrap_content"
-                    android:layout_height="16dp"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    app:rtv_background_color="@color/color_ffffff"
-                    app:rtv_border_color="@color/color_4a90e2"
-                    app:rtv_border_width="1dp"
-                    app:rtv_corner_radius="3dp"
-                    tools:text="active" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="9dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="6dp"
-                    android:text="@string/validators_staked"
-                    android:textColor="@color/color_61646e"
-                    android:textSize="12sp" />
+        <TextView
+            android:id="@+id/tv_delegated_amount"
+            style="@style/Text.000.13"
+            android:layout_marginLeft="7dp"
+            tools:text="1644848.10552" />
 
 
-                <TextView
-                    android:id="@+id/tv_staked_money"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/color_000000"
-                    android:textSize="13sp"
-                    tools:text="1644848.10552" />
+    </LinearLayout>
 
-            </LinearLayout>
-        </LinearLayout>
+    <com.juzix.wallet.component.widget.RoundedTextView
+        android:id="@+id/rtv_node_state"
+        style="@style/Text.4a90e2.11"
+        android:layout_height="16dp"
+        android:layout_marginLeft="7dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_node_name"
+        app:layout_constraintLeft_toRightOf="@id/tv_node_name"
+        app:rtv_background_color="@color/color_ffffff"
+        app:rtv_border_color="@color/color_4a90e2"
+        app:rtv_border_width="1dp"
+        app:rtv_corner_radius="3dp"
+        tools:text="active" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="21dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginBottom="21dp"
-            android:gravity="center"
-            android:orientation="vertical">
+    <TextView
+        android:id="@+id/tv_annual_yield"
+        style="@style/Text.105cfe.17"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/tv_yield_msg"
+        app:layout_constraintRight_toRightOf="@+id/tv_yield_msg"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="12.30%" />
 
-            <TextView
-                android:id="@+id/tv_yield"
-                style="@style/Text.105cfe.17"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="2dp"
-                android:textStyle="bold"
-                tools:text="12.30%" />
+    <TextView
+        android:id="@+id/tv_yield_msg"
+        style="@style/Text.898c9e.11"
+        android:layout_marginRight="36dp"
+        android:text="@string/validators_yield"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_annual_yield" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:text="@string/validators_yield"
-                android:textColor="@color/color_898c9e"
-                android:textSize="11sp" />
-
-        </LinearLayout>
-
-
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/tv_validators_rank"
-            style="@style/Text.fff.11"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="5dp"
-            android:background="@drawable/icon_rank_first"
-            android:includeFontPadding="false"
-            android:lines="1"
-            android:paddingLeft="3dp"
-            android:paddingBottom="2dp"
-            app:autoSizeMaxTextSize="11sp"
-            app:autoSizeMinTextSize="8sp"
-            app:autoSizeTextType="uniform"
-            tools:text="5500" />
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tv_node_rank"
+        style="@style/Text.fff.11"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:background="@drawable/icon_rank_first"
+        android:includeFontPadding="false"
+        android:lines="1"
+        android:paddingLeft="3dp"
+        android:paddingBottom="2dp"
+        app:autoSizeMaxTextSize="11sp"
+        app:autoSizeMinTextSize="8sp"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="5500" />
 
 
-    </RelativeLayout>
-
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

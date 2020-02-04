@@ -2,6 +2,7 @@ package com.juzix.wallet.entity;
 
 import android.support.annotation.StringRes;
 
+import com.juzhen.framework.util.MapUtils;
 import com.juzix.wallet.R;
 
 import java.util.HashMap;
@@ -9,6 +10,10 @@ import java.util.Map;
 
 public enum TransactionType {
 
+    /**
+     * 未知
+     */
+    UNKNOWN(-1, R.string.unknown),
     /**
      * 转账
      */
@@ -88,7 +93,11 @@ public enum TransactionType {
     /**
      * 创建锁仓计划(创建锁仓)
      */
-    CREATE_RESTRICTING(4000, R.string.create_restricting);
+    CREATE_RESTRICTING(4000, R.string.create_restricting),
+    /**
+     * 领取奖励
+     */
+    CLAIM_REWARDS(5000, R.string.claim_rewards);
 
     private int value;
     private @StringRes
@@ -108,7 +117,8 @@ public enum TransactionType {
     }
 
     public static TransactionType getTxTypeByValue(int value) {
-        return map.get(value);
+        TransactionType transactionType = map.get(value);
+        return transactionType == null ? TransactionType.UNKNOWN : transactionType;
     }
 
     public int getTxTypeDescRes() {

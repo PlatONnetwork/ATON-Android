@@ -83,11 +83,12 @@ public class TransactionViewHolder extends BaseViewHolder<Transaction> {
         boolean isSender = transaction.isSender(mQueryAddressList);
         boolean isTransfer = transaction.isTransfer(mQueryAddressList);
         boolean isValueZero = !BigDecimalUtil.isBiggerThanZero(transaction.getValue());
+        boolean isSend = isSender && transactionType != TransactionType.UNDELEGATE && transactionType != TransactionType.EXIT_VALIDATOR && transactionType != TransactionType.CLAIM_REWARDS;
 
         if (isTransfer || isValueZero || transactionStatus == TransactionStatus.FAILED) {
             mTransactionAmountTv.setText(StringUtil.formatBalance(transaction.getShowValue()));
             mTransactionAmountTv.setTextColor(ContextCompat.getColor(mContext, R.color.color_b6bbd0));
-        } else if (isSender && transactionType != TransactionType.UNDELEGATE && transactionType != TransactionType.EXIT_VALIDATOR) {
+        } else if (isSend) {
             mTransactionAmountTv.setText(String.format("%s%s", "-", StringUtil.formatBalance(transaction.getShowValue())));
             mTransactionAmountTv.setTextColor(ContextCompat.getColor(mContext, R.color.color_ff3b3b));
         } else {
@@ -102,7 +103,7 @@ public class TransactionViewHolder extends BaseViewHolder<Transaction> {
         if (transactionType == TransactionType.TRANSFER) {
             mTransactionStatusIv.setImageResource(isSender ? R.drawable.icon_send_transation : R.drawable.icon_receive_transaction);
         } else {
-            mTransactionStatusIv.setImageResource(isSender ? R.drawable.icon_delegate : R.drawable.icon_undelegate);
+            mTransactionStatusIv.setImageResource(isSend ? R.drawable.icon_delegate : R.drawable.icon_undelegate);
         }
     }
 

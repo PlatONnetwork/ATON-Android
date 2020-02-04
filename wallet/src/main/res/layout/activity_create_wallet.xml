@@ -42,16 +42,20 @@
 
             <EditText
                 android:id="@+id/et_name"
+                style="@style/Text.000.15"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginRight="16dp"
                 android:background="@drawable/bg_edittext_underline"
+                android:gravity="left|center_vertical"
                 android:hint="@string/nameOfWallet"
-                android:textColor="@color/color_000000"
-                android:textColorHint="@color/color_b6bbd0"
-                android:textSize="15sp" />
+                android:imeOptions="actionNext"
+                android:singleLine="true"
+                android:maxLength="12"
+                android:nextFocusForward="@+id/et_password"
+                android:textColorHint="@color/color_b6bbd0" />
 
             <TextView
                 android:id="@+id/tv_name_error"
@@ -82,17 +86,19 @@
 
                 <EditText
                     android:id="@+id/et_password"
+                    style="@style/Text.000.15"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/bg_edittext_underline"
-                    android:digits="@string/inputDigits"
+                    android:inputType="textPassword"
                     android:ellipsize="end"
+                    android:gravity="left|center_vertical"
                     android:hint="@string/setPassword"
-                    android:lines="1"
+                    android:imeOptions="actionNext"
+                    android:singleLine="true"
+                    android:nextFocusForward="@+id/et_repeat_password"
                     android:paddingRight="25dp"
-                    android:textColor="@color/color_000000"
-                    android:textColorHint="@color/color_b6bbd0"
-                    android:textSize="15sp" />
+                    android:textColorHint="@color/color_b6bbd0" />
 
                 <ImageView
                     android:id="@+id/iv_password_eyes"
@@ -112,14 +118,16 @@
 
                 <EditText
                     android:id="@+id/et_repeat_password"
+                    style="@style/Text.000.15"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/bg_edittext_underline"
-                    android:digits="@string/inputDigits"
+                    android:inputType="textPassword"
+                    android:gravity="left|center_vertical"
                     android:hint="@string/repeatPassword"
-                    android:textColor="@color/color_000000"
-                    android:textColorHint="@color/color_b6bbd0"
-                    android:textSize="15sp" />
+                    android:imeOptions="actionNext"
+                    android:singleLine="true"
+                    android:textColorHint="@color/color_b6bbd0" />
 
                 <ImageView
                     android:id="@+id/iv_repeat_password_eyes"

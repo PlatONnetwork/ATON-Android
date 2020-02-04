@@ -1,6 +1,7 @@
 package com.juzix.wallet.engine;
 
 import android.text.TextUtils;
+
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.util.LogUtils;
@@ -14,11 +15,14 @@ import com.juzix.wallet.entity.TransactionStatus;
 import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.event.EventPublisher;
+
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionEncoder;
 import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
+import org.web3j.protocol.core.methods.response.PlatonTransaction;
 import org.web3j.utils.Numeric;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -27,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
@@ -58,7 +63,6 @@ public class TransactionManager {
     }
 
     public Wallet getBalanceByAddress(Wallet walletEntity) {
-//        walletEntity.setBalance(Web3jManager.getInstance().getBalance(walletEntity.getPrefixAddress()));
         return walletEntity;
     }
 
@@ -71,7 +75,9 @@ public class TransactionManager {
     }
 
     public void putTask(String hash, Disposable disposable) {
-        mDisposableMap.put(hash, disposable);
+        if (!mDisposableMap.containsKey(hash)) {
+            mDisposableMap.put(hash, disposable);
+        }
     }
 
     public void cancelTaskByHash(String hash) {
@@ -116,6 +122,7 @@ public class TransactionManager {
 
     public PlatonSendTransaction sendTransactionReturnPlatonSendTransaction(String signedMessage) {
         try {
+
             return Web3jManager.getInstance().getWeb3j().platonSendRawTransaction(signedMessage).send();
         } catch (Exception e) {
             e.printStackTrace();

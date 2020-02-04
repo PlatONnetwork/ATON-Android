@@ -4,12 +4,16 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.InputFilter;
+import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +25,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
-import com.juzhen.framework.util.NumberParserUtils;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
@@ -38,7 +41,8 @@ import com.juzix.wallet.component.widget.PointLengthFilter;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.config.AppSettings;
-import com.juzix.wallet.entity.DelegateDetail;
+import com.juzix.wallet.entity.DelegateItemInfo;
+import com.juzix.wallet.entity.DelegateNodeDetail;
 import com.juzix.wallet.entity.GuideType;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.Wallet;
@@ -46,6 +50,7 @@ import com.juzix.wallet.entity.WithDrawType;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.AmountUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.CommonTextUtils;
 import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.GlideUtils;
 import com.juzix.wallet.utils.RxUtils;
@@ -77,8 +82,8 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     CircleImageView wallet_icon;
     @BindView(R.id.tv_withdraw_wallet_name)
     TextView walletName;
-    @BindView(R.id.tv_withdraw_wallet_address)
-    TextView walletAddress;
+    @BindView(R.id.tv_withdraw_wallet_balance)
+    TextView walletBalance;
     @BindView(R.id.rl_choose_delegate)
     RelativeLayout chooseDelegate;
     @BindView(R.id.tv_delegate_type)
@@ -124,7 +129,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         initView();
         //初始化请求数据
         mPresenter.showWalletInfo();
-        mPresenter.getGas();
+        mPresenter.getBalanceType();
     }
 
     private void initView() {
@@ -307,7 +312,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     @Override
     public void showSelectedWalletInfo(Wallet wallet) {
         walletName.setText(wallet.getName());
-        walletAddress.setText(AddressFormatUtil.formatAddress(wallet.getPrefixAddress()));
+        CommonTextUtils.richText(walletBalance, getString(R.string.msg_balance_with_unit, AmountUtil.formatAmountText(wallet.getFreeBalance())), AmountUtil.formatAmountText(wallet.getFreeBalance()), new ForegroundColorSpan(ContextCompat.getColor(this, R.color.color_000000)));
         wallet_icon.setImageResource(RUtils.drawable(wallet.getAvatar()));
         freeAccount = wallet.getFreeBalance();
     }
@@ -330,7 +335,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
 
     //显示节点基本信息
     @Override
-    public void showNodeInfo(DelegateDetail delegateDetail) {
+    public void showNodeInfo(DelegateItemInfo delegateDetail) {
         GlideUtils.loadRound(getContext(), delegateDetail.getUrl(), node_icon);
         nodeName.setText(delegateDetail.getNodeName());
         nodeAddress.setText(AddressFormatUtil.formatAddress(delegateDetail.getNodeId()));
@@ -348,13 +353,13 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         mPopWindowAdapter.notifyDataSetChanged();
 
         withdrawAmount.setHint(getString(R.string.withdraw_tip, minDelegationAmount));
-        tvDelegateTips.setText(getString(R.string.delegate_node_des, minDelegationAmount));
+        tvDelegateTips.setText(getString(R.string.withdraw_title_explain, minDelegationAmount));
 
         refreshData(released > 0 ? releasedWithDrawType : delegatedWithDrawType);
     }
 
     @Override
-    public DelegateDetail getDelegateDetailFromIntent() {
+    public DelegateItemInfo getDelegateDetailFromIntent() {
         return getIntent().getParcelableExtra(Constants.Extra.EXTRA_DELEGATE_DETAIL);
     }
 
@@ -385,10 +390,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
 
     @Override
     public void showGas(BigInteger bigInteger) {
-
         gasPrice = bigInteger.toString();
-
-        mPresenter.getBalanceType();
     }
 
     @Override
@@ -428,7 +430,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         }
     }
 
-    public static void actionStart(Context context, DelegateDetail delegateDetail) {
+    public static void actionStart(Context context, DelegateItemInfo delegateDetail) {
         Intent intent = new Intent(context, WithDrawActivity.class);
         intent.putExtra(Constants.Extra.EXTRA_DELEGATE_DETAIL, delegateDetail);
         context.startActivity(intent);

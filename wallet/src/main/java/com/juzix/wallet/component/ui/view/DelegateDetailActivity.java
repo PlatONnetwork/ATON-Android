@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -14,24 +15,22 @@ import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.adapter.DelegateDetailAdapter;
+import com.juzix.wallet.component.adapter.DelegateItemInfoDiffCallback;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.DelegateDetailContract;
 import com.juzix.wallet.component.ui.dialog.BaseDialogFragment;
-import com.juzix.wallet.component.ui.dialog.DelegateTipsDialog;
 import com.juzix.wallet.component.ui.dialog.CommonGuideDialogFragment;
 import com.juzix.wallet.component.ui.presenter.DelegateDetailPresenter;
 import com.juzix.wallet.component.widget.CircleImageView;
-import com.juzix.wallet.component.widget.CommonTitleBar;
 import com.juzix.wallet.component.widget.CustomRefreshHeader;
 import com.juzix.wallet.config.AppSettings;
-import com.juzix.wallet.entity.DelegateDetail;
+import com.juzix.wallet.entity.DelegateItemInfo;
 import com.juzix.wallet.entity.DelegateInfo;
 import com.juzix.wallet.entity.GuideType;
-import com.juzix.wallet.entity.WebType;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.AddressFormatUtil;
-import com.juzix.wallet.utils.ToastUtil;
+import com.juzix.wallet.utils.AmountUtil;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -50,25 +49,25 @@ import butterknife.Unbinder;
  */
 public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresenter> implements DelegateDetailContract.View {
 
-    private Unbinder unbinder;
-
-    @BindView(R.id.commonTitleBar)
-    CommonTitleBar titleBar;
+    @BindView(R.id.civ_wallet_avatar)
+    CircleImageView civWalletAvatar;
+    @BindView(R.id.tv_wallet_name)
+    TextView tvWalletName;
+    @BindView(R.id.tv_wallet_address)
+    TextView tvWalletAddress;
+    @BindView(R.id.tv_avaliable_balance_amount)
+    TextView tvAvaliableBalanceAmount;
+    @BindView(R.id.tv_total_delegated_amount)
+    TextView tvTotalDelegatedAmount;
+    @BindView(R.id.rlv_list)
+    RecyclerView rlvList;
+    @BindView(R.id.ll_no_data)
+    LinearLayout llNoData;
     @BindView(R.id.refreshLayout)
     SmartRefreshLayout refreshLayout;
-    @BindView(R.id.iv_wallet_icon)
-    CircleImageView circleImageView;
-    @BindView(R.id.tv_wallet_name)
-    TextView tv_wallet_name;
-    @BindView(R.id.tv_wallet_address)
-    TextView tv_wallet_address;
-    @BindView(R.id.rlv_list)
-    RecyclerView rlv_list;
-    @BindView(R.id.ll_no_data)
-    LinearLayout ll_no_data;
 
+    private Unbinder unbinder;
     private DelegateDetailAdapter mDetailAdapter;
-    private LinearLayoutManager linearLayoutManager;
 
     @Override
     protected DelegateDetailPresenter createPresenter() {
@@ -92,22 +91,9 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
 
     private void initView() {
 
-        linearLayoutManager = new LinearLayoutManager(getContext());
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        rlv_list.setLayoutManager(linearLayoutManager);
         mDetailAdapter = new DelegateDetailAdapter();
-        rlv_list.setAdapter(mDetailAdapter);
-
-        titleBar.setRightDrawable(R.drawable.icon_tips);
-        titleBar.setRightDrawableClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //弹出tips
-                DelegateTipsDialog.createWithTitleAndContentDialog(string(R.string.detail_wait_undelegate), string(R.string.detail_tips_content),
-                        "", "", "", "")
-                        .show(getSupportFragmentManager(), "delegateTips");
-            }
-        });
+        rlvList.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
+        rlvList.setAdapter(mDetailAdapter);
 
         //添加下拉刷新的header和加载更多的footer
         refreshLayout.setRefreshHeader(new CustomRefreshHeader(getContext()));
@@ -116,24 +102,6 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 mPresenter.loadDelegateDetailData();
-            }
-        });
-
-        mDetailAdapter.setOnDelegateClickListener(new DelegateDetailAdapter.OnDelegateClickListener() {
-
-            @Override
-            public void onDelegateClick(DelegateDetail delegateDetail) {
-                DelegateActivity.actionStart(getContext(), delegateDetail);
-            }
-
-            @Override
-            public void onWithDrawClick(DelegateDetail delegateDetail) {
-                WithDrawActivity.actionStart(getContext(), delegateDetail);
-            }
-
-            @Override
-            public void onLinkClick(String webSiteUrl) {
-                CommonHybridActivity.actionStart(getContext(), webSiteUrl, WebType.WEB_TYPE_NODE_DETAIL);
             }
         });
 
@@ -154,46 +122,48 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
 
     @Override
     public void showWalletInfo(DelegateInfo delegateInfo) {
-        circleImageView.setImageResource(RUtils.drawable(delegateInfo.getWalletIcon()));
-        tv_wallet_name.setText(delegateInfo.getWalletName());
-        tv_wallet_address.setText(AddressFormatUtil.formatAddress(delegateInfo.getWalletAddress()));
+        civWalletAvatar.setImageResource(RUtils.drawable(delegateInfo.getWalletIcon()));
+        tvWalletName.setText(delegateInfo.getWalletName());
+        tvWalletAddress.setText(AddressFormatUtil.formatAddress(delegateInfo.getWalletAddress()));
     }
 
     @Override
-    public void showDelegateDetailData(List<DelegateDetail> detailList) {
-        if (detailList != null && detailList.size() > 0) {
-            ll_no_data.setVisibility(View.GONE);
-        } else {
-            ll_no_data.setVisibility(View.VISIBLE);
-        }
-        mDetailAdapter.notifyDataChanged(detailList);
+    public void showDelegateDetailData(List<DelegateItemInfo> oldDelegateItemInfoList, List<DelegateItemInfo> newDelegateItemInfoList) {
         refreshLayout.finishRefresh();
+        llNoData.setVisibility(newDelegateItemInfoList == null || newDelegateItemInfoList.isEmpty() ? View.VISIBLE : View.GONE);
+        mDetailAdapter.setDatas(newDelegateItemInfoList);
+        if (newDelegateItemInfoList != null && !newDelegateItemInfoList.isEmpty()) {
+            DelegateItemInfoDiffCallback diffCallback = new DelegateItemInfoDiffCallback(oldDelegateItemInfoList, newDelegateItemInfoList);
+            DiffUtil.calculateDiff(diffCallback, true).dispatchUpdatesTo(mDetailAdapter);
+        } else {
+            mDetailAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void showWalletDelegatedInfo(String availableDelegationBalance, String totalDelegatedAmount) {
+        tvAvaliableBalanceAmount.setText(AmountUtil.formatAmountText(availableDelegationBalance));
+        tvTotalDelegatedAmount.setText(AmountUtil.formatAmountText(totalDelegatedAmount));
     }
 
     //是否可以进入委托页面进行委托
     @Override
     public void showIsCanDelegate(String nodeAddress, String nodeName, String nodeIcon, String walletAddress, boolean isCanDelegate) {
-        if (!isCanDelegate) {//表示不能委托
-            ToastUtil.showLongToast(getContext(), R.string.tips_no_wallet);
-        } else {
-            DelegateDetail delegateDetail = new DelegateDetail();
-            delegateDetail.setNodeId(nodeAddress);
-            delegateDetail.setNodeName(nodeName);
-            delegateDetail.setUrl(nodeIcon);
-            delegateDetail.setWalletAddress(walletAddress);
-            DelegateActivity.actionStart(getContext(), delegateDetail);
-        }
+//        if (!isCanDelegate) {//表示不能委托
+//            ToastUtil.showLongToast(getContext(), R.string.tips_no_wallet);
+//        } else {
+//            DelegateNodeDetail delegateDetail = new DelegateNodeDetail();
+//            delegateDetail.setNodeId(nodeAddress);
+//            delegateDetail.setNodeName(nodeName);
+//            delegateDetail.setUrl(nodeIcon);
+//            delegateDetail.setWalletAddress(walletAddress);
+//            DelegateActivity.actionStart(getContext(), delegateDetail);
+//        }
     }
 
     @Override
     public DelegateInfo getDelegateInfoFromIntent() {
         return getIntent().getParcelableExtra(Constants.Extra.EXTRA_DELEGATE_INFO);
-    }
-
-    public static void actionStart(Context context, DelegateInfo delegateInfo) {
-        Intent intent = new Intent(context, DelegateDetailActivity.class);
-        intent.putExtra(Constants.Extra.EXTRA_DELEGATE_INFO, delegateInfo);
-        context.startActivity(intent);
     }
 
     @Override
@@ -225,5 +195,11 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
         if (unbinder != null) {
             unbinder.unbind();
         }
+    }
+
+    public static void actionStart(Context context, DelegateInfo delegateInfo) {
+        Intent intent = new Intent(context, DelegateDetailActivity.class);
+        intent.putExtra(Constants.Extra.EXTRA_DELEGATE_INFO, delegateInfo);
+        context.startActivity(intent);
     }
 }

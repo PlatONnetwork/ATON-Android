@@ -27,6 +27,7 @@ import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.dialog.CommonTipsDialogFragment;
 import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
 import com.juzix.wallet.engine.DeviceManager;
+import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.VersionUpdate;
 import com.juzix.wallet.entity.VersionInfo;
@@ -60,6 +61,8 @@ public class AboutActivity extends BaseActivity {
     TextView tvPrivacyPolicy;
     @BindView(R.id.iv_logo)
     ImageView ivLogo;
+    @BindView(R.id.tv_service_agreement)
+    TextView tvServiceAgreement;
 
     private Unbinder unbinder;
 
@@ -121,7 +124,16 @@ public class AboutActivity extends BaseActivity {
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) {
-                        CommonHybridActivity.actionStart(AboutActivity.this, getString(R.string.web_url_privacy_policy), WebType.WEB_TYPE_COMMON);
+                        CommonHybridActivity.actionStart(AboutActivity.this, getString(R.string.web_url_privacy_policy, NodeManager.getInstance().getCurNodeAddress()), WebType.WEB_TYPE_COMMON);
+                    }
+                });
+        RxView.clicks(tvServiceAgreement)
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        CommonHybridActivity.actionStart(AboutActivity.this, getString(R.string.web_url_agreement, NodeManager.getInstance().getCurNodeAddress()), WebType.WEB_TYPE_COMMON);
                     }
                 });
     }

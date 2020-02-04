@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_common_dialog_fragment"
+    android:divider="@drawable/bg_select_wallet_list_divider"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingLeft="26dp"
+    android:paddingRight="26dp"
+    android:showDividers="middle">
+
+    <TextView
+        style="@style/Text.000000.16"
+        android:layout_height="48dp"
+        android:text="@string/msg_sort"
+        android:textStyle="bold" />
+
+    <ListView
+        android:id="@+id/list_sort_type"
+        style="@style/List_common_style"
+        android:layout_height="195dp"
+        android:choiceMode="singleChoice"
+        android:divider="@drawable/bg_select_wallet_list_divider"
+        android:dividerHeight="1dp"
+        tools:listitem="@layout/item_select_sort_type" />
+
+</LinearLayout>

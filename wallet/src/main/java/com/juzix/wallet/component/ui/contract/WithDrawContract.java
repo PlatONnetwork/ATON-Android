@@ -2,7 +2,8 @@ package com.juzix.wallet.component.ui.contract;
 
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
-import com.juzix.wallet.entity.DelegateDetail;
+import com.juzix.wallet.entity.DelegateItemInfo;
+import com.juzix.wallet.entity.DelegateNodeDetail;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.Wallet;
 
@@ -11,7 +12,7 @@ import java.math.BigInteger;
 public class WithDrawContract {
     public interface View extends IView {
 
-        DelegateDetail getDelegateDetailFromIntent();
+        DelegateItemInfo getDelegateDetailFromIntent();
 
         String getInputAmount();
 
@@ -25,7 +26,7 @@ public class WithDrawContract {
 
         void showTips(boolean isShow,String minDelegationAmount);
 
-        void showNodeInfo(DelegateDetail delegateDetail);
+        void showNodeInfo(DelegateItemInfo delegateDetail);
 
         /**
          * @param delegated 已委托
@@ -63,8 +64,6 @@ public class WithDrawContract {
         void submitWithDraw(String chooseType);
 
         void getWithDrawGasPrice(String gasPrice);
-
-        void getGas();
 
     }
 

@@ -11,11 +11,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionStatus;
 import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.entity.TransferType;
+import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.CommonUtil;
 import com.juzix.wallet.utils.StringUtil;
 
@@ -38,14 +40,14 @@ public class TransactionDetailInfoView extends LinearLayout {
         setDividerDrawable(ContextCompat.getDrawable(context, R.drawable.divider_transaction_info_item));
     }
 
-    public void setData(Transaction transaction, @TransferType int transferType) {
+    public void setData(Transaction transaction, String senderName, @TransferType int transferType) {
 
         removeAllViews();
 
-        addView(transaction, transferType);
+        addView(transaction, senderName, transferType);
     }
 
-    private void addView(Transaction transaction, @TransferType int transferType) {
+    private void addView(Transaction transaction, String senderName, @TransferType int transferType) {
 
         int transactionTimeDescRes = getTransactionTimeDescRes(transaction.getTxReceiptStatus());
 
@@ -118,6 +120,9 @@ public class TransactionDetailInfoView extends LinearLayout {
                 addView(getItemView(getStringWithColon(transaction.getTxType() == TransactionType.DELEGATE ? R.string.delegated_to : R.string.undelegated_from), transaction.getNodeName()));
                 addView(getItemView(getStringWithColon(R.string.nodeId), transaction.getNodeId()));
                 addView(getItemView(transaction.getTxType() == TransactionType.DELEGATE ? getStringWithColon(R.string.delegation_amount) : getStringWithColon(R.string.withdrawal_amount), getString(R.string.amount_with_unit, StringUtil.formatBalance(transaction.getShowValue()))));
+                if (BigDecimalUtil.isBiggerThanZero(transaction.getTotalReward())) {
+                    addView(getItemView(getStringWithColon(R.string.reward_amount), getString(R.string.amount_with_unit, StringUtil.formatBalance(transaction.getShowTotalReward()))));
+                }
                 addView(getItemView(getStringWithColon(R.string.fee), getString(R.string.amount_with_unit, transaction.getShowActualTxCost())));
                 addView(getItemView(getStringWithColon(R.string.msg_transaction_hash), transaction.getHash(), true));
                 break;
@@ -162,6 +167,14 @@ public class TransactionDetailInfoView extends LinearLayout {
                 addView(getItemView(getStringWithColon(transactionTimeDescRes), transaction.getShowCreateTime()));
                 addView(getItemView(getStringWithColon(R.string.restricted_account), transaction.getLockAddress()));
                 addView(getItemView(getStringWithColon(R.string.restricted_amount), getString(R.string.amount_with_unit, StringUtil.formatBalance(transaction.getShowValue()))));
+                addView(getItemView(getStringWithColon(R.string.fee), getString(R.string.amount_with_unit, transaction.getShowActualTxCost())));
+                addView(getItemView(getStringWithColon(R.string.msg_transaction_hash), transaction.getHash(), true));
+                break;
+            case CLAIM_REWARDS:
+                addView(getItemView(getStringWithColon(R.string.type), getString(transaction.getTxType().getTxTypeDescRes())));
+                addView(getItemView(getStringWithColon(transactionTimeDescRes), transaction.getShowCreateTime()));
+                addView(getItemView(getStringWithColon(R.string.claim_wallet), senderName));
+                addView(getItemView(getStringWithColon(R.string.reward_amount), getString(R.string.amount_with_unit, StringUtil.formatBalance(transaction.getShowValue()))));
                 addView(getItemView(getStringWithColon(R.string.fee), getString(R.string.amount_with_unit, transaction.getShowActualTxCost())));
                 addView(getItemView(getStringWithColon(R.string.msg_transaction_hash), transaction.getHash(), true));
                 break;

@@ -131,7 +131,7 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
         if (transferType == TransferType.TRANSFER || isValueZero) {
             tvAmount.setText(transaction.getShowValue());
             tvAmount.setTextColor(ContextCompat.getColor(this, R.color.color_b6bbd0));
-        } else if (transferType == TransferType.SEND && transactionType != TransactionType.UNDELEGATE && transactionType != TransactionType.EXIT_VALIDATOR) {
+        } else if (transferType == TransferType.SEND && transactionType != TransactionType.UNDELEGATE && transactionType != TransactionType.EXIT_VALIDATOR && transactionType != TransactionType.CLAIM_REWARDS) {
             tvAmount.setText(String.format("%s%s", "-", StringUtil.formatBalance(transaction.getShowValue())));
             tvAmount.setTextColor(ContextCompat.getColor(this, R.color.color_ff3b3b));
         } else {
@@ -144,13 +144,15 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
         tvToAddress.setText(transaction.getTo());
         ivContractToTag.setVisibility(transactionType == TransactionType.TRANSFER ? View.GONE : View.VISIBLE);
 
-        tvFrom.setText(getSenderName(transaction.getFrom()));
+        String senderName = getSenderName(transaction.getFrom());
+
+        tvFrom.setText(senderName);
         tvFrom.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, getSenderAvatar(transaction.getFrom())), null, null, null);
 
         tvTo.setText(getReceiverName(transaction.getTo(), transaction.getNodeName()));
         tvTo.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, getReceiverAvatar(transactionType, transaction.getTo())), null, null, null);
 
-        viewTransactionDetailInfo.setData(transaction, transferType);
+        viewTransactionDetailInfo.setData(transaction, senderName, transferType);
 
     }
 

@@ -2,27 +2,56 @@ package com.juzix.wallet.component.adapter;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
+import android.util.Pair;
 
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.entity.VerifyNode;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class VerifyNodeDiffCallback extends BaseDiffCallback<VerifyNode> {
 
+    /**
+     * 节点排名
+     */
     public final static String KEY_RANKING = "key_ranking";
-
+    /**
+     * 节点名称
+     */
     public final static String KEY_NAME = "key_name";
-
+    /**
+     * 节点委托数量以及节点委托者数
+     */
+    public final static String KEY_DEPOSIT_DELEGATOR_NUMBER = "key_deposit_delegator_number";
+    /**
+     * 节点委托数量
+     */
     public final static String KEY_DEPOSIT = "key_deposit";
+    /**
+     * /**
+     * 节点委托者数
+     */
+    public final static String KEY_DELEGATOR_NUMBER = "key_delegator_number";
 
+    /**
+     * 节点头像
+     */
     public final static String KEY_URL = "key_url";
-
+    /**
+     * 节点收益率
+     */
     public final static String KEY_RATEPA = "key_ratePA";
+    /**
+     * 节点状态
+     */
+    public final static String KEY_NODE_STATUS_DESC = "key_node_status_desc";
 
-    public final static String KEY_NODESTATUS = "key_nodeStatus";
+    public final static String KEY_NODE_STATUS = "key_node_status";
 
-    public final static String KEY_ISINIT = "key_isInit";
+    public final static String KEY_CONSENSUS = "key_consensus";
 
     public VerifyNodeDiffCallback(List<VerifyNode> oldList, List<VerifyNode> newList) {
         super(oldList, newList);
@@ -43,33 +72,31 @@ public class VerifyNodeDiffCallback extends BaseDiffCallback<VerifyNode> {
             return false;
         }
 
-        if (!oldVerifyNode.getName().equals(newVerifyNode.getName())) {
+        if (!TextUtils.equals(oldVerifyNode.getName(), newVerifyNode.getName())) {
             return false;
         }
 
-        if (!oldVerifyNode.getDeposit().equals(newVerifyNode.getName())) {
+        if (!oldVerifyNode.getDelegateSum().equals(newVerifyNode.getDelegateSum())) {
             return false;
         }
 
-        if (oldVerifyNode.getUrl() != null) {
-            if (!oldVerifyNode.getUrl().equals(newVerifyNode.getUrl())) {
-                return false;
-            }
-        } else {
-            if (newVerifyNode.getUrl() != null) {
-                return false;
-            }
-        }
-
-        if (!oldVerifyNode.getRatePA().equals(newVerifyNode.getRatePA())) {
+        if (!TextUtils.equals(oldVerifyNode.getDelegate(), newVerifyNode.getDelegate())) {
             return false;
         }
 
-        if (!oldVerifyNode.getNodeStatus().equals(newVerifyNode.getNodeStatus())) {
+        if (!TextUtils.equals(oldVerifyNode.getUrl(), newVerifyNode.getUrl())) {
             return false;
         }
 
-        if (oldVerifyNode.isInit() != newVerifyNode.isInit()) {
+        if (!TextUtils.equals(oldVerifyNode.getShowDelegatedRatePA(), newVerifyNode.getShowDelegatedRatePA())) {
+            return false;
+        }
+
+        if (oldVerifyNode.isConsensus() != newVerifyNode.isConsensus()) {
+            return false;
+        }
+
+        if (!TextUtils.equals(oldVerifyNode.getNodeStatus(), newVerifyNode.getNodeStatus())) {
             return false;
         }
 
@@ -92,32 +119,29 @@ public class VerifyNodeDiffCallback extends BaseDiffCallback<VerifyNode> {
             bundle.putString(KEY_NAME, newVerifyNode.getName());
         }
 
-        if (!oldVerifyNode.getDeposit().equals(newVerifyNode.getName())) {
-            bundle.putString(KEY_DEPOSIT, newVerifyNode.getDeposit());
+        if (!oldVerifyNode.getDelegateSum().equals(newVerifyNode.getDelegateSum()) || !TextUtils.equals(oldVerifyNode.getDelegate(), newVerifyNode.getDelegate())) {
+            HashMap<String, Object> map = new HashMap<>();
+            map.put(KEY_DELEGATOR_NUMBER, newVerifyNode.getDelegate());
+            map.put(KEY_DEPOSIT, newVerifyNode.getDelegateSum());
+            bundle.putSerializable(KEY_DEPOSIT_DELEGATOR_NUMBER, map);
         }
 
-        if (oldVerifyNode.getUrl() != null) {
-            if (!oldVerifyNode.getUrl().equals(newVerifyNode.getUrl())) {
-                bundle.putString(KEY_URL, newVerifyNode.getUrl());
-            }
-        } else {
-            if (newVerifyNode.getUrl() != null) {
-                bundle.putString(KEY_URL, newVerifyNode.getUrl());
-            }
+        if (!TextUtils.equals(oldVerifyNode.getUrl(), newVerifyNode.getUrl())) {
+            bundle.putString(KEY_URL, newVerifyNode.getUrl());
         }
 
-        if (!oldVerifyNode.getRatePA().equals(newVerifyNode.getRatePA())) {
-            bundle.putString(KEY_RATEPA, newVerifyNode.getRatePA());
+        if (!TextUtils.equals(oldVerifyNode.getShowDelegatedRatePA(), newVerifyNode.getShowDelegatedRatePA())) {
+            bundle.putString(KEY_RATEPA, newVerifyNode.getShowDelegatedRatePA());
         }
 
-        if (!oldVerifyNode.getNodeStatus().equals(newVerifyNode.getNodeStatus())) {
-            bundle.putString(KEY_NODESTATUS, newVerifyNode.getNodeStatus());
+
+        if (oldVerifyNode.isConsensus() != newVerifyNode.isConsensus() || !TextUtils.equals(oldVerifyNode.getNodeStatus(), newVerifyNode.getNodeStatus())) {
+            HashMap<String, Object> map = new HashMap<>();
+            map.put(KEY_NODE_STATUS, newVerifyNode.getNodeStatus());
+            map.put(KEY_CONSENSUS, newVerifyNode.isConsensus());
+            bundle.putSerializable(KEY_NODE_STATUS_DESC, map);
         }
 
-        if (oldVerifyNode.isInit() != newVerifyNode.isInit()) {
-            bundle.putBoolean(KEY_ISINIT, newVerifyNode.isInit());
-        }
-
-        return bundle;
+        return bundle.isEmpty() ? null : bundle;
     }
 }

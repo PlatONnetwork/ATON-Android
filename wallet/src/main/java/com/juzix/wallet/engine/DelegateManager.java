@@ -6,11 +6,14 @@ import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.db.sqlite.TransactionDao;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionStatus;
+import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.event.EventPublisher;
 
 import org.web3j.crypto.Credentials;
+import org.web3j.platon.ContractAddress;
 import org.web3j.platon.StakingAmountType;
 import org.web3j.platon.contracts.DelegateContract;
+import org.web3j.platon.contracts.RewardContract;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 import org.web3j.tx.gas.DefaultGasProvider;
@@ -108,7 +111,9 @@ public class DelegateManager {
                 .toSingle();
     }
 
-    /** 赎回委托
+    /**
+     * 赎回委托
+     *
      * @param credentials
      * @param to
      * @param nodeId
@@ -120,7 +125,7 @@ public class DelegateManager {
      * @param GasProvider
      * @return
      */
-    public Observable<Transaction> withdraw(Credentials credentials, String to, String nodeId, String nodeName, String feeAmount, String stakingBlockNum, String amount, String transactionType, GasProvider GasProvider) {
+    public Observable<Transaction> withdrawDelegate(Credentials credentials, String to, String nodeId, String nodeName, String feeAmount, String stakingBlockNum, String amount, String transactionType, GasProvider GasProvider) {
 
         return Single.fromCallable(new Callable<PlatonSendTransaction>() {
             @Override
@@ -151,6 +156,46 @@ public class DelegateManager {
                 })
                 .toObservable();
 
+    }
+
+    /**
+     * 领取奖励
+     *
+     * @param credentials
+     * @param feeAmount
+     * @param amount
+     * @param GasProvider
+     * @return
+     */
+    public Observable<Transaction> withdrawDelegateReward(Credentials credentials, String feeAmount, String amount, GasProvider GasProvider) {
+        return Single.fromCallable(new Callable<PlatonSendTransaction>() {
+            @Override
+            public PlatonSendTransaction call() throws Exception {
+                Web3j web3j = Web3jManager.getInstance().getWeb3j();
+                String chainId = NodeManager.getInstance().getChainId();
+                RewardContract rewardContract = RewardContract.load(web3j, credentials, NumberParserUtils.parseLong(chainId));
+                return rewardContract.withdrawDelegateRewardReturnTransaction(GasProvider).send();
+            }
+        })
+                .filter(new Predicate<PlatonSendTransaction>() {
+                    @Override
+                    public boolean test(PlatonSendTransaction platonSendTransaction) throws Exception {
+                        return !TextUtils.isEmpty(platonSendTransaction.getTransactionHash());
+                    }
+                })
+                .switchIfEmpty(new SingleSource<PlatonSendTransaction>() {
+                    @Override
+                    public void subscribe(SingleObserver<? super PlatonSendTransaction> observer) {
+                        observer.onError(new Throwable());
+                    }
+                })
+                .flatMap(new Function<PlatonSendTransaction, SingleSource<Transaction>>() {
+                    @Override
+                    public SingleSource<Transaction> apply(PlatonSendTransaction platonSendTransaction) throws Exception {
+                        return insertTransaction(credentials, platonSendTransaction, ContractAddress.REWARD_CONTRACT_ADDRESS, amount, "", "", feeAmount, String.valueOf(TransactionType.CLAIM_REWARDS.getTxTypeValue()));
+                    }
+                })
+                .toObservable();
     }
 
 }

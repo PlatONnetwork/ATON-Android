@@ -1,6 +1,7 @@
 package com.juzix.wallet.component.ui.view;
 
 import android.os.Bundle;
+import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
@@ -28,7 +29,18 @@ import java.util.ArrayList;
  * 委托模块
  */
 public class DelegateFragment extends BaseFragment {
+
+    @IntDef({
+            DelegateTab.MY_DELEGATE_TAB,
+            DelegateTab.VALIDATORS_TAB
+    })
+    public @interface DelegateTab {
+        int MY_DELEGATE_TAB = 0;
+        int VALIDATORS_TAB = 1;
+    }
+
     private ViewPagerSlide vpContent;
+
     private CustomTabLayout stbBar;
 
     @Nullable
@@ -39,14 +51,16 @@ public class DelegateFragment extends BaseFragment {
         return view;
     }
 
+    public void setCurrentTab(@DelegateTab int delegateTab) {
+        vpContent.setCurrentItem(delegateTab);
+    }
+
     private void initView(View view) {
         stbBar = view.findViewById(R.id.stb_bar);
         int indicatorThickness = AndroidUtil.dip2px(getContext(), 2.0f);
-        Log.debug("indicatorThickness", "==============>" + indicatorThickness);
         stbBar.setIndicatorThickness(indicatorThickness + 4);
         indicatorThickness = indicatorThickness + 4;
 
-        Log.debug("indicatorThickness", "==============>" + indicatorThickness);
         stbBar.setIndicatorCornerRadius(indicatorThickness / 2);
         ArrayList<Class<? extends BaseFragment>> fragments = getFragments();
         stbBar.setCustomTabView(new CustomTabLayout.TabProvider() {
@@ -72,29 +86,29 @@ public class DelegateFragment extends BaseFragment {
     }
 
     private void initTab() {
-        stbBar.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int i, float v, int i1) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                switch (position) {
-                    case 0:
-                    case 1:
-                        //切换tab刷新页面（0.7.3.1）
-                        EventPublisher.getInstance().sendTabChangeUpdateValidatorsEvent();
-                        break;
-                }
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int i) {
-
-            }
-        });
+//        stbBar.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+//            @Override
+//            public void onPageScrolled(int i, float v, int i1) {
+//
+//            }
+//
+//            @Override
+//            public void onPageSelected(int position) {
+//                switch (position) {
+//                    case 0:
+//                    case 1:
+//                        //切换tab刷新页面（0.7.3.1）
+//                        EventPublisher.getInstance().sendTabChangeUpdateValidatorsEvent();
+//                        break;
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onPageScrollStateChanged(int i) {
+//
+//            }
+//        });
 
     }
 
@@ -122,23 +136,6 @@ public class DelegateFragment extends BaseFragment {
         titleList.add(getString(R.string.tab_my_delegate));
         titleList.add(getString(R.string.tab_validators));
         return titleList;
-    }
-
-
-    private Fragment2Fragment fragment2Fragment;
-
-    public void setFragment2Fragment(Fragment2Fragment fragment2Fragment) {
-        this.fragment2Fragment = fragment2Fragment;
-    }
-
-    public void forSkip() {
-        if (fragment2Fragment != null) {
-            fragment2Fragment.gotoFragment(vpContent);
-        }
-    }
-
-    public interface Fragment2Fragment {
-        public void gotoFragment(ViewPager viewPager);
     }
 
 }

@@ -4,17 +4,17 @@ import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
 import com.juzix.wallet.entity.AccountBalance;
 import com.juzix.wallet.entity.AppConfig;
-import com.juzix.wallet.entity.CandidateWrap;
-import com.juzix.wallet.entity.DelegateDetail;
+import com.juzix.wallet.entity.ClaimRewardRecord;
+import com.juzix.wallet.entity.DelegateNodeDetail;
 import com.juzix.wallet.entity.DelegateHandle;
 import com.juzix.wallet.entity.DelegateInfo;
 import com.juzix.wallet.entity.DelegationValue;
+import com.juzix.wallet.entity.GasProvider;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionReceipt;
 import com.juzix.wallet.entity.VerifyNode;
 import com.juzix.wallet.entity.VerifyNodeDetail;
 import com.juzix.wallet.entity.VersionInfo;
-import com.juzix.wallet.entity.WithDrawBalance;
 
 import java.util.List;
 
@@ -22,10 +22,7 @@ import io.reactivex.Single;
 import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
-import retrofit2.http.Headers;
 import retrofit2.http.POST;
-import retrofit2.http.Path;
-import retrofit2.http.Url;
 
 public interface BaseApi {
 
@@ -34,7 +31,7 @@ public interface BaseApi {
      *
      * @return
      */
-    @POST("app/v0700/config/checkUpdate")
+    @POST("app/v0760/config/checkUpdate")
     Single<Response<ApiResponse<VersionInfo>>> getVersionInfo(@Body ApiRequestBody body);
 
     /**
@@ -43,7 +40,7 @@ public interface BaseApi {
      * @param body
      * @return
      */
-    @POST("app/v0700/transaction/list")
+    @POST("app/v0760/transaction/list")
     Single<Response<ApiResponse<List<Transaction>>>> getTransactionList(@Body ApiRequestBody body);
 
     /**--------------v0.7.0---------------------*/
@@ -52,7 +49,7 @@ public interface BaseApi {
      * 获取验证节点列表
      */
 
-    @POST("app/v0700/node/nodelist")
+    @POST("app/v0760/node/nodelist")
     Single<Response<ApiResponse<List<VerifyNode>>>> getVerifyNodeList();
 
 
@@ -61,7 +58,7 @@ public interface BaseApi {
      * nodeId   //节点id
      */
 
-    @POST("app/v0700/node/nodeDetails")
+    @POST("app/v0760/node/nodeDetails")
     Single<Response<ApiResponse<VerifyNodeDetail>>> getNodeCandidateDetail(@Body ApiRequestBody body);
 
 
@@ -74,7 +71,7 @@ public interface BaseApi {
      *            ]
      * @return
      */
-    @POST("app/v0700/node/listDelegateGroupByAddr")
+    @POST("app/v0760/node/listDelegateGroupByAddr")
     Single<Response<ApiResponse<List<DelegateInfo>>>> getMyDelegateList(@Body ApiRequestBody body);
 
 
@@ -89,8 +86,8 @@ public interface BaseApi {
      *               客户端首次进入页面时或者上拉时传old。客户端自动获取最新记录时传new。
      */
 
-    @POST("app/v0700/node/delegateDetails")
-    Single<Response<ApiResponse<List<DelegateDetail>>>> getDelegateDetailList(@Body ApiRequestBody body);
+    @POST("app/v0760/node/delegateDetails")
+    Single<Response<ApiResponse<DelegateNodeDetail>>> getDelegateDetailList(@Body ApiRequestBody body);
 
 
     /**
@@ -111,7 +108,7 @@ public interface BaseApi {
      *               ]
      */
 
-    @POST("app/v0700/transaction/delegateRecord")
+    @POST("app/v0760/transaction/delegateRecord")
     Single<Response<ApiResponse<List<Transaction>>>> getDelegateRecordList(@Body ApiRequestBody body);
 
 
@@ -121,7 +118,7 @@ public interface BaseApi {
      * "address1",
      * "address2"]
      */
-    @POST("app/v0700/account/getBalance")
+    @POST("app/v0760/account/getBalance")
     Single<Response<ApiResponse<List<AccountBalance>>>> getAccountBalance(@Body ApiRequestBody body);
 
 
@@ -130,7 +127,7 @@ public interface BaseApi {
      * "addr":"",                             //委托的地址
      * "nodeId":"",                          //节点id
      */
-    @POST("app/v0700/node/getDelegationValue")
+    @POST("app/v0760/node/getDelegationValue")
     Single<Response<ApiResponse<DelegationValue>>> getDelegationValue(@Body ApiRequestBody body);
 
 
@@ -141,7 +138,7 @@ public interface BaseApi {
      * @param body
      * @return
      */
-    @POST("app/v0700/node/canDelegation")
+    @POST("app/v0760/node/canDelegation")
     Single<Response<ApiResponse<DelegateHandle>>> getIsDelegateInfo(@Body ApiRequestBody body);
 
     /**
@@ -150,7 +147,7 @@ public interface BaseApi {
      * @param body
      * @return
      */
-    @POST("app/v0700/transaction/getTransactionsStatus")
+    @POST("app/v0760/transaction/getTransactionsStatus")
     Single<Response<ApiResponse<List<TransactionReceipt>>>> getTransactionsStatus(@Body ApiRequestBody body);
 
     /**
@@ -160,4 +157,21 @@ public interface BaseApi {
      */
     @GET("config/config.json")
     Single<Response<ApiResponse<AppConfig>>> getAppConfig();
+
+    /**
+     * 查询领取奖励记录
+     *
+     * @return
+     */
+    @POST("app/v0760/transaction/getRewardTransactions")
+    Single<Response<ApiResponse<List<ClaimRewardRecord>>>> getRewardTransactions(@Body ApiRequestBody body);
+
+    /**
+     * 估算gas,支持委托、赎回委托、领取奖励交易类型
+     *
+     * @param body
+     * @return
+     */
+    @POST("app/v0760//transaction/estimateGas")
+    Single<Response<ApiResponse<GasProvider>>> getGasProvider(@Body ApiRequestBody body);
 }
