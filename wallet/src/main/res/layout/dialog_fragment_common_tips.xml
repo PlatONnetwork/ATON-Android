@@ -53,6 +53,7 @@
             android:layout_width="80dp"
             android:layout_height="40dp"
             android:layout_marginBottom="16dp"
+            android:textStyle="bold"
             android:gravity="center_horizontal|top"
             android:paddingTop="8dp"
             tools:text="No" />

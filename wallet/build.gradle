@@ -34,9 +34,9 @@ android {
         renderscriptSupportModeEnabled true
         resConfigs "zh", "en"
 
-        ndk {
-            abiFilters "armeabi-v7a"
-        }
+//        ndk {
+//            abiFilters "armeabi-v7a"
+//        }
     }
 
     lintOptions {
@@ -85,7 +85,7 @@ android {
     buildTypes {
         debug {
             debuggable true
-            signingConfig signingConfigs.releaseC
+            signingConfig signingConfigs.debug
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
             multiDexEnabled true

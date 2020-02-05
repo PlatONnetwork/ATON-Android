@@ -20,7 +20,6 @@ import org.web3j.crypto.Credentials;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionEncoder;
 import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
-import org.web3j.protocol.core.methods.response.PlatonTransaction;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
@@ -72,6 +71,10 @@ public class TransactionManager {
 
     public Disposable removeTaskByHash(String hash) {
         return mDisposableMap.remove(hash);
+    }
+
+    public boolean isExistPendingTransaction() {
+        return !mDisposableMap.isEmpty();
     }
 
     public void putTask(String hash, Disposable disposable) {

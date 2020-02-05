@@ -8,10 +8,10 @@ import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.engine.TransactionManager;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.BigIntegerUtil;
-import com.juzix.wallet.utils.JSONUtil;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.platon.FunctionType;
+import org.web3j.utils.JSONUtil;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -110,7 +110,7 @@ public class TransactionAuthorizationData implements Parcelable {
 
         TransactionAuthorizationBaseData firstBaseData = baseDataList.get(0);
 
-        return new TransactionSignatureData(getSignedMessageList(credentials), firstBaseData.getFrom(), firstBaseData.getChainId(), timestamp, firstBaseData.getPlatOnFunction().getType());
+        return new TransactionSignatureData(getSignedMessageList(credentials), firstBaseData.getFrom(), firstBaseData.getChainId(), firstBaseData.getPlatOnFunction().getType(), timestamp, firstBaseData.getNodeName());
     }
 
     private List<String> getSignedMessageList(Credentials credentials) {
@@ -135,7 +135,7 @@ public class TransactionAuthorizationData implements Parcelable {
         return TransactionManager.getInstance().signTransaction(credentials, encodeData, baseData.getTo(), transferAmount, BigIntegerUtil.toBigInteger(nonce), BigIntegerUtil.toBigInteger(baseData.getGasPrice()), BigIntegerUtil.toBigInteger(baseData.getGasLimit()));
     }
 
-    @JSONField(serialize = false,deserialize = false)
+    @JSONField(serialize = false, deserialize = false)
     private String getSumAmount() {
 
         if (baseDataList == null || baseDataList.isEmpty()) {
@@ -159,7 +159,7 @@ public class TransactionAuthorizationData implements Parcelable {
                 .blockingGet();
     }
 
-    @JSONField(serialize = false,deserialize = false)
+    @JSONField(serialize = false, deserialize = false)
     private String getSumFee() {
 
         if (baseDataList == null || baseDataList.isEmpty()) {

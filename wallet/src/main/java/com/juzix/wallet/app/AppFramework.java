@@ -11,8 +11,8 @@ import com.juzix.wallet.BuildConfig;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.config.JZAppConfigure;
 import com.juzix.wallet.engine.DeviceManager;
-import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.NodeManager;
+import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.meituan.android.walle.WalleChannelReader;
@@ -127,7 +127,7 @@ public class AppFramework {
 
                 //增加backedUp 0.7.5
                 //删除链ID为104的钱包 0.7.4.0
-                //链id 103-->95或者103-->96 0.7.4.1
+                //链id 103-->94或者103-->96 0.7.4.1
                 schema.get("WalletEntity")
                         .addField("backedUp", boolean.class)
                         .transform(new RealmObjectSchema.Function() {
@@ -173,7 +173,7 @@ public class AppFramework {
                 oldVersion++;
 
             } else if (oldVersion == 107) {
-                //0.7.4.0升级到0.7.5.0,链id 97--->96
+                //0.7.4.0升级到0.7.5.0,链id 97--->94
                 schema.get("WalletEntity")
                         .addField("backedUp", boolean.class)
                         .transform(new RealmObjectSchema.Function() {
@@ -238,7 +238,7 @@ public class AppFramework {
                             }
                         });
 
-                //0.7.4.0升级到0.7.5.0,链id 96--->95
+                //0.7.4.0升级到0.7.5.0,链id 96--->94
                 schema.get("WalletEntity")
                         .addField("backedUp", boolean.class)
                         .transform(new RealmObjectSchema.Function() {
@@ -253,7 +253,36 @@ public class AppFramework {
                         });
 
                 oldVersion++;
+            } else if (oldVersion == 109) {
 
+                //0.7.6到0.8.0  95到94
+                schema.get("NodeEntity")
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.getDynamicRealm()
+                                        .where("NodeEntity")
+                                        .equalTo("chainId", "95")
+                                        .findAll()
+                                        .setString("chainId", BuildConfig.ID_MAIN_CHAIN);
+                            }
+                        });
+
+                //0.7.4.0升级到0.7.5.0,链id 96--->94
+                schema.get("WalletEntity")
+                        .addField("backedUp", boolean.class)
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.getDynamicRealm()
+                                        .where("WalletEntity")
+                                        .equalTo("chainId", "95")
+                                        .findAll()
+                                        .setString("chainId", BuildConfig.ID_MAIN_CHAIN);
+                            }
+                        });
+
+                oldVersion++;
             }
 
         }

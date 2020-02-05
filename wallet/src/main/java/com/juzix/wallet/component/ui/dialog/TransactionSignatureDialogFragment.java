@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
-import com.juzhen.framework.util.LogUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
@@ -32,14 +31,12 @@ import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionAuthorizationBaseData;
 import com.juzix.wallet.entity.TransactionAuthorizationData;
-import com.juzix.wallet.entity.TransactionAuthorizationDetail;
 import com.juzix.wallet.entity.TransactionSignatureData;
 import com.juzix.wallet.entity.TransactionStatus;
 import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.AddressFormatUtil;
-import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.BigIntegerUtil;
 import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.GZipUtil;
@@ -50,14 +47,16 @@ import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import org.reactivestreams.Publisher;
-import org.web3j.abi.datatypes.Bool;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionDecoder;
 import org.web3j.platon.FunctionType;
 import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
-import org.web3j.protocol.core.methods.response.PlatonTransaction;
+import org.web3j.rlp.RlpDecoder;
+import org.web3j.rlp.RlpList;
+import org.web3j.rlp.RlpString;
+import org.web3j.rlp.RlpType;
+import org.web3j.utils.Numeric;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -68,7 +67,6 @@ import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.SingleSource;
-import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
@@ -430,8 +428,6 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
 
     private Transaction buildTransaction(TransactionAuthorizationData transactionAuthorizationData, String hash, String signedMessage) {
         RawTransaction rawTransaction = TransactionDecoder.decode(signedMessage);
-        String nodeName = transactionAuthorizationData != null && transactionAuthorizationData.getTransactionAuthorizationDetail() != null ? transactionAuthorizationData.getTransactionAuthorizationDetail().getNodeName() : "--";
-        String nodeId = transactionAuthorizationData != null && transactionAuthorizationData.getTransactionAuthorizationDetail() != null ? transactionAuthorizationData.getTransactionAuthorizationDetail().getNodeName() : "--";
         return new Transaction.Builder()
                 .hash(hash)
                 .from(transactionSignatureData.getFrom())
@@ -443,8 +439,8 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
                 .txReceiptStatus(TransactionStatus.PENDING.ordinal())
                 .actualTxCost(BigIntegerUtil.mul(rawTransaction.getGasLimit(), rawTransaction.getGasPrice()))
                 .unDelegation(rawTransaction.getValue().toString(10))
-                .nodeName(nodeName)
-                .nodeId(nodeId)
+                .nodeName(transactionSignatureData.getNodeName())
+                .nodeId(decodeNodeId(rawTransaction.getData()))
                 .build();
     }
 
@@ -471,6 +467,15 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
 
     private boolean isEmpty(TransactionSignatureData transactionSignatureData) {
         return transactionSignatureData == null || transactionSignatureData.getSignedDatas() == null || transactionSignatureData.getSignedDatas().isEmpty();
+    }
+
+    private String decodeNodeId(String hex) {
+
+        RlpList rlp = RlpDecoder.decode(Numeric.hexStringToByteArray(hex));
+
+        List<RlpType> rlpList = ((RlpList) (rlp.getValues().get(0))).getValues();
+
+        return ((RlpString) RlpDecoder.decode(((RlpString) rlpList.get(2)).getBytes()).getValues().get(0)).asString();
     }
 
     public interface OnSendTransactionSucceedListener {

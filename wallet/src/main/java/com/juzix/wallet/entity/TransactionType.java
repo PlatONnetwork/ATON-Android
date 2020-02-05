@@ -99,6 +99,8 @@ public enum TransactionType {
      */
     CLAIM_REWARDS(5000, R.string.claim_rewards);
 
+
+
     private int value;
     private @StringRes
     int descRes;

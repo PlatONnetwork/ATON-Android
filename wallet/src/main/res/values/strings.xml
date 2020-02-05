@@ -769,4 +769,10 @@
     <string name="msg_delegation_annual_yield">预计委托年化收益率：</string>
     <string name="msg_delegation_annual_yield_tips">近4个结算周期每份额委托净收益折合成的年化收益率，仅做参考。</string>
 
+    <string name="msg_wait_finished_transaction_tips">请等待上笔交易完成后方可继续交易！</string>
+    <!-- 全部委托提示-->
+    <string name="msg_delegate_all_amount_tips">建议保留少量余额，以支持委托赎回和奖励领取操作。</string>
+
+    <string name="action_delegate_all_amount">Delegate All</string>
+    <string name="action_keep_delegate_balance">保留余额(0.1LAT)</string>
 </resources>

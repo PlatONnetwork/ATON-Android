@@ -178,7 +178,7 @@ public class CommonTipsDialogFragment extends DialogFragment {
         }
     }
 
-    class FixedDialog extends AppCompatDialog {
+    public class FixedDialog extends AppCompatDialog {
 
         @BindView(R.id.image)
         ImageView image;
@@ -187,7 +187,7 @@ public class CommonTipsDialogFragment extends DialogFragment {
         @BindView(R.id.text_content)
         TextView textContent;
         @BindView(R.id.button_confirm)
-        ShadowButton buttonConfirm;
+        public ShadowButton buttonConfirm;
         @BindView(R.id.text_cancel)
         TextView textCancel;
         @BindView(R.id.layout_content)

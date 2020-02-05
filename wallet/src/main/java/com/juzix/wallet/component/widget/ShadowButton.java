@@ -111,4 +111,8 @@ public class ShadowButton extends LinearLayout {
             mTextView.setText(text);
         }
     }
+
+    public TextView getTextView(){
+        return mTextView;
+    }
 }
