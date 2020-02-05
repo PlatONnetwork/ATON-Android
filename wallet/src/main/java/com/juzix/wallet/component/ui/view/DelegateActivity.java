@@ -181,6 +181,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     }
 
     private void initClick() {
+
         RxView.clicks(walletChoose).compose(RxUtils.bindToLifecycle(this))
                 .compose(RxUtils.getClickTransformer())
                 .subscribe(new CustomObserver<Object>() {
@@ -214,7 +215,6 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                                 @Override
                                 public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
                                     isAll = false;
-                                    fragment.dismiss();
                                     //点击全部
                                     mPresenter.getAllPrice(stakingAmountType, amount.getText().toString().replace(",", ""), true);
                                 }
@@ -222,7 +222,6 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                                 @Override
                                 public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
                                     isAll = true;
-                                    fragment.dismiss();
                                     //点击全部
                                     mPresenter.getAllPrice(stakingAmountType, amount.getText().toString().replace(",", ""), false);
                                 }
@@ -232,8 +231,9 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                                 @Override
                                 public void onFragmentStarted(@NonNull FragmentManager fm, @NonNull Fragment f) {
                                     super.onFragmentStarted(fm, f);
-                                    if (f.getClass() == dialogFragment.getClass()) {
-                                        CommonTextUtils.richText(((CommonTipsDialogFragment.FixedDialog) dialogFragment.getDialog()).buttonConfirm.getTextView(), getString(R.string.action_keep_delegate_balance), "\\(.*\\)", new AbsoluteSizeSpan(DensityUtil.dp2px(DelegateActivity.this, 12)));
+                                    if (f.getClass() == CommonTipsDialogFragment.class) {
+                                        TextView textView = ((CommonTipsDialogFragment.FixedDialog) ((CommonTipsDialogFragment) f).getDialog()).buttonConfirm.getTextView();
+                                        CommonTextUtils.richText(textView, getString(R.string.action_keep_delegate_balance), "\\(.*\\)", new AbsoluteSizeSpan(DensityUtil.dp2px(DelegateActivity.this, 12)));
                                     }
                                 }
                             }, false);
