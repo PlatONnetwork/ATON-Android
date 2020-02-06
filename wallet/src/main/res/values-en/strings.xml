@@ -753,5 +753,11 @@
     <string name="msg_delegation_annual_yield">Expected delegation annualized yield:</string>
     <string name="msg_delegation_annual_yield_tips">Annualized rate of return for each delegated net income in the last 4 epochs，For reference only！</string>
 
+    <string name="msg_wait_finished_transaction_tips">Please wait for the transaction to complete before continuing！</string>
+    <!-- 全部委托提示-->
+    <string name="msg_delegate_all_amount_tips">Recommended to keep a small balance to support delegated withdrawal and reward claim operations.</string>
+
+    <string name="action_delegate_all_amount">Delegate All</string>
+    <string name="action_keep_delegate_balance">Keep Balance (0.1LAT)</string>
 </resources>
 

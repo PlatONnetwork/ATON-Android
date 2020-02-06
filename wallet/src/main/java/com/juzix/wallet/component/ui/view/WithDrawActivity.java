@@ -4,15 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.InputFilter;
-import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,8 +38,8 @@ import com.juzix.wallet.component.widget.PointLengthFilter;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.config.AppSettings;
+import com.juzix.wallet.engine.TransactionManager;
 import com.juzix.wallet.entity.DelegateItemInfo;
-import com.juzix.wallet.entity.DelegateNodeDetail;
 import com.juzix.wallet.entity.GuideType;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.Wallet;
@@ -199,6 +196,12 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
                             ToastUtil.showLongToast(getContext(), R.string.withdraw_less_than_fee);
                             return;
                         }
+
+                        if (TransactionManager.getInstance().isExistPendingTransaction()) {
+                            ToastUtil.showLongToast(getContext(), R.string.msg_wait_finished_transaction_tips);
+                            return;
+                        }
+
                         mPresenter.submitWithDraw(chooseType);
                     }
                 });

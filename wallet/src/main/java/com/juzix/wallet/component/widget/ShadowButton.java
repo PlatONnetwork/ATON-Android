@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -83,6 +84,11 @@ public class ShadowButton extends LinearLayout {
     }
 
     @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return true;
+    }
+
+    @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         for (int i = 0; i < getChildCount(); i++) {
@@ -110,5 +116,9 @@ public class ShadowButton extends LinearLayout {
         if (mTextView != null) {
             mTextView.setText(text);
         }
+    }
+
+    public TextView getTextView(){
+        return mTextView;
     }
 }

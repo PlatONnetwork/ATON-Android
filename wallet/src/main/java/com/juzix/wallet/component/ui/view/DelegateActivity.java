@@ -5,7 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -13,6 +17,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.style.AbsoluteSizeSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +41,8 @@ import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.DelegateContract;
 import com.juzix.wallet.component.ui.dialog.BaseDialogFragment;
 import com.juzix.wallet.component.ui.dialog.CommonGuideDialogFragment;
+import com.juzix.wallet.component.ui.dialog.CommonTipsDialogFragment;
+import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
 import com.juzix.wallet.component.ui.dialog.TransactionSignatureDialogFragment;
 import com.juzix.wallet.component.ui.presenter.DelegatePresenter;
 import com.juzix.wallet.component.widget.CircleImageView;
@@ -44,8 +51,9 @@ import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.component.widget.VerticalImageSpan;
 import com.juzix.wallet.config.AppSettings;
-import com.juzix.wallet.entity.DelegateItemInfo;
+import com.juzix.wallet.engine.TransactionManager;
 import com.juzix.wallet.entity.DelegateHandle;
+import com.juzix.wallet.entity.DelegateItemInfo;
 import com.juzix.wallet.entity.DelegateType;
 import com.juzix.wallet.entity.GuideType;
 import com.juzix.wallet.entity.Transaction;
@@ -53,6 +61,7 @@ import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.AmountUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.CommonTextUtils;
 import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.GlideUtils;
 import com.juzix.wallet.utils.RxUtils;
@@ -172,6 +181,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     }
 
     private void initClick() {
+
         RxView.clicks(walletChoose).compose(RxUtils.bindToLifecycle(this))
                 .compose(RxUtils.getClickTransformer())
                 .subscribe(new CustomObserver<Object>() {
@@ -199,9 +209,41 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        //点击全部
-                        mPresenter.getAllPrice(stakingAmountType, amount.getText().toString().replace(",", ""));
-                        isAll = true;
+
+                        if (stakingAmountType == StakingAmountType.FREE_AMOUNT_TYPE) {
+                            CommonTipsDialogFragment dialogFragment = CommonTipsDialogFragment.createDialogWithTwoButton(ContextCompat.getDrawable(DelegateActivity.this, R.drawable.icon_dialog_tips), getString(R.string.msg_delegate_all_amount_tips), getString(R.string.action_keep_delegate_balance), new OnDialogViewClickListener() {
+                                @Override
+                                public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
+                                    isAll = false;
+                                    //点击全部
+                                    mPresenter.getAllPrice(stakingAmountType, amount.getText().toString().replace(",", ""), true);
+                                }
+                            }, getString(R.string.action_delegate_all_amount), new OnDialogViewClickListener() {
+                                @Override
+                                public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
+                                    isAll = true;
+                                    //点击全部
+                                    mPresenter.getAllPrice(stakingAmountType, amount.getText().toString().replace(",", ""), false);
+                                }
+                            });
+
+                            getSupportFragmentManager().registerFragmentLifecycleCallbacks(new FragmentManager.FragmentLifecycleCallbacks() {
+                                @Override
+                                public void onFragmentStarted(@NonNull FragmentManager fm, @NonNull Fragment f) {
+                                    super.onFragmentStarted(fm, f);
+                                    if (f.getClass() == CommonTipsDialogFragment.class) {
+                                        TextView textView = ((CommonTipsDialogFragment.FixedDialog) ((CommonTipsDialogFragment) f).getDialog()).buttonConfirm.getTextView();
+                                        CommonTextUtils.richText(textView, getString(R.string.action_keep_delegate_balance), "\\(.*\\)", new AbsoluteSizeSpan(DensityUtil.dp2px(DelegateActivity.this, 12)));
+                                    }
+                                }
+                            }, false);
+                            dialogFragment.show(getSupportFragmentManager(), "showDelegateAllAmountTipsDialog");
+                        } else {
+                            isAll = true;
+                            //点击全部
+                            mPresenter.getAllPrice(stakingAmountType, amount.getText().toString().replace(",", ""), false);
+                        }
+
                     }
                 });
 
@@ -216,6 +258,10 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                         //点击委托操作
                         if (BigDecimalUtil.sub(freeBalance, feeAmount).doubleValue() < 0) { //可用余额大于手续费才能委托
                             ToastUtil.showLongToast(getContext(), R.string.delegate_less_than_fee);
+                            return;
+                        }
+                        if (TransactionManager.getInstance().isExistPendingTransaction()) {
+                            ToastUtil.showLongToast(getContext(), R.string.msg_wait_finished_transaction_tips);
                             return;
                         }
                         mPresenter.submitDelegate(stakingAmountType);

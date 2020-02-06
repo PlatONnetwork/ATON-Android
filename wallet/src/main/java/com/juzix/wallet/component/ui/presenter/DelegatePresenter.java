@@ -2,7 +2,6 @@ package com.juzix.wallet.component.ui.presenter;
 
 import android.annotation.SuppressLint;
 import android.text.TextUtils;
-import android.util.Pair;
 
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
@@ -23,9 +22,8 @@ import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.Web3jManager;
-import com.juzix.wallet.entity.DelegateItemInfo;
-import com.juzix.wallet.entity.DelegateNodeDetail;
 import com.juzix.wallet.entity.DelegateHandle;
+import com.juzix.wallet.entity.DelegateItemInfo;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionAuthorizationBaseData;
 import com.juzix.wallet.entity.TransactionAuthorizationData;
@@ -41,7 +39,6 @@ import org.web3j.crypto.Credentials;
 import org.web3j.platon.ContractAddress;
 import org.web3j.platon.FunctionType;
 import org.web3j.platon.StakingAmountType;
-import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.tx.gas.GasProvider;
 import org.web3j.utils.Convert;
@@ -49,19 +46,12 @@ import org.web3j.utils.Convert;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.functions.Consumer;
 import retrofit2.Response;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 public class DelegatePresenter extends BasePresenter<DelegateContract.View> implements DelegateContract.Presenter {
 
@@ -79,9 +69,9 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     public DelegatePresenter(DelegateContract.View view) {
         super(view);
         mDelegateDetail = view.getDelegateDetailFromIntent();
-        if (TextUtils.isEmpty(mDelegateDetail.getWalletAddress())){
+        if (TextUtils.isEmpty(mDelegateDetail.getWalletAddress())) {
             mWallet = WalletManager.getInstance().getFirstSortedWallet();
-        }else{
+        } else {
             mWallet = WalletManager.getInstance().getWalletEntityByWalletAddress(mDelegateDetail.getWalletAddress());
         }
     }
@@ -234,12 +224,13 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
 
     //点击全部的时候，需要获取一次手续费
-    public void getAllPrice(StakingAmountType stakingAmountType, String amount) {
+    public void getAllPrice(StakingAmountType stakingAmountType, String amount, boolean keepBalance) {
         isAll = true;
         if (mDelegateDetail != null) {
             String feeAmount = getFeeAmount(mGasProvider.getGasPrice(), mGasProvider.getGasLimit());
             BigInteger delegateAmount = stakingAmountType == StakingAmountType.FREE_AMOUNT_TYPE ? BigDecimalUtil.sub(Convert.toVon(amount, Convert.Unit.LAT).toBigInteger().toString(10), feeAmount).toBigInteger() : Convert.toVon(amount, Convert.Unit.LAT).toBigInteger();
-            getView().showAllFeeAmount(stakingAmountType, BigIntegerUtil.toString(delegateAmount), feeAmount);
+            BigInteger actualDelegateAmount = keepBalance ? delegateAmount.subtract(Convert.toVon("0.1", Convert.Unit.LAT).toBigInteger()) : delegateAmount;
+            getView().showAllFeeAmount(stakingAmountType, BigIntegerUtil.toString(actualDelegateAmount), feeAmount);
         }
     }
 
