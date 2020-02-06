@@ -280,7 +280,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {//改变后
 
-            mPresenter.checkWithDrawAmount(s.toString().trim());
+            mPresenter.checkWithDrawAmount(s.toString().trim().replace(",", ""));
             mPresenter.updateWithDrawButtonState();
             mPresenter.getWithDrawGasPrice(gasPrice);
 
@@ -327,7 +327,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
 
     @Override
     public String getWithDrawAmount() {
-        return withdrawAmount.getText().toString().trim();
+        return withdrawAmount.getText().toString().trim().replace(",", "");
     }
 
     @Override
