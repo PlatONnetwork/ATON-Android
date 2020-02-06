@@ -85,6 +85,10 @@ public class Constants {
 
         String BUNDLE_TIME_STAMP = "bundle_time_stamp";
 
+        String BUNDLE_DATA_LIST = "bundle_data_list";
+
+        String BUNDLE_POSITION = "bundle_position";
+
     }
 
     public interface Action {

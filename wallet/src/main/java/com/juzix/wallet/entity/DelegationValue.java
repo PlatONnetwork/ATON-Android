@@ -9,6 +9,7 @@ import java.util.List;
 import io.reactivex.Flowable;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 
 public class DelegationValue {
 
@@ -83,5 +84,28 @@ public class DelegationValue {
                     }
                 })
                 .blockingGet();
+    }
+
+    /**
+     * 获取默认展示的项，优先展示待赎回待
+     *
+     * @return
+     */
+    public WithDrawBalance getDefaultShowWithDrawBalance() {
+
+        if (withDrawBalanceList == null || withDrawBalanceList.isEmpty()) {
+            return null;
+        }
+
+        return Flowable.fromIterable(withDrawBalanceList)
+                .filter(new Predicate<WithDrawBalance>() {
+                    @Override
+                    public boolean test(WithDrawBalance withDrawBalance) throws Exception {
+                        return !withDrawBalance.isDelegated();
+                    }
+                })
+                .defaultIfEmpty(withDrawBalanceList.get(0))
+                .blockingFirst();
+
     }
 }

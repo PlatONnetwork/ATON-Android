@@ -759,5 +759,7 @@
 
     <string name="action_delegate_all_amount">Delegate All</string>
     <string name="action_keep_delegate_balance">Keep Balance (0.1LAT)</string>
+    <string name="title_select_delegations">Select Delegations</string>
+    <string name="msg_invalid_delegations">Invalid delegations (%1$dst)</string>
 </resources>
 

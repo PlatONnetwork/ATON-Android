@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_common_dialog_fragment"
+    android:divider="@drawable/divider_item_claim_record"
+    android:orientation="vertical"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:showDividers="middle">
+
+    <TextView
+        style="@style/Text.000.16"
+        android:layout_width="match_parent"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:text="@string/title_select_delegations"
+        android:textStyle="bold" />
+
+    <ListView
+        android:id="@+id/list_delegations"
+        style="@style/List_common_style"
+        android:choiceMode="singleChoice"
+        android:divider="@drawable/divider_item_claim_record"
+        android:dividerHeight="1dp"
+        tools:listitem="@layout/item_select_delegations" />
+
+</LinearLayout>

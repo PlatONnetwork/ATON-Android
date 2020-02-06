@@ -10,10 +10,10 @@ import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.app.LoadingTransformer;
-import com.juzix.wallet.component.adapter.WithDrawPopWindowAdapter;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.WithDrawContract;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
+import com.juzix.wallet.component.ui.dialog.SelectDelegationsDialogFragment;
 import com.juzix.wallet.component.ui.dialog.TransactionAuthorizationDialogFragment;
 import com.juzix.wallet.component.ui.dialog.TransactionSignatureDialogFragment;
 import com.juzix.wallet.engine.AppConfigManager;
@@ -30,6 +30,7 @@ import com.juzix.wallet.entity.TransactionAuthorizationData;
 import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.entity.WithDrawBalance;
+import com.juzix.wallet.utils.AmountUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.ToastUtil;
@@ -42,8 +43,6 @@ import org.web3j.tx.gas.GasProvider;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -62,8 +61,8 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     private Wallet mWallet;
 
     private List<WithDrawBalance> list = new ArrayList<>();
+    private WithDrawBalance mWithDrawBalance = null;
 
-    private int tag;
     private String feeAmount;
     private GasProvider mGasProvider = new DefaultGasProvider();
 
@@ -77,6 +76,14 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
         } else {
             mWallet = WalletManager.getInstance().getWalletEntityByWalletAddress(mDelegateDetail.getWalletAddress());
         }
+    }
+
+    public List<WithDrawBalance> getWithDrawBalanceList() {
+        return list;
+    }
+
+    public WithDrawBalance getWithDrawBalance() {
+        return mWithDrawBalance;
     }
 
     public double getMinDelegationAmount() {
@@ -144,15 +151,18 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                 .doOnSuccess(new Consumer<DelegationValue>() {
                     @Override
                     public void accept(DelegationValue delegationValue) throws Exception {
-                        list.clear();
-                        list.addAll(delegationValue.getWithDrawBalanceList());
+
+                        list = delegationValue.getWithDrawBalanceList();
+
+                        mWithDrawBalance = delegationValue.getDefaultShowWithDrawBalance();
 
                         minDelegation = delegationValue.getMinDelegation();
 
                         double releasedSum = delegationValue.getReleasedSumAmount(); //待赎回
                         double delegatedSum = delegationValue.getDelegatedSumAmount();//已委托
 
-                        getView().showBalanceType(delegatedSum, releasedSum, NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(minDelegation, "1E18")));
+                        getView().showMinDelegationInfo(NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(minDelegation, "1E18")));
+                        getView().showWithdrawBalance(mWithDrawBalance);
 
                         if (delegatedSum + releasedSum <= 0) {
                             getView().finishDelayed();
@@ -176,7 +186,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                     public void onApiSuccess(com.juzix.wallet.entity.GasProvider gasProvider) {
                         if (isViewAttached()) {
                             mGasProvider = gasProvider.toSdkGasProvider();
-                            getView().showGas(mGasProvider.getGasPrice());
+                            getView().showGas(mGasProvider);
                         }
                     }
                 })
@@ -203,34 +213,48 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
         getView().showWithDrawGasPrice(feeAmount);
     }
 
+    @Override
+    public void showSelectDelegationsDialogFragment() {
+        SelectDelegationsDialogFragment.newInstance(list, list.indexOf(mWithDrawBalance))
+                .setOnInvalidDelegationsClickListener(new SelectDelegationsDialogFragment.OnInvalidDelegationsClickListener() {
+                    @Override
+                    public void onInvalidDelegationsClick(WithDrawBalance withDrawBalance) {
+                        mWithDrawBalance = withDrawBalance;
+                        if (isViewAttached()) {
+                            getView().showWithdrawBalance(mWithDrawBalance);
+                        }
+                    }
+                })
+                .show(currentActivity().getSupportFragmentManager(), "showSelectDelegationsDialogFragment");
+    }
+
     private String getFeeAmount(GasProvider gasProvider) {
         return BigDecimalUtil.mul(gasProvider.getGasLimit().toString(10), gasProvider.getGasPrice().toString(10)).toPlainString();
     }
 
     @SuppressLint("CheckResult")
     @Override
-    public void submitWithDraw(String type) {
-        if (mDelegateDetail == null) {
+    public void submitWithDraw() {
+        if (mDelegateDetail == null || mWithDrawBalance == null) {
             return;
         }
 
         if (isViewAttached()) {
-            double chooseNum = NumberParserUtils.parseDouble(getView().getChooseType());
-            double inputPutAmount = NumberParserUtils.parseDouble(getView().getInputAmount());
-            if (chooseNum < inputPutAmount) {
+            String amount = mWithDrawBalance.isDelegated() ? mWithDrawBalance.getDelegated() : mWithDrawBalance.getReleased();
+            if (BigDecimalUtil.isBigger(getView().getInputAmount(), AmountUtil.formatAmountText(amount).replace(",", ""))) {
                 showLongToast(R.string.withdraw_operation_tips);
                 return;
             }
 
             if (mWallet.isObservedWallet()) {
-                showTransactionAuthorizationDialogFragment(mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), getView().getInputAmount(), mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, mGasProvider.getGasLimit().toString(10), mGasProvider.getGasPrice().toString(10), type);
+                showTransactionAuthorizationDialogFragment(mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), getView().getInputAmount(), mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, mGasProvider.getGasLimit().toString(10), mGasProvider.getGasPrice().toString(10));
             } else {
                 InputWalletPasswordDialogFragment
                         .newInstance(mWallet)
                         .setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
                             @Override
                             public void onWalletPasswordCorrect(Credentials credentials) {
-                                withDrawIterate(credentials, mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), getView().getInputAmount(), type);
+                                withdraw(credentials, mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), mWithDrawBalance.getStakingBlockNum(), getView().getInputAmount());
                             }
                         })
                         .show(currentActivity().getSupportFragmentManager(), "inputWalletPasssword");
@@ -238,42 +262,9 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
         }
     }
 
-
-    /**
-     * @param credentials
-     * @param nodeId
-     * @param withdrawAmount 输入数量
-     * @param type           从  已委托 或 未锁定委托 提取：  只操作记录最新的那个委托对象（快高最大）
-     *                       从  已解除委托 提取：  查看记录中所有 已解锁余额非0的记录。  会存在调用多次底层的情况。
-     */
-    public void withDrawIterate(Credentials credentials, String nodeId, String nodeName, String withdrawAmount, String type) {
-        String stakingBlockNum = "0";
-        if (TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_DELEGATED)) { //已委托
-            for (int i = 0; i < list.size(); i++) {
-                if (!TextUtils.isEmpty(list.get(i).getDelegated())) {
-                    stakingBlockNum = list.get(i).getStakingBlockNum(); //这里其实就是第一条，因为最新的块高排在前面
-                    withdraw(credentials, nodeId, nodeName, stakingBlockNum, withdrawAmount, type);
-                    return;
-                }
-            }
-        } else { //表示选择的是已解除委托
-            for (int i = 0; i < list.size(); i++) {
-                WithDrawBalance balance = list.get(i);
-                if (!TextUtils.isEmpty(balance.getReleased())) {
-                    stakingBlockNum = balance.getStakingBlockNum();
-                    tag++;
-                    withdraw(credentials, nodeId, nodeName, stakingBlockNum, NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(balance.getReleased(), "1E18")), type); //这里传入的数量应该是记录中每个对象不为0的数量（而不是显示的全部数量，因为这里要循环执行多次）
-                }
-            }
-
-
-        }
-    }
-
-
     //操作赎回
     @SuppressLint("CheckResult")
-    public void withdraw(Credentials credentials, String nodeId, String nodeName, String blockNum, String withdrawAmount, String type) {
+    public void withdraw(Credentials credentials, String nodeId, String nodeName, String blockNum, String withdrawAmount) {
         DelegateManager.getInstance().withdrawDelegate(credentials, ContractAddress.DELEGATE_CONTRACT_ADDRESS, nodeId, nodeName, feeAmount, blockNum, withdrawAmount, String.valueOf(TransactionType.UNDELEGATE.getTxTypeValue()), mGasProvider)
                 .compose(RxUtils.getSchedulerTransformer())
                 .compose(RxUtils.getLoadingTransformer(currentActivity()))
@@ -282,13 +273,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                     public void accept(Transaction transaction) {
                         if (isViewAttached()) {
                             //操作成功，跳转到交易详情，当前页面关闭
-                            if (TextUtils.equals(type, WithDrawPopWindowAdapter.TAG_DELEGATED)) {
-                                getView().withDrawSuccessInfo(transaction);
-                            } else {
-                                if (tag == list.size()) {
-                                    getView().withDrawSuccessInfo(transaction);
-                                }
-                            }
+                            getView().withDrawSuccessInfo(transaction);
                         }
                     }
 
@@ -334,7 +319,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     }
 
 
-    private void showTransactionAuthorizationDialogFragment(String nodeId, String nodeName, String transactionAmount, String from, String to, String gasLimit, String gasPrice, String type) {
+    private void showTransactionAuthorizationDialogFragment(String nodeId, String nodeName, String transactionAmount, String from, String to, String gasLimit, String gasPrice) {
 
         Observable
                 .fromCallable(new Callable<BigInteger>() {
