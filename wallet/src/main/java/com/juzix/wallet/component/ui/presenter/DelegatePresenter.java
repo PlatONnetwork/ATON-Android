@@ -189,6 +189,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                     public void onApiSuccess(com.juzix.wallet.entity.GasProvider gasProvider) {
                         if (isViewAttached()) {
                             mGasProvider = gasProvider.toSdkGasProvider();
+                            getView().showFeeAmount(BigIntegerUtil.mul(mGasProvider.getGasLimit(), mGasProvider.getGasPrice()));
                         }
                     }
                 });
