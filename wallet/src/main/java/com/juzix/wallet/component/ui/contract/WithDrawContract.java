@@ -3,9 +3,11 @@ package com.juzix.wallet.component.ui.contract;
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
 import com.juzix.wallet.entity.DelegateItemInfo;
-import com.juzix.wallet.entity.DelegateNodeDetail;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.Wallet;
+import com.juzix.wallet.entity.WithDrawBalance;
+
+import org.web3j.tx.gas.GasProvider;
 
 import java.math.BigInteger;
 
@@ -16,23 +18,17 @@ public class WithDrawContract {
 
         String getInputAmount();
 
-        String getChooseType();
-
         String getWithDrawAmount();
 
         void showSelectedWalletInfo(Wallet individualWalletEntity);
 
         void setWithDrawButtonState(boolean isClickable);
 
-        void showTips(boolean isShow,String minDelegationAmount);
+        void showTips(boolean isShow, String minDelegationAmount);
 
         void showNodeInfo(DelegateItemInfo delegateDetail);
 
-        /**
-         * @param delegated 已委托
-         * @param released  待赎回
-         */
-        void showBalanceType(double delegated, double released,String minDelegationAmount);
+        void showMinDelegationInfo(String minDelegationAmount);
 
         /**
          * @param transaction
@@ -45,9 +41,11 @@ public class WithDrawContract {
 
         void showWithDrawGasPrice(String gas);
 
-        void showGas(BigInteger bigInteger);
+        void showGas(GasProvider gasProvider);
 
         void finishDelayed();
+
+        void showWithdrawBalance(WithDrawBalance withDrawBalance);
 
     }
 
@@ -61,9 +59,11 @@ public class WithDrawContract {
 
         void getBalanceType();
 
-        void submitWithDraw(String chooseType);
+        void submitWithDraw();
 
         void getWithDrawGasPrice(String gasPrice);
+
+        void showSelectDelegationsDialogFragment();
 
     }
 

@@ -111,7 +111,7 @@ public class DelegateItemInfoDiffCallback extends BaseDiffCallback<DelegateItemI
         }
 
         if (!TextUtils.equals(oldDelegateItemInfo.getReleased(), newDelegateItemInfo.getReleased())) {
-            bundle.putString(KEY_RELEASED, newDelegateItemInfo.getNodeName());
+            bundle.putString(KEY_RELEASED, newDelegateItemInfo.getReleased());
         }
 
         return bundle.isEmpty() ? null : bundle;

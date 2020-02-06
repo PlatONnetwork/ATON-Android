@@ -26,16 +26,19 @@ public class TransactionSignatureData implements Parcelable {
 
     private String nodeName;
 
+    private String claimRewardAmount;
+
     public TransactionSignatureData() {
     }
 
-    public TransactionSignatureData(List<String> signedDatas, String from, String chainId, int functionType, long timestamp, String nodeName) {
+    public TransactionSignatureData(List<String> signedDatas, String from, String chainId, int functionType, long timestamp, String nodeName, String claimRewardAmount) {
         this.signedDatas = signedDatas;
         this.from = from;
         this.chainId = chainId;
         this.functionType = functionType;
         this.timestamp = timestamp;
         this.nodeName = nodeName;
+        this.claimRewardAmount = claimRewardAmount;
     }
 
     protected TransactionSignatureData(Parcel in) {
@@ -45,6 +48,7 @@ public class TransactionSignatureData implements Parcelable {
         timestamp = in.readLong();
         functionType = in.readInt();
         nodeName = in.readString();
+        claimRewardAmount = in.readString();
     }
 
     @Override
@@ -55,6 +59,7 @@ public class TransactionSignatureData implements Parcelable {
         dest.writeLong(timestamp);
         dest.writeInt(functionType);
         dest.writeString(nodeName);
+        dest.writeString(claimRewardAmount);
     }
 
     @Override
@@ -125,6 +130,14 @@ public class TransactionSignatureData implements Parcelable {
     public @QrCodeType
     int getQrCodeType() {
         return QrCodeType.TRANSACTION_SIGNATURE;
+    }
+
+    public String getClaimRewardAmount() {
+        return claimRewardAmount;
+    }
+
+    public void setClaimRewardAmount(String claimRewardAmount) {
+        this.claimRewardAmount = claimRewardAmount;
     }
 
     public String toJSONString() {
