@@ -62,6 +62,7 @@ public class Constants {
         String EXTRA_BUNDLE = "extra_bundle";
         String EXTRA_DELEGATE_INFO = "extra_delegate_info";
         String EXTRA_DELEGATE_DETAIL = "extra_delegate_detail";
+        String EXTRA_BOOLEAN = "extra_boolean";
     }
 
     public interface Bundle {

@@ -1,25 +1,17 @@
 package com.juzix.wallet.component.adapter;
 
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
-import android.text.style.AbsoluteSizeSpan;
-import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.juzhen.framework.util.AndroidUtil;
 import com.juzix.wallet.BuildConfig;
 import com.juzix.wallet.R;
-import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.component.ui.base.BaseActivity;
-import com.juzix.wallet.db.entity.NodeEntity;
 import com.juzix.wallet.entity.Node;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.ToastUtil;
@@ -126,7 +118,7 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
     private String getNodeName(Node node) {
         if (BuildConfig.URL_MAIN_SERVER.equals(node.getNodeAddress()) || BuildConfig.URL_TEST_MAIN_SERVER.equals(node.getNodeAddress())) {
             return activity.getString(R.string.newbaleyworld);
-        } else if (TextUtils.equals(BuildConfig.URL_TEST_SERVER, node.getNodeAddress())) {
+        } else if (TextUtils.equals(BuildConfig.URL_TEST_SERVER, node.getNodeAddress()) || TextUtils.equals(BuildConfig.URL_TEST_OUTER_SERVER, node.getNodeAddress())) {
             return activity.getString(R.string.test_net);
         } else if (TextUtils.equals(BuildConfig.URL_DEVELOP_SERVER, node.getNodeAddress())) {
             return activity.getString(R.string.develop_net);

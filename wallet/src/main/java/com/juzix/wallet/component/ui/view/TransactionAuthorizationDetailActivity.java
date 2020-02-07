@@ -90,7 +90,7 @@ public class TransactionAuthorizationDetailActivity extends BaseActivity {
         tvSenderTitle.setText(getSenderTitleRes(transactionAuthorizationDetail.getFunctionType()));
         tvRecipientTitle.setText(getRecipientInfoRes(transactionAuthorizationDetail.getFunctionType()));
         tvTxnInfo.setText(string(getTxnInfoRes(transactionAuthorizationDetail.getFunctionType())));
-        String amountText = string(R.string.amount_with_unit, AmountUtil.formatAmountText(transactionAuthorizationDetail.getAmount(),12));
+        String amountText = string(R.string.amount_with_unit, AmountUtil.formatAmountText(transactionAuthorizationDetail.getAmount(), 12));
         tvAmount.setText(amountText);
         CommonTextUtils.richText(tvAmount, amountText, "\\w[3]", new AbsoluteSizeSpan(DensityUtil.dp2px(this, 24)) {
             @Override
@@ -158,7 +158,7 @@ public class TransactionAuthorizationDetailActivity extends BaseActivity {
             case FunctionType.WITHDRAW_DELEGATE_REWARD_FUNC_TYPE:
                 return R.string.msg_claim_rewards;
             default:
-                return R.string.transfer;
+                return R.string.msg_transfer_info;
         }
     }
 

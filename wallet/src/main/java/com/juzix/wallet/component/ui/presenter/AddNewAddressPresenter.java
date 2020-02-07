@@ -123,7 +123,6 @@ public class AddNewAddressPresenter extends BasePresenter<AddNewAddressContract.
         if (TextUtils.isEmpty(address)) {
             errMsg = string(R.string.address_cannot_be_empty);
         } else {
-            //TODO 不是以0x开头的则提示格式错误，之后统一地址显示
             if (!JZWalletUtil.isValidAddress(address) || !address.startsWith("0x")) {
                 errMsg = string(R.string.address_format_error);
             }
