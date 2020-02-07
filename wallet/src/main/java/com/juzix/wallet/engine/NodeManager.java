@@ -157,7 +157,7 @@ public class NodeManager {
         if (BuildConfig.RELEASE_TYPE.equals("server.typeC")) {
             nodeInfoEntityList.add(new Node.Builder()
                     .id(UUID.randomUUID().hashCode())
-                    .nodeAddress(BuildConfig.URL_TEST_SERVER)
+                    .nodeAddress(BuildConfig.URL_TEST_OUTER_SERVER)
                     .isDefaultNode(true)
                     .isChecked(true)
                     .chainId(BuildConfig.ID_TEST_CHAIN)

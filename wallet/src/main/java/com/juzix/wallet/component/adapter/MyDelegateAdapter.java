@@ -5,7 +5,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +14,8 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
-import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.component.widget.PendingClaimRewardAnimationLayout;
-import com.juzix.wallet.component.widget.RoundedTextView;
 import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.entity.DelegateInfo;
 import com.juzix.wallet.utils.AddressFormatUtil;
@@ -26,8 +23,6 @@ import com.juzix.wallet.utils.AmountUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.RxUtils;
-import com.juzix.wallet.utils.StringUtil;
-
 
 import java.util.List;
 
@@ -71,8 +66,8 @@ public class MyDelegateAdapter extends RecyclerView.Adapter<MyDelegateAdapter.Vi
         holder.walletAvatarIv.setImageResource(RUtils.drawable(info.getWalletIcon()));
         holder.walletNameTv.setText(info.getWalletName());
         holder.walletAddressTv.setText(AddressFormatUtil.formatAddress(info.getWalletAddress()));
-        holder.unclaimedRewardAmountTv.setText(AmountUtil.formatAmountText(info.getDelegated()));
-        holder.totalRewardAmountTv.setText(AmountUtil.formatAmountText(info.getCumulativeReward()));
+        holder.unclaimedRewardAmountTv.setText(AmountUtil.formatAmountText(info.getDelegated(), 12));
+        holder.totalRewardAmountTv.setText(AmountUtil.formatAmountText(info.getCumulativeReward(), 12));
         holder.delegatedAmountTv.setText(AmountUtil.formatAmountText(info.getDelegated()));
         holder.unclaimedRewardAmountTv.setText(AmountUtil.formatAmountText(info.getWithdrawReward()));
         holder.claimRewardLayout.setVisibility(BigDecimalUtil.isBiggerThanZero(info.getWithdrawReward()) ? View.VISIBLE : View.GONE);

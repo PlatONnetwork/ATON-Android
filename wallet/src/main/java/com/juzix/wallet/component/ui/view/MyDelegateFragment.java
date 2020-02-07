@@ -18,7 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
-import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
@@ -31,9 +30,7 @@ import com.juzix.wallet.component.ui.presenter.MyDelegatePresenter;
 import com.juzix.wallet.component.widget.CustomRefreshHeader;
 import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.config.AppSettings;
-import com.juzix.wallet.entity.ClaimRewardInfo;
 import com.juzix.wallet.entity.DelegateInfo;
-import com.juzix.wallet.entity.DelegateItemInfo;
 import com.juzix.wallet.entity.GuideType;
 import com.juzix.wallet.entity.WebType;
 import com.juzix.wallet.event.Event;
@@ -249,8 +246,8 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
         SparseArray<String> totalAmountArray = getTotalAmountArray(list);
         totalDelegatedAmountTv.setText(CommonTextUtils.getPriceTextWithBold(AmountUtil.formatAmountText(totalAmountArray.get(TotalAmountType.TOTAL_DELEGATED)),
                 ContextCompat.getColor(currentActivity(), R.color.color_f9fbff), ContextCompat.getColor(currentActivity(), R.color.color_f9fbff), DensityUtil.sp2px(currentActivity(), 12), DensityUtil.sp2px(currentActivity(), 22)));
-        totalRewardAmountTv.setText(AmountUtil.formatAmountText(totalAmountArray.get(TotalAmountType.TOTAL_REWARD)));
-        totalUnclaimedRewardAmountTv.setText(AmountUtil.formatAmountText(totalAmountArray.get(TotalAmountType.TOTAL_UNCLAIMED_REWARD)));
+        totalRewardAmountTv.setText(AmountUtil.formatAmountText(totalAmountArray.get(TotalAmountType.TOTAL_REWARD), 12));
+        totalUnclaimedRewardAmountTv.setText(AmountUtil.formatAmountText(totalAmountArray.get(TotalAmountType.TOTAL_UNCLAIMED_REWARD),12));
     }
 
     @Override

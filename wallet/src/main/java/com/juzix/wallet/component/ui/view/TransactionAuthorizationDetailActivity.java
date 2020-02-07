@@ -4,8 +4,11 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
+import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.style.AbsoluteSizeSpan;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
@@ -22,19 +25,16 @@ import com.juzix.wallet.db.sqlite.WalletDao;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.TransactionAuthorizationData;
 import com.juzix.wallet.entity.TransactionAuthorizationDetail;
-import com.juzix.wallet.entity.TransactionSignatureData;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.AmountUtil;
-import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.CommonTextUtils;
+import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.RxUtils;
-import com.juzix.wallet.utils.StringUtil;
-import com.juzix.wallet.utils.ToastUtil;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.platon.FunctionType;
 
-import java.math.BigDecimal;
 import java.util.concurrent.Callable;
 
 import butterknife.BindView;
@@ -90,7 +90,15 @@ public class TransactionAuthorizationDetailActivity extends BaseActivity {
         tvSenderTitle.setText(getSenderTitleRes(transactionAuthorizationDetail.getFunctionType()));
         tvRecipientTitle.setText(getRecipientInfoRes(transactionAuthorizationDetail.getFunctionType()));
         tvTxnInfo.setText(string(getTxnInfoRes(transactionAuthorizationDetail.getFunctionType())));
-        tvAmount.setText(StringUtil.formatBalance(AmountUtil.convertVonToLat(transactionAuthorizationDetail.getAmount())));
+        String amountText = string(R.string.amount_with_unit, AmountUtil.formatAmountText(transactionAuthorizationDetail.getAmount(),12));
+        tvAmount.setText(amountText);
+        CommonTextUtils.richText(tvAmount, amountText, "\\w[3]", new AbsoluteSizeSpan(DensityUtil.dp2px(this, 24)) {
+            @Override
+            public void updateDrawState(@NonNull TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setFakeBoldText(false);
+            }
+        });
         tvSender.setText(getFormatName(transactionAuthorizationDetail.getSender(), null));
         tvRecipient.setText(getReceiverName(transactionAuthorizationDetail));
         tvFee.setText(string(R.string.amount_with_unit, NumberParserUtils.getPrettyBalance(AmountUtil.convertVonToLat(transactionAuthorizationDetail.getFee()))));
@@ -161,6 +169,8 @@ public class TransactionAuthorizationDetailActivity extends BaseActivity {
                 return R.string.msg_delegated_to;
             case FunctionType.WITHDREW_DELEGATE_FUNC_TYPE:
                 return R.string.msg_undelegated_from;
+            case FunctionType.WITHDRAW_DELEGATE_REWARD_FUNC_TYPE:
+                return R.string.reward_amount;
             default:
                 return R.string.msg_recipient;
         }
@@ -170,6 +180,8 @@ public class TransactionAuthorizationDetailActivity extends BaseActivity {
     int getSenderTitleRes(int functionType) {
         if (functionType == FunctionType.DELEGATE_FUNC_TYPE || functionType == FunctionType.WITHDREW_DELEGATE_FUNC_TYPE) {
             return R.string.msg_operator_address;
+        } else if (functionType == FunctionType.WITHDRAW_DELEGATE_REWARD_FUNC_TYPE) {
+            return R.string.claim_wallet;
         }
 
         return R.string.msg_sender;
@@ -205,6 +217,8 @@ public class TransactionAuthorizationDetailActivity extends BaseActivity {
     private String getReceiverName(TransactionAuthorizationDetail transactionAuthorizationDetail) {
         if (FunctionType.TRANSFER == transactionAuthorizationDetail.getFunctionType()) {
             return getTransferFormatName(transactionAuthorizationDetail.getReceiver());
+        } else if (FunctionType.WITHDRAW_DELEGATE_REWARD_FUNC_TYPE == transactionAuthorizationDetail.getFunctionType()) {
+            return AmountUtil.formatAmountText(transactionAuthorizationDetail.getAmount(), 12);
         } else {
             return String.format("%s(%s)", transactionAuthorizationDetail.getNodeName(), transactionAuthorizationDetail.getNodeId());
         }
