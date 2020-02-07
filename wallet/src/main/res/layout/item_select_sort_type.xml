@@ -16,7 +16,6 @@
     <TextView
         android:id="@+id/tv_sort_type"
         style="@style/Text.000000.15"
-        android:textStyle="bold"
         tools:text="Wallet name" />
 
 
