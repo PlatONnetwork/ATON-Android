@@ -111,10 +111,12 @@ public class SelectDelegationsDialogFragment extends BaseDialogFragment {
     static class DelegationsAdapter extends CommonAdapter<WithDrawBalance> {
 
         private ListView mListView;
+        private boolean mExistDelegatedItem;
 
         public DelegationsAdapter(ListView listView, int layoutId, List<WithDrawBalance> datas) {
             super(layoutId, datas);
             this.mListView = listView;
+            this.mExistDelegatedItem = isExistDelegatedItem(datas);
         }
 
         @Override
@@ -124,8 +126,9 @@ public class SelectDelegationsDialogFragment extends BaseDialogFragment {
                 textView.setText(context.getString(R.string.detail_delegated));
                 viewHolder.setText(R.id.tv_invalid_delegations_amount, context.getString(R.string.amount_with_unit, AmountUtil.formatAmountText(item.getDelegated())));
             } else {
-                textView.setText(context.getString(R.string.msg_invalid_delegations, position));
-                CommonTextUtils.richText(textView, context.getString(R.string.msg_invalid_delegations, position), "\\(.*\\)", new ForegroundColorSpan(ContextCompat.getColor(context, R.color.color_b6bbd0)));
+                int rank = mExistDelegatedItem ? position : position + 1;
+                textView.setText(context.getString(R.string.msg_invalid_delegations, rank));
+                CommonTextUtils.richText(textView, context.getString(R.string.msg_invalid_delegations, rank), "\\(.*\\)", new ForegroundColorSpan(ContextCompat.getColor(context, R.color.color_b6bbd0)));
                 viewHolder.setText(R.id.tv_invalid_delegations_amount, context.getString(R.string.amount_with_unit, AmountUtil.formatAmountText(item.getReleased())));
             }
 
@@ -134,6 +137,17 @@ public class SelectDelegationsDialogFragment extends BaseDialogFragment {
             textView.setLongClickable(false);
 
             viewHolder.setVisible(R.id.iv_selected, mListView.getCheckedItemPosition() == position);
+        }
+
+        private boolean isExistDelegatedItem(List<WithDrawBalance> withDrawBalanceList) {
+            for (int i = 0; i < withDrawBalanceList.size(); i++) {
+                WithDrawBalance withDrawBalance = withDrawBalanceList.get(i);
+                if (withDrawBalance.isDelegated()) {
+                    return true;
+                }
+                continue;
+            }
+            return false;
         }
     }
 
