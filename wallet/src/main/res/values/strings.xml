@@ -776,5 +776,5 @@
     <string name="action_delegate_all_amount">Delegate All</string>
     <string name="action_keep_delegate_balance">保留余额(0.1LAT)</string>
     <string name="title_select_delegations">选择赎回项</string>
-    <string name="msg_invalid_delegations">待赎回委托(%1$dst)</string>
+    <string name="msg_invalid_delegations">待赎回委托(第%1$d份)</string>
 </resources>
