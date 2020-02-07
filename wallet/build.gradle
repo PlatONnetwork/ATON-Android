@@ -34,9 +34,6 @@ android {
         renderscriptSupportModeEnabled true
         resConfigs "zh", "en"
 
-//        ndk {
-//            abiFilters "armeabi-v7a"
-//        }
     }
 
     lintOptions {
@@ -101,6 +98,10 @@ android {
             multiDexEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
+
+            ndk {
+                abiFilters "armeabi-v7a"
+            }
         }
 
         releaseJC {
@@ -112,6 +113,10 @@ android {
             multiDexEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
+
+            ndk {
+                abiFilters "armeabi-v7a"
+            }
         }
 
         releaseJOC {
@@ -123,6 +128,10 @@ android {
             multiDexEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeOC}")
+
+            ndk {
+                abiFilters "armeabi-v7a"
+            }
         }
 
         releaseX {
@@ -145,6 +154,10 @@ android {
             multiDexEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeX}")
+
+            ndk {
+                abiFilters "armeabi-v7a"
+            }
         }
 
         releaseTX {
@@ -167,6 +180,10 @@ android {
             multiDexEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeTX}")
+
+            ndk {
+                abiFilters "armeabi-v7a"
+            }
         }
 
         flavorDimensions "channel"
