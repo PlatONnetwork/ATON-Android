@@ -48,6 +48,7 @@ import com.umeng.analytics.MobclickAgent;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import butterknife.BindString;
@@ -247,7 +248,7 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
         totalDelegatedAmountTv.setText(CommonTextUtils.getPriceTextWithBold(AmountUtil.formatAmountText(totalAmountArray.get(TotalAmountType.TOTAL_DELEGATED)),
                 ContextCompat.getColor(currentActivity(), R.color.color_f9fbff), ContextCompat.getColor(currentActivity(), R.color.color_f9fbff), DensityUtil.sp2px(currentActivity(), 12), DensityUtil.sp2px(currentActivity(), 22)));
         totalRewardAmountTv.setText(AmountUtil.formatAmountText(totalAmountArray.get(TotalAmountType.TOTAL_REWARD), 12));
-        totalUnclaimedRewardAmountTv.setText(AmountUtil.formatAmountText(totalAmountArray.get(TotalAmountType.TOTAL_UNCLAIMED_REWARD),12));
+        totalUnclaimedRewardAmountTv.setText(AmountUtil.formatAmountText(totalAmountArray.get(TotalAmountType.TOTAL_UNCLAIMED_REWARD), 12));
     }
 
     @Override
@@ -257,8 +258,13 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
 
     private SparseArray<String> getTotalAmountArray(List<DelegateInfo> list) {
 
+
         if (list == null || list.isEmpty()) {
-            return new SparseArray<>(0);
+            SparseArray<String> sparseArray = new SparseArray<String>(3);
+            sparseArray.put(TotalAmountType.TOTAL_DELEGATED, BigDecimal.ZERO.toPlainString());
+            sparseArray.put(TotalAmountType.TOTAL_REWARD, BigDecimal.ZERO.toPlainString());
+            sparseArray.put(TotalAmountType.TOTAL_UNCLAIMED_REWARD, BigDecimal.ZERO.toPlainString());
+            return sparseArray;
         }
 
         return Flowable
