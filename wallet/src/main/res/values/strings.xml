@@ -627,10 +627,10 @@
     <string name="msg_agree_agreement">我已阅读并同意上述条款</string>
 
     <!--委托不可操作提示-->
-    <string name="delegate_no_click">请先赎回"已解除委托"</string>
+    <string name="delegate_no_click">请先赎回"已待赎回委托"</string>
 
     <!--委托和赎回手续费显示-->
-    <string name="delegate_and_withdraw_fee">手续费:</string>
+    <string name="delegate_and_withdraw_fee">预估手续费:</string>
     <string name="msg_turn_light_on">轻点照亮</string>
     <string name="msg_turn_light_off">轻点关闭</string>
     <string name="tips_no_wallet">无可用钱包</string>
@@ -777,4 +777,5 @@
     <string name="action_keep_delegate_balance">保留余额(0.1LAT)</string>
     <string name="title_select_delegations">选择赎回项</string>
     <string name="msg_invalid_delegations">待赎回委托(第%1$d份)</string>
+    <string name="msg_withdraw_claim_reward">注意：操作全部赎回时，将自动领取委托奖励。</string>
 </resources>

@@ -612,10 +612,10 @@
     <string name="action_continue">Next</string>
     <string name="msg_agree_agreement">I have read and agree to the above agreement</string>
 
-    <string name="delegate_no_click">Please withdraw first "Released delegate</string>
+    <string name="delegate_no_click">Please withdraw first "Invalid delegate"</string>
 
     <!--委托和赎回手续费显示-->
-    <string name="delegate_and_withdraw_fee">Fee:</string>
+    <string name="delegate_and_withdraw_fee">Estimated fee:</string>
 
     <string name="msg_turn_light_on">Tap to turn light on</string>
     <string name="msg_turn_light_off">Tap to turn light off</string>
@@ -761,5 +761,6 @@
     <string name="action_keep_delegate_balance">Keep Balance (0.1LAT)</string>
     <string name="title_select_delegations">Select Delegations</string>
     <string name="msg_invalid_delegations">Invalid delegations (%1$dst)</string>
+    <string name="msg_withdraw_claim_reward">Note: When withdrawing all delegations,Claim rewards automatically.</string>
 </resources>
 

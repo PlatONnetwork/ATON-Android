@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -107,8 +106,6 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     View v_tips;
     @BindView(R.id.tv_delegate_tips)
     TextView tvDelegateTips;
-    @BindView(R.id.iv_drop_down)
-    ImageView dropDownIv;
 
     private Unbinder unbinder;
     private PopupWindow mPopupWindow;
@@ -402,7 +399,9 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         delegateType.setText(withDrawBalance.isDelegated() ? getString(R.string.withdraw_type_delegated) : getString(R.string.withdraw_type_released));
         withdrawAmount.setFocusableInTouchMode(withDrawBalance.isDelegated());
         withdrawAmount.setFocusable(withDrawBalance.isDelegated());
-        if (!withDrawBalance.isDelegated()) {
+        if (withDrawBalance.isDelegated()) {
+            withdrawAmount.setText(AmountUtil.formatAmountText(withDrawBalance.getDelegated()));
+        } else {
             withdrawAmount.setText(AmountUtil.formatAmountText(withDrawBalance.getReleased()));
         }
         delegateAmount.setText(string(R.string.amount_with_unit, AmountUtil.formatAmountText(withDrawBalance.isDelegated() ? withDrawBalance.getDelegated() : withDrawBalance.getReleased())));
@@ -411,7 +410,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
 
     @Override
     public void showsSelectDelegationsBtnVisibility(int visibility) {
-        dropDownIv.setVisibility(visibility);
+        delegateAmount.setCompoundDrawablesWithIntrinsicBounds(null, null, visibility == View.VISIBLE ? ContextCompat.getDrawable(this, R.drawable.icon_drop_down) : null, null);
     }
 
     @Override
