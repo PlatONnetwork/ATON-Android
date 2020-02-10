@@ -7,8 +7,6 @@ import android.os.Bundle;
 import android.support.constraint.Group;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatTextView;
-import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -28,7 +26,6 @@ import com.juzix.wallet.component.ui.presenter.ValidatorsDetailPresenter;
 import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.component.widget.RoundedTextView;
 import com.juzix.wallet.component.widget.ShadowButton;
-import com.juzix.wallet.component.widget.VerticalImageSpan;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.NodeStatus;
 import com.juzix.wallet.entity.VerifyNodeDetail;
@@ -246,17 +243,16 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
             tvDelegateYieldAmount.setCompoundDrawablesWithIntrinsicBounds(delegatedRatePATrend, null, null, null);
             tvDelegateRewardRatioAmount.setText(String.format("%s%%", NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(nodeDetail.getDelegatedRewardPer(), "100"))));
             tvTotalRewardAmount.setText(string(R.string.amount_with_unit, AmountUtil.convertVonToLat(nodeDetail.getCumulativeReward())));
-
-            tvTotalStakedAmount.setText(AmountUtil.formatAmountText(nodeDetail.getDeposit())); //总质押
+            tvTotalStakedAmount.setText(AmountUtil.formatAmountText(nodeDetail.getDeposit()));
             tvTotalDelegatedAmount.setText(AmountUtil.formatAmountText(nodeDetail.getDelegateSum()));
 
             tvDelegatorsCount.setText(getCommonFormatText(nodeDetail.getDelegate()));
-            tvSlashCount.setText(StringUtil.formatBalance(String.valueOf(nodeDetail.getPunishNumber())));
+            tvSlashCount.setText(StringUtil.formatBalanceWithoutFractionDigits(String.valueOf(nodeDetail.getPunishNumber())));
             tvBlocksNumber.setText(nodeDetail.getBlockOutNumber() == 0 ? "--" : StringUtil.formatBalance(String.valueOf(nodeDetail.getBlockOutNumber())));
             tvBlocksRateNumber.setText(String.format("%s%%", NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(nodeDetail.getBlockRate(), "100"))));
 
             tvDetailIntroduction.setText(getCommonFormatText(nodeDetail.getIntro()));
-            tvDetailWebsite.setText(getCommonFormatText(nodeDetail.getWebsite()));//官网
+            tvDetailWebsite.setText(getCommonFormatText(nodeDetail.getWebsite()));
             tvDetailWebsite.setTextColor(TextUtils.isEmpty(nodeDetail.getWebsite()) ? ContextCompat.getColor(this, R.color.color_000000) : ContextCompat.getColor(this, R.color.color_105cfe));
 
             ivDetailNodeLink.setVisibility(TextUtils.isEmpty(nodeDetail.getWebsite()) ? View.GONE : View.VISIBLE);

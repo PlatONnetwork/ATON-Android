@@ -399,10 +399,18 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         delegateType.setText(withDrawBalance.isDelegated() ? getString(R.string.withdraw_type_delegated) : getString(R.string.withdraw_type_released));
         withdrawAmount.setFocusableInTouchMode(withDrawBalance.isDelegated());
         withdrawAmount.setFocusable(withDrawBalance.isDelegated());
-        if (!withDrawBalance.isDelegated()) {
+        if (withDrawBalance.isDelegated()) {
+            withdrawAmount.setText(AmountUtil.formatAmountText(withDrawBalance.getDelegated()));
+        } else {
             withdrawAmount.setText(AmountUtil.formatAmountText(withDrawBalance.getReleased()));
         }
         delegateAmount.setText(string(R.string.amount_with_unit, AmountUtil.formatAmountText(withDrawBalance.isDelegated() ? withDrawBalance.getDelegated() : withDrawBalance.getReleased())));
+
+    }
+
+    @Override
+    public void showsSelectDelegationsBtnVisibility(int visibility) {
+        delegateAmount.setCompoundDrawablesWithIntrinsicBounds(null, null, visibility == View.VISIBLE ? ContextCompat.getDrawable(this, R.drawable.icon_drop_down) : null, null);
     }
 
     @Override

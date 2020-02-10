@@ -9,9 +9,8 @@ import com.juzix.wallet.entity.WithDrawBalance;
 
 import org.web3j.tx.gas.GasProvider;
 
-import java.math.BigInteger;
-
 public class WithDrawContract {
+
     public interface View extends IView {
 
         DelegateItemInfo getDelegateDetailFromIntent();
@@ -46,6 +45,8 @@ public class WithDrawContract {
         void finishDelayed();
 
         void showWithdrawBalance(WithDrawBalance withDrawBalance);
+
+        void showsSelectDelegationsBtnVisibility(int visibility);
 
     }
 

@@ -75,33 +75,31 @@
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="jiang" />
 
+                <ImageView
+                    android:id="@+id/iv_detail_node_link"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:src="@drawable/icon_validators_detail_link"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_detail_node_name"
+                    app:layout_constraintLeft_toRightOf="@id/tv_detail_node_name"
+                    app:layout_constraintTop_toTopOf="@id/tv_detail_node_name" />
 
                 <com.juzix.wallet.component.widget.RoundedTextView
                     android:id="@+id/rtv_detail_node_state"
                     style="@style/Text.f9fbff.11"
                     android:layout_height="16dp"
-                    android:layout_marginLeft="6dp"
+                    android:layout_marginLeft="7dp"
                     android:paddingLeft="8dp"
                     android:paddingRight="8dp"
                     app:layout_constraintBaseline_toBaselineOf="@id/tv_detail_node_name"
-                    app:layout_constraintLeft_toRightOf="@id/tv_detail_node_name"
+                    app:layout_constraintLeft_toRightOf="@id/iv_detail_node_link"
                     app:layout_constraintTop_toTopOf="parent"
                     app:rtv_background_color="@color/color_00000000"
                     app:rtv_border_color="@color/color_f9fbff"
                     app:rtv_border_width="1dp"
                     app:rtv_corner_radius="3dp"
                     tools:text="active" />
-
-                <ImageView
-                    android:id="@+id/iv_detail_node_link"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="7dp"
-                    android:paddingRight="20dp"
-                    android:src="@drawable/icon_validators_detail_link"
-                    app:layout_constraintBottom_toBottomOf="@id/rtv_detail_node_state"
-                    app:layout_constraintLeft_toRightOf="@id/rtv_detail_node_state"
-                    app:layout_constraintTop_toTopOf="@id/rtv_detail_node_state" />
 
                 <TextView
                     android:id="@+id/tv_detail_node_address"
@@ -322,6 +320,19 @@
                 <TextView
                     style="@style/Text.61646e.14"
                     android:includeFontPadding="false"
+                    android:text="@string/website" />
+
+                <TextView
+                    android:id="@+id/tv_detail_website"
+                    style="@style/Text.105cfe.14"
+                    android:layout_marginTop="10dp"
+                    android:includeFontPadding="false"
+                    tools:text="- -" />
+
+                <TextView
+                    style="@style/Text.61646e.14"
+                    android:layout_marginTop="16dp"
+                    android:includeFontPadding="false"
                     android:text="@string/introduction" />
 
                 <TextView
@@ -331,18 +342,7 @@
                     android:includeFontPadding="false"
                     tools:text="- -" />
 
-                <TextView
-                    style="@style/Text.61646e.14"
-                    android:layout_marginTop="16dp"
-                    android:includeFontPadding="false"
-                    android:text="@string/website" />
 
-                <TextView
-                    android:id="@+id/tv_detail_website"
-                    style="@style/Text.105cfe.14"
-                    android:layout_marginTop="10dp"
-                    android:includeFontPadding="false"
-                    tools:text="- -" />
             </LinearLayout>
         </LinearLayout>
 
@@ -374,8 +374,8 @@
             style="@style/Text.ff6b00.12"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:drawablePadding="2dp"
             android:drawableLeft="@drawable/icon_no_delegate_tips"
+            android:drawablePadding="2dp"
             android:text="@string/validators_details_tips"
             android:visibility="visible" />
 

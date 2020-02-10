@@ -2,6 +2,7 @@ package com.juzix.wallet.component.ui.presenter;
 
 import android.annotation.SuppressLint;
 import android.text.TextUtils;
+import android.view.View;
 
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
@@ -163,6 +164,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
 
                         getView().showMinDelegationInfo(NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(minDelegation, "1E18")));
                         getView().showWithdrawBalance(mWithDrawBalance);
+                        getView().showsSelectDelegationsBtnVisibility(list != null && list.size() > 1 ? View.VISIBLE : View.GONE);
 
                         if (delegatedSum + releasedSum <= 0) {
                             getView().finishDelayed();
@@ -215,17 +217,19 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
 
     @Override
     public void showSelectDelegationsDialogFragment() {
-        SelectDelegationsDialogFragment.newInstance(list, list.indexOf(mWithDrawBalance))
-                .setOnInvalidDelegationsClickListener(new SelectDelegationsDialogFragment.OnInvalidDelegationsClickListener() {
-                    @Override
-                    public void onInvalidDelegationsClick(WithDrawBalance withDrawBalance) {
-                        mWithDrawBalance = withDrawBalance;
-                        if (isViewAttached()) {
-                            getView().showWithdrawBalance(mWithDrawBalance);
+        if (list != null && list.size() > 1) {
+            SelectDelegationsDialogFragment.newInstance(list, list.indexOf(mWithDrawBalance))
+                    .setOnInvalidDelegationsClickListener(new SelectDelegationsDialogFragment.OnInvalidDelegationsClickListener() {
+                        @Override
+                        public void onInvalidDelegationsClick(WithDrawBalance withDrawBalance) {
+                            mWithDrawBalance = withDrawBalance;
+                            if (isViewAttached()) {
+                                getView().showWithdrawBalance(mWithDrawBalance);
+                            }
                         }
-                    }
-                })
-                .show(currentActivity().getSupportFragmentManager(), "showSelectDelegationsDialogFragment");
+                    })
+                    .show(currentActivity().getSupportFragmentManager(), "showSelectDelegationsDialogFragment");
+        }
     }
 
     private String getFeeAmount(GasProvider gasProvider) {
