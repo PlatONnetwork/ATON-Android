@@ -48,7 +48,6 @@ public class SelectDelegationsDialogFragment extends BaseDialogFragment {
         return this;
     }
 
-
     public static SelectDelegationsDialogFragment newInstance(List<WithDrawBalance> withDrawBalanceList, int selectedPosition) {
         SelectDelegationsDialogFragment dialogFragment = new SelectDelegationsDialogFragment();
         Bundle bundle = new Bundle();

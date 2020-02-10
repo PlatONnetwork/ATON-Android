@@ -91,6 +91,12 @@ public class CommonHybridActivity extends BaseAgentWebActivity {
 
     private void init() {
 
+        boolean isFirstEnterUserAgreement = getIntent().getBooleanExtra(Constants.Extra.EXTRA_BOOLEAN, false);
+        mExitIv.setVisibility(isFirstEnterUserAgreement ? View.GONE : View.VISIBLE);
+        mBackIv.setVisibility(isFirstEnterUserAgreement ? View.GONE : View.VISIBLE);
+        mMoreIv.setVisibility(isFirstEnterUserAgreement ? View.GONE : View.VISIBLE);
+        mRefreshIv.setVisibility(isFirstEnterUserAgreement ? View.GONE : View.VISIBLE);
+
         mUrl = buildUrl(getIntent().getStringExtra(Constants.Extra.EXTRA_URL));
         mWebType = getIntent().getIntExtra(Constants.Extra.EXTRA_WEB_TYPE, WebType.WEB_TYPE_COMMON);
         layoutServiceAgreement = findViewById(R.id.layout_service_agreement);
@@ -269,6 +275,14 @@ public class CommonHybridActivity extends BaseAgentWebActivity {
         Intent intent = new Intent(context, CommonHybridActivity.class);
         intent.putExtra(Constants.Extra.EXTRA_URL, url);
         intent.putExtra(Constants.Extra.EXTRA_WEB_TYPE, webType);
+        context.startActivity(intent);
+    }
+
+    public static void actionStart(Context context, String url, @WebType int webType, boolean isFirstEnterUserAgreement) {
+        Intent intent = new Intent(context, CommonHybridActivity.class);
+        intent.putExtra(Constants.Extra.EXTRA_URL, url);
+        intent.putExtra(Constants.Extra.EXTRA_WEB_TYPE, webType);
+        intent.putExtra(Constants.Extra.EXTRA_BOOLEAN, isFirstEnterUserAgreement);
         context.startActivity(intent);
     }
 }

@@ -133,6 +133,28 @@ public class StringUtil {
     /**
      * 字符串数字显示按千分位显示
      */
+    public static String formatBalance(String price, int maxFractionDigits) {
+        DecimalFormat decimalFormat = new DecimalFormat();
+        decimalFormat.setMaximumFractionDigits(maxFractionDigits);//设置最大的小数位数
+        decimalFormat.setMinimumFractionDigits(2);
+        decimalFormat.setGroupingSize(3);//设置分组大小，也就是显示逗号的位置
+        return decimalFormat.format(new BigDecimal(NumberParserUtils.getPrettyNumber(price, maxFractionDigits)));
+    }
+
+    /**
+     * 字符串数字显示按千分位显示
+     */
+    public static String formatBalance(String price, int minimumFractionDigits,int maxFractionDigits) {
+        DecimalFormat decimalFormat = new DecimalFormat();
+        decimalFormat.setMaximumFractionDigits(maxFractionDigits);//设置最大的小数位数
+        decimalFormat.setMinimumFractionDigits(minimumFractionDigits);
+        decimalFormat.setGroupingSize(3);//设置分组大小，也就是显示逗号的位置
+        return decimalFormat.format(new BigDecimal(NumberParserUtils.getPrettyNumber(price, maxFractionDigits)));
+    }
+
+    /**
+     * 字符串数字显示按千分位显示
+     */
     public static String formatBalanceWithoutMinFraction(String price) {
         DecimalFormat decimalFormat = new DecimalFormat();
         decimalFormat.setMaximumFractionDigits(8);//设置最大的小数位数

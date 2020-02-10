@@ -4,8 +4,6 @@ import android.text.TextUtils;
 
 import com.juzhen.framework.util.NumberParserUtils;
 
-import org.web3j.utils.Convert;
-
 import java.math.BigDecimal;
 
 /**
@@ -111,5 +109,15 @@ public class AmountUtil {
      */
     public static String formatAmountText(String amount) {
         return TextUtils.isEmpty(amount) ? "— —" : StringUtil.formatBalance(BigDecimalUtil.div(amount, VALUE_1E18));
+    }
+
+    /**
+     * 格式化金额文本
+     *
+     * @param amount
+     * @return
+     */
+    public static String formatAmountText(String amount, int maxFractionDigits) {
+        return TextUtils.isEmpty(amount) ? "— —" : StringUtil.formatBalance(BigDecimalUtil.div(amount, VALUE_1E18,maxFractionDigits), maxFractionDigits);
     }
 }

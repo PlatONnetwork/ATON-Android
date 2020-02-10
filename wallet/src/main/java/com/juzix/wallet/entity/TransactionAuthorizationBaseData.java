@@ -283,18 +283,20 @@ public class TransactionAuthorizationBaseData implements Parcelable {
         }
     }
 
-    @JSONField(serialize = false,deserialize = false)
+    @JSONField(serialize = false, deserialize = false)
     public PlatOnFunction getPlatOnFunction() {
         if (functionType == FunctionType.DELEGATE_FUNC_TYPE) {
             return PlatOnFunctionFactory.createDelegateFunction(nodeId, StakingAmountType.getStakingAmountType(stakingAmountType), BigIntegerUtil.toBigInteger(amount));
         } else if (functionType == FunctionType.WITHDREW_DELEGATE_FUNC_TYPE) {
             return PlatOnFunctionFactory.createUnDelegateFunction(nodeId, BigIntegerUtil.toBigInteger(stakingBlockNum), BigIntegerUtil.toBigInteger(amount));
+        } else if (functionType == FunctionType.WITHDRAW_DELEGATE_REWARD_FUNC_TYPE) {
+            return new PlatOnFunction(FunctionType.WITHDRAW_DELEGATE_REWARD_FUNC_TYPE);
         } else {
             return PlatOnFunctionFactory.createTransferFunction();
         }
     }
 
-    @JSONField(serialize = false,deserialize = false)
+    @JSONField(serialize = false, deserialize = false)
     public String getGasUsed() {
         return BigDecimalUtil.mul(gasPrice, gasLimit).toPlainString();
     }

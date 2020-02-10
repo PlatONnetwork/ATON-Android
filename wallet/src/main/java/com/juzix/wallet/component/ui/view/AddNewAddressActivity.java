@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
@@ -27,7 +26,6 @@ import com.juzix.wallet.entity.Address;
 import com.juzix.wallet.utils.GZipUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.ToastUtil;
-import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import butterknife.BindString;
@@ -122,6 +120,24 @@ public class AddNewAddressActivity extends MVPBaseActivity<AddNewAddressPresente
         if (getIntent().hasExtra(Constants.Extra.EXTRA_SCAN_QRCODE_DATA)) {
             etAddress.setText(getIntent().getStringExtra(Constants.Extra.EXTRA_SCAN_QRCODE_DATA));
         }
+
+        etAddressName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    mPresenter.checkAddressName(etAddressName.getText().toString().trim());
+                }
+            }
+        });
+
+        etAddress.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    mPresenter.checkAddress(etAddress.getText().toString().trim());
+                }
+            }
+        });
     }
 
     @Override

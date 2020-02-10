@@ -46,6 +46,9 @@
             android:background="@drawable/bg_edittext_underline"
             android:gravity="center_vertical|left"
             android:hint="@string/input_address_name"
+            android:imeOptions="actionNext"
+            android:nextFocusForward="@+id/et_address"
+            android:singleLine="true"
             android:textColorHint="@color/color_b6bbd0" />
 
         <TextView
@@ -76,6 +79,8 @@
             android:ellipsize="end"
             android:gravity="center_vertical|left"
             android:hint="@string/addressOfWallet"
+            android:imeOptions="actionNext"
+            android:nextFocusForward="@+id/et_address_name"
             android:singleLine="true"
             android:textColorHint="@color/color_b6bbd0" />
 
