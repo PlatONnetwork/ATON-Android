@@ -222,10 +222,31 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                     .setOnInvalidDelegationsClickListener(new SelectDelegationsDialogFragment.OnInvalidDelegationsClickListener() {
                         @Override
                         public void onInvalidDelegationsClick(WithDrawBalance withDrawBalance) {
-                            mWithDrawBalance = withDrawBalance;
-                            if (isViewAttached()) {
-                                getView().showWithdrawBalance(mWithDrawBalance);
-                            }
+                            ServerUtils.getCommonApi().getGasProvider(ApiRequestBody.newBuilder()
+                                    .put("from", mDelegateDetail.getWalletAddress())
+                                    .put("txType", FunctionType.WITHDREW_DELEGATE_FUNC_TYPE)
+                                    .put("nodeId", mDelegateDetail.getNodeId())
+                                    .put("stakingBlockNum", withDrawBalance.getStakingBlockNum())
+                                    .build())
+                                    .compose(RxUtils.getSingleSchedulerTransformer())
+                                    .compose(bindToLifecycle())
+                                    .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
+                                    .subscribe(new ApiSingleObserver<com.juzix.wallet.entity.GasProvider>() {
+                                        @Override
+                                        public void onApiSuccess(com.juzix.wallet.entity.GasProvider gasProvider) {
+                                            if (isViewAttached()) {
+                                                mWithDrawBalance = withDrawBalance;
+                                                mGasProvider = gasProvider.toSdkGasProvider();
+                                                getView().showGas(mGasProvider);
+                                                getView().showWithdrawBalance(mWithDrawBalance);
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onApiFailure(ApiResponse response) {
+                                            super.onApiFailure(response);
+                                        }
+                                    });
                         }
                     })
                     .show(currentActivity().getSupportFragmentManager(), "showSelectDelegationsDialogFragment");

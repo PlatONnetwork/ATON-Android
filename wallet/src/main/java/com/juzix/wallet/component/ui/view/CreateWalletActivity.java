@@ -2,6 +2,7 @@ package com.juzix.wallet.component.ui.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
@@ -94,7 +95,9 @@ public class CreateWalletActivity extends MVPBaseActivity<CreateWalletPresenter>
         mSbtnCreate.setOnClickListener(this);
         mEtName.addTextChangedListener(this);
         mEtPassword.addTextChangedListener(this);
+        mEtPassword.setTypeface(Typeface.DEFAULT);
         mEtRepeatPassword.addTextChangedListener(this);
+        mEtRepeatPassword.setTypeface(Typeface.DEFAULT);
         mIvPasswordEyes.setOnClickListener(this);
         mIvRepeatPasswordEyes.setOnClickListener(this);
         mEtName.setOnFocusChangeListener(this);

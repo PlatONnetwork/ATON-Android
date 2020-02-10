@@ -450,6 +450,7 @@
     <string name="exit_validator">ExitValidator</string>
     <string name="delegate">Delegate</string>
     <string name="undelegate">Undelegate</string>
+    <string name="withdraw">Withdraw</string>
     <string name="create_proposal">CreateProposal</string>
     <string name="voting_proposal">VotingProposal</string>
     <string name="declare_version">DeclareVersion</string>

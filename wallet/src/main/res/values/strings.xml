@@ -523,6 +523,7 @@
     <string name="all_record">全部</string>
     <string name="delegate">委托</string>
     <string name="undelegate">赎回委托</string>
+    <string name="withdraw">赎回委托</string>
     <string name="no_record">暂无记录</string>
     <string name="delegate_node_detail">委托节点详情</string>
     <string name="locked_delegate">已锁定委托</string>
