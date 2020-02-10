@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -106,6 +107,8 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     View v_tips;
     @BindView(R.id.tv_delegate_tips)
     TextView tvDelegateTips;
+    @BindView(R.id.iv_drop_down)
+    ImageView dropDownIv;
 
     private Unbinder unbinder;
     private PopupWindow mPopupWindow;
@@ -403,6 +406,12 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
             withdrawAmount.setText(AmountUtil.formatAmountText(withDrawBalance.getReleased()));
         }
         delegateAmount.setText(string(R.string.amount_with_unit, AmountUtil.formatAmountText(withDrawBalance.isDelegated() ? withDrawBalance.getDelegated() : withDrawBalance.getReleased())));
+
+    }
+
+    @Override
+    public void showsSelectDelegationsBtnVisibility(int visibility) {
+        dropDownIv.setVisibility(visibility);
     }
 
     @Override

@@ -130,6 +130,10 @@ public class StringUtil {
         return decimalFormat.format(new BigDecimal(NumberParserUtils.getPrettyNumber(price, 8)));
     }
 
+    public static String formatBalanceWithoutFractionDigits(String price) {
+        return formatBalance(price, 0, 0);
+    }
+
     /**
      * 字符串数字显示按千分位显示
      */
@@ -144,7 +148,7 @@ public class StringUtil {
     /**
      * 字符串数字显示按千分位显示
      */
-    public static String formatBalance(String price, int minimumFractionDigits,int maxFractionDigits) {
+    public static String formatBalance(String price, int minimumFractionDigits, int maxFractionDigits) {
         DecimalFormat decimalFormat = new DecimalFormat();
         decimalFormat.setMaximumFractionDigits(maxFractionDigits);//设置最大的小数位数
         decimalFormat.setMinimumFractionDigits(minimumFractionDigits);

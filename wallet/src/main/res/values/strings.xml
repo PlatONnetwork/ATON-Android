@@ -773,7 +773,7 @@
     <!-- 全部委托提示-->
     <string name="msg_delegate_all_amount_tips">建议保留少量余额，以支持委托赎回和奖励领取操作。</string>
 
-    <string name="action_delegate_all_amount">Delegate All</string>
+    <string name="action_delegate_all_amount">全部委托</string>
     <string name="action_keep_delegate_balance">保留余额(0.1LAT)</string>
     <string name="title_select_delegations">选择赎回项</string>
     <string name="msg_invalid_delegations">待赎回委托(第%1$d份)</string>
