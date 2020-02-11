@@ -222,7 +222,7 @@
                 android:layout_height="match_parent"
                 android:drawableLeft="@drawable/icon_detail_undelegate"
                 android:drawablePadding="4dp"
-                android:text="@string/undelegate"
+                android:text="@string/withdraw"
                 android:textStyle="bold"
                 app:layout_constraintLeft_toRightOf="@id/view_divider"
                 app:layout_constraintRight_toRightOf="parent" />

@@ -25,9 +25,9 @@ import com.juzix.wallet.entity.TransferType;
 import com.juzix.wallet.event.Event;
 import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.AddressFormatUtil;
+import com.juzix.wallet.utils.AmountUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.CommonUtil;
-import com.juzix.wallet.utils.StringUtil;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -129,13 +129,13 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
         @TransferType int transferType = transaction.getTransferType(queryAddressList);
 
         if (transferType == TransferType.TRANSFER || isValueZero) {
-            tvAmount.setText(transaction.getShowValue());
+            tvAmount.setText(AmountUtil.formatAmountText(transaction.getValue()));
             tvAmount.setTextColor(ContextCompat.getColor(this, R.color.color_b6bbd0));
         } else if (transferType == TransferType.SEND && transactionType != TransactionType.UNDELEGATE && transactionType != TransactionType.EXIT_VALIDATOR && transactionType != TransactionType.CLAIM_REWARDS) {
-            tvAmount.setText(String.format("%s%s", "-", StringUtil.formatBalance(transaction.getShowValue())));
+            tvAmount.setText(String.format("%s%s", "-", AmountUtil.formatAmountText(transaction.getValue())));
             tvAmount.setTextColor(ContextCompat.getColor(this, R.color.color_ff3b3b));
         } else {
-            tvAmount.setText(String.format("%s%s", "+", StringUtil.formatBalance(transaction.getShowValue())));
+            tvAmount.setText(String.format("%s%s", "+", AmountUtil.formatAmountText(transaction.getValue())));
             tvAmount.setTextColor(ContextCompat.getColor(this, R.color.color_19a20e));
         }
 

@@ -2,6 +2,7 @@ package com.juzix.wallet.component.ui.view;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -209,6 +210,7 @@ public class ImportKeystoreFragment extends MVPBaseFragment<ImportKeystorePresen
     }
 
     private void showPassword() {
+        mEtPassword.setTypeface(Typeface.DEFAULT);
         if (mShowPassword) {
             // 显示密码
             mEtPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
