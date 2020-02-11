@@ -581,6 +581,8 @@
     <string name="withdraw_undelegating">Undelegating</string>
     <string name="withdraw_pending">Pending</string>
     <string name="withdraw_success">Success</string>
+    <string name="withdraw_delegate_reward_success">Success</string>
+    <string name="withdraw_delegate_reward_failed">Failed</string>
     <string name="withdraw_failed">Failed</string>
 
     <!--验证节点状态-->

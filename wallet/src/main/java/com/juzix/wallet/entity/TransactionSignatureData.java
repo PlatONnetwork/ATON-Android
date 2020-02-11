@@ -24,9 +24,8 @@ public class TransactionSignatureData implements Parcelable {
 
     private long timestamp;
 
-    @JSONField(name = "nn")
     private String nodeName;
-    @JSONField(name = "rv")
+    
     private String claimRewardAmount;
 
     public TransactionSignatureData() {
