@@ -30,10 +30,8 @@ import com.juzix.wallet.utils.RxUtils;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -103,7 +101,7 @@ public class ReceiveTransactionFragment extends MVPBaseFragment<ReceiveTransacti
     private String getNodeName(Node node) {
         if (BuildConfig.URL_MAIN_SERVER.equals(node.getNodeAddress()) || BuildConfig.URL_TEST_MAIN_SERVER.equals(node.getNodeAddress())) {
             return string(R.string.newbaleyworld);
-        } else if (TextUtils.equals(BuildConfig.URL_TEST_SERVER, node.getNodeAddress())) {
+        } else if (TextUtils.equals(BuildConfig.URL_TEST_SERVER, node.getNodeAddress()) || TextUtils.equals(BuildConfig.URL_TEST_OUTER_SERVER, node.getNodeAddress())) {
             return string(R.string.test_net);
         } else if (TextUtils.equals(BuildConfig.URL_DEVELOP_SERVER, node.getNodeAddress())) {
             return string(R.string.develop_net);

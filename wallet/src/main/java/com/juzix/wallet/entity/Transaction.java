@@ -584,7 +584,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
             case EXIT_VALIDATOR:
                 return NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(stakingValue, "1E18"));
             case UNDELEGATE:
-                return NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(value, "1E18"));
+                return NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(unDelegation, "1E18"));
             default:
                 return NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(value, "1E18"));
 
