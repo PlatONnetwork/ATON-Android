@@ -13,6 +13,11 @@ public class GasProvider {
     public GasProvider() {
     }
 
+    public GasProvider(String gasLimit, String gasPrice) {
+        this.gasLimit = gasLimit;
+        this.gasPrice = gasPrice;
+    }
+
     public String getGasLimit() {
         return gasLimit;
     }

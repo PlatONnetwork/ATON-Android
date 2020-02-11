@@ -7,8 +7,11 @@ import android.text.TextUtils;
 
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.BigIntegerUtil;
 
-import java.util.Comparator;
+import org.web3j.tx.gas.GasProvider;
+
+import java.math.BigInteger;
 
 public class WithDrawBalance implements Parcelable {
 
@@ -27,6 +30,9 @@ public class WithDrawBalance implements Parcelable {
      */
     private String delegated;
 
+    private String gasLimit;
+
+    private String gasPrice;
 
     public WithDrawBalance() {
 
@@ -36,6 +42,8 @@ public class WithDrawBalance implements Parcelable {
         released = in.readString();
         stakingBlockNum = in.readString();
         delegated = in.readString();
+        gasLimit = in.readString();
+        gasPrice = in.readString();
     }
 
     @Override
@@ -43,6 +51,8 @@ public class WithDrawBalance implements Parcelable {
         dest.writeString(released);
         dest.writeString(stakingBlockNum);
         dest.writeString(delegated);
+        dest.writeString(gasLimit);
+        dest.writeString(gasPrice);
     }
 
     @Override
@@ -98,11 +108,29 @@ public class WithDrawBalance implements Parcelable {
         return BigDecimalUtil.isBiggerThanZero(delegated);
     }
 
+    public String getGasLimit() {
+        return gasLimit;
+    }
+
+    public void setGasLimit(String gasLimit) {
+        this.gasLimit = gasLimit;
+    }
+
+    public String getGasPrice() {
+        return gasPrice;
+    }
+
+    public void setGasPrice(String gasPrice) {
+        this.gasPrice = gasPrice;
+    }
+
     @Override
     public int hashCode() {
         int result = TextUtils.isEmpty(released) ? 0 : released.hashCode();
         result = 31 * result + (TextUtils.isEmpty(stakingBlockNum) ? 0 : stakingBlockNum.hashCode());
         result = 31 * result + (TextUtils.isEmpty(delegated) ? 0 : delegated.hashCode());
+        result = 31 * result + (TextUtils.isEmpty(gasLimit) ? 0 : gasLimit.hashCode());
+        result = 31 * result + (TextUtils.isEmpty(gasPrice) ? 0 : gasPrice.hashCode());
         return result;
     }
 
@@ -114,8 +142,27 @@ public class WithDrawBalance implements Parcelable {
 
         if (obj.getClass() == getClass()) {
             WithDrawBalance withDrawBalance = (WithDrawBalance) obj;
-            return TextUtils.equals(withDrawBalance.delegated, delegated) && TextUtils.equals(withDrawBalance.released, released) && TextUtils.equals(withDrawBalance.stakingBlockNum, stakingBlockNum);
+            return TextUtils.equals(withDrawBalance.delegated, delegated)
+                    && TextUtils.equals(withDrawBalance.released, released)
+                    && TextUtils.equals(withDrawBalance.stakingBlockNum, stakingBlockNum)
+                    && TextUtils.equals(withDrawBalance.gasLimit, gasLimit)
+                    && TextUtils.equals(withDrawBalance.gasPrice, gasPrice);
         }
         return super.equals(obj);
+    }
+
+    public org.web3j.tx.gas.GasProvider getGasProvider() {
+        
+        return new GasProvider() {
+            @Override
+            public BigInteger getGasPrice() {
+                return BigIntegerUtil.toBigInteger(gasPrice);
+            }
+
+            @Override
+            public BigInteger getGasLimit() {
+                return BigIntegerUtil.toBigInteger(gasLimit);
+            }
+        };
     }
 }

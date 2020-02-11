@@ -39,7 +39,6 @@ import com.juzix.wallet.utils.ToastUtil;
 import org.web3j.crypto.Credentials;
 import org.web3j.platon.ContractAddress;
 import org.web3j.platon.FunctionType;
-import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.tx.gas.GasProvider;
 
 import java.math.BigInteger;
@@ -49,12 +48,7 @@ import java.util.concurrent.Callable;
 
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
-import io.reactivex.SingleSource;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
-import retrofit2.Response;
 
 public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> implements WithDrawContract.Presenter {
 
@@ -65,7 +59,6 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     private WithDrawBalance mWithDrawBalance = null;
 
     private String feeAmount;
-    private GasProvider mGasProvider = new DefaultGasProvider();
 
     private String minDelegation = AppConfigManager.getInstance().getMinDelegation();
 
@@ -142,57 +135,41 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(bindToLifecycle())
                 .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
-                .map(new Function<Response<ApiResponse<DelegationValue>>, DelegationValue>() {
+                .subscribe(new ApiSingleObserver<DelegationValue>() {
+
                     @Override
-                    public DelegationValue apply(Response<ApiResponse<DelegationValue>> apiResponseResponse) throws Exception {
-                        return apiResponseResponse != null && apiResponseResponse.isSuccessful() ? apiResponseResponse.body().getData() : null;
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSuccess(new Consumer<DelegationValue>() {
-                    @Override
-                    public void accept(DelegationValue delegationValue) throws Exception {
-
-                        list = delegationValue.getWithDrawBalanceList();
-
-                        mWithDrawBalance = delegationValue.getDefaultShowWithDrawBalance();
-
-                        minDelegation = delegationValue.getMinDelegation();
-
-                        double releasedSum = delegationValue.getReleasedSumAmount(); //待赎回
-                        double delegatedSum = delegationValue.getDelegatedSumAmount();//已委托
-
-                        getView().showMinDelegationInfo(NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(minDelegation, "1E18")));
-                        getView().showWithdrawBalance(mWithDrawBalance);
-                        getView().showsSelectDelegationsBtnVisibility(list != null && list.size() > 1 ? View.VISIBLE : View.GONE);
-
-                        if (delegatedSum + releasedSum <= 0) {
-                            getView().finishDelayed();
-                        }
-                    }
-                })
-                .observeOn(Schedulers.io())
-                .flatMap(new Function<DelegationValue, SingleSource<Response<ApiResponse<com.juzix.wallet.entity.GasProvider>>>>() {
-                    @Override
-                    public SingleSource<Response<ApiResponse<com.juzix.wallet.entity.GasProvider>>> apply(DelegationValue delegationValue) throws Exception {
-                        return ServerUtils.getCommonApi().getGasProvider(ApiRequestBody.newBuilder()
-                                .put("from", mDelegateDetail.getWalletAddress())
-                                .put("txType", FunctionType.WITHDREW_DELEGATE_FUNC_TYPE)
-                                .put("nodeId", mDelegateDetail.getNodeId())
-                                .put("stakingBlockNum", delegationValue.getWithDrawBalanceList().get(0).getStakingBlockNum())
-                                .build());
-                    }
-                })
-                .subscribe(new ApiSingleObserver<com.juzix.wallet.entity.GasProvider>() {
-                    @Override
-                    public void onApiSuccess(com.juzix.wallet.entity.GasProvider gasProvider) {
+                    public void onApiSuccess(DelegationValue delegationValue) {
                         if (isViewAttached()) {
-                            mGasProvider = gasProvider.toSdkGasProvider();
-                            getView().showGas(mGasProvider);
+
+                            list = delegationValue.getWithDrawBalanceList();
+
+                            mWithDrawBalance = delegationValue.getDefaultShowWithDrawBalance();
+
+                            minDelegation = delegationValue.getMinDelegation();
+
+                            if (mWithDrawBalance != null) {
+
+                                getView().showGas(mWithDrawBalance.getGasProvider());
+
+                                double releasedSum = delegationValue.getReleasedSumAmount(); //待赎回
+                                double delegatedSum = delegationValue.getDelegatedSumAmount();//已委托
+
+                                getView().showMinDelegationInfo(NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(minDelegation, "1E18")));
+                                getView().showWithdrawBalance(mWithDrawBalance);
+                                getView().showsSelectDelegationsBtnVisibility(list != null && list.size() > 1 ? View.VISIBLE : View.GONE);
+
+                                if (delegatedSum + releasedSum <= 0) {
+                                    getView().finishDelayed();
+                                }
+                            }
                         }
                     }
-                })
-        ;
+
+                    @Override
+                    public void onApiFailure(ApiResponse response) {
+                        super.onApiFailure(response);
+                    }
+                });
     }
 
 
@@ -207,11 +184,11 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
             return;
         }
 
-        if (mDelegateDetail == null || list.isEmpty()) {
+        if (mDelegateDetail == null || list.isEmpty() || mWithDrawBalance == null) {
             return;
         }
 
-        feeAmount = getFeeAmount(mGasProvider);
+        feeAmount = getFeeAmount(mWithDrawBalance.getGasProvider());
         getView().showWithDrawGasPrice(feeAmount);
     }
 
@@ -222,31 +199,9 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                     .setOnInvalidDelegationsClickListener(new SelectDelegationsDialogFragment.OnInvalidDelegationsClickListener() {
                         @Override
                         public void onInvalidDelegationsClick(WithDrawBalance withDrawBalance) {
-                            ServerUtils.getCommonApi().getGasProvider(ApiRequestBody.newBuilder()
-                                    .put("from", mDelegateDetail.getWalletAddress())
-                                    .put("txType", FunctionType.WITHDREW_DELEGATE_FUNC_TYPE)
-                                    .put("nodeId", mDelegateDetail.getNodeId())
-                                    .put("stakingBlockNum", withDrawBalance.getStakingBlockNum())
-                                    .build())
-                                    .compose(RxUtils.getSingleSchedulerTransformer())
-                                    .compose(bindToLifecycle())
-                                    .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
-                                    .subscribe(new ApiSingleObserver<com.juzix.wallet.entity.GasProvider>() {
-                                        @Override
-                                        public void onApiSuccess(com.juzix.wallet.entity.GasProvider gasProvider) {
-                                            if (isViewAttached()) {
-                                                mWithDrawBalance = withDrawBalance;
-                                                mGasProvider = gasProvider.toSdkGasProvider();
-                                                getView().showGas(mGasProvider);
-                                                getView().showWithdrawBalance(mWithDrawBalance);
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onApiFailure(ApiResponse response) {
-                                            super.onApiFailure(response);
-                                        }
-                                    });
+                            mWithDrawBalance = withDrawBalance;
+                            getView().showGas(mWithDrawBalance.getGasProvider());
+                            getView().showWithdrawBalance(mWithDrawBalance);
                         }
                     })
                     .show(currentActivity().getSupportFragmentManager(), "showSelectDelegationsDialogFragment");
@@ -271,15 +226,17 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                 return;
             }
 
+            GasProvider gasProvider = mWithDrawBalance.getGasProvider();
+
             if (mWallet.isObservedWallet()) {
-                showTransactionAuthorizationDialogFragment(mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), getView().getInputAmount(), mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, mGasProvider.getGasLimit().toString(10), mGasProvider.getGasPrice().toString(10));
+                showTransactionAuthorizationDialogFragment(mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), getView().getInputAmount(), mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, gasProvider.getGasLimit().toString(10), gasProvider.getGasPrice().toString(10));
             } else {
                 InputWalletPasswordDialogFragment
                         .newInstance(mWallet)
                         .setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
                             @Override
                             public void onWalletPasswordCorrect(Credentials credentials) {
-                                withdraw(credentials, mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), mWithDrawBalance.getStakingBlockNum(), getView().getInputAmount());
+                                withdraw(credentials, gasProvider, mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), mWithDrawBalance.getStakingBlockNum(), getView().getInputAmount());
                             }
                         })
                         .show(currentActivity().getSupportFragmentManager(), "inputWalletPasssword");
@@ -287,10 +244,19 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
         }
     }
 
-    //操作赎回
+    /**
+     * 操作赎回
+     *
+     * @param credentials
+     * @param gasProvider
+     * @param nodeId
+     * @param nodeName
+     * @param blockNum
+     * @param withdrawAmount
+     */
     @SuppressLint("CheckResult")
-    public void withdraw(Credentials credentials, String nodeId, String nodeName, String blockNum, String withdrawAmount) {
-        DelegateManager.getInstance().withdrawDelegate(credentials, ContractAddress.DELEGATE_CONTRACT_ADDRESS, nodeId, nodeName, feeAmount, blockNum, withdrawAmount, String.valueOf(TransactionType.UNDELEGATE.getTxTypeValue()), mGasProvider)
+    public void withdraw(Credentials credentials, GasProvider gasProvider, String nodeId, String nodeName, String blockNum, String withdrawAmount) {
+        DelegateManager.getInstance().withdrawDelegate(credentials, ContractAddress.DELEGATE_CONTRACT_ADDRESS, nodeId, nodeName, feeAmount, blockNum, withdrawAmount, String.valueOf(TransactionType.UNDELEGATE.getTxTypeValue()), gasProvider)
                 .compose(RxUtils.getSchedulerTransformer())
                 .compose(RxUtils.getLoadingTransformer(currentActivity()))
                 .subscribe(new CustomObserver<Transaction>() {
