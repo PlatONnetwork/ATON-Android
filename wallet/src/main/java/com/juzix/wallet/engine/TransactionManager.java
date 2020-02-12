@@ -15,6 +15,7 @@ import com.juzix.wallet.entity.TransactionStatus;
 import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.event.EventPublisher;
+import com.juzix.wallet.utils.BigDecimalUtil;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.RawTransaction;
@@ -211,6 +212,10 @@ public class TransactionManager {
                         } else {
                             TransactionReceipt transactionReceipt = getTransactionReceipt(tempTransaction.getHash());
                             tempTransaction.setTxReceiptStatus(transactionReceipt.getStatus());
+                            tempTransaction.setTotalReward(transactionReceipt.getTotalReward());
+                            if (tempTransaction.getTxType() == TransactionType.UNDELEGATE) {
+                                tempTransaction.setValue(BigDecimalUtil.add(transaction.getUnDelegation(), transactionReceipt.getTotalReward()).toPlainString());
+                            }
                         }
                         return tempTransaction;
                     }
