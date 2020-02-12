@@ -34,10 +34,8 @@
                 android:background="@color/color_f0f1f5"
                 android:gravity="left|top"
                 android:hint="@string/inputPrivateKeyTips"
-                android:imeOptions="actionNext"
                 android:minHeight="130dp"
                 android:padding="10dp"
-                android:singleLine="true"
                 android:textColor="@color/color_000000"
                 android:textColorHint="@color/color_b6bbd0"
                 android:textSize="13sp" />
