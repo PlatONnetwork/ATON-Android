@@ -335,7 +335,6 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     @SuppressLint("CheckResult")
     private void sendTransaction(String toAddress, String transferAmount) {
 
-
         TransactionRecordEntity transactionRecordEntity = new TransactionRecordEntity(System.currentTimeMillis(), walletEntity.getPrefixAddress(), toAddress, transferAmount,NodeManager.getInstance().getChainId());
 
         if (AppSettings.getInstance().getResendReminder()) {

@@ -3,6 +3,8 @@ package com.juzix.wallet.component.ui.view;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +21,7 @@ import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.MVPBaseFragment;
 import com.juzix.wallet.component.ui.contract.ReceiveTransationContract;
 import com.juzix.wallet.component.ui.presenter.ReceiveTransactionPresenter;
+import com.juzix.wallet.component.widget.CustomImageSpan;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.entity.Node;
@@ -75,7 +78,7 @@ public class ReceiveTransactionFragment extends MVPBaseFragment<ReceiveTransacti
 
     private void initViews() {
 
-        tvNetworkTips.setText(string(R.string.msg_network_tips, getNodeName(NodeManager.getInstance().getCurNode())));
+        tvNetworkTips.setText(buildNetworkTipsText());
 
         RxView.clicks(btnSave)
                 .compose(RxUtils.getClickTransformer())
@@ -96,6 +99,13 @@ public class ReceiveTransactionFragment extends MVPBaseFragment<ReceiveTransacti
                         mPresenter.copy();
                     }
                 });
+    }
+
+    private SpannableStringBuilder buildNetworkTipsText() {
+        String text = "  " + string(R.string.msg_network_tips, getNodeName(NodeManager.getInstance().getCurNode()));
+        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(text);
+        spannableStringBuilder.setSpan(new CustomImageSpan(getContext(), R.drawable.icon_no_delegate_tips), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spannableStringBuilder;
     }
 
     private String getNodeName(Node node) {
