@@ -37,6 +37,7 @@
                     style="@style/Text.ff6b00.12"
                     android:layout_gravity="center"
                     android:layout_marginBottom="12dp"
+                    android:includeFontPadding="false"
                     android:maxLines="2"
                     tools:text="You are on the xxxx Network." />
 
