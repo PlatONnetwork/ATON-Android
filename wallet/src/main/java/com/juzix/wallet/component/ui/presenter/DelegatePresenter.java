@@ -82,15 +82,30 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                 .setOnItemClickListener(new DelegateSelectWalletDialogFragment.OnItemClickListener() {
                     @Override
                     public void onItemClick(Wallet wallet) {
-                        if (isViewAttached()) {
-                            mWallet = wallet;
-                            if (mWallet != null) {
-                                getView().showSelectedWalletInfo(mWallet);
-                            }
-                            if (mDelegateDetail != null && mWallet != null) {
-                                checkIsCanDelegate(mWallet.getPrefixAddress(), mDelegateDetail.getNodeId()); //0.7.3修改
-                            }
-                        }
+                        ServerUtils.getCommonApi().getGasProvider(ApiRequestBody.newBuilder()
+                                .put("from", wallet.getPrefixAddress())
+                                .put("txType", FunctionType.DELEGATE_FUNC_TYPE)
+                                .put("nodeId", mDelegateDetail.getNodeId())
+                                .build())
+                                .compose(RxUtils.bindToLifecycle(getView()))
+                                .compose(RxUtils.getSingleSchedulerTransformer())
+                                .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
+                                .subscribe(new ApiSingleObserver<com.juzix.wallet.entity.GasProvider>() {
+                                    @Override
+                                    public void onApiSuccess(com.juzix.wallet.entity.GasProvider gasProvider) {
+                                        if (isViewAttached()) {
+                                            mWallet = wallet;
+                                            getView().showSelectedWalletInfo(mWallet);
+                                            getView().clearInputDelegateAmount();
+                                            if (mDelegateDetail != null && mWallet != null) {
+                                                checkIsCanDelegate(mWallet.getPrefixAddress(), mDelegateDetail.getNodeId()); //0.7.3修改
+                                            }
+                                            mGasProvider = gasProvider.toSdkGasProvider();
+                                            getView().showFeeAmount(BigIntegerUtil.mul(mGasProvider.getGasLimit(), mGasProvider.getGasPrice()));
+
+                                        }
+                                    }
+                                });
                     }
                 })
                 .show(currentActivity().getSupportFragmentManager(), "showSelectWalletDialog");

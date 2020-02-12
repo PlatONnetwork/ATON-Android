@@ -520,6 +520,11 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     }
 
     @Override
+    public void clearInputDelegateAmount() {
+        et_amount.setText("");
+    }
+
+    @Override
     protected boolean immersiveBarViewEnabled() {
         return true;
     }

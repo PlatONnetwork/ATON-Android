@@ -144,6 +144,10 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
 
         mValidatorsAdapter = new ValidatorsAdapter();
         validatorsList.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false));
+        validatorsList.setFocusableInTouchMode(false);
+        validatorsList.setFocusable(false);
+        validatorsList.setHasFixedSize(true);
+
         validatorsList.setAdapter(mValidatorsAdapter);
 
         RxRadioGroup

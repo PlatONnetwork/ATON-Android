@@ -2,9 +2,8 @@ package com.juzix.wallet.component.ui.contract;
 
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
-import com.juzix.wallet.entity.DelegateItemInfo;
-import com.juzix.wallet.entity.DelegateNodeDetail;
 import com.juzix.wallet.entity.DelegateHandle;
+import com.juzix.wallet.entity.DelegateItemInfo;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.Wallet;
 
@@ -47,6 +46,11 @@ public class DelegateContract {
          * 获取手续费
          */
         String getFeeAmount();
+
+        /**
+         * 清除输入的委托金额
+         */
+        void clearInputDelegateAmount();
     }
 
     public interface Presenter extends IPresenter<View> {

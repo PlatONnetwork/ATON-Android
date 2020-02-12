@@ -607,6 +607,8 @@
     <string name="withdraw_pending">确认中</string>
     <string name="withdraw_success">赎回成功</string>
     <string name="withdraw_failed">赎回失败</string>
+    <string name="withdraw_delegate_reward_success">领取奖励成功</string>
+    <string name="withdraw_delegate_reward_failed">领取奖励失败</string>
 
     <!--验证节点状态-->
     <string name="validators_state_active">活跃中</string>

@@ -250,6 +250,8 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
                             ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.delegate_success));
                         } else if (transactionSignatureData.getFunctionType() == FunctionType.WITHDREW_DELEGATE_FUNC_TYPE) {
                             ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.withdraw_success));
+                        } else if (transactionSignatureData.getFunctionType() == FunctionType.WITHDRAW_DELEGATE_REWARD_FUNC_TYPE) {
+                            ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.withdraw_delegate_reward_success));
                         }
                         afterSendTransactionSucceed(platonSendTransaction, transactionAuthorizationData);
                     }
@@ -265,6 +267,8 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
                             ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.delegate_failed));
                         } else if (transactionSignatureData.getFunctionType() == FunctionType.WITHDREW_DELEGATE_FUNC_TYPE) {
                             ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.withdraw_failed));
+                        } else if (transactionSignatureData.getFunctionType() == FunctionType.WITHDRAW_DELEGATE_REWARD_FUNC_TYPE) {
+                            ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.withdraw_delegate_reward_failed));
                         }
                     }
                 });
@@ -376,19 +380,27 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
             //跳转至交易记录页签
             transaction.setTxType(String.valueOf(TransactionType.TRANSFER.getTxTypeValue()));
             afterTransferSucceed(transaction);
-        } else if (transactionSignatureData.getFunctionType() == FunctionType.DELEGATE_FUNC_TYPE) {
-            transaction.setTxType(String.valueOf(TransactionType.DELEGATE.getTxTypeValue()));
-            TransactionManager.getInstance().getTransactionByLoop(transaction);
-            if (sendTransactionSucceedListener != null) {
-                sendTransactionSucceedListener.onSendTransactionSucceed(transaction);
-            }
-        } else if (transactionSignatureData.getFunctionType() == FunctionType.WITHDREW_DELEGATE_FUNC_TYPE) {
-            transaction.setTxType(String.valueOf(TransactionType.UNDELEGATE.getTxTypeValue()));
+        } else {
+            transaction.setTxType(getTxTypeByFunctionType(transactionSignatureData.getFunctionType()));
             TransactionManager.getInstance().getTransactionByLoop(transaction);
             if (sendTransactionSucceedListener != null) {
                 sendTransactionSucceedListener.onSendTransactionSucceed(transaction);
             }
         }
+    }
+
+    private String getTxTypeByFunctionType(int functionType) {
+        switch (functionType) {
+            case FunctionType.DELEGATE_FUNC_TYPE:
+                return String.valueOf(TransactionType.DELEGATE.getTxTypeValue());
+            case FunctionType.WITHDREW_DELEGATE_FUNC_TYPE:
+                return String.valueOf(TransactionType.UNDELEGATE.getTxTypeValue());
+            case FunctionType.WITHDRAW_DELEGATE_REWARD_FUNC_TYPE:
+                return String.valueOf(TransactionType.CLAIM_REWARDS.getTxTypeValue());
+            default:
+                return String.valueOf(TransactionType.UNKNOWN.getTxTypeValue());
+        }
+
     }
 
     private void afterTransferSucceed(Transaction transaction) {
@@ -428,19 +440,22 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
 
     private Transaction buildTransaction(TransactionAuthorizationData transactionAuthorizationData, String hash, String signedMessage) {
         RawTransaction rawTransaction = TransactionDecoder.decode(signedMessage);
+        String amount = transactionAuthorizationData.getTransactionAuthorizationDetail().getAmount();
         return new Transaction.Builder()
                 .hash(hash)
                 .from(transactionSignatureData.getFrom())
                 .to(rawTransaction.getTo())
                 .senderWalletName(getSenderName(transactionSignatureData.getFrom()))
-                .value(rawTransaction.getValue().toString(10))
+                .value(amount)
+                .unDelegation(amount)
                 .chainId(transactionSignatureData.getChainId())
                 .timestamp(System.currentTimeMillis())
                 .txReceiptStatus(TransactionStatus.PENDING.ordinal())
                 .actualTxCost(BigIntegerUtil.mul(rawTransaction.getGasLimit(), rawTransaction.getGasPrice()))
-                .unDelegation(rawTransaction.getValue().toString(10))
+                .unDelegation(amount)
                 .nodeName(transactionSignatureData.getNodeName())
                 .nodeId(decodeNodeId(rawTransaction.getData()))
+                .totalReward(transactionSignatureData.getClaimRewardAmount())
                 .build();
     }
 
@@ -473,9 +488,25 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
 
         RlpList rlp = RlpDecoder.decode(Numeric.hexStringToByteArray(hex));
 
-        List<RlpType> rlpList = ((RlpList) (rlp.getValues().get(0))).getValues();
+        List<RlpType> typeList = rlp.getValues();
 
-        return ((RlpString) RlpDecoder.decode(((RlpString) rlpList.get(2)).getBytes()).getValues().get(0)).asString();
+        if (typeList == null || typeList.isEmpty()) {
+            return null;
+        }
+
+        List<RlpType> rlpList = ((RlpList) (typeList.get(0))).getValues();
+
+        if (rlpList == null || rlpList.size() < 3) {
+            return null;
+        }
+
+        List<RlpType> rlpTypeList = RlpDecoder.decode(((RlpString) rlpList.get(2)).getBytes()).getValues();
+
+        if (rlpTypeList == null || rlpTypeList.isEmpty()) {
+            return null;
+        }
+
+        return ((RlpString) rlpTypeList.get(0)).asString();
     }
 
     public interface OnSendTransactionSucceedListener {
