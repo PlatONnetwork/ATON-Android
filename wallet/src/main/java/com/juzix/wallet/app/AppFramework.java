@@ -270,7 +270,6 @@ public class AppFramework {
 
                 //0.7.4.0升级到0.7.5.0,链id 96--->94
                 schema.get("WalletEntity")
-                        .addField("backedUp", boolean.class)
                         .transform(new RealmObjectSchema.Function() {
                             @Override
                             public void apply(DynamicRealmObject obj) {
