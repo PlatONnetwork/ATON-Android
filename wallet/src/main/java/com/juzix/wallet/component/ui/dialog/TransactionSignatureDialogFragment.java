@@ -441,10 +441,13 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
     private Transaction buildTransaction(TransactionAuthorizationData transactionAuthorizationData, String hash, String signedMessage) {
         RawTransaction rawTransaction = TransactionDecoder.decode(signedMessage);
         String amount = null;
+        String data = rawTransaction.getData();
+        String nodeId = decodeNodeId(data);
+        String contractAmount = Numeric.decodeQuantity(decodeAmount(data)).toString(10);
         if (transactionAuthorizationData != null) {
             amount = transactionAuthorizationData.getTransactionAuthorizationDetail().getAmount();
         } else {
-            amount = rawTransaction.getValue().toString(10);
+            amount = transactionSignatureData.getFunctionType() == FunctionType.TRANSFER ? rawTransaction.getValue().toString(10) : contractAmount;
         }
         return new Transaction.Builder()
                 .hash(hash)
@@ -459,7 +462,7 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
                 .actualTxCost(BigIntegerUtil.mul(rawTransaction.getGasLimit(), rawTransaction.getGasPrice()))
                 .unDelegation(amount)
                 .nodeName(transactionSignatureData.getNodeName())
-                .nodeId(decodeNodeId(rawTransaction.getData()))
+                .nodeId(nodeId)
                 .build();
     }
 
@@ -503,6 +506,31 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
         }
 
         List<RlpType> rlpTypeList = RlpDecoder.decode(((RlpString) rlpList.get(2)).getBytes()).getValues();
+
+        if (rlpTypeList == null || rlpTypeList.isEmpty()) {
+            return null;
+        }
+
+        return ((RlpString) rlpTypeList.get(0)).asString();
+    }
+
+    private String decodeAmount(String hex) {
+
+        RlpList rlp = RlpDecoder.decode(Numeric.hexStringToByteArray(hex));
+
+        List<RlpType> typeList = rlp.getValues();
+
+        if (typeList == null || typeList.isEmpty()) {
+            return null;
+        }
+
+        List<RlpType> rlpList = ((RlpList) (typeList.get(0))).getValues();
+
+        if (rlpList == null || rlpList.size() < 4) {
+            return null;
+        }
+
+        List<RlpType> rlpTypeList = RlpDecoder.decode(((RlpString) rlpList.get(3)).getBytes()).getValues();
 
         if (rlpTypeList == null || rlpTypeList.isEmpty()) {
             return null;
