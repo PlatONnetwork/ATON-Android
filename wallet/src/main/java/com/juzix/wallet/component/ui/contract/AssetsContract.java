@@ -2,6 +2,8 @@ package com.juzix.wallet.component.ui.contract;
 
 import com.juzix.wallet.component.ui.base.IPresenter;
 import com.juzix.wallet.component.ui.base.IView;
+import com.juzix.wallet.component.ui.view.AssetsFragment;
+import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.Wallet;
 
 import java.util.List;
@@ -30,6 +32,10 @@ public class AssetsContract {
         void setArgument(Wallet entity);
 
         void finishRefresh();
+
+        void showTab(@AssetsFragment.MainTab int tab);
+
+        void resetView();
     }
 
     public interface Presenter extends IPresenter<View> {
@@ -43,6 +49,8 @@ public class AssetsContract {
         void backupWallet();
 
         void fetchWalletsBalance();
+
+        void afterSendTransactionSucceed(Transaction transaction);
 
     }
 }

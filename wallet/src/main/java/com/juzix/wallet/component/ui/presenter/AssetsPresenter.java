@@ -1,13 +1,21 @@
 package com.juzix.wallet.component.ui.presenter;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.AssetsContract;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
+import com.juzix.wallet.component.ui.view.AssetsFragment;
 import com.juzix.wallet.component.ui.view.BackupMnemonicPhraseActivity;
+import com.juzix.wallet.component.ui.view.TransactionDetailActivity;
+import com.juzix.wallet.config.AppSettings;
+import com.juzix.wallet.db.entity.TransactionRecordEntity;
+import com.juzix.wallet.db.sqlite.TransactionRecordDao;
 import com.juzix.wallet.engine.WalletManager;
+import com.juzix.wallet.entity.Transaction;
+import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.RxUtils;
 import com.trello.rxlifecycle2.android.FragmentEvent;
@@ -15,10 +23,16 @@ import com.trello.rxlifecycle2.android.FragmentEvent;
 import org.web3j.crypto.Credentials;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 public class AssetsPresenter extends BasePresenter<AssetsContract.View> implements AssetsContract.Presenter {
 
@@ -88,6 +102,50 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
                         }
                     }
                 });
+    }
+
+    @Override
+    public void afterSendTransactionSucceed(Transaction transaction) {
+        if (transaction.getTxType() == TransactionType.TRANSFER) {
+            insertAndDeleteTransactionRecord(transaction.buildTransactionRecordEntity());
+            backToTransactionListWithDelay();
+        } else {
+            TransactionDetailActivity.actionStart(getContext(), transaction, Arrays.asList(transaction.getFrom()));
+        }
+    }
+
+    /**
+     * 延迟指定时间后返回交易列表页
+     */
+    @SuppressLint("CheckResult")
+    private void backToTransactionListWithDelay() {
+        Single
+                .timer(1000, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+                .compose(bindToLifecycle())
+                .subscribe(new Consumer<Long>() {
+                    @Override
+                    public void accept(Long aLong) throws Exception {
+                        if (isViewAttached()) {
+                            getView().resetView();
+                            getView().showTab(AssetsFragment.MainTab.TRANSACTION_LIST);
+                        }
+                    }
+                });
+    }
+
+    private void insertAndDeleteTransactionRecord(TransactionRecordEntity transactionRecordEntity) {
+        if (AppSettings.getInstance().getResendReminder()) {
+            Single
+                    .fromCallable(new Callable<Boolean>() {
+
+                        @Override
+                        public Boolean call() throws Exception {
+                            return TransactionRecordDao.insertTransactionRecord(transactionRecordEntity) && TransactionRecordDao.deleteTimeoutTransactionRecord();
+                        }
+                    })
+                    .subscribeOn(Schedulers.io())
+                    .subscribe();
+        }
     }
 
 

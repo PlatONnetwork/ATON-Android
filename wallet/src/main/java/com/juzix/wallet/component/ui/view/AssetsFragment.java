@@ -29,7 +29,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.juzhen.framework.util.LogUtils;
-import com.juzhen.framework.util.NumberParserUtils;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
@@ -41,12 +40,9 @@ import com.juzix.wallet.component.ui.base.BaseFragment;
 import com.juzix.wallet.component.ui.base.MVPBaseFragment;
 import com.juzix.wallet.component.ui.contract.AssetsContract;
 import com.juzix.wallet.component.ui.dialog.AssetsMoreDialogFragment;
-
 import com.juzix.wallet.component.ui.dialog.BaseDialogFragment;
-
 import com.juzix.wallet.component.ui.dialog.CommonGuideDialogFragment;
 import com.juzix.wallet.component.ui.dialog.TransactionSignatureDialogFragment;
-
 import com.juzix.wallet.component.ui.presenter.AssetsPresenter;
 import com.juzix.wallet.component.widget.AmountTransformationMethod;
 import com.juzix.wallet.component.widget.CustomImageSpan;
@@ -57,6 +53,7 @@ import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.GuideType;
 import com.juzix.wallet.entity.QrCodeType;
+import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionAuthorizationData;
 import com.juzix.wallet.entity.TransactionSignatureData;
 import com.juzix.wallet.entity.Wallet;
@@ -67,9 +64,7 @@ import com.juzix.wallet.netlistener.NetworkUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.GZipUtil;
 import com.juzix.wallet.utils.JSONUtil;
-
 import com.juzix.wallet.utils.QrCodeParser;
-
 import com.juzix.wallet.utils.StringUtil;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -79,8 +74,6 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -357,7 +350,14 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
                 }
 
                 if (qrCodeType == QrCodeType.TRANSACTION_SIGNATURE) {
-                    TransactionSignatureDialogFragment.newInstance(JSONUtil.parseObject(unzip, TransactionSignatureData.class)).show(getActivity().getSupportFragmentManager(), TransactionSignatureDialogFragment.TAG);
+                    TransactionSignatureDialogFragment.newInstance(JSONUtil.parseObject(unzip, TransactionSignatureData.class))
+                            .setOnSendTransactionSucceedListener(new TransactionSignatureDialogFragment.OnSendTransactionSucceedListener() {
+                                @Override
+                                public void onSendTransactionSucceed(Transaction transaction) {
+                                    mPresenter.afterSendTransactionSucceed(transaction);
+                                }
+                            })
+                            .show(getActivity().getSupportFragmentManager(), TransactionSignatureDialogFragment.TAG);
                     return;
                 }
 
@@ -639,6 +639,23 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     @Override
     public void finishRefresh() {
         layoutRefresh.finishRefresh();
+    }
+
+    @Override
+    public void showTab(int tab) {
+        vpContent.setCurrentItem(tab);
+    }
+
+    @Override
+    public void resetView() {
+
+        List<BaseFragment> fragments = ((TabAdapter) vpContent.getAdapter()).getFragments();
+
+        BaseFragment baseFragment = fragments.get(1);
+        if (baseFragment instanceof SendTransactionFragment) {
+            ((SendTransactionFragment) baseFragment).resetView("0.00");
+        }
+
     }
 
     private SpannableString getRestrictedAmount(String text) {

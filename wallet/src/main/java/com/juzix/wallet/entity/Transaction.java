@@ -8,6 +8,8 @@ import android.text.TextUtils;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.db.entity.TransactionEntity;
+import com.juzix.wallet.db.entity.TransactionRecordEntity;
+import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.DateUtil;
 import com.juzix.wallet.utils.JSONUtil;
@@ -1051,5 +1053,9 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
             list.add(String.valueOf(b));
         }
         return list;
+    }
+
+    public TransactionRecordEntity buildTransactionRecordEntity() {
+        return new TransactionRecordEntity(System.currentTimeMillis(), from, to, value, NodeManager.getInstance().getChainId());
     }
 }
