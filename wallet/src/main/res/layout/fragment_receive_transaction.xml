@@ -31,15 +31,16 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
+
                 <TextView
                     android:id="@+id/tv_network_tips"
                     style="@style/Text.ff6b00.12"
+                    android:layout_gravity="center"
                     android:layout_marginBottom="12dp"
-                    android:drawableLeft="@drawable/icon_no_delegate_tips"
-                    android:drawablePadding="4dp"
                     android:includeFontPadding="false"
                     android:maxLines="2"
                     tools:text="You are on the xxxx Network." />
+
 
                 <TextView
                     android:id="@+id/tv_address"

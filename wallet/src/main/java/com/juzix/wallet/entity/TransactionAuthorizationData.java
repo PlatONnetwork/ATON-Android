@@ -110,7 +110,7 @@ public class TransactionAuthorizationData implements Parcelable {
 
         TransactionAuthorizationBaseData firstBaseData = baseDataList.get(0);
 
-        return new TransactionSignatureData(getSignedMessageList(credentials), firstBaseData.getFrom(), firstBaseData.getChainId(), firstBaseData.getPlatOnFunction().getType(), timestamp, firstBaseData.getNodeName(), firstBaseData.getAmount());
+        return new TransactionSignatureData(getSignedMessageList(credentials), firstBaseData.getFrom(), firstBaseData.getChainId(), firstBaseData.getPlatOnFunction().getType(), timestamp, firstBaseData.getNodeName());
     }
 
     private List<String> getSignedMessageList(Credentials credentials) {

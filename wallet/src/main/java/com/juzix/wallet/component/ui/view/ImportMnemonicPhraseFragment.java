@@ -2,6 +2,7 @@ package com.juzix.wallet.component.ui.view;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -120,6 +121,11 @@ public class ImportMnemonicPhraseFragment extends MVPBaseFragment<ImportMnemonic
     }
 
     private void addListeners() {
+
+        mEtPassword.setTypeface(Typeface.DEFAULT);
+        mEtRepeatPassword.setTypeface(Typeface.DEFAULT);
+
+
         RxView.clicks(mIvPasswordEyes).subscribe(new Consumer<Object>() {
             @Override
             public void accept(Object object) throws Exception {
@@ -328,7 +334,7 @@ public class ImportMnemonicPhraseFragment extends MVPBaseFragment<ImportMnemonic
         }
         if (requestCode == ImportWalletActivity.REQ_QR_CODE) {
             Bundle bundle = data.getExtras();
-            String scanResult = bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA,"");
+            String scanResult = bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA, "");
             mPresenter.parseQRCode(scanResult);
         }
     }
@@ -337,7 +343,7 @@ public class ImportMnemonicPhraseFragment extends MVPBaseFragment<ImportMnemonic
     public String getKeystoreFromIntent() {
         Bundle bundle = getArguments();
         if (bundle != null && !bundle.isEmpty()) {
-            return bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA,"");
+            return bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA, "");
         }
         return "";
     }

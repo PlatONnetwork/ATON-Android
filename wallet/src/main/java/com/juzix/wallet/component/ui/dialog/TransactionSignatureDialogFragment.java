@@ -440,7 +440,12 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
 
     private Transaction buildTransaction(TransactionAuthorizationData transactionAuthorizationData, String hash, String signedMessage) {
         RawTransaction rawTransaction = TransactionDecoder.decode(signedMessage);
-        String amount = transactionAuthorizationData.getTransactionAuthorizationDetail().getAmount();
+        String amount = null;
+        if (transactionAuthorizationData != null) {
+            amount = transactionAuthorizationData.getTransactionAuthorizationDetail().getAmount();
+        } else {
+            amount = rawTransaction.getValue().toString(10);
+        }
         return new Transaction.Builder()
                 .hash(hash)
                 .from(transactionSignatureData.getFrom())
@@ -455,7 +460,6 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
                 .unDelegation(amount)
                 .nodeName(transactionSignatureData.getNodeName())
                 .nodeId(decodeNodeId(rawTransaction.getData()))
-                .totalReward(transactionSignatureData.getClaimRewardAmount())
                 .build();
     }
 
@@ -475,9 +479,7 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
         if (isEmpty(transactionSignatureData)) {
             return "";
         }
-
         return TextUtils.join(",", transactionSignatureData.getSignedDatas());
-
     }
 
     private boolean isEmpty(TransactionSignatureData transactionSignatureData) {
