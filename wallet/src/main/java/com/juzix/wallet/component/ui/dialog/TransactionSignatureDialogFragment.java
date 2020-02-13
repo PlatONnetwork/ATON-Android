@@ -463,6 +463,7 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
                 .unDelegation(amount)
                 .nodeName(transactionSignatureData.getNodeName())
                 .nodeId(nodeId)
+                .totalReward(transactionSignatureData.getClaimRewardAmount())
                 .build();
     }
 
