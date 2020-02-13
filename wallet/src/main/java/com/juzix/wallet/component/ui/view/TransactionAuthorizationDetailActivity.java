@@ -92,7 +92,7 @@ public class TransactionAuthorizationDetailActivity extends BaseActivity {
         tvTxnInfo.setText(string(getTxnInfoRes(transactionAuthorizationDetail.getFunctionType())));
         String amountText = string(R.string.amount_with_unit, AmountUtil.formatAmountText(transactionAuthorizationDetail.getAmount(), 12));
         tvAmount.setText(amountText);
-        CommonTextUtils.richText(tvAmount, amountText, "\\w[3]", new AbsoluteSizeSpan(DensityUtil.dp2px(this, 24)) {
+        CommonTextUtils.richText(tvAmount, amountText, "LAT", new AbsoluteSizeSpan(DensityUtil.dp2px(this, 24)) {
             @Override
             public void updateDrawState(@NonNull TextPaint ds) {
                 super.updateDrawState(ds);
