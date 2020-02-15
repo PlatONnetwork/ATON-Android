@@ -443,7 +443,7 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
         String amount = null;
         String data = rawTransaction.getData();
         String nodeId = decodeNodeId(data);
-        String contractAmount = Numeric.decodeQuantity(decodeAmount(data)).toString(10);
+        String contractAmount = decodeContractAmount(data);
         if (transactionAuthorizationData != null) {
             amount = transactionAuthorizationData.getTransactionAuthorizationDetail().getAmount();
         } else {
@@ -488,6 +488,16 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
 
     private boolean isEmpty(TransactionSignatureData transactionSignatureData) {
         return transactionSignatureData == null || transactionSignatureData.getSignedDatas() == null || transactionSignatureData.getSignedDatas().isEmpty();
+    }
+
+    private String decodeContractAmount(String hex) {
+        String contractAmount = null;
+        try {
+            contractAmount = Numeric.decodeQuantity(decodeAmount(hex)).toString(10);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return contractAmount;
     }
 
     private String decodeNodeId(String hex) {
