@@ -447,7 +447,13 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
         if (transactionAuthorizationData != null) {
             amount = transactionAuthorizationData.getTransactionAuthorizationDetail().getAmount();
         } else {
-            amount = transactionSignatureData.getFunctionType() == FunctionType.TRANSFER ? rawTransaction.getValue().toString(10) : contractAmount;
+            if (transactionSignatureData.getFunctionType() == FunctionType.TRANSFER) {
+                amount = rawTransaction.getValue().toString(10);
+            } else if (transactionSignatureData.getFunctionType() == FunctionType.WITHDRAW_DELEGATE_REWARD_FUNC_TYPE) {
+                amount = transactionSignatureData.getClaimRewardAmount();
+            } else {
+                amount = contractAmount;
+            }
         }
         return new Transaction.Builder()
                 .hash(hash)
