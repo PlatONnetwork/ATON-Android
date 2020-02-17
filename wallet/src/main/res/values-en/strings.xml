@@ -689,7 +689,8 @@
     <string name="withdraw_amount_tips">The Amount cannot be less than %1$s LAT</string>
     <string name="unrecognized_content">Unrecognized content</string>
     <string name="no_delegation_information">No delegation information</string>
-    <string name="newbaleyworld">New Baleyworld (testnet)</string>
+    <string name="newbaleyworld">New Baleyworld</string>
+    <string name="uat_net">UAT</string>
     <string name="test_net">testnet</string>
     <string name="develop_net">developnet</string>
 
