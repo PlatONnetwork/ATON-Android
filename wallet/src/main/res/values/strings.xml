@@ -781,4 +781,5 @@
     <string name="title_select_delegations">选择赎回项</string>
     <string name="msg_invalid_delegations">待赎回委托(第%1$d份)</string>
     <string name="msg_withdraw_claim_reward">注意：操作全部赎回时，将自动领取委托奖励。</string>
+    <string name="msg_restricted_plan">锁仓:</string>
 </resources>

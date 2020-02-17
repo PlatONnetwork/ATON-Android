@@ -42,6 +42,7 @@ import com.juzix.wallet.component.ui.contract.AssetsContract;
 import com.juzix.wallet.component.ui.dialog.AssetsMoreDialogFragment;
 import com.juzix.wallet.component.ui.dialog.BaseDialogFragment;
 import com.juzix.wallet.component.ui.dialog.CommonGuideDialogFragment;
+import com.juzix.wallet.component.ui.dialog.DelegateTipsDialog;
 import com.juzix.wallet.component.ui.dialog.TransactionSignatureDialogFragment;
 import com.juzix.wallet.component.ui.presenter.AssetsPresenter;
 import com.juzix.wallet.component.widget.AmountTransformationMethod;
@@ -436,7 +437,9 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
                 mPresenter.backupWallet();
                 break;
             case R.id.tv_restricted_amount:
-                showLongToast(R.string.restricted_amount_tips);
+                //弹出tips
+                DelegateTipsDialog.createWithTitleAndContentDialog(null, null,
+                        null, null, string(R.string.msg_restricted_plan), string(R.string.restricted_amount_tips)).show(getChildFragmentManager(), "restrictedTips");
                 break;
             case R.id.rl_wallet_detail:
                 ManageWalletActivity.actionStart(currentActivity(), mWalletAdapter.getSelectedWallet());
