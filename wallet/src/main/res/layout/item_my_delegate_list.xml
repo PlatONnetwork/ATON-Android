@@ -141,7 +141,7 @@
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/tv_unclaimed_reward_amount"
-            style="@style/Text.000.14"
+            style="@style/Text.000.16"
             android:layout_width="0dp"
             android:layout_marginTop="7dp"
             android:gravity="center_vertical|left"

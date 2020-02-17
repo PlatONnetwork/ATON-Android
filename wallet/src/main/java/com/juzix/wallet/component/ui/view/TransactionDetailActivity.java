@@ -91,13 +91,15 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
     }
 
 
-    @OnClick({R.id.iv_copy_from_address, R.id.iv_copy_to_address})
+    @OnClick({R.id.iv_copy_from_address, R.id.tv_from_address, R.id.iv_copy_to_address, R.id.tv_to_address})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_copy_from_address:
+            case R.id.tv_from_address:
                 CommonUtil.copyTextToClipboard(this, tvFromAddress.getText().toString());
                 break;
             case R.id.iv_copy_to_address:
+            case R.id.tv_to_address:
                 CommonUtil.copyTextToClipboard(this, tvToAddress.getText().toString());
                 break;
             default:

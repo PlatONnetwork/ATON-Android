@@ -21,6 +21,7 @@ import com.juzix.wallet.entity.DelegateInfo;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.AmountUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.CommonTextUtils;
 import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.RxUtils;
 
@@ -66,10 +67,10 @@ public class MyDelegateAdapter extends RecyclerView.Adapter<MyDelegateAdapter.Vi
         holder.walletAvatarIv.setImageResource(RUtils.drawable(info.getWalletIcon()));
         holder.walletNameTv.setText(info.getWalletName());
         holder.walletAddressTv.setText(AddressFormatUtil.formatAddress(info.getWalletAddress()));
-        holder.unclaimedRewardAmountTv.setText(AmountUtil.formatAmountText(info.getDelegated(), 12));
+        holder.unclaimedRewardAmountTv.setText(CommonTextUtils.getPriceTextWithBold(AmountUtil.formatAmountText(info.getWithdrawReward(), 12), ContextCompat.getColor(mContext, R.color.color_000000), ContextCompat.getColor(mContext, R.color.color_000000),
+                DensityUtil.dp2px(mContext, 14), DensityUtil.dp2px(mContext, 16)));
         holder.totalRewardAmountTv.setText(AmountUtil.formatAmountText(info.getCumulativeReward(), 8));
         holder.delegatedAmountTv.setText(AmountUtil.formatAmountText(info.getDelegated()));
-        holder.unclaimedRewardAmountTv.setText(AmountUtil.formatAmountText(info.getWithdrawReward()));
         holder.claimRewardLayout.setVisibility(BigDecimalUtil.isBiggerThanZero(info.getWithdrawReward()) ? View.VISIBLE : View.GONE);
         holder.claimRewardLayout.setEnabled(!info.isPending());
         holder.claimRewardRtv.setVisibility(info.isPending() ? View.GONE : View.VISIBLE);
