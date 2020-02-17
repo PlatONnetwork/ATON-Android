@@ -145,8 +145,8 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
 
         mValidatorsAdapter = new ValidatorsAdapter();
         validatorsList.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false));
-        validatorsList.setFocusableInTouchMode(false);
-        validatorsList.setFocusable(false);
+        validatorsList.setFocusableInTouchMode(true);
+        validatorsList.setFocusable(true);
         validatorsList.setHasFixedSize(true);
 
         validatorsList.setAdapter(mValidatorsAdapter);
@@ -164,7 +164,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                mPresenter.loadValidatorsData(getNodeStatusByTab(mTab), mSortType, searchEt.getText().toString().trim(), true);
+                mPresenter.loadValidatorsData(getNodeStatusByTab(mTab), mSortType, searchEt.getText().toString().trim(), true, false);
             }
         });
 
@@ -188,7 +188,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
                                     @Override
                                     public void onItemClick(SortType sortType) {
                                         mSortType = sortType;
-                                        mPresenter.loadValidatorsData(getNodeStatusByTab(mTab), mSortType, searchEt.getText().toString().trim(), false);
+                                        mPresenter.loadValidatorsData(getNodeStatusByTab(mTab), mSortType, searchEt.getText().toString().trim(), false, true);
                                     }
                                 })
                                 .show(getActivity()
@@ -205,7 +205,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
                     public void accept(Object o) {
                         mSearchEnabled = !mSearchEnabled;
                         searchIv.setImageResource(mSearchEnabled ? R.drawable.icon_search : R.drawable.icon_search_grey);
-                        searchLayout.setVisibility(mSearchEnabled ? View.GONE : View.VISIBLE                );
+                        searchLayout.setVisibility(mSearchEnabled ? View.GONE : View.VISIBLE);
                     }
                 });
 
@@ -241,7 +241,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
                     @Override
                     public void accept(Object o) {
                         searchEt.setText("");
-                        mPresenter.loadValidatorsData(getNodeStatusByTab(mTab), mSortType, searchEt.getText().toString().trim(), false);
+                        mPresenter.loadValidatorsData(getNodeStatusByTab(mTab), mSortType, searchEt.getText().toString().trim(), false, false);
                     }
                 });
 
@@ -256,7 +256,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
                 .subscribe(new CustomObserver<TextViewEditorActionEvent>() {
                     @Override
                     public void accept(TextViewEditorActionEvent textViewEditorActionEvent) {
-                        mPresenter.loadValidatorsData(getNodeStatusByTab(mTab), mSortType, searchEt.getText().toString().trim(), false);
+                        mPresenter.loadValidatorsData(getNodeStatusByTab(mTab), mSortType, searchEt.getText().toString().trim(), false, false);
                     }
                 });
 
@@ -281,7 +281,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
 
     private void tabStateChanged(@Tab int tab) {
         mTab = tab;
-        mPresenter.loadValidatorsData(getNodeStatusByTab(mTab), mSortType, searchEt.getText().toString().trim(), false);
+        mPresenter.loadValidatorsData(getNodeStatusByTab(mTab), mSortType, searchEt.getText().toString().trim(), false, false);
         tabCheckedChanged(tab);
     }
 
@@ -310,12 +310,13 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
         super.onPause();
     }
 
+
     @Override
-    public void loadValidatorsDataResult(List<VerifyNode> oldVerifyNodeList, List<VerifyNode> newVerifyNodeList) {
+    public void loadValidatorsDataResult(List<VerifyNode> oldVerifyNodeList, List<VerifyNode> newVerifyNodeList, boolean isRefreshAll) {
         refreshLayout.finishRefresh();
         noDataLayout.setVisibility(newVerifyNodeList == null || newVerifyNodeList.isEmpty() ? View.VISIBLE : View.GONE);
         mValidatorsAdapter.setDatas(newVerifyNodeList);
-        if (newVerifyNodeList == null || newVerifyNodeList.isEmpty()) {
+        if (newVerifyNodeList == null || newVerifyNodeList.isEmpty() || isRefreshAll) {
             mValidatorsAdapter.notifyDataSetChanged();
         } else {
             VerifyNodeDiffCallback diffCallback = new VerifyNodeDiffCallback(oldVerifyNodeList, newVerifyNodeList);
