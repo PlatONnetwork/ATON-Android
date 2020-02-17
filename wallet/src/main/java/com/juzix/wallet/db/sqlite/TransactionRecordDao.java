@@ -1,9 +1,7 @@
 package com.juzix.wallet.db.sqlite;
 
 import com.juzix.wallet.app.Constants;
-import com.juzix.wallet.db.entity.AddressEntity;
 import com.juzix.wallet.db.entity.TransactionRecordEntity;
-import com.juzix.wallet.utils.BigDecimalUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,25 +61,27 @@ public class TransactionRecordDao {
     }
 
     public static boolean deleteTimeoutTransactionRecord() {
-        boolean succeed = false;
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
-            succeed = realm.where(TransactionRecordEntity.class)
-                    .lessThan("timeStamp", System.currentTimeMillis() - Constants.Common.TRANSACTION_TIMEOUT_WITH_MILLISECOND)
-                    .findAll()
-                    .deleteAllFromRealm();
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    realm.where(TransactionRecordEntity.class)
+                            .lessThan("timeStamp", System.currentTimeMillis() - Constants.Common.TRANSACTION_TIMEOUT_WITH_MILLISECOND)
+                            .findAll()
+                            .deleteAllFromRealm();
+                }
+            });
+            return true;
         } catch (Exception exp) {
             exp.printStackTrace();
-            if (realm != null) {
-                realm.cancelTransaction();
-            }
+            return false;
         } finally {
             if (realm != null) {
                 realm.close();
             }
         }
-        return succeed;
     }
 
     public static boolean isResendTransaction(TransactionRecordEntity transactionRecordEntity) {

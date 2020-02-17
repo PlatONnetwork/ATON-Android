@@ -126,7 +126,7 @@
     <string name="exportKeystore">导出钱包文件(.json)</string>
     <string name="backupMnemonics">备份助记词</string>
     <string name="backup">备份</string>
-    <string name="changeWalletName">修改钱包名称</string>
+    <string name="changeWalletName">修改名称</string>
     <string name="formatError">钱包名称格式错误</string>
     <string name="validWalletNameTips">请输入1-12位字符</string>
     <string name="validKeystoreEmptyTips">钱包文件(.json)不能为空</string>
