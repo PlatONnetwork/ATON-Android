@@ -48,6 +48,8 @@ public class WithDrawContract {
 
         void showsSelectDelegationsBtnVisibility(int visibility);
 
+        void setAllAmountDelegate();
+
     }
 
     public interface Presenter extends IPresenter<View> {

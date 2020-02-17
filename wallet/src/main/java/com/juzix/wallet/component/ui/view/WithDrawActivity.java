@@ -22,6 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
+import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
@@ -175,12 +176,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
                     @Override
                     public void accept(Object o) {
                         //点击全部
-                        WithDrawBalance withDrawBalance = mPresenter.getWithDrawBalance();
-                        if (withDrawBalance != null) {
-                            String withdrawAmountText = AmountUtil.formatAmountText(withDrawBalance.isDelegated() ? withDrawBalance.getDelegated() : withDrawBalance.getReleased());
-                            withdrawAmount.setText(withdrawAmountText);
-                            withdrawAmount.setSelection(withdrawAmountText.length());
-                        }
+                        setAllAmountDelegate();
                     }
                 });
 
@@ -411,6 +407,17 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     @Override
     public void showsSelectDelegationsBtnVisibility(int visibility) {
         delegateAmount.setCompoundDrawablesWithIntrinsicBounds(null, null, visibility == View.VISIBLE ? ContextCompat.getDrawable(this, R.drawable.icon_drop_down) : null, null);
+    }
+
+    @Override
+    public void setAllAmountDelegate() {
+        //点击全部
+        WithDrawBalance withDrawBalance = mPresenter.getWithDrawBalance();
+        if (withDrawBalance != null) {
+            String withdrawAmountText = AmountUtil.formatAmountText(withDrawBalance.isDelegated() ? withDrawBalance.getDelegated() : withDrawBalance.getReleased());
+            withdrawAmount.setText(withdrawAmountText);
+            withdrawAmount.setSelection(withdrawAmountText.length());
+        }
     }
 
     @Override

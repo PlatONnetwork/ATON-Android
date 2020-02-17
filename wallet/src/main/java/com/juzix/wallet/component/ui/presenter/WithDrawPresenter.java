@@ -40,6 +40,7 @@ import org.web3j.crypto.Credentials;
 import org.web3j.platon.ContractAddress;
 import org.web3j.platon.FunctionType;
 import org.web3j.tx.gas.GasProvider;
+import org.web3j.utils.Convert;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -103,16 +104,19 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     @Override
     public void checkWithDrawAmount(String withdrawAmount) {
         //检查赎回的数量
-        double amount = NumberParserUtils.parseDouble(withdrawAmount);
-        String minDelegationAmount = NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(minDelegation, "1E18"));
-        if (TextUtils.isEmpty(withdrawAmount)) {
-            getView().showTips(false, minDelegationAmount);
-        } else if (amount < NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(minDelegation, "1E18")))) {
-            //按钮不可点击,并且下方提示
-            getView().showTips(true, minDelegationAmount);
-        } else {
-            getView().showTips(false, minDelegationAmount);
+        String minDelegationAmount = BigDecimalUtil.div(minDelegation, "1E18");
+        boolean isWithdrawAmountBiggerThanMinDelegation = BigDecimalUtil.isNotSmaller(withdrawAmount, minDelegationAmount);
+
+        getView().showTips(!isWithdrawAmountBiggerThanMinDelegation, NumberParserUtils.getPrettyNumber(minDelegationAmount));
+
+        if (mWithDrawBalance != null && mWithDrawBalance.isDelegated()) {
+            String leftWithdrawAmount = BigDecimalUtil.sub(mWithDrawBalance.getDelegated(), Convert.toVon(BigDecimalUtil.toBigDecimal(withdrawAmount), Convert.Unit.LAT).toPlainString()).toPlainString();
+            boolean isLeftWithdrawAmountSmallerThanMinDelegation = BigDecimalUtil.isBiggerThanZero(leftWithdrawAmount) && !BigDecimalUtil.isNotSmaller(leftWithdrawAmount, minDelegation);
+            if (isLeftWithdrawAmountSmallerThanMinDelegation) {
+                getView().setAllAmountDelegate();
+            }
         }
+
         updateWithDrawButtonState();
     }
 
