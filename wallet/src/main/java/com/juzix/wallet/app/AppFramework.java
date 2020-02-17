@@ -27,6 +27,7 @@ import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmMigration;
 import io.realm.RealmObjectSchema;
+import io.realm.RealmResults;
 import io.realm.RealmSchema;
 
 /**
@@ -260,11 +261,12 @@ public class AppFramework {
                         .transform(new RealmObjectSchema.Function() {
                             @Override
                             public void apply(DynamicRealmObject obj) {
-                                obj.getDynamicRealm()
+                                RealmResults realmResults = obj.getDynamicRealm()
                                         .where("NodeEntity")
                                         .equalTo("chainId", "95")
-                                        .findAll()
-                                        .setString("chainId", BuildConfig.ID_MAIN_CHAIN);
+                                        .findAll();
+                                realmResults.setString("chainId", BuildConfig.ID_MAIN_CHAIN);
+                                realmResults.setString("nodeAddress", BuildConfig.URL_MAIN_SERVER);
                             }
                         });
 
