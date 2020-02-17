@@ -4,15 +4,11 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.juzhen.framework.util.NumberParserUtils;
-import com.juzix.wallet.App;
 import com.juzix.wallet.R;
-import com.juzix.wallet.entity.Candidate;
-import com.juzix.wallet.entity.DelegateInfo;
 import com.juzix.wallet.entity.VerifyNode;
-import com.juzix.wallet.utils.LanguageUtil;
+import com.juzix.wallet.utils.BigIntegerUtil;
 
 import java.util.Comparator;
-import java.util.Locale;
 
 /**
  * @author matrixelement
@@ -103,7 +99,7 @@ public enum SortType implements Parcelable {
 
         @Override
         public int compare(VerifyNode o1, VerifyNode o2) {
-            return Long.compare(NumberParserUtils.parseLong(o2.getDelegateSum()), NumberParserUtils.parseLong(o1.getDelegateSum()));
+            return BigIntegerUtil.toBigInteger(o2.getDelegateSum()).compareTo(BigIntegerUtil.toBigInteger(o1.getDelegateSum()));
         }
     }
 
