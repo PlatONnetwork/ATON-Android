@@ -3,9 +3,6 @@ package com.juzix.wallet.entity;
 import android.content.Context;
 
 import com.juzix.wallet.R;
-import com.juzix.wallet.engine.AppConfigManager;
-
-import java.math.BigInteger;
 
 /**
  * 委托操作的判断
@@ -72,14 +69,14 @@ public class DelegateHandle implements Nullable {
 
     private String getMessageDescByMessage(Context context) {
         switch (message) {
-            case "1":
-                return context.getString(R.string.delegate_no_click);
             case "2":
                 return context.getString(R.string.the_validator_has_exited_and_cannot_be_delegated);
             case "3":
                 return context.getString(R.string.tips_not_delegate);
             case "4":
                 return context.getString(R.string.tips_not_balance);
+            case "5":
+                return context.getString(R.string.validators_details_tips);
             default:
                 return "";
         }
