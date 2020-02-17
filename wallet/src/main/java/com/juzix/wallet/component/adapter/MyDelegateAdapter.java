@@ -67,7 +67,7 @@ public class MyDelegateAdapter extends RecyclerView.Adapter<MyDelegateAdapter.Vi
         holder.walletNameTv.setText(info.getWalletName());
         holder.walletAddressTv.setText(AddressFormatUtil.formatAddress(info.getWalletAddress()));
         holder.unclaimedRewardAmountTv.setText(AmountUtil.formatAmountText(info.getDelegated(), 12));
-        holder.totalRewardAmountTv.setText(AmountUtil.formatAmountText(info.getCumulativeReward(), 12));
+        holder.totalRewardAmountTv.setText(AmountUtil.formatAmountText(info.getCumulativeReward(), 8));
         holder.delegatedAmountTv.setText(AmountUtil.formatAmountText(info.getDelegated()));
         holder.unclaimedRewardAmountTv.setText(AmountUtil.formatAmountText(info.getWithdrawReward()));
         holder.claimRewardLayout.setVisibility(BigDecimalUtil.isBiggerThanZero(info.getWithdrawReward()) ? View.VISIBLE : View.GONE);
