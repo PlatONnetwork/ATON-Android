@@ -765,5 +765,6 @@
     <string name="title_select_delegations">Select Delegations</string>
     <string name="msg_invalid_delegations">Invalid delegations (%1$dst)</string>
     <string name="msg_withdraw_claim_reward">Note: When withdrawing all delegations,Claim rewards automatically.</string>
+    <string name="msg_restricted_plan">Restricted:</string>
 </resources>
 

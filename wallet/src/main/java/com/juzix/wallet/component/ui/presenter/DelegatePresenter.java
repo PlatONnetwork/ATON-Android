@@ -294,7 +294,6 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
         BigDecimal freeAmount = new BigDecimal(delegateHandle.getFree());
         BigDecimal lockAmount = new BigDecimal(delegateHandle.getLock());
 
-
         //自由金额是否够委托金额与手续费的和
         boolean isFreeAmountNotEnoughDelegateAmount = freeAmount.compareTo(feeAmount.add(delegateAmount)) < 0;
         //自由金额是否够手续费

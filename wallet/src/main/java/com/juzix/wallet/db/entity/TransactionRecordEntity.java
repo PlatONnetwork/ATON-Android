@@ -77,7 +77,6 @@ public class TransactionRecordEntity extends RealmObject {
     @Override
     public int hashCode() {
         int hashCode = 17;
-        hashCode = hashCode * 31 + (int) (timeStamp ^ (timeStamp >>> 32));
         hashCode = hashCode * 31 + (TextUtils.isEmpty(from) ? 0 : from.hashCode());
         hashCode = hashCode * 31 + (TextUtils.isEmpty(to) ? 0 : to.hashCode());
         hashCode = hashCode * 31 + (TextUtils.isEmpty(value) ? 0 : value.hashCode());

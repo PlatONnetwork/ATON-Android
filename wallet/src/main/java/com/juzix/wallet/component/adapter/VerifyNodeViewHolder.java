@@ -96,7 +96,7 @@ public class VerifyNodeViewHolder extends BaseViewHolder<VerifyNode> {
                     HashMap<String, Object> map = (HashMap<String, Object>) bundle.getSerializable(key);
                     String deposit = MapUtils.getString(map, VerifyNodeDiffCallback.KEY_DEPOSIT);
                     String delegatorNumber = MapUtils.getString(map, VerifyNodeDiffCallback.KEY_DELEGATOR_NUMBER);
-                    mNodeDelegatedAmount.setText(String.format("%s / %s", mContext.getResources().getString(R.string.amount_with_unit, AmountUtil.convertVonToLat(deposit)), StringUtil.formatBalance(delegatorNumber)));
+                    mNodeDelegatedAmount.setText(String.format("%s / %s", mContext.getResources().getString(R.string.amount_with_unit, AmountUtil.convertVonToLat(deposit)), StringUtil.formatBalance(delegatorNumber, 0, 0)));
                     break;
                 case VerifyNodeDiffCallback.KEY_URL:
                     String url = bundle.getString(key);

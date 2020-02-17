@@ -117,6 +117,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
 
     private SortType mSortType = SortType.SORTED_BY_NODE_RANKINGS;
     private int mTab = Tab.ALL;
+    private boolean mSearchEnabled = true;
 
     private ValidatorsAdapter mValidatorsAdapter;
 
@@ -202,8 +203,9 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        searchIv.setEnabled(false);
-                        searchLayout.setVisibility(View.VISIBLE);
+                        mSearchEnabled = !mSearchEnabled;
+                        searchIv.setImageResource(mSearchEnabled ? R.drawable.icon_search : R.drawable.icon_search_grey);
+                        searchLayout.setVisibility(mSearchEnabled ? View.GONE : View.VISIBLE                );
                     }
                 });
 
@@ -216,7 +218,8 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
                     public void accept(Object o) {
                         searchLayout.setVisibility(View.GONE);
                         searchEt.setText("");
-                        searchIv.setEnabled(true);
+                        searchIv.setImageResource(R.drawable.icon_search);
+                        mSearchEnabled = true;
                     }
                 });
 

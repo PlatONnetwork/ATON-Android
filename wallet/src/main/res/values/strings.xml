@@ -71,15 +71,15 @@
     <string name="keystoreContent">请输入钱包文件(.json)内容</string>
     <string name="mnemonicPhrase">助记词</string>
     <string name="privateKey">私钥</string>
-    <string name="importIndividualWalletResume">使用钱包文件(.json)导入的同时需要输入钱包密码进行解密，同时未来需要通过密码验证才能进行能量发送、备份等操作。</string>
+    <string name="importIndividualWalletResume">直接复制粘贴您之前生成的钱包文件(.json)内容至输入框，或者扫描钱包文件内容生成的二维码录入。</string>
     <string name="startImporting">开始导入</string>
     <string name="walletPassword">输入钱包密码</string>
     <string name="nameOfWallet">输入钱包名称</string>
     <string name="nameOfAddress">输入地址名称</string>
     <string name="addressOfWallet">输入钱包地址</string>
-    <string name="importMnemonicPhraseResume">请将记下的助记词按顺序填入以下表格中，在每个助记词输入完成后按“下一步”键可以跳转到下个单词，使用助记词导入的同时需要设定钱包密码，未来需要通过密码验证才能够进行能量发送、备份等操作。</string>
+    <string name="importMnemonicPhraseResume">请将记下的助记词按顺序填入以下表格中，在每个助记词输入完成后按“空格”键可以跳转到下个单词，使用助记词导入的同时需要设定钱包密码。</string>
     <string name="inputMnemonicPhraseTips">请输入助记词，用空格分割</string>
-    <string name="importPrivateKeyResume">使用私钥导入的同时需要设置钱包密码，未来需要通过密码验证才能够进行能量发送、备份等操作。</string>
+    <string name="importPrivateKeyResume">输入私钥内容至输入框，或者通过扫描私钥内容生成的二维码录入。请留意字符大小写。使用私钥导入的同时需要设定钱包密码。</string>
     <string name="inputPrivateKeyTips">请输入私钥</string>
     <string name="backupWallet">备份钱包</string>
     <string name="backupMnemonic">备份助记词</string>
@@ -413,7 +413,7 @@
     <string name="execute_wallet">执行钱包</string>
     <string name="from_wallet">发送钱包</string>
     <string name="wallet_name_exists">钱包名称在本客户端已存在，不可重复</string>
-    <string name="rename_wallet">修改钱包名称</string>
+    <string name="rename_wallet">修改名称</string>
     <string name="version_update">版本更新</string>
     <string name="version_update_tips">发现新版本%1$s，是否立即更新？</string>
     <string name="not_now">暂不更新</string>
@@ -781,4 +781,5 @@
     <string name="title_select_delegations">选择赎回项</string>
     <string name="msg_invalid_delegations">待赎回委托(第%1$d份)</string>
     <string name="msg_withdraw_claim_reward">注意：操作全部赎回时，将自动领取委托奖励。</string>
+    <string name="msg_restricted_plan">锁仓:</string>
 </resources>

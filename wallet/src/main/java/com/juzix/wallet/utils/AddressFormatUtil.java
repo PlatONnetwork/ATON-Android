@@ -26,13 +26,30 @@ public class AddressFormatUtil {
         return text;
     }
 
-    public static String formatTransactionAddress(String address){
+    public static String formatTransactionAddress(String address) {
 
         String text = "";
 
         if (address != null) {
 
             String regex = "(\\w{4})(\\w*)(\\w{4})";
+
+            try {
+                text = address.replaceAll(regex, "$1...$3");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return text;
+    }
+
+    public static String formatClaimRewardRecordAddress(String address) {
+
+        String text = "";
+
+        if (address != null) {
+
+            String regex = "(\\w{6})(\\w*)(\\w{8})";
 
             try {
                 text = address.replaceAll(regex, "$1...$3");

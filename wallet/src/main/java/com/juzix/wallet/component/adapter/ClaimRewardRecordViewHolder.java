@@ -1,7 +1,6 @@
 package com.juzix.wallet.component.adapter;
 
 import android.content.Context;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
@@ -24,8 +23,6 @@ import com.juzix.wallet.utils.DateUtil;
 import com.juzix.wallet.utils.DensityUtil;
 
 import java.util.List;
-
-import jnr.constants.platform.PRIO;
 
 public class ClaimRewardRecordViewHolder extends BaseViewHolder<ClaimRewardRecord> {
 
@@ -67,7 +64,7 @@ public class ClaimRewardRecordViewHolder extends BaseViewHolder<ClaimRewardRecor
         mWalletAvatarCiv.setImageResource(RUtils.drawable(data.getWalletAvatar()));
         mClaimRewardAmountTv.setText(String.format("%s%s", "+", mContext.getString(R.string.amount_with_unit, AmountUtil.formatAmountText(data.getTotalReward()))));
         mWalletNameTv.setText(data.getWalletName());
-        mWalletAddressTv.setText(AddressFormatUtil.formatAddress(data.getAddress()));
+        mWalletAddressTv.setText(AddressFormatUtil.formatClaimRewardRecordAddress(data.getAddress()));
         mClaimRewardTimeTv.setText(String.format("#%s", DateUtil.format(data.getTimestamp(), DateUtil.DATETIME_FORMAT_PATTERN)));
         mSpreadIv.setImageResource(data.isExpanded() ? R.drawable.icon_pull_up_blue : R.drawable.icon_drop_down_blue);
         mSpreadIv.setVisibility(data.getClaimRewardList() == null || data.getClaimRewardList().isEmpty() ? View.GONE : View.VISIBLE);
@@ -89,7 +86,7 @@ public class ClaimRewardRecordViewHolder extends BaseViewHolder<ClaimRewardRecor
         for (String key : bundle.keySet()) {
             switch (key) {
                 case ClaimRewardRecordDiffCallback.KEY_CLAIM_REWARD_ADDRESS:
-                    mWalletAddressTv.setText(bundle.getString(key));
+                    mWalletAddressTv.setText(AddressFormatUtil.formatClaimRewardRecordAddress(bundle.getString(key)));
                     break;
                 case ClaimRewardRecordDiffCallback.KEY_CLAIM_REWARD_AMOUNT:
                     mClaimRewardAmountTv.setText(bundle.getString(key));
