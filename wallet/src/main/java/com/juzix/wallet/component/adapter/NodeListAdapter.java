@@ -3,7 +3,6 @@ package com.juzix.wallet.component.adapter;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -117,8 +116,10 @@ public class NodeListAdapter extends RecyclerView.Adapter<NodeListAdapter.ViewHo
     }
 
     private String getNodeName(Node node) {
-        if (BuildConfig.URL_MAIN_SERVER.equals(node.getNodeAddress()) || BuildConfig.URL_TEST_MAIN_SERVER.equals(node.getNodeAddress())) {
+        if (BuildConfig.URL_MAIN_SERVER.equals(node.getNodeAddress())) {
             return activity.getString(R.string.newbaleyworld);
+        } else if (BuildConfig.URL_TEST_MAIN_SERVER.equals(node.getNodeAddress())) {
+            return activity.getString(R.string.uat_net);
         } else if (TextUtils.equals(BuildConfig.URL_TEST_SERVER, node.getNodeAddress()) || TextUtils.equals(BuildConfig.URL_TEST_OUTER_SERVER, node.getNodeAddress())) {
             return activity.getString(R.string.test_net);
         } else if (TextUtils.equals(BuildConfig.URL_DEVELOP_SERVER, node.getNodeAddress())) {

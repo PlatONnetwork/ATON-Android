@@ -192,12 +192,7 @@ public class AppFramework {
                         .transform(new RealmObjectSchema.Function() {
                             @Override
                             public void apply(DynamicRealmObject obj) {
-                                RealmResults realmResults = obj.getDynamicRealm()
-                                        .where("NodeEntity")
-                                        .equalTo("chainId", "97")
-                                        .findAll();
-                                realmResults.setString("chainId", BuildConfig.ID_MAIN_CHAIN);
-                                realmResults.setString("nodeAddress",BuildConfig.URL_MAIN_SERVER);
+                                obj.getDynamicRealm().where("NodeEntity").findAll().deleteAllFromRealm();
                             }
                         });
 
@@ -232,12 +227,7 @@ public class AppFramework {
                         .transform(new RealmObjectSchema.Function() {
                             @Override
                             public void apply(DynamicRealmObject obj) {
-                                RealmResults realmResults = obj.getDynamicRealm()
-                                        .where("NodeEntity")
-                                        .equalTo("chainId", "96")
-                                        .findAll();
-                                realmResults.setString("chainId", BuildConfig.ID_MAIN_CHAIN);
-                                realmResults.setString("nodeAddress",BuildConfig.URL_MAIN_SERVER);
+                                obj.getDynamicRealm().where("NodeEntity").findAll().deleteAllFromRealm();
                             }
                         });
 
@@ -263,12 +253,7 @@ public class AppFramework {
                         .transform(new RealmObjectSchema.Function() {
                             @Override
                             public void apply(DynamicRealmObject obj) {
-                                RealmResults realmResults = obj.getDynamicRealm()
-                                        .where("NodeEntity")
-                                        .equalTo("chainId", "95")
-                                        .findAll();
-                                realmResults.setString("chainId", BuildConfig.ID_MAIN_CHAIN);
-                                realmResults.setString("nodeAddress",BuildConfig.URL_MAIN_SERVER);
+                                obj.getDynamicRealm().where("NodeEntity").findAll().deleteAllFromRealm();
                             }
                         });
 
