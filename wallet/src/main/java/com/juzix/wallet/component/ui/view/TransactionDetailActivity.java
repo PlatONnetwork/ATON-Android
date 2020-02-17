@@ -245,7 +245,7 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
             }
             return R.drawable.avatar_1;
         } else {
-            return R.drawable.icon_node;
+            return R.drawable.icon_contract_to_tag;
         }
     }
 
