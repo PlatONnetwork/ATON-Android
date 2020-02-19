@@ -126,7 +126,7 @@ public class ManageWalletActivity extends MVPBaseActivity<ManageWalletPresenter>
             llPrivateKey.setVisibility(View.GONE);
             llKeystore.setVisibility(View.GONE);
         }
-        tvDelete.setVisibility(wallet.isBackedUp() ? View.VISIBLE : View.GONE);
+        tvDelete.setVisibility(wallet.isDeletedEnabled() ? View.VISIBLE : View.GONE);
         //是否可以备份  都可以备份
         llBackup.setVisibility(wallet.isBackedUpEnabled() ? View.VISIBLE : View.GONE);
 
