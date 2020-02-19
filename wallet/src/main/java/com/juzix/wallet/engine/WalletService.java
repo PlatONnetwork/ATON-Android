@@ -69,5 +69,13 @@ public interface WalletService {
      */
     String exportPrivateKey(Wallet wallet, String password);
 
+    /**
+     * 助记词导出私钥
+     *
+     * @param mnemonic
+     * @return
+     */
+    String exportPrivateKey(String mnemonic);
+
     String getWalletAvatar();
 }

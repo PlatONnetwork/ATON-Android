@@ -149,6 +149,28 @@ class WalletServiceImpl implements WalletService {
     }
 
     @Override
+    public String exportPrivateKey(String mnemonic) {
+        try {
+            // 2.生成种子
+            byte[] seed = JZMnemonicUtil.generateSeed(mnemonic, null);
+            // 3. 生成根Keystore root private key 树顶点的master key ；bip32
+            DeterministicKey rootPrivateKey = HDKeyDerivation.createMasterPrivateKey(seed);
+            // 4. 由根Keystore生成 第一个HD 钱包
+            DeterministicHierarchy dh = new DeterministicHierarchy(rootPrivateKey);
+            // 5. 定义父路径 H则是加强
+            List<ChildNumber> parentPath = HDUtils.parsePath(PATH);
+            // 6. 由父路径,派生出第一个子Keystore "new ChildNumber(0)" 表示第一个（PATH）
+            DeterministicKey child = dh.deriveChild(parentPath, true, true, new ChildNumber(0));
+            //7.通过Keystore生成公Keystore对
+            ECKeyPair ecKeyPair = ECKeyPair.create(child.getPrivKeyBytes());
+            return Numeric.toHexStringNoPrefix(ecKeyPair.getPrivateKey());
+        } catch (Exception exp) {
+            exp.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
     public String getWalletAvatar() {
         String[] avatarArray = App.getContext().getResources().getStringArray(R.array.wallet_avatar);
         return avatarArray[new Random().nextInt(avatarArray.length)];

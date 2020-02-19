@@ -32,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
+import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
 import io.reactivex.SingleSource;
@@ -40,7 +41,6 @@ import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
-import io.reactivex.Single;
 import retrofit2.Response;
 
 
@@ -265,6 +265,10 @@ public class WalletManager {
 
     public String generateMnemonic() {
         return WalletServiceImpl.getInstance().generateMnemonic();
+    }
+
+    public String exportPrivateKey(String mnemonic) {
+        return WalletServiceImpl.getInstance().exportPrivateKey(mnemonic);
     }
 
     private Single<String> createMnemonic() {

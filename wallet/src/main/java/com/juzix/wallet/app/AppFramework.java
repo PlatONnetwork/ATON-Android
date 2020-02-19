@@ -27,7 +27,6 @@ import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmMigration;
 import io.realm.RealmObjectSchema;
-import io.realm.RealmResults;
 import io.realm.RealmSchema;
 
 /**
@@ -134,6 +133,12 @@ public class AppFramework {
                         .transform(new RealmObjectSchema.Function() {
                             @Override
                             public void apply(DynamicRealmObject obj) {
+
+                                obj.getDynamicRealm()
+                                        .where("WalletEntity")
+                                        .findAll()
+                                        .setString("mnemonic", null);
+
                                 obj.getDynamicRealm()
                                         .where("WalletEntity")
                                         .equalTo("chainId", "104")

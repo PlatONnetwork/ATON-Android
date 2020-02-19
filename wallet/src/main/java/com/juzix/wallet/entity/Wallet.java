@@ -241,6 +241,24 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
         return backedUp;
     }
 
+    /**
+     * 是否可以备份
+     *
+     * @return
+     */
+    public boolean isBackedUpEnabled() {
+        return !TextUtils.isEmpty(mnemonic);
+    }
+
+    /**
+     * 是否需要备份,未备份并且助记词不为空
+     *
+     * @return
+     */
+    public boolean isBackedUpNeeded() {
+        return !TextUtils.isEmpty(mnemonic) && !isBackedUp();
+    }
+
     public void setBackedUp(boolean backedUp) {
         this.backedUp = backedUp;
     }
