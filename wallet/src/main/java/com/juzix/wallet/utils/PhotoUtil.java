@@ -77,10 +77,10 @@ public class PhotoUtil {
         }
         intent.setDataAndType(srcUri, "image/*");
         intent.putExtra("crop", "true");
-        if (Build.MODEL.contains("HUAWEI")){
+        if (Build.MODEL.contains("HUAWEI")) {
             intent.putExtra("aspectX", 9998);
             intent.putExtra("aspectY", 9999);
-        }else {
+        } else {
             intent.putExtra("aspectX", aspectX);
             intent.putExtra("aspectY", aspectY);
         }
@@ -122,14 +122,14 @@ public class PhotoUtil {
     public static String getPath(final Context context, final Uri uri) {
 
         final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
-        String        pathHead = "file:///";
+        String pathHead = "file:///";
         // DocumentProvider
         if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
             // ExternalStorageProvider
             if (isExternalStorageDocument(uri)) {
-                final String   docId = DocumentsContract.getDocumentId(uri);
+                final String docId = DocumentsContract.getDocumentId(uri);
                 final String[] split = docId.split(":");
-                final String   type  = split[0];
+                final String type = split[0];
                 if ("primary".equalsIgnoreCase(type)) {
                     return pathHead + Environment.getExternalStorageDirectory() + "/" + split[1];
                 }
@@ -145,9 +145,9 @@ public class PhotoUtil {
             }
             // MediaProvider
             else if (isMediaDocument(uri)) {
-                final String   docId = DocumentsContract.getDocumentId(uri);
+                final String docId = DocumentsContract.getDocumentId(uri);
                 final String[] split = docId.split(":");
-                final String   type  = split[0];
+                final String type = split[0];
 
                 Uri contentUri = null;
                 if ("image".equals(type)) {
@@ -158,7 +158,7 @@ public class PhotoUtil {
                     contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
                 }
 
-                final String   selection     = "_id=?";
+                final String selection = "_id=?";
                 final String[] selectionArgs = new String[]{split[1]};
 
                 return pathHead + getDataColumn(context, contentUri, selection, selectionArgs);
@@ -187,8 +187,8 @@ public class PhotoUtil {
      */
     private static String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {
 
-        Cursor         cursor     = null;
-        final String   column     = "_data";
+        Cursor cursor = null;
+        final String column = "_data";
         final String[] projection = {column};
         try {
             cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
@@ -234,20 +234,28 @@ public class PhotoUtil {
      * @param file  保存文件
      */
     public static void writeImage(byte[] bytes, File file) {
+        FileOutputStream fops = null;
         try {
-            FileOutputStream fops = new FileOutputStream(file);
+            fops = new FileOutputStream(file);
             fops.write(bytes);
             fops.flush();
-            fops.close();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (fops != null) {
+                try {
+                    fops.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
     /**
      * 将Uri转换成Bitmap
      */
-    public static Bitmap decodeBitmapWithUri(Context context, Uri uri, BitmapFactory.Options options){
+    public static Bitmap decodeBitmapWithUri(Context context, Uri uri, BitmapFactory.Options options) {
         Bitmap bitmap = null;
         InputStream is = null;
         try {
@@ -257,17 +265,17 @@ public class PhotoUtil {
             e.printStackTrace();
         }
         try {
-            if (is != null){
+            if (is != null) {
                 is.close();
             }
-        }catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
 
         return bitmap;
     }
 
-    public static Bitmap getDecodeAbleBitmap(Context context, Uri uri){
+    public static Bitmap getDecodeAbleBitmap(Context context, Uri uri) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         PhotoUtil.decodeBitmapWithUri(context, uri, options);
@@ -284,14 +292,14 @@ public class PhotoUtil {
         View decorView = activity.getWindow().getDecorView();
         decorView.setDrawingCacheEnabled(true);
         decorView.buildDrawingCache();
-        Bitmap         bmp = decorView.getDrawingCache();
-        DisplayMetrics dm  = new DisplayMetrics();
+        Bitmap bmp = decorView.getDrawingCache();
+        DisplayMetrics dm = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
         Bitmap ret;
         if (isDeleteStatusBar) {
-            Resources resources       = activity.getResources();
-            int       resourceId      = resources.getIdentifier("status_bar_height", "dimen", "android");
-            int       statusBarHeight = resources.getDimensionPixelSize(resourceId);
+            Resources resources = activity.getResources();
+            int resourceId = resources.getIdentifier("status_bar_height", "dimen", "android");
+            int statusBarHeight = resources.getDimensionPixelSize(resourceId);
             ret = Bitmap.createBitmap(
                     bmp,
                     0,
@@ -306,11 +314,11 @@ public class PhotoUtil {
         return ret;
     }
 
-    public static Bitmap blurBitmap(Context context, Bitmap bitmap){
+    public static Bitmap blurBitmap(Context context, Bitmap bitmap) {
         //Let's create an empty bitmap with the same size of the bitmap we want to blur
         Bitmap outBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
         //Instantiate a new Renderscript
-        RenderScript rs = RenderScript.create(context. getApplicationContext());
+        RenderScript rs = RenderScript.create(context.getApplicationContext());
         //Create an Intrinsic Blur Script using the Renderscript
         ScriptIntrinsicBlur blurScript = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
         //Create the Allocations (in/out) with the Renderscript and the in/out bitmaps
@@ -332,12 +340,13 @@ public class PhotoUtil {
 
     /**
      * 保存图片到本地，需要权限
+     *
      * @param fileName 文件名
-     * @param bmp 二维码图片
+     * @param bmp      二维码图片
      */
     public static boolean saveImageToAlbum(Context context, @NonNull File dir, @NonNull String fileName, @NonNull Bitmap bmp) {
         File file = saveImage(dir, fileName, bmp);
-        if (file == null){
+        if (file == null) {
             return false;
         }
         // 其次把文件插入到系统图库
@@ -355,11 +364,12 @@ public class PhotoUtil {
 
     /**
      * 保存图片到本地，需要权限
+     *
      * @param fileName 文件名
-     * @param bmp 二维码图片
+     * @param bmp      二维码图片
      */
     public static File saveImage(@NonNull File dir, @NonNull String fileName, @NonNull Bitmap bmp) {
-        if (!dir.exists()){
+        if (!dir.exists()) {
             dir.mkdirs();
         }
         // 首先保存图片
@@ -370,7 +380,7 @@ public class PhotoUtil {
             fos.flush();
             fos.close();
             return file;
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -380,10 +390,11 @@ public class PhotoUtil {
     /**
      * 读取一个缩放后的图片，限定图片大小，避免OOM
      * http://blog.sina.com.cn/s/blog_5de73d0b0100zfm8.html
+     *
      * @param uri       图片uri，支持“file://”、“content://”
      * @param maxWidth  最大允许宽度
      * @param maxHeight 最大允许高度
-     * @return  返回一个缩放后的Bitmap，失败则返回null
+     * @return 返回一个缩放后的Bitmap，失败则返回null
      */
     public static Bitmap decodeUri(Context context, Uri uri, int maxWidth, int maxHeight) {
         BitmapFactory.Options options = new BitmapFactory.Options();

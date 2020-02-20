@@ -40,8 +40,6 @@ import com.juzix.wallet.component.widget.CommonTitleBar;
 import com.juzix.wallet.utils.PhotoUtil;
 import com.juzix.wallet.utils.QRCodeDecoder;
 import com.juzix.wallet.utils.RxUtils;
-import com.juzix.wallet.utils.ToastUtil;
-import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.io.File;
@@ -391,8 +389,8 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
             mediaPlayer = new MediaPlayer();
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mediaPlayer.setOnCompletionListener(beepListener);
-            AssetFileDescriptor file = getResources().openRawResourceFd(R.raw.beep);
             try {
+                AssetFileDescriptor file = getResources().openRawResourceFd(R.raw.beep);
                 mediaPlayer.setDataSource(file.getFileDescriptor(), file.getStartOffset(), file.getLength());
                 file.close();
                 mediaPlayer.setVolume(BEEP_VOLUME, BEEP_VOLUME);

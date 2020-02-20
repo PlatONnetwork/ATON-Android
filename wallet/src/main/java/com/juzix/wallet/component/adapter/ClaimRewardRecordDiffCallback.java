@@ -1,12 +1,10 @@
 package com.juzix.wallet.component.adapter;
 
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.entity.ClaimReward;
 import com.juzix.wallet.entity.ClaimRewardRecord;
 
@@ -97,12 +95,15 @@ public class ClaimRewardRecordDiffCallback extends BaseDiffCallback<ClaimRewardR
         } else {
             if (newClaimRewardList == null) {
                 bundle.putParcelableArrayList(KEY_CLAIM_REWARD_LIST, (ArrayList<? extends Parcelable>) newClaimRewardList);
-            }
-            Collections.sort(oldClaimRewardList, new ClaimRewardComparator());
-            Collections.sort(newClaimRewardList, new ClaimRewardComparator());
+            } else {
 
-            if (oldClaimRewardList.size() != newClaimRewardList.size() || !oldClaimRewardList.equals(newClaimRewardList)) {
-                bundle.putParcelableArrayList(KEY_CLAIM_REWARD_LIST, (ArrayList<? extends Parcelable>) newClaimRewardList);
+                Collections.sort(oldClaimRewardList, new ClaimRewardComparator());
+
+                Collections.sort(newClaimRewardList, new ClaimRewardComparator());
+
+                if (oldClaimRewardList.size() != newClaimRewardList.size() || !oldClaimRewardList.equals(newClaimRewardList)) {
+                    bundle.putParcelableArrayList(KEY_CLAIM_REWARD_LIST, (ArrayList<? extends Parcelable>) newClaimRewardList);
+                }
             }
         }
 

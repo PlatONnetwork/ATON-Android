@@ -2,9 +2,7 @@ package com.juzix.wallet.utils;
 
 import android.app.Application;
 
-import com.juzhen.framework.app.log.Log;
 import com.juzhen.framework.network.ApiResponse;
-import com.juzix.wallet.BaseTestCase;
 import com.juzix.wallet.BuildConfig;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.engine.NodeManager;
@@ -23,10 +21,11 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLog;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 23, manifest = Config.NONE, constants = BuildConfig.class)
-public class AddressFormatUtilTest{
+public class AddressFormatUtilTest {
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
     @Rule
@@ -53,10 +52,11 @@ public class AddressFormatUtilTest{
         appSettings.init(app);
 
     }
+
     @Test
     public void formatAddress() {
-        String address ="0x2e95e3ce0a54951eb9a99152a6d5827872dfb4fd";
-        String text =null;
+        String address = "0x2e95e3ce0a54951eb9a99152a6d5827872dfb4fd";
+        String text = null;
         if (address != null) {
             String regex = "(\\w{10})(\\w*)(\\w{10})";
             try {
@@ -65,14 +65,13 @@ public class AddressFormatUtilTest{
                 e.printStackTrace();
             }
         }
-
-        Log.debug("格式化后的地址","=============" + text);
+        assertEquals("0x2e95e3ce...7872dfb4fd", text);
     }
 
     @Test
     public void formatTransactionAddress() {
-        String address ="0x2e95e3ce0a54951eb9a99152a6d5827872dfb4fd";
-        String text =null;
+        String address = "0x2e95e3ce0a54951eb9a99152a6d5827872dfb4fd";
+        String text = null;
         if (address != null) {
 
             String regex = "(\\w{4})(\\w*)(\\w{4})";
@@ -83,7 +82,6 @@ public class AddressFormatUtilTest{
                 e.printStackTrace();
             }
         }
-        Log.debug("格式化后的地址","=============" + text);
-
+        assertEquals("0x2e...b4fd", text);
     }
 }

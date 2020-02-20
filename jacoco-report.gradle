@@ -1,0 +1,36 @@
+apply plugin: 'jacoco' //加载代码覆盖库jacoco
+
+jacoco {
+    toolVersion = "0.7.9" //代码覆盖库jacoco版本号
+}
+
+//代码覆盖率相关配置 start
+def coverageSourceDirs = [
+        '../wallet/src/main/java'
+]
+
+task jacocoTestReport(type: JacocoReport) {
+    group = "Reporting"
+    description = "Generate Jacoco coverage reports after running tests."
+
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+
+    classDirectories = fileTree(
+            //检测覆盖率的class所在目录(以项目class所在目录为准)
+            dir: './build/intermediates/javac/GooglePlayDebug/classes', //gradle2.3 class所在目录
+            //gradle3.2 class所在目录 dir: './build/intermediates/javac/debug/compileDebugJavaWithJavac/classes',
+            //增加以上目录中不需要检测的文件列表
+            excludes: ['**/R*.class',
+                       '**/*$InjectAdapter.class',
+                       '**/*$ModuleAdapter.class',
+                       '**/*$ViewInjector*.class'
+            ]
+    )
+
+    sourceDirectories = files(coverageSourceDirs) //设置需要检测覆盖率的目录
+    executionData = files("$buildDir/outputs/code-coverage/connected/coverage.ec") //存储APP运行时产生报告的路径
+}
+//代码覆盖率相关配置 end
