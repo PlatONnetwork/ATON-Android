@@ -4,6 +4,7 @@ package com.juzix.wallet.component.ui.presenter;
 import android.annotation.SuppressLint;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Pair;
 
 import com.juzhen.framework.network.ApiErrorCode;
 import com.juzhen.framework.network.ApiRequestBody;
@@ -91,10 +92,15 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                 .toObservable()
                 .observeOn(Schedulers.newThread())
                 .compose(RxUtils.getSchedulerTransformer())
-                .subscribe(new Consumer<List<Transaction>>() {
+                .subscribe(new Consumer<Pair<List<Transaction>, List<Transaction>>>() {
                     @Override
-                    public void accept(List<Transaction> transactionList) {
+                    public void accept(Pair<List<Transaction>, List<Transaction>> pair) {
                         if (isViewAttached()) {
+                            List<Transaction> dbTransactionList = pair.first;
+                            List<Transaction> netTransactionList = pair.second;
+                            List<Transaction> transactionList = new ArrayList<>();
+                            transactionList.addAll(dbTransactionList);
+                            transactionList.addAll(netTransactionList);
                             //先进行排序
                             List<Transaction> transactions = mTransactionMap.get(mWalletAddress);
                             List<Transaction> newTransactionList = getNewTransactionList(transactions, transactionList, true);
@@ -103,7 +109,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
 
                             mTransactionMap.put(mWalletAddress, newTransactionList);
 
-                            deleteExceptionalTransaction(transactions, newTransactionList);
+                            deleteExceptionalTransaction(transactions, netTransactionList);
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -135,19 +141,25 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                 .toObservable()
                 .compose(RxUtils.getSchedulerTransformer())
                 .compose(RxUtils.bindToParentLifecycleUtilEvent(getView(), FragmentEvent.STOP))
-                .subscribe(new Consumer<List<Transaction>>() {
+                .subscribe(new Consumer<Pair<List<Transaction>, List<Transaction>>>() {
                     @Override
-                    public void accept(List<Transaction> transactionList) throws Exception {
+                    public void accept(Pair<List<Transaction>, List<Transaction>> pair) throws Exception {
                         if (isViewAttached()) {
                             //先进行排序
                             List<Transaction> transactions = mTransactionMap.get(mWalletAddress);
+                            List<Transaction> dbTransactionList = pair.first;
+                            List<Transaction> netTransactionList = pair.second;
+                            List<Transaction> transactionList = new ArrayList<>();
+                            transactionList.addAll(dbTransactionList);
+                            transactionList.addAll(netTransactionList);
+
                             List<Transaction> newTransactionList = getNewTransactionList(transactions, transactionList, true);
                             Collections.sort(newTransactionList);
                             getView().notifyDataSetChanged(transactions, newTransactionList, mWalletAddress, false);
 
                             mTransactionMap.put(mWalletAddress, newTransactionList);
 
-                            deleteExceptionalTransaction(transactions, newTransactionList);
+                            deleteExceptionalTransaction(transactions, netTransactionList);
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -230,7 +242,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
             boolean isOldTransactionStatusException = oldTransaction.getTxReceiptStatus() == TransactionStatus.PENDING || oldTransaction.getTxReceiptStatus() == TransactionStatus.TIMEOUT;
             if (curTransactionList.contains(oldTransaction) && isOldTransactionStatusException) {
                 Transaction newTransaction = curTransactionList.get(i);
-                if (newTransaction.getTxReceiptStatus() == TransactionStatus.SUCCESSED || newTransaction.getTxReceiptStatus() == TransactionStatus.FAILED) {
+                if (newTransaction.getTxReceiptStatus() == TransactionStatus.SUCCESSED || newTransaction.getTxReceiptStatus() == TransactionStatus.FAILED || newTransaction.getTxReceiptStatus() == TransactionStatus.TIMEOUT) {
                     //删除掉
                     deleteTransaction(oldTransactionList.get(i).getHash());
                 }
@@ -286,19 +298,31 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
      * @param direction
      * @return
      */
-    private Flowable<List<Transaction>> getTransactionListWithTime(String walletAddress, String direction) {
-        return getTransactionList(walletAddress, DIRECTION_NEW, getBeginSequenceByDirection(direction))
-                .flatMap(new Function<Response<ApiResponse<List<Transaction>>>, SingleSource<List<Transaction>>>() {
-                    @Override
-                    public SingleSource<List<Transaction>> apply(Response<ApiResponse<List<Transaction>>> apiResponseResponse) throws Exception {
-                        if (apiResponseResponse.isSuccessful() && apiResponseResponse.body().getResult() == ApiErrorCode.SUCCESS) {
-                            return Single.just(apiResponseResponse.body().getData());
-                        } else {
-                            return Single.error(new Throwable());
+    private Flowable<Pair<List<Transaction>, List<Transaction>>> getTransactionListWithTime(String walletAddress, String direction) {
+        long beginSequence = getBeginSequenceByDirection(direction);
+        if (beginSequence == -1) {
+            return getTransactionList(walletAddress)
+                    .toFlowable()
+                    .flatMap(new Function<Pair<List<Transaction>, List<Transaction>>, Publisher<Pair<List<Transaction>, List<Transaction>>>>() {
+                        @Override
+                        public Publisher<Pair<List<Transaction>, List<Transaction>>> apply(Pair<List<Transaction>, List<Transaction>> pair) throws Exception {
+                            return Flowable.just(pair);
                         }
-                    }
-                })
-                .toFlowable();
+                    });
+        } else {
+            return getTransactionList(walletAddress, DIRECTION_NEW, beginSequence)
+                    .flatMap(new Function<Response<ApiResponse<List<Transaction>>>, SingleSource<Pair<List<Transaction>, List<Transaction>>>>() {
+                        @Override
+                        public SingleSource<Pair<List<Transaction>, List<Transaction>>> apply(Response<ApiResponse<List<Transaction>>> apiResponseResponse) throws Exception {
+                            if (apiResponseResponse.isSuccessful() && apiResponseResponse.body().getResult() == ApiErrorCode.SUCCESS) {
+                                return Single.just(new Pair<List<Transaction>, List<Transaction>>(new ArrayList<>(), apiResponseResponse.body().getData()));
+                            } else {
+                                return Single.error(new Throwable());
+                            }
+                        }
+                    })
+                    .toFlowable();
+        }
     }
 
 
@@ -308,21 +332,22 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
      * @param walletAddress
      * @return
      */
-    private Single<List<Transaction>> getTransactionList(String walletAddress) {
+    private Single<Pair<List<Transaction>, List<Transaction>>> getTransactionList(String walletAddress) {
 
-        return getTransactionListFromDB(walletAddress).flatMap(new Function<List<Transaction>, SingleSource<List<Transaction>>>() {
+        return getTransactionListFromDB(walletAddress).flatMap(new Function<List<Transaction>, SingleSource<Pair<List<Transaction>, List<Transaction>>>>() {
             @Override
-            public SingleSource<List<Transaction>> apply(List<Transaction> transactionList) throws Exception {
+            public SingleSource<Pair<List<Transaction>, List<Transaction>>> apply(List<Transaction> transactionList) throws Exception {
                 LogUtils.d("getTransactionListFromDB success" + transactionList);
                 return getTransactionList(walletAddress, DIRECTION_NEW, getBeginSequenceByDirection(DIRECTION_NEW))
-                        .flatMap(new Function<Response<ApiResponse<List<Transaction>>>, SingleSource<List<Transaction>>>() {
+                        .flatMap(new Function<Response<ApiResponse<List<Transaction>>>, SingleSource<Pair<List<Transaction>, List<Transaction>>>>() {
                             @Override
-                            public SingleSource<List<Transaction>> apply(Response<ApiResponse<List<Transaction>>> apiResponseResponse) throws Exception {
+                            public SingleSource<Pair<List<Transaction>, List<Transaction>>> apply(Response<ApiResponse<List<Transaction>>> apiResponseResponse) throws Exception {
                                 LogUtils.d("getTransactionList success" + apiResponseResponse.toString());
+                                List<Transaction> netTransactionList = new ArrayList<>();
                                 if (apiResponseResponse.isSuccessful() && apiResponseResponse.body().getResult() == ApiErrorCode.SUCCESS) {
-                                    transactionList.addAll(apiResponseResponse.body().getData());
+                                    netTransactionList = apiResponseResponse.body().getData();
                                 }
-                                return Single.just(transactionList);
+                                return Single.just(new Pair<>(transactionList, netTransactionList));
                             }
                         })
                         .doOnError(new Consumer<Throwable>() {

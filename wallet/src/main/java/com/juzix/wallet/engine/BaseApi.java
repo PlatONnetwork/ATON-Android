@@ -156,7 +156,7 @@ public interface BaseApi {
      * @return
      */
     @GET("config/config.json")
-    Single<Response<ApiResponse<AppConfig>>> getAppConfig();
+    Single<String> getAppConfig();
 
     /**
      * 查询领取奖励记录

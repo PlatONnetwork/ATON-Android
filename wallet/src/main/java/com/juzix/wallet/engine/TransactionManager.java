@@ -5,7 +5,6 @@ import android.util.Pair;
 
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
-import com.juzhen.framework.util.LogUtils;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomThrowable;
@@ -290,7 +289,8 @@ public class TransactionManager {
                         removeTaskByHash(transaction.getHash());
                         if (transaction.getTxReceiptStatus() == TransactionStatus.SUCCESSED) {
                             TransactionDao.deleteTransaction(transaction.getHash());
-                            LogUtils.e("getIndividualTransactionByLoop 轮询交易成功" + transaction.toString());
+                        } else if (transaction.getTxReceiptStatus() == TransactionStatus.TIMEOUT) {
+                            TransactionDao.insertTransaction(transaction.toTransactionEntity());
                         }
                         EventPublisher.getInstance().sendUpdateTransactionEvent(transaction);
                     }
