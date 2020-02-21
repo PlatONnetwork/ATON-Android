@@ -115,6 +115,10 @@ public class AppFramework {
                 //修改transactionStatus 从string到int
                 schema.get("TransactionEntity")
                         .addField("txReceiptStatus_temp", Integer.class)
+                        .addField("nodeId", String.class)
+                        .addField("nodeName", String.class)
+                        .addField("totalReward", String.class)
+                        .addField("unDelegation", String.class)
                         .setRequired("txReceiptStatus_temp", true)
                         .transform(new RealmObjectSchema.Function() {
                             @Override
@@ -213,6 +217,13 @@ public class AppFramework {
                 schema.get("VerifyNodeEntity")
                         .addField("isConsensus", boolean.class);
 
+                //增加三个字段
+                schema.get("TransactionEntity")
+                        .addField("nodeId", String.class)
+                        .addField("nodeName", String.class)
+                        .addField("totalReward", String.class)
+                        .addField("unDelegation", String.class);
+
                 oldVersion++;
 
             } else if (oldVersion == 108) {
@@ -250,6 +261,13 @@ public class AppFramework {
                             }
                         });
 
+                //增加三个字段
+                schema.get("TransactionEntity")
+                        .addField("nodeId", String.class)
+                        .addField("nodeName", String.class)
+                        .addField("totalReward", String.class)
+                        .addField("unDelegation", String.class);
+
                 oldVersion++;
             } else if (oldVersion == 109) {
 
@@ -275,7 +293,23 @@ public class AppFramework {
                             }
                         });
 
+                //增加三个字段
+                schema.get("TransactionEntity")
+                        .addField("nodeId", String.class)
+                        .addField("nodeName", String.class)
+                        .addField("totalReward", String.class)
+                        .addField("unDelegation", String.class);
+
                 oldVersion++;
+            } else if (oldVersion == 110) {
+
+                //增加三个字段
+                schema.get("TransactionEntity")
+                        .addField("nodeId", String.class)
+                        .addField("nodeName", String.class)
+                        .addField("totalReward", String.class)
+                        .addField("unDelegation", String.class);
+
             }
 
         }
