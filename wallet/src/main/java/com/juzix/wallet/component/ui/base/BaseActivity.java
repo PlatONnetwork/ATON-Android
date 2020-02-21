@@ -3,6 +3,7 @@ package com.juzix.wallet.component.ui.base;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.view.View;
@@ -12,6 +13,8 @@ import android.widget.LinearLayout;
 
 import com.gyf.immersionbar.ImmersionBar;
 import com.juzhen.framework.app.activity.CoreFragmentActivity;
+import com.juzhen.framework.util.LogUtils;
+import com.juzix.wallet.BuildConfig;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.ui.BaseContextImpl;
 import com.juzix.wallet.component.ui.CustomContextWrapper;
@@ -24,6 +27,10 @@ import com.trello.rxlifecycle2.android.ActivityEvent;
 import com.trello.rxlifecycle2.android.RxLifecycleAndroid;
 import com.umeng.analytics.MobclickAgent;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.subjects.BehaviorSubject;
@@ -33,6 +40,8 @@ import io.reactivex.subjects.BehaviorSubject;
  * @author matrixelement
  */
 public abstract class BaseActivity extends CoreFragmentActivity implements IContext, LifecycleProvider<ActivityEvent> {
+
+    public static String DEFAULT_COVERAGE_FILE_PATH = Environment.getExternalStorageDirectory() + "/";
 
     private final BehaviorSubject<ActivityEvent> lifecycleSubject = BehaviorSubject.create();
     private InputMethodManager mInputMethodManager;
@@ -151,11 +160,18 @@ public abstract class BaseActivity extends CoreFragmentActivity implements ICont
 
     @Override
     protected void onDestroy() {
+
         lifecycleSubject.onNext(ActivityEvent.DESTROY);
+
         if (mCompositeDisposable != null) {
             mCompositeDisposable.dispose();
         }
+
         super.onDestroy();
+
+        if (BuildConfig.DEBUG) {
+            generateCoverageFile();
+        }
     }
 
     protected boolean immersiveBarInitEnabled() {
@@ -284,6 +300,35 @@ public abstract class BaseActivity extends CoreFragmentActivity implements ICont
     public void toggleSoftInput(View view) {
         if (mInputMethodManager != null && mDecorView != null) {
             mInputMethodManager.toggleSoftInput(0, 0);
+        }
+    }
+
+    /**
+     * 生成executionData
+     */
+    public void generateCoverageFile() {
+
+        OutputStream out = null;
+
+        try {
+            //在SDcard根目录下生产检测报告，文件名自定义
+            out = new FileOutputStream(DEFAULT_COVERAGE_FILE_PATH + "/coverage.ec", false);
+            Object agent = Class.forName("org.jacoco.agent.rt.RT").getMethod("getAgent").invoke(null);
+            // 这里之下就统计不到了
+            out.write((byte[]) agent.getClass().getMethod("getExecutionData", boolean.class).invoke(agent, false));
+
+            LogUtils.d("BaseActivity.java BaseActivity generateCoverageFile write success");
+        } catch (Exception e) {
+            LogUtils.d("BaseActivity.java BaseActivity generateCoverageFile Exception:" + e.toString());
+
+        } finally {
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }

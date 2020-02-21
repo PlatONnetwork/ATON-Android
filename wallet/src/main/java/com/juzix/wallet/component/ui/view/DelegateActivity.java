@@ -260,7 +260,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                             ToastUtil.showLongToast(getContext(), R.string.delegate_less_than_fee);
                             return;
                         }
-                        if (TransactionManager.getInstance().isExistPendingTransaction()) {
+                        if (!TransactionManager.getInstance().isAllowSendTransaction()) {
                             ToastUtil.showLongToast(getContext(), R.string.msg_wait_finished_transaction_tips);
                             return;
                         }

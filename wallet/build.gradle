@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
 apply plugin: 'org.sonarqube'
+apply from: '../jacoco-report.gradle'
 
 android {
 
@@ -39,6 +40,17 @@ android {
     lintOptions {
         abortOnError false
     }
+
+    testOptions {
+        unitTests.all {
+            jacoco {
+                includeNoLocationClasses = true
+            }
+        }
+    }
+
+
+
 
     signingConfigs {
 
@@ -87,10 +99,6 @@ android {
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
             multiDexEnabled true
             testCoverageEnabled true  //打开覆盖率统计开关
-
-            ndk {
-                abiFilters "armeabi-v7a"
-            }
         }
 
         releaseC {
@@ -132,10 +140,6 @@ android {
             multiDexEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeOC}")
-
-            ndk {
-                abiFilters "armeabi-v7a"
-            }
         }
 
         releaseX {
@@ -234,7 +238,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
 }
+
 
 def getGitVersion() {
     return 'git rev-parse --short HEAD'.execute().text.trim()
@@ -246,49 +252,6 @@ repositories {
     }
 }
 
-//下面jacoco插件的配置
-apply plugin: 'jacoco'
-
-jacoco {
-    toolVersion = "0.7.4+"
-}
-def coverageSourceDirs = [
-        '../wallet/src/main/java']
-
-task jacocoTestReport(type: JacocoReport, dependsOn: "testDebugUnitTest") {
-    group = "Reporting"
-
-    description = "Generate Jacoco coverage reports"
-
-    classDirectories = fileTree(
-            dir: '../wallet/build/intermediates/classes/debug',
-            excludes: ['**/R.class',
-                       '**/R$*.class',
-                       '**/*$ViewInjector*.*',
-                       '**/BuildConfig.*',
-                       '**/Manifest*.*']          // 去掉不进行检查的文件
-    )
-
-    additionalSourceDirs = files(coverageSourceDirs)
-    sourceDirectories = files(coverageSourceDirs) //设置需要检测覆盖率的目录
-//    executionData = files('../wallet/build/jacoco/testDebugUnitTest.exec')
-    executionData = files('$buildDir/outputs/code-coverage/connected/coverage.ec')
-
-    reports {
-        xml.enabled = true
-        html.enabled = true
-    }
-
-    doFirst {
-        new File("$buildDir/intermediates/classes/").eachFileRecurse { file ->
-            if (file.name.contains('$$')) {
-                file.renameTo(file.path.replace('$$', '$'))
-            }
-        }
-
-    }
-
-}
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
