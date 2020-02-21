@@ -22,7 +22,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
-import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
@@ -193,7 +192,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
                             return;
                         }
 
-                        if (TransactionManager.getInstance().isExistPendingTransaction()) {
+                        if (!TransactionManager.getInstance().isAllowSendTransaction()) {
                             ToastUtil.showLongToast(getContext(), R.string.msg_wait_finished_transaction_tips);
                             return;
                         }

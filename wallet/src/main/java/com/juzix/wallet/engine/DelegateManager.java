@@ -1,6 +1,7 @@
 package com.juzix.wallet.engine;
 
 import android.text.TextUtils;
+import android.util.Pair;
 
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.db.sqlite.TransactionDao;
@@ -9,18 +10,24 @@ import com.juzix.wallet.entity.TransactionStatus;
 import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.event.EventPublisher;
 
+import org.web3j.abi.datatypes.BytesType;
+import org.web3j.abi.datatypes.generated.Uint16;
+import org.web3j.abi.datatypes.generated.Uint256;
+import org.web3j.abi.datatypes.generated.Uint64;
 import org.web3j.crypto.Credentials;
 import org.web3j.platon.ContractAddress;
+import org.web3j.platon.FunctionType;
+import org.web3j.platon.PlatOnFunction;
 import org.web3j.platon.StakingAmountType;
 import org.web3j.platon.contracts.DelegateContract;
 import org.web3j.platon.contracts.RewardContract;
 import org.web3j.protocol.Web3j;
-import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
-import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.tx.gas.GasProvider;
 import org.web3j.utils.Convert;
+import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
@@ -33,6 +40,7 @@ import io.reactivex.functions.Predicate;
 
 
 public class DelegateManager {
+
     private static class InstanceHolder {
         private static volatile DelegateManager INSTANCE = new DelegateManager();
     }
@@ -44,37 +52,41 @@ public class DelegateManager {
     public Observable<Transaction> delegate(Credentials credentials, String to, String amount, String nodeId, String nodeName, String feeAmount, String transactionType, StakingAmountType stakingAmountType, GasProvider gasProvider) { //这里新修改，传入GasProvider
 
         return Single
-                .fromCallable(new Callable<PlatonSendTransaction>() {
+                .fromCallable(new Callable<String>() {
                     @Override
-                    public PlatonSendTransaction call() throws Exception {
+                    public String call() throws Exception {
                         Web3j web3j = Web3jManager.getInstance().getWeb3j();
                         String chainId = NodeManager.getInstance().getChainId();
                         DelegateContract delegateContract = DelegateContract.load(web3j, credentials, NumberParserUtils.parseLong(chainId));
-                        return delegateContract.delegateReturnTransaction(nodeId, stakingAmountType, Convert.toVon(amount, Convert.Unit.LAT).toBigInteger(), gasProvider).send();
+                        PlatOnFunction function = new PlatOnFunction(FunctionType.DELEGATE_FUNC_TYPE,
+                                Arrays.asList(new Uint16(stakingAmountType.getValue())
+                                        , new BytesType(Numeric.hexStringToByteArray(nodeId))
+                                        , new Uint256(Convert.toVon(amount, Convert.Unit.LAT).toBigInteger())), gasProvider);
+                        return TransactionManager.getInstance().sendTransaction(delegateContract, credentials, function);
                     }
                 })
-                .filter(new Predicate<PlatonSendTransaction>() {
+                .filter(new Predicate<String>() {
                     @Override
-                    public boolean test(PlatonSendTransaction platonSendTransaction) throws Exception {
-                        return !TextUtils.isEmpty(platonSendTransaction.getTransactionHash());
+                    public boolean test(String hash) throws Exception {
+                        return !TextUtils.isEmpty(hash);
                     }
                 })
-                .switchIfEmpty(new SingleSource<PlatonSendTransaction>() {
+                .switchIfEmpty(new SingleSource<String>() {
                     @Override
-                    public void subscribe(SingleObserver<? super PlatonSendTransaction> observer) {
+                    public void subscribe(SingleObserver<? super String> observer) {
                         observer.onError(new Throwable());
                     }
                 })
-                .flatMap(new Function<PlatonSendTransaction, SingleSource<Transaction>>() {
+                .flatMap(new Function<String, SingleSource<Transaction>>() {
                     @Override
-                    public SingleSource<Transaction> apply(PlatonSendTransaction platonSendTransaction) throws Exception {
-                        return insertTransaction(credentials, platonSendTransaction, to, amount, nodeId, nodeName, feeAmount, transactionType);
+                    public SingleSource<Transaction> apply(String hash) throws Exception {
+                        return insertTransaction(credentials, hash, to, amount, nodeId, nodeName, feeAmount, transactionType);
                     }
                 })
                 .toObservable();
     }
 
-    private Single<Transaction> insertTransaction(Credentials credentials, PlatonSendTransaction platonSendTransaction, String to, String amount, String nodeId, String nodeName, String feeAmount, String transactionType) {
+    private Single<Transaction> insertTransaction(Credentials credentials, String hash, String to, String amount, String nodeId, String nodeName, String feeAmount, String transactionType) {
 
         return Single.just(new Transaction.Builder()
                 .from(credentials.getAddress())
@@ -88,7 +100,7 @@ public class DelegateManager {
                 .nodeId(nodeId)
                 .chainId(NodeManager.getInstance().getChainId())
                 .txReceiptStatus(TransactionStatus.PENDING.ordinal())
-                .hash(platonSendTransaction.getTransactionHash())
+                .hash(hash)
                 .build())
                 .doOnSuccess(new Consumer<Transaction>() {
                     @Override
@@ -105,7 +117,7 @@ public class DelegateManager {
                 .doOnSuccess(new Consumer<Transaction>() {
                     @Override
                     public void accept(Transaction transaction) throws Exception {
-                        TransactionManager.getInstance().putTask(transaction.getHash(), TransactionManager.getInstance().getTransactionByLoop(transaction));
+                        TransactionManager.getInstance().putTask(transaction.getHash(), new Pair<>(transaction.getTimestamp(), TransactionManager.getInstance().getTransactionByLoop(transaction)));
                     }
                 })
                 .toSingle();
@@ -122,36 +134,40 @@ public class DelegateManager {
      * @param stakingBlockNum
      * @param amount
      * @param transactionType
-     * @param GasProvider
+     * @param gasProvider
      * @return
      */
-    public Observable<Transaction> withdrawDelegate(Credentials credentials, String to, String nodeId, String nodeName, String feeAmount, String stakingBlockNum, String amount, String transactionType, GasProvider GasProvider) {
+    public Observable<Transaction> withdrawDelegate(Credentials credentials, String to, String nodeId, String nodeName, String feeAmount, String stakingBlockNum, String amount, String transactionType, GasProvider gasProvider) {
 
-        return Single.fromCallable(new Callable<PlatonSendTransaction>() {
+        return Single.fromCallable(new Callable<String>() {
             @Override
-            public PlatonSendTransaction call() throws Exception {
+            public String call() throws Exception {
                 Web3j web3j = Web3jManager.getInstance().getWeb3j();
                 String chainId = NodeManager.getInstance().getChainId();
                 DelegateContract delegateContract = DelegateContract.load(web3j, credentials, NumberParserUtils.parseLong(chainId));
-                return delegateContract.unDelegateReturnTransaction(nodeId, new BigInteger(stakingBlockNum), Convert.toVon(amount, Convert.Unit.LAT).toBigInteger(), GasProvider).send();
+                PlatOnFunction platOnFunction = new PlatOnFunction(FunctionType.WITHDREW_DELEGATE_FUNC_TYPE,
+                        Arrays.asList(new Uint64(new BigInteger(stakingBlockNum))
+                                , new BytesType(Numeric.hexStringToByteArray(nodeId))
+                                , new Uint256(Convert.toVon(amount, Convert.Unit.LAT).toBigInteger())), gasProvider);
+                return TransactionManager.getInstance().sendTransaction(delegateContract, credentials, platOnFunction);
             }
         })
-                .filter(new Predicate<PlatonSendTransaction>() {
+                .filter(new Predicate<String>() {
                     @Override
-                    public boolean test(PlatonSendTransaction platonSendTransaction) throws Exception {
-                        return !TextUtils.isEmpty(platonSendTransaction.getTransactionHash());
+                    public boolean test(String hash) throws Exception {
+                        return !TextUtils.isEmpty(hash);
                     }
                 })
-                .switchIfEmpty(new SingleSource<PlatonSendTransaction>() {
+                .switchIfEmpty(new SingleSource<String>() {
                     @Override
-                    public void subscribe(SingleObserver<? super PlatonSendTransaction> observer) {
+                    public void subscribe(SingleObserver<? super String> observer) {
                         observer.onError(new Throwable());
                     }
                 })
-                .flatMap(new Function<PlatonSendTransaction, SingleSource<Transaction>>() {
+                .flatMap(new Function<String, SingleSource<Transaction>>() {
                     @Override
-                    public SingleSource<Transaction> apply(PlatonSendTransaction platonSendTransaction) throws Exception {
-                        return insertTransaction(credentials, platonSendTransaction, to, amount, nodeId, nodeName, feeAmount, transactionType);
+                    public SingleSource<Transaction> apply(String hash) throws Exception {
+                        return insertTransaction(credentials, hash, to, amount, nodeId, nodeName, feeAmount, transactionType);
                     }
                 })
                 .toObservable();
@@ -164,38 +180,40 @@ public class DelegateManager {
      * @param credentials
      * @param feeAmount
      * @param amount
-     * @param GasProvider
+     * @param gasProvider
      * @return
      */
-    public Observable<Transaction> withdrawDelegateReward(Credentials credentials, String feeAmount, String amount, GasProvider GasProvider) {
-        return Single.fromCallable(new Callable<PlatonSendTransaction>() {
+    public Observable<Transaction> withdrawDelegateReward(Credentials credentials, String feeAmount, String amount, GasProvider gasProvider) {
+        return Single.fromCallable(new Callable<String>() {
             @Override
-            public PlatonSendTransaction call() throws Exception {
+            public String call() throws Exception {
                 Web3j web3j = Web3jManager.getInstance().getWeb3j();
                 String chainId = NodeManager.getInstance().getChainId();
                 RewardContract rewardContract = RewardContract.load(web3j, credentials, NumberParserUtils.parseLong(chainId));
-                return rewardContract.withdrawDelegateRewardReturnTransaction(GasProvider).send();
+                PlatOnFunction function = new PlatOnFunction(FunctionType.WITHDRAW_DELEGATE_REWARD_FUNC_TYPE, gasProvider);
+                return TransactionManager.getInstance().sendTransaction(rewardContract, credentials, function);
             }
         })
-                .filter(new Predicate<PlatonSendTransaction>() {
+                .filter(new Predicate<String>() {
                     @Override
-                    public boolean test(PlatonSendTransaction platonSendTransaction) throws Exception {
-                        return !TextUtils.isEmpty(platonSendTransaction.getTransactionHash());
+                    public boolean test(String hash) throws Exception {
+                        return !TextUtils.isEmpty(hash);
                     }
                 })
-                .switchIfEmpty(new SingleSource<PlatonSendTransaction>() {
+                .switchIfEmpty(new SingleSource<String>() {
                     @Override
-                    public void subscribe(SingleObserver<? super PlatonSendTransaction> observer) {
+                    public void subscribe(SingleObserver<? super String> observer) {
                         observer.onError(new Throwable());
                     }
                 })
-                .flatMap(new Function<PlatonSendTransaction, SingleSource<Transaction>>() {
+                .flatMap(new Function<String, SingleSource<Transaction>>() {
                     @Override
-                    public SingleSource<Transaction> apply(PlatonSendTransaction platonSendTransaction) throws Exception {
-                        return insertTransaction(credentials, platonSendTransaction, ContractAddress.REWARD_CONTRACT_ADDRESS, amount, "", "", feeAmount, String.valueOf(TransactionType.CLAIM_REWARDS.getTxTypeValue()));
+                    public SingleSource<Transaction> apply(String hash) throws Exception {
+                        return insertTransaction(credentials, hash, ContractAddress.REWARD_CONTRACT_ADDRESS, amount, "", "", feeAmount, String.valueOf(TransactionType.CLAIM_REWARDS.getTxTypeValue()));
                     }
                 })
                 .toObservable();
     }
+
 
 }

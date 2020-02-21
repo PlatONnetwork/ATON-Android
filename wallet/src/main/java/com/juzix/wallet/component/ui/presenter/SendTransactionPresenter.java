@@ -7,12 +7,10 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.jakewharton.rxbinding2.view.RxView;
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.ApiSingleObserver;
 import com.juzhen.framework.network.NetConnectivity;
-import com.juzhen.framework.util.LogUtils;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomObserver;
@@ -30,16 +28,14 @@ import com.juzix.wallet.component.ui.view.AssetsFragment;
 import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.config.AppSettings;
 import com.juzix.wallet.db.entity.AddressEntity;
-import com.juzix.wallet.db.entity.TransactionEntity;
 import com.juzix.wallet.db.entity.TransactionRecordEntity;
-import com.juzix.wallet.db.entity.WalletEntity;
 import com.juzix.wallet.db.sqlite.AddressDao;
 import com.juzix.wallet.db.sqlite.TransactionRecordDao;
 import com.juzix.wallet.engine.AppConfigManager;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
-import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.TransactionManager;
+import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.AccountBalance;
 import com.juzix.wallet.entity.Transaction;
@@ -264,6 +260,11 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                 return;
             }
 
+            if (!TransactionManager.getInstance().isAllowSendTransaction()) {
+                ToastUtil.showLongToast(getContext(), R.string.msg_wait_finished_transaction_tips);
+                return;
+            }
+
             if (BigDecimalUtil.isNotSmaller(transferAmount, AppSettings.getInstance().getReminderThresholdAmount())) {
                 CommonTipsDialogFragment.createDialogWithTwoButton(ContextCompat.getDrawable(currentActivity(), R.drawable.icon_dialog_tips),
                         string(R.string.msg_large_transaction_reminder, StringUtil.formatBalanceWithoutMinFraction(AppSettings.getInstance().getReminderThresholdAmount())),
@@ -335,7 +336,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     @SuppressLint("CheckResult")
     private void sendTransaction(String toAddress, String transferAmount) {
 
-        TransactionRecordEntity transactionRecordEntity = new TransactionRecordEntity(System.currentTimeMillis(), walletEntity.getPrefixAddress(), toAddress, transferAmount,NodeManager.getInstance().getChainId());
+        TransactionRecordEntity transactionRecordEntity = new TransactionRecordEntity(System.currentTimeMillis(), walletEntity.getPrefixAddress(), toAddress, transferAmount, NodeManager.getInstance().getChainId());
 
         if (AppSettings.getInstance().getResendReminder()) {
             Single

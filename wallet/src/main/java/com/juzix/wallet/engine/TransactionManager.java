@@ -1,6 +1,7 @@
 package com.juzix.wallet.engine;
 
 import android.text.TextUtils;
+import android.util.Pair;
 
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
@@ -18,18 +19,24 @@ import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.BigDecimalUtil;
 
 import org.web3j.crypto.Credentials;
+import org.web3j.crypto.Hash;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionEncoder;
+import org.web3j.platon.PlatOnFunction;
 import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
+import org.web3j.tx.PlatOnContract;
+import org.web3j.tx.RawTransactionManager;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.SocketTimeoutException;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
@@ -48,7 +55,7 @@ import retrofit2.Response;
  */
 public class TransactionManager {
 
-    private volatile Map<String, Disposable> mDisposableMap = new HashMap<>();
+    private volatile Map<String, Pair<Long, Disposable>> mDisposableMap = new LinkedHashMap<>();
 
     private TransactionManager() {
 
@@ -66,21 +73,29 @@ public class TransactionManager {
         return walletEntity;
     }
 
-    public Disposable getTaskByHash(String hash) {
-        return mDisposableMap.get(hash);
-    }
-
     public Disposable removeTaskByHash(String hash) {
-        return mDisposableMap.remove(hash);
+        Pair<Long, Disposable> pair = mDisposableMap.remove(hash);
+        if (pair != null) {
+            return pair.second;
+        }
+        return null;
     }
 
-    public boolean isExistPendingTransaction() {
-        return !mDisposableMap.isEmpty();
+    /**
+     * 是否允许发送交易，与上笔pending中交易间隔超过五分钟
+     *
+     * @return
+     */
+    public boolean isAllowSendTransaction() {
+
+        Set<Map.Entry<String, Pair<Long, Disposable>>> entrySet = mDisposableMap.entrySet();
+
+        return entrySet.isEmpty() || System.currentTimeMillis() - entrySet.iterator().next().getValue().first > Constants.Common.TRANSACTION_SEND_INTERVAL;
     }
 
-    public void putTask(String hash, Disposable disposable) {
+    public void putTask(String hash, Pair<Long, Disposable> pair) {
         if (!mDisposableMap.containsKey(hash)) {
-            mDisposableMap.put(hash, disposable);
+            mDisposableMap.put(hash, pair);
         }
     }
 
@@ -95,22 +110,59 @@ public class TransactionManager {
 
         Credentials credentials = Credentials.create(privateKey);
 
-        try {
+        RawTransaction rawTransaction = RawTransaction.createTransaction(Web3jManager.getInstance().getNonce(from), gasPrice, gasLimit, toAddress, amount.toBigInteger(),
+                "");
 
-            RawTransaction rawTransaction = RawTransaction.createTransaction(Web3jManager.getInstance().getNonce(from), gasPrice, gasLimit, toAddress, amount.toBigInteger(),
-                    "");
+        byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, NumberParserUtils.parseLong(NodeManager.getInstance().getChainId()), credentials);
 
-            byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, NumberParserUtils.parseLong(NodeManager.getInstance().getChainId()), credentials);
-            String hexValue = Numeric.toHexString(signedMessage);
-
-            PlatonSendTransaction transaction = Web3jManager.getInstance().getWeb3j().platonSendRawTransaction(hexValue).send();
-
-            return transaction.getTransactionHash();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
+        return getTransactionHash(Numeric.toHexString(signedMessage));
     }
+
+    public String sendTransaction(PlatOnContract platOnContract, Credentials credentials, PlatOnFunction platOnFunction) throws IOException {
+
+        String signedMessage = signedTransaction(platOnContract, credentials, platOnFunction.getGasProvider().getGasPrice(), platOnFunction.getGasProvider().getGasLimit(), platOnContract.getContractAddress(), platOnFunction.getEncodeData(), BigInteger.ZERO);
+
+        return getTransactionHash(signedMessage);
+
+    }
+
+    private String signedTransaction(PlatOnContract platOnContract, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit, String to,
+                                     String data, BigInteger value) throws IOException {
+
+        RawTransactionManager rawTransactionManager = (RawTransactionManager) platOnContract.getTransactionManager();
+
+        BigInteger nonce = Web3jManager.getInstance().getNonce(credentials.getAddress());
+
+        return rawTransactionManager.signedTransaction(RawTransaction.createTransaction(
+                nonce,
+                gasPrice,
+                gasLimit,
+                to,
+                value,
+                data));
+
+    }
+
+
+    /**
+     * 获取交易hash，交易读超时的话就使用本地hash
+     *
+     * @param hexValue
+     * @return
+     */
+    private String getTransactionHash(String hexValue) {
+        String hash = null;
+        try {
+            hash = Web3jManager.getInstance().getWeb3j().platonSendRawTransaction(hexValue).send().getTransactionHash();
+        } catch (IOException e) {
+            e.printStackTrace();
+            if (e instanceof SocketTimeoutException) {
+                hash = Hash.sha3(hexValue);
+            }
+        }
+        return hash;
+    }
+
 
     public String sendTransaction(String signedMessage) {
 
@@ -190,7 +242,7 @@ public class TransactionManager {
                     @Override
                     public void accept(Transaction transaction) throws Exception {
                         EventPublisher.getInstance().sendUpdateTransactionEvent(transaction);
-                        putTask(transaction.getHash(), getTransactionByLoop(transaction));
+                        putTask(transaction.getHash(), new Pair<>(transaction.getTimestamp(), getTransactionByLoop(transaction)));
                     }
                 });
     }

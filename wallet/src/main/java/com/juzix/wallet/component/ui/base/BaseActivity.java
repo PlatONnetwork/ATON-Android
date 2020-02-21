@@ -160,10 +160,13 @@ public abstract class BaseActivity extends CoreFragmentActivity implements ICont
 
     @Override
     protected void onDestroy() {
+
         lifecycleSubject.onNext(ActivityEvent.DESTROY);
+
         if (mCompositeDisposable != null) {
             mCompositeDisposable.dispose();
         }
+
         super.onDestroy();
 
         if (BuildConfig.DEBUG) {

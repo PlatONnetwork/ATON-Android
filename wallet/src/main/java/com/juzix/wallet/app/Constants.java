@@ -14,6 +14,10 @@ public class Constants {
          * 重复交易超时时间
          */
         int TRANSACTION_TIMEOUT_WITH_MILLISECOND = 2 * 60 * 60 * 1000;
+        /**
+         * 交易发送间隔
+         */
+        int TRANSACTION_SEND_INTERVAL = 5 * 60 * 1000;
 
     }
 
