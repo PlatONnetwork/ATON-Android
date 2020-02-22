@@ -48,4 +48,16 @@ public class DateUtil {
         String day = sf.format(new Date(time));
         return day.equals(nowDay);
     }
+
+    /**
+     * 毫秒转秒
+     *
+     * @param millisecond
+     * @return
+     */
+    public static long millisecondToMinutes(long millisecond) {
+
+        return millisecond / (60 * 1000);
+
+    }
 }

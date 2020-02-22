@@ -62,6 +62,7 @@ import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.AmountUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.CommonTextUtils;
+import com.juzix.wallet.utils.DateUtil;
 import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.GlideUtils;
 import com.juzix.wallet.utils.RxUtils;
@@ -260,8 +261,11 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                             ToastUtil.showLongToast(getContext(), R.string.delegate_less_than_fee);
                             return;
                         }
-                        if (!TransactionManager.getInstance().isAllowSendTransaction()) {
-                            ToastUtil.showLongToast(getContext(), R.string.msg_wait_finished_transaction_tips);
+
+                        long currentTime = System.currentTimeMillis();
+
+                        if (!TransactionManager.getInstance().isAllowSendTransaction(currentTime)) {
+                            ToastUtil.showLongToast(getContext(), string(R.string.msg_wait_finished_transaction_tips, DateUtil.millisecondToMinutes(TransactionManager.getInstance().getSendTransactionTimeInterval(currentTime))));
                             return;
                         }
                         mPresenter.submitDelegate(stakingAmountType);

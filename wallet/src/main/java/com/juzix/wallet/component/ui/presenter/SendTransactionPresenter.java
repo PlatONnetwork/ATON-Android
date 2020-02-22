@@ -44,6 +44,7 @@ import com.juzix.wallet.entity.TransactionAuthorizationData;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.DateUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
@@ -260,8 +261,10 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                 return;
             }
 
-            if (!TransactionManager.getInstance().isAllowSendTransaction()) {
-                ToastUtil.showLongToast(getContext(), R.string.msg_wait_finished_transaction_tips);
+            long currentTime = System.currentTimeMillis();
+
+            if (!TransactionManager.getInstance().isAllowSendTransaction(currentTime)) {
+                ToastUtil.showLongToast(getContext(), string(R.string.msg_wait_finished_transaction_tips, DateUtil.millisecondToMinutes(TransactionManager.getInstance().getSendTransactionTimeInterval(currentTime))));
                 return;
             }
 
