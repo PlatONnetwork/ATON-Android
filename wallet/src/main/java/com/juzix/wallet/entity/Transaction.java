@@ -801,6 +801,10 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
                 .setTxReceiptStatus(txReceiptStatus)
                 .setActualTxCost(actualTxCost)
                 .setValue(NumberParserUtils.parseDouble(value))
+                .setNodeId(nodeId)
+                .setNodeName(nodeName)
+                .setTotalReward(totalReward)
+                .setUnDelegation(unDelegation)
                 .build();
     }
 

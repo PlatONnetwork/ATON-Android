@@ -70,6 +70,14 @@ public class TransactionEntity extends RealmObject implements Cloneable {
      */
     private String txInfo;
 
+    private String nodeId;
+
+    private String nodeName;
+
+    private String totalReward;
+
+    private String unDelegation;
+
     public TransactionEntity() {
     }
 
@@ -86,6 +94,10 @@ public class TransactionEntity extends RealmObject implements Cloneable {
         this.chainId = builder.chainId;
         this.actualTxCost = builder.actualTxCost;
         this.txInfo = builder.txInfo;
+        this.nodeId = builder.nodeId;
+        this.nodeName = builder.nodeName;
+        this.totalReward = builder.totalReward;
+        this.unDelegation = builder.unDelegation;
     }
 
     public String getHash() {
@@ -184,6 +196,38 @@ public class TransactionEntity extends RealmObject implements Cloneable {
         this.txInfo = txInfo;
     }
 
+    public String getNodeId() {
+        return nodeId;
+    }
+
+    public void setNodeId(String nodeId) {
+        this.nodeId = nodeId;
+    }
+
+    public String getNodeName() {
+        return nodeName;
+    }
+
+    public void setNodeName(String nodeName) {
+        this.nodeName = nodeName;
+    }
+
+    public String getTotalReward() {
+        return totalReward;
+    }
+
+    public void setTotalReward(String totalReward) {
+        this.totalReward = totalReward;
+    }
+
+    public String getUnDelegation() {
+        return unDelegation;
+    }
+
+    public void setUnDelegation(String unDelegation) {
+        this.unDelegation = unDelegation;
+    }
+
     public static final class Builder {
         private String hash;
         private long createTime;
@@ -197,6 +241,10 @@ public class TransactionEntity extends RealmObject implements Cloneable {
         private String chainId;
         private String actualTxCost;
         private String txInfo;
+        private String nodeId;
+        private String nodeName;
+        private String totalReward;
+        private String unDelegation;
 
         public Builder(String hash, String walletName, String from, String to, long createTime) {
             this.hash = hash;
@@ -241,6 +289,27 @@ public class TransactionEntity extends RealmObject implements Cloneable {
             return this;
         }
 
+        public Builder setNodeId(String nodeId) {
+            this.nodeId = nodeId;
+            return this;
+        }
+
+        public Builder setNodeName(String nodeName) {
+            this.nodeName = nodeName;
+            return this;
+        }
+
+        public Builder setTotalReward(String totalReward) {
+            this.totalReward = totalReward;
+            return this;
+        }
+
+        public Builder setUnDelegation(String unDelegation) {
+            this.unDelegation = unDelegation;
+            return this;
+        }
+
+
         public TransactionEntity build() {
             return new TransactionEntity(this);
         }
@@ -260,6 +329,10 @@ public class TransactionEntity extends RealmObject implements Cloneable {
                 .value(String.valueOf(value))
                 .actualTxCost(actualTxCost)
                 .txInfo(txInfo)
+                .nodeId(nodeId)
+                .nodeName(nodeName)
+                .totalReward(totalReward)
+                .unDelegation(unDelegation)
                 .build();
     }
 }

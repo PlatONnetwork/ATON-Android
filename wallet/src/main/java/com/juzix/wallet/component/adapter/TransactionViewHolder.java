@@ -84,8 +84,9 @@ public class TransactionViewHolder extends BaseViewHolder<Transaction> {
         boolean isTransfer = transaction.isTransfer(mQueryAddressList);
         boolean isValueZero = !BigDecimalUtil.isBiggerThanZero(transaction.getValue());
         boolean isSend = isSender && transactionType != TransactionType.UNDELEGATE && transactionType != TransactionType.EXIT_VALIDATOR && transactionType != TransactionType.CLAIM_REWARDS;
+        boolean isTransactionGray = isTransfer || isValueZero || transactionStatus == TransactionStatus.FAILED || transactionStatus == TransactionStatus.TIMEOUT;
 
-        if (isTransfer || isValueZero || transactionStatus == TransactionStatus.FAILED) {
+        if (isTransactionGray) {
             mTransactionAmountTv.setText(AmountUtil.formatAmountText(transaction.getValue()));
             mTransactionAmountTv.setTextColor(ContextCompat.getColor(mContext, R.color.color_b6bbd0));
         } else if (isSend) {
@@ -95,9 +96,11 @@ public class TransactionViewHolder extends BaseViewHolder<Transaction> {
             mTransactionAmountTv.setText(String.format("%s%s", "+", AmountUtil.formatAmountText(transaction.getValue())));
             mTransactionAmountTv.setTextColor(ContextCompat.getColor(mContext, R.color.color_19a20e));
         }
+        mTransactionStatusTv.setTextColor(isTransactionGray ? ContextCompat.getColor(mContext, R.color.color_000000_50) : ContextCompat.getColor(mContext, R.color.color_000000));
+        mTransactionTimeTv.setTextColor(isTransactionGray ? ContextCompat.getColor(mContext, R.color.color_61646e_50) : ContextCompat.getColor(mContext, R.color.color_61646e));
         mTransactionStatusTv.setText(getTxTDesc(transaction, mContext, isSender));
         mTransactionTimeTv.setText(transaction.getShowCreateTime());
-        mPendingLayout.setVisibility(transactionStatus != TransactionStatus.PENDING || mContext instanceof TransactionRecordsActivity || !isSender ? View.GONE : View.VISIBLE);
+        mPendingLayout.setVisibility(transactionStatus != TransactionStatus.PENDING || mContext instanceof TransactionRecordsActivity ? View.GONE : View.VISIBLE);
         mTransactionStatusIv.setVisibility(transactionStatus == TransactionStatus.PENDING || mContext instanceof TransactionRecordsActivity ? View.GONE : View.VISIBLE);
 
         if (transactionType == TransactionType.TRANSFER) {

@@ -1,18 +1,18 @@
 package com.juzix.wallet.engine;
 
-import com.juzhen.framework.network.ApiResponse;
-import com.juzhen.framework.network.ApiSingleObserver;
 import com.juzhen.framework.util.LogUtils;
 import com.juzix.wallet.entity.AppConfig;
-import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.JSONUtil;
 import com.juzix.wallet.utils.RxUtils;
+
+import io.reactivex.functions.Consumer;
 
 
 public class AppConfigManager {
 
     private final static String DEFAULT_MIN_GASPRICE = "10000000000";
     private final static String DEFAULT_MIN_DELEGATION = "10000000000000000000";
-    private final static String DEFAULT_TIMEOUT = String.valueOf(24 * 60 * 60);
+    private final static String DEFAULT_TIMEOUT = String.valueOf(24 * 60 * 60 * 1000);
 
     private AppConfig mAppConfig;
 
@@ -37,7 +37,14 @@ public class AppConfigManager {
     }
 
     public String getTimeout() {
-        return BigDecimalUtil.mul(mAppConfig.getTimeout(), "1000").toPlainString();
+        return mAppConfig.getTimeout();
+    }
+
+    @Override
+    public String toString() {
+        return "AppConfigManager{" +
+                "mAppConfig=" + mAppConfig +
+                '}';
     }
 
     public void init() {
@@ -46,17 +53,12 @@ public class AppConfigManager {
                 .getCommonApi()
                 .getAppConfig()
                 .compose(RxUtils.getSingleSchedulerTransformer())
-                .subscribe(new ApiSingleObserver<AppConfig>() {
+                .subscribe(new Consumer<String>() {
                     @Override
-                    public void onApiSuccess(AppConfig appConfig) {
-                        LogUtils.e("onApiSuccess");
-                        mAppConfig = appConfig;
-                        LogUtils.e(appConfig.toString());
-                    }
-
-                    @Override
-                    public void onApiFailure(ApiResponse response) {
-                        LogUtils.e("onApiFailure");
+                    public void accept(String text) throws Exception {
+                        LogUtils.e(text);
+                        mAppConfig = JSONUtil.parseObject(text, AppConfig.class);
+                        LogUtils.e(mAppConfig.toString());
                     }
                 });
 
