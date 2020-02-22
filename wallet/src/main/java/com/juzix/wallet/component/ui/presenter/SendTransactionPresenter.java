@@ -38,6 +38,7 @@ import com.juzix.wallet.engine.TransactionManager;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.AccountBalance;
+import com.juzix.wallet.entity.RPCErrorCode;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionAuthorizationBaseData;
 import com.juzix.wallet.entity.TransactionAuthorizationData;
@@ -493,7 +494,6 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                     @Override
                     public void accept(Transaction transaction) {
                         if (isViewAttached()) {
-                            showLongToast(string(R.string.transfer_succeed));
                             insertAndDeleteTransactionRecord(transactionRecordEntity);
                             backToTransactionListWithDelay();
                         }
@@ -503,8 +503,9 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                     public void accept(Throwable throwable) {
                         if (isViewAttached()) {
                             if (throwable instanceof CustomThrowable) {
-                                CustomThrowable exception = (CustomThrowable) throwable;
-                                if (exception.getErrCode() == CustomThrowable.CODE_ERROR_TRANSFER_FAILED) {
+                                if (throwable instanceof CustomThrowable && ((CustomThrowable) throwable).getErrCode() == RPCErrorCode.CONNECT_TIMEOUT) {
+                                    showLongToast(R.string.msg_connect_timeout);
+                                } else {
                                     showLongToast(string(R.string.transfer_failed));
                                 }
                             }

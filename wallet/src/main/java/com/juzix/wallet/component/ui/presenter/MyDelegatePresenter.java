@@ -8,6 +8,7 @@ import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.ApiSingleObserver;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomObserver;
+import com.juzix.wallet.app.CustomThrowable;
 import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.MyDelegateContract;
@@ -29,6 +30,7 @@ import com.juzix.wallet.entity.ClaimReward;
 import com.juzix.wallet.entity.ClaimRewardInfo;
 import com.juzix.wallet.entity.DelegateInfo;
 import com.juzix.wallet.entity.GasProvider;
+import com.juzix.wallet.entity.RPCErrorCode;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionAuthorizationBaseData;
 import com.juzix.wallet.entity.TransactionAuthorizationData;
@@ -194,7 +196,9 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                                         @Override
                                         public void accept(Throwable throwable) {
                                             super.accept(throwable);
-                                            if (isViewAttached()) {
+                                            if (throwable instanceof CustomThrowable && ((CustomThrowable) throwable).getErrCode() == RPCErrorCode.CONNECT_TIMEOUT) {
+                                                showLongToast(R.string.msg_connect_timeout);
+                                            } else {
                                                 showLongToast(R.string.claim_reward_failed);
                                             }
                                         }

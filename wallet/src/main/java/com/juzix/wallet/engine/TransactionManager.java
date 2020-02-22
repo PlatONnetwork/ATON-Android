@@ -9,6 +9,8 @@ import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomThrowable;
 import com.juzix.wallet.db.sqlite.TransactionDao;
+import com.juzix.wallet.entity.RPCErrorCode;
+import com.juzix.wallet.entity.RPCTransactionResult;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionReceipt;
 import com.juzix.wallet.entity.TransactionStatus;
@@ -30,6 +32,7 @@ import org.web3j.utils.Numeric;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -119,7 +122,7 @@ public class TransactionManager {
         }
     }
 
-    public String sendTransaction(String privateKey, String from, String toAddress, BigDecimal amount, BigInteger gasPrice, BigInteger gasLimit) {
+    public RPCTransactionResult sendTransaction(String privateKey, String from, String toAddress, BigDecimal amount, BigInteger gasPrice, BigInteger gasLimit) {
 
         Credentials credentials = Credentials.create(privateKey);
 
@@ -128,14 +131,14 @@ public class TransactionManager {
 
         byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, NumberParserUtils.parseLong(NodeManager.getInstance().getChainId()), credentials);
 
-        return getTransactionHash(Numeric.toHexString(signedMessage));
+        return getTransactionResult(Numeric.toHexString(signedMessage));
     }
 
-    public String sendTransaction(PlatOnContract platOnContract, Credentials credentials, PlatOnFunction platOnFunction) throws IOException {
+    public RPCTransactionResult sendTransaction(PlatOnContract platOnContract, Credentials credentials, PlatOnFunction platOnFunction) throws IOException {
 
         String signedMessage = signedTransaction(platOnContract, credentials, platOnFunction.getGasProvider().getGasPrice(), platOnFunction.getGasProvider().getGasLimit(), platOnContract.getContractAddress(), platOnFunction.getEncodeData(), BigInteger.ZERO);
 
-        return getTransactionHash(signedMessage);
+        return getTransactionResult(signedMessage);
 
     }
 
@@ -163,17 +166,20 @@ public class TransactionManager {
      * @param hexValue
      * @return
      */
-    private String getTransactionHash(String hexValue) {
-        String hash = null;
+    private RPCTransactionResult getTransactionResult(String hexValue) {
+        RPCTransactionResult rpcTransactionResult = null;
         try {
-            hash = Web3jManager.getInstance().getWeb3j().platonSendRawTransaction(hexValue).send().getTransactionHash();
+            String hash = Web3jManager.getInstance().getWeb3j().platonSendRawTransaction(hexValue).send().getTransactionHash();
+            rpcTransactionResult = new RPCTransactionResult(RPCErrorCode.SUCCESS, hash);
         } catch (IOException e) {
             e.printStackTrace();
             if (e instanceof SocketTimeoutException) {
-                hash = Hash.sha3(hexValue);
+                rpcTransactionResult = new RPCTransactionResult(RPCErrorCode.SOCKET_TIMEOUT, Hash.sha3(hexValue));
+            } else if (e instanceof ConnectException) {
+                rpcTransactionResult = new RPCTransactionResult(RPCErrorCode.CONNECT_TIMEOUT, Hash.sha3(hexValue));
             }
         }
-        return hash;
+        return rpcTransactionResult;
     }
 
 
@@ -220,11 +226,11 @@ public class TransactionManager {
         return Single.create(new SingleOnSubscribe<String>() {
             @Override
             public void subscribe(SingleEmitter<String> emitter) throws Exception {
-                String transactionHash = sendTransaction(privateKey, fromAddress, toAddress, transferAmount, gasPrice, gasLimit);
-                if (TextUtils.isEmpty(transactionHash)) {
-                    emitter.onError(new CustomThrowable(CustomThrowable.CODE_ERROR_TRANSFER_FAILED));
+                RPCTransactionResult transactionResult = sendTransaction(privateKey, fromAddress, toAddress, transferAmount, gasPrice, gasLimit);
+                if (TextUtils.isEmpty(transactionResult.getHash())) {
+                    emitter.onError(new CustomThrowable(transactionResult.getErrCode()));
                 } else {
-                    emitter.onSuccess(transactionHash);
+                    emitter.onSuccess(transactionResult.getHash());
                 }
             }
         }).map(new Function<String, Transaction>() {

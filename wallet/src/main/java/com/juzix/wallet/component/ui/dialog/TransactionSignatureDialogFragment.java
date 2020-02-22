@@ -244,15 +244,6 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
                 .subscribe(new Consumer<PlatonSendTransaction>() {
                     @Override
                     public void accept(PlatonSendTransaction platonSendTransaction) throws Exception {
-                        if (transactionSignatureData.getFunctionType() == FunctionType.TRANSFER) {
-                            ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.transfer_succeed));
-                        } else if (transactionSignatureData.getFunctionType() == FunctionType.DELEGATE_FUNC_TYPE) {
-                            ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.delegate_success));
-                        } else if (transactionSignatureData.getFunctionType() == FunctionType.WITHDREW_DELEGATE_FUNC_TYPE) {
-                            ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.withdraw_success));
-                        } else if (transactionSignatureData.getFunctionType() == FunctionType.WITHDRAW_DELEGATE_REWARD_FUNC_TYPE) {
-                            ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.withdraw_delegate_reward_success));
-                        }
                         afterSendTransactionSucceed(platonSendTransaction, transactionAuthorizationData);
                     }
                 }, new Consumer<Throwable>() {
