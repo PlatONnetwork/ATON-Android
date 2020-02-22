@@ -99,8 +99,9 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                             List<Transaction> dbTransactionList = pair.first;
                             List<Transaction> netTransactionList = pair.second;
                             List<Transaction> transactionList = new ArrayList<>();
-                            transactionList.addAll(dbTransactionList);
                             transactionList.addAll(netTransactionList);
+                            transactionList.removeAll(dbTransactionList);
+                            transactionList.addAll(dbTransactionList);
                             //先进行排序
                             List<Transaction> transactions = mTransactionMap.get(mWalletAddress);
                             List<Transaction> newTransactionList = getNewTransactionList(transactions, transactionList, true);
@@ -150,8 +151,9 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                             List<Transaction> dbTransactionList = pair.first;
                             List<Transaction> netTransactionList = pair.second;
                             List<Transaction> transactionList = new ArrayList<>();
-                            transactionList.addAll(dbTransactionList);
                             transactionList.addAll(netTransactionList);
+                            transactionList.removeAll(dbTransactionList);
+                            transactionList.addAll(dbTransactionList);
 
                             List<Transaction> newTransactionList = getNewTransactionList(transactions, transactionList, true);
                             Collections.sort(newTransactionList);

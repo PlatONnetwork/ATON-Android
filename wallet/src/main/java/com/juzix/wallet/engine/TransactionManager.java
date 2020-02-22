@@ -85,12 +85,26 @@ public class TransactionManager {
      *
      * @return
      */
-    public boolean isAllowSendTransaction() {
+    public long getSendTransactionTimeInterval(long currentTime) {
 
         Set<Map.Entry<String, Pair<Long, Disposable>>> entrySet = mDisposableMap.entrySet();
 
-        return entrySet.isEmpty() || System.currentTimeMillis() - entrySet.iterator().next().getValue().first > Constants.Common.TRANSACTION_SEND_INTERVAL;
+        return Constants.Common.TRANSACTION_SEND_INTERVAL - (currentTime - entrySet.iterator().next().getValue().first);
+
     }
+
+    /**
+     * 是否允许发送交易，与上笔pending中交易间隔超过五分钟
+     *
+     * @return
+     */
+    public boolean isAllowSendTransaction(long currentTime) {
+
+        Set<Map.Entry<String, Pair<Long, Disposable>>> entrySet = mDisposableMap.entrySet();
+
+        return entrySet.isEmpty() || currentTime - entrySet.iterator().next().getValue().first > Constants.Common.TRANSACTION_SEND_INTERVAL;
+    }
+
 
     public void putTask(String hash, Pair<Long, Disposable> pair) {
         if (!mDisposableMap.containsKey(hash)) {
