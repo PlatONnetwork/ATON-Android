@@ -10,6 +10,7 @@ import com.juzhen.framework.network.ApiSingleObserver;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomObserver;
+import com.juzix.wallet.app.CustomThrowable;
 import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.WithDrawContract;
@@ -25,6 +26,7 @@ import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.DelegateItemInfo;
 import com.juzix.wallet.entity.DelegationValue;
+import com.juzix.wallet.entity.RPCErrorCode;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionAuthorizationBaseData;
 import com.juzix.wallet.entity.TransactionAuthorizationData;
@@ -278,7 +280,9 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                     public void accept(Throwable throwable) {
                         super.accept(throwable);
                         if (isViewAttached()) {
-                            if (isViewAttached()) {
+                            if (throwable instanceof CustomThrowable && ((CustomThrowable) throwable).getErrCode() == RPCErrorCode.CONNECT_TIMEOUT) {
+                                showLongToast(R.string.msg_connect_timeout);
+                            } else {
                                 showLongToast(R.string.withdraw_failed);
                             }
                         }

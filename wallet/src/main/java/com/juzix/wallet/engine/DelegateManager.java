@@ -4,7 +4,9 @@ import android.text.TextUtils;
 import android.util.Pair;
 
 import com.juzhen.framework.util.NumberParserUtils;
+import com.juzix.wallet.app.CustomThrowable;
 import com.juzix.wallet.db.sqlite.TransactionDao;
+import com.juzix.wallet.entity.RPCTransactionResult;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionStatus;
 import com.juzix.wallet.entity.TransactionType;
@@ -32,7 +34,8 @@ import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
 import io.reactivex.Single;
-import io.reactivex.SingleObserver;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
 import io.reactivex.SingleSource;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
@@ -52,9 +55,9 @@ public class DelegateManager {
     public Observable<Transaction> delegate(Credentials credentials, String to, String amount, String nodeId, String nodeName, String feeAmount, String transactionType, StakingAmountType stakingAmountType, GasProvider gasProvider) { //这里新修改，传入GasProvider
 
         return Single
-                .fromCallable(new Callable<String>() {
+                .fromCallable(new Callable<RPCTransactionResult>() {
                     @Override
-                    public String call() throws Exception {
+                    public RPCTransactionResult call() throws Exception {
                         Web3j web3j = Web3jManager.getInstance().getWeb3j();
                         String chainId = NodeManager.getInstance().getChainId();
                         DelegateContract delegateContract = DelegateContract.load(web3j, credentials, NumberParserUtils.parseLong(chainId));
@@ -65,25 +68,32 @@ public class DelegateManager {
                         return TransactionManager.getInstance().sendTransaction(delegateContract, credentials, function);
                     }
                 })
-                .filter(new Predicate<String>() {
+                .flatMap(new Function<RPCTransactionResult, SingleSource<RPCTransactionResult>>() {
                     @Override
-                    public boolean test(String hash) throws Exception {
-                        return !TextUtils.isEmpty(hash);
+                    public SingleSource<RPCTransactionResult> apply(RPCTransactionResult transactionResult) throws Exception {
+                        return createRPCTransactionResult(transactionResult);
                     }
                 })
-                .switchIfEmpty(new SingleSource<String>() {
+                .flatMap(new Function<RPCTransactionResult, SingleSource<Transaction>>() {
                     @Override
-                    public void subscribe(SingleObserver<? super String> observer) {
-                        observer.onError(new Throwable());
-                    }
-                })
-                .flatMap(new Function<String, SingleSource<Transaction>>() {
-                    @Override
-                    public SingleSource<Transaction> apply(String hash) throws Exception {
-                        return insertTransaction(credentials, hash, to, amount, nodeId, nodeName, feeAmount, transactionType);
+                    public SingleSource<Transaction> apply(RPCTransactionResult transactionResult) throws Exception {
+                        return insertTransaction(credentials, transactionResult.getHash(), to, amount, nodeId, nodeName, feeAmount, transactionType);
                     }
                 })
                 .toObservable();
+    }
+
+    private Single<RPCTransactionResult> createRPCTransactionResult(RPCTransactionResult rpcTransactionResult) {
+        return Single.create(new SingleOnSubscribe<RPCTransactionResult>() {
+            @Override
+            public void subscribe(SingleEmitter<RPCTransactionResult> emitter) throws Exception {
+                if (TextUtils.isEmpty(rpcTransactionResult.getHash())) {
+                    emitter.onError(new CustomThrowable(rpcTransactionResult.getErrCode()));
+                } else {
+                    emitter.onSuccess(rpcTransactionResult);
+                }
+            }
+        });
     }
 
     private Single<Transaction> insertTransaction(Credentials credentials, String hash, String to, String amount, String nodeId, String nodeName, String feeAmount, String transactionType) {
@@ -139,9 +149,9 @@ public class DelegateManager {
      */
     public Observable<Transaction> withdrawDelegate(Credentials credentials, String to, String nodeId, String nodeName, String feeAmount, String stakingBlockNum, String amount, String transactionType, GasProvider gasProvider) {
 
-        return Single.fromCallable(new Callable<String>() {
+        return Single.fromCallable(new Callable<RPCTransactionResult>() {
             @Override
-            public String call() throws Exception {
+            public RPCTransactionResult call() throws Exception {
                 Web3j web3j = Web3jManager.getInstance().getWeb3j();
                 String chainId = NodeManager.getInstance().getChainId();
                 DelegateContract delegateContract = DelegateContract.load(web3j, credentials, NumberParserUtils.parseLong(chainId));
@@ -152,22 +162,16 @@ public class DelegateManager {
                 return TransactionManager.getInstance().sendTransaction(delegateContract, credentials, platOnFunction);
             }
         })
-                .filter(new Predicate<String>() {
+                .flatMap(new Function<RPCTransactionResult, SingleSource<RPCTransactionResult>>() {
                     @Override
-                    public boolean test(String hash) throws Exception {
-                        return !TextUtils.isEmpty(hash);
+                    public SingleSource<RPCTransactionResult> apply(RPCTransactionResult transactionResult) throws Exception {
+                        return createRPCTransactionResult(transactionResult);
                     }
                 })
-                .switchIfEmpty(new SingleSource<String>() {
+                .flatMap(new Function<RPCTransactionResult, SingleSource<Transaction>>() {
                     @Override
-                    public void subscribe(SingleObserver<? super String> observer) {
-                        observer.onError(new Throwable());
-                    }
-                })
-                .flatMap(new Function<String, SingleSource<Transaction>>() {
-                    @Override
-                    public SingleSource<Transaction> apply(String hash) throws Exception {
-                        return insertTransaction(credentials, hash, to, amount, nodeId, nodeName, feeAmount, transactionType);
+                    public SingleSource<Transaction> apply(RPCTransactionResult transactionResult) throws Exception {
+                        return insertTransaction(credentials, transactionResult.getHash(), to, amount, nodeId, nodeName, feeAmount, transactionType);
                     }
                 })
                 .toObservable();
@@ -184,9 +188,9 @@ public class DelegateManager {
      * @return
      */
     public Observable<Transaction> withdrawDelegateReward(Credentials credentials, String feeAmount, String amount, GasProvider gasProvider) {
-        return Single.fromCallable(new Callable<String>() {
+        return Single.fromCallable(new Callable<RPCTransactionResult>() {
             @Override
-            public String call() throws Exception {
+            public RPCTransactionResult call() throws Exception {
                 Web3j web3j = Web3jManager.getInstance().getWeb3j();
                 String chainId = NodeManager.getInstance().getChainId();
                 RewardContract rewardContract = RewardContract.load(web3j, credentials, NumberParserUtils.parseLong(chainId));
@@ -194,22 +198,16 @@ public class DelegateManager {
                 return TransactionManager.getInstance().sendTransaction(rewardContract, credentials, function);
             }
         })
-                .filter(new Predicate<String>() {
+                .flatMap(new Function<RPCTransactionResult, SingleSource<RPCTransactionResult>>() {
                     @Override
-                    public boolean test(String hash) throws Exception {
-                        return !TextUtils.isEmpty(hash);
+                    public SingleSource<RPCTransactionResult> apply(RPCTransactionResult transactionResult) throws Exception {
+                        return createRPCTransactionResult(transactionResult);
                     }
                 })
-                .switchIfEmpty(new SingleSource<String>() {
+                .flatMap(new Function<RPCTransactionResult, SingleSource<Transaction>>() {
                     @Override
-                    public void subscribe(SingleObserver<? super String> observer) {
-                        observer.onError(new Throwable());
-                    }
-                })
-                .flatMap(new Function<String, SingleSource<Transaction>>() {
-                    @Override
-                    public SingleSource<Transaction> apply(String hash) throws Exception {
-                        return insertTransaction(credentials, hash, ContractAddress.REWARD_CONTRACT_ADDRESS, amount, "", "", feeAmount, String.valueOf(TransactionType.CLAIM_REWARDS.getTxTypeValue()));
+                    public SingleSource<Transaction> apply(RPCTransactionResult transactionResult) throws Exception {
+                        return insertTransaction(credentials, transactionResult.getHash(), ContractAddress.REWARD_CONTRACT_ADDRESS, amount, "", "", feeAmount, String.valueOf(TransactionType.CLAIM_REWARDS.getTxTypeValue()));
                     }
                 })
                 .toObservable();
