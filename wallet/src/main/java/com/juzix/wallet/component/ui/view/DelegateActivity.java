@@ -18,7 +18,6 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.AbsoluteSizeSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +45,7 @@ import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
 import com.juzix.wallet.component.ui.dialog.TransactionSignatureDialogFragment;
 import com.juzix.wallet.component.ui.presenter.DelegatePresenter;
 import com.juzix.wallet.component.widget.CircleImageView;
+import com.juzix.wallet.component.widget.MyWatcher;
 import com.juzix.wallet.component.widget.PointLengthFilter;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.component.widget.ShadowDrawable;
@@ -164,7 +164,6 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         initShade();
         initPopWindow();
         setDelegateButtonState(false);
-        et_amount.setFilters(new InputFilter[]{new PointLengthFilter()});
         et_amount.addTextChangedListener(delegateWatcher);
         initClick();
         initGuide();
@@ -256,6 +255,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                     @Override
                     public void accept(Object o) {
                         UMEventUtil.onEventCount(DelegateActivity.this, Constants.UMEventID.DELEGATE);
+
                         //点击委托操作
                         if (BigDecimalUtil.sub(freeBalance, feeAmount).doubleValue() < 0) { //可用余额大于手续费才能委托
                             ToastUtil.showLongToast(getContext(), R.string.delegate_less_than_fee);
@@ -324,7 +324,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         mPopupWindow.showAsDropDown(view);
     }
 
-    private TextWatcher delegateWatcher = new TextWatcher() {
+    private TextWatcher delegateWatcher = new MyWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -333,9 +333,8 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-            Log.d("DelegateActivity1111", " ==========textwatcher============" + s.toString().trim());
+            mPresenter.checkDelegateAmount(et_amount.getText().toString().trim().replace(",", ""));
 
-            mPresenter.checkDelegateAmount(s.toString().trim());
             mPresenter.updateDelegateButtonState();
 
             String amountMagnitudes = StringUtil.getAmountMagnitudes(getContext(), s.toString().trim());
@@ -348,7 +347,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
 
         @Override
         public void afterTextChanged(Editable s) {
-
+            super.afterTextChanged(s);
         }
     };
 
