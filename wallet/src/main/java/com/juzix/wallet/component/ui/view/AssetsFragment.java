@@ -14,6 +14,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
@@ -149,7 +150,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     @BindView(R.id.layout_refresh)
     SmartRefreshLayout layoutRefresh;
     @BindView(R.id.tv_restricted_amount)
-    TextView tvRestrictedAmount;
+    AppCompatTextView tvRestrictedAmount;
 
     private WalletHorizontalRecycleViewAdapter mWalletAdapter;
     private Unbinder unbinder;
