@@ -324,7 +324,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         mPopupWindow.showAsDropDown(view);
     }
 
-    private TextWatcher delegateWatcher = new MyWatcher() {
+    private TextWatcher delegateWatcher = new MyWatcher(-1, 8) {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 

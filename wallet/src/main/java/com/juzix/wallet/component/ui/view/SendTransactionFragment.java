@@ -384,7 +384,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
         }
     };
 
-    private TextWatcher mEtWalletAddressWatcher = new MyWatcher() {
+    private TextWatcher mEtWalletAddressWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -399,7 +399,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
 
         @Override
         public void afterTextChanged(Editable s) {
-            super.afterTextChanged(s);
+
         }
     };
 
@@ -417,7 +417,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
         }
     };
 
-    private TextWatcher mEtWalletAmountWatcher = new TextWatcher() {
+    private TextWatcher mEtWalletAmountWatcher = new MyWatcher(-1, 8) {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -434,7 +434,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
 
         @Override
         public void afterTextChanged(Editable s) {
-
+            super.afterTextChanged(s);
         }
     };
 
