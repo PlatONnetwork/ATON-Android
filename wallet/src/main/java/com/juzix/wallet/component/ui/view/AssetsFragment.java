@@ -124,7 +124,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     @BindView(R.id.rv_wallet)
     RecyclerView rvWallet;
     @BindView(R.id.rl_wallet_detail)
-    RelativeLayout rlWalletDetail;
+    ConstraintLayout rlWalletDetail;
     @BindView(R.id.iv_wallet_avatar)
     ImageView ivWalletAvatar;
     @BindView(R.id.tv_wallet_name)
