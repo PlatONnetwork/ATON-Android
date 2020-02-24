@@ -106,6 +106,10 @@ public class MyDelegateAdapter extends RecyclerView.Adapter<MyDelegateAdapter.Vi
 
                     @Override
                     public void accept(Object o) throws Exception {
+                        if (info.isPending()) {
+                            return;
+                        }
+
                         if (mOnItemClickListener != null) {
                             mOnItemClickListener.onClaimRewardClick(info, position);
                         }
