@@ -1,6 +1,8 @@
 package com.juzix.wallet.engine;
 
 
+import com.juzix.wallet.app.Constants;
+
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.Web3jFactory;
@@ -26,9 +28,11 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
 import io.reactivex.functions.Function;
+import okhttp3.OkHttpClient;
 
 public class Web3jManager {
 
@@ -45,7 +49,10 @@ public class Web3jManager {
     }
 
     public void init(String url) {
-        mWeb3j = Web3jFactory.build(new HttpService(url));
+        mWeb3j = Web3jFactory.build(new HttpService(url, new OkHttpClient().newBuilder()
+                .connectTimeout(Constants.Common.TRANSACTION_SEND_CONNECT_TIMEOUT, TimeUnit.MILLISECONDS)
+                .readTimeout(Constants.Common.TRANSACTION_SEND_READ_TIMEOUT, TimeUnit.MILLISECONDS)
+                .build(), false));
     }
 
     public Web3j getWeb3j() {

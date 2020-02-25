@@ -174,6 +174,9 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                     @Override
                     public void onApiFailure(ApiResponse response) {
                         super.onApiFailure(response);
+                        if (isViewAttached()) {
+                            showLongToast(R.string.msg_connect_timeout);
+                        }
                     }
                 });
     }
