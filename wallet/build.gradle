@@ -140,6 +140,10 @@ android {
             multiDexEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeOC}")
+
+            ndk {
+                abiFilters "armeabi-v7a"
+            }
         }
 
         releaseX {
@@ -151,6 +155,10 @@ android {
             multiDexEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeX}")
+
+            ndk {
+                abiFilters "armeabi-v7a"
+            }
         }
 
         releaseJX {
@@ -177,6 +185,10 @@ android {
             multiDexEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeTX}")
+
+            ndk {
+                abiFilters "armeabi-v7a"
+            }
         }
 
         releaseJTX {
