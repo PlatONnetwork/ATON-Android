@@ -77,6 +77,13 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
         }
     }
 
+    public String getWalletAddress() {
+        if (mWallet != null) {
+            return mWallet.getPrefixAddress();
+        }
+        return null;
+    }
+
     public List<WithDrawBalance> getWithDrawBalanceList() {
         return list;
     }

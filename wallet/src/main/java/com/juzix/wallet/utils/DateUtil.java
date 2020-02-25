@@ -57,7 +57,9 @@ public class DateUtil {
      */
     public static long millisecondToMinutes(long millisecond) {
 
-        return millisecond / (60 * 1000);
+        long time = millisecond / (60 * 1000);
+
+        return Math.max(1, time);
 
     }
 }

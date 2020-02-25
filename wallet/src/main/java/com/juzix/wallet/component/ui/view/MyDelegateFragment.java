@@ -182,8 +182,8 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
 
                 long currentTime = System.currentTimeMillis();
 
-                if (!TransactionManager.getInstance().isAllowSendTransaction(currentTime)) {
-                    ToastUtil.showLongToast(getContext(), string(R.string.msg_wait_finished_transaction_tips, DateUtil.millisecondToMinutes(TransactionManager.getInstance().getSendTransactionTimeInterval(currentTime))));
+                if (!TransactionManager.getInstance().isAllowSendTransaction(delegateInfo.getWalletAddress(),currentTime)) {
+                    ToastUtil.showLongToast(getContext(), string(R.string.msg_wait_finished_transaction_tips, DateUtil.millisecondToMinutes(TransactionManager.getInstance().getSendTransactionTimeInterval(delegateInfo.getWalletAddress(),currentTime))));
                     return;
                 }
 

@@ -1,10 +1,10 @@
 package com.juzix.wallet.engine;
 
 import android.text.TextUtils;
-import android.util.Pair;
 
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
+import com.juzhen.framework.util.MapUtils;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomThrowable;
@@ -35,10 +35,9 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.SocketTimeoutException;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
@@ -57,7 +56,8 @@ import retrofit2.Response;
  */
 public class TransactionManager {
 
-    private volatile Map<String, Pair<Long, Disposable>> mDisposableMap = new LinkedHashMap<>();
+    private volatile Map<String, Disposable> mDisposableMap = new HashMap<>();
+    private volatile Map<String, Object> mPendingMap = new HashMap<>();
 
     private TransactionManager() {
 
@@ -76,11 +76,19 @@ public class TransactionManager {
     }
 
     public Disposable removeTaskByHash(String hash) {
-        Pair<Long, Disposable> pair = mDisposableMap.remove(hash);
-        if (pair != null) {
-            return pair.second;
-        }
-        return null;
+        return mDisposableMap.remove(hash);
+    }
+
+    public void putPendingTransaction(String from, long timeStamp) {
+        mPendingMap.put(buildPendingMapKey(from), timeStamp);
+    }
+
+    public long getPendingTransactionTimeStamp(String from) {
+        return MapUtils.getLong(mPendingMap, buildPendingMapKey(from));
+    }
+
+    public void removePendingTransaction(String from) {
+        mPendingMap.remove(buildPendingMapKey(from));
     }
 
     /**
@@ -88,11 +96,11 @@ public class TransactionManager {
      *
      * @return
      */
-    public long getSendTransactionTimeInterval(long currentTime) {
+    public long getSendTransactionTimeInterval(String from, long currentTime) {
 
-        Set<Map.Entry<String, Pair<Long, Disposable>>> entrySet = mDisposableMap.entrySet();
+        long timestamp = getPendingTransactionTimeStamp(from);
 
-        return Constants.Common.TRANSACTION_SEND_INTERVAL - (currentTime - entrySet.iterator().next().getValue().first);
+        return Constants.Common.TRANSACTION_SEND_INTERVAL - (currentTime - timestamp);
 
     }
 
@@ -101,17 +109,17 @@ public class TransactionManager {
      *
      * @return
      */
-    public boolean isAllowSendTransaction(long currentTime) {
+    public boolean isAllowSendTransaction(String from, long currentTime) {
 
-        Set<Map.Entry<String, Pair<Long, Disposable>>> entrySet = mDisposableMap.entrySet();
+        long timestamp = getPendingTransactionTimeStamp(from);
 
-        return entrySet.isEmpty() || currentTime - entrySet.iterator().next().getValue().first > Constants.Common.TRANSACTION_SEND_INTERVAL;
+        return currentTime - timestamp > Constants.Common.TRANSACTION_SEND_INTERVAL;
     }
 
 
-    public void putTask(String hash, Pair<Long, Disposable> pair) {
+    public void putTask(String hash, Disposable disposable) {
         if (!mDisposableMap.containsKey(hash)) {
-            mDisposableMap.put(hash, pair);
+            mDisposableMap.put(hash, disposable);
         }
     }
 
@@ -266,7 +274,8 @@ public class TransactionManager {
                     @Override
                     public void accept(Transaction transaction) throws Exception {
                         EventPublisher.getInstance().sendUpdateTransactionEvent(transaction);
-                        putTask(transaction.getHash(), new Pair<>(transaction.getTimestamp(), getTransactionByLoop(transaction)));
+                        putPendingTransaction(transaction.getFrom(), transaction.getTimestamp());
+                        putTask(transaction.getHash(), getTransactionByLoop(transaction));
                     }
                 });
     }
@@ -312,6 +321,7 @@ public class TransactionManager {
                     @Override
                     public void accept(Transaction transaction) throws Exception {
                         removeTaskByHash(transaction.getHash());
+                        removePendingTransaction(transaction.getFrom());
                         if (transaction.getTxReceiptStatus() == TransactionStatus.SUCCESSED) {
                             TransactionDao.deleteTransaction(transaction.getHash());
                         } else if (transaction.getTxReceiptStatus() == TransactionStatus.TIMEOUT) {
@@ -357,5 +367,9 @@ public class TransactionManager {
                 .toSingle()
                 .blockingGet();
 
+    }
+
+    private String buildPendingMapKey(String from) {
+        return from.toLowerCase() + "-" + NodeManager.getInstance().getChainId();
     }
 }
