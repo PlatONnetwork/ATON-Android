@@ -80,6 +80,13 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
         }
     }
 
+    public String getWalletAddress() {
+        if (mWallet != null) {
+            return mWallet.getPrefixAddress();
+        }
+        return null;
+    }
+
     @Override
     public void showSelectWalletDialogFragment() {
         DelegateSelectWalletDialogFragment.newInstance(mWallet != null ? mWallet.getUuid() : "", false)

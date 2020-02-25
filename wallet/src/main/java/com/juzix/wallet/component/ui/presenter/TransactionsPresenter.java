@@ -246,6 +246,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                 Transaction newTransaction = curTransactionList.get(i);
                 if (newTransaction.getTxReceiptStatus() == TransactionStatus.SUCCESSED || newTransaction.getTxReceiptStatus() == TransactionStatus.FAILED || newTransaction.getTxReceiptStatus() == TransactionStatus.TIMEOUT) {
                     //删除掉
+                    TransactionManager.getInstance().removePendingTransaction(newTransaction.getFrom());
                     deleteTransaction(oldTransactionList.get(i).getHash());
                 }
             }

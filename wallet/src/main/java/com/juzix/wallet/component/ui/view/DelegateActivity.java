@@ -12,7 +12,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
-import android.text.InputFilter;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -46,7 +45,6 @@ import com.juzix.wallet.component.ui.dialog.TransactionSignatureDialogFragment;
 import com.juzix.wallet.component.ui.presenter.DelegatePresenter;
 import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.component.widget.MyWatcher;
-import com.juzix.wallet.component.widget.PointLengthFilter;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.component.widget.VerticalImageSpan;
@@ -265,8 +263,8 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
 
                         long currentTime = System.currentTimeMillis();
 
-                        if (!TransactionManager.getInstance().isAllowSendTransaction(currentTime)) {
-                            ToastUtil.showLongToast(getContext(), string(R.string.msg_wait_finished_transaction_tips, DateUtil.millisecondToMinutes(TransactionManager.getInstance().getSendTransactionTimeInterval(currentTime))));
+                        if (!TransactionManager.getInstance().isAllowSendTransaction(mPresenter.getWalletAddress(), currentTime)) {
+                            ToastUtil.showLongToast(getContext(), string(R.string.msg_wait_finished_transaction_tips, DateUtil.millisecondToMinutes(TransactionManager.getInstance().getSendTransactionTimeInterval(mPresenter.getWalletAddress(), currentTime))));
                             return;
                         }
                         mPresenter.submitDelegate(stakingAmountType);

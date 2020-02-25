@@ -264,8 +264,8 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
 
             long currentTime = System.currentTimeMillis();
 
-            if (!TransactionManager.getInstance().isAllowSendTransaction(currentTime)) {
-                ToastUtil.showLongToast(getContext(), string(R.string.msg_wait_finished_transaction_tips, DateUtil.millisecondToMinutes(TransactionManager.getInstance().getSendTransactionTimeInterval(currentTime))));
+            if (!TransactionManager.getInstance().isAllowSendTransaction(address,currentTime)) {
+                ToastUtil.showLongToast(getContext(), string(R.string.msg_wait_finished_transaction_tips, DateUtil.millisecondToMinutes(TransactionManager.getInstance().getSendTransactionTimeInterval(address,currentTime))));
                 return;
             }
 
