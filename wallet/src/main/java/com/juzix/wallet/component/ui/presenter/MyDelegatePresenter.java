@@ -31,6 +31,7 @@ import com.juzix.wallet.entity.RPCErrorCode;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionAuthorizationBaseData;
 import com.juzix.wallet.entity.TransactionAuthorizationData;
+import com.juzix.wallet.entity.TransactionStatus;
 import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.utils.AmountUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
@@ -104,8 +105,11 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                         delegateInfo.setObservedWallet(WalletManager.getInstance().isObservedWallet(delegateInfo.getWalletAddress()));
                         TransactionEntity transactionEntity = TransactionDao.getTransaction(delegateInfo.getWalletAddress(), String.valueOf(TransactionType.CLAIM_REWARDS.getTxTypeValue()));
                         if (transactionEntity != null) {
-                            delegateInfo.setPending(true);
-                            TransactionManager.getInstance().getTransactionByLoop(transactionEntity.toTransaction());
+                            TransactionStatus transactionStatus = TransactionStatus.getTransactionStatusByIndex(transactionEntity.getTxReceiptStatus());
+                            if (transactionStatus == TransactionStatus.PENDING) {
+                                delegateInfo.setPending(true);
+                                TransactionManager.getInstance().getTransactionByLoop(transactionEntity.toTransaction());
+                            }
                         }
                         return delegateInfo;
                     }
