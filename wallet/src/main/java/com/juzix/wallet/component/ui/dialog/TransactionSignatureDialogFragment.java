@@ -398,15 +398,10 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
         if (transactionSignatureData.getFunctionType() == FunctionType.TRANSFER) {
             //跳转至交易记录页签
             transaction.setTxType(String.valueOf(TransactionType.TRANSFER.getTxTypeValue()));
-            afterTransferSucceed(transaction);
         } else {
             transaction.setTxType(getTxTypeByFunctionType(transactionSignatureData.getFunctionType()));
-            TransactionManager.getInstance().putPendingTransaction(transaction.getFrom(), transaction.getTimestamp());
-            TransactionManager.getInstance().getTransactionByLoop(transaction);
-            if (sendTransactionSucceedListener != null) {
-                sendTransactionSucceedListener.onSendTransactionSucceed(transaction);
-            }
         }
+        afterTransferSucceed(transaction);
     }
 
     private String getTxTypeByFunctionType(int functionType) {
