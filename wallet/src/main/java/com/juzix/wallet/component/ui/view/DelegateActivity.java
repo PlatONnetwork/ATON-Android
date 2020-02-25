@@ -264,7 +264,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                         long currentTime = System.currentTimeMillis();
 
                         if (!TransactionManager.getInstance().isAllowSendTransaction(mPresenter.getWalletAddress(), currentTime)) {
-                            ToastUtil.showLongToast(getContext(), string(R.string.msg_wait_finished_transaction_tips, DateUtil.millisecondToMinutes(TransactionManager.getInstance().getSendTransactionTimeInterval(mPresenter.getWalletAddress(), currentTime))));
+                            showLongToast(string(R.string.msg_wait_finished_transaction_tips, DateUtil.millisecondToMinutes(TransactionManager.getInstance().getSendTransactionTimeInterval(mPresenter.getWalletAddress(), currentTime))));
                             return;
                         }
                         mPresenter.submitDelegate(stakingAmountType);

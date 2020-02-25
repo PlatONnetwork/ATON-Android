@@ -116,6 +116,14 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
                                         }
                                     }
+
+                                    @Override
+                                    public void onApiFailure(ApiResponse response) {
+                                        super.onApiFailure(response);
+                                        if (isViewAttached()) {
+                                            showLongToast(R.string.msg_connect_timeout);
+                                        }
+                                    }
                                 });
                     }
                 })
@@ -216,6 +224,14 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                         if (isViewAttached()) {
                             mGasProvider = gasProvider.toSdkGasProvider();
                             getView().showFeeAmount(BigIntegerUtil.mul(mGasProvider.getGasLimit(), mGasProvider.getGasPrice()));
+                        }
+                    }
+
+                    @Override
+                    public void onApiFailure(ApiResponse response) {
+                        super.onApiFailure(response);
+                        if (isViewAttached()) {
+                            showLongToast(R.string.msg_connect_timeout);
                         }
                     }
                 });

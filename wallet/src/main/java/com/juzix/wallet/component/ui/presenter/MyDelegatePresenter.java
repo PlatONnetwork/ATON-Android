@@ -1,6 +1,5 @@
 package com.juzix.wallet.component.ui.presenter;
 
-import android.content.IntentFilter;
 import android.text.TextUtils;
 
 import com.juzhen.framework.network.ApiRequestBody;
@@ -17,7 +16,6 @@ import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.juzix.wallet.component.ui.dialog.TransactionAuthorizationDialogFragment;
 import com.juzix.wallet.component.ui.dialog.TransactionSignatureDialogFragment;
 import com.juzix.wallet.db.entity.TransactionEntity;
-import com.juzix.wallet.db.entity.TransactionRecordEntity;
 import com.juzix.wallet.db.sqlite.TransactionDao;
 import com.juzix.wallet.engine.DelegateManager;
 import com.juzix.wallet.engine.NodeManager;
@@ -26,7 +24,6 @@ import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.TransactionManager;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.Web3jManager;
-import com.juzix.wallet.entity.ClaimReward;
 import com.juzix.wallet.entity.ClaimRewardInfo;
 import com.juzix.wallet.entity.DelegateInfo;
 import com.juzix.wallet.entity.GasProvider;
@@ -46,24 +43,14 @@ import org.reactivestreams.Subscriber;
 import org.web3j.crypto.Credentials;
 import org.web3j.platon.ContractAddress;
 import org.web3j.platon.FunctionType;
-import org.web3j.platon.StakingAmountType;
-import org.web3j.platon.contracts.RewardContract;
-import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
-import org.web3j.tx.gas.DefaultGasProvider;
-import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
-import io.reactivex.Single;
-import io.reactivex.SingleSource;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
@@ -158,6 +145,14 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                     public void onApiSuccess(GasProvider gasProvider) {
                         if (isViewAttached()) {
                             showClaimRewardsDialogFragment(delegateInfo, gasProvider.toSdkGasProvider(), position);
+                        }
+                    }
+
+                    @Override
+                    public void onApiFailure(ApiResponse response) {
+                        super.onApiFailure(response);
+                        if (isViewAttached()) {
+                            showLongToast(R.string.msg_connect_timeout);
                         }
                     }
                 });
