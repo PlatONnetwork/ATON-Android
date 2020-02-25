@@ -30,6 +30,7 @@ import com.juzix.wallet.component.ui.presenter.MyDelegatePresenter;
 import com.juzix.wallet.component.widget.CustomRefreshHeader;
 import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.config.AppSettings;
+import com.juzix.wallet.engine.TransactionManager;
 import com.juzix.wallet.entity.DelegateInfo;
 import com.juzix.wallet.entity.GuideType;
 import com.juzix.wallet.entity.WebType;
@@ -38,8 +39,10 @@ import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.AmountUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.CommonTextUtils;
+import com.juzix.wallet.utils.DateUtil;
 import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.RxUtils;
+import com.juzix.wallet.utils.ToastUtil;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -176,6 +179,14 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
 
             @Override
             public void onClaimRewardClick(DelegateInfo delegateInfo, int position) {
+
+                long currentTime = System.currentTimeMillis();
+
+                if (!TransactionManager.getInstance().isAllowSendTransaction(currentTime)) {
+                    ToastUtil.showLongToast(getContext(), string(R.string.msg_wait_finished_transaction_tips, DateUtil.millisecondToMinutes(TransactionManager.getInstance().getSendTransactionTimeInterval(currentTime))));
+                    return;
+                }
+
                 mPresenter.withdrawDelegateReward(delegateInfo, position);
             }
         });

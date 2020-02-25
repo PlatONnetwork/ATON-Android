@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
-import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -24,7 +23,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
-import com.juzhen.framework.util.LogUtils;
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
@@ -35,7 +33,7 @@ import com.juzix.wallet.component.ui.dialog.CommonEditDialogFragment;
 import com.juzix.wallet.component.ui.dialog.CommonTipsDialogFragment;
 import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
 import com.juzix.wallet.component.ui.presenter.SendTransactionPresenter;
-import com.juzix.wallet.component.widget.PointLengthFilter;
+import com.juzix.wallet.component.widget.MyWatcher;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.component.widget.bubbleSeekBar.BubbleSeekBar;
 import com.juzix.wallet.db.sqlite.WalletDao;
@@ -128,7 +126,6 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
 
     private void initViews() {
         setSendTransactionButtonEnable(false);
-        etWalletAmount.setFilters(new InputFilter[]{new PointLengthFilter()});
         etWalletAddress.addTextChangedListener(mEtWalletAddressWatcher);
         etWalletAmount.addTextChangedListener(mEtWalletAmountWatcher);
         etWalletAddress.setOnFocusChangeListener(mEtWalletAddressFocusChangeListener);
@@ -420,7 +417,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
         }
     };
 
-    private TextWatcher mEtWalletAmountWatcher = new TextWatcher() {
+    private TextWatcher mEtWalletAmountWatcher = new MyWatcher(-1, 8) {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -437,7 +434,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
 
         @Override
         public void afterTextChanged(Editable s) {
-
+            super.afterTextChanged(s);
         }
     };
 

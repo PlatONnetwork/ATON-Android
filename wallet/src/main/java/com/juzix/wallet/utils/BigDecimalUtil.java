@@ -441,4 +441,8 @@ public class BigDecimalUtil {
         }
         return BigDecimal.ZERO;
     }
+
+    public static int compareTo(String val1, String val2) {
+        return toBigDecimal(val1).compareTo(toBigDecimal(val2));
+    }
 }

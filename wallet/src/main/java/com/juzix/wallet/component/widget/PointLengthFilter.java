@@ -7,7 +7,7 @@ import android.text.Spanned;
  * @author matrixelement
  */
 public class PointLengthFilter implements InputFilter {
-    
+
     private static final int DECIMAL_DIGITS = 8;
 
     @Override
@@ -26,6 +26,6 @@ public class PointLengthFilter implements InputFilter {
                 return source.subSequence(start, end - diff);
             }
         }
-        return null;
+        return source;
     }
 }

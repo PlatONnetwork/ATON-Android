@@ -118,8 +118,6 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                 getView().setAllAmountDelegate();
             }
         }
-
-        updateWithDrawButtonState();
     }
 
     @Override

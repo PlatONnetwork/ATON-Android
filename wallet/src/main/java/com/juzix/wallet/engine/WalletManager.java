@@ -694,7 +694,7 @@ public class WalletManager {
 
         @Override
         public int compare(Wallet o1, Wallet o2) {
-            return BigDecimalUtil.isBigger(o1.getFreeBalance(), o2.getFreeBalance()) ? -1 : 1;
+            return BigDecimalUtil.compareTo(o2.getFreeBalance(), o1.getFreeBalance());
         }
     }
 

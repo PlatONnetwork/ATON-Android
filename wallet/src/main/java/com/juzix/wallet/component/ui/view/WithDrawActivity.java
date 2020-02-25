@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
-import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
@@ -34,7 +33,7 @@ import com.juzix.wallet.component.ui.dialog.CommonGuideDialogFragment;
 import com.juzix.wallet.component.ui.dialog.TransactionSignatureDialogFragment;
 import com.juzix.wallet.component.ui.presenter.WithDrawPresenter;
 import com.juzix.wallet.component.widget.CircleImageView;
-import com.juzix.wallet.component.widget.PointLengthFilter;
+import com.juzix.wallet.component.widget.MyWatcher;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.config.AppSettings;
@@ -139,7 +138,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         initShade();
         initPopWindow();
         setWithDrawButtonState(false);
-        withdrawAmount.setFilters(new InputFilter[]{new PointLengthFilter()});
+//        withdrawAmount.setFilters(new InputFilter[]{new PointLengthFilter()});
         withdrawAmount.addTextChangedListener(mAmountTextWatcher);
         initClicks();
         initGuide();
@@ -186,13 +185,15 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
+
                         UMEventUtil.onEventCount(WithDrawActivity.this, Constants.UMEventID.WITHDRAW_DELEGATE);
+
+                        mPresenter.checkWithDrawAmount(withdrawAmount.getText().toString().trim().replace(",", ""));
 
                         if (BigDecimalUtil.sub(freeAccount, withdrawFee).doubleValue() < 0) { //赎回时，自用金额必须大于手续费，才能赎回
                             ToastUtil.showLongToast(getContext(), R.string.withdraw_less_than_fee);
                             return;
                         }
-
 
                         long currentTime = System.currentTimeMillis();
 
@@ -271,7 +272,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         mPopupWindow.showAsDropDown(view);
     }
 
-    private TextWatcher mAmountTextWatcher = new TextWatcher() {
+    private TextWatcher mAmountTextWatcher = new MyWatcher(-1, 8) {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         }
@@ -279,7 +280,6 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {//改变后
 
-            mPresenter.checkWithDrawAmount(s.toString().trim().replace(",", ""));
             mPresenter.updateWithDrawButtonState();
             mPresenter.getWithDrawGasPrice(gasPrice);
 
@@ -307,7 +307,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
 
         @Override
         public void afterTextChanged(Editable s) {
-
+            super.afterTextChanged(s);
         }
     };
 
