@@ -1,7 +1,6 @@
 package com.juzix.wallet.engine;
 
 import android.text.TextUtils;
-import android.util.Pair;
 
 import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.app.CustomThrowable;
@@ -127,7 +126,8 @@ public class DelegateManager {
                 .doOnSuccess(new Consumer<Transaction>() {
                     @Override
                     public void accept(Transaction transaction) throws Exception {
-                        TransactionManager.getInstance().putTask(transaction.getHash(), new Pair<>(transaction.getTimestamp(), TransactionManager.getInstance().getTransactionByLoop(transaction)));
+                        TransactionManager.getInstance().putPendingTransaction(transaction.getFrom(), transaction.getTimestamp());
+                        TransactionManager.getInstance().putTask(transaction.getHash(), TransactionManager.getInstance().getTransactionByLoop(transaction));
                     }
                 })
                 .toSingle();
@@ -212,6 +212,5 @@ public class DelegateManager {
                 })
                 .toObservable();
     }
-
 
 }
