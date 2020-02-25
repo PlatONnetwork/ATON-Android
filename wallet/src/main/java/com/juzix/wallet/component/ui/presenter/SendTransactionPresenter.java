@@ -502,12 +502,10 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                     @Override
                     public void accept(Throwable throwable) {
                         if (isViewAttached()) {
-                            if (throwable instanceof CustomThrowable) {
-                                if (throwable instanceof CustomThrowable && ((CustomThrowable) throwable).getErrCode() == RPCErrorCode.CONNECT_TIMEOUT) {
-                                    showLongToast(R.string.msg_connect_timeout);
-                                } else {
-                                    showLongToast(string(R.string.transfer_failed));
-                                }
+                            if (throwable instanceof CustomThrowable && ((CustomThrowable) throwable).getErrCode() == RPCErrorCode.CONNECT_TIMEOUT) {
+                                showLongToast(R.string.msg_connect_timeout);
+                            } else {
+                                showLongToast(string(R.string.transfer_failed));
                             }
                         }
                     }

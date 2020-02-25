@@ -18,6 +18,7 @@ import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
+import com.juzix.wallet.app.CustomThrowable;
 import com.juzix.wallet.app.LoadingTransformer;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.view.ScanQRCodeActivity;
@@ -28,6 +29,8 @@ import com.juzix.wallet.db.sqlite.WalletDao;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.TransactionManager;
 import com.juzix.wallet.engine.WalletManager;
+import com.juzix.wallet.entity.RPCErrorCode;
+import com.juzix.wallet.entity.RPCTransactionResult;
 import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionAuthorizationBaseData;
 import com.juzix.wallet.entity.TransactionAuthorizationData;
@@ -65,7 +68,9 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
 import io.reactivex.SingleObserver;
+import io.reactivex.SingleOnSubscribe;
 import io.reactivex.SingleSource;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
@@ -218,32 +223,38 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
     private void sendTransaction(TransactionSignatureData transactionSignatureData, TransactionAuthorizationData transactionAuthorizationData) {
 
         getSendTransactionResult()
-                .filter(new Predicate<Pair<Boolean, List<PlatonSendTransaction>>>() {
+                .filter(new Predicate<Pair<Boolean, List<RPCTransactionResult>>>() {
                     @Override
-                    public boolean test(Pair<Boolean, List<PlatonSendTransaction>> booleanListPair) throws Exception {
+                    public boolean test(Pair<Boolean, List<RPCTransactionResult>> booleanListPair) throws Exception {
                         return booleanListPair.first;
                     }
                 })
-                .switchIfEmpty(new SingleSource<Pair<Boolean, List<PlatonSendTransaction>>>() {
+                .switchIfEmpty(new SingleSource<Pair<Boolean, List<RPCTransactionResult>>>() {
                     @Override
-                    public void subscribe(SingleObserver<? super Pair<Boolean, List<PlatonSendTransaction>>> observer) {
+                    public void subscribe(SingleObserver<? super Pair<Boolean, List<RPCTransactionResult>>> observer) {
                         observer.onError(new Throwable());
                     }
                 })
                 .toFlowable()
-                .flatMap(new Function<Pair<Boolean, List<PlatonSendTransaction>>, Publisher<PlatonSendTransaction>>() {
+                .flatMap(new Function<Pair<Boolean, List<RPCTransactionResult>>, Publisher<RPCTransactionResult>>() {
                     @Override
-                    public Publisher<PlatonSendTransaction> apply(Pair<Boolean, List<PlatonSendTransaction>> booleanListPair) throws Exception {
+                    public Publisher<RPCTransactionResult> apply(Pair<Boolean, List<RPCTransactionResult>> booleanListPair) throws Exception {
                         return Flowable.fromIterable(booleanListPair.second);
                     }
                 })
                 .takeLast(1)
+                .flatMap(new Function<RPCTransactionResult, Publisher<RPCTransactionResult>>() {
+                    @Override
+                    public Publisher<RPCTransactionResult> apply(RPCTransactionResult transactionResult) throws Exception {
+                        return createRPCTransactionResult(transactionResult).toFlowable();
+                    }
+                })
                 .compose(RxUtils.getFlowableSchedulerTransformer())
                 .compose(bindToLifecycle())
                 .compose(LoadingTransformer.bindToFlowableLifecycle((BaseActivity) getActivity()))
-                .subscribe(new Consumer<PlatonSendTransaction>() {
+                .subscribe(new Consumer<RPCTransactionResult>() {
                     @Override
-                    public void accept(PlatonSendTransaction platonSendTransaction) throws Exception {
+                    public void accept(RPCTransactionResult platonSendTransaction) throws Exception {
                         afterSendTransactionSucceed(platonSendTransaction, transactionAuthorizationData);
                     }
                 }, new Consumer<Throwable>() {
@@ -252,17 +263,34 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
 
                         sbtnSendTransaction.setEnabled(true);
 
-                        if (transactionSignatureData.getFunctionType() == FunctionType.TRANSFER) {
-                            ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.transfer_failed));
-                        } else if (transactionSignatureData.getFunctionType() == FunctionType.DELEGATE_FUNC_TYPE) {
-                            ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.delegate_failed));
-                        } else if (transactionSignatureData.getFunctionType() == FunctionType.WITHDREW_DELEGATE_FUNC_TYPE) {
-                            ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.withdraw_failed));
-                        } else if (transactionSignatureData.getFunctionType() == FunctionType.WITHDRAW_DELEGATE_REWARD_FUNC_TYPE) {
-                            ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.withdraw_delegate_reward_failed));
+                        if (throwable instanceof CustomThrowable && ((CustomThrowable) throwable).getErrCode() == RPCErrorCode.CONNECT_TIMEOUT) {
+                            ToastUtil.showLongToast(getActivity(), R.string.msg_connect_timeout);
+                        } else {
+                            if (transactionSignatureData.getFunctionType() == FunctionType.TRANSFER) {
+                                ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.transfer_failed));
+                            } else if (transactionSignatureData.getFunctionType() == FunctionType.DELEGATE_FUNC_TYPE) {
+                                ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.delegate_failed));
+                            } else if (transactionSignatureData.getFunctionType() == FunctionType.WITHDREW_DELEGATE_FUNC_TYPE) {
+                                ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.withdraw_failed));
+                            } else if (transactionSignatureData.getFunctionType() == FunctionType.WITHDRAW_DELEGATE_REWARD_FUNC_TYPE) {
+                                ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.withdraw_delegate_reward_failed));
+                            }
                         }
                     }
                 });
+    }
+
+    private Single<RPCTransactionResult> createRPCTransactionResult(RPCTransactionResult rpcTransactionResult) {
+        return Single.create(new SingleOnSubscribe<RPCTransactionResult>() {
+            @Override
+            public void subscribe(SingleEmitter<RPCTransactionResult> emitter) throws Exception {
+                if (TextUtils.isEmpty(rpcTransactionResult.getHash())) {
+                    emitter.onError(new CustomThrowable(rpcTransactionResult.getErrCode()));
+                } else {
+                    emitter.onSuccess(rpcTransactionResult);
+                }
+            }
+        });
     }
 
     private Single<List<PlatonSendTransaction>> getSendTransactionResultList() {
@@ -277,30 +305,30 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
                 .toList();
     }
 
-    private Single<Pair<Boolean, List<PlatonSendTransaction>>> getSendTransactionResult() {
+    private Single<Pair<Boolean, List<RPCTransactionResult>>> getSendTransactionResult() {
 
         return Flowable
                 .fromIterable(transactionSignatureData.getSignedDatas())
-                .map(new Function<String, PlatonSendTransaction>() {
+                .map(new Function<String, RPCTransactionResult>() {
                     @Override
-                    public PlatonSendTransaction apply(String signedMessage) throws Exception {
-                        return TransactionManager.getInstance().sendTransactionReturnPlatonSendTransaction(signedMessage);
+                    public RPCTransactionResult apply(String signedMessage) throws Exception {
+                        return TransactionManager.getInstance().getTransactionResult(signedMessage);
                     }
                 })
                 .toList()
-                .map(new Function<List<PlatonSendTransaction>, Pair<Boolean, List<PlatonSendTransaction>>>() {
+                .map(new Function<List<RPCTransactionResult>, Pair<Boolean, List<RPCTransactionResult>>>() {
                     @Override
-                    public Pair<Boolean, List<PlatonSendTransaction>> apply(List<PlatonSendTransaction> platonSendTransactions) throws Exception {
-                        return new Pair<Boolean, List<PlatonSendTransaction>>(getSendTransactionResult(platonSendTransactions), platonSendTransactions);
+                    public Pair<Boolean, List<RPCTransactionResult>> apply(List<RPCTransactionResult> rpcTransactionResults) throws Exception {
+                        return new Pair<Boolean, List<RPCTransactionResult>>(getSendTransactionResult(rpcTransactionResults), rpcTransactionResults);
                     }
                 });
     }
 
-    private boolean getSendTransactionResult(List<PlatonSendTransaction> platonSendTransactions) {
+    private boolean getSendTransactionResult(List<RPCTransactionResult> platonSendTransactions) {
         boolean succeed = false;
 
-        for (PlatonSendTransaction platonSendTransaction : platonSendTransactions) {
-            if (!TextUtils.isEmpty(platonSendTransaction.getTransactionHash())) {
+        for (RPCTransactionResult platonSendTransaction : platonSendTransactions) {
+            if (!TextUtils.isEmpty(platonSendTransaction.getHash())) {
                 succeed = true;
                 break;
             }
@@ -363,10 +391,10 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
         return transactionAuthorizationBaseData.getFunctionType() == transactionSignatureData.getFunctionType();
     }
 
-    private void afterSendTransactionSucceed(PlatonSendTransaction platonSendTransaction, TransactionAuthorizationData transactionAuthorizationData) {
+    private void afterSendTransactionSucceed(RPCTransactionResult platonSendTransaction, TransactionAuthorizationData transactionAuthorizationData) {
         dismiss();
         List<String> signedDatas = transactionSignatureData.getSignedDatas();
-        Transaction transaction = buildTransaction(transactionAuthorizationData, platonSendTransaction.getTransactionHash(), signedDatas.get(signedDatas.size() - 1));
+        Transaction transaction = buildTransaction(transactionAuthorizationData, platonSendTransaction.getHash(), signedDatas.get(signedDatas.size() - 1));
         if (transactionSignatureData.getFunctionType() == FunctionType.TRANSFER) {
             //跳转至交易记录页签
             transaction.setTxType(String.valueOf(TransactionType.TRANSFER.getTxTypeValue()));
