@@ -172,7 +172,7 @@ public class TransactionManager {
      * @param hexValue
      * @return
      */
-    private RPCTransactionResult getTransactionResult(String hexValue) {
+    public RPCTransactionResult getTransactionResult(String hexValue) {
         RPCTransactionResult rpcTransactionResult = null;
         try {
             String hash = Web3jManager.getInstance().getWeb3j().platonSendRawTransaction(hexValue).send().getTransactionHash();
@@ -203,7 +203,6 @@ public class TransactionManager {
 
     public PlatonSendTransaction sendTransactionReturnPlatonSendTransaction(String signedMessage) {
         try {
-
             return Web3jManager.getInstance().getWeb3j().platonSendRawTransaction(signedMessage).send();
         } catch (IOException e) {
             e.printStackTrace();
