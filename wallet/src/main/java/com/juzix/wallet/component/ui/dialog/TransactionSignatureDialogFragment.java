@@ -401,6 +401,7 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
             afterTransferSucceed(transaction);
         } else {
             transaction.setTxType(getTxTypeByFunctionType(transactionSignatureData.getFunctionType()));
+            TransactionManager.getInstance().putPendingTransaction(transaction.getFrom(), transaction.getTimestamp());
             TransactionManager.getInstance().getTransactionByLoop(transaction);
             if (sendTransactionSucceedListener != null) {
                 sendTransactionSucceedListener.onSendTransactionSucceed(transaction);
@@ -442,6 +443,7 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
                     @Override
                     public void accept(Boolean aBoolean) throws Exception {
                         EventPublisher.getInstance().sendUpdateTransactionEvent(transaction);
+                        TransactionManager.getInstance().putPendingTransaction(transaction.getFrom(), transaction.getTimestamp());
                         TransactionManager.getInstance().getTransactionByLoop(transaction);
                     }
                 })
