@@ -138,7 +138,6 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         initShade();
         initPopWindow();
         setWithDrawButtonState(false);
-//        withdrawAmount.setFilters(new InputFilter[]{new PointLengthFilter()});
         withdrawAmount.addTextChangedListener(mAmountTextWatcher);
         initClicks();
         initGuide();
