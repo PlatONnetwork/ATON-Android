@@ -25,6 +25,7 @@ import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionEncoder;
 import org.web3j.platon.PlatOnFunction;
 import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
+import org.web3j.protocol.exceptions.ClientConnectionException;
 import org.web3j.tx.PlatOnContract;
 import org.web3j.tx.RawTransactionManager;
 import org.web3j.utils.Numeric;
@@ -32,7 +33,6 @@ import org.web3j.utils.Numeric;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -126,7 +126,13 @@ public class TransactionManager {
 
         Credentials credentials = Credentials.create(privateKey);
 
-        RawTransaction rawTransaction = RawTransaction.createTransaction(Web3jManager.getInstance().getNonce(from), gasPrice, gasLimit, toAddress, amount.toBigInteger(),
+        BigInteger nonce = Web3jManager.getInstance().getNonce(from);
+
+        if (Web3jManager.NONE_NONCE.equals(nonce)) {
+            return new RPCTransactionResult(RPCErrorCode.CONNECT_TIMEOUT);
+        }
+
+        RawTransaction rawTransaction = RawTransaction.createTransaction(nonce, gasPrice, gasLimit, toAddress, amount.toBigInteger(),
                 "");
 
         byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, NumberParserUtils.parseLong(NodeManager.getInstance().getChainId()), credentials);
@@ -171,13 +177,13 @@ public class TransactionManager {
         try {
             String hash = Web3jManager.getInstance().getWeb3j().platonSendRawTransaction(hexValue).send().getTransactionHash();
             rpcTransactionResult = new RPCTransactionResult(RPCErrorCode.SUCCESS, hash);
+        } catch (SocketTimeoutException e) {
+            e.printStackTrace();
+            rpcTransactionResult = new RPCTransactionResult(RPCErrorCode.SOCKET_TIMEOUT, Hash.sha3(hexValue));
+        } catch (ClientConnectionException e) {
+            rpcTransactionResult = new RPCTransactionResult(RPCErrorCode.CONNECT_TIMEOUT);
         } catch (IOException e) {
             e.printStackTrace();
-            if (e instanceof SocketTimeoutException) {
-                rpcTransactionResult = new RPCTransactionResult(RPCErrorCode.SOCKET_TIMEOUT, Hash.sha3(hexValue));
-            } else if (e instanceof ConnectException) {
-                rpcTransactionResult = new RPCTransactionResult(RPCErrorCode.CONNECT_TIMEOUT, Hash.sha3(hexValue));
-            }
         }
         return rpcTransactionResult;
     }

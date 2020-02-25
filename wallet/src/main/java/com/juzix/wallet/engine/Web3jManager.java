@@ -2,7 +2,6 @@ package com.juzix.wallet.engine;
 
 
 import org.web3j.crypto.Credentials;
-
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.Web3jFactory;
 import org.web3j.protocol.core.DefaultBlockParameterName;
@@ -32,6 +31,8 @@ import io.reactivex.Single;
 import io.reactivex.functions.Function;
 
 public class Web3jManager {
+
+    public final static BigInteger NONE_NONCE = BigInteger.valueOf(-1);
 
     private Web3j mWeb3j;
 
@@ -111,10 +112,10 @@ public class Web3jManager {
                         from, DefaultBlockParameterName.LATEST).send();
             }
             return ethGetTransactionCount.getTransactionCount();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return BigInteger.ZERO;
+        return NONE_NONCE;
     }
 
     public long getLatestBlockNumber() {

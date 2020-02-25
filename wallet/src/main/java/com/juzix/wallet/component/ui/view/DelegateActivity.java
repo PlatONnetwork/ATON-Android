@@ -254,6 +254,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
+
                         UMEventUtil.onEventCount(DelegateActivity.this, Constants.UMEventID.DELEGATE);
 
                         //点击委托操作

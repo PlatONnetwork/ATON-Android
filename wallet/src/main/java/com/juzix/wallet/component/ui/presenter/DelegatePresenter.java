@@ -321,6 +321,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
             getIsDelegateInfo(mWallet.getPrefixAddress(), mDelegateDetail.getNodeId())
                     .compose(RxUtils.getSingleSchedulerTransformer())
                     .compose(bindToLifecycle())
+                    .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
                     .subscribe(new ApiSingleObserver<DelegateHandle>() {
                         @Override
                         public void onApiSuccess(DelegateHandle delegateHandle) {

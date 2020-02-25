@@ -12,6 +12,10 @@ public class RPCTransactionResult {
 
     private String hash;
 
+    public RPCTransactionResult(int errCode) {
+        this.errCode = errCode;
+    }
+
     public RPCTransactionResult(int errCode, String hash) {
         this.errCode = errCode;
         this.hash = hash;
