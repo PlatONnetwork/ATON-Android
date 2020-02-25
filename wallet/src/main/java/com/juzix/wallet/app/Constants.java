@@ -18,7 +18,14 @@ public class Constants {
          * 交易发送间隔
          */
         int TRANSACTION_SEND_INTERVAL = 5 * 60 * 1000;
-
+        /**
+         * 连接超时10s
+         */
+        int TRANSACTION_SEND_CONNECT_TIMEOUT = 10000;
+        /**
+         * 读超时50s
+         */
+        int TRANSACTION_SEND_READ_TIMEOUT = 50000;
     }
 
     public interface Extra {
