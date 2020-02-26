@@ -103,12 +103,14 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                         delegateInfo.setWalletIcon(WalletManager.getInstance().getWalletIconByWalletAddress(delegateInfo.getWalletAddress()));
                         delegateInfo.setWalletName(WalletManager.getInstance().getWalletNameByWalletAddress(delegateInfo.getWalletAddress()));
                         delegateInfo.setObservedWallet(WalletManager.getInstance().isObservedWallet(delegateInfo.getWalletAddress()));
-                        TransactionEntity transactionEntity = TransactionDao.getTransaction(delegateInfo.getWalletAddress(), String.valueOf(TransactionType.CLAIM_REWARDS.getTxTypeValue()));
+                        TransactionEntity transactionEntity = TransactionDao.getTransaction(delegateInfo.getWalletAddress(), String.valueOf(TransactionType.CLAIM_REWARDS.getTxTypeValue()), TransactionStatus.PENDING.ordinal());
                         if (transactionEntity != null) {
                             TransactionStatus transactionStatus = TransactionStatus.getTransactionStatusByIndex(transactionEntity.getTxReceiptStatus());
                             if (transactionStatus == TransactionStatus.PENDING) {
                                 delegateInfo.setPending(true);
                                 TransactionManager.getInstance().getTransactionByLoop(transactionEntity.toTransaction());
+                            } else {
+                                delegateInfo.setPending(false);
                             }
                         }
                         return delegateInfo;
