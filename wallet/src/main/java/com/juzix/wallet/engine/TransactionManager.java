@@ -285,7 +285,9 @@ public class TransactionManager {
      */
     public Disposable getTransactionByLoop(Transaction transaction) {
 
-        return Flowable
+        Disposable disposable = mDisposableMap.get(transaction.getHash());
+
+        return disposable != null ? disposable : Flowable
                 .interval(Constants.Common.TRANSACTION_STATUS_LOOP_TIME, TimeUnit.MILLISECONDS)
                 .map(new Function<Long, Transaction>() {
                     @Override
