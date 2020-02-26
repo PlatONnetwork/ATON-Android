@@ -103,12 +103,12 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                             transactionList.removeAll(dbTransactionList);
                             transactionList.addAll(dbTransactionList);
                             //先进行排序
-                            List<Transaction> transactions = mTransactionMap.get(mWalletAddress);
+                            List<Transaction> transactions = get(mWalletAddress);
                             List<Transaction> newTransactionList = getNewTransactionList(transactions, transactionList, true);
                             Collections.sort(newTransactionList);
                             getView().notifyDataSetChanged(transactions, newTransactionList, mWalletAddress, true);
 
-                            mTransactionMap.put(mWalletAddress, newTransactionList);
+                            put(mWalletAddress, newTransactionList);
 
                             deleteExceptionalTransaction(transactions, netTransactionList);
                         }
@@ -118,7 +118,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                     public void accept(Throwable throwable) throws Exception {
                         Log.e(TAG, "loadLatestData onApiFailure");
                         if (isViewAttached()) {
-                            getView().notifyDataSetChanged(mTransactionMap.get(mWalletAddress), mTransactionMap.get(mWalletAddress), mWalletAddress, true);
+                            getView().notifyDataSetChanged(get(mWalletAddress), get(mWalletAddress), mWalletAddress, true);
                         }
                     }
                 });
@@ -147,7 +147,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                     public void accept(Pair<List<Transaction>, List<Transaction>> pair) throws Exception {
                         if (isViewAttached()) {
                             //先进行排序
-                            List<Transaction> transactions = mTransactionMap.get(mWalletAddress);
+                            List<Transaction> transactions = get(mWalletAddress);
                             List<Transaction> dbTransactionList = pair.first;
                             List<Transaction> netTransactionList = pair.second;
                             List<Transaction> transactionList = new ArrayList<>();
@@ -159,7 +159,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                             Collections.sort(newTransactionList);
                             getView().notifyDataSetChanged(transactions, newTransactionList, mWalletAddress, false);
 
-                            mTransactionMap.put(mWalletAddress, newTransactionList);
+                            put(mWalletAddress, newTransactionList);
 
                             deleteExceptionalTransaction(transactions, netTransactionList);
                         }
@@ -169,7 +169,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
                     public void accept(Throwable throwable) throws Exception {
                         Log.e(TAG, "onApiFailure");
                         if (isViewAttached()) {
-                            getView().notifyDataSetChanged(mTransactionMap.get(mWalletAddress), mTransactionMap.get(mWalletAddress), mWalletAddress, true);
+                            getView().notifyDataSetChanged(get(mWalletAddress), get(mWalletAddress), mWalletAddress, true);
                         }
                     }
                 });
@@ -178,42 +178,56 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
     @Override
     public void deleteTransaction(Transaction transaction) {
 
-        List<Transaction> transactionList = mTransactionMap.get(mWalletAddress);
+        List<Transaction> transactionList = get(mWalletAddress);
         if (transactionList != null && !transactionList.isEmpty()) {
             List<Transaction> newTransactionList = new ArrayList<>(transactionList);
             newTransactionList.remove(transaction);
             Collections.sort(newTransactionList);
             getView().notifyDataSetChanged(transactionList, newTransactionList, mWalletAddress, false);
 
-            mTransactionMap.put(mWalletAddress, newTransactionList);
+            put(mWalletAddress, newTransactionList);
         }
     }
 
     @Override
     public synchronized void addNewTransaction(Transaction transaction) {
         if (isViewAttached()) {
-            List<Transaction> transactionList = mTransactionMap.get(mWalletAddress);
+            String walletAddress = getWalletAddressFromTransaction(transaction);
+            List<Transaction> transactionList = get(walletAddress);
             List<Transaction> newTransactionList = new ArrayList<>();
-            if (isCurrentSelectedWallet(transaction)) {
-                if (transactionList != null && !transactionList.isEmpty()) {
-                    if (transactionList.contains(transaction)) {
-                        //更新
-                        newTransactionList = new ArrayList<>(transactionList);
-                        int index = newTransactionList.indexOf(transaction);
-                        newTransactionList.set(index, transaction);
-                        Collections.sort(newTransactionList);
-                        getView().notifyDataSetChanged(transactionList, newTransactionList, mWalletAddress, false);
-                    } else {
-                        //添加
-                        newTransactionList = getNewTransactionList(transactionList, Arrays.asList(transaction), true);
-                        Collections.sort(newTransactionList);
-                        getView().notifyDataSetChanged(transactionList, newTransactionList, mWalletAddress, false);
-                    }
-                    mTransactionMap.put(mWalletAddress, newTransactionList);
+            if (transactionList != null) {
+                if (transactionList.contains(transaction)) {
+                    //更新
+                    newTransactionList = new ArrayList<>(transactionList);
+                    int index = newTransactionList.indexOf(transaction);
+                    newTransactionList.set(index, transaction);
+                    Collections.sort(newTransactionList);
+                } else {
+                    //添加
+                    newTransactionList = getNewTransactionList(transactionList, Arrays.asList(transaction), true);
+                    Collections.sort(newTransactionList);
                 }
+                if (mWalletAddress != null && mWalletAddress.equalsIgnoreCase(walletAddress)) {
+                    getView().notifyDataSetChanged(transactionList, newTransactionList, walletAddress, false);
+                }
+                put(walletAddress, newTransactionList);
+
             }
 
         }
+    }
+
+    private List<Transaction> get(String address) {
+        List<Transaction> transactionList = mTransactionMap.get(address.toLowerCase());
+        return transactionList == null ? new ArrayList<>() : transactionList;
+    }
+
+    private void put(String address, List<Transaction> transactionList) {
+        mTransactionMap.put(address.toLowerCase(), transactionList);
+    }
+
+    private String getWalletAddressFromTransaction(Transaction transaction) {
+        return !TextUtils.isEmpty(transaction.getFrom()) ? transaction.getFrom() : transaction.getTo();
     }
 
     /**
@@ -223,7 +237,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
      * @return
      */
     private boolean isCurrentSelectedWallet(Transaction transaction) {
-        return transaction.getFrom().equals(mWalletAddress) || transaction.getTo().equals(mWalletAddress);
+        return transaction.getFrom().equalsIgnoreCase(mWalletAddress) || transaction.getTo().equalsIgnoreCase(mWalletAddress);
     }
 
     /**
@@ -414,7 +428,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
     }
 
     private long getBeginSequenceByDirection(String direction) {
-        List<Transaction> transactionList = mTransactionMap.get(mWalletAddress);
+        List<Transaction> transactionList = get(mWalletAddress);
         //拉最新的
         if (transactionList == null || transactionList.isEmpty()) {
             return -1;

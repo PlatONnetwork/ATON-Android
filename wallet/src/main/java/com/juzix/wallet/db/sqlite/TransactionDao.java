@@ -117,9 +117,9 @@ public class TransactionDao {
             realm = Realm.getDefaultInstance();
             RealmResults<TransactionEntity> results = realm.where(TransactionEntity.class)
                     .beginGroup()
-                    .equalTo("from", address)
+                    .equalTo("from", address.toLowerCase())
                     .or()
-                    .equalTo("to", address)
+                    .equalTo("to", address.toLowerCase())
                     .endGroup()
                     .equalTo("chainId", NodeManager.getInstance().getChainId())
                     .sort("createTime", Sort.DESCENDING)
@@ -137,14 +137,15 @@ public class TransactionDao {
         return list;
     }
 
-    public static TransactionEntity getTransaction(String from, String txType) {
+    public static TransactionEntity getTransaction(String from, String txType, int txReceiptStatus) {
         TransactionEntity transactionEntity = null;
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
             RealmObject realmObject = realm.where(TransactionEntity.class)
-                    .equalTo("from", from)
+                    .equalTo("from", from.toLowerCase())
                     .equalTo("txType", txType)
+                    .equalTo("txReceiptStatus", txReceiptStatus)
                     .equalTo("chainId", NodeManager.getInstance().getChainId())
                     .findFirst();
             if (realmObject != null) {
