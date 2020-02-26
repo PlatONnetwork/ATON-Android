@@ -36,7 +36,6 @@ import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.utils.AmountUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.RxUtils;
-import com.juzix.wallet.utils.ToastUtil;
 import com.trello.rxlifecycle2.android.FragmentEvent;
 
 import org.reactivestreams.Publisher;
@@ -52,6 +51,7 @@ import java.util.concurrent.Callable;
 
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
+import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
@@ -230,6 +230,18 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                         return Web3jManager.getInstance().getNonce(from);
                     }
                 })
+                .filter(new Predicate<BigInteger>() {
+                    @Override
+                    public boolean test(BigInteger bigInteger) throws Exception {
+                        return !bigInteger.equals(Web3jManager.NONE_NONCE);
+                    }
+                })
+                .switchIfEmpty(new Observable<BigInteger>() {
+                    @Override
+                    protected void subscribeActual(Observer<? super BigInteger> observer) {
+                        observer.onError(new CustomThrowable(RPCErrorCode.CONNECT_TIMEOUT));
+                    }
+                })
                 .compose(RxUtils.getSchedulerTransformer())
                 .compose(bindToLifecycle())
                 .compose(RxUtils.getLoadingTransformer(currentActivity()))
@@ -270,8 +282,12 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                     public void accept(Throwable throwable) {
                         super.accept(throwable);
                         if (isViewAttached()) {
-                            if (!TextUtils.isEmpty(throwable.getMessage())) {
-                                ToastUtil.showLongToast(currentActivity(), throwable.getMessage());
+                            if (throwable instanceof CustomThrowable && ((CustomThrowable) throwable).getErrCode() == RPCErrorCode.CONNECT_TIMEOUT) {
+                                showLongToast(R.string.msg_connect_timeout);
+                            } else {
+                                if (!TextUtils.isEmpty(throwable.getMessage())) {
+                                    showLongToast(throwable.getMessage());
+                                }
                             }
                         }
                     }
