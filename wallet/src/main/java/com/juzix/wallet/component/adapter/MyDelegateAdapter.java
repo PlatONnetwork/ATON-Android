@@ -124,9 +124,17 @@ public class MyDelegateAdapter extends RecyclerView.Adapter<MyDelegateAdapter.Vi
         if (payloads.isEmpty()) {
             super.onBindViewHolder(holder, position, payloads);
         } else {
-            DelegateInfo delegateInfo = (DelegateInfo) payloads.get(0);
-            holder.claimRewardRtv.setVisibility(delegateInfo.isPending() ? View.GONE : View.VISIBLE);
+            DelegateInfo delegateInfo = infoList.get(position);
+            holder.walletAvatarIv.setImageResource(RUtils.drawable(delegateInfo.getWalletIcon()));
+            holder.walletNameTv.setText(delegateInfo.getWalletName());
+            holder.walletAddressTv.setText(AddressFormatUtil.formatAddress(delegateInfo.getWalletAddress()));
+            holder.unclaimedRewardAmountTv.setText(CommonTextUtils.getPriceTextWithBold(AmountUtil.formatAmountText(delegateInfo.getWithdrawReward(), 12), ContextCompat.getColor(mContext, R.color.color_000000), ContextCompat.getColor(mContext, R.color.color_000000),
+                    DensityUtil.dp2px(mContext, 14), DensityUtil.dp2px(mContext, 16)));
+            holder.totalRewardAmountTv.setText(AmountUtil.formatAmountText(delegateInfo.getCumulativeReward(), 8));
+            holder.delegatedAmountTv.setText(AmountUtil.formatAmountText(delegateInfo.getDelegated()));
+            holder.claimRewardLayout.setVisibility(BigDecimalUtil.isBiggerThanZero(delegateInfo.getWithdrawReward()) ? View.VISIBLE : View.GONE);
             holder.claimRewardLayout.setEnabled(!delegateInfo.isPending());
+            holder.claimRewardRtv.setVisibility(delegateInfo.isPending() ? View.GONE : View.VISIBLE);
             holder.pendingClaimRewardAnimationLayout.setVisibility(delegateInfo.isPending() ? View.VISIBLE : View.GONE);
         }
     }
