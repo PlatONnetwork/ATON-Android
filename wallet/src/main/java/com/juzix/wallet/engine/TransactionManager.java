@@ -212,10 +212,9 @@ public class TransactionManager {
     public PlatonSendTransaction sendTransactionReturnPlatonSendTransaction(String signedMessage) {
         try {
             return Web3jManager.getInstance().getWeb3j().platonSendRawTransaction(signedMessage).send();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
         return null;
     }
 
