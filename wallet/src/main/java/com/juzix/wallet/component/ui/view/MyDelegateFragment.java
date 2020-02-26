@@ -8,6 +8,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.text.style.ClickableSpan;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -42,7 +43,6 @@ import com.juzix.wallet.utils.CommonTextUtils;
 import com.juzix.wallet.utils.DateUtil;
 import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.RxUtils;
-import com.juzix.wallet.utils.ToastUtil;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -182,8 +182,8 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
 
                 long currentTime = System.currentTimeMillis();
 
-                if (!TransactionManager.getInstance().isAllowSendTransaction(delegateInfo.getWalletAddress(),currentTime)) {
-                    showLongToast(string(R.string.msg_wait_finished_transaction_tips, DateUtil.millisecondToMinutes(TransactionManager.getInstance().getSendTransactionTimeInterval(delegateInfo.getWalletAddress(),currentTime))));
+                if (!TransactionManager.getInstance().isAllowSendTransaction(delegateInfo.getWalletAddress(), currentTime)) {
+                    showLongToast(string(R.string.msg_wait_finished_transaction_tips, DateUtil.millisecondToMinutes(TransactionManager.getInstance().getSendTransactionTimeInterval(delegateInfo.getWalletAddress(), currentTime))));
                     return;
                 }
 
@@ -256,8 +256,15 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
         noDataLl.setVisibility(list != null && list.size() > 0 ? View.GONE : View.VISIBLE);
         mMyDelegateAdapter.notifyDataChanged(list);
         SparseArray<String> totalAmountArray = getTotalAmountArray(list);
-        totalDelegatedAmountTv.setText(CommonTextUtils.getPriceTextWithBold(AmountUtil.formatAmountText(totalAmountArray.get(TotalAmountType.TOTAL_DELEGATED)),
-                ContextCompat.getColor(currentActivity(), R.color.color_f9fbff), ContextCompat.getColor(currentActivity(), R.color.color_f9fbff), DensityUtil.sp2px(currentActivity(), 12), DensityUtil.sp2px(currentActivity(), 22)));
+
+        String totalDelegated = totalAmountArray.get(TotalAmountType.TOTAL_DELEGATED);
+
+        if (TextUtils.isEmpty(totalDelegated)) {
+            totalDelegatedAmountTv.setText(AmountUtil.formatAmountText(totalDelegated));
+        } else {
+            totalDelegatedAmountTv.setText(CommonTextUtils.getPriceTextWithBold(AmountUtil.formatAmountText(totalAmountArray.get(TotalAmountType.TOTAL_DELEGATED)),
+                    ContextCompat.getColor(currentActivity(), R.color.color_f9fbff), ContextCompat.getColor(currentActivity(), R.color.color_f9fbff), DensityUtil.sp2px(currentActivity(), 12), DensityUtil.sp2px(currentActivity(), 22)));
+        }
         totalRewardAmountTv.setText(AmountUtil.formatAmountText(totalAmountArray.get(TotalAmountType.TOTAL_REWARD), 8));
         totalUnclaimedRewardAmountTv.setText(AmountUtil.formatAmountText(totalAmountArray.get(TotalAmountType.TOTAL_UNCLAIMED_REWARD), 8));
     }
@@ -269,18 +276,26 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
 
     private SparseArray<String> getTotalAmountArray(List<DelegateInfo> list) {
 
+        SparseArray<String> sparseArray = new SparseArray<String>(3);
 
-        if (list == null || list.isEmpty()) {
-            SparseArray<String> sparseArray = new SparseArray<String>(3);
+        if (list == null) {
+            sparseArray.put(TotalAmountType.TOTAL_DELEGATED, null);
+            sparseArray.put(TotalAmountType.TOTAL_REWARD, null);
+            sparseArray.put(TotalAmountType.TOTAL_UNCLAIMED_REWARD, null);
+            return sparseArray;
+        }
+
+        if (list.isEmpty()) {
             sparseArray.put(TotalAmountType.TOTAL_DELEGATED, BigDecimal.ZERO.toPlainString());
             sparseArray.put(TotalAmountType.TOTAL_REWARD, BigDecimal.ZERO.toPlainString());
             sparseArray.put(TotalAmountType.TOTAL_UNCLAIMED_REWARD, BigDecimal.ZERO.toPlainString());
             return sparseArray;
         }
 
+
         return Flowable
                 .fromIterable(list)
-                .reduce(new SparseArray<String>(3), new BiFunction<SparseArray<String>, DelegateInfo, SparseArray<String>>() {
+                .reduce(sparseArray, new BiFunction<SparseArray<String>, DelegateInfo, SparseArray<String>>() {
                     @Override
                     public SparseArray<String> apply(SparseArray<String> bigDecimalSparseArray, DelegateInfo delegateInfo) throws Exception {
                         bigDecimalSparseArray.put(TotalAmountType.TOTAL_DELEGATED, BigDecimalUtil.add(bigDecimalSparseArray.get(TotalAmountType.TOTAL_DELEGATED), delegateInfo.getDelegated()).toPlainString());

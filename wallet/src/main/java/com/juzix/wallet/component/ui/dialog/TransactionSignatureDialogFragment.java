@@ -69,9 +69,7 @@ import butterknife.Unbinder;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
-import io.reactivex.SingleObserver;
 import io.reactivex.SingleOnSubscribe;
-import io.reactivex.SingleSource;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
@@ -219,22 +217,24 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
         }
     }
 
+    private Flowable<RPCTransactionResult> buildRPCTransactionResult(RPCTransactionResult rpcTransactionResult) {
+
+        return Single.create(new SingleOnSubscribe<RPCTransactionResult>() {
+            @Override
+            public void subscribe(SingleEmitter<RPCTransactionResult> emitter) throws Exception {
+                if (!TextUtils.isEmpty(rpcTransactionResult.getHash())) {
+                    emitter.onSuccess(rpcTransactionResult);
+                } else {
+                    emitter.onError(new CustomThrowable(rpcTransactionResult.getErrCode()));
+                }
+            }
+        }).toFlowable();
+    }
+
     @SuppressLint("CheckResult")
     private void sendTransaction(TransactionSignatureData transactionSignatureData, TransactionAuthorizationData transactionAuthorizationData) {
 
         getSendTransactionResult()
-                .filter(new Predicate<Pair<Boolean, List<RPCTransactionResult>>>() {
-                    @Override
-                    public boolean test(Pair<Boolean, List<RPCTransactionResult>> booleanListPair) throws Exception {
-                        return booleanListPair.first;
-                    }
-                })
-                .switchIfEmpty(new SingleSource<Pair<Boolean, List<RPCTransactionResult>>>() {
-                    @Override
-                    public void subscribe(SingleObserver<? super Pair<Boolean, List<RPCTransactionResult>>> observer) {
-                        observer.onError(new Throwable());
-                    }
-                })
                 .toFlowable()
                 .flatMap(new Function<Pair<Boolean, List<RPCTransactionResult>>, Publisher<RPCTransactionResult>>() {
                     @Override

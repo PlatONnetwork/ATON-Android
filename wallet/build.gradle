@@ -50,8 +50,6 @@ android {
     }
 
 
-
-
     signingConfigs {
 
         debug {
@@ -99,10 +97,6 @@ android {
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
             multiDexEnabled true
             testCoverageEnabled true  //打开覆盖率统计开关
-
-            ndk {
-                abiFilters "armeabi-v7a"
-            }
         }
 
         releaseC {
@@ -116,7 +110,7 @@ android {
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
 
             ndk {
-                abiFilters "armeabi-v7a"
+                abiFilters 'armeabi-v7a', 'x86_64'
             }
         }
 
@@ -131,7 +125,7 @@ android {
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
 
             ndk {
-                abiFilters "armeabi-v7a"
+                abiFilters 'armeabi-v7a', 'x86_64'
             }
         }
 
@@ -146,7 +140,7 @@ android {
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeOC}")
 
             ndk {
-                abiFilters "armeabi-v7a"
+                abiFilters 'armeabi-v7a', 'x86_64'
             }
         }
 
@@ -161,7 +155,7 @@ android {
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeX}")
 
             ndk {
-                abiFilters "armeabi-v7a"
+                abiFilters 'armeabi-v7a', 'x86_64'
             }
         }
 
@@ -176,7 +170,7 @@ android {
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeX}")
 
             ndk {
-                abiFilters "armeabi-v7a"
+                abiFilters 'armeabi-v7a', 'x86_64'
             }
         }
 
@@ -191,7 +185,7 @@ android {
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeTX}")
 
             ndk {
-                abiFilters "armeabi-v7a"
+                abiFilters 'armeabi-v7a', 'x86_64'
             }
         }
 
@@ -206,7 +200,7 @@ android {
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeTX}")
 
             ndk {
-                abiFilters "armeabi-v7a"
+                abiFilters 'armeabi-v7a', 'x86_64'
             }
         }
 
@@ -216,10 +210,18 @@ android {
 
             PlatONNetwork {
                 buildConfigField "String", "CHANNEL", '"PlatONNetwork"'
+
+                ndk {
+                    abiFilters 'armeabi-v7a'
+                }
             }
 
             GooglePlay {
                 buildConfigField "String", "CHANNEL", '"GooglePlay"'
+
+                ndk {
+                    abiFilters 'armeabi-v7a', 'x86_64'
+                }
             }
 
         }
