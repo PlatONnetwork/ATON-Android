@@ -99,17 +99,6 @@
 
         </LinearLayout>
 
-
-        <LinearLayout
-            android:id="@+id/list_claim_record_detail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:divider="@drawable/divider_claim_reward"
-            android:orientation="vertical"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp"
-            android:showDividers="middle" />
-
     </LinearLayout>
 
 </LinearLayout>

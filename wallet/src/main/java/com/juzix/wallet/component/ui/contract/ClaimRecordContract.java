@@ -11,7 +11,7 @@ public class ClaimRecordContract {
 
     public interface View extends IView {
 
-        void getRewardTransactionsResult(List<ClaimRewardRecord> oldClaimRewardRecordList,List<ClaimRewardRecord> newClaimRewardRecordList);
+        void getRewardTransactionsResult(List<ClaimRewardRecord> newClaimRewardRecordList);
 
         void finishLoadMore();
 

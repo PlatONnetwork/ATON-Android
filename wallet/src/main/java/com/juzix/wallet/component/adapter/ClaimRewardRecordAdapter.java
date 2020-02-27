@@ -1,80 +1,138 @@
 package com.juzix.wallet.component.adapter;
 
 import android.content.Context;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
-import com.juzix.wallet.component.adapter.base.BaseViewHolder;
-import com.juzix.wallet.component.adapter.base.RecycleHolder;
-import com.juzix.wallet.component.adapter.base.RecyclerAdapter;
+import com.juzix.wallet.component.adapter.expandablerecycleradapter.BaseExpandableRecyclerViewAdapter;
+import com.juzix.wallet.component.widget.CircleImageView;
+import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.entity.ClaimReward;
 import com.juzix.wallet.entity.ClaimRewardRecord;
+import com.juzix.wallet.utils.AddressFormatUtil;
+import com.juzix.wallet.utils.AmountUtil;
 import com.juzix.wallet.utils.DateUtil;
+import com.juzix.wallet.utils.DensityUtil;
 
 import java.util.List;
 
-public class ClaimRewardRecordAdapter extends RecyclerView.Adapter<BaseViewHolder<ClaimRewardRecord>> {
+/**
+ * @author ziv
+ * date On 2020-02-27
+ */
+public class ClaimRewardRecordAdapter extends BaseExpandableRecyclerViewAdapter<ClaimRewardRecord, ClaimReward, ClaimRewardRecordAdapter.GroupVH, ClaimRewardRecordAdapter.ChildVH> {
 
     private List<ClaimRewardRecord> mClaimRewardRecordList;
+    private Context mContext;
+
+
+    public ClaimRewardRecordAdapter(Context context) {
+        this.mContext = context;
+    }
 
     public void setList(List<ClaimRewardRecord> claimRewardRecordList) {
         this.mClaimRewardRecordList = claimRewardRecordList;
     }
 
-    @NonNull
     @Override
-    public BaseViewHolder<ClaimRewardRecord> onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        return new ClaimRewardRecordViewHolder(R.layout.item_claim_record, viewGroup);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull BaseViewHolder<ClaimRewardRecord> claimRewardRecordBaseViewHolder, int position) {
-        claimRewardRecordBaseViewHolder.refreshData(mClaimRewardRecordList.get(position), position);
-        claimRewardRecordBaseViewHolder.setOnItemClickListener(new BaseViewHolder.OnItemClickListener<ClaimRewardRecord>() {
-            @Override
-            public void onItemClick(ClaimRewardRecord claimRewardRecord) {
-                if (mClaimRewardRecordList.get(position).getClaimRewardList() != null && !mClaimRewardRecordList.get(position).getClaimRewardList().isEmpty()) {
-                    notifyItemSpreadChanged(position, !claimRewardRecord.isExpanded());
-                }
-            }
-        });
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull BaseViewHolder<ClaimRewardRecord> holder, int position, @NonNull List<Object> payloads) {
-        if (payloads.isEmpty()) {
-            super.onBindViewHolder(holder, position, payloads);
-        } else {
-            holder.updateItem((Bundle) payloads.get(0));
-        }
-    }
-
-    @Override
-    public int getItemCount() {
+    public int getGroupCount() {
         if (mClaimRewardRecordList != null) {
             return mClaimRewardRecordList.size();
         }
         return 0;
     }
 
-    private void notifyItemSpreadChanged(int position, boolean spread) {
-        if (position == -1 || position > getItemCount()) {
-            return;
+    @Override
+    public ClaimRewardRecord getGroupItem(int groupIndex) {
+        if (mClaimRewardRecordList != null && groupIndex < mClaimRewardRecordList.size()) {
+            return mClaimRewardRecordList.get(groupIndex);
+        }
+        return null;
+    }
+
+    @Override
+    public GroupVH onCreateGroupViewHolder(ViewGroup parent, int groupViewType) {
+        return new GroupVH(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_claim_record, parent, false));
+    }
+
+    @Override
+    public void onBindGroupViewHolder(GroupVH holder, ClaimRewardRecord claimRewardRecord, boolean isExpand) {
+
+        ShadowDrawable.setShadowDrawable(holder.mItemParentLayout,
+                ContextCompat.getColor(mContext, R.color.color_ffffff),
+                DensityUtil.dp2px(mContext, 4),
+                ContextCompat.getColor(mContext, R.color.color_cc9ca7c2),
+                DensityUtil.dp2px(mContext, 10),
+                0,
+                DensityUtil.dp2px(mContext, 2));
+
+        holder.mWalletAvatarCiv.setImageResource(RUtils.drawable(claimRewardRecord.getWalletAvatar()));
+        holder.mClaimRewardAmountTv.setText(String.format("%s%s", "+", mContext.getString(R.string.amount_with_unit, AmountUtil.formatAmountText(claimRewardRecord.getTotalReward()))));
+        holder.mWalletNameTv.setText(claimRewardRecord.getWalletName());
+        holder.mWalletAddressTv.setText(AddressFormatUtil.formatClaimRewardRecordAddress(claimRewardRecord.getAddress()));
+        holder.mClaimRewardTimeTv.setText(String.format("#%s", DateUtil.format(claimRewardRecord.getTimestamp(), DateUtil.DATETIME_FORMAT_PATTERN)));
+        holder.mSpreadIv.setVisibility(claimRewardRecord.isExpandable() ? View.VISIBLE : View.GONE);
+        holder.mSpreadIv.setImageResource(claimRewardRecord.isExpanded() ? R.drawable.icon_pull_up_blue : R.drawable.icon_drop_down_blue);
+    }
+
+    @Override
+    public ChildVH onCreateChildViewHolder(ViewGroup parent, int childViewType) {
+        return new ChildVH(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_claim_record_detail, parent, false));
+    }
+
+    @Override
+    public void onBindChildViewHolder(ChildVH holder, ClaimRewardRecord groupBean, ClaimReward claimReward) {
+        holder.mNodeNameTv.setText(claimReward.getNodeName());
+        holder.mClaimAmountTv.setText(String.format("%s%s", "+", mContext.getResources().getString(R.string.amount_with_unit, AmountUtil.formatAmountText(claimReward.getReward()))));
+    }
+
+    static class GroupVH extends BaseExpandableRecyclerViewAdapter.BaseGroupViewHolder {
+
+        private CircleImageView mWalletAvatarCiv;
+        private TextView mClaimRewardAmountTv;
+        private TextView mWalletNameTv;
+        private TextView mWalletAddressTv;
+        private TextView mClaimRewardTimeTv;
+        private LinearLayout mItemParentLayout;
+        private ImageView mSpreadIv;
+
+        GroupVH(View itemView) {
+            super(itemView);
+
+            mWalletAvatarCiv = itemView.findViewById(R.id.civ_wallet_avatar);
+            mClaimRewardAmountTv = itemView.findViewById(R.id.tv_claim_amount);
+            mWalletNameTv = itemView.findViewById(R.id.tv_wallet_name);
+            mWalletAddressTv = itemView.findViewById(R.id.tv_wallet_address);
+            mClaimRewardTimeTv = itemView.findViewById(R.id.tv_claim_reward_time);
+            mItemParentLayout = itemView.findViewById(R.id.layout_item_parent);
+            mSpreadIv = itemView.findViewById(R.id.iv_spread);
         }
 
-        ClaimRewardRecord claimRewardRecord = mClaimRewardRecordList.get(position);
-        claimRewardRecord.setExpanded(spread);
+        // this method is used for partial update.Which means when expand status changed,only a part of this view need to invalidate
+        @Override
+        protected void onExpandStatusChanged(RecyclerView.Adapter relatedAdapter, boolean isExpanding) {
+            mSpreadIv.setImageResource(isExpanding ? R.drawable.icon_pull_up_blue : R.drawable.icon_drop_down_blue);
+        }
+    }
 
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(ClaimRewardRecordDiffCallback.KEY_CLAIM_REWARD_EXPANDED, claimRewardRecord.isExpanded());
-        notifyItemChanged(position, bundle);
+    static class ChildVH extends RecyclerView.ViewHolder {
+
+        private TextView mNodeNameTv;
+        private TextView mClaimAmountTv;
+
+        ChildVH(View itemView) {
+            super(itemView);
+
+            mNodeNameTv = itemView.findViewById(R.id.tv_node_name);
+            mClaimAmountTv = itemView.findViewById(R.id.tv_claim_amount);
+        }
     }
 }

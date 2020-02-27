@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -12,11 +11,12 @@ import android.widget.LinearLayout;
 
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.adapter.ClaimRewardRecordAdapter;
-import com.juzix.wallet.component.adapter.ClaimRewardRecordDiffCallback;
+import com.juzix.wallet.component.adapter.expandablerecycleradapter.BaseExpandableRecyclerViewAdapter;
 import com.juzix.wallet.component.ui.base.MVPBaseActivity;
 import com.juzix.wallet.component.ui.contract.ClaimRecordContract;
 import com.juzix.wallet.component.ui.presenter.ClaimRecordPresenter;
 import com.juzix.wallet.component.ui.presenter.Direction;
+import com.juzix.wallet.entity.ClaimReward;
 import com.juzix.wallet.entity.ClaimRewardRecord;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -56,7 +56,7 @@ public class ClaimRewardRecordActivity extends MVPBaseActivity<ClaimRecordPresen
 
     private void initViews() {
 
-        mClaimRewardRecordAdapter = new ClaimRewardRecordAdapter();
+        mClaimRewardRecordAdapter = new ClaimRewardRecordAdapter(this);
 
         layoutRefresh.setOnRefreshListener(new OnRefreshListener() {
             @Override
@@ -72,6 +72,28 @@ public class ClaimRewardRecordActivity extends MVPBaseActivity<ClaimRecordPresen
             }
         });
 
+        mClaimRewardRecordAdapter.setListener(new BaseExpandableRecyclerViewAdapter.ExpandableRecyclerViewOnClickListener<ClaimRewardRecord, ClaimReward>() {
+            @Override
+            public boolean onGroupLongClicked(ClaimRewardRecord groupItem) {
+                return false;
+            }
+
+            @Override
+            public boolean onInterceptGroupExpandEvent(ClaimRewardRecord groupItem, boolean isExpand) {
+                return false;
+            }
+
+            @Override
+            public void onGroupClicked(ClaimRewardRecord groupItem) {
+
+            }
+
+            @Override
+            public void onChildClicked(ClaimRewardRecord groupItem, ClaimReward childItem) {
+
+            }
+        });
+
         listClaimRecord.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         listClaimRecord.setAdapter(mClaimRewardRecordAdapter);
 
@@ -84,7 +106,8 @@ public class ClaimRewardRecordActivity extends MVPBaseActivity<ClaimRecordPresen
     }
 
     @Override
-    public void getRewardTransactionsResult(List<ClaimRewardRecord> oldClaimRewardRecordList, List<ClaimRewardRecord> newClaimRewardRecordList) {
+    public void getRewardTransactionsResult(List<ClaimRewardRecord> newClaimRewardRecordList) {
+
         if (newClaimRewardRecordList == null || newClaimRewardRecordList.isEmpty()) {
             emptyLayout.setVisibility(View.VISIBLE);
             listClaimRecord.setVisibility(View.GONE);
@@ -92,9 +115,9 @@ public class ClaimRewardRecordActivity extends MVPBaseActivity<ClaimRecordPresen
             emptyLayout.setVisibility(View.GONE);
             listClaimRecord.setVisibility(View.VISIBLE);
 
-            DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new ClaimRewardRecordDiffCallback(oldClaimRewardRecordList, newClaimRewardRecordList), true);
             mClaimRewardRecordAdapter.setList(newClaimRewardRecordList);
-            diffResult.dispatchUpdatesTo(mClaimRewardRecordAdapter);
+            mClaimRewardRecordAdapter.notifyDataSetChanged();
+
         }
     }
 
