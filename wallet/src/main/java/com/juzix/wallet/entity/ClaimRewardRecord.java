@@ -1,10 +1,11 @@
 package com.juzix.wallet.entity;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.juzix.wallet.component.adapter.expandablerecycleradapter.BaseExpandableRecyclerViewAdapter;
 
 import java.util.List;
 
-public class ClaimRewardRecord {
+public class ClaimRewardRecord implements BaseExpandableRecyclerViewAdapter.BaseGroupBean<ClaimReward> {
 
     private String walletAvatar;
 
@@ -88,5 +89,26 @@ public class ClaimRewardRecord {
 
     public void setExpanded(boolean expanded) {
         this.expanded = expanded;
+    }
+
+    @Override
+    public int getChildCount() {
+        if (claimRewardList != null) {
+            return claimRewardList.size();
+        }
+        return 0;
+    }
+
+    @Override
+    public ClaimReward getChildAt(int childIndex) {
+        if (claimRewardList != null) {
+            return claimRewardList.get(childIndex);
+        }
+        return null;
+    }
+
+    @Override
+    public boolean isExpandable() {
+        return getChildCount() > 0;
     }
 }

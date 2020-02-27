@@ -95,7 +95,7 @@ public class ClaimRecordPresenter extends BasePresenter<ClaimRecordContract.View
                             //新数据
                             List<ClaimRewardRecord> newList = getNewList(mOldClaimRewardRecordList, claimRewardRecords, isLoadMore);
                             //刷新页面
-                            getView().getRewardTransactionsResult(mOldClaimRewardRecordList, newList);
+                            getView().getRewardTransactionsResult(newList);
 
                             mOldClaimRewardRecordList = newList;
 
