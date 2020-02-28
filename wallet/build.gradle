@@ -57,9 +57,9 @@ android {
         }
 
         releaseC {
-            storeFile file("../extras/aton.keystore")
+            storeFile file("../extras/wallet.keystore")
             storePassword "123456"
-            keyAlias "aton"
+            keyAlias "wallet"
             keyPassword "123456"
             v2SigningEnabled false
         }
