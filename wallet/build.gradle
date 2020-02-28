@@ -57,9 +57,9 @@ android {
         }
 
         releaseC {
-            storeFile file("../extras/wallet.keystore")
+            storeFile file("../extras/aton.keystore")
             storePassword "123456"
-            keyAlias "wallet"
+            keyAlias "aton"
             keyPassword "123456"
             v2SigningEnabled false
         }
@@ -99,7 +99,7 @@ android {
             testCoverageEnabled true  //打开覆盖率统计开关
 
             ndk {
-                abiFilters 'armeabi-v7a', 'x86_64','x86'
+                abiFilters 'armeabi-v7a','x86'
             }
         }
 
@@ -188,7 +188,7 @@ android {
                 buildConfigField "String", "CHANNEL", '"PlatONNetwork"'
 
                 ndk {
-                    abiFilters 'armeabi-v7a', 'x86_64'
+                    abiFilters 'armeabi-v7a', 'arm64-v8a','armeabi'
                 }
             }
 
@@ -196,7 +196,7 @@ android {
                 buildConfigField "String", "CHANNEL", '"GooglePlay"'
 
                 ndk {
-                    abiFilters 'armeabi-v7a', 'x86_64'
+                    abiFilters 'armeabi-v7a', 'arm64-v8a','armeabi'
                 }
             }
 
