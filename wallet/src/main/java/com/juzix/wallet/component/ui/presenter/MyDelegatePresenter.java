@@ -1,10 +1,9 @@
 package com.juzix.wallet.component.ui.presenter;
 
-import android.text.TextUtils;
-
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.ApiSingleObserver;
+import com.juzix.wallet.BuildConfig;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.app.CustomThrowable;
@@ -23,7 +22,6 @@ import com.juzix.wallet.engine.Optional;
 import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.TransactionManager;
 import com.juzix.wallet.engine.WalletManager;
-import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.ClaimRewardInfo;
 import com.juzix.wallet.entity.DelegateInfo;
 import com.juzix.wallet.entity.GasProvider;
@@ -47,11 +45,8 @@ import org.web3j.platon.FunctionType;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import io.reactivex.Flowable;
-import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
@@ -197,10 +192,18 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                                         @Override
                                         public void accept(Throwable throwable) {
                                             super.accept(throwable);
-                                            if (throwable instanceof CustomThrowable && ((CustomThrowable) throwable).getErrCode() == RPCErrorCode.CONNECT_TIMEOUT) {
-                                                showLongToast(R.string.msg_connect_timeout);
-                                            } else {
-                                                showLongToast(R.string.claim_reward_failed);
+                                            if (throwable instanceof CustomThrowable) {
+                                                CustomThrowable customThrowable = (CustomThrowable) throwable;
+                                                if (customThrowable.getErrCode() == RPCErrorCode.CONNECT_TIMEOUT) {
+                                                    showLongToast(R.string.msg_connect_timeout);
+                                                } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_KNOWN_TX) {
+                                                    showLongToast(R.string.msg_transaction_repeatedly_exception);
+                                                } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_NONCE_TOO_LOW ||
+                                                        customThrowable.getErrCode() == CustomThrowable.CODE_TX_GAS_LOW) {
+                                                    showLongToast(R.string.msg_transaction_exception);
+                                                } else {
+                                                    showLongToast(R.string.msg_server_exception);
+                                                }
                                             }
                                         }
                                     });
@@ -223,25 +226,8 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
 
     private void showTransactionAuthorizationDialogFragment(String amount, String from, org.web3j.tx.gas.GasProvider gasProvider, int position) {
 
-        Observable
-                .fromCallable(new Callable<BigInteger>() {
-                    @Override
-                    public BigInteger call() throws Exception {
-                        return Web3jManager.getInstance().getNonce(from);
-                    }
-                })
-                .filter(new Predicate<BigInteger>() {
-                    @Override
-                    public boolean test(BigInteger bigInteger) throws Exception {
-                        return !bigInteger.equals(Web3jManager.NONE_NONCE);
-                    }
-                })
-                .switchIfEmpty(new Observable<BigInteger>() {
-                    @Override
-                    protected void subscribeActual(Observer<? super BigInteger> observer) {
-                        observer.onError(new CustomThrowable(RPCErrorCode.CONNECT_TIMEOUT));
-                    }
-                })
+        TransactionManager.getInstance().getNonce(from)
+                .toObservable()
                 .compose(RxUtils.getSchedulerTransformer())
                 .compose(bindToLifecycle())
                 .compose(RxUtils.getLoadingTransformer(currentActivity()))
@@ -257,7 +243,7 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                                     .setTo(ContractAddress.REWARD_CONTRACT_ADDRESS)
                                     .setGasLimit(gasProvider.getGasLimit().toString(10))
                                     .setGasPrice(gasProvider.getGasPrice().toString(10))
-                                    .build()), System.currentTimeMillis() / 1000);
+                                    .build()), System.currentTimeMillis() / 1000, BuildConfig.QRCODE_VERSION_CODE);
                             TransactionAuthorizationDialogFragment.newInstance(transactionAuthorizationData)
                                     .setOnNextBtnClickListener(new TransactionAuthorizationDialogFragment.OnNextBtnClickListener() {
                                         @Override
@@ -282,11 +268,17 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                     public void accept(Throwable throwable) {
                         super.accept(throwable);
                         if (isViewAttached()) {
-                            if (throwable instanceof CustomThrowable && ((CustomThrowable) throwable).getErrCode() == RPCErrorCode.CONNECT_TIMEOUT) {
-                                showLongToast(R.string.msg_connect_timeout);
-                            } else {
-                                if (!TextUtils.isEmpty(throwable.getMessage())) {
-                                    showLongToast(throwable.getMessage());
+                            if (throwable instanceof CustomThrowable) {
+                                CustomThrowable customThrowable = (CustomThrowable) throwable;
+                                if (customThrowable.getErrCode() == RPCErrorCode.CONNECT_TIMEOUT) {
+                                    showLongToast(R.string.msg_connect_timeout);
+                                } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_KNOWN_TX) {
+                                    showLongToast(R.string.msg_transaction_repeatedly_exception);
+                                } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_NONCE_TOO_LOW ||
+                                        customThrowable.getErrCode() == CustomThrowable.CODE_TX_GAS_LOW) {
+                                    showLongToast(R.string.msg_expired_qr_code);
+                                } else {
+                                    showLongToast(R.string.msg_server_exception);
                                 }
                             }
                         }

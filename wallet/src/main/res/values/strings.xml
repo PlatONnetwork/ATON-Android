@@ -128,7 +128,7 @@
     <string name="backup">备份</string>
     <string name="changeWalletName">修改名称</string>
     <string name="formatError">钱包名称格式错误</string>
-    <string name="validWalletNameTips">请输入1-12位字符</string>
+    <string name="validWalletNameTips">请输入1-20位字符</string>
     <string name="validKeystoreEmptyTips">钱包文件(.json)不能为空</string>
     <string name="validPrivateKeyEmptyTips">私钥不能为空</string>
     <string name="validMnenonicEmptyTips">助记词不能为空</string>
@@ -295,6 +295,7 @@
     <string name="submissionTime">交易时间</string>
     <string name="memo">备注</string>
     <string name="msg_transaction_hash">交易哈希</string>
+    <string name="msg_confirmation_block">确认区块</string>
     <string name="executeContractConfirm">交易确认</string>
     <string name="pending">确认中</string>
     <string name="signing">签名中</string>
@@ -784,4 +785,11 @@
     <string name="msg_withdraw_claim_reward">注意：操作全部赎回时，将自动领取委托奖励。</string>
     <string name="msg_restricted_plan">锁仓:</string>
     <string name="msg_connect_timeout">请求超时</string>
+    <string name="msg_transaction_memo">备注：%1$s</string>
+    <string name="hint_input_transaction_note">备注(可选30字以内)</string>
+
+    <string name="msg_server_exception">服务器开了小差，请重试(%1$d)</string>
+    <string name="msg_transaction_repeatedly_exception">请勿重复提交!</string>
+    <string name="msg_transaction_exception">交易异常，请重试（%1$d）</string>
+    <string name="msg_expired_qr_code">二维码已失效</string>
 </resources>

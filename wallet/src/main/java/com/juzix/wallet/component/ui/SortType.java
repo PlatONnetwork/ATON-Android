@@ -3,10 +3,10 @@ package com.juzix.wallet.component.ui;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.entity.VerifyNode;
 import com.juzix.wallet.utils.BigIntegerUtil;
+import com.juzix.wallet.utils.NumberParserUtils;
 
 import java.util.Comparator;
 

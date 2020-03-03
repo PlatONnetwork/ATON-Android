@@ -60,6 +60,7 @@ import org.web3j.rlp.RlpString;
 import org.web3j.rlp.RlpType;
 import org.web3j.utils.Numeric;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -307,21 +308,34 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
 
     private Single<Pair<Boolean, List<RPCTransactionResult>>> getSendTransactionResult() {
 
-        return Flowable
-                .fromIterable(transactionSignatureData.getSignedDatas())
-                .map(new Function<String, RPCTransactionResult>() {
-                    @Override
-                    public RPCTransactionResult apply(String signedMessage) throws Exception {
-                        return TransactionManager.getInstance().getTransactionResult(signedMessage);
-                    }
-                })
-                .toList()
-                .map(new Function<List<RPCTransactionResult>, Pair<Boolean, List<RPCTransactionResult>>>() {
-                    @Override
-                    public Pair<Boolean, List<RPCTransactionResult>> apply(List<RPCTransactionResult> rpcTransactionResults) throws Exception {
-                        return new Pair<Boolean, List<RPCTransactionResult>>(getSendTransactionResult(rpcTransactionResults), rpcTransactionResults);
-                    }
-                });
+        if (transactionSignatureData.isVersionNotEmpty()) {
+            return Flowable
+                    .fromIterable(transactionSignatureData.getSignedDatas())
+                    .map(new Function<String, RPCTransactionResult>() {
+                        @Override
+                        public RPCTransactionResult apply(String signedMessage) throws Exception {
+                            return TransactionManager.getInstance().getTransactionResult(signedMessage);
+                        }
+                    })
+                    .toList()
+                    .map(new Function<List<RPCTransactionResult>, Pair<Boolean, List<RPCTransactionResult>>>() {
+                        @Override
+                        public Pair<Boolean, List<RPCTransactionResult>> apply(List<RPCTransactionResult> rpcTransactionResults) throws Exception {
+                            return new Pair<Boolean, List<RPCTransactionResult>>(getSendTransactionResult(rpcTransactionResults), rpcTransactionResults);
+                        }
+                    });
+        } else {
+            return TransactionManager.getInstance()
+                    .submitTransaction(transactionSignatureData.getSignedMessage(), transactionSignatureData.getSignedDatas().get(0), transactionSignatureData.getRemark())
+                    .map(new Function<RPCTransactionResult, Pair<Boolean, List<RPCTransactionResult>>>() {
+                        @Override
+                        public Pair<Boolean, List<RPCTransactionResult>> apply(RPCTransactionResult rpcTransactionResult) throws Exception {
+                            return new Pair<Boolean, List<RPCTransactionResult>>(getSendTransactionResult(Arrays.asList(rpcTransactionResult)), Arrays.asList(rpcTransactionResult));
+                        }
+                    });
+
+        }
+
     }
 
     private boolean getSendTransactionResult(List<RPCTransactionResult> platonSendTransactions) {

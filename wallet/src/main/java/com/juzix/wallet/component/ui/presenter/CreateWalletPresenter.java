@@ -27,7 +27,7 @@ public class CreateWalletPresenter extends BasePresenter<CreateWalletContract.Vi
     @SuppressLint("CheckResult")
     @Override
     public void createWallet(String name, String password, String repeatPassword) {
-        if (name.length() > 12) {
+        if (name.length() > 20) {
             getView().showNameError(string(R.string.validWalletNameTips), true);
             return;
         }

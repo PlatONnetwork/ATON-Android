@@ -73,6 +73,8 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
     TextView tvTo;
     @BindView(R.id.iv_contract_to_tag)
     ImageView ivContractToTag;
+    @BindView(R.id.tv_transaction_note)
+    TextView tvTransactionNote;
 
     private Unbinder unbinder;
 
@@ -153,6 +155,9 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
 
         tvTo.setText(getReceiverName(transaction.getTo(), transaction.getNodeName()));
         tvTo.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, getReceiverAvatar(transactionType, transaction.getTo())), null, null, null);
+
+        tvTransactionNote.setVisibility(TextUtils.isEmpty(transaction.getRemark()) ? View.GONE : View.VISIBLE);
+        tvTransactionNote.setText(getString(R.string.msg_transaction_memo, transaction.getRemark()));
 
         viewTransactionDetailInfo.setData(transaction, senderName, transferType);
 

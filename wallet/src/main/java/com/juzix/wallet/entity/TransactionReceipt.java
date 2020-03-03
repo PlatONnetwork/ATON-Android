@@ -8,15 +8,11 @@ public class TransactionReceipt {
 
     private String totalReward;
 
+    private String blockNumber;
+
     public TransactionReceipt(int status, String hash) {
         this.status = status;
         this.hash = hash;
-    }
-
-    public TransactionReceipt(int status, String hash, String totalReward) {
-        this.status = status;
-        this.hash = hash;
-        this.totalReward = totalReward;
     }
 
     public TransactionReceipt() {
@@ -44,5 +40,13 @@ public class TransactionReceipt {
 
     public void setTotalReward(String totalReward) {
         this.totalReward = totalReward;
+    }
+
+    public String getBlockNumber() {
+        return blockNumber;
+    }
+
+    public void setBlockNumber(String blockNumber) {
+        this.blockNumber = blockNumber;
     }
 }

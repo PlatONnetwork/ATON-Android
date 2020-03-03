@@ -93,7 +93,7 @@ public class OfficialCommunityActivity extends BaseActivity {
         OfficialCommunity liOfficialCommunity = new OfficialCommunity(OfficialCommunityType.LINKEDIN, getResources().getString(R.string.linked_in), liOfficialCommunityItemList);
         officialCommunityList.add(liOfficialCommunity);
 
-        List<OfficialCommunityItem> tgOfficialCommunityItemList = Arrays.asList(new OfficialCommunityItem("https://t.me/PlatONHK"));
+        List<OfficialCommunityItem> tgOfficialCommunityItemList = Arrays.asList(new OfficialCommunityItem("https://t.me/PlatONNetwork"));
         OfficialCommunity tgOfficialCommunity = new OfficialCommunity(OfficialCommunityType.TELEGRAM, getResources().getString(R.string.telegram), tgOfficialCommunityItemList);
         officialCommunityList.add(tgOfficialCommunity);
 

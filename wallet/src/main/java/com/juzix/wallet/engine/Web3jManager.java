@@ -2,6 +2,8 @@ package com.juzix.wallet.engine;
 
 
 import com.juzix.wallet.app.Constants;
+import com.juzix.wallet.entity.RPCErrorCode;
+import com.juzix.wallet.entity.RPCNonceResult;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
@@ -17,6 +19,7 @@ import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 import org.web3j.protocol.core.methods.response.PlatonTransaction;
 import org.web3j.protocol.core.methods.response.Transaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.protocol.exceptions.ClientConnectionException;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.RawTransactionManager;
 import org.web3j.tx.TransactionManager;
@@ -27,6 +30,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.net.SocketTimeoutException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
@@ -108,21 +112,27 @@ public class Web3jManager {
         }
     }
 
-    public BigInteger getNonce(String from) {
+    public RPCNonceResult getNonce(String from) {
 
-        PlatonGetTransactionCount ethGetTransactionCount = null;
+        RPCNonceResult rpcNonceResult = null;
+
         try {
-            ethGetTransactionCount = Web3jManager.getInstance().getWeb3j().platonGetTransactionCount(
+            PlatonGetTransactionCount ethGetTransactionCount = Web3jManager.getInstance().getWeb3j().platonGetTransactionCount(
                     from, DefaultBlockParameterName.PENDING).send();
             if (ethGetTransactionCount.getTransactionCount().intValue() == 0) {
                 ethGetTransactionCount = Web3jManager.getInstance().getWeb3j().platonGetTransactionCount(
                         from, DefaultBlockParameterName.LATEST).send();
             }
-            return ethGetTransactionCount.getTransactionCount();
-        } catch (Exception e) {
+            rpcNonceResult = new RPCNonceResult(RPCErrorCode.SUCCESS, ethGetTransactionCount.getTransactionCount());
+        } catch (SocketTimeoutException e) {
+            e.printStackTrace();
+            rpcNonceResult = new RPCNonceResult(RPCErrorCode.SOCKET_TIMEOUT, NONE_NONCE);
+        } catch (ClientConnectionException e) {
+            rpcNonceResult = new RPCNonceResult(RPCErrorCode.CONNECT_TIMEOUT, NONE_NONCE);
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        return NONE_NONCE;
+        return rpcNonceResult;
     }
 
     public long getLatestBlockNumber() {

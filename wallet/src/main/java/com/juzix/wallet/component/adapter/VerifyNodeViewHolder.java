@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.juzhen.framework.util.MapUtils;
-import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.adapter.base.BaseViewHolder;
 import com.juzix.wallet.component.widget.CircleImageView;
@@ -21,6 +20,7 @@ import com.juzix.wallet.entity.VerifyNode;
 import com.juzix.wallet.utils.AmountUtil;
 import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.GlideUtils;
+import com.juzix.wallet.utils.NumberParserUtils;
 import com.juzix.wallet.utils.StringUtil;
 
 import java.util.HashMap;
@@ -66,7 +66,7 @@ public class VerifyNodeViewHolder extends BaseViewHolder<VerifyNode> {
 
         GlideUtils.loadRound(mContext, data.getUrl(), mNodeAvatarCiv);
         mNodeNameTv.setText(data.getName());
-        mNodeDelegatedAmount.setText(String.format("%s / %s", mContext.getResources().getString(R.string.amount_with_unit, AmountUtil.convertVonToLat(data.getDelegateSum())), StringUtil.formatBalance(data.getDelegate(), 0, 0)));
+        mNodeDelegatedAmount.setText(String.format("%s / %s", mContext.getResources().getString(R.string.amount_with_unit, AmountUtil.convertVonToLatWithFractionDigits(data.getDelegateSum(), 2)), StringUtil.formatBalance(data.getDelegate(), 0, 0)));
         mNodeStateRtv.setText(mContext.getString(getNodeStatusDescRes(data.getNodeStatus(), data.isConsensus())));
         mNodeStateRtv.setTextColor(ContextCompat.getColor(mContext, getNodeStatusTextAndBorderColor(data.getNodeStatus(), data.isConsensus())));
         mNodeStateRtv.setRoundedBorderColor(ContextCompat.getColor(mContext, getNodeStatusTextAndBorderColor(data.getNodeStatus(), data.isConsensus())));

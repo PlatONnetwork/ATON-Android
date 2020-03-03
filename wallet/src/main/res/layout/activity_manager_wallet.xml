@@ -42,16 +42,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/wallet_address"
-                android:textStyle="bold"
                 android:textColor="@color/color_000000"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/iv_copy_wallet_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/icon_copy"
-                android:layout_alignParentRight="true"/>
+                android:layout_alignParentRight="true"
+                android:src="@drawable/icon_copy" />
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/tv_address"
@@ -59,9 +59,9 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_wallet_title"
                 android:layout_marginTop="8dp"
+                android:lines="1"
                 android:textColor="@color/color_b6bbd0"
                 android:textSize="14sp"
-                android:lines="1"
                 app:autoSizeTextType="uniform"
                 tools:text="0x493301712671Ada506ba6Ca7891F436D291858210x4933017" />
 
@@ -102,13 +102,16 @@
 
             <TextView
                 android:id="@+id/tv_rename"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/Text.61646e.14"
                 android:layout_centerVertical="true"
+                android:layout_marginLeft="12dp"
                 android:layout_toLeftOf="@id/iv_arrow1"
-                android:textColor="@color/color_61646e"
-                android:textSize="14sp"
-                tools:text="@string/wallet_name" />
+                android:layout_toRightOf="@id/tv_rename_title"
+                android:ellipsize="none"
+                android:gravity="right"
+                android:includeFontPadding="false"
+                android:singleLine="true"
+                tools:text="钱包名称钱钱包名钱包名称钱钱包名钱包名称钱钱包名" />
 
             <View
                 android:layout_width="match_parent"
@@ -238,8 +241,8 @@
             android:layout_marginBottom="24dp"
             android:background="@drawable/bg_delete_wallet"
             android:text="@string/delete_wallet"
-            android:textStyle="bold"
-            android:textColor="@color/color_delete_wallet_text" />
+            android:textColor="@color/color_delete_wallet_text"
+            android:textStyle="bold" />
     </LinearLayout>
 
 

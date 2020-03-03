@@ -53,7 +53,7 @@
                 android:hint="@string/nameOfWallet"
                 android:imeOptions="actionNext"
                 android:singleLine="true"
-                android:maxLength="12"
+                android:maxLength="20"
                 android:nextFocusForward="@+id/et_password"
                 android:textColorHint="@color/color_b6bbd0" />
 

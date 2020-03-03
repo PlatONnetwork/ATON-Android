@@ -3,11 +3,8 @@ package com.juzix.wallet.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.juzhen.framework.util.NumberParserUtils;
-import com.juzix.wallet.R;
 import com.juzix.wallet.utils.BigDecimalUtil;
-
-import java.text.NumberFormat;
+import com.juzix.wallet.utils.NumberParserUtils;
 
 public class VerifyNode implements Parcelable {
 

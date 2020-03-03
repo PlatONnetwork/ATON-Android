@@ -2,17 +2,25 @@ package com.juzix.wallet.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import com.juzhen.framework.util.NumberParserUtils;
+import com.juzix.wallet.BuildConfig;
 import com.juzix.wallet.engine.TransactionManager;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.BigIntegerUtil;
+import com.juzix.wallet.utils.NumberParserUtils;
+import com.juzix.wallet.utils.SignCodeUtils;
 
 import org.web3j.crypto.Credentials;
+import org.web3j.crypto.ECKeyPair;
+import org.web3j.crypto.Hash;
+import org.web3j.crypto.Sign;
 import org.web3j.platon.FunctionType;
 import org.web3j.utils.JSONUtil;
+import org.web3j.utils.Numeric;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,18 +31,24 @@ import io.reactivex.functions.Function;
 
 public class TransactionAuthorizationData implements Parcelable {
 
+    private static final String UTF_8 = "UTF-8";
+
     @JSONField(name = "qrCodeData")
     private List<TransactionAuthorizationBaseData> baseDataList;
 
     protected long timestamp;
 
+    @JSONField(name = "v")
+    protected int version;
+
     public TransactionAuthorizationData() {
 
     }
 
-    public TransactionAuthorizationData(List<TransactionAuthorizationBaseData> baseDataList, long timeStamp) {
+    public TransactionAuthorizationData(List<TransactionAuthorizationBaseData> baseDataList, long timestamp, int version) {
         this.baseDataList = baseDataList;
-        this.timestamp = timeStamp;
+        this.timestamp = timestamp;
+        this.version = version;
     }
 
     public List<TransactionAuthorizationBaseData> getBaseDataList() {
@@ -51,6 +65,14 @@ public class TransactionAuthorizationData implements Parcelable {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
     }
 
     protected TransactionAuthorizationData(Parcel in) {
@@ -116,7 +138,39 @@ public class TransactionAuthorizationData implements Parcelable {
             claimRewardAmount = firstBaseData.getAmount();
         }
 
-        return new TransactionSignatureData(getSignedMessageList(credentials), firstBaseData.getFrom(), firstBaseData.getChainId(), firstBaseData.getPlatOnFunction().getType(), timestamp, firstBaseData.getNodeName(), claimRewardAmount);
+        List<String> signedMessageList = getSignedMessageList(credentials);
+        String signedMessage = signedMessageList.isEmpty() ? null : signedMessageList.get(0);
+
+        return new TransactionSignatureData(signedMessageList, firstBaseData.getFrom(), firstBaseData.getChainId(), firstBaseData.getPlatOnFunction().getType(), timestamp, firstBaseData.getNodeName(), claimRewardAmount, firstBaseData.getRemark(), createSigned(credentials.getEcKeyPair(), signedMessage, firstBaseData.getRemark()), BuildConfig.QRCODE_VERSION_CODE);
+    }
+
+    private String createSigned(ECKeyPair ecKeyPair, String signedData, String remark) {
+        byte[] signedDataByte = Numeric.hexStringToByteArray(signedData);
+        byte[] remarkByte = new byte[0];
+        if (!TextUtils.isEmpty(remark)) {
+            try {
+                remarkByte = remark.getBytes(UTF_8);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (remarkByte == null) {
+            return null;
+        }
+        byte[] message = new byte[signedDataByte.length + remarkByte.length];
+        System.arraycopy(signedDataByte, 0, message, 0, signedDataByte.length);
+        System.arraycopy(remarkByte, 0, message, signedDataByte.length, remarkByte.length);
+
+        byte[] messageHash = Hash.sha3(message);
+
+        //签名 Sign.signMessage(message, ecKeyPair, true) 和  Sign.signMessage(messageHash, ecKeyPair, false) 等效
+        Sign.SignatureData signatureData = Sign.signMessage(messageHash, ecKeyPair, false);
+
+        byte[] signByte = SignCodeUtils.encode(signatureData);
+
+        //报文中sign数据， signHex等于下面打印的值
+        return Numeric.toHexString(signByte);
     }
 
     private List<String> getSignedMessageList(Credentials credentials) {
