@@ -160,7 +160,7 @@ public class TransactionDetailInfoView extends LinearLayout {
         if (!TextUtils.isEmpty(transaction.getBlockNumber())) {
             addView(getItemView(getStringWithColon(R.string.msg_confirmation_block), String.valueOf(transaction.getBlockNumber()), true));
         }
-        addView(getItemView(getStringWithColon(R.string.msg_transaction_hash), transaction.getHash(), true));
+        addView(getItemView(getStringWithColon(R.string.msg_transaction_hash), AddressFormatUtil.formatAddress(transaction.getHash()), true));
 
     }
 

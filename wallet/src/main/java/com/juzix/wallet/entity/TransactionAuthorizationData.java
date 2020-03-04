@@ -116,7 +116,7 @@ public class TransactionAuthorizationData implements Parcelable {
 
         TransactionAuthorizationBaseData baseData = baseDataList.get(0);
 
-        return new TransactionAuthorizationDetail(getSumAmount(), baseData.getPlatOnFunction().getType(), baseData.getFrom(), baseData.getTo(), getSumFee(), baseData.getNodeId(), baseData.getNodeName());
+        return new TransactionAuthorizationDetail(getSumAmount(), baseData.getPlatOnFunction().getType(), baseData.getFrom(), baseData.getTo(), getSumFee(), baseData.getNodeId(), baseData.getNodeName(),baseData.getRemark());
 
     }
 

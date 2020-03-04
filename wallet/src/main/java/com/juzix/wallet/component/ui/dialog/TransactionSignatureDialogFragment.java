@@ -309,6 +309,16 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
     private Single<Pair<Boolean, List<RPCTransactionResult>>> getSendTransactionResult() {
 
         if (transactionSignatureData.isVersionNotEmpty()) {
+
+            return TransactionManager.getInstance()
+                    .submitTransaction(transactionSignatureData.getSignedMessage(), transactionSignatureData.getSignedDatas().get(0), transactionSignatureData.getRemark())
+                    .map(new Function<RPCTransactionResult, Pair<Boolean, List<RPCTransactionResult>>>() {
+                        @Override
+                        public Pair<Boolean, List<RPCTransactionResult>> apply(RPCTransactionResult rpcTransactionResult) throws Exception {
+                            return new Pair<Boolean, List<RPCTransactionResult>>(getSendTransactionResult(Arrays.asList(rpcTransactionResult)), Arrays.asList(rpcTransactionResult));
+                        }
+                    });
+        } else {
             return Flowable
                     .fromIterable(transactionSignatureData.getSignedDatas())
                     .map(new Function<String, RPCTransactionResult>() {
@@ -324,16 +334,6 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
                             return new Pair<Boolean, List<RPCTransactionResult>>(getSendTransactionResult(rpcTransactionResults), rpcTransactionResults);
                         }
                     });
-        } else {
-            return TransactionManager.getInstance()
-                    .submitTransaction(transactionSignatureData.getSignedMessage(), transactionSignatureData.getSignedDatas().get(0), transactionSignatureData.getRemark())
-                    .map(new Function<RPCTransactionResult, Pair<Boolean, List<RPCTransactionResult>>>() {
-                        @Override
-                        public Pair<Boolean, List<RPCTransactionResult>> apply(RPCTransactionResult rpcTransactionResult) throws Exception {
-                            return new Pair<Boolean, List<RPCTransactionResult>>(getSendTransactionResult(Arrays.asList(rpcTransactionResult)), Arrays.asList(rpcTransactionResult));
-                        }
-                    });
-
         }
 
     }
@@ -473,7 +473,7 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
         String amount = null;
         String data = rawTransaction.getData();
         String nodeId = decodeNodeId(data);
-        String contractAmount = decodeContractAmount(data);
+        String claimRewardAmount = transactionSignatureData.getClaimRewardAmount();
         if (transactionAuthorizationData != null) {
             amount = transactionAuthorizationData.getTransactionAuthorizationDetail().getAmount();
         } else {
@@ -482,7 +482,7 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
             } else if (transactionSignatureData.getFunctionType() == FunctionType.WITHDRAW_DELEGATE_REWARD_FUNC_TYPE) {
                 amount = transactionSignatureData.getClaimRewardAmount();
             } else {
-                amount = contractAmount;
+                amount = decodeContractAmount(data);
             }
         }
         return new Transaction.Builder()
@@ -491,7 +491,6 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
                 .to(rawTransaction.getTo())
                 .senderWalletName(getSenderName(transactionSignatureData.getFrom()))
                 .value(amount)
-                .unDelegation(amount)
                 .chainId(transactionSignatureData.getChainId())
                 .timestamp(System.currentTimeMillis())
                 .txReceiptStatus(TransactionStatus.PENDING.ordinal())
@@ -499,7 +498,7 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
                 .unDelegation(amount)
                 .nodeName(transactionSignatureData.getNodeName())
                 .nodeId(nodeId)
-                .totalReward(transactionSignatureData.getClaimRewardAmount())
+                .totalReward(claimRewardAmount)
                 .build();
     }
 

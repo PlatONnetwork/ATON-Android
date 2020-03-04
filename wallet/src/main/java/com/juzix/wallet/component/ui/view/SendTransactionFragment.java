@@ -341,6 +341,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
         etWalletAmount.setFocusableInTouchMode(false);
         etWalletAddress.setText("");
         etWalletAmount.setText("");
+        etTransactionNote.setText("");
         setTransferFeeAmount(feeAmount);
         bubbleSeekBar.setProgress(0);
         setSendTransactionButtonEnable(false);
