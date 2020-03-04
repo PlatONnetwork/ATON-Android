@@ -6,7 +6,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.juzhen.framework.util.NumberParserUtils;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.component.adapter.base.ViewHolder;
@@ -18,6 +17,7 @@ import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.DateUtil;
 import com.juzix.wallet.utils.DensityUtil;
+import com.juzix.wallet.utils.NumberParserUtils;
 import com.juzix.wallet.utils.StringUtil;
 
 
@@ -53,7 +53,7 @@ public class DelegateRecordAdapter extends CommonAdapter<Transaction> {
         TextView tv = viewHolder.getView(R.id.tv_state);
         changeTextStateAndColor(context, tv, item);
 
-        viewHolder.setText(R.id.tv_delegate_time, String.format("#%s", DateUtil.format(item.getTimestamp(), DateUtil.DATETIME_FORMAT_PATTERN2)));
+        viewHolder.setText(R.id.tv_delegate_time, String.format("#%s", DateUtil.format(item.getTimestamp(), DateUtil.DATETIME_FORMAT_PATTERN_WITH_SECOND)));
 
         CircleImageView walletIcon = viewHolder.getView(R.id.iv_wallet);
         walletIcon.setImageResource(RUtils.drawable(item.getWalletIcon()));

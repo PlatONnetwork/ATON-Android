@@ -15,7 +15,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
-import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
@@ -36,6 +35,7 @@ import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.AmountUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.GlideUtils;
+import com.juzix.wallet.utils.NumberParserUtils;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
 import com.juzix.wallet.utils.ToastUtil;
@@ -48,6 +48,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+/**
+ * @author ziv
+ */
 public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPresenter> implements ValidatorsDetailContract.View {
 
     @BindView(R.id.civ_wallet_avatar)
@@ -106,10 +109,10 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
     TextView tvTotalRewardAmount;
     @BindView(R.id.tv_delegate_yield_amount)
     TextView tvDelegateYieldAmount;
+    @BindView(R.id.tv_delegate_yield)
+    TextView tvDelegateYield;
     @BindView(R.id.tv_delegate_reward_ratio)
     TextView tvDelegateRewardRatio;
-    @BindView(R.id.layout_delegate_yield)
-    LinearLayout layoutDelegateYield;
     @BindView(R.id.group)
     Group group;
 
@@ -202,7 +205,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
                     }
                 });
 
-        RxView.clicks(layoutDelegateYield)
+        RxView.clicks(tvDelegateYield)
                 .compose(RxUtils.bindToLifecycle(this))
                 .compose(RxUtils.getClickTransformer())
                 .subscribe(new CustomObserver<Object>() {
@@ -240,7 +243,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
 
             tvDelegateYieldAmount.setText(String.format("%s%%", NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(nodeDetail.getDelegatedRatePA(), "100"))));
             Drawable delegatedRatePATrend = nodeDetail.isShowDelegatedRatePATrend() ? nodeDetail.isDelegatedRatePATrendRose() ? ContextCompat.getDrawable(this, R.drawable.icon_rose) : ContextCompat.getDrawable(this, R.drawable.icon_fell) : null;
-            tvDelegateYieldAmount.setCompoundDrawablesWithIntrinsicBounds(delegatedRatePATrend, null, null, null);
+            tvDelegateYieldAmount.setCompoundDrawablesWithIntrinsicBounds(null, null, delegatedRatePATrend, null);
             tvDelegateRewardRatioAmount.setText(String.format("%s%%", NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(nodeDetail.getDelegatedRewardPer(), "100"))));
             tvTotalRewardAmount.setText(string(R.string.amount_with_unit, AmountUtil.convertVonToLat(nodeDetail.getCumulativeReward())));
             tvTotalStakedAmount.setText(AmountUtil.formatAmountText(nodeDetail.getDeposit()));
@@ -296,7 +299,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
         //客户端钱包列表是否为空
         boolean isWalletAddressListEmpty = WalletManager.getInstance().getAddressList().isEmpty();
 
-        return isNodeExit || isInit || isWalletAddressListEmpty ? false : true;
+        return !isNodeExit && !isInit && !isWalletAddressListEmpty;
     }
 
     private String getDelegateTips(VerifyNodeDetail nodeDetail) {

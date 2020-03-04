@@ -295,6 +295,7 @@
     <string name="submissionTime">Submission Time</string>
     <string name="memo">Memo</string>
     <string name="msg_transaction_hash">Tx Hash</string>
+    <string name="msg_confirmation_block">Confirmation block</string>
     <string name="executeContractConfirm">Execute Contract-Confirm</string>
     <string name="pending">Pending</string>
     <string name="signing">Signing</string>
@@ -768,5 +769,12 @@
     <string name="msg_withdraw_claim_reward">Note: When withdrawing all delegations,Claim rewards automatically.</string>
     <string name="msg_restricted_plan">Restricted:</string>
     <string name="msg_connect_timeout">connect timeout</string>
+    <string name="msg_transaction_memo">Memo：%1$s</string>
+    <string name="hint_input_transaction_note">Memo(optional-less than 30 characters)</string>
+
+    <string name="msg_server_exception">Server took a break, please try again(%1$d)</string>
+    <string name="msg_transaction_repeatedly_exception">Do not submit repeatedly!</string>
+    <string name="msg_transaction_exception">Transaction abnormal，please try again（%1$d）</string>
+    <string name="msg_expired_qr_code">Expired QR code</string>
 </resources>
 

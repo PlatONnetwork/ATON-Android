@@ -3,11 +3,10 @@ package com.juzix.wallet.engine;
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
 import com.juzix.wallet.entity.AccountBalance;
-import com.juzix.wallet.entity.AppConfig;
 import com.juzix.wallet.entity.ClaimRewardRecord;
-import com.juzix.wallet.entity.DelegateNodeDetail;
 import com.juzix.wallet.entity.DelegateHandle;
 import com.juzix.wallet.entity.DelegateInfo;
+import com.juzix.wallet.entity.DelegateNodeDetail;
 import com.juzix.wallet.entity.DelegationValue;
 import com.juzix.wallet.entity.GasProvider;
 import com.juzix.wallet.entity.Transaction;
@@ -31,7 +30,7 @@ public interface BaseApi {
      *
      * @return
      */
-    @POST("app/v0760/config/checkUpdate")
+    @POST("app/checkUpdate")
     Single<Response<ApiResponse<VersionInfo>>> getVersionInfo(@Body ApiRequestBody body);
 
     /**
@@ -174,4 +173,13 @@ public interface BaseApi {
      */
     @POST("app/v0760//transaction/estimateGas")
     Single<Response<ApiResponse<GasProvider>>> getGasProvider(@Body ApiRequestBody body);
+
+    /**
+     * 提交一个签名后的交易
+     *
+     * @param body
+     * @return
+     */
+    @POST("app/v0760//transaction/submitSignedTransaction")
+    Single<Response<ApiResponse<String>>> submitSignedTransaction(@Body ApiRequestBody body);
 }

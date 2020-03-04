@@ -23,7 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
-import com.juzhen.framework.util.NumberParserUtils;
+import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
@@ -44,6 +44,7 @@ import com.juzix.wallet.event.EventPublisher;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.GZipUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
+import com.juzix.wallet.utils.NumberParserUtils;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
 import com.juzix.wallet.utils.ToastUtil;
@@ -99,6 +100,10 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
     String cheaper;
     @BindString(R.string.faster)
     String faster;
+    @BindView(R.id.et_transaction_note)
+    EditText etTransactionNote;
+    @BindView(R.id.iv_clear)
+    ImageView ivClear;
 
     private Unbinder unbinder;
 
@@ -150,6 +155,26 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
                     public void accept(Object object) {
                         UMEventUtil.onEventCount(getActivity(), Constants.UMEventID.SEND_TRANSACTION);
                         mPresenter.submit();
+                    }
+                });
+
+        RxTextView.textChanges(etTransactionNote)
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<CharSequence>() {
+                    @Override
+                    public void accept(CharSequence charSequence) {
+                        ivClear.setVisibility(TextUtils.isEmpty(charSequence) ? View.GONE : View.VISIBLE);
+                    }
+                });
+
+        RxView.clicks(ivClear)
+                .compose(RxUtils.getClickTransformer())
+                .compose(RxUtils.bindToLifecycle(this))
+                .subscribe(new CustomObserver<Object>() {
+
+                    @Override
+                    public void accept(Object o) {
+                        etTransactionNote.setText("");
                     }
                 });
 
@@ -316,6 +341,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
         etWalletAmount.setFocusableInTouchMode(false);
         etWalletAddress.setText("");
         etWalletAmount.setText("");
+        etTransactionNote.setText("");
         setTransferFeeAmount(feeAmount);
         bubbleSeekBar.setProgress(0);
         setSendTransactionButtonEnable(false);
@@ -357,6 +383,11 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
     @Override
     public void setProgress(float progress) {
         bubbleSeekBar.setProgress(progress);
+    }
+
+    @Override
+    public String getTransactionRemark() {
+        return etTransactionNote.getText().toString().trim();
     }
 
     @Override

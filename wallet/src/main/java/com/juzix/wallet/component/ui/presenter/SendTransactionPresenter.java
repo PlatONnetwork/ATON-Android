@@ -11,7 +11,7 @@ import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.ApiSingleObserver;
 import com.juzhen.framework.network.NetConnectivity;
-import com.juzhen.framework.util.NumberParserUtils;
+import com.juzix.wallet.BuildConfig;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.app.CustomThrowable;
@@ -47,16 +47,17 @@ import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.DateUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
+import com.juzix.wallet.utils.NumberParserUtils;
 import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
 import com.trello.rxlifecycle2.android.FragmentEvent;
 
 import org.web3j.crypto.Credentials;
+import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.WalletUtils;
 import org.web3j.platon.FunctionType;
 import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.utils.Convert;
-import org.web3j.utils.Numeric;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -69,8 +70,6 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleObserver;
@@ -262,6 +261,8 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                 return;
             }
 
+            String remark = getView().getTransactionRemark();
+
             long currentTime = System.currentTimeMillis();
 
             if (!TransactionManager.getInstance().isAllowSendTransaction(address, currentTime)) {
@@ -275,7 +276,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                         string(R.string.confirm), new OnDialogViewClickListener() {
                             @Override
                             public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
-                                sendTransaction(toAddress, transferAmount);
+                                sendTransaction(toAddress, transferAmount, remark);
                             }
                         }, string(R.string.cancel), new OnDialogViewClickListener() {
                             @Override
@@ -284,7 +285,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                             }
                         }).show(currentActivity().getSupportFragmentManager(), "showLargeTransactionReminderDialogFragment");
             } else {
-                sendTransaction(toAddress, transferAmount);
+                sendTransaction(toAddress, transferAmount, remark);
             }
 
         }
@@ -338,7 +339,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     }
 
     @SuppressLint("CheckResult")
-    private void sendTransaction(String toAddress, String transferAmount) {
+    private void sendTransaction(String toAddress, String transferAmount, String remark) {
 
         TransactionRecordEntity transactionRecordEntity = new TransactionRecordEntity(System.currentTimeMillis(), walletEntity.getPrefixAddress(), toAddress, transferAmount, NodeManager.getInstance().getChainId());
 
@@ -356,26 +357,26 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                         @Override
                         public void accept(Boolean aBoolean) throws Exception {
                             if (aBoolean) {
-                                showResendTransactionReminderDialogFragment(transactionRecordEntity);
+                                showResendTransactionReminderDialogFragment(transactionRecordEntity, remark);
                             } else {
-                                showTransactionInfoDialogFragment(transactionRecordEntity);
+                                showTransactionInfoDialogFragment(transactionRecordEntity, remark);
                             }
                         }
                     });
         } else {
-            showTransactionInfoDialogFragment(transactionRecordEntity);
+            showTransactionInfoDialogFragment(transactionRecordEntity, remark);
         }
 
     }
 
-    private void showResendTransactionReminderDialogFragment(TransactionRecordEntity transactionRecordEntity) {
+    private void showResendTransactionReminderDialogFragment(TransactionRecordEntity transactionRecordEntity, String remark) {
 
         CommonTipsDialogFragment.createDialogWithTwoButton(ContextCompat.getDrawable(currentActivity(), R.drawable.icon_dialog_tips),
                 string(R.string.msg_resend_transaction_reminder, StringUtil.formatBalanceWithoutMinFraction(AppSettings.getInstance().getReminderThresholdAmount())),
                 string(R.string.confirm), new OnDialogViewClickListener() {
                     @Override
                     public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
-                        showTransactionInfoDialogFragment(transactionRecordEntity);
+                        showTransactionInfoDialogFragment(transactionRecordEntity, remark);
                     }
                 }, string(R.string.cancel), new OnDialogViewClickListener() {
                     @Override
@@ -386,7 +387,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     }
 
     @SuppressLint("CheckResult")
-    private void showTransactionInfoDialogFragment(TransactionRecordEntity transactionRecordEntity) {
+    private void showTransactionInfoDialogFragment(TransactionRecordEntity transactionRecordEntity, String remark) {
 
         String fromWallet = String.format("%s(%s)", walletEntity.getName(), AddressFormatUtil.formatTransactionAddress(walletEntity.getPrefixAddress()));
         String fee = NumberParserUtils.getPrettyBalance(feeAmount);
@@ -404,13 +405,13 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                                         @Override
                                         public void onConfirmBtnClick() {
                                             if (WalletManager.getInstance().getSelectedWallet().isObservedWallet()) {
-                                                showTransactionAuthorizationDialogFragment(transactionRecordEntity, gasLimit.toString(10), gasPrice.toString(10));
+                                                showTransactionAuthorizationDialogFragment(transactionRecordEntity, gasLimit.toString(10), gasPrice.toString(10), remark);
                                             } else {
-                                                showInputWalletPasswordDialogFragment(transactionRecordEntity, feeAmount);
+                                                showInputWalletPasswordDialogFragment(transactionRecordEntity, feeAmount, remark);
                                             }
                                         }
                                     })
-                                    .show(currentActivity().getSupportFragmentManager(), "sendTransaction");
+                                    .show(currentActivity().getSupportFragmentManager(), "sendContractTransaction");
                         }
                     }
                 });
@@ -482,11 +483,11 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     }
 
     @SuppressLint("CheckResult")
-    private void sendTransaction(TransactionRecordEntity transactionRecordEntity, String privateKey, String feeAmount) {
+    private void sendTransaction(TransactionRecordEntity transactionRecordEntity, ECKeyPair ecKeyPair, String feeAmount, String remark) {
 
         TransactionManager
                 .getInstance()
-                .sendTransaction(privateKey, transactionRecordEntity.getFrom(), transactionRecordEntity.getTo(), walletEntity.getName(), Convert.toVon(transactionRecordEntity.getValue(), Convert.Unit.LAT), Convert.toVon(feeAmount, Convert.Unit.LAT), gasPrice, gasLimit)
+                .sendTransferTransaction(ecKeyPair, transactionRecordEntity.getFrom(), transactionRecordEntity.getTo(), walletEntity.getName(), Convert.toVon(transactionRecordEntity.getValue(), Convert.Unit.LAT), Convert.toVon(feeAmount, Convert.Unit.LAT), gasPrice, gasLimit, remark)
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
                 .compose(bindToLifecycle())
@@ -502,10 +503,18 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                     @Override
                     public void accept(Throwable throwable) {
                         if (isViewAttached()) {
-                            if (throwable instanceof CustomThrowable && ((CustomThrowable) throwable).getErrCode() == RPCErrorCode.CONNECT_TIMEOUT) {
-                                showLongToast(R.string.msg_connect_timeout);
-                            } else {
-                                showLongToast(string(R.string.transfer_failed));
+                            if (throwable instanceof CustomThrowable) {
+                                CustomThrowable customThrowable = (CustomThrowable) throwable;
+                                if (customThrowable.getErrCode() == RPCErrorCode.CONNECT_TIMEOUT) {
+                                    showLongToast(R.string.msg_connect_timeout);
+                                } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_KNOWN_TX) {
+                                    showLongToast(R.string.msg_transaction_repeatedly_exception);
+                                } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_NONCE_TOO_LOW ||
+                                        customThrowable.getErrCode() == CustomThrowable.CODE_TX_GAS_LOW) {
+                                    showLongToast(R.string.msg_transaction_exception);
+                                } else {
+                                    showLongToast(R.string.msg_server_exception);
+                                }
                             }
                         }
                     }
@@ -547,36 +556,19 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     }
 
 
-    private void showInputWalletPasswordDialogFragment(TransactionRecordEntity transactionRecordEntity, String feeAmount) {
+    private void showInputWalletPasswordDialogFragment(TransactionRecordEntity transactionRecordEntity, String feeAmount, String remark) {
         InputWalletPasswordDialogFragment.newInstance(walletEntity).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
             @Override
             public void onWalletPasswordCorrect(Credentials credentials) {
-                sendTransaction(transactionRecordEntity, Numeric.toHexStringNoPrefix(credentials.getEcKeyPair().getPrivateKey()), feeAmount);
+                sendTransaction(transactionRecordEntity, credentials.getEcKeyPair(), feeAmount, remark);
             }
         }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
     }
 
-    private void showTransactionAuthorizationDialogFragment(TransactionRecordEntity transactionRecordEntity, String gasLimit, String gasPrice) {
+    private void showTransactionAuthorizationDialogFragment(TransactionRecordEntity transactionRecordEntity, String gasLimit, String gasPrice, String remark) {
 
-        Observable
-                .fromCallable(new Callable<BigInteger>() {
-                    @Override
-                    public BigInteger call() throws Exception {
-                        return Web3jManager.getInstance().getNonce(transactionRecordEntity.getFrom());
-                    }
-                })
-                .filter(new Predicate<BigInteger>() {
-                    @Override
-                    public boolean test(BigInteger bigInteger) throws Exception {
-                        return !bigInteger.equals(Web3jManager.NONE_NONCE);
-                    }
-                })
-                .switchIfEmpty(new Observable<BigInteger>() {
-                    @Override
-                    protected void subscribeActual(Observer<? super BigInteger> observer) {
-                        observer.onError(new CustomThrowable(RPCErrorCode.CONNECT_TIMEOUT));
-                    }
-                })
+        TransactionManager.getInstance().getNonce(transactionRecordEntity.getFrom())
+                .toObservable()
                 .compose(RxUtils.getSchedulerTransformer())
                 .compose(bindToLifecycle())
                 .compose(RxUtils.getLoadingTransformer(currentActivity()))
@@ -592,7 +584,8 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                                     .setTo(transactionRecordEntity.getTo())
                                     .setGasLimit(gasLimit)
                                     .setGasPrice(gasPrice)
-                                    .build()), transactionRecordEntity.getTimeStamp() / 1000);
+                                    .setRemark(remark)
+                                    .build()), transactionRecordEntity.getTimeStamp() / 1000, BuildConfig.QRCODE_VERSION_CODE);
                             TransactionAuthorizationDialogFragment.newInstance(transactionAuthorizationData)
                                     .setOnNextBtnClickListener(new TransactionAuthorizationDialogFragment.OnNextBtnClickListener() {
                                         @Override

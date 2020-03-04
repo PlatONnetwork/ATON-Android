@@ -81,7 +81,7 @@
             android:gravity="left|center_vertical"
             android:hint="@string/nameOfWallet"
             android:imeOptions="actionNext"
-            android:maxLength="12"
+            android:maxLength="20"
             android:singleLine="true"
             android:textColorHint="@color/color_b6bbd0" />
 

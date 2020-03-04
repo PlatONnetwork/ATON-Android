@@ -3,9 +3,9 @@ package com.juzix.wallet.db.entity;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.NumberParserUtils;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;

@@ -29,10 +29,19 @@ public class TransactionSignatureData implements Parcelable {
     @JSONField(name = "rn")
     private String claimRewardAmount;
 
+    @JSONField(name = "rk")
+    private String remark;
+
+    @JSONField(name = "si")
+    private String signedMessage;
+
+    @JSONField(name = "v")
+    private int version;
+
     public TransactionSignatureData() {
     }
 
-    public TransactionSignatureData(List<String> signedDatas, String from, String chainId, int functionType, long timestamp, String nodeName, String claimRewardAmount) {
+    public TransactionSignatureData(List<String> signedDatas, String from, String chainId, int functionType, long timestamp, String nodeName, String claimRewardAmount, String remark, String signedMessage, int version) {
         this.signedDatas = signedDatas;
         this.from = from;
         this.chainId = chainId;
@@ -40,6 +49,9 @@ public class TransactionSignatureData implements Parcelable {
         this.timestamp = timestamp;
         this.nodeName = nodeName;
         this.claimRewardAmount = claimRewardAmount;
+        this.remark = remark;
+        this.signedMessage = signedMessage;
+        this.version = version;
     }
 
     protected TransactionSignatureData(Parcel in) {
@@ -50,6 +62,9 @@ public class TransactionSignatureData implements Parcelable {
         functionType = in.readInt();
         nodeName = in.readString();
         claimRewardAmount = in.readString();
+        remark = in.readString();
+        signedMessage = in.readString();
+        version = in.readInt();
     }
 
     @Override
@@ -61,6 +76,9 @@ public class TransactionSignatureData implements Parcelable {
         dest.writeInt(functionType);
         dest.writeString(nodeName);
         dest.writeString(claimRewardAmount);
+        dest.writeString(remark);
+        dest.writeString(signedMessage);
+        dest.writeInt(version);
     }
 
     @Override
@@ -135,6 +153,35 @@ public class TransactionSignatureData implements Parcelable {
     public void setClaimRewardAmount(String claimRewardAmount) {
         this.claimRewardAmount = claimRewardAmount;
     }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public String getSignedMessage() {
+        return signedMessage;
+    }
+
+    public void setSignedMessage(String signedMessage) {
+        this.signedMessage = signedMessage;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public boolean isVersionNotEmpty() {
+        return version > 0;
+    }
+
 
     public @QrCodeType
     int getQrCodeType() {

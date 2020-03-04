@@ -321,7 +321,7 @@ public class TransactionEntity extends RealmObject implements Cloneable {
                 .timestamp(getCreateTime())
                 .txType(txType)
                 .txReceiptStatus(txReceiptStatus)
-                .blockNumber(blockNumber)
+                .blockNumber(String.valueOf(blockNumber))
                 .senderWalletName(walletName)
                 .chainId(chainId)
                 .from(from)

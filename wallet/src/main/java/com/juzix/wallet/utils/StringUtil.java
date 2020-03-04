@@ -18,7 +18,6 @@ package com.juzix.wallet.utils;
 
 import android.content.Context;
 
-import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 

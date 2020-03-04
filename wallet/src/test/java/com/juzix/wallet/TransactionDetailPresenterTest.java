@@ -109,14 +109,14 @@ public class TransactionDetailPresenterTest {
 //    @Test
 //    public void testLoadDelegateResult() {
 //
-//        PlatonSendTransaction sendTransaction = new PlatonSendTransaction();
-//        sendTransaction.setResult("0x39a50f94dd1524c092db55c621e30ffeb7072b5e1a7c90224911958208d24e7d");
+//        PlatonSendTransaction sendContractTransaction = new PlatonSendTransaction();
+//        sendContractTransaction.setResult("0x39a50f94dd1524c092db55c621e30ffeb7072b5e1a7c90224911958208d24e7d");
 //        Single.fromCallable(new Callable<BaseResponse>() {
 //            @Override
 //            public BaseResponse call() throws Exception {
 //                Web3j web3j = Web3jManager.getInstance().getWeb3j();
 //                DelegateContract delegateContract = DelegateContract.load(web3j);
-//                return delegateContract.getUnDelegateResult(sendTransaction).send();
+//                return delegateContract.getUnDelegateResult(sendContractTransaction).send();
 //            }
 //        }).delay(5000, TimeUnit.SECONDS)
 //                .subscribe(new Consumer<BaseResponse>() {
