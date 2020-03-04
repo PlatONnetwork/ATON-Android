@@ -256,7 +256,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                 return;
             }
             String address = walletEntity.getPrefixAddress();
-            if (toAddress.equals(address)) {
+            if (toAddress.equalsIgnoreCase(address)) {
                 showLongToast(R.string.can_not_send_to_itself);
                 return;
             }

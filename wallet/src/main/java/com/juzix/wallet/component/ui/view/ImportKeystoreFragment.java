@@ -143,7 +143,7 @@ public class ImportKeystoreFragment extends MVPBaseFragment<ImportKeystorePresen
                         String keystore = charSequence.toString().trim();
                         String passsword = charSequence2.toString().trim();
                         String walletName = charSequence3.toString().trim();
-                        return !TextUtils.isEmpty(keystore) && !TextUtils.isEmpty(passsword) && passsword.length() >= 6 && !TextUtils.isEmpty(walletName) && walletName.length() <= 12;
+                        return !TextUtils.isEmpty(keystore) && !TextUtils.isEmpty(passsword) && passsword.length() >= 6 && !TextUtils.isEmpty(walletName) && walletName.length() <= 20;
                     }
                 }).compose(RxUtils.bindToLifecycle(this)).subscribe(new CustomObserver<Boolean>() {
             @Override

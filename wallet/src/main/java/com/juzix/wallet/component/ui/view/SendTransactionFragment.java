@@ -34,6 +34,7 @@ import com.juzix.wallet.component.ui.dialog.CommonTipsDialogFragment;
 import com.juzix.wallet.component.ui.dialog.OnDialogViewClickListener;
 import com.juzix.wallet.component.ui.presenter.SendTransactionPresenter;
 import com.juzix.wallet.component.widget.MyWatcher;
+import com.juzix.wallet.component.widget.NoEmojiEditText;
 import com.juzix.wallet.component.widget.ShadowButton;
 import com.juzix.wallet.component.widget.bubbleSeekBar.BubbleSeekBar;
 import com.juzix.wallet.db.sqlite.WalletDao;
@@ -101,7 +102,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
     @BindString(R.string.faster)
     String faster;
     @BindView(R.id.et_transaction_note)
-    EditText etTransactionNote;
+    NoEmojiEditText etTransactionNote;
     @BindView(R.id.iv_clear)
     ImageView ivClear;
 

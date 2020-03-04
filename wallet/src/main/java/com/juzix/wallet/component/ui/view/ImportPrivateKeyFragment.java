@@ -151,7 +151,7 @@ public class ImportPrivateKeyFragment extends MVPBaseFragment<ImportPrivateKeyPr
                     public Boolean apply(CharSequence charSequence, CharSequence charSequence2) throws Exception {
                         String privateKey = charSequence.toString().trim();
                         String walletName = charSequence2.toString().trim();
-                        return !TextUtils.isEmpty(privateKey) && !TextUtils.isEmpty(walletName) && walletName.length() <= 12;
+                        return !TextUtils.isEmpty(privateKey) && !TextUtils.isEmpty(walletName) && walletName.length() <= 20;
                     }
                 });
 
@@ -206,7 +206,7 @@ public class ImportPrivateKeyFragment extends MVPBaseFragment<ImportPrivateKeyPr
                         if (!hasFocus) {
                             if (TextUtils.isEmpty(name)) {
                                 showNameError(string(R.string.validWalletNameEmptyTips), true);
-                            } else if (name.length() > 12) {
+                            } else if (name.length() > 20) {
                                 showNameError(string(R.string.validWalletNameTips), true);
                             } else if (mPresenter.isExists(name)) {
                                 showNameError(string(R.string.wallet_name_exists), true);

@@ -179,7 +179,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginRight="16dp">
 
-            <EditText
+            <com.juzix.wallet.component.widget.NoEmojiEditText
                 android:id="@+id/et_transaction_note"
                 style="@style/Text.000.14"
                 android:layout_width="match_parent"
