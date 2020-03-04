@@ -226,8 +226,8 @@
     <string name="address_name_cannot_be_empty">地址名称不能为空</string>
     <string name="address_cannot_be_empty">地址不能为空</string>
     <string name="address_format_error">地址格式不正确</string>
-    <string name="address_name_length_error">请输入1-12位地址名称</string>
-    <string name="wallet_name_length_error">请输入1-12位钱包名称</string>
+    <string name="address_name_length_error">请输入1-20位地址名称</string>
+    <string name="wallet_name_length_error">请输入1-20位钱包名称</string>
     <string name="estimated_transaction_confirmation_time">预计交易确认时间:</string>
     <string name="fastest_transfer_time">30秒</string>
     <string name="slowest_transfer_time">15分钟</string>

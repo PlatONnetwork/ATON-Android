@@ -101,7 +101,7 @@ public class AddNewAddressPresenter extends BasePresenter<AddNewAddressContract.
         if (TextUtils.isEmpty(name.trim())) {
             errMsg = string(R.string.address_name_cannot_be_empty);
         } else {
-            if (name.length() > 12) {
+            if (name.length() > 20) {
                 errMsg = string(R.string.address_name_length_error);
             }
         }

@@ -252,7 +252,7 @@ public class TransactionManager {
     private String createSigned(ECKeyPair ecKeyPair, String signedData, String remark) {
         byte[] signedDataByte = Numeric.hexStringToByteArray(signedData);
         byte[] remarkByte = new byte[0];
-        if (!TextUtils.isEmpty(remark)){
+        if (!TextUtils.isEmpty(remark)) {
             try {
                 remarkByte = remark.getBytes(UTF_8);
             } catch (UnsupportedEncodingException e) {
@@ -468,10 +468,11 @@ public class TransactionManager {
                     public void accept(Transaction transaction) throws Exception {
                         removeTaskByHash(transaction.getHash());
                         removePendingTransaction(transaction.getFrom());
-                        if (transaction.getTxReceiptStatus() == TransactionStatus.SUCCESSED) {
+                        //更新数据库中交易的状态
+                        TransactionDao.insertTransaction(transaction.toTransactionEntity());
+                        //如果是完成了的交易，则从数据库中删除
+                        if (transaction.getTxReceiptStatus() == TransactionStatus.SUCCESSED || transaction.getTxReceiptStatus() == TransactionStatus.FAILED) {
                             TransactionDao.deleteTransaction(transaction.getHash());
-                        } else if (transaction.getTxReceiptStatus() == TransactionStatus.TIMEOUT) {
-                            TransactionDao.insertTransaction(transaction.toTransactionEntity());
                         }
                         EventPublisher.getInstance().sendUpdateTransactionEvent(transaction);
                     }

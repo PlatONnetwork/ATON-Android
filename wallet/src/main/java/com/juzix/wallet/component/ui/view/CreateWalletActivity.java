@@ -231,7 +231,7 @@ public class CreateWalletActivity extends MVPBaseActivity<CreateWalletPresenter>
         String name = mEtName.getText().toString().trim();
         String password = mEtPassword.getText().toString().trim();
         String repeatPassword = mEtRepeatPassword.getText().toString().trim();
-        enableCreate(!TextUtils.isEmpty(name) && !TextUtils.isEmpty(password) && !TextUtils.isEmpty(repeatPassword) && password.length() >= 6 && name.length() <= 12);
+        enableCreate(!TextUtils.isEmpty(name) && !TextUtils.isEmpty(password) && !TextUtils.isEmpty(repeatPassword) && password.length() >= 6 && name.length() <= 20);
         checkPwdStrength(password);
     }
 
