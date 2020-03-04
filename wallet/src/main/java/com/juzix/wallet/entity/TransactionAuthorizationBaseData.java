@@ -42,6 +42,9 @@ public class TransactionAuthorizationBaseData implements Parcelable {
 
     protected String stakingBlockNum;
 
+    @JSONField(name = "rk")
+    protected String remark;
+
     public TransactionAuthorizationBaseData() {
 
     }
@@ -59,6 +62,7 @@ public class TransactionAuthorizationBaseData implements Parcelable {
         stakingAmountType = in.readInt();
         nodeName = in.readString();
         stakingBlockNum = in.readString();
+        remark = in.readString();
     }
 
     public TransactionAuthorizationBaseData(Builder builder) {
@@ -74,6 +78,7 @@ public class TransactionAuthorizationBaseData implements Parcelable {
         this.stakingAmountType = builder.stakingAmountType;
         this.nodeName = builder.nodeName;
         this.stakingBlockNum = builder.stakingBlockNum;
+        this.remark = builder.remark;
     }
 
     @Override
@@ -90,6 +95,7 @@ public class TransactionAuthorizationBaseData implements Parcelable {
         dest.writeInt(stakingAmountType);
         dest.writeString(nodeName);
         dest.writeString(stakingBlockNum);
+        dest.writeString(remark);
     }
 
     @Override
@@ -205,6 +211,14 @@ public class TransactionAuthorizationBaseData implements Parcelable {
         this.stakingBlockNum = stakingBlockNum;
     }
 
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
     public static final class Builder {
         private int functionType;
         private String amount;
@@ -217,7 +231,8 @@ public class TransactionAuthorizationBaseData implements Parcelable {
         private String nodeId;
         private int stakingAmountType;
         private String nodeName;
-        protected String stakingBlockNum;
+        private String stakingBlockNum;
+        private String remark;
 
         public Builder(int functionType) {
             this.functionType = functionType;
@@ -275,6 +290,11 @@ public class TransactionAuthorizationBaseData implements Parcelable {
 
         public Builder setStakingBlockNum(String stakingBlockNum) {
             this.stakingBlockNum = stakingBlockNum;
+            return this;
+        }
+
+        public Builder setRemark(String remark) {
+            this.remark = remark;
             return this;
         }
 

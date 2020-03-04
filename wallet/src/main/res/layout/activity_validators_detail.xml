@@ -52,9 +52,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_validators_detail"
-                android:paddingLeft="10dp"
-                android:paddingTop="12dp"
-                android:paddingRight="10dp"
+                android:paddingLeft="16dp"
+                android:paddingTop="16dp"
+                android:paddingRight="16dp"
                 android:paddingBottom="20dp">
 
                 <com.juzix.wallet.component.widget.CircleImageView
@@ -92,9 +92,9 @@
                     android:layout_marginLeft="7dp"
                     android:paddingLeft="8dp"
                     android:paddingRight="8dp"
-                    app:layout_constraintBaseline_toBaselineOf="@id/tv_detail_node_name"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_detail_node_name"
                     app:layout_constraintLeft_toRightOf="@id/iv_detail_node_link"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/tv_detail_node_name"
                     app:rtv_background_color="@color/color_00000000"
                     app:rtv_border_color="@color/color_f9fbff"
                     app:rtv_border_width="1dp"
@@ -113,74 +113,81 @@
                 <TextView
                     android:id="@+id/tv_delegate_reward_ratio"
                     style="@style/Text.f9fbff.13"
-                    android:layout_marginTop="28dp"
+                    android:layout_marginTop="26dp"
                     android:drawableRight="@drawable/icon_reward_ratio_help"
                     android:drawablePadding="2dp"
                     android:text="@string/msg_delegate_reward_ratio"
-                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_detail_node_address" />
 
-                <TextView
-                    android:id="@+id/tv_total_reward"
-                    style="@style/Text.f9fbff.13"
-                    android:layout_marginLeft="36dp"
-                    android:text="@string/msg_total_delegate_reward"
-                    app:layout_constraintLeft_toRightOf="@id/tv_delegate_reward_ratio"
-                    app:layout_constraintTop_toTopOf="@id/tv_delegate_reward_ratio" />
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/tv_delegate_reward_ratio_amount"
-                    style="@style/Text.f9fbff.14"
+                    style="@style/Text.f9fbff.20"
                     android:layout_width="0dp"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="2dp"
                     android:gravity="start"
                     android:lines="1"
+                    android:textStyle="bold"
                     app:autoSizeTextType="uniform"
                     app:layout_constrainedWidth="true"
                     app:layout_constraintLeft_toLeftOf="@id/tv_delegate_reward_ratio"
-                    app:layout_constraintRight_toRightOf="@id/tv_delegate_reward_ratio"
-                    app:layout_constraintTop_toBottomOf="@id/tv_total_reward"
+                    app:layout_constraintTop_toBottomOf="@id/tv_delegate_reward_ratio"
                     tools:text="100%" />
 
 
                 <TextView
+                    android:id="@+id/tv_delegate_yield"
+                    style="@style/Text.f9fbff.13"
+                    android:layout_marginTop="26dp"
+                    android:drawableRight="@drawable/icon_reward_ratio_help"
+                    android:drawablePadding="2dp"
+                    android:text="@string/msg_annual_delegate_yield"
+                    app:layout_constraintLeft_toLeftOf="@id/civ_wallet_avatar"
+                    app:layout_constraintTop_toBottomOf="@id/civ_wallet_avatar" />
+
+                <TextView
+                    android:id="@+id/tv_delegate_yield_amount"
+                    style="@style/Text.f9fbff.20"
+                    android:layout_marginTop="2dp"
+                    android:lines="1"
+                    android:textStyle="bold"
+                    app:layout_constraintLeft_toLeftOf="@id/tv_delegate_yield"
+                    app:layout_constraintTop_toBottomOf="@id/tv_delegate_yield"
+                    tools:text="90%" />
+
+                <View
+                    android:id="@+id/view_divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="18dp"
+                    android:background="@color/color_ffffff"
+                    app:layout_constraintTop_toBottomOf="@id/tv_delegate_yield_amount" />
+
+                <TextView
+                    android:id="@+id/tv_total_reward"
+                    style="@style/Text.f9fbff.14"
+                    android:layout_marginTop="18dp"
+                    android:text="@string/msg_total_reward"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/view_divider" />
+
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/tv_total_reward_amount"
                     style="@style/Text.f9fbff.14"
                     android:layout_width="0dp"
-                    android:layout_marginTop="4dp"
-                    android:gravity="start"
+                    android:layout_marginLeft="8dp"
+                    android:gravity="left"
+                    android:includeFontPadding="false"
                     android:lines="1"
                     app:autoSizeTextType="uniform"
                     app:layout_constrainedWidth="true"
-                    app:layout_constraintLeft_toLeftOf="@id/tv_total_reward"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_total_reward"
+                    app:layout_constraintLeft_toRightOf="@id/tv_total_reward"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_total_reward"
-                    tools:text="40,355.24584782 LAT" />
-
-
-                <LinearLayout
-                    android:id="@+id/layout_delegate_yield"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <TextView
-                        android:id="@+id/tv_delegate_yield_amount"
-                        style="@style/Text.f9fbff.22"
-                        android:lines="1"
-                        android:textStyle="bold"
-                        tools:text="90%" />
-
-                    <TextView
-                        android:id="@+id/tv_delegate_yield"
-                        style="@style/Text.f9fbff.11"
-                        android:drawableRight="@drawable/icon_reward_ratio_help"
-                        android:drawablePadding="2dp"
-                        android:text="@string/msg_annual_delegate_yield" />
-                </LinearLayout>
+                    app:layout_constraintTop_toBottomOf="@id/view_divider"
+                    app:layout_constraintTop_toTopOf="@id/tv_total_reward"
+                    tools:text="40,355.245 LAT" />
 
 
                 <android.support.constraint.Group
@@ -188,7 +195,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:visibility="gone"
-                    app:constraint_referenced_ids="tv_delegate_reward_ratio,tv_total_reward,tv_delegate_reward_ratio_amount,tv_total_reward_amount,layout_delegate_yield"
+                    app:constraint_referenced_ids="tv_delegate_reward_ratio,tv_delegate_reward_ratio_amount,tv_delegate_yield,tv_delegate_yield_amount,view_divider,tv_total_reward,tv_total_reward_amount"
                     tools:visibility="visible" />
 
             </android.support.constraint.ConstraintLayout>

@@ -10,7 +10,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
-import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.component.adapter.SelectWalletListAdapter;
@@ -22,6 +21,7 @@ import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.DensityUtil;
+import com.juzix.wallet.utils.NumberParserUtils;
 import com.juzix.wallet.utils.RxUtils;
 
 import org.reactivestreams.Publisher;

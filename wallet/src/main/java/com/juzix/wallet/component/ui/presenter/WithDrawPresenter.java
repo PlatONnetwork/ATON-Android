@@ -7,7 +7,7 @@ import android.view.View;
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.ApiSingleObserver;
-import com.juzhen.framework.util.NumberParserUtils;
+import com.juzix.wallet.BuildConfig;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.app.CustomThrowable;
@@ -22,8 +22,8 @@ import com.juzix.wallet.engine.AppConfigManager;
 import com.juzix.wallet.engine.DelegateManager;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
+import com.juzix.wallet.engine.TransactionManager;
 import com.juzix.wallet.engine.WalletManager;
-import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.DelegateItemInfo;
 import com.juzix.wallet.entity.DelegationValue;
 import com.juzix.wallet.entity.RPCErrorCode;
@@ -35,6 +35,7 @@ import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.entity.WithDrawBalance;
 import com.juzix.wallet.utils.AmountUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.NumberParserUtils;
 import com.juzix.wallet.utils.RxUtils;
 
 import org.web3j.crypto.Credentials;
@@ -46,13 +47,9 @@ import org.web3j.utils.Convert;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import io.reactivex.Flowable;
-import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.functions.Function;
-import io.reactivex.functions.Predicate;
 
 public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> implements WithDrawContract.Presenter {
 
@@ -274,6 +271,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     @SuppressLint("CheckResult")
     public void withdraw(Credentials credentials, GasProvider gasProvider, String nodeId, String nodeName, String blockNum, String withdrawAmount) {
         DelegateManager.getInstance().withdrawDelegate(credentials, ContractAddress.DELEGATE_CONTRACT_ADDRESS, nodeId, nodeName, feeAmount, blockNum, withdrawAmount, String.valueOf(TransactionType.UNDELEGATE.getTxTypeValue()), gasProvider)
+                .toObservable()
                 .compose(RxUtils.getSchedulerTransformer())
                 .compose(RxUtils.getLoadingTransformer(currentActivity()))
                 .subscribe(new CustomObserver<Transaction>() {
@@ -289,10 +287,18 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                     public void accept(Throwable throwable) {
                         super.accept(throwable);
                         if (isViewAttached()) {
-                            if (throwable instanceof CustomThrowable && ((CustomThrowable) throwable).getErrCode() == RPCErrorCode.CONNECT_TIMEOUT) {
-                                showLongToast(R.string.msg_connect_timeout);
-                            } else {
-                                showLongToast(R.string.withdraw_failed);
+                            if (throwable instanceof CustomThrowable) {
+                                CustomThrowable customThrowable = (CustomThrowable) throwable;
+                                if (customThrowable.getErrCode() == RPCErrorCode.CONNECT_TIMEOUT) {
+                                    showLongToast(R.string.msg_connect_timeout);
+                                } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_KNOWN_TX) {
+                                    showLongToast(R.string.msg_transaction_repeatedly_exception);
+                                } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_NONCE_TOO_LOW ||
+                                        customThrowable.getErrCode() == CustomThrowable.CODE_TX_GAS_LOW) {
+                                    showLongToast(R.string.msg_transaction_exception);
+                                } else {
+                                    showLongToast(R.string.msg_server_exception);
+                                }
                             }
                         }
                     }
@@ -320,6 +326,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                                 .setGasPrice(gasPrice)
                                 .setNodeId(nodeId)
                                 .setNodeName(nodeName)
+                                .setRemark("")
                                 .setStakingBlockNum(list.get(position).getStakingBlockNum())
                                 .build();
                     }
@@ -331,25 +338,8 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
 
     private void showTransactionAuthorizationDialogFragment(String nodeId, String nodeName, String transactionAmount, String from, String to, String gasLimit, String gasPrice) {
 
-        Observable
-                .fromCallable(new Callable<BigInteger>() {
-                    @Override
-                    public BigInteger call() throws Exception {
-                        return Web3jManager.getInstance().getNonce(from);
-                    }
-                })
-                .filter(new Predicate<BigInteger>() {
-                    @Override
-                    public boolean test(BigInteger bigInteger) throws Exception {
-                        return !bigInteger.equals(Web3jManager.NONE_NONCE);
-                    }
-                })
-                .switchIfEmpty(new Observable<BigInteger>() {
-                    @Override
-                    protected void subscribeActual(Observer<? super BigInteger> observer) {
-                        observer.onError(new CustomThrowable(RPCErrorCode.CONNECT_TIMEOUT));
-                    }
-                })
+        TransactionManager.getInstance().getNonce(from)
+                .toObservable()
                 .compose(RxUtils.getSchedulerTransformer())
                 .compose(bindToLifecycle())
                 .compose(RxUtils.getLoadingTransformer(currentActivity()))
@@ -357,7 +347,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                     @Override
                     public void accept(BigInteger nonce) {
                         if (isViewAttached()) {
-                            TransactionAuthorizationData transactionAuthorizationData = new TransactionAuthorizationData(buildTransactionAuthorizationBaseDataList(nonce, nodeId, nodeName, transactionAmount, from, to, gasLimit, gasPrice), System.currentTimeMillis() / 1000);
+                            TransactionAuthorizationData transactionAuthorizationData = new TransactionAuthorizationData(buildTransactionAuthorizationBaseDataList(nonce, nodeId, nodeName, transactionAmount, from, to, gasLimit, gasPrice), System.currentTimeMillis() / 1000, BuildConfig.QRCODE_VERSION_CODE);
                             TransactionAuthorizationDialogFragment.newInstance(transactionAuthorizationData)
                                     .setOnNextBtnClickListener(new TransactionAuthorizationDialogFragment.OnNextBtnClickListener() {
                                         @Override
@@ -381,13 +371,17 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                     @Override
                     public void accept(Throwable throwable) {
                         super.accept(throwable);
-                        if (isViewAttached()) {
-                            if (throwable instanceof CustomThrowable && ((CustomThrowable) throwable).getErrCode() == RPCErrorCode.CONNECT_TIMEOUT) {
+                        if (throwable instanceof CustomThrowable) {
+                            CustomThrowable customThrowable = (CustomThrowable) throwable;
+                            if (customThrowable.getErrCode() == RPCErrorCode.CONNECT_TIMEOUT) {
                                 showLongToast(R.string.msg_connect_timeout);
+                            } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_KNOWN_TX) {
+                                showLongToast(R.string.msg_transaction_repeatedly_exception);
+                            } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_NONCE_TOO_LOW ||
+                                    customThrowable.getErrCode() == CustomThrowable.CODE_TX_GAS_LOW) {
+                                showLongToast(R.string.msg_expired_qr_code);
                             } else {
-                                if (!TextUtils.isEmpty(throwable.getMessage())) {
-                                    showLongToast(throwable.getMessage());
-                                }
+                                showLongToast(R.string.msg_server_exception);
                             }
                         }
                     }

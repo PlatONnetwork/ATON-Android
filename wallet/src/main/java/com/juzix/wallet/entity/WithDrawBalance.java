@@ -5,9 +5,9 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.BigIntegerUtil;
+import com.juzix.wallet.utils.NumberParserUtils;
 
 import org.web3j.tx.gas.GasProvider;
 

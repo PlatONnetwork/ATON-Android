@@ -2,8 +2,6 @@ package com.juzix.wallet.utils;
 
 import android.text.TextUtils;
 
-import com.juzhen.framework.util.NumberParserUtils;
-
 import java.math.BigDecimal;
 
 /**
@@ -91,6 +89,10 @@ public class AmountUtil {
         return NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(value, VALUE_1E18), max);
     }
 
+    public static String convertVonToLatWithFractionDigits(String value, int fractionDigits) {
+        return NumberParserUtils.parseStringWithFractionDigits(BigDecimalUtil.div(value, VALUE_1E18), fractionDigits);
+    }
+
     /**
      * von to lat  value除以10的18次方，默认保留小数点后八位
      *
@@ -118,6 +120,6 @@ public class AmountUtil {
      * @return
      */
     public static String formatAmountText(String amount, int maxFractionDigits) {
-        return TextUtils.isEmpty(amount) ? "— —" : StringUtil.formatBalance(BigDecimalUtil.div(amount, VALUE_1E18,maxFractionDigits), maxFractionDigits);
+        return TextUtils.isEmpty(amount) ? "— —" : StringUtil.formatBalance(BigDecimalUtil.div(amount, VALUE_1E18, maxFractionDigits), maxFractionDigits);
     }
 }

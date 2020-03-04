@@ -5,7 +5,6 @@ import android.os.Parcelable;
 import android.support.annotation.StringRes;
 import android.text.TextUtils;
 
-import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.db.entity.TransactionEntity;
 import com.juzix.wallet.db.entity.TransactionRecordEntity;
@@ -13,6 +12,7 @@ import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.DateUtil;
 import com.juzix.wallet.utils.JSONUtil;
+import com.juzix.wallet.utils.NumberParserUtils;
 
 import org.web3j.abi.datatypes.generated.Uint32;
 
@@ -33,7 +33,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
     /**
      * 当前交易所在快高
      */
-    private long blockNumber;
+    private String blockNumber;
     /**
      * 当前交易的链id
      */
@@ -184,13 +184,17 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
      */
     private String totalReward;
 
+    /**
+     * 交易备注
+     */
+    private String remark;
 
     public Transaction() {
     }
 
     protected Transaction(Parcel in) {
         hash = in.readString();
-        blockNumber = in.readLong();
+        blockNumber = in.readString();
         chainId = in.readString();
         actualTxCost = in.readString();
         from = in.readString();
@@ -220,6 +224,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         unDelegation = in.readString();
         stakingValue = in.readString();
         totalReward = in.readString();
+        remark = in.readString();
     }
 
     public Transaction(Builder builder) {
@@ -254,12 +259,13 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         this.unDelegation = builder.unDelegation;
         this.stakingValue = builder.stakingValue;
         this.totalReward = builder.totalReward;
+        this.remark = builder.remark;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(hash);
-        dest.writeLong(blockNumber);
+        dest.writeString(blockNumber);
         dest.writeString(chainId);
         dest.writeString(actualTxCost);
         dest.writeString(from);
@@ -289,6 +295,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         dest.writeString(unDelegation);
         dest.writeString(stakingValue);
         dest.writeString(totalReward);
+        dest.writeString(remark);
     }
 
     @Override
@@ -459,11 +466,11 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         this.timestamp = timestamp;
     }
 
-    public long getBlockNumber() {
+    public String getBlockNumber() {
         return blockNumber;
     }
 
-    public void setBlockNumber(long blockNumber) {
+    public void setBlockNumber(String blockNumber) {
         this.blockNumber = blockNumber;
     }
 
@@ -500,7 +507,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
     }
 
     public String getShowCreateTime() {
-        return DateUtil.format(timestamp, DateUtil.DATETIME_FORMAT_PATTERN);
+        return DateUtil.format(timestamp, DateUtil.DATETIME_FORMAT_PATTERN_WITH_SECOND);
     }
 
     public String getActualTxCost() {
@@ -573,6 +580,14 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
 
     public void setTotalReward(String totalReward) {
         this.totalReward = totalReward;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 
     public String getShowValue() {
@@ -796,7 +811,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         return new TransactionEntity.Builder(hash, senderWalletName, from, to, timestamp)
                 .setTxType(txType)
                 .setTxInfo(txInfo)
-                .setBlockNumber(blockNumber)
+                .setBlockNumber(NumberParserUtils.parseLong(blockNumber))
                 .setChainId(chainId)
                 .setTxReceiptStatus(txReceiptStatus)
                 .setActualTxCost(actualTxCost)
@@ -811,7 +826,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
 
     public static final class Builder {
         private String hash;
-        private long blockNumber;
+        private String blockNumber;
         private String chainId;
         private long createTime;
         private String actualTxCost;
@@ -842,13 +857,14 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         private String unDelegation;
         private String stakingValue;
         private String totalReward;
+        private String remark;
 
         public Builder hash(String hash) {
             this.hash = hash;
             return this;
         }
 
-        public Builder blockNumber(long blockNumber) {
+        public Builder blockNumber(String blockNumber) {
             this.blockNumber = blockNumber;
             return this;
         }
@@ -1003,6 +1019,11 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
             return this;
         }
 
+        public Builder remark(String remark) {
+            this.remark = remark;
+            return this;
+        }
+
         public Transaction build() {
             return new Transaction(this);
         }
@@ -1042,6 +1063,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
                 ", unDelegation='" + unDelegation + '\'' +
                 ", stakingValue='" + stakingValue + '\'' +
                 ", totalReward='" + totalReward + '\'' +
+                ", remark='" + remark + '\'' +
                 '}';
     }
 

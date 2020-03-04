@@ -1,12 +1,9 @@
 package com.juzix.wallet.entity;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.NumberParserUtils;
 
-import org.web3j.tx.gas.GasProvider;
-
-import java.math.BigInteger;
 import java.util.List;
 
 import io.reactivex.Flowable;

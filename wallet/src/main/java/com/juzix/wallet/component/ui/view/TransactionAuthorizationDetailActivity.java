@@ -6,13 +6,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
+import android.support.constraint.Group;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
+import android.view.View;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
-import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.app.CustomObserver;
@@ -30,6 +31,7 @@ import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.AmountUtil;
 import com.juzix.wallet.utils.CommonTextUtils;
 import com.juzix.wallet.utils.DensityUtil;
+import com.juzix.wallet.utils.NumberParserUtils;
 import com.juzix.wallet.utils.RxUtils;
 
 import org.web3j.crypto.Credentials;
@@ -61,6 +63,12 @@ public class TransactionAuthorizationDetailActivity extends BaseActivity {
     TextView tvSenderTitle;
     @BindView(R.id.tv_recipient_title)
     TextView tvRecipientTitle;
+    @BindView(R.id.tv_memo)
+    TextView tvMemo;
+    @BindView(R.id.tv_memo_title)
+    TextView tvMemoTitle;
+    @BindView(R.id.group_memo)
+    Group groupMemo;
 
     Unbinder unbinder;
 
@@ -102,6 +110,10 @@ public class TransactionAuthorizationDetailActivity extends BaseActivity {
         tvSender.setText(getFormatName(transactionAuthorizationDetail.getSender(), null));
         tvRecipient.setText(getReceiverName(transactionAuthorizationDetail));
         tvFee.setText(string(R.string.amount_with_unit, NumberParserUtils.getPrettyBalance(AmountUtil.convertVonToLat(transactionAuthorizationDetail.getFee()))));
+
+        groupMemo.setVisibility(transactionAuthorizationDetail.getFunctionType() == FunctionType.TRANSFER && !TextUtils.isEmpty(transactionAuthorizationDetail.getRemark()) ? View.VISIBLE : View.GONE);
+        tvMemoTitle.setText(string(R.string.msg_transaction_memo, ""));
+        tvMemo.setText(transactionAuthorizationDetail.getRemark());
 
         RxView
                 .clicks(sbtnNext)

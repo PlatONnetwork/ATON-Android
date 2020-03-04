@@ -82,12 +82,16 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
                 .filter(new Predicate<VerifyNode>() {
                     @Override
                     public boolean test(VerifyNode verifyNode) throws Exception {
-                        return (TextUtils.equals(nodeStatus, NodeStatus.ALL) || TextUtils.equals(nodeStatus, verifyNode.getNodeStatus())) && !TextUtils.isEmpty(verifyNode.getName()) && verifyNode.getName().contains(keywords);
+                        return (TextUtils.equals(nodeStatus, NodeStatus.ALL) || TextUtils.equals(nodeStatus, verifyNode.getNodeStatus())) && containsIgnoreCase(verifyNode.getName(), keywords);
                     }
                 })
                 .toSortedList(sortType.getComparator())
                 .blockingGet();
 
+    }
+
+    private boolean containsIgnoreCase(String parentText, String childText) {
+        return !TextUtils.isEmpty(parentText) && parentText.toLowerCase().contains(childText.toLowerCase());
     }
 
 }

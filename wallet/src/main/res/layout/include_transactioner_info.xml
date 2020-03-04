@@ -6,10 +6,22 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingTop="10dp"
-    android:paddingBottom="15dp">
+    android:paddingBottom="16dp">
+
+    <TextView
+        android:id="@+id/tv_transaction_note"
+        style="@style/Text.000.13"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_f9fbff"
+        android:gravity="left"
+        android:lineHeight="18dp"
+        android:padding="10dp"
+        tools:text="Note：Foundation reward you money, make good use of, come on! You can look after you." />
 
     <TextView
         style="@style/Text.000.14"
+        android:layout_marginTop="10dp"
         android:text="@string/fromAddress" />
 
     <android.support.constraint.ConstraintLayout

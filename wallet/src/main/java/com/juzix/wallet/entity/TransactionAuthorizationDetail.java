@@ -16,7 +16,9 @@ public class TransactionAuthorizationDetail {
 
     private String nodeName;
 
-    public TransactionAuthorizationDetail(String amount, int functionType, String sender, String receiver, String fee,String nodeId,String nodeName) {
+    private String remark;
+
+    public TransactionAuthorizationDetail(String amount, int functionType, String sender, String receiver, String fee, String nodeId, String nodeName) {
         this.amount = amount;
         this.functionType = functionType;
         this.sender = sender;
@@ -24,6 +26,11 @@ public class TransactionAuthorizationDetail {
         this.fee = fee;
         this.nodeId = nodeId;
         this.nodeName = nodeName;
+    }
+
+    public TransactionAuthorizationDetail(String amount, int functionType, String sender, String receiver, String fee, String nodeId, String nodeName, String remark) {
+        this(amount, functionType, sender, receiver, fee, nodeId, nodeName);
+        this.remark = remark;
     }
 
     public String getAmount() {
@@ -80,5 +87,13 @@ public class TransactionAuthorizationDetail {
 
     public void setNodeName(String nodeName) {
         this.nodeName = nodeName;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }

@@ -1,10 +1,9 @@
-package com.juzhen.framework.util;
+package com.juzix.wallet.utils;
 
 import android.text.TextUtils;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.IllegalFormatCodePointException;
+import java.math.RoundingMode;
 
 /**
  * 数字转化
@@ -201,6 +200,11 @@ public class NumberParserUtils {
     public static String parseStringWithoutTwoDecimalsToInt(String value) {
         String price = String.format("%d", parseInt(value) / 100);
         return getPrettyNumber(price);
+    }
+
+    public static String parseStringWithFractionDigits(String value, int fractionDigits) {
+        BigDecimal bigDecimal = BigDecimalUtil.toBigDecimal(value);
+        return bigDecimal.setScale(fractionDigits, RoundingMode.DOWN).toPlainString();
     }
 
     // 去除数字里多余的0

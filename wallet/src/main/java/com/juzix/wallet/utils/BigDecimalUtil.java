@@ -2,8 +2,6 @@ package com.juzix.wallet.utils;
 
 import android.text.TextUtils;
 
-import com.juzhen.framework.util.NumberParserUtils;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 

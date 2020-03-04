@@ -5,7 +5,6 @@ import com.juzhen.framework.app.log.Log;
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.util.LogUtils;
-import com.juzhen.framework.util.NumberParserUtils;
 import com.juzix.wallet.BuildConfig;
 import com.juzix.wallet.app.Constants;
 import com.juzix.wallet.config.AppSettings;

@@ -47,6 +47,7 @@
             android:gravity="center_vertical|left"
             android:hint="@string/input_address_name"
             android:imeOptions="actionNext"
+            android:maxLength="20"
             android:nextFocusForward="@+id/et_address"
             android:singleLine="true"
             android:textColorHint="@color/color_b6bbd0" />
@@ -103,7 +104,6 @@
             android:textSize="12sp" />
 
     </LinearLayout>
-
 
     <com.juzix.wallet.component.widget.ShadowButton
         android:id="@+id/sbtn_add_address"

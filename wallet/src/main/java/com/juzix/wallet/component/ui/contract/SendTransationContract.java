@@ -40,6 +40,8 @@ public class SendTransationContract {
         void showSaveAddressDialog();
 
         void setProgress(float progress);
+
+        String getTransactionRemark();
     }
 
     public interface Presenter extends IPresenter<View> {

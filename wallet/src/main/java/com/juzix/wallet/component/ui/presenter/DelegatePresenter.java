@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.ApiSingleObserver;
-import com.juzhen.framework.util.NumberParserUtils;
+import com.juzix.wallet.BuildConfig;
 import com.juzix.wallet.R;
 import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.app.CustomThrowable;
@@ -21,8 +21,8 @@ import com.juzix.wallet.engine.AppConfigManager;
 import com.juzix.wallet.engine.DelegateManager;
 import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
+import com.juzix.wallet.engine.TransactionManager;
 import com.juzix.wallet.engine.WalletManager;
-import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.DelegateHandle;
 import com.juzix.wallet.entity.DelegateItemInfo;
 import com.juzix.wallet.entity.RPCErrorCode;
@@ -34,6 +34,7 @@ import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.AmountUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.BigIntegerUtil;
+import com.juzix.wallet.utils.NumberParserUtils;
 import com.juzix.wallet.utils.RxUtils;
 
 import org.web3j.crypto.Credentials;
@@ -47,13 +48,9 @@ import org.web3j.utils.Convert;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.concurrent.Callable;
 
-import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.Single;
 import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Predicate;
 import retrofit2.Response;
 
 public class DelegatePresenter extends BasePresenter<DelegateContract.View> implements DelegateContract.Presenter {
@@ -63,7 +60,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     private Wallet mWallet;
     private DelegateItemInfo mDelegateDetail;
 
-    private String feeAmount;
+    //    private String feeAmount;
     private GasProvider mGasProvider = new DefaultGasProvider();
     private boolean isAll = false;//是否点击全部
 
@@ -74,7 +71,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
         mDelegateDetail = view.getDelegateDetailFromIntent();
         if (mDelegateDetail != null) {
             if (TextUtils.isEmpty(mDelegateDetail.getWalletAddress())) {
-                mWallet = WalletManager.getInstance().getFirstSortedWallet();
+                mWallet = WalletManager.getInstance().getSelectedWallet();
             } else {
                 mWallet = WalletManager.getInstance().getWalletEntityByWalletAddress(mDelegateDetail.getWalletAddress());
             }
@@ -257,8 +254,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
         if (mDelegateDetail != null && !TextUtils.isEmpty(mDelegateDetail.getNodeId())) {
             if (!isAll) {
-                feeAmount = getFeeAmount(mGasProvider.getGasPrice(), mGasProvider.getGasLimit());
-                getView().showFeeAmount(feeAmount);
+                getView().showFeeAmount(getFeeAmount(mGasProvider.getGasPrice(), mGasProvider.getGasLimit()));
             } else {
                 isAll = false;
             }
@@ -390,9 +386,9 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     @SuppressLint("CheckResult")
     private void delegate(Credentials credentials, String inputAmount, String nodeId, String nodeName, StakingAmountType stakingAmountType) {
         //这里调用新的方法，传入GasProvider
-        DelegateManager.getInstance().delegate(credentials, ContractAddress.DELEGATE_CONTRACT_ADDRESS, inputAmount, nodeId, nodeName, feeAmount, String.valueOf(TransactionType.DELEGATE.getTxTypeValue()), stakingAmountType, mGasProvider)
-                .compose(RxUtils.getSchedulerTransformer())
-                .compose(RxUtils.getLoadingTransformer(currentActivity()))
+        DelegateManager.getInstance().delegate(credentials, ContractAddress.DELEGATE_CONTRACT_ADDRESS, inputAmount, nodeId, nodeName, String.valueOf(TransactionType.DELEGATE.getTxTypeValue()), stakingAmountType, mGasProvider)
+                .compose(RxUtils.getSingleSchedulerTransformer())
+                .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
                 .subscribe(new Consumer<Transaction>() {
                     @Override
                     public void accept(Transaction transaction) throws Exception {
@@ -405,10 +401,19 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         if (isViewAttached()) {
-                            if (throwable instanceof CustomThrowable && ((CustomThrowable) throwable).getErrCode() == RPCErrorCode.CONNECT_TIMEOUT) {
-                                showLongToast(R.string.msg_connect_timeout);
-                            } else {
-                                showLongToast(R.string.delegate_failed);
+
+                            if (throwable instanceof CustomThrowable) {
+                                CustomThrowable customThrowable = (CustomThrowable) throwable;
+                                if (customThrowable.getErrCode() == RPCErrorCode.CONNECT_TIMEOUT) {
+                                    showLongToast(R.string.msg_connect_timeout);
+                                } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_KNOWN_TX) {
+                                    showLongToast(R.string.msg_transaction_repeatedly_exception);
+                                } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_NONCE_TOO_LOW ||
+                                        customThrowable.getErrCode() == CustomThrowable.CODE_TX_GAS_LOW) {
+                                    showLongToast(R.string.msg_transaction_exception);
+                                } else {
+                                    showLongToast(R.string.msg_server_exception);
+                                }
                             }
                         }
                     }
@@ -430,25 +435,8 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
     private void showTransactionAuthorizationDialogFragment(String nodeId, String nodeName, StakingAmountType stakingAmountType, String transactionAmount, String from, String to, String gasLimit, String gasPrice) {
 
-        Observable
-                .fromCallable(new Callable<BigInteger>() {
-                    @Override
-                    public BigInteger call() throws Exception {
-                        return Web3jManager.getInstance().getNonce(from);
-                    }
-                })
-                .filter(new Predicate<BigInteger>() {
-                    @Override
-                    public boolean test(BigInteger bigInteger) throws Exception {
-                        return !bigInteger.equals(Web3jManager.NONE_NONCE);
-                    }
-                })
-                .switchIfEmpty(new Observable<BigInteger>() {
-                    @Override
-                    protected void subscribeActual(Observer<? super BigInteger> observer) {
-                        observer.onError(new CustomThrowable(RPCErrorCode.CONNECT_TIMEOUT));
-                    }
-                })
+        TransactionManager.getInstance().getNonce(from)
+                .toObservable()
                 .compose(RxUtils.getSchedulerTransformer())
                 .compose(bindToLifecycle())
                 .compose(RxUtils.getLoadingTransformer(currentActivity()))
@@ -467,7 +455,8 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                                     .setNodeId(nodeId)
                                     .setNodeName(nodeName)
                                     .setStakingAmountType(stakingAmountType.getValue())
-                                    .build()), System.currentTimeMillis() / 1000);
+                                    .setRemark("")
+                                    .build()), System.currentTimeMillis() / 1000, BuildConfig.QRCODE_VERSION_CODE);
                             TransactionAuthorizationDialogFragment.newInstance(transactionAuthorizationData)
                                     .setOnNextBtnClickListener(new TransactionAuthorizationDialogFragment.OnNextBtnClickListener() {
                                         @Override
@@ -492,11 +481,18 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                     public void accept(Throwable throwable) {
                         super.accept(throwable);
                         if (isViewAttached()) {
-                            if (throwable instanceof CustomThrowable && ((CustomThrowable) throwable).getErrCode() == RPCErrorCode.CONNECT_TIMEOUT) {
-                                showLongToast(R.string.msg_connect_timeout);
-                            } else {
-                                if (!TextUtils.isEmpty(throwable.getMessage())) {
-                                    showLongToast(throwable.getMessage());
+
+                            if (throwable instanceof CustomThrowable) {
+                                CustomThrowable customThrowable = (CustomThrowable) throwable;
+                                if (customThrowable.getErrCode() == RPCErrorCode.CONNECT_TIMEOUT) {
+                                    showLongToast(R.string.msg_connect_timeout);
+                                } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_KNOWN_TX) {
+                                    showLongToast(R.string.msg_transaction_repeatedly_exception);
+                                } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_NONCE_TOO_LOW ||
+                                        customThrowable.getErrCode() == CustomThrowable.CODE_TX_GAS_LOW) {
+                                    showLongToast(R.string.msg_expired_qr_code);
+                                } else {
+                                    showLongToast(R.string.msg_server_exception);
                                 }
                             }
                         }

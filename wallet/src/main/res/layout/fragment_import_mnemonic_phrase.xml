@@ -290,7 +290,7 @@
             android:gravity="left|center_vertical"
             android:background="@drawable/bg_edittext_underline"
             android:hint="@string/nameOfWallet"
-            android:maxLength="12"
+            android:maxLength="20"
             style="@style/Text.000.13"
             android:textColorHint="@color/color_b6bbd0" />
 

@@ -78,7 +78,7 @@ public class ClaimRewardRecordAdapter extends BaseExpandableRecyclerViewAdapter<
         holder.mClaimRewardAmountTv.setText(String.format("%s%s", "+", mContext.getString(R.string.amount_with_unit, AmountUtil.formatAmountText(claimRewardRecord.getTotalReward()))));
         holder.mWalletNameTv.setText(claimRewardRecord.getWalletName());
         holder.mWalletAddressTv.setText(AddressFormatUtil.formatClaimRewardRecordAddress(claimRewardRecord.getAddress()));
-        holder.mClaimRewardTimeTv.setText(String.format("#%s", DateUtil.format(claimRewardRecord.getTimestamp(), DateUtil.DATETIME_FORMAT_PATTERN)));
+        holder.mClaimRewardTimeTv.setText(String.format("#%s", DateUtil.format(claimRewardRecord.getTimestamp(), DateUtil.DATETIME_FORMAT_PATTERN_WITH_SECOND)));
         holder.mSpreadIv.setVisibility(claimRewardRecord.isExpandable() ? View.VISIBLE : View.GONE);
         holder.mSpreadIv.setImageResource(claimRewardRecord.isExpanded() ? R.drawable.icon_pull_up_blue : R.drawable.icon_drop_down_blue);
     }
