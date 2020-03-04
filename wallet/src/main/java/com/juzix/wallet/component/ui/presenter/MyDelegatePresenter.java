@@ -243,6 +243,7 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                                     .setTo(ContractAddress.REWARD_CONTRACT_ADDRESS)
                                     .setGasLimit(gasProvider.getGasLimit().toString(10))
                                     .setGasPrice(gasProvider.getGasPrice().toString(10))
+                                    .setRemark("")
                                     .build()), System.currentTimeMillis() / 1000, BuildConfig.QRCODE_VERSION_CODE);
                             TransactionAuthorizationDialogFragment.newInstance(transactionAuthorizationData)
                                     .setOnNextBtnClickListener(new TransactionAuthorizationDialogFragment.OnNextBtnClickListener() {

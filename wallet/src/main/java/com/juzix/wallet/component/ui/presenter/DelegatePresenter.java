@@ -455,6 +455,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                                     .setNodeId(nodeId)
                                     .setNodeName(nodeName)
                                     .setStakingAmountType(stakingAmountType.getValue())
+                                    .setRemark("")
                                     .build()), System.currentTimeMillis() / 1000, BuildConfig.QRCODE_VERSION_CODE);
                             TransactionAuthorizationDialogFragment.newInstance(transactionAuthorizationData)
                                     .setOnNextBtnClickListener(new TransactionAuthorizationDialogFragment.OnNextBtnClickListener() {

@@ -116,7 +116,7 @@ public class TransactionAuthorizationData implements Parcelable {
 
         TransactionAuthorizationBaseData baseData = baseDataList.get(0);
 
-        return new TransactionAuthorizationDetail(getSumAmount(), baseData.getPlatOnFunction().getType(), baseData.getFrom(), baseData.getTo(), getSumFee(), baseData.getNodeId(), baseData.getNodeName(),baseData.getRemark());
+        return new TransactionAuthorizationDetail(getSumAmount(), baseData.getPlatOnFunction().getType(), baseData.getFrom(), baseData.getTo(), getSumFee(), baseData.getNodeId(), baseData.getNodeName(), baseData.getRemark());
 
     }
 
@@ -153,10 +153,6 @@ public class TransactionAuthorizationData implements Parcelable {
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
-        }
-
-        if (remarkByte == null) {
-            return null;
         }
         byte[] message = new byte[signedDataByte.length + remarkByte.length];
         System.arraycopy(signedDataByte, 0, message, 0, signedDataByte.length);

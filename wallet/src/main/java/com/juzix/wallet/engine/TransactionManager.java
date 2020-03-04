@@ -147,7 +147,7 @@ public class TransactionManager {
                 .flatMap(new Function<String, SingleSource<RPCTransactionResult>>() {
                     @Override
                     public SingleSource<RPCTransactionResult> apply(String signedMessage) throws Exception {
-                        return submitTransaction(createSigned(credentials.getEcKeyPair(), signedMessage, ""), signedMessage, null);
+                        return submitTransaction(createSigned(credentials.getEcKeyPair(), signedMessage, ""), signedMessage, "");
                     }
                 });
     }
@@ -258,10 +258,6 @@ public class TransactionManager {
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
-        }
-
-        if (remarkByte == null) {
-            return null;
         }
         byte[] message = new byte[signedDataByte.length + remarkByte.length];
         System.arraycopy(signedDataByte, 0, message, 0, signedDataByte.length);

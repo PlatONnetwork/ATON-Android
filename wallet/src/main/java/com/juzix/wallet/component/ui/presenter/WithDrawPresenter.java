@@ -326,6 +326,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                                 .setGasPrice(gasPrice)
                                 .setNodeId(nodeId)
                                 .setNodeName(nodeName)
+                                .setRemark("")
                                 .setStakingBlockNum(list.get(position).getStakingBlockNum())
                                 .build();
                     }
