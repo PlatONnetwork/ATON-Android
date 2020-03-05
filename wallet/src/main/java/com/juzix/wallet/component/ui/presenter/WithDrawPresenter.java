@@ -71,9 +71,9 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
         mDelegateDetail = view.getDelegateDetailFromIntent();
         if (mDelegateDetail != null) {
             if (TextUtils.isEmpty(mDelegateDetail.getWalletAddress())) {
-                mWallet = WalletManager.getInstance().getFirstSortedWallet();
+                mWallet = WalletManager.getInstance().getSelectedWallet();
             } else {
-                mWallet = WalletManager.getInstance().getWalletEntityByWalletAddress(mDelegateDetail.getWalletAddress());
+                mWallet = WalletManager.getInstance().getWalletByWalletAddress(mDelegateDetail.getWalletAddress());
             }
         }
     }

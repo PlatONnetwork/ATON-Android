@@ -180,8 +180,17 @@
                 android:id="@+id/tv_fee_amount_title"
                 style="@style/Text.61646e.16"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
                 android:text="@string/transaction_fee" />
+
+            <ImageView
+                android:id="@+id/iv_advanced_function"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/tv_fee_amount_title"
+                android:layout_alignBottom="@id/tv_fee_amount_title"
+                android:layout_marginLeft="8dp"
+                android:layout_toRightOf="@id/tv_fee_amount_title"
+                android:src="@drawable/icon_up" />
 
             <TextView
                 android:id="@+id/tv_fee_amount"
@@ -223,6 +232,53 @@
                 app:bsb_track_size="2dp" />
 
         </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_advanced_function"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="16dp"
+            android:paddingTop="16dp"
+            android:paddingRight="16dp"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <TextView
+                style="@style/Text.61646e.14"
+                android:layout_width="match_parent"
+                android:background="@drawable/shape_advanced_function"
+                android:gravity="left"
+                android:lineHeight="20dp"
+                android:padding="14dp"
+                android:text="@string/msg_advanced_function" />
+
+            <TextView
+                style="@style/Text.61646e.16"
+                android:layout_marginTop="16dp"
+                android:text="@string/msg_gas_limit" />
+
+            <EditText
+                android:id="@+id/et_gas_limit"
+                style="@style/Text.000.14"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_edittext_underline"
+                android:ellipsize="end"
+                android:gravity="center_vertical|left"
+                android:imeOptions="actionNext"
+                android:inputType="number"
+                android:singleLine="true"
+                android:text="21000" />
+
+            <TextView
+                android:id="@+id/tv_gas_limit_error"
+                style="@style/Text.ff4747.12"
+                android:layout_marginTop="5dp"
+                android:text="@string/msg_gas_limit_error"
+                tools:text="金额不能为空" />
+
+        </LinearLayout>
 
         <com.juzix.wallet.component.widget.ShadowButton
             android:id="@+id/sbtn_send_transation"

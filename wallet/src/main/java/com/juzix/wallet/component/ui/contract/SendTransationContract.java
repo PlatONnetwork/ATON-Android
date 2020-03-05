@@ -40,6 +40,14 @@ public class SendTransationContract {
         void showSaveAddressDialog();
 
         void setProgress(float progress);
+
+        String getGasLimit();
+
+        void setGasLimit(String gasLimit);
+
+        void showGasLimitError(boolean isShow);
+
+        boolean isShowAdvancedFunction();
     }
 
     public interface Presenter extends IPresenter<View> {
@@ -67,5 +75,7 @@ public class SendTransationContract {
         void saveWallet(String name, String address);
 
         void updateAssetsTab(int tabIndex);
+
+        void setGasLimit(String gasLimit);
     }
 }
