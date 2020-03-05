@@ -333,6 +333,7 @@
                     android:id="@+id/tv_detail_website"
                     style="@style/Text.105cfe.14"
                     android:layout_marginTop="10dp"
+                    android:gravity="left"
                     android:includeFontPadding="false"
                     tools:text="- -" />
 
@@ -346,8 +347,9 @@
                     android:id="@+id/tv_detail_introduction"
                     style="@style/Text.000.14"
                     android:layout_marginTop="10dp"
+                    android:gravity="left"
                     android:includeFontPadding="false"
-                    tools:text="- -" />
+                    tools:text="哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈" />
 
 
             </LinearLayout>
