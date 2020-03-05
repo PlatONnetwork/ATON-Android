@@ -23,6 +23,7 @@ import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.WalletManager;
 import com.juzix.wallet.engine.Web3jManager;
+import com.juzix.wallet.entity.AccountBalance;
 import com.juzix.wallet.entity.DelegateHandle;
 import com.juzix.wallet.entity.DelegateItemInfo;
 import com.juzix.wallet.entity.RPCErrorCode;
@@ -65,7 +66,10 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
     private String feeAmount;
     private GasProvider mGasProvider = new DefaultGasProvider();
-    private boolean isAll = false;//是否点击全部
+    /**
+     * 是否点击全部
+     */
+    private boolean isAll = false;
 
     private String minDelegation = AppConfigManager.getInstance().getMinDelegation();
 
@@ -191,8 +195,11 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                     public void onApiSuccess(DelegateHandle delegateHandle) {
                         if (isViewAttached()) {
                             if (null != delegateHandle) {
+                                WalletManager.getInstance().updateAccountBalance(new AccountBalance(walletAddress, delegateHandle.getFree(), delegateHandle.getLock()));
                                 minDelegation = delegateHandle.getMinDelegation();
+                                mWallet = WalletManager.getInstance().getWalletByAddress(walletAddress);
                                 getView().showIsCanDelegate(delegateHandle);
+                                getView().showSelectedWalletInfo(mWallet);
                             }
 
                         }
