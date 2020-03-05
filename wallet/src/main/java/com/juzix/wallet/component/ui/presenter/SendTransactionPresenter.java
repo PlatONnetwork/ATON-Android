@@ -45,6 +45,7 @@ import com.juzix.wallet.entity.TransactionAuthorizationData;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
+import com.juzix.wallet.utils.BigIntegerUtil;
 import com.juzix.wallet.utils.DateUtil;
 import com.juzix.wallet.utils.JZWalletUtil;
 import com.juzix.wallet.utils.RxUtils;
@@ -90,19 +91,33 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
 
     private final static int DEFAULT_PERCENT = 0;
     private final static BigInteger DEFAULT_EXCHANGE_RATE = BigInteger.valueOf(1000000000000000000L);
-    //默认gasLimit
+    /**
+     * 默认gasLimit
+     */
     private final static BigInteger DEFAULT_GAS_LIMIT = DefaultGasProvider.GAS_LIMIT;
-    //默认最小gasPrice
+    /**
+     * 默认最小gasPrice
+     */
     private final static BigInteger DEFAULT_MIN_GASPRICE = new BigInteger(AppConfigManager.getInstance().getMinGasPrice());
-    //当前gasLimit
+    /**
+     * 当前gasLimit
+     */
     private BigInteger gasLimit = DEFAULT_GAS_LIMIT;
-    //最小值gasPrice
+    /**
+     * 最小值gasPrice
+     */
     private BigInteger minGasPrice = DEFAULT_MIN_GASPRICE;
-    //最高gasPrice
+    /**
+     * 最高gasPrice
+     */
     private BigInteger maxGasPrice = DEFAULT_MIN_GASPRICE.multiply(BigInteger.valueOf(6));
-    //当前gasPrice
+    /**
+     * 当前gasPrice
+     */
     private BigInteger gasPrice;
-    //当前滑动百分比
+    /**
+     * 当前滑动百分比
+     */
     private float progress = DEFAULT_PERCENT;
 
     private String feeAmount;
@@ -295,9 +310,11 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
         if (isViewAttached()) {
             String transferAmount = getView().getTransferAmount();
             String toAddress = getView().getToAddress();
+            String gasLimit = getView().getGasLimit();
             boolean isToAddressFormatCorrect = !TextUtils.isEmpty(toAddress) && WalletUtils.isValidAddress(toAddress);
             boolean isTransferAmountValid = !TextUtils.isEmpty(transferAmount) && NumberParserUtils.parseDouble(transferAmount) > 0 && isBalanceEnough(transferAmount);
-            getView().setSendTransactionButtonEnable(isToAddressFormatCorrect && isTransferAmountValid);
+            boolean isGasLimitValid = BigIntegerUtil.toBigInteger(gasLimit).compareTo(DEFAULT_GAS_LIMIT) >= 0;
+            getView().setSendTransactionButtonEnable(isToAddressFormatCorrect && isTransferAmountValid && isGasLimitValid);
         }
 
     }
@@ -321,6 +338,19 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
             } else {
                 getGasPrice();
             }
+        }
+    }
+
+    @Override
+    public void setGasLimit(String gasLimit) {
+        this.gasLimit = BigIntegerUtil.toBigInteger(gasLimit);
+        feeAmount = NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(BigIntegerUtil.mul(this.gasLimit, this.gasPrice), DEFAULT_EXCHANGE_RATE.toString(10)));
+        boolean isGasLimitValid = BigIntegerUtil.toBigInteger(gasLimit).compareTo(DEFAULT_GAS_LIMIT) >= 0;
+        if (isViewAttached()) {
+            getView().setTransferFeeAmount(feeAmount);
+            getView().showGasLimitError(!isGasLimitValid);
+            checkTransferAmount(getView().getTransferAmount());
+            updateSendTransactionButtonStatus();
         }
     }
 

@@ -281,10 +281,6 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         reStoreStateFromArguments();
     }
 
-    public void fetchWalletsBalance() {
-        mPresenter.fetchWalletsBalance();
-    }
-
     public void initTab() {
 
         stbBar.getTabAt(1).setOnClickListener(new View.OnClickListener() {

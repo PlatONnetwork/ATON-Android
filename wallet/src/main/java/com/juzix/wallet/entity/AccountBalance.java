@@ -24,6 +24,12 @@ public class AccountBalance implements Parcelable {
      */
     private String lock;
 
+    public AccountBalance(String addr, String free, String lock) {
+        this.addr = addr;
+        this.free = free;
+        this.lock = lock;
+    }
+
     public AccountBalance() {
     }
 
