@@ -271,14 +271,14 @@
                 android:singleLine="true"
                 android:text="21000" />
 
-            <TextView
-                android:id="@+id/tv_gas_limit_error"
-                style="@style/Text.ff4747.12"
-                android:layout_marginTop="5dp"
-                android:text="@string/msg_gas_limit_error"
-                tools:text="金额不能为空" />
-
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_gas_limit_error"
+            style="@style/Text.ff4747.12"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="5dp"
+            android:text="@string/msg_gas_limit_error" />
 
         <com.juzix.wallet.component.widget.ShadowButton
             android:id="@+id/sbtn_send_transation"

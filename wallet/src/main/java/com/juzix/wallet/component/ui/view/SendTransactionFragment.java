@@ -56,6 +56,7 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.web3j.tx.gas.DefaultGasProvider;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -210,6 +211,9 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
                 mShowAdvancedFunction = !mShowAdvancedFunction;
                 layoutAdvancedFunction.setVisibility(mShowAdvancedFunction ? View.VISIBLE : View.GONE);
                 showAnimation(mShowAdvancedFunction);
+                if (mShowAdvancedFunction) {
+                    resetDefaultGasLimit();
+                }
                 break;
             default:
                 break;
@@ -338,6 +342,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
         etWalletAmount.setFocusableInTouchMode(false);
         etWalletAddress.setText("");
         etWalletAmount.setText("");
+        resetDefaultGasLimit();
         setTransferFeeAmount(feeAmount);
         bubbleSeekBar.setProgress(0);
         setSendTransactionButtonEnable(false);
@@ -413,6 +418,11 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
         }
     }
 
+    private void resetDefaultGasLimit() {
+        etGasLimit.setText(DefaultGasProvider.GAS_LIMIT.toString(10));
+        etGasLimit.setSelection(DefaultGasProvider.GAS_LIMIT.toString(10).length());
+    }
+
     private void showAnimation(boolean showAdvancedFunction) {
 
         int startDegree = showAdvancedFunction ? 0 : 180;
@@ -421,6 +431,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
         RotateAnimation rotateAnimation = new RotateAnimation(startDegree, toDegree, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         rotateAnimation.setInterpolator(new LinearInterpolator());
         rotateAnimation.setFillAfter(true);
+        rotateAnimation.setDuration(500);
         ivAdvancedFunction.startAnimation(rotateAnimation);
     }
 
