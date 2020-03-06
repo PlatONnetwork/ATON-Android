@@ -184,7 +184,7 @@ public class CreateWalletActivity extends MVPBaseActivity<CreateWalletPresenter>
         if (v == mEtName && !hasFocus) {
             if (TextUtils.isEmpty(name)) {
                 showNameError(string(R.string.validWalletNameEmptyTips), true);
-            } else if (name.length() > 12) {
+            } else if (name.length() > 20) {
                 showNameError(string(R.string.validWalletNameTips), true);
             } else if (WalletManager.getInstance().isWalletNameExists(name)) {
                 showNameError(string(R.string.wallet_name_exists), true);
