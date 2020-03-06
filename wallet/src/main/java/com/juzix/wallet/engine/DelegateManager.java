@@ -110,6 +110,7 @@ public class DelegateManager {
                 .chainId(NodeManager.getInstance().getChainId())
                 .txReceiptStatus(TransactionStatus.PENDING.ordinal())
                 .hash(hash)
+                .remark("")
                 .build())
                 .doOnSuccess(new Consumer<Transaction>() {
                     @Override

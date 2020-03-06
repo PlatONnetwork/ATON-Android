@@ -402,6 +402,7 @@ public class TransactionManager {
                                                 .timestamp(System.currentTimeMillis())
                                                 .txReceiptStatus(TransactionStatus.PENDING.ordinal())
                                                 .actualTxCost(feeAmount.toPlainString())
+                                                .remark(remark)
                                                 .build();
                                     }
                                 }).filter(new Predicate<Transaction>() {
