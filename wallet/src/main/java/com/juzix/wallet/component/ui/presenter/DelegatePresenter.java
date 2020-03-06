@@ -264,8 +264,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
         if (mDelegateDetail != null && !TextUtils.isEmpty(mDelegateDetail.getNodeId())) {
             if (!isAll) {
-                feeAmount = getFeeAmount(mGasProvider.getGasPrice(), mGasProvider.getGasLimit());
-                getView().showFeeAmount(feeAmount);
+                getView().showFeeAmount(getFeeAmount(mGasProvider.getGasPrice(), mGasProvider.getGasLimit()));
             } else {
                 isAll = false;
             }
@@ -393,11 +392,10 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                 .build());
     }
 
-
     @SuppressLint("CheckResult")
     private void delegate(Credentials credentials, String inputAmount, String nodeId, String nodeName, StakingAmountType stakingAmountType) {
         //这里调用新的方法，传入GasProvider
-        DelegateManager.getInstance().delegate(credentials, ContractAddress.DELEGATE_CONTRACT_ADDRESS, inputAmount, nodeId, nodeName, feeAmount, String.valueOf(TransactionType.DELEGATE.getTxTypeValue()), stakingAmountType, mGasProvider)
+        DelegateManager.getInstance().delegate(credentials, ContractAddress.DELEGATE_CONTRACT_ADDRESS, inputAmount, nodeId, nodeName, String.valueOf(TransactionType.DELEGATE.getTxTypeValue()), stakingAmountType, mGasProvider)
                 .compose(RxUtils.getSchedulerTransformer())
                 .compose(RxUtils.getLoadingTransformer(currentActivity()))
                 .subscribe(new Consumer<Transaction>() {
