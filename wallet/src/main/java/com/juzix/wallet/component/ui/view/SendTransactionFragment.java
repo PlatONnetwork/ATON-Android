@@ -225,9 +225,6 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
                 mShowAdvancedFunction = !mShowAdvancedFunction;
                 layoutAdvancedFunction.setVisibility(mShowAdvancedFunction ? View.VISIBLE : View.GONE);
                 showAnimation(mShowAdvancedFunction);
-                if (mShowAdvancedFunction) {
-                    resetDefaultGasLimit();
-                }
                 break;
             default:
                 break;
