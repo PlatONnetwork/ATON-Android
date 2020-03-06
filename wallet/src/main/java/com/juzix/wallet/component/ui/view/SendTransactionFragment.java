@@ -56,6 +56,7 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.web3j.tx.gas.DefaultGasProvider;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -338,6 +339,8 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
         etWalletAmount.setFocusableInTouchMode(false);
         etWalletAddress.setText("");
         etWalletAmount.setText("");
+        etGasLimit.setText(DefaultGasProvider.GAS_LIMIT.toString(10));
+        etGasLimit.setSelection(DefaultGasProvider.GAS_LIMIT.toString(10).length());
         setTransferFeeAmount(feeAmount);
         bubbleSeekBar.setProgress(0);
         setSendTransactionButtonEnable(false);
