@@ -21,9 +21,25 @@ public enum ApiErrorCode {
 
     SK_NOT_FOUND(1004, R.string.private_key_not_found);
 
-    public final int code;
+    public int code;
 
-    public final int descId;
+    public int descId;
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
+    }
+
+    public int getDescId() {
+        return descId;
+    }
+
+    public void setDescId(int descId) {
+        this.descId = descId;
+    }
 
     ApiErrorCode(int code, int resId) {
         this.code = code;
@@ -36,6 +52,10 @@ public enum ApiErrorCode {
                 return errorCode;
             }
         }
-        return NETWORK_ERROR;
+        ApiErrorCode apiErrorCode = SYSTEM_ERROR;
+
+        apiErrorCode.setCode(code);
+
+        return apiErrorCode;
     }
 }

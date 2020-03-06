@@ -3,8 +3,13 @@ package com.juzix.wallet.component.ui.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
@@ -49,7 +54,7 @@ public class ManageWalletActivity extends MVPBaseActivity<ManageWalletPresenter>
     @BindView(R.id.tv_delete)
     TextView tvDelete;
     @BindView(R.id.rl_rename)
-    RelativeLayout rename;
+    ConstraintLayout rename;
     @BindView(R.id.iv_copy_wallet_address)
     ImageView ivCopyAddress;
     private Unbinder unbinder;
@@ -134,7 +139,7 @@ public class ManageWalletActivity extends MVPBaseActivity<ManageWalletPresenter>
 
     @Override
     public void showModifyNameDialog(String name) {
-        CommonEditDialogFragment.createCommonEditDialogFragment(string(R.string.rename_wallet), name, InputType.TYPE_CLASS_TEXT, string(R.string.confirm), string(R.string.cancel), new OnDialogViewClickListener() {
+        CommonEditDialogFragment commonEditDialogFragment = CommonEditDialogFragment.createCommonEditDialogFragment(string(R.string.rename_wallet), name, InputType.TYPE_CLASS_TEXT, string(R.string.confirm), string(R.string.cancel), new OnDialogViewClickListener() {
             @Override
             public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
                 String text = extra.getString(Constants.Bundle.BUNDLE_TEXT);
@@ -154,7 +159,18 @@ public class ManageWalletActivity extends MVPBaseActivity<ManageWalletPresenter>
                     }
                 }
             }
-        }).show(getSupportFragmentManager(), "showModifyName");
+        });
+        getSupportFragmentManager().registerFragmentLifecycleCallbacks(new FragmentManager.FragmentLifecycleCallbacks() {
+            @Override
+            public void onFragmentStarted(@NonNull FragmentManager fm, @NonNull Fragment f) {
+                super.onFragmentStarted(fm, f);
+                if (f.getClass() == CommonEditDialogFragment.class) {
+                    CommonEditDialogFragment.FixedDialog fixedDialog = (CommonEditDialogFragment.FixedDialog) ((CommonEditDialogFragment) f).getDialog();
+                    fixedDialog.etInputInfo.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
+                }
+            }
+        }, false);
+        commonEditDialogFragment.show(getSupportFragmentManager(), "showModifyName");
 
     }
 

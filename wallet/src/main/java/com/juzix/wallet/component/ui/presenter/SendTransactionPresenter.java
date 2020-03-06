@@ -511,9 +511,9 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                                     showLongToast(R.string.msg_transaction_repeatedly_exception);
                                 } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_NONCE_TOO_LOW ||
                                         customThrowable.getErrCode() == CustomThrowable.CODE_TX_GAS_LOW) {
-                                    showLongToast(R.string.msg_transaction_exception);
+                                    showLongToast(string(R.string.msg_transaction_exception, customThrowable.getErrCode()));
                                 } else {
-                                    showLongToast(R.string.msg_server_exception);
+                                    showLongToast(string(R.string.msg_server_exception, customThrowable.getErrCode()));
                                 }
                             }
                         }
