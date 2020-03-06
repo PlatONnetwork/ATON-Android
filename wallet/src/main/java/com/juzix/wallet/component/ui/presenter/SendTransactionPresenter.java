@@ -257,6 +257,12 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
         return TextUtils.isEmpty(errMsg);
     }
 
+    public void checkTransferAmountDueToGasLimitChanged(String transferAmount) {
+        if (!TextUtils.isEmpty(transferAmount) && !isBalanceEnough(transferAmount)) {
+            getView().showAmountError(string(R.string.insufficient_balance));
+        }
+    }
+
     @Override
     public void submit() {
         if (isViewAttached()) {
@@ -350,7 +356,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
         if (isViewAttached()) {
             getView().setTransferFeeAmount(feeAmount);
             getView().showGasLimitError(!isGasLimitValid);
-            checkTransferAmount(getView().getTransferAmount());
+            checkTransferAmountDueToGasLimitChanged(getView().getTransferAmount());
             updateSendTransactionButtonStatus();
         }
     }
