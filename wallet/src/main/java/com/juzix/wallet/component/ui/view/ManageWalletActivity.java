@@ -138,7 +138,7 @@ public class ManageWalletActivity extends MVPBaseActivity<ManageWalletPresenter>
             @Override
             public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
                 String text = extra.getString(Constants.Bundle.BUNDLE_TEXT);
-                if (text.length() > 12) {
+                if (text.length() > 20) {
                     CommonTipsDialogFragment.createDialogWithTitleAndOneButton(ContextCompat.getDrawable(ManageWalletActivity.this, R.drawable.icon_dialog_tips),
                             string(R.string.formatError), string(R.string.validWalletNameTips), string(R.string.understood), new OnDialogViewClickListener() {
                                 @Override
