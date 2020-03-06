@@ -10,6 +10,7 @@ import com.juzix.wallet.entity.Transaction;
 import com.juzix.wallet.entity.TransactionStatus;
 import com.juzix.wallet.entity.TransactionType;
 import com.juzix.wallet.event.EventPublisher;
+import com.juzix.wallet.utils.BigIntegerUtil;
 
 import org.web3j.abi.datatypes.BytesType;
 import org.web3j.abi.datatypes.generated.Uint16;
@@ -51,7 +52,7 @@ public class DelegateManager {
         return InstanceHolder.INSTANCE;
     }
 
-    public Observable<Transaction> delegate(Credentials credentials, String to, String amount, String nodeId, String nodeName, String feeAmount, String transactionType, StakingAmountType stakingAmountType, GasProvider gasProvider) { //这里新修改，传入GasProvider
+    public Observable<Transaction> delegate(Credentials credentials, String to, String amount, String nodeId, String nodeName, String transactionType, StakingAmountType stakingAmountType, GasProvider gasProvider) { //这里新修改，传入GasProvider
 
         return Single
                 .fromCallable(new Callable<RPCTransactionResult>() {
@@ -76,7 +77,7 @@ public class DelegateManager {
                 .flatMap(new Function<RPCTransactionResult, SingleSource<Transaction>>() {
                     @Override
                     public SingleSource<Transaction> apply(RPCTransactionResult transactionResult) throws Exception {
-                        return insertTransaction(credentials, transactionResult.getHash(), to, amount, nodeId, nodeName, feeAmount, transactionType);
+                        return insertTransaction(credentials, transactionResult.getHash(), to, amount, nodeId, nodeName, BigIntegerUtil.mul(gasProvider.getGasLimit(), gasProvider.getGasPrice()), transactionType);
                     }
                 })
                 .toObservable();

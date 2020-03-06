@@ -9,7 +9,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.InputType;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.SparseArray;
@@ -69,6 +71,8 @@ import io.reactivex.functions.Consumer;
  * @author matrixelement
  */
 public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPresenter> implements SendTransationContract.View {
+
+    private final static long MAX_GAS_LIMIT = 999999999;
 
     @BindView(R.id.iv_address_book)
     ImageView ivAddressBook;
@@ -169,6 +173,16 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
                         mPresenter.submit();
                     }
                 });
+
+        etGasLimit.setFilters(new InputFilter[]{new InputFilter() {
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                if (NumberParserUtils.parseLong(dest.toString() + source.toString()) > MAX_GAS_LIMIT) {
+                    return "";
+                }
+                return null;
+            }
+        }});
 
         RxTextView
                 .textChanges(etGasLimit)

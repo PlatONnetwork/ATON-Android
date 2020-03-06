@@ -191,6 +191,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                             initGasPrice(bigInteger);
                             setDefaultProgress();
                             setDefaultFeeAmount();
+                            setDefaultGasLimit();
                         }
                     }
                 });
@@ -703,6 +704,13 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
 
         if (isViewAttached()) {
             getView().setTransferFeeAmount(feeAmount);
+        }
+    }
+
+    private void setDefaultGasLimit() {
+        this.gasLimit = DEFAULT_GAS_LIMIT;
+        if (isViewAttached()) {
+            getView().setGasLimit(gasLimit.toString(10));
         }
     }
 
