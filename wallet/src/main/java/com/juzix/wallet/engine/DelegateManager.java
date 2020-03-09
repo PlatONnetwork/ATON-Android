@@ -52,7 +52,7 @@ public class DelegateManager {
         return InstanceHolder.INSTANCE;
     }
 
-    public Single<Transaction> delegate(Credentials credentials, String to, String amount, String nodeId, String nodeName, String transactionType, StakingAmountType stakingAmountType, GasProvider gasProvider) { //这里新修改，传入GasProvider
+    public Observable<Transaction> delegate(Credentials credentials, String to, String amount, String nodeId, String nodeName, String transactionType, StakingAmountType stakingAmountType, GasProvider gasProvider) { //这里新修改，传入GasProvider
 
         return Single
                 .fromCallable(new Callable<RPCTransactionResult>() {
@@ -70,16 +70,17 @@ public class DelegateManager {
                 })
                 .flatMap(new Function<RPCTransactionResult, SingleSource<RPCTransactionResult>>() {
                     @Override
-                    public SingleSource<RPCTransactionResult> apply(RPCTransactionResult rpcTransactionResult) throws Exception {
-                        return createRPCTransactionResult(rpcTransactionResult);
+                    public SingleSource<RPCTransactionResult> apply(RPCTransactionResult transactionResult) throws Exception {
+                        return createRPCTransactionResult(transactionResult);
                     }
                 })
                 .flatMap(new Function<RPCTransactionResult, SingleSource<Transaction>>() {
                     @Override
-                    public SingleSource<Transaction> apply(RPCTransactionResult rpcTransactionResult) throws Exception {
-                        return insertTransaction(credentials, rpcTransactionResult.getHash(), to, amount, nodeId, nodeName, BigIntegerUtil.mul(gasProvider.getGasLimit(), gasProvider.getGasPrice()), transactionType);
+                    public SingleSource<Transaction> apply(RPCTransactionResult transactionResult) throws Exception {
+                        return insertTransaction(credentials, transactionResult.getHash(), to, amount, nodeId, nodeName, BigIntegerUtil.mul(gasProvider.getGasLimit(), gasProvider.getGasPrice()), transactionType);
                     }
-                });
+                })
+                .toObservable();
     }
 
     private Single<RPCTransactionResult> createRPCTransactionResult(RPCTransactionResult rpcTransactionResult) {
@@ -147,7 +148,7 @@ public class DelegateManager {
      * @param gasProvider
      * @return
      */
-    public Single<Transaction> withdrawDelegate(Credentials credentials, String to, String nodeId, String nodeName, String feeAmount, String stakingBlockNum, String amount, String transactionType, GasProvider gasProvider) {
+    public Observable<Transaction> withdrawDelegate(Credentials credentials, String to, String nodeId, String nodeName, String feeAmount, String stakingBlockNum, String amount, String transactionType, GasProvider gasProvider) {
 
         return Single.fromCallable(new Callable<RPCTransactionResult>() {
             @Override
@@ -161,18 +162,20 @@ public class DelegateManager {
                                 , new Uint256(Convert.toVon(amount, Convert.Unit.LAT).toBigInteger())), gasProvider);
                 return TransactionManager.getInstance().sendContractTransaction(delegateContract, credentials, platOnFunction).blockingGet();
             }
-        }).flatMap(new Function<RPCTransactionResult, SingleSource<RPCTransactionResult>>() {
-            @Override
-            public SingleSource<RPCTransactionResult> apply(RPCTransactionResult rpcTransactionResult) throws Exception {
-                return createRPCTransactionResult(rpcTransactionResult);
-            }
         })
+                .flatMap(new Function<RPCTransactionResult, SingleSource<RPCTransactionResult>>() {
+                    @Override
+                    public SingleSource<RPCTransactionResult> apply(RPCTransactionResult transactionResult) throws Exception {
+                        return createRPCTransactionResult(transactionResult);
+                    }
+                })
                 .flatMap(new Function<RPCTransactionResult, SingleSource<Transaction>>() {
                     @Override
-                    public SingleSource<Transaction> apply(RPCTransactionResult rpcTransactionResult) throws Exception {
-                        return insertTransaction(credentials, rpcTransactionResult.getHash(), to, amount, nodeId, nodeName, feeAmount, transactionType);
+                    public SingleSource<Transaction> apply(RPCTransactionResult transactionResult) throws Exception {
+                        return insertTransaction(credentials, transactionResult.getHash(), to, amount, nodeId, nodeName, feeAmount, transactionType);
                     }
-                });
+                })
+                .toObservable();
 
     }
 
@@ -195,16 +198,17 @@ public class DelegateManager {
                 PlatOnFunction function = new PlatOnFunction(FunctionType.WITHDRAW_DELEGATE_REWARD_FUNC_TYPE, gasProvider);
                 return TransactionManager.getInstance().sendContractTransaction(rewardContract, credentials, function).blockingGet();
             }
-        }).flatMap(new Function<RPCTransactionResult, SingleSource<RPCTransactionResult>>() {
-            @Override
-            public SingleSource<RPCTransactionResult> apply(RPCTransactionResult rpcTransactionResult) throws Exception {
-                return createRPCTransactionResult(rpcTransactionResult);
-            }
         })
+                .flatMap(new Function<RPCTransactionResult, SingleSource<RPCTransactionResult>>() {
+                    @Override
+                    public SingleSource<RPCTransactionResult> apply(RPCTransactionResult transactionResult) throws Exception {
+                        return createRPCTransactionResult(transactionResult);
+                    }
+                })
                 .flatMap(new Function<RPCTransactionResult, SingleSource<Transaction>>() {
                     @Override
-                    public SingleSource<Transaction> apply(RPCTransactionResult rpcTransactionResult) throws Exception {
-                        return insertTransaction(credentials, rpcTransactionResult.getHash(), ContractAddress.REWARD_CONTRACT_ADDRESS, amount, "", "", feeAmount, String.valueOf(TransactionType.CLAIM_REWARDS.getTxTypeValue()));
+                    public SingleSource<Transaction> apply(RPCTransactionResult transactionResult) throws Exception {
+                        return insertTransaction(credentials, transactionResult.getHash(), ContractAddress.REWARD_CONTRACT_ADDRESS, amount, "", "", feeAmount, String.valueOf(TransactionType.CLAIM_REWARDS.getTxTypeValue()));
                     }
                 })
                 .toObservable();

@@ -9,7 +9,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.InputType;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.SparseArray;
@@ -66,6 +68,8 @@ import io.reactivex.functions.Consumer;
  */
 public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPresenter> implements SendTransationContract.View {
 
+    private final static long MAX_GAS_LIMIT = 999999999;
+
     @BindView(R.id.iv_address_book)
     ImageView ivAddressBook;
     @BindView(R.id.et_wallet_address)
@@ -100,12 +104,22 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
     String cheaper;
     @BindString(R.string.faster)
     String faster;
+    @BindView(R.id.layout_advanced_function)
+    LinearLayout layoutAdvancedFunction;
+    @BindView(R.id.iv_advanced_function)
+    ImageView ivAdvancedFunction;
+    @BindView(R.id.et_gas_limit)
+    EditText etGasLimit;
+    @BindView(R.id.tv_gas_limit_error)
+    TextView tvGasLimitError;
     @BindView(R.id.et_transaction_note)
     EditText etTransactionNote;
     @BindView(R.id.iv_clear)
     ImageView ivClear;
 
     private Unbinder unbinder;
+
+    private boolean mShowAdvancedFunction = false;
 
     @Override
     protected void onFragmentPageStart() {
@@ -158,6 +172,25 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
                     }
                 });
 
+        etGasLimit.setFilters(new InputFilter[]{new InputFilter() {
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                if (NumberParserUtils.parseLong(dest.toString() + source.toString()) > MAX_GAS_LIMIT) {
+                    return "";
+                }
+                return null;
+            }
+        }});
+
+        RxTextView
+                .textChanges(etGasLimit)
+                .compose(bindToLifecycle())
+                .subscribe(new CustomObserver<CharSequence>() {
+                    @Override
+                    public void accept(CharSequence gasLimit) {
+                        mPresenter.setGasLimit(gasLimit.toString().trim());
+                    }
+                });
         RxTextView.textChanges(etTransactionNote)
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<CharSequence>() {
@@ -341,7 +374,6 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
         etWalletAmount.setFocusableInTouchMode(false);
         etWalletAddress.setText("");
         etWalletAmount.setText("");
-        etTransactionNote.setText("");
         setTransferFeeAmount(feeAmount);
         bubbleSeekBar.setProgress(0);
         setSendTransactionButtonEnable(false);
@@ -383,6 +415,27 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
     @Override
     public void setProgress(float progress) {
         bubbleSeekBar.setProgress(progress);
+    }
+
+    @Override
+    public String getGasLimit() {
+        return etGasLimit.getText().toString().trim();
+    }
+
+    @Override
+    public void setGasLimit(String gasLimit) {
+        etGasLimit.setText(gasLimit);
+        etGasLimit.setSelection(gasLimit.length());
+    }
+
+    @Override
+    public void showGasLimitError(boolean isShow) {
+        tvGasLimitError.setVisibility(isShow ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public boolean isShowAdvancedFunction() {
+        return mShowAdvancedFunction;
     }
 
     @Override

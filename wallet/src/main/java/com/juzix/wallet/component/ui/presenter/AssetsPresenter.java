@@ -3,7 +3,6 @@ package com.juzix.wallet.component.ui.presenter;
 import android.annotation.SuppressLint;
 import android.util.Log;
 
-import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.ui.base.BasePresenter;
 import com.juzix.wallet.component.ui.contract.AssetsContract;
 import com.juzix.wallet.component.ui.dialog.InputWalletPasswordDialogFragment;
@@ -31,12 +30,14 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class AssetsPresenter extends BasePresenter<AssetsContract.View> implements AssetsContract.Presenter {
 
     private List<Wallet> mWalletList;
+    private Disposable mDisposable;
 
     public AssetsPresenter(AssetsContract.View view) {
         super(view);
@@ -77,10 +78,14 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
     @Override
     public void fetchWalletsBalance() {
 
-        WalletManager.getInstance().getAccountBalance()
+        if (mDisposable != null && !mDisposable.isDisposed()) {
+            mDisposable.dispose();
+        }
+
+        mDisposable = WalletManager.getInstance().getAccountBalance()
                 .compose(bindUntilEvent(FragmentEvent.STOP))
                 .compose(RxUtils.getSchedulerTransformer())
-                .subscribe(new CustomObserver<BigDecimal>() {
+                .subscribe(new Consumer<BigDecimal>() {
                     @Override
                     public void accept(BigDecimal balance) {
                         if (isViewAttached()) {
@@ -94,9 +99,9 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
                         }
                     }
 
+                }, new Consumer<Throwable>() {
                     @Override
-                    public void accept(Throwable throwable) {
-                        super.accept(throwable);
+                    public void accept(Throwable throwable) throws Exception {
                         if (isViewAttached()) {
                             getView().finishRefresh();
                         }

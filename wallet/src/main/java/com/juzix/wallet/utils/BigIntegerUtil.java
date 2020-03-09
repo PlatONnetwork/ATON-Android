@@ -18,6 +18,11 @@ public class BigIntegerUtil {
         return BigInteger.ZERO;
     }
 
+    public static BigInteger max(BigInteger value1, BigInteger value2) {
+
+        return value1.compareTo(value2) == 1 ? value1 : value2;
+    }
+
     public static String toString(BigInteger bigInteger) {
         if (bigInteger == null) {
             return BigInteger.ZERO.toString(10);

@@ -23,6 +23,8 @@ import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.TransactionManager;
 import com.juzix.wallet.engine.WalletManager;
+import com.juzix.wallet.engine.Web3jManager;
+import com.juzix.wallet.entity.AccountBalance;
 import com.juzix.wallet.entity.DelegateHandle;
 import com.juzix.wallet.entity.DelegateItemInfo;
 import com.juzix.wallet.entity.RPCErrorCode;
@@ -48,9 +50,13 @@ import org.web3j.utils.Convert;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.concurrent.Callable;
 
+import io.reactivex.Observable;
+import io.reactivex.Observer;
 import io.reactivex.Single;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Predicate;
 import retrofit2.Response;
 
 public class DelegatePresenter extends BasePresenter<DelegateContract.View> implements DelegateContract.Presenter {
@@ -60,9 +66,12 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     private Wallet mWallet;
     private DelegateItemInfo mDelegateDetail;
 
-    //    private String feeAmount;
+    private String feeAmount;
     private GasProvider mGasProvider = new DefaultGasProvider();
-    private boolean isAll = false;//是否点击全部
+    /**
+     * 是否点击全部
+     */
+    private boolean isAll = false;
 
     private String minDelegation = AppConfigManager.getInstance().getMinDelegation();
 
@@ -73,7 +82,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
             if (TextUtils.isEmpty(mDelegateDetail.getWalletAddress())) {
                 mWallet = WalletManager.getInstance().getSelectedWallet();
             } else {
-                mWallet = WalletManager.getInstance().getWalletEntityByWalletAddress(mDelegateDetail.getWalletAddress());
+                mWallet = WalletManager.getInstance().getWalletByWalletAddress(mDelegateDetail.getWalletAddress());
             }
         }
     }
@@ -188,8 +197,11 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                     public void onApiSuccess(DelegateHandle delegateHandle) {
                         if (isViewAttached()) {
                             if (null != delegateHandle) {
+                                WalletManager.getInstance().updateAccountBalance(new AccountBalance(walletAddress, delegateHandle.getFree(), delegateHandle.getLock()));
                                 minDelegation = delegateHandle.getMinDelegation();
+                                mWallet = WalletManager.getInstance().getWalletByAddress(walletAddress);
                                 getView().showIsCanDelegate(delegateHandle);
+                                getView().showSelectedWalletInfo(mWallet);
                             }
 
                         }
@@ -382,13 +394,12 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                 .build());
     }
 
-
     @SuppressLint("CheckResult")
     private void delegate(Credentials credentials, String inputAmount, String nodeId, String nodeName, StakingAmountType stakingAmountType) {
         //这里调用新的方法，传入GasProvider
         DelegateManager.getInstance().delegate(credentials, ContractAddress.DELEGATE_CONTRACT_ADDRESS, inputAmount, nodeId, nodeName, String.valueOf(TransactionType.DELEGATE.getTxTypeValue()), stakingAmountType, mGasProvider)
-                .compose(RxUtils.getSingleSchedulerTransformer())
-                .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
+                .compose(RxUtils.getSchedulerTransformer())
+                .compose(RxUtils.getLoadingTransformer(currentActivity()))
                 .subscribe(new Consumer<Transaction>() {
                     @Override
                     public void accept(Transaction transaction) throws Exception {
@@ -401,19 +412,10 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         if (isViewAttached()) {
-
-                            if (throwable instanceof CustomThrowable) {
-                                CustomThrowable customThrowable = (CustomThrowable) throwable;
-                                if (customThrowable.getErrCode() == RPCErrorCode.CONNECT_TIMEOUT) {
-                                    showLongToast(R.string.msg_connect_timeout);
-                                } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_KNOWN_TX) {
-                                    showLongToast(R.string.msg_transaction_repeatedly_exception);
-                                } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_NONCE_TOO_LOW ||
-                                        customThrowable.getErrCode() == CustomThrowable.CODE_TX_GAS_LOW) {
-                                    showLongToast(R.string.msg_transaction_exception);
-                                } else {
-                                    showLongToast(R.string.msg_server_exception);
-                                }
+                            if (throwable instanceof CustomThrowable && ((CustomThrowable) throwable).getErrCode() == RPCErrorCode.CONNECT_TIMEOUT) {
+                                showLongToast(R.string.msg_connect_timeout);
+                            } else {
+                                showLongToast(R.string.delegate_failed);
                             }
                         }
                     }

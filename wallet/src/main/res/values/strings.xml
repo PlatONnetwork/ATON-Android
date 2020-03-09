@@ -333,7 +333,7 @@
     <string name="action_send_all">全部发送</string>
     <string name="balance_text">当前余额:&#160;%1$s&#160;LAT</string>
     <string name="fee">交易手续费</string>
-    <string name="transaction_fee">交易费用</string>
+    <string name="transaction_fee">交易费用:</string>
     <string name="save_successfully">保存成功</string>
     <string name="joint_wallet_execution">执行联名钱包</string>
     <string name="create_joint_wallet">创建联名钱包</string>
@@ -785,6 +785,9 @@
     <string name="msg_withdraw_claim_reward">注意：操作全部赎回时，将自动领取委托奖励。</string>
     <string name="msg_restricted_plan">锁仓:</string>
     <string name="msg_connect_timeout">请求超时</string>
+    <string name="msg_advanced_function">关于特殊合约转账，建议在默认GasLimit基础上增加2倍或更多，GasLimit太低可能导致您的交易失败。</string>
+    <string name="msg_gas_limit">Gas Limit:</string>
+    <string name="msg_gas_limit_error">Gas Limit不能小于21000</string>
     <string name="msg_transaction_memo">备注：%1$s</string>
     <string name="hint_input_transaction_note">备注(可选30字以内)</string>
 

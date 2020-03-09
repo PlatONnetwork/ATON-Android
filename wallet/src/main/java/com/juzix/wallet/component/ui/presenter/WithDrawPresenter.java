@@ -70,7 +70,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
             if (TextUtils.isEmpty(mDelegateDetail.getWalletAddress())) {
                 mWallet = WalletManager.getInstance().getFirstSortedWallet();
             } else {
-                mWallet = WalletManager.getInstance().getWalletEntityByWalletAddress(mDelegateDetail.getWalletAddress());
+                mWallet = WalletManager.getInstance().getWalletByAddress(mDelegateDetail.getWalletAddress());
             }
         }
     }
@@ -271,7 +271,6 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     @SuppressLint("CheckResult")
     public void withdraw(Credentials credentials, GasProvider gasProvider, String nodeId, String nodeName, String blockNum, String withdrawAmount) {
         DelegateManager.getInstance().withdrawDelegate(credentials, ContractAddress.DELEGATE_CONTRACT_ADDRESS, nodeId, nodeName, feeAmount, blockNum, withdrawAmount, String.valueOf(TransactionType.UNDELEGATE.getTxTypeValue()), gasProvider)
-                .toObservable()
                 .compose(RxUtils.getSchedulerTransformer())
                 .compose(RxUtils.getLoadingTransformer(currentActivity()))
                 .subscribe(new CustomObserver<Transaction>() {
