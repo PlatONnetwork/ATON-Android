@@ -225,7 +225,7 @@ public class WalletManager {
     /**
      * 根据钱包地址获取钱包
      */
-    public Wallet getWalletEntityByWalletAddress(String walletAddress) {
+    public Wallet getWalletByWalletAddress(String walletAddress) {
 
         if (!mWalletList.isEmpty()) {
             for (Wallet walletEntity : mWalletList) {

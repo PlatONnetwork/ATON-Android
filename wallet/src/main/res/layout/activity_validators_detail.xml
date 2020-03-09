@@ -335,7 +335,7 @@
                     android:layout_marginTop="10dp"
                     android:gravity="left"
                     android:includeFontPadding="false"
-                    tools:text="- -" />
+                    tools:text="这是一个很长的简介这是一个很长的简介这是一个很长的简介这是一个很长的简介这是一个很长的简介这是一个很长的简介这是一个很长的简介" />
 
                 <TextView
                     style="@style/Text.61646e.14"
@@ -349,7 +349,7 @@
                     android:layout_marginTop="10dp"
                     android:gravity="left"
                     android:includeFontPadding="false"
-                    tools:text="哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈" />
+                    tools:text="这是一个很长的简介这是一个很长的简介这是一个很长的简介这是一个很长的简介这是一个很长的简介这是一个很长的简介这是一个很长的简介" />
 
 
             </LinearLayout>

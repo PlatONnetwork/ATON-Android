@@ -70,14 +70,14 @@ public class DelegateManager {
                 })
                 .flatMap(new Function<RPCTransactionResult, SingleSource<RPCTransactionResult>>() {
                     @Override
-                    public SingleSource<RPCTransactionResult> apply(RPCTransactionResult rpcTransactionResult) throws Exception {
-                        return createRPCTransactionResult(rpcTransactionResult);
+                    public SingleSource<RPCTransactionResult> apply(RPCTransactionResult transactionResult) throws Exception {
+                        return createRPCTransactionResult(transactionResult);
                     }
                 })
                 .flatMap(new Function<RPCTransactionResult, SingleSource<Transaction>>() {
                     @Override
-                    public SingleSource<Transaction> apply(RPCTransactionResult rpcTransactionResult) throws Exception {
-                        return insertTransaction(credentials, rpcTransactionResult.getHash(), to, amount, nodeId, nodeName, BigIntegerUtil.mul(gasProvider.getGasLimit(), gasProvider.getGasPrice()), transactionType);
+                    public SingleSource<Transaction> apply(RPCTransactionResult transactionResult) throws Exception {
+                        return insertTransaction(credentials, transactionResult.getHash(), to, amount, nodeId, nodeName, BigIntegerUtil.mul(gasProvider.getGasLimit(), gasProvider.getGasPrice()), transactionType);
                     }
                 });
     }
@@ -110,6 +110,7 @@ public class DelegateManager {
                 .chainId(NodeManager.getInstance().getChainId())
                 .txReceiptStatus(TransactionStatus.PENDING.ordinal())
                 .hash(hash)
+                .remark("")
                 .build())
                 .doOnSuccess(new Consumer<Transaction>() {
                     @Override
@@ -195,16 +196,17 @@ public class DelegateManager {
                 PlatOnFunction function = new PlatOnFunction(FunctionType.WITHDRAW_DELEGATE_REWARD_FUNC_TYPE, gasProvider);
                 return TransactionManager.getInstance().sendContractTransaction(rewardContract, credentials, function).blockingGet();
             }
-        }).flatMap(new Function<RPCTransactionResult, SingleSource<RPCTransactionResult>>() {
-            @Override
-            public SingleSource<RPCTransactionResult> apply(RPCTransactionResult rpcTransactionResult) throws Exception {
-                return createRPCTransactionResult(rpcTransactionResult);
-            }
         })
+                .flatMap(new Function<RPCTransactionResult, SingleSource<RPCTransactionResult>>() {
+                    @Override
+                    public SingleSource<RPCTransactionResult> apply(RPCTransactionResult transactionResult) throws Exception {
+                        return createRPCTransactionResult(transactionResult);
+                    }
+                })
                 .flatMap(new Function<RPCTransactionResult, SingleSource<Transaction>>() {
                     @Override
-                    public SingleSource<Transaction> apply(RPCTransactionResult rpcTransactionResult) throws Exception {
-                        return insertTransaction(credentials, rpcTransactionResult.getHash(), ContractAddress.REWARD_CONTRACT_ADDRESS, amount, "", "", feeAmount, String.valueOf(TransactionType.CLAIM_REWARDS.getTxTypeValue()));
+                    public SingleSource<Transaction> apply(RPCTransactionResult transactionResult) throws Exception {
+                        return insertTransaction(credentials, transactionResult.getHash(), ContractAddress.REWARD_CONTRACT_ADDRESS, amount, "", "", feeAmount, String.valueOf(TransactionType.CLAIM_REWARDS.getTxTypeValue()));
                     }
                 })
                 .toObservable();

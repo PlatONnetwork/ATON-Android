@@ -3,10 +3,13 @@ package com.juzix.wallet.component.widget;
 
 import android.content.Context;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.Selection;
 import android.text.Spannable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+
+import java.lang.reflect.Field;
 
 /**
  * @author ziv
@@ -66,7 +69,7 @@ public class NoEmojiEditText extends android.support.v7.widget.AppCompatEditText
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (!resetText) {
-                    if (count >= 2) {//表情符号的字符长度最小为2
+                    if (count >= 2 && cursorPos + count < getMaxLength()) {//表情符号的字符长度最小为2
                         CharSequence input = s.subSequence(cursorPos, cursorPos + count);
                         if (containsEmoji(input.toString())) {
                             resetText = true;
@@ -107,6 +110,33 @@ public class NoEmojiEditText extends android.support.v7.widget.AppCompatEditText
             }
         }
         return false;
+    }
+
+    /**
+     * 　　* 获取设置的最大长度
+     * 　　*
+     * 　　* @return
+     */
+    public int getMaxLength() {
+        int length = 0;
+        try {
+            InputFilter[] inputFilters = getFilters();
+            for (InputFilter filter : inputFilters) {
+                Class<?> c = filter.getClass();
+                if (c.getName().equals("android.text.InputFilter$LengthFilter")) {
+                    Field[] f = c.getDeclaredFields();
+                    for (Field field : f) {
+                        if (field.getName().equals("mMax")) {
+                            field.setAccessible(true);
+                            length = (Integer) field.get(filter);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return length;
     }
 
     /**

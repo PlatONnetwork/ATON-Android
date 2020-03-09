@@ -769,6 +769,9 @@
     <string name="msg_withdraw_claim_reward">Note: When withdrawing all delegations,Claim rewards automatically.</string>
     <string name="msg_restricted_plan">Restricted:</string>
     <string name="msg_connect_timeout">connect timeout</string>
+    <string name="msg_advanced_function">For contract transfers, increase the default GasLimit by a factor of 2 or more. Too low a Gaslimit may cause your transaction to fail.</string>
+    <string name="msg_gas_limit">Gas Limit:</string>
+    <string name="msg_gas_limit_error">Gas Limit cannot be less than 21000</string>
     <string name="msg_transaction_memo">Memo：%1$s</string>
     <string name="hint_input_transaction_note">Memo(optional-less than 30 characters)</string>
 

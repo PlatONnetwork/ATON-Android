@@ -9,13 +9,18 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.InputType;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -54,6 +59,7 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.web3j.tx.gas.DefaultGasProvider;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -66,6 +72,8 @@ import io.reactivex.functions.Consumer;
  * @author matrixelement
  */
 public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPresenter> implements SendTransationContract.View {
+
+    private final static long MAX_GAS_LIMIT = 999999999;
 
     @BindView(R.id.iv_address_book)
     ImageView ivAddressBook;
@@ -101,12 +109,22 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
     String cheaper;
     @BindString(R.string.faster)
     String faster;
+    @BindView(R.id.layout_advanced_function)
+    LinearLayout layoutAdvancedFunction;
+    @BindView(R.id.iv_advanced_function)
+    ImageView ivAdvancedFunction;
+    @BindView(R.id.et_gas_limit)
+    EditText etGasLimit;
+    @BindView(R.id.tv_gas_limit_error)
+    TextView tvGasLimitError;
     @BindView(R.id.et_transaction_note)
     NoEmojiEditText etTransactionNote;
     @BindView(R.id.iv_clear)
     ImageView ivClear;
 
     private Unbinder unbinder;
+
+    private boolean mShowAdvancedFunction = false;
 
     @Override
     protected void onFragmentPageStart() {
@@ -159,6 +177,25 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
                     }
                 });
 
+        etGasLimit.setFilters(new InputFilter[]{new InputFilter() {
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                if (NumberParserUtils.parseLong(dest.toString() + source.toString()) > MAX_GAS_LIMIT) {
+                    return "";
+                }
+                return null;
+            }
+        }});
+
+        RxTextView
+                .textChanges(etGasLimit)
+                .compose(bindToLifecycle())
+                .subscribe(new CustomObserver<CharSequence>() {
+                    @Override
+                    public void accept(CharSequence gasLimit) {
+                        mPresenter.setGasLimit(gasLimit.toString().trim());
+                    }
+                });
         RxTextView.textChanges(etTransactionNote)
                 .compose(RxUtils.bindToLifecycle(this))
                 .subscribe(new CustomObserver<CharSequence>() {
@@ -178,10 +215,13 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
                         etTransactionNote.setText("");
                     }
                 });
-
     }
 
-    @OnClick({R.id.iv_address_scan, R.id.iv_address_book, R.id.tv_save_address, R.id.tv_all_amount})
+    private void showAdvancedFunctionView(boolean showAdvancedFunction) {
+        layoutAdvancedFunction.setVisibility(showAdvancedFunction ? View.VISIBLE : View.GONE);
+    }
+
+    @OnClick({R.id.iv_address_scan, R.id.iv_address_book, R.id.tv_save_address, R.id.tv_all_amount, R.id.tv_fee_amount_title, R.id.iv_advanced_function})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_address_book:
@@ -205,20 +245,16 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
             case R.id.tv_all_amount:
                 mPresenter.transferAllBalance();
                 break;
+            case R.id.tv_fee_amount_title:
+            case R.id.iv_advanced_function:
+                mShowAdvancedFunction = !mShowAdvancedFunction;
+                layoutAdvancedFunction.setVisibility(mShowAdvancedFunction ? View.VISIBLE : View.GONE);
+                showAnimation(mShowAdvancedFunction);
+                break;
             default:
                 break;
         }
 
-    }
-
-    private void saveToAddressBook() {
-        String walletAddress = etWalletAddress.getText().toString().trim();
-        String walletName = WalletDao.getWalletNameByAddress(walletAddress);
-        if (TextUtils.isEmpty(walletName)) {
-            showSaveAddressDialog();
-        } else {
-            mPresenter.saveWallet(walletName, walletAddress);
-        }
     }
 
     @Override
@@ -257,6 +293,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateAssetsTabEvent(Event.UpdateAssetsTabEvent event) {
         mPresenter.updateAssetsTab(event.tabIndex);
+        resetDefaultGasLimit();
     }
 
     @Override
@@ -342,7 +379,6 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
         etWalletAmount.setFocusableInTouchMode(false);
         etWalletAddress.setText("");
         etWalletAmount.setText("");
-        etTransactionNote.setText("");
         setTransferFeeAmount(feeAmount);
         bubbleSeekBar.setProgress(0);
         setSendTransactionButtonEnable(false);
@@ -387,6 +423,27 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
     }
 
     @Override
+    public String getGasLimit() {
+        return etGasLimit.getText().toString().trim();
+    }
+
+    @Override
+    public void setGasLimit(String gasLimit) {
+        etGasLimit.setText(gasLimit);
+        etGasLimit.setSelection(gasLimit.length());
+    }
+
+    @Override
+    public void showGasLimitError(boolean isShow) {
+        tvGasLimitError.setVisibility(isShow ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public boolean isShowAdvancedFunction() {
+        return mShowAdvancedFunction;
+    }
+
+    @Override
     public String getTransactionRemark() {
         return etTransactionNote.getText().toString().trim();
     }
@@ -399,6 +456,36 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
         etWalletAmount.removeTextChangedListener(mEtWalletAmountWatcher);
         if (unbinder != null) {
             unbinder.unbind();
+        }
+    }
+
+    private void resetDefaultGasLimit() {
+        showAdvancedFunctionView(mShowAdvancedFunction = false);
+        etGasLimit.setText(DefaultGasProvider.GAS_LIMIT.toString(10));
+        etGasLimit.setSelection(DefaultGasProvider.GAS_LIMIT.toString(10).length());
+    }
+
+
+    private void showAnimation(boolean showAdvancedFunction) {
+
+        int startDegree = showAdvancedFunction ? 0 : 180;
+        int toDegree = showAdvancedFunction ? 180 : 360;
+
+        RotateAnimation rotateAnimation = new RotateAnimation(startDegree, toDegree, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotateAnimation.setInterpolator(new LinearInterpolator());
+        rotateAnimation.setFillAfter(true);
+        rotateAnimation.setDuration(500);
+        ivAdvancedFunction.startAnimation(rotateAnimation);
+    }
+
+
+    private void saveToAddressBook() {
+        String walletAddress = etWalletAddress.getText().toString().trim();
+        String walletName = WalletDao.getWalletNameByAddress(walletAddress);
+        if (TextUtils.isEmpty(walletName)) {
+            showSaveAddressDialog();
+        } else {
+            mPresenter.saveWallet(walletName, walletAddress);
         }
     }
 

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.juzhen.framework.network.ApiErrorCode;
 import com.juzhen.framework.network.ApiRequestBody;
 import com.juzhen.framework.network.ApiResponse;
 import com.juzhen.framework.network.ApiSingleObserver;
@@ -24,6 +25,7 @@ import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.TransactionManager;
 import com.juzix.wallet.engine.WalletManager;
+import com.juzix.wallet.entity.AccountBalance;
 import com.juzix.wallet.entity.DelegateItemInfo;
 import com.juzix.wallet.entity.DelegationValue;
 import com.juzix.wallet.entity.RPCErrorCode;
@@ -46,10 +48,16 @@ import org.web3j.utils.Convert;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import io.reactivex.Flowable;
+import io.reactivex.SingleSource;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
+import retrofit2.Response;
 
 public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> implements WithDrawContract.Presenter {
 
@@ -70,7 +78,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
             if (TextUtils.isEmpty(mDelegateDetail.getWalletAddress())) {
                 mWallet = WalletManager.getInstance().getFirstSortedWallet();
             } else {
-                mWallet = WalletManager.getInstance().getWalletEntityByWalletAddress(mDelegateDetail.getWalletAddress());
+                mWallet = WalletManager.getInstance().getWalletByAddress(mDelegateDetail.getWalletAddress());
             }
         }
     }
@@ -139,10 +147,41 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
         if (mDelegateDetail == null) {
             return;
         }
-        ServerUtils.getCommonApi().getDelegationValue(ApiRequestBody.newBuilder()
-                .put("addr", mWallet.getPrefixAddress())
-                .put("nodeId", mDelegateDetail.getNodeId())
+        ServerUtils.getCommonApi().getAccountBalance(ApiRequestBody.newBuilder()
+                .put("addrs", Arrays.asList(mWallet.getPrefixAddress()))
                 .build())
+                .map(new Function<Response<ApiResponse<List<AccountBalance>>>, List<AccountBalance>>() {
+                    @Override
+                    public List<AccountBalance> apply(Response<ApiResponse<List<AccountBalance>>> apiResponseResponse) {
+                        if (apiResponseResponse != null && apiResponseResponse.isSuccessful() && apiResponseResponse.body().getResult() == ApiErrorCode.SUCCESS) {
+                            return apiResponseResponse.body().getData();
+                        } else {
+                            return new ArrayList<>();
+                        }
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSuccess(new Consumer<List<AccountBalance>>() {
+                    @Override
+                    public void accept(List<AccountBalance> accountBalances) {
+                        if (isViewAttached() && !accountBalances.isEmpty()) {
+                            AccountBalance accountBalance = accountBalances.get(0);
+                            WalletManager.getInstance().updateAccountBalance(accountBalance);
+                            mWallet = WalletManager.getInstance().getWalletByAddress(accountBalance.getPrefixAddress());
+                            showWalletInfo();
+                        }
+                    }
+                })
+                .observeOn(Schedulers.io())
+                .flatMap(new Function<List<AccountBalance>, SingleSource<Response<ApiResponse<DelegationValue>>>>() {
+                    @Override
+                    public SingleSource<Response<ApiResponse<DelegationValue>>> apply(List<AccountBalance> accountBalances) throws Exception {
+                        return ServerUtils.getCommonApi().getDelegationValue(ApiRequestBody.newBuilder()
+                                .put("addr", mWallet.getPrefixAddress())
+                                .put("nodeId", mDelegateDetail.getNodeId())
+                                .build());
+                    }
+                })
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(bindToLifecycle())
                 .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
@@ -270,7 +309,8 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
      */
     @SuppressLint("CheckResult")
     public void withdraw(Credentials credentials, GasProvider gasProvider, String nodeId, String nodeName, String blockNum, String withdrawAmount) {
-        DelegateManager.getInstance().withdrawDelegate(credentials, ContractAddress.DELEGATE_CONTRACT_ADDRESS, nodeId, nodeName, feeAmount, blockNum, withdrawAmount, String.valueOf(TransactionType.UNDELEGATE.getTxTypeValue()), gasProvider)
+        DelegateManager.getInstance()
+                .withdrawDelegate(credentials, ContractAddress.DELEGATE_CONTRACT_ADDRESS, nodeId, nodeName, feeAmount, blockNum, withdrawAmount, String.valueOf(TransactionType.UNDELEGATE.getTxTypeValue()), gasProvider)
                 .toObservable()
                 .compose(RxUtils.getSchedulerTransformer())
                 .compose(RxUtils.getLoadingTransformer(currentActivity()))
@@ -295,9 +335,9 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                                     showLongToast(R.string.msg_transaction_repeatedly_exception);
                                 } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_NONCE_TOO_LOW ||
                                         customThrowable.getErrCode() == CustomThrowable.CODE_TX_GAS_LOW) {
-                                    showLongToast(R.string.msg_transaction_exception);
+                                    showLongToast(string(R.string.msg_transaction_exception, customThrowable.getErrCode()));
                                 } else {
-                                    showLongToast(R.string.msg_server_exception);
+                                    showLongToast(string(R.string.msg_server_exception, customThrowable.getErrCode()));
                                 }
                             }
                         }
@@ -381,7 +421,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                                     customThrowable.getErrCode() == CustomThrowable.CODE_TX_GAS_LOW) {
                                 showLongToast(R.string.msg_expired_qr_code);
                             } else {
-                                showLongToast(R.string.msg_server_exception);
+                                showLongToast(string(R.string.msg_server_exception, customThrowable.getErrCode()));
                             }
                         }
                     }
