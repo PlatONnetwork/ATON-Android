@@ -258,9 +258,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     }
 
     public void checkTransferAmountDueToGasLimitChanged(String transferAmount) {
-        if (!TextUtils.isEmpty(transferAmount) && !isBalanceEnough(transferAmount)) {
-            getView().showAmountError(string(R.string.insufficient_balance));
-        }
+        getView().showAmountError(!TextUtils.isEmpty(transferAmount) && !isBalanceEnough(transferAmount) ? string(R.string.insufficient_balance) : "");
     }
 
     @Override
