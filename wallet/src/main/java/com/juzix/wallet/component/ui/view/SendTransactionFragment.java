@@ -161,7 +161,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
         });
         bubbleSeekBar.setOnProgressChangedListener(mProgressListener);
 
-        layoutAdvancedFunction.setVisibility(mShowAdvancedFunction ? View.VISIBLE : View.GONE);
+        showAdvancedFunctionView(mShowAdvancedFunction = false);
 
         RxView.clicks(btnSendTransation)
                 .compose(RxUtils.getClickTransformer())
@@ -194,6 +194,10 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
                     }
                 });
 
+    }
+
+    private void showAdvancedFunctionView(boolean showAdvancedFunction) {
+        layoutAdvancedFunction.setVisibility(showAdvancedFunction ? View.VISIBLE : View.GONE);
     }
 
     @OnClick({R.id.iv_address_scan, R.id.iv_address_book, R.id.tv_save_address, R.id.tv_all_amount, R.id.tv_fee_amount_title, R.id.iv_advanced_function})
@@ -430,9 +434,11 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
     }
 
     private void resetDefaultGasLimit() {
+        showAdvancedFunctionView(mShowAdvancedFunction = false);
         etGasLimit.setText(DefaultGasProvider.GAS_LIMIT.toString(10));
         etGasLimit.setSelection(DefaultGasProvider.GAS_LIMIT.toString(10).length());
     }
+
 
     private void showAnimation(boolean showAdvancedFunction) {
 
