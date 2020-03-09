@@ -18,6 +18,9 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -55,6 +58,7 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.web3j.tx.gas.DefaultGasProvider;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -210,10 +214,13 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
                         etTransactionNote.setText("");
                     }
                 });
-
     }
 
-    @OnClick({R.id.iv_address_scan, R.id.iv_address_book, R.id.tv_save_address, R.id.tv_all_amount})
+    private void showAdvancedFunctionView(boolean showAdvancedFunction) {
+        layoutAdvancedFunction.setVisibility(showAdvancedFunction ? View.VISIBLE : View.GONE);
+    }
+
+    @OnClick({R.id.iv_address_scan, R.id.iv_address_book, R.id.tv_save_address, R.id.tv_all_amount, R.id.tv_fee_amount_title, R.id.iv_advanced_function})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_address_book:
@@ -237,20 +244,16 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
             case R.id.tv_all_amount:
                 mPresenter.transferAllBalance();
                 break;
+            case R.id.tv_fee_amount_title:
+            case R.id.iv_advanced_function:
+                mShowAdvancedFunction = !mShowAdvancedFunction;
+                layoutAdvancedFunction.setVisibility(mShowAdvancedFunction ? View.VISIBLE : View.GONE);
+                showAnimation(mShowAdvancedFunction);
+                break;
             default:
                 break;
         }
 
-    }
-
-    private void saveToAddressBook() {
-        String walletAddress = etWalletAddress.getText().toString().trim();
-        String walletName = WalletDao.getWalletNameByAddress(walletAddress);
-        if (TextUtils.isEmpty(walletName)) {
-            showSaveAddressDialog();
-        } else {
-            mPresenter.saveWallet(walletName, walletAddress);
-        }
     }
 
     @Override
@@ -289,6 +292,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateAssetsTabEvent(Event.UpdateAssetsTabEvent event) {
         mPresenter.updateAssetsTab(event.tabIndex);
+        resetDefaultGasLimit();
     }
 
     @Override
@@ -451,6 +455,36 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
         etWalletAmount.removeTextChangedListener(mEtWalletAmountWatcher);
         if (unbinder != null) {
             unbinder.unbind();
+        }
+    }
+
+    private void resetDefaultGasLimit() {
+        showAdvancedFunctionView(mShowAdvancedFunction = false);
+        etGasLimit.setText(DefaultGasProvider.GAS_LIMIT.toString(10));
+        etGasLimit.setSelection(DefaultGasProvider.GAS_LIMIT.toString(10).length());
+    }
+
+
+    private void showAnimation(boolean showAdvancedFunction) {
+
+        int startDegree = showAdvancedFunction ? 0 : 180;
+        int toDegree = showAdvancedFunction ? 180 : 360;
+
+        RotateAnimation rotateAnimation = new RotateAnimation(startDegree, toDegree, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotateAnimation.setInterpolator(new LinearInterpolator());
+        rotateAnimation.setFillAfter(true);
+        rotateAnimation.setDuration(500);
+        ivAdvancedFunction.startAnimation(rotateAnimation);
+    }
+
+
+    private void saveToAddressBook() {
+        String walletAddress = etWalletAddress.getText().toString().trim();
+        String walletName = WalletDao.getWalletNameByAddress(walletAddress);
+        if (TextUtils.isEmpty(walletName)) {
+            showSaveAddressDialog();
+        } else {
+            mPresenter.saveWallet(walletName, walletAddress);
         }
     }
 

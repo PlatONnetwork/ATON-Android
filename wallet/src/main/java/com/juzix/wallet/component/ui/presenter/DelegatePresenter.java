@@ -23,7 +23,6 @@ import com.juzix.wallet.engine.NodeManager;
 import com.juzix.wallet.engine.ServerUtils;
 import com.juzix.wallet.engine.TransactionManager;
 import com.juzix.wallet.engine.WalletManager;
-import com.juzix.wallet.engine.Web3jManager;
 import com.juzix.wallet.entity.AccountBalance;
 import com.juzix.wallet.entity.DelegateHandle;
 import com.juzix.wallet.entity.DelegateItemInfo;
@@ -50,13 +49,9 @@ import org.web3j.utils.Convert;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.concurrent.Callable;
 
-import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.Single;
 import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Predicate;
 import retrofit2.Response;
 
 public class DelegatePresenter extends BasePresenter<DelegateContract.View> implements DelegateContract.Presenter {
@@ -398,6 +393,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     private void delegate(Credentials credentials, String inputAmount, String nodeId, String nodeName, StakingAmountType stakingAmountType) {
         //这里调用新的方法，传入GasProvider
         DelegateManager.getInstance().delegate(credentials, ContractAddress.DELEGATE_CONTRACT_ADDRESS, inputAmount, nodeId, nodeName, String.valueOf(TransactionType.DELEGATE.getTxTypeValue()), stakingAmountType, mGasProvider)
+                .toObservable()
                 .compose(RxUtils.getSchedulerTransformer())
                 .compose(RxUtils.getLoadingTransformer(currentActivity()))
                 .subscribe(new Consumer<Transaction>() {
@@ -412,10 +408,19 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                     @Override
                     public void accept(Throwable throwable) throws Exception {
                         if (isViewAttached()) {
-                            if (throwable instanceof CustomThrowable && ((CustomThrowable) throwable).getErrCode() == RPCErrorCode.CONNECT_TIMEOUT) {
-                                showLongToast(R.string.msg_connect_timeout);
-                            } else {
-                                showLongToast(R.string.delegate_failed);
+
+                            if (throwable instanceof CustomThrowable) {
+                                CustomThrowable customThrowable = (CustomThrowable) throwable;
+                                if (customThrowable.getErrCode() == RPCErrorCode.CONNECT_TIMEOUT) {
+                                    showLongToast(R.string.msg_connect_timeout);
+                                } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_KNOWN_TX) {
+                                    showLongToast(R.string.msg_transaction_repeatedly_exception);
+                                } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_NONCE_TOO_LOW ||
+                                        customThrowable.getErrCode() == CustomThrowable.CODE_TX_GAS_LOW) {
+                                    showLongToast(R.string.msg_transaction_exception);
+                                } else {
+                                    showLongToast(R.string.msg_server_exception);
+                                }
                             }
                         }
                     }
