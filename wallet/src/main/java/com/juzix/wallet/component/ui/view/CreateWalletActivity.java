@@ -184,7 +184,7 @@ public class CreateWalletActivity extends MVPBaseActivity<CreateWalletPresenter>
         if (v == mEtName && !hasFocus) {
             if (TextUtils.isEmpty(name)) {
                 showNameError(string(R.string.validWalletNameEmptyTips), true);
-            } else if (name.length() > 12) {
+            } else if (name.length() > 20) {
                 showNameError(string(R.string.validWalletNameTips), true);
             } else if (WalletManager.getInstance().isWalletNameExists(name)) {
                 showNameError(string(R.string.wallet_name_exists), true);
@@ -231,7 +231,7 @@ public class CreateWalletActivity extends MVPBaseActivity<CreateWalletPresenter>
         String name = mEtName.getText().toString().trim();
         String password = mEtPassword.getText().toString().trim();
         String repeatPassword = mEtRepeatPassword.getText().toString().trim();
-        enableCreate(!TextUtils.isEmpty(name) && !TextUtils.isEmpty(password) && !TextUtils.isEmpty(repeatPassword) && password.length() >= 6 && name.length() <= 12);
+        enableCreate(!TextUtils.isEmpty(name) && !TextUtils.isEmpty(password) && !TextUtils.isEmpty(repeatPassword) && password.length() >= 6 && name.length() <= 20);
         checkPwdStrength(password);
     }
 

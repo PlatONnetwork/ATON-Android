@@ -157,7 +157,7 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
         tvTo.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, getReceiverAvatar(transactionType, transaction.getTo())), null, null, null);
 
         tvTransactionNote.setVisibility(TextUtils.isEmpty(transaction.getRemark()) ? View.GONE : View.VISIBLE);
-        tvTransactionNote.setText(getString(R.string.msg_transaction_memo, transaction.getRemark()));
+        tvTransactionNote.setText(string(R.string.msg_transaction_memo, transaction.getRemark()));
 
         viewTransactionDetailInfo.setData(transaction, senderName, transferType);
 

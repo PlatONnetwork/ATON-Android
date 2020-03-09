@@ -499,6 +499,7 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
                 .nodeName(transactionSignatureData.getNodeName())
                 .nodeId(nodeId)
                 .totalReward(claimRewardAmount)
+                .remark(transactionSignatureData.getRemark())
                 .build();
     }
 

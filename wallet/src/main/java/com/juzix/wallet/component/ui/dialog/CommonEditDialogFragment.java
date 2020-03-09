@@ -254,12 +254,12 @@ public class CommonEditDialogFragment extends DialogFragment {
         }
     }
 
-    class FixedDialog extends AppCompatDialog {
+   public class FixedDialog extends AppCompatDialog {
 
         @BindView(R.id.tv_title)
         TextView tvTitle;
         @BindView(R.id.et_input_info)
-        CustomUnderlineEditText etInputInfo;
+        public CustomUnderlineEditText etInputInfo;
         @BindView(R.id.button_confirm)
         ShadowButton buttonConfirm;
         @BindView(R.id.tv_cancel)

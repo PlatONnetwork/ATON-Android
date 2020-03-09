@@ -171,7 +171,7 @@
     <string name="backup">Backup</string>
     <string name="changeWalletName">Rename</string>
     <string name="formatError">Format Error</string>
-    <string name="validWalletNameTips">Please enter 1-12 characters</string>
+    <string name="validWalletNameTips">Please enter 1-20 characters</string>
     <string name="validKeystoreEmptyTips">Keystore can\'t be empty</string>
     <string name="validPrivateKeyEmptyTips">Private Key can\'t be empty</string>
     <string name="validMnenonicEmptyTips">Mnemonic phrase can\'t be empty</string>
@@ -226,8 +226,8 @@
     <string name="address_name_cannot_be_empty">Address name cannot be empty</string>
     <string name="address_cannot_be_empty">Address cannot be empty</string>
     <string name="address_format_error">Format error</string>
-    <string name="address_name_length_error">Please enter 1-12 characters</string>
-    <string name="wallet_name_length_error">Please enter 1-12 digits wallet name</string>
+    <string name="address_name_length_error">Please enter 1-20 characters</string>
+    <string name="wallet_name_length_error">Please enter 1-20 digits wallet name</string>
     <string name="estimated_transaction_confirmation_time">Estimated transaction confirmation time:</string>
     <string name="fastest_transfer_time">30s</string>
     <string name="slowest_transfer_time">15mins</string>

@@ -193,7 +193,7 @@ public class ImportMnemonicPhraseFragment extends MVPBaseFragment<ImportMnemonic
             @Override
             public Boolean apply(CharSequence charSequence) throws Exception {
                 String walletName = charSequence.toString().trim();
-                return !TextUtils.isEmpty(walletName) && walletName.length() <= 12;
+                return !TextUtils.isEmpty(walletName) && walletName.length() <= 20;
             }
         });
 
