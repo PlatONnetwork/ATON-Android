@@ -1,6 +1,7 @@
 package com.juzix.wallet.component.widget;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -18,10 +19,13 @@ import com.juzix.wallet.utils.DensityUtil;
  */
 public class CustomUnderlineEditText extends AppCompatEditText {
 
-    private final static String TAG = CustomUnderlineEditText.class.getSimpleName();
-
     public enum Status {
-        NORMAL {
+        UNFOCUSED {
+            @Override
+            int getStrokeColor() {
+                return R.color.color_d5d8df;
+            }
+        }, FOCUSED {
             @Override
             int getStrokeColor() {
                 return R.color.color_0077ff;
@@ -56,10 +60,20 @@ public class CustomUnderlineEditText extends AppCompatEditText {
         super(context, attrs, defStyleAttr);
         this.context = context;
 
-        LayerDrawable layerDrawable = (LayerDrawable) getBackground();
-        gradientDrawable = (GradientDrawable) layerDrawable.findDrawableByLayerId(R.id.shape);
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CustomUnderlineEditText, defStyleAttr, 0);
 
-        setStatus(Status.NORMAL);
+        int statusValue = typedArray.getInteger(R.styleable.CustomUnderlineEditText_status, Status.FOCUSED.ordinal());
+
+        Drawable drawable = getBackground();
+        if (drawable instanceof LayerDrawable) {
+
+            LayerDrawable layerDrawable = (LayerDrawable) drawable;
+
+            gradientDrawable = (GradientDrawable) layerDrawable.findDrawableByLayerId(R.id.shape);
+
+            setStatus(Status.values()[statusValue]);
+        }
+
     }
 
     public void setStatus(Status status) {

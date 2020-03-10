@@ -3,7 +3,7 @@ package com.juzix.wallet;
 import static org.mockito.Mockito.mock;
 
 //@RunWith(RobolectricTestRunner.class)
-//@Config(sdk = 27, manifest = Config.NONE)
+//@Config(sdk = 27, manifest = Config.ERROR)
 public class TransactionDetailPresenterTest {
 //    private TransactionDetailPresenter presenter;
 //    @Mock

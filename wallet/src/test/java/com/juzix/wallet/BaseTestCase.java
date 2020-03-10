@@ -26,7 +26,7 @@ import org.robolectric.shadows.ShadowLog;
  *
  */
 //@RunWith(RobolectricTestRunner.class)
-//@Config(sdk = 27,manifest = Config.NONE,constants = BuildConfig.class)
+//@Config(sdk = 27,manifest = Config.ERROR,constants = BuildConfig.class)
 public class BaseTestCase {
 //    @Rule
 //    public MockitoRule mockitoRule = MockitoJUnit.rule();

@@ -5,12 +5,13 @@ import com.juzix.wallet.db.entity.AddressEntity;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
 public class AddressDao {
 
-    private AddressDao(){
+    private AddressDao() {
 
     }
 
@@ -43,7 +44,7 @@ public class AddressDao {
         try {
             realm = Realm.getDefaultInstance();
             AddressEntity addressInfoEntity = realm.where(AddressEntity.class)
-                    .equalTo("address", address)
+                    .equalTo("address", address, Case.INSENSITIVE)
                     .findFirst();
             if (addressInfoEntity != null) {
                 addressName = realm.copyFromRealm(addressInfoEntity).getName();
@@ -89,13 +90,13 @@ public class AddressDao {
             if (oldAddressInfo.getAddress().equals(newAddressInfo.getAddress())) {
                 //update
                 realm.where(AddressEntity.class)
-                        .equalTo("address", oldAddressInfo.getAddress())
+                        .equalTo("address", oldAddressInfo.getAddress(), Case.INSENSITIVE)
                         .findFirst()
                         .setName(newAddressInfo.getName());
             } else {
                 //delete
                 realm.where(AddressEntity.class)
-                        .equalTo("address", oldAddressInfo.getAddress())
+                        .equalTo("address", oldAddressInfo.getAddress(), Case.INSENSITIVE)
                         .findAll()
                         .deleteFirstFromRealm();
                 //insert
@@ -123,7 +124,7 @@ public class AddressDao {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
             realm.where(AddressEntity.class)
-                    .equalTo("address", address)
+                    .equalTo("address", address, Case.INSENSITIVE)
                     .findFirst()
                     .setName(name);
             realm.commitTransaction();
@@ -149,9 +150,9 @@ public class AddressDao {
         try {
             realm = Realm.getDefaultInstance();
             AddressEntity entity = realm.where(AddressEntity.class)
-                    .equalTo("address", address)
+                    .equalTo("address", address, Case.INSENSITIVE)
                     .findFirst();
-            if (entity != null){
+            if (entity != null) {
                 return realm.copyFromRealm(entity);
             }
         } catch (Exception e) {
@@ -170,7 +171,7 @@ public class AddressDao {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
             realm.where(AddressEntity.class)
-                    .equalTo("address", address)
+                    .equalTo("address", address, Case.INSENSITIVE)
                     .findAll()
                     .deleteFirstFromRealm();
             realm.commitTransaction();
@@ -179,8 +180,8 @@ public class AddressDao {
             if (realm != null) {
                 realm.cancelTransaction();
             }
-        }finally {
-            if (realm != null){
+        } finally {
+            if (realm != null) {
                 realm.close();
             }
         }

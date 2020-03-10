@@ -21,9 +21,9 @@
         android:gravity="right|center_vertical"
         app:layout_constrainedWidth="true"
         app:layout_constraintLeft_toRightOf="@id/tv_key"
+        app:layout_constraintRight_toLeftOf="@id/iv_copy_hash"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/iv_copy_hash"
         tools:text="钱包余额不足钱包余额不足钱包余额不足钱包余额不足钱包余额不足钱包余额" />
 
 
@@ -32,11 +32,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/icon_copy"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>

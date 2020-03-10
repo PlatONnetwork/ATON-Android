@@ -66,6 +66,6 @@ public class NoDataView extends FrameLayout {
 //    }
 //
 //    public enum EmptyStatus {
-//        NO_WALLET, NO_DATA, NO_NETWORK, ERROR;
+//        NO_WALLET, NO_DATA, NO_NETWORK, FOCUSED;
 //    }
 }
