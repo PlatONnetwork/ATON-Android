@@ -6,8 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.jakewharton.rxbinding2.view.RxView;
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.utils.DensityUtil;
+import com.juzix.wallet.utils.RxUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,26 +52,33 @@ public class AssetsMoreDialogFragment extends BaseDialogFragment {
 
     private void initViews() {
 
-        llCreateWallet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mOnAssetMoreClickListener != null) {
-                    mOnAssetMoreClickListener.onCreateWalletClick();
-                    dismiss();
-                }
-            }
-        });
+        RxView
+                .clicks(llCreateWallet)
+                .compose(RxUtils.getClickTransformer())
+                .compose(bindToLifecycle())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        if (mOnAssetMoreClickListener != null) {
+                            mOnAssetMoreClickListener.onCreateWalletClick();
+                            dismiss();
+                        }
+                    }
+                });
 
-        llImportWallet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mOnAssetMoreClickListener != null) {
-                    mOnAssetMoreClickListener.onImportWalletClick();
-                    dismiss();
-                }
-            }
-        });
-
+        RxView
+                .clicks(llImportWallet)
+                .compose(RxUtils.getClickTransformer())
+                .compose(bindToLifecycle())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        if (mOnAssetMoreClickListener != null) {
+                            mOnAssetMoreClickListener.onImportWalletClick();
+                            dismiss();
+                        }
+                    }
+                });
     }
 
     @Override

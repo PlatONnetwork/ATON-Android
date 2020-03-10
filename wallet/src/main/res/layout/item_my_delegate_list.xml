@@ -32,7 +32,7 @@
             style="@style/Text.000.15"
             android:layout_width="0dp"
             android:layout_marginLeft="3dp"
-            android:ellipsize="middle"
+            android:ellipsize="end"
             android:gravity="left|center_vertical"
             android:singleLine="true"
             app:layout_constrainedWidth="true"
