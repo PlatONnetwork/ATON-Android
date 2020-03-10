@@ -9,13 +9,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding2.view.RxView;
 import com.juzhen.framework.util.MapUtils;
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.CustomObserver;
 import com.juzix.wallet.component.adapter.base.BaseViewHolder;
 import com.juzix.wallet.component.ui.base.BaseActivity;
 import com.juzix.wallet.component.ui.dialog.DelegateTipsDialog;
 import com.juzix.wallet.component.ui.view.CommonHybridActivity;
 import com.juzix.wallet.component.ui.view.DelegateActivity;
+import com.juzix.wallet.component.ui.view.DelegateDetailActivity;
 import com.juzix.wallet.component.ui.view.WithDrawActivity;
 import com.juzix.wallet.component.widget.CircleImageView;
 import com.juzix.wallet.component.widget.ShadowDrawable;
@@ -25,9 +28,9 @@ import com.juzix.wallet.entity.WebType;
 import com.juzix.wallet.utils.AddressFormatUtil;
 import com.juzix.wallet.utils.AmountUtil;
 import com.juzix.wallet.utils.BigDecimalUtil;
-import com.juzix.wallet.utils.BigIntegerUtil;
 import com.juzix.wallet.utils.DensityUtil;
 import com.juzix.wallet.utils.GlideUtils;
+import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.ToastUtil;
 
 import java.util.HashMap;
@@ -92,39 +95,56 @@ public class DelegateItemInfoViewHolder extends BaseViewHolder<DelegateItemInfo>
 
         mDelegateLayout.setEnabled(isDelegateBtnEnabled(data.getNodeStatus(), data.isInit()));
 
-        mDelegateLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (BigDecimalUtil.isBiggerThanZero(data.getReleased())) {
-                    ToastUtil.showLongToast(mContext, R.string.delegate_no_click);
-                } else {
-                    DelegateActivity.actionStart(mContext, data);
-                }
-            }
-        });
+        RxView
+                .clicks(mDelegateLayout)
+                .compose(RxUtils.getClickTransformer())
+                .compose(((DelegateDetailActivity) mContext).bindToLifecycle())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        if (BigDecimalUtil.isBiggerThanZero(data.getReleased())) {
+                            ToastUtil.showLongToast(mContext, R.string.delegate_no_click);
+                        } else {
+                            DelegateActivity.actionStart(mContext, data);
+                        }
+                    }
+                });
 
-        mUnDelegateLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                WithDrawActivity.actionStart(mContext, data);
-            }
-        });
 
-        mNodeLinkIv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CommonHybridActivity.actionStart(mContext, data.getUrl(), WebType.WEB_TYPE_NODE_DETAIL);
-            }
-        });
+        RxView
+                .clicks(mUnDelegateLayout)
+                .compose(RxUtils.getClickTransformer())
+                .compose(((DelegateDetailActivity) mContext).bindToLifecycle())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        WithDrawActivity.actionStart(mContext, data);
+                    }
+                });
 
-        mUndelegatedTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //弹出tips
-                DelegateTipsDialog.createWithTitleAndContentDialog(null, null,
-                        null, null, mContext.getString(R.string.detail_wait_undelegate), mContext.getString(R.string.detail_tips_content)).show(((BaseActivity) mContext).getSupportFragmentManager(), "validatorstip");
-            }
-        });
+        RxView
+                .clicks(mNodeLinkIv)
+                .compose(RxUtils.getClickTransformer())
+                .compose(((DelegateDetailActivity) mContext).bindToLifecycle())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        CommonHybridActivity.actionStart(mContext, data.getUrl(), WebType.WEB_TYPE_NODE_DETAIL);
+                    }
+                });
+
+        RxView
+                .clicks(mUndelegatedTv)
+                .compose(RxUtils.getClickTransformer())
+                .compose(((DelegateDetailActivity) mContext).bindToLifecycle())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        //弹出tips
+                        DelegateTipsDialog.createWithTitleAndContentDialog(null, null,
+                                null, null, mContext.getString(R.string.detail_wait_undelegate), mContext.getString(R.string.detail_tips_content)).show(((BaseActivity) mContext).getSupportFragmentManager(), "validatorstip");
+                    }
+                });
     }
 
     @Override

@@ -43,9 +43,9 @@
         <TextView
             android:id="@+id/tv_wallet_name"
             style="@style/Text.000000.14"
-            android:ellipsize="middle"
+            android:ellipsize="end"
             android:gravity="left|center_vertical"
-            android:maxWidth="120dp"
+            android:maxWidth="140dp"
             android:singleLine="true"
             android:textStyle="bold"
             tools:text="哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈" />

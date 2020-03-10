@@ -12,11 +12,15 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding2.view.RxView;
 import com.juzix.wallet.R;
+import com.juzix.wallet.app.CustomObserver;
+import com.juzix.wallet.component.ui.view.MainActivity;
 import com.juzix.wallet.component.widget.ShadowDrawable;
 import com.juzix.wallet.entity.Wallet;
 import com.juzix.wallet.netlistener.NetworkType;
 import com.juzix.wallet.netlistener.NetworkUtil;
+import com.juzix.wallet.utils.RxUtils;
 
 import java.util.List;
 
@@ -97,13 +101,7 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
         holder.rlItem.findViewById(R.id.v_new_msg).setVisibility(View.GONE);
         TextView tvName = holder.rlItem.findViewById(R.id.tv_item2_name);
         ImageView ivIcon = holder.rlItem.findViewById(R.id.iv_item2_icon);
-//        ShadowDrawable.setShadowDrawable(holder.vShadow,
-//                ContextCompat.getColor(mContext, R.color.color_660051ff),
-//                mShapeRadius,
-//                ContextCompat.getColor(mContext, R.color.color_660051ff),
-//                mShadowRadius,
-//                0,
-//                0);
+
         if (mSelectedWallet == walletEntity) {
             tvName.setText(walletEntity.getName());
 
@@ -128,12 +126,12 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
                     ivIcon.setImageResource(R.drawable.icon_assets_classic_h);
                     tvName.setTextColor(ContextCompat.getColor(mContext, R.color.color_ffffff));
                     ShadowDrawable.setShadowDrawable(holder.vShadow,
-                        ContextCompat.getColor(mContext, R.color.color_660051ff),
-                        mShapeRadius,
-                        ContextCompat.getColor(mContext, R.color.color_660051ff),
-                        mShadowRadius,
-                        0,
-                        0);
+                            ContextCompat.getColor(mContext, R.color.color_660051ff),
+                            mShapeRadius,
+                            ContextCompat.getColor(mContext, R.color.color_660051ff),
+                            mShadowRadius,
+                            0,
+                            0);
                 } else {
                     //冷钱包
                     holder.vShadow.setVisibility(View.VISIBLE);
@@ -141,12 +139,12 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
                     ivIcon.setImageResource(R.drawable.icon_assets_observed_h);
                     tvName.setTextColor(ContextCompat.getColor(mContext, R.color.color_ffffff));
                     ShadowDrawable.setShadowDrawable(holder.vShadow,
-                        ContextCompat.getColor(mContext, R.color.color_b3858585),
-                        mShapeRadius,
-                        ContextCompat.getColor(mContext, R.color.color_b3858585),
-                        mShadowRadius,
-                        0,
-                        0);
+                            ContextCompat.getColor(mContext, R.color.color_b3858585),
+                            mShapeRadius,
+                            ContextCompat.getColor(mContext, R.color.color_b3858585),
+                            mShadowRadius,
+                            0,
+                            0);
                 }
             }
 
@@ -169,21 +167,26 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
                     //未选中的冷钱包
                     holder.rlItem.setBackgroundResource(R.drawable.bg_assets_cold_n);
                     ivIcon.setImageResource(R.drawable.icon_assets_observed_n);
-                    tvName.setTextColor(ContextCompat.getColor(mContext,R.color.color_61646e));
+                    tvName.setTextColor(ContextCompat.getColor(mContext, R.color.color_61646e));
                 }
             }
         }
-        holder.rlItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mSelectedWallet != walletEntity) {
-                    mSelectedWallet = walletEntity;
-                    if (mOnItemClickListener != null) {
-                        mOnItemClickListener.onContentViewClick(walletEntity);
+
+        RxView
+                .clicks(holder.rlItem)
+                .compose(RxUtils.getClickTransformer())
+                .compose(((MainActivity) mContext).bindToLifecycle())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        if (mSelectedWallet != walletEntity) {
+                            mSelectedWallet = walletEntity;
+                            if (mOnItemClickListener != null) {
+                                mOnItemClickListener.onContentViewClick(walletEntity);
+                            }
+                        }
                     }
-                }
-            }
-        });
+                });
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

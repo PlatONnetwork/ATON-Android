@@ -26,9 +26,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding2.view.RxView;
 import com.juzhen.framework.util.LogUtils;
 import com.juzhen.framework.util.RUtils;
 import com.juzix.wallet.R;
@@ -67,6 +67,7 @@ import com.juzix.wallet.utils.BigDecimalUtil;
 import com.juzix.wallet.utils.GZipUtil;
 import com.juzix.wallet.utils.JSONUtil;
 import com.juzix.wallet.utils.QrCodeParser;
+import com.juzix.wallet.utils.RxUtils;
 import com.juzix.wallet.utils.StringUtil;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -470,6 +471,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         rvWallet.setLayoutManager(linearLayoutManager);
         mWalletAdapter = new WalletHorizontalRecycleViewAdapter(getContext(), mPresenter.getRecycleViewDataSource());
+
         mWalletAdapter.setOnItemClickListener(new WalletHorizontalRecycleViewAdapter.OnRecycleViewItemClickListener() {
             @Override
             public void onContentViewClick(Wallet walletEntity) {
@@ -486,12 +488,17 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         View view = LayoutInflater.from(getContext()).inflate(R.layout.item_wallet_list_footer, null);
         ((TextView) view.findViewById(R.id.tv_name)).setText(R.string.createIndividualWallet);
         ((ImageView) view.findViewById(R.id.iv_icon)).setImageResource(R.drawable.icon_assets_create);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CreateWalletActivity.actionStart(getContext());
-            }
-        });
+
+        RxView
+                .clicks(view)
+                .compose(RxUtils.getClickTransformer())
+                .compose(bindToLifecycle())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        CreateWalletActivity.actionStart(getContext());
+                    }
+                });
         return view;
     }
 
@@ -499,12 +506,17 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         View view = LayoutInflater.from(getContext()).inflate(R.layout.item_wallet_list_footer, null);
         ((TextView) view.findViewById(R.id.tv_name)).setText(R.string.importIndividualWallet);
         ((ImageView) view.findViewById(R.id.iv_icon)).setImageResource(R.drawable.icon_assets_import);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ImportWalletActivity.actionStart(getContext());
-            }
-        });
+
+        RxView
+                .clicks(view)
+                .compose(RxUtils.getClickTransformer())
+                .compose(bindToLifecycle())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        ImportWalletActivity.actionStart(getContext());
+                    }
+                });
         return view;
     }
 

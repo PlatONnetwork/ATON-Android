@@ -238,8 +238,6 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
             tvDetailNodeAddress.setText(AddressFormatUtil.formatAddress(nodeDetail.getNodeId()));
 
             rtvDetailNodeState.setText(getResources().getString(nodeDetail.getNodeStatusDescRes()));
-            rtvDetailNodeState.setTextColor(ContextCompat.getColor(this, getNodeStatusTextAndBorderColor(nodeDetail.getNodeStatus(), nodeDetail.isConsensus())));
-            rtvDetailNodeState.setRoundedBorderColor(ContextCompat.getColor(this, getNodeStatusTextAndBorderColor(nodeDetail.getNodeStatus(), nodeDetail.isConsensus())));
 
             tvDelegateYieldAmount.setText(String.format("%s%%", NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(nodeDetail.getDelegatedRatePA(), "100"))));
             Drawable delegatedRatePATrend = nodeDetail.isShowDelegatedRatePATrend() ? nodeDetail.isDelegatedRatePATrendRose() ? ContextCompat.getDrawable(this, R.drawable.icon_rose) : ContextCompat.getDrawable(this, R.drawable.icon_fell) : null;

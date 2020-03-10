@@ -35,6 +35,7 @@
 
         <TextView
             style="@style/Text.105cfe.14"
+            android:drawableLeft="@drawable/icon_tutorial"
             android:drawablePadding="5dp"
             android:text="@string/tutorial" />
     </LinearLayout>
