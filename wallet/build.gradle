@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
 
-        applicationId "com.juzix.wallet"
+        applicationId "com.platon.wallet"
         minSdkVersion rootProject.ext.android.minSdkVersion
         targetSdkVersion rootProject.ext.android.targetSdkVersion
         versionName "${version_name}"

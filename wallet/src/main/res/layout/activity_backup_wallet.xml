@@ -68,7 +68,7 @@
             android:paddingLeft="21dp"
             android:paddingRight="21dp">
 
-            <com.juzix.wallet.component.widget.ShadowContainer
+            <com.platon.wallet.component.widget.ShadowContainer
                 android:id="@+id/sc_start_backup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -92,7 +92,7 @@
                         android:text="@string/startBackup"
                         android:textColor="@color/color_main_button_text" />
                 </LinearLayout>
-            </com.juzix.wallet.component.widget.ShadowContainer>
+            </com.platon.wallet.component.widget.ShadowContainer>
 
 
             <LinearLayout

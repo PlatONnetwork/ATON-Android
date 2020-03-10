@@ -13,7 +13,7 @@
         android:orientation="vertical"
         android:paddingTop="20dp">
 
-        <com.juzix.wallet.component.widget.CommonTitleBar
+        <com.platon.wallet.component.widget.CommonTitleBar
             android:id="@+id/commonTitleBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -221,7 +221,7 @@
                 android:textSize="11sp" />
 
 
-            <com.juzix.wallet.component.widget.ShadowButton
+            <com.platon.wallet.component.widget.ShadowButton
                 android:id="@+id/sbtn_create"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

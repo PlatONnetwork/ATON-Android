@@ -17,7 +17,7 @@
         android:layout_height="60dp"
         android:background="@drawable/icon_my_delegate_item_bg">
 
-        <com.juzix.wallet.component.widget.CircleImageView
+        <com.platon.wallet.component.widget.CircleImageView
             android:id="@+id/civ_wallet_avatar"
             android:layout_width="42dp"
             android:layout_height="42dp"

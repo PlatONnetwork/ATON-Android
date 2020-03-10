@@ -14,7 +14,7 @@
         android:orientation="vertical"
         android:paddingTop="20dp">
 
-        <com.juzix.wallet.component.widget.CommonTitleBar
+        <com.platon.wallet.component.widget.CommonTitleBar
             android:id="@+id/commonTitleBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -69,7 +69,7 @@
             android:text="@string/wallet_address" />
 
 
-        <com.juzix.wallet.component.widget.CustomUnderlineEditText
+        <com.platon.wallet.component.widget.CustomUnderlineEditText
             android:id="@+id/et_address"
             style="@style/Text.000.14"
             android:layout_width="match_parent"
@@ -105,7 +105,7 @@
     </LinearLayout>
 
 
-    <com.juzix.wallet.component.widget.ShadowButton
+    <com.platon.wallet.component.widget.ShadowButton
         android:id="@+id/sbtn_add_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

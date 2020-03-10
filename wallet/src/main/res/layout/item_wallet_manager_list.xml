@@ -50,7 +50,7 @@
             android:textStyle="bold"
             tools:text="哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈" />
 
-        <com.juzix.wallet.component.widget.RoundedTextView
+        <com.platon.wallet.component.widget.RoundedTextView
             android:id="@+id/tv_wallet_logo"
             style="@style/Text.4a90e2.11"
             android:layout_width="wrap_content"

@@ -14,7 +14,7 @@
         android:orientation="vertical"
         android:paddingTop="20dp">
 
-        <com.juzix.wallet.component.widget.CommonTitleBar
+        <com.platon.wallet.component.widget.CommonTitleBar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:ctb_left_drawable="@drawable/icon_back_black"
@@ -55,7 +55,7 @@
                 <!--交易者信息-->
                 <include layout="@layout/include_transactioner_info" />
                 <!--交易详情信息-->
-                <com.juzix.wallet.component.ui.view.TransactionDetailInfoView
+                <com.platon.wallet.component.ui.view.TransactionDetailInfoView
                     android:id="@+id/view_transaction_detai_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />

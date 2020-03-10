@@ -67,7 +67,7 @@
 
     </LinearLayout>
 
-    <com.juzix.wallet.component.widget.ShadowButton
+    <com.platon.wallet.component.widget.ShadowButton
         android:id="@+id/sbtn_confirm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

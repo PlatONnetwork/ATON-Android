@@ -1,0 +1,26 @@
+package com.platon.wallet.component.ui.contract;
+
+import com.platon.wallet.component.ui.base.IPresenter;
+import com.platon.wallet.component.ui.base.IView;
+import com.platon.wallet.entity.DelegateItemInfo;
+import com.platon.wallet.entity.VerifyNodeDetail;
+
+public class ValidatorsDetailContract {
+    public interface View extends IView {
+
+        String getNodeIdFromIntent();
+
+        void showValidatorsDetailData(VerifyNodeDetail nodeDetail);
+
+        void showIsCanDelegate(boolean isCanDelegate);
+    }
+
+    public interface Presenter extends IPresenter<View> {
+
+        void loadValidatorsDetailData();
+
+        DelegateItemInfo getDelegateDetail();
+
+    }
+
+}

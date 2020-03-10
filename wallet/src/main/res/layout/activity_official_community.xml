@@ -12,7 +12,7 @@
         android:orientation="vertical"
         android:paddingTop="20dp">
 
-        <com.juzix.wallet.component.widget.CommonTitleBar
+        <com.platon.wallet.component.widget.CommonTitleBar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:ctb_left_drawable="@drawable/icon_back_black"

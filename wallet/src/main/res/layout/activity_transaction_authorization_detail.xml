@@ -17,7 +17,7 @@
         android:paddingTop="20dp"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.juzix.wallet.component.widget.CommonTitleBar
+        <com.platon.wallet.component.widget.CommonTitleBar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:ctb_left_drawable="@drawable/icon_back_black"
@@ -141,7 +141,7 @@
         app:layout_constraintRight_toRightOf="@id/view_divider"
         tools:text="0.00035 LAT" />
 
-    <com.juzix.wallet.component.widget.ShadowButton
+    <com.platon.wallet.component.widget.ShadowButton
         android:id="@+id/sbtn_next"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
