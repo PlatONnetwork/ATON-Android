@@ -228,10 +228,10 @@ rx.internal.util.atomic.LinkedQueueNode producerNode;
 rx.internal.util.atomic.LinkedQueueNode consumerNode;
 }
 
--keep class com.juzhen.framework.network.**{
+-keep class com.platon.framework.network.**{
     *;
 }
--dontwarn com.juzhen.framework.network.**
+-dontwarn com.platon.framework.network.**
 
 -dontpreverify
 -dontwarn com.umeng.**
