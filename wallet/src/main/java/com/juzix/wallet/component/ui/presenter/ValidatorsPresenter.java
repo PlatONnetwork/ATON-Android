@@ -52,8 +52,7 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
                     @Override
                     public void onApiFailure(ApiResponse response) {
                         if (isViewAttached()) {
-                            List<VerifyNode> oldVerifyNodeList = getVerifyNodeList(mVerifyNodeList, nodeStatus, sortType, keywords);
-                            getView().loadValidatorsDataResult(oldVerifyNodeList, null, isRefreshAll);
+                            getView().finishRefresh();
                         }
                     }
                 });

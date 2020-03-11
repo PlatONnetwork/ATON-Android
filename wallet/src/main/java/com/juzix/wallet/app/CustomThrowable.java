@@ -29,9 +29,9 @@ public class CustomThrowable extends Throwable {
     public static final int CODE_ERROR_MNEMONIC = -209;
     public static final int CODE_ERROR_CREATE_WALLET_FAILED = -210;
     public static final int CODE_TRANSFER_FAILED = -211;
-    public static final int CODE_TX_KNOWN_TX = 301;
-    public static final int CODE_TX_NONCE_TOO_LOW = 302;
-    public static final int CODE_TX_GAS_LOW = 303;
+    public static final int CODE_TX_KNOWN_TX = 3001;
+    public static final int CODE_TX_NONCE_TOO_LOW = 3002;
+    public static final int CODE_TX_GAS_LOW = 3003;
 
     private int errCode;
 

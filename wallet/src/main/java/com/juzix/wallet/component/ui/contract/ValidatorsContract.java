@@ -12,6 +12,9 @@ public class ValidatorsContract {
     public interface View extends IView {
 
         void loadValidatorsDataResult(List<VerifyNode> oldVerifyNodeList, List<VerifyNode> newVerifyNodeList, boolean isRefreshAll);
+
+        void finishRefresh();
+
     }
 
     public interface Presenter extends IPresenter<View> {
