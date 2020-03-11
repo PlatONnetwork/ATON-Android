@@ -6,6 +6,7 @@ import com.juzix.wallet.engine.NodeManager;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -51,7 +52,7 @@ public class WalletDao {
             realm = Realm.getDefaultInstance();
             WalletEntity walletEntity = realm.where(WalletEntity.class)
                     .equalTo("chainId", NodeManager.getInstance().getChainId())
-                    .equalTo("address", prefixAddress)
+                    .equalTo("address", prefixAddress, Case.INSENSITIVE)
                     .findFirst();
             if (walletEntity != null) {
                 walletName = walletEntity.getName();
@@ -73,7 +74,7 @@ public class WalletDao {
             realm = Realm.getDefaultInstance();
             WalletEntity walletEntity = realm.where(WalletEntity.class)
                     .equalTo("chainId", NodeManager.getInstance().getChainId())
-                    .equalTo("address", prefixAddress)
+                    .equalTo("address", prefixAddress, Case.INSENSITIVE)
                     .findFirst();
             if (walletEntity != null) {
                 walletAvatar = walletEntity.getAvatar();

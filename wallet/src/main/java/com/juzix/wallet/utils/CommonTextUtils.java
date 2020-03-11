@@ -137,12 +137,12 @@ public class CommonTextUtils {
      */
     public static SpannableString getPriceTextWithBold(String text, int smallTextColor, int bigTextColor, float smallTextSize, float bigTextSize) {
         SpannableString spannableString = new SpannableString(text);
-        if (TextUtils.isEmpty(text)) {
+        int index = text.indexOf(".");
+        if (TextUtils.isEmpty(text) || index == -1) {
             return spannableString;
         }
 
         int length = text.length();
-        int index = text.contains(".") ? text.indexOf(".") : length;
         spannableString.setSpan(new AbsoluteSizeSpan((int) bigTextSize, false), 0, index, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         spannableString.setSpan(new AbsoluteSizeSpan((int) smallTextSize, false), index + 1, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         spannableString.setSpan(new ForegroundColorSpan(bigTextColor), 0, index, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
