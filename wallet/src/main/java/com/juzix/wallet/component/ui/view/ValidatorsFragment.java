@@ -324,6 +324,11 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
         }
     }
 
+    @Override
+    public void finishRefresh() {
+        refreshLayout.finishRefresh();
+    }
+
 
     public void tabCheckedChanged(@Tab int tab) {
 

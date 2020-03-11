@@ -264,8 +264,18 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
 
                         sbtnSendTransaction.setEnabled(true);
 
-                        if (throwable instanceof CustomThrowable && ((CustomThrowable) throwable).getErrCode() == RPCErrorCode.CONNECT_TIMEOUT) {
-                            ToastUtil.showLongToast(getActivity(), R.string.msg_connect_timeout);
+                        if (throwable instanceof CustomThrowable) {
+                            CustomThrowable customThrowable = (CustomThrowable) throwable;
+                            if (customThrowable.getErrCode() == RPCErrorCode.CONNECT_TIMEOUT) {
+                                ToastUtil.showLongToast(getActivity(), R.string.msg_connect_timeout);
+                            } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_KNOWN_TX) {
+                                ToastUtil.showLongToast(getActivity(), R.string.msg_transaction_repeatedly_exception);
+                            } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_NONCE_TOO_LOW ||
+                                    customThrowable.getErrCode() == CustomThrowable.CODE_TX_GAS_LOW) {
+                                ToastUtil.showLongToast(getActivity(), R.string.msg_expired_qr_code);
+                            } else {
+                                ToastUtil.showLongToast(getActivity(), getString(R.string.msg_server_exception, customThrowable.getErrCode()));
+                            }
                         } else {
                             if (transactionSignatureData.getFunctionType() == FunctionType.TRANSFER) {
                                 ToastUtil.showLongToast(getActivity(), getContext().getString(R.string.transfer_failed));
