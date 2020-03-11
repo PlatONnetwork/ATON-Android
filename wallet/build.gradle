@@ -92,7 +92,7 @@ android {
     buildTypes {
         debug {
             debuggable true
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.releaseC
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
             multiDexEnabled true

@@ -172,7 +172,7 @@ public class VersionUpdate {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            Uri contentUri = FileProvider.getUriForFile(context, "com.juzix.wallet.fileprovider", new File(filePath));
+            Uri contentUri = FileProvider.getUriForFile(context, "com.platon.aton.fileprovider", new File(filePath));
             intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
         } else {
             intent.setDataAndType(Uri.fromFile(new File(filePath)), "application/vnd.android.package-archive");

@@ -121,10 +121,10 @@
     <init>(java.lang.Throwable);
 }
 
--keep class com.juzix.wallet.event.Event{
+-keep class com.platon.aton.event.Event{
     *;
 }
--dontwarn com.juzix.wallet.event.Event
+-dontwarn com.platon.aton.event.Event
 
 #glide
 -keep public class * implements com.bumptech.glide.module.GlideModule
@@ -138,7 +138,7 @@
 -keepclassmembers class * {
    public <init> (org.json.JSONObject);
 }
--keep public class com.juzix.wallet.R$*{
+-keep public class com.platon.aton.R$*{
    public static final int *;
 }
 #5.0以上sdk使用
@@ -156,7 +156,7 @@
 -keep class com.alibaba.fastjson.** { *; }
 -dontwarn com.alibaba.fastjson.**
 #所有使用fastJson的实体类
--keep class com.juzix.wallet.entity.**{
+-keep class com.platon.aton.entity.**{
     *;
 }
 #alipay

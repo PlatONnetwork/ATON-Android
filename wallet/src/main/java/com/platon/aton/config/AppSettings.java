@@ -20,7 +20,7 @@ public class AppSettings {
      */
     private static final boolean DEFAULT_RESEND_REMINDER = true;
 
-    private static final String PREFERENCES_NAME = "com.juzix.wallet.appsettings";
+    private static final String PREFERENCES_NAME = "com.platon.aton.appsettings";
 
     private static final AppSettings APP_SETTINGS = new AppSettings();
     /**
