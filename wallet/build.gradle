@@ -57,34 +57,34 @@ android {
         }
 
         releaseC {
-            storeFile file("../extras/wallet.keystore")
-            storePassword "123456"
-            keyAlias "wallet"
-            keyPassword "123456"
+            storeFile file("../extras/aton.keystore")
+            storePassword "platon123456"
+            keyAlias "platon"
+            keyPassword "platon123456"
             v2SigningEnabled false
         }
 
         releaseJC {
-            storeFile file("/Users/jenkins/extras/wallet.keystore")
-            storePassword "123456"
-            keyAlias "wallet"
-            keyPassword "123456"
+            storeFile file("/Users/jenkins/extras/aton.keystore")
+            storePassword "platon123456"
+            keyAlias "platon"
+            keyPassword "platon123456"
             v2SigningEnabled false
         }
 
         releaseX {
-            storeFile file("../extras/wallet.keystore")
-            storePassword "123456"
-            keyAlias "wallet"
-            keyPassword "123456"
+            storeFile file("../extras/aton.keystore")
+            storePassword "platon123456"
+            keyAlias "platon"
+            keyPassword "platon123456"
             v2SigningEnabled false
         }
 
         releaseJX {
-            storeFile file("/Users/jenkins/extras/wallet.keystore")
-            storePassword "123456"
-            keyAlias "wallet"
-            keyPassword "123456"
+            storeFile file("/Users/jenkins/extras/aton.keystore")
+            storePassword "platon123456"
+            keyAlias "platon"
+            keyPassword "platon123456"
             v2SigningEnabled false
         }
     }
