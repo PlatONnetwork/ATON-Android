@@ -19,7 +19,7 @@
         android:paddingLeft="10dp"
         android:paddingRight="10dp">
 
-        <com.platon.wallet.component.widget.CircleImageView
+        <com.platon.aton.component.widget.CircleImageView
             android:id="@+id/civ_wallet_avatar"
             android:layout_width="30dp"
             android:layout_height="30dp"

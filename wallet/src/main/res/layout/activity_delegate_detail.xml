@@ -13,7 +13,7 @@
         android:orientation="vertical"
         android:paddingTop="20dp">
 
-        <com.platon.wallet.component.widget.CommonTitleBar
+        <com.platon.aton.component.widget.CommonTitleBar
             android:id="@+id/commonTitleBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
                 android:background="@drawable/bg_validators_detail"
                 android:padding="20dp">
 
-                <com.platon.wallet.component.widget.CircleImageView
+                <com.platon.aton.component.widget.CircleImageView
                     android:id="@+id/civ_wallet_avatar"
                     android:layout_width="42dp"
                     android:layout_height="42dp"

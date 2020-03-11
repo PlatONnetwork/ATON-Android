@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
 
-        applicationId "com.platon.wallet"
+        applicationId "com.platon.aton"
         minSdkVersion rootProject.ext.android.minSdkVersion
         targetSdkVersion rootProject.ext.android.targetSdkVersion
         versionName "${version_name}"

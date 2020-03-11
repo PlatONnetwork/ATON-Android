@@ -108,7 +108,7 @@
             app:layout_constraintLeft_toRightOf="@id/ck_agreement"
             app:layout_constraintTop_toTopOf="@id/ck_agreement" />
 
-        <com.platon.wallet.component.widget.ShadowButton
+        <com.platon.aton.component.widget.ShadowButton
             android:id="@+id/sbtn_next"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

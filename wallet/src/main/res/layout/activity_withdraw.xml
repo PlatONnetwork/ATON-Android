@@ -14,7 +14,7 @@
         android:orientation="vertical"
         android:paddingTop="20dp">
 
-        <com.platon.wallet.component.widget.CommonTitleBar
+        <com.platon.aton.component.widget.CommonTitleBar
             android:id="@+id/commonTitleBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
                 android:paddingTop="16dp"
                 android:paddingBottom="15dp">
 
-                <com.platon.wallet.component.widget.CircleImageView
+                <com.platon.aton.component.widget.CircleImageView
                     android:id="@+id/iv_node_icon"
                     android:layout_width="42dp"
                     android:layout_height="42dp"
@@ -89,7 +89,7 @@
                 android:background="@drawable/icon_my_delegate_item_bg"
                 android:orientation="horizontal">
 
-                <com.platon.wallet.component.widget.CircleImageView
+                <com.platon.aton.component.widget.CircleImageView
                     android:id="@+id/iv_wallet_icon"
                     android:layout_width="42dp"
                     android:layout_height="42dp"
@@ -299,7 +299,7 @@
             </LinearLayout>
 
 
-            <com.platon.wallet.component.widget.ShadowButton
+            <com.platon.aton.component.widget.ShadowButton
                 android:id="@+id/btn_withdraw"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

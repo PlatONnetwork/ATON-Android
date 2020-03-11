@@ -59,7 +59,7 @@
 
         </FrameLayout>
 
-        <com.platon.wallet.component.widget.ShadowButton
+        <com.platon.aton.component.widget.ShadowButton
             android:id="@+id/sbtn_finish"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

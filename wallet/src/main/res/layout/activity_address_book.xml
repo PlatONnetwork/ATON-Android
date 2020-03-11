@@ -13,7 +13,7 @@
         android:orientation="vertical"
         android:paddingTop="20dp">
 
-        <com.platon.wallet.component.widget.CommonTitleBar
+        <com.platon.aton.component.widget.CommonTitleBar
             android:id="@+id/commonTitleBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
     </LinearLayout>
 
 
-    <com.platon.wallet.component.widget.swipeenulistview.SwipeMenuListView
+    <com.platon.aton.component.widget.swipeenulistview.SwipeMenuListView
         android:id="@+id/swipeMenuListView"
         style="@style/List_common_style"
         android:layout_height="match_parent"

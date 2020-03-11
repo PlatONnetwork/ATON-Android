@@ -203,7 +203,7 @@
                 tools:text="0.0000000228 Energon" />
 
 
-            <com.platon.wallet.component.widget.bubbleSeekBar.BubbleSeekBar
+            <com.platon.aton.component.widget.bubbleSeekBar.BubbleSeekBar
                 android:id="@+id/bubbleSeekBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -280,7 +280,7 @@
             android:layout_marginTop="5dp"
             android:text="@string/msg_gas_limit_error" />
 
-        <com.platon.wallet.component.widget.ShadowButton
+        <com.platon.aton.component.widget.ShadowButton
             android:id="@+id/sbtn_send_transation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

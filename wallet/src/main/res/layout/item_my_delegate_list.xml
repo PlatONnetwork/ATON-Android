@@ -17,7 +17,7 @@
         android:layout_height="60dp"
         android:background="@drawable/icon_my_delegate_item_bg">
 
-        <com.platon.wallet.component.widget.CircleImageView
+        <com.platon.aton.component.widget.CircleImageView
             android:id="@+id/iv_wallet_avatar"
             android:layout_width="42dp"
             android:layout_height="42dp"
@@ -172,7 +172,7 @@
                 android:text="@string/msg_claim_reward"
                 android:visibility="gone" />
 
-            <com.platon.wallet.component.widget.PendingClaimRewardAnimationLayout
+            <com.platon.aton.component.widget.PendingClaimRewardAnimationLayout
                 android:id="@+id/layout_claim_reward_animation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

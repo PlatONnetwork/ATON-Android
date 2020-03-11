@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/icon_my_delegate_item_bg">
 
-            <com.platon.wallet.component.widget.CircleImageView
+            <com.platon.aton.component.widget.CircleImageView
                 android:id="@+id/iv_total_delegate"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
@@ -117,7 +117,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1" />
 
-                <com.platon.wallet.component.widget.CircleImageView
+                <com.platon.aton.component.widget.CircleImageView
                     android:id="@+id/iv_wallet"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
