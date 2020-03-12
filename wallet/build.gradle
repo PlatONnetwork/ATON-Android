@@ -31,6 +31,7 @@ android {
         buildConfigField("String", "SINA_APP_SECRET", "${SINA_APP_SECRET}")
         buildConfigField("String", "SINA_APP_REDIRECT_URL", "${SINA_APP_REDIRECT_URL}")
         buildConfigField "String", "CHANNEL", '"PlatONNetwork"'
+        buildConfigField("int","QRCODE_VERSION_CODE","${qrcode_version_code}")
         renderscriptTargetApi 19
         renderscriptSupportModeEnabled true
         resConfigs "zh", "en"
