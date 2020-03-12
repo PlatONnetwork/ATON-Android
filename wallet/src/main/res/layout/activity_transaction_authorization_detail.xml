@@ -17,7 +17,7 @@
         android:paddingTop="20dp"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.juzix.wallet.component.widget.CommonTitleBar
+        <com.platon.aton.component.widget.CommonTitleBar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:ctb_left_drawable="@drawable/icon_back_black"
@@ -159,7 +159,7 @@
         android:visibility="gone"
         app:constraint_referenced_ids="tv_memo,tv_memo_title" />
 
-    <com.juzix.wallet.component.widget.ShadowButton
+    <com.platon.aton.component.widget.ShadowButton
         android:id="@+id/sbtn_next"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

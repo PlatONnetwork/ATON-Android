@@ -6,7 +6,7 @@
     android:paddingLeft="16dp"
     android:paddingTop="12dp">
 
-    <com.juzix.wallet.component.widget.CircleImageView
+    <com.platon.aton.component.widget.CircleImageView
         android:id="@+id/iv_wallet_avatar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

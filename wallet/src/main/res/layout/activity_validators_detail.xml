@@ -18,7 +18,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.juzix.wallet.component.widget.CommonTitleBar
+        <com.platon.aton.component.widget.CommonTitleBar
             android:id="@+id/commonTitleBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -57,7 +57,7 @@
                 android:paddingRight="16dp"
                 android:paddingBottom="20dp">
 
-                <com.juzix.wallet.component.widget.CircleImageView
+                <com.platon.aton.component.widget.CircleImageView
                     android:id="@+id/civ_wallet_avatar"
                     android:layout_width="42dp"
                     android:layout_height="42dp"
@@ -85,7 +85,7 @@
                     app:layout_constraintLeft_toRightOf="@id/tv_detail_node_name"
                     app:layout_constraintTop_toTopOf="@id/tv_detail_node_name" />
 
-                <com.juzix.wallet.component.widget.RoundedTextView
+                <com.platon.aton.component.widget.RoundedTextView
                     android:id="@+id/rtv_detail_node_state"
                     style="@style/Text.f9fbff.11"
                     android:layout_height="16dp"
@@ -367,7 +367,7 @@
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <com.juzix.wallet.component.widget.ShadowButton
+        <com.platon.aton.component.widget.ShadowButton
             android:id="@+id/sbtn_delegate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

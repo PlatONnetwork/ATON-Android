@@ -257,7 +257,6 @@
     <string name="unlock">解锁</string>
     <string name="unlockWithWalletPasswordTitle">钱包密码解锁</string>
     <string name="unlockWithWalletPasswordDesc">请使用选定的钱包密码验证解锁</string>
-    <string name="company_name">矩阵元技术（深圳）有限公司</string>
     <string name="copyright_resume">Powered by PlatON Network</string>
     <string name="language">语言</string>
     <string name="warning">警告</string>

@@ -16,7 +16,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.juzix.wallet.component.widget.PendingAnimationLayout
+        <com.platon.aton.component.widget.PendingAnimationLayout
             android:id="@+id/layout_pending"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
