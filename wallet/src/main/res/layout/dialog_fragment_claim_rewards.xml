@@ -103,7 +103,7 @@
         app:layout_constraintTop_toBottomOf="@id/tv_claim_wallet"
         tools:text="Balance:0.00035 LAT" />
 
-    <com.juzix.wallet.component.widget.ShadowButton
+    <com.platon.aton.component.widget.ShadowButton
         android:id="@+id/sbtn_confirm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

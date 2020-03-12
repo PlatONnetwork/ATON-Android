@@ -18,7 +18,7 @@
         android:focusable="true"
         android:focusableInTouchMode="true" />
 
-    <com.juzix.wallet.component.widget.FragmentTabHost
+    <com.platon.aton.component.widget.FragmentTabHost
         android:id="@android:id/tabhost"
         android:layout_width="match_parent"
         android:layout_height="49dp"/>

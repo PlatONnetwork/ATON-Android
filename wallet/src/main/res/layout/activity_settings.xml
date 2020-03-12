@@ -13,7 +13,7 @@
         android:orientation="vertical"
         android:paddingTop="20dp">
 
-        <com.juzix.wallet.component.widget.CommonTitleBar
+        <com.platon.aton.component.widget.CommonTitleBar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:ctb_left_drawable="@drawable/icon_back_black"
@@ -80,7 +80,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
-            <com.juzix.wallet.component.widget.togglebutton.ToggleButton
+            <com.platon.aton.component.widget.togglebutton.ToggleButton
                 android:id="@+id/tgb_resend_reminder"
                 android:layout_width="51dp"
                 android:layout_height="31dp"
@@ -106,7 +106,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
-            <com.juzix.wallet.component.widget.togglebutton.ToggleButton
+            <com.platon.aton.component.widget.togglebutton.ToggleButton
                 android:id="@+id/tgb_switch"
                 android:layout_width="51dp"
                 android:layout_height="31dp"

@@ -8,7 +8,7 @@
     android:background="@drawable/bg_validators_item"
     android:padding="8dp">
 
-    <com.juzix.wallet.component.widget.CircleImageView
+    <com.platon.aton.component.widget.CircleImageView
         android:id="@+id/civ_node_avatar"
         android:layout_width="42dp"
         android:layout_height="42dp"
@@ -54,7 +54,7 @@
 
     </LinearLayout>
 
-    <com.juzix.wallet.component.widget.RoundedTextView
+    <com.platon.aton.component.widget.RoundedTextView
         android:id="@+id/rtv_node_state"
         style="@style/Text.4a90e2.11"
         android:layout_height="16dp"
