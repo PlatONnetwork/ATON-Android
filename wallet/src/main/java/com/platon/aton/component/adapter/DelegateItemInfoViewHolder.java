@@ -10,7 +10,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
-import com.platon.framework.util.MapUtils;
 import com.platon.aton.R;
 import com.platon.aton.app.CustomObserver;
 import com.platon.aton.component.adapter.base.BaseViewHolder;
@@ -32,6 +31,7 @@ import com.platon.aton.utils.DensityUtil;
 import com.platon.aton.utils.GlideUtils;
 import com.platon.aton.utils.RxUtils;
 import com.platon.aton.utils.ToastUtil;
+import com.platon.framework.util.MapUtils;
 
 import java.util.HashMap;
 
@@ -98,7 +98,6 @@ public class DelegateItemInfoViewHolder extends BaseViewHolder<DelegateItemInfo>
         RxView
                 .clicks(mDelegateLayout)
                 .compose(RxUtils.getClickTransformer())
-                .compose(((DelegateDetailActivity) mContext).bindToLifecycle())
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
@@ -110,11 +109,9 @@ public class DelegateItemInfoViewHolder extends BaseViewHolder<DelegateItemInfo>
                     }
                 });
 
-
         RxView
                 .clicks(mUnDelegateLayout)
                 .compose(RxUtils.getClickTransformer())
-                .compose(((DelegateDetailActivity) mContext).bindToLifecycle())
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
@@ -125,7 +122,6 @@ public class DelegateItemInfoViewHolder extends BaseViewHolder<DelegateItemInfo>
         RxView
                 .clicks(mNodeLinkIv)
                 .compose(RxUtils.getClickTransformer())
-                .compose(((DelegateDetailActivity) mContext).bindToLifecycle())
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
@@ -136,7 +132,6 @@ public class DelegateItemInfoViewHolder extends BaseViewHolder<DelegateItemInfo>
         RxView
                 .clicks(mUndelegatedTv)
                 .compose(RxUtils.getClickTransformer())
-                .compose(((DelegateDetailActivity) mContext).bindToLifecycle())
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {

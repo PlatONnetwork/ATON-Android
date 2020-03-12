@@ -3,18 +3,18 @@ package com.platon.aton.component.ui.presenter;
 
 import android.text.TextUtils;
 
-import com.platon.framework.network.ApiErrorCode;
-import com.platon.framework.network.ApiRequestBody;
-import com.platon.framework.network.ApiResponse;
-import com.platon.framework.network.ApiSingleObserver;
 import com.platon.aton.app.LoadingTransformer;
 import com.platon.aton.component.ui.base.BasePresenter;
 import com.platon.aton.component.ui.contract.DelegateDetailContract;
 import com.platon.aton.engine.ServerUtils;
+import com.platon.aton.entity.DelegateInfo;
 import com.platon.aton.entity.DelegateItemInfo;
 import com.platon.aton.entity.DelegateNodeDetail;
-import com.platon.aton.entity.DelegateInfo;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.network.ApiErrorCode;
+import com.platon.framework.network.ApiRequestBody;
+import com.platon.framework.network.ApiResponse;
+import com.platon.framework.network.ApiSingleObserver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,9 +45,10 @@ public class DelegateDetailPresenter extends BasePresenter<DelegateDetailContrac
     }
 
     private void getDelegateDetailData(DelegateInfo delegateInfo) {
-        ServerUtils.getCommonApi().getDelegateDetailList(ApiRequestBody.newBuilder()
-                .put("addr", delegateInfo.getWalletAddress())
-                .build())
+        ServerUtils.getCommonApi()
+                .getDelegateDetailList(ApiRequestBody.newBuilder()
+                        .put("addr", delegateInfo.getWalletAddress())
+                        .build())
                 .map(new Function<Response<ApiResponse<DelegateNodeDetail>>, DelegateNodeDetail>() {
                     @Override
                     public DelegateNodeDetail apply(Response<ApiResponse<DelegateNodeDetail>> apiResponseResponse) throws Exception {
@@ -106,7 +107,6 @@ public class DelegateDetailPresenter extends BasePresenter<DelegateDetailContrac
         if (mDelegateNodeDetail == null) {
             return new ArrayList<>();
         }
-
         return mDelegateNodeDetail.getDelegateItemInfoList();
     }
 

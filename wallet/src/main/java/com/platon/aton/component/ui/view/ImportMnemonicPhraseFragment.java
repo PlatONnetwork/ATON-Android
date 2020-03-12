@@ -225,7 +225,7 @@ public class ImportMnemonicPhraseFragment extends MVPBaseFragment<ImportMnemonic
                 if (!hasFocus) {
                     if (TextUtils.isEmpty(name)) {
                         showNameError(string(R.string.validWalletNameEmptyTips), true);
-                    } else if (name.length() > 12) {
+                    } else if (name.length() > 20) {
                         showNameError(string(R.string.validWalletNameTips), true);
                     } else if (mPresenter.isExists(name)) {
                         showNameError(string(R.string.wallet_name_exists), true);
