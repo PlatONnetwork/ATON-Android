@@ -15,7 +15,6 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.platon.aton.R;
 import com.platon.aton.app.CustomObserver;
-import com.platon.aton.component.ui.view.MainActivity;
 import com.platon.aton.component.widget.ShadowDrawable;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.netlistener.NetworkType;
@@ -175,7 +174,6 @@ public class WalletHorizontalRecycleViewAdapter extends RecyclerView.Adapter<Wal
         RxView
                 .clicks(holder.rlItem)
                 .compose(RxUtils.getClickTransformer())
-                .compose(((MainActivity) mContext).bindToLifecycle())
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
