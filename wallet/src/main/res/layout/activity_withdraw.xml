@@ -104,6 +104,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="3dp"
                     android:layout_marginTop="10dp"
+                    android:layout_marginRight="3dp"
                     android:layout_marginBottom="12dp"
                     android:layout_toRightOf="@id/iv_wallet_icon"
                     android:orientation="vertical">
@@ -112,10 +113,12 @@
                         android:id="@+id/tv_withdraw_wallet_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:lines="1"
                         android:textColor="@color/color_000000"
                         android:textSize="15sp"
                         android:textStyle="bold"
-                        tools:text="钱包名称" />
+                        tools:text="钱包名" />
 
                     <android.support.v7.widget.AppCompatTextView
                         android:id="@+id/tv_withdraw_wallet_balance"
@@ -128,16 +131,6 @@
                         tools:text="@string/msg_balance_with_unit" />
 
                 </LinearLayout>
-
-
-                <ImageView
-                    android:layout_width="14dp"
-                    android:layout_height="14dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerInParent="true"
-                    android:layout_marginRight="20dp"
-                    android:src="@drawable/icon_drop_down"
-                    android:visibility="gone" />
 
             </RelativeLayout>
 
