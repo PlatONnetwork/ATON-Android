@@ -107,7 +107,8 @@ public class NodeManager {
     }
 
     public String getChainId() {
-        if (TextUtils.isEmpty(getCurNode().getChainId())) {
+
+        if (getCurNode() == null || TextUtils.isEmpty(getCurNode().getChainId())) {
             if (BuildConfig.RELEASE_TYPE.equals("server.typeC")) {
                 return BuildConfig.ID_TEST_CHAIN;
             } else if (BuildConfig.RELEASE_TYPE.equals("server.typeOC")) {
