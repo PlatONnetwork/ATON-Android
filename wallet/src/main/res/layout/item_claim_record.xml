@@ -28,38 +28,51 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/avatar_14" />
 
-        <TextView
-            android:id="@+id/tv_claim_amount"
-            style="@style/Text.000.15"
-            android:layout_marginTop="10dp"
-            android:textStyle="bold"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="+5,323,50 LAT" />
 
-        <TextView
-            android:id="@+id/tv_wallet_name"
-            style="@style/Text.000.15"
+        <LinearLayout
+            android:id="@+id/layout"
             android:layout_width="0dp"
-            android:layout_marginLeft="8dp"
-            android:ellipsize="middle"
-            android:gravity="center_vertical|left"
-            android:singleLine="true"
-            android:textStyle="bold"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
             app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toTopOf="@+id/tv_wallet_address"
             app:layout_constraintLeft_toRightOf="@id/civ_wallet_avatar"
-            app:layout_constraintRight_toLeftOf="@id/tv_claim_amount"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"
-            tools:text="JiangJiangJiang" />
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/tv_wallet_name"
+                style="@style/Text.000.15"
+                android:layout_marginLeft="8dp"
+                android:layout_weight="2"
+                android:ellipsize="end"
+                android:gravity="left"
+                android:singleLine="true"
+                android:textStyle="bold"
+                tools:text="JiangJiangJiang" />
+
+            <Space
+                android:layout_width="8dp"
+                android:layout_height="wrap_content" />
+
+
+            <TextView
+                android:id="@+id/tv_claim_amount"
+                style="@style/Text.000.13"
+                android:lines="1"
+                tools:text="+5,323,505,3235,323,505,323,505,323,505,323,50" />
+
+
+        </LinearLayout>
+
 
         <TextView
             android:id="@+id/tv_wallet_address"
             style="@style/Text.61646e.13"
+            android:layout_marginLeft="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="@id/tv_wallet_name"
-            app:layout_constraintTop_toBottomOf="@id/tv_wallet_name"
+            app:layout_constraintLeft_toLeftOf="@id/layout"
+            app:layout_constraintTop_toBottomOf="@id/layout"
             tools:text="0xs7e4dade....4deadedwda" />
 
     </android.support.constraint.ConstraintLayout>
