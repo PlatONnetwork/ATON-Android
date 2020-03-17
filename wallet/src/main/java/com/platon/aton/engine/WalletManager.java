@@ -240,28 +240,31 @@ public class WalletManager {
         return null;
     }
 
-    /**
-     * 获取第一个有效的(余额大于0)个人钱包，
-     *
-     * @return
-     */
-    public Wallet getFirstValidIndividualWalletBalance() {
-
-        if (!mWalletList.isEmpty()) {
-            for (int i = 0; i < mWalletList.size(); i++) {
-                Wallet walletEntity = mWalletList.get(i);
-                if (BigDecimalUtil.isBiggerThanZero(walletEntity.getFreeBalance())) {
-                    return walletEntity;
-                }
-            }
-        }
-
-        return null;
-
-    }
-
-
     public List<Wallet> getWalletList() {
+        if (mWalletList == null || mWalletList.isEmpty()) {
+            return mWalletList = Flowable
+                    .fromCallable(new Callable<List<WalletEntity>>() {
+                        @Override
+                        public List<WalletEntity> call() throws Exception {
+                            return WalletDao.getWalletInfoList();
+                        }
+                    })
+                    .flatMap(new Function<List<WalletEntity>, Publisher<WalletEntity>>() {
+                        @Override
+                        public Publisher<WalletEntity> apply(List<WalletEntity> walletEntities) throws Exception {
+                            return Flowable.fromIterable(walletEntities);
+                        }
+                    })
+                    .map(new Function<WalletEntity, Wallet>() {
+                        @Override
+                        public Wallet apply(WalletEntity walletEntity) throws Exception {
+                            return walletEntity.buildWalletEntity();
+                        }
+                    })
+                    .toList()
+                    .toFlowable()
+                    .blockingFirst();
+        }
         return mWalletList;
     }
 
