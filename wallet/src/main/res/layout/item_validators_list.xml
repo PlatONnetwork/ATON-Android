@@ -47,7 +47,7 @@
 
         <TextView
             android:id="@+id/tv_delegated_amount"
-            style="@style/Text.000.13"
+            style="@style/Text.000.12"
             android:layout_marginLeft="7dp"
             tools:text="1644848.10552" />
 
