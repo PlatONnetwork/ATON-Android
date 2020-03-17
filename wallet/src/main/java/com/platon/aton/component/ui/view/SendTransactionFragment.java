@@ -38,8 +38,8 @@ import com.platon.aton.component.ui.dialog.CommonEditDialogFragment;
 import com.platon.aton.component.ui.dialog.CommonTipsDialogFragment;
 import com.platon.aton.component.ui.dialog.OnDialogViewClickListener;
 import com.platon.aton.component.ui.presenter.SendTransactionPresenter;
+import com.platon.aton.component.widget.EmojiExcludeFilter;
 import com.platon.aton.component.widget.MyWatcher;
-import com.platon.aton.component.widget.NoEmojiEditText;
 import com.platon.aton.component.widget.ShadowButton;
 import com.platon.aton.component.widget.bubbleSeekBar.BubbleSeekBar;
 import com.platon.aton.db.sqlite.WalletDao;
@@ -118,7 +118,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
     @BindView(R.id.tv_gas_limit_error)
     TextView tvGasLimitError;
     @BindView(R.id.et_transaction_note)
-    NoEmojiEditText etTransactionNote;
+    EditText etTransactionNote;
     @BindView(R.id.iv_clear)
     ImageView ivClear;
 
@@ -186,6 +186,8 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
                 return null;
             }
         }});
+
+        etTransactionNote.setFilters(new InputFilter[]{new EmojiExcludeFilter()});
 
         RxTextView
                 .textChanges(etGasLimit)

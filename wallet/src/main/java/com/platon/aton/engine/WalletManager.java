@@ -2,9 +2,6 @@ package com.platon.aton.engine;
 
 import android.text.TextUtils;
 
-import com.platon.framework.network.ApiErrorCode;
-import com.platon.framework.network.ApiRequestBody;
-import com.platon.framework.network.ApiResponse;
 import com.platon.aton.app.CustomThrowable;
 import com.platon.aton.config.AppSettings;
 import com.platon.aton.db.entity.WalletEntity;
@@ -16,6 +13,9 @@ import com.platon.aton.event.EventPublisher;
 import com.platon.aton.utils.AmountUtil;
 import com.platon.aton.utils.BigDecimalUtil;
 import com.platon.aton.utils.JZWalletUtil;
+import com.platon.framework.network.ApiErrorCode;
+import com.platon.framework.network.ApiRequestBody;
+import com.platon.framework.network.ApiResponse;
 
 import org.greenrobot.eventbus.EventBus;
 import org.reactivestreams.Publisher;
@@ -44,6 +44,9 @@ import io.reactivex.functions.Predicate;
 import retrofit2.Response;
 
 
+/**
+ * @author ziv
+ */
 public class WalletManager {
 
     public static final int CODE_OK = 0;
@@ -178,7 +181,6 @@ public class WalletManager {
                 }
             }
         }
-
         return "";
     }
 

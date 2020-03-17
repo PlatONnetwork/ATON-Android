@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
-import com.platon.framework.network.SchedulersTransformer;
 import com.platon.aton.R;
 import com.platon.aton.app.Constants;
 import com.platon.aton.app.LoadingTransformer;
@@ -25,6 +24,7 @@ import com.platon.aton.entity.Wallet;
 import com.platon.aton.utils.DensityUtil;
 import com.platon.aton.utils.JZWalletUtil;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.network.SchedulersTransformer;
 
 import org.web3j.crypto.Credentials;
 
@@ -112,7 +112,9 @@ public class InputWalletPasswordDialogFragment extends BaseDialogFragment {
                 0,
                 DensityUtil.dp2px(context, 2f));
 
-        textWalletName.setText(wallet.getName());
+        if (wallet != null) {
+            textWalletName.setText(wallet.getName());
+        }
 
         if (!TextUtils.isEmpty(title)) {
             tvTitle.setText(title);

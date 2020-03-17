@@ -21,23 +21,28 @@
     <TextView
         android:id="@+id/tv_wallet_name"
         style="@style/Text.000000.15"
-        android:textStyle="bold"
         android:layout_alignTop="@id/iv_wallet_pic"
         android:layout_marginLeft="3dp"
+        android:layout_toLeftOf="@id/iv_selected"
         android:layout_toRightOf="@id/iv_wallet_pic"
-        tools:text="Wallet name" />
+        android:ellipsize="end"
+        android:gravity="left"
+        android:singleLine="true"
+        android:textStyle="bold"
+        tools:text="Wallet " />
 
     <TextView
         android:id="@+id/tv_wallet_balance"
         style="@style/Text.898c9e.12"
         android:layout_width="match_parent"
         android:layout_below="@id/tv_wallet_name"
-        android:layout_alignParentLeft="@id/tv_wallet_name"
-        android:ellipsize="end"
-        android:layout_marginTop="4dp"
-        android:gravity="left"
         android:layout_alignLeft="@id/tv_wallet_name"
+        android:layout_alignParentLeft="@id/tv_wallet_name"
+        android:layout_marginTop="4dp"
+        android:layout_toLeftOf="@id/iv_selected"
+        android:ellipsize="end"
+        android:gravity="left"
         android:lines="1"
-        tools:text="Balance 100.00 Energon" />
+        tools:text="Balance 100.00" />
 
 </RelativeLayout>

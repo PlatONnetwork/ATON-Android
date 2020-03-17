@@ -82,7 +82,7 @@
     <TextView
         android:id="@+id/tv_yield_msg"
         style="@style/Text.898c9e.11"
-        android:layout_marginRight="36dp"
+        android:layout_marginRight="20dp"
         android:text="@string/validators_yield"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
