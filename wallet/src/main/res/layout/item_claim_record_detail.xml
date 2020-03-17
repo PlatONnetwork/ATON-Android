@@ -14,12 +14,17 @@
         android:layout_weight="1"
         android:gravity="left|center_vertical"
         android:lines="1"
+        android:ellipsize="end"
         tools:text="Nodename" />
+
+    <Space
+        android:layout_width="8dp"
+        android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/tv_claim_amount"
-        style="@style/Text.000.14"
-        android:textStyle="bold"
-        tools:text="+5,323,5355 LAT" />
+        style="@style/Text.000.12"
+        android:lines="1"
+        tools:text="+5,323,53555,323,53555,353555,353555" />
 
 </LinearLayout>
