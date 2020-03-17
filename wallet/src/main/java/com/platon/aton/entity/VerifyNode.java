@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.platon.aton.utils.BigDecimalUtil;
 import com.platon.aton.utils.NumberParserUtils;
+import com.platon.aton.utils.StringUtil;
 
 public class VerifyNode implements Parcelable {
 
@@ -189,6 +190,6 @@ public class VerifyNode implements Parcelable {
 
 
     public String getShowDelegatedRatePA() {
-        return isInit ? "--" : String.format("%s%%", NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(delegatedRatePA, "100")));
+        return isInit ? "--" : String.format("%s%%", StringUtil.formatBalance(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(delegatedRatePA, "100")), 2));
     }
 }
