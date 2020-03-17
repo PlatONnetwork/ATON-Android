@@ -144,14 +144,16 @@
             style="@style/Text.000.16"
             android:layout_width="0dp"
             android:layout_marginTop="7dp"
+            android:layout_marginRight="8dp"
             android:gravity="center_vertical|left"
             android:lines="1"
             android:textStyle="bold"
             app:autoSizeTextType="uniform"
+            app:layout_constrainedWidth="true"
             app:layout_constraintLeft_toLeftOf="@id/tv_unclaimed_reward"
+            app:layout_constraintRight_toLeftOf="@+id/layout_claim_reward"
             app:layout_constraintTop_toBottomOf="@id/tv_unclaimed_reward"
-            app:layout_constraintWidth_percent="0.5"
-            tools:text="1,555.033678799" />
+            tools:text="1,555.033678799033678799033678799033678799033678799" />
 
 
         <LinearLayout
