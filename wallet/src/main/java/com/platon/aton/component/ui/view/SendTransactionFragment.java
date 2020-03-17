@@ -187,7 +187,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
             }
         }});
 
-        etTransactionNote.setFilters(new InputFilter[]{new EmojiExcludeFilter()});
+        etTransactionNote.setFilters(new InputFilter[]{new EmojiExcludeFilter(), new InputFilter.LengthFilter(30)});
 
         RxTextView
                 .textChanges(etGasLimit)
