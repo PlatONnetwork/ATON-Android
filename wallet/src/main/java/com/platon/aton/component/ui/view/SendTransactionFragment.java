@@ -301,7 +301,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
     @Override
     public void updateWalletBalance(String balance) {
         if (isAdded()) {
-            tvWalletBalance.setText(getString(R.string.balance_text, NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(balance, "1E18"))));
+            tvWalletBalance.setText(getString(R.string.balance_text, StringUtil.formatBalance(BigDecimalUtil.div(balance, "1E18"))));
         }
     }
 
