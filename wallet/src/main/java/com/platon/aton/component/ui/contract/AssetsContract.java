@@ -17,7 +17,9 @@ public class AssetsContract {
 
         void showTotalBalance(String totalBalance);
 
-        void showWalletList(Wallet selectedWallet);
+        void showWalletList(List<Wallet> walletList,Wallet selectedWallet);
+
+        void setSelectedWallet(Wallet selectedWallet);
 
         void showWalletInfo(Wallet walletEntity);
 
