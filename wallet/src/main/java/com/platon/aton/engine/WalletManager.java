@@ -602,6 +602,7 @@ public class WalletManager {
                                         return balance1.add(banalce2);
                                     }
                                 })
+                                .defaultIfEmpty(BigDecimal.ZERO)
                                 .onErrorReturnItem(BigDecimal.ZERO)
                                 .doOnSuccess(new Consumer<BigDecimal>() {
                                     @Override

@@ -31,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -101,7 +102,14 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
 
                 }, new Consumer<Throwable>() {
                     @Override
-                    public void accept(Throwable throwable) throws Exception {
+                    public void accept(Throwable throwable) {
+                        if (isViewAttached()) {
+                            getView().finishRefresh();
+                        }
+                    }
+                }, new Action() {
+                    @Override
+                    public void run() {
                         if (isViewAttached()) {
                             getView().finishRefresh();
                         }
