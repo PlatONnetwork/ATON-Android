@@ -29,8 +29,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
-import com.platon.framework.util.LogUtils;
-import com.platon.framework.util.RUtils;
 import com.platon.aton.R;
 import com.platon.aton.app.Constants;
 import com.platon.aton.app.CustomObserver;
@@ -69,6 +67,8 @@ import com.platon.aton.utils.JSONUtil;
 import com.platon.aton.utils.QrCodeParser;
 import com.platon.aton.utils.RxUtils;
 import com.platon.aton.utils.StringUtil;
+import com.platon.framework.util.LogUtils;
+import com.platon.framework.util.RUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -582,6 +582,11 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     }
 
     @Override
+    public void setSelectedWallet(Wallet selectedWallet) {
+        mWalletAdapter.notifyDataSetChanged(selectedWallet);
+    }
+
+    @Override
     public void showFreeBalance(String balance) {//当前钱包的资产
 
         tvWalletAmount.setText(string(R.string.amount_with_unit, StringUtil.formatBalance(BigDecimalUtil.div(balance, "1E18"), false)));
@@ -603,8 +608,8 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     }
 
     @Override
-    public void showWalletList(Wallet walletEntity) {
-        mWalletAdapter.notifyDataSetChanged(walletEntity);
+    public void showWalletList(List<Wallet> walletList, Wallet walletEntity) {
+        mWalletAdapter.notifyDataSetChanged(walletList, walletEntity);
     }
 
     @Override

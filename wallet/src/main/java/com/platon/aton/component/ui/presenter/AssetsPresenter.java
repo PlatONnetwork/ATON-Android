@@ -59,7 +59,7 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
     @Override
     public void clickRecycleViewItem(Wallet walletEntity) {
         WalletManager.getInstance().setSelectedWallet(walletEntity);
-        getView().showWalletList(walletEntity);
+        getView().setSelectedWallet(walletEntity);
         getView().showWalletInfo(walletEntity);
         getView().setArgument(walletEntity);
     }
@@ -189,7 +189,7 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
             WalletManager.getInstance().setSelectedWallet(walletEntity);
             getView().setArgument(walletEntity);
         }
-        getView().showWalletList(walletEntity);
+        getView().showWalletList(mWalletList, walletEntity);
         getView().showWalletInfo(walletEntity);
         getView().showContent(false);
     }
