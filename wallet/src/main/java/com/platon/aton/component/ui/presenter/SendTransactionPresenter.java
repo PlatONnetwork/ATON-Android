@@ -7,10 +7,6 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.platon.framework.network.ApiRequestBody;
-import com.platon.framework.network.ApiResponse;
-import com.platon.framework.network.ApiSingleObserver;
-import com.platon.framework.network.NetConnectivity;
 import com.platon.aton.BuildConfig;
 import com.platon.aton.R;
 import com.platon.aton.app.CustomObserver;
@@ -51,6 +47,10 @@ import com.platon.aton.utils.JZWalletUtil;
 import com.platon.aton.utils.NumberParserUtils;
 import com.platon.aton.utils.RxUtils;
 import com.platon.aton.utils.StringUtil;
+import com.platon.framework.network.ApiRequestBody;
+import com.platon.framework.network.ApiResponse;
+import com.platon.framework.network.ApiSingleObserver;
+import com.platon.framework.network.NetConnectivity;
 import com.trello.rxlifecycle2.android.FragmentEvent;
 
 import org.web3j.crypto.Credentials;
@@ -148,17 +148,17 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
             return;
         }
 
-        getAccountBalance(walletEntity.getPrefixAddress());
+        getAccountBalance(walletEntity);
 
         getGasPrice();
     }
 
-    private void getAccountBalance(String prefixAddress) {
+    private void getAccountBalance(Wallet wallet) {
 
         ServerUtils
                 .getCommonApi()
                 .getAccountBalance(ApiRequestBody.newBuilder()
-                        .put("addrs", Arrays.asList(prefixAddress))
+                        .put("addrs", Arrays.asList(wallet.getPrefixAddress()))
                         .build())
                 .compose(bindUntilEvent(FragmentEvent.STOP))
                 .compose(RxUtils.getSingleSchedulerTransformer())
