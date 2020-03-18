@@ -220,6 +220,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
                         searchEt.setText("");
                         searchIv.setImageResource(R.drawable.icon_search);
                         mSearchEnabled = true;
+                        mPresenter.loadValidatorsData(getNodeStatusByTab(mTab), mSortType, searchEt.getText().toString().trim(), false, false);
                     }
                 });
 
