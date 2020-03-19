@@ -35,7 +35,7 @@
             android:textColor="@color/color_000000"
             android:textSize="14sp" />
 
-        <com.juzix.wallet.component.widget.ShadowButton
+        <com.platon.aton.component.widget.ShadowButton
             android:id="@+id/button_confirm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

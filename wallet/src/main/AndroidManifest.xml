@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.juzix.wallet">
+    package="com.platon.aton">
     <!--获取手机通讯权限-->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -22,7 +22,7 @@
     <uses-permission android:name="android.permission.READ_LOGS" />
 
     <application
-        android:name=".App"
+        android:name="com.platon.aton.App"
         android:allowBackup="false"
         android:icon="@mipmap/logo"
         android:label="@string/app_name"
@@ -36,7 +36,7 @@
         tools:replace="android:roundIcon">
 
         <activity
-            android:name=".component.ui.view.SplashActivity"
+            android:name="com.platon.aton.component.ui.view.SplashActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
@@ -47,146 +47,146 @@
         </activity>
 
         <activity
-            android:name=".component.ui.view.MainActivity"
+            android:name="com.platon.aton.component.ui.view.MainActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/MainTheme"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
 
         <activity
-            android:name=".component.ui.view.OperateMenuActivity"
+            android:name="com.platon.aton.component.ui.view.OperateMenuActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".component.ui.view.CreateWalletActivity"
+            android:name="com.platon.aton.component.ui.view.CreateWalletActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".component.ui.view.ImportWalletActivity"
+            android:name="com.platon.aton.component.ui.view.ImportWalletActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <activity
-            android:name=".component.ui.view.BackupMnemonicPhraseActivity"
+            android:name="com.platon.aton.component.ui.view.BackupMnemonicPhraseActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".component.ui.view.BackupWalletActivity"
+            android:name="com.platon.aton.component.ui.view.BackupWalletActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".component.ui.view.SelectAddressActivity"
-            android:launchMode="standard"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
-            android:name=".component.ui.view.AboutActivity"
-            android:launchMode="standard"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".component.ui.view.VerificationMnemonicActivity"
-            android:launchMode="standard"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".component.ui.view.WalletManagerActivity"
-            android:launchMode="standard"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".component.ui.view.ManageWalletActivity"
-            android:launchMode="standard"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".component.ui.view.ExportPrivateKeyActivity"
-            android:launchMode="standard"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".component.ui.view.ExportKeystoreActivity"
-            android:launchMode="standard"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".component.ui.view.ScanQRCodeActivity"
-            android:launchMode="standard"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".component.ui.view.TransactionDetailActivity"
-            android:launchMode="standard"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".component.ui.view.AddressBookActivity"
+            android:name="com.platon.aton.component.ui.view.SelectAddressActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".component.ui.view.AddNewAddressActivity"
+            android:name="com.platon.aton.component.ui.view.AboutActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.platon.aton.component.ui.view.VerificationMnemonicActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".component.ui.view.TransactionRecordsActivity"
+            android:name="com.platon.aton.component.ui.view.WalletManagerActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".component.ui.view.NodeSettingsActivity"
+            android:name="com.platon.aton.component.ui.view.ManageWalletActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".component.ui.view.SettingsActivity"
+            android:name="com.platon.aton.component.ui.view.ExportPrivateKeyActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".component.ui.view.UnlockFigerprintActivity"
+            android:name="com.platon.aton.component.ui.view.ExportKeystoreActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.platon.aton.component.ui.view.ScanQRCodeActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.platon.aton.component.ui.view.TransactionDetailActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.platon.aton.component.ui.view.AddressBookActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name="com.platon.aton.component.ui.view.AddNewAddressActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.platon.aton.component.ui.view.TransactionRecordsActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.platon.aton.component.ui.view.NodeSettingsActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.platon.aton.component.ui.view.SettingsActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.platon.aton.component.ui.view.UnlockFigerprintActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".component.ui.view.UnlockWithPasswordActivity"
+            android:name="com.platon.aton.component.ui.view.UnlockWithPasswordActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".component.ui.view.SwitchLanguageActivity"
+            android:name="com.platon.aton.component.ui.view.SwitchLanguageActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <!--Aton v0.7.0-->
         <activity
-            android:name=".component.ui.view.DelegateRecordActivity"
+            android:name="com.platon.aton.component.ui.view.DelegateRecordActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".component.ui.view.DelegateDetailActivity"
+            android:name="com.platon.aton.component.ui.view.DelegateDetailActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".component.ui.view.ValidatorsDetailActivity"
+            android:name="com.platon.aton.component.ui.view.ValidatorsDetailActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".component.ui.view.WithDrawActivity"
+            android:name="com.platon.aton.component.ui.view.WithDrawActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <activity
-            android:name=".component.ui.view.DelegateActivity"
+            android:name="com.platon.aton.component.ui.view.DelegateActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <activity
-            android:name=".component.ui.view.OfficialCommunityActivity"
+            android:name="com.platon.aton.component.ui.view.OfficialCommunityActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".component.ui.view.CommonHybridActivity"
+            android:name="com.platon.aton.component.ui.view.CommonHybridActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".component.ui.view.TransactionAuthorizationDetailActivity"
+            android:name="com.platon.aton.component.ui.view.TransactionAuthorizationDetailActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".component.ui.view.ClaimRewardRecordActivity"
+            android:name="com.platon.aton.component.ui.view.ClaimRewardRecordActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait" />
 
@@ -218,7 +218,7 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <service
-            android:name=".component.service.LoopService"
+            android:name="com.platon.aton.component.service.LoopService"
             android:exported="false">
             <intent-filter>
                 <action android:name=".component.service.LoopService" />

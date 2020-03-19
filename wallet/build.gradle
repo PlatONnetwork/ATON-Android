@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
 
-        applicationId "com.juzix.wallet"
+        applicationId "com.platon.aton"
         minSdkVersion rootProject.ext.android.minSdkVersion
         targetSdkVersion rootProject.ext.android.targetSdkVersion
         versionName "${version_name}"
@@ -31,6 +31,7 @@ android {
         buildConfigField("String", "SINA_APP_SECRET", "${SINA_APP_SECRET}")
         buildConfigField("String", "SINA_APP_REDIRECT_URL", "${SINA_APP_REDIRECT_URL}")
         buildConfigField "String", "CHANNEL", '"PlatONNetwork"'
+        buildConfigField("int","QRCODE_VERSION_CODE","${qrcode_version_code}")
         renderscriptTargetApi 19
         renderscriptSupportModeEnabled true
         resConfigs "zh", "en"
@@ -57,34 +58,34 @@ android {
         }
 
         releaseC {
-            storeFile file("../extras/wallet.keystore")
-            storePassword "123456"
-            keyAlias "wallet"
-            keyPassword "123456"
+            storeFile file("../extras/aton.keystore")
+            storePassword "platon123456"
+            keyAlias "platon"
+            keyPassword "platon123456"
             v2SigningEnabled false
         }
 
         releaseJC {
-            storeFile file("/Users/jenkins/extras/wallet.keystore")
-            storePassword "123456"
-            keyAlias "wallet"
-            keyPassword "123456"
+            storeFile file("/Users/jenkins/extras/aton.keystore")
+            storePassword "platon123456"
+            keyAlias "platon"
+            keyPassword "platon123456"
             v2SigningEnabled false
         }
 
         releaseX {
-            storeFile file("../extras/wallet.keystore")
-            storePassword "123456"
-            keyAlias "wallet"
-            keyPassword "123456"
+            storeFile file("../extras/aton.keystore")
+            storePassword "platon123456"
+            keyAlias "platon"
+            keyPassword "platon123456"
             v2SigningEnabled false
         }
 
         releaseJX {
-            storeFile file("/Users/jenkins/extras/wallet.keystore")
-            storePassword "123456"
-            keyAlias "wallet"
-            keyPassword "123456"
+            storeFile file("/Users/jenkins/extras/aton.keystore")
+            storePassword "platon123456"
+            keyAlias "platon"
+            keyPassword "platon123456"
             v2SigningEnabled false
         }
     }
@@ -92,7 +93,7 @@ android {
     buildTypes {
         debug {
             debuggable true
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.releaseC
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
             multiDexEnabled true

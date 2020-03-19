@@ -14,7 +14,7 @@
         android:orientation="vertical"
         android:paddingTop="20dp">
 
-        <com.juzix.wallet.component.widget.CommonTitleBar
+        <com.platon.aton.component.widget.CommonTitleBar
             android:id="@+id/commonTitleBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
                 android:background="@color/color_ffffff"
                 android:orientation="horizontal">
 
-                <com.juzix.wallet.component.widget.CircleImageView
+                <com.platon.aton.component.widget.CircleImageView
                     android:id="@+id/iv_delegate_node_icon"
                     android:layout_width="42dp"
                     android:layout_height="42dp"
@@ -93,7 +93,7 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <com.juzix.wallet.component.widget.CircleImageView
+                <com.platon.aton.component.widget.CircleImageView
                     android:id="@+id/iv_wallet_icon"
                     android:layout_width="42dp"
                     android:layout_height="42dp"
@@ -101,13 +101,25 @@
                     android:layout_marginLeft="3dp"
                     android:layout_marginTop="11dp" />
 
+
+                <ImageView
+                    android:id="@+id/iv_arrow"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="20dp"
+                    android:src="@drawable/icon_drop_down" />
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="3dp"
                     android:layout_marginTop="11dp"
+                    android:layout_marginRight="3dp"
                     android:layout_marginBottom="12dp"
+                    android:layout_toLeftOf="@id/iv_arrow"
                     android:layout_toRightOf="@id/iv_wallet_icon"
                     android:orientation="vertical">
 
@@ -115,10 +127,13 @@
                         android:id="@+id/tv_delegate_wallet_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:gravity="left"
+                        android:lines="1"
                         android:textColor="@color/color_000000"
                         android:textSize="15sp"
                         android:textStyle="bold"
-                        tools:text="钱包名称" />
+                        tools:text="钱包名称钱包名称钱钱包名称钱包名称钱钱包名称钱包名称钱钱包名称钱包名称钱" />
 
                     <TextView
                         android:id="@+id/tv_delegate_wallet_address"
@@ -131,14 +146,6 @@
 
                 </LinearLayout>
 
-
-                <ImageView
-                    android:layout_width="14dp"
-                    android:layout_height="14dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerInParent="true"
-                    android:layout_marginRight="20dp"
-                    android:src="@drawable/icon_drop_down" />
 
             </RelativeLayout>
 
@@ -359,7 +366,7 @@
             </LinearLayout>
 
 
-            <com.juzix.wallet.component.widget.ShadowButton
+            <com.platon.aton.component.widget.ShadowButton
                 android:id="@+id/sbtn_delegate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

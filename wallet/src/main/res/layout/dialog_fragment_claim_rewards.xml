@@ -68,6 +68,7 @@
         tools:text="0.00035 LAT" />
 
     <TextView
+        android:id="@+id/tv_claim_wallet_title"
         style="@style/Text.61646e.14"
         android:layout_marginTop="16dp"
         android:text="@string/msg_claim_wallet"
@@ -77,12 +78,19 @@
     <TextView
         android:id="@+id/tv_claim_wallet"
         style="@style/Text.000.14"
+        android:layout_width="0dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginRight="16dp"
+        android:ellipsize="end"
+        android:gravity="right"
+        android:lines="1"
         android:textStyle="bold"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintLeft_toRightOf="@id/tv_claim_wallet_title"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_fee_amount"
-        tools:text="wallste1" />
+        tools:text="wallste1wallste1wallste1wallste1wallste1wallste1wallste1wallste1wallste1" />
 
     <TextView
         android:id="@+id/tv_balance_amount"
@@ -95,7 +103,7 @@
         app:layout_constraintTop_toBottomOf="@id/tv_claim_wallet"
         tools:text="Balance:0.00035 LAT" />
 
-    <com.juzix.wallet.component.widget.ShadowButton
+    <com.platon.aton.component.widget.ShadowButton
         android:id="@+id/sbtn_confirm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

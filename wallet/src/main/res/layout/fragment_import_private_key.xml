@@ -81,7 +81,7 @@
             android:gravity="left|center_vertical"
             android:hint="@string/nameOfWallet"
             android:imeOptions="actionNext"
-            android:maxLength="12"
+            android:maxLength="20"
             android:singleLine="true"
             android:textColorHint="@color/color_b6bbd0" />
 
@@ -233,7 +233,7 @@
             android:textColor="@color/color_b6bbd0"
             android:textSize="11sp" />
 
-        <com.juzix.wallet.component.widget.ShadowButton
+        <com.platon.aton.component.widget.ShadowButton
             android:id="@+id/sbtn_import"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

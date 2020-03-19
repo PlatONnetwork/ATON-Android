@@ -171,7 +171,7 @@
     <string name="backup">Backup</string>
     <string name="changeWalletName">Rename</string>
     <string name="formatError">Format Error</string>
-    <string name="validWalletNameTips">Please enter 1-12 characters</string>
+    <string name="validWalletNameTips">Please enter 1-20 characters</string>
     <string name="validKeystoreEmptyTips">Keystore can\'t be empty</string>
     <string name="validPrivateKeyEmptyTips">Private Key can\'t be empty</string>
     <string name="validMnenonicEmptyTips">Mnemonic phrase can\'t be empty</string>
@@ -226,8 +226,8 @@
     <string name="address_name_cannot_be_empty">Address name cannot be empty</string>
     <string name="address_cannot_be_empty">Address cannot be empty</string>
     <string name="address_format_error">Format error</string>
-    <string name="address_name_length_error">Please enter 1-12 characters</string>
-    <string name="wallet_name_length_error">Please enter 1-12 digits wallet name</string>
+    <string name="address_name_length_error">Please enter 1-20 characters</string>
+    <string name="wallet_name_length_error">Please enter 1-20 digits wallet name</string>
     <string name="estimated_transaction_confirmation_time">Estimated transaction confirmation time:</string>
     <string name="fastest_transfer_time">30s</string>
     <string name="slowest_transfer_time">15mins</string>
@@ -257,7 +257,6 @@
     <string name="unlock">Unlock</string>
     <string name="unlockWithWalletPasswordTitle">Login with Password</string>
     <string name="unlockWithWalletPasswordDesc">Be sure to correspond password to wallet.</string>
-    <string name="company_name">juzix（shenzhen)</string>
     <string name="copyright_resume">Powered by PlatON Network</string>
     <string name="language">Languages</string>
     <string name="warning">Warning</string>
@@ -295,6 +294,7 @@
     <string name="submissionTime">Submission Time</string>
     <string name="memo">Memo</string>
     <string name="msg_transaction_hash">Tx Hash</string>
+    <string name="msg_confirmation_block">Confirmation block</string>
     <string name="executeContractConfirm">Execute Contract-Confirm</string>
     <string name="pending">Pending</string>
     <string name="signing">Signing</string>
@@ -332,7 +332,7 @@
     <string name="action_send_all">Send all</string>
     <string name="balance_text">Balance:&#160;%1$s&#160;LAT</string>
     <string name="fee">Fee</string>
-    <string name="transaction_fee">Fee:</string>
+    <string name="transaction_fee">Fee</string>
     <string name="save_successfully">Save successfully</string>
     <string name="joint_wallet_execution">Joint Wallet Execution</string>
     <string name="create_joint_wallet">Create Joint Wallet</string>
@@ -771,5 +771,12 @@
     <string name="msg_advanced_function">For contract transfers, increase the default GasLimit by a factor of 2 or more. Too low a Gaslimit may cause your transaction to fail.</string>
     <string name="msg_gas_limit">Gas Limit:</string>
     <string name="msg_gas_limit_error">Gas Limit cannot be less than 21000</string>
+    <string name="msg_transaction_memo">Memo：%1$s</string>
+    <string name="hint_input_transaction_note">Memo(optional-less than 30 characters)</string>
+
+    <string name="msg_server_exception">Server took a break, please try again(%1$d)</string>
+    <string name="msg_transaction_repeatedly_exception">Do not submit repeatedly!</string>
+    <string name="msg_transaction_exception">Transaction abnormal，please try again（%1$d）</string>
+    <string name="msg_expired_qr_code">Expired QR code</string>
 </resources>
 

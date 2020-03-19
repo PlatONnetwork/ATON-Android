@@ -128,7 +128,7 @@
     <string name="backup">备份</string>
     <string name="changeWalletName">修改名称</string>
     <string name="formatError">钱包名称格式错误</string>
-    <string name="validWalletNameTips">请输入1-12位字符</string>
+    <string name="validWalletNameTips">请输入1-20位字符</string>
     <string name="validKeystoreEmptyTips">钱包文件(.json)不能为空</string>
     <string name="validPrivateKeyEmptyTips">私钥不能为空</string>
     <string name="validMnenonicEmptyTips">助记词不能为空</string>
@@ -226,8 +226,8 @@
     <string name="address_name_cannot_be_empty">地址名称不能为空</string>
     <string name="address_cannot_be_empty">地址不能为空</string>
     <string name="address_format_error">地址格式不正确</string>
-    <string name="address_name_length_error">请输入1-12位地址名称</string>
-    <string name="wallet_name_length_error">请输入1-12位钱包名称</string>
+    <string name="address_name_length_error">请输入1-20位地址名称</string>
+    <string name="wallet_name_length_error">请输入1-20位钱包名称</string>
     <string name="estimated_transaction_confirmation_time">预计交易确认时间:</string>
     <string name="fastest_transfer_time">30秒</string>
     <string name="slowest_transfer_time">15分钟</string>
@@ -257,7 +257,6 @@
     <string name="unlock">解锁</string>
     <string name="unlockWithWalletPasswordTitle">钱包密码解锁</string>
     <string name="unlockWithWalletPasswordDesc">请使用选定的钱包密码验证解锁</string>
-    <string name="company_name">矩阵元技术（深圳）有限公司</string>
     <string name="copyright_resume">Powered by PlatON Network</string>
     <string name="language">语言</string>
     <string name="warning">警告</string>
@@ -295,6 +294,7 @@
     <string name="submissionTime">交易时间</string>
     <string name="memo">备注</string>
     <string name="msg_transaction_hash">交易哈希</string>
+    <string name="msg_confirmation_block">确认区块</string>
     <string name="executeContractConfirm">交易确认</string>
     <string name="pending">确认中</string>
     <string name="signing">签名中</string>
@@ -787,4 +787,11 @@
     <string name="msg_advanced_function">关于特殊合约转账，建议在默认GasLimit基础上增加2倍或更多，GasLimit太低可能导致您的交易失败。</string>
     <string name="msg_gas_limit">Gas Limit:</string>
     <string name="msg_gas_limit_error">Gas Limit不能小于21000</string>
+    <string name="msg_transaction_memo">备注：%1$s</string>
+    <string name="hint_input_transaction_note">备注(可选30字以内)</string>
+
+    <string name="msg_server_exception">服务器开了小差，请重试(%1$d)</string>
+    <string name="msg_transaction_repeatedly_exception">请勿重复提交!</string>
+    <string name="msg_transaction_exception">交易异常，请重试（%1$d）</string>
+    <string name="msg_expired_qr_code">二维码已失效</string>
 </resources>

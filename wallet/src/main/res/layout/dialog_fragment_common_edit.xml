@@ -23,7 +23,7 @@
             android:hint="@string/wallet_name"
             android:text="@string/rename_wallet" />
 
-        <com.juzix.wallet.component.widget.CustomUnderlineEditText
+        <com.platon.aton.component.widget.CustomUnderlineEditText
             android:id="@+id/et_input_info"
             style="@style/EditTextWithUnderlineStyle"
             android:layout_marginLeft="24dp"
@@ -31,7 +31,7 @@
             android:layout_marginRight="24dp"
             android:inputType="textPassword" />
 
-        <com.juzix.wallet.component.widget.ShadowButton
+        <com.platon.aton.component.widget.ShadowButton
             android:id="@+id/button_confirm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

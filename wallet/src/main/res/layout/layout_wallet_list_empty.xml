@@ -24,7 +24,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/iv_no_wallet" />
 
-    <com.juzix.wallet.component.widget.ShadowContainer
+    <com.platon.aton.component.widget.ShadowContainer
         android:id="@+id/sc_import_wallet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -54,9 +54,9 @@
                 android:textColor="@color/color_secondary_button_text" />
         </LinearLayout>
 
-    </com.juzix.wallet.component.widget.ShadowContainer>
+    </com.platon.aton.component.widget.ShadowContainer>
 
-    <com.juzix.wallet.component.widget.ShadowContainer
+    <com.platon.aton.component.widget.ShadowContainer
         android:id="@+id/sc_create_wallet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -83,6 +83,6 @@
                 android:textColor="@color/color_main_button_text" />
         </LinearLayout>
 
-    </com.juzix.wallet.component.widget.ShadowContainer>
+    </com.platon.aton.component.widget.ShadowContainer>
 
 </android.support.constraint.ConstraintLayout>

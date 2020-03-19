@@ -171,6 +171,41 @@
 
         </RelativeLayout>
 
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="16dp">
+
+            <EditText
+                android:id="@+id/et_transaction_note"
+                style="@style/Text.000.14"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_edittext_underline"
+                android:gravity="left|center_vertical"
+                android:hint="@string/hint_input_transaction_note"
+                android:imeOptions="actionNext"
+                android:includeFontPadding="false"
+                android:paddingRight="32dp"
+                android:singleLine="true"
+                android:textColorHint="@color/color_b6bbd0"
+                tools:text="是生生世世是生生世世是生生世世是生生世世是生生世世是生生世世是生生世世是生生世世是生生世世是生生世世" />
+
+            <ImageView
+                android:id="@+id/iv_clear"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="right|center_vertical"
+                android:scaleType="centerCrop"
+                android:src="@drawable/icon_clear"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+        </FrameLayout>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -203,7 +238,7 @@
                 tools:text="0.0000000228 Energon" />
 
 
-            <com.juzix.wallet.component.widget.bubbleSeekBar.BubbleSeekBar
+            <com.platon.aton.component.widget.bubbleSeekBar.BubbleSeekBar
                 android:id="@+id/bubbleSeekBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -280,7 +315,7 @@
             android:layout_marginTop="5dp"
             android:text="@string/msg_gas_limit_error" />
 
-        <com.juzix.wallet.component.widget.ShadowButton
+        <com.platon.aton.component.widget.ShadowButton
             android:id="@+id/sbtn_send_transation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

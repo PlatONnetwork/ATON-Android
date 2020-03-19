@@ -8,7 +8,7 @@
     android:background="@drawable/bg_validators_item"
     android:padding="8dp">
 
-    <com.juzix.wallet.component.widget.CircleImageView
+    <com.platon.aton.component.widget.CircleImageView
         android:id="@+id/civ_node_avatar"
         android:layout_width="42dp"
         android:layout_height="42dp"
@@ -20,14 +20,19 @@
 
     <TextView
         android:id="@+id/tv_node_name"
-        style="@style/Text.000.15"
+        style="@style/Text.000.14"
         android:layout_marginLeft="3dp"
+        android:ellipsize="end"
+        android:gravity="left"
+        android:lines="1"
+        android:maxWidth="120dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/layout_delegated_info"
         app:layout_constraintLeft_toRightOf="@id/civ_node_avatar"
+        app:layout_constraintRight_toLeftOf="@id/rtv_node_state"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
-        tools:text="jiang" />
+        tools:text="jiangjiangjiangjiangjiangjiangjiangjiangjiang" />
 
 
     <LinearLayout
@@ -47,42 +52,47 @@
 
         <TextView
             android:id="@+id/tv_delegated_amount"
-            style="@style/Text.000.13"
+            style="@style/Text.000.12"
             android:layout_marginLeft="7dp"
             tools:text="1644848.10552" />
 
 
     </LinearLayout>
 
-    <com.juzix.wallet.component.widget.RoundedTextView
+    <com.platon.aton.component.widget.RoundedTextView
         android:id="@+id/rtv_node_state"
         style="@style/Text.4a90e2.11"
         android:layout_height="16dp"
-        android:layout_marginLeft="7dp"
+        android:layout_marginLeft="6dp"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         app:layout_constraintBaseline_toBaselineOf="@id/tv_node_name"
         app:layout_constraintLeft_toRightOf="@id/tv_node_name"
+        app:layout_constraintRight_toLeftOf="@id/layout_delegated_info"
         app:rtv_background_color="@color/color_ffffff"
         app:rtv_border_color="@color/color_4a90e2"
         app:rtv_border_width="1dp"
         app:rtv_corner_radius="3dp"
         tools:text="active" />
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tv_annual_yield"
         style="@style/Text.105cfe.17"
+        android:layout_width="108dp"
+        android:gravity="right"
+        android:lines="1"
         android:textStyle="bold"
+        app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toTopOf="@+id/tv_yield_msg"
         app:layout_constraintRight_toRightOf="@+id/tv_yield_msg"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
-        tools:text="12.30%" />
+        tools:text="--" />
 
     <TextView
         android:id="@+id/tv_yield_msg"
         style="@style/Text.898c9e.11"
-        android:layout_marginRight="36dp"
+        android:layout_marginRight="20dp"
         android:text="@string/validators_yield"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"

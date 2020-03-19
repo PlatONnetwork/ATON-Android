@@ -14,7 +14,7 @@
         android:orientation="vertical"
         android:paddingTop="20dp">
 
-        <com.juzix.wallet.component.widget.CommonTitleBar
+        <com.platon.aton.component.widget.CommonTitleBar
             android:id="@+id/commonTitleBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -47,6 +47,7 @@
             android:gravity="center_vertical|left"
             android:hint="@string/input_address_name"
             android:imeOptions="actionNext"
+            android:maxLength="20"
             android:nextFocusForward="@+id/et_address"
             android:singleLine="true"
             android:textColorHint="@color/color_b6bbd0" />
@@ -69,12 +70,12 @@
             android:text="@string/wallet_address" />
 
 
-        <com.juzix.wallet.component.widget.CustomUnderlineEditText
+        <com.platon.aton.component.widget.CustomUnderlineEditText
             android:id="@+id/et_address"
             style="@style/Text.000.14"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:background="@drawable/bg_account_activation_et"
+            android:background="@drawable/bg_edittext_underline"
             android:drawableRight="@drawable/icon_scan_s"
             android:ellipsize="end"
             android:gravity="center_vertical|left"
@@ -104,8 +105,7 @@
 
     </LinearLayout>
 
-
-    <com.juzix.wallet.component.widget.ShadowButton
+    <com.platon.aton.component.widget.ShadowButton
         android:id="@+id/sbtn_add_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -14,7 +13,7 @@
         android:orientation="vertical"
         android:paddingTop="20dp">
 
-        <com.juzix.wallet.component.widget.CommonTitleBar
+        <com.platon.aton.component.widget.CommonTitleBar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:ctb_left_drawable="@drawable/icon_back_black"
@@ -44,18 +43,16 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="22dp"
+                android:layout_marginTop="16dp"
                 android:divider="@drawable/bg_transaction_detail_divider"
                 android:orientation="vertical"
-                android:paddingLeft="12dp"
-                android:paddingRight="12dp"
                 android:paddingBottom="17dp"
                 android:showDividers="beginning|middle">
 
                 <!--交易者信息-->
                 <include layout="@layout/include_transactioner_info" />
                 <!--交易详情信息-->
-                <com.juzix.wallet.component.ui.view.TransactionDetailInfoView
+                <com.platon.aton.component.ui.view.TransactionDetailInfoView
                     android:id="@+id/view_transaction_detai_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />

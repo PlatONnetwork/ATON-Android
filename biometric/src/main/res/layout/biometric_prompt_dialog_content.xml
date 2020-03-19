@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.juzix.biometric.FingerprintDialogLayout
+<com.platon.biometric.FingerprintDialogLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -28,7 +28,7 @@
         tools:targetApi="21"
         tools:text="Description: blabla."/>
 
-    <com.juzix.biometric.FingerprintIconView
+    <com.platon.biometric.FingerprintIconView
         android:id="@+id/fingerprint_icon"
         android:layout_width="@dimen/fingerprint_icon_size"
         android:layout_height="@dimen/fingerprint_icon_size"
@@ -63,4 +63,4 @@
         android:textColor="@color/color_0077FF"
         tools:text="Negative"/>
 
-</com.juzix.biometric.FingerprintDialogLayout>
+</com.platon.biometric.FingerprintDialogLayout>

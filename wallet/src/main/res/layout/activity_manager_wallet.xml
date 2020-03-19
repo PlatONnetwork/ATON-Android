@@ -14,7 +14,7 @@
         android:orientation="vertical"
         android:paddingTop="20dp">
 
-        <com.juzix.wallet.component.widget.CommonTitleBar
+        <com.platon.aton.component.widget.CommonTitleBar
             android:id="@+id/commonTitleBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -26,32 +26,34 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:divider="@drawable/divider_item_claim_record"
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:showDividers="middle">
 
         <RelativeLayout
             android:id="@+id/rl_wallet_address"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="90dp"
             android:layout_marginTop="10dp"
-            android:gravity="center_vertical"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp">
+            android:gravity="center_vertical">
 
             <TextView
                 android:id="@+id/tv_wallet_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/wallet_address"
-                android:textStyle="bold"
                 android:textColor="@color/color_000000"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/iv_copy_wallet_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/icon_copy"
-                android:layout_alignParentRight="true"/>
+                android:layout_alignParentRight="true"
+                android:src="@drawable/icon_copy" />
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/tv_address"
@@ -59,83 +61,66 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_wallet_title"
                 android:layout_marginTop="8dp"
+                android:lines="1"
                 android:textColor="@color/color_b6bbd0"
                 android:textSize="14sp"
-                android:lines="1"
                 app:autoSizeTextType="uniform"
                 tools:text="0x493301712671Ada506ba6Ca7891F436D291858210x4933017" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_below="@id/tv_address"
-                android:layout_marginTop="12dp"
-                android:background="@color/color_e4e7f3" />
         </RelativeLayout>
 
-        <RelativeLayout
+        <android.support.constraint.ConstraintLayout
             android:id="@+id/rl_rename"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp">
+            android:layout_height="70dp"
+            android:gravity="center_vertical">
 
             <TextView
                 android:id="@+id/tv_rename_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
+                style="@style/Text.000.16"
                 android:text="@string/changeWalletName"
-                android:textColor="@color/color_000000"
-                android:textSize="16sp" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tv_rename"
+                style="@style/Text.61646e.14"
+                android:layout_width="0dp"
+                android:layout_gravity="right|center_vertical"
+                android:layout_marginLeft="12dp"
+                android:gravity="right"
+                android:lines="1"
+                app:autoSizeTextType="uniform"
+                app:layout_constrainedWidth="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/tv_rename_title"
+                app:layout_constraintRight_toLeftOf="@+id/iv_arrow1"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="钱包名称钱包名钱包" />
 
             <ImageView
                 android:id="@+id/iv_arrow1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/icon_right_arrow" />
+                android:src="@drawable/icon_right_arrow"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/tv_rename"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@id/iv_arrow1"
-                android:textColor="@color/color_61646e"
-                android:textSize="14sp"
-                tools:text="@string/wallet_name" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_below="@id/tv_rename_title"
-                android:layout_marginTop="12dp"
-                android:background="@color/color_e4e7f3" />
-        </RelativeLayout>
+        </android.support.constraint.ConstraintLayout>
 
         <RelativeLayout
             android:id="@+id/rl_private_key"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp">
+            android:layout_height="70dp"
+            android:gravity="center_vertical">
 
             <TextView
                 android:id="@+id/tv_private_key_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/Text.000.16"
                 android:layout_centerVertical="true"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:text="@string/exportPrivateKey"
-                android:textColor="@color/color_000000"
-                android:textSize="16sp" />
+                android:text="@string/exportPrivateKey" />
 
             <ImageView
                 android:id="@+id/iv_arrow2"
@@ -145,32 +130,19 @@
                 android:layout_centerVertical="true"
                 android:src="@drawable/icon_right_arrow" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_below="@id/tv_private_key_title"
-                android:layout_marginTop="12dp"
-                android:background="@color/color_e4e7f3" />
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/rl_keystore"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp">
+            android:layout_height="70dp"
+            android:gravity="center_vertical">
 
             <TextView
                 android:id="@+id/tv_keystore_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/Text.000.16"
                 android:layout_centerVertical="true"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:text="@string/exportKeystore"
-                android:textColor="@color/color_000000"
-                android:textSize="16sp" />
+                android:text="@string/exportKeystore" />
 
             <ImageView
                 android:id="@+id/iv_arrow3"
@@ -180,32 +152,19 @@
                 android:layout_centerVertical="true"
                 android:src="@drawable/icon_right_arrow" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_below="@id/tv_keystore_title"
-                android:layout_marginTop="12dp"
-                android:background="@color/color_e4e7f3" />
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/rl_backup"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp">
+            android:layout_height="70dp"
+            android:gravity="center_vertical">
 
             <TextView
                 android:id="@+id/tv_backup_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/Text.000.16"
                 android:layout_centerVertical="true"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:text="@string/backupMnemonics"
-                android:textColor="@color/color_000000"
-                android:textSize="16sp" />
+                android:text="@string/backupMnemonics" />
 
             <ImageView
                 android:id="@+id/iv_arrow4"
@@ -215,12 +174,6 @@
                 android:layout_centerVertical="true"
                 android:src="@drawable/icon_right_arrow" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_below="@id/tv_backup_title"
-                android:layout_marginTop="12dp"
-                android:background="@color/color_e4e7f3" />
         </RelativeLayout>
 
         <View
@@ -238,8 +191,8 @@
             android:layout_marginBottom="24dp"
             android:background="@drawable/bg_delete_wallet"
             android:text="@string/delete_wallet"
-            android:textStyle="bold"
-            android:textColor="@color/color_delete_wallet_text" />
+            android:textColor="@color/color_delete_wallet_text"
+            android:textStyle="bold" />
     </LinearLayout>
 
 
