@@ -74,7 +74,7 @@ public class TransactionDetailInfoView extends LinearLayout {
                 addView(getItemView(getStringWithColon(R.string.type), getString(transaction.getTxType().getTxTypeDescRes())));
                 addView(getItemView(getStringWithColon(transactionTimeDescRes), transaction.getShowCreateTime()));
                 addView(getItemView(getStringWithColon(R.string.validator), getString(transaction.getNodeName())));
-                addView(getItemView(getStringWithColon(R.string.nodeId), AddressFormatUtil.formatAddress(transaction.getNodeId()), true));
+                addView(getItemView(getStringWithColon(R.string.nodeId), AddressFormatUtil.formatAddress(transaction.getNodeId()), transaction.getNodeId(), true));
                 addView(getItemView(getStringWithColon(R.string.version), transaction.getFormatVersion()));
                 addView(getItemView(getStringWithColon(R.string.stake_amount), getString(R.string.amount_with_unit, StringUtil.formatBalance(transaction.getShowValue()))));
                 break;
@@ -82,21 +82,21 @@ public class TransactionDetailInfoView extends LinearLayout {
                 addView(getItemView(getStringWithColon(R.string.type), getString(transaction.getTxType().getTxTypeDescRes())));
                 addView(getItemView(getStringWithColon(transactionTimeDescRes), transaction.getShowCreateTime()));
                 addView(getItemView(getStringWithColon(R.string.validator), getString(transaction.getNodeName())));
-                addView(getItemView(getStringWithColon(R.string.nodeId), AddressFormatUtil.formatAddress(transaction.getNodeId()), true));
+                addView(getItemView(getStringWithColon(R.string.nodeId), AddressFormatUtil.formatAddress(transaction.getNodeId()), transaction.getNodeId(), true));
                 addView(getItemView(getStringWithColon(R.string.stake_amount), getString(R.string.amount_with_unit, StringUtil.formatBalance(transaction.getShowValue()))));
                 break;
             case INCREASE_STAKING:
                 addView(getItemView(getStringWithColon(R.string.type), getString(transaction.getTxType().getTxTypeDescRes())));
                 addView(getItemView(getStringWithColon(transactionTimeDescRes), transaction.getShowCreateTime()));
                 addView(getItemView(getStringWithColon(R.string.validator), getString(transaction.getNodeName())));
-                addView(getItemView(getStringWithColon(R.string.nodeId), AddressFormatUtil.formatAddress(transaction.getNodeId()), true));
+                addView(getItemView(getStringWithColon(R.string.nodeId), AddressFormatUtil.formatAddress(transaction.getNodeId()), transaction.getNodeId(), true));
                 addView(getItemView(getStringWithColon(R.string.stake_increase_amount), getString(R.string.amount_with_unit, StringUtil.formatBalance(transaction.getShowValue()))));
                 break;
             case EXIT_VALIDATOR:
                 addView(getItemView(getStringWithColon(R.string.type), getString(transaction.getTxType().getTxTypeDescRes())));
                 addView(getItemView(getStringWithColon(transactionTimeDescRes), transaction.getShowCreateTime()));
                 addView(getItemView(getStringWithColon(R.string.validator), getString(transaction.getNodeName())));
-                addView(getItemView(getStringWithColon(R.string.nodeId), AddressFormatUtil.formatAddress(transaction.getNodeId()), true));
+                addView(getItemView(getStringWithColon(R.string.nodeId), AddressFormatUtil.formatAddress(transaction.getNodeId()), transaction.getNodeId(), true));
                 addView(getItemView(getStringWithColon(R.string.return_amount), getString(R.string.amount_with_unit, StringUtil.formatBalance(transaction.getShowValue()))));
                 break;
             case DELEGATE:
@@ -104,7 +104,7 @@ public class TransactionDetailInfoView extends LinearLayout {
                 addView(getItemView(getStringWithColon(R.string.type), transaction.getTxType() == TransactionType.DELEGATE ? getString(R.string.delegate) : getString(R.string.undelegate)));
                 addView(getItemView(getStringWithColon(transactionTimeDescRes), transaction.getShowCreateTime()));
                 addView(getItemView(getStringWithColon(transaction.getTxType() == TransactionType.DELEGATE ? R.string.delegated_to : R.string.undelegated_from), transaction.getNodeName()));
-                addView(getItemView(getStringWithColon(R.string.nodeId), AddressFormatUtil.formatAddress(transaction.getNodeId()), true));
+                addView(getItemView(getStringWithColon(R.string.nodeId), AddressFormatUtil.formatAddress(transaction.getNodeId()), transaction.getNodeId(), true));
                 addView(getItemView(transaction.getTxType() == TransactionType.DELEGATE ? getStringWithColon(R.string.delegation_amount) : getStringWithColon(R.string.withdrawal_amount), getString(R.string.amount_with_unit, StringUtil.formatBalance(transaction.getShowValue()))));
                 if (BigDecimalUtil.isBiggerThanZero(transaction.getTotalReward())) {
                     addView(getItemView(getStringWithColon(R.string.reward_amount), getString(R.string.amount_with_unit, StringUtil.formatBalance(transaction.getShowTotalReward()))));
@@ -118,8 +118,8 @@ public class TransactionDetailInfoView extends LinearLayout {
                 addView(getItemView(getStringWithColon(R.string.type), getString(transaction.getTxType().getTxTypeDescRes())));
                 addView(getItemView(getStringWithColon(transactionTimeDescRes), transaction.getShowCreateTime()));
                 addView(getItemView(getStringWithColon(R.string.validator), getString(transaction.getNodeName())));
-                addView(getItemView(getStringWithColon(R.string.nodeId), AddressFormatUtil.formatAddress(transaction.getNodeId()), true));
-                addView(getItemView(getStringWithColon(R.string.proposal_id), AddressFormatUtil.formatAddress(transaction.getProposalId()), true));
+                addView(getItemView(getStringWithColon(R.string.nodeId), AddressFormatUtil.formatAddress(transaction.getNodeId()), transaction.getNodeId(), true));
+                addView(getItemView(getStringWithColon(R.string.proposal_id), AddressFormatUtil.formatAddress(transaction.getProposalId()), transaction.getProposalId(), true));
                 addView(getItemView(getStringWithColon(R.string.pip_number), TextUtils.isEmpty(transaction.getPiDID()) ? "--" : String.format("%s-%s", "PIP", transaction.getPiDID())));
                 addView(getItemView(getStringWithColon(R.string.proposal_type), getString(transaction.getProposalTypeDescRes())));
                 if (transaction.getTxType() == TransactionType.VOTING_PROPOSAL) {
@@ -130,20 +130,20 @@ public class TransactionDetailInfoView extends LinearLayout {
                 addView(getItemView(getStringWithColon(R.string.type), getString(transaction.getTxType().getTxTypeDescRes())));
                 addView(getItemView(getStringWithColon(transactionTimeDescRes), transaction.getShowCreateTime()));
                 addView(getItemView(getStringWithColon(R.string.validator), getString(transaction.getNodeName())));
-                addView(getItemView(getStringWithColon(R.string.nodeId), AddressFormatUtil.formatAddress(transaction.getNodeId()), true));
+                addView(getItemView(getStringWithColon(R.string.nodeId), AddressFormatUtil.formatAddress(transaction.getNodeId()), transaction.getNodeId(), true));
                 addView(getItemView(getStringWithColon(R.string.version), transaction.getFormatVersion()));
                 break;
             case REPORT_VALIDATOR:
                 addView(getItemView(getStringWithColon(R.string.type), getString(transaction.getTxType().getTxTypeDescRes())));
                 addView(getItemView(getStringWithColon(transactionTimeDescRes), transaction.getShowCreateTime()));
                 addView(getItemView(getStringWithColon(R.string.reported), transaction.getNodeName()));
-                addView(getItemView(getStringWithColon(R.string.nodeId), AddressFormatUtil.formatAddress(transaction.getNodeId()), true));
+                addView(getItemView(getStringWithColon(R.string.nodeId), AddressFormatUtil.formatAddress(transaction.getNodeId()), transaction.getNodeId(), true));
                 addView(getItemView(getStringWithColon(R.string.report_type), getString(transaction.getReportTypeDescRes())));
                 break;
             case CREATE_RESTRICTING:
                 addView(getItemView(getStringWithColon(R.string.type), getString(transaction.getTxType().getTxTypeDescRes())));
                 addView(getItemView(getStringWithColon(transactionTimeDescRes), transaction.getShowCreateTime()));
-                addView(getItemView(getStringWithColon(R.string.restricted_account), AddressFormatUtil.formatAddress(transaction.getLockAddress()), true));
+                addView(getItemView(getStringWithColon(R.string.restricted_account), AddressFormatUtil.formatAddress(transaction.getLockAddress()), transaction.getLockAddress(), true));
                 addView(getItemView(getStringWithColon(R.string.restricted_amount), getString(R.string.amount_with_unit, StringUtil.formatBalance(transaction.getShowValue()))));
                 break;
             case CLAIM_REWARDS:
@@ -158,9 +158,9 @@ public class TransactionDetailInfoView extends LinearLayout {
 
         addView(getItemView(getStringWithColon(R.string.fee), getString(R.string.amount_with_unit, transaction.getShowActualTxCost())));
         if (!TextUtils.isEmpty(transaction.getBlockNumber())) {
-            addView(getItemView(getStringWithColon(R.string.msg_confirmation_block), String.valueOf(transaction.getBlockNumber()), true));
+            addView(getItemView(getStringWithColon(R.string.msg_confirmation_block), String.valueOf(transaction.getBlockNumber()), transaction.getBlockNumber(), true));
         }
-        addView(getItemView(getStringWithColon(R.string.msg_transaction_hash), AddressFormatUtil.formatAddress(transaction.getHash()), true));
+        addView(getItemView(getStringWithColon(R.string.msg_transaction_hash), AddressFormatUtil.formatAddress(transaction.getHash()), transaction.getHash(), true));
 
     }
 
@@ -170,7 +170,7 @@ public class TransactionDetailInfoView extends LinearLayout {
     }
 
 
-    private View getItemView(String key, String value, boolean isShowCopyImage) {
+    private View getItemView(String key, String value, String originalValue, boolean isShowCopyImage) {
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.item_transaction_detail_info, null);
         TextView keyTv = contentView.findViewById(R.id.tv_key);
         TextView valueTv = contentView.findViewById(R.id.tv_value);
@@ -179,7 +179,7 @@ public class TransactionDetailInfoView extends LinearLayout {
         iv_copy_hash.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                CommonUtil.copyTextToClipboard(getContext(), value);
+                CommonUtil.copyTextToClipboard(getContext(), originalValue);
             }
         });
         keyTv.setText(key);
