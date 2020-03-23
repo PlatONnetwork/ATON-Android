@@ -22,10 +22,8 @@ import com.trello.rxlifecycle2.android.FragmentEvent;
 import org.web3j.crypto.Credentials;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
@@ -123,7 +121,7 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
             insertAndDeleteTransactionRecord(transaction.buildTransactionRecordEntity());
             backToTransactionListWithDelay();
         } else {
-            TransactionDetailActivity.actionStart(getContext(), transaction, Arrays.asList(transaction.getFrom()));
+            TransactionDetailActivity.actionStart(getContext(), transaction, Collections.singletonList(transaction.getFrom()));
         }
     }
 
@@ -135,13 +133,10 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
         Single
                 .timer(1000, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
                 .compose(bindToLifecycle())
-                .subscribe(new Consumer<Long>() {
-                    @Override
-                    public void accept(Long aLong) throws Exception {
-                        if (isViewAttached()) {
-                            getView().resetView();
-                            getView().showTab(AssetsFragment.MainTab.TRANSACTION_LIST);
-                        }
+                .subscribe(aLong -> {
+                    if (isViewAttached()) {
+                        getView().resetView();
+                        getView().showTab(AssetsFragment.MainTab.TRANSACTION_LIST);
                     }
                 });
     }
@@ -149,13 +144,7 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
     private void insertAndDeleteTransactionRecord(TransactionRecordEntity transactionRecordEntity) {
         if (AppSettings.getInstance().getResendReminder()) {
             Single
-                    .fromCallable(new Callable<Boolean>() {
-
-                        @Override
-                        public Boolean call() throws Exception {
-                            return TransactionRecordDao.insertTransactionRecord(transactionRecordEntity) && TransactionRecordDao.deleteTimeoutTransactionRecord();
-                        }
-                    })
+                    .fromCallable(() -> TransactionRecordDao.insertTransactionRecord(transactionRecordEntity) && TransactionRecordDao.deleteTimeoutTransactionRecord())
                     .subscribeOn(Schedulers.io())
                     .subscribe();
         }
@@ -175,8 +164,8 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
     }
 
     private Wallet getSelectedWallet() {
-        for (int i = 0; i < mWalletList.size(); i++) {
-            return mWalletList.get(i);
+        if (mWalletList != null && !mWalletList.isEmpty()) {
+            return mWalletList.get(0);
         }
         return null;
     }

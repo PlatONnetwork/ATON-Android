@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CancellationSignal;
@@ -13,10 +12,10 @@ import android.support.annotation.Nullable;
 import android.view.KeyEvent;
 import android.view.View;
 
-import com.platon.biometric.BiometricPromptCompat;
 import com.platon.aton.R;
 import com.platon.aton.app.Constants;
 import com.platon.aton.component.ui.base.BaseActivity;
+import com.platon.biometric.BiometricPromptCompat;
 
 public class UnlockFigerprintActivity extends BaseActivity implements View.OnClickListener{
 
@@ -128,11 +127,7 @@ public class UnlockFigerprintActivity extends BaseActivity implements View.OnCli
     private BiometricPromptCompat.IAuthenticationCallback mCallback = new BiometricPromptCompat.IAuthenticationCallback(){
         @Override
         public void onAuthenticationError(int errorCode, @Nullable CharSequence errString) {
-            //多次指纹密码验证错误后，进入此方法；并且，不可再验（短时间）
-            if (errorCode == FingerprintManager.FINGERPRINT_ERROR_LOCKOUT){
-//                mCancellationSignal.cancel();
-            }else {
-            }
+
         }
 
         @Override

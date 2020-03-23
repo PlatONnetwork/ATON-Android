@@ -100,7 +100,7 @@ public class TransactionRecordPresenterTest {
         List<Transaction> list = new ArrayList<>();
         Transaction transaction = new Transaction();
         transaction.setActualTxCost("0.005648");
-        transaction.setBlockNumber(10556);
+        transaction.setBlockNumber("10556");
         transaction.setNodeId("0xfa4a45sfa54s4dfa5s");
         transaction.setNodeName("Node-1");
         transaction.setFrom("0x4ded81199608adb765fb2fe029bbfdf57f538be8");
@@ -109,7 +109,7 @@ public class TransactionRecordPresenterTest {
 
         Transaction transaction2 = new Transaction();
         transaction.setActualTxCost("0.005648");
-        transaction.setBlockNumber(10556);
+        transaction.setBlockNumber("10556");
         transaction.setNodeId("0xfa4a45sfa54s4dfa5s");
         transaction.setNodeName("Node-1");
         transaction.setFrom("0x4ded81199608adb765fb2fe029bbfdf57f538be8");
@@ -118,7 +118,7 @@ public class TransactionRecordPresenterTest {
 
         Transaction transaction3 = new Transaction();
         transaction.setActualTxCost("0.005648");
-        transaction.setBlockNumber(10556);
+        transaction.setBlockNumber("10556");
         transaction.setNodeId("0xfa4a45sfa54s4dfa5s");
         transaction.setNodeName("Node-1");
         transaction.setSequence(1035);
@@ -152,7 +152,7 @@ public class TransactionRecordPresenterTest {
         List<Transaction> list = new ArrayList<>();
         Transaction transaction = new Transaction();
         transaction.setActualTxCost("0.005648");
-        transaction.setBlockNumber(10556);
+        transaction.setBlockNumber("10556");
         transaction.setNodeId("0xfa4a45sfa54s4dfa5s");
         transaction.setNodeName("Node-1");
         transaction.setFrom("0x4ded81199608adb765fb2fe029bbfdf57f538be8");
@@ -161,7 +161,7 @@ public class TransactionRecordPresenterTest {
 
         Transaction transaction2 = new Transaction();
         transaction.setActualTxCost("0.005648");
-        transaction.setBlockNumber(10556);
+        transaction.setBlockNumber("10556");
         transaction.setNodeId("0xfa4a45sfa54s4dfa5s");
         transaction.setNodeName("Node-1");
         transaction.setFrom("0x4ded81199608adb765fb2fe029bbfdf57f538be8");
@@ -170,7 +170,7 @@ public class TransactionRecordPresenterTest {
 
         Transaction transaction3 = new Transaction();
         transaction.setActualTxCost("0.005648");
-        transaction.setBlockNumber(10556);
+        transaction.setBlockNumber("10556");
         transaction.setNodeId("0xfa4a45sfa54s4dfa5s");
         transaction.setNodeName("Node-1");
         transaction.setSequence(1035);
@@ -179,7 +179,7 @@ public class TransactionRecordPresenterTest {
 
         Transaction transaction4 = new Transaction();
         transaction.setActualTxCost("0.005648");
-        transaction.setBlockNumber(10556);
+        transaction.setBlockNumber("10556");
         transaction.setNodeId("0xfa4a45sfa54s4dfa5s");
         transaction.setNodeName("Node-1");
         transaction.setSequence(1055);

@@ -198,6 +198,8 @@ public class SwipeMenuListView extends ListView {
                     }
                     return true;
                 }
+            default:
+                break;
         }
         return super.onInterceptTouchEvent(ev);
     }
@@ -318,7 +320,6 @@ public class SwipeMenuListView extends ListView {
                 if (mTouchState == TouchState.TOUCH_STATE_X) {
                     if (mTouchView != null) {
                         boolean isBeforeOpen = mTouchView.isOpen();
-                        Log.e(TAG, "ev is null" + (ev == null ? "true" : "false"));
                         mTouchView.onSwipe(ev);
                         boolean isAfterOpen = mTouchView.isOpen();
                         Log.e(TAG, "isBeforeOpen is " + isBeforeOpen + "    isAfterOpen is " + isAfterOpen);
@@ -341,6 +342,8 @@ public class SwipeMenuListView extends ListView {
                     super.onTouchEvent(ev);
                     return true;
                 }
+                break;
+            default:
                 break;
         }
         return super.onTouchEvent(ev);

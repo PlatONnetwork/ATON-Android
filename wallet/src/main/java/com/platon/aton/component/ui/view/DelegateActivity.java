@@ -29,7 +29,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
-import com.platon.framework.util.RUtils;
 import com.platon.aton.R;
 import com.platon.aton.app.Constants;
 import com.platon.aton.app.CustomObserver;
@@ -68,6 +67,7 @@ import com.platon.aton.utils.SoftHideKeyboardUtils;
 import com.platon.aton.utils.StringUtil;
 import com.platon.aton.utils.ToastUtil;
 import com.platon.aton.utils.UMEventUtil;
+import com.platon.framework.util.RUtils;
 
 import org.web3j.platon.StakingAmountType;
 
@@ -196,7 +196,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                     @Override
                     public void accept(Object o) {
                         //选择余额类型
-                        ShowPopWindow(amounChoose);
+                        showPopWindow(amounChoose);
                     }
                 });
 
@@ -309,7 +309,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     }
 
     private void refreshData(DelegateType item) {
-        stakingAmountType = item.getType() == "0" ? StakingAmountType.FREE_AMOUNT_TYPE : StakingAmountType.RESTRICTING_AMOUNT_TYPE;
+        stakingAmountType = TextUtils.equals("0", item.getType()) ? StakingAmountType.FREE_AMOUNT_TYPE : StakingAmountType.RESTRICTING_AMOUNT_TYPE;
         amountType.setText(TextUtils.equals(item.getType(), "0") ? getString(R.string.available_balance) : getString(R.string.locked_balance));
         amount.setText(StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(item.getAmount(), "1E18"))), false));
     }
@@ -319,7 +319,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
      *
      * @param view
      */
-    public void ShowPopWindow(View view) {
+    public void showPopWindow(View view) {
         mPopupWindow.showAsDropDown(view);
     }
 

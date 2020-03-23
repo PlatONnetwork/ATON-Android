@@ -7,12 +7,12 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.multidex.MultiDex;
 
-import com.platon.framework.app.CoreApp;
 import com.platon.aton.app.AppFramework;
 import com.platon.aton.component.ui.view.UnlockFigerprintActivity;
 import com.platon.aton.config.AppSettings;
 import com.platon.aton.engine.DeviceManager;
 import com.platon.aton.engine.WalletManager;
+import com.platon.framework.app.CoreApp;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
 import com.umeng.socialize.PlatformConfig;
@@ -25,7 +25,8 @@ import io.reactivex.plugins.RxJavaPlugins;
  */
 public class App extends CoreApp {
 
-    private final static long MAX_TIMEINMILLS = 2 * 60 * 1000;
+    private final static long MAX_TIME = 120000;
+
     private static Context context;
     private int mActivityAmount = 0;
     private long mBackgroundTimeInMills;
@@ -61,8 +62,9 @@ public class App extends CoreApp {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         //非默认值
-        if (newConfig.fontScale != 1)
+        if (newConfig.fontScale != 1) {
             getResources();
+        }
         super.onConfigurationChanged(newConfig);
     }
 
@@ -109,7 +111,7 @@ public class App extends CoreApp {
             if (mActivityAmount == 0) {
                 long timeInMills = System.currentTimeMillis();
                 if (mBackgroundTimeInMills > 0 &&
-                        timeInMills - mBackgroundTimeInMills > MAX_TIMEINMILLS &&
+                        timeInMills - mBackgroundTimeInMills > MAX_TIME &&
                         AppSettings.getInstance().getFaceTouchIdFlag() &&
                         !WalletManager.getInstance().getWalletList().isEmpty()) {
                     UnlockFigerprintActivity.actionStart(activity);

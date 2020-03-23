@@ -1,20 +1,28 @@
 package com.platon.aton.engine;
 
 import android.app.Application;
-import com.platon.framework.app.log.Log;
-import com.platon.framework.network.ApiRequestBody;
-import com.platon.framework.network.ApiResponse;
-import com.platon.framework.util.LogUtils;
+
 import com.platon.aton.BuildConfig;
 import com.platon.aton.app.Constants;
 import com.platon.aton.config.AppSettings;
 import com.platon.aton.db.sqlite.TransactionDao;
+import com.platon.aton.entity.GasProvider;
 import com.platon.aton.entity.Node;
+import com.platon.aton.entity.RPCErrorCode;
+import com.platon.aton.entity.RPCTransactionResult;
+import com.platon.aton.entity.SubmitTransactionData;
 import com.platon.aton.entity.Transaction;
 import com.platon.aton.entity.TransactionReceipt;
 import com.platon.aton.entity.TransactionStatus;
 import com.platon.aton.event.EventPublisher;
 import com.platon.aton.rxjavatest.RxJavaTestSchedulerRule;
+import com.platon.aton.utils.JSONUtil;
+import com.platon.aton.utils.NumberParserUtils;
+import com.platon.framework.app.log.Log;
+import com.platon.framework.network.ApiRequestBody;
+import com.platon.framework.network.ApiResponse;
+import com.platon.framework.util.LogUtils;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -26,11 +34,22 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLog;
+import org.web3j.crypto.Hash;
+import org.web3j.platon.ErrorCode;
+import org.web3j.platon.FunctionType;
+import org.web3j.protocol.exceptions.ClientConnectionException;
+
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
 import io.reactivex.Flowable;
+import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
+import io.reactivex.SingleSource;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
@@ -49,7 +68,8 @@ public class TransactionManagerTest {
     @Mock
     public Node node;
 
-    public  Web3jManager web3jManager;
+    public Web3jManager web3jManager;
+
     @Before
     public void setup() {
         Application app = RuntimeEnvironment.application;
@@ -59,7 +79,7 @@ public class TransactionManagerTest {
         nodeManager = NodeManager.getInstance();
         node = new Node.Builder().build();
         nodeManager.setCurNode(node);
-         web3jManager = Web3jManager.getInstance();
+        web3jManager = Web3jManager.getInstance();
         //输出日志
         ShadowLog.stream = System.out;
 
@@ -67,7 +87,7 @@ public class TransactionManagerTest {
     }
 
     @Test
-    public  void sendTransaction() throws IOException {
+    public void sendTransaction() throws IOException {
 //        String privateKey = "705324c0aa7e796a9f13cb015f29c9782cdff35144c09c737c766a45f5065d6e";
 //        String from ="0xa577c0230df2cb329415bfebcb936496ab8ae2e4";
 //        String toAddress ="0x3d4cee0fb811034dab8ddda086f4448ee3124cc2";
@@ -90,8 +110,8 @@ public class TransactionManagerTest {
     }
 
     @Test
-    public  void getTransactionByLoop(){
-        Transaction transaction =new Transaction.Builder()
+    public void getTransactionByLoop() {
+        Transaction transaction = new Transaction.Builder()
                 .hash("0x7c60553fe3dcdf19f641ee58c5691e49b63c4d7055b92fe1b09b517471f26143")
                 .from("0xa577c0230df2cb329415bfebcb936496ab8ae2e4")
                 .to("0x3d4cee0fb811034dab8ddda086f4448ee3124cc2")
@@ -187,6 +207,73 @@ public class TransactionManagerTest {
         Log.debug("======", "得到结果result---------->" + receipt.getHash() + "==========" + receipt.getStatus());
     }
 
+    @Test
+    public void getGasProvider() {
+
+        String from = "0x4ded81199608adb765fb2fe029bbfdf57f538be8";
+        String nodeId = "0xdac7931462dc0db97d9a0010c5719411810c06f90bd8b66432113a6f31bf9d1ab8a8f7db5bbbc76f4448ad6b3215cb527ba3276e185f9ba2360ef09be62d90c5";
+
+        GasProvider gasProvider = ServerUtils.getCommonApi().getGasProvider(ApiRequestBody.newBuilder()
+                .put("from", from)
+                .put("txType", FunctionType.DELEGATE_FUNC_TYPE)
+                .put("nodeId", nodeId)
+                .build())
+                .map(new Function<Response<ApiResponse<GasProvider>>, GasProvider>() {
+
+                    @Override
+                    public GasProvider apply(Response<ApiResponse<GasProvider>> apiResponseResponse) throws Exception {
+                        return apiResponseResponse.isSuccessful() && apiResponseResponse.body().getData() != null ? apiResponseResponse.body().getData() : new GasProvider();
+                    }
+                })
+                .blockingGet();
+
+        Log.debug("getGasProvider", gasProvider.toString());
+
+    }
+
+    @Test
+    public void submitSignedTransaction() {
+
+        String signedMessage = "";
+        String remark = "haha";
+        String sign = "";
+
+        RPCTransactionResult rpcTransactionResult = ServerUtils.getCommonApi().submitSignedTransaction(ApiRequestBody.newBuilder()
+                .put("data", JSONUtil.toJSONString(new SubmitTransactionData(signedMessage, remark)))
+                .put("sign", sign)
+                .build())
+                .flatMap(new Function<Response<ApiResponse<String>>, SingleSource<RPCTransactionResult>>() {
+                    @Override
+                    public SingleSource<RPCTransactionResult> apply(Response<ApiResponse<String>> apiResponseResponse) {
+
+                        return Single.create(new SingleOnSubscribe<RPCTransactionResult>() {
+                            @Override
+                            public void subscribe(SingleEmitter<RPCTransactionResult> emitter) {
+
+                                if (apiResponseResponse != null && apiResponseResponse.isSuccessful() && apiResponseResponse.body().getErrorCode() == ErrorCode.SUCCESS) {
+                                    emitter.onSuccess(new RPCTransactionResult(RPCErrorCode.SUCCESS, apiResponseResponse.body().getData()));
+                                } else {
+                                    emitter.onSuccess(new RPCTransactionResult(apiResponseResponse.body().getErrorCode()));
+                                }
+                            }
+                        });
+                    }
+                })
+                .onErrorReturn(new Function<Throwable, RPCTransactionResult>() {
+                    @Override
+                    public RPCTransactionResult apply(Throwable throwable) {
+                        if (throwable instanceof SocketTimeoutException) {
+                            return new RPCTransactionResult(RPCErrorCode.SOCKET_TIMEOUT, Hash.sha3(signedMessage));
+                        } else if (throwable instanceof ClientConnectionException) {
+                            return new RPCTransactionResult(RPCErrorCode.CONNECT_TIMEOUT);
+                        }
+                        return null;
+                    }
+                })
+                .blockingGet();
+
+        Log.debug("submitSignedTransaction", rpcTransactionResult.toString());
+    }
 
 
 }

@@ -1,7 +1,6 @@
 package com.platon.aton.config;
 
 import android.content.Context;
-import android.os.Build;
 import android.os.Environment;
 
 import com.platon.framework.fs.Directory;
@@ -35,11 +34,9 @@ public class JZDirectroyContext extends DirectroyContext {
     }
 
     private File getExternalFilesDir(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
-            File path = context.getExternalFilesDir(null);
-            if (path != null) {
-                return path;
-            }
+        File path = context.getExternalFilesDir(null);
+        if (path != null) {
+            return path;
         }
         final String filesDir = "/Android/data/" + context.getPackageName() + "/files/";
         return new File(Environment.getExternalStorageDirectory().getPath() + filesDir);
@@ -49,22 +46,22 @@ public class JZDirectroyContext extends DirectroyContext {
     protected Collection<Directory> initDirectories() {
         List<Directory> children = new ArrayList<Directory>();
         //添加edge目录
-        Directory dir = newDirectory(JZDirType.plat);
+        Directory dir = createDirectory(JZDirType.plat);
         children.add(dir);
         //添加log目录
-        dir = newDirectory(JZDirType.log);
+        dir = createDirectory(JZDirType.log);
         children.add(dir);
         //添加crash目录
-        dir = newDirectory(JZDirType.crash);
+        dir = createDirectory(JZDirType.crash);
         children.add(dir);
         //添加cache目录
-        dir = newDirectory(JZDirType.cache);
+        dir = createDirectory(JZDirType.cache);
         children.add(dir);
         //添加raw目录
-        dir = newDirectory(JZDirType.raw);
+        dir = createDirectory(JZDirType.raw);
         children.add(dir);
         //添加user目录
-        dir = newDirectory(JZDirType.user);
+        dir = createDirectory(JZDirType.user);
         children.add(dir);
 
 
@@ -82,7 +79,7 @@ public class JZDirectroyContext extends DirectroyContext {
         return children;
     }
 
-    private Directory newDirectory(String type) {
+    private Directory createDirectory(String type) {
         Directory child = new Directory(type, null);
         child.setType(type);
         if (type.equals(JZDirType.cache)) {

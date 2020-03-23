@@ -140,7 +140,7 @@ public class WithDrawBalance implements Parcelable {
             return true;
         }
 
-        if (obj.getClass() == getClass()) {
+        if (obj instanceof WithDrawBalance) {
             WithDrawBalance withDrawBalance = (WithDrawBalance) obj;
             return TextUtils.equals(withDrawBalance.delegated, delegated)
                     && TextUtils.equals(withDrawBalance.released, released)
@@ -152,7 +152,7 @@ public class WithDrawBalance implements Parcelable {
     }
 
     public org.web3j.tx.gas.GasProvider getGasProvider() {
-        
+
         return new GasProvider() {
             @Override
             public BigInteger getGasPrice() {

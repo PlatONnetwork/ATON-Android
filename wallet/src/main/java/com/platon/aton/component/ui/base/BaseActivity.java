@@ -3,7 +3,6 @@ package com.platon.aton.component.ui.base;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.view.View;
@@ -12,14 +11,14 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 
 import com.gyf.immersionbar.ImmersionBar;
-import com.platon.framework.app.activity.CoreFragmentActivity;
-import com.platon.framework.util.LogUtils;
 import com.platon.aton.BuildConfig;
 import com.platon.aton.R;
 import com.platon.aton.component.ui.BaseContextImpl;
 import com.platon.aton.component.ui.CustomContextWrapper;
 import com.platon.aton.component.ui.IContext;
 import com.platon.aton.utils.LanguageUtil;
+import com.platon.framework.app.activity.CoreFragmentActivity;
+import com.platon.framework.util.LogUtils;
 import com.trello.rxlifecycle2.LifecycleProvider;
 import com.trello.rxlifecycle2.LifecycleTransformer;
 import com.trello.rxlifecycle2.RxLifecycle;
@@ -40,8 +39,6 @@ import io.reactivex.subjects.BehaviorSubject;
  * @author matrixelement
  */
 public abstract class BaseActivity extends CoreFragmentActivity implements IContext, LifecycleProvider<ActivityEvent> {
-
-    public static String DEFAULT_COVERAGE_FILE_PATH = Environment.getExternalStorageDirectory() + "/";
 
     private final BehaviorSubject<ActivityEvent> lifecycleSubject = BehaviorSubject.create();
     private InputMethodManager mInputMethodManager;
@@ -308,11 +305,13 @@ public abstract class BaseActivity extends CoreFragmentActivity implements ICont
      */
     public void generateCoverageFile() {
 
+        String filePath = getFilesDir().getAbsolutePath();
+
         OutputStream out = null;
 
         try {
             //在SDcard根目录下生产检测报告，文件名自定义
-            out = new FileOutputStream(DEFAULT_COVERAGE_FILE_PATH + "/coverage.ec", false);
+            out = new FileOutputStream(filePath + "/coverage.ec", false);
             Object agent = Class.forName("org.jacoco.agent.rt.RT").getMethod("getAgent").invoke(null);
             // 这里之下就统计不到了
             out.write((byte[]) agent.getClass().getMethod("getExecutionData", boolean.class).invoke(agent, false));

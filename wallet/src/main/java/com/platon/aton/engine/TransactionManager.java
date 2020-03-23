@@ -2,9 +2,6 @@ package com.platon.aton.engine;
 
 import android.text.TextUtils;
 
-import com.platon.framework.network.ApiRequestBody;
-import com.platon.framework.network.ApiResponse;
-import com.platon.framework.util.MapUtils;
 import com.platon.aton.app.Constants;
 import com.platon.aton.app.CustomThrowable;
 import com.platon.aton.db.sqlite.TransactionDao;
@@ -22,6 +19,9 @@ import com.platon.aton.utils.BigDecimalUtil;
 import com.platon.aton.utils.JSONUtil;
 import com.platon.aton.utils.NumberParserUtils;
 import com.platon.aton.utils.SignCodeUtils;
+import com.platon.framework.network.ApiRequestBody;
+import com.platon.framework.network.ApiResponse;
+import com.platon.framework.util.MapUtils;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
@@ -174,10 +174,12 @@ public class TransactionManager {
                             @Override
                             public void subscribe(SingleEmitter<RPCTransactionResult> emitter) {
 
-                                if (apiResponseResponse != null && apiResponseResponse.isSuccessful() && apiResponseResponse.body().getErrorCode() == ErrorCode.SUCCESS) {
-                                    emitter.onSuccess(new RPCTransactionResult(RPCErrorCode.SUCCESS, apiResponseResponse.body().getData()));
-                                } else {
-                                    emitter.onSuccess(new RPCTransactionResult(apiResponseResponse.body().getErrorCode()));
+                                if (apiResponseResponse != null) {
+                                    if (apiResponseResponse.isSuccessful() && apiResponseResponse.body().getErrorCode() == ErrorCode.SUCCESS) {
+                                        emitter.onSuccess(new RPCTransactionResult(RPCErrorCode.SUCCESS, apiResponseResponse.body().getData()));
+                                    } else {
+                                        emitter.onSuccess(new RPCTransactionResult(apiResponseResponse.body().getErrorCode()));
+                                    }
                                 }
                             }
                         });

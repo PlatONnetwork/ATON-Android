@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -396,6 +397,10 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
                 mediaPlayer.setVolume(BEEP_VOLUME, BEEP_VOLUME);
                 mediaPlayer.prepare();
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch (Resources.NotFoundException e) {
+                e.printStackTrace();
+            } finally {
                 mediaPlayer = null;
             }
         }

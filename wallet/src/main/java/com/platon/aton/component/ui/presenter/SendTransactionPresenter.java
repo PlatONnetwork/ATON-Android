@@ -472,7 +472,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
 
         BigInteger recommendedMinGasPrice = recommendedGasPrice.divide(BigInteger.valueOf(2));
         //推荐的最小值是否大于默认的最小值
-        boolean isRecommendedMinGasPriceBiggerThanDefaultMinGasPrice = recommendedMinGasPrice.compareTo(DEFAULT_MIN_GASPRICE) == 1;
+        boolean isRecommendedMinGasPriceBiggerThanDefaultMinGasPrice = recommendedMinGasPrice.compareTo(DEFAULT_MIN_GASPRICE) > 0;
         //如果推荐的最小值大于默认的最小值，则最小值取推荐的最小值，否则为默认的最小值
         minGasPrice = isRecommendedMinGasPriceBiggerThanDefaultMinGasPrice ? recommendedMinGasPrice : DEFAULT_MIN_GASPRICE;
         //如果推荐的最小值大于默认的最小值，则推荐值取推荐值，否则取默认的最小值

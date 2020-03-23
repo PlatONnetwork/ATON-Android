@@ -146,13 +146,15 @@ public class AutofitHelper {
                 displayMetrics));
 
         if (maxLines != 1) {
-            layout = new StaticLayout(text, paint, (int)targetWidth, Layout.Alignment.ALIGN_NORMAL,
+            layout = new StaticLayout(text, paint, (int) targetWidth, Layout.Alignment.ALIGN_NORMAL,
                     1.0f, 0.0f, true);
             lineCount = layout.getLineCount();
         }
 
-        if (SPEW) Log.d(TAG, "low=" + low + " high=" + high + " mid=" + mid +
-                " target=" + targetWidth + " maxLines=" + maxLines + " lineCount=" + lineCount);
+        if (SPEW) {
+            Log.d(TAG, "low=" + low + " high=" + high + " mid=" + mid +
+                    " target=" + targetWidth + " maxLines=" + maxLines + " lineCount=" + lineCount);
+        }
 
         if (lineCount > maxLines) {
             // For the case that `text` has more newline characters than `maxLines`.
@@ -161,19 +163,19 @@ public class AutofitHelper {
             }
             return getAutofitTextSize(text, paint, targetWidth, maxLines, low, mid, precision,
                     displayMetrics);
-        }
-        else if (lineCount < maxLines) {
+        } else if (lineCount < maxLines) {
             return getAutofitTextSize(text, paint, targetWidth, maxLines, mid, high, precision,
                     displayMetrics);
-        }
-        else {
+        } else {
             float maxLineWidth = 0;
             if (maxLines == 1) {
                 maxLineWidth = paint.measureText(text, 0, text.length());
             } else {
                 for (int i = 0; i < lineCount; i++) {
-                    if (layout.getLineWidth(i) > maxLineWidth) {
-                        maxLineWidth = layout.getLineWidth(i);
+                    if (layout != null) {
+                        if (layout.getLineWidth(i) > maxLineWidth) {
+                            maxLineWidth = layout.getLineWidth(i);
+                        }
                     }
                 }
             }
@@ -196,7 +198,7 @@ public class AutofitHelper {
                                     DisplayMetrics displayMetrics) {
         paint.setTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, size,
                 displayMetrics));
-        StaticLayout layout = new StaticLayout(text, paint, (int)width,
+        StaticLayout layout = new StaticLayout(text, paint, (int) width,
                 Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, true);
         return layout.getLineCount();
     }
@@ -207,8 +209,7 @@ public class AutofitHelper {
         TransformationMethod method = view.getTransformationMethod();
         if (method != null && method instanceof SingleLineTransformationMethod) {
             maxLines = 1;
-        }
-        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             // setMaxLines() and getMaxLines() are only available on android-16+
             maxLines = view.getMaxLines();
         }
@@ -311,7 +312,6 @@ public class AutofitHelper {
      * is adjusted based on the current density and user font size preference.
      *
      * @param size The scaled pixel size.
-     *
      * @attr ref me.grantland.R.styleable#AutofitTextView_minTextSize
      */
     public AutofitHelper setMinTextSize(float size) {
@@ -324,7 +324,6 @@ public class AutofitHelper {
      *
      * @param unit The desired dimension unit.
      * @param size The desired size in the given units.
-     *
      * @attr ref me.grantland.R.styleable#AutofitTextView_minTextSize
      */
     public AutofitHelper setMinTextSize(int unit, float size) {
@@ -359,7 +358,6 @@ public class AutofitHelper {
      * is adjusted based on the current density and user font size preference.
      *
      * @param size The scaled pixel size.
-     *
      * @attr ref android.R.styleable#TextView_textSize
      */
     public AutofitHelper setMaxTextSize(float size) {
@@ -372,7 +370,6 @@ public class AutofitHelper {
      *
      * @param unit The desired dimension unit.
      * @param size The desired size in the given units.
-     *
      * @attr ref android.R.styleable#TextView_textSize
      */
     public AutofitHelper setMaxTextSize(int unit, float size) {

@@ -566,7 +566,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
             default:
                 break;
         }
-        if (walletEntity != null) {
+        if (walletEntity != null && fragment != null) {
             Bundle bundle = new Bundle();
             bundle.putParcelable(Constants.Extra.EXTRA_WALLET, walletEntity);
             fragment.setArguments(bundle);

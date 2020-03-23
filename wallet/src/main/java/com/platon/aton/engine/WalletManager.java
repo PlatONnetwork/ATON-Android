@@ -86,6 +86,10 @@ public class WalletManager {
         return mSelectedWallet;
     }
 
+    public void setWalletList(List<Wallet> walletList) {
+        this.mWalletList = walletList;
+    }
+
     public void setSelectedWallet(Wallet mSelectedWallet) {
         this.mSelectedWallet = mSelectedWallet;
         EventPublisher.getInstance().sendUpdateSelectedWalletEvent(mSelectedWallet);
@@ -619,7 +623,7 @@ public class WalletManager {
 
     }
 
-    private int getPositionByAddress(String address) {
+    public int getPositionByAddress(String address) {
         return Flowable
                 .range(0, mWalletList.size())
                 .filter(new Predicate<Integer>() {

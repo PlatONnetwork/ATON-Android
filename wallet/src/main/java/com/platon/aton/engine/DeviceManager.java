@@ -64,7 +64,7 @@ public class DeviceManager {
                         // unless it's not available, then fallback on a random number which we store
                         // to a prefs file
                         try {
-                            if (!"9774d56d682e549c".equals(androidId)) {
+                            if (!"9774d56d682e549c".equals(androidId) && !TextUtils.isEmpty(androidId)) {
                                 deviceID = UUID.nameUUIDFromBytes(androidId.getBytes("utf8")).toString();
                             } else {
                                 deviceID = System.currentTimeMillis() + new String(MD5Utils.encode(SystemUtil.getMacAddr().getBytes()), "utf-8");
@@ -107,12 +107,14 @@ public class DeviceManager {
 
     //获取版本名
     public static String getVersionName(Context context) {
-        return getPackageInfo(context).versionName;
+        PackageInfo packageInfo = getPackageInfo(context);
+        return packageInfo != null ? packageInfo.versionName : null;
     }
 
     //获取版本号
     public static int getVersionCode(Context context) {
-        return getPackageInfo(context).versionCode;
+        PackageInfo packageInfo = getPackageInfo(context);
+        return packageInfo != null ? packageInfo.versionCode : 0;
     }
 
     //通过PackageInfo得到的想要启动的应用的包名
