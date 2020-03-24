@@ -4,8 +4,6 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.platon.aton.R;
-import com.platon.aton.component.ui.base.BaseActivity;
-import com.platon.aton.component.ui.base.BasePresenter;
 import com.platon.aton.component.ui.contract.AddNewAddressContract;
 import com.platon.aton.db.entity.AddressEntity;
 import com.platon.aton.db.sqlite.AddressDao;

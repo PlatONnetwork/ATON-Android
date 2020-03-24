@@ -8,7 +8,6 @@ import com.platon.aton.R;
 import com.platon.aton.app.CustomObserver;
 import com.platon.aton.app.CustomThrowable;
 import com.platon.aton.app.LoadingTransformer;
-import com.platon.aton.component.ui.base.BasePresenter;
 import com.platon.aton.component.ui.contract.MyDelegateContract;
 import com.platon.aton.component.ui.dialog.ClaimRewardsDialogFragment;
 import com.platon.aton.component.ui.dialog.InputWalletPasswordDialogFragment;

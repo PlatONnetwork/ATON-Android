@@ -3,8 +3,6 @@ package com.platon.aton.utils;
 import android.support.annotation.NonNull;
 
 import com.platon.aton.component.ui.IContext;
-import com.platon.aton.component.ui.base.BaseActivity;
-import com.platon.aton.component.ui.base.BaseFragment;
 import com.trello.rxlifecycle2.LifecycleTransformer;
 import com.trello.rxlifecycle2.android.ActivityEvent;
 import com.trello.rxlifecycle2.android.FragmentEvent;

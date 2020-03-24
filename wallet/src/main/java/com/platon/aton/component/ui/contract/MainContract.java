@@ -1,14 +1,13 @@
 package com.platon.aton.component.ui.contract;
 
-import com.platon.aton.component.ui.base.IPresenter;
-import com.platon.aton.component.ui.base.IView;
+import com.platon.aton.component.ui.IContext;
 
 /**
  * @author matrixelement
  */
 public class MainContract {
 
-    public interface View extends IView {
+    public interface View extends IContext {
 
         void exitApp();
     }

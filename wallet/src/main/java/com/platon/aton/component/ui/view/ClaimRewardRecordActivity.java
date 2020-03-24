@@ -12,7 +12,6 @@ import android.widget.LinearLayout;
 import com.platon.aton.R;
 import com.platon.aton.component.adapter.ClaimRewardRecordAdapter;
 import com.platon.aton.component.adapter.expandablerecycleradapter.BaseExpandableRecyclerViewAdapter;
-import com.platon.aton.component.ui.base.MVPBaseActivity;
 import com.platon.aton.component.ui.contract.ClaimRecordContract;
 import com.platon.aton.component.ui.presenter.ClaimRecordPresenter;
 import com.platon.aton.component.ui.presenter.Direction;

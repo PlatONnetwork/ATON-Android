@@ -7,6 +7,8 @@ import android.text.TextUtils;
 
 import com.platon.aton.component.ui.view.MainActivity;
 import com.platon.aton.config.AppSettings;
+import com.platon.framework.app.Constants;
+import com.platon.framework.utils.PreferenceTool;
 
 import java.util.Locale;
 
@@ -26,7 +28,7 @@ public class LanguageUtil {
 
         Configuration configuration = resources.getConfiguration();
 
-        String language = AppSettings.getInstance().getLanguage();
+        String language = PreferenceTool.getString(Constants.Preference.KEY_LANGUAGE);
 
         if (TextUtils.isEmpty(language)) {
             Locale locale = null;
@@ -44,7 +46,7 @@ public class LanguageUtil {
 
     public static void switchLanguage(Context context, Locale locale) {
 
-        AppSettings.getInstance().setLanguage(locale.getLanguage());
+        PreferenceTool.putString(Constants.Preference.KEY_LANGUAGE, locale.getLanguage());
 
         MainActivity.restart(context);
 

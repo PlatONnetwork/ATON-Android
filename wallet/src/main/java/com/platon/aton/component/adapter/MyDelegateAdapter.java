@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
-import com.platon.framework.util.RUtils;
+import com.platon.framework.utils.RUtils;
 import com.platon.aton.R;
 import com.platon.aton.component.widget.CircleImageView;
 import com.platon.aton.component.widget.PendingClaimRewardAnimationLayout;

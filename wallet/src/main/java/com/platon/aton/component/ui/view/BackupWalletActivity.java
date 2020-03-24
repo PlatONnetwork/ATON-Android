@@ -8,8 +8,6 @@ import android.view.View;
 import android.view.WindowManager;
 
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
-import com.platon.aton.component.ui.base.BaseActivity;
 import com.platon.aton.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.platon.aton.entity.Wallet;
 

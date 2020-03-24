@@ -11,9 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.component.adapter.DelegateRecordAdapter;
-import com.platon.aton.component.ui.base.MVPBaseFragment;
 import com.platon.aton.component.ui.contract.DelegateRecordContract;
 import com.platon.aton.component.ui.presenter.DelegateRecordPresenter;
 import com.platon.aton.component.widget.CustomRefreshFooter;

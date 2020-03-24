@@ -5,8 +5,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.ViewGroup;
 
-import com.platon.aton.component.ui.base.BaseFragment;
-
 import java.util.List;
 
 /**

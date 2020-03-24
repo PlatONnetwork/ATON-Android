@@ -18,8 +18,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
-import com.platon.aton.component.ui.base.MVPBaseActivity;
 import com.platon.aton.component.ui.contract.ManageWalletContract;
 import com.platon.aton.component.ui.dialog.CommonEditDialogFragment;
 import com.platon.aton.component.ui.dialog.CommonTipsDialogFragment;

@@ -12,7 +12,6 @@ import com.platon.aton.R;
 import com.platon.aton.app.CustomObserver;
 import com.platon.aton.app.CustomThrowable;
 import com.platon.aton.app.LoadingTransformer;
-import com.platon.aton.component.ui.base.BasePresenter;
 import com.platon.aton.component.ui.contract.SendTransationContract;
 import com.platon.aton.component.ui.dialog.CommonTipsDialogFragment;
 import com.platon.aton.component.ui.dialog.InputWalletPasswordDialogFragment;
@@ -47,10 +46,13 @@ import com.platon.aton.utils.JZWalletUtil;
 import com.platon.aton.utils.NumberParserUtils;
 import com.platon.aton.utils.RxUtils;
 import com.platon.aton.utils.StringUtil;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BasePresenter;
 import com.platon.framework.network.ApiRequestBody;
 import com.platon.framework.network.ApiResponse;
 import com.platon.framework.network.ApiSingleObserver;
 import com.platon.framework.network.NetConnectivity;
+import com.platon.framework.utils.PreferenceTool;
 import com.trello.rxlifecycle2.android.FragmentEvent;
 
 import org.web3j.crypto.Credentials;
@@ -378,7 +380,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
 
         TransactionRecordEntity transactionRecordEntity = new TransactionRecordEntity(System.currentTimeMillis(), walletEntity.getPrefixAddress(), toAddress, transferAmount, NodeManager.getInstance().getChainId());
 
-        if (AppSettings.getInstance().getResendReminder()) {
+        if (PreferenceTool.getBoolean(Constants.Preference.KEY_RESEND_REMINDER,true)) {
             Single
                     .fromCallable(new Callable<Boolean>() {
                         @Override
@@ -659,7 +661,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     }
 
     private void insertAndDeleteTransactionRecord(TransactionRecordEntity transactionRecordEntity) {
-        if (AppSettings.getInstance().getResendReminder()) {
+        if (PreferenceTool.getBoolean(Constants.Preference.KEY_RESEND_REMINDER,true)) {
             Single
                     .fromCallable(new Callable<Boolean>() {
 

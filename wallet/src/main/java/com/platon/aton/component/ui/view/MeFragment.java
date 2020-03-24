@@ -10,9 +10,7 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.app.CustomObserver;
-import com.platon.aton.component.ui.base.BaseFragment;
 import com.platon.aton.entity.WebType;
 import com.platon.aton.utils.RxUtils;
 

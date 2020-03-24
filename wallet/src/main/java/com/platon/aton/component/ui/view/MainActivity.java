@@ -19,11 +19,9 @@ import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
 
-import com.platon.framework.app.activity.ActivityManager;
-import com.platon.framework.util.AndroidUtil;
+import com.platon.framework.utils.AndroidUtil;
 import com.platon.aton.R;
 import com.platon.aton.app.Constants;
-import com.platon.aton.component.ui.base.MVPBaseActivity;
 import com.platon.aton.component.ui.contract.MainContract;
 import com.platon.aton.component.ui.presenter.MainPresenter;
 import com.platon.aton.component.widget.FragmentTabHost;

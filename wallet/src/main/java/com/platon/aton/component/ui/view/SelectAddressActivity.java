@@ -9,9 +9,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.component.adapter.SelectAddressListAdapter;
-import com.platon.aton.component.ui.base.MVPBaseActivity;
 import com.platon.aton.component.ui.contract.SelectAddressContract;
 import com.platon.aton.component.ui.presenter.SelectAddressPresenter;
 import com.platon.aton.component.widget.CommonTitleBar;

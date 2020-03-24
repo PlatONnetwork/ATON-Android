@@ -20,10 +20,8 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.app.CustomObserver;
 import com.platon.aton.component.adapter.MyDelegateAdapter;
-import com.platon.aton.component.ui.base.MVPBaseFragment;
 import com.platon.aton.component.ui.contract.MyDelegateContract;
 import com.platon.aton.component.ui.dialog.BaseDialogFragment;
 import com.platon.aton.component.ui.dialog.CommonGuideDialogFragment;
@@ -43,6 +41,9 @@ import com.platon.aton.utils.CommonTextUtils;
 import com.platon.aton.utils.DateUtil;
 import com.platon.aton.utils.DensityUtil;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.MVPBaseFragment;
+import com.platon.framework.utils.PreferenceTool;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -311,7 +312,7 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
     //接收event事件然后刷新
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void refreshMyDelegate(Event.UpdateDelegateTabEvent tabEvent) {
-        if (AppSettings.getInstance().getMydelegateTab()) {
+        if (PreferenceTool.getBoolean(Constants.Preference.KEY_MYDELEGATETAB,true)) {
             refreshLayout.autoRefresh();
         }
 
@@ -337,11 +338,8 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
-        if (isVisibleToUser) {
-            AppSettings.getInstance().setMydelegateTab(true);
-        } else {
-            AppSettings.getInstance().setMydelegateTab(false);
-        }
+        PreferenceTool.putBoolean(Constants.Preference.KEY_MYDELEGATETAB, isVisibleToUser);
+        PreferenceTool.getBoolean(Constants.Preference.KEY_MYDELEGATETAB, true);
     }
 
 

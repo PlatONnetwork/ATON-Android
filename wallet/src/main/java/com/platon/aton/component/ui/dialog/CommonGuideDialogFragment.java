@@ -9,7 +9,6 @@ import android.widget.ImageView;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.app.CustomObserver;
 import com.platon.aton.entity.GuideType;
 import com.platon.aton.utils.RxUtils;

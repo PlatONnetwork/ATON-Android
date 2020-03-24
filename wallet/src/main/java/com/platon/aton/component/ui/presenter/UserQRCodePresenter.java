@@ -9,12 +9,9 @@ import android.util.DisplayMetrics;
 import android.view.View;
 
 import com.google.zxing.encoding.EncodingHandler;
-import com.platon.framework.util.AndroidUtil;
+import com.platon.framework.utils.AndroidUtil;
 import com.platon.aton.R;
-import com.platon.aton.component.ui.base.BasePresenter;
 import com.platon.aton.component.ui.contract.UserQRCodeContract;
-import com.platon.aton.config.JZAppConfigure;
-import com.platon.aton.config.JZDirType;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.utils.PhotoUtil;
 

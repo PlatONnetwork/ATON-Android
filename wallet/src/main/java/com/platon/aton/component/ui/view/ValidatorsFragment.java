@@ -26,13 +26,11 @@ import com.jakewharton.rxbinding2.widget.RxRadioGroup;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.jakewharton.rxbinding2.widget.TextViewEditorActionEvent;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.app.CustomObserver;
 import com.platon.aton.component.adapter.ValidatorsAdapter;
 import com.platon.aton.component.adapter.VerifyNodeDiffCallback;
 import com.platon.aton.component.ui.OnItemClickListener;
 import com.platon.aton.component.ui.SortType;
-import com.platon.aton.component.ui.base.MVPBaseFragment;
 import com.platon.aton.component.ui.contract.ValidatorsContract;
 import com.platon.aton.component.ui.dialog.BaseDialogFragment;
 import com.platon.aton.component.ui.dialog.CommonGuideDialogFragment;
@@ -45,6 +43,9 @@ import com.platon.aton.entity.VerifyNode;
 import com.platon.aton.event.Event;
 import com.platon.aton.event.EventPublisher;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.MVPBaseFragment;
+import com.platon.framework.utils.PreferenceTool;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -375,7 +376,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
     //接收event事件然后刷新
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void refreshValidators(Event.UpdateValidatorsTabEvent tabEvent) {
-        if (AppSettings.getInstance().getValidatorsTab()) {
+        if (PreferenceTool.getBoolean(Constants.Preference.KEY_VALIDATORSTAB, false)) {
             refreshLayout.autoRefresh();
         }
 
@@ -390,11 +391,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
-        if (isVisibleToUser) {
-            AppSettings.getInstance().setValidatorsTab(true);
-        } else {
-            AppSettings.getInstance().setValidatorsTab(false);
-        }
+        PreferenceTool.putBoolean(Constants.Preference.KEY_VALIDATORSTAB, isVisibleToUser);
     }
 
     @Override

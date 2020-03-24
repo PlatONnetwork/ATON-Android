@@ -13,12 +13,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.platon.framework.util.RUtils;
+import com.platon.framework.utils.RUtils;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.component.adapter.TransactionDiffCallback;
 import com.platon.aton.component.adapter.TransactionListAdapter;
-import com.platon.aton.component.ui.base.MVPBaseActivity;
 import com.platon.aton.component.ui.contract.TransactionRecordsContract;
 import com.platon.aton.component.ui.presenter.TransactionRecordsPresenter;
 import com.platon.aton.component.widget.CommonVerticalItemDecoration;

@@ -1,6 +1,7 @@
 package com.platon.aton;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -12,7 +13,7 @@ import com.platon.aton.component.ui.view.UnlockFigerprintActivity;
 import com.platon.aton.config.AppSettings;
 import com.platon.aton.engine.DeviceManager;
 import com.platon.aton.engine.WalletManager;
-import com.platon.framework.app.CoreApp;
+import com.platon.framework.base.BaseAppDeletage;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
 import com.umeng.socialize.PlatformConfig;
@@ -23,13 +24,17 @@ import io.reactivex.plugins.RxJavaPlugins;
 /**
  * @author matrixelement
  */
-public class App extends CoreApp {
+public class App extends BaseAppDeletage {
 
     private final static long MAX_TIME = 120000;
 
     private static Context context;
     private int mActivityAmount = 0;
     private long mBackgroundTimeInMills;
+
+    public App(Application application) {
+        super(application);
+    }
 
     @Override
     public void onCreate() {

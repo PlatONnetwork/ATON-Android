@@ -1,0 +1,131 @@
+apply plugin: 'com.android.library'
+
+android {
+
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+
+        buildConfigField "String", "CHANNEL", 'PlatONNetwork'
+        buildConfigField("String", "UM_APPKEY", "${UM_APPKEY}")
+        buildConfigField("String", "SINA_APPKEY", "${SINA_APPKEY}")
+        buildConfigField("String", "SINA_APP_SECRET", "${SINA_APP_SECRET}")
+        buildConfigField("String", "SINA_APP_REDIRECT_URL", "${SINA_APP_REDIRECT_URL}")
+    }
+
+    buildTypes {
+
+        debug {
+
+        }
+        releaseC {
+
+        }
+        releaseJC {
+
+        }
+        releaseJOC {
+
+        }
+        releaseX {
+
+        }
+        releaseJX {
+
+        }
+        releaseTX {
+
+        }
+        releaseJTX {
+
+        }
+
+        flavorDimensions "channel"
+
+        productFlavors {
+
+            PlatONNetwork {
+                buildConfigField "String", "CHANNEL", '"PlatONNetwork"'
+
+                ndk {
+                    abiFilters 'armeabi-v7a', 'arm64-v8a', 'armeabi'
+                }
+            }
+
+            GooglePlay {
+                buildConfigField "String", "CHANNEL", '"GooglePlay"'
+
+                ndk {
+                    abiFilters 'armeabi-v7a', 'arm64-v8a', 'armeabi'
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.8.1'
+    api files('libs/bcprov-jdk16-146.jar')
+    api rootProject.ext.dependencies["support-v4"]
+    api rootProject.ext.dependencies["support-appcompat-v7"]
+    api rootProject.ext.dependencies["fastjson"]
+    api rootProject.ext.dependencies["retrofit-converter-gson"]
+    api rootProject.ext.dependencies["okhttp3"]
+    api rootProject.ext.dependencies["retrofit"]
+    api rootProject.ext.dependencies["adapter-rxjava"]
+    api rootProject.ext.dependencies["stetho"]
+    api rootProject.ext.dependencies["stetho-okhttp3"]
+    api rootProject.ext.dependencies["rxjava"]
+    api rootProject.ext.dependencies["rxandroid"]
+    api rootProject.ext.dependencies["support-gridlayout"]
+    api rootProject.ext.dependencies["support-design"]
+    api rootProject.ext.dependencies["support-annotations"]
+    api rootProject.ext.dependencies["support-recyclerview-v7"]
+    api rootProject.ext.dependencies["support-zxing"]
+    api rootProject.ext.dependencies["support-constraint-layout"]
+    api rootProject.ext.dependencies["support-multidex"]
+    api rootProject.ext.dependencies["web3j-core"]
+    api rootProject.ext.dependencies["web3j-crypto"]
+    api rootProject.ext.dependencies["bitcoinj-core"]
+    api rootProject.ext.dependencies["eventbus"]
+    api rootProject.ext.dependencies["rxlifecycle"]
+    api rootProject.ext.dependencies["rxlifecycle-android"]
+    api rootProject.ext.dependencies["rxlifecycle-components"]
+    api(rootProject.ext.dependencies["rxbinding"]) {
+        exclude group: 'com.android.support'
+    }
+    api(rootProject.ext.dependencies["rxbinding-appcompat-v7"]) {
+        exclude group: 'com.android.support'
+    }
+    api(rootProject.ext.dependencies["rxbinding-recyclerview-v7"]) {
+        exclude group: 'com.android.support'
+    }
+    api rootProject.ext.dependencies["rxpermissions"]
+    api rootProject.ext.dependencies["butterknife"]
+    annotationProcessor rootProject.ext.dependencies["butterknife-compiler"]
+    api rootProject.ext.dependencies["support-zxing"]
+    api rootProject.ext.dependencies["flexbox"]
+    api rootProject.ext.dependencies["tinypinyin"]
+    api rootProject.ext.dependencies["immersionbar"]
+    api rootProject.ext.dependencies["immersionbar-components"]
+    api rootProject.ext.dependencies["smarttablayout"]
+    api rootProject.ext.dependencies["umeng_common"]
+    api rootProject.ext.dependencies["umeng_analytics"]
+    api rootProject.ext.dependencies["SmartRefreshLayout"]
+    api rootProject.ext.dependencies["SmartRefreshHeader"]
+    //引入glide
+    api rootProject.ext.dependencies["glide"]
+    annotationProcessor rootProject.ext.dependencies["glide"]
+    api rootProject.ext.dependencies["webview-agentweb"]
+    api rootProject.ext.dependencies["rxandroid1"]
+    //单元测试用到的库
+    //junit
+    api rootProject.ext.dependencies["twitter-core"]
+    api rootProject.ext.dependencies["twitter-composer"]
+    api rootProject.ext.dependencies["walle"]
+    implementation files('libs/umeng-share-core-6.9.6.jar')
+    implementation files('libs/umeng-share-facebook-6.9.6.jar')
+    implementation files('libs/umeng-share-sina-full-6.9.6.jar')
+}

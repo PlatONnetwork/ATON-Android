@@ -1,7 +1,6 @@
 package com.platon.aton.engine;
 
 
-import com.platon.aton.app.Constants;
 import com.platon.aton.entity.RPCErrorCode;
 import com.platon.aton.entity.RPCNonceResult;
 

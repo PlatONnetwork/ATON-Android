@@ -8,9 +8,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.platon.aton.R;
-import com.platon.aton.component.ui.base.BaseActivity;
 import com.platon.aton.component.widget.CommonTitleBar;
 import com.platon.aton.utils.LanguageUtil;
+import com.platon.framework.base.BaseActivity;
 
 import java.util.Locale;
 

@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.platon.framework.util.RUtils;
+import com.platon.framework.utils.RUtils;
 import com.platon.aton.R;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.netlistener.NetworkType;

@@ -1,11 +1,10 @@
 package com.platon.aton.component.ui.contract;
 
-import com.platon.aton.component.ui.base.IPresenter;
-import com.platon.aton.component.ui.base.IView;
+import com.platon.aton.component.ui.IContext;
 
 public class CreateWalletContract {
 
-    public interface View extends IView {
+    public interface View extends IContext {
 
         void showNameError(String text, boolean isVisible);
 

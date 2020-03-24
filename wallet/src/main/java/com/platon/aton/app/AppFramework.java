@@ -6,10 +6,9 @@ import android.content.Intent;
 
 import com.platon.framework.network.NetConnectivity;
 import com.platon.framework.network.NetState;
-import com.platon.framework.util.RUtils;
+import com.platon.framework.utils.RUtils;
 import com.platon.aton.BuildConfig;
 import com.platon.aton.config.AppSettings;
-import com.platon.aton.config.JZAppConfigure;
 import com.platon.aton.engine.DeviceManager;
 import com.platon.aton.engine.NodeManager;
 import com.platon.aton.engine.WalletManager;

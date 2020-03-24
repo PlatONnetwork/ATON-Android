@@ -6,9 +6,11 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.platon.aton.R;
-import com.platon.aton.component.ui.base.BaseActivity;
 import com.platon.aton.component.widget.ShadowContainer;
 import com.platon.aton.config.AppSettings;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.utils.PreferenceTool;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,7 +38,7 @@ public class OperateMenuActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (!AppSettings.getInstance().getOperateMenuFlag()) {
+        if (!PreferenceTool.getBoolean(Constants.Preference.KEY_OPERATE_MENU_FLAG,true)) {
             this.finish();
         }
     }

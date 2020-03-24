@@ -11,7 +11,6 @@ import android.widget.ListView;
 
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.component.adapter.SelectWalletListAdapter;
 import com.platon.aton.component.widget.ShadowDrawable;
 import com.platon.aton.db.entity.WalletEntity;

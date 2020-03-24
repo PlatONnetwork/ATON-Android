@@ -3,7 +3,6 @@ package com.platon.aton.engine;
 import android.app.Application;
 
 import com.platon.aton.BuildConfig;
-import com.platon.aton.app.Constants;
 import com.platon.aton.config.AppSettings;
 import com.platon.aton.db.sqlite.TransactionDao;
 import com.platon.aton.entity.GasProvider;
@@ -21,7 +20,7 @@ import com.platon.aton.utils.NumberParserUtils;
 import com.platon.framework.app.log.Log;
 import com.platon.framework.network.ApiRequestBody;
 import com.platon.framework.network.ApiResponse;
-import com.platon.framework.util.LogUtils;
+import com.platon.framework.utils.LogUtils;
 
 import org.junit.Before;
 import org.junit.Rule;

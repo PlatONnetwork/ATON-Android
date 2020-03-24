@@ -1,6 +1,5 @@
 package com.platon.aton.db.sqlite;
 
-import com.platon.aton.app.Constants;
 import com.platon.aton.db.entity.TransactionRecordEntity;
 
 import java.util.ArrayList;

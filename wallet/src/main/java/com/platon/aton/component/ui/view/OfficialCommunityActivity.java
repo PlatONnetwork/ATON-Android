@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 
 import com.platon.aton.R;
 import com.platon.aton.component.adapter.OfficialCommunityAdapter;
-import com.platon.aton.component.ui.base.BaseActivity;
 import com.platon.aton.component.widget.CommonVerticalItemDecoration;
 import com.platon.aton.entity.OfficialCommunity;
 import com.platon.aton.entity.OfficialCommunityItem;

@@ -9,9 +9,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.component.adapter.AddressBookListAdapter;
-import com.platon.aton.component.ui.base.MVPBaseActivity;
 import com.platon.aton.component.ui.contract.AddressBookContract;
 import com.platon.aton.component.ui.presenter.AddressBookPresenter;
 import com.platon.aton.component.widget.CommonTitleBar;

@@ -10,9 +10,7 @@ import android.widget.ImageView;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.app.CustomObserver;
-import com.platon.aton.component.ui.base.BaseFragment;
 import com.platon.aton.component.widget.ShadowButton;
 import com.platon.aton.utils.CommonUtil;
 import com.platon.aton.utils.DensityUtil;

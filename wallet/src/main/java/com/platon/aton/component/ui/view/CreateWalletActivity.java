@@ -17,7 +17,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.platon.aton.R;
-import com.platon.aton.component.ui.base.MVPBaseActivity;
 import com.platon.aton.component.ui.contract.CreateWalletContract;
 import com.platon.aton.component.ui.presenter.CreateWalletPresenter;
 import com.platon.aton.component.widget.ShadowButton;

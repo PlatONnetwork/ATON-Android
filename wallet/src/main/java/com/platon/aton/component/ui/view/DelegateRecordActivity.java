@@ -10,11 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.platon.framework.util.AndroidUtil;
+import com.platon.framework.utils.AndroidUtil;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
-import com.platon.aton.component.ui.base.BaseActivity;
-import com.platon.aton.component.ui.base.BaseFragment;
 import com.platon.aton.component.widget.ViewPagerSlide;
 import com.platon.aton.component.widget.table.PagerItem;
 import com.platon.aton.component.widget.table.PagerItemAdapter;

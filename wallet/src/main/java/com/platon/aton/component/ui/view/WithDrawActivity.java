@@ -21,12 +21,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
-import com.platon.framework.util.RUtils;
+import com.platon.framework.utils.RUtils;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.app.CustomObserver;
 import com.platon.aton.component.adapter.WithDrawPopWindowAdapter;
-import com.platon.aton.component.ui.base.MVPBaseActivity;
 import com.platon.aton.component.ui.contract.WithDrawContract;
 import com.platon.aton.component.ui.dialog.BaseDialogFragment;
 import com.platon.aton.component.ui.dialog.CommonGuideDialogFragment;
@@ -55,7 +53,6 @@ import com.platon.aton.utils.GlideUtils;
 import com.platon.aton.utils.RxUtils;
 import com.platon.aton.utils.SoftHideKeyboardUtils;
 import com.platon.aton.utils.StringUtil;
-import com.platon.aton.utils.ToastUtil;
 import com.platon.aton.utils.UMEventUtil;
 
 import org.web3j.tx.gas.GasProvider;

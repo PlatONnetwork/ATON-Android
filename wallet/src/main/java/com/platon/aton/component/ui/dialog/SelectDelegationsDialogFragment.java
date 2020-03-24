@@ -14,7 +14,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.component.adapter.CommonAdapter;
 import com.platon.aton.component.adapter.base.ViewHolder;
 import com.platon.aton.entity.WithDrawBalance;

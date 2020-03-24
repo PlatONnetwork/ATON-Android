@@ -10,7 +10,6 @@ import android.widget.ListView;
 
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.app.CustomObserver;
 import com.platon.aton.component.adapter.CommonAdapter;
 import com.platon.aton.component.adapter.base.ViewHolder;

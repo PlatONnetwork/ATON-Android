@@ -15,10 +15,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
-import com.platon.framework.util.AndroidUtil;
+import com.platon.framework.utils.AndroidUtil;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
-import com.platon.aton.component.ui.base.MVPBaseActivity;
 import com.platon.aton.component.ui.contract.VerificationMnemonicContract;
 import com.platon.aton.component.ui.dialog.CommonTipsDialogFragment;
 import com.platon.aton.component.ui.dialog.OnDialogViewClickListener;

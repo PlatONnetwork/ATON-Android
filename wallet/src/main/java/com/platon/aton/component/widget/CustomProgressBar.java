@@ -14,7 +14,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.widget.ProgressBar;
 
-import com.platon.framework.util.AndroidUtil;
+import com.platon.framework.utils.AndroidUtil;
 import com.platon.aton.R;
 
 public class CustomProgressBar extends ProgressBar {

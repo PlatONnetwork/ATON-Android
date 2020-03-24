@@ -11,10 +11,8 @@ import android.widget.TextView;
 import com.platon.aton.BuildConfig;
 import com.platon.aton.R;
 import com.platon.aton.app.LoadingTransformer;
-import com.platon.aton.component.ui.base.BaseActivity;
 import com.platon.aton.entity.Node;
 import com.platon.aton.utils.RxUtils;
-import com.platon.aton.utils.ToastUtil;
 
 import org.web3j.protocol.Web3jFactory;
 import org.web3j.protocol.core.DefaultBlockParameterName;

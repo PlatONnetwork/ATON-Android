@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.text.TextUtils;
 
 import com.platon.aton.app.LoadingTransformer;
-import com.platon.aton.component.ui.base.BasePresenter;
 import com.platon.aton.component.ui.contract.TransactionDetailContract;
 import com.platon.aton.db.sqlite.AddressDao;
 import com.platon.aton.db.sqlite.WalletDao;

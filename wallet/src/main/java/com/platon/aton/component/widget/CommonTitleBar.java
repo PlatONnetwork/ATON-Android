@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.platon.aton.R;
-import com.platon.aton.component.ui.base.BaseActivity;
 import com.platon.aton.utils.DensityUtil;
 
 import java.util.concurrent.TimeUnit;

@@ -2,7 +2,6 @@ package com.platon.aton.engine;
 
 import android.text.TextUtils;
 
-import com.platon.aton.app.Constants;
 import com.platon.aton.app.CustomThrowable;
 import com.platon.aton.db.sqlite.TransactionDao;
 import com.platon.aton.entity.RPCErrorCode;
@@ -21,7 +20,7 @@ import com.platon.aton.utils.NumberParserUtils;
 import com.platon.aton.utils.SignCodeUtils;
 import com.platon.framework.network.ApiRequestBody;
 import com.platon.framework.network.ApiResponse;
-import com.platon.framework.util.MapUtils;
+import com.platon.framework.utils.MapUtils;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;

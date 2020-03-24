@@ -3,7 +3,6 @@ package com.platon.aton.component.ui.presenter;
 import android.annotation.SuppressLint;
 import android.util.Log;
 
-import com.platon.aton.component.ui.base.BasePresenter;
 import com.platon.aton.component.ui.contract.AssetsContract;
 import com.platon.aton.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.platon.aton.component.ui.view.AssetsFragment;
@@ -17,6 +16,9 @@ import com.platon.aton.entity.Transaction;
 import com.platon.aton.entity.TransactionType;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BasePresenter;
+import com.platon.framework.utils.PreferenceTool;
 import com.trello.rxlifecycle2.android.FragmentEvent;
 
 import org.web3j.crypto.Credentials;
@@ -142,7 +144,7 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
     }
 
     private void insertAndDeleteTransactionRecord(TransactionRecordEntity transactionRecordEntity) {
-        if (AppSettings.getInstance().getResendReminder()) {
+        if (PreferenceTool.getBoolean(Constants.Preference.KEY_RESEND_REMINDER,true)) {
             Single
                     .fromCallable(() -> TransactionRecordDao.insertTransactionRecord(transactionRecordEntity) && TransactionRecordDao.deleteTimeoutTransactionRecord())
                     .subscribeOn(Schedulers.io())

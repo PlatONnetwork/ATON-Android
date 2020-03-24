@@ -2,8 +2,6 @@ package com.platon.aton.component.ui;
 
 import android.content.Context;
 
-import com.platon.aton.component.ui.base.BaseActivity;
-
 
 public interface IContext {
 

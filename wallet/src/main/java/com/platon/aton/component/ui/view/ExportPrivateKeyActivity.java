@@ -12,11 +12,8 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.platon.framework.util.AndroidUtil;
+import com.platon.framework.utils.AndroidUtil;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
-import com.platon.aton.component.ui.base.BaseActivity;
-import com.platon.aton.component.ui.base.BaseFragment;
 import com.platon.aton.component.ui.dialog.CommonTipsDialogFragment;
 import com.platon.aton.component.ui.dialog.OnDialogViewClickListener;
 import com.platon.aton.component.widget.ViewPagerSlide;

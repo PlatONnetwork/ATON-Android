@@ -13,12 +13,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
-import com.platon.framework.util.RUtils;
+import com.platon.framework.utils.RUtils;
 import com.platon.aton.BuildConfig;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.app.CustomObserver;
-import com.platon.aton.component.ui.base.MVPBaseFragment;
 import com.platon.aton.component.ui.contract.ReceiveTransationContract;
 import com.platon.aton.component.ui.presenter.ReceiveTransactionPresenter;
 import com.platon.aton.component.widget.CustomImageSpan;

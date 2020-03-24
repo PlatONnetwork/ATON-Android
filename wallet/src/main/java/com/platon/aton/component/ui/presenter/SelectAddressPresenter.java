@@ -1,8 +1,5 @@
 package com.platon.aton.component.ui.presenter;
 
-import com.platon.aton.app.Constants;
-import com.platon.aton.component.ui.base.BaseActivity;
-import com.platon.aton.component.ui.base.BasePresenter;
 import com.platon.aton.component.ui.contract.SelectAddressContract;
 import com.platon.aton.db.entity.AddressEntity;
 import com.platon.aton.db.sqlite.AddressDao;

@@ -13,8 +13,6 @@ import android.view.KeyEvent;
 import android.view.View;
 
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
-import com.platon.aton.component.ui.base.BaseActivity;
 import com.platon.biometric.BiometricPromptCompat;
 
 public class UnlockFigerprintActivity extends BaseActivity implements View.OnClickListener{

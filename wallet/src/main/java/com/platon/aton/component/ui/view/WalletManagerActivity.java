@@ -13,9 +13,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.component.adapter.WalletManagerAdapter;
-import com.platon.aton.component.ui.base.MVPBaseActivity;
 import com.platon.aton.component.ui.contract.WalletManagerContract;
 import com.platon.aton.component.ui.presenter.WalletManagerPresenter;
 import com.platon.aton.component.widget.CommonTitleBar;

@@ -22,8 +22,6 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
-import com.platon.aton.component.ui.base.MVPBaseFragment;
 import com.platon.aton.component.ui.contract.ImportMnemonicPhraseContract;
 import com.platon.aton.component.ui.presenter.ImportMnemonicPhrasePresenter;
 import com.platon.aton.component.widget.ShadowButton;

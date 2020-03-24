@@ -3,7 +3,7 @@ package com.platon.aton.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.platon.framework.util.MapUtils;
+import com.platon.framework.utils.MapUtils;
 import com.platon.aton.R;
 
 import org.web3j.abi.datatypes.BytesType;

@@ -2,13 +2,12 @@ package com.platon.aton.component.ui.contract;
 
 import android.graphics.Bitmap;
 
-import com.platon.aton.component.ui.base.IPresenter;
-import com.platon.aton.component.ui.base.IView;
+import com.platon.aton.component.ui.IContext;
 import com.platon.aton.entity.Wallet;
 
 public class UserQRCodeContract {
 
-    public interface View extends IView {
+    public interface View extends IContext {
 
         Wallet getWalletFromIntent();
 

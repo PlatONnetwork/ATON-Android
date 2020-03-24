@@ -13,16 +13,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
-import com.platon.biometric.BiometricPromptCompat;
 import com.platon.aton.R;
 import com.platon.aton.app.CustomObserver;
-import com.platon.aton.component.ui.base.BaseActivity;
 import com.platon.aton.component.ui.dialog.ReminderThresholdAmountDialogFragment;
 import com.platon.aton.component.widget.togglebutton.ToggleButton;
 import com.platon.aton.config.AppSettings;
 import com.platon.aton.utils.LanguageUtil;
 import com.platon.aton.utils.RxUtils;
 import com.platon.aton.utils.StringUtil;
+import com.platon.biometric.BiometricPromptCompat;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.utils.PreferenceTool;
 
 import java.util.Locale;
 
@@ -104,7 +106,7 @@ public class SettingsActivity extends BaseActivity {
         tgbResendReminder.setOnToggleChanged(new ToggleButton.OnToggleChanged() {
             @Override
             public void onToggle(boolean on) {
-                AppSettings.getInstance().setResendReminder(on);
+                PreferenceTool.putBoolean(Constants.Preference.KEY_RESEND_REMINDER,on);
                 switchResendReminder(on);
             }
         });
@@ -149,7 +151,7 @@ public class SettingsActivity extends BaseActivity {
 
         switchToggleButton(AppSettings.getInstance().getFaceTouchIdFlag());
 
-        switchResendReminder(AppSettings.getInstance().getResendReminder());
+        switchResendReminder(PreferenceTool.getBoolean(Constants.Preference.KEY_RESEND_REMINDER, true));
     }
 
     private void switchResendReminder(boolean resendReminder) {

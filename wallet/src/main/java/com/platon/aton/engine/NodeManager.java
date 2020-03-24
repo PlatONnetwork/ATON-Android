@@ -3,10 +3,11 @@ package com.platon.aton.engine;
 import android.text.TextUtils;
 
 import com.platon.aton.BuildConfig;
-import com.platon.aton.config.AppSettings;
 import com.platon.aton.entity.Node;
 import com.platon.aton.event.EventPublisher;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.app.Constants;
+import com.platon.framework.utils.PreferenceTool;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +46,7 @@ public class NodeManager {
     }
 
     public String getCurNodeAddress() {
-        return curNode == null || TextUtils.isEmpty(curNode.getNodeAddress()) ? AppSettings.getInstance().getCurrentNodeAddress() : curNode.getNodeAddress();
+        return curNode == null || TextUtils.isEmpty(curNode.getNodeAddress()) ? PreferenceTool.getString(Constants.Preference.KEY_CURRENT_NODE_ADDRESS) : curNode.getNodeAddress();
     }
 
     public void setCurNode(Node curNode) {
@@ -125,7 +126,7 @@ public class NodeManager {
 
     public void switchNode(Node nodeEntity) {
         setCurNode(nodeEntity);
-        AppSettings.getInstance().setCurrentNodeAddress(nodeEntity.getNodeAddress());
+        PreferenceTool.putString(Constants.Preference.KEY_CURRENT_NODE_ADDRESS, nodeEntity.getNodeAddress());
         Web3jManager.getInstance().init(nodeEntity.getRPCUrl());
     }
 

@@ -14,11 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.platon.framework.util.AndroidUtil;
+import com.platon.framework.utils.AndroidUtil;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
-import com.platon.aton.component.ui.base.BaseActivity;
-import com.platon.aton.component.ui.base.BaseFragment;
 import com.platon.aton.component.ui.dialog.BaseDialogFragment;
 import com.platon.aton.component.ui.dialog.CommonGuideDialogFragment;
 import com.platon.aton.component.widget.CommonTitleBar;
@@ -31,7 +28,6 @@ import com.platon.aton.config.AppSettings;
 import com.platon.aton.entity.GuideType;
 import com.platon.aton.utils.GZipUtil;
 import com.platon.aton.utils.JZWalletUtil;
-import com.platon.aton.utils.ToastUtil;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.util.ArrayList;

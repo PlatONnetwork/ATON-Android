@@ -1,13 +1,13 @@
 package com.platon.aton.component.ui.contract;
 
-import com.platon.aton.component.ui.base.IPresenter;
+import com.platon.aton.component.ui.IContext;
 import com.platon.aton.component.ui.base.IView;
 
 import java.util.List;
 
 public class ImportMnemonicPhraseContract {
 
-    public interface View extends IView {
+    public interface View extends IContext {
         String getKeystoreFromIntent();
         void showMnemonicWords(List<String> words);
         void showMnemonicPhraseError(String text, boolean isVisible);

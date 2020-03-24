@@ -1,14 +1,14 @@
 package com.platon.aton.component.ui.contract;
 
+import com.platon.aton.component.ui.IContext;
 import com.platon.aton.component.ui.base.IPresenter;
-import com.platon.aton.component.ui.base.IView;
 import com.platon.aton.entity.Wallet;
 
 import org.web3j.crypto.Credentials;
 
 public class ManageWalletContract {
 
-    public interface View extends IView {
+    public interface View extends IContext {
         int TYPE_DELETE_WALLET       = -1;
         int TYPE_MODIFY_NAME        = 1;
         int TYPE_EXPORT_PRIVATE_KEY = 2;

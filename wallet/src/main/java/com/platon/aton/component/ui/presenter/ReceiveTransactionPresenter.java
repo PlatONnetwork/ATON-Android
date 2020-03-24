@@ -6,13 +6,9 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.platon.aton.R;
-import com.platon.aton.component.ui.base.BaseActivity;
-import com.platon.aton.component.ui.base.BasePresenter;
 import com.platon.aton.component.ui.contract.ReceiveTransationContract;
 import com.platon.aton.component.ui.dialog.BaseDialogFragment;
 import com.platon.aton.component.ui.dialog.ShareDialogFragment;
-import com.platon.aton.config.JZAppConfigure;
-import com.platon.aton.config.JZDirType;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.ShareAppInfo;
 import com.platon.aton.entity.Wallet;

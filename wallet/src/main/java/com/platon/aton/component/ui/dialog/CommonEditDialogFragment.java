@@ -22,7 +22,6 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.component.widget.CustomUnderlineEditText;
 import com.platon.aton.component.widget.ShadowButton;
 import com.platon.aton.component.widget.ShadowDrawable;

@@ -13,11 +13,13 @@ import android.view.Window;
 import android.view.WindowInsets;
 
 import com.platon.aton.R;
-import com.platon.aton.component.ui.base.BaseActivity;
 import com.platon.aton.config.AppSettings;
 import com.platon.aton.engine.NodeManager;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.WebType;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.utils.PreferenceTool;
 
 public class SplashActivity extends BaseActivity {
 
@@ -60,13 +62,13 @@ public class SplashActivity extends BaseActivity {
         mDecorView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (AppSettings.getInstance().isFirstEnter()) {
+                if (PreferenceTool.getBoolean(Constants.Preference.KEY_FIRST_ENTER, true)) {
                     CommonHybridActivity.actionStart(SplashActivity.this, getResources().getString(R.string.web_url_agreement, NodeManager.getInstance().getCurNodeAddress()), WebType.WEB_TYPE_AGREEMENT, true);
                     SplashActivity.this.finish();
                     return;
                 }
 
-                if (AppSettings.getInstance().getOperateMenuFlag()) {
+                if (PreferenceTool.getBoolean(Constants.Preference.KEY_OPERATE_MENU_FLAG, true)) {
                     OperateMenuActivity.actionStart(SplashActivity.this);
                     SplashActivity.this.finish();
                     return;

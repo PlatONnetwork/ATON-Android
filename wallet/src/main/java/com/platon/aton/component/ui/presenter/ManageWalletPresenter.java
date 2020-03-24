@@ -2,7 +2,6 @@ package com.platon.aton.component.ui.presenter;
 
 import com.platon.framework.network.SchedulersTransformer;
 import com.platon.aton.app.LoadingTransformer;
-import com.platon.aton.component.ui.base.BasePresenter;
 import com.platon.aton.component.ui.contract.ManageWalletContract;
 import com.platon.aton.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.platon.aton.component.ui.dialog.ObservedWalletDialogFragment;

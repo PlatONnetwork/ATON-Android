@@ -6,8 +6,6 @@ import android.os.Message;
 
 import com.platon.biometric.BiometricPromptCompat;
 import com.platon.aton.R;
-import com.platon.aton.component.ui.base.BaseActivity;
-import com.platon.aton.component.ui.base.BasePresenter;
 import com.platon.aton.component.ui.contract.UnlockWithPasswordContract;
 import com.platon.aton.config.AppSettings;
 import com.platon.aton.engine.WalletManager;

@@ -30,9 +30,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.app.CustomObserver;
-import com.platon.aton.component.ui.base.MVPBaseFragment;
 import com.platon.aton.component.ui.contract.SendTransationContract;
 import com.platon.aton.component.ui.dialog.CommonEditDialogFragment;
 import com.platon.aton.component.ui.dialog.CommonTipsDialogFragment;
@@ -53,7 +51,6 @@ import com.platon.aton.utils.JZWalletUtil;
 import com.platon.aton.utils.NumberParserUtils;
 import com.platon.aton.utils.RxUtils;
 import com.platon.aton.utils.StringUtil;
-import com.platon.aton.utils.ToastUtil;
 import com.platon.aton.utils.UMEventUtil;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 

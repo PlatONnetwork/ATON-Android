@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 
-import com.platon.framework.app.CoreApp;
-
 import java.util.ArrayList;
 import java.util.List;
 

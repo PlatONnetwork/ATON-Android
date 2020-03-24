@@ -14,7 +14,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
-import com.platon.framework.app.activity.WeakHandler;
+import com.platon.framework.app.WeakHandler;
 import com.platon.aton.R;
 import com.platon.aton.utils.CommonUtil;
 import com.trello.rxlifecycle2.LifecycleProvider;

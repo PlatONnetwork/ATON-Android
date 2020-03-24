@@ -4,7 +4,6 @@ package com.platon.aton.component.ui.presenter;
 import android.text.TextUtils;
 
 import com.platon.aton.app.LoadingTransformer;
-import com.platon.aton.component.ui.base.BasePresenter;
 import com.platon.aton.component.ui.contract.DelegateDetailContract;
 import com.platon.aton.engine.ServerUtils;
 import com.platon.aton.entity.DelegateInfo;

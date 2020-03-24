@@ -3,7 +3,6 @@ package com.platon.aton.component.ui.presenter;
 import com.platon.framework.network.ApiRequestBody;
 import com.platon.framework.network.ApiResponse;
 import com.platon.aton.app.LoadingTransformer;
-import com.platon.aton.component.ui.base.BasePresenter;
 import com.platon.aton.component.ui.contract.ClaimRecordContract;
 import com.platon.aton.engine.Optional;
 import com.platon.aton.engine.ServerUtils;

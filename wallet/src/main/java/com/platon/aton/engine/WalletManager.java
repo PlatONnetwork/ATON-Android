@@ -3,7 +3,6 @@ package com.platon.aton.engine;
 import android.text.TextUtils;
 
 import com.platon.aton.app.CustomThrowable;
-import com.platon.aton.config.AppSettings;
 import com.platon.aton.db.entity.WalletEntity;
 import com.platon.aton.db.sqlite.WalletDao;
 import com.platon.aton.entity.AccountBalance;
@@ -13,9 +12,11 @@ import com.platon.aton.event.EventPublisher;
 import com.platon.aton.utils.AmountUtil;
 import com.platon.aton.utils.BigDecimalUtil;
 import com.platon.aton.utils.JZWalletUtil;
+import com.platon.framework.app.Constants;
 import com.platon.framework.network.ApiErrorCode;
 import com.platon.framework.network.ApiRequestBody;
 import com.platon.framework.network.ApiResponse;
+import com.platon.framework.utils.PreferenceTool;
 
 import org.greenrobot.eventbus.EventBus;
 import org.reactivestreams.Publisher;
@@ -330,7 +331,7 @@ public class WalletManager {
             entity.setChainId(NodeManager.getInstance().getChainId());
             mWalletList.add(entity);
             WalletDao.insertWalletInfo(entity.buildWalletInfoEntity());
-            AppSettings.getInstance().setOperateMenuFlag(false);
+            PreferenceTool.putBoolean(Constants.Preference.KEY_OPERATE_MENU_FLAG, false);
             return CODE_OK;
         } catch (Exception exp) {
             return CODE_ERROR_UNKNOW;
@@ -355,10 +356,10 @@ public class WalletManager {
         mWallet.setChainId(NodeManager.getInstance().getChainId());
         mWallet.setCreateTime(System.currentTimeMillis());
         mWallet.setUpdateTime(System.currentTimeMillis());
-        mWallet.setName(String.format("%s%d", "Wallet", AppSettings.getInstance().getWalletNameSequence(NodeManager.getInstance().getChainId())));
+        mWallet.setName(String.format("%s%d", "Wallet", PreferenceTool.getInt(NodeManager.getInstance().getChainId(), 1)));
         mWalletList.add(mWallet);
         WalletDao.insertWalletInfo(mWallet.buildWalletInfoEntity());
-        AppSettings.getInstance().setOperateMenuFlag(false);
+        PreferenceTool.putBoolean(Constants.Preference.KEY_OPERATE_MENU_FLAG, false);
         return CODE_OK;
     }
 
@@ -387,7 +388,7 @@ public class WalletManager {
             entity.setChainId(NodeManager.getInstance().getChainId());
             mWalletList.add(entity);
             WalletDao.insertWalletInfo(entity.buildWalletInfoEntity());
-            AppSettings.getInstance().setOperateMenuFlag(false);
+            PreferenceTool.putBoolean(Constants.Preference.KEY_OPERATE_MENU_FLAG, false);
             return CODE_OK;
         } catch (Exception exp) {
             return CODE_ERROR_UNKNOW;
@@ -435,7 +436,7 @@ public class WalletManager {
             entity.setChainId(NodeManager.getInstance().getChainId());
             mWalletList.add(entity);
             WalletDao.insertWalletInfo(entity.buildWalletInfoEntity());
-            AppSettings.getInstance().setOperateMenuFlag(false);
+            PreferenceTool.putBoolean(Constants.Preference.KEY_OPERATE_MENU_FLAG, false);
             return CODE_OK;
         } catch (Exception exp) {
             return CODE_ERROR_UNKNOW;

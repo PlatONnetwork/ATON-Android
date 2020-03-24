@@ -13,11 +13,9 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.platon.aton.R;
 import com.platon.aton.app.CustomObserver;
 import com.platon.aton.component.adapter.base.BaseViewHolder;
-import com.platon.aton.component.ui.base.BaseActivity;
 import com.platon.aton.component.ui.dialog.DelegateTipsDialog;
 import com.platon.aton.component.ui.view.CommonHybridActivity;
 import com.platon.aton.component.ui.view.DelegateActivity;
-import com.platon.aton.component.ui.view.DelegateDetailActivity;
 import com.platon.aton.component.ui.view.WithDrawActivity;
 import com.platon.aton.component.widget.CircleImageView;
 import com.platon.aton.component.widget.ShadowDrawable;
@@ -30,8 +28,7 @@ import com.platon.aton.utils.BigDecimalUtil;
 import com.platon.aton.utils.DensityUtil;
 import com.platon.aton.utils.GlideUtils;
 import com.platon.aton.utils.RxUtils;
-import com.platon.aton.utils.ToastUtil;
-import com.platon.framework.util.MapUtils;
+import com.platon.framework.utils.MapUtils;
 
 import java.util.HashMap;
 

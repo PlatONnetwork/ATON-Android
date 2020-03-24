@@ -1,7 +1,5 @@
 package com.platon.aton.component.ui.presenter;
 
-import com.platon.aton.component.ui.base.BaseActivity;
-import com.platon.aton.component.ui.base.BasePresenter;
 import com.platon.aton.component.ui.contract.AddressBookContract;
 import com.platon.aton.component.ui.view.AddNewAddressActivity;
 import com.platon.aton.db.entity.AddressEntity;

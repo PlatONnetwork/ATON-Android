@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import com.platon.aton.R;
 import com.platon.aton.component.adapter.TransactionDiffCallback;
 import com.platon.aton.component.adapter.TransactionListAdapter;
-import com.platon.aton.component.ui.base.BaseViewPageFragment;
 import com.platon.aton.component.ui.contract.TransactionsContract;
 import com.platon.aton.component.ui.presenter.TransactionsPresenter;
 import com.platon.aton.component.widget.CommonVerticalItemDecoration;

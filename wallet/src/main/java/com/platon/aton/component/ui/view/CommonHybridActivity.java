@@ -22,15 +22,16 @@ import com.jakewharton.rxbinding2.widget.RxCompoundButton;
 import com.just.agentweb.WebChromeClient;
 import com.just.agentweb.WebViewClient;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.app.CustomObserver;
-import com.platon.aton.component.ui.base.BaseAgentWebActivity;
 import com.platon.aton.component.ui.dialog.NodeDetailMoreDialogFragment;
 import com.platon.aton.component.widget.ShadowButton;
 import com.platon.aton.config.AppSettings;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.WebType;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseAgentWebActivity;
+import com.platon.framework.utils.PreferenceTool;
 import com.umeng.analytics.MobclickAgent;
 
 import butterknife.BindView;
@@ -109,8 +110,8 @@ public class CommonHybridActivity extends BaseAgentWebActivity {
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) {
-                        AppSettings.getInstance().setFirstEnter(false);
-                        if (AppSettings.getInstance().getOperateMenuFlag()) {
+                        PreferenceTool.putBoolean(Constants.Preference.KEY_FIRST_ENTER,false);
+                        if (PreferenceTool.getBoolean(Constants.Preference.KEY_OPERATE_MENU_FLAG,true)) {
                             OperateMenuActivity.actionStart(CommonHybridActivity.this);
                             CommonHybridActivity.this.finish();
                             return;

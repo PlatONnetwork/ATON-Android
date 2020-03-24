@@ -1,7 +1,6 @@
 package com.platon.aton.component.ui.presenter;
 
 
-import com.platon.aton.component.ui.base.BasePresenter;
 import com.platon.aton.component.ui.contract.VerificationMnemonicContract;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.Wallet;
