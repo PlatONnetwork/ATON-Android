@@ -58,7 +58,7 @@ public class AssetsPresenterTest {
         ShadowLog.stream = System.out;
         schedulerTestProvider = new SchedulerTestProvider();
         view = mock(AssetsContract.View.class);
-        presenter = new AssetsPresenter(view);
+        presenter = new AssetsPresenter();
         presenter.attachView(view);
         appSettings.init(RuntimeEnvironment.application);
     }

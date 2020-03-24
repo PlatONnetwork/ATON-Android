@@ -19,9 +19,11 @@ import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
 
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.ActivityManager;
+import com.platon.framework.base.BaseActivity;
 import com.platon.framework.utils.AndroidUtil;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.component.ui.contract.MainContract;
 import com.platon.aton.component.ui.presenter.MainPresenter;
 import com.platon.aton.component.widget.FragmentTabHost;
@@ -35,7 +37,7 @@ import butterknife.Unbinder;
 /**
  * @author matrixelement
  */
-public class MainActivity extends MVPBaseActivity<MainPresenter> implements MainContract.View {
+public class MainActivity extends BaseActivity<MainContract.View,MainPresenter> implements MainContract.View {
 
     private final static String TAG = MainActivity.class.getSimpleName();
     private final static String TAG_PROPERTY = "property";
@@ -61,19 +63,27 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
     private FragmentManager fragmentManager;
 
     @Override
-    protected MainPresenter createPresenter() {
-        return new MainPresenter(this);
+    public MainPresenter createPresenter() {
+        return new MainPresenter();
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public MainContract.View createView() {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-        setContentView(R.layout.activity_main);
+        return this;
+    }
+
+    @Override
+    public void init() {
         unbinder = ButterKnife.bind(this);
         EventPublisher.getInstance().register(this);
         initViews();
-        mPresenter.checkVersion();
+        getPresenter().checkVersion();
+    }
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.activity_main;
     }
 
     @Override

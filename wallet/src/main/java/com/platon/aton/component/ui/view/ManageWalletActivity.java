@@ -27,6 +27,8 @@ import com.platon.aton.component.ui.presenter.ManageWalletPresenter;
 import com.platon.aton.component.widget.CommonTitleBar;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.utils.CommonUtil;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseActivity;
 
 import org.web3j.crypto.Credentials;
 
@@ -35,7 +37,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-public class ManageWalletActivity extends MVPBaseActivity<ManageWalletPresenter> implements ManageWalletContract.View {
+public class ManageWalletActivity extends BaseActivity<ManageWalletContract.View, ManageWalletPresenter> implements ManageWalletContract.View {
 
     @BindView(R.id.commonTitleBar)
     CommonTitleBar commonTitleBar;
@@ -60,15 +62,24 @@ public class ManageWalletActivity extends MVPBaseActivity<ManageWalletPresenter>
     RelativeLayout rl_wallet_address;
 
     @Override
-    protected ManageWalletPresenter createPresenter() {
-        return new ManageWalletPresenter(this);
+    public ManageWalletPresenter createPresenter() {
+        return new ManageWalletPresenter();
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_manager_wallet);
+    public ManageWalletContract.View createView() {
+        return null;
+    }
+
+    @Override
+    public void init() {
         unbinder = ButterKnife.bind(this);
+    }
+
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.activity_manager_wallet;
     }
 
     @Override
@@ -79,7 +90,7 @@ public class ManageWalletActivity extends MVPBaseActivity<ManageWalletPresenter>
     @Override
     protected void onResume() {
         super.onResume();
-        mPresenter.showWalletInfo();
+        getPresenter().showWalletInfo();
     }
 
     @OnClick({R.id.rl_rename, R.id.rl_private_key, R.id.rl_keystore, R.id.rl_backup, R.id.tv_delete, R.id.iv_copy_wallet_address, R.id.rl_wallet_address})
@@ -95,11 +106,12 @@ public class ManageWalletActivity extends MVPBaseActivity<ManageWalletPresenter>
                 showPasswordDialog(TYPE_EXPORT_KEYSTORE, getWalletEntityFromIntent());
                 break;
             case R.id.rl_backup:
-                mPresenter.backup();
+                getPresenter().backup();
                 break;
-            case R.id.tv_delete://删除钱包按钮
+            //删除钱包按钮
+            case R.id.tv_delete:
                 if (TextUtils.isEmpty(getWalletEntityFromIntent().getKey())) {
-                    mPresenter.deleteObservedWallet();
+                    getPresenter().deleteObservedWallet();
                 } else {
                     showPasswordDialog(TYPE_DELETE_WALLET, getWalletEntityFromIntent());
                 }
@@ -150,10 +162,10 @@ public class ManageWalletActivity extends MVPBaseActivity<ManageWalletPresenter>
                                 }
                             }).show(getSupportFragmentManager(), "showTips");
                 } else {
-                    if (mPresenter.isExists(text)) {
+                    if (getPresenter().isExists(text)) {
                         showLongToast(string(R.string.wallet_name_exists));
                     } else {
-                        mPresenter.modifyName(text);
+                        getPresenter().modifyName(text);
                     }
                 }
             }
@@ -188,7 +200,7 @@ public class ManageWalletActivity extends MVPBaseActivity<ManageWalletPresenter>
         InputWalletPasswordDialogFragment.newInstance(walletEntity, type == TYPE_DELETE_WALLET ? string(R.string.msg_delete_wallet) : null).setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
             @Override
             public void onWalletPasswordCorrect(Credentials credentials) {
-                mPresenter.validPassword(type, credentials);
+                getPresenter().validPassword(type, credentials);
             }
         }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
     }

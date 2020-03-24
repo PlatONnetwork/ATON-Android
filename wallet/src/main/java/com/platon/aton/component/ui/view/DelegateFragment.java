@@ -1,8 +1,6 @@
 package com.platon.aton.component.ui.view;
 
-import android.os.Bundle;
 import android.support.annotation.IntDef;
-import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
@@ -10,13 +8,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.platon.framework.utils.AndroidUtil;
 import com.platon.aton.R;
 import com.platon.aton.component.widget.ViewPagerSlide;
+import com.platon.aton.component.widget.table.CustomTabLayout;
 import com.platon.aton.component.widget.table.PagerItem;
 import com.platon.aton.component.widget.table.PagerItemAdapter;
 import com.platon.aton.component.widget.table.PagerItems;
-import com.platon.aton.component.widget.table.CustomTabLayout;
+import com.platon.framework.base.BaseFragment;
+import com.platon.framework.base.BaseNestingLazyFragment;
+import com.platon.framework.base.BasePresenter;
+import com.platon.framework.base.BaseViewImp;
+import com.platon.framework.utils.AndroidUtil;
 
 import java.util.ArrayList;
 
@@ -24,7 +26,7 @@ import java.util.ArrayList;
 /**
  * 委托模块
  */
-public class DelegateFragment extends BaseFragment {
+public class DelegateFragment extends BaseNestingLazyFragment {
 
     @IntDef({
             DelegateTab.MY_DELEGATE_TAB,
@@ -39,12 +41,24 @@ public class DelegateFragment extends BaseFragment {
 
     private CustomTabLayout stbBar;
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_delegate, container, false);
-        initView(view);
-        return view;
+    public int getLayoutId() {
+        return R.layout.fragment_delegate;
+    }
+
+    @Override
+    public BasePresenter createPresenter() {
+        return null;
+    }
+
+    @Override
+    public BaseViewImp createView() {
+        return null;
+    }
+
+    @Override
+    public void init(View rootView) {
+        initView(rootView);
     }
 
     public void setCurrentTab(@DelegateTab int delegateTab) {
@@ -78,35 +92,8 @@ public class DelegateFragment extends BaseFragment {
         stbBar.setViewPager(vpContent);
         setTableView(stbBar.getTabAt(0), 0);
         vpContent.setCurrentItem(0);
-        initTab();
     }
 
-    private void initTab() {
-//        stbBar.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-//            @Override
-//            public void onPageScrolled(int i, float v, int i1) {
-//
-//            }
-//
-//            @Override
-//            public void onPageSelected(int position) {
-//                switch (position) {
-//                    case 0:
-//                    case 1:
-//                        //切换tab刷新页面（0.7.3.1）
-//                        EventPublisher.getInstance().sendTabChangeUpdateValidatorsEvent();
-//                        break;
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onPageScrollStateChanged(int i) {
-//
-//            }
-//        });
-
-    }
 
     private View getTableView(int position, ViewGroup container) {
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.layout_app_tab_item3, container, false);

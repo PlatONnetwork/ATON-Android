@@ -1,14 +1,15 @@
 package com.platon.aton.component.ui.contract;
 
-import com.platon.aton.component.ui.IContext;
 import com.platon.aton.entity.Wallet;
+import com.platon.framework.base.BaseViewImp;
+import com.platon.framework.base.IPresenter;
 
 /**
  * @author matrixelement
  */
 public class SendTransationContract {
 
-    public interface View extends IContext {
+    public interface View extends BaseViewImp {
 
         void updateWalletBalance(String balance);
 

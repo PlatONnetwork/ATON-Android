@@ -22,6 +22,8 @@ import com.platon.aton.entity.Wallet;
 import com.platon.aton.utils.DensityUtil;
 import com.platon.aton.utils.JZWalletUtil;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseActivity;
 import com.platon.framework.network.SchedulersTransformer;
 
 import org.web3j.crypto.Credentials;

@@ -21,7 +21,6 @@ import com.platon.aton.component.ui.dialog.TransactionAuthorizationDialogFragmen
 import com.platon.aton.component.ui.dialog.TransactionSignatureDialogFragment;
 import com.platon.aton.component.ui.view.AssetsFragment;
 import com.platon.aton.component.ui.view.MainActivity;
-import com.platon.aton.config.AppSettings;
 import com.platon.aton.db.entity.AddressEntity;
 import com.platon.aton.db.entity.TransactionRecordEntity;
 import com.platon.aton.db.sqlite.AddressDao;
@@ -125,10 +124,6 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     //刷新时间
     private Wallet walletEntity;
     private String toAddress;
-
-    public SendTransactionPresenter(SendTransationContract.View view) {
-        super(view);
-    }
 
     @Override
     public void init() {
@@ -292,9 +287,9 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                 return;
             }
 
-            if (BigDecimalUtil.isNotSmaller(transferAmount, AppSettings.getInstance().getReminderThresholdAmount())) {
+            if (BigDecimalUtil.isNotSmaller(transferAmount, PreferenceTool.getString(Constants.Preference.KEY_REMINDER_THRESHOLD_AMOUNT, "1000"))) {
                 CommonTipsDialogFragment.createDialogWithTwoButton(ContextCompat.getDrawable(currentActivity(), R.drawable.icon_dialog_tips),
-                        string(R.string.msg_large_transaction_reminder, StringUtil.formatBalanceWithoutMinFraction(AppSettings.getInstance().getReminderThresholdAmount())),
+                        string(R.string.msg_large_transaction_reminder, StringUtil.formatBalanceWithoutMinFraction(PreferenceTool.getString(Constants.Preference.KEY_REMINDER_THRESHOLD_AMOUNT, "1000"))),
                         string(R.string.confirm), new OnDialogViewClickListener() {
                             @Override
                             public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
@@ -380,7 +375,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
 
         TransactionRecordEntity transactionRecordEntity = new TransactionRecordEntity(System.currentTimeMillis(), walletEntity.getPrefixAddress(), toAddress, transferAmount, NodeManager.getInstance().getChainId());
 
-        if (PreferenceTool.getBoolean(Constants.Preference.KEY_RESEND_REMINDER,true)) {
+        if (PreferenceTool.getBoolean(Constants.Preference.KEY_RESEND_REMINDER, true)) {
             Single
                     .fromCallable(new Callable<Boolean>() {
                         @Override
@@ -409,7 +404,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     private void showResendTransactionReminderDialogFragment(TransactionRecordEntity transactionRecordEntity, String remark) {
 
         CommonTipsDialogFragment.createDialogWithTwoButton(ContextCompat.getDrawable(currentActivity(), R.drawable.icon_dialog_tips),
-                string(R.string.msg_resend_transaction_reminder, StringUtil.formatBalanceWithoutMinFraction(AppSettings.getInstance().getReminderThresholdAmount())),
+                string(R.string.msg_resend_transaction_reminder, StringUtil.formatBalanceWithoutMinFraction(PreferenceTool.getString(Constants.Preference.KEY_REMINDER_THRESHOLD_AMOUNT, "1000"))),
                 string(R.string.confirm), new OnDialogViewClickListener() {
                     @Override
                     public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
@@ -661,7 +656,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     }
 
     private void insertAndDeleteTransactionRecord(TransactionRecordEntity transactionRecordEntity) {
-        if (PreferenceTool.getBoolean(Constants.Preference.KEY_RESEND_REMINDER,true)) {
+        if (PreferenceTool.getBoolean(Constants.Preference.KEY_RESEND_REMINDER, true)) {
             Single
                     .fromCallable(new Callable<Boolean>() {
 

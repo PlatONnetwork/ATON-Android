@@ -19,7 +19,7 @@ package com.platon.framework.network;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.parser.Feature;
 import com.alibaba.fastjson.support.retrofit.Retrofit2ConverterFactory;
-import com.platon.framework.app.log.Log;
+import com.platon.framework.utils.LogUtils;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -77,7 +77,7 @@ public final class ApiFastjsonConverterFactory extends Retrofit2ConverterFactory
                 content = value.string();
             } else {
                 content = EncryptionManager.getInstance().decrypt(requestInfo, value.string());
-                Log.debug(TAG, requestInfo.getRealUrl() + "\nRAW: " + content);
+                LogUtils.d(requestInfo.getRealUrl() + "\nRAW: " + content);
             }
             try {
                 Feature[] features = getParserFeatures();
@@ -89,7 +89,7 @@ public final class ApiFastjsonConverterFactory extends Retrofit2ConverterFactory
                                 ? features
                                 : EMPTY_SERIALIZER_FEATURES
                 );
-                Log.debug(TAG, t.toString());
+                LogUtils.d(t.toString());
                 return t;
             } catch (Exception ex) {
                 ex.printStackTrace();

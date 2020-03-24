@@ -13,19 +13,19 @@ import android.view.Window;
 import android.view.WindowInsets;
 
 import com.platon.aton.R;
-import com.platon.aton.config.AppSettings;
 import com.platon.aton.engine.NodeManager;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.WebType;
 import com.platon.framework.app.Constants;
 import com.platon.framework.base.BaseActivity;
+import com.platon.framework.base.BasePresenter;
+import com.platon.framework.base.BaseViewImp;
 import com.platon.framework.utils.PreferenceTool;
 
 public class SplashActivity extends BaseActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public int getLayoutId() {
         //FIX: 以下代码是为了解决Android自level 1以来的[安装完成点击“Open”后导致的应用被重复启动]的Bug
         if (!isTaskRoot()) {
             final Intent intent = getIntent();
@@ -35,9 +35,21 @@ public class SplashActivity extends BaseActivity {
                 finish();
             }
         }
+        return R.layout.activity_splash;
+    }
 
-        setContentView(R.layout.activity_splash);
+    @Override
+    public BasePresenter createPresenter() {
+        return null;
+    }
 
+    @Override
+    public BaseViewImp createView() {
+        return null;
+    }
+
+    @Override
+    public void init() {
         //适配刘海屏
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
@@ -73,7 +85,7 @@ public class SplashActivity extends BaseActivity {
                     SplashActivity.this.finish();
                     return;
                 }
-                if (AppSettings.getInstance().getFaceTouchIdFlag() &&
+                if (PreferenceTool.getBoolean(Constants.Preference.KEY_FACE_TOUCH_ID_FLAG, false) &&
                         !WalletManager.getInstance().getWalletList().isEmpty()) {
                     UnlockFigerprintActivity.actionStartMainActivity(SplashActivity.this);
                     SplashActivity.this.finish();
@@ -83,7 +95,6 @@ public class SplashActivity extends BaseActivity {
                 SplashActivity.this.finish();
             }
         }, 1000);
-
     }
 
     @SuppressLint("RestrictedApi")

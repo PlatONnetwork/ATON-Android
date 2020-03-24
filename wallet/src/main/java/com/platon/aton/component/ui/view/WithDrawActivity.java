@@ -3,7 +3,6 @@ package com.platon.aton.component.ui.view;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
@@ -21,7 +20,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
-import com.platon.framework.utils.RUtils;
 import com.platon.aton.R;
 import com.platon.aton.app.CustomObserver;
 import com.platon.aton.component.adapter.WithDrawPopWindowAdapter;
@@ -34,7 +32,6 @@ import com.platon.aton.component.widget.CircleImageView;
 import com.platon.aton.component.widget.MyWatcher;
 import com.platon.aton.component.widget.ShadowButton;
 import com.platon.aton.component.widget.ShadowDrawable;
-import com.platon.aton.config.AppSettings;
 import com.platon.aton.engine.TransactionManager;
 import com.platon.aton.entity.DelegateItemInfo;
 import com.platon.aton.entity.GuideType;
@@ -54,6 +51,11 @@ import com.platon.aton.utils.RxUtils;
 import com.platon.aton.utils.SoftHideKeyboardUtils;
 import com.platon.aton.utils.StringUtil;
 import com.platon.aton.utils.UMEventUtil;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.utils.PreferenceTool;
+import com.platon.framework.utils.RUtils;
+import com.platon.framework.utils.ToastUtil;
 
 import org.web3j.tx.gas.GasProvider;
 
@@ -65,7 +67,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> implements WithDrawContract.View {
+public class WithDrawActivity extends BaseActivity<WithDrawContract.View, WithDrawPresenter> implements WithDrawContract.View {
 
     @BindView(R.id.iv_node_icon)
     CircleImageView node_icon;
@@ -116,19 +118,28 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     private String freeAccount;
 
     @Override
-    protected WithDrawPresenter createPresenter() {
+    public WithDrawPresenter createPresenter() {
         return new WithDrawPresenter(this);
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_withdraw);
+    public WithDrawContract.View createView() {
+        return null;
+    }
+
+    @Override
+    public void init() {
+
         unbinder = ButterKnife.bind(this);
         initView();
         //初始化请求数据
-        mPresenter.showWalletInfo();
-        mPresenter.getBalanceType();
+        getPresenter().showWalletInfo();
+        getPresenter().getBalanceType();
+    }
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.activity_withdraw;
     }
 
     private void initView() {
@@ -159,7 +170,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        mPresenter.showSelectDelegationsDialogFragment();
+                        getPresenter().showSelectDelegationsDialogFragment();
                     }
                 });
 
@@ -184,7 +195,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
 
                         UMEventUtil.onEventCount(WithDrawActivity.this, Constants.UMEventID.WITHDRAW_DELEGATE);
 
-                        mPresenter.checkWithDrawAmount(withdrawAmount.getText().toString().trim().replace(",", ""));
+                        getPresenter().checkWithDrawAmount(withdrawAmount.getText().toString().trim().replace(",", ""));
 
                         if (BigDecimalUtil.sub(freeAccount, withdrawFee).doubleValue() < 0) { //赎回时，自用金额必须大于手续费，才能赎回
                             ToastUtil.showLongToast(getContext(), R.string.withdraw_less_than_fee);
@@ -193,22 +204,22 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
 
                         long currentTime = System.currentTimeMillis();
 
-                        if (!TransactionManager.getInstance().isAllowSendTransaction(mPresenter.getWalletAddress(), currentTime)) {
-                            showLongToast(string(R.string.msg_wait_finished_transaction_tips, DateUtil.millisecondToMinutes(TransactionManager.getInstance().getSendTransactionTimeInterval(mPresenter.getWalletAddress(), currentTime))));
+                        if (!TransactionManager.getInstance().isAllowSendTransaction(getPresenter().getWalletAddress(), currentTime)) {
+                            showLongToast(string(R.string.msg_wait_finished_transaction_tips, DateUtil.millisecondToMinutes(TransactionManager.getInstance().getSendTransactionTimeInterval(getPresenter().getWalletAddress(), currentTime))));
                             return;
                         }
 
-                        mPresenter.submitWithDraw();
+                        getPresenter().submitWithDraw();
                     }
                 });
     }
 
     private void initGuide() {
-        if (!AppSettings.getInstance().getWithdrawOperation()) {
+        if (!PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_WITHDRAW_OPERATION, false)) {
             CommonGuideDialogFragment.newInstance(GuideType.WITHDRAW_DELEGATE).setOnDissmissListener(new BaseDialogFragment.OnDissmissListener() {
                 @Override
                 public void onDismiss() {
-                    AppSettings.getInstance().setWithdrawOperation(true);
+                    PreferenceTool.putBoolean(Constants.Preference.KEY_SHOW_WITHDRAW_OPERATION, true);
                 }
             }).show(getSupportFragmentManager(), "showGuideDialogFragment");
         }
@@ -252,7 +263,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
             withdrawAmount.setText(String.valueOf(item.getValue()));
             withdrawAmount.setFocusableInTouchMode(false);
             withdrawAmount.setFocusable(false);
-            mPresenter.getWithDrawGasPrice(gasPrice);//已解除不能操作，所以需要再获取一次手续费
+            getPresenter().getWithDrawGasPrice(gasPrice);//已解除不能操作，所以需要再获取一次手续费
         }
         delegateAmount.setText(String.valueOf(item.getValue()));
 
@@ -276,8 +287,8 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {//改变后
 
-            mPresenter.updateWithDrawButtonState();
-            mPresenter.getWithDrawGasPrice(gasPrice);
+            getPresenter().updateWithDrawButtonState();
+            getPresenter().getWithDrawGasPrice(gasPrice);
 
             String amountMagnitudes = StringUtil.getAmountMagnitudes(getContext(), s.toString().trim());
             etWalletAmount.setText(amountMagnitudes);
@@ -291,7 +302,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
             if (!TextUtils.isEmpty(s.toString()) && !TextUtils.equals(s.toString(), ".")) {
 
                 if (BigDecimalUtil.sub(delegateAmount.getText().toString().replaceAll(",", ""), s.toString()).doubleValue() > 0) {
-                    if (BigDecimalUtil.sub(delegateAmount.getText().toString().replaceAll(",", ""), s.toString()).doubleValue() < mPresenter.getMinDelegationAmount()) {
+                    if (BigDecimalUtil.sub(delegateAmount.getText().toString().replaceAll(",", ""), s.toString()).doubleValue() < getPresenter().getMinDelegationAmount()) {
                         withdrawAmount.setText(delegateAmount.getText().toString().replaceAll(",", ""));
                         withdrawAmount.setSelection(delegateAmount.getText().toString().replaceAll(",", "").length());
                     }
@@ -411,7 +422,7 @@ public class WithDrawActivity extends MVPBaseActivity<WithDrawPresenter> impleme
     @Override
     public void setAllAmountDelegate() {
         //点击全部
-        WithDrawBalance withDrawBalance = mPresenter.getWithDrawBalance();
+        WithDrawBalance withDrawBalance = getPresenter().getWithDrawBalance();
         if (withDrawBalance != null) {
             String withdrawAmountText = AmountUtil.formatAmountText(withDrawBalance.isDelegated() ? withDrawBalance.getDelegated() : withDrawBalance.getReleased());
             withdrawAmount.setText(withdrawAmountText);

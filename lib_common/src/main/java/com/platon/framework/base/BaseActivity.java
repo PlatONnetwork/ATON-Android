@@ -28,14 +28,14 @@ import java.io.OutputStream;
 /**
  * 父类->基类->动态指定类型->泛型设计（通过泛型指定动态类型->由子类指定，父类只需要规定范围即可）
  */
-public abstract class BaseActivity<V extends IView, P extends BasePresenter<V>> extends RxAppCompatActivity implements IContext {
+public abstract class BaseActivity<V extends BaseViewImp, P extends BasePresenter<V>> extends RxAppCompatActivity implements IContext {
 
     //引用V层和P层
     private P presenter;
     private V view;
     private InputMethodManager mInputMethodManager;
     protected View mDecorView;
-    protected View mRootView;
+    protected ViewGroup mContentView;
     private int mDefaultStatusBarColor = android.R.color.white;
 
     public P getPresenter() {
@@ -62,7 +62,7 @@ public abstract class BaseActivity<V extends IView, P extends BasePresenter<V>> 
         }
         mInputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         mDecorView = getWindow().getDecorView();
-        mRootView = ((ViewGroup) (mDecorView.findViewById(android.R.id.content))).getChildAt(0);
+        mContentView = (ViewGroup) ((ViewGroup) (mDecorView.findViewById(android.R.id.content))).getChildAt(0);
         init();
         if (immersiveBarInitEnabled()) {
             if (immersiveBarViewEnabled()) {
@@ -87,6 +87,10 @@ public abstract class BaseActivity<V extends IView, P extends BasePresenter<V>> 
 
     protected int getStatusBarColor() {
         return mDefaultStatusBarColor;
+    }
+
+    public ViewGroup getContentView() {
+        return mContentView;
     }
 
     protected View getStatusBarView() {

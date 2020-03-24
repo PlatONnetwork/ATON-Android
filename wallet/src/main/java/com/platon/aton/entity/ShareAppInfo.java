@@ -10,6 +10,7 @@ import android.os.Parcelable;
 
 import com.platon.aton.R;
 import com.platon.aton.utils.AppUtil;
+import com.platon.framework.utils.ToastUtil;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.UMShareListener;

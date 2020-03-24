@@ -2,6 +2,7 @@ package com.platon.aton.component.ui.presenter;
 
 import android.text.TextUtils;
 
+import com.platon.framework.base.BasePresenter;
 import com.platon.framework.network.ApiErrorCode;
 import com.platon.framework.network.ApiResponse;
 import com.platon.framework.network.ApiSingleObserver;
@@ -26,10 +27,6 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
 
     private List<VerifyNode> mVerifyNodeList = new ArrayList<>();
     private List<VerifyNode> mOldVerifyNodeList = new ArrayList<>();
-
-    public ValidatorsPresenter(ValidatorsContract.View view) {
-        super(view);
-    }
 
     @Override
     public void loadValidatorsData(@NodeStatus String nodeStatus, SortType sortType, String keywords, boolean isRefresh, boolean isRefreshAll) {

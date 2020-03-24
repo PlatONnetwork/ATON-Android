@@ -39,6 +39,10 @@ import com.platon.aton.component.widget.CommonTitleBar;
 import com.platon.aton.utils.PhotoUtil;
 import com.platon.aton.utils.QRCodeDecoder;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.base.BasePresenter;
+import com.platon.framework.base.BaseViewImp;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.io.File;
@@ -81,18 +85,6 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
     private CommonTitleBar mCtb;
     private ImageView lightIv;
     private TextView lightTv;
-
-    /**
-     * Called when the activity is first created.
-     */
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scan_qrcode);
-        initView();
-    }
-
 
     private void initView() {
 
@@ -179,6 +171,26 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
         ImmersionBar.with(this).keyboardEnable(false).statusBarDarkFont(false).fitsSystemWindows(false).init();
     }
 
+    @Override
+    public int getLayoutId() {
+        return R.layout.activity_scan_qrcode;
+    }
+
+    @Override
+    public BasePresenter createPresenter() {
+        return null;
+    }
+
+    @Override
+    public BaseViewImp createView() {
+        return null;
+    }
+
+    @Override
+    public void init() {
+        initView();
+    }
+
     private void switchLight() {
         try {
             boolean isSuccess = CameraManager.get().setFlashLight(!isFlashOn);
@@ -198,7 +210,7 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
 
         new RxPermissions(currentActivity())
                 .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .compose(RxUtils.bindToLifecycle(this))
+                .compose(bindToLifecycle())
                 .subscribe(new CustomObserver<Boolean>() {
                     @Override
                     public void accept(Boolean success) {

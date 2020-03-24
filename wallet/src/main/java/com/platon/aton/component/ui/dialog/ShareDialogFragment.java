@@ -14,6 +14,7 @@ import com.platon.aton.component.adapter.CommonAdapter;
 import com.platon.aton.component.adapter.base.ViewHolder;
 import com.platon.aton.entity.ShareAppInfo;
 import com.platon.aton.utils.DensityUtil;
+import com.platon.framework.app.Constants;
 
 import java.util.ArrayList;
 import java.util.List;

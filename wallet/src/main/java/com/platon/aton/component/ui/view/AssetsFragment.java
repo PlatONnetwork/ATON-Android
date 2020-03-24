@@ -46,7 +46,6 @@ import com.platon.aton.component.widget.CustomImageSpan;
 import com.platon.aton.component.widget.ShadowContainer;
 import com.platon.aton.component.widget.ViewPagerSlide;
 import com.platon.aton.component.widget.table.AssetsTabLayout;
-import com.platon.aton.config.AppSettings;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.GuideType;
 import com.platon.aton.entity.QrCodeType;
@@ -64,7 +63,12 @@ import com.platon.aton.utils.JSONUtil;
 import com.platon.aton.utils.QrCodeParser;
 import com.platon.aton.utils.RxUtils;
 import com.platon.aton.utils.StringUtil;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseFragment;
+import com.platon.framework.base.BaseLazyFragment;
+import com.platon.framework.base.BaseNestingLazyFragment;
 import com.platon.framework.utils.LogUtils;
+import com.platon.framework.utils.PreferenceTool;
 import com.platon.framework.utils.RUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -86,7 +90,7 @@ import butterknife.Unbinder;
 /**
  * @author matrixelement
  */
-public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements AssetsContract.View {
+public class AssetsFragment extends BaseNestingLazyFragment<AssetsContract.View, AssetsPresenter> implements AssetsContract.View {
 
 
     @IntDef({
@@ -155,24 +159,32 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     private TabAdapter mTabAdapter;
 
     @Override
-    protected AssetsPresenter createPresenter() {
-        return new AssetsPresenter(this);
+    public AssetsPresenter createPresenter() {
+        return new AssetsPresenter();
     }
 
     @Override
-    protected void onFragmentPageStart() {
-        mPresenter.fetchWalletsBalance();
-        mPresenter.fetchWalletList();
-
+    public AssetsContract.View createView() {
+        return this;
     }
 
     @Override
-    protected View onCreateFragmentPage(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_assets, container, false);
+    public void init(View rootView) {
         unbinder = ButterKnife.bind(this, rootView);
         EventPublisher.getInstance().register(this);
         initViews();
-        return rootView;
+    }
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.fragment_assets;
+    }
+
+    @Override
+    public void onFragmentFirst() {
+        super.onFragmentFirst();
+        getPresenter().fetchWalletsBalance();
+        getPresenter().fetchWalletList();
     }
 
     private void initViews() {
@@ -180,17 +192,17 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         initRefreshLayout();
         initHeader();
         initTab();
-        showAssets(AppSettings.getInstance().getShowAssetsFlag());
+        showAssets(PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, true));
         showContent(true);
         initGuide();
     }
 
     private void initGuide() {
-        if (!AppSettings.getInstance().getRecordBoolean()) {
+        if (!PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_RECORD, false)) {
             CommonGuideDialogFragment.newInstance(GuideType.TRANSACTION_LIST).setOnDissmissListener(new BaseDialogFragment.OnDissmissListener() {
                 @Override
                 public void onDismiss() {
-                    AppSettings.getInstance().setRecordBoolean(true);
+                    PreferenceTool.putBoolean(Constants.Preference.KEY_SHOW_RECORD, true);
                 }
             }).show(getActivity().getSupportFragmentManager(), "showGuideDialogFragment");
         }
@@ -198,7 +210,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     }
 
     private void initIndicator() {
-        List<BaseFragment> fragments = getFragments(null);
+        List<BaseLazyFragment> fragments = getFragments(null);
         stbBar.setCustomTabView(new AssetsTabLayout.TabProvider() {
             @Override
             public View createTabView(ViewGroup container, int position, PagerAdapter adapter) {
@@ -233,8 +245,8 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         layoutRefresh.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                mPresenter.fetchWalletList();
-                mPresenter.fetchWalletsBalance();
+                getPresenter().fetchWalletList();
+                getPresenter().fetchWalletsBalance();
             }
         });
     }
@@ -260,7 +272,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
     private Bundle saveState() {
         Bundle outState = new Bundle();
-        List<Wallet> walletList = mPresenter.getRecycleViewDataSource();
+        List<Wallet> walletList = getPresenter().getRecycleViewDataSource();
         if (walletList != null && walletList.size() > 0) {
             outState.putParcelableArrayList(Constants.Extra.EXTRA_WALLET_LIST, (ArrayList<? extends Parcelable>) walletList);
         }
@@ -350,7 +362,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
                             .setOnSendTransactionSucceedListener(new TransactionSignatureDialogFragment.OnSendTransactionSucceedListener() {
                                 @Override
                                 public void onSendTransactionSucceed(Transaction transaction) {
-                                    mPresenter.afterSendTransactionSucceed(transaction);
+                                    getPresenter().afterSendTransactionSucceed(transaction);
                                 }
                             })
                             .show(getActivity().getSupportFragmentManager(), TransactionSignatureDialogFragment.TAG);
@@ -425,11 +437,11 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
                 }).show(getChildFragmentManager(), "showAssetsMore");
                 break;
             case R.id.tv_total_assets_title:
-                AppSettings.getInstance().setShowAssetsFlag(!AppSettings.getInstance().getShowAssetsFlag());
-                showAssets(AppSettings.getInstance().getShowAssetsFlag());
+                PreferenceTool.putBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, true));
+                showAssets(PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, true));
                 break;
             case R.id.tv_backup:
-                mPresenter.backupWallet();
+                getPresenter().backupWallet();
                 break;
             case R.id.tv_restricted_amount:
                 //弹出tips
@@ -467,12 +479,12 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         rvWallet.setLayoutManager(linearLayoutManager);
-        mWalletAdapter = new WalletHorizontalRecycleViewAdapter(getContext(), mPresenter.getRecycleViewDataSource());
+        mWalletAdapter = new WalletHorizontalRecycleViewAdapter(getContext(), getPresenter().getRecycleViewDataSource());
 
         mWalletAdapter.setOnItemClickListener(new WalletHorizontalRecycleViewAdapter.OnRecycleViewItemClickListener() {
             @Override
             public void onContentViewClick(Wallet walletEntity) {
-                mPresenter.clickRecycleViewItem(WalletManager.getInstance().getWalletByAddress(walletEntity.getPrefixAddress()));
+                getPresenter().clickRecycleViewItem(WalletManager.getInstance().getWalletByAddress(walletEntity.getPrefixAddress()));
             }
         });
         RecycleViewProxyAdapter proxyAdapter = new RecycleViewProxyAdapter(mWalletAdapter);
@@ -540,16 +552,16 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
         return titleList;
     }
 
-    private List<BaseFragment> getFragments(Wallet walletEntity) {
-        List<BaseFragment> list = new ArrayList<>();
+    private List<BaseLazyFragment> getFragments(Wallet walletEntity) {
+        List<BaseLazyFragment> list = new ArrayList<>();
         list.add(getFragment(MainTab.TRANSACTION_LIST, walletEntity));
         list.add(getFragment(MainTab.SEND_TRANSACTION, walletEntity));
         list.add(getFragment(MainTab.RECEIVE_TRANSACTION, walletEntity));
         return list;
     }
 
-    private BaseFragment getFragment(@MainTab int tab, Wallet walletEntity) {
-        BaseFragment fragment = null;
+    private BaseLazyFragment getFragment(@MainTab int tab, Wallet walletEntity) {
+        BaseLazyFragment fragment = null;
         switch (tab) {
             case MainTab.TRANSACTION_LIST:
                 fragment = new TransactionsFragment();
@@ -573,7 +585,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
     @Override
     public void showTotalBalance(String totalBalance) {//显示总资产
-        boolean visible = AppSettings.getInstance().getShowAssetsFlag();
+        boolean visible = PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, true);
         tvTotalAssetsAmount.setText(StringUtil.formatBalance(BigDecimalUtil.div(totalBalance, "1E18")));
         tvTotalAssetsAmount.setTransformationMethod(visible ? HideReturnsTransformationMethod.getInstance() : new AmountTransformationMethod(tvTotalAssetsAmount.getText().toString()));
     }
@@ -587,7 +599,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     public void showFreeBalance(String balance) {//当前钱包的资产
 
         tvWalletAmount.setText(string(R.string.amount_with_unit, StringUtil.formatBalance(BigDecimalUtil.div(balance, "1E18"), false)));
-        tvWalletAmount.setTransformationMethod(AppSettings.getInstance().getShowAssetsFlag() ? HideReturnsTransformationMethod.getInstance() : new AmountTransformationMethod(tvWalletAmount.getText().toString()));
+        tvWalletAmount.setTransformationMethod(PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, true) ? HideReturnsTransformationMethod.getInstance() : new AmountTransformationMethod(tvWalletAmount.getText().toString()));
 
         if (vpContent.getCurrentItem() == MainTab.SEND_TRANSACTION) {
             SendTransactionFragment sendTransactionFragment = (SendTransactionFragment) mTabAdapter.getItem(MainTab.SEND_TRANSACTION);
@@ -601,7 +613,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     public void showLockBalance(String balance) { //当前选中钱包的锁仓金额
         tvRestrictedAmount.setVisibility(BigDecimalUtil.isBiggerThanZero(balance) ? View.VISIBLE : View.GONE);
         tvRestrictedAmount.setText(getRestrictedAmount(string(R.string.restricted_amount_with_unit, StringUtil.formatBalance(BigDecimalUtil.div(balance, "1E18")))));
-        tvRestrictedAmount.setTransformationMethod(AppSettings.getInstance().getShowAssetsFlag() ? HideReturnsTransformationMethod.getInstance() : new AmountTransformationMethod(tvRestrictedAmount.getText().toString()));
+        tvRestrictedAmount.setTransformationMethod(PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, true) ? HideReturnsTransformationMethod.getInstance() : new AmountTransformationMethod(tvRestrictedAmount.getText().toString()));
     }
 
     @Override
@@ -642,7 +654,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
 
     @Override
     public void setArgument(Wallet entity) {
-        List<BaseFragment> fragments = ((TabAdapter) vpContent.getAdapter()).getFragments();
+        List<BaseLazyFragment> fragments = ((TabAdapter) vpContent.getAdapter()).getFragments();
         for (BaseFragment fragment : fragments) {
             Bundle bundle = new Bundle();
             bundle.putParcelable(Constants.Extra.EXTRA_WALLET, entity);
@@ -663,7 +675,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     @Override
     public void resetView() {
 
-        List<BaseFragment> fragments = ((TabAdapter) vpContent.getAdapter()).getFragments();
+        List<BaseLazyFragment> fragments = ((TabAdapter) vpContent.getAdapter()).getFragments();
 
         BaseFragment baseFragment = fragments.get(1);
         if (baseFragment instanceof SendTransactionFragment) {
@@ -685,7 +697,7 @@ public class AssetsFragment extends MVPBaseFragment<AssetsPresenter> implements 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNetWorkStateChangedEvent(Event.NetWorkStateChangedEvent event) {
         ((TabView) stbBar.getTabAt(1)).setTitle((NetworkUtil.getNetWorkType(getContext()) != NetworkType.NETWORK_NO) ? string(R.string.action_send_transation) : string(R.string.wallet_send_offline_signature));
-        mPresenter.fetchWalletList();
+        getPresenter().fetchWalletList();
     }
 
     class TabView extends LinearLayout {

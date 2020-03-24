@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
@@ -23,6 +22,9 @@ import com.platon.aton.component.widget.ShadowButton;
 import com.platon.aton.entity.Address;
 import com.platon.aton.utils.GZipUtil;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.utils.ToastUtil;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import butterknife.BindString;
@@ -35,7 +37,7 @@ import io.reactivex.functions.BiFunction;
 /**
  * @author matrixelement
  */
-public class AddNewAddressActivity extends MVPBaseActivity<AddNewAddressPresenter> implements AddNewAddressContract.View {
+public class AddNewAddressActivity extends BaseActivity<AddNewAddressContract.View, AddNewAddressPresenter> implements AddNewAddressContract.View {
 
     @BindView(R.id.et_address_name)
     EditText etAddressName;
@@ -57,18 +59,26 @@ public class AddNewAddressActivity extends MVPBaseActivity<AddNewAddressPresente
     private Unbinder unbinder;
 
     @Override
-    protected AddNewAddressPresenter createPresenter() {
-        return new AddNewAddressPresenter(this);
+    public AddNewAddressPresenter createPresenter() {
+        return new AddNewAddressPresenter();
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public AddNewAddressContract.View createView() {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-        setContentView(R.layout.activity_add_new_address);
+        return this;
+    }
+
+    @Override
+    public void init() {
         unbinder = ButterKnife.bind(this);
         initViews();
-        mPresenter.loadAddressInfo();
+        getPresenter().loadAddressInfo();
+    }
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.activity_add_new_address;
     }
 
     private void initViews() {
@@ -76,7 +86,7 @@ public class AddNewAddressActivity extends MVPBaseActivity<AddNewAddressPresente
         Observable.combineLatest(RxTextView.textChanges(etAddress).skipInitialValue(), RxTextView.textChanges(etAddressName).skipInitialValue(), new BiFunction<CharSequence, CharSequence, Boolean>() {
             @Override
             public Boolean apply(CharSequence address, CharSequence addressName) throws Exception {
-                return mPresenter.checkAddress(address.toString()) && mPresenter.checkAddressName(addressName.toString());
+                return getPresenter().checkAddress(address.toString()) && getPresenter().checkAddressName(addressName.toString());
             }
         }).compose(bindToLifecycle())
                 .subscribe(new CustomObserver<Boolean>() {
@@ -110,7 +120,7 @@ public class AddNewAddressActivity extends MVPBaseActivity<AddNewAddressPresente
                     @Override
                     public void accept(Object o) {
                         hideSoftInput();
-                        mPresenter.addAddress();
+                        getPresenter().addAddress();
                     }
                 });
 
@@ -122,7 +132,7 @@ public class AddNewAddressActivity extends MVPBaseActivity<AddNewAddressPresente
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    mPresenter.checkAddressName(etAddressName.getText().toString().trim());
+                    getPresenter().checkAddressName(etAddressName.getText().toString().trim());
                 }
             }
         });
@@ -131,7 +141,7 @@ public class AddNewAddressActivity extends MVPBaseActivity<AddNewAddressPresente
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    mPresenter.checkAddress(etAddress.getText().toString().trim());
+                    getPresenter().checkAddress(etAddress.getText().toString().trim());
                 }
             }
         });
@@ -148,7 +158,7 @@ public class AddNewAddressActivity extends MVPBaseActivity<AddNewAddressPresente
                     ToastUtil.showLongToast(getContext(), R.string.unrecognized_content);
                     return;
                 }
-                mPresenter.validQRCode(newStr);
+                getPresenter().validQRCode(newStr);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);

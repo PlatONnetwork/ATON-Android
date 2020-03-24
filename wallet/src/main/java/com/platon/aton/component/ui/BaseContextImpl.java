@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.platon.aton.R;
 import com.platon.aton.component.ui.dialog.BaseDialog;
+import com.platon.framework.utils.ToastUtil;
 
 
 /**

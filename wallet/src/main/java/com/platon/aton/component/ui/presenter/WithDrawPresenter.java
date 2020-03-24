@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.platon.framework.base.BasePresenter;
 import com.platon.framework.network.ApiErrorCode;
 import com.platon.framework.network.ApiRequestBody;
 import com.platon.framework.network.ApiResponse;
@@ -71,7 +72,6 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     private String minDelegation = AppConfigManager.getInstance().getMinDelegation();
 
     public WithDrawPresenter(WithDrawContract.View view) {
-        super(view);
         mDelegateDetail = view.getDelegateDetailFromIntent();
         if (mDelegateDetail != null) {
             if (TextUtils.isEmpty(mDelegateDetail.getWalletAddress())) {

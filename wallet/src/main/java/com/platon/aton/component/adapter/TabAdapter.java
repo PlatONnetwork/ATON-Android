@@ -5,6 +5,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.ViewGroup;
 
+import com.platon.framework.base.BaseFragment;
+import com.platon.framework.base.BaseLazyFragment;
+
 import java.util.List;
 
 /**
@@ -12,17 +15,17 @@ import java.util.List;
  */
 public class TabAdapter extends FragmentStatePagerAdapter {
 
-    private List<BaseFragment> mFragments;
+    private List<BaseLazyFragment> mFragments;
     private List<String> mTitles;
 
-    public TabAdapter(FragmentManager fm, List<String> mTitles, List<BaseFragment> fragments) {
+    public TabAdapter(FragmentManager fm, List<String> mTitles, List<BaseLazyFragment> fragments) {
         super(fm);
         this.mFragments = fragments;
         this.mTitles = mTitles;
     }
 
 
-    public List<BaseFragment> getFragments() {
+    public List<BaseLazyFragment> getFragments() {
         return mFragments;
     }
 

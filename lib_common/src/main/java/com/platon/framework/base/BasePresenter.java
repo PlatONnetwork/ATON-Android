@@ -14,7 +14,7 @@ import java.lang.ref.WeakReference;
  * @date 2017/12/25
  */
 
-public class BasePresenter<V extends IView> implements IPresenter<V> {
+public class BasePresenter<V extends BaseViewImp> implements IPresenter<V> {
 
     private WeakReference<V> mViewReference;
 

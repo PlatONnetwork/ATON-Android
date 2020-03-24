@@ -8,7 +8,6 @@ import com.platon.aton.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.platon.aton.component.ui.view.AssetsFragment;
 import com.platon.aton.component.ui.view.BackupMnemonicPhraseActivity;
 import com.platon.aton.component.ui.view.TransactionDetailActivity;
-import com.platon.aton.config.AppSettings;
 import com.platon.aton.db.entity.TransactionRecordEntity;
 import com.platon.aton.db.sqlite.TransactionRecordDao;
 import com.platon.aton.engine.WalletManager;
@@ -40,8 +39,7 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
     private List<Wallet> mWalletList;
     private Disposable mDisposable;
 
-    public AssetsPresenter(AssetsContract.View view) {
-        super(view);
+    public AssetsPresenter() {
         mWalletList = WalletManager.getInstance().getWalletList();
     }
 

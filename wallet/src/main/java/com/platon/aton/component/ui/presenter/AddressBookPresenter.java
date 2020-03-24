@@ -6,6 +6,8 @@ import com.platon.aton.db.entity.AddressEntity;
 import com.platon.aton.db.sqlite.AddressDao;
 import com.platon.aton.entity.Address;
 import com.platon.aton.utils.CommonUtil;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.base.BasePresenter;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -25,10 +27,6 @@ import io.reactivex.schedulers.Schedulers;
 public class AddressBookPresenter extends BasePresenter<AddressBookContract.View> implements AddressBookContract.Presenter {
 
     private List<Address> addressEntityList;
-
-    public AddressBookPresenter(AddressBookContract.View view) {
-        super(view);
-    }
 
     @Override
     public void fetchAddressList() {

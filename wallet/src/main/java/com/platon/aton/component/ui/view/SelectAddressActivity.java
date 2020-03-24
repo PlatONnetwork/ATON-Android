@@ -3,7 +3,6 @@ package com.platon.aton.component.ui.view;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -14,6 +13,8 @@ import com.platon.aton.component.ui.contract.SelectAddressContract;
 import com.platon.aton.component.ui.presenter.SelectAddressPresenter;
 import com.platon.aton.component.widget.CommonTitleBar;
 import com.platon.aton.entity.Address;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseActivity;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ import butterknife.Unbinder;
 /**
  * @author matrixelement
  */
-public class SelectAddressActivity extends MVPBaseActivity<SelectAddressPresenter> implements SelectAddressContract.View {
+public class SelectAddressActivity extends BaseActivity<SelectAddressContract.View, SelectAddressPresenter> implements SelectAddressContract.View {
 
     @BindView(R.id.list_wallet_address)
     ListView listWalletAddress;
@@ -38,17 +39,25 @@ public class SelectAddressActivity extends MVPBaseActivity<SelectAddressPresente
     private SelectAddressListAdapter addressBookListAdapter;
 
     @Override
-    protected SelectAddressPresenter createPresenter() {
-        return new SelectAddressPresenter(this);
+    public SelectAddressPresenter createPresenter() {
+        return new SelectAddressPresenter();
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_select_address);
+    public SelectAddressContract.View createView() {
+        return this;
+    }
+
+    @Override
+    public void init() {
         unbinder = ButterKnife.bind(this);
         initViews();
-        mPresenter.fetchAddressList();
+        getPresenter().fetchAddressList();
+    }
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.activity_select_address;
     }
 
     private void initViews() {
@@ -68,7 +77,7 @@ public class SelectAddressActivity extends MVPBaseActivity<SelectAddressPresente
                     showLongToast(R.string.can_not_send_to_itself);
                     return;
                 } else {
-                    mPresenter.selectAddress(position);
+                    getPresenter().selectAddress(position);
                 }
             }
         });
@@ -93,7 +102,7 @@ public class SelectAddressActivity extends MVPBaseActivity<SelectAddressPresente
             switch (requestCode) {
                 case Constants.RequestCode.REQUEST_CODE_ADD_ADDRESS:
                 case Constants.RequestCode.REQUEST_CODE_EDIT_ADDRESS:
-                    mPresenter.fetchAddressList();
+                    getPresenter().fetchAddressList();
                     break;
                 default:
                     break;

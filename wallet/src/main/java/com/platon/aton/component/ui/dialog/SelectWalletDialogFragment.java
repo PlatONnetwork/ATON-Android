@@ -21,6 +21,7 @@ import com.platon.aton.entity.Wallet;
 import com.platon.aton.utils.BigDecimalUtil;
 import com.platon.aton.utils.DensityUtil;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.app.Constants;
 
 import org.reactivestreams.Publisher;
 

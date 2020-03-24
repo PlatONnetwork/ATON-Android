@@ -16,6 +16,7 @@ import com.platon.aton.component.adapter.base.ViewHolder;
 import com.platon.aton.utils.DensityUtil;
 import com.platon.aton.utils.RxUtils;
 import com.platon.aton.utils.StringUtil;
+import com.platon.framework.app.Constants;
 
 import java.util.Arrays;
 import java.util.List;

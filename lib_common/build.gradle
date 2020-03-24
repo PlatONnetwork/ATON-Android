@@ -125,7 +125,8 @@ dependencies {
     api rootProject.ext.dependencies["twitter-core"]
     api rootProject.ext.dependencies["twitter-composer"]
     api rootProject.ext.dependencies["walle"]
-    implementation files('libs/umeng-share-core-6.9.6.jar')
-    implementation files('libs/umeng-share-facebook-6.9.6.jar')
-    implementation files('libs/umeng-share-sina-full-6.9.6.jar')
+    //友盟相关
+    api files('libs/umeng-share-core-6.9.6.jar')
+    api files('libs/umeng-share-facebook-6.9.6.jar')
+    api files('libs/umeng-share-sina-full-6.9.6.jar')
 }

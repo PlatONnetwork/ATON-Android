@@ -7,21 +7,19 @@ import android.os.Message;
 import com.platon.biometric.BiometricPromptCompat;
 import com.platon.aton.R;
 import com.platon.aton.component.ui.contract.UnlockWithPasswordContract;
-import com.platon.aton.config.AppSettings;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.Wallet;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.base.BasePresenter;
+import com.platon.framework.utils.PreferenceTool;
 
 /**
  * @author matrixelement
  */
 public class UnlockWithPasswordPresenter extends BasePresenter<UnlockWithPasswordContract.View> implements UnlockWithPasswordContract.Presenter{
 
-    private final static String TAG = UnlockWithPasswordPresenter.class.getSimpleName();
     private Wallet mWallet;
-
-    public UnlockWithPasswordPresenter(UnlockWithPasswordContract.View view) {
-        super(view);
-    }
 
     @Override
     public void setSelectWallet(Wallet wallet) {
@@ -71,7 +69,7 @@ public class UnlockWithPasswordPresenter extends BasePresenter<UnlockWithPasswor
                     break;
                 case MSG_OK:
                     if (!BiometricPromptCompat.supportBiometricPromptCompat(currentActivity())) {
-                        AppSettings.getInstance().setFaceTouchIdFlag(false);
+                        PreferenceTool.putBoolean(Constants.Preference.KEY_FACE_TOUCH_ID_FLAG, false);
                     }
                     dismissLoadingDialogImmediately();
                     BaseActivity activity = currentActivity();

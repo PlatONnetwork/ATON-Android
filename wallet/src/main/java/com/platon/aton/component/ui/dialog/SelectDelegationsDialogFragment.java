@@ -20,6 +20,7 @@ import com.platon.aton.entity.WithDrawBalance;
 import com.platon.aton.utils.AmountUtil;
 import com.platon.aton.utils.CommonTextUtils;
 import com.platon.aton.utils.DensityUtil;
+import com.platon.framework.app.Constants;
 
 import java.util.ArrayList;
 import java.util.List;

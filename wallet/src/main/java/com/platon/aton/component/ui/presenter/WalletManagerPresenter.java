@@ -4,7 +4,6 @@ import com.platon.aton.component.ui.contract.WalletManagerContract;
 import com.platon.aton.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.platon.aton.component.ui.view.BackupMnemonicPhraseActivity;
 import com.platon.aton.component.ui.view.ManageWalletActivity;
-import com.platon.aton.config.AppSettings;
 import com.platon.aton.db.sqlite.WalletDao;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.Wallet;
@@ -30,10 +29,6 @@ public class WalletManagerPresenter extends BasePresenter<WalletManagerContract.
 
     private ArrayList<Wallet> mWalletList = new ArrayList<>();
 
-    public WalletManagerPresenter(WalletManagerContract.View view) {
-        super(view);
-    }
-
     @Override
     public void fetchWalletList() {
         if (isViewAttached()) {
@@ -46,7 +41,7 @@ public class WalletManagerPresenter extends BasePresenter<WalletManagerContract.
             }
             if (mWalletList.isEmpty()) {
                 PreferenceTool.putBoolean(Constants.Preference.KEY_OPERATE_MENU_FLAG,true);
-                AppSettings.getInstance().setFaceTouchIdFlag(false);
+                PreferenceTool.putBoolean(Constants.Preference.KEY_FACE_TOUCH_ID_FLAG, false);
                 getView().showEmpty();
                 return;
             }

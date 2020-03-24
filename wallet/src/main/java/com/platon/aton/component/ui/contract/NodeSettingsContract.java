@@ -1,6 +1,9 @@
 package com.platon.aton.component.ui.contract;
 
 import com.platon.aton.entity.Node;
+import com.platon.framework.base.BaseViewImp;
+import com.platon.framework.base.IPresenter;
+import com.platon.framework.base.IView;
 
 import java.util.List;
 
@@ -9,8 +12,7 @@ import java.util.List;
  */
 public class NodeSettingsContract {
 
-
-    public interface View extends IView {
+    public interface View extends BaseViewImp {
 
         void notifyDataChanged(List<Node> nodeEntityList);
 

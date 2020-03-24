@@ -1,19 +1,14 @@
 package com.platon.aton.component.ui.view;
 
 import android.graphics.Bitmap;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
-import com.platon.framework.utils.RUtils;
 import com.platon.aton.BuildConfig;
 import com.platon.aton.R;
 import com.platon.aton.app.CustomObserver;
@@ -27,6 +22,9 @@ import com.platon.aton.entity.Wallet;
 import com.platon.aton.event.Event;
 import com.platon.aton.event.EventPublisher;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseLazyFragment;
+import com.platon.framework.utils.RUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -38,7 +36,7 @@ import butterknife.Unbinder;
 /**
  * @author matrixelement
  */
-public class ReceiveTransactionFragment extends MVPBaseFragment<ReceiveTransactionPresenter> implements ReceiveTransationContract.View {
+public class ReceiveTransactionFragment extends BaseLazyFragment<ReceiveTransationContract.View, ReceiveTransactionPresenter> implements ReceiveTransationContract.View {
 
     @BindView(R.id.iv_wallet_address_qr_code)
     ImageView ivWalletAddressQrCode;
@@ -56,23 +54,33 @@ public class ReceiveTransactionFragment extends MVPBaseFragment<ReceiveTransacti
     private Unbinder unbinder;
 
     @Override
-    protected ReceiveTransactionPresenter createPresenter() {
-        return new ReceiveTransactionPresenter(this);
+    public ReceiveTransactionPresenter createPresenter() {
+        return new ReceiveTransactionPresenter();
     }
 
     @Override
-    protected void onFragmentPageStart() {
-        mPresenter.loadData();
+    public ReceiveTransationContract.View createView() {
+        return this;
     }
 
     @Override
-    protected View onCreateFragmentPage(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_receive_transaction, container, false);
+    public void init(View rootView) {
         unbinder = ButterKnife.bind(this, rootView);
         EventPublisher.getInstance().register(this);
         initViews();
-        return rootView;
     }
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.fragment_receive_transaction;
+    }
+
+    @Override
+    public void onFragmentFirst() {
+        super.onFragmentFirst();
+        getPresenter().loadData();
+    }
+
 
     private void initViews() {
 
@@ -84,7 +92,7 @@ public class ReceiveTransactionFragment extends MVPBaseFragment<ReceiveTransacti
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) {
-                        mPresenter.shareView();
+                        getPresenter().shareView();
                     }
                 });
 
@@ -94,7 +102,7 @@ public class ReceiveTransactionFragment extends MVPBaseFragment<ReceiveTransacti
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        mPresenter.copy();
+                        getPresenter().copy();
                     }
                 });
     }
@@ -149,7 +157,7 @@ public class ReceiveTransactionFragment extends MVPBaseFragment<ReceiveTransacti
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateSelectedWalletEvent(Event.UpdateSelectedWalletEvent event) {
-        mPresenter.loadData();
+        getPresenter().loadData();
     }
 
     @Override
@@ -160,4 +168,5 @@ public class ReceiveTransactionFragment extends MVPBaseFragment<ReceiveTransacti
             unbinder.unbind();
         }
     }
+
 }

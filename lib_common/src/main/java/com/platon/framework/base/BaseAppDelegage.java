@@ -25,7 +25,7 @@ import com.umeng.commonsdk.UMConfigure;
 import com.umeng.socialize.PlatformConfig;
 
 
-public class BaseAppDeletage {
+public class BaseAppDelegage {
 
     private Application mApplication;
 
@@ -49,7 +49,7 @@ public class BaseAppDeletage {
         });
     }
 
-    public BaseAppDeletage(Application application) {
+    public BaseAppDelegage(Application application) {
         mApplication = application;
     }
 
@@ -67,15 +67,15 @@ public class BaseAppDeletage {
         //网络状态变化监听
         NetConnectivity.getConnectivityManager().init(mApplication);
         //初始化异常组件
-        CustomerException.getExceptionControl().init(context);
+        CustomerException.getExceptionControl().init(mApplication);
         // 初始化网络组件
-        NetConnectivity.getConnectivityManager().init(this);
+        NetConnectivity.getConnectivityManager().init(mApplication);
         //初始化请求响应类
-        ApiResponse.init(context);
+        ApiResponse.init(mApplication);
     }
 
     private void initUMConfigure() {
-        UMConfigure.init(this, BuildConfig.UM_APPKEY, DeviceManager.getInstance().getChannel(), UMConfigure.DEVICE_TYPE_PHONE, null);
+        UMConfigure.init(mApplication, BuildConfig.UM_APPKEY, DeviceManager.getInstance().getChannel(), UMConfigure.DEVICE_TYPE_PHONE, null);
         if (BuildConfig.DEBUG) {
             UMConfigure.setLogEnabled(true);
         }

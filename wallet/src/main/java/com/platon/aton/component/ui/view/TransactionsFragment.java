@@ -1,12 +1,8 @@
 package com.platon.aton.component.ui.view;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.platon.aton.R;
 import com.platon.aton.component.adapter.TransactionDiffCallback;
@@ -18,6 +14,7 @@ import com.platon.aton.component.widget.WrapContentLinearLayoutManager;
 import com.platon.aton.entity.Transaction;
 import com.platon.aton.event.Event;
 import com.platon.aton.event.EventPublisher;
+import com.platon.framework.base.BaseLazyFragment;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -32,7 +29,7 @@ import butterknife.Unbinder;
 /**
  * @author matrixelement
  */
-public class TransactionsFragment extends BaseViewPageFragment<TransactionsPresenter> implements TransactionsContract.View {
+public class TransactionsFragment extends BaseLazyFragment<TransactionsContract.View, TransactionsPresenter> implements TransactionsContract.View {
 
     @BindView(R.id.list_transaction)
     RecyclerView listTransaction;
@@ -43,23 +40,35 @@ public class TransactionsFragment extends BaseViewPageFragment<TransactionsPrese
     private TransactionListAdapter mTransactionListAdapter;
 
     @Override
-    protected View onCreatePage(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_transactions, container, false);
+    public TransactionsPresenter createPresenter() {
+        return new TransactionsPresenter();
+    }
+
+    @Override
+    public TransactionsContract.View createView() {
+        return this;
+    }
+
+    @Override
+    public void init(View rootView) {
         unbinder = ButterKnife.bind(this, rootView);
         EventPublisher.getInstance().register(this);
         initViews();
-        return rootView;
     }
 
     @Override
-    protected TransactionsPresenter createPresenter() {
-        return new TransactionsPresenter(this);
+    public void onFragmentVisible() {
+        super.onFragmentVisible();
+        if (getPresenter() != null) {
+            getPresenter().loadNew(TransactionsPresenter.DIRECTION_NEW);
+        }
     }
 
     @Override
-    public void onPageStart() {
-        if (mPresenter != null) {
-            mPresenter.loadNew(TransactionsPresenter.DIRECTION_NEW);
+    public void onFragmentFirst() {
+        super.onFragmentFirst();
+        if (getPresenter() != null) {
+            getPresenter().loadNew(TransactionsPresenter.DIRECTION_NEW);
         }
     }
 
@@ -89,28 +98,28 @@ public class TransactionsFragment extends BaseViewPageFragment<TransactionsPrese
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateTransactionEvent(Event.UpdateTransactionEvent event) {
-        mPresenter.addNewTransaction(event.transaction);
+        getPresenter().addNewTransaction(event.transaction);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDeleteTransactionEvent(Event.DeleteTransactionEvent event) {
-        mPresenter.deleteTransaction(event.transaction);
+        getPresenter().deleteTransaction(event.transaction);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateSelectedWalletEvent(Event.UpdateSelectedWalletEvent event) {
-        mPresenter.loadLatestData();
+        getPresenter().loadLatestData();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNodeChangedEvent(Event.NodeChangedEvent event) {
         //获取最新
-        mPresenter.loadLatestData();
+        getPresenter().loadLatestData();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSumAccountBalanceChanged(Event.SumAccountBalanceChanged event) {
-        mPresenter.loadNew(TransactionsPresenter.DIRECTION_NEW);
+        getPresenter().loadNew(TransactionsPresenter.DIRECTION_NEW);
     }
 
     @Override
@@ -120,5 +129,10 @@ public class TransactionsFragment extends BaseViewPageFragment<TransactionsPrese
         if (unbinder != null) {
             unbinder.unbind();
         }
+    }
+
+    @Override
+    public int getLayoutId() {
+        return 0;
     }
 }

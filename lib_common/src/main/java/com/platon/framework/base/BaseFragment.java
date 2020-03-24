@@ -10,13 +10,17 @@ import android.view.ViewGroup;
 
 import com.gyf.immersionbar.components.ImmersionOwner;
 import com.gyf.immersionbar.components.ImmersionProxy;
+import com.platon.framework.R;
+import com.platon.framework.app.BaseContextImpl;
+import com.platon.framework.app.IContext;
 import com.trello.rxlifecycle2.components.support.RxFragment;
 
 /**
  * 父类->基类->动态指定类型->泛型设计（通过泛型指定动态类型->由子类指定，父类只需要规定范围即可）
+ *
  * @author ziv
  */
-public abstract class BaseFragment<V extends IView, P extends BasePresenter<V>> extends RxFragment implements ImmersionOwner {
+public abstract class BaseFragment<V extends BaseViewImp, P extends BasePresenter<V>> extends RxFragment implements ImmersionOwner, IContext {
 
     /**
      * 引用V层和P层
@@ -179,6 +183,85 @@ public abstract class BaseFragment<V extends IView, P extends BasePresenter<V>> 
     public View getRootView() {
         return rootView;
     }
+
+
+    @Override
+    public Context getContext() {
+        return mContextImpl.getContext();
+    }
+
+    @Override
+    public BaseActivity currentActivity() {
+        return mContextImpl.currentActivity();
+    }
+
+    @Override
+    public String string(int resId, Object... formatArgs) {
+        return mContextImpl.string(resId, formatArgs);
+    }
+
+    @Override
+    public void showShortToast(String text) {
+        mContextImpl.showShortToast(text);
+    }
+
+    @Override
+    public void showLongToast(String text) {
+        mContextImpl.showLongToast(text);
+    }
+
+    @Override
+    public void showShortToast(int resId) {
+        mContextImpl.showShortToast(resId);
+    }
+
+    @Override
+    public void showLongToast(int resId) {
+        mContextImpl.showLongToast(resId);
+    }
+
+
+    @Override
+    public void dismissLoadingDialogImmediately() {
+        mContextImpl.dismissLoadingDialogImmediately();
+    }
+
+    @Override
+    public void showLoadingDialog() {
+        showLoadingDialog(string(R.string.loading));
+    }
+
+    @Override
+    public void showLoadingDialog(int resId) {
+        showLoadingDialog(string(resId));
+    }
+
+    @Override
+    public void showLoadingDialog(String text) {
+        showLoadingDialog(text, false);
+    }
+
+    @Override
+    public void showLoadingDialogWithCancelable(String text) {
+        showLoadingDialog(text, true);
+    }
+
+    @Override
+    public void showLoadingDialog(String text, boolean cancelable) {
+        mContextImpl.showLoadingDialog(text, cancelable);
+    }
+
+    private BaseContextImpl mContextImpl = new BaseContextImpl() {
+        @Override
+        public Context getContext() {
+            return getContext();
+        }
+
+        @Override
+        public BaseActivity currentActivity() {
+            return (BaseActivity) getActivity();
+        }
+    };
 
 
 }

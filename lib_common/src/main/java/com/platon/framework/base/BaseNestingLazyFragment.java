@@ -19,7 +19,7 @@ import java.util.List;
  * <p>
  * BaseNestingLazyFragment  fragment嵌套fragment的懒加载父类
  */
-public abstract class BaseNestingLazyFragment<V extends IView, P extends BasePresenter<V>> extends BaseFragment<V, P> {
+public abstract class BaseNestingLazyFragment<V extends BaseViewImp, P extends BasePresenter<V>> extends BaseFragment<V, P> {
     //引用V层和P层
     private P presenter;
     private V view;

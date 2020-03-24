@@ -18,6 +18,7 @@ import com.platon.aton.utils.BigDecimalUtil;
 import com.platon.aton.utils.JSONUtil;
 import com.platon.aton.utils.NumberParserUtils;
 import com.platon.aton.utils.SignCodeUtils;
+import com.platon.framework.app.Constants;
 import com.platon.framework.network.ApiRequestBody;
 import com.platon.framework.network.ApiResponse;
 import com.platon.framework.utils.MapUtils;

@@ -16,10 +16,6 @@ import com.platon.framework.utils.PreferenceTool;
 
 public class ImportObservedPresenter extends BasePresenter<ImportObservedContract.View> implements ImportObservedContract.Presenter {
 
-    public ImportObservedPresenter(ImportObservedContract.View view) {
-        super(view);
-    }
-
     @Override
     public void parseQRCode(String QRCode) {
         getView().showQRCode(QRCode);

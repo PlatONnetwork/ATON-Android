@@ -2,6 +2,9 @@ package com.platon.aton.app;
 
 import android.text.TextUtils;
 
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.base.BaseFragment;
+
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscription;
 

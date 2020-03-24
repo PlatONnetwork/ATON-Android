@@ -22,6 +22,7 @@ import com.platon.aton.utils.DensityUtil;
 import com.platon.aton.utils.JZWalletUtil;
 import com.platon.aton.utils.RxUtils;
 import com.platon.aton.utils.StringUtil;
+import com.platon.framework.app.Constants;
 
 import java.io.Serializable;
 import java.util.Map;

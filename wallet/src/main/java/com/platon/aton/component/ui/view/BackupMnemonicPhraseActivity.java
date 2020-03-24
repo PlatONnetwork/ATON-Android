@@ -17,6 +17,10 @@ import com.platon.aton.component.widget.CommonTitleBar;
 import com.platon.aton.component.widget.ShadowContainer;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.utils.JZWalletUtil;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.base.BasePresenter;
+import com.platon.framework.base.BaseViewImp;
 
 public class BackupMnemonicPhraseActivity extends BaseActivity {
 
@@ -24,10 +28,22 @@ public class BackupMnemonicPhraseActivity extends BaseActivity {
     private ShadowContainer mShadowContainer;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_backup_mnemonic_phrase);
+    public int getLayoutId() {
+        return R.layout.activity_backup_mnemonic_phrase;
+    }
+
+    @Override
+    public BasePresenter createPresenter() {
+        return null;
+    }
+
+    @Override
+    public BaseViewImp createView() {
+        return null;
+    }
+
+    @Override
+    public void init() {
         showTipsDialog();
         initView();
         Wallet walletEntity = getIntent().getParcelableExtra(Constants.Extra.EXTRA_WALLET);

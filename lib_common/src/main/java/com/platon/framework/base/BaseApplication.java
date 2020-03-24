@@ -10,12 +10,12 @@ import android.app.Application;
  */
 public class BaseApplication extends Application {
 
-    private BaseAppDeletage mBaseAppDeletage;
+    private BaseAppDelegage mBaseAppDeletage;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        mBaseAppDeletage = new BaseAppDeletage(this);
+        mBaseAppDeletage = new BaseAppDelegage(this);
         mBaseAppDeletage.onCreate();
     }
 }

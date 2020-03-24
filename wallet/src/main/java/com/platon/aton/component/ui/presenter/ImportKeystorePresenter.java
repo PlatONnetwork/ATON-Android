@@ -10,12 +10,9 @@ import com.platon.aton.component.ui.contract.ImportKeystoreContract;
 import com.platon.aton.component.ui.view.MainActivity;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.utils.CommonUtil;
+import com.platon.framework.base.BasePresenter;
 
 public class ImportKeystorePresenter extends BasePresenter<ImportKeystoreContract.View> implements ImportKeystoreContract.Presenter {
-
-    public ImportKeystorePresenter(ImportKeystoreContract.View view) {
-        super(view);
-    }
 
     @Override
     public void init() {

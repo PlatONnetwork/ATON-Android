@@ -23,6 +23,7 @@ import android.widget.AbsListView;
 import android.widget.TextView;
 
 import com.platon.aton.R;
+import com.platon.framework.utils.ToastUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

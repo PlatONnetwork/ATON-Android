@@ -10,6 +10,7 @@ import com.platon.aton.entity.DelegateInfo;
 import com.platon.aton.entity.DelegateItemInfo;
 import com.platon.aton.entity.DelegateNodeDetail;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.base.BasePresenter;
 import com.platon.framework.network.ApiErrorCode;
 import com.platon.framework.network.ApiRequestBody;
 import com.platon.framework.network.ApiResponse;
@@ -26,11 +27,6 @@ import retrofit2.Response;
 public class DelegateDetailPresenter extends BasePresenter<DelegateDetailContract.View> implements DelegateDetailContract.Presenter {
 
     private DelegateNodeDetail mDelegateNodeDetail;
-
-    public DelegateDetailPresenter(DelegateDetailContract.View view) {
-        super(view);
-
-    }
 
     @Override
     public void loadDelegateDetailData() {

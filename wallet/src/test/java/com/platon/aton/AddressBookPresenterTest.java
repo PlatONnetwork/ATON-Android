@@ -2,7 +2,6 @@ package com.platon.aton;
 
 import com.platon.aton.component.ui.contract.AddressBookContract;
 import com.platon.aton.component.ui.presenter.AddressBookPresenter;
-import com.platon.aton.config.AppSettings;
 import com.platon.aton.db.entity.AddressEntity;
 import com.platon.aton.engine.NodeManager;
 import com.platon.aton.entity.Address;
@@ -51,7 +50,6 @@ public class AddressBookPresenterTest {
 
     @Before
     public void setup() {
-        AppSettings appSettings = AppSettings.getInstance();
         NodeManager nodeManager = NodeManager.getInstance();
         //输出日志
         ShadowLog.stream = System.out;

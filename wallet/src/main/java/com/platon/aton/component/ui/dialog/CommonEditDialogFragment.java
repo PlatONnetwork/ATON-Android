@@ -27,6 +27,7 @@ import com.platon.aton.component.widget.ShadowButton;
 import com.platon.aton.component.widget.ShadowDrawable;
 import com.platon.aton.utils.DensityUtil;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.app.Constants;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

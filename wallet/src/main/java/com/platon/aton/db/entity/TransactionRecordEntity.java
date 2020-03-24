@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.platon.aton.utils.BigDecimalUtil;
 import com.platon.aton.utils.NumberParserUtils;
+import com.platon.framework.app.Constants;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;

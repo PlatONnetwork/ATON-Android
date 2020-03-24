@@ -30,10 +30,6 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 
 public class MainPresenter extends BasePresenter<MainContract.View> implements MainContract.Presenter {
 
-    public MainPresenter(MainContract.View view) {
-        super(view);
-    }
-
     @Override
     public void checkVersion() {
         ServerUtils

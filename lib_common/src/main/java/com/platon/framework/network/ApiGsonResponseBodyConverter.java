@@ -19,7 +19,7 @@ package com.platon.framework.network;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
-import com.platon.framework.app.log.Log;
+import com.platon.framework.utils.LogUtils;
 
 import java.io.IOException;
 
@@ -54,7 +54,7 @@ final class ApiGsonResponseBodyConverter<T> implements Converter<ResponseBody, T
             }
         } else {
             String jsonString = EncryptionManager.getInstance().decrypt(requestInfo, value.string());
-            Log.debug(TAG, requestInfo.getRealUrl() + "\nRAW: " + jsonString);
+            LogUtils.d(requestInfo.getRealUrl() + "\nRAW: " + jsonString);
             return adapter.fromJson(jsonString);
         }
     }

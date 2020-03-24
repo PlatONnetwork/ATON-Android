@@ -1,6 +1,5 @@
 package com.platon.aton.component.ui.presenter;
 
-import com.platon.framework.network.SchedulersTransformer;
 import com.platon.aton.app.LoadingTransformer;
 import com.platon.aton.component.ui.contract.ManageWalletContract;
 import com.platon.aton.component.ui.dialog.InputWalletPasswordDialogFragment;
@@ -13,6 +12,8 @@ import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.event.EventPublisher;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.base.BasePresenter;
+import com.platon.framework.network.SchedulersTransformer;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.Keys;
@@ -30,9 +31,10 @@ public class ManageWalletPresenter extends BasePresenter<ManageWalletContract.Vi
 
     private Wallet mWalletEntity;
 
-    public ManageWalletPresenter(ManageWalletContract.View view) {
-        super(view);
-        mWalletEntity = getView().getWalletEntityFromIntent();
+    public ManageWalletPresenter() {
+        if (isViewAttached()) {
+            mWalletEntity = getView().getWalletEntityFromIntent();
+        }
     }
 
     @Override
@@ -82,7 +84,7 @@ public class ManageWalletPresenter extends BasePresenter<ManageWalletContract.Vi
                     }
                 })
                 .compose(RxUtils.getSingleSchedulerTransformer())
-                .compose(RxUtils.bindToLifecycle(currentActivity()))
+                .compose(bindToLifecycle())
                 .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
                 .subscribe(new Consumer<Boolean>() {
                     @Override

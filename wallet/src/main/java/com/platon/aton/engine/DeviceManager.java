@@ -8,9 +8,10 @@ import android.support.annotation.StringDef;
 import android.text.TextUtils;
 
 import com.platon.aton.BuildConfig;
-import com.platon.aton.config.AppSettings;
 import com.platon.aton.utils.MD5Utils;
 import com.platon.aton.utils.SystemUtil;
+import com.platon.framework.app.Constants;
+import com.platon.framework.utils.PreferenceTool;
 
 import java.io.UnsupportedEncodingException;
 import java.util.UUID;
@@ -54,7 +55,7 @@ public class DeviceManager {
         if (TextUtils.isEmpty(deviceID)) {
             synchronized (DeviceManager.class) {
                 if (deviceID == null) {
-                    final String id = AppSettings.getInstance().getDeviceId();
+                    final String id = PreferenceTool.getString(Constants.Preference.KEY_DEVICE_ID);
                     if (!TextUtils.isEmpty(id)) {
                         // Use the ids previously computed and stored in the prefs file
                         deviceID = UUID.fromString(id).toString();
@@ -73,7 +74,7 @@ public class DeviceManager {
                             throw new RuntimeException(e);
                         }
                         // Write the value out to the prefs file
-                        AppSettings.getInstance().setDeviceId(deviceID);
+                        PreferenceTool.putString(Constants.Preference.KEY_DEVICE_ID,deviceID);
                     }
                 }
             }
@@ -94,7 +95,7 @@ public class DeviceManager {
 
     public void setDeviceID(String deviceID) {
         this.deviceID = deviceID;
-        AppSettings.getInstance().setDeviceId(deviceID);
+        PreferenceTool.putString(Constants.Preference.KEY_DEVICE_ID,deviceID);
     }
 
     public String getChannel() {

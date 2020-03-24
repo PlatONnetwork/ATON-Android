@@ -2,7 +2,6 @@ package com.platon.aton.component.ui.view;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.WindowManager;
@@ -19,6 +18,8 @@ import com.platon.aton.component.widget.swipeenulistview.SwipeMenuItem;
 import com.platon.aton.component.widget.swipeenulistview.SwipeMenuListView;
 import com.platon.aton.entity.Address;
 import com.platon.aton.utils.DensityUtil;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseActivity;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.List;
@@ -31,7 +32,7 @@ import butterknife.Unbinder;
 /**
  * @author matrixelement
  */
-public class AddressBookActivity extends MVPBaseActivity<AddressBookPresenter> implements AddressBookContract.View {
+public class AddressBookActivity extends BaseActivity<AddressBookContract.View, AddressBookPresenter> implements AddressBookContract.View {
 
     @BindView(R.id.swipeMenuListView)
     SwipeMenuListView swipeMenuListView;
@@ -50,18 +51,26 @@ public class AddressBookActivity extends MVPBaseActivity<AddressBookPresenter> i
     private AddressBookListAdapter addressBookListAdapter;
 
     @Override
-    protected AddressBookPresenter createPresenter() {
-        return new AddressBookPresenter(this);
+    public AddressBookPresenter createPresenter() {
+        return new AddressBookPresenter();
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public AddressBookContract.View createView() {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        setContentView(R.layout.activity_address_book);
+        return this;
+    }
+
+    @Override
+    public void init() {
         unbinder = ButterKnife.bind(this);
         initViews();
-        mPresenter.fetchAddressList();
+        getPresenter().fetchAddressList();
+    }
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.activity_address_book;
     }
 
     @Override
@@ -102,9 +111,9 @@ public class AddressBookActivity extends MVPBaseActivity<AddressBookPresenter> i
             @Override
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
                 if (index == 0) {
-                    mPresenter.editAddress(position);
+                    getPresenter().editAddress(position);
                 } else {
-                    mPresenter.deleteAddress(position);
+                    getPresenter().deleteAddress(position);
                 }
                 swipeMenuListView.smoothCloseMenu();
                 return true;
@@ -114,7 +123,7 @@ public class AddressBookActivity extends MVPBaseActivity<AddressBookPresenter> i
         swipeMenuListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mPresenter.selectAddress(position);
+                getPresenter().selectAddress(position);
             }
         });
 
@@ -159,7 +168,7 @@ public class AddressBookActivity extends MVPBaseActivity<AddressBookPresenter> i
             switch (requestCode) {
                 case Constants.RequestCode.REQUEST_CODE_ADD_ADDRESS:
                 case Constants.RequestCode.REQUEST_CODE_EDIT_ADDRESS:
-                    mPresenter.fetchAddressList();
+                    getPresenter().fetchAddressList();
                     break;
                 default:
                     break;

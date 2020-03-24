@@ -11,7 +11,6 @@ import com.platon.aton.app.CustomThrowable;
 import com.platon.aton.app.LoadingTransformer;
 import com.platon.aton.component.ui.contract.NodeSettingsContract;
 import com.platon.aton.component.ui.view.OperateMenuActivity;
-import com.platon.aton.config.AppSettings;
 import com.platon.aton.db.entity.WalletEntity;
 import com.platon.aton.db.sqlite.WalletDao;
 import com.platon.aton.engine.NodeManager;
@@ -40,10 +39,6 @@ public class NodeSettingsPresenter extends BasePresenter<NodeSettingsContract.Vi
     private final static String TAG = NodeSettingsPresenter.class.getSimpleName();
     private final static String IP_WITH_HTTP_PREFIX = "^(http(s?)://)?((25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))\\.){3}(25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)):\\d{3,})";
     private final static String IP_WITHOUT_HTTP_PREFIX = "((25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))\\.){3}(25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)):\\d{3,})";
-
-    public NodeSettingsPresenter(NodeSettingsContract.View view) {
-        super(view);
-    }
 
     @Override
     public void fetchNodes() {

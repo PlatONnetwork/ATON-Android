@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
@@ -15,9 +14,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.SparseArray;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
@@ -52,6 +49,9 @@ import com.platon.aton.utils.NumberParserUtils;
 import com.platon.aton.utils.RxUtils;
 import com.platon.aton.utils.StringUtil;
 import com.platon.aton.utils.UMEventUtil;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseLazyFragment;
+import com.platon.framework.utils.ToastUtil;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -68,7 +68,7 @@ import io.reactivex.functions.Consumer;
 /**
  * @author matrixelement
  */
-public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPresenter> implements SendTransationContract.View {
+public class SendTransactionFragment extends BaseLazyFragment<SendTransationContract.View, SendTransactionPresenter> implements SendTransationContract.View {
 
     private final static long MAX_GAS_LIMIT = 999999999;
 
@@ -124,25 +124,33 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
     private boolean mShowAdvancedFunction = false;
 
     @Override
-    protected void onFragmentPageStart() {
-        mPresenter.checkAddressBook(etWalletAddress.getText().toString());
+    public SendTransactionPresenter createPresenter() {
+        return new SendTransactionPresenter();
     }
 
-    @Nullable
     @Override
-    public View onCreateFragmentPage(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_send_transaction, container, false);
+    public SendTransationContract.View createView() {
+        return this;
+    }
+
+    @Override
+    public void onFragmentFirst() {
+        super.onFragmentFirst();
+        getPresenter().checkAddressBook(etWalletAddress.getText().toString());
+    }
+
+    @Override
+    public void init(View rootView) {
         unbinder = ButterKnife.bind(this, rootView);
         EventPublisher.getInstance().register(this);
         initViews();
-        mPresenter.init();
-        mPresenter.fetchDefaultWalletInfo();
-        return rootView;
+        getPresenter().init();
+        getPresenter().fetchDefaultWalletInfo();
     }
 
     @Override
-    protected SendTransactionPresenter createPresenter() {
-        return new SendTransactionPresenter(this);
+    public int getLayoutId() {
+        return R.layout.fragment_send_transaction;
     }
 
     private void initViews() {
@@ -170,7 +178,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
                     @Override
                     public void accept(Object object) {
                         UMEventUtil.onEventCount(getActivity(), Constants.UMEventID.SEND_TRANSACTION);
-                        mPresenter.submit();
+                        getPresenter().submit();
                     }
                 });
 
@@ -192,7 +200,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
                 .subscribe(new CustomObserver<CharSequence>() {
                     @Override
                     public void accept(CharSequence gasLimit) {
-                        mPresenter.setGasLimit(gasLimit.toString().trim());
+                        getPresenter().setGasLimit(gasLimit.toString().trim());
                     }
                 });
         RxTextView.textChanges(etTransactionNote)
@@ -224,7 +232,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_address_book:
-                SelectAddressActivity.actionStartForResult(getContext(), Constants.Action.ACTION_GET_ADDRESS, MainActivity.REQ_ASSETS_SELECT_ADDRESS_BOOK, mPresenter.getSenderAddress());
+                SelectAddressActivity.actionStartForResult(getContext(), Constants.Action.ACTION_GET_ADDRESS, MainActivity.REQ_ASSETS_SELECT_ADDRESS_BOOK, getPresenter().getSenderAddress());
                 break;
             case R.id.iv_address_scan:
                 new RxPermissions(currentActivity())
@@ -242,7 +250,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
                 saveToAddressBook();
                 break;
             case R.id.tv_all_amount:
-                mPresenter.transferAllBalance();
+                getPresenter().transferAllBalance();
                 break;
             case R.id.tv_fee_amount_title:
             case R.id.iv_advanced_function:
@@ -286,12 +294,12 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateSelectedWalletEvent(Event.UpdateSelectedWalletEvent event) {
-        mPresenter.fetchDefaultWalletInfo();
+        getPresenter().fetchDefaultWalletInfo();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateAssetsTabEvent(Event.UpdateAssetsTabEvent event) {
-        mPresenter.updateAssetsTab(event.tabIndex);
+        getPresenter().updateAssetsTab(event.tabIndex);
         resetDefaultGasLimit();
     }
 
@@ -410,7 +418,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
                                 }
                             }).show(getChildFragmentManager(), "showTips");
                 } else {
-                    mPresenter.saveWallet(text, etWalletAddress.getText().toString());
+                    getPresenter().saveWallet(text, etWalletAddress.getText().toString());
                 }
             }
         }).show(getChildFragmentManager(), "showTips");
@@ -485,7 +493,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
         if (TextUtils.isEmpty(walletName)) {
             showSaveAddressDialog();
         } else {
-            mPresenter.saveWallet(walletName, walletAddress);
+            getPresenter().saveWallet(walletName, walletAddress);
         }
     }
 
@@ -495,7 +503,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
             if (etWalletAddress != null) {
                 String address = etWalletAddress.getText().toString().trim();
                 if (!hasFocus) {
-                    mPresenter.checkToAddress(address);
+                    getPresenter().checkToAddress(address);
                 } else {
                     showToAddressError("");
                 }
@@ -512,8 +520,8 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             String text = s.toString();
-            mPresenter.updateSendTransactionButtonStatus();
-            mPresenter.checkAddressBook(text);
+            getPresenter().updateSendTransactionButtonStatus();
+            getPresenter().checkAddressBook(text);
         }
 
         @Override
@@ -528,7 +536,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
             if (etWalletAmount != null) {
                 String amount = etWalletAmount.getText().toString().trim();
                 if (!hasFocus) {
-                    mPresenter.checkTransferAmount(amount);
+                    getPresenter().checkTransferAmount(amount);
                 } else {
                     showAmountError("");
                 }
@@ -544,8 +552,8 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            mPresenter.updateSendTransactionButtonStatus();
-            mPresenter.checkTransferAmount(s.toString().trim());
+            getPresenter().updateSendTransactionButtonStatus();
+            getPresenter().checkTransferAmount(s.toString().trim());
             String amountMagnitudes = StringUtil.getAmountMagnitudes(getContext(), s.toString().trim());
             tvAmountMagnitudes.setText(amountMagnitudes);
             layoutAmountMagnitudes.setVisibility(TextUtils.isEmpty(amountMagnitudes) ? View.GONE : View.VISIBLE);
@@ -561,8 +569,8 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
         @Override
         public void onProgressChanged(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat, boolean fromUser) {
             if (fromUser) {
-                mPresenter.calculateFeeAndTime(progressFloat);
-                mPresenter.updateSendTransactionButtonStatus();
+                getPresenter().calculateFeeAndTime(progressFloat);
+                getPresenter().updateSendTransactionButtonStatus();
                 if (etWalletAmount.isFocused()) {
                     etWalletAmount.clearFocus();
                 }
@@ -571,7 +579,7 @@ public class SendTransactionFragment extends MVPBaseFragment<SendTransactionPres
                 }
                 String amount = etWalletAmount.getText().toString().trim();
                 if (!TextUtils.isEmpty(amount)) {
-                    mPresenter.checkTransferAmount(amount);
+                    getPresenter().checkTransferAmount(amount);
                 }
             }
         }

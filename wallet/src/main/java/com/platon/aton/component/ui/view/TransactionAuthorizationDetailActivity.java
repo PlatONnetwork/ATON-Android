@@ -3,7 +3,6 @@ package com.platon.aton.component.ui.view;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.constraint.Group;
@@ -31,6 +30,10 @@ import com.platon.aton.utils.CommonTextUtils;
 import com.platon.aton.utils.DensityUtil;
 import com.platon.aton.utils.NumberParserUtils;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.base.BasePresenter;
+import com.platon.framework.base.BaseViewImp;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.platon.FunctionType;
@@ -71,9 +74,22 @@ public class TransactionAuthorizationDetailActivity extends BaseActivity {
     Unbinder unbinder;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_transaction_authorization_detail);
+    public int getLayoutId() {
+        return R.layout.activity_transaction_authorization_detail;
+    }
+
+    @Override
+    public BasePresenter createPresenter() {
+        return null;
+    }
+
+    @Override
+    public BaseViewImp createView() {
+        return null;
+    }
+
+    @Override
+    public void init() {
         unbinder = ButterKnife.bind(this);
         initViews();
     }
@@ -115,7 +131,7 @@ public class TransactionAuthorizationDetailActivity extends BaseActivity {
 
         RxView
                 .clicks(sbtnNext)
-                .compose(RxUtils.bindToLifecycle(this))
+                .compose(bindToLifecycle())
                 .compose(RxUtils.getClickTransformer())
                 .subscribe(new CustomObserver<Object>() {
                     @Override
@@ -135,7 +151,7 @@ public class TransactionAuthorizationDetailActivity extends BaseActivity {
                     }
                 })
                 .compose(RxUtils.getSingleSchedulerTransformer())
-                .compose(RxUtils.bindToLifecycle(this))
+                .compose(bindToLifecycle())
                 .subscribe(new Consumer<Wallet>() {
                     @Override
                     public void accept(Wallet wallet) throws Exception {

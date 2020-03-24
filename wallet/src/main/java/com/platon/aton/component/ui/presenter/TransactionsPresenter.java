@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 
+import com.platon.framework.base.BasePresenter;
 import com.platon.framework.network.ApiErrorCode;
 import com.platon.framework.network.ApiRequestBody;
 import com.platon.framework.network.ApiResponse;
@@ -59,8 +60,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
     private Disposable mLoadLatestDisposable;
     private String mWalletAddress;
 
-    public TransactionsPresenter(TransactionsContract.View view) {
-        super(view);
+    public TransactionsPresenter() {
         mAutoRefreshDisposable = new CompositeDisposable();
         mLoadLatestDisposable = new CompositeDisposable();
     }

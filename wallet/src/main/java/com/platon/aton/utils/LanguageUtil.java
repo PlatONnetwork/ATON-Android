@@ -6,7 +6,6 @@ import android.content.res.Resources;
 import android.text.TextUtils;
 
 import com.platon.aton.component.ui.view.MainActivity;
-import com.platon.aton.config.AppSettings;
 import com.platon.framework.app.Constants;
 import com.platon.framework.utils.PreferenceTool;
 

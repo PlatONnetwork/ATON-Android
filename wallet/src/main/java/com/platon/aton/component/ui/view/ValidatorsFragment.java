@@ -1,18 +1,14 @@
 package com.platon.aton.component.ui.view;
 
 import android.graphics.Typeface;
-import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -36,7 +32,6 @@ import com.platon.aton.component.ui.dialog.BaseDialogFragment;
 import com.platon.aton.component.ui.dialog.CommonGuideDialogFragment;
 import com.platon.aton.component.ui.dialog.SelectSortTypeDialogFragment;
 import com.platon.aton.component.ui.presenter.ValidatorsPresenter;
-import com.platon.aton.config.AppSettings;
 import com.platon.aton.entity.GuideType;
 import com.platon.aton.entity.NodeStatus;
 import com.platon.aton.entity.VerifyNode;
@@ -44,7 +39,7 @@ import com.platon.aton.event.Event;
 import com.platon.aton.event.EventPublisher;
 import com.platon.aton.utils.RxUtils;
 import com.platon.framework.app.Constants;
-import com.platon.framework.base.MVPBaseFragment;
+import com.platon.framework.base.BaseLazyFragment;
 import com.platon.framework.utils.PreferenceTool;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -65,7 +60,7 @@ import io.reactivex.functions.Predicate;
  * 验证节点页面
  */
 
-public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> implements ValidatorsContract.View {
+public class ValidatorsFragment extends BaseLazyFragment<ValidatorsContract.View, ValidatorsPresenter> implements ValidatorsContract.View {
 
     @IntDef({
             Tab.ALL,
@@ -123,23 +118,37 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
     private ValidatorsAdapter mValidatorsAdapter;
 
     @Override
-
-    protected ValidatorsPresenter createPresenter() {
-        return new ValidatorsPresenter(this);
+    public ValidatorsPresenter createPresenter() {
+        return new ValidatorsPresenter();
     }
 
     @Override
-    protected void onFragmentPageStart() {
+    public ValidatorsContract.View createView() {
+        return this;
+    }
+
+    @Override
+    public void init(View rootView) {
+        unbinder = ButterKnife.bind(this, rootView);
+        EventPublisher.getInstance().register(this);
+        initView();
+    }
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.fragment_validators;
+    }
+
+    @Override
+    public void onFragmentFirst() {
+        super.onFragmentFirst();
         refreshLayout.autoRefresh();
     }
 
     @Override
-    protected View onCreateFragmentPage(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_validators, container, false);
-        unbinder = ButterKnife.bind(this, view);
-        EventPublisher.getInstance().register(this);
-        initView();
-        return view;
+    public void onFragmentVisible() {
+        super.onFragmentVisible();
+        refreshLayout.autoRefresh();
     }
 
     private void initView() {
@@ -165,7 +174,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                mPresenter.loadValidatorsData(getNodeStatusByTab(mTab), mSortType, searchEt.getText().toString().trim(), true, false);
+                getPresenter().loadValidatorsData(getNodeStatusByTab(mTab), mSortType, searchEt.getText().toString().trim(), true, false);
             }
         });
 
@@ -189,7 +198,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
                                     @Override
                                     public void onItemClick(SortType sortType) {
                                         mSortType = sortType;
-                                        mPresenter.loadValidatorsData(getNodeStatusByTab(mTab), mSortType, searchEt.getText().toString().trim(), false, true);
+                                        getPresenter().loadValidatorsData(getNodeStatusByTab(mTab), mSortType, searchEt.getText().toString().trim(), false, true);
                                     }
                                 })
                                 .show(getActivity()
@@ -221,7 +230,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
                         searchEt.setText("");
                         searchIv.setImageResource(R.drawable.icon_search);
                         mSearchEnabled = true;
-                        mPresenter.loadValidatorsData(getNodeStatusByTab(mTab), mSortType, searchEt.getText().toString().trim(), false, false);
+                        getPresenter().loadValidatorsData(getNodeStatusByTab(mTab), mSortType, searchEt.getText().toString().trim(), false, false);
                     }
                 });
 
@@ -243,7 +252,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
                     @Override
                     public void accept(Object o) {
                         searchEt.setText("");
-                        mPresenter.loadValidatorsData(getNodeStatusByTab(mTab), mSortType, searchEt.getText().toString().trim(), false, false);
+                        getPresenter().loadValidatorsData(getNodeStatusByTab(mTab), mSortType, searchEt.getText().toString().trim(), false, false);
                     }
                 });
 
@@ -258,7 +267,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
                 .subscribe(new CustomObserver<TextViewEditorActionEvent>() {
                     @Override
                     public void accept(TextViewEditorActionEvent textViewEditorActionEvent) {
-                        mPresenter.loadValidatorsData(getNodeStatusByTab(mTab), mSortType, searchEt.getText().toString().trim(), false, false);
+                        getPresenter().loadValidatorsData(getNodeStatusByTab(mTab), mSortType, searchEt.getText().toString().trim(), false, false);
                     }
                 });
 
@@ -283,7 +292,7 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
 
     private void tabStateChanged(@Tab int tab) {
         mTab = tab;
-        mPresenter.loadValidatorsData(getNodeStatusByTab(mTab), mSortType, searchEt.getText().toString().trim(), false, false);
+        getPresenter().loadValidatorsData(getNodeStatusByTab(mTab), mSortType, searchEt.getText().toString().trim(), false, false);
         tabCheckedChanged(tab);
     }
 
@@ -411,11 +420,11 @@ public class ValidatorsFragment extends MVPBaseFragment<ValidatorsPresenter> imp
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void showValidatorsGuide(Event.ValidatorsGuide event) {
 
-        if (!AppSettings.getInstance().getValidatorsBoolean()) {
+        if (!PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_VALIDATORS, false)) {
             CommonGuideDialogFragment.newInstance(GuideType.DELEGATE_VALIDATORS).setOnDissmissListener(new BaseDialogFragment.OnDissmissListener() {
                 @Override
                 public void onDismiss() {
-                    AppSettings.getInstance().setValidatorsBoolean(true);
+                    PreferenceTool.putBoolean(Constants.Preference.KEY_SHOW_VALIDATORS, true);
                 }
             }).show(getActivity().getSupportFragmentManager(), "showGuideDialogFragment");
         }

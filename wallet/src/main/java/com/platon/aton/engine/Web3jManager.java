@@ -3,6 +3,7 @@ package com.platon.aton.engine;
 
 import com.platon.aton.entity.RPCErrorCode;
 import com.platon.aton.entity.RPCNonceResult;
+import com.platon.framework.app.Constants;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;

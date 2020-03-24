@@ -50,7 +50,7 @@ import butterknife.Unbinder;
 /**
  * @author ziv
  */
-public class ValidatorsDetailActivity extends BaseActivity<ValidatorsDetailContract.View, ValidatorsDetailContract.Presenter> implements ValidatorsDetailContract.View {
+public class ValidatorsDetailActivity extends BaseActivity<ValidatorsDetailContract.View, ValidatorsDetailPresenter> implements ValidatorsDetailContract.View {
 
     @BindView(R.id.civ_wallet_avatar)
     CircleImageView civWalletAvatar;
@@ -118,12 +118,6 @@ public class ValidatorsDetailActivity extends BaseActivity<ValidatorsDetailContr
     private Unbinder unbinder;
 
     @Override
-    public ValidatorsDetailPresenter createPresenter() {
-        return new ValidatorsDetailPresenter(this);
-
-    }
-
-    @Override
     public ValidatorsDetailContract.View createView() {
         return this;
     }
@@ -138,6 +132,11 @@ public class ValidatorsDetailActivity extends BaseActivity<ValidatorsDetailContr
     @Override
     public int getLayoutId() {
         return R.layout.activity_validators_detail;
+    }
+
+    @Override
+    public ValidatorsDetailPresenter createPresenter() {
+        return new ValidatorsDetailPresenter();
     }
 
     @Override

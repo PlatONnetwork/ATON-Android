@@ -43,6 +43,9 @@ import com.platon.aton.utils.DensityUtil;
 import com.platon.aton.utils.GZipUtil;
 import com.platon.aton.utils.JSONUtil;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.utils.ToastUtil;
 import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 

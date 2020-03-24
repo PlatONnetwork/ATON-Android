@@ -11,7 +11,6 @@ import com.platon.aton.app.CustomThrowable;
 import com.platon.aton.app.LoadingTransformer;
 import com.platon.aton.component.ui.contract.CreateWalletContract;
 import com.platon.aton.component.ui.view.BackupWalletActivity;
-import com.platon.aton.config.AppSettings;
 import com.platon.aton.db.sqlite.WalletDao;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.Wallet;
@@ -21,10 +20,6 @@ import com.platon.framework.utils.PreferenceTool;
 import io.reactivex.functions.Consumer;
 
 public class CreateWalletPresenter extends BasePresenter<CreateWalletContract.View> implements CreateWalletContract.Presenter {
-
-    public CreateWalletPresenter(CreateWalletContract.View view) {
-        super(view);
-    }
 
     @SuppressLint("CheckResult")
     @Override

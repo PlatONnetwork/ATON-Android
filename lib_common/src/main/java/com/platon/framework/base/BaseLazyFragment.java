@@ -30,8 +30,8 @@ import com.platon.framework.utils.LogUtils;
  *
  * 未销毁且不可见-->重新可见：
  * onStart: -----> onStart
- * onFragmentVisble: 可见
- * onFragmentVisble: -----> 子fragment每次可见时的操作
+ * onFragmentVisible: 可见
+ * onFragmentVisible: -----> 子fragment每次可见时的操作
  * onResume: -----> onResume
  *
  * 可见-->销毁：
@@ -42,7 +42,7 @@ import com.platon.framework.utils.LogUtils;
  * 我们可以更具以上生命周期来操作不同的业务逻辑，
  * 请务必运行此module demo，观看打印日志来自定义逻辑。
  */
-public abstract class BaseLazyFragment<V extends IView, P extends BasePresenter<V>> extends BaseFragment<V, P> {
+public abstract class BaseLazyFragment<V extends BaseViewImp, P extends BasePresenter<V>> extends BaseFragment<V, P> {
     //引用V层和P层
     private P presenter;
     private V view;
@@ -165,7 +165,7 @@ public abstract class BaseLazyFragment<V extends IView, P extends BasePresenter<
                 mIsFirstVisible=false;//改变首次可见的状态
                 onFragmentFirst();
             }else{//可见但不是第一次
-                onFragmentVisble();
+                onFragmentVisible();
             }
         }else {//不可见
             onFragmentInVisible();
@@ -177,7 +177,7 @@ public abstract class BaseLazyFragment<V extends IView, P extends BasePresenter<
         LogUtils.e(getClass().getSimpleName() + "首次可见");
     }
     //Fragemnet可见的方法
-    public void onFragmentVisble(){//子Fragment调用次方法，执行可见操作
+    public void onFragmentVisible() {//子Fragment调用次方法，执行可见操作
         LogUtils.e(getClass().getSimpleName() + "可见");
     }
     //Fragemnet不可见的方法

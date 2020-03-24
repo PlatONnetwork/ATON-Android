@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,6 +13,10 @@ import android.view.View;
 
 import com.platon.aton.R;
 import com.platon.biometric.BiometricPromptCompat;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.base.BasePresenter;
+import com.platon.framework.base.BaseViewImp;
 
 public class UnlockFigerprintActivity extends BaseActivity implements View.OnClickListener{
 
@@ -32,9 +35,22 @@ public class UnlockFigerprintActivity extends BaseActivity implements View.OnCli
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_unlock_figerprint);
+    public int getLayoutId() {
+        return R.layout.activity_unlock_figerprint;
+    }
+
+    @Override
+    public BasePresenter createPresenter() {
+        return null;
+    }
+
+    @Override
+    public BaseViewImp createView() {
+        return null;
+    }
+
+    @Override
+    public void init() {
         initView();
     }
 

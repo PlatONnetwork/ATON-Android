@@ -4,14 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -29,6 +26,8 @@ import com.platon.aton.utils.CheckStrength;
 import com.platon.aton.utils.CommonUtil;
 import com.platon.aton.utils.GZipUtil;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseLazyFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,7 +35,7 @@ import butterknife.Unbinder;
 import io.reactivex.Observable;
 import io.reactivex.functions.BiFunction;
 
-public class ImportPrivateKeyFragment extends MVPBaseFragment<ImportPrivateKeyPresenter> implements ImportPrivateKeyContract.View {
+public class ImportPrivateKeyFragment extends BaseLazyFragment<ImportPrivateKeyContract.View, ImportPrivateKeyPresenter> implements ImportPrivateKeyContract.View {
     Unbinder unbinder;
     @BindView(R.id.et_private_key)
     EditText mEtPrivateKey;
@@ -79,22 +78,31 @@ public class ImportPrivateKeyFragment extends MVPBaseFragment<ImportPrivateKeyPr
     private boolean mShowRepeatPassword;
 
     @Override
-    protected ImportPrivateKeyPresenter createPresenter() {
-        return new ImportPrivateKeyPresenter(this);
+    public int getLayoutId() {
+        return R.layout.fragment_import_private_key;
     }
 
     @Override
-    protected void onFragmentPageStart() {
-        mPresenter.checkPaste();
+    public ImportPrivateKeyPresenter createPresenter() {
+        return new ImportPrivateKeyPresenter();
     }
 
     @Override
-    protected View onCreateFragmentPage(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_import_private_key, container, false);
-        unbinder = ButterKnife.bind(this, view);
+    public ImportPrivateKeyContract.View createView() {
+        return null;
+    }
+
+    @Override
+    public void init(View rootView) {
+        unbinder = ButterKnife.bind(this, rootView);
         addListeners();
         initDatas();
-        return view;
+    }
+
+    @Override
+    public void onFragmentFirst() {
+        super.onFragmentFirst();
+        getPresenter().checkPaste();
     }
 
     private void addListeners() {
@@ -126,7 +134,7 @@ public class ImportPrivateKeyFragment extends MVPBaseFragment<ImportPrivateKeyPr
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object unit) {
-                        mPresenter.importPrivateKey(mEtPrivateKey.getText().toString(),
+                        getPresenter().importPrivateKey(mEtPrivateKey.getText().toString(),
                                 mEtWalletName.getText().toString(),
                                 mEtPassword.getText().toString(),
                                 mEtRepeatPassword.getText().toString());
@@ -206,7 +214,7 @@ public class ImportPrivateKeyFragment extends MVPBaseFragment<ImportPrivateKeyPr
                                 showNameError(string(R.string.validWalletNameEmptyTips), true);
                             } else if (name.length() > 20) {
                                 showNameError(string(R.string.validWalletNameTips), true);
-                            } else if (mPresenter.isExists(name)) {
+                            } else if (getPresenter().isExists(name)) {
                                 showNameError(string(R.string.wallet_name_exists), true);
                             } else {
                                 showNameError("", false);
@@ -269,7 +277,7 @@ public class ImportPrivateKeyFragment extends MVPBaseFragment<ImportPrivateKeyPr
         showPrivateKeyError("", false);
         showNameError("", false);
         showPasswordError("", false);
-        mPresenter.init();
+        getPresenter().init();
     }
 
     @Override
@@ -282,7 +290,7 @@ public class ImportPrivateKeyFragment extends MVPBaseFragment<ImportPrivateKeyPr
             Bundle bundle = data.getExtras();
             String scanResult = bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA,"");
             String unzip = GZipUtil.unCompress(scanResult);
-            mPresenter.parseQRCode(TextUtils.isEmpty(unzip)? scanResult : unzip);
+            getPresenter().parseQRCode(TextUtils.isEmpty(unzip) ? scanResult : unzip);
         }
     }
 

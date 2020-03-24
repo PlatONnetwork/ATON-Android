@@ -1,8 +1,5 @@
 package com.platon.aton.component.ui.presenter;
 
-import com.platon.framework.network.ApiRequestBody;
-import com.platon.framework.network.ApiResponse;
-import com.platon.framework.network.ApiSingleObserver;
 import com.platon.aton.BuildConfig;
 import com.platon.aton.R;
 import com.platon.aton.app.CustomObserver;
@@ -33,6 +30,10 @@ import com.platon.aton.entity.TransactionType;
 import com.platon.aton.utils.AmountUtil;
 import com.platon.aton.utils.BigDecimalUtil;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.base.BasePresenter;
+import com.platon.framework.network.ApiRequestBody;
+import com.platon.framework.network.ApiResponse;
+import com.platon.framework.network.ApiSingleObserver;
 import com.trello.rxlifecycle2.android.FragmentEvent;
 
 import org.reactivestreams.Publisher;
@@ -55,10 +56,6 @@ import retrofit2.Response;
 public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> implements MyDelegateContract.Presenter {
 
     private Disposable mDisposable;
-
-    public MyDelegatePresenter(MyDelegateContract.View view) {
-        super(view);
-    }
 
     @Override
     public void loadMyDelegateData() {
@@ -137,7 +134,7 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                 .put("from", delegateInfo.getWalletAddress())
                 .put("txType", FunctionType.WITHDRAW_DELEGATE_REWARD_FUNC_TYPE)
                 .build())
-                .compose(RxUtils.bindToLifecycle(currentActivity()))
+                .compose(bindToLifecycle())
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
                 .subscribe(new ApiSingleObserver<GasProvider>() {
@@ -177,7 +174,7 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                         public void onWalletPasswordCorrect(Credentials credentials) {
                             DelegateManager.getInstance()
                                     .withdrawDelegateReward(credentials, claimRewardInfo.getFeeAmount(), AmountUtil.convertVonToLat(delegateInfo.getWithdrawReward()), gasProvider)
-                                    .compose(RxUtils.bindToLifecycle(currentActivity()))
+                                    .compose(bindToLifecycle())
                                     .compose(RxUtils.getSchedulerTransformer())
                                     .compose(RxUtils.getLoadingTransformer(currentActivity()))
                                     .subscribe(new CustomObserver<Transaction>() {
@@ -199,9 +196,9 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                                                     showLongToast(R.string.msg_transaction_repeatedly_exception);
                                                 } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_NONCE_TOO_LOW ||
                                                         customThrowable.getErrCode() == CustomThrowable.CODE_TX_GAS_LOW) {
-                                                    showLongToast(string(R.string.msg_transaction_exception,customThrowable.getErrCode()));
+                                                    showLongToast(string(R.string.msg_transaction_exception, customThrowable.getErrCode()));
                                                 } else {
-                                                    showLongToast(string(R.string.msg_server_exception,customThrowable.getErrCode()));
+                                                    showLongToast(string(R.string.msg_server_exception, customThrowable.getErrCode()));
                                                 }
                                             }
                                         }
@@ -278,7 +275,7 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                                         customThrowable.getErrCode() == CustomThrowable.CODE_TX_GAS_LOW) {
                                     showLongToast(R.string.msg_expired_qr_code);
                                 } else {
-                                    showLongToast(string(R.string.msg_server_exception,customThrowable.getErrCode()));
+                                    showLongToast(string(R.string.msg_server_exception, customThrowable.getErrCode()));
                                 }
                             }
                         }

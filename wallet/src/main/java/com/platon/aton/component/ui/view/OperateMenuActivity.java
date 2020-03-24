@@ -7,9 +7,10 @@ import android.view.View;
 
 import com.platon.aton.R;
 import com.platon.aton.component.widget.ShadowContainer;
-import com.platon.aton.config.AppSettings;
 import com.platon.framework.app.Constants;
 import com.platon.framework.base.BaseActivity;
+import com.platon.framework.base.BasePresenter;
+import com.platon.framework.base.BaseViewImp;
 import com.platon.framework.utils.PreferenceTool;
 
 import butterknife.BindView;
@@ -19,8 +20,6 @@ import butterknife.Unbinder;
 
 public class OperateMenuActivity extends BaseActivity {
 
-    private final static String TAG = OperateMenuActivity.class.getSimpleName();
-
     @BindView(R.id.sc_import_wallet)
     ShadowContainer scImportWallet;
     @BindView(R.id.sc_create_wallet)
@@ -29,9 +28,22 @@ public class OperateMenuActivity extends BaseActivity {
     Unbinder unbinder;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_operate_menu);
+    public int getLayoutId() {
+        return R.layout.activity_operate_menu;
+    }
+
+    @Override
+    public BasePresenter createPresenter() {
+        return null;
+    }
+
+    @Override
+    public BaseViewImp createView() {
+        return null;
+    }
+
+    @Override
+    public void init() {
         unbinder = ButterKnife.bind(this);
     }
 

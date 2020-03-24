@@ -12,10 +12,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
-import com.platon.framework.network.ApiRequestBody;
-import com.platon.framework.network.ApiResponse;
-import com.platon.framework.network.ApiSingleObserver;
-import com.platon.framework.utils.AndroidUtil;
 import com.platon.aton.BuildConfig;
 import com.platon.aton.R;
 import com.platon.aton.app.CustomObserver;
@@ -29,6 +25,13 @@ import com.platon.aton.engine.VersionUpdate;
 import com.platon.aton.entity.VersionInfo;
 import com.platon.aton.entity.WebType;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.base.BasePresenter;
+import com.platon.framework.base.BaseViewImp;
+import com.platon.framework.network.ApiRequestBody;
+import com.platon.framework.network.ApiResponse;
+import com.platon.framework.network.ApiSingleObserver;
+import com.platon.framework.utils.AndroidUtil;
 import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
@@ -61,9 +64,22 @@ public class AboutActivity extends BaseActivity {
     private Unbinder unbinder;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_about);
+    public int getLayoutId() {
+        return R.layout.activity_about;
+    }
+
+    @Override
+    public BasePresenter createPresenter() {
+        return null;
+    }
+
+    @Override
+    public BaseViewImp createView() {
+        return null;
+    }
+
+    @Override
+    public void init() {
         unbinder = ButterKnife.bind(this);
         initViews();
         checkVersion();
@@ -77,14 +93,15 @@ public class AboutActivity extends BaseActivity {
     private void initViews() {
 
         String versionName = AndroidUtil.getVersionName(this);
-        if (!versionName.toLowerCase().startsWith("v"))
+        if (!versionName.toLowerCase().startsWith("v")) {
             versionName = "v" + versionName;
+        }
         vNewMsg.setVisibility(View.GONE);
         tvUpdate.setText(string(R.string.current_version, versionName));
 
         RxView
                 .longClicks(ivLogo)
-                .compose(RxUtils.bindToLifecycle(this))
+                .compose(bindToLifecycle())
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
@@ -94,7 +111,7 @@ public class AboutActivity extends BaseActivity {
 
         RxView.clicks(tvAboutUs)
                 .compose(RxUtils.getClickTransformer())
-                .compose(RxUtils.bindToLifecycle(this))
+                .compose(bindToLifecycle())
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
@@ -104,7 +121,7 @@ public class AboutActivity extends BaseActivity {
 
         RxView.clicks(llUpdate)
                 .compose(RxUtils.getClickTransformer())
-                .compose(RxUtils.bindToLifecycle(this))
+                .compose(bindToLifecycle())
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) {
@@ -114,7 +131,7 @@ public class AboutActivity extends BaseActivity {
 
         RxView.clicks(tvPrivacyPolicy)
                 .compose(RxUtils.getClickTransformer())
-                .compose(RxUtils.bindToLifecycle(this))
+                .compose(bindToLifecycle())
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) {
@@ -123,7 +140,7 @@ public class AboutActivity extends BaseActivity {
                 });
         RxView.clicks(tvServiceAgreement)
                 .compose(RxUtils.getClickTransformer())
-                .compose(RxUtils.bindToLifecycle(this))
+                .compose(bindToLifecycle())
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {

@@ -15,7 +15,6 @@ import android.os.Handler;
 import android.support.v4.content.FileProvider;
 import android.webkit.MimeTypeMap;
 
-import com.platon.aton.config.AppSettings;
 import com.platon.framework.app.Constants;
 import com.platon.framework.utils.LogUtils;
 import com.platon.framework.utils.PreferenceTool;
@@ -84,7 +83,7 @@ public class VersionUpdate {
         lastDownloadId = PreferenceTool.getLong(Constants.Preference.KEY_DOWNLOAD_MANAGER_ID, -1);
         if (lastDownloadId != -1 && !invalidDownLoadManager()) {
             mDownloadManager.remove(lastDownloadId);
-            AppSettings.getInstance().removeSharedPreferenceByKey("downloadManagerId");
+            PreferenceTool.remove(Constants.Preference.KEY_DOWNLOAD_MANAGER_ID);
         }
         initDownLoadPath();
         //2.创建下载请求对象，并且把下载的地址放进去

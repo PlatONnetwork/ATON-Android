@@ -3,6 +3,9 @@ package com.platon.aton.utils;
 import android.support.annotation.NonNull;
 
 import com.platon.aton.component.ui.IContext;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.base.BaseFragment;
+import com.platon.framework.base.BaseViewImp;
 import com.trello.rxlifecycle2.LifecycleTransformer;
 import com.trello.rxlifecycle2.android.ActivityEvent;
 import com.trello.rxlifecycle2.android.FragmentEvent;
@@ -31,7 +34,7 @@ public class RxUtils {
         throw new RuntimeException("No instances.");
     }
 
-    public static <T> LifecycleTransformer<T> bindToLifecycle(IContext context) {
+    public static <T> LifecycleTransformer<T> bindToLifecycle(BaseViewImp context) {
         if (context instanceof BaseFragment) {
             return ((BaseFragment) context).bindToLifecycle();
         } else if (context instanceof BaseActivity) {
@@ -63,9 +66,9 @@ public class RxUtils {
      * @param <T>
      * @return
      */
-    public static <T> LifecycleTransformer<T> bindToParentLifecycleUtilEvent(IContext context, FragmentEvent event) {
-        if (context instanceof BaseFragment && ((BaseFragment) context).getParentFragment() instanceof BaseFragment) {
-            return ((BaseFragment) ((BaseFragment) context).getParentFragment()).bindUntilEvent(event);
+    public static <T> LifecycleTransformer<T> bindToParentLifecycleUtilEvent(BaseViewImp baseViewImp, FragmentEvent event) {
+        if (baseViewImp instanceof BaseFragment && ((BaseFragment) baseViewImp).getParentFragment() instanceof BaseFragment) {
+            return ((BaseFragment) ((BaseFragment) baseViewImp).getParentFragment()).bindUntilEvent(event);
         } else {
             throw new IllegalArgumentException("context isn't activity or fragment");
         }

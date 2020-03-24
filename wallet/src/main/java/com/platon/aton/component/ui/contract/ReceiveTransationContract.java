@@ -4,13 +4,15 @@ import android.graphics.Bitmap;
 
 import com.platon.aton.component.ui.IContext;
 import com.platon.aton.entity.Wallet;
+import com.platon.framework.base.BaseViewImp;
+import com.platon.framework.base.IPresenter;
 
 /**
  * @author matrixelement
  */
 public class ReceiveTransationContract {
 
-    public interface View extends IContext {
+    public interface View extends BaseViewImp {
 
         Wallet getWalletFromIntent();
 

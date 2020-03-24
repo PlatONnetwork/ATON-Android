@@ -4,11 +4,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.platon.framework.app.Constants;
 import com.platon.framework.network.NetConnectivity;
 import com.platon.framework.network.NetState;
 import com.platon.framework.utils.RUtils;
 import com.platon.aton.BuildConfig;
-import com.platon.aton.config.AppSettings;
 import com.platon.aton.engine.DeviceManager;
 import com.platon.aton.engine.NodeManager;
 import com.platon.aton.engine.WalletManager;
@@ -53,15 +53,11 @@ public class AppFramework {
 
         mContext = context;
 
-        JZAppConfigure.getInstance().init(context);
-
         EventPublisher.getInstance().register(this);
         //注册网络状态变化
         NetConnectivity.getConnectivityManager().registerNetworkStateChange(new NetStateBroadcastReceiver());
         //初始化realm
         initRealm(context);
-        //初始化偏好设置
-        AppSettings.getInstance().init(context);
         //初始化节点配置
         NodeManager.getInstance().init();
         //初始化DeviceManager

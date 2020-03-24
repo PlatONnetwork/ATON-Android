@@ -17,6 +17,7 @@ import com.platon.aton.utils.BigDecimalUtil;
 import com.platon.aton.utils.CommonTextUtils;
 import com.platon.aton.utils.DensityUtil;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.app.Constants;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

@@ -9,6 +9,7 @@ import com.platon.aton.db.sqlite.AddressDao;
 import com.platon.aton.db.sqlite.WalletDao;
 import com.platon.aton.entity.Transaction;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.base.BasePresenter;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -27,10 +28,11 @@ public class TransactionDetailPresenter extends BasePresenter<TransactionDetailC
     private Transaction mTransaction;
     private List<String> mQueryAddressList;
 
-    public TransactionDetailPresenter(TransactionDetailContract.View view) {
-        super(view);
-        mTransaction = view.getTransactionFromIntent();
-        mQueryAddressList = view.getAddressListFromIntent();
+    public TransactionDetailPresenter() {
+        if (isViewAttached()) {
+            mTransaction = getView().getTransactionFromIntent();
+            mQueryAddressList = getView().getAddressListFromIntent();
+        }
     }
 
 

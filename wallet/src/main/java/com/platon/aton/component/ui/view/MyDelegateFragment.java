@@ -1,9 +1,7 @@
 package com.platon.aton.component.ui.view;
 
-import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,9 +9,7 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.style.ClickableSpan;
 import android.util.SparseArray;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -28,7 +24,6 @@ import com.platon.aton.component.ui.dialog.CommonGuideDialogFragment;
 import com.platon.aton.component.ui.presenter.MyDelegatePresenter;
 import com.platon.aton.component.widget.CustomRefreshHeader;
 import com.platon.aton.component.widget.ShadowDrawable;
-import com.platon.aton.config.AppSettings;
 import com.platon.aton.engine.TransactionManager;
 import com.platon.aton.entity.DelegateInfo;
 import com.platon.aton.entity.GuideType;
@@ -42,7 +37,7 @@ import com.platon.aton.utils.DateUtil;
 import com.platon.aton.utils.DensityUtil;
 import com.platon.aton.utils.RxUtils;
 import com.platon.framework.app.Constants;
-import com.platon.framework.base.MVPBaseFragment;
+import com.platon.framework.base.BaseLazyFragment;
 import com.platon.framework.utils.PreferenceTool;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -67,7 +62,7 @@ import io.reactivex.functions.BiFunction;
  * 我的委托页面
  */
 
-public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> implements MyDelegateContract.View {
+public class MyDelegateFragment extends BaseLazyFragment<MyDelegateContract.View, MyDelegatePresenter> implements MyDelegateContract.View {
 
     @IntDef({
             TotalAmountType.TOTAL_DELEGATED,
@@ -122,24 +117,44 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
     private MyDelegateAdapter mMyDelegateAdapter;
 
     @Override
-    protected MyDelegatePresenter createPresenter() {
-        return new MyDelegatePresenter(this);
+    public MyDelegatePresenter createPresenter() {
+        return new MyDelegatePresenter();
     }
 
     @Override
-    protected void onFragmentPageStart() {
+    public MyDelegateContract.View createView() {
+        return null;
+    }
+
+    @Override
+    public void init(View rootView) {
+        unbinder = ButterKnife.bind(this, rootView);
+        EventPublisher.getInstance().register(this);
+        initViews();
+    }
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.fragment_my_delegate;
+    }
+
+    @Override
+    public void onFragmentFirst() {
+        super.onFragmentFirst();
         refreshLayout.autoRefresh();
     }
 
     @Override
-    protected View onCreateFragmentPage(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_my_delegate, container, false);
-        unbinder = ButterKnife.bind(this, view);
-        EventPublisher.getInstance().register(this);
-        initViews();
-        return view;
+    public void onFragmentVisible() {
+        super.onFragmentVisible();
+        MobclickAgent.onPageStart(Constants.UMPages.MY_DELEGATION);
     }
 
+    @Override
+    public void onFragmentInVisible() {
+        super.onFragmentInVisible();
+        MobclickAgent.onPageEnd(Constants.UMPages.MY_DELEGATION);
+    }
 
     private void initViews() {
 
@@ -166,7 +181,7 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                mPresenter.loadMyDelegateData();
+                getPresenter().loadMyDelegateData();
             }
         });
         mMyDelegateAdapter = new MyDelegateAdapter();
@@ -188,7 +203,7 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
                     return;
                 }
 
-                mPresenter.withdrawDelegateReward(delegateInfo, position);
+                getPresenter().withdrawDelegateReward(delegateInfo, position);
             }
         });
 
@@ -240,11 +255,11 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
     }
 
     private void initGuide() {
-        if (!AppSettings.getInstance().getMyDelegateBoolean()) {
+        if (!PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_MY_DELEGATE, false)) {
             CommonGuideDialogFragment.newInstance(GuideType.DELEGATE_LIST).setOnDissmissListener(new BaseDialogFragment.OnDissmissListener() {
                 @Override
                 public void onDismiss() {
-                    AppSettings.getInstance().setMyDelegateBoolean(true);
+                    PreferenceTool.putBoolean(Constants.Preference.KEY_SHOW_MY_DELEGATE, true);
                 }
             }).show(getActivity().getSupportFragmentManager(), "showGuideDialogFragment");
         }
@@ -312,7 +327,7 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
     //接收event事件然后刷新
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void refreshMyDelegate(Event.UpdateDelegateTabEvent tabEvent) {
-        if (PreferenceTool.getBoolean(Constants.Preference.KEY_MYDELEGATETAB,true)) {
+        if (PreferenceTool.getBoolean(Constants.Preference.KEY_MYDELEGATETAB, true)) {
             refreshLayout.autoRefresh();
         }
 
@@ -325,18 +340,6 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
     }
 
     @Override
-    public void onTabHidden() {
-        super.onTabHidden();
-        MobclickAgent.onPageEnd(Constants.UMPages.MY_DELEGATION);
-    }
-
-    @Override
-    public void onTabShown() {
-        super.onTabShown();
-        MobclickAgent.onPageStart(Constants.UMPages.MY_DELEGATION);
-    }
-
-    @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         PreferenceTool.putBoolean(Constants.Preference.KEY_MYDELEGATETAB, isVisibleToUser);
         PreferenceTool.getBoolean(Constants.Preference.KEY_MYDELEGATETAB, true);
@@ -345,7 +348,7 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateTransactionEvent(Event.UpdateTransactionEvent event) {
-        mPresenter.loadMyDelegateData();
+        getPresenter().loadMyDelegateData();
     }
 
     @Override
@@ -364,11 +367,11 @@ public class MyDelegateFragment extends MVPBaseFragment<MyDelegatePresenter> imp
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onShowMyDelegateGuideEvent(Event.MyDelegateGuide event) {
-        if (!AppSettings.getInstance().getMyDelegateBoolean()) {
+        if (!PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_MY_DELEGATE, false)) {
             CommonGuideDialogFragment.newInstance(GuideType.DELEGATE_LIST).setOnDissmissListener(new BaseDialogFragment.OnDissmissListener() {
                 @Override
                 public void onDismiss() {
-                    AppSettings.getInstance().setMyDelegateBoolean(true);
+                    PreferenceTool.putBoolean(Constants.Preference.KEY_SHOW_MY_DELEGATE, true);
                 }
             }).show(getActivity().getSupportFragmentManager(), "showGuideDialogFragment");
         }

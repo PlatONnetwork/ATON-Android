@@ -1,10 +1,6 @@
 package com.platon.aton.component.ui.view;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -13,6 +9,10 @@ import com.platon.aton.R;
 import com.platon.aton.app.CustomObserver;
 import com.platon.aton.entity.WebType;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseLazyFragment;
+import com.platon.framework.base.BasePresenter;
+import com.platon.framework.base.BaseViewImp;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,7 +21,7 @@ import butterknife.Unbinder;
 /**
  * @author matrixelement
  */
-public class MeFragment extends BaseFragment {
+public class MeFragment extends BaseLazyFragment {
 
     @BindView(R.id.tv_title)
     TextView tvTitle;
@@ -41,20 +41,33 @@ public class MeFragment extends BaseFragment {
     LinearLayout layoutSupportFeedback;
     Unbinder unbinder;
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_me, container, false);
+    public int getLayoutId() {
+        return R.layout.fragment_me;
+    }
+
+    @Override
+    public BasePresenter createPresenter() {
+        return null;
+    }
+
+    @Override
+    public BaseViewImp createView() {
+        return null;
+    }
+
+    @Override
+    public void init(View rootView) {
         unbinder = ButterKnife.bind(this, rootView);
         init();
-        return rootView;
     }
+
 
     private void init() {
 
         RxView.clicks(layoutWalletManage)
                 .compose(RxUtils.getClickTransformer())
-                .compose(RxUtils.bindToLifecycle(this))
+                .compose(bindToLifecycle())
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) {
@@ -63,7 +76,7 @@ public class MeFragment extends BaseFragment {
                 });
         RxView.clicks(layoutWalletTransations)
                 .compose(RxUtils.getClickTransformer())
-                .compose(RxUtils.bindToLifecycle(this))
+                .compose(bindToLifecycle())
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) {
@@ -72,7 +85,7 @@ public class MeFragment extends BaseFragment {
                 });
         RxView.clicks(layoutWalletAddressBook)
                 .compose(RxUtils.getClickTransformer())
-                .compose(RxUtils.bindToLifecycle(this))
+                .compose(bindToLifecycle())
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) {
@@ -81,7 +94,7 @@ public class MeFragment extends BaseFragment {
                 });
         RxView.clicks(layoutSettings)
                 .compose(RxUtils.getClickTransformer())
-                .compose(RxUtils.bindToLifecycle(this))
+                .compose(bindToLifecycle())
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) {
@@ -90,7 +103,7 @@ public class MeFragment extends BaseFragment {
                 });
         RxView.clicks(layoutAbout)
                 .compose(RxUtils.getClickTransformer())
-                .compose(RxUtils.bindToLifecycle(this))
+                .compose(bindToLifecycle())
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) {
@@ -101,7 +114,7 @@ public class MeFragment extends BaseFragment {
         RxView
                 .clicks(layoutOfficialCommunity)
                 .compose(RxUtils.getClickTransformer())
-                .compose(RxUtils.bindToLifecycle(this))
+                .compose(bindToLifecycle())
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) {
@@ -112,7 +125,7 @@ public class MeFragment extends BaseFragment {
         RxView
                 .clicks(layoutSupportFeedback)
                 .compose(RxUtils.getClickTransformer())
-                .compose(RxUtils.bindToLifecycle(this))
+                .compose(bindToLifecycle())
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) {
@@ -128,4 +141,5 @@ public class MeFragment extends BaseFragment {
             unbinder.unbind();
         }
     }
+
 }

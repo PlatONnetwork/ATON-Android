@@ -3,9 +3,6 @@ package com.platon.aton.component.ui.presenter;
 import android.annotation.SuppressLint;
 import android.text.TextUtils;
 
-import com.platon.framework.network.ApiRequestBody;
-import com.platon.framework.network.ApiResponse;
-import com.platon.framework.network.ApiSingleObserver;
 import com.platon.aton.BuildConfig;
 import com.platon.aton.R;
 import com.platon.aton.app.CustomObserver;
@@ -36,6 +33,10 @@ import com.platon.aton.utils.BigDecimalUtil;
 import com.platon.aton.utils.BigIntegerUtil;
 import com.platon.aton.utils.NumberParserUtils;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.base.BasePresenter;
+import com.platon.framework.network.ApiRequestBody;
+import com.platon.framework.network.ApiResponse;
+import com.platon.framework.network.ApiSingleObserver;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.platon.ContractAddress;
@@ -69,14 +70,15 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
     private String minDelegation = AppConfigManager.getInstance().getMinDelegation();
 
-    public DelegatePresenter(DelegateContract.View view) {
-        super(view);
-        mDelegateDetail = view.getDelegateDetailFromIntent();
-        if (mDelegateDetail != null) {
-            if (TextUtils.isEmpty(mDelegateDetail.getWalletAddress())) {
-                mWallet = WalletManager.getInstance().getSelectedWallet();
-            } else {
-                mWallet = WalletManager.getInstance().getWalletByWalletAddress(mDelegateDetail.getWalletAddress());
+    public DelegatePresenter() {
+        if (isViewAttached()) {
+            mDelegateDetail = getView().getDelegateDetailFromIntent();
+            if (mDelegateDetail != null) {
+                if (TextUtils.isEmpty(mDelegateDetail.getWalletAddress())) {
+                    mWallet = WalletManager.getInstance().getSelectedWallet();
+                } else {
+                    mWallet = WalletManager.getInstance().getWalletByWalletAddress(mDelegateDetail.getWalletAddress());
+                }
             }
         }
     }
@@ -498,7 +500,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                                         customThrowable.getErrCode() == CustomThrowable.CODE_TX_GAS_LOW) {
                                     showLongToast(R.string.msg_expired_qr_code);
                                 } else {
-                                    showLongToast(string(R.string.msg_server_exception,customThrowable.getErrCode()));
+                                    showLongToast(string(R.string.msg_server_exception, customThrowable.getErrCode()));
                                 }
                             }
                         }

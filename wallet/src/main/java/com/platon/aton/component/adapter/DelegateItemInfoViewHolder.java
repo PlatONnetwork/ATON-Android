@@ -28,7 +28,9 @@ import com.platon.aton.utils.BigDecimalUtil;
 import com.platon.aton.utils.DensityUtil;
 import com.platon.aton.utils.GlideUtils;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.base.BaseActivity;
 import com.platon.framework.utils.MapUtils;
+import com.platon.framework.utils.ToastUtil;
 
 import java.util.HashMap;
 
