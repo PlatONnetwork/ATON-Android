@@ -125,7 +125,7 @@
     <string name="exportPrivateKey">导出私钥</string>
     <string name="exportKeystore">导出钱包文件(.json)</string>
     <string name="backupMnemonics">备份助记词</string>
-    <string name="backup">备份</string>
+    <string name="msg_backup_wallet">备份</string>
     <string name="changeWalletName">修改名称</string>
     <string name="formatError">钱包名称格式错误</string>
     <string name="validWalletNameTips">请输入1-20位字符</string>
@@ -145,8 +145,8 @@
     <string name="me_transactions">交易记录</string>
     <string name="sendATP">发送&#160;Energon</string>
     <string name="actionSendATP">下一步</string>
-    <string name="action_send_transation">发送</string>
-    <string name="action_receive_transation">接收</string>
+    <string name="msg_send_transaction">发送</string>
+    <string name="action_receive_transaction">接收</string>
     <string name="vote">投票</string>
     <string name="voting">投票</string>
     <string name="wallet_address">钱包地址</string>
@@ -268,7 +268,7 @@
     <string name="no_transaction_record">暂无交易记录</string>
     <string name="figerprintUnlockTips">指纹识别无法启动，请使用钱包密码解锁</string>
     <string name="openFigerprintError">指纹识别已锁定，请到系统设置中解锁后重试</string>
-    <string name="total_assets">总计LAT</string>
+    <string name="msg_total_assets">总计LAT</string>
     <string name="transfer_succeed">转账成功</string>
     <string name="transfer_failed">转账失败</string>
     <string name="input_again">请重新输入</string>
@@ -651,14 +651,14 @@
     <string name="observed_invalid_address">钱包地址无效</string>
     <string name="observed_wallet_delete_title">删除观察钱包</string>
     <string name="observed_wallet_delete_tips">请确认是否删除此观察钱包?</string>
-    <string name="wallet_send_offline_signature">离线签名</string>
+    <string name="msg_offline_signature">离线签名</string>
 
     <string name="withdraw_less_than_fee">余额不足支付手续费，无法赎回</string>
     <string name="delegate_risk_tips">节点双重签名、出块率低会被惩罚，从而间接影响您的收益。为规避风险，请认真选择合格的节点。</string>
     <string name="recipient_wallet_address">接收钱包地址</string>
     <string name="delegate_less_than_fee">余额不足支付手续费，无法委托</string>
     <string name="claim_reward_less_than_fee">余额不足支付手续费，无法领取奖励</string>
-    <string name="cold_wallet">冷钱包</string>
+    <string name="msg_cold_wallet">冷钱包</string>
     <string name="observed_wallet">观察钱包</string>
 
     <string name="title_transaction_authorization">冷钱包确认</string>
@@ -794,4 +794,8 @@
     <string name="msg_transaction_repeatedly_exception">请勿重复提交!</string>
     <string name="msg_transaction_exception">交易异常，请重试（%1$d）</string>
     <string name="msg_expired_qr_code">二维码已失效</string>
+    <string name="msg_my_wallet">我的钱包</string>
+    <string name="msg_security_reminders">安全提醒</string>
+    <string name="msg_assets_transaction">交易记录</string>
+    <string name="msg_observed_wallet">观察钱包</string>
 </resources>

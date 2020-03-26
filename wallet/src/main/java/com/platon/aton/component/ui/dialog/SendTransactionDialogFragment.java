@@ -98,7 +98,7 @@ public class SendTransactionDialogFragment extends BaseDialogFragment {
 
         String title = getArguments().getString(Constants.Bundle.BUNDLE_TEXT);
         String amount = getArguments().getString(Constants.Bundle.BUNDLE_TRANSFER_AMOUNT);
-        String confirmText = WalletManager.getInstance().getSelectedWallet().isObservedWallet() ? getString(R.string.next) : getString(R.string.action_send_transation);
+        String confirmText = WalletManager.getInstance().getSelectedWallet().isObservedWallet() ? getString(R.string.next) : getString(R.string.action_send_transaction);
 
         if (!TextUtils.isEmpty(title)){
             tvTitle.setText(title);

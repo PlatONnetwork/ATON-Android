@@ -110,7 +110,7 @@ public class ImportMnemonicPhraseFragment extends BaseLazyFragment<ImportMnemoni
 
     @Override
     public ImportMnemonicPhraseContract.View createView() {
-        return null;
+        return this;
     }
 
     @Override

@@ -133,6 +133,6 @@ public class TransactionsFragment extends BaseLazyFragment<TransactionsContract.
 
     @Override
     public int getLayoutId() {
-        return 0;
+        return R.layout.fragment_transactions;
     }
 }

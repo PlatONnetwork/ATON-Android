@@ -123,7 +123,7 @@ public class MyDelegateFragment extends BaseLazyFragment<MyDelegateContract.View
 
     @Override
     public MyDelegateContract.View createView() {
-        return null;
+        return this;
     }
 
     @Override

@@ -69,7 +69,7 @@ public class ImportKeystoreFragment extends BaseLazyFragment<ImportKeystoreContr
 
     @Override
     public ImportKeystoreContract.View createView() {
-        return null;
+        return this;
     }
 
     @Override

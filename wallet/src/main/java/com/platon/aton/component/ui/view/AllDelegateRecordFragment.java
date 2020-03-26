@@ -56,7 +56,7 @@ public class AllDelegateRecordFragment extends BaseLazyFragment<DelegateRecordCo
 
     @Override
     public DelegateRecordContract.View createView() {
-        return null;
+        return this;
     }
 
     @Override

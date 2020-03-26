@@ -254,7 +254,7 @@ public abstract class BaseFragment<V extends BaseViewImp, P extends BasePresente
     private BaseContextImpl mContextImpl = new BaseContextImpl() {
         @Override
         public Context getContext() {
-            return getContext();
+            return getActivity();
         }
 
         @Override

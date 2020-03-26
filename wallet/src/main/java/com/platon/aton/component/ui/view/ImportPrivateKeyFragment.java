@@ -89,7 +89,7 @@ public class ImportPrivateKeyFragment extends BaseLazyFragment<ImportPrivateKeyC
 
     @Override
     public ImportPrivateKeyContract.View createView() {
-        return null;
+        return this;
     }
 
     @Override

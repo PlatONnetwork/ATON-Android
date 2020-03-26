@@ -67,7 +67,7 @@ public class WalletManagerAdapter extends RecyclerView.Adapter<WalletManagerAdap
         } else {
             if (NetworkUtil.getNetWorkType(mContext) == NetworkType.NETWORK_NO) { //没网，冷钱包
                 viewHolder.tv_wallet_logo.setVisibility(View.VISIBLE);
-                viewHolder.tv_wallet_logo.setText(mContext.getString(R.string.cold_wallet));
+                viewHolder.tv_wallet_logo.setText(mContext.getString(R.string.msg_cold_wallet));
             } else {
                 viewHolder.tv_wallet_logo.setVisibility(View.GONE);
             }

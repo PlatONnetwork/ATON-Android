@@ -103,8 +103,6 @@ dependencies {
         exclude group: 'com.android.support'
     }
     api rootProject.ext.dependencies["rxpermissions"]
-    api rootProject.ext.dependencies["butterknife"]
-    annotationProcessor rootProject.ext.dependencies["butterknife-compiler"]
     api rootProject.ext.dependencies["support-zxing"]
     api rootProject.ext.dependencies["flexbox"]
     api rootProject.ext.dependencies["tinypinyin"]

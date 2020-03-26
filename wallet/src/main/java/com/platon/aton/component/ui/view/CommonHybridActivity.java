@@ -103,8 +103,6 @@ public class CommonHybridActivity extends BaseAgentWebActivity {
     public void init() {
 
         unbinder = ButterKnife.bind(this);
-        init();
-        buildAgentWeb();
 
         boolean isFirstEnterUserAgreement = getIntent().getBooleanExtra(Constants.Extra.EXTRA_BOOLEAN, false);
         mExitIv.setVisibility(isFirstEnterUserAgreement ? View.GONE : View.VISIBLE);
@@ -197,6 +195,8 @@ public class CommonHybridActivity extends BaseAgentWebActivity {
                         NodeDetailMoreDialogFragment.newInstance(mUrl).show(getSupportFragmentManager(), "showNodeDetailMoreDialog");
                     }
                 });
+
+        buildAgentWeb();
     }
 
     private String buildUrl(String originalUrl) {

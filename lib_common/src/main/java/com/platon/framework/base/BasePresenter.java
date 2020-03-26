@@ -66,7 +66,7 @@ public class BasePresenter<V extends BaseViewImp> implements IPresenter<V> {
     }
 
     protected Context getContext() {
-        return getView().getContext();
+        return currentActivity().getContext();
     }
 
     protected BaseActivity currentActivity() {

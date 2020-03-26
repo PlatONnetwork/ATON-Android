@@ -35,7 +35,7 @@ public abstract class BaseActivity<V extends BaseViewImp, P extends BasePresente
     private V view;
     private InputMethodManager mInputMethodManager;
     protected View mDecorView;
-    protected ViewGroup mContentView;
+    protected ViewGroup mRootView;
     private int mDefaultStatusBarColor = android.R.color.white;
 
     public P getPresenter() {
@@ -62,7 +62,7 @@ public abstract class BaseActivity<V extends BaseViewImp, P extends BasePresente
         }
         mInputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         mDecorView = getWindow().getDecorView();
-        mContentView = (ViewGroup) ((ViewGroup) (mDecorView.findViewById(android.R.id.content))).getChildAt(0);
+        mRootView = mDecorView.findViewById(android.R.id.content);
         init();
         if (immersiveBarInitEnabled()) {
             if (immersiveBarViewEnabled()) {
@@ -90,7 +90,7 @@ public abstract class BaseActivity<V extends BaseViewImp, P extends BasePresente
     }
 
     public ViewGroup getContentView() {
-        return mContentView;
+        return (ViewGroup) mRootView.getChildAt(0);
     }
 
     protected View getStatusBarView() {
@@ -230,7 +230,7 @@ public abstract class BaseActivity<V extends BaseViewImp, P extends BasePresente
     private BaseContextImpl mContextImpl = new BaseContextImpl() {
         @Override
         public Context getContext() {
-            return getContext();
+            return BaseActivity.this;
         }
 
         @Override
