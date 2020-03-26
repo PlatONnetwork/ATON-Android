@@ -248,6 +248,8 @@ dependencies {
     implementation project(':zxing')
     implementation project(':biometric')
     implementation project(':lib_common')
+    implementation rootProject.ext.dependencies["butterknife"]
+    annotationProcessor rootProject.ext.dependencies["butterknife-compiler"]
     //mockito
     testImplementation 'org.mockito:mockito-core:2.19.0'
     //powermock
