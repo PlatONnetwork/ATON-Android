@@ -2,7 +2,6 @@ package com.platon.aton.component.ui.view;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,26 +10,26 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.platon.framework.util.RUtils;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.component.adapter.DelegateDetailAdapter;
 import com.platon.aton.component.adapter.DelegateItemInfoDiffCallback;
-import com.platon.aton.component.ui.base.MVPBaseActivity;
 import com.platon.aton.component.ui.contract.DelegateDetailContract;
 import com.platon.aton.component.ui.dialog.BaseDialogFragment;
 import com.platon.aton.component.ui.dialog.CommonGuideDialogFragment;
 import com.platon.aton.component.ui.presenter.DelegateDetailPresenter;
 import com.platon.aton.component.widget.CircleImageView;
 import com.platon.aton.component.widget.CustomRefreshHeader;
-import com.platon.aton.config.AppSettings;
-import com.platon.aton.entity.DelegateItemInfo;
 import com.platon.aton.entity.DelegateInfo;
+import com.platon.aton.entity.DelegateItemInfo;
 import com.platon.aton.entity.GuideType;
 import com.platon.aton.event.Event;
 import com.platon.aton.event.EventPublisher;
 import com.platon.aton.utils.AddressFormatUtil;
 import com.platon.aton.utils.AmountUtil;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.utils.PreferenceTool;
+import com.platon.framework.utils.RUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -47,7 +46,7 @@ import butterknife.Unbinder;
 /**
  * 委托详情activity
  */
-public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresenter> implements DelegateDetailContract.View {
+public class DelegateDetailActivity extends BaseActivity<DelegateDetailContract.View, DelegateDetailPresenter> implements DelegateDetailContract.View {
 
     @BindView(R.id.civ_wallet_avatar)
     CircleImageView civWalletAvatar;
@@ -70,17 +69,25 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
     private DelegateDetailAdapter mDetailAdapter;
 
     @Override
-    protected DelegateDetailPresenter createPresenter() {
-        return new DelegateDetailPresenter(this);
+    public DelegateDetailPresenter createPresenter() {
+        return new DelegateDetailPresenter();
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_delegate_detail);
+    public DelegateDetailContract.View createView() {
+        return this;
+    }
+
+    @Override
+    public void init() {
         unbinder = ButterKnife.bind(this);
         EventPublisher.getInstance().register(this);
         initView();
+    }
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.activity_delegate_detail;
     }
 
     @Override
@@ -101,7 +108,7 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                mPresenter.loadDelegateDetailData();
+                getPresenter().loadDelegateDetailData();
             }
         });
 
@@ -109,11 +116,11 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
     }
 
     private void initGuide() {
-        if (!AppSettings.getInstance().getDelegateDetailBoolean()) {
+        if (!PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_DELEGATE_DETAIL, false)) {
             CommonGuideDialogFragment.newInstance(GuideType.DELEGATE_NODE_DETAIL).setOnDissmissListener(new BaseDialogFragment.OnDissmissListener() {
                 @Override
                 public void onDismiss() {
-                    AppSettings.getInstance().setDelegateDetailBoolean(true);
+                    PreferenceTool.putBoolean(Constants.Preference.KEY_SHOW_DELEGATE_DETAIL, true);
                 }
             }).show(getSupportFragmentManager(), "showGuideDialogFragment");
         }
@@ -179,13 +186,13 @@ public class DelegateDetailActivity extends MVPBaseActivity<DelegateDetailPresen
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateDelegateDetailPageEvent(Event.UpdateDelegateDetailEvent event) {
         //刷新页面
-        mPresenter.loadDelegateDetailData();
+        getPresenter().loadDelegateDetailData();
     }
 
     //赎回成功，返回，刷新页面
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void refreshPageEvent(Event.UpdateRefreshPageEvent event) {
-        mPresenter.loadDelegateDetailData();
+        getPresenter().loadDelegateDetailData();
     }
 
     @Override

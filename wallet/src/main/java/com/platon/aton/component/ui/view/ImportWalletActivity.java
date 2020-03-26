@@ -14,11 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.platon.framework.util.AndroidUtil;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
-import com.platon.aton.component.ui.base.BaseActivity;
-import com.platon.aton.component.ui.base.BaseFragment;
 import com.platon.aton.component.ui.dialog.BaseDialogFragment;
 import com.platon.aton.component.ui.dialog.CommonGuideDialogFragment;
 import com.platon.aton.component.widget.CommonTitleBar;
@@ -27,11 +23,17 @@ import com.platon.aton.component.widget.table.PagerItem;
 import com.platon.aton.component.widget.table.PagerItemAdapter;
 import com.platon.aton.component.widget.table.PagerItems;
 import com.platon.aton.component.widget.table.SmartTabLayout;
-import com.platon.aton.config.AppSettings;
 import com.platon.aton.entity.GuideType;
 import com.platon.aton.utils.GZipUtil;
 import com.platon.aton.utils.JZWalletUtil;
-import com.platon.aton.utils.ToastUtil;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.base.BaseFragment;
+import com.platon.framework.base.BasePresenter;
+import com.platon.framework.base.BaseViewImp;
+import com.platon.framework.utils.AndroidUtil;
+import com.platon.framework.utils.PreferenceTool;
+import com.platon.framework.utils.ToastUtil;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.util.ArrayList;
@@ -72,21 +74,34 @@ public class ImportWalletActivity extends BaseActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_import_wallet);
+    public int getLayoutId() {
+        return R.layout.activity_import_wallet;
+    }
+
+    @Override
+    public BasePresenter createPresenter() {
+        return null;
+    }
+
+    @Override
+    public BaseViewImp createView() {
+        return null;
+    }
+
+    @Override
+    public void init() {
         initView();
         initGuide();
     }
 
     private void initGuide() {
 
-        if (!AppSettings.getInstance().getObservedWalletBoolean()) {
+        if (!PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_OBSERVED_WALLET, false)) {
             CommonGuideDialogFragment.newInstance(GuideType.IMPORT_WALLET)
                     .setOnDissmissListener(new BaseDialogFragment.OnDissmissListener() {
                         @Override
                         public void onDismiss() {
-                            AppSettings.getInstance().setObservedWalletBoolean(true);
+                            PreferenceTool.putBoolean(Constants.Preference.KEY_SHOW_OBSERVED_WALLET, true);
                         }
                     })
                     .show(getSupportFragmentManager(), "showGuideDialogFragment");
@@ -115,7 +130,7 @@ public class ImportWalletActivity extends BaseActivity {
             }
         });
         int indicatorThickness = AndroidUtil.dip2px(getContext(), 2.0f);
-        SmartTabLayout stbBar = mRootView.findViewById(R.id.stb_bar);
+        SmartTabLayout stbBar = getContentView().findViewById(R.id.stb_bar);
         stbBar.setIndicatorThickness(indicatorThickness);
         stbBar.setIndicatorCornerRadius(indicatorThickness / 2);
         ArrayList<Class<? extends BaseFragment>> fragments = getFragments();
@@ -136,7 +151,7 @@ public class ImportWalletActivity extends BaseActivity {
                 pages.add(PagerItem.of(getTitles().get(i), fragments.get(i), new Bundle()));
             }
         }
-        mVpContent = mRootView.findViewById(R.id.vp_content);
+        mVpContent = getContentView().findViewById(R.id.vp_content);
         mVpContent.setSlide(true);
         mVpContent.setOffscreenPageLimit(fragments.size());
         mVpContent.setAdapter(new PagerItemAdapter(getSupportFragmentManager(), pages));

@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import com.platon.framework.network.ApiRequestBody;
 import com.platon.framework.network.ApiResponse;
 import com.platon.framework.network.ApiSingleObserver;
-import com.platon.framework.util.LogUtils;
+import com.platon.framework.utils.LogUtils;
 import com.platon.aton.component.ui.contract.SendTransationContract;
 import com.platon.aton.component.ui.presenter.SendTransactionPresenter;
 import com.platon.aton.config.AppSettings;

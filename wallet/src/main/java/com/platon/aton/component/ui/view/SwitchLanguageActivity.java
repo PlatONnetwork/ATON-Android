@@ -8,9 +8,11 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.platon.aton.R;
-import com.platon.aton.component.ui.base.BaseActivity;
 import com.platon.aton.component.widget.CommonTitleBar;
 import com.platon.aton.utils.LanguageUtil;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.base.BasePresenter;
+import com.platon.framework.base.BaseViewImp;
 
 import java.util.Locale;
 
@@ -40,9 +42,22 @@ public class SwitchLanguageActivity extends BaseActivity {
     private Locale locale;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_switch_language);
+    public int getLayoutId() {
+        return R.layout.activity_switch_language;
+    }
+
+    @Override
+    public BasePresenter createPresenter() {
+        return null;
+    }
+
+    @Override
+    public BaseViewImp createView() {
+        return null;
+    }
+
+    @Override
+    public void init() {
         unbinder = ButterKnife.bind(this);
         initViews();
     }

@@ -9,7 +9,6 @@ import android.widget.ImageView;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.app.CustomObserver;
 import com.platon.aton.component.widget.ShadowButton;
 import com.platon.aton.entity.TransactionAuthorizationData;
@@ -17,6 +16,7 @@ import com.platon.aton.utils.DensityUtil;
 import com.platon.aton.utils.GZipUtil;
 import com.platon.aton.utils.QRCodeEncoder;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.app.Constants;
 
 import java.util.concurrent.Callable;
 

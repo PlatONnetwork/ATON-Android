@@ -3,9 +3,7 @@ package com.platon.aton.delegate;
 import android.app.Application;
 import android.text.TextUtils;
 import android.util.Log;
-import com.platon.framework.network.ApiRequestBody;
-import com.platon.framework.network.ApiResponse;
-import com.platon.framework.network.ApiSingleObserver;
+
 import com.platon.aton.BuildConfig;
 import com.platon.aton.config.AppSettings;
 import com.platon.aton.engine.NodeManager;
@@ -16,7 +14,12 @@ import com.platon.aton.entity.DelegateHandle;
 import com.platon.aton.entity.Node;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.rxjavatest.RxJavaTestSchedulerRule;
+import com.platon.aton.utils.NumberParserUtils;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.network.ApiRequestBody;
+import com.platon.framework.network.ApiResponse;
+import com.platon.framework.network.ApiSingleObserver;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -31,15 +34,17 @@ import org.robolectric.shadows.ShadowLog;
 import org.web3j.platon.StakingAmountType;
 import org.web3j.protocol.Web3j;
 import org.web3j.utils.Convert;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
 import io.reactivex.functions.Consumer;
 import rx.Subscriber;
+
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 23, manifest = Config.NONE, constants = BuildConfig.class)
@@ -200,21 +205,21 @@ public class DelegateActivityTest {
         Collections.sort(list, new Comparator<Wallet>() {
             @Override
             public int compare(Wallet o1, Wallet o2) {
-               return Double.compare(NumberParserUtils.parseDouble(o2.getFreeBalance()), NumberParserUtils.parseDouble(o1.getFreeBalance()));
+                return Double.compare(NumberParserUtils.parseDouble(o2.getFreeBalance()), NumberParserUtils.parseDouble(o1.getFreeBalance()));
             }
         });
 
 
         Log.d("DelegateActivityTest", "=============" + list.size());
 
-        for(Wallet bean :list){
+        for (Wallet bean : list) {
             Log.d("DelegateActivityTest", "=============" + bean);
         }
 
     }
 
     @Test
-    public  void testSortByCreateTime(){
+    public void testSortByCreateTime() {
         List<Wallet> list = new ArrayList<>();
 
         Wallet wallet = new Wallet();
@@ -265,7 +270,7 @@ public class DelegateActivityTest {
             }
         });
 
-        for(Wallet bean :list){
+        for (Wallet bean : list) {
             Log.d("DelegateActivityTest", "=============" + bean);
         }
 

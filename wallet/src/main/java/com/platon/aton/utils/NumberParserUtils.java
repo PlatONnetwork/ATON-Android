@@ -321,6 +321,7 @@ public class NumberParserUtils {
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
+
         if (TextUtils.isEmpty(bigDecimalStr)) {
             return "0";
         }

@@ -29,12 +29,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
-import com.platon.framework.util.RUtils;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.app.CustomObserver;
 import com.platon.aton.component.adapter.DelegatePopAdapter;
-import com.platon.aton.component.ui.base.MVPBaseActivity;
 import com.platon.aton.component.ui.contract.DelegateContract;
 import com.platon.aton.component.ui.dialog.BaseDialogFragment;
 import com.platon.aton.component.ui.dialog.CommonGuideDialogFragment;
@@ -47,7 +44,6 @@ import com.platon.aton.component.widget.MyWatcher;
 import com.platon.aton.component.widget.ShadowButton;
 import com.platon.aton.component.widget.ShadowDrawable;
 import com.platon.aton.component.widget.VerticalImageSpan;
-import com.platon.aton.config.AppSettings;
 import com.platon.aton.engine.TransactionManager;
 import com.platon.aton.entity.DelegateHandle;
 import com.platon.aton.entity.DelegateItemInfo;
@@ -66,8 +62,12 @@ import com.platon.aton.utils.NumberParserUtils;
 import com.platon.aton.utils.RxUtils;
 import com.platon.aton.utils.SoftHideKeyboardUtils;
 import com.platon.aton.utils.StringUtil;
-import com.platon.aton.utils.ToastUtil;
 import com.platon.aton.utils.UMEventUtil;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.utils.PreferenceTool;
+import com.platon.framework.utils.RUtils;
+import com.platon.framework.utils.ToastUtil;
 
 import org.web3j.platon.StakingAmountType;
 
@@ -83,7 +83,7 @@ import butterknife.Unbinder;
  * 委托操作页面
  */
 
-public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> implements DelegateContract.View {
+public class DelegateActivity extends BaseActivity<DelegateContract.View, DelegatePresenter> implements DelegateContract.View {
 
     @BindView(R.id.iv_delegate_node_icon)
     CircleImageView nodeIcon;
@@ -144,18 +144,26 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
 
     @Override
 
-    protected DelegatePresenter createPresenter() {
-        return new DelegatePresenter(this);
+    public DelegatePresenter createPresenter() {
+        return new DelegatePresenter();
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_delegate);
+    public DelegateContract.View createView() {
+        return this;
+    }
+
+    @Override
+    public void init() {
         unbinder = ButterKnife.bind(this);
         initView();
-        mPresenter.showWalletInfo();
-        mPresenter.getGas();
+        getPresenter().showWalletInfo();
+        getPresenter().getGas();
+    }
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.activity_delegate;
     }
 
     private void initView() {
@@ -185,7 +193,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        mPresenter.showSelectWalletDialogFragment();
+                        getPresenter().showSelectWalletDialogFragment();
                     }
                 });
 
@@ -196,7 +204,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                     @Override
                     public void accept(Object o) {
                         //选择余额类型
-                        ShowPopWindow(amounChoose);
+                        showPopWindow(amounChoose);
                     }
                 });
 
@@ -214,14 +222,14 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                                 public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
                                     isAll = false;
                                     //点击全部
-                                    mPresenter.getAllPrice(stakingAmountType, amount.getText().toString().replace(",", ""), true);
+                                    getPresenter().getAllPrice(stakingAmountType, amount.getText().toString().replace(",", ""), true);
                                 }
                             }, getString(R.string.action_delegate_all_amount), new OnDialogViewClickListener() {
                                 @Override
                                 public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
                                     isAll = true;
                                     //点击全部
-                                    mPresenter.getAllPrice(stakingAmountType, amount.getText().toString().replace(",", ""), false);
+                                    getPresenter().getAllPrice(stakingAmountType, amount.getText().toString().replace(",", ""), false);
                                 }
                             });
 
@@ -239,7 +247,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
                         } else {
                             isAll = true;
                             //点击全部
-                            mPresenter.getAllPrice(stakingAmountType, amount.getText().toString().replace(",", ""), false);
+                            getPresenter().getAllPrice(stakingAmountType, amount.getText().toString().replace(",", ""), false);
                         }
 
                     }
@@ -263,21 +271,21 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
 
                         long currentTime = System.currentTimeMillis();
 
-                        if (!TransactionManager.getInstance().isAllowSendTransaction(mPresenter.getWalletAddress(), currentTime)) {
-                            showLongToast(string(R.string.msg_wait_finished_transaction_tips, DateUtil.millisecondToMinutes(TransactionManager.getInstance().getSendTransactionTimeInterval(mPresenter.getWalletAddress(), currentTime))));
+                        if (!TransactionManager.getInstance().isAllowSendTransaction(getPresenter().getWalletAddress(), currentTime)) {
+                            showLongToast(string(R.string.msg_wait_finished_transaction_tips, DateUtil.millisecondToMinutes(TransactionManager.getInstance().getSendTransactionTimeInterval(getPresenter().getWalletAddress(), currentTime))));
                             return;
                         }
-                        mPresenter.submitDelegate(stakingAmountType);
+                        getPresenter().submitDelegate(stakingAmountType);
                     }
                 });
     }
 
     private void initGuide() {
-        if (!AppSettings.getInstance().getDelegateOperationBoolean()) {
+        if (!PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_DELEGATE_OPERATION, false)) {
             CommonGuideDialogFragment.newInstance(GuideType.DELEGATE).setOnDissmissListener(new BaseDialogFragment.OnDissmissListener() {
                 @Override
                 public void onDismiss() {
-                    AppSettings.getInstance().setDelegateOperationBoolean(true);
+                    PreferenceTool.putBoolean(Constants.Preference.KEY_SHOW_DELEGATE_OPERATION, true);
                 }
             }).show(getSupportFragmentManager(), "showGuideDialogFragment");
         }
@@ -309,7 +317,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
     }
 
     private void refreshData(DelegateType item) {
-        stakingAmountType = item.getType() == "0" ? StakingAmountType.FREE_AMOUNT_TYPE : StakingAmountType.RESTRICTING_AMOUNT_TYPE;
+        stakingAmountType = TextUtils.equals("0", item.getType()) ? StakingAmountType.FREE_AMOUNT_TYPE : StakingAmountType.RESTRICTING_AMOUNT_TYPE;
         amountType.setText(TextUtils.equals(item.getType(), "0") ? getString(R.string.available_balance) : getString(R.string.locked_balance));
         amount.setText(StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(item.getAmount(), "1E18"))), false));
     }
@@ -319,7 +327,7 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
      *
      * @param view
      */
-    public void ShowPopWindow(View view) {
+    public void showPopWindow(View view) {
         mPopupWindow.showAsDropDown(view);
     }
 
@@ -332,16 +340,16 @@ public class DelegateActivity extends MVPBaseActivity<DelegatePresenter> impleme
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-            mPresenter.checkDelegateAmount(et_amount.getText().toString().trim().replace(",", ""));
+            getPresenter().checkDelegateAmount(et_amount.getText().toString().trim().replace(",", ""));
 
-            mPresenter.updateDelegateButtonState();
+            getPresenter().updateDelegateButtonState();
 
             String amountMagnitudes = StringUtil.getAmountMagnitudes(getContext(), s.toString().trim());
             inputTips.setText(amountMagnitudes);
             inputTips.setVisibility(TextUtils.isEmpty(amountMagnitudes) ? View.GONE : View.VISIBLE);
             v_tips.setVisibility(TextUtils.isEmpty(amountMagnitudes) ? View.GONE : View.VISIBLE);
 
-            mPresenter.getGasProvider(stakingAmountType); //获取手续费
+            getPresenter().getGasProvider(stakingAmountType); //获取手续费
         }
 
         @Override

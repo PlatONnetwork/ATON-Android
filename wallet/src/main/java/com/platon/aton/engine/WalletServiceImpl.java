@@ -5,7 +5,7 @@ import com.platon.aton.R;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.utils.JZMnemonicUtil;
 import com.platon.aton.utils.JZWalletUtil;
-import com.platon.framework.util.LogUtils;
+import com.platon.framework.utils.LogUtils;
 
 import org.bitcoinj.crypto.ChildNumber;
 import org.bitcoinj.crypto.DeterministicHierarchy;

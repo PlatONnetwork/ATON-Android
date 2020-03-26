@@ -2,7 +2,6 @@ package com.platon.aton.component.ui.view;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,12 +11,12 @@ import android.widget.LinearLayout;
 import com.platon.aton.R;
 import com.platon.aton.component.adapter.ClaimRewardRecordAdapter;
 import com.platon.aton.component.adapter.expandablerecycleradapter.BaseExpandableRecyclerViewAdapter;
-import com.platon.aton.component.ui.base.MVPBaseActivity;
 import com.platon.aton.component.ui.contract.ClaimRecordContract;
 import com.platon.aton.component.ui.presenter.ClaimRecordPresenter;
 import com.platon.aton.component.ui.presenter.Direction;
 import com.platon.aton.entity.ClaimReward;
 import com.platon.aton.entity.ClaimRewardRecord;
+import com.platon.framework.base.BaseActivity;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
@@ -29,7 +28,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class ClaimRewardRecordActivity extends MVPBaseActivity<ClaimRecordPresenter> implements ClaimRecordContract.View {
+public class ClaimRewardRecordActivity extends BaseActivity<ClaimRecordContract.View, ClaimRecordPresenter> implements ClaimRecordContract.View {
 
     @BindView(R.id.list_claim_record)
     RecyclerView listClaimRecord;
@@ -42,11 +41,8 @@ public class ClaimRewardRecordActivity extends MVPBaseActivity<ClaimRecordPresen
     private ClaimRewardRecordAdapter mClaimRewardRecordAdapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_claim_record);
-        unbinder = ButterKnife.bind(this);
-        initViews();
+    public int getLayoutId() {
+        return R.layout.activity_claim_record;
     }
 
     @Override
@@ -54,21 +50,34 @@ public class ClaimRewardRecordActivity extends MVPBaseActivity<ClaimRecordPresen
         return true;
     }
 
-    private void initViews() {
+    @Override
+    public ClaimRecordPresenter createPresenter() {
+        return new ClaimRecordPresenter();
+    }
+
+    @Override
+    public ClaimRecordContract.View createView() {
+        return this;
+    }
+
+    @Override
+    public void init() {
+
+        unbinder = ButterKnife.bind(this);
 
         mClaimRewardRecordAdapter = new ClaimRewardRecordAdapter(this);
 
         layoutRefresh.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                mPresenter.getRewardTransactions(Direction.DIRECTION_NEW);
+                getPresenter().getRewardTransactions(Direction.DIRECTION_NEW);
             }
         });
 
         layoutRefresh.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-                mPresenter.getRewardTransactions(Direction.DIRECTION_OLD);
+                getPresenter().getRewardTransactions(Direction.DIRECTION_OLD);
             }
         });
 
@@ -98,11 +107,6 @@ public class ClaimRewardRecordActivity extends MVPBaseActivity<ClaimRecordPresen
         listClaimRecord.setAdapter(mClaimRewardRecordAdapter);
 
         layoutRefresh.autoRefresh();
-    }
-
-    @Override
-    protected ClaimRecordPresenter createPresenter() {
-        return new ClaimRecordPresenter(this);
     }
 
     @Override

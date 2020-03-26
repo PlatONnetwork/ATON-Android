@@ -2,10 +2,6 @@ package com.platon.aton.delegate;
 
 import android.app.Application;
 
-import com.platon.framework.app.log.Log;
-import com.platon.framework.network.ApiRequestBody;
-import com.platon.framework.network.ApiResponse;
-import com.platon.framework.network.ApiSingleObserver;
 import com.platon.aton.component.ui.contract.DelegateRecordContract;
 import com.platon.aton.component.ui.presenter.DelegateRecordPresenter;
 import com.platon.aton.config.AppSettings;
@@ -15,6 +11,10 @@ import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.Node;
 import com.platon.aton.entity.Transaction;
 import com.platon.aton.rxjavatest.RxJavaTestSchedulerRule;
+import com.platon.framework.app.log.Log;
+import com.platon.framework.network.ApiRequestBody;
+import com.platon.framework.network.ApiResponse;
+import com.platon.framework.network.ApiSingleObserver;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -115,7 +115,7 @@ public class DelegateRecordTest {
 
         Transaction transaction = new Transaction();
         transaction.setActualTxCost("0.005648");
-        transaction.setBlockNumber(10556);
+        transaction.setBlockNumber("10556");
         transaction.setNodeId("0xfa4a45sfa54s4dfa5s");
         transaction.setNodeName("Node-1");
         transaction.setFrom("0x4ded81199608adb765fb2fe029bbfdf57f538be8");
@@ -123,7 +123,7 @@ public class DelegateRecordTest {
 
         Transaction transaction2 = new Transaction();
         transaction2.setActualTxCost("0.005648");
-        transaction2.setBlockNumber(10556);
+        transaction2.setBlockNumber("10556");
         transaction2.setNodeId("0xfa4a45sfa54s4dfa5s");
         transaction2.setNodeName("Node-2");
         transaction2.setFrom("0x2e95e3ce0a54951eb9a99152a6d5827872dfb4fd");
@@ -131,7 +131,7 @@ public class DelegateRecordTest {
 
         Transaction transaction3 = new Transaction();
         transaction3.setActualTxCost("0.005648");
-        transaction3.setBlockNumber(10556);
+        transaction3.setBlockNumber("10556");
         transaction3.setNodeId("0xfa4a45sfa54s4dfa5s");
         transaction3.setNodeName("Node-3");
         transaction3.setFrom("0x7e4f77a7daaba0c90851d388df02783511c2befa");
@@ -148,7 +148,7 @@ public class DelegateRecordTest {
                 }).toList().blockingGet();
 
         for (Transaction bean : transactionList) {
-            System.out.println("--------------------"+bean.getWalletName() + " ============== " + bean.getWalletIcon());
+            System.out.println("--------------------" + bean.getWalletName() + " ============== " + bean.getWalletIcon());
         }
     }
 

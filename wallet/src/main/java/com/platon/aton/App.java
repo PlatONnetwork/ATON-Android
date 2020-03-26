@@ -1,21 +1,19 @@
 package com.platon.aton;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.multidex.MultiDex;
 
-import com.platon.framework.app.CoreApp;
 import com.platon.aton.app.AppFramework;
 import com.platon.aton.component.ui.view.UnlockFigerprintActivity;
-import com.platon.aton.config.AppSettings;
-import com.platon.aton.engine.DeviceManager;
 import com.platon.aton.engine.WalletManager;
-import com.umeng.analytics.MobclickAgent;
-import com.umeng.commonsdk.UMConfigure;
-import com.umeng.socialize.PlatformConfig;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseApplication;
+import com.platon.framework.utils.PreferenceTool;
 
 import io.reactivex.functions.Consumer;
 import io.reactivex.plugins.RxJavaPlugins;
@@ -23,9 +21,10 @@ import io.reactivex.plugins.RxJavaPlugins;
 /**
  * @author matrixelement
  */
-public class App extends CoreApp {
+public class App extends BaseApplication {
 
-    private final static long MAX_TIMEINMILLS = 2 * 60 * 1000;
+    private final static long MAX_TIME = 120000;
+
     private static Context context;
     private int mActivityAmount = 0;
     private long mBackgroundTimeInMills;
@@ -40,9 +39,8 @@ public class App extends CoreApp {
             }
         });
         context = this;
-        AppFramework.getAppFramework().initAppFramework(this);
+        AppFramework.getAppFramework().initAppFramework(context);
         //初始化友盟
-        initUMConfigure();
         registerActivityLifecycleCallbacks(mActivityLifecycleCallbacks);
     }
 
@@ -61,8 +59,9 @@ public class App extends CoreApp {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         //非默认值
-        if (newConfig.fontScale != 1)
+        if (newConfig.fontScale != 1) {
             getResources();
+        }
         super.onConfigurationChanged(newConfig);
     }
 
@@ -79,26 +78,11 @@ public class App extends CoreApp {
         return res;
     }
 
-    @Override
-    protected String getConfiguredReleaseType() {
-        return BuildConfig.RELEASE_TYPE;
-    }
-
     public static Context getContext() {
         return context;
     }
 
-    private void initUMConfigure() {
-        UMConfigure.init(this, BuildConfig.UM_APPKEY, DeviceManager.getInstance().getChannel(), UMConfigure.DEVICE_TYPE_PHONE, null);
-        if (BuildConfig.DEBUG) {
-            UMConfigure.setLogEnabled(true);
-        }
-        // 选用LEGACY_AUTO页面采集模式
-        MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.LEGACY_MANUAL);
-        PlatformConfig.setSinaWeibo(BuildConfig.SINA_APPKEY, BuildConfig.SINA_APP_SECRET, BuildConfig.SINA_APP_REDIRECT_URL);
-    }
-
-    private ActivityLifecycleCallbacks mActivityLifecycleCallbacks = new ActivityLifecycleCallbacks() {
+    private Application.ActivityLifecycleCallbacks mActivityLifecycleCallbacks = new Application.ActivityLifecycleCallbacks() {
         @Override
         public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
 
@@ -109,8 +93,8 @@ public class App extends CoreApp {
             if (mActivityAmount == 0) {
                 long timeInMills = System.currentTimeMillis();
                 if (mBackgroundTimeInMills > 0 &&
-                        timeInMills - mBackgroundTimeInMills > MAX_TIMEINMILLS &&
-                        AppSettings.getInstance().getFaceTouchIdFlag() &&
+                        timeInMills - mBackgroundTimeInMills > MAX_TIME &&
+                        PreferenceTool.getBoolean(Constants.Preference.KEY_FACE_TOUCH_ID_FLAG, false) &&
                         !WalletManager.getInstance().getWalletList().isEmpty()) {
                     UnlockFigerprintActivity.actionStart(activity);
                 }

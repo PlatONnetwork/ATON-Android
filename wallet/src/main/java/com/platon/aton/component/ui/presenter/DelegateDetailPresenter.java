@@ -4,13 +4,13 @@ package com.platon.aton.component.ui.presenter;
 import android.text.TextUtils;
 
 import com.platon.aton.app.LoadingTransformer;
-import com.platon.aton.component.ui.base.BasePresenter;
 import com.platon.aton.component.ui.contract.DelegateDetailContract;
 import com.platon.aton.engine.ServerUtils;
 import com.platon.aton.entity.DelegateInfo;
 import com.platon.aton.entity.DelegateItemInfo;
 import com.platon.aton.entity.DelegateNodeDetail;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.base.BasePresenter;
 import com.platon.framework.network.ApiErrorCode;
 import com.platon.framework.network.ApiRequestBody;
 import com.platon.framework.network.ApiResponse;
@@ -27,11 +27,6 @@ import retrofit2.Response;
 public class DelegateDetailPresenter extends BasePresenter<DelegateDetailContract.View> implements DelegateDetailContract.Presenter {
 
     private DelegateNodeDetail mDelegateNodeDetail;
-
-    public DelegateDetailPresenter(DelegateDetailContract.View view) {
-        super(view);
-
-    }
 
     @Override
     public void loadDelegateDetailData() {

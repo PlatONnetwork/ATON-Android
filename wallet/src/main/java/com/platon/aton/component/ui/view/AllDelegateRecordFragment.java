@@ -3,22 +3,20 @@ package com.platon.aton.component.ui.view;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.component.adapter.DelegateRecordAdapter;
-import com.platon.aton.component.ui.base.MVPBaseFragment;
 import com.platon.aton.component.ui.contract.DelegateRecordContract;
 import com.platon.aton.component.ui.presenter.DelegateRecordPresenter;
 import com.platon.aton.component.widget.CustomRefreshFooter;
 import com.platon.aton.component.widget.CustomRefreshHeader;
 import com.platon.aton.entity.Transaction;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseLazyFragment;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
@@ -36,7 +34,9 @@ import butterknife.Unbinder;
  * 所有委托记录（委托和赎回委托）
  */
 
-public class AllDelegateRecordFragment extends MVPBaseFragment<DelegateRecordPresenter> implements DelegateRecordContract.View {
+public class AllDelegateRecordFragment extends BaseLazyFragment<DelegateRecordContract.View, DelegateRecordPresenter> implements DelegateRecordContract.View {
+
+
     private Unbinder unbinder;
     @BindView(R.id.refreshLayout)
     SmartRefreshLayout refreshLayout;
@@ -50,20 +50,35 @@ public class AllDelegateRecordFragment extends MVPBaseFragment<DelegateRecordPre
     private boolean isLoadMore = false;
 
     @Override
-    protected DelegateRecordPresenter createPresenter() {
-        return new DelegateRecordPresenter(this);
+    public DelegateRecordPresenter createPresenter() {
+        return new DelegateRecordPresenter();
     }
 
     @Override
-    protected void onFragmentPageStart() {
+    public DelegateRecordContract.View createView() {
+        return this;
+    }
+
+    @Override
+    public void init(View rootView) {
+        unbinder = ButterKnife.bind(this, rootView);
+        initView();
+    }
+
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.fragment_delegate_record;
+    }
+
+    @Override
+    public void onFragmentFirst() {
         refreshLayout.autoRefresh();
     }
 
     @Override
-    protected View onCreateFragmentPage(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_delegate_record, container, false);
-        unbinder = ButterKnife.bind(this, view);
-        return view;
+    public void onFragmentVisible() {
+        super.onFragmentVisible();
     }
 
     @Override
@@ -98,7 +113,7 @@ public class AllDelegateRecordFragment extends MVPBaseFragment<DelegateRecordPre
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 isLoadMore = false;
-                mPresenter.loadDelegateRecordData(Constants.VoteConstants.NEWEST_DATA, Constants.VoteConstants.REFRESH_DIRECTION, Constants.DelegateRecordType.All);
+                getPresenter().loadDelegateRecordData(Constants.VoteConstants.NEWEST_DATA, Constants.VoteConstants.REFRESH_DIRECTION, Constants.DelegateRecordType.All);
             }
         });
 
@@ -106,7 +121,7 @@ public class AllDelegateRecordFragment extends MVPBaseFragment<DelegateRecordPre
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
                 isLoadMore = true;
-                mPresenter.loadDelegateRecordData(beginSequence, Constants.VoteConstants.REQUEST_DIRECTION, Constants.DelegateRecordType.All);
+                getPresenter().loadDelegateRecordData(beginSequence, Constants.VoteConstants.REQUEST_DIRECTION, Constants.DelegateRecordType.All);
             }
         });
 

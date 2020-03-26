@@ -15,9 +15,10 @@ import android.os.Handler;
 import android.support.v4.content.FileProvider;
 import android.webkit.MimeTypeMap;
 
-import com.platon.framework.app.log.Log;
-import com.platon.aton.config.AppSettings;
-import com.platon.aton.utils.ToastUtil;
+import com.platon.framework.app.Constants;
+import com.platon.framework.utils.LogUtils;
+import com.platon.framework.utils.PreferenceTool;
+import com.platon.framework.utils.ToastUtil;
 
 import java.io.File;
 
@@ -79,10 +80,10 @@ public class VersionUpdate {
      * 执行下载
      */
     public void execute() {
-        lastDownloadId = AppSettings.getInstance().getDownloadManagerId();
+        lastDownloadId = PreferenceTool.getLong(Constants.Preference.KEY_DOWNLOAD_MANAGER_ID, -1);
         if (lastDownloadId != -1 && !invalidDownLoadManager()) {
             mDownloadManager.remove(lastDownloadId);
-            AppSettings.getInstance().removeSharedPreferenceByKey("downloadManagerId");
+            PreferenceTool.remove(Constants.Preference.KEY_DOWNLOAD_MANAGER_ID);
         }
         initDownLoadPath();
         //2.创建下载请求对象，并且把下载的地址放进去
@@ -109,7 +110,7 @@ public class VersionUpdate {
             ToastUtil.showLongToast(mContext, "当前下载器被禁用，请在设置中开启");
         } else {
             lastDownloadId = mDownloadManager.enqueue(request);
-            AppSettings.getInstance().setDownloadManagerId(lastDownloadId);
+            PreferenceTool.putLong(Constants.Preference.KEY_DOWNLOAD_MANAGER_ID, lastDownloadId);
             updateView();
         }
     }
@@ -191,7 +192,7 @@ public class VersionUpdate {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.debug(TAG, "[CompleteReceiver]");
+            LogUtils.d("[CompleteReceiver]");
             long completeDownloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
             if (completeDownloadId == lastDownloadId) {
                 updateView();
@@ -215,7 +216,7 @@ public class VersionUpdate {
 
         @Override
         public void onChange(boolean selfChange) {
-            Log.debug(TAG, "[DownloadChangeObserver]");
+            LogUtils.d("[DownloadChangeObserver]");
             if (isForceUpdate) {
                 updateView();
             }
@@ -233,7 +234,7 @@ public class VersionUpdate {
                 int downloadedBytes = bytesAndStatus[0];
                 int totalBytes = bytesAndStatus[1];
                 int downloadStatus = bytesAndStatus[2];
-                Log.debug(TAG, "[cursize,total,status]" + "[" + downloadedBytes + "," + totalBytes + "," + downloadStatus + "]");
+                LogUtils.d("[cursize,total,status]" + "[" + downloadedBytes + "," + totalBytes + "," + downloadStatus + "]");
                 mHandler.sendMessage(mHandler.obtainMessage(MSG_DWSIZE, downloadedBytes, totalBytes, downloadStatus));
             } else {
                 mHandler.sendEmptyMessage(MSG_NULL);

@@ -14,9 +14,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.app.LoadingTransformer;
-import com.platon.aton.component.ui.base.BaseActivity;
 import com.platon.aton.component.widget.CustomUnderlineEditText;
 import com.platon.aton.component.widget.ShadowButton;
 import com.platon.aton.component.widget.ShadowDrawable;
@@ -24,6 +22,8 @@ import com.platon.aton.entity.Wallet;
 import com.platon.aton.utils.DensityUtil;
 import com.platon.aton.utils.JZWalletUtil;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseActivity;
 import com.platon.framework.network.SchedulersTransformer;
 
 import org.web3j.crypto.Credentials;

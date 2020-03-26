@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.component.widget.ShadowButton;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.ClaimRewardInfo;
@@ -18,6 +17,7 @@ import com.platon.aton.utils.BigDecimalUtil;
 import com.platon.aton.utils.CommonTextUtils;
 import com.platon.aton.utils.DensityUtil;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.app.Constants;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

@@ -6,11 +6,11 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 
+import com.platon.framework.base.BasePresenter;
 import com.platon.framework.network.ApiErrorCode;
 import com.platon.framework.network.ApiRequestBody;
 import com.platon.framework.network.ApiResponse;
-import com.platon.framework.util.LogUtils;
-import com.platon.aton.component.ui.base.BasePresenter;
+import com.platon.framework.utils.LogUtils;
 import com.platon.aton.component.ui.contract.TransactionsContract;
 import com.platon.aton.db.entity.TransactionEntity;
 import com.platon.aton.db.sqlite.TransactionDao;
@@ -60,8 +60,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
     private Disposable mLoadLatestDisposable;
     private String mWalletAddress;
 
-    public TransactionsPresenter(TransactionsContract.View view) {
-        super(view);
+    public TransactionsPresenter() {
         mAutoRefreshDisposable = new CompositeDisposable();
         mLoadLatestDisposable = new CompositeDisposable();
     }

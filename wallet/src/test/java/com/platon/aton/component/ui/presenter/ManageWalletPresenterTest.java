@@ -3,17 +3,19 @@ package com.platon.aton.component.ui.presenter;
 import android.app.Application;
 import android.text.TextUtils;
 
-import com.platon.framework.app.log.Log;
-import com.platon.framework.network.ApiResponse;
 import com.platon.aton.BuildConfig;
 import com.platon.aton.component.ui.contract.ManageWalletContract;
 import com.platon.aton.config.AppSettings;
 import com.platon.aton.engine.NodeManager;
+import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.AccountBalance;
 import com.platon.aton.entity.Node;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.rxjavatest.RxJavaTestSchedulerRule;
+import com.platon.framework.app.log.Log;
+import com.platon.framework.network.ApiResponse;
 
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,9 +45,10 @@ import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 
 import static org.mockito.Mockito.mock;
+
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 23, manifest = Config.NONE, constants = BuildConfig.class)
-public class ManageWalletPresenterTest{
+public class ManageWalletPresenterTest {
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
     @Rule
@@ -60,7 +63,7 @@ public class ManageWalletPresenterTest{
     @Mock
     private ManageWalletContract.View view;
 
-    public void setup(){
+    public void setup() {
         Application app = RuntimeEnvironment.application;
         ApiResponse.init(app);
 
@@ -74,8 +77,8 @@ public class ManageWalletPresenterTest{
 
         appSettings.init(app);
 
-        view =mock(ManageWalletContract.View.class);
-        presenter =new ManageWalletPresenter(view);
+        view = mock(ManageWalletContract.View.class);
+        presenter = new ManageWalletPresenter(view);
         presenter.attachView(view);
     }
 
@@ -129,24 +132,11 @@ public class ManageWalletPresenterTest{
         list.add(wallet4);
 
 
-        Single.fromCallable(new Callable<Boolean>() {
-                    @Override
-                    public Boolean call() throws Exception {
-                        return list.remove(wallet4);
-                    }
-                })
-                .subscribe(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(Boolean isSuccess) throws Exception {
-                        Log.debug("==============" , "boolean" + "=====>" + isSuccess);
-                    }
-                });
-
-        Log.debug("==============" , "list" + "=====>" + list.toString() + "length" + "==========>" +list.size());
+        Assert.assertEquals(WalletManager.getInstance().getWalletList().size(), 3);
     }
 
     @Test
-    public void modifyName(){
+    public void modifyName() {
         List<Wallet> list = new ArrayList<>();
 
         Wallet wallet = new Wallet();
@@ -189,12 +179,12 @@ public class ManageWalletPresenterTest{
         list.add(wallet4);
 
         Single.fromCallable(new Callable<Boolean>() {
-                    @Override
-                    public Boolean call() throws Exception {
-                        wallet4.setName("0000111");
-                        return !TextUtils.isEmpty(wallet4.getName());
-                    }
-                })
+            @Override
+            public Boolean call() throws Exception {
+                wallet4.setName("0000111");
+                return !TextUtils.isEmpty(wallet4.getName());
+            }
+        })
                 .filter(new Predicate<Boolean>() {
                     @Override
                     public boolean test(Boolean success) throws Exception {
@@ -204,7 +194,7 @@ public class ManageWalletPresenterTest{
                 .map(new Function<Boolean, Boolean>() {
                     @Override
                     public Boolean apply(Boolean aBoolean) throws Exception {
-                       return true;
+                        return true;
                     }
                 })
                 .filter(new Predicate<Boolean>() {
@@ -217,14 +207,14 @@ public class ManageWalletPresenterTest{
                 .subscribe(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean isSuccess) throws Exception {
-                            presenter.getView().showWalletName("0000111");
+                        presenter.getView().showWalletName("0000111");
                     }
                 });
     }
 
 
     @Test
-    public  void  testRXjava(){
+    public void testRXjava() {
         Observable.create(new ObservableOnSubscribe<String>() {
 
             @Override
@@ -234,10 +224,11 @@ public class ManageWalletPresenterTest{
         }).doOnComplete(new Action() {
             @Override
             public void run() throws Exception {
-                Log.debug("rxjava","触发重订阅");
+                Log.debug("rxjava", "触发重订阅");
             }
         }).repeatWhen(new Function<Observable<Object>, ObservableSource<?>>() {
             private int n = 0;
+
             @Override
             public ObservableSource<?> apply(Observable<Object> objectObservable) throws Exception {
                 return objectObservable.flatMap(new Function<Object, ObservableSource<?>>() {
@@ -261,21 +252,20 @@ public class ManageWalletPresenterTest{
 
             @Override
             public void onNext(String s) {
-                Log.debug("onNext",s);
+                Log.debug("onNext", s);
             }
 
             @Override
             public void onError(Throwable e) {
-                Log.debug("onError","onError"+e);
+                Log.debug("onError", "onError" + e);
             }
 
             @Override
             public void onComplete() {
-                Log.debug("onComplete","onComplete");
+                Log.debug("onComplete", "onComplete");
             }
         });
     }
-
 
 
 }

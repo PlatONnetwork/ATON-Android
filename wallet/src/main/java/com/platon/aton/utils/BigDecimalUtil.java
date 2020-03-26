@@ -242,7 +242,7 @@ public class BigDecimalUtil {
     public static double round(double v, int scale) {
         double result = 0D;
         try {
-            BigDecimal b = new BigDecimal(Double.toString(v));
+            BigDecimal b = BigDecimal.valueOf(v);
             BigDecimal one = new BigDecimal("1");
             result = b.divide(one, scale, BigDecimal.ROUND_FLOOR).doubleValue();
         } catch (Exception e) {
@@ -296,7 +296,7 @@ public class BigDecimalUtil {
     public static int convertsToInt(double v) {
         int result = 0;
         try {
-            BigDecimal b = new BigDecimal(v);
+            BigDecimal b = BigDecimal.valueOf(v);
             result = b.intValue();
         } catch (Exception e) {
             e.printStackTrace();
@@ -313,7 +313,7 @@ public class BigDecimalUtil {
     public static long convertsToLong(double v) {
         long result = 0L;
         try {
-            BigDecimal b = new BigDecimal(v);
+            BigDecimal b = BigDecimal.valueOf(v);
             result = b.longValue();
         } catch (Exception e) {
             e.printStackTrace();
@@ -331,8 +331,8 @@ public class BigDecimalUtil {
     public static double returnMax(double v1, double v2) {
         double result = 0D;
         try {
-            BigDecimal b1 = new BigDecimal(v1);
-            BigDecimal b2 = new BigDecimal(v2);
+            BigDecimal b1 = BigDecimal.valueOf(v1);
+            BigDecimal b2 = BigDecimal.valueOf(v2);
             result = b1.max(b2).doubleValue();
         } catch (Exception e) {
             e.printStackTrace();
@@ -350,8 +350,8 @@ public class BigDecimalUtil {
     public static double returnMin(double v1, double v2) {
         double result = 0D;
         try {
-            BigDecimal b1 = new BigDecimal(v1);
-            BigDecimal b2 = new BigDecimal(v2);
+            BigDecimal b1 = BigDecimal.valueOf(v1);
+            BigDecimal b2 = BigDecimal.valueOf(v2);
             result = b1.min(b2).doubleValue();
         } catch (Exception e) {
             e.printStackTrace();
@@ -369,8 +369,8 @@ public class BigDecimalUtil {
     public static int compareTo(double v1, double v2) {
         int result = 0;
         try {
-            BigDecimal b1 = new BigDecimal(v1);
-            BigDecimal b2 = new BigDecimal(v2);
+            BigDecimal b1 = BigDecimal.valueOf(v1);
+            BigDecimal b2 = BigDecimal.valueOf(v2);
             result = b1.compareTo(b2);
         } catch (Exception e) {
             e.printStackTrace();

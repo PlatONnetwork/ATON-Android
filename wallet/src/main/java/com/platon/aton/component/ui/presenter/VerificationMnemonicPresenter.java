@@ -1,11 +1,11 @@
 package com.platon.aton.component.ui.presenter;
 
 
-import com.platon.aton.component.ui.base.BasePresenter;
 import com.platon.aton.component.ui.contract.VerificationMnemonicContract;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.utils.JZWalletUtil;
+import com.platon.framework.base.BasePresenter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,10 +18,7 @@ public class VerificationMnemonicPresenter extends BasePresenter<VerificationMne
     private Wallet mWalletEntity;
     private String mMnemonic;
 
-    public VerificationMnemonicPresenter(VerificationMnemonicContract.View view) {
-        super(view);
-    }
-
+    @Override
     public void init() {
         mAllList.clear();
         mPassword = getView().getPasswordFromIntent();

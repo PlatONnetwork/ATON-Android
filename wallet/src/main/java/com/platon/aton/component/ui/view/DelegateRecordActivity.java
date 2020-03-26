@@ -2,7 +2,6 @@ package com.platon.aton.component.ui.view;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
@@ -10,31 +9,47 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.platon.framework.util.AndroidUtil;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
-import com.platon.aton.component.ui.base.BaseActivity;
-import com.platon.aton.component.ui.base.BaseFragment;
 import com.platon.aton.component.widget.ViewPagerSlide;
 import com.platon.aton.component.widget.table.PagerItem;
 import com.platon.aton.component.widget.table.PagerItemAdapter;
 import com.platon.aton.component.widget.table.PagerItems;
 import com.platon.aton.component.widget.table.SmartTabLayout;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.base.BaseFragment;
+import com.platon.framework.base.BasePresenter;
+import com.platon.framework.base.BaseViewImp;
+import com.platon.framework.utils.AndroidUtil;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 
 /**
  * 委托记录
+ *
+ * @author ziv
  */
 
 public class DelegateRecordActivity extends BaseActivity {
 
+    @Override
+    public int getLayoutId() {
+        return R.layout.activity_delegate_record;
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_delegate_record);
+    public BasePresenter createPresenter() {
+        return null;
+    }
+
+    @Override
+    public BaseViewImp createView() {
+        return null;
+    }
+
+    @Override
+    public void init() {
         initView();
     }
 
@@ -51,7 +66,7 @@ public class DelegateRecordActivity extends BaseActivity {
     }
 
     private void initView() {
-        SmartTabLayout stbBar = mRootView.findViewById(R.id.stb_bar);
+        SmartTabLayout stbBar = getContentView().findViewById(R.id.stb_bar);
         int indicatorThickness = AndroidUtil.dip2px(getContext(), 2.0f);
         stbBar.setIndicatorThickness(indicatorThickness);//设置指示器的厚度
         stbBar.setIndicatorCornerRadius(indicatorThickness / 2);//指示器圆角半径
@@ -69,7 +84,7 @@ public class DelegateRecordActivity extends BaseActivity {
             pages.add(PagerItem.of(getTitles().get(i), fragments.get(i)));
         }
 
-        ViewPagerSlide vpContent = mRootView.findViewById(R.id.vp_content);
+        ViewPagerSlide vpContent = getContentView().findViewById(R.id.vp_content);
         vpContent.setSlide(true);//设置是否可滑动
 //        vpContent.setOffscreenPageLimit(fragments.size());//设置预加载
         vpContent.setAdapter(new PagerItemAdapter(getSupportFragmentManager(), pages));
@@ -104,7 +119,7 @@ public class DelegateRecordActivity extends BaseActivity {
         ArrayList<Class<? extends BaseFragment>> list = new ArrayList<>();
         list.add(AllDelegateRecordFragment.class);
         list.add(DelegateRecordFragment.class);
-        list.add(UnDelegateRecordFragment.class);
+        list.add(BaseFragment.class);
         return list;
 
     }

@@ -6,13 +6,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 
-import com.platon.framework.app.CoreApp;
+import com.platon.aton.App;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class NetStateChangeReceiver extends BroadcastReceiver {
-    private NetworkType mType = NetworkUtil.getNetWorkType(CoreApp.context);
+    private NetworkType mType = NetworkUtil.getNetWorkType(App.getContext());
     private List<NetStateChangeObserver> mObservers = new ArrayList<>();
 
     private static class InstanceHolder {

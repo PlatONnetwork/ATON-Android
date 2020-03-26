@@ -3,7 +3,6 @@ package com.platon.aton.component.ui.view;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
 import android.support.constraint.Group;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatTextView;
@@ -16,9 +15,7 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.app.CustomObserver;
-import com.platon.aton.component.ui.base.MVPBaseActivity;
 import com.platon.aton.component.ui.contract.ValidatorsDetailContract;
 import com.platon.aton.component.ui.dialog.DelegateTipsDialog;
 import com.platon.aton.component.ui.presenter.ValidatorsDetailPresenter;
@@ -38,7 +35,9 @@ import com.platon.aton.utils.GlideUtils;
 import com.platon.aton.utils.NumberParserUtils;
 import com.platon.aton.utils.RxUtils;
 import com.platon.aton.utils.StringUtil;
-import com.platon.aton.utils.ToastUtil;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.utils.ToastUtil;
 import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -51,7 +50,7 @@ import butterknife.Unbinder;
 /**
  * @author ziv
  */
-public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPresenter> implements ValidatorsDetailContract.View {
+public class ValidatorsDetailActivity extends BaseActivity<ValidatorsDetailContract.View, ValidatorsDetailPresenter> implements ValidatorsDetailContract.View {
 
     @BindView(R.id.civ_wallet_avatar)
     CircleImageView civWalletAvatar;
@@ -119,18 +118,25 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
     private Unbinder unbinder;
 
     @Override
-    protected ValidatorsDetailPresenter createPresenter() {
-        return new ValidatorsDetailPresenter(this);
-
+    public ValidatorsDetailContract.View createView() {
+        return this;
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_validators_detail);
+    public void init() {
         unbinder = ButterKnife.bind(this);
         EventPublisher.getInstance().register(this);
         initView();
+    }
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.activity_validators_detail;
+    }
+
+    @Override
+    public ValidatorsDetailPresenter createPresenter() {
+        return new ValidatorsDetailPresenter();
     }
 
     @Override
@@ -140,7 +146,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
 
     @Override
     public void onResume() {
-        mPresenter.loadValidatorsDetailData();
+        getPresenter().loadValidatorsDetailData();
         MobclickAgent.onPageStart(Constants.UMPages.NODE_DETAIL);
         super.onResume();
     }
@@ -159,7 +165,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        DelegateActivity.actionStart(getContext(), mPresenter.getDelegateDetail());
+                        DelegateActivity.actionStart(getContext(), getPresenter().getDelegateDetail());
                     }
                 });
 
@@ -189,7 +195,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        mPresenter.loadValidatorsDetailData();
+                        getPresenter().loadValidatorsDetailData();
                     }
                 });
 
@@ -217,7 +223,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
                     }
                 });
 
-        mPresenter.loadValidatorsDetailData();
+        getPresenter().loadValidatorsDetailData();
 
     }
 
@@ -361,7 +367,7 @@ public class ValidatorsDetailActivity extends MVPBaseActivity<ValidatorsDetailPr
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateValidatorsPageEvent(Event.UpdateValidatorsDetailEvent event) {
         //刷新页面
-        mPresenter.loadValidatorsDetailData();
+        getPresenter().loadValidatorsDetailData();
     }
 
     @Override

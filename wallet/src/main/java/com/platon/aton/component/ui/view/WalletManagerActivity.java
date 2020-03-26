@@ -3,7 +3,6 @@ package com.platon.aton.component.ui.view;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
@@ -13,9 +12,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.component.adapter.WalletManagerAdapter;
-import com.platon.aton.component.ui.base.MVPBaseActivity;
 import com.platon.aton.component.ui.contract.WalletManagerContract;
 import com.platon.aton.component.ui.presenter.WalletManagerPresenter;
 import com.platon.aton.component.widget.CommonTitleBar;
@@ -23,6 +20,8 @@ import com.platon.aton.component.widget.ShadowContainer;
 import com.platon.aton.netlistener.NetStateChangeObserver;
 import com.platon.aton.netlistener.NetStateChangeReceiver;
 import com.platon.aton.netlistener.NetworkType;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseActivity;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.Collections;
@@ -35,7 +34,7 @@ import butterknife.Unbinder;
 /**
  * @author matrixelement
  */
-public class WalletManagerActivity extends MVPBaseActivity<WalletManagerPresenter> implements WalletManagerContract.View, NetStateChangeObserver {
+public class WalletManagerActivity extends BaseActivity<WalletManagerContract.View, WalletManagerPresenter> implements WalletManagerContract.View, NetStateChangeObserver {
 
     @BindView(R.id.commonTitleBar)
     CommonTitleBar commonTitleBar;
@@ -57,22 +56,30 @@ public class WalletManagerActivity extends MVPBaseActivity<WalletManagerPresente
     }
 
     @Override
-    protected WalletManagerPresenter createPresenter() {
-        return new WalletManagerPresenter(this);
+    public WalletManagerPresenter createPresenter() {
+        return new WalletManagerPresenter();
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_wallet_manager);
+    public WalletManagerContract.View createView() {
+        return null;
+    }
+
+    @Override
+    public void init() {
         unbinder = ButterKnife.bind(this);
         NetStateChangeReceiver.registerReceiver(this);
         initView();
     }
 
     @Override
+    public int getLayoutId() {
+        return R.layout.activity_wallet_manager;
+    }
+
+    @Override
     protected void onResume() {
-        mPresenter.fetchWalletList();
+        getPresenter().fetchWalletList();
         MobclickAgent.onPageStart(Constants.UMPages.WALLET_MANAGER);
         NetStateChangeReceiver.registerObserver(this);
         super.onResume();
@@ -117,16 +124,16 @@ public class WalletManagerActivity extends MVPBaseActivity<WalletManagerPresente
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rvWallet.setLayoutManager(linearLayoutManager);
-        mAdapter = new WalletManagerAdapter(mPresenter.getDataSource(),getContext());
+        mAdapter = new WalletManagerAdapter(getPresenter().getDataSource(), getContext());
         mAdapter.setOnBackupClickListener(new WalletManagerAdapter.OnBackupClickListener() {
             @Override
             public void onBackupClick(int position) {
-                mPresenter.backupWallet(position);
+                getPresenter().backupWallet(position);
             }
 
             @Override
             public void onItemClick(int position) {
-                mPresenter.startAction(position);
+                getPresenter().startAction(position);
             }
         });
         rvWallet.setAdapter(mAdapter);
@@ -210,15 +217,15 @@ public class WalletManagerActivity extends MVPBaseActivity<WalletManagerPresente
             int toPosition = target.getAdapterPosition();
             if (fromPosition < toPosition) {
                 for (int i = fromPosition; i < toPosition; i++) {
-                    Collections.swap(mPresenter.getDataSource(), i, i + 1);
+                    Collections.swap(getPresenter().getDataSource(), i, i + 1);
                 }
             } else {
                 for (int i = fromPosition; i > toPosition; i--) {
-                    Collections.swap(mPresenter.getDataSource(), i, i - 1);
+                    Collections.swap(getPresenter().getDataSource(), i, i - 1);
                 }
             }
             mAdapter.notifyItemMoved(fromPosition, toPosition);
-            mPresenter.sortWalletList();
+            getPresenter().sortWalletList();
             return true;
         }
 
@@ -266,11 +273,11 @@ public class WalletManagerActivity extends MVPBaseActivity<WalletManagerPresente
 
     @Override
     public void onNetDisconnected() {
-        mPresenter.fetchWalletList();
+        getPresenter().fetchWalletList();
     }
 
     @Override
     public void onNetConnected(NetworkType networkType) {
-       mPresenter.fetchWalletList();
+        getPresenter().fetchWalletList();
     }
 }

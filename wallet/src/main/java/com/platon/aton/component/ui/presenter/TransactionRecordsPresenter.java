@@ -1,9 +1,9 @@
 package com.platon.aton.component.ui.presenter;
 
+import com.platon.framework.base.BasePresenter;
 import com.platon.framework.network.ApiRequestBody;
 import com.platon.framework.network.ApiResponse;
 import com.platon.framework.network.ApiSingleObserver;
-import com.platon.aton.component.ui.base.BasePresenter;
 import com.platon.aton.component.ui.contract.TransactionRecordsContract;
 import com.platon.aton.engine.ServerUtils;
 import com.platon.aton.entity.Transaction;
@@ -26,10 +26,6 @@ public class TransactionRecordsPresenter extends BasePresenter<TransactionRecord
     public final static String DIRECTION_NEW = "new";
 
     private List<Transaction> mTransactionList;
-
-    public TransactionRecordsPresenter(TransactionRecordsContract.View view) {
-        super(view);
-    }
 
     @Override
     public void fetchTransactions(String direction, List<String> addressList,boolean isWalletChanged) {

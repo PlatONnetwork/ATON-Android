@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -13,16 +12,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
-import com.platon.biometric.BiometricPromptCompat;
 import com.platon.aton.R;
 import com.platon.aton.app.CustomObserver;
-import com.platon.aton.component.ui.base.BaseActivity;
 import com.platon.aton.component.ui.dialog.ReminderThresholdAmountDialogFragment;
 import com.platon.aton.component.widget.togglebutton.ToggleButton;
-import com.platon.aton.config.AppSettings;
 import com.platon.aton.utils.LanguageUtil;
 import com.platon.aton.utils.RxUtils;
 import com.platon.aton.utils.StringUtil;
+import com.platon.biometric.BiometricPromptCompat;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.base.BasePresenter;
+import com.platon.framework.base.BaseViewImp;
+import com.platon.framework.utils.PreferenceTool;
 
 import java.util.Locale;
 
@@ -60,9 +62,22 @@ public class SettingsActivity extends BaseActivity {
     private Unbinder unbinder;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+    public int getLayoutId() {
+        return R.layout.activity_settings;
+    }
+
+    @Override
+    public BasePresenter createPresenter() {
+        return null;
+    }
+
+    @Override
+    public BaseViewImp createView() {
+        return null;
+    }
+
+    @Override
+    public void init() {
         unbinder = ButterKnife.bind(this);
         iniViews();
     }
@@ -87,7 +102,7 @@ public class SettingsActivity extends BaseActivity {
             layoutFaceTouchId.setVisibility(View.VISIBLE);
         }
 
-        tvReminderThresholdAmount.setText(getString(R.string.amount_with_unit, StringUtil.formatBalanceWithoutMinFraction(AppSettings.getInstance().getReminderThresholdAmount())));
+        tvReminderThresholdAmount.setText(getString(R.string.amount_with_unit, StringUtil.formatBalanceWithoutMinFraction(PreferenceTool.getString(Constants.Preference.KEY_REMINDER_THRESHOLD_AMOUNT, "1000"))));
 
         tgbSwitch.setOnToggleChanged(new ToggleButton.OnToggleChanged() {
             @Override
@@ -104,14 +119,14 @@ public class SettingsActivity extends BaseActivity {
         tgbResendReminder.setOnToggleChanged(new ToggleButton.OnToggleChanged() {
             @Override
             public void onToggle(boolean on) {
-                AppSettings.getInstance().setResendReminder(on);
+                PreferenceTool.putBoolean(Constants.Preference.KEY_RESEND_REMINDER, on);
                 switchResendReminder(on);
             }
         });
 
         RxView.clicks(tvNodeSetting)
                 .compose(RxUtils.getClickTransformer())
-                .compose(RxUtils.bindToLifecycle(this))
+                .compose(bindToLifecycle())
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) {
@@ -121,7 +136,7 @@ public class SettingsActivity extends BaseActivity {
 
         RxView.clicks(layoutSwitchLanguage)
                 .compose(RxUtils.getClickTransformer())
-                .compose(RxUtils.bindToLifecycle(this))
+                .compose(bindToLifecycle())
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object object) {
@@ -131,15 +146,15 @@ public class SettingsActivity extends BaseActivity {
 
         RxView.clicks(layoutLargeTransactionReminder)
                 .compose(RxUtils.getClickTransformer())
-                .compose(RxUtils.bindToLifecycle(this))
+                .compose(bindToLifecycle())
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        ReminderThresholdAmountDialogFragment.newInstance(AppSettings.getInstance().getReminderThresholdAmount())
+                        ReminderThresholdAmountDialogFragment.newInstance(PreferenceTool.getString(Constants.Preference.KEY_REMINDER_THRESHOLD_AMOUNT, "1000"))
                                 .setOnReminderThresholdAmountItemClickListener(new ReminderThresholdAmountDialogFragment.OnReminderThresholdAmountItemClickListener() {
                                     @Override
                                     public void onReminderThresholdAmountItemClick(String reminderThresholdAmount) {
-                                        AppSettings.getInstance().setReminderThresholdAmount(reminderThresholdAmount);
+                                        PreferenceTool.putString(Constants.Preference.KEY_REMINDER_THRESHOLD_AMOUNT, reminderThresholdAmount);
                                         tvReminderThresholdAmount.setText(getString(R.string.amount_with_unit, StringUtil.formatBalanceWithoutMinFraction(reminderThresholdAmount)));
                                     }
                                 })
@@ -147,9 +162,9 @@ public class SettingsActivity extends BaseActivity {
                     }
                 });
 
-        switchToggleButton(AppSettings.getInstance().getFaceTouchIdFlag());
+        switchToggleButton(PreferenceTool.getBoolean(Constants.Preference.KEY_FACE_TOUCH_ID_FLAG, false));
 
-        switchResendReminder(AppSettings.getInstance().getResendReminder());
+        switchResendReminder(PreferenceTool.getBoolean(Constants.Preference.KEY_RESEND_REMINDER, true));
     }
 
     private void switchResendReminder(boolean resendReminder) {
@@ -196,13 +211,13 @@ public class SettingsActivity extends BaseActivity {
 
         @Override
         public void onAuthenticationSucceeded(@NonNull BiometricPromptCompat.IAuthenticationResult result) {
-            boolean flag = AppSettings.getInstance().getFaceTouchIdFlag();
+            boolean flag = PreferenceTool.getBoolean(Constants.Preference.KEY_FACE_TOUCH_ID_FLAG, false);
             if (flag) {
                 //指纹密码验证成功
-                AppSettings.getInstance().setFaceTouchIdFlag(false);
+                PreferenceTool.putBoolean(Constants.Preference.KEY_FACE_TOUCH_ID_FLAG, false);
                 switchToggleButton(false);
             } else {
-                AppSettings.getInstance().setFaceTouchIdFlag(true);
+                PreferenceTool.putBoolean(Constants.Preference.KEY_FACE_TOUCH_ID_FLAG, true);
                 switchToggleButton(true);
             }
         }

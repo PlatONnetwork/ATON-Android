@@ -12,7 +12,6 @@ import com.platon.aton.R;
 import com.platon.aton.app.CustomObserver;
 import com.platon.aton.app.CustomThrowable;
 import com.platon.aton.app.LoadingTransformer;
-import com.platon.aton.component.ui.base.BasePresenter;
 import com.platon.aton.component.ui.contract.SendTransationContract;
 import com.platon.aton.component.ui.dialog.CommonTipsDialogFragment;
 import com.platon.aton.component.ui.dialog.InputWalletPasswordDialogFragment;
@@ -22,7 +21,6 @@ import com.platon.aton.component.ui.dialog.TransactionAuthorizationDialogFragmen
 import com.platon.aton.component.ui.dialog.TransactionSignatureDialogFragment;
 import com.platon.aton.component.ui.view.AssetsFragment;
 import com.platon.aton.component.ui.view.MainActivity;
-import com.platon.aton.config.AppSettings;
 import com.platon.aton.db.entity.AddressEntity;
 import com.platon.aton.db.entity.TransactionRecordEntity;
 import com.platon.aton.db.sqlite.AddressDao;
@@ -47,10 +45,13 @@ import com.platon.aton.utils.JZWalletUtil;
 import com.platon.aton.utils.NumberParserUtils;
 import com.platon.aton.utils.RxUtils;
 import com.platon.aton.utils.StringUtil;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BasePresenter;
 import com.platon.framework.network.ApiRequestBody;
 import com.platon.framework.network.ApiResponse;
 import com.platon.framework.network.ApiSingleObserver;
 import com.platon.framework.network.NetConnectivity;
+import com.platon.framework.utils.PreferenceTool;
 import com.trello.rxlifecycle2.android.FragmentEvent;
 
 import org.web3j.crypto.Credentials;
@@ -123,10 +124,6 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     //刷新时间
     private Wallet walletEntity;
     private String toAddress;
-
-    public SendTransactionPresenter(SendTransationContract.View view) {
-        super(view);
-    }
 
     @Override
     public void init() {
@@ -290,9 +287,9 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                 return;
             }
 
-            if (BigDecimalUtil.isNotSmaller(transferAmount, AppSettings.getInstance().getReminderThresholdAmount())) {
+            if (BigDecimalUtil.isNotSmaller(transferAmount, PreferenceTool.getString(Constants.Preference.KEY_REMINDER_THRESHOLD_AMOUNT, "1000"))) {
                 CommonTipsDialogFragment.createDialogWithTwoButton(ContextCompat.getDrawable(currentActivity(), R.drawable.icon_dialog_tips),
-                        string(R.string.msg_large_transaction_reminder, StringUtil.formatBalanceWithoutMinFraction(AppSettings.getInstance().getReminderThresholdAmount())),
+                        string(R.string.msg_large_transaction_reminder, StringUtil.formatBalanceWithoutMinFraction(PreferenceTool.getString(Constants.Preference.KEY_REMINDER_THRESHOLD_AMOUNT, "1000"))),
                         string(R.string.confirm), new OnDialogViewClickListener() {
                             @Override
                             public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
@@ -378,7 +375,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
 
         TransactionRecordEntity transactionRecordEntity = new TransactionRecordEntity(System.currentTimeMillis(), walletEntity.getPrefixAddress(), toAddress, transferAmount, NodeManager.getInstance().getChainId());
 
-        if (AppSettings.getInstance().getResendReminder()) {
+        if (PreferenceTool.getBoolean(Constants.Preference.KEY_RESEND_REMINDER, true)) {
             Single
                     .fromCallable(new Callable<Boolean>() {
                         @Override
@@ -407,7 +404,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     private void showResendTransactionReminderDialogFragment(TransactionRecordEntity transactionRecordEntity, String remark) {
 
         CommonTipsDialogFragment.createDialogWithTwoButton(ContextCompat.getDrawable(currentActivity(), R.drawable.icon_dialog_tips),
-                string(R.string.msg_resend_transaction_reminder, StringUtil.formatBalanceWithoutMinFraction(AppSettings.getInstance().getReminderThresholdAmount())),
+                string(R.string.msg_resend_transaction_reminder, StringUtil.formatBalanceWithoutMinFraction(PreferenceTool.getString(Constants.Preference.KEY_REMINDER_THRESHOLD_AMOUNT, "1000"))),
                 string(R.string.confirm), new OnDialogViewClickListener() {
                     @Override
                     public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
@@ -472,7 +469,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
 
         BigInteger recommendedMinGasPrice = recommendedGasPrice.divide(BigInteger.valueOf(2));
         //推荐的最小值是否大于默认的最小值
-        boolean isRecommendedMinGasPriceBiggerThanDefaultMinGasPrice = recommendedMinGasPrice.compareTo(DEFAULT_MIN_GASPRICE) == 1;
+        boolean isRecommendedMinGasPriceBiggerThanDefaultMinGasPrice = recommendedMinGasPrice.compareTo(DEFAULT_MIN_GASPRICE) > 0;
         //如果推荐的最小值大于默认的最小值，则最小值取推荐的最小值，否则为默认的最小值
         minGasPrice = isRecommendedMinGasPriceBiggerThanDefaultMinGasPrice ? recommendedMinGasPrice : DEFAULT_MIN_GASPRICE;
         //如果推荐的最小值大于默认的最小值，则推荐值取推荐值，否则取默认的最小值
@@ -659,7 +656,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     }
 
     private void insertAndDeleteTransactionRecord(TransactionRecordEntity transactionRecordEntity) {
-        if (AppSettings.getInstance().getResendReminder()) {
+        if (PreferenceTool.getBoolean(Constants.Preference.KEY_RESEND_REMINDER, true)) {
             Single
                     .fromCallable(new Callable<Boolean>() {
 

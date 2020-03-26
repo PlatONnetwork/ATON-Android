@@ -4,14 +4,15 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.platon.aton.R;
-import com.platon.aton.component.ui.base.BaseActivity;
-import com.platon.aton.component.ui.base.BasePresenter;
 import com.platon.aton.component.ui.contract.AddNewAddressContract;
 import com.platon.aton.db.entity.AddressEntity;
 import com.platon.aton.db.sqlite.AddressDao;
 import com.platon.aton.entity.Address;
 import com.platon.aton.utils.JZWalletUtil;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.base.BasePresenter;
 
+import java.util.IllegalFormatCodePointException;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -28,9 +29,10 @@ public class AddNewAddressPresenter extends BasePresenter<AddNewAddressContract.
 
     private Address addressEntity;
 
-    public AddNewAddressPresenter(AddNewAddressContract.View view) {
-        super(view);
-        addressEntity = view.getAddressFromIntent();
+    public AddNewAddressPresenter() {
+        if (isViewAttached()){
+            addressEntity = getView().getAddressFromIntent();
+        }
     }
 
     @Override

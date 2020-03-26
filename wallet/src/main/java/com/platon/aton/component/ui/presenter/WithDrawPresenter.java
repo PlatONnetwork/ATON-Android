@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.platon.framework.base.BasePresenter;
 import com.platon.framework.network.ApiErrorCode;
 import com.platon.framework.network.ApiRequestBody;
 import com.platon.framework.network.ApiResponse;
@@ -13,7 +14,6 @@ import com.platon.aton.R;
 import com.platon.aton.app.CustomObserver;
 import com.platon.aton.app.CustomThrowable;
 import com.platon.aton.app.LoadingTransformer;
-import com.platon.aton.component.ui.base.BasePresenter;
 import com.platon.aton.component.ui.contract.WithDrawContract;
 import com.platon.aton.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.platon.aton.component.ui.dialog.SelectDelegationsDialogFragment;
@@ -72,7 +72,6 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     private String minDelegation = AppConfigManager.getInstance().getMinDelegation();
 
     public WithDrawPresenter(WithDrawContract.View view) {
-        super(view);
         mDelegateDetail = view.getDelegateDetailFromIntent();
         if (mDelegateDetail != null) {
             if (TextUtils.isEmpty(mDelegateDetail.getWalletAddress())) {

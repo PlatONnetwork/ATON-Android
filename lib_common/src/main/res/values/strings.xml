@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">framework</string>
+    <string name="network_error">网络异常，请检查手机网络连接状态</string>
+    <string name="success">成功</string>
+    <string name="system_error">系统错误</string>
+    <string name="request_params_error">请求参数错误</string>
+    <string name="system_config_error">系统配置错误</string>
+    <string name="verification_code_sent">验证码已发送</string>
+    <string name="verification_code_error">手机号或验证码不正确</string>
+    <string name="private_key_not_found">私钥分量未找到</string>
+    <string name="repeat_submit">重复提交</string>
+    <string name="record_not_exists">记录不存在</string>
+    <string name="record_deleted">该id记录已删除</string>
+    <string name="loading">加载中...</string>
+</resources>

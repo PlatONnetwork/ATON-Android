@@ -19,7 +19,7 @@ package com.platon.aton.utils;
 import android.content.Context;
 
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
+import com.platon.framework.app.Constants;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

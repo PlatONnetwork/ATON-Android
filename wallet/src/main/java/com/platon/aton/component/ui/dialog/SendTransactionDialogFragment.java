@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.app.CustomObserver;
 import com.platon.aton.component.widget.ShadowButton;
 import com.platon.aton.component.widget.ShadowDrawable;
@@ -23,6 +22,7 @@ import com.platon.aton.utils.DensityUtil;
 import com.platon.aton.utils.JZWalletUtil;
 import com.platon.aton.utils.RxUtils;
 import com.platon.aton.utils.StringUtil;
+import com.platon.framework.app.Constants;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -98,7 +98,7 @@ public class SendTransactionDialogFragment extends BaseDialogFragment {
 
         String title = getArguments().getString(Constants.Bundle.BUNDLE_TEXT);
         String amount = getArguments().getString(Constants.Bundle.BUNDLE_TRANSFER_AMOUNT);
-        String confirmText = WalletManager.getInstance().getSelectedWallet().isObservedWallet() ? getString(R.string.next) : getString(R.string.action_send_transation);
+        String confirmText = WalletManager.getInstance().getSelectedWallet().isObservedWallet() ? getString(R.string.next) : getString(R.string.action_send_transaction);
 
         if (!TextUtils.isEmpty(title)){
             tvTitle.setText(title);

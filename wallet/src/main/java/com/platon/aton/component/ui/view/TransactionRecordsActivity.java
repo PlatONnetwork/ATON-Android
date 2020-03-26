@@ -2,7 +2,6 @@ package com.platon.aton.component.ui.view;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.util.DiffUtil;
@@ -13,12 +12,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.platon.framework.util.RUtils;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.component.adapter.TransactionDiffCallback;
 import com.platon.aton.component.adapter.TransactionListAdapter;
-import com.platon.aton.component.ui.base.MVPBaseActivity;
 import com.platon.aton.component.ui.contract.TransactionRecordsContract;
 import com.platon.aton.component.ui.presenter.TransactionRecordsPresenter;
 import com.platon.aton.component.widget.CommonVerticalItemDecoration;
@@ -28,6 +24,9 @@ import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.Transaction;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.utils.DensityUtil;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.utils.RUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
@@ -45,7 +44,7 @@ import io.reactivex.Flowable;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 
-public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecordsPresenter> implements TransactionRecordsContract.View {
+public class TransactionRecordsActivity extends BaseActivity<TransactionRecordsContract.View, TransactionRecordsPresenter> implements TransactionRecordsContract.View {
 
     @BindView(R.id.list_transactions)
     RecyclerView listTransactions;
@@ -68,16 +67,24 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
     private List<String> mAddressList;
 
     @Override
-    protected TransactionRecordsPresenter createPresenter() {
-        return new TransactionRecordsPresenter(this);
+    public TransactionRecordsPresenter createPresenter() {
+        return new TransactionRecordsPresenter();
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_transaction_records);
+    public TransactionRecordsContract.View createView() {
+        return this;
+    }
+
+    @Override
+    public void init() {
         unbinder = ButterKnife.bind(this);
         initViews();
+    }
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.activity_transaction_records;
     }
 
     @Override
@@ -120,14 +127,14 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
         layoutRefresh.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                mPresenter.fetchTransactions(TransactionRecordsPresenter.DIRECTION_NEW, mAddressList, false);
+                getPresenter().fetchTransactions(TransactionRecordsPresenter.DIRECTION_NEW, mAddressList, false);
             }
         });
 
         layoutRefresh.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-                mPresenter.fetchTransactions(TransactionRecordsPresenter.DIRECTION_OLD, mAddressList, false);
+                getPresenter().fetchTransactions(TransactionRecordsPresenter.DIRECTION_OLD, mAddressList, false);
             }
         });
 
@@ -143,7 +150,7 @@ public class TransactionRecordsActivity extends MVPBaseActivity<TransactionRecor
                         public void onWalletItemClick(int position) {
                             Wallet wallet = walletList.get(position);
                             showSelectWalletInfo(wallet);
-                            mPresenter.fetchTransactions(TransactionRecordsPresenter.DIRECTION_NEW, mAddressList, true);
+                            getPresenter().fetchTransactions(TransactionRecordsPresenter.DIRECTION_NEW, mAddressList, true);
                         }
                     }, getSelectedWalletPosition(selectedWallet));
                 }

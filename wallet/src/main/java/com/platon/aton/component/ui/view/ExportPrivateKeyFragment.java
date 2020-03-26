@@ -12,17 +12,33 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
-import com.platon.aton.component.ui.base.BaseFragment;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseFragment;
+import com.platon.framework.base.BaseLazyFragment;
+import com.platon.framework.base.BasePresenter;
+import com.platon.framework.base.BaseViewImp;
 
-public class ExportPrivateKeyFragment extends BaseFragment implements View.OnClickListener {
+public class ExportPrivateKeyFragment extends BaseLazyFragment implements View.OnClickListener {
 
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_export_private_key, container, false);
-        view.findViewById(R.id.btn_copy).setOnClickListener(this);
-        ((TextView)view.findViewById(R.id.tv_private_key)).setText(getActivity().getIntent().getStringExtra(Constants.Extra.EXTRA_PASSWORD));
-        return view;
+    public int getLayoutId() {
+        return R.layout.fragment_export_private_key;
+    }
+
+    @Override
+    public BasePresenter createPresenter() {
+        return null;
+    }
+
+    @Override
+    public BaseViewImp createView() {
+        return null;
+    }
+
+    @Override
+    public void init(View rootView) {
+        rootView.findViewById(R.id.btn_copy).setOnClickListener(this);
+        ((TextView)rootView.findViewById(R.id.tv_private_key)).setText(getActivity().getIntent().getStringExtra(Constants.Extra.EXTRA_PASSWORD));
     }
 
     @Override

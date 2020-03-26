@@ -3,33 +3,30 @@ package com.platon.aton.component.ui.view;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.app.CustomObserver;
-import com.platon.aton.component.ui.base.MVPBaseFragment;
 import com.platon.aton.component.ui.contract.ImportObservedContract;
 import com.platon.aton.component.ui.presenter.ImportObservedPresenter;
 import com.platon.aton.component.widget.ShadowButton;
 import com.platon.aton.utils.CommonUtil;
 import com.platon.aton.utils.GZipUtil;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseLazyFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class ImportObservedFragment extends MVPBaseFragment<ImportObservedPresenter> implements ImportObservedContract.View {
+public class ImportObservedFragment extends BaseLazyFragment<ImportObservedContract.View, ImportObservedPresenter> implements ImportObservedContract.View {
     Unbinder unbinder;
     @BindView(R.id.et_observed)
     EditText et_observed;
@@ -39,22 +36,32 @@ public class ImportObservedFragment extends MVPBaseFragment<ImportObservedPresen
     Button mBtnPaste;
 
     @Override
-    protected ImportObservedPresenter createPresenter() {
-        return new ImportObservedPresenter(this);
+    public int getLayoutId() {
+        return R.layout.fragment_import_observed;
     }
 
     @Override
-    protected void onFragmentPageStart() {
-        mPresenter.checkPaste();
+    public ImportObservedPresenter createPresenter() {
+        return new ImportObservedPresenter();
     }
 
     @Override
-    protected View onCreateFragmentPage(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_import_observed, container, false);
-        unbinder = ButterKnife.bind(this, view);
+    public ImportObservedContract.View createView() {
+        return this;
+    }
+
+    @Override
+    public void init(View rootView) {
+        unbinder = ButterKnife.bind(this, rootView);
         addListener();
-        return view;
     }
+
+    @Override
+    public void onFragmentFirst() {
+        super.onFragmentFirst();
+        getPresenter().checkPaste();
+    }
+
 
     private void addListener() {
 
@@ -65,7 +72,7 @@ public class ImportObservedFragment extends MVPBaseFragment<ImportObservedPresen
                     @Override
                     public void accept(Object o) {
                         //点击完成，验证是否正确
-                        mPresenter.importWalletAddress(et_observed.getText().toString());
+                        getPresenter().importWalletAddress(et_observed.getText().toString());
                     }
                 });
 
@@ -86,7 +93,7 @@ public class ImportObservedFragment extends MVPBaseFragment<ImportObservedPresen
                 .subscribe(new CustomObserver<CharSequence>() {
                     @Override
                     public void accept(CharSequence charSequence) {
-                        mPresenter.IsImportObservedWallet(charSequence.toString());
+                        getPresenter().IsImportObservedWallet(charSequence.toString());
                     }
                 });
     }
@@ -105,10 +112,10 @@ public class ImportObservedFragment extends MVPBaseFragment<ImportObservedPresen
 
         if (requestCode == ImportWalletActivity.REQ_QR_CODE) {
             Bundle bundle = data.getExtras();
-            String scanResult = bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA,"");
-            String  unzip = GZipUtil.unCompress(scanResult);
-            mPresenter.parseQRCode(TextUtils.isEmpty(unzip)? scanResult : unzip);
-            mPresenter.IsImportObservedWallet(TextUtils.isEmpty(unzip)? scanResult : unzip);
+            String scanResult = bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA, "");
+            String unzip = GZipUtil.unCompress(scanResult);
+            getPresenter().parseQRCode(TextUtils.isEmpty(unzip) ? scanResult : unzip);
+            getPresenter().IsImportObservedWallet(TextUtils.isEmpty(unzip) ? scanResult : unzip);
         }
     }
 

@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.platon.framework.util.MapUtils;
+import com.platon.framework.utils.MapUtils;
 import com.platon.aton.R;
 import com.platon.aton.component.adapter.base.BaseViewHolder;
 import com.platon.aton.component.widget.CircleImageView;

@@ -2,7 +2,6 @@ package com.platon.aton.component.ui.view;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
@@ -10,10 +9,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.platon.framework.util.RUtils;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
-import com.platon.aton.component.ui.base.MVPBaseActivity;
 import com.platon.aton.component.ui.contract.TransactionDetailContract;
 import com.platon.aton.component.ui.presenter.TransactionDetailPresenter;
 import com.platon.aton.db.sqlite.AddressDao;
@@ -28,6 +24,9 @@ import com.platon.aton.utils.AddressFormatUtil;
 import com.platon.aton.utils.AmountUtil;
 import com.platon.aton.utils.BigDecimalUtil;
 import com.platon.aton.utils.CommonUtil;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.utils.RUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -43,7 +42,7 @@ import butterknife.Unbinder;
 /**
  * @author matrixelement
  */
-public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetailPresenter> implements TransactionDetailContract.View {
+public class TransactionDetailActivity extends BaseActivity<TransactionDetailContract.View, TransactionDetailPresenter> implements TransactionDetailContract.View {
 
     @BindView(R.id.iv_copy_from_address)
     ImageView ivCopyFromAddress;
@@ -79,17 +78,25 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
     private Unbinder unbinder;
 
     @Override
-    protected TransactionDetailPresenter createPresenter() {
-        return new TransactionDetailPresenter(this);
+    public TransactionDetailPresenter createPresenter() {
+        return new TransactionDetailPresenter();
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_transation_detail);
+    public TransactionDetailContract.View createView() {
+        return this;
+    }
+
+    @Override
+    public void init() {
         EventPublisher.getInstance().register(this);
         unbinder = ButterKnife.bind(this);
-        mPresenter.loadData();
+        getPresenter().loadData();
+    }
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.activity_transation_detail;
     }
 
 
@@ -165,7 +172,7 @@ public class TransactionDetailActivity extends MVPBaseActivity<TransactionDetail
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateTransactionEvent(Event.UpdateTransactionEvent event) {
-        mPresenter.updateTransactionDetailInfo(event.transaction);
+        getPresenter().updateTransactionDetailInfo(event.transaction);
     }
 
     @Override
