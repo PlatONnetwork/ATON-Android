@@ -798,4 +798,8 @@
     <string name="msg_security_reminders">安全提醒</string>
     <string name="msg_assets_transaction">交易记录</string>
     <string name="msg_observed_wallet">观察钱包</string>
+    <string name="msg_device_offline_prompt">设备离线提示</string>
+    <string name="msg_got_it">我知道了</string>
+    <string name="msg_device_offline_tips">可配合在线设备的观察钱包进行冷钱包离线签名，保证私钥安全</string>
+    <string name="msg_security_reminders_tips">为您钱包安全，请务必完成助记词备份!</string>
 </resources>
