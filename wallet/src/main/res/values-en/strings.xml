@@ -116,8 +116,8 @@
     <string name="me_transactions">Transactions</string>
     <string name="sendATP">Send</string>
     <string name="actionSendATP">NEXT</string>
-    <string name="action_send_transation">Send</string>
-    <string name="action_receive_transation">Receive</string>
+    <string name="msg_send_transaction">Send</string>
+    <string name="action_receive_transaction">Receive</string>
     <string name="vote">Vote</string>
     <string name="voting">Voting</string>
     <string name="wallet_address">Wallet Address</string>
@@ -168,7 +168,7 @@
     <string name="exportPrivateKey">Export Private Key</string>
     <string name="exportKeystore">Export Keystore</string>
     <string name="backupMnemonics">Mnemonics backup</string>
-    <string name="backup">Backup</string>
+    <string name="msg_backup_wallet">Backup</string>
     <string name="changeWalletName">Rename</string>
     <string name="formatError">Format Error</string>
     <string name="validWalletNameTips">Please enter 1-20 characters</string>
@@ -268,7 +268,7 @@
     <string name="no_transaction_record">No transaction yet</string>
     <string name="figerprintUnlockTips">Fingerprint Verification can not be activated, Please Login with Password</string>
     <string name="openFigerprintError">Fingerprint was disallowed,please check system settings and try again</string>
-    <string name="total_assets">Total LAT</string>
+    <string name="msg_total_assets">Total LAT</string>
     <string name="transfer_succeed">Transfer succeed</string>
     <string name="transfer_failed">Transfer failed</string>
     <string name="input_again">Input again</string>
@@ -637,14 +637,14 @@
     <string name="observed_invalid_address">Invalid  Address</string>
     <string name="observed_wallet_delete_title">Delete Wallet</string>
     <string name="observed_wallet_delete_tips">Are you sure want to delete observed wallet?</string>
-    <string name="wallet_send_offline_signature">Offline Signature</string>
+    <string name="msg_offline_signature">Offline Signature</string>
     <string name="withdraw_less_than_fee">Insufficient balance payment fee</string>
 
     <string name="delegate_risk_tips">Validators would be punished for double signing or low block rate. It would indirectly affect your reward. Please select qualified validators.</string>
     <string name="recipient_wallet_address">Recipient</string>
     <string name="delegate_less_than_fee">Insufficient balance payment fee</string>
     <string name="claim_reward_less_than_fee">Insufficient balance payment fee</string>
-    <string name="cold_wallet">Cold</string>
+    <string name="msg_cold_wallet">Cold</string>
     <string name="observed_wallet">Observed</string>
 
     <string name="title_transaction_authorization">Transaction Authorization</string>
@@ -778,5 +778,13 @@
     <string name="msg_transaction_repeatedly_exception">Do not submit repeatedly!</string>
     <string name="msg_transaction_exception">Transaction abnormal，please try again（%1$d）</string>
     <string name="msg_expired_qr_code">Expired QR code</string>
+    <string name="msg_my_wallet">My Wallet</string>
+    <string name="msg_security_reminders">Security Reminders</string>
+    <string name="msg_assets_transaction">Transaction</string>
+    <string name="msg_observed_wallet">Observed Wallet</string>
+    <string name="msg_device_offline_prompt">Device offline prompt</string>
+    <string name="msg_got_it">Got it</string>
+    <string name="msg_device_offline_tips">Can cooperate with online devices to perform cold wallet offline signing to ensure the security of private keys!</string>
+    <string name="msg_security_reminders_tips">For your wallet security, be sure to complete the mnemonic backup !</string>
 </resources>
 
