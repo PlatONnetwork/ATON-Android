@@ -6,11 +6,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 
-import com.platon.framework.base.BasePresenter;
-import com.platon.framework.network.ApiErrorCode;
-import com.platon.framework.network.ApiRequestBody;
-import com.platon.framework.network.ApiResponse;
-import com.platon.framework.utils.LogUtils;
 import com.platon.aton.component.ui.contract.TransactionsContract;
 import com.platon.aton.db.entity.TransactionEntity;
 import com.platon.aton.db.sqlite.TransactionDao;
@@ -20,7 +15,11 @@ import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.Transaction;
 import com.platon.aton.entity.TransactionStatus;
 import com.platon.aton.utils.RxUtils;
-import com.trello.rxlifecycle2.android.FragmentEvent;
+import com.platon.framework.base.BasePresenter;
+import com.platon.framework.network.ApiErrorCode;
+import com.platon.framework.network.ApiRequestBody;
+import com.platon.framework.network.ApiResponse;
+import com.platon.framework.utils.LogUtils;
 
 import org.reactivestreams.Publisher;
 
@@ -140,7 +139,7 @@ public class TransactionsPresenter extends BasePresenter<TransactionsContract.Vi
         mAutoRefreshDisposable = getTransactionListWithTime(mWalletAddress, direction)
                 .toObservable()
                 .compose(RxUtils.getSchedulerTransformer())
-                .compose(RxUtils.bindToParentLifecycleUtilEvent(getView(), FragmentEvent.STOP))
+                .compose(bindToLifecycle())
                 .subscribe(new Consumer<Pair<List<Transaction>, List<Transaction>>>() {
                     @Override
                     public void accept(Pair<List<Transaction>, List<Transaction>> pair) throws Exception {

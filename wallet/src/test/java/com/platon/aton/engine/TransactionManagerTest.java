@@ -17,6 +17,7 @@ import com.platon.aton.event.EventPublisher;
 import com.platon.aton.rxjavatest.RxJavaTestSchedulerRule;
 import com.platon.aton.utils.JSONUtil;
 import com.platon.aton.utils.NumberParserUtils;
+import com.platon.framework.app.Constants;
 import com.platon.framework.app.log.Log;
 import com.platon.framework.network.ApiRequestBody;
 import com.platon.framework.network.ApiResponse;
@@ -212,21 +213,21 @@ public class TransactionManagerTest {
         String from = "0x4ded81199608adb765fb2fe029bbfdf57f538be8";
         String nodeId = "0xdac7931462dc0db97d9a0010c5719411810c06f90bd8b66432113a6f31bf9d1ab8a8f7db5bbbc76f4448ad6b3215cb527ba3276e185f9ba2360ef09be62d90c5";
 
-        GasProvider gasProvider = ServerUtils.getCommonApi().getGasProvider(ApiRequestBody.newBuilder()
-                .put("from", from)
-                .put("txType", FunctionType.DELEGATE_FUNC_TYPE)
-                .put("nodeId", nodeId)
-                .build())
-                .map(new Function<Response<ApiResponse<GasProvider>>, GasProvider>() {
-
-                    @Override
-                    public GasProvider apply(Response<ApiResponse<GasProvider>> apiResponseResponse) throws Exception {
-                        return apiResponseResponse.isSuccessful() && apiResponseResponse.body().getData() != null ? apiResponseResponse.body().getData() : new GasProvider();
-                    }
-                })
-                .blockingGet();
-
-        Log.debug("getGasProvider", gasProvider.toString());
+//        GasProvider gasProvider = ServerUtils.getCommonApi().getGasProvider(ApiRequestBody.newBuilder()
+//                .put("from", from)
+//                .put("txType", FunctionType.DELEGATE_FUNC_TYPE)
+//                .put("nodeId", nodeId)
+//                .build())
+//                .map(new Function<Response<ApiResponse<GasProvider>>, GasProvider>() {
+//
+//                    @Override
+//                    public GasProvider apply(Response<ApiResponse<GasProvider>> apiResponseResponse) throws Exception {
+//                        return apiResponseResponse.isSuccessful() && apiResponseResponse.body().getData() != null ? apiResponseResponse.body().getData() : new GasProvider();
+//                    }
+//                })
+//                .blockingGet();
+//
+//        Log.debug("getGasProvider", gasProvider.toString());
 
     }
 

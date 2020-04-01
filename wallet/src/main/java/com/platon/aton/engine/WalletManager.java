@@ -8,7 +8,6 @@ import com.platon.aton.db.sqlite.WalletDao;
 import com.platon.aton.entity.AccountBalance;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.event.Event;
-import com.platon.aton.event.EventPublisher;
 import com.platon.aton.utils.AmountUtil;
 import com.platon.aton.utils.BigDecimalUtil;
 import com.platon.aton.utils.JZWalletUtil;
@@ -62,10 +61,10 @@ public class WalletManager {
     private List<Wallet> mWalletList = new ArrayList<>();
     public static final int CODE_ERROR_INVALIA_ADDRESS = -5;
 
-    //记录上次的余额
+    /**
+     * 记录上次的余额
+     */
     private BigDecimal mSumAccountBalance = BigDecimal.ZERO;
-    //当前选中的钱包
-    private Wallet mSelectedWallet;
 
     private WalletManager() {
 
@@ -73,6 +72,10 @@ public class WalletManager {
 
     private static class InstanceHolder {
         private static volatile WalletManager INSTANCE = new WalletManager();
+    }
+
+    public static WalletManager getInstance() {
+        return WalletManager.InstanceHolder.INSTANCE;
     }
 
     public BigDecimal getSumAccountBalance() {
@@ -84,39 +87,70 @@ public class WalletManager {
     }
 
     public Wallet getSelectedWallet() {
-        return mSelectedWallet;
+        if (mWalletList.size() == 0) {
+            return null;
+        }
+        return Flowable.fromIterable(mWalletList)
+                .filter(new Predicate<Wallet>() {
+                    @Override
+                    public boolean test(Wallet wallet) throws Exception {
+                        return wallet.isSelected();
+                    }
+                })
+                .firstElement()
+                .defaultIfEmpty(mWalletList.get(0))
+                .onErrorReturnItem(mWalletList.get(0))
+                .blockingGet();
     }
 
     public void setWalletList(List<Wallet> walletList) {
         this.mWalletList = walletList;
     }
 
-    public void setSelectedWallet(Wallet mSelectedWallet) {
-        this.mSelectedWallet = mSelectedWallet;
-        EventPublisher.getInstance().sendUpdateSelectedWalletEvent(mSelectedWallet);
-    }
-
+    /**
+     * 获取选中钱包的地址
+     *
+     * @return
+     */
     public String getSelectedWalletAddress() {
-        return mSelectedWallet == null ? null : mSelectedWallet.getPrefixAddress();
-    }
 
-    public static WalletManager getInstance() {
-        return WalletManager.InstanceHolder.INSTANCE;
+        Wallet selectedWallet = getSelectedWallet();
+
+        return selectedWallet == null ? null : selectedWallet.getPrefixAddress();
+
     }
 
     public void init() {
-        if (!mWalletList.isEmpty()) {
-            mWalletList.clear();
-        }
+        mWalletList.clear();
+        mWalletList = getWalletListFromDB().blockingGet();
+    }
 
-        List<WalletEntity> walletInfoList = WalletDao.getWalletInfoList();
-        for (WalletEntity walletInfoEntity : walletInfoList) {
-            try {
-                mWalletList.add(walletInfoEntity.buildWalletEntity());
-            } catch (Exception exp) {
-                exp.printStackTrace();
-            }
-        }
+    public Single<List<Wallet>> getWalletListFromDB() {
+        return Flowable
+                .fromCallable(new Callable<List<WalletEntity>>() {
+                    @Override
+                    public List<WalletEntity> call() throws Exception {
+                        return WalletDao.getWalletInfoList();
+                    }
+                })
+                .flatMap(new Function<List<WalletEntity>, Publisher<Wallet>>() {
+                    @Override
+                    public Publisher<Wallet> apply(List<WalletEntity> walletEntities) throws Exception {
+                        return Flowable.range(0, walletEntities.size()).map(new Function<Integer, Wallet>() {
+                            @Override
+                            public Wallet apply(Integer integer) throws Exception {
+                                if (integer == 0) {
+                                    Wallet wallet = walletEntities.get(0).buildWalletEntity();
+                                    wallet.setSelected(true);
+                                    return wallet;
+                                } else {
+                                    return walletEntities.get(integer).buildWalletEntity();
+                                }
+                            }
+                        });
+                    }
+                })
+                .toList();
     }
 
     public void addWallet(Wallet walletEntity) {
@@ -138,6 +172,10 @@ public class WalletManager {
 
         Wallet wallet = mWalletList.get(position);
         wallet.setAccountBalance(accountBalance);
+    }
+
+    public void update() {
+
     }
 
     /**
@@ -246,29 +284,8 @@ public class WalletManager {
     }
 
     public List<Wallet> getWalletList() {
-        if (mWalletList == null || mWalletList.isEmpty()) {
-            return mWalletList = Flowable
-                    .fromCallable(new Callable<List<WalletEntity>>() {
-                        @Override
-                        public List<WalletEntity> call() throws Exception {
-                            return WalletDao.getWalletInfoList();
-                        }
-                    })
-                    .flatMap(new Function<List<WalletEntity>, Publisher<WalletEntity>>() {
-                        @Override
-                        public Publisher<WalletEntity> apply(List<WalletEntity> walletEntities) throws Exception {
-                            return Flowable.fromIterable(walletEntities);
-                        }
-                    })
-                    .map(new Function<WalletEntity, Wallet>() {
-                        @Override
-                        public Wallet apply(WalletEntity walletEntity) throws Exception {
-                            return walletEntity.buildWalletEntity();
-                        }
-                    })
-                    .toList()
-                    .toFlowable()
-                    .blockingFirst();
+        if (mWalletList.isEmpty()) {
+            return mWalletList = getWalletListFromDB().blockingGet();
         }
         return mWalletList;
     }
@@ -443,6 +460,18 @@ public class WalletManager {
         }
     }
 
+
+    public boolean updateWalletName(Wallet wallet, String newName) {
+        for (Wallet walletEntity : mWalletList) {
+            if (wallet.getUuid().equals(walletEntity.getUuid())) {
+                walletEntity.setName(newName);
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public boolean updateBackedUpWithUuid(String uuid, boolean backedUp) {
         if (TextUtils.isEmpty(uuid)) {
             return false;
@@ -456,28 +485,32 @@ public class WalletManager {
         return WalletDao.updateBackedUpWithUuid(uuid, backedUp);
     }
 
-    public boolean updateWalletName(Wallet wallet, String newName) {
-        for (Wallet walletEntity : mWalletList) {
-            if (wallet.getUuid().equals(walletEntity.getUuid())) {
-                walletEntity.setName(newName);
-                return true;
-            }
-        }
-        return false;
-    }
+    public void updateWalletBackedUpPromptWithUUID(String uuid, boolean backedUpPrompt) {
 
-    public void updateWalletBalance(String address, double balance) {
-        int position = -1;
-        for (int i = 0; i < mWalletList.size(); i++) {
-            Wallet walletEntity = mWalletList.get(i);
-            if (address.equalsIgnoreCase(walletEntity.getPrefixAddress())) {
-                position = i;
-                break;
-            }
+        if (TextUtils.isEmpty(uuid)) {
+            return;
         }
-        if (position != -1) {
-//            mWalletList.get(position).setBalance(balance);
+
+        if (mWalletList.isEmpty()) {
+            return;
         }
+
+
+        Flowable.range(0, mWalletList.size())
+                .filter(new Predicate<Integer>() {
+                    @Override
+                    public boolean test(Integer integer) throws Exception {
+                        return TextUtils.equals(mWalletList.get(integer).getUuid(), uuid);
+                    }
+                })
+                .firstElement()
+                .doOnSuccess(new Consumer<Integer>() {
+                    @Override
+                    public void accept(Integer integer) throws Exception {
+                        mWalletList.get(integer).setBackedUpPrompt(backedUpPrompt);
+                    }
+                })
+                .subscribe();
     }
 
     public Wallet getWalletByAddress(String address) {

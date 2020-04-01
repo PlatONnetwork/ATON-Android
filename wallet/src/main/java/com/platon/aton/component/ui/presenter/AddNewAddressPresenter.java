@@ -12,7 +12,6 @@ import com.platon.aton.utils.JZWalletUtil;
 import com.platon.framework.base.BaseActivity;
 import com.platon.framework.base.BasePresenter;
 
-import java.util.IllegalFormatCodePointException;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -30,9 +29,7 @@ public class AddNewAddressPresenter extends BasePresenter<AddNewAddressContract.
     private Address addressEntity;
 
     public AddNewAddressPresenter() {
-        if (isViewAttached()){
-            addressEntity = getView().getAddressFromIntent();
-        }
+        addressEntity = getView().getAddressFromIntent();
     }
 
     @Override
@@ -71,9 +68,9 @@ public class AddNewAddressPresenter extends BasePresenter<AddNewAddressContract.
                 public Boolean call() throws Exception {
                     if (addressEntity == null) {
                         AddressEntity entity = AddressDao.getEntityWithAddress(addressInfoEntity.getAddress());
-                        if (entity != null){
+                        if (entity != null) {
                             return AddressDao.updateNameWithAddress(addressInfoEntity.getAddress(), addressInfoEntity.getName());
-                        }else {
+                        } else {
                             return AddressDao.insertAddressInfo(addressInfoEntity);
                         }
                     } else {
@@ -146,7 +143,7 @@ public class AddNewAddressPresenter extends BasePresenter<AddNewAddressContract.
             showLongToast(string(R.string.scan_qr_code_failed_tips1));
             return;
         }
-        if (isViewAttached()){
+        if (isViewAttached()) {
             getView().showAddress(text);
         }
     }

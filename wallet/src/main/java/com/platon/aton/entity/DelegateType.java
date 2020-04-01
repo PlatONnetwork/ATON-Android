@@ -1,23 +1,25 @@
 package com.platon.aton.entity;
 
 
+import org.web3j.platon.StakingAmountType;
+
 public class DelegateType {
-    private String type;
+
+    private StakingAmountType stakingAmountType;
     private String amount;
 
 
-    public DelegateType(String type, String amount) {
-        this.type = type;
+    public DelegateType(StakingAmountType stakingAmountType, String amount) {
+        this.stakingAmountType = stakingAmountType;
         this.amount = amount;
     }
 
-
-    public String getType() {
-        return type;
+    public StakingAmountType getStakingAmountType() {
+        return stakingAmountType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setStakingAmountType(StakingAmountType stakingAmountType) {
+        this.stakingAmountType = stakingAmountType;
     }
 
     public String getAmount() {
@@ -28,20 +30,4 @@ public class DelegateType {
         this.amount = amount;
     }
 
-//    @Override
-//    public int hashCode() {
-//        return TextUtils.isEmpty(address) ? 0 : address.hashCode();
-//    }
-//
-//    @Override
-//    public boolean equals(Object obj) {
-//        if (obj == this) {
-//            return true;
-//        }
-//        if (obj instanceof Wallet) {
-//            Wallet entity = (Wallet) obj;
-//            return entity.getUuid() != null && entity.getUuid().equals(address);
-//        }
-//        return super.equals(obj);
-//    }
 }

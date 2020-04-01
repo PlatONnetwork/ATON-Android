@@ -4,23 +4,22 @@ import com.platon.aton.engine.AppConfigManager;
 
 import java.math.BigInteger;
 
-class NullDelegateHandle extends DelegateHandle {
+/**
+ * @author ziv
+ * date On 2020-03-31
+ */
+public class NullEstimateGasResult extends EstimateGasResult {
 
-    private NullDelegateHandle() {
+    private NullEstimateGasResult() {
     }
 
-    public static NullDelegateHandle getInstance() {
-        return new NullDelegateHandle();
+    public static NullEstimateGasResult getInstance() {
+        return new NullEstimateGasResult();
     }
 
     @Override
     public boolean isNull() {
         return true;
-    }
-
-    @Override
-    public String getMessage() {
-        return "";
     }
 
     @Override

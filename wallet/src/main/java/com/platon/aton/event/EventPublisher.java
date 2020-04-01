@@ -51,9 +51,9 @@ public class EventPublisher {
         BusProvider.post(new Event.UpdateWalletListEvent());
     }
 
-    public void sendUpdateAssetsTabEvent(@AssetsFragment.MainTab int tabIndex) {
-        BusProvider.post(new Event.UpdateAssetsTabEvent(tabIndex));
-    }
+//    public void sendUpdateAssetsTabEvent(@AssetsFragment.MainTab int tabIndex) {
+//        BusProvider.post(new Event.UpdateAssetsTabEvent(tabIndex));
+//    }
 
     public void sendNodeChangedEvent(Node nodeEntity) {
         BusProvider.post(new Event.NodeChangedEvent(nodeEntity));

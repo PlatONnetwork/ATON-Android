@@ -31,10 +31,9 @@ public class ManageWalletPresenter extends BasePresenter<ManageWalletContract.Vi
 
     private Wallet mWalletEntity;
 
-    public ManageWalletPresenter() {
-        if (isViewAttached()) {
-            mWalletEntity = getView().getWalletEntityFromIntent();
-        }
+    @Override
+    public void init(Wallet wallet) {
+        this.mWalletEntity = wallet;
     }
 
     @Override
@@ -144,7 +143,7 @@ public class ManageWalletPresenter extends BasePresenter<ManageWalletContract.Vi
         InputWalletPasswordDialogFragment.newInstance(mWalletEntity).setOnWalletCorrectListener(new InputWalletPasswordDialogFragment.OnWalletCorrectListener() {
             @Override
             public void onCorrect(Credentials credentials, String password) {
-                BackupMnemonicPhraseActivity.actionStart(getContext(), password, mWalletEntity, 1);
+                BackupMnemonicPhraseActivity.actionStart(getContext(), password, mWalletEntity, BackupMnemonicPhraseActivity.BackupMnemonicExport.MAIN_ACTIVITY);
             }
         }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
     }

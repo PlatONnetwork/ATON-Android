@@ -4,11 +4,6 @@ import android.annotation.SuppressLint;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.platon.framework.base.BasePresenter;
-import com.platon.framework.network.ApiErrorCode;
-import com.platon.framework.network.ApiRequestBody;
-import com.platon.framework.network.ApiResponse;
-import com.platon.framework.network.ApiSingleObserver;
 import com.platon.aton.BuildConfig;
 import com.platon.aton.R;
 import com.platon.aton.app.CustomObserver;
@@ -39,6 +34,10 @@ import com.platon.aton.utils.AmountUtil;
 import com.platon.aton.utils.BigDecimalUtil;
 import com.platon.aton.utils.NumberParserUtils;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.base.BasePresenter;
+import com.platon.framework.network.ApiRequestBody;
+import com.platon.framework.network.ApiResponse;
+import com.platon.framework.network.ApiSingleObserver;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.platon.ContractAddress;
@@ -48,16 +47,10 @@ import org.web3j.utils.Convert;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import io.reactivex.Flowable;
-import io.reactivex.SingleSource;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
-import retrofit2.Response;
 
 public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> implements WithDrawContract.Presenter {
 
@@ -71,8 +64,9 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
 
     private String minDelegation = AppConfigManager.getInstance().getMinDelegation();
 
-    public WithDrawPresenter(WithDrawContract.View view) {
-        mDelegateDetail = view.getDelegateDetailFromIntent();
+    @Override
+    public void init(DelegateItemInfo delegateItemInfo) {
+        mDelegateDetail = delegateItemInfo;
         if (mDelegateDetail != null) {
             if (TextUtils.isEmpty(mDelegateDetail.getWalletAddress())) {
                 mWallet = WalletManager.getInstance().getFirstSortedWallet();
@@ -100,7 +94,6 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     public double getMinDelegationAmount() {
         return NumberParserUtils.parseDouble(BigDecimalUtil.div(minDelegation, "1E18"));
     }
-
 
     @Override
     public void showWalletInfo() {
@@ -146,49 +139,24 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
         if (mDelegateDetail == null) {
             return;
         }
-        ServerUtils.getCommonApi().getAccountBalance(ApiRequestBody.newBuilder()
-                .put("addrs", Arrays.asList(mWallet.getPrefixAddress()))
+
+        ServerUtils.getCommonApi().getDelegationValue(ApiRequestBody.newBuilder()
+                .put("addr", mWallet.getPrefixAddress())
+                .put("nodeId", mDelegateDetail.getNodeId())
                 .build())
-                .map(new Function<Response<ApiResponse<List<AccountBalance>>>, List<AccountBalance>>() {
-                    @Override
-                    public List<AccountBalance> apply(Response<ApiResponse<List<AccountBalance>>> apiResponseResponse) {
-                        if (apiResponseResponse != null && apiResponseResponse.isSuccessful() && apiResponseResponse.body().getResult() == ApiErrorCode.SUCCESS) {
-                            return apiResponseResponse.body().getData();
-                        } else {
-                            return new ArrayList<>();
-                        }
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSuccess(new Consumer<List<AccountBalance>>() {
-                    @Override
-                    public void accept(List<AccountBalance> accountBalances) {
-                        if (isViewAttached() && !accountBalances.isEmpty()) {
-                            AccountBalance accountBalance = accountBalances.get(0);
-                            WalletManager.getInstance().updateAccountBalance(accountBalance);
-                            mWallet = WalletManager.getInstance().getWalletByAddress(accountBalance.getPrefixAddress());
-                            showWalletInfo();
-                        }
-                    }
-                })
-                .observeOn(Schedulers.io())
-                .flatMap(new Function<List<AccountBalance>, SingleSource<Response<ApiResponse<DelegationValue>>>>() {
-                    @Override
-                    public SingleSource<Response<ApiResponse<DelegationValue>>> apply(List<AccountBalance> accountBalances) throws Exception {
-                        return ServerUtils.getCommonApi().getDelegationValue(ApiRequestBody.newBuilder()
-                                .put("addr", mWallet.getPrefixAddress())
-                                .put("nodeId", mDelegateDetail.getNodeId())
-                                .build());
-                    }
-                })
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(bindToLifecycle())
                 .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
                 .subscribe(new ApiSingleObserver<DelegationValue>() {
-
                     @Override
                     public void onApiSuccess(DelegationValue delegationValue) {
                         if (isViewAttached()) {
+                            AccountBalance accountBalance = new AccountBalance(mWallet.getPrefixAddress(), delegationValue.getFree(), delegationValue.getLock());
+                            WalletManager.getInstance().updateAccountBalance(accountBalance);
+
+                            mWallet = WalletManager.getInstance().getWalletByAddress(accountBalance.getPrefixAddress());
+
+                            showWalletInfo();
 
                             list = delegationValue.getWithDrawBalanceList();
 
@@ -211,6 +179,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                                     getView().finishDelayed();
                                 }
                             }
+
                         }
                     }
 

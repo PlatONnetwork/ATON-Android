@@ -68,12 +68,14 @@ public class ManageWalletActivity extends BaseActivity<ManageWalletContract.View
 
     @Override
     public ManageWalletContract.View createView() {
-        return null;
+        return this;
     }
 
     @Override
     public void init() {
         unbinder = ButterKnife.bind(this);
+
+        getPresenter().init(getWalletEntityFromIntent());
     }
 
 

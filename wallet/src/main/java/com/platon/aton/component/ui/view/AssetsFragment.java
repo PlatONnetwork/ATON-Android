@@ -6,13 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -92,21 +90,6 @@ import butterknife.Unbinder;
  */
 public class AssetsFragment extends BaseNestingLazyFragment<AssetsContract.View, AssetsPresenter> implements AssetsContract.View {
 
-
-    @IntDef({
-            MainTab.TRANSACTION_LIST,
-            MainTab.SEND_TRANSACTION,
-            MainTab.RECEIVE_TRANSACTION
-    })
-    public @interface MainTab {
-
-        int TRANSACTION_LIST = 0;
-
-        int SEND_TRANSACTION = 1;
-
-        int RECEIVE_TRANSACTION = 2;
-    }
-
     @BindView(R.id.app_bar_layout)
     AppBarLayout appBarLayout;
     @BindView(R.id.v_tab_line)
@@ -141,9 +124,9 @@ public class AssetsFragment extends BaseNestingLazyFragment<AssetsContract.View,
     ConstraintLayout layoutEmpty;
     @BindString(R.string.transactions)
     String transaction;
-    @BindString(R.string.action_send_transation)
+    @BindString(R.string.action_send_transaction)
     String send;
-    @BindString(R.string.action_receive_transation)
+    @BindString(R.string.action_receive_transaction)
     String receive;
     @BindView(R.id.sc_import_wallet)
     ShadowContainer scImportWallet;
@@ -206,38 +189,10 @@ public class AssetsFragment extends BaseNestingLazyFragment<AssetsContract.View,
                 }
             }).show(getActivity().getSupportFragmentManager(), "showGuideDialogFragment");
         }
-
     }
 
     private void initIndicator() {
-        List<BaseLazyFragment> fragments = getFragments(null);
-        stbBar.setCustomTabView(new AssetsTabLayout.TabProvider() {
-            @Override
-            public View createTabView(ViewGroup container, int position, PagerAdapter adapter) {
-                return new TabView(container.getContext(), position);
-            }
-        });
 
-        int indicatorThickness = (int) getResources().getDimension(R.dimen.assetsCollapsIndicatorThickness);
-        int indicatorCornerRadius = indicatorThickness / 2;
-
-        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) stbBar.getLayoutParams();
-        params.topMargin = 0;
-        stbBar.setIndicatorCornerRadius(indicatorCornerRadius);
-        stbBar.setIndicatorThickness(indicatorThickness);
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
-                boolean collapsed = Math.abs(i) >= appBarLayout.getTotalScrollRange();
-                vTabLine.setVisibility(collapsed ? View.GONE : View.VISIBLE);
-                appBarLayout.setBackgroundColor(ContextCompat.getColor(getContext(), collapsed ? R.color.color_ffffff : R.color.color_f9fbff));
-            }
-        });
-        vpContent.setOffscreenPageLimit(fragments.size());
-        mTabAdapter = new TabAdapter(getChildFragmentManager(), getTitles(), fragments);
-        vpContent.setAdapter(mTabAdapter);
-        vpContent.setSlide(true);
-        stbBar.setViewPager(vpContent);
     }
 
     private void initRefreshLayout() {
@@ -320,7 +275,7 @@ public class AssetsFragment extends BaseNestingLazyFragment<AssetsContract.View,
 
             @Override
             public void onPageSelected(int position) {
-                EventPublisher.getInstance().sendUpdateAssetsTabEvent(position);
+//                EventPublisher.getInstance().sendUpdateAssetsTabEvent(position);
             }
 
             @Override
@@ -413,15 +368,15 @@ public class AssetsFragment extends BaseNestingLazyFragment<AssetsContract.View,
         switch (view.getId()) {
             case R.id.layout_scan://扫一扫功能
                 new RxPermissions(currentActivity())
-                        .request(Manifest.permission.CAMERA)
-                        .subscribe(new CustomObserver<Boolean>() {
-                            @Override
-                            public void accept(Boolean success) {
-                                if (success) {
-                                    ScanQRCodeActivity.startActivityForResult(currentActivity(), MainActivity.REQ_ASSETS_TAB_QR_CODE);
-                                }
+                    .request(Manifest.permission.CAMERA)
+                    .subscribe(new CustomObserver<Boolean>() {
+                        @Override
+                        public void accept(Boolean success) {
+                            if (success) {
+                                ScanQRCodeActivity.startActivityForResult(currentActivity(), MainActivity.REQ_ASSETS_TAB_QR_CODE);
                             }
-                        });
+                        }
+                    });
                 break;
             case R.id.layout_add:
                 AssetsMoreDialogFragment.newInstance().setOnAssetMoreClickListener(new AssetsMoreDialogFragment.OnAssetMoreClickListener() {
@@ -539,8 +494,8 @@ public class AssetsFragment extends BaseNestingLazyFragment<AssetsContract.View,
     private ArrayList<String> getTitles() {
         ArrayList<String> titleList = new ArrayList<>();
         titleList.add(string(R.string.transactions));
-        titleList.add((NetworkUtil.getNetWorkType(getContext()) != NetworkType.NETWORK_NO) ? string(R.string.action_send_transation) : string(R.string.wallet_send_offline_signature));
-        titleList.add(string(R.string.action_receive_transation));
+        titleList.add((NetworkUtil.getNetWorkType(getContext()) != NetworkType.NETWORK_NO) ? string(R.string.action_send_transaction) : string(R.string.msg_offline_signature));
+        titleList.add(string(R.string.action_receive_transaction));
         return titleList;
     }
 
@@ -550,37 +505,6 @@ public class AssetsFragment extends BaseNestingLazyFragment<AssetsContract.View,
         titleList.add(R.drawable.assets_tab_send_icon);
         titleList.add(R.drawable.assets_tab_receive_icon);
         return titleList;
-    }
-
-    private List<BaseLazyFragment> getFragments(Wallet walletEntity) {
-        List<BaseLazyFragment> list = new ArrayList<>();
-        list.add(getFragment(MainTab.TRANSACTION_LIST, walletEntity));
-        list.add(getFragment(MainTab.SEND_TRANSACTION, walletEntity));
-        list.add(getFragment(MainTab.RECEIVE_TRANSACTION, walletEntity));
-        return list;
-    }
-
-    private BaseLazyFragment getFragment(@MainTab int tab, Wallet walletEntity) {
-        BaseLazyFragment fragment = null;
-        switch (tab) {
-            case MainTab.TRANSACTION_LIST:
-                fragment = new TransactionsFragment();
-                break;
-            case MainTab.SEND_TRANSACTION:
-                fragment = new SendTransactionFragment();
-                break;
-            case MainTab.RECEIVE_TRANSACTION:
-                fragment = new ReceiveTransactionFragment();
-                break;
-            default:
-                break;
-        }
-        if (walletEntity != null && fragment != null) {
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(Constants.Extra.EXTRA_WALLET, walletEntity);
-            fragment.setArguments(bundle);
-        }
-        return fragment;
     }
 
     @Override
@@ -600,13 +524,6 @@ public class AssetsFragment extends BaseNestingLazyFragment<AssetsContract.View,
 
         tvWalletAmount.setText(string(R.string.amount_with_unit, StringUtil.formatBalance(BigDecimalUtil.div(balance, "1E18"), false)));
         tvWalletAmount.setTransformationMethod(PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, true) ? HideReturnsTransformationMethod.getInstance() : new AmountTransformationMethod(tvWalletAmount.getText().toString()));
-
-        if (vpContent.getCurrentItem() == MainTab.SEND_TRANSACTION) {
-            SendTransactionFragment sendTransactionFragment = (SendTransactionFragment) mTabAdapter.getItem(MainTab.SEND_TRANSACTION);
-            if (sendTransactionFragment != null) {
-                sendTransactionFragment.updateWalletBalance(balance);
-            }
-        }
     }
 
     @Override
@@ -668,11 +585,6 @@ public class AssetsFragment extends BaseNestingLazyFragment<AssetsContract.View,
     }
 
     @Override
-    public void showTab(int tab) {
-        vpContent.setCurrentItem(tab);
-    }
-
-    @Override
     public void resetView() {
 
         List<BaseLazyFragment> fragments = ((TabAdapter) vpContent.getAdapter()).getFragments();
@@ -696,7 +608,7 @@ public class AssetsFragment extends BaseNestingLazyFragment<AssetsContract.View,
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNetWorkStateChangedEvent(Event.NetWorkStateChangedEvent event) {
-        ((TabView) stbBar.getTabAt(1)).setTitle((NetworkUtil.getNetWorkType(getContext()) != NetworkType.NETWORK_NO) ? string(R.string.action_send_transation) : string(R.string.wallet_send_offline_signature));
+        ((TabView) stbBar.getTabAt(1)).setTitle((NetworkUtil.getNetWorkType(getContext()) != NetworkType.NETWORK_NO) ? string(R.string.action_send_transaction) : string(R.string.msg_offline_signature));
         getPresenter().fetchWalletList();
     }
 

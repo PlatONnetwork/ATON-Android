@@ -22,7 +22,7 @@
             android:drawableRight="@drawable/icon_open_eyes"
             android:drawablePadding="5dp"
             android:includeFontPadding="false"
-            android:text="@string/total_assets"
+            android:text="@string/msg_total_assets"
             android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

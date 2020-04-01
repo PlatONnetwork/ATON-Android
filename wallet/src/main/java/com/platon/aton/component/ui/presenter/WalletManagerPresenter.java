@@ -82,7 +82,7 @@ public class WalletManagerPresenter extends BasePresenter<WalletManagerContract.
         InputWalletPasswordDialogFragment.newInstance(walletEntity).setOnWalletCorrectListener(new InputWalletPasswordDialogFragment.OnWalletCorrectListener() {
             @Override
             public void onCorrect(Credentials credentials, String password) {
-                BackupMnemonicPhraseActivity.actionStart(getContext(), password, walletEntity, 1);
+                BackupMnemonicPhraseActivity.actionStart(getContext(), password, walletEntity, BackupMnemonicPhraseActivity.BackupMnemonicExport.MAIN_ACTIVITY);
             }
         }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
     }

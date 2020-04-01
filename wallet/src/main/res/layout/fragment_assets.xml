@@ -98,7 +98,7 @@
                     android:layout_marginRight="16dp"
                     android:drawableLeft="@drawable/icon_backup"
                     android:drawablePadding="5dp"
-                    android:text="@string/backup"
+                    android:text="@string/msg_backup_wallet"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 

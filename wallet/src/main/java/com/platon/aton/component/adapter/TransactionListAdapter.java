@@ -1,35 +1,62 @@
 package com.platon.aton.component.adapter;
 
-import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.platon.aton.R;
 import com.platon.aton.component.adapter.base.BaseViewHolder;
-import com.platon.aton.component.ui.view.TransactionDetailActivity;
-import com.platon.aton.component.ui.view.TransactionRecordsActivity;
-import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.Transaction;
 
 import java.util.List;
 
+/**
+ * @author ziv
+ */
 public class TransactionListAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
-    private final static int COMMON_ITEM_VIEW = 0;
-    private final static int FOOTER_ITEM_VIEW = 1;
 
-    private Context mContext;
+    @IntDef({
+            ItemViewType.COMMON_ITEM_VIEW,
+            ItemViewType.FOOTER_ITEM_VIEW
+    })
+    public @interface ItemViewType {
+
+        int COMMON_ITEM_VIEW = 0;
+
+        int FOOTER_ITEM_VIEW = 1;
+    }
+
+    @IntDef({
+            EntranceType.MAIN_PAGE,
+            EntranceType.ME_PAGE
+    })
+    public @interface EntranceType {
+        /**
+         * 首页
+         */
+        int MAIN_PAGE = 0;
+        /**
+         * 我的页面
+         */
+        int ME_PAGE = 1;
+    }
+
+    private final static int MAX_ITEM_COUNT = 20;
+
     private List<Transaction> mTransactionList;
-    private List<String> mQueryAddressList;
-    private boolean mTransactionRecordPage;
 
-    public TransactionListAdapter(Context context) {
-        this.mContext = context;
-        this.mTransactionRecordPage = context instanceof TransactionRecordsActivity;
+    private List<String> mQueryAddressList;
+
+    private @EntranceType
+    int mEntranceType;
+
+    private OnItemClickListener mItemClickListener;
+
+    public TransactionListAdapter(@EntranceType int entranceType) {
+        this.mEntranceType = entranceType;
     }
 
     public void setTransactionList(List<Transaction> transactionList) {
@@ -40,11 +67,15 @@ public class TransactionListAdapter extends RecyclerView.Adapter<BaseViewHolder>
         this.mQueryAddressList = queryAddressList;
     }
 
+    public void setOnItemClickListener(OnItemClickListener itemClickListener) {
+        this.mItemClickListener = itemClickListener;
+    }
+
 
     @NonNull
     @Override
     public BaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (viewType == COMMON_ITEM_VIEW) {
+        if (viewType == ItemViewType.COMMON_ITEM_VIEW) {
             return new TransactionViewHolder(R.layout.item_transaction_list, parent, mQueryAddressList);
         } else {
             return new TransactionFooterViewHolder(R.layout.item_transaction_list_footer, parent);
@@ -53,15 +84,28 @@ public class TransactionListAdapter extends RecyclerView.Adapter<BaseViewHolder>
 
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder holder, int position) {
-        if (getItemViewType(position) == COMMON_ITEM_VIEW) {
+        if (getItemViewType(position) == ItemViewType.COMMON_ITEM_VIEW) {
             ((TransactionViewHolder) holder).setQueryAddressList(mQueryAddressList);
             holder.setOnItemClickListener(new BaseViewHolder.OnItemClickListener() {
                 @Override
                 public void onItemClick(Object o) {
-                    TransactionDetailActivity.actionStart(mContext, mTransactionList.get(holder.getAdapterPosition()), mQueryAddressList);
+                    if (mItemClickListener != null) {
+                        mItemClickListener.onCommonTransactionItemClick(mTransactionList.get(holder.getAdapterPosition()), position);
+                    }
+//                    TransactionDetailActivity.actionStart(mContext, mTransactionList.get(holder.getAdapterPosition()), mQueryAddressList);
                 }
             });
             holder.refreshData(mTransactionList.get(position), position);
+        } else {
+            holder.setOnItemClickListener(new BaseViewHolder.OnItemClickListener() {
+                @Override
+                public void onItemClick(Object o) {
+                    if (mItemClickListener != null) {
+                        mItemClickListener.onMoreTransactionItemClick();
+                    }
+//                    TransactionRecordsActivity.actionStart(mContext, WalletManager.getInstance().getSelectedWallet());
+                }
+            });
         }
     }
 
@@ -83,20 +127,20 @@ public class TransactionListAdapter extends RecyclerView.Adapter<BaseViewHolder>
         if (mTransactionList != null) {
             size = mTransactionList.size();
         }
-        return mTransactionRecordPage ? size : (size >= 20 ? size + 1 : size);
+        return mEntranceType == EntranceType.ME_PAGE ? size : (size >= MAX_ITEM_COUNT ? size + 1 : size);
     }
 
     @Override
     public int getItemViewType(int position) {
         int size = getItemCount();
-        if (!mTransactionRecordPage) {
-            if (size > 20) {
+        if (mEntranceType != EntranceType.ME_PAGE) {
+            if (size > MAX_ITEM_COUNT) {
                 if (position == size - 1) {
-                    return FOOTER_ITEM_VIEW;
+                    return ItemViewType.FOOTER_ITEM_VIEW;
                 }
             }
         }
-        return COMMON_ITEM_VIEW;
+        return ItemViewType.COMMON_ITEM_VIEW;
     }
 
     public void notifyDataSetChanged(List<Transaction> transactionList) {
@@ -106,19 +150,24 @@ public class TransactionListAdapter extends RecyclerView.Adapter<BaseViewHolder>
 
     static class TransactionFooterViewHolder extends BaseViewHolder<String> {
 
-        private TextView mMoreTransactionTv;
-
         public TransactionFooterViewHolder(int viewId, ViewGroup parent) {
             super(viewId, parent);
-
-            mMoreTransactionTv = itemView.findViewById(R.id.tv_more_transaction);
-
-            mMoreTransactionTv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    TransactionRecordsActivity.actionStart(mContext, WalletManager.getInstance().getSelectedWallet());
-                }
-            });
         }
+    }
+
+    public interface OnItemClickListener {
+
+        /**
+         * 正常交易被点击，进入交易详情页面
+         *
+         * @param transaction
+         * @param position
+         */
+        void onCommonTransactionItemClick(Transaction transaction, int position);
+
+        /**
+         * 加载更多，进入交易记录页面
+         */
+        void onMoreTransactionItemClick();
     }
 }

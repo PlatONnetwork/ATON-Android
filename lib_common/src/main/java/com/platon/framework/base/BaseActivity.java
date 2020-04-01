@@ -49,8 +49,7 @@ public abstract class BaseActivity<V extends BaseViewImp, P extends BasePresente
         setContentView(getLayoutId());
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT); // 禁止所有的activity横屏
         ActivityManager.getInstance().addManagedActivity(this);
-//        ARouter.getInstance().inject(this);
-//        PushAgent.getInstance(this).onAppStart();
+
         if (presenter == null) {
             presenter = createPresenter();
         }
@@ -63,7 +62,6 @@ public abstract class BaseActivity<V extends BaseViewImp, P extends BasePresente
         mInputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         mDecorView = getWindow().getDecorView();
         mRootView = mDecorView.findViewById(android.R.id.content);
-        init();
         if (immersiveBarInitEnabled()) {
             if (immersiveBarViewEnabled()) {
                 setStatusBarView();
@@ -71,6 +69,7 @@ public abstract class BaseActivity<V extends BaseViewImp, P extends BasePresente
                 setStatusBarColor(getStatusBarColor());
             }
         }
+        init();
     }
 
     @Override

@@ -78,7 +78,7 @@
             android:drawableLeft="@drawable/icon_backup"
             android:drawablePadding="5dp"
             android:includeFontPadding="false"
-            android:text="@string/backup" />
+            android:text="@string/msg_backup_wallet" />
 
 
     </LinearLayout>

@@ -76,6 +76,14 @@
         <item name="android:textSize">16sp</item>
     </style>
 
+    <style name="Text.fff.18">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="Text.fff.30">
+        <item name="android:textSize">30sp</item>
+    </style>
+
     <style name="Text.000">
         <item name="android:textColor">@color/color_000000</item>
     </style>

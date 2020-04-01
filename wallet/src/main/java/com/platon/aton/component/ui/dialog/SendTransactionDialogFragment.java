@@ -8,6 +8,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -51,6 +52,8 @@ public class SendTransactionDialogFragment extends BaseDialogFragment {
     ConstraintLayout layoutContent;
     @BindString(R.string.pay_wallet)
     String payWallet;
+    @BindView(R.id.iv_close)
+    ImageView ivClose;
 
     private Unbinder unbinder;
     private Context mContext;
@@ -86,8 +89,6 @@ public class SendTransactionDialogFragment extends BaseDialogFragment {
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_fragment_send_transaction, null, false);
         baseDialog.setContentView(contentView);
         setFullWidthEnable(true);
-        setHorizontalMargin(DensityUtil.dp2px(getContext(), 14f));
-        setyOffset(DensityUtil.dp2px(getContext(), 4f));
         setAnimation(R.style.Animation_slide_in_bottom);
         unbinder = ButterKnife.bind(this, contentView);
         initViews();
@@ -100,13 +101,13 @@ public class SendTransactionDialogFragment extends BaseDialogFragment {
         String amount = getArguments().getString(Constants.Bundle.BUNDLE_TRANSFER_AMOUNT);
         String confirmText = WalletManager.getInstance().getSelectedWallet().isObservedWallet() ? getString(R.string.next) : getString(R.string.action_send_transaction);
 
-        if (!TextUtils.isEmpty(title)){
+        if (!TextUtils.isEmpty(title)) {
             tvTitle.setText(title);
         }
-        if (!TextUtils.isEmpty(StringUtil.formatBalance(amount))){
+        if (!TextUtils.isEmpty(StringUtil.formatBalance(amount))) {
             tvAmount.setText(StringUtil.formatBalance(amount));
         }
-        if (!TextUtils.isEmpty(confirmText)){
+        if (!TextUtils.isEmpty(confirmText)) {
             sbtnConfirm.setText(confirmText);
         }
 
@@ -136,7 +137,8 @@ public class SendTransactionDialogFragment extends BaseDialogFragment {
                         }
                     }
                 });
-        RxView.clicks(tvCancel)
+
+        RxView.clicks(ivClose)
                 .compose(RxUtils.getClickTransformer())
                 .compose(bindToLifecycle())
                 .subscribe(new CustomObserver<Object>() {

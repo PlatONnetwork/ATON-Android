@@ -62,8 +62,6 @@ public class ClaimRewardsDialogFragment extends BaseDialogFragment {
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_fragment_claim_rewards, null, false);
         baseDialog.setContentView(contentView);
         setFullWidthEnable(true);
-        setHorizontalMargin(DensityUtil.dp2px(getContext(), 14f));
-        setyOffset(DensityUtil.dp2px(getContext(), 4f));
         setAnimation(R.style.Animation_slide_in_bottom);
         unbinder = ButterKnife.bind(this, contentView);
         initViews();

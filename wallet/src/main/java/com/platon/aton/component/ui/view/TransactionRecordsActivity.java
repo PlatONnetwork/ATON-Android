@@ -118,7 +118,7 @@ public class TransactionRecordsActivity extends BaseActivity<TransactionRecordsC
                 0,
                 DensityUtil.dp2px(this, 2));
 
-        mTransactionListAdapter = new TransactionListAdapter(this);
+        mTransactionListAdapter = new TransactionListAdapter(TransactionListAdapter.EntranceType.ME_PAGE);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         listTransactions.addItemDecoration(new CommonVerticalItemDecoration(this, R.drawable.bg_transation_list_divider));
         listTransactions.setLayoutManager(linearLayoutManager);

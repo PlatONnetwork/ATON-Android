@@ -5,12 +5,10 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.platon.aton.BuildConfig;
-import com.platon.aton.config.AppSettings;
 import com.platon.aton.engine.NodeManager;
 import com.platon.aton.engine.ServerUtils;
 import com.platon.aton.engine.Web3jManager;
 import com.platon.aton.entity.AccountBalance;
-import com.platon.aton.entity.DelegateHandle;
 import com.platon.aton.entity.Node;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.rxjavatest.RxJavaTestSchedulerRule;
@@ -64,7 +62,7 @@ public class DelegateActivityTest {
         Application app = RuntimeEnvironment.application;
         ApiResponse.init(app);
 
-        AppSettings appSettings = AppSettings.getInstance();
+//        AppSettings appSettings = AppSettings.getInstance();
         nodeManager = NodeManager.getInstance();
         node = new Node.Builder().build();
         nodeManager.setCurNode(node);
@@ -72,7 +70,7 @@ public class DelegateActivityTest {
         //输出日志
         ShadowLog.stream = System.out;
 
-        appSettings.init(app);
+//        appSettings.init(app);
 
     }
 
@@ -80,22 +78,22 @@ public class DelegateActivityTest {
     public void testIsDelegate() {
         String walletAddress = "0xa577c0230df2cb329415bfebcb936496ab8ae2e4";
         String nodeId = "0x411a6c3640b6cd13799e7d4ed286c95104e3a31fbb05d7ae0004463db648f26e93f7f5848ee9795fb4bbb5f83985afd63f750dc4cf48f53b0e84d26d6834c20c";
-        ServerUtils.getCommonApi().getIsDelegateInfo(ApiRequestBody.newBuilder()
-                .put("addr", walletAddress)
-                .put("nodeId", nodeId)
-                .build())
-                .subscribe(new ApiSingleObserver<DelegateHandle>() {
-                    @Override
-                    public void onApiSuccess(DelegateHandle delegateHandle) {
-//                        presenter.getView().showIsCanDelegate(delegateHandle);
-                        Log.d("result", "========================" + delegateHandle.isCanDelegation() + "====================" + delegateHandle.getMessage());
-                    }
-
-                    @Override
-                    public void onApiFailure(ApiResponse response) {
-
-                    }
-                });
+//        ServerUtils.getCommonApi().getIsDelegateInfo(ApiRequestBody.newBuilder()
+//                .put("addr", walletAddress)
+//                .put("nodeId", nodeId)
+//                .build())
+//                .subscribe(new ApiSingleObserver<DelegateHandle>() {
+//                    @Override
+//                    public void onApiSuccess(DelegateHandle delegateHandle) {
+////                        presenter.getView().showIsCanDelegate(delegateHandle);
+//                        Log.d("result", "========================" + delegateHandle.isCanDelegation() + "====================" + delegateHandle.getMessage());
+//                    }
+//
+//                    @Override
+//                    public void onApiFailure(ApiResponse response) {
+//
+//                    }
+//                });
     }
 
     @Test

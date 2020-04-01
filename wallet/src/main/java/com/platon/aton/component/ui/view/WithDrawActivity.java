@@ -119,12 +119,12 @@ public class WithDrawActivity extends BaseActivity<WithDrawContract.View, WithDr
 
     @Override
     public WithDrawPresenter createPresenter() {
-        return new WithDrawPresenter(this);
+        return new WithDrawPresenter();
     }
 
     @Override
     public WithDrawContract.View createView() {
-        return null;
+        return this;
     }
 
     @Override
@@ -133,6 +133,7 @@ public class WithDrawActivity extends BaseActivity<WithDrawContract.View, WithDr
         unbinder = ButterKnife.bind(this);
         initView();
         //初始化请求数据
+        getPresenter().init(getDelegateDetailFromIntent());
         getPresenter().showWalletInfo();
         getPresenter().getBalanceType();
     }
