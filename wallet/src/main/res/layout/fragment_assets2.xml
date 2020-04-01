@@ -41,7 +41,7 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <android.support.v7.widget.RecyclerView
+                    <com.platon.aton.component.widget.EmptyRecyclerView
                         android:id="@+id/rv_assets_wallet_list"
                         android:layout_width="match_parent"
                         android:layout_height="72dp"
