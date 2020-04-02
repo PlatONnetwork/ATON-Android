@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.view.KeyEvent;
@@ -80,7 +79,7 @@ public class SplashActivity extends BaseActivity {
                     return;
                 }
 
-                if (PreferenceTool.getBoolean(Constants.Preference.KEY_OPERATE_MENU_FLAG, true)) {
+                if (WalletManager.getInstance().getWalletList().isEmpty()) {
                     OperateMenuActivity.actionStart(SplashActivity.this);
                     SplashActivity.this.finish();
                     return;

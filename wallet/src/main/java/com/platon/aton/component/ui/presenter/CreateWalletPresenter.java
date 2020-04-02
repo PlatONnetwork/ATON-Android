@@ -3,9 +3,6 @@ package com.platon.aton.component.ui.presenter;
 import android.annotation.SuppressLint;
 import android.text.TextUtils;
 
-import com.platon.framework.app.Constants;
-import com.platon.framework.base.BasePresenter;
-import com.platon.framework.utils.LogUtils;
 import com.platon.aton.R;
 import com.platon.aton.app.CustomThrowable;
 import com.platon.aton.app.LoadingTransformer;
@@ -14,7 +11,10 @@ import com.platon.aton.component.ui.view.BackupWalletActivity;
 import com.platon.aton.db.sqlite.WalletDao;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.Wallet;
+import com.platon.aton.event.EventPublisher;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BasePresenter;
 import com.platon.framework.utils.PreferenceTool;
 
 import io.reactivex.functions.Consumer;
@@ -64,8 +64,8 @@ public class CreateWalletPresenter extends BasePresenter<CreateWalletContract.Vi
                 .subscribe(new Consumer<Wallet>() {
                     @Override
                     public void accept(Wallet walletEntity) throws Exception {
-                        LogUtils.e("accept " + System.currentTimeMillis() + " " + Thread.currentThread().getName());
                         if (isViewAttached()) {
+                            EventPublisher.getInstance().sendWalletNumberChangeEvent();
                             BackupWalletActivity.actionStart(currentActivity(), walletEntity);
                             currentActivity().finish();
                         }

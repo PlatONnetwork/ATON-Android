@@ -9,6 +9,7 @@ import com.platon.aton.component.ui.contract.ImportObservedContract;
 import com.platon.aton.component.ui.view.MainActivity;
 import com.platon.aton.engine.NodeManager;
 import com.platon.aton.engine.WalletManager;
+import com.platon.aton.event.EventPublisher;
 import com.platon.aton.utils.CommonUtil;
 import com.platon.framework.base.BasePresenter;
 import com.platon.framework.utils.PreferenceTool;
@@ -67,6 +68,7 @@ public class ImportObservedPresenter extends BasePresenter<ImportObservedContrac
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_OK:
+                    EventPublisher.getInstance().sendWalletNumberChangeEvent();
                     dismissLoadingDialogImmediately();
                     PreferenceTool.putInt(NodeManager.getInstance().getChainId(), PreferenceTool.getInt(NodeManager.getInstance().getChainId(), 1) + 1);
                     MainActivity.actionStart(currentActivity());

@@ -84,8 +84,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fadeScrollbars="true"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
                 android:scrollbarStyle="outsideOverlay"
                 android:scrollbars="vertical"
                 tools:listitem="@layout/item_transaction_list" />

@@ -89,7 +89,7 @@ public class ManageWalletPresenter extends BasePresenter<ManageWalletContract.Vi
                     @Override
                     public void accept(Boolean isSuccess) throws Exception {
                         if (isSuccess && isViewAttached()) {
-                            EventPublisher.getInstance().sendUpdateWalletListEvent();
+                            EventPublisher.getInstance().sendWalletNumberChangeEvent();
                             currentActivity().finish();
                         }
                     }
@@ -132,7 +132,7 @@ public class ManageWalletPresenter extends BasePresenter<ManageWalletContract.Vi
                     public void accept(Boolean isSuccess) throws Exception {
                         if (isSuccess && isViewAttached()) {
                             getView().showWalletName(name);
-                            EventPublisher.getInstance().sendUpdateWalletListEvent();
+                            EventPublisher.getInstance().sendWalletNumberChangeEvent();
                         }
                     }
                 });

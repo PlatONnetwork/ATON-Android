@@ -6,7 +6,7 @@ import android.text.TextUtils;
 
 import com.platon.aton.db.entity.WalletEntity;
 
-public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
+public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneable {
 
     /**
      * 唯一识别码，与Keystore的id一致
@@ -394,6 +394,18 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
 
     public static Wallet getNullInstance() {
         return NullWallet.getInstance();
+    }
+
+    @Override
+    public Wallet clone() {
+        Wallet wallet = null;
+        try {
+            wallet = (Wallet) super.clone();
+        } catch (Exception e) {
+            e.printStackTrace();
+            wallet = NullWallet.getInstance();
+        }
+        return wallet;
     }
 
     /**

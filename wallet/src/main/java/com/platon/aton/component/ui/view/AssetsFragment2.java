@@ -12,9 +12,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
@@ -33,9 +35,9 @@ import com.platon.aton.component.ui.dialog.DelegateTipsDialog;
 import com.platon.aton.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.platon.aton.component.ui.dialog.TransactionSignatureDialogFragment;
 import com.platon.aton.component.ui.presenter.AssetsPresenter2;
-import com.platon.aton.component.ui.presenter.Direction;
 import com.platon.aton.component.ui.presenter.TransactionsPresenter;
 import com.platon.aton.component.widget.AmountTransformationMethod;
+import com.platon.aton.component.widget.EmptyRecyclerView;
 import com.platon.aton.component.widget.RoundedTextView;
 import com.platon.aton.component.widget.WrapContentLinearLayoutManager;
 import com.platon.aton.engine.WalletManager;
@@ -62,7 +64,6 @@ import com.platon.framework.network.NetConnectivity;
 import com.platon.framework.utils.PreferenceTool;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
@@ -72,6 +73,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.web3j.crypto.Credentials;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -106,7 +108,7 @@ public class AssetsFragment2 extends BaseLazyFragment<AssetsContract2.View, Asse
     @BindView(R.id.rtv_send_transaction)
     RoundedTextView rtvSendTransaction;
     @BindView(R.id.rv_assets_transaction_list)
-    RecyclerView rvAssetsTransactionList;
+    EmptyRecyclerView rvAssetsTransactionList;
     @BindView(R.id.layout_refresh)
     SmartRefreshLayout layoutRefresh;
     @BindView(R.id.tv_wallet_amount_unit)
@@ -125,6 +127,13 @@ public class AssetsFragment2 extends BaseLazyFragment<AssetsContract2.View, Asse
     ConstraintLayout layoutDeviceOfflinePrompt;
     @BindView(R.id.iv_manage_wallet)
     ImageView ivManageWallet;
+    @BindView(R.id.layout_no_wallet)
+    RelativeLayout layoutNoWallet;
+    @BindView(R.id.layout_assets_wallet)
+    ConstraintLayout layoutAssetsWallet;
+    @BindView(R.id.layout_assets_transactions)
+    LinearLayout layoutAssetsTransactions;
+
     Unbinder unbinder;
 
     private AssetsWalletListAdapter mWalletListAdapter;
@@ -201,8 +210,21 @@ public class AssetsFragment2 extends BaseLazyFragment<AssetsContract2.View, Asse
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onNetWorkStateChangedEvent(Event.NetWorkStateChangedEvent netWorkStateChangedEvent) {
+    public void onWalletSelectedChangedEvent(Event.WalletSelectedChangedEvent event) {
+        showSelectedWalletInfo(WalletManager.getInstance().getSelectedWallet());
+    }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onWalletNumberChangeEvent(Event.WalletNumberChangeEvent event) {
+        List<Wallet> walletList = WalletManager.getInstance().getWalletList();
+        mWalletListAdapter.notifyDataSetChanged(walletList);
+        layoutNoWallet.setVisibility(walletList.isEmpty() ? View.VISIBLE : View.GONE);
+        layoutAssetsWallet.setVisibility(walletList.isEmpty() ? View.GONE : View.VISIBLE);
+        layoutAssetsTransactions.setVisibility(walletList.isEmpty() ? View.GONE : View.VISIBLE);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onNetWorkStateChangedEvent(Event.NetWorkStateChangedEvent netWorkStateChangedEvent) {
         showSelectedWalletInfo(WalletManager.getInstance().getSelectedWallet());
     }
 
@@ -318,7 +340,7 @@ public class AssetsFragment2 extends BaseLazyFragment<AssetsContract2.View, Asse
             public void onCommonWalletItemClick(Wallet wallet, int position) {
                 WalletManager.getInstance().setWalletList(mWalletListAdapter.getDatas());
                 showSelectedWalletInfo(wallet);
-                getPresenter().loadNewData(Direction.DIRECTION_NEW);
+                getPresenter().loadData();
             }
 
             @Override
@@ -329,6 +351,18 @@ public class AssetsFragment2 extends BaseLazyFragment<AssetsContract2.View, Asse
             @Override
             public void onImportWalletItemClick() {
                 ImportWalletActivity.actionStart(Objects.requireNonNull(getActivity()));
+            }
+        });
+
+        mTransactionListAdapter.setOnItemClickListener(new TransactionListAdapter.OnItemClickListener() {
+            @Override
+            public void onCommonTransactionItemClick(Transaction transaction, int position) {
+                TransactionDetailActivity.actionStart(getContext(), transaction, Collections.singletonList(transaction.getFrom()));
+            }
+
+            @Override
+            public void onMoreTransactionItemClick() {
+                TransactionRecordsActivity.actionStart(getActivity(), WalletManager.getInstance().getSelectedWallet());
             }
         });
 
@@ -514,11 +548,17 @@ public class AssetsFragment2 extends BaseLazyFragment<AssetsContract2.View, Asse
 
     private void showAssetsWalletList() {
 
-        mWalletListAdapter = new AssetsWalletListAdapter(WalletManager.getInstance().getWalletList());
+        List<Wallet> walletList = WalletManager.getInstance().getWalletList();
+
+        mWalletListAdapter = new AssetsWalletListAdapter(walletList);
 
         rvAssetsWalletList.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
         rvAssetsWalletList.addItemDecoration(new CommonHorizontalItemDecoration(getActivity(), R.drawable.shape_assets_wallet_list_divider));
         rvAssetsWalletList.setAdapter(mWalletListAdapter);
+
+        layoutNoWallet.setVisibility(walletList.isEmpty() ? View.VISIBLE : View.GONE);
+        layoutAssetsWallet.setVisibility(walletList.isEmpty() ? View.GONE : View.VISIBLE);
+        layoutAssetsTransactions.setVisibility(walletList.isEmpty() ? View.GONE : View.VISIBLE);
 
     }
 
@@ -526,6 +566,7 @@ public class AssetsFragment2 extends BaseLazyFragment<AssetsContract2.View, Asse
 
         mTransactionListAdapter = new TransactionListAdapter(TransactionListAdapter.EntranceType.MAIN_PAGE);
 
+        rvAssetsTransactionList.setEmptyView(LayoutInflater.from(getActivity()).inflate(R.layout.include_no_transaction, null));
         rvAssetsTransactionList.setLayoutManager(new WrapContentLinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
         //解决数据加载完成后, 没有停留在顶部的问题
         rvAssetsTransactionList.setFocusable(false);
@@ -599,8 +640,7 @@ public class AssetsFragment2 extends BaseLazyFragment<AssetsContract2.View, Asse
     public void notifyTransactionSetChanged(List<Transaction> oldTransactionList, List<Transaction> newTransactionList, String queryAddress, boolean loadLatestData) {
 
         mTransactionListAdapter.setQueryAddressList(Arrays.asList(queryAddress));
-//        emptyView.setVisibility(newTransactionList == null || newTransactionList.isEmpty() ? View.VISIBLE : View.GONE);
-        if (loadLatestData) {
+        if (loadLatestData || newTransactionList == null || newTransactionList.isEmpty()) {
             mTransactionListAdapter.notifyDataSetChanged(newTransactionList);
         } else {
             TransactionDiffCallback transactionDiffCallback = new TransactionDiffCallback(oldTransactionList, newTransactionList);

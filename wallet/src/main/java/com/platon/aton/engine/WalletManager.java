@@ -8,6 +8,7 @@ import com.platon.aton.db.sqlite.WalletDao;
 import com.platon.aton.entity.AccountBalance;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.event.Event;
+import com.platon.aton.event.EventPublisher;
 import com.platon.aton.utils.AmountUtil;
 import com.platon.aton.utils.BigDecimalUtil;
 import com.platon.aton.utils.JZWalletUtil;
@@ -88,8 +89,28 @@ public class WalletManager {
 
     public Wallet getSelectedWallet() {
         if (mWalletList.size() == 0) {
-            return null;
+            return getWalletListFromDB().toFlowable().flatMap(new Function<List<Wallet>, Publisher<Wallet>>() {
+                @Override
+                public Publisher<Wallet> apply(List<Wallet> walletList) throws Exception {
+                    return Flowable.fromIterable(walletList);
+                }
+            })
+                    .filter(new Predicate<Wallet>() {
+                        @Override
+                        public boolean test(Wallet wallet) throws Exception {
+                            return wallet.isSelected();
+                        }
+                    })
+                    .firstElement()
+                    .defaultIfEmpty(mWalletList.get(0))
+                    .onErrorReturnItem(mWalletList.get(0))
+                    .blockingGet();
         }
+        return getSelectedWalletFromWalletList();
+    }
+
+    private Wallet getSelectedWalletFromWalletList() {
+
         return Flowable.fromIterable(mWalletList)
                 .filter(new Predicate<Wallet>() {
                     @Override
@@ -140,11 +161,11 @@ public class WalletManager {
                             @Override
                             public Wallet apply(Integer integer) throws Exception {
                                 if (integer == 0) {
-                                    Wallet wallet = walletEntities.get(0).buildWalletEntity();
+                                    Wallet wallet = walletEntities.get(0).buildWallet();
                                     wallet.setSelected(true);
                                     return wallet;
                                 } else {
-                                    return walletEntities.get(integer).buildWalletEntity();
+                                    return walletEntities.get(integer).buildWallet();
                                 }
                             }
                         });
@@ -153,9 +174,14 @@ public class WalletManager {
                 .toList();
     }
 
-    public void addWallet(Wallet walletEntity) {
-        if (!mWalletList.contains(walletEntity)) {
-            mWalletList.add(walletEntity);
+    public void addWallet(Wallet wallet) {
+        if (!mWalletList.contains(wallet)) {
+            Wallet cloneWallet = wallet.clone();
+            if (!isExistSelectedWallet()) {
+                cloneWallet.setSelected(true);
+                EventPublisher.getInstance().sendWalletSelectedChangedEvent();
+            }
+            mWalletList.add(cloneWallet);
         }
     }
 
@@ -298,6 +324,30 @@ public class WalletManager {
         return WalletServiceImpl.getInstance().exportPrivateKey(mnemonic);
     }
 
+    private boolean isExistSelectedWallet() {
+        if (mWalletList.isEmpty()) {
+            return false;
+        }
+
+        return Flowable.fromIterable(mWalletList)
+                .map(new Function<Wallet, Boolean>() {
+                    @Override
+                    public Boolean apply(Wallet wallet) throws Exception {
+                        return wallet.isSelected();
+                    }
+                })
+                .filter(new Predicate<Boolean>() {
+                    @Override
+                    public boolean test(Boolean aBoolean) throws Exception {
+                        return aBoolean;
+                    }
+                })
+                .firstElement()
+                .defaultIfEmpty(false)
+                .onErrorReturnItem(false)
+                .blockingGet();
+    }
+
     private Single<String> createMnemonic() {
         return Single.create(new SingleOnSubscribe<String>() {
             @Override
@@ -346,7 +396,7 @@ public class WalletManager {
             entity.setBackedUp(true);
             entity.setMnemonic("");
             entity.setChainId(NodeManager.getInstance().getChainId());
-            mWalletList.add(entity);
+            addWallet(entity);
             WalletDao.insertWalletInfo(entity.buildWalletInfoEntity());
             PreferenceTool.putBoolean(Constants.Preference.KEY_OPERATE_MENU_FLAG, false);
             return CODE_OK;
@@ -374,7 +424,7 @@ public class WalletManager {
         mWallet.setCreateTime(System.currentTimeMillis());
         mWallet.setUpdateTime(System.currentTimeMillis());
         mWallet.setName(String.format("%s%d", "Wallet", PreferenceTool.getInt(NodeManager.getInstance().getChainId(), 1)));
-        mWalletList.add(mWallet);
+        addWallet(mWallet);
         WalletDao.insertWalletInfo(mWallet.buildWalletInfoEntity());
         PreferenceTool.putBoolean(Constants.Preference.KEY_OPERATE_MENU_FLAG, false);
         return CODE_OK;
@@ -403,7 +453,7 @@ public class WalletManager {
             entity.setBackedUp(true);
             entity.setMnemonic("");
             entity.setChainId(NodeManager.getInstance().getChainId());
-            mWalletList.add(entity);
+            addWallet(entity);
             WalletDao.insertWalletInfo(entity.buildWalletInfoEntity());
             PreferenceTool.putBoolean(Constants.Preference.KEY_OPERATE_MENU_FLAG, false);
             return CODE_OK;
@@ -451,7 +501,7 @@ public class WalletManager {
             entity.setBackedUp(true);
             entity.setMnemonic(JZWalletUtil.encryptMnemonic(entity.getKey(), mnemonic, password));
             entity.setChainId(NodeManager.getInstance().getChainId());
-            mWalletList.add(entity);
+            addWallet(entity);
             WalletDao.insertWalletInfo(entity.buildWalletInfoEntity());
             PreferenceTool.putBoolean(Constants.Preference.KEY_OPERATE_MENU_FLAG, false);
             return CODE_OK;
@@ -532,6 +582,10 @@ public class WalletManager {
                 mWalletList.remove(walletEntity);
                 break;
             }
+        }
+        if (!isExistSelectedWallet() && !mWalletList.isEmpty()) {
+            mWalletList.get(0).setSelected(true);
+            EventPublisher.getInstance().sendWalletSelectedChangedEvent();
         }
         return WalletDao.deleteWalletInfo(wallet.getUuid());
     }
