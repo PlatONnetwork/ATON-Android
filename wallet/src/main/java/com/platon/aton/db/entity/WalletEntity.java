@@ -236,7 +236,7 @@ public class WalletEntity extends RealmObject {
         }
     }
 
-    public Wallet buildWalletEntity() {
+    public Wallet buildWallet() {
         return new Wallet.Builder()
                 .uuid(uuid)
                 .key(keyJson)

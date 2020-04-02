@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="98dp"
+    android:paddingLeft="16dp"
+    android:paddingTop="18dp"
+    android:paddingBottom="18dp">
+
+    <TextView
+        android:id="@+id/tv_my_wallet"
+        style="@style/Text.000000.18"
+        android:text="@string/msg_my_wallet"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <ImageView
+        android:id="@+id/iv_assets_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/inset_assets_add"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_assets_scan_qrcode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/inset_assets_scan_qrcode"
+        app:layout_constraintRight_toLeftOf="@id/iv_assets_add"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/tv_total_assets_amount_title"
+        style="@style/Text.000000.14"
+        android:layout_marginTop="18dp"
+        android:includeFontPadding="false"
+        android:text="@string/msg_total_assets"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_my_wallet" />
+
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@id/tv_total_assets_amount_title"
+        app:layout_constraintLeft_toRightOf="@id/tv_total_assets_amount_title"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_total_assets_amount_title">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_total_assets_amount"
+            style="@style/Text.000000.18"
+            android:drawableRight="@drawable/icon_open_eyes"
+            android:drawablePadding="10dp"
+            android:ellipsize="end"
+            android:gravity="left|center_vertical"
+            android:lines="1"
+            android:textStyle="bold"
+            app:autoSizeTextType="uniform"
+            app:layout_constrainedWidth="true"
+            tools:text="******" />
+
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

@@ -75,7 +75,7 @@ public class TransactionsFragment extends BaseLazyFragment<TransactionsContract.
     private void initViews() {
 
         WrapContentLinearLayoutManager wrapContentLinearLayoutManager = new WrapContentLinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-        mTransactionListAdapter = new TransactionListAdapter(getContext());
+        mTransactionListAdapter = new TransactionListAdapter(TransactionListAdapter.EntranceType.MAIN_PAGE);
         listTransaction.addItemDecoration(new CommonVerticalItemDecoration(getContext(), R.drawable.bg_transation_list_divider));
         listTransaction.setLayoutManager(wrapContentLinearLayoutManager);
         //解决数据加载完成后, 没有停留在顶部的问题

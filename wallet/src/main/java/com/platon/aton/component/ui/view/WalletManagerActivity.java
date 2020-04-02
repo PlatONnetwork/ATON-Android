@@ -62,7 +62,7 @@ public class WalletManagerActivity extends BaseActivity<WalletManagerContract.Vi
 
     @Override
     public WalletManagerContract.View createView() {
-        return null;
+        return this;
     }
 
     @Override

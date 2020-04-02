@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.platon.aton.component.ui.contract.AssetsContract;
 import com.platon.aton.component.ui.dialog.InputWalletPasswordDialogFragment;
-import com.platon.aton.component.ui.view.AssetsFragment;
 import com.platon.aton.component.ui.view.BackupMnemonicPhraseActivity;
 import com.platon.aton.component.ui.view.TransactionDetailActivity;
 import com.platon.aton.db.entity.TransactionRecordEntity;
@@ -57,7 +56,7 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
 
     @Override
     public void clickRecycleViewItem(Wallet walletEntity) {
-        WalletManager.getInstance().setSelectedWallet(walletEntity);
+//        WalletManager.getInstance().setSelectedWallet(walletEntity);
         getView().setSelectedWallet(walletEntity);
         getView().showWalletInfo(walletEntity);
         getView().setArgument(walletEntity);
@@ -69,7 +68,7 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
         InputWalletPasswordDialogFragment.newInstance(walletEntity).setOnWalletCorrectListener(new InputWalletPasswordDialogFragment.OnWalletCorrectListener() {
             @Override
             public void onCorrect(Credentials credentials, String password) {
-                BackupMnemonicPhraseActivity.actionStart(getContext(), password, walletEntity, 1);
+                BackupMnemonicPhraseActivity.actionStart(getContext(), password, walletEntity, BackupMnemonicPhraseActivity.BackupMnemonicExport.MAIN_ACTIVITY);
             }
         }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
     }
@@ -136,7 +135,7 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
                 .subscribe(aLong -> {
                     if (isViewAttached()) {
                         getView().resetView();
-                        getView().showTab(AssetsFragment.MainTab.TRANSACTION_LIST);
+//                        getView().showTab(AssetsFragment.MainTab.TRANSACTION_LIST);
                     }
                 });
     }
@@ -183,7 +182,7 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
         if (!isSelected(walletEntity)) {
             //挑选一个当前选中的钱包
             walletEntity = getSelectedWallet();
-            WalletManager.getInstance().setSelectedWallet(walletEntity);
+//            WalletManager.getInstance().setSelectedWallet(walletEntity);
             getView().setArgument(walletEntity);
         }
         getView().showWalletList(mWalletList, walletEntity);

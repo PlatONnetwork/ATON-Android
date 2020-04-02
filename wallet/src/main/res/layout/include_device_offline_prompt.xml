@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_device_offline_prompt"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:layout_gravity="bottom"
+    android:background="@color/color_eff4fd"
+    android:padding="16dp">
+
+
+    <TextView
+        android:id="@+id/tv_device_offline_prompt"
+        style="@style/Text.000.14"
+        android:drawableLeft="@drawable/icon_prompt"
+        android:drawablePadding="10dp"
+        android:text="@string/msg_device_offline_prompt"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.platon.aton.component.widget.RoundedTextView
+        android:id="@+id/rtv_got_it"
+        style="@style/Text.fff.14"
+        android:layout_width="82dp"
+        android:layout_height="34dp"
+        android:text="@string/msg_got_it"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:rtv_background_color="@color/color_105cfe"
+        app:rtv_border_color="@color/color_78a2fa" />
+
+    <TextView
+        style="@style/Text.000.13"
+        android:layout_width="0dp"
+        android:layout_marginTop="13.5dp"
+        android:layout_marginRight="30dp"
+        android:gravity="left"
+        android:text="@string/msg_device_offline_tips"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/rtv_got_it"
+        app:layout_constraintTop_toBottomOf="@id/tv_device_offline_prompt" />
+
+    <ImageView
+        android:id="@+id/iv_close_device_offline_prompt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_shut_down"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+</android.support.constraint.ConstraintLayout>

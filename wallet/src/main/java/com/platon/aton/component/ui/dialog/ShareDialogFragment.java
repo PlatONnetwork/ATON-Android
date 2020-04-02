@@ -7,13 +7,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding2.view.RxView;
 import com.platon.aton.R;
+import com.platon.aton.app.CustomObserver;
 import com.platon.aton.component.adapter.CommonAdapter;
 import com.platon.aton.component.adapter.base.ViewHolder;
 import com.platon.aton.entity.ShareAppInfo;
-import com.platon.aton.utils.DensityUtil;
+import com.platon.aton.utils.RxUtils;
 import com.platon.framework.app.Constants;
 
 import java.util.ArrayList;
@@ -33,6 +36,8 @@ public class ShareDialogFragment extends BaseDialogFragment {
     TextView tvCancel;
     @BindView(R.id.gridview)
     GridView gridView;
+    @BindView(R.id.iv_close)
+    ImageView ivClose;
 
     Unbinder unbinder;
 
@@ -57,8 +62,6 @@ public class ShareDialogFragment extends BaseDialogFragment {
         baseDialog.setContentView(contentView);
         setFullWidthEnable(true);
         setAnimation(R.style.Animation_slide_in_bottom);
-        setHorizontalMargin(DensityUtil.dp2px(getContext(), 24));
-        setyOffset(DensityUtil.dp2px(getContext(), 16));
         unbinder = ButterKnife.bind(this, contentView);
         initViews();
         return baseDialog;
@@ -79,11 +82,21 @@ public class ShareDialogFragment extends BaseDialogFragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (mShareItemClickListener != null){
-                    mShareItemClickListener.onShareItemClick(ShareDialogFragment.this,(ShareAppInfo) parent.getAdapter().getItem(position));
+                if (mShareItemClickListener != null) {
+                    mShareItemClickListener.onShareItemClick(ShareDialogFragment.this, (ShareAppInfo) parent.getAdapter().getItem(position));
                 }
             }
         });
+
+        RxView.clicks(ivClose)
+                .compose(RxUtils.getClickTransformer())
+                .compose(bindToLifecycle())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        dismiss();
+                    }
+                });
     }
 
     @OnClick({R.id.tv_cancel})

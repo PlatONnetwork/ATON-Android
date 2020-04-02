@@ -20,7 +20,7 @@ import com.platon.aton.engine.TransactionManager;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.ClaimRewardInfo;
 import com.platon.aton.entity.DelegateInfo;
-import com.platon.aton.entity.GasProvider;
+import com.platon.aton.entity.EstimateGasResult;
 import com.platon.aton.entity.RPCErrorCode;
 import com.platon.aton.entity.Transaction;
 import com.platon.aton.entity.TransactionAuthorizationBaseData;
@@ -130,18 +130,19 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
 
     @Override
     public void withdrawDelegateReward(DelegateInfo delegateInfo, int position) {
-        ServerUtils.getCommonApi().getGasProvider(ApiRequestBody.newBuilder()
+
+        ServerUtils.getCommonApi().estimateGas(ApiRequestBody.newBuilder()
                 .put("from", delegateInfo.getWalletAddress())
                 .put("txType", FunctionType.WITHDRAW_DELEGATE_REWARD_FUNC_TYPE)
                 .build())
                 .compose(bindToLifecycle())
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
-                .subscribe(new ApiSingleObserver<GasProvider>() {
+                .subscribe(new ApiSingleObserver<EstimateGasResult>() {
                     @Override
-                    public void onApiSuccess(GasProvider gasProvider) {
+                    public void onApiSuccess(EstimateGasResult estimateGasResult) {
                         if (isViewAttached()) {
-                            showClaimRewardsDialogFragment(delegateInfo, gasProvider.toSdkGasProvider(), position);
+                            showClaimRewardsDialogFragment(delegateInfo, estimateGasResult.buildGasProvider().toSdkGasProvider(), position);
                         }
                     }
 

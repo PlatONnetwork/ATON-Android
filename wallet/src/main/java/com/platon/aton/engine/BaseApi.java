@@ -1,19 +1,19 @@
 package com.platon.aton.engine;
 
-import com.platon.framework.network.ApiRequestBody;
-import com.platon.framework.network.ApiResponse;
 import com.platon.aton.entity.AccountBalance;
 import com.platon.aton.entity.ClaimRewardRecord;
-import com.platon.aton.entity.DelegateHandle;
 import com.platon.aton.entity.DelegateInfo;
 import com.platon.aton.entity.DelegateNodeDetail;
 import com.platon.aton.entity.DelegationValue;
+import com.platon.aton.entity.EstimateGasResult;
 import com.platon.aton.entity.GasProvider;
 import com.platon.aton.entity.Transaction;
 import com.platon.aton.entity.TransactionReceipt;
 import com.platon.aton.entity.VerifyNode;
 import com.platon.aton.entity.VerifyNodeDetail;
 import com.platon.aton.entity.VersionInfo;
+import com.platon.framework.network.ApiRequestBody;
+import com.platon.framework.network.ApiResponse;
 
 import java.util.List;
 
@@ -64,10 +64,7 @@ public interface BaseApi {
     /**
      * 获取我的委托列表
      *
-     * @param cid "walletAddrs":[                     //地址列表
-     *            "address1",
-     *            "address2"
-     *            ]
+     * @param body
      * @return
      */
     @POST("app/v0760/node/listDelegateGroupByAddr")
@@ -129,17 +126,6 @@ public interface BaseApi {
     @POST("app/v0760/node/getDelegationValue")
     Single<Response<ApiResponse<DelegationValue>>> getDelegationValue(@Body ApiRequestBody body);
 
-
-    /**
-     * 是否允许委托及原因
-     *
-     * @param id
-     * @param body
-     * @return
-     */
-    @POST("app/v0760/node/canDelegation")
-    Single<Response<ApiResponse<DelegateHandle>>> getIsDelegateInfo(@Body ApiRequestBody body);
-
     /**
      * 批量查询交易记录状态
      *
@@ -166,15 +152,6 @@ public interface BaseApi {
     Single<Response<ApiResponse<List<ClaimRewardRecord>>>> getRewardTransactions(@Body ApiRequestBody body);
 
     /**
-     * 估算gas,支持委托、赎回委托、领取奖励交易类型
-     *
-     * @param body
-     * @return
-     */
-    @POST("app/v0760//transaction/estimateGas")
-    Single<Response<ApiResponse<GasProvider>>> getGasProvider(@Body ApiRequestBody body);
-
-    /**
      * 提交一个签名后的交易
      *
      * @param body
@@ -182,4 +159,13 @@ public interface BaseApi {
      */
     @POST("app/v0760//transaction/submitSignedTransaction")
     Single<Response<ApiResponse<String>>> submitSignedTransaction(@Body ApiRequestBody body);
+
+    /**
+     * 估算gas
+     *
+     * @param body
+     * @return
+     */
+    @POST("app/v0760//transaction/estimateGas")
+    Single<Response<ApiResponse<EstimateGasResult>>> estimateGas(@Body ApiRequestBody body);
 }

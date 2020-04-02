@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_assets_transactions"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/color_ffffff"
+    android:orientation="vertical"
+    android:paddingTop="12dp">
+
+    <TextView
+        style="@style/Text.000000.15"
+        android:layout_marginLeft="16dp"
+        android:text="@string/msg_assets_transaction" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.platon.aton.component.widget.EmptyRecyclerView
+            android:id="@+id/rv_assets_transaction_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginRight="10dp"
+            tools:listitem="@layout/item_transaction_list" />
+
+
+    </FrameLayout>
+
+</LinearLayout>

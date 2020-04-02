@@ -33,6 +33,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.reactivex.Observable;
 import io.reactivex.functions.BiFunction;
+import io.reactivex.functions.Predicate;
 
 /**
  * @author matrixelement

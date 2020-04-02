@@ -11,6 +11,7 @@ import com.platon.aton.component.ui.view.MainActivity;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.engine.NodeManager;
 import com.platon.aton.entity.Wallet;
+import com.platon.aton.event.EventPublisher;
 import com.platon.framework.base.BasePresenter;
 
 import java.util.Arrays;
@@ -103,6 +104,7 @@ public class ImportMnemonicPhrasePresenter extends BasePresenter<ImportMnemonicP
             super.handleMessage(msg);
             switch (msg.what) {
                 case MSG_OK:
+                    EventPublisher.getInstance().sendWalletNumberChangeEvent();
                     dismissLoadingDialogImmediately();
                     MainActivity.actionStart(currentActivity());
                     currentActivity().finish();

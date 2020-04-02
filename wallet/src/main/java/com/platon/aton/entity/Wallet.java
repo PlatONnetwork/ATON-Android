@@ -6,7 +6,7 @@ import android.text.TextUtils;
 
 import com.platon.aton.db.entity.WalletEntity;
 
-public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
+public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneable {
 
     /**
      * 唯一识别码，与Keystore的id一致
@@ -28,7 +28,6 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
      * 更新时间(更新钱包信息)
      */
     protected long updateTime;
-
     /**
      * 钱包头图
      */
@@ -49,13 +48,20 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
      * 节点地址
      */
     protected String chainId;
-
     /**
      * 是否已经备份了
      */
     protected boolean backedUp;
 
     protected AccountBalance accountBalance;
+    /**
+     * 是否被选中
+     */
+    protected boolean selected;
+    /**
+     * 展示首页提示
+     */
+    protected boolean backedUpPrompt;
 
     public Wallet() {
 
@@ -74,6 +80,8 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
         chainId = in.readString();
         backedUp = in.readByte() != 0;
         accountBalance = in.readParcelable(AccountBalance.class.getClassLoader());
+        selected = in.readByte() != 0;
+        backedUpPrompt = in.readByte() != 0;
     }
 
     public Wallet(Builder builder) {
@@ -89,6 +97,8 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
         this.chainId = builder.chainId;
         this.backedUp = builder.backedUp;
         this.accountBalance = builder.accountBalance;
+        this.selected = builder.selected;
+        this.backedUpPrompt = builder.backedUpPrompt;
     }
 
     @Override
@@ -105,6 +115,8 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
         dest.writeString(chainId);
         dest.writeByte((byte) (backedUp ? 1 : 0));
         dest.writeParcelable(accountBalance, flags);
+        dest.writeByte((byte) (selected ? 1 : 0));
+        dest.writeByte((byte) (backedUpPrompt ? 1 : 0));
     }
 
     @Override
@@ -241,6 +253,14 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
         return backedUp;
     }
 
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
     /**
      * 是否可以备份
      *
@@ -270,6 +290,23 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
 
     public void setBackedUp(boolean backedUp) {
         this.backedUp = backedUp;
+    }
+
+    public boolean isBackedUpPrompt() {
+        return backedUpPrompt;
+    }
+
+    public void setBackedUpPrompt(boolean backedUpPrompt) {
+        this.backedUpPrompt = backedUpPrompt;
+    }
+
+    /**
+     * 展示备份的提示
+     *
+     * @return
+     */
+    public boolean showBackedUpPrompt() {
+        return backedUpPrompt && isBackedUpNeeded();
     }
 
     public String getAddressWithoutPrefix() {
@@ -319,6 +356,7 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
                 ", chainId='" + chainId + '\'' +
                 ", backedUp=" + backedUp +
                 ", accountBalance=" + accountBalance +
+                ", selected=" + selected +
                 '}';
     }
 
@@ -358,6 +396,18 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
         return NullWallet.getInstance();
     }
 
+    @Override
+    public Wallet clone() {
+        Wallet wallet = null;
+        try {
+            wallet = (Wallet) super.clone();
+        } catch (Exception e) {
+            e.printStackTrace();
+            wallet = NullWallet.getInstance();
+        }
+        return wallet;
+    }
+
     /**
      * 是否是观察者钱包
      *
@@ -380,6 +430,8 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
         private String chainId;
         protected boolean backedUp;
         private AccountBalance accountBalance;
+        private boolean selected;
+        private boolean backedUpPrompt;
 
         public Builder uuid(String uuid) {
             this.uuid = uuid;
@@ -438,6 +490,16 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable {
 
         public Builder accountBalance(AccountBalance accountBalance) {
             this.accountBalance = accountBalance;
+            return this;
+        }
+
+        public Builder selected(boolean selected) {
+            this.selected = selected;
+            return this;
+        }
+
+        public Builder backedUpPrompt(boolean backedUpPrompt) {
+            this.backedUpPrompt = backedUpPrompt;
             return this;
         }
 

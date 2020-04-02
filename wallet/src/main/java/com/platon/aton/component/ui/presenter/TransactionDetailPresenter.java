@@ -28,13 +28,13 @@ public class TransactionDetailPresenter extends BasePresenter<TransactionDetailC
     private Transaction mTransaction;
     private List<String> mQueryAddressList;
 
-    public TransactionDetailPresenter() {
+    @Override
+    public void init() {
         if (isViewAttached()) {
             mTransaction = getView().getTransactionFromIntent();
             mQueryAddressList = getView().getAddressListFromIntent();
         }
     }
-
 
     @SuppressLint("CheckResult")
     @Override

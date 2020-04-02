@@ -54,6 +54,8 @@ public class WithDrawContract {
 
     public interface Presenter extends IPresenter<View> {
 
+        void init(DelegateItemInfo delegateItemInfo);
+
         void showWalletInfo();
 
         void updateWithDrawButtonState();

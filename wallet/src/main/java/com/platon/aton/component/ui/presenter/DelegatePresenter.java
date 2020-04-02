@@ -20,8 +20,8 @@ import com.platon.aton.engine.ServerUtils;
 import com.platon.aton.engine.TransactionManager;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.AccountBalance;
-import com.platon.aton.entity.DelegateHandle;
 import com.platon.aton.entity.DelegateItemInfo;
+import com.platon.aton.entity.EstimateGasResult;
 import com.platon.aton.entity.RPCErrorCode;
 import com.platon.aton.entity.Transaction;
 import com.platon.aton.entity.TransactionAuthorizationBaseData;
@@ -61,7 +61,6 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     private Wallet mWallet;
     private DelegateItemInfo mDelegateDetail;
 
-    private String feeAmount;
     private GasProvider mGasProvider = new DefaultGasProvider();
     /**
      * 是否点击全部
@@ -69,19 +68,6 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     private boolean isAll = false;
 
     private String minDelegation = AppConfigManager.getInstance().getMinDelegation();
-
-    public DelegatePresenter() {
-        if (isViewAttached()) {
-            mDelegateDetail = getView().getDelegateDetailFromIntent();
-            if (mDelegateDetail != null) {
-                if (TextUtils.isEmpty(mDelegateDetail.getWalletAddress())) {
-                    mWallet = WalletManager.getInstance().getSelectedWallet();
-                } else {
-                    mWallet = WalletManager.getInstance().getWalletByWalletAddress(mDelegateDetail.getWalletAddress());
-                }
-            }
-        }
-    }
 
     public String getWalletAddress() {
         if (mWallet != null) {
@@ -91,31 +77,50 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     }
 
     @Override
+    public void init(DelegateItemInfo delegateItemInfo) {
+        this.mDelegateDetail = delegateItemInfo;
+        if (mDelegateDetail != null) {
+            if (TextUtils.isEmpty(mDelegateDetail.getWalletAddress())) {
+                mWallet = WalletManager.getInstance().getSelectedWallet();
+            } else {
+                mWallet = WalletManager.getInstance().getWalletByWalletAddress(mDelegateDetail.getWalletAddress());
+            }
+        }
+    }
+
+    @Override
     public void showSelectWalletDialogFragment() {
         DelegateSelectWalletDialogFragment.newInstance(mWallet != null ? mWallet.getUuid() : "", false)
                 .setOnItemClickListener(new DelegateSelectWalletDialogFragment.OnItemClickListener() {
                     @Override
                     public void onItemClick(Wallet wallet) {
-                        ServerUtils.getCommonApi().getGasProvider(ApiRequestBody.newBuilder()
-                                .put("from", wallet.getPrefixAddress())
-                                .put("txType", FunctionType.DELEGATE_FUNC_TYPE)
-                                .put("nodeId", mDelegateDetail.getNodeId())
-                                .build())
+
+                        estimateGas(wallet.getPrefixAddress(), mDelegateDetail.getNodeId())
                                 .compose(RxUtils.bindToLifecycle(getView()))
                                 .compose(RxUtils.getSingleSchedulerTransformer())
                                 .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
-                                .subscribe(new ApiSingleObserver<com.platon.aton.entity.GasProvider>() {
+                                .subscribe(new ApiSingleObserver<EstimateGasResult>() {
                                     @Override
-                                    public void onApiSuccess(com.platon.aton.entity.GasProvider gasProvider) {
+                                    public void onApiSuccess(EstimateGasResult estimateGasResult) {
                                         if (isViewAttached()) {
-                                            mWallet = wallet;
+
+                                            WalletManager.getInstance().updateAccountBalance(new AccountBalance(wallet.getPrefixAddress(), estimateGasResult.getFree(), estimateGasResult.getLock()));
+
+                                            mWallet = WalletManager.getInstance().getWalletByAddress(wallet.getPrefixAddress());
+
+                                            minDelegation = estimateGasResult.getMinDelegation();
+
+                                            mGasProvider = estimateGasResult.buildGasProvider().toSdkGasProvider();
+
                                             getView().showSelectedWalletInfo(mWallet);
                                             getView().clearInputDelegateAmount();
-                                            if (mDelegateDetail != null && mWallet != null) {
-                                                checkIsCanDelegate(mWallet.getPrefixAddress(), mDelegateDetail.getNodeId()); //0.7.3修改
-                                            }
-                                            mGasProvider = gasProvider.toSdkGasProvider();
+
                                             getView().showFeeAmount(BigIntegerUtil.mul(mGasProvider.getGasLimit(), mGasProvider.getGasPrice()));
+
+                                            getView().showIsCanDelegate(estimateGasResult);
+
+                                            getView().showDelegateResult(estimateGasResult.getMinDelegation());
+
 
                                         }
                                     }
@@ -124,7 +129,9 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                                     public void onApiFailure(ApiResponse response) {
                                         super.onApiFailure(response);
                                         if (isViewAttached()) {
-                                            showLongToast(R.string.msg_connect_timeout);
+                                            getView().showIsCanDelegate(EstimateGasResult.getNullInstance());
+
+                                            getView().showDelegateException(response.getErrorCode());
                                         }
                                     }
                                 });
@@ -145,7 +152,30 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                 getView().showSelectedWalletInfo(mWallet);
             }
             if (mDelegateDetail != null && mWallet != null) {
-                checkIsCanDelegate(mWallet.getPrefixAddress(), mDelegateDetail.getNodeId()); //0.7.3修改
+                estimateGas(mWallet.getPrefixAddress(), mDelegateDetail.getNodeId())
+                        .compose(RxUtils.bindToLifecycle(getView()))
+                        .compose(RxUtils.getSingleSchedulerTransformer())
+                        .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
+                        .subscribe(new ApiSingleObserver<EstimateGasResult>() {
+                            @Override
+                            public void onApiSuccess(EstimateGasResult estimateGasResult) {
+                                if (isViewAttached()) {
+                                    WalletManager.getInstance().updateAccountBalance(new AccountBalance(mWallet.getPrefixAddress(), estimateGasResult.getFree(), estimateGasResult.getLock()));
+                                    minDelegation = estimateGasResult.getMinDelegation();
+                                    mWallet = WalletManager.getInstance().getWalletByAddress(mWallet.getPrefixAddress());
+                                    getView().showIsCanDelegate(estimateGasResult);
+                                    getView().showSelectedWalletInfo(mWallet);
+                                }
+                            }
+
+                            @Override
+                            public void onApiFailure(ApiResponse response) {
+                                super.onApiFailure(response);
+                                if (isViewAttached()) {
+                                    getView().showIsCanDelegate(EstimateGasResult.getNullInstance());
+                                }
+                            }
+                        });
             }
         }
     }
@@ -181,24 +211,22 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
      */
     @Override
     public void checkIsCanDelegate(String walletAddress, String nodeAddress) {
-        ServerUtils.getCommonApi().getIsDelegateInfo(ApiRequestBody.newBuilder()
-                .put("addr", walletAddress)
+        ServerUtils.getCommonApi().estimateGas(ApiRequestBody.newBuilder()
+                .put("from", walletAddress)
                 .put("nodeId", nodeAddress)
                 .build())
                 .compose(RxUtils.bindToLifecycle(getView()))
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
-                .subscribe(new ApiSingleObserver<DelegateHandle>() {
+                .subscribe(new ApiSingleObserver<EstimateGasResult>() {
                     @Override
-                    public void onApiSuccess(DelegateHandle delegateHandle) {
+                    public void onApiSuccess(EstimateGasResult estimateGasResult) {
                         if (isViewAttached()) {
-                            if (null != delegateHandle) {
-                                WalletManager.getInstance().updateAccountBalance(new AccountBalance(walletAddress, delegateHandle.getFree(), delegateHandle.getLock()));
-                                minDelegation = delegateHandle.getMinDelegation();
-                                mWallet = WalletManager.getInstance().getWalletByAddress(walletAddress);
-                                getView().showIsCanDelegate(delegateHandle);
-                                getView().showSelectedWalletInfo(mWallet);
-                            }
+                            WalletManager.getInstance().updateAccountBalance(new AccountBalance(walletAddress, estimateGasResult.getFree(), estimateGasResult.getLock()));
+                            minDelegation = estimateGasResult.getMinDelegation();
+                            mWallet = WalletManager.getInstance().getWalletByAddress(walletAddress);
+                            getView().showIsCanDelegate(estimateGasResult);
+                            getView().showSelectedWalletInfo(mWallet);
 
                         }
                     }
@@ -206,7 +234,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                     @Override
                     public void onApiFailure(ApiResponse response) {
                         if (isViewAttached()) {
-                            getView().showIsCanDelegate(DelegateHandle.getNullInstance());
+                            getView().showIsCanDelegate(EstimateGasResult.getNullInstance());
                         }
                     }
                 });
@@ -216,19 +244,15 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     @Override
     public void getGas() {
 
-        ServerUtils.getCommonApi().getGasProvider(ApiRequestBody.newBuilder()
-                .put("from", mWallet.getPrefixAddress())
-                .put("txType", FunctionType.DELEGATE_FUNC_TYPE)
-                .put("nodeId", mDelegateDetail.getNodeId())
-                .build())
+        estimateGas(mWallet.getPrefixAddress(), mDelegateDetail.getNodeId())
                 .compose(RxUtils.bindToLifecycle(getView()))
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
-                .subscribe(new ApiSingleObserver<com.platon.aton.entity.GasProvider>() {
+                .subscribe(new ApiSingleObserver<EstimateGasResult>() {
                     @Override
-                    public void onApiSuccess(com.platon.aton.entity.GasProvider gasProvider) {
+                    public void onApiSuccess(EstimateGasResult estimateGasResult) {
                         if (isViewAttached()) {
-                            mGasProvider = gasProvider.toSdkGasProvider();
+                            mGasProvider = estimateGasResult.buildGasProvider().toSdkGasProvider();
                             getView().showFeeAmount(BigIntegerUtil.mul(mGasProvider.getGasLimit(), mGasProvider.getGasPrice()));
                         }
                     }
@@ -243,12 +267,17 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                 });
     }
 
-    //获取手续费
+    /**
+     * 获取手续费
+     *
+     * @param stakingAmountType
+     */
     @SuppressLint("CheckResult")
     @Override
     public void getGasProvider(StakingAmountType stakingAmountType) {
 
-        String inputAmount = getView().getDelegateAmount();//输入的数量
+        //输入的数量
+        String inputAmount = getView().getDelegateAmount();
 
         if (TextUtils.isEmpty(inputAmount) || TextUtils.equals(inputAmount, ".")) {
             getView().showFeeAmount("0.00");
@@ -315,16 +344,16 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
      * 1.锁仓金额是否够委托金额
      * 2.自由金额是否够手续费
      *
-     * @param delegateHandle
+     * @param estimateGasResult
      * @param stakingAmountType
      * @return
      */
-    private String checkDelegateParam(DelegateHandle delegateHandle, StakingAmountType stakingAmountType) {
+    private String checkDelegateParam(EstimateGasResult estimateGasResult, StakingAmountType stakingAmountType) {
 
         BigDecimal feeAmount = new BigDecimal(getView().getFeeAmount()).multiply(new BigDecimal(DEFAULT_EXCHANGE_RATE));
         BigDecimal delegateAmount = new BigDecimal(getView().getDelegateAmount()).multiply(new BigDecimal(DEFAULT_EXCHANGE_RATE));
-        BigDecimal freeAmount = new BigDecimal(delegateHandle.getFree());
-        BigDecimal lockAmount = new BigDecimal(delegateHandle.getLock());
+        BigDecimal freeAmount = new BigDecimal(estimateGasResult.getFree());
+        BigDecimal lockAmount = new BigDecimal(estimateGasResult.getLock());
 
         //自由金额是否够委托金额与手续费的和
         boolean isFreeAmountNotEnoughDelegateAmount = freeAmount.compareTo(feeAmount.add(delegateAmount)) < 0;
@@ -338,7 +367,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
         if (isNotEnough) {
             return string(R.string.insufficient_balance_unable_to_delegate);
         }
-        return delegateHandle.getMessageDesc(getContext());
+        return "";
     }
 
     @SuppressLint("CheckResult")
@@ -346,16 +375,16 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     public void submitDelegate(StakingAmountType stakingAmountType) {
 
         if (mWallet != null && mDelegateDetail != null) {
-            getIsDelegateInfo(mWallet.getPrefixAddress(), mDelegateDetail.getNodeId())
+            estimateGas(mWallet.getPrefixAddress(), mDelegateDetail.getNodeId())
                     .compose(RxUtils.getSingleSchedulerTransformer())
                     .compose(bindToLifecycle())
                     .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
-                    .subscribe(new ApiSingleObserver<DelegateHandle>() {
+                    .subscribe(new ApiSingleObserver<EstimateGasResult>() {
                         @Override
-                        public void onApiSuccess(DelegateHandle delegateHandle) {
+                        public void onApiSuccess(EstimateGasResult estimateGasResult) {
                             if (isViewAttached()) {
-                                minDelegation = delegateHandle.getMinDelegation();
-                                String errMsg = checkDelegateParam(delegateHandle, stakingAmountType);
+                                minDelegation = estimateGasResult.getMinDelegation();
+                                String errMsg = checkDelegateParam(estimateGasResult, stakingAmountType);
                                 if (!TextUtils.isEmpty(errMsg)) {
                                     showLongToast(errMsg);
                                 } else {
@@ -371,8 +400,9 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                         @Override
                         public void onApiFailure(ApiResponse response) {
                             if (isViewAttached()) {
-                                if (!TextUtils.isEmpty(response.getErrMsg(getContext()))) {
-                                    showLongToast(response.getErrMsg(getContext()));
+                                String errMsg = getMessageDescByErrorCode(response.getErrorCode());
+                                if (!TextUtils.isEmpty(errMsg)) {
+                                    showLongToast(errMsg);
                                 } else {
                                     showLongToast(R.string.delegate_failed);
                                 }
@@ -383,10 +413,33 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
     }
 
-    private Single<Response<ApiResponse<DelegateHandle>>> getIsDelegateInfo(String walletAddress, String nodeAddress) {
-        return ServerUtils.getCommonApi().getIsDelegateInfo(ApiRequestBody.newBuilder()
-                .put("addr", walletAddress)
-                .put("nodeId", nodeAddress)
+    private String getMessageDescByErrorCode(int errorCode) {
+        switch (errorCode) {
+            case 3006:
+                return string(R.string.the_validator_has_exited_and_cannot_be_delegated);
+            case 3007:
+                return string(R.string.tips_not_delegate);
+            case 3004:
+                return string(R.string.tips_not_balance);
+            case 3008:
+                return string(R.string.validators_details_tips);
+            default:
+                return "";
+        }
+    }
+
+    /**
+     * 估算gas
+     *
+     * @param from
+     * @param nodeId
+     * @return
+     */
+    private Single<Response<ApiResponse<EstimateGasResult>>> estimateGas(String from, String nodeId) {
+        return ServerUtils.getCommonApi().estimateGas(ApiRequestBody.newBuilder()
+                .put("from", from)
+                .put("nodeId", nodeId)
+                .put("txType", TransactionType.DELEGATE.getTxTypeValue())
                 .build());
     }
 
@@ -420,7 +473,12 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                                         customThrowable.getErrCode() == CustomThrowable.CODE_TX_GAS_LOW) {
                                     showLongToast(string(R.string.msg_transaction_exception, customThrowable.getErrCode()));
                                 } else {
-                                    showLongToast(string(R.string.msg_server_exception, customThrowable.getErrCode()));
+                                    String errMsg = getMessageDescByErrorCode(customThrowable.getErrCode());
+                                    if (TextUtils.isEmpty(errMsg)) {
+                                        showLongToast(string(R.string.msg_server_exception, customThrowable.getErrCode()));
+                                    } else {
+                                        showLongToast(errMsg);
+                                    }
                                 }
                             }
                         }

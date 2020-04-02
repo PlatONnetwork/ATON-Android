@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/layout_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        app:srlEnableAutoLoadMore="false">
+
+        <com.scwang.smartrefresh.layout.header.ClassicsHeader
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srlTextUpdate="yyyy-MM-dd HH:mm" />
+
+        <android.support.design.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.design.widget.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/color_ffffff"
+                app:elevation="0dp">
+
+                <include layout="@layout/include_assets_top" />
+
+            </android.support.design.widget.AppBarLayout>
+
+            <android.support.v4.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fillViewport="true"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rv_assets_wallet_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="72dp"
+                        android:background="@color/color_f9fbff"
+                        android:clipChildren="false"
+                        android:clipToPadding="false"
+                        android:paddingLeft="16dp"
+                        android:paddingTop="14dp"
+                        android:paddingRight="16dp"
+                        android:paddingBottom="14dp"
+                        tools:listitem="@layout/item_assets_wallet_list"
+                        tools:orientation="horizontal" />
+
+                    <include layout="@layout/include_no_wallet" />
+
+                    <include layout="@layout/include_assets_wallet" />
+
+                    <include layout="@layout/include_assets_transactions" />
+
+                </LinearLayout>
+
+            </android.support.v4.widget.NestedScrollView>
+
+        </android.support.design.widget.CoordinatorLayout>
+
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
+    <include layout="@layout/include_security_reminders" />
+
+    <include layout="@layout/include_device_offline_prompt" />
+</FrameLayout>
+

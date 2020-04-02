@@ -44,10 +44,11 @@ import com.platon.aton.component.widget.MyWatcher;
 import com.platon.aton.component.widget.ShadowButton;
 import com.platon.aton.component.widget.ShadowDrawable;
 import com.platon.aton.component.widget.VerticalImageSpan;
+import com.platon.aton.engine.AppConfigManager;
 import com.platon.aton.engine.TransactionManager;
-import com.platon.aton.entity.DelegateHandle;
 import com.platon.aton.entity.DelegateItemInfo;
 import com.platon.aton.entity.DelegateType;
+import com.platon.aton.entity.EstimateGasResult;
 import com.platon.aton.entity.GuideType;
 import com.platon.aton.entity.Transaction;
 import com.platon.aton.entity.Wallet;
@@ -81,6 +82,8 @@ import butterknife.Unbinder;
 
 /**
  * 委托操作页面
+ *
+ * @author ziv
  */
 
 public class DelegateActivity extends BaseActivity<DelegateContract.View, DelegatePresenter> implements DelegateContract.View {
@@ -131,16 +134,27 @@ public class DelegateActivity extends BaseActivity<DelegateContract.View, Delega
     TextView tv_lat_two;
 
     private Unbinder unbinder;
-    private StakingAmountType stakingAmountType;//选择的钱包类型（可用余额/锁仓余额）
+    /**
+     * 选择的钱包类型（可用余额/锁仓余额）
+     */
+    private StakingAmountType stakingAmountType;
     private List<DelegateType> typeList = new ArrayList<>();
 
     private PopupWindow mPopupWindow;
     private ListView mPopListview;
     private DelegatePopAdapter mAdapter;
-    private boolean isAll = false;//是否点击的全部
-    private String feeAmount;//手续费
-    private String freeBalance;//自由金额
-    private boolean isCanDelegate;//是否允许委托
+    /**
+     * 是否点击的全部
+     */
+    private boolean isAll = false;
+    /**
+     * 手续费
+     */
+    private String feeAmount;
+    /**
+     * 自由金额
+     */
+    private String freeBalance;
 
     @Override
 
@@ -157,6 +171,7 @@ public class DelegateActivity extends BaseActivity<DelegateContract.View, Delega
     public void init() {
         unbinder = ButterKnife.bind(this);
         initView();
+        getPresenter().init(getDelegateDetailFromIntent());
         getPresenter().showWalletInfo();
         getPresenter().getGas();
     }
@@ -317,8 +332,8 @@ public class DelegateActivity extends BaseActivity<DelegateContract.View, Delega
     }
 
     private void refreshData(DelegateType item) {
-        stakingAmountType = TextUtils.equals("0", item.getType()) ? StakingAmountType.FREE_AMOUNT_TYPE : StakingAmountType.RESTRICTING_AMOUNT_TYPE;
-        amountType.setText(TextUtils.equals(item.getType(), "0") ? getString(R.string.available_balance) : getString(R.string.locked_balance));
+        stakingAmountType = item.getStakingAmountType();
+        amountType.setText(stakingAmountType == StakingAmountType.FREE_AMOUNT_TYPE ? getString(R.string.available_balance) : getString(R.string.locked_balance));
         amount.setText(StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(item.getAmount(), "1E18"))), false));
     }
 
@@ -385,21 +400,20 @@ public class DelegateActivity extends BaseActivity<DelegateContract.View, Delega
         walletIcon.setImageResource(RUtils.drawable(individualWalletEntity.getAvatar()));
     }
 
-    private void checkIsClick(DelegateHandle bean) {
-        if (TextUtils.equals(bean.getLock(), "0")) {
+    private void checkIsClick(EstimateGasResult estimateGasResult) {
+        if (BigDecimalUtil.isBiggerThanZero(estimateGasResult.getLock())) {
+            iv_drop_down.setVisibility(View.VISIBLE);
+            tv_lat_two.setVisibility(View.GONE);
+            tv_lat_one.setVisibility(View.VISIBLE);
+            amounChoose.setClickable(true);
+        } else {
             //锁仓金额为0，不可点击
             amounChoose.setClickable(false);
             iv_drop_down.setVisibility(View.GONE);
             tv_lat_one.setVisibility(View.GONE);
             tv_lat_two.setVisibility(View.VISIBLE);
-
-        } else {
-            iv_drop_down.setVisibility(View.VISIBLE);
-            tv_lat_two.setVisibility(View.GONE);
-            tv_lat_one.setVisibility(View.VISIBLE);
-            amounChoose.setClickable(true);
         }
-        freeBalance = bean.getFree();
+        freeBalance = estimateGasResult.getFree();
 
     }
 
@@ -422,61 +436,60 @@ public class DelegateActivity extends BaseActivity<DelegateContract.View, Delega
     @Override
     public void showTips(boolean isShow, String minDelegation) {
         inputError.setText(getString(R.string.delegate_amount_tips, minDelegation));
-        inputError.setVisibility(isShow && isCanDelegate ? View.VISIBLE : View.GONE);
+        inputError.setVisibility(isShow ? View.VISIBLE : View.GONE);
     }
 
 
     @Override
-    public void showIsCanDelegate(DelegateHandle bean) {
-        isCanDelegate = bean.isCanDelegation();
+    public void showIsCanDelegate(EstimateGasResult estimateGasResult) {
+        et_amount.setHint(getString(R.string.withdraw_tip, NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(estimateGasResult.getMinDelegation(), "1E18"))));
         typeList.clear();
-        typeList.add(new DelegateType("0", bean.getFree()));
-        typeList.add(new DelegateType("1", bean.getLock()));
+        typeList.add(new DelegateType(StakingAmountType.FREE_AMOUNT_TYPE, estimateGasResult.getFree()));
+        typeList.add(new DelegateType(StakingAmountType.RESTRICTING_AMOUNT_TYPE, estimateGasResult.getLock()));
         amountType.setText(getString(R.string.available_balance));
-        amount.setText(StringUtil.formatBalance((BigDecimalUtil.div(bean.getFree(), "1E18"))));
-        checkIsClick(bean);
-        //判断是否允许委托
-        checkIsCanDelegate(bean);
-
+        amount.setText(StringUtil.formatBalance((BigDecimalUtil.div(estimateGasResult.getFree(), "1E18"))));
+        checkIsClick(estimateGasResult);
     }
 
-    private void checkIsCanDelegate(DelegateHandle bean) {
+    @Override
+    public void showDelegateException(int errorCode) {
 
-        et_amount.setHint(getString(R.string.withdraw_tip, NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(bean.getMinDelegation(), "1E18"))));
+        et_amount.setHint(getString(R.string.withdraw_tip, NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(AppConfigManager.getInstance().getMinDelegation(), "1E18"))));
 
-        if (!bean.isCanDelegation()) {
-            all.setClickable(false);
-            et_amount.setText("");
-            et_amount.setFocusableInTouchMode(false);
-            et_amount.setFocusable(false);
-            //表示不能委托
-            if (TextUtils.equals(bean.getMessage(), "1")) { //不能委托原因：1.解除委托金额大于0
-                btnDelegate.setEnabled(false);
-                showLongToast(getString(R.string.delegate_no_click));
-            } else if (TextUtils.equals(bean.getMessage(), "2")) { //节点已退出或退出中
-                btnDelegate.setEnabled(false);
-                tv_no_delegate_tips.setVisibility(View.VISIBLE);
-                setImageIconForText(tv_no_delegate_tips, getString(R.string.the_validator_has_exited_and_cannot_be_delegated));
-            } else if (TextUtils.equals(bean.getMessage(), "3")) {
-                btnDelegate.setEnabled(false);
-                tv_no_delegate_tips.setVisibility(View.VISIBLE);
-                setImageIconForText(tv_no_delegate_tips, getString(R.string.tips_not_delegate));
-            } else {
-                btnDelegate.setEnabled(false);
-                tv_no_delegate_tips.setVisibility(View.VISIBLE);
-                setImageIconForText(tv_no_delegate_tips, getString(R.string.tips_not_balance));
-            }
+        all.setClickable(false);
+        et_amount.setText("");
+        et_amount.setFocusableInTouchMode(false);
+        et_amount.setFocusable(false);
+        if (errorCode == 3006) {
+            //节点已退出或退出中
+            btnDelegate.setEnabled(false);
+            tv_no_delegate_tips.setVisibility(View.VISIBLE);
+            setImageIconForText(tv_no_delegate_tips, getString(R.string.the_validator_has_exited_and_cannot_be_delegated));
+        } else if (errorCode == 3007) {
+            btnDelegate.setEnabled(false);
+            tv_no_delegate_tips.setVisibility(View.VISIBLE);
+            setImageIconForText(tv_no_delegate_tips, getString(R.string.tips_not_delegate));
         } else {
-            all.setClickable(true);
-            et_amount.setFocusableInTouchMode(true);
-            et_amount.setFocusable(true);
-            tv_no_delegate_tips.setVisibility(View.GONE);
-            //可以委托,判断数量是否大于10
-            if (NumberParserUtils.parseDouble(et_amount.getText().toString()) >= 10) {
-                btnDelegate.setEnabled(true);
-            } else {
-                btnDelegate.setEnabled(false);
-            }
+            btnDelegate.setEnabled(false);
+            tv_no_delegate_tips.setVisibility(View.VISIBLE);
+            setImageIconForText(tv_no_delegate_tips, getString(R.string.tips_not_balance));
+        }
+    }
+
+    @Override
+    public void showDelegateResult(String minDelegation) {
+
+        et_amount.setHint(getString(R.string.withdraw_tip, NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(minDelegation, "1E18"))));
+
+        all.setClickable(true);
+        et_amount.setFocusableInTouchMode(true);
+        et_amount.setFocusable(true);
+        tv_no_delegate_tips.setVisibility(View.GONE);
+        //可以委托,判断数量是否大于10
+        if (NumberParserUtils.parseDouble(et_amount.getText().toString()) >= 10) {
+            btnDelegate.setEnabled(true);
+        } else {
+            btnDelegate.setEnabled(false);
         }
     }
 

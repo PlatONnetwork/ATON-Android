@@ -28,6 +28,9 @@ public class ManageWalletContract {
     }
 
     public interface Presenter extends IPresenter<View> {
+
+        void init(Wallet wallet);
+
         void showWalletInfo();
 
         void validPassword(int type, Credentials credentials);

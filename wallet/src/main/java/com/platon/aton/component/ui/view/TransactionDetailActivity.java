@@ -91,6 +91,7 @@ public class TransactionDetailActivity extends BaseActivity<TransactionDetailCon
     public void init() {
         EventPublisher.getInstance().register(this);
         unbinder = ButterKnife.bind(this);
+        getPresenter().init();
         getPresenter().loadData();
     }
 

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_wallet"
+    android:layout_width="200dp"
+    android:layout_height="44dp"
+    android:background="@drawable/selector_item_assets_wallet"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingLeft="14dp"
+    android:paddingRight="14dp">
+
+
+    <ImageView
+        android:id="@+id/iv_wallet_tag"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="@drawable/selector_item_assets_wallet_tag" />
+
+    <TextView
+        android:id="@+id/tv_wallet_name"
+        style="@style/Text.fff.14"
+        android:layout_marginLeft="8dp"
+        android:ellipsize="end"
+        android:lines="1"
+        android:textColor="@color/color_item_assets_wallet_name"
+        android:textStyle="bold"
+        tools:text="BIGANXING_WalletBIGANXING_Wallet" />
+
+</LinearLayout>

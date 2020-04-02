@@ -65,7 +65,7 @@ public class BackupWalletActivity extends BaseActivity implements View.OnClickLi
         InputWalletPasswordDialogFragment.newInstance(walletEntity).setOnWalletCorrectListener(new InputWalletPasswordDialogFragment.OnWalletCorrectListener() {
             @Override
             public void onCorrect(Credentials credentials, String password) {
-                BackupMnemonicPhraseActivity.actionStart(getContext(), password, walletEntity);
+                BackupMnemonicPhraseActivity.actionStart(getContext(), password, walletEntity, BackupMnemonicPhraseActivity.BackupMnemonicExport.BACKUP_WALLET_ACTIVITY);
                 BackupWalletActivity.this.finish();
             }
         }).show(currentActivity().getSupportFragmentManager(), "inputPassword");

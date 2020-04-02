@@ -147,7 +147,7 @@ public class DelegateSelectWalletDialogFragment extends BaseDialogFragment {
                 .map(new Function<WalletEntity, Wallet>() {
                     @Override
                     public Wallet apply(WalletEntity walletInfoEntity) throws Exception {
-                        return walletInfoEntity.buildWalletEntity();
+                        return walletInfoEntity.buildWallet();
                     }
                 })
                 .map(new Function<Wallet, Wallet>() {

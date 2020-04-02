@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<inset xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <inset
+        android:drawable="@drawable/icon_scan"
+        android:insetLeft="16dp"
+        android:insetTop="3dp"
+        android:insetRight="10dp"
+        android:insetBottom="21dp" />
+
+</inset>

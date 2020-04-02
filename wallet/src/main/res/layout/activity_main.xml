@@ -4,10 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipToPadding="true"
+    android:divider="@drawable/divider_tab_bar"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
     android:showDividers="middle"
-    android:divider="@drawable/divider_tab_bar"
     tools:context=".component.ui.view.MainActivity">
 
     <FrameLayout
@@ -21,6 +21,6 @@
     <com.platon.aton.component.widget.FragmentTabHost
         android:id="@android:id/tabhost"
         android:layout_width="match_parent"
-        android:layout_height="49dp"/>
+        android:layout_height="49dp" />
 
 </LinearLayout>

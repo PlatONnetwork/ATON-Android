@@ -35,8 +35,6 @@ public class AssetsContract {
 
         void finishRefresh();
 
-        void showTab(@AssetsFragment.MainTab int tab);
-
         void resetView();
     }
 

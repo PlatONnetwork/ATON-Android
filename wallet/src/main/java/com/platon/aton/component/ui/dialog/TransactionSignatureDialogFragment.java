@@ -39,7 +39,6 @@ import com.platon.aton.entity.Wallet;
 import com.platon.aton.event.EventPublisher;
 import com.platon.aton.utils.AddressFormatUtil;
 import com.platon.aton.utils.BigIntegerUtil;
-import com.platon.aton.utils.DensityUtil;
 import com.platon.aton.utils.GZipUtil;
 import com.platon.aton.utils.JSONUtil;
 import com.platon.aton.utils.RxUtils;
@@ -97,6 +96,8 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
     TextView tvTransactionSignature;
     @BindView(R.id.sbtn_send_transaction)
     ShadowButton sbtnSendTransaction;
+    @BindView(R.id.iv_close)
+    ImageView ivClose;
 
     private Unbinder unbinder;
     private TransactionSignatureData transactionSignatureData;
@@ -128,8 +129,6 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_fragment_transaction_signature, null, false);
         baseDialog.setContentView(contentView);
         setFullWidthEnable(true);
-        setHorizontalMargin(DensityUtil.dp2px(getContext(), 14f));
-        setyOffset(DensityUtil.dp2px(getContext(), 16f));
         setAnimation(R.style.Animation_slide_in_bottom);
         unbinder = ButterKnife.bind(this, contentView);
         initViews();
@@ -194,6 +193,16 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
                             sbtnSendTransaction.setEnabled(false);
                             sendTransaction(transactionSignatureData, transactionAuthorizationData);
                         }
+                    }
+                });
+
+        RxView.clicks(ivClose)
+                .compose(RxUtils.getClickTransformer())
+                .compose(bindToLifecycle())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        dismiss();
                     }
                 });
     }

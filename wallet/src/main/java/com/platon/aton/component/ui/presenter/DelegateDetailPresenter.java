@@ -30,12 +30,10 @@ public class DelegateDetailPresenter extends BasePresenter<DelegateDetailContrac
 
     @Override
     public void loadDelegateDetailData() {
-        if (isViewAttached()) {
-            DelegateInfo delegateInfo = getView().getDelegateInfoFromIntent();
-            if (delegateInfo != null) {
-                getView().showWalletInfo(delegateInfo);
-                getDelegateDetailData(delegateInfo);
-            }
+        DelegateInfo delegateInfo = getView().getDelegateInfoFromIntent();
+        if (delegateInfo != null) {
+            getView().showWalletInfo(delegateInfo);
+            getDelegateDetailData(delegateInfo);
         }
     }
 

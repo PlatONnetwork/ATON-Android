@@ -90,7 +90,7 @@ public class AmountUtil {
     }
 
     public static String convertVonToLatWithFractionDigits(String value, int fractionDigits) {
-        return NumberParserUtils.parseStringWithFractionDigits(BigDecimalUtil.div(value, VALUE_1E18), fractionDigits);
+        return NumberParserUtils.parseStringWithFractionDigits(BigDecimalUtil.div(value, VALUE_1E18, fractionDigits), fractionDigits);
     }
 
     /**

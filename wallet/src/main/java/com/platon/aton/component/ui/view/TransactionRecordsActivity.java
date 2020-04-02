@@ -17,7 +17,6 @@ import com.platon.aton.component.adapter.TransactionDiffCallback;
 import com.platon.aton.component.adapter.TransactionListAdapter;
 import com.platon.aton.component.ui.contract.TransactionRecordsContract;
 import com.platon.aton.component.ui.presenter.TransactionRecordsPresenter;
-import com.platon.aton.component.widget.CommonVerticalItemDecoration;
 import com.platon.aton.component.widget.ShadowDrawable;
 import com.platon.aton.component.widget.WalletListPop;
 import com.platon.aton.engine.WalletManager;
@@ -118,11 +117,22 @@ public class TransactionRecordsActivity extends BaseActivity<TransactionRecordsC
                 0,
                 DensityUtil.dp2px(this, 2));
 
-        mTransactionListAdapter = new TransactionListAdapter(this);
+        mTransactionListAdapter = new TransactionListAdapter(TransactionListAdapter.EntranceType.ME_PAGE);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
-        listTransactions.addItemDecoration(new CommonVerticalItemDecoration(this, R.drawable.bg_transation_list_divider));
         listTransactions.setLayoutManager(linearLayoutManager);
         listTransactions.setAdapter(mTransactionListAdapter);
+
+        mTransactionListAdapter.setOnItemClickListener(new TransactionListAdapter.OnItemClickListener() {
+            @Override
+            public void onCommonTransactionItemClick(Transaction transaction, int position) {
+                TransactionDetailActivity.actionStart(TransactionRecordsActivity.this, transaction, mAddressList);
+            }
+
+            @Override
+            public void onMoreTransactionItemClick() {
+
+            }
+        });
 
         layoutRefresh.setOnRefreshListener(new OnRefreshListener() {
             @Override

@@ -11,6 +11,9 @@ import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 
+/**
+ * @author ziv
+ */
 public class DelegationValue {
 
 
@@ -21,6 +24,18 @@ public class DelegationValue {
      * 最新最小委托数量
      */
     private String minDelegation;
+    /**
+     * 地址对应的自由账户余额  单位von
+     */
+    private String free;
+    /**
+     * 地址对应的锁仓账户余额  单位von
+     */
+    private String lock;
+    /**
+     * 该地址对应的nonce值
+     */
+    private String nonce;
 
     public DelegationValue() {
     }
@@ -39,6 +54,30 @@ public class DelegationValue {
 
     public void setMinDelegation(String minDelegation) {
         this.minDelegation = minDelegation;
+    }
+
+    public String getFree() {
+        return free;
+    }
+
+    public void setFree(String free) {
+        this.free = free;
+    }
+
+    public String getLock() {
+        return lock;
+    }
+
+    public void setLock(String lock) {
+        this.lock = lock;
+    }
+
+    public String getNonce() {
+        return nonce;
+    }
+
+    public void setNonce(String nonce) {
+        this.nonce = nonce;
     }
 
     public double getDelegatedSumAmount() {

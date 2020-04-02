@@ -148,6 +148,7 @@ public class MyDelegateFragment extends BaseLazyFragment<MyDelegateContract.View
     public void onFragmentVisible() {
         super.onFragmentVisible();
         MobclickAgent.onPageStart(Constants.UMPages.MY_DELEGATION);
+        refreshLayout.autoRefresh();
     }
 
     @Override
