@@ -93,9 +93,9 @@ android {
     buildTypes {
         debug {
             debuggable true
-            signingConfig signingConfigs.releaseC
+            signingConfig signingConfigs.releaseX
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
+            buildConfigField("String", "RELEASE_TYPE", "${releaseTypeX}")
             multiDexEnabled true
             testCoverageEnabled true  //打开覆盖率统计开关
 
@@ -312,6 +312,8 @@ dependencies {
     testImplementation 'org.robolectric:shadows-support-v4:3.0'
     //    testImplementation group: 'org.robolectric',name:'android-all',version:'8.1.0-robolectric-4611349'
     //    testImplementation 'com.squareup.okhttp3:mockwebserver:3.9.1'
+//    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.6.3'
+//    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
 }
 
 

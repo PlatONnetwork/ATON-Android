@@ -8,12 +8,19 @@
     android:paddingTop="16dp"
     android:paddingBottom="16dp">
 
+    <com.platon.aton.component.widget.framesurfaceview.FrameSurfaceView
+        android:id="@+id/sv_frame"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_centerHorizontal="true" />
+
     <ImageView
-        android:id="@+id/iv_loading"
+        android:id="@+id/iv"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/bg_loading" />
+        android:src="@drawable/icon_loading_16"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/tv_loading"

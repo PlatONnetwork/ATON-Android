@@ -44,4 +44,5 @@ public class BaseDialog extends AppCompatDialog {
             window.setAttributes(layoutParams);
         }
     }
+
 }

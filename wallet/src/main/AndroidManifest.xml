@@ -33,7 +33,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
-        tools:replace="android:roundIcon">
+        tools:replace="android:roundIcon,android:allowBackup">
 
         <activity
             android:name="com.platon.aton.component.ui.view.SplashActivity"

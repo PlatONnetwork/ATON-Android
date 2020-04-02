@@ -1,6 +1,5 @@
 package com.platon.aton.component.ui;
 
-import android.graphics.drawable.AnimationDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -11,7 +10,11 @@ import android.widget.TextView;
 
 import com.platon.aton.R;
 import com.platon.aton.component.ui.dialog.BaseDialog;
+import com.platon.aton.component.widget.framesurfaceview.FrameSurfaceView;
 import com.platon.aton.utils.ToastUtil;
+
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -22,10 +25,28 @@ public abstract class BaseContextImpl implements IContext {
     private final static int FRAME_ANIMATION_DURATION = 640;
 
     private BaseDialog mProgressDialog;
-    private ImageView mLoadingImage;
-    private AnimationDrawable mAnimationDrawable;
+    private FrameSurfaceView mFrameSurfaceView;
     private RotateAnimation mRotateAnimation;
     private Runnable mRunnable;
+
+    private List<Integer> frameAnimationDrawables = Arrays.asList(
+            R.drawable.icon_loading_01,
+            R.drawable.icon_loading_02,
+            R.drawable.icon_loading_03,
+            R.drawable.icon_loading_04,
+            R.drawable.icon_loading_05,
+            R.drawable.icon_loading_06,
+            R.drawable.icon_loading_07,
+            R.drawable.icon_loading_08,
+            R.drawable.icon_loading_09,
+            R.drawable.icon_loading_10,
+            R.drawable.icon_loading_11,
+            R.drawable.icon_loading_12,
+            R.drawable.icon_loading_13,
+            R.drawable.icon_loading_14,
+            R.drawable.icon_loading_15,
+            R.drawable.icon_loading_16
+    );
 
     @Override
     public void showShortToast(String text) {
@@ -49,20 +70,17 @@ public abstract class BaseContextImpl implements IContext {
 
     @Override
     public void dismissLoadingDialogImmediately() {
+
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
 
-            if (mAnimationDrawable != null && mAnimationDrawable.isRunning()) {
-                mAnimationDrawable.stop();
-            }
-
-            if (mLoadingImage != null && mRunnable != null) {
-                mLoadingImage.removeCallbacks(mRunnable);
+            if (mFrameSurfaceView != null && mRunnable != null) {
+                mFrameSurfaceView.destroy();
+                mFrameSurfaceView.removeCallbacks(mRunnable);
                 //已经启动，并且还没结束
                 if (mRotateAnimation != null && mRotateAnimation.hasStarted() && !mRotateAnimation.hasEnded()) {
                     mRotateAnimation.cancel();
                 }
             }
-
             mProgressDialog.dismiss();
         }
     }
@@ -86,17 +104,20 @@ public abstract class BaseContextImpl implements IContext {
         mProgressDialog = createProgressDialog(text);
         mProgressDialog.setCancelable(cancelable);
 
-        mLoadingImage = mProgressDialog.findViewById(R.id.iv_loading);
-        mAnimationDrawable = (AnimationDrawable) mLoadingImage.getBackground();
-        mAnimationDrawable.start();
+        ImageView imageView = mProgressDialog.findViewById(R.id.iv);
+        mFrameSurfaceView = mProgressDialog.findViewById(R.id.sv_frame);
+        mFrameSurfaceView.setBitmapIds(frameAnimationDrawables);
+        mFrameSurfaceView.setDuration(FRAME_ANIMATION_DURATION);
+        mFrameSurfaceView.start();
         mRunnable = new Runnable() {
             @Override
             public void run() {
                 mRotateAnimation = getRotateAnimation();
-                mLoadingImage.startAnimation(mRotateAnimation);
+                imageView.setVisibility(View.VISIBLE);
+                imageView.startAnimation(mRotateAnimation);
             }
         };
-        mLoadingImage.postDelayed(mRunnable, FRAME_ANIMATION_DURATION);
+        mFrameSurfaceView.postDelayed(mRunnable, FRAME_ANIMATION_DURATION);
 
         mProgressDialog.show();
     }
@@ -135,4 +156,5 @@ public abstract class BaseContextImpl implements IContext {
         rotateAnimation.cancel();
         return rotateAnimation;
     }
+
 }

@@ -89,6 +89,7 @@ public class ObservedWalletDialogFragment extends BaseDialogFragment {
 
     }
 
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof ConfirmListener) {
