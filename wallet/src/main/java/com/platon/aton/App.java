@@ -13,7 +13,6 @@ import com.platon.aton.config.AppSettings;
 import com.platon.aton.engine.DeviceManager;
 import com.platon.aton.engine.WalletManager;
 import com.platon.framework.app.CoreApp;
-import com.squareup.leakcanary.LeakCanary;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
 import com.umeng.socialize.PlatformConfig;
