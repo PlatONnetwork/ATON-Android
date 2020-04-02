@@ -357,7 +357,7 @@ public class AssetsFragment2 extends BaseLazyFragment<AssetsContract2.View, Asse
         mTransactionListAdapter.setOnItemClickListener(new TransactionListAdapter.OnItemClickListener() {
             @Override
             public void onCommonTransactionItemClick(Transaction transaction, int position) {
-                TransactionDetailActivity.actionStart(getContext(), transaction, Collections.singletonList(transaction.getFrom()));
+                TransactionDetailActivity.actionStart(getContext(), transaction, Collections.singletonList(WalletManager.getInstance().getSelectedWalletAddress()));
             }
 
             @Override
