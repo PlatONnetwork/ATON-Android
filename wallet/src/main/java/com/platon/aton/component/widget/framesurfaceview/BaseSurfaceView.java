@@ -132,13 +132,16 @@ public abstract class BaseSurfaceView extends SurfaceView implements SurfaceHold
             if (!isAlive) {
                 return;
             }
+            SurfaceHolder surfaceHolder = getHolder();
             try {
-                canvas = getHolder().lockCanvas();
+                canvas = surfaceHolder.lockCanvas();
                 onFrameDraw(canvas);
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
-                getHolder().unlockCanvasAndPost(canvas);
+                if (canvas != null && surfaceHolder.getSurface() != null && surfaceHolder.getSurface().isValid()) {
+                    surfaceHolder.unlockCanvasAndPost(canvas);
+                }
                 onFrameDrawFinish();
             }
             if (handler != null) {
