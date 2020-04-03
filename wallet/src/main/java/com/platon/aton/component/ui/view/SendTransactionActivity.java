@@ -318,7 +318,6 @@ public class SendTransactionActivity extends BaseActivity<SendTransationContract
                 default:
                     break;
             }
-
         }
     }
 
