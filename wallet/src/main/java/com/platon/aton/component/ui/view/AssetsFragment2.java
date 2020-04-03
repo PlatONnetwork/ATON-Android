@@ -502,6 +502,34 @@ public class AssetsFragment2 extends BaseLazyFragment<AssetsContract2.View, Asse
                         ManageWalletActivity.actionStart(currentActivity(), WalletManager.getInstance().getSelectedWallet());
                     }
                 });
+        RxView.clicks(rtvSendTransaction)
+                .compose(RxUtils.getClickTransformer())
+                .compose(bindToLifecycle())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        SendTransactionActivity.actionStart(getContext());
+                    }
+                });
+        RxView.clicks(rtvSendTransaction)
+                .compose(RxUtils.getClickTransformer())
+                .compose(bindToLifecycle())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        SendTransactionActivity.actionStart(getContext());
+                    }
+                });
+        RxView.clicks(rtvReceiveTransaction)
+                .compose(RxUtils.getClickTransformer())
+                .compose(bindToLifecycle())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                       ReceiveTransactionActivity.actionStart(getContext());
+                    }
+                });
+
     }
 
     /**

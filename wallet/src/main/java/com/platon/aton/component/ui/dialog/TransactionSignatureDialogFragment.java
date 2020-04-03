@@ -277,13 +277,16 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
                             CustomThrowable customThrowable = (CustomThrowable) throwable;
                             if (customThrowable.getErrCode() == RPCErrorCode.CONNECT_TIMEOUT) {
                                 ToastUtil.showLongToast(getActivity(), R.string.msg_connect_timeout);
-                            } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_KNOWN_TX) {
-                                ToastUtil.showLongToast(getActivity(), R.string.msg_transaction_repeatedly_exception);
-                            } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_NONCE_TOO_LOW ||
-                                    customThrowable.getErrCode() == CustomThrowable.CODE_TX_GAS_LOW) {
-                                ToastUtil.showLongToast(getActivity(), R.string.msg_expired_qr_code);
+                            } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_NONCE_TOO_LOW  ||
+                                    customThrowable.getErrCode() == CustomThrowable.CODE_TX_GAS_LOW){
+                                if(WalletManager.getInstance().getSelectedWallet().isObservedWallet()){
+                                    ToastUtil.showLongToast(getActivity(), (((BaseActivity) getActivity()).string(R.string.msg_transaction_exception, customThrowable.getErrCode())));
+                                }else{
+                                    ToastUtil.showLongToast(getActivity(), R.string.msg_expired_qr_code);
+                                }
                             } else {
-                                ToastUtil.showLongToast(getActivity(), getString(R.string.msg_server_exception, customThrowable.getErrCode()));
+                                //showLongToast(string(R.string.msg_server_exception, customThrowable.getErrCode()));
+                                ToastUtil.showLongToast(getActivity(), customThrowable.getDetailMsgRes());
                             }
                         } else {
                             if (transactionSignatureData.getFunctionType() == FunctionType.TRANSFER) {

@@ -5,8 +5,7 @@
     android:id="@+id/layout_content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_send_transaction_dialog_fragment"
-    android:orientation="vertical">
+    android:background="@drawable/bg_send_transaction_dialog_fragment">
 
     <RelativeLayout
         android:id="@+id/layout_title"
@@ -40,6 +39,8 @@
         android:id="@+id/view_divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:background="@drawable/bg_send_transaction_divider"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -78,14 +79,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="42dp"
-        android:layout_marginTop="48dp"
         android:layout_marginRight="42dp"
-        android:paddingLeft="2dp"
-        android:paddingTop="4dp"
-        android:paddingRight="2dp"
-        android:paddingBottom="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="30dp"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintTop_toBottomOf="@id/table_transaction_info"
         app:text="@string/next"
         app:textAppearance="@style/MainButtonStyle"

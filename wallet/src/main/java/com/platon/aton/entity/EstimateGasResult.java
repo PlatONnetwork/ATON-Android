@@ -30,12 +30,24 @@ public class EstimateGasResult implements Nullable {
      * 区块最大gasLimit
      */
     private String blockGasLimit;
+    /**
+     * nonce值
+     */
+    private String nonce;
 
     public static EstimateGasResult getNullInstance() {
         return NullEstimateGasResult.getInstance();
     }
 
     public EstimateGasResult() {
+    }
+
+    public String getNonce() {
+        return nonce;
+    }
+
+    public void setNonce(String nonce) {
+        this.nonce = nonce;
     }
 
     public String getGasLimit() {
