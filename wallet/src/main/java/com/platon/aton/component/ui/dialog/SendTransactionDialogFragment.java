@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,10 +15,8 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.platon.aton.R;
 import com.platon.aton.app.CustomObserver;
 import com.platon.aton.component.widget.ShadowButton;
-import com.platon.aton.component.widget.ShadowDrawable;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.utils.AddressFormatUtil;
-import com.platon.aton.utils.DensityUtil;
 import com.platon.aton.utils.JZWalletUtil;
 import com.platon.aton.utils.RxUtils;
 import com.platon.aton.utils.StringUtil;
@@ -46,8 +43,6 @@ public class SendTransactionDialogFragment extends BaseDialogFragment {
     LinearLayout tableTransactionInfo;
     @BindView(R.id.sbtn_confirm)
     ShadowButton sbtnConfirm;
-    @BindView(R.id.tv_cancel)
-    TextView tvCancel;
     @BindView(R.id.layout_content)
     ConstraintLayout layoutContent;
     @BindString(R.string.pay_wallet)
@@ -117,13 +112,13 @@ public class SendTransactionDialogFragment extends BaseDialogFragment {
             tableTransactionInfo.addView(buildTransactionInfoItemLayout(entry.getKey(), entry.getValue()));
         }
 
-        ShadowDrawable.setShadowDrawable(layoutContent,
+       /* ShadowDrawable.setShadowDrawable(layoutContent,
                 ContextCompat.getColor(context, R.color.color_ffffff),
                 DensityUtil.dp2px(context, 6f),
                 ContextCompat.getColor(context, R.color.color_33616161)
                 , DensityUtil.dp2px(context, 10f),
                 0,
-                DensityUtil.dp2px(context, 2f));
+                DensityUtil.dp2px(context, 2f));*/
 
         RxView.clicks(sbtnConfirm)
                 .compose(RxUtils.getClickTransformer())

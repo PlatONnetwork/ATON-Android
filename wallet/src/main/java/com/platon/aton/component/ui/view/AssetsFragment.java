@@ -382,12 +382,14 @@ public class AssetsFragment extends BaseNestingLazyFragment<AssetsContract.View,
                 AssetsMoreDialogFragment.newInstance().setOnAssetMoreClickListener(new AssetsMoreDialogFragment.OnAssetMoreClickListener() {
                     @Override
                     public void onCreateWalletClick() {
-                        CreateWalletActivity.actionStart(getContext());
+                        SendTransactionActivity.actionStart(getContext());
+                       // CreateWalletActivity.actionStart(getContext());
                     }
 
                     @Override
                     public void onImportWalletClick() {
-                        ImportWalletActivity.actionStart(getContext());
+                        ReceiveTransactionActivity.actionStart(getContext());
+                       // ImportWalletActivity.actionStart(getContext());
                     }
                 }).show(getChildFragmentManager(), "showAssetsMore");
                 break;
