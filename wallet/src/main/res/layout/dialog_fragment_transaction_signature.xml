@@ -72,6 +72,7 @@
         android:layout_marginLeft="48dp"
         android:layout_marginTop="14dp"
         android:layout_marginRight="48dp"
+        android:textColor="@color/black"
         android:background="@drawable/bg_transaction_signature"
         android:padding="16dp"
         app:layout_constraintTop_toBottomOf="@id/iv_scan" />

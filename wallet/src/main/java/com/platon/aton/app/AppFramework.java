@@ -4,17 +4,18 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.platon.framework.app.Constants;
-import com.platon.framework.network.NetConnectivity;
-import com.platon.framework.network.NetState;
-import com.platon.framework.utils.RUtils;
+import com.meituan.android.walle.WalleChannelReader;
 import com.platon.aton.BuildConfig;
 import com.platon.aton.engine.DeviceManager;
 import com.platon.aton.engine.NodeManager;
 import com.platon.aton.engine.WalletManager;
+import com.platon.aton.engine.directory.DirectroyController;
 import com.platon.aton.event.Event;
 import com.platon.aton.event.EventPublisher;
-import com.meituan.android.walle.WalleChannelReader;
+import com.platon.framework.app.Constants;
+import com.platon.framework.network.NetConnectivity;
+import com.platon.framework.network.NetState;
+import com.platon.framework.utils.RUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -64,6 +65,8 @@ public class AppFramework {
         DeviceManager.getInstance().init(context, WalleChannelReader.getChannel(context));
         //初始化RUtils
         RUtils.init(context);
+        //初始化Directroy
+        DirectroyController.getInstance().init(context);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

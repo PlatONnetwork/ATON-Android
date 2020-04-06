@@ -33,7 +33,6 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.reactivex.Observable;
 import io.reactivex.functions.BiFunction;
-import io.reactivex.functions.Predicate;
 
 /**
  * @author matrixelement
@@ -73,6 +72,7 @@ public class AddNewAddressActivity extends BaseActivity<AddNewAddressContract.Vi
     @Override
     public void init() {
         unbinder = ButterKnife.bind(this);
+        getPresenter().getIntentData();
         initViews();
         getPresenter().loadAddressInfo();
     }
