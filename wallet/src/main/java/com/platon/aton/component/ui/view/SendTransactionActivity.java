@@ -341,7 +341,7 @@ public class SendTransactionActivity extends BaseActivity<SendTransationContract
         if(NetworkUtil.getNetWorkType(getContext()) == NetworkType.NETWORK_NO){
             layoutNetworkNo.setVisibility(View.VISIBLE);
         }else{
-            layoutNetworkNo.setVisibility(View.GONE);
+            layoutNetworkNo.setVisibility(View.INVISIBLE);
         }
     }
 

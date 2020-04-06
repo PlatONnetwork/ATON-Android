@@ -61,6 +61,7 @@ import org.web3j.crypto.WalletUtils;
 import org.web3j.platon.FunctionType;
 import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.utils.Convert;
+import org.web3j.utils.Numeric;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -279,6 +280,26 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
         return TextUtils.isEmpty(errMsg);
     }
 
+    public static final int ADDRESS_STANDARD_SIZE = 42;
+
+    public boolean checkToAddressNotSelf(String toAddress,String address){
+
+        if(toAddress.contains("0x") && toAddress.length() == ADDRESS_STANDARD_SIZE){
+            if (toAddress.equalsIgnoreCase(address)) {
+                showLongToast(R.string.can_not_send_to_itself);
+                return false;
+            }
+        }else{
+            String cleanToAddress = Numeric.cleanHexPrefix(toAddress);
+            String cleanAddress = Numeric.cleanHexPrefix(address);
+            if (cleanToAddress.equalsIgnoreCase(cleanAddress)) {
+                showLongToast(R.string.can_not_send_to_itself);
+                return false;
+            }
+        }
+        return true;
+    }
+
     @Override
     public boolean checkTransferAmount(String transferAmount) {
 
@@ -317,8 +338,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                 return;
             }
             String address = walletEntity.getPrefixAddress();
-            if (toAddress.equalsIgnoreCase(address)) {
-                showLongToast(R.string.can_not_send_to_itself);
+            if(!checkToAddressNotSelf(toAddress,address)){
                 return;
             }
 
