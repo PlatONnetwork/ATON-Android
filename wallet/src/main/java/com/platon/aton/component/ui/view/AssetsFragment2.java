@@ -254,6 +254,11 @@ public class AssetsFragment2 extends BaseLazyFragment<AssetsContract2.View, Asse
         getPresenter().loadNewData(TransactionsPresenter.DIRECTION_NEW);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onWalletListOrderChangedEvent(Event.WalletListOrderChangedEvent event) {
+        mWalletListAdapter.notifyDataSetChanged(WalletManager.getInstance().getWalletList());
+    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -295,7 +300,12 @@ public class AssetsFragment2 extends BaseLazyFragment<AssetsContract2.View, Asse
 
                 if (qrCodeType == QrCodeType.WALLET_ADDRESS) {
                     //有钱包进入发送界面，如果是地址的话无钱包进入导入观察者钱包页面
-                    //todo
+                    if (WalletManager.getInstance().getWalletList().isEmpty()) {
+                        //进入导入观察者钱包
+                        ImportWalletActivity.actionStart(getActivity(), ImportWalletActivity.TabIndex.IMPORT_OBSERVED, unzip);
+                    } else {
+                        SendTransactionActivity.actionStart(getActivity());
+                    }
                     return;
                 }
 
@@ -526,7 +536,7 @@ public class AssetsFragment2 extends BaseLazyFragment<AssetsContract2.View, Asse
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                       ReceiveTransactionActivity.actionStart(getContext());
+                        ReceiveTransactionActivity.actionStart(getContext());
                     }
                 });
 

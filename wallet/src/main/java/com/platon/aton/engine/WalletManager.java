@@ -313,6 +313,7 @@ public class WalletManager {
         if (mWalletList.isEmpty()) {
             return mWalletList = getWalletListFromDB().blockingGet();
         }
+        Collections.sort(mWalletList);
         return mWalletList;
     }
 
@@ -422,7 +423,6 @@ public class WalletManager {
         mWallet.setBackedUp(true);
         mWallet.setChainId(NodeManager.getInstance().getChainId());
         mWallet.setCreateTime(System.currentTimeMillis());
-        mWallet.setUpdateTime(System.currentTimeMillis());
         mWallet.setName(String.format("%s%d", "Wallet", PreferenceTool.getInt(NodeManager.getInstance().getChainId(), 1)));
         addWallet(mWallet);
         WalletDao.insertWalletInfo(mWallet.buildWalletInfoEntity());

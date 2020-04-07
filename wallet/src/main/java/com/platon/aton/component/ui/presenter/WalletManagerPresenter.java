@@ -7,6 +7,7 @@ import com.platon.aton.component.ui.view.ManageWalletActivity;
 import com.platon.aton.db.sqlite.WalletDao;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.Wallet;
+import com.platon.aton.event.EventPublisher;
 import com.platon.framework.app.Constants;
 import com.platon.framework.base.BasePresenter;
 import com.platon.framework.utils.PreferenceTool;
@@ -61,16 +62,16 @@ public class WalletManagerPresenter extends BasePresenter<WalletManagerContract.
                     for (int i = 0; i < mWalletList.size(); i++) {
                         Wallet walletEntity = mWalletList.get(i);
                         updateTime += 10;
-                        walletEntity.setUpdateTime(updateTime);
+                        walletEntity.setUpdateTime(System.currentTimeMillis());
                         WalletDao.updateUpdateTimeWithUuid(walletEntity.getUuid(), updateTime);
                     }
-                    return null;
+                    return true;
                 }
             }).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Boolean>() {
                 @Override
                 public void accept(Boolean aVoid) throws Exception {
-
+                    EventPublisher.getInstance().sendWalletListOrderChangedEvent();
                 }
             });
         }
