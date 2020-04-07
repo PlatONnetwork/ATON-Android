@@ -227,15 +227,22 @@ public class TransactionManager {
 
     }
 
-    private Single<String> getSignedMessage(ECKeyPair ecKeyPair, String from, String toAddress, BigDecimal amount, BigInteger gasPrice, BigInteger gasLimit) {
+    private Single<String> getSignedMessageSingle(ECKeyPair ecKeyPair, String from, String toAddress, BigDecimal amount, BigInteger gasPrice, BigInteger gasLimit ,BigInteger nonce) {
 
-        return getNonce(from)
+        return Single
+                .fromCallable(new Callable<String>() {
+                    @Override
+                    public String call() throws Exception {
+                        return getSignedMessage(ecKeyPair, from, toAddress, amount, gasPrice, gasLimit, nonce);
+                    }
+                });
+      /*  return getNonce(from)
                 .map(new Function<BigInteger, String>() {
                     @Override
                     public String apply(BigInteger nonce) throws Exception {
                         return getSignedMessage(ecKeyPair, from, toAddress, amount, gasPrice, gasLimit, nonce);
                     }
-                });
+                });*/
     }
 
     private String getSignedMessage(ECKeyPair ecKeyPair, String from, String toAddress, BigDecimal amount, BigInteger gasPrice, BigInteger gasLimit, BigInteger nonce) {
@@ -377,9 +384,9 @@ public class TransactionManager {
         return null;
     }
 
-    public Single<Transaction> sendTransferTransaction(ECKeyPair ecKeyPair, String fromAddress, String toAddress, String walletName, BigDecimal transferAmount, BigDecimal feeAmount, BigInteger gasPrice, BigInteger gasLimit, String remark) {
+    public Single<Transaction> sendTransferTransaction(ECKeyPair ecKeyPair, String fromAddress, String toAddress, String walletName, BigDecimal transferAmount, BigDecimal feeAmount, BigInteger gasPrice, BigInteger gasLimit,BigInteger nonce, String remark) {
 
-        return getSignedMessage(ecKeyPair, fromAddress, toAddress, transferAmount, gasPrice, gasLimit)
+        return getSignedMessageSingle(ecKeyPair, fromAddress, toAddress, transferAmount, gasPrice, gasLimit,nonce)
                 .flatMap(new Function<String, SingleSource<Transaction>>() {
                     @Override
                     public SingleSource<Transaction> apply(String signedMessage) throws Exception {

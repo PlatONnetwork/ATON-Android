@@ -28,7 +28,9 @@ public class AddNewAddressPresenter extends BasePresenter<AddNewAddressContract.
 
     private Address addressEntity;
 
-    public AddNewAddressPresenter() {
+
+    @Override
+    public void getIntentData() {
         addressEntity = getView().getAddressFromIntent();
     }
 

@@ -150,7 +150,7 @@
     <string name="vote">投票</string>
     <string name="voting">投票</string>
     <string name="wallet_address">钱包地址</string>
-    <string name="amount">数量</string>
+    <string name="amount">发送金额</string>
     <string name="delegate_amount">委托数量</string>
     <string name="withdraw_amount">赎回数量</string>
     <string name="submissionAmount">交易数量</string>
@@ -272,7 +272,6 @@
     <string name="transfer_succeed">转账成功</string>
     <string name="transfer_failed">转账失败</string>
     <string name="input_again">请重新输入</string>
-    <string name="network_error">网络异常，请稍候重试</string>
     <string name="walletExists">钱包已存在</string>
     <string name="create_contract">创建合约</string>
     <string name="payment_info">支付类型</string>
@@ -307,8 +306,8 @@
     <string name="none">无</string>
     <string name="noWalletTips">请先创建普通钱包</string>
     <string name="insufficientBalanceTips">钱包余额不足，无法创建</string>
-    <string name="inputWalletAddress">输入钱包地址</string>
-    <string name="inputSendAmount">输入发送数量</string>
+    <string name="inputWalletAddress">输入接收地址</string>
+    <string name="inputSendAmount">0.00</string>
     <string name="inputMome">备注（选填）</string>
     <string name="duplicateAddress">存在重复地址</string>
     <string name="saveAndShareImage">保存图片并分享</string>
@@ -332,7 +331,7 @@
     <string name="action_send_all">全部发送</string>
     <string name="balance_text">当前余额:&#160;%1$s&#160;LAT</string>
     <string name="fee">交易手续费</string>
-    <string name="transaction_fee">交易费用:</string>
+    <string name="transaction_fee">交易手续费</string>
     <string name="save_successfully">保存成功</string>
     <string name="joint_wallet_execution">执行联名钱包</string>
     <string name="create_joint_wallet">创建联名钱包</string>
@@ -585,9 +584,6 @@
 
     <string name="available_balance">可用余额</string>
     <string name="locked_balance">锁仓余额</string>
-    <string name="delegate_amount_tips">委托数量不能少于%1$sLAT</string>
-    <string name="insufficient_balance_unable_to_delegate">余额不足，无法委托</string>
-    <string name="the_validator_has_exited_and_cannot_be_delegated">委托节点已退出，无法委托</string>
     <string name="delegate_failed">委托失败</string>
     <string name="claim_reward_failed">领取奖励失败</string>
     <string name="delegate_success">委托成功</string>
@@ -615,7 +611,6 @@
     <string name="validators_state_candidate">候选中</string>
     <string name="validators_state_exiting">退出中</string>
     <string name="validators_state_exited">已退出</string>
-
     <string name="validators_details_tips">基金会资助的节点不接受委托</string>
 
     <!--赎回类型-->
@@ -655,7 +650,7 @@
 
     <string name="withdraw_less_than_fee">余额不足支付手续费，无法赎回</string>
     <string name="delegate_risk_tips">节点双重签名、出块率低会被惩罚，从而间接影响您的收益。为规避风险，请认真选择合格的节点。</string>
-    <string name="recipient_wallet_address">接收钱包地址</string>
+    <string name="recipient_wallet_address">发送至</string>
     <string name="delegate_less_than_fee">余额不足支付手续费，无法委托</string>
     <string name="claim_reward_less_than_fee">余额不足支付手续费，无法领取奖励</string>
     <string name="msg_cold_wallet">冷钱包</string>
@@ -760,7 +755,7 @@
     <string name="msg_total_delegate_reward">累计委托奖励</string>
     <string name="msg_delegate_balance">可委托余额</string>
 
-    <string name="msg_network_tips">当前%1$s网络，切勿将其他网络LAT转入到当前地址</string>
+    <string name="msg_network_tips">当前%1$s网络，切勿将其他网络LAT转入到当前地址。</string>
 
     <string name="msg_avaliable_balance">可用余额：%1$s LAT</string>
     <string name="msg_balance_with_unit">余额：%1$s LAT</string>
@@ -790,10 +785,6 @@
     <string name="msg_transaction_memo">备注：%1$s</string>
     <string name="hint_input_transaction_note">备注(可选30字以内)</string>
 
-    <string name="msg_server_exception">服务器开了小差，请重试(%1$d)</string>
-    <string name="msg_transaction_repeatedly_exception">请勿重复提交!</string>
-    <string name="msg_transaction_exception">交易异常，请重试（%1$d）</string>
-    <string name="msg_expired_qr_code">二维码已失效</string>
     <string name="msg_my_wallet">我的钱包</string>
     <string name="msg_security_reminders">安全提醒</string>
     <string name="msg_assets_transaction">交易记录</string>
@@ -802,4 +793,34 @@
     <string name="msg_got_it">我知道了</string>
     <string name="msg_device_offline_tips">可配合在线设备的观察钱包进行冷钱包离线签名，保证私钥安全</string>
     <string name="msg_security_reminders_tips">为您钱包安全，请务必完成助记词备份!</string>
+
+    <!-- 异常提示语 -->
+    <string name="msg_server_exception">服务器开了小差，请重试(%1$d)</string>
+    <string name="msg_transaction_repeatedly_exception">请勿重复提交</string>
+    <string name="msg_transaction_exception">交易异常，请重试（%1$d）</string>
+    <string name="msg_expired_qr_code">二维码已失效</string>
+                <!-- 余额不足分场景：普通转账、委托转账、赎回、领取-->
+    <string name="insufficient_balance_unable_to_delegate">余额不足，无法委托</string>
+    <string name="msg_balance_not_enougth">余额不足</string>
+
+    <string name="msg_transaction_over_block_gas_limit">GasLimt超过最大区块限制</string>
+    <string name="the_validator_has_exited_and_cannot_be_delegated">委托节点已退出，无法委托</string>
+    <string name="msg_transaction_node_associated_wallet">节点参与钱包地址，不可参与委托</string>
+    <string name="msg_transaction_node_as_inside_candidate">@string/validators_details_tips</string>
+    <string name="delegate_amount_tips">委托数量不能少于%1$sLAT</string>
+
+    <!-- 通用 -->
+    <string name="common_name">通用...</string>
+    <string name="network_error">网络异常，请稍候重试</string>
+    <string name="network_connection_failed">网络连接失败！</string>
+
+    <!-- 钱包 -->
+    <string name="wallet_receive">接收</string>
+    <string name="wallet_receive_refresh_network">请点击刷新或检查网络！</string>
+    <!-- 委托 -->
+    <string name="delegate_name">委托...</string>
+
+    <!-- 我的 -->
+
+
 </resources>

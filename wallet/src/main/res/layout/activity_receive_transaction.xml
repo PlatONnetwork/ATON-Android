@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_status_bar"
+        android:orientation="vertical"
+        android:paddingTop="20dp">
+
+        <com.platon.aton.component.widget.CommonTitleBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:ctb_left_drawable="@drawable/icon_back_black"
+            app:ctb_title="@string/wallet_receive" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include layout="@layout/include_share_content" />
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/color_f9fbff">
+
+            <LinearLayout
+                android:id="@+id/layout_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="24dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/layout_space_50"
+                    android:orientation="vertical"
+                    android:background="@color/color_ffe6d1">
+
+                    <TextView
+                        android:id="@+id/tv_network_tips"
+                        android:layout_height="@dimen/layout_space_50"
+                        style="@style/Text.ff6b00.12"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="12dp"
+                        android:includeFontPadding="false"
+                        android:maxLines="2"
+                        tools:text="You are on the xxxx Network." />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_transation_type"
+                    style="@style/Text.61646e.12"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="22dp"
+                    android:text="@string/receive_atp"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/iv_wallet_address_qr_code"
+                    android:layout_marginTop="@dimen/layout_space_90"
+                    android:layout_gravity="center"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:scaleType="fitXY" />
+
+                <TextView
+                    android:id="@+id/tv_address"
+                    style="@style/Text.000000.13"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/layout_space_10"
+                    android:gravity="center_horizontal"
+                    android:layout_gravity="center_horizontal"
+                    tools:text="0x3ofg449Gf3lw4ghy330443020fdg4o4f8mdf3slKF" />
+
+                <ImageView
+                    android:id="@+id/iv_wallet_address_copy"
+                    android:layout_marginTop="@dimen/layout_space_10"
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/icon_copy"
+                    android:scaleType="fitXY" />
+
+            </LinearLayout>
+
+
+        </android.support.constraint.ConstraintLayout>
+
+        <com.platon.aton.component.widget.ShadowButton
+            android:id="@+id/sbtn_save"
+            android:layout_margin="@dimen/layout_space_10"
+            android:layout_gravity="bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:enabled="true"
+            app:layout_constraintTop_toBottomOf="@id/layout_content"
+            app:text="@string/saveAndShareImage"
+            app:textAppearance="@style/MainButtonStyle"
+            app:textBackground="@drawable/bg_main_button" />
+    </FrameLayout>
+</LinearLayout>

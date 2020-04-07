@@ -82,7 +82,7 @@ public class CommonTitleBar extends LinearLayout {
 
         mLeftDrawable = ta.getDrawable(R.styleable.CommonTitleBar_ctb_left_drawable);
         mRightDrawable = ta.getDrawable(R.styleable.CommonTitleBar_ctb_right_drawable);
-        mBackground = ta.getDrawable(5);
+        mBackground = ta.getDrawable(R.styleable.CommonTitleBar_ctb_background);
 
         ta.recycle();
 

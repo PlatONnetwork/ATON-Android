@@ -210,6 +210,17 @@
             </intent-filter>
         </activity>
 
+        <!--Aton v0.11.1-->
+        <activity
+            android:name="com.platon.aton.component.ui.view.ReceiveTransactionActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.platon.aton.component.ui.view.SendTransactionActivity"
+            android:launchMode="standard"
+            android:screenOrientation="portrait" />
+
+
         <!--facebook-->
         <activity
             android:name="com.umeng.facebook.FacebookActivity"

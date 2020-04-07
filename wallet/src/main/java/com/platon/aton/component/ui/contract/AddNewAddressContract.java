@@ -36,6 +36,8 @@ public class AddNewAddressContract {
 
     public interface Presenter extends IPresenter<View> {
 
+        void getIntentData();
+
         void loadAddressInfo();
 
         void addAddress();

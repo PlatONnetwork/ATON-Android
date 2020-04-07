@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.platon.aton.R;
@@ -24,7 +23,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -32,8 +30,7 @@ import butterknife.Unbinder;
  */
 public class ShareDialogFragment extends BaseDialogFragment {
 
-    @BindView(R.id.tv_cancel)
-    TextView tvCancel;
+
     @BindView(R.id.gridview)
     GridView gridView;
     @BindView(R.id.iv_close)
@@ -99,17 +96,6 @@ public class ShareDialogFragment extends BaseDialogFragment {
                 });
     }
 
-    @OnClick({R.id.tv_cancel})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.tv_cancel:
-                dismiss();
-                break;
-            default:
-                break;
-
-        }
-    }
 
     @Override
     public void onDestroyView() {
