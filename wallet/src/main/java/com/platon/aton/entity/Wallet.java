@@ -25,7 +25,7 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneab
      */
     protected long createTime;
     /**
-     * 更新时间(更新钱包信息)
+     * 更新时间(更新钱包信息),用于排序的
      */
     protected long updateTime;
     /**
@@ -368,7 +368,11 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneab
      */
     @Override
     public int compareTo(Wallet o) {
-        return Long.compare(updateTime, o.getUpdateTime());
+        if (updateTime != 0) {
+            return Long.compare(updateTime, o.getUpdateTime());
+        } else {
+            return Long.compare(createTime, o.getCreateTime());
+        }
     }
 
     public WalletEntity buildWalletInfoEntity() {

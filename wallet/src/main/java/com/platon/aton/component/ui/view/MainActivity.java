@@ -15,9 +15,11 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
 
+import com.gyf.immersionbar.ImmersionBar;
 import com.platon.aton.R;
 import com.platon.aton.component.ui.contract.MainContract;
 import com.platon.aton.component.ui.presenter.MainPresenter;
@@ -148,6 +150,23 @@ public class MainActivity extends BaseActivity<MainContract.View, MainPresenter>
         tabhost.addTab(tabhost.newTabSpec(MainTabTag.TAG_DELEGATE).setIndicator(getIndicatorView(R.drawable.bg_nav_delegate, R.string.nav_delegate)), DelegateFragment.class, null);
         tabhost.addTab(tabhost.newTabSpec(MainTabTag.TAG_ME).setIndicator(getIndicatorView(R.drawable.bg_nav_me, R.string.nav_me)), MeFragment.class, null);
         tabhost.setCurrentTab(mCurIndex);
+
+        tabhost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+            @Override
+            public void onTabChanged(String tabId) {
+                switch (tabId) {
+                    case MainTabTag.TAG_ASSETS:
+                        ImmersionBar.with(MainActivity.this).keyboardEnable(false).statusBarDarkFont(true, 0.2f).fitsSystemWindows(true).init();
+                        break;
+                    case MainTabTag.TAG_DELEGATE:
+                    case MainTabTag.TAG_ME:
+                        ImmersionBar.with(MainActivity.this).keyboardEnable(false).statusBarDarkFont(true, 0.2f).fitsSystemWindows(true).init();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
     }
 
     private static final long DOUBLE_TIME = 500;

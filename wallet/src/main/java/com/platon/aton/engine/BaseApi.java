@@ -157,7 +157,7 @@ public interface BaseApi {
      * @param body
      * @return
      */
-    @POST("app/v0760//transaction/submitSignedTransaction")
+    @POST("app/v0760/transaction/submitSignedTransaction")
     Single<Response<ApiResponse<String>>> submitSignedTransaction(@Body ApiRequestBody body);
 
     /**
@@ -166,6 +166,6 @@ public interface BaseApi {
      * @param body
      * @return
      */
-    @POST("app/v0760//transaction/estimateGas")
+    @POST("app/v0760/transaction/estimateGas")
     Single<Response<ApiResponse<EstimateGasResult>>> estimateGas(@Body ApiRequestBody body);
 }
