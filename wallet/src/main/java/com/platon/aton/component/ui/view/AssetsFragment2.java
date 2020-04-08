@@ -518,16 +518,11 @@ public class AssetsFragment2 extends BaseLazyFragment<AssetsContract2.View, Asse
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        SendTransactionActivity.actionStart(getContext());
-                    }
-                });
-        RxView.clicks(rtvSendTransaction)
-                .compose(RxUtils.getClickTransformer())
-                .compose(bindToLifecycle())
-                .subscribe(new CustomObserver<Object>() {
-                    @Override
-                    public void accept(Object o) {
-                        SendTransactionActivity.actionStart(getContext());
+                        if (NetConnectivity.getConnectivityManager().isConnected()) {
+                            SendTransactionActivity.actionStart(getContext());
+                        } else {
+                            ScanQRCodeActivity.actionStart(getContext());
+                        }
                     }
                 });
         RxView.clicks(rtvReceiveTransaction)
