@@ -61,7 +61,8 @@ android {
         }
 
         releaseJC {
-            storeFile file("/Users/jenkins/extras/aton.keystore")
+//            storeFile file("/Users/jenkins/extras/aton.keystore")
+            storeFile file("../extras/aton.keystore")
             storePassword "platon123456"
             keyAlias "platon"
             keyPassword "platon123456"

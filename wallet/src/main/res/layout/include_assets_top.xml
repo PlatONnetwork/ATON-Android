@@ -37,7 +37,7 @@
     <TextView
         android:id="@+id/tv_total_assets_amount_title"
         style="@style/Text.000000.14"
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="16dp"
         android:includeFontPadding="false"
         android:text="@string/msg_total_assets"
         app:layout_constraintLeft_toLeftOf="parent"

@@ -52,7 +52,7 @@ public class DelegateManager {
         return InstanceHolder.INSTANCE;
     }
 
-    public Single<Transaction> delegate(Credentials credentials, String to, String amount, String nodeId, String nodeName, String transactionType, StakingAmountType stakingAmountType, GasProvider gasProvider) { //这里新修改，传入GasProvider
+    public Single<Transaction> delegate(Credentials credentials, String to, String amount, String nodeId, String nodeName, String transactionType, StakingAmountType stakingAmountType, GasProvider gasProvider,String nonce) { //这里新修改，传入GasProvider
 
         return Single
                 .fromCallable(new Callable<RPCTransactionResult>() {
@@ -65,7 +65,7 @@ public class DelegateManager {
                                 Arrays.asList(new Uint16(stakingAmountType.getValue())
                                         , new BytesType(Numeric.hexStringToByteArray(nodeId))
                                         , new Uint256(Convert.toVon(amount, Convert.Unit.LAT).toBigInteger())), gasProvider);
-                        return TransactionManager.getInstance().sendContractTransaction(delegateContract, credentials, function).blockingGet();
+                        return TransactionManager.getInstance().sendContractTransaction(delegateContract, credentials, function,nonce).blockingGet();
                     }
                 })
                 .flatMap(new Function<RPCTransactionResult, SingleSource<RPCTransactionResult>>() {
@@ -148,7 +148,7 @@ public class DelegateManager {
      * @param gasProvider
      * @return
      */
-    public Single<Transaction> withdrawDelegate(Credentials credentials, String to, String nodeId, String nodeName, String feeAmount, String stakingBlockNum, String amount, String transactionType, GasProvider gasProvider) {
+    public Single<Transaction> withdrawDelegate(Credentials credentials, String to, String nodeId, String nodeName, String feeAmount, String stakingBlockNum, String amount, String transactionType, GasProvider gasProvider,String nonce) {
 
         return Single.fromCallable(new Callable<RPCTransactionResult>() {
             @Override
@@ -160,7 +160,7 @@ public class DelegateManager {
                         Arrays.asList(new Uint64(new BigInteger(stakingBlockNum))
                                 , new BytesType(Numeric.hexStringToByteArray(nodeId))
                                 , new Uint256(Convert.toVon(amount, Convert.Unit.LAT).toBigInteger())), gasProvider);
-                return TransactionManager.getInstance().sendContractTransaction(delegateContract, credentials, platOnFunction).blockingGet();
+                return TransactionManager.getInstance().sendContractTransaction(delegateContract, credentials, platOnFunction,nonce).blockingGet();
             }
         }).flatMap(new Function<RPCTransactionResult, SingleSource<RPCTransactionResult>>() {
             @Override
@@ -186,7 +186,7 @@ public class DelegateManager {
      * @param gasProvider
      * @return
      */
-    public Observable<Transaction> withdrawDelegateReward(Credentials credentials, String feeAmount, String amount, GasProvider gasProvider) {
+    public Observable<Transaction> withdrawDelegateReward(Credentials credentials, String feeAmount, String amount, GasProvider gasProvider,String nonce) {
         return Single.fromCallable(new Callable<RPCTransactionResult>() {
             @Override
             public RPCTransactionResult call() throws Exception {
@@ -194,7 +194,7 @@ public class DelegateManager {
                 String chainId = NodeManager.getInstance().getChainId();
                 RewardContract rewardContract = RewardContract.load(web3j, credentials, NumberParserUtils.parseLong(chainId));
                 PlatOnFunction function = new PlatOnFunction(FunctionType.WITHDRAW_DELEGATE_REWARD_FUNC_TYPE, gasProvider);
-                return TransactionManager.getInstance().sendContractTransaction(rewardContract, credentials, function).blockingGet();
+                return TransactionManager.getInstance().sendContractTransaction(rewardContract, credentials, function,nonce).blockingGet();
             }
         })
                 .flatMap(new Function<RPCTransactionResult, SingleSource<RPCTransactionResult>>() {

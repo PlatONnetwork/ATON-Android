@@ -173,7 +173,6 @@ public class DelegateActivity extends BaseActivity<DelegateContract.View, Delega
         initView();
         getPresenter().init(getDelegateDetailFromIntent());
         getPresenter().showWalletInfo();
-        getPresenter().getGas();
     }
 
     @Override

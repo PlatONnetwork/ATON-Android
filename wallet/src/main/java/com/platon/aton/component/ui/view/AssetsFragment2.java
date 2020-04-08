@@ -521,7 +521,20 @@ public class AssetsFragment2 extends BaseLazyFragment<AssetsContract2.View, Asse
                         if (NetConnectivity.getConnectivityManager().isConnected()) {
                             SendTransactionActivity.actionStart(getContext());
                         } else {
-                            ScanQRCodeActivity.actionStart(getContext());
+                            new RxPermissions(currentActivity())
+                                    .requestEach(Manifest.permission.CAMERA)
+                                    .subscribe(new CustomObserver<Permission>() {
+                                        @Override
+                                        public void accept(Permission permission) {
+                                            if (permission.granted) {
+                                                ScanQRCodeActivity.actionStart(getContext());
+                                            } else if (permission.shouldShowRequestPermissionRationale) {
+                                                // Denied permission without ask never again
+                                            } else {
+                                                showLongToast("使用该功能需要拍照和SD卡存储权限，请前往系统设置开启权限");
+                                            }
+                                        }
+                                    });
                         }
                     }
                 });
