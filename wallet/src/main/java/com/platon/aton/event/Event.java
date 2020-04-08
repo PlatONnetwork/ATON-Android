@@ -166,4 +166,15 @@ public class Event {
         public WalletSelectedChangedEvent() {
         }
     }
+
+    public static class BackedUpWalletSuccessedEvent {
+
+        public String uuid;
+
+        public BackedUpWalletSuccessedEvent(String uuid) {
+            this.uuid = uuid;
+        }
+
+
+    }
 }

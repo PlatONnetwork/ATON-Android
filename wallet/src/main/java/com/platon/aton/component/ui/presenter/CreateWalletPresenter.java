@@ -53,9 +53,10 @@ public class CreateWalletPresenter extends BasePresenter<CreateWalletContract.Vi
                 .doOnSuccess(new Consumer<Wallet>() {
                     @Override
                     public void accept(Wallet walletEntity) throws Exception {
+                        walletEntity.setBackedUpPrompt(true);
                         WalletManager.getInstance().addWallet(walletEntity);
                         WalletDao.insertWalletInfo(walletEntity.buildWalletInfoEntity());
-                        PreferenceTool.putBoolean(Constants.Preference.KEY_OPERATE_MENU_FLAG,false);
+                        PreferenceTool.putBoolean(Constants.Preference.KEY_OPERATE_MENU_FLAG, false);
                     }
                 })
                 .compose(RxUtils.getSingleSchedulerTransformer())

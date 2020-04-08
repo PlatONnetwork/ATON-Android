@@ -259,6 +259,13 @@ public class AssetsFragment2 extends BaseLazyFragment<AssetsContract2.View, Asse
         mWalletListAdapter.notifyDataSetChanged(WalletManager.getInstance().getWalletList());
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBackedUpWalletSuccessedEvent(Event.BackedUpWalletSuccessedEvent event) {
+        if (TextUtils.equals(WalletManager.getInstance().getSelectedWallet().getUuid(), event.uuid)) {
+            layoutSecurityReminders.setVisibility(View.GONE);
+        }
+    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -447,6 +454,7 @@ public class AssetsFragment2 extends BaseLazyFragment<AssetsContract2.View, Asse
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
+                        layoutSecurityReminders.setVisibility(View.GONE);
                         Wallet selectedWallet = WalletManager.getInstance().getSelectedWallet();
                         if (selectedWallet != null) {
                             WalletManager.getInstance().updateWalletBackedUpPromptWithUUID(selectedWallet.getUuid(), false);
