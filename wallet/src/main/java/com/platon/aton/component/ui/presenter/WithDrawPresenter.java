@@ -14,15 +14,14 @@ import com.platon.aton.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.platon.aton.component.ui.dialog.SelectDelegationsDialogFragment;
 import com.platon.aton.component.ui.dialog.TransactionAuthorizationDialogFragment;
 import com.platon.aton.component.ui.dialog.TransactionSignatureDialogFragment;
-import com.platon.aton.engine.AppConfigManager;
 import com.platon.aton.engine.DelegateManager;
 import com.platon.aton.engine.NodeManager;
 import com.platon.aton.engine.ServerUtils;
-import com.platon.aton.engine.TransactionManager;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.AccountBalance;
 import com.platon.aton.entity.DelegateItemInfo;
 import com.platon.aton.entity.DelegationValue;
+import com.platon.aton.entity.GasProvider;
 import com.platon.aton.entity.RPCErrorCode;
 import com.platon.aton.entity.Transaction;
 import com.platon.aton.entity.TransactionAuthorizationBaseData;
@@ -32,6 +31,7 @@ import com.platon.aton.entity.Wallet;
 import com.platon.aton.entity.WithDrawBalance;
 import com.platon.aton.utils.AmountUtil;
 import com.platon.aton.utils.BigDecimalUtil;
+import com.platon.aton.utils.BigIntegerUtil;
 import com.platon.aton.utils.NumberParserUtils;
 import com.platon.aton.utils.RxUtils;
 import com.platon.framework.base.BasePresenter;
@@ -42,7 +42,6 @@ import com.platon.framework.network.ApiSingleObserver;
 import org.web3j.crypto.Credentials;
 import org.web3j.platon.ContractAddress;
 import org.web3j.platon.FunctionType;
-import org.web3j.tx.gas.GasProvider;
 import org.web3j.utils.Convert;
 
 import java.math.BigInteger;
@@ -52,17 +51,16 @@ import java.util.List;
 import io.reactivex.Flowable;
 import io.reactivex.functions.Function;
 
+/**
+ * @author ziv
+ */
 public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> implements WithDrawContract.Presenter {
 
     private DelegateItemInfo mDelegateDetail;
     private Wallet mWallet;
-
+    private DelegationValue mDelegationValue;
     private List<WithDrawBalance> list = new ArrayList<>();
     private WithDrawBalance mWithDrawBalance = null;
-
-    private String feeAmount;
-
-    private String minDelegation = AppConfigManager.getInstance().getMinDelegation();
 
     @Override
     public void init(DelegateItemInfo delegateItemInfo) {
@@ -92,7 +90,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     }
 
     public double getMinDelegationAmount() {
-        return NumberParserUtils.parseDouble(BigDecimalUtil.div(minDelegation, "1E18"));
+        return NumberParserUtils.parseDouble(AmountUtil.convertVonToLat(mDelegationValue.getMinDelegation()));
     }
 
     @Override
@@ -110,26 +108,29 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
 
     @Override
     public void checkWithDrawAmount(String withdrawAmount) {
-        //检查赎回的数量
-        String minDelegationAmount = BigDecimalUtil.div(minDelegation, "1E18");
-        boolean isWithdrawAmountBiggerThanMinDelegation = BigDecimalUtil.isNotSmaller(withdrawAmount, minDelegationAmount);
+        if (mDelegationValue != null) {
+            //检查赎回的数量
+            String minDelegation = mDelegationValue.getMinDelegation();
+            String minDelegationAmount = AmountUtil.convertVonToLat(mDelegationValue.getMinDelegation());
+            boolean isWithdrawAmountBiggerThanMinDelegation = BigDecimalUtil.isNotSmaller(withdrawAmount, minDelegationAmount);
 
-        getView().showTips(!isWithdrawAmountBiggerThanMinDelegation, NumberParserUtils.getPrettyNumber(minDelegationAmount));
+            getView().showTips(!isWithdrawAmountBiggerThanMinDelegation, NumberParserUtils.getPrettyNumber(minDelegationAmount));
 
-        if (mWithDrawBalance != null && mWithDrawBalance.isDelegated()) {
-            String leftWithdrawAmount = BigDecimalUtil.sub(mWithDrawBalance.getDelegated(), Convert.toVon(BigDecimalUtil.toBigDecimal(withdrawAmount), Convert.Unit.LAT).toPlainString()).toPlainString();
-            boolean isLeftWithdrawAmountSmallerThanMinDelegation = BigDecimalUtil.isBiggerThanZero(leftWithdrawAmount) && !BigDecimalUtil.isNotSmaller(leftWithdrawAmount, minDelegation);
-            if (isLeftWithdrawAmountSmallerThanMinDelegation) {
-                getView().setAllAmountDelegate();
+            if (mWithDrawBalance != null && mWithDrawBalance.isDelegated()) {
+                String leftWithdrawAmount = BigDecimalUtil.sub(mWithDrawBalance.getDelegated(), Convert.toVon(BigDecimalUtil.toBigDecimal(withdrawAmount), Convert.Unit.LAT).toPlainString()).toPlainString();
+                boolean isLeftWithdrawAmountSmallerThanMinDelegation = BigDecimalUtil.isBiggerThanZero(leftWithdrawAmount) && !BigDecimalUtil.isNotSmaller(leftWithdrawAmount, minDelegation);
+                if (isLeftWithdrawAmountSmallerThanMinDelegation) {
+                    getView().setAllAmountDelegate();
+                }
             }
         }
     }
 
     @Override
     public void updateWithDrawButtonState() {
-        if (isViewAttached()) {
+        if (isViewAttached() && mDelegationValue != null) {
             String withdrawAmount = getView().getWithDrawAmount();
-            boolean isAmountValid = !TextUtils.isEmpty(withdrawAmount) && NumberParserUtils.parseDouble(withdrawAmount) >= NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(minDelegation, "1E18")));
+            boolean isAmountValid = !TextUtils.isEmpty(withdrawAmount) && NumberParserUtils.parseDouble(withdrawAmount) >= NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(AmountUtil.convertVonToLat(mDelegationValue.getMinDelegation())));
             getView().setWithDrawButtonState(isAmountValid);
         }
     }
@@ -151,6 +152,9 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                     @Override
                     public void onApiSuccess(DelegationValue delegationValue) {
                         if (isViewAttached()) {
+
+                            mDelegationValue = delegationValue;
+
                             AccountBalance accountBalance = new AccountBalance(mWallet.getPrefixAddress(), delegationValue.getFree(), delegationValue.getLock());
                             WalletManager.getInstance().updateAccountBalance(accountBalance);
 
@@ -162,16 +166,14 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
 
                             mWithDrawBalance = delegationValue.getDefaultShowWithDrawBalance();
 
-                            minDelegation = delegationValue.getMinDelegation();
-
                             if (mWithDrawBalance != null) {
 
-                                getView().showGas(mWithDrawBalance.getGasProvider());
+                                getView().showGas(mWithDrawBalance.getGasProvider().toSdkGasProvider());
 
                                 double releasedSum = delegationValue.getReleasedSumAmount(); //待赎回
                                 double delegatedSum = delegationValue.getDelegatedSumAmount();//已委托
 
-                                getView().showMinDelegationInfo(NumberParserUtils.getPrettyNumber(BigDecimalUtil.div(minDelegation, "1E18")));
+                                getView().showMinDelegationInfo(NumberParserUtils.getPrettyNumber(AmountUtil.convertVonToLat(delegationValue.getMinDelegation())));
                                 getView().showWithdrawBalance(mWithDrawBalance);
                                 getView().showsSelectDelegationsBtnVisibility(list != null && list.size() > 1 ? View.VISIBLE : View.GONE);
 
@@ -205,12 +207,11 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
             return;
         }
 
-        if (mDelegateDetail == null || list.isEmpty() || mWithDrawBalance == null) {
+        if (mDelegateDetail == null || list.isEmpty() || mWithDrawBalance == null || mDelegationValue == null) {
             return;
         }
 
-        feeAmount = getFeeAmount(mWithDrawBalance.getGasProvider());
-        getView().showWithDrawGasPrice(feeAmount);
+        getView().showWithDrawGasPrice(getFeeAmount(mWithDrawBalance.getGasProvider()));
     }
 
     @Override
@@ -221,7 +222,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                         @Override
                         public void onInvalidDelegationsClick(WithDrawBalance withDrawBalance) {
                             mWithDrawBalance = withDrawBalance;
-                            getView().showGas(mWithDrawBalance.getGasProvider());
+                            getView().showGas(mWithDrawBalance.getGasProvider().toSdkGasProvider());
                             getView().showWithdrawBalance(mWithDrawBalance);
                         }
                     })
@@ -230,7 +231,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     }
 
     private String getFeeAmount(GasProvider gasProvider) {
-        return BigDecimalUtil.mul(gasProvider.getGasLimit().toString(10), gasProvider.getGasPrice().toString(10)).toPlainString();
+        return BigDecimalUtil.mul(gasProvider.getGasLimit(), gasProvider.getGasPrice()).toPlainString();
     }
 
     @SuppressLint("CheckResult")
@@ -250,14 +251,14 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
             GasProvider gasProvider = mWithDrawBalance.getGasProvider();
 
             if (mWallet.isObservedWallet()) {
-                showTransactionAuthorizationDialogFragment(mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), getView().getInputAmount(), mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, gasProvider.getGasLimit().toString(10), gasProvider.getGasPrice().toString(10));
+                showTransactionAuthorizationDialogFragment(gasProvider, mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), getView().getInputAmount(), mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS,mDelegationValue.getNonce());
             } else {
                 InputWalletPasswordDialogFragment
                         .newInstance(mWallet)
                         .setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
                             @Override
                             public void onWalletPasswordCorrect(Credentials credentials) {
-                                withdraw(credentials, gasProvider, mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), mWithDrawBalance.getStakingBlockNum(), getView().getInputAmount());
+                                withdraw(credentials, gasProvider, mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), mWithDrawBalance.getStakingBlockNum(), getView().getInputAmount(),mDelegationValue.getNonce());
                             }
                         })
                         .show(currentActivity().getSupportFragmentManager(), "inputWalletPasssword");
@@ -276,9 +277,9 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
      * @param withdrawAmount
      */
     @SuppressLint("CheckResult")
-    public void withdraw(Credentials credentials, GasProvider gasProvider, String nodeId, String nodeName, String blockNum, String withdrawAmount) {
+    public void withdraw(Credentials credentials, GasProvider gasProvider, String nodeId, String nodeName, String blockNum, String withdrawAmount,String nonce) {
         DelegateManager.getInstance()
-                .withdrawDelegate(credentials, ContractAddress.DELEGATE_CONTRACT_ADDRESS, nodeId, nodeName, feeAmount, blockNum, withdrawAmount, String.valueOf(TransactionType.UNDELEGATE.getTxTypeValue()), gasProvider)
+                .withdrawDelegate(credentials, ContractAddress.DELEGATE_CONTRACT_ADDRESS, nodeId, nodeName, getFeeAmount(gasProvider), blockNum, withdrawAmount, String.valueOf(TransactionType.UNDELEGATE.getTxTypeValue()), gasProvider.toSdkGasProvider(),nonce)
                 .toObservable()
                 .compose(RxUtils.getSchedulerTransformer())
                 .compose(RxUtils.getLoadingTransformer(currentActivity()))
@@ -314,7 +315,7 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
 
     }
 
-    private List<TransactionAuthorizationBaseData> buildTransactionAuthorizationBaseDataList(final BigInteger nonce, String nodeId, String nodeName, String transactionAmount, String from, String to, String gasLimit, String gasPrice) {
+    private List<TransactionAuthorizationBaseData> buildTransactionAuthorizationBaseDataList(final BigInteger nonce, String nodeId, String nodeName, String transactionAmount, String from, String to, com.platon.aton.entity.GasProvider gasProvider) {
         if (list == null || list.isEmpty()) {
             return new ArrayList<>();
         }
@@ -330,8 +331,8 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                                 .setNonce(nonce.add(BigInteger.valueOf(position)).toString(10))
                                 .setFrom(from)
                                 .setTo(to)
-                                .setGasLimit(gasLimit)
-                                .setGasPrice(gasPrice)
+                                .setGasLimit(gasProvider.getGasLimit())
+                                .setGasPrice(gasProvider.getGasPrice())
                                 .setNodeId(nodeId)
                                 .setNodeName(nodeName)
                                 .setRemark("")
@@ -344,56 +345,26 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     }
 
 
-    private void showTransactionAuthorizationDialogFragment(String nodeId, String nodeName, String transactionAmount, String from, String to, String gasLimit, String gasPrice) {
+    private void showTransactionAuthorizationDialogFragment(GasProvider gasProvider, String nodeId, String nodeName, String transactionAmount, String from, String to, String nonce) {
 
-        TransactionManager.getInstance().getNonce(from)
-                .toObservable()
-                .compose(RxUtils.getSchedulerTransformer())
-                .compose(bindToLifecycle())
-                .compose(RxUtils.getLoadingTransformer(currentActivity()))
-                .subscribe(new CustomObserver<BigInteger>() {
+        TransactionAuthorizationData transactionAuthorizationData = new TransactionAuthorizationData(buildTransactionAuthorizationBaseDataList(BigIntegerUtil.toBigInteger(nonce), nodeId, nodeName, transactionAmount, from, to, gasProvider), System.currentTimeMillis() / 1000, BuildConfig.QRCODE_VERSION_CODE);
+        TransactionAuthorizationDialogFragment.newInstance(transactionAuthorizationData)
+                .setOnNextBtnClickListener(new TransactionAuthorizationDialogFragment.OnNextBtnClickListener() {
                     @Override
-                    public void accept(BigInteger nonce) {
-                        if (isViewAttached()) {
-                            TransactionAuthorizationData transactionAuthorizationData = new TransactionAuthorizationData(buildTransactionAuthorizationBaseDataList(nonce, nodeId, nodeName, transactionAmount, from, to, gasLimit, gasPrice), System.currentTimeMillis() / 1000, BuildConfig.QRCODE_VERSION_CODE);
-                            TransactionAuthorizationDialogFragment.newInstance(transactionAuthorizationData)
-                                    .setOnNextBtnClickListener(new TransactionAuthorizationDialogFragment.OnNextBtnClickListener() {
-                                        @Override
-                                        public void onNextBtnClick() {
-                                            TransactionSignatureDialogFragment.newInstance(transactionAuthorizationData)
-                                                    .setOnSendTransactionSucceedListener(new TransactionSignatureDialogFragment.OnSendTransactionSucceedListener() {
-                                                        @Override
-                                                        public void onSendTransactionSucceed(Transaction transaction) {
-                                                            if (isViewAttached()) {
-                                                                getView().withDrawSuccessInfo(transaction);
-                                                            }
-                                                        }
-                                                    })
-                                                    .show(currentActivity().getSupportFragmentManager(), TransactionSignatureDialogFragment.TAG);
+                    public void onNextBtnClick() {
+                        TransactionSignatureDialogFragment.newInstance(transactionAuthorizationData)
+                                .setOnSendTransactionSucceedListener(new TransactionSignatureDialogFragment.OnSendTransactionSucceedListener() {
+                                    @Override
+                                    public void onSendTransactionSucceed(Transaction transaction) {
+                                        if (isViewAttached()) {
+                                            getView().withDrawSuccessInfo(transaction);
                                         }
-                                    })
-                                    .show(currentActivity().getSupportFragmentManager(), "showTransactionAuthorizationDialog");
-                        }
+                                    }
+                                })
+                                .show(currentActivity().getSupportFragmentManager(), TransactionSignatureDialogFragment.TAG);
                     }
-
-                    @Override
-                    public void accept(Throwable throwable) {
-                        super.accept(throwable);
-                        if (throwable instanceof CustomThrowable) {
-                            CustomThrowable customThrowable = (CustomThrowable) throwable;
-                            if (customThrowable.getErrCode() == RPCErrorCode.CONNECT_TIMEOUT) {
-                                showLongToast(R.string.msg_connect_timeout);
-                            } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_KNOWN_TX) {
-                                showLongToast(R.string.msg_transaction_repeatedly_exception);
-                            } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_NONCE_TOO_LOW ||
-                                    customThrowable.getErrCode() == CustomThrowable.CODE_TX_GAS_LOW) {
-                                showLongToast(R.string.msg_expired_qr_code);
-                            } else {
-                                showLongToast(string(R.string.msg_server_exception, customThrowable.getErrCode()));
-                            }
-                        }
-                    }
-                });
+                })
+                .show(currentActivity().getSupportFragmentManager(), "showTransactionAuthorizationDialog");
     }
 
 }

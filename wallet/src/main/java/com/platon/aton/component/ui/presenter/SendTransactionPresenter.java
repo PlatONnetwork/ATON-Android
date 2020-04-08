@@ -197,7 +197,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                     @Override
                     public void onApiSuccess(EstimateGasResult gasProvider) {
                         if (isViewAttached()) {
-                            GasProvider mGasProvider = gasProvider.buildGasProvider();
+                            GasProvider mGasProvider = gasProvider.getGasProvider();
                             gasLimit = BigIntegerUtil.toBigInteger(gasProvider.getGasLimit());
                             nonce = BigIntegerUtil.toBigInteger(gasProvider.getNonce());
                             initGasPrice(BigIntegerUtil.toBigInteger(mGasProvider.getGasPrice()));

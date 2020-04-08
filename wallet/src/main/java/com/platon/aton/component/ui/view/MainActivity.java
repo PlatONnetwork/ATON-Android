@@ -156,7 +156,9 @@ public class MainActivity extends BaseActivity<MainContract.View, MainPresenter>
             public void onTabChanged(String tabId) {
                 switch (tabId) {
                     case MainTabTag.TAG_ASSETS:
-                        ImmersionBar.with(MainActivity.this).keyboardEnable(false).statusBarDarkFont(true, 0.2f).fitsSystemWindows(true).init();
+                        ImmersionBar.with(MainActivity.this)
+                                .statusBarView(getStatusBarView())
+                                .init();
                         break;
                     case MainTabTag.TAG_DELEGATE:
                     case MainTabTag.TAG_ME:

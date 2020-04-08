@@ -15,6 +15,7 @@ import com.platon.aton.entity.TransactionType;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.event.EventPublisher;
 import com.platon.aton.utils.BigDecimalUtil;
+import com.platon.aton.utils.BigIntegerUtil;
 import com.platon.aton.utils.JSONUtil;
 import com.platon.aton.utils.NumberParserUtils;
 import com.platon.aton.utils.SignCodeUtils;
@@ -141,9 +142,9 @@ public class TransactionManager {
         }
     }
 
-    public Single<RPCTransactionResult> sendContractTransaction(PlatOnContract platOnContract, Credentials credentials, PlatOnFunction platOnFunction) throws IOException {
+    public Single<RPCTransactionResult> sendContractTransaction(PlatOnContract platOnContract, Credentials credentials, PlatOnFunction platOnFunction, String nonce) throws IOException {
 
-        return signedTransaction(platOnContract, credentials, platOnFunction.getGasProvider().getGasPrice(), platOnFunction.getGasProvider().getGasLimit(), platOnContract.getContractAddress(), platOnFunction.getEncodeData(), BigInteger.ZERO)
+        return signedTransaction(platOnContract, credentials, platOnFunction.getGasProvider().getGasPrice(), platOnFunction.getGasProvider().getGasLimit(), platOnContract.getContractAddress(), platOnFunction.getEncodeData(), BigInteger.ZERO, nonce)
                 .flatMap(new Function<String, SingleSource<RPCTransactionResult>>() {
                     @Override
                     public SingleSource<RPCTransactionResult> apply(String signedMessage) throws Exception {
@@ -227,7 +228,7 @@ public class TransactionManager {
 
     }
 
-    private Single<String> getSignedMessageSingle(ECKeyPair ecKeyPair, String from, String toAddress, BigDecimal amount, BigInteger gasPrice, BigInteger gasLimit ,BigInteger nonce) {
+    private Single<String> getSignedMessageSingle(ECKeyPair ecKeyPair, String from, String toAddress, BigDecimal amount, BigInteger gasPrice, BigInteger gasLimit, BigInteger nonce) {
 
         return Single
                 .fromCallable(new Callable<String>() {
@@ -236,13 +237,6 @@ public class TransactionManager {
                         return getSignedMessage(ecKeyPair, from, toAddress, amount, gasPrice, gasLimit, nonce);
                     }
                 });
-      /*  return getNonce(from)
-                .map(new Function<BigInteger, String>() {
-                    @Override
-                    public String apply(BigInteger nonce) throws Exception {
-                        return getSignedMessage(ecKeyPair, from, toAddress, amount, gasPrice, gasLimit, nonce);
-                    }
-                });*/
     }
 
     private String getSignedMessage(ECKeyPair ecKeyPair, String from, String toAddress, BigDecimal amount, BigInteger gasPrice, BigInteger gasLimit, BigInteger nonce) {
@@ -304,23 +298,20 @@ public class TransactionManager {
     }
 
     private Single<String> signedTransaction(PlatOnContract platOnContract, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit, String to,
-                                             String data, BigInteger value) throws IOException {
+                                             String data, BigInteger value, String nonce) throws IOException {
 
-        return getNonce(credentials.getAddress())
-                .map(new Function<BigInteger, String>() {
-
-                    @Override
-                    public String apply(BigInteger nonce) throws Exception {
-                        return ((RawTransactionManager) platOnContract.getTransactionManager()).signedTransaction(RawTransaction.createTransaction(
-                                nonce,
-                                gasPrice,
-                                gasLimit,
-                                to,
-                                value,
-                                data));
-                    }
-                });
-
+        return Single.fromCallable(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                return ((RawTransactionManager) platOnContract.getTransactionManager()).signedTransaction(RawTransaction.createTransaction(
+                        BigIntegerUtil.toBigInteger(nonce),
+                        gasPrice,
+                        gasLimit,
+                        to,
+                        value,
+                        data));
+            }
+        });
     }
 
 
@@ -384,9 +375,9 @@ public class TransactionManager {
         return null;
     }
 
-    public Single<Transaction> sendTransferTransaction(ECKeyPair ecKeyPair, String fromAddress, String toAddress, String walletName, BigDecimal transferAmount, BigDecimal feeAmount, BigInteger gasPrice, BigInteger gasLimit,BigInteger nonce, String remark) {
+    public Single<Transaction> sendTransferTransaction(ECKeyPair ecKeyPair, String fromAddress, String toAddress, String walletName, BigDecimal transferAmount, BigDecimal feeAmount, BigInteger gasPrice, BigInteger gasLimit, BigInteger nonce, String remark) {
 
-        return getSignedMessageSingle(ecKeyPair, fromAddress, toAddress, transferAmount, gasPrice, gasLimit,nonce)
+        return getSignedMessageSingle(ecKeyPair, fromAddress, toAddress, transferAmount, gasPrice, gasLimit, nonce)
                 .flatMap(new Function<String, SingleSource<Transaction>>() {
                     @Override
                     public SingleSource<Transaction> apply(String signedMessage) throws Exception {

@@ -1,5 +1,7 @@
 package com.platon.aton.entity;
 
+import com.platon.aton.utils.BigIntegerUtil;
+
 /**
  * @author ziv
  * date On 2020-03-31
@@ -98,12 +100,16 @@ public class EstimateGasResult implements Nullable {
         this.blockGasLimit = blockGasLimit;
     }
 
-    public GasProvider buildGasProvider() {
+    public GasProvider getGasProvider() {
         return new GasProvider(gasLimit, gasPrice);
     }
 
     @Override
     public boolean isNull() {
         return false;
+    }
+
+    public String getFeeAmount() {
+        return BigIntegerUtil.mul(gasLimit, gasPrice);
     }
 }
