@@ -26,7 +26,7 @@ android {
         buildConfigField("String", "ID_MAIN_CHAIN", "${ID_MAIN_CHAIN}")
         buildConfigField("String", "ID_TEST_CHAIN", "${ID_TEST_CHAIN}")
         buildConfigField("String", "ID_DEVELOP_CHAIN", "${ID_DEVELOP_CHAIN}")
-        buildConfigField("int","QRCODE_VERSION_CODE","${qrcode_version_code}")
+        buildConfigField("int", "QRCODE_VERSION_CODE", "${qrcode_version_code}")
         renderscriptTargetApi 19
         renderscriptSupportModeEnabled true
         resConfigs "zh", "en"
@@ -61,8 +61,7 @@ android {
         }
 
         releaseJC {
-//            storeFile file("/Users/jenkins/extras/aton.keystore")
-            storeFile file("../extras/aton.keystore")
+            storeFile file("/Users/jenkins/extras/aton.keystore")
             storePassword "platon123456"
             keyAlias "platon"
             keyPassword "platon123456"
@@ -96,7 +95,7 @@ android {
             testCoverageEnabled true  //打开覆盖率统计开关
 
             ndk {
-                abiFilters 'armeabi-v7a','x86'
+                abiFilters 'armeabi-v7a', 'x86'
             }
         }
 
@@ -185,7 +184,7 @@ android {
                 buildConfigField "String", "CHANNEL", '"PlatONNetwork"'
 
                 ndk {
-                    abiFilters 'armeabi-v7a', 'arm64-v8a','armeabi'
+                    abiFilters 'armeabi-v7a', 'arm64-v8a', 'armeabi'
                 }
             }
 
@@ -193,7 +192,7 @@ android {
                 buildConfigField "String", "CHANNEL", '"GooglePlay"'
 
                 ndk {
-                    abiFilters 'armeabi-v7a', 'arm64-v8a','armeabi'
+                    abiFilters 'armeabi-v7a', 'arm64-v8a', 'armeabi'
                 }
             }
 
