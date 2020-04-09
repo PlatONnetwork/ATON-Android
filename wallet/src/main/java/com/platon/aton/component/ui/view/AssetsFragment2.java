@@ -221,6 +221,8 @@ public class AssetsFragment2 extends BaseLazyFragment<AssetsContract2.View, Asse
         layoutNoWallet.setVisibility(walletList.isEmpty() ? View.VISIBLE : View.GONE);
         layoutAssetsWallet.setVisibility(walletList.isEmpty() ? View.GONE : View.VISIBLE);
         layoutAssetsTransactions.setVisibility(walletList.isEmpty() ? View.GONE : View.VISIBLE);
+
+        showSelectedWalletInfo(WalletManager.getInstance().getSelectedWallet());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -462,6 +464,17 @@ public class AssetsFragment2 extends BaseLazyFragment<AssetsContract2.View, Asse
                         }
                     }
                 });
+
+        RxView.clicks(layoutDeviceOfflinePrompt)
+                .compose(RxUtils.getClickTransformer())
+                .compose(bindToLifecycle())
+                .subscribe();
+
+        RxView.clicks(layoutSecurityReminders)
+                .compose(RxUtils.getClickTransformer())
+                .compose(bindToLifecycle())
+                .subscribe();
+
 
         RxView.clicks(ivCloseDeviceOfflinePrompt)
                 .compose(RxUtils.getClickTransformer())

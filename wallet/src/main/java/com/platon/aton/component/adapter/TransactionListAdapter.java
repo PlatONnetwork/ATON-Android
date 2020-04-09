@@ -4,10 +4,13 @@ import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.platon.aton.R;
 import com.platon.aton.component.adapter.base.BaseViewHolder;
+import com.platon.aton.component.ui.view.TransactionRecordsActivity;
+import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.Transaction;
 
 import java.util.List;
@@ -84,26 +87,17 @@ public class TransactionListAdapter extends RecyclerView.Adapter<BaseViewHolder>
 
     @Override
     public void onBindViewHolder(@NonNull BaseViewHolder holder, int position) {
-        if (getItemViewType(position) == ItemViewType.COMMON_ITEM_VIEW) {
-            ((TransactionViewHolder) holder).setQueryAddressList(mQueryAddressList);
-            holder.setOnItemClickListener(new BaseViewHolder.OnItemClickListener() {
+        int itemViewType = getItemViewType(position);
+        if (itemViewType == ItemViewType.COMMON_ITEM_VIEW) {
+            TransactionViewHolder transactionViewHolder = (TransactionViewHolder) holder;
+            transactionViewHolder.setQueryAddressList(mQueryAddressList);
+            transactionViewHolder.refreshData(mTransactionList.get(holder.getAdapterPosition()), position);
+            transactionViewHolder.setOnItemClickListener(new BaseViewHolder.OnItemClickListener() {
                 @Override
                 public void onItemClick(Object o) {
                     if (mItemClickListener != null) {
                         mItemClickListener.onCommonTransactionItemClick(mTransactionList.get(holder.getAdapterPosition()), position);
                     }
-//                    TransactionDetailActivity.actionStart(mContext, mTransactionList.get(holder.getAdapterPosition()), mQueryAddressList);
-                }
-            });
-            holder.refreshData(mTransactionList.get(position), position);
-        } else {
-            holder.setOnItemClickListener(new BaseViewHolder.OnItemClickListener() {
-                @Override
-                public void onItemClick(Object o) {
-                    if (mItemClickListener != null) {
-                        mItemClickListener.onMoreTransactionItemClick();
-                    }
-//                    TransactionRecordsActivity.actionStart(mContext, WalletManager.getInstance().getSelectedWallet());
                 }
             });
         }
@@ -114,7 +108,7 @@ public class TransactionListAdapter extends RecyclerView.Adapter<BaseViewHolder>
         if (holder instanceof TransactionViewHolder) {
             ((TransactionViewHolder) holder).setQueryAddressList(mQueryAddressList);
             if (payloads.isEmpty()) {
-                super.onBindViewHolder(holder, position, payloads);
+                onBindViewHolder(holder, position);
             } else {
                 holder.updateItem((Bundle) payloads.get(0));
             }
@@ -130,10 +124,11 @@ public class TransactionListAdapter extends RecyclerView.Adapter<BaseViewHolder>
         return mEntranceType == EntranceType.ME_PAGE ? size : (size >= MAX_ITEM_COUNT ? size + 1 : size);
     }
 
+
     @Override
     public int getItemViewType(int position) {
         int size = getItemCount();
-        if (mEntranceType != EntranceType.ME_PAGE) {
+        if (mEntranceType == EntranceType.MAIN_PAGE) {
             if (size > MAX_ITEM_COUNT) {
                 if (position == size - 1) {
                     return ItemViewType.FOOTER_ITEM_VIEW;
@@ -152,6 +147,13 @@ public class TransactionListAdapter extends RecyclerView.Adapter<BaseViewHolder>
 
         public TransactionFooterViewHolder(int viewId, ViewGroup parent) {
             super(viewId, parent);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    TransactionRecordsActivity.actionStart(mContext, WalletManager.getInstance().getSelectedWallet());
+                }
+            });
         }
     }
 
