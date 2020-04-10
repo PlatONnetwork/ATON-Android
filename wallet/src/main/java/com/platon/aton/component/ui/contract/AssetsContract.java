@@ -1,15 +1,14 @@
 package com.platon.aton.component.ui.contract;
 
-import com.platon.aton.component.ui.view.AssetsFragment;
 import com.platon.aton.entity.Transaction;
-import com.platon.aton.entity.Wallet;
 import com.platon.framework.base.BaseViewImp;
 import com.platon.framework.base.IPresenter;
 
 import java.util.List;
 
 /**
- * @author matrixelement
+ * @author ziv
+ * date On 2020-03-25
  */
 public class AssetsContract {
 
@@ -17,40 +16,46 @@ public class AssetsContract {
 
         void showTotalBalance(String totalBalance);
 
-        void showWalletList(List<Wallet> walletList,Wallet selectedWallet);
+        void showFreeBalance(String freeBalance);
 
-        void setSelectedWallet(Wallet selectedWallet);
-
-        void showWalletInfo(Wallet walletEntity);
-
-        void showContent(boolean isContentEmpty);
-
-        void showCurrentItem(int index);
-
-        void showFreeBalance(String balance);
-
-        void showLockBalance(String balance);
-
-        void setArgument(Wallet entity);
+        void showLockBalance(String lockBalance);
 
         void finishRefresh();
 
-        void resetView();
+        /**
+         * 更新交易数据
+         *
+         * @param oldTransactionList
+         * @param newTransactionList
+         * @param queryAddress
+         * @param loadLatestData
+         */
+        void notifyTransactionSetChanged(List<Transaction> oldTransactionList, List<Transaction> newTransactionList, String queryAddress, boolean loadLatestData);
+
     }
 
     public interface Presenter extends IPresenter<View> {
 
-        List<Wallet> getRecycleViewDataSource();
+        /**
+         * 获取钱包余额
+         */
+        void fetchWalletBalance();
 
-        void fetchWalletList();
+        /**
+         * 获取数据
+         */
+        void loadData();
 
-        void clickRecycleViewItem(Wallet walletEntity);
+        /**
+         * 获取最新的数据
+         */
+        void loadNewData(String direction);
 
-        void backupWallet();
-
-        void fetchWalletsBalance();
-
+        /**
+         * 发送交易完之后
+         *
+         * @param transaction
+         */
         void afterSendTransactionSucceed(Transaction transaction);
-
     }
 }

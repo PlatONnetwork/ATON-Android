@@ -4,7 +4,6 @@ import android.app.Application;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 
-import com.platon.aton.component.ui.contract.ReceiveTransationContract;
 import com.platon.aton.component.ui.presenter.ReceiveTransactionPresenter;
 import com.platon.aton.config.AppSettings;
 import com.platon.aton.engine.NodeManager;

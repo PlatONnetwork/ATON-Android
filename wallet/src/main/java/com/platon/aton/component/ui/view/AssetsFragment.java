@@ -2,48 +2,44 @@ package com.platon.aton.component.ui.view;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.AppBarLayout;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.platon.aton.R;
 import com.platon.aton.app.CustomObserver;
-import com.platon.aton.component.adapter.RecycleViewProxyAdapter;
-import com.platon.aton.component.adapter.TabAdapter;
-import com.platon.aton.component.adapter.WalletHorizontalRecycleViewAdapter;
+import com.platon.aton.component.adapter.AssetsWalletListAdapter;
+import com.platon.aton.component.adapter.TransactionDiffCallback;
+import com.platon.aton.component.adapter.TransactionListAdapter;
+import com.platon.aton.component.adapter.WalletListDiffCallback;
+import com.platon.aton.component.adapter.base.CommonHorizontalItemDecoration;
 import com.platon.aton.component.ui.contract.AssetsContract;
 import com.platon.aton.component.ui.dialog.AssetsMoreDialogFragment;
 import com.platon.aton.component.ui.dialog.BaseDialogFragment;
 import com.platon.aton.component.ui.dialog.CommonGuideDialogFragment;
 import com.platon.aton.component.ui.dialog.DelegateTipsDialog;
+import com.platon.aton.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.platon.aton.component.ui.dialog.TransactionSignatureDialogFragment;
 import com.platon.aton.component.ui.presenter.AssetsPresenter;
+import com.platon.aton.component.ui.presenter.TransactionsPresenter;
 import com.platon.aton.component.widget.AmountTransformationMethod;
-import com.platon.aton.component.widget.CustomImageSpan;
-import com.platon.aton.component.widget.ShadowContainer;
-import com.platon.aton.component.widget.ViewPagerSlide;
-import com.platon.aton.component.widget.table.AssetsTabLayout;
+import com.platon.aton.component.widget.EmptyRecyclerView;
+import com.platon.aton.component.widget.RoundedTextView;
+import com.platon.aton.component.widget.WrapContentLinearLayoutManager;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.GuideType;
 import com.platon.aton.entity.QrCodeType;
@@ -53,93 +49,101 @@ import com.platon.aton.entity.TransactionSignatureData;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.event.Event;
 import com.platon.aton.event.EventPublisher;
-import com.platon.aton.netlistener.NetworkType;
-import com.platon.aton.netlistener.NetworkUtil;
+import com.platon.aton.utils.AmountUtil;
 import com.platon.aton.utils.BigDecimalUtil;
+import com.platon.aton.utils.CommonUtil;
+import com.platon.aton.utils.DensityUtil;
 import com.platon.aton.utils.GZipUtil;
 import com.platon.aton.utils.JSONUtil;
 import com.platon.aton.utils.QrCodeParser;
 import com.platon.aton.utils.RxUtils;
 import com.platon.aton.utils.StringUtil;
 import com.platon.framework.app.Constants;
-import com.platon.framework.base.BaseFragment;
 import com.platon.framework.base.BaseLazyFragment;
-import com.platon.framework.base.BaseNestingLazyFragment;
+import com.platon.framework.network.NetConnectivity;
 import com.platon.framework.utils.LogUtils;
 import com.platon.framework.utils.PreferenceTool;
-import com.platon.framework.utils.RUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
+import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.web3j.crypto.Credentials;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
-import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
- * @author matrixelement
+ * @author ziv
+ * date On 2020-03-25
  */
-public class AssetsFragment extends BaseNestingLazyFragment<AssetsContract.View, AssetsPresenter> implements AssetsContract.View {
+public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, AssetsPresenter> implements AssetsContract.View {
 
-    @BindView(R.id.app_bar_layout)
-    AppBarLayout appBarLayout;
-    @BindView(R.id.v_tab_line)
-    View vTabLine;
-    @BindView(R.id.ll_assets_title)
-    LinearLayout llAssetsTitle;
-    @BindView(R.id.tv_total_assets_title)
-    TextView tvTotalAssetsUnit;
-    @BindView(R.id.layout_add)
-    LinearLayout addLayout;
-    @BindView(R.id.layout_scan)
-    LinearLayout scanLayout;
     @BindView(R.id.tv_total_assets_amount)
     TextView tvTotalAssetsAmount;
-    @BindView(R.id.stb_bar)
-    AssetsTabLayout stbBar;
-    @BindView(R.id.rv_wallet)
-    RecyclerView rvWallet;
-    @BindView(R.id.rl_wallet_detail)
-    ConstraintLayout rlWalletDetail;
-    @BindView(R.id.iv_wallet_avatar)
-    ImageView ivWalletAvatar;
+    @BindView(R.id.iv_assets_add)
+    ImageView ivAssetsAdd;
+    @BindView(R.id.iv_assets_scan_qrcode)
+    ImageView ivAssetsScanQrcode;
+    @BindView(R.id.rv_assets_wallet_list)
+    RecyclerView rvAssetsWalletList;
     @BindView(R.id.tv_wallet_name)
     TextView tvWalletName;
     @BindView(R.id.tv_wallet_amount)
     TextView tvWalletAmount;
-    @BindView(R.id.tv_backup)
-    TextView tvBackup;
-    @BindView(R.id.vp_content)
-    ViewPagerSlide vpContent;
-    @BindView(R.id.layout_empty)
-    ConstraintLayout layoutEmpty;
-    @BindString(R.string.transactions)
-    String transaction;
-    @BindString(R.string.action_send_transaction)
-    String send;
-    @BindString(R.string.action_receive_transaction)
-    String receive;
-    @BindView(R.id.sc_import_wallet)
-    ShadowContainer scImportWallet;
-    @BindView(R.id.sc_create_wallet)
-    ShadowContainer scCreateWallet;
+    @BindView(R.id.tv_restricted_balance_amount)
+    AppCompatTextView tvRestrictedBalanceAmount;
+    @BindView(R.id.tv_observed_wallet_tag)
+    TextView tvObservedWalletTag;
+    @BindView(R.id.rtv_receive_transaction)
+    RoundedTextView rtvReceiveTransaction;
+    @BindView(R.id.rtv_send_transaction)
+    RoundedTextView rtvSendTransaction;
+    @BindView(R.id.rv_assets_transaction_list)
+    EmptyRecyclerView rvAssetsTransactionList;
     @BindView(R.id.layout_refresh)
     SmartRefreshLayout layoutRefresh;
-    @BindView(R.id.tv_restricted_amount)
-    AppCompatTextView tvRestrictedAmount;
+    @BindView(R.id.tv_wallet_amount_unit)
+    TextView tvWalletAmountUnit;
+    @BindView(R.id.rtv_backup_wallet)
+    RoundedTextView rtvBackupWallet;
+    @BindView(R.id.iv_close_security_reminders)
+    ImageView ivCloseSecurityReminders;
+    @BindView(R.id.layout_security_reminders)
+    ConstraintLayout layoutSecurityReminders;
+    @BindView(R.id.rtv_got_it)
+    RoundedTextView rtvGotIt;
+    @BindView(R.id.iv_close_device_offline_prompt)
+    ImageView ivCloseDeviceOfflinePrompt;
+    @BindView(R.id.layout_device_offline_prompt)
+    ConstraintLayout layoutDeviceOfflinePrompt;
+    @BindView(R.id.iv_manage_wallet)
+    ImageView ivManageWallet;
+    @BindView(R.id.layout_no_wallet)
+    RelativeLayout layoutNoWallet;
+    @BindView(R.id.layout_assets_wallet)
+    ConstraintLayout layoutAssetsWallet;
+    @BindView(R.id.layout_assets_transactions)
+    LinearLayout layoutAssetsTransactions;
 
-    private WalletHorizontalRecycleViewAdapter mWalletAdapter;
-    private Unbinder unbinder;
-    private TabAdapter mTabAdapter;
+    Unbinder unbinder;
+
+    private AssetsWalletListAdapter mWalletListAdapter;
+    private TransactionListAdapter mTransactionListAdapter;
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.fragment_assets;
+    }
 
     @Override
     public AssetsPresenter createPresenter() {
@@ -152,139 +156,119 @@ public class AssetsFragment extends BaseNestingLazyFragment<AssetsContract.View,
     }
 
     @Override
-    public void init(View rootView) {
-        unbinder = ButterKnife.bind(this, rootView);
-        EventPublisher.getInstance().register(this);
-        initViews();
-    }
-
-    @Override
-    public int getLayoutId() {
-        return R.layout.fragment_assets;
+    public void onFragmentVisible() {
+        super.onFragmentVisible();
+        //获取余额
+        getPresenter().fetchWalletBalance();
+        //加载交易记录数据
+        getPresenter().loadData();
     }
 
     @Override
     public void onFragmentFirst() {
         super.onFragmentFirst();
-        getPresenter().fetchWalletsBalance();
-        getPresenter().fetchWalletList();
+        //获取余额
+        getPresenter().fetchWalletBalance();
+        //加载交易记录数据
+        getPresenter().loadData();
     }
 
-    private void initViews() {
-        initIndicator();
-        initRefreshLayout();
-        initHeader();
-        initTab();
-        showAssets(PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, true));
-        showContent(true);
+    @Override
+    public void init(View rootView) {
+        //绑定ButterKnife
+        unbinder = ButterKnife.bind(this, rootView);
+        //注册eventBus
+        EventPublisher.getInstance().register(this);
+        //初始化指引页
         initGuide();
-    }
+        //展示我的钱包信息
+        showAssetsInfo(PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, true));
+        //展示钱包列表信息
+        showAssetsWalletList();
+        //展示选中的钱包信息
+        showSelectedWalletInfo(WalletManager.getInstance().getSelectedWallet());
+        //展示交易列表
+        showAssetsTransactionList();
+        //初始化点击事件
+        initListener();
 
-    private void initGuide() {
-        if (!PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_RECORD, false)) {
-            CommonGuideDialogFragment.newInstance(GuideType.TRANSACTION_LIST).setOnDissmissListener(new BaseDialogFragment.OnDissmissListener() {
-                @Override
-                public void onDismiss() {
-                    PreferenceTool.putBoolean(Constants.Preference.KEY_SHOW_RECORD, true);
-                }
-            }).show(getActivity().getSupportFragmentManager(), "showGuideDialogFragment");
-        }
-    }
-
-    private void initIndicator() {
-
-    }
-
-    private void initRefreshLayout() {
-
-        layoutRefresh.setOnRefreshListener(new OnRefreshListener() {
+        tvWalletAmountUnit.post(new Runnable() {
             @Override
-            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                getPresenter().fetchWalletList();
-                getPresenter().fetchWalletsBalance();
+            public void run() {
+                tvWalletAmount.setMaxWidth(getWalletAmountMaxWidth());
             }
         });
-    }
 
-    private void saveStateToArguments() {
-        Bundle saveState = saveState();
-        LogUtils.e("saveStateToArguments");
-        if (saveState != null) {
-            Bundle bundle = getArguments(); // 获取之前初始化时候的bundle
-            bundle.putBundle(Constants.Extra.EXTRA_BUNDLE, saveState);//将bundle传入数据
-        }
-    }
-
-    private void reStoreStateFromArguments() {
-        Bundle bundle = getArguments().getBundle(Constants.Extra.EXTRA_BUNDLE);
-        LogUtils.e("reStoreStateFromArguments");
-        if (bundle != null) {
-            List<Wallet> walletList = bundle.getParcelableArrayList(Constants.Extra.EXTRA_WALLET_LIST);
-            LogUtils.e("reStoreStateFromArguments" + walletList.size());
-            showContent(walletList == null || walletList.isEmpty());
-        }
-    }
-
-    private Bundle saveState() {
-        Bundle outState = new Bundle();
-        List<Wallet> walletList = getPresenter().getRecycleViewDataSource();
-        if (walletList != null && walletList.size() > 0) {
-            outState.putParcelableArrayList(Constants.Extra.EXTRA_WALLET_LIST, (ArrayList<? extends Parcelable>) walletList);
-        }
-        return outState;
     }
 
     @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        saveStateToArguments();
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (unbinder != null) {
+            unbinder.unbind();
+        }
+        EventPublisher.getInstance().unRegister(this);
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        reStoreStateFromArguments();
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onWalletSelectedChangedEvent(Event.WalletSelectedChangedEvent event) {
+        showSelectedWalletInfo(WalletManager.getInstance().getSelectedWallet());
     }
 
-    public void initTab() {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onWalletNumberChangeEvent(Event.WalletNumberChangeEvent event) {
+        List<Wallet> walletList = WalletManager.getInstance().getWalletList();
+        mWalletListAdapter.notifyDataSetChanged(walletList);
+        layoutNoWallet.setVisibility(walletList.isEmpty() ? View.VISIBLE : View.GONE);
+        layoutAssetsWallet.setVisibility(walletList.isEmpty() ? View.GONE : View.VISIBLE);
+        layoutAssetsTransactions.setVisibility(walletList.isEmpty() ? View.GONE : View.VISIBLE);
 
-        stbBar.getTabAt(1).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if ((NetworkUtil.getNetWorkType(getContext()) == NetworkType.NETWORK_NO)) { //没有网络，调起相机界面
-                    new RxPermissions(currentActivity())
-                            .request(Manifest.permission.CAMERA)
-                            .subscribe(new CustomObserver<Boolean>() {
-                                @Override
-                                public void accept(Boolean success) {
-                                    if (success) {
-                                        ScanQRCodeActivity.startActivityForResult(currentActivity(), MainActivity.REQ_ASSETS_TAB_QR_CODE);
-                                    }
-                                }
-                            });
-                } else {
-                    vpContent.setCurrentItem(1);
-                }
-            }
-        });
-
-        stbBar.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-//                EventPublisher.getInstance().sendUpdateAssetsTabEvent(position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
+        showSelectedWalletInfo(WalletManager.getInstance().getSelectedWallet());
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onNetWorkStateChangedEvent(Event.NetWorkStateChangedEvent netWorkStateChangedEvent) {
+        showSelectedWalletInfo(WalletManager.getInstance().getSelectedWallet());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdateTransactionEvent(Event.UpdateTransactionEvent event) {
+        getPresenter().addNewTransaction(event.transaction);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDeleteTransactionEvent(Event.DeleteTransactionEvent event) {
+        getPresenter().deleteTransaction(event.transaction);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdateSelectedWalletEvent(Event.UpdateSelectedWalletEvent event) {
+        getPresenter().loadData();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onNodeChangedEvent(Event.NodeChangedEvent event) {
+        //获取最新
+        getPresenter().loadData();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSumAccountBalanceChanged(Event.SumAccountBalanceChanged event) {
+        getPresenter().loadNewData(TransactionsPresenter.DIRECTION_NEW);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onWalletListOrderChangedEvent(Event.WalletListOrderChangedEvent event) {
+        mWalletListAdapter.notifyDataSetChanged(WalletManager.getInstance().getWalletList());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBackedUpWalletSuccessedEvent(Event.BackedUpWalletSuccessedEvent event) {
+        if (TextUtils.equals(WalletManager.getInstance().getSelectedWallet().getUuid(), event.uuid)) {
+            layoutSecurityReminders.setVisibility(View.GONE);
+        }
+    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -325,11 +309,12 @@ public class AssetsFragment extends BaseNestingLazyFragment<AssetsContract.View,
                 }
 
                 if (qrCodeType == QrCodeType.WALLET_ADDRESS) {
-                    if (vpContent.getVisibility() == View.VISIBLE) {
-                        vpContent.setCurrentItem(1);
-                        ((TabAdapter) vpContent.getAdapter()).getItem(1).onActivityResult(MainActivity.REQ_ASSETS_ADDRESS_QR_CODE, resultCode, data);
+                    //有钱包进入发送界面，如果是地址的话无钱包进入导入观察者钱包页面
+                    if (WalletManager.getInstance().getWalletList().isEmpty()) {
+                        //进入导入观察者钱包
+                        ImportWalletActivity.actionStart(getActivity(), ImportWalletActivity.TabIndex.IMPORT_OBSERVED, unzip);
                     } else {
-                        AddNewAddressActivity.actionStartWithAddress(getContext(), TextUtils.isEmpty(unzip) ? result : unzip);
+                        SendTransactionActivity.actionStart(getActivity());
                     }
                     return;
                 }
@@ -349,12 +334,6 @@ public class AssetsFragment extends BaseNestingLazyFragment<AssetsContract.View,
                     return;
                 }
                 break;
-            case MainActivity.REQ_ASSETS_ADDRESS_QR_CODE:
-            case MainActivity.REQ_ASSETS_SELECT_ADDRESS_BOOK:
-                if (vpContent.getVisibility() == View.VISIBLE) {
-                    ((TabAdapter) vpContent.getAdapter()).getItem(1).onActivityResult(requestCode, resultCode, data);
-                }
-                break;
             case Constants.RequestCode.REQUEST_CODE_TRANSACTION_SIGNATURE:
                 getActivity().getSupportFragmentManager().findFragmentByTag(TransactionSignatureDialogFragment.TAG).onActivityResult(Constants.RequestCode.REQUEST_CODE_TRANSACTION_SIGNATURE, resultCode, data);
                 break;
@@ -363,222 +342,362 @@ public class AssetsFragment extends BaseNestingLazyFragment<AssetsContract.View,
         }
     }
 
-    @OnClick({R.id.layout_scan, R.id.tv_total_assets_title, R.id.tv_backup, R.id.layout_add, R.id.tv_restricted_amount, R.id.rl_wallet_detail})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.layout_scan://扫一扫功能
-                new RxPermissions(currentActivity())
-                    .request(Manifest.permission.CAMERA)
-                    .subscribe(new CustomObserver<Boolean>() {
-                        @Override
-                        public void accept(Boolean success) {
-                            if (success) {
-                                ScanQRCodeActivity.startActivityForResult(currentActivity(), MainActivity.REQ_ASSETS_TAB_QR_CODE);
-                            }
-                        }
-                    });
-                break;
-            case R.id.layout_add:
-                AssetsMoreDialogFragment.newInstance().setOnAssetMoreClickListener(new AssetsMoreDialogFragment.OnAssetMoreClickListener() {
-                    @Override
-                    public void onCreateWalletClick() {
-                        SendTransactionActivity.actionStart(getContext());
-                       // CreateWalletActivity.actionStart(getContext());
-                    }
-
-                    @Override
-                    public void onImportWalletClick() {
-                        ReceiveTransactionActivity.actionStart(getContext());
-                       // ImportWalletActivity.actionStart(getContext());
-                    }
-                }).show(getChildFragmentManager(), "showAssetsMore");
-                break;
-            case R.id.tv_total_assets_title:
-                PreferenceTool.putBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, true));
-                showAssets(PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, true));
-                break;
-            case R.id.tv_backup:
-                getPresenter().backupWallet();
-                break;
-            case R.id.tv_restricted_amount:
-                //弹出tips
-                DelegateTipsDialog.createWithTitleAndContentDialog(null, null,
-                        null, null, string(R.string.msg_restricted_plan), string(R.string.restricted_amount_tips)).show(getChildFragmentManager(), "restrictedTips");
-                break;
-            case R.id.rl_wallet_detail:
-                ManageWalletActivity.actionStart(currentActivity(), mWalletAdapter.getSelectedWallet());
-                break;
-            default:
-                break;
+    private void initGuide() {
+        if (!PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_RECORD, false)) {
+            CommonGuideDialogFragment.newInstance(GuideType.TRANSACTION_LIST).setOnDissmissListener(new BaseDialogFragment.OnDissmissListener() {
+                @Override
+                public void onDismiss() {
+                    PreferenceTool.putBoolean(Constants.Preference.KEY_SHOW_RECORD, true);
+                }
+            }).show(getActivity().getSupportFragmentManager(), "showGuideDialogFragment");
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onWalletListOrderChangedEvent(Event.WalletListOrderChangedEvent event) {
-        mWalletAdapter.notify();
-    }
+    private void initListener() {
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        saveStateToArguments();
-        if (unbinder != null) {
-            unbinder.unbind();
-        }
-        EventPublisher.getInstance().unRegister(this);
-    }
-
-    private String makeFragmentName(long id) {
-        return "android:switcher:" + vpContent.getId() + ":" + id;
-    }
-
-    private void initHeader() {
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        rvWallet.setLayoutManager(linearLayoutManager);
-        mWalletAdapter = new WalletHorizontalRecycleViewAdapter(getContext(), getPresenter().getRecycleViewDataSource());
-
-        mWalletAdapter.setOnItemClickListener(new WalletHorizontalRecycleViewAdapter.OnRecycleViewItemClickListener() {
+        mWalletListAdapter.setOnItemClickListener(new AssetsWalletListAdapter.OnItemClickListener() {
             @Override
-            public void onContentViewClick(Wallet walletEntity) {
-                getPresenter().clickRecycleViewItem(WalletManager.getInstance().getWalletByAddress(walletEntity.getPrefixAddress()));
+            public void onCommonWalletItemClick(Wallet wallet, int position) {
+                WalletManager.getInstance().setWalletList(mWalletListAdapter.getDatas());
+                showSelectedWalletInfo(wallet);
+                getPresenter().loadData();
+            }
+
+            @Override
+            public void onCreateWalletItemClick() {
+                CreateWalletActivity.actionStart(Objects.requireNonNull(getActivity()));
+            }
+
+            @Override
+            public void onImportWalletItemClick() {
+                ImportWalletActivity.actionStart(Objects.requireNonNull(getActivity()));
             }
         });
-        RecycleViewProxyAdapter proxyAdapter = new RecycleViewProxyAdapter(mWalletAdapter);
-        rvWallet.setAdapter(proxyAdapter);
-        proxyAdapter.addFooterView(getCreateWalletView());
-        proxyAdapter.addFooterView(getImportWalletView());
-    }
 
-    private View getCreateWalletView() {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.item_wallet_list_footer, null);
-        ((TextView) view.findViewById(R.id.tv_name)).setText(R.string.createIndividualWallet);
-        ((ImageView) view.findViewById(R.id.iv_icon)).setImageResource(R.drawable.icon_assets_create);
+        mTransactionListAdapter.setOnItemClickListener(new TransactionListAdapter.OnItemClickListener() {
+            @Override
+            public void onCommonTransactionItemClick(int position) {
+                LogUtils.e(position + ":" + mTransactionListAdapter.getTransactionList().get(position).toString());
+                TransactionDetailActivity.actionStart(getContext(), mTransactionListAdapter.getTransactionList().get(position), Collections.singletonList(WalletManager.getInstance().getSelectedWalletAddress()));
+            }
+
+            @Override
+            public void onMoreTransactionItemClick() {
+                TransactionRecordsActivity.actionStart(getActivity(), WalletManager.getInstance().getSelectedWallet());
+            }
+        });
+
+        layoutRefresh.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                getPresenter().fetchWalletBalance();
+            }
+        });
 
         RxView
-                .clicks(view)
+                .clicks(tvTotalAssetsAmount)
                 .compose(RxUtils.getClickTransformer())
                 .compose(bindToLifecycle())
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        CreateWalletActivity.actionStart(getContext());
+                        boolean showAssetsTag = PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, true);
+                        PreferenceTool.putBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, !showAssetsTag);
+                        showAssetsInfo(!showAssetsTag);
                     }
                 });
-        return view;
-    }
 
-    private View getImportWalletView() {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.item_wallet_list_footer, null);
-        ((TextView) view.findViewById(R.id.tv_name)).setText(R.string.importIndividualWallet);
-        ((ImageView) view.findViewById(R.id.iv_icon)).setImageResource(R.drawable.icon_assets_import);
-
-        RxView
-                .clicks(view)
+        RxView.clicks(ivAssetsAdd)
                 .compose(RxUtils.getClickTransformer())
                 .compose(bindToLifecycle())
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        ImportWalletActivity.actionStart(getContext());
+
+                        AssetsMoreDialogFragment.newInstance().setOnAssetMoreClickListener(new AssetsMoreDialogFragment.OnAssetMoreClickListener() {
+                            @Override
+                            public void onCreateWalletClick() {
+                                CreateWalletActivity.actionStart(getContext());
+                            }
+
+                            @Override
+                            public void onImportWalletClick() {
+                                ImportWalletActivity.actionStart(getContext());
+                            }
+                        }).show(getChildFragmentManager(), "showAssetsMore");
                     }
                 });
-        return view;
+
+
+        RxView.clicks(ivAssetsScanQrcode)
+                .compose(RxUtils.getClickTransformer())
+                .compose(bindToLifecycle())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object object) {
+                        new RxPermissions(currentActivity())
+                                .requestEach(Manifest.permission.CAMERA)
+                                .subscribe(new CustomObserver<Permission>() {
+                                    @Override
+                                    public void accept(Permission permission) {
+                                        if (permission.granted) {
+                                            ScanQRCodeActivity.startActivityForResult(currentActivity(), MainActivity.REQ_ASSETS_TAB_QR_CODE);
+                                        } else if (permission.shouldShowRequestPermissionRationale) {
+                                            // Denied permission without ask never again
+                                        } else {
+                                            showLongToast("使用该功能需要拍照和SD卡存储权限，请前往系统设置开启权限");
+                                        }
+                                    }
+                                });
+                    }
+                });
+
+        RxView.clicks(ivCloseSecurityReminders)
+                .compose(RxUtils.getClickTransformer())
+                .compose(bindToLifecycle())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        layoutSecurityReminders.setVisibility(View.GONE);
+                        Wallet selectedWallet = WalletManager.getInstance().getSelectedWallet();
+                        if (selectedWallet != null) {
+                            WalletManager.getInstance().updateWalletBackedUpPromptWithUUID(selectedWallet.getUuid(), false);
+                            notifyWalletList();
+                        }
+                    }
+                });
+
+        RxView.clicks(layoutDeviceOfflinePrompt)
+                .compose(RxUtils.getClickTransformer())
+                .compose(bindToLifecycle())
+                .subscribe();
+
+        RxView.clicks(layoutSecurityReminders)
+                .compose(RxUtils.getClickTransformer())
+                .compose(bindToLifecycle())
+                .subscribe();
+
+
+        RxView.clicks(ivCloseDeviceOfflinePrompt)
+                .compose(RxUtils.getClickTransformer())
+                .compose(bindToLifecycle())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        layoutDeviceOfflinePrompt.setVisibility(View.GONE);
+                    }
+                });
+
+        RxView.clicks(rtvGotIt)
+                .compose(RxUtils.getClickTransformer())
+                .compose(bindToLifecycle())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        layoutDeviceOfflinePrompt.setVisibility(View.GONE);
+                    }
+                });
+
+        RxView.clicks(rtvBackupWallet)
+                .compose(RxUtils.getClickTransformer())
+                .compose(bindToLifecycle())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        Wallet walletEntity = WalletManager.getInstance().getSelectedWallet();
+                        InputWalletPasswordDialogFragment.newInstance(walletEntity).setOnWalletCorrectListener(new InputWalletPasswordDialogFragment.OnWalletCorrectListener() {
+                            @Override
+                            public void onCorrect(Credentials credentials, String password) {
+                                BackupMnemonicPhraseActivity.actionStart(getContext(), password, walletEntity, BackupMnemonicPhraseActivity.BackupMnemonicExport.MAIN_ACTIVITY);
+                            }
+                        }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
+                    }
+                });
+
+        RxView.clicks(tvRestrictedBalanceAmount)
+                .compose(RxUtils.getClickTransformer())
+                .compose(bindToLifecycle())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        //弹出tips
+                        DelegateTipsDialog.createWithTitleAndContentDialog(null, null,
+                                null, null, string(R.string.msg_restricted_plan), string(R.string.restricted_amount_tips)).show(getChildFragmentManager(), "restrictedTips");
+                    }
+                });
+
+        RxView.clicks(ivManageWallet)
+                .compose(RxUtils.getClickTransformer())
+                .compose(bindToLifecycle())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        ManageWalletActivity.actionStart(currentActivity(), WalletManager.getInstance().getSelectedWallet());
+                    }
+                });
+        RxView.clicks(rtvSendTransaction)
+                .compose(RxUtils.getClickTransformer())
+                .compose(bindToLifecycle())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        if (NetConnectivity.getConnectivityManager().isConnected()) {
+                            SendTransactionActivity.actionStart(getContext());
+                        } else {
+                            new RxPermissions(currentActivity())
+                                    .requestEach(Manifest.permission.CAMERA)
+                                    .subscribe(new CustomObserver<Permission>() {
+                                        @Override
+                                        public void accept(Permission permission) {
+                                            if (permission.granted) {
+                                                ScanQRCodeActivity.actionStart(getContext());
+                                            } else if (permission.shouldShowRequestPermissionRationale) {
+                                                // Denied permission without ask never again
+                                            } else {
+                                                showLongToast("使用该功能需要拍照和SD卡存储权限，请前往系统设置开启权限");
+                                            }
+                                        }
+                                    });
+                        }
+                    }
+                });
+        RxView.clicks(rtvReceiveTransaction)
+                .compose(RxUtils.getClickTransformer())
+                .compose(bindToLifecycle())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        ReceiveTransactionActivity.actionStart(getContext());
+                    }
+                });
+
     }
 
-    private void showAssets(boolean visible) {
-        tvTotalAssetsUnit.setCompoundDrawablesWithIntrinsicBounds(0, 0, visible ? R.drawable.icon_open_eyes : R.drawable.icon_close_eyes, 0);
+    /**
+     * 获取钱包金额的最大长度
+     *
+     * @return
+     */
+    private int getWalletAmountMaxWidth() {
+        return CommonUtil.getScreenWidth(getActivity()) - DensityUtil.dp2px(getActivity(), 32) - tvWalletAmountUnit.getWidth();
+    }
+
+    private void showSelectedWalletInfo(Wallet selectedWallet) {
+
+        tvWalletName.setText(selectedWallet.getName());
+        tvWalletAmount.setText(StringUtil.formatBalance(AmountUtil.convertVonToLatWithFractionDigits(selectedWallet.getFreeBalance(), 8)));
+        tvRestrictedBalanceAmount.setVisibility(BigDecimalUtil.isBiggerThanZero(selectedWallet.getLockBalance()) ? View.VISIBLE : View.GONE);
+        tvRestrictedBalanceAmount.setText(string(R.string.restricted_amount_with_unit, StringUtil.formatBalance(AmountUtil.convertVonToLatWithFractionDigits(selectedWallet.getLockBalance(), 8))));
+        tvObservedWalletTag.setVisibility(selectedWallet.isObservedWallet() || !NetConnectivity.getConnectivityManager().isConnected() ? View.VISIBLE : View.GONE);
+        tvObservedWalletTag.setText(selectedWallet.isObservedWallet() ? string(R.string.msg_observed_wallet) : string(R.string.msg_cold_wallet));
+
+        if (selectedWallet.isObservedWallet()) {
+            rtvSendTransaction.setRoundedBackgroundColor(ContextCompat.getColor(getActivity(), R.color.color_ffffff));
+            rtvSendTransaction.setRoundedBorderColor(ContextCompat.getColor(getActivity(), R.color.color_78a2fa));
+            rtvSendTransaction.setText(string(R.string.msg_send_transaction));
+            rtvSendTransaction.setTextColor(ContextCompat.getColor(getActivity(), R.color.color_105cfe));
+        } else {
+            rtvSendTransaction.setRoundedBackgroundColor(NetConnectivity.getConnectivityManager().isConnected() ? ContextCompat.getColor(getActivity(), R.color.color_ffffff) : ContextCompat.getColor(getActivity(), R.color.color_f59a23));
+            rtvSendTransaction.setRoundedBorderColor(NetConnectivity.getConnectivityManager().isConnected() ? ContextCompat.getColor(getActivity(), R.color.color_78a2fa) : ContextCompat.getColor(getActivity(), R.color.color_ffcd8b));
+            rtvSendTransaction.setText(NetConnectivity.getConnectivityManager().isConnected() ? string(R.string.msg_send_transaction) : string(R.string.msg_offline_signature));
+            rtvSendTransaction.setTextColor(NetConnectivity.getConnectivityManager().isConnected() ? ContextCompat.getColor(getActivity(), R.color.color_105cfe) : ContextCompat.getColor(getActivity(), R.color.color_ffffff));
+        }
+
+        layoutSecurityReminders.setVisibility(selectedWallet.showBackedUpPrompt() ? View.VISIBLE : View.GONE);
+        layoutDeviceOfflinePrompt.setVisibility(NetConnectivity.getConnectivityManager().isConnected() ? View.GONE : View.VISIBLE);
+
+    }
+
+    private void showAssetsInfo(boolean visible) {
+        tvTotalAssetsAmount.setCompoundDrawablesWithIntrinsicBounds(0, 0, visible ? R.drawable.icon_open_eyes : R.drawable.icon_close_eyes, 0);
         tvTotalAssetsAmount.setTransformationMethod(visible ? HideReturnsTransformationMethod.getInstance() : new AmountTransformationMethod(tvTotalAssetsAmount.getText().toString()));
         tvWalletAmount.setTransformationMethod(visible ? HideReturnsTransformationMethod.getInstance() : new AmountTransformationMethod(tvWalletAmount.getText().toString()));
-        tvRestrictedAmount.setTransformationMethod(visible ? HideReturnsTransformationMethod.getInstance() : new AmountTransformationMethod(tvRestrictedAmount.getText().toString()));
+        tvRestrictedBalanceAmount.setTransformationMethod(visible ? HideReturnsTransformationMethod.getInstance() : new AmountTransformationMethod(tvRestrictedBalanceAmount.getText().toString()));
     }
 
-    private ArrayList<String> getTitles() {
-        ArrayList<String> titleList = new ArrayList<>();
-        titleList.add(string(R.string.transactions));
-        titleList.add((NetworkUtil.getNetWorkType(getContext()) != NetworkType.NETWORK_NO) ? string(R.string.action_send_transaction) : string(R.string.msg_offline_signature));
-        titleList.add(string(R.string.action_receive_transaction));
-        return titleList;
+    private void showAssetsWalletList() {
+
+        List<Wallet> walletList = WalletManager.getInstance().getWalletList();
+
+        mWalletListAdapter = new AssetsWalletListAdapter(walletList);
+
+        rvAssetsWalletList.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
+        rvAssetsWalletList.addItemDecoration(new CommonHorizontalItemDecoration(getActivity(), R.drawable.shape_assets_wallet_list_divider));
+        rvAssetsWalletList.setAdapter(mWalletListAdapter);
+
+        layoutNoWallet.setVisibility(walletList.isEmpty() ? View.VISIBLE : View.GONE);
+        layoutAssetsWallet.setVisibility(walletList.isEmpty() ? View.GONE : View.VISIBLE);
+        layoutAssetsTransactions.setVisibility(walletList.isEmpty() ? View.GONE : View.VISIBLE);
+
     }
 
-    private ArrayList<Integer> getCollapsIcons() {
-        ArrayList<Integer> titleList = new ArrayList<>();
-        titleList.add(R.drawable.assets_tab_transactions_icon);
-        titleList.add(R.drawable.assets_tab_send_icon);
-        titleList.add(R.drawable.assets_tab_receive_icon);
-        return titleList;
+    private void showAssetsTransactionList() {
+
+        mTransactionListAdapter = new TransactionListAdapter(TransactionListAdapter.EntranceType.MAIN_PAGE);
+
+        rvAssetsTransactionList.setEmptyView(LayoutInflater.from(getActivity()).inflate(R.layout.include_no_transaction, null));
+        rvAssetsTransactionList.setLayoutManager(new WrapContentLinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
+        //解决数据加载完成后, 没有停留在顶部的问题
+        rvAssetsTransactionList.setFocusable(false);
+        rvAssetsTransactionList.setAdapter(mTransactionListAdapter);
     }
 
+    private void notifyWalletList() {
+
+        List<Wallet> oldWalletList = mWalletListAdapter.getDatas();
+
+        List<Wallet> newWalletList = WalletManager.getInstance().getWalletList();
+
+        if (oldWalletList == null || oldWalletList.isEmpty()) {
+            mWalletListAdapter.notifyDataSetChanged(newWalletList);
+        } else {
+            WalletListDiffCallback diffCallback = new WalletListDiffCallback(oldWalletList, newWalletList);
+            DiffUtil.calculateDiff(diffCallback, true).dispatchUpdatesTo(mWalletListAdapter);
+        }
+
+    }
+
+    protected View getStatusBarView() {
+        View view = new View(getActivity());
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0);
+        view.setLayoutParams(layoutParams);
+        return view;
+    }
+
+
+    /**
+     * 显示总金额
+     *
+     * @param totalBalance
+     */
     @Override
-    public void showTotalBalance(String totalBalance) {//显示总资产
+    public void showTotalBalance(String totalBalance) {
         boolean visible = PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, true);
-        tvTotalAssetsAmount.setText(StringUtil.formatBalance(BigDecimalUtil.div(totalBalance, "1E18")));
+        tvTotalAssetsAmount.setText(StringUtil.formatBalance(AmountUtil.convertVonToLatWithFractionDigits(totalBalance, 8)));
         tvTotalAssetsAmount.setTransformationMethod(visible ? HideReturnsTransformationMethod.getInstance() : new AmountTransformationMethod(tvTotalAssetsAmount.getText().toString()));
     }
 
-    @Override
-    public void setSelectedWallet(Wallet selectedWallet) {
-        mWalletAdapter.notifyDataSetChanged(selectedWallet);
-    }
-
+    /**
+     * 显示自由金额
+     *
+     * @param balance
+     */
     @Override
     public void showFreeBalance(String balance) {//当前钱包的资产
-
-        tvWalletAmount.setText(string(R.string.amount_with_unit, StringUtil.formatBalance(BigDecimalUtil.div(balance, "1E18"), false)));
+        tvWalletAmount.setText(StringUtil.formatBalance(AmountUtil.convertVonToLatWithFractionDigits(balance, 8)));
         tvWalletAmount.setTransformationMethod(PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, true) ? HideReturnsTransformationMethod.getInstance() : new AmountTransformationMethod(tvWalletAmount.getText().toString()));
     }
 
+    /**
+     * 显示锁仓金额
+     *
+     * @param balance
+     */
     @Override
     public void showLockBalance(String balance) { //当前选中钱包的锁仓金额
-        tvRestrictedAmount.setVisibility(BigDecimalUtil.isBiggerThanZero(balance) ? View.VISIBLE : View.GONE);
-        tvRestrictedAmount.setText(getRestrictedAmount(string(R.string.restricted_amount_with_unit, StringUtil.formatBalance(BigDecimalUtil.div(balance, "1E18")))));
-        tvRestrictedAmount.setTransformationMethod(PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, true) ? HideReturnsTransformationMethod.getInstance() : new AmountTransformationMethod(tvRestrictedAmount.getText().toString()));
-    }
-
-    @Override
-    public void showWalletList(List<Wallet> walletList, Wallet walletEntity) {
-        mWalletAdapter.notifyDataSetChanged(walletList, walletEntity);
-    }
-
-    @Override
-    public void showWalletInfo(Wallet wallet) {
-        tvBackup.setVisibility(wallet.isBackedUpNeeded() ? View.VISIBLE : View.GONE);
-        int resId = RUtils.drawable(wallet.getAvatar());
-        if (resId < 0) {
-            resId = R.drawable.avatar_15;
-        }
-        ivWalletAvatar.setImageResource(resId);
-        tvWalletName.setText(wallet.getName());
-        showFreeBalance(wallet.getFreeBalance());
-        showLockBalance(wallet.getLockBalance());
-    }
-
-    @Override
-    public void showContent(boolean isEmpty) {
-        rlWalletDetail.setVisibility(!isEmpty ? View.VISIBLE : View.GONE);
-        stbBar.setVisibility(!isEmpty ? View.VISIBLE : View.GONE);
-        vpContent.setVisibility(!isEmpty ? View.VISIBLE : View.GONE);
-        layoutEmpty.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
-        scCreateWallet.setVisibility(View.GONE);
-        scImportWallet.setVisibility(View.GONE);
-        AppBarLayout.LayoutParams layoutParams = ((AppBarLayout.LayoutParams) llAssetsTitle.getLayoutParams());
-        layoutParams.setScrollFlags(isEmpty ? 0 : AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED | AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
-        mWalletAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void showCurrentItem(int index) {
-        vpContent.setCurrentItem(index, true);
-    }
-
-    @Override
-    public void setArgument(Wallet entity) {
-        List<BaseLazyFragment> fragments = ((TabAdapter) vpContent.getAdapter()).getFragments();
-        for (BaseFragment fragment : fragments) {
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(Constants.Extra.EXTRA_WALLET, entity);
-            fragment.setArguments(bundle);
-        }
+        tvRestrictedBalanceAmount.setVisibility(BigDecimalUtil.isBiggerThanZero(balance) ? View.VISIBLE : View.GONE);
+        tvRestrictedBalanceAmount.setText(string(R.string.restricted_amount_with_unit, StringUtil.formatBalance(AmountUtil.convertVonToLatWithFractionDigits(balance, 8))));
+        tvRestrictedBalanceAmount.setTransformationMethod(PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, true) ? HideReturnsTransformationMethod.getInstance() : new AmountTransformationMethod(tvRestrictedBalanceAmount.getText().toString()));
     }
 
     @Override
@@ -587,54 +706,16 @@ public class AssetsFragment extends BaseNestingLazyFragment<AssetsContract.View,
     }
 
     @Override
-    public void resetView() {
+    public void notifyTransactionSetChanged(List<Transaction> oldTransactionList, List<Transaction> newTransactionList, String queryAddress, boolean loadLatestData) {
 
-        List<BaseLazyFragment> fragments = ((TabAdapter) vpContent.getAdapter()).getFragments();
-
-        BaseFragment baseFragment = fragments.get(1);
-        if (baseFragment instanceof SendTransactionFragment) {
-            ((SendTransactionFragment) baseFragment).resetView("0.00");
+        mTransactionListAdapter.setQueryAddressList(Arrays.asList(queryAddress));
+        if (loadLatestData || newTransactionList == null || newTransactionList.isEmpty()) {
+            mTransactionListAdapter.notifyDataSetChanged(newTransactionList);
+        } else {
+            TransactionDiffCallback transactionDiffCallback = new TransactionDiffCallback(oldTransactionList, newTransactionList);
+            mTransactionListAdapter.setTransactionList(newTransactionList);
+            DiffUtil.calculateDiff(transactionDiffCallback, true).dispatchUpdatesTo(mTransactionListAdapter);
         }
 
-    }
-
-    private SpannableString getRestrictedAmount(String text) {
-        SpannableString spannableString = new SpannableString(text);
-        CustomImageSpan imageSpan = new CustomImageSpan(getActivity(), R.drawable.icon_restricted_amount);
-        int index = TextUtils.indexOf(text, "(");
-        if (index != -1) {
-            spannableString.setSpan(imageSpan, index + 1, index + 2, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-        }
-        return spannableString;
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onNetWorkStateChangedEvent(Event.NetWorkStateChangedEvent event) {
-        ((TabView) stbBar.getTabAt(1)).setTitle((NetworkUtil.getNetWorkType(getContext()) != NetworkType.NETWORK_NO) ? string(R.string.action_send_transaction) : string(R.string.msg_offline_signature));
-        getPresenter().fetchWalletList();
-    }
-
-    class TabView extends LinearLayout {
-
-        private ImageView mIconIv;
-        private TextView mTitleTv;
-
-        public TabView(Context context, int position) {
-            super(context);
-            LayoutInflater.from(context).inflate(R.layout.layout_app_tab_item1, this);
-
-            setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
-
-            mIconIv = findViewById(R.id.iv_icon);
-            mTitleTv = findViewById(R.id.tv_title);
-
-            mIconIv.setImageResource(getCollapsIcons().get(position));
-            mTitleTv.setText(getTitles().get(position));
-            mTitleTv.setTextColor(ContextCompat.getColorStateList(getContext(), R.color.color_app_tab_text2));
-        }
-
-        public void setTitle(String text) {
-            mTitleTv.setText(text);
-        }
     }
 }
