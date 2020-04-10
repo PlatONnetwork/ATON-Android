@@ -4,6 +4,7 @@ package com.platon.aton.component.ui.presenter;
 import com.platon.aton.component.ui.contract.VerificationMnemonicContract;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.Wallet;
+import com.platon.aton.event.EventPublisher;
 import com.platon.aton.utils.JZWalletUtil;
 import com.platon.framework.base.BasePresenter;
 
@@ -97,6 +98,7 @@ public class VerificationMnemonicPresenter extends BasePresenter<VerificationMne
                 //备份成功
                 view.showDisclaimerDialog();
                 WalletManager.getInstance().updateBackedUpWithUuid(mWalletEntity.getUuid(), true);
+                EventPublisher.getInstance().sendBackedUpWalletSuccessedEvent(mWalletEntity.getUuid());
             } else {
                 //备份失败
                 view.showBackupFailedDialog();

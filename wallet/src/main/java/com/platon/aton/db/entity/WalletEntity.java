@@ -249,6 +249,7 @@ public class WalletEntity extends RealmObject {
                 .mnemonic(mnemonic)
                 .chainId(chainId)
                 .backedUp(backedUp)
+                .backedUpPrompt(true)
                 .build();
     }
 

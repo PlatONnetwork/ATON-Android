@@ -97,4 +97,8 @@ public class EventPublisher {
     public void sendWalletSelectedChangedEvent() {
         BusProvider.post(new Event.WalletSelectedChangedEvent());
     }
+
+    public void sendBackedUpWalletSuccessedEvent(String uuid) {
+        BusProvider.post(new Event.BackedUpWalletSuccessedEvent(uuid));
+    }
 }

@@ -221,6 +221,8 @@ public class AssetsFragment2 extends BaseLazyFragment<AssetsContract2.View, Asse
         layoutNoWallet.setVisibility(walletList.isEmpty() ? View.VISIBLE : View.GONE);
         layoutAssetsWallet.setVisibility(walletList.isEmpty() ? View.GONE : View.VISIBLE);
         layoutAssetsTransactions.setVisibility(walletList.isEmpty() ? View.GONE : View.VISIBLE);
+
+        showSelectedWalletInfo(WalletManager.getInstance().getSelectedWallet());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -257,6 +259,13 @@ public class AssetsFragment2 extends BaseLazyFragment<AssetsContract2.View, Asse
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onWalletListOrderChangedEvent(Event.WalletListOrderChangedEvent event) {
         mWalletListAdapter.notifyDataSetChanged(WalletManager.getInstance().getWalletList());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBackedUpWalletSuccessedEvent(Event.BackedUpWalletSuccessedEvent event) {
+        if (TextUtils.equals(WalletManager.getInstance().getSelectedWallet().getUuid(), event.uuid)) {
+            layoutSecurityReminders.setVisibility(View.GONE);
+        }
     }
 
 
@@ -447,6 +456,7 @@ public class AssetsFragment2 extends BaseLazyFragment<AssetsContract2.View, Asse
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
+                        layoutSecurityReminders.setVisibility(View.GONE);
                         Wallet selectedWallet = WalletManager.getInstance().getSelectedWallet();
                         if (selectedWallet != null) {
                             WalletManager.getInstance().updateWalletBackedUpPromptWithUUID(selectedWallet.getUuid(), false);
@@ -454,6 +464,17 @@ public class AssetsFragment2 extends BaseLazyFragment<AssetsContract2.View, Asse
                         }
                     }
                 });
+
+        RxView.clicks(layoutDeviceOfflinePrompt)
+                .compose(RxUtils.getClickTransformer())
+                .compose(bindToLifecycle())
+                .subscribe();
+
+        RxView.clicks(layoutSecurityReminders)
+                .compose(RxUtils.getClickTransformer())
+                .compose(bindToLifecycle())
+                .subscribe();
+
 
         RxView.clicks(ivCloseDeviceOfflinePrompt)
                 .compose(RxUtils.getClickTransformer())

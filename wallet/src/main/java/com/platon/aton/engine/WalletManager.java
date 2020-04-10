@@ -102,8 +102,8 @@ public class WalletManager {
                         }
                     })
                     .firstElement()
-                    .defaultIfEmpty(mWalletList.get(0))
-                    .onErrorReturnItem(mWalletList.get(0))
+                    .defaultIfEmpty(Wallet.getNullInstance())
+                    .onErrorReturnItem(Wallet.getNullInstance())
                     .blockingGet();
         }
         return getSelectedWalletFromWalletList();
