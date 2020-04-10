@@ -31,11 +31,10 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 /**
- * 所有委托记录（委托和赎回委托）
+ * @author ziv
+ * date On 2020-04-10
  */
-
-public class AllDelegateRecordFragment extends BaseLazyFragment<DelegateRecordContract.View, DelegateRecordPresenter> implements DelegateRecordContract.View {
-
+public class WithdrawDelegateRecordFragment extends BaseLazyFragment<DelegateRecordContract.View, DelegateRecordPresenter> implements DelegateRecordContract.View {
 
     private Unbinder unbinder;
     @BindView(R.id.refreshLayout)
@@ -45,7 +44,8 @@ public class AllDelegateRecordFragment extends BaseLazyFragment<DelegateRecordCo
     @BindView(R.id.layout_no_record)
     LinearLayout ll_no_data;
     private DelegateRecordAdapter mAdapter;
-    public long beginSequence = 0;//加载更多需要传入的值
+    //加载更多需要传入的值
+    public long beginSequence = 0;
     private List<Transaction> list = new ArrayList<>();
     private boolean isLoadMore = false;
 
@@ -60,19 +60,19 @@ public class AllDelegateRecordFragment extends BaseLazyFragment<DelegateRecordCo
     }
 
     @Override
-    public void init(View rootView) {
-        unbinder = ButterKnife.bind(this, rootView);
-        initView();
-    }
-
-
-    @Override
     public int getLayoutId() {
         return R.layout.fragment_delegate_record;
     }
 
     @Override
+    public void init(View rootView) {
+        unbinder = ButterKnife.bind(this, rootView);
+        initView();
+    }
+
+    @Override
     public void onFragmentFirst() {
+        super.onFragmentFirst();
         refreshLayout.autoRefresh();
     }
 
@@ -104,12 +104,11 @@ public class AllDelegateRecordFragment extends BaseLazyFragment<DelegateRecordCo
                 TransactionDetailActivity.actionStart(getContext(), transactionRecord, Arrays.asList(transactionRecord.getFrom()));
             }
         });
-
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 isLoadMore = false;
-                getPresenter().loadDelegateRecordData(Constants.VoteConstants.NEWEST_DATA, Constants.VoteConstants.REFRESH_DIRECTION, Constants.DelegateRecordType.All);
+                getPresenter().loadDelegateRecordData(Constants.VoteConstants.NEWEST_DATA, Constants.VoteConstants.REFRESH_DIRECTION, Constants.DelegateRecordType.REDEEM);
             }
         });
 
@@ -117,7 +116,7 @@ public class AllDelegateRecordFragment extends BaseLazyFragment<DelegateRecordCo
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
                 isLoadMore = true;
-                getPresenter().loadDelegateRecordData(beginSequence, Constants.VoteConstants.REQUEST_DIRECTION, Constants.DelegateRecordType.All);
+                getPresenter().loadDelegateRecordData(beginSequence, Constants.VoteConstants.REQUEST_DIRECTION, Constants.DelegateRecordType.REDEEM);
             }
         });
 
@@ -125,11 +124,9 @@ public class AllDelegateRecordFragment extends BaseLazyFragment<DelegateRecordCo
 
     @Override
     public void showDelegateRecordData(List<Transaction> recordList) {
-
         if (recordList.size() > 0) {
             beginSequence = recordList.get(recordList.size() - 1).getSequence();
         }
-
         if (isLoadMore) {
             list.addAll(recordList);
         } else {
@@ -148,6 +145,7 @@ public class AllDelegateRecordFragment extends BaseLazyFragment<DelegateRecordCo
         dismissLoadingDialogImmediately();
     }
 
+
     @Override
     public void showDelegateRecordFailed() {
         refreshLayout.finishLoadMore();
@@ -155,7 +153,6 @@ public class AllDelegateRecordFragment extends BaseLazyFragment<DelegateRecordCo
         dismissLoadingDialogImmediately();
         ll_no_data.setVisibility(View.VISIBLE);
     }
-
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {

@@ -820,6 +820,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
                 .setNodeName(nodeName)
                 .setTotalReward(totalReward)
                 .setUnDelegation(unDelegation)
+                .setRemark(remark)
                 .build();
     }
 

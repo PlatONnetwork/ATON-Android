@@ -61,6 +61,7 @@ import com.platon.aton.utils.StringUtil;
 import com.platon.framework.app.Constants;
 import com.platon.framework.base.BaseLazyFragment;
 import com.platon.framework.network.NetConnectivity;
+import com.platon.framework.utils.LogUtils;
 import com.platon.framework.utils.PreferenceTool;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -375,8 +376,9 @@ public class AssetsFragment2 extends BaseLazyFragment<AssetsContract2.View, Asse
 
         mTransactionListAdapter.setOnItemClickListener(new TransactionListAdapter.OnItemClickListener() {
             @Override
-            public void onCommonTransactionItemClick(Transaction transaction, int position) {
-                TransactionDetailActivity.actionStart(getContext(), transaction, Collections.singletonList(WalletManager.getInstance().getSelectedWalletAddress()));
+            public void onCommonTransactionItemClick(int position) {
+                LogUtils.e(position + ":" + mTransactionListAdapter.getTransactionList().get(position).toString());
+                TransactionDetailActivity.actionStart(getContext(), mTransactionListAdapter.getTransactionList().get(position), Collections.singletonList(WalletManager.getInstance().getSelectedWalletAddress()));
             }
 
             @Override

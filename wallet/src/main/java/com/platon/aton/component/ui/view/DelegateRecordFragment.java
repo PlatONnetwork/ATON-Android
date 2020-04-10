@@ -55,7 +55,7 @@ public class DelegateRecordFragment extends BaseLazyFragment<DelegateRecordContr
 
     @Override
     public DelegateRecordContract.View createView() {
-        return null;
+        return this;
     }
 
     @Override
@@ -72,6 +72,12 @@ public class DelegateRecordFragment extends BaseLazyFragment<DelegateRecordContr
     @Override
     public void onFragmentFirst() {
         super.onFragmentFirst();
+        refreshLayout.autoRefresh();
+    }
+
+    @Override
+    public void onFragmentVisible() {
+        super.onFragmentVisible();
         refreshLayout.autoRefresh();
     }
 
@@ -97,12 +103,6 @@ public class DelegateRecordFragment extends BaseLazyFragment<DelegateRecordContr
                 TransactionDetailActivity.actionStart(getContext(), transactionRecord, Arrays.asList(transactionRecord.getFrom()));
             }
         });
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {

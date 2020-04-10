@@ -124,8 +124,8 @@ public class TransactionRecordsActivity extends BaseActivity<TransactionRecordsC
 
         mTransactionListAdapter.setOnItemClickListener(new TransactionListAdapter.OnItemClickListener() {
             @Override
-            public void onCommonTransactionItemClick(Transaction transaction, int position) {
-                TransactionDetailActivity.actionStart(TransactionRecordsActivity.this, transaction, mAddressList);
+            public void onCommonTransactionItemClick(int position) {
+                TransactionDetailActivity.actionStart(TransactionRecordsActivity.this, mTransactionListAdapter.getTransactionList().get(position), mAddressList);
             }
 
             @Override
