@@ -1,8 +1,6 @@
 package com.platon.aton;
 
 import com.platon.aton.app.CustomObserver;
-import com.platon.aton.component.ui.contract.AssetsContract;
-import com.platon.aton.component.ui.presenter.AssetsPresenter;
 import com.platon.aton.config.AppSettings;
 import com.platon.aton.engine.NodeManager;
 import com.platon.aton.entity.AccountBalance;

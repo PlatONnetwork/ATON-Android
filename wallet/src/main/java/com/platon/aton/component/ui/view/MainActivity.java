@@ -146,7 +146,7 @@ public class MainActivity extends BaseActivity<MainContract.View, MainPresenter>
         TabWidget tabWidget = findViewById(android.R.id.tabs);
         tabWidget.setDividerDrawable(null);
 
-        tabhost.addTab(tabhost.newTabSpec(MainTabTag.TAG_ASSETS).setIndicator(getIndicatorView(R.drawable.bg_nav_property, R.string.nav_property)), AssetsFragment2.class, new Bundle());
+        tabhost.addTab(tabhost.newTabSpec(MainTabTag.TAG_ASSETS).setIndicator(getIndicatorView(R.drawable.bg_nav_property, R.string.nav_property)), AssetsFragment.class, new Bundle());
         tabhost.addTab(tabhost.newTabSpec(MainTabTag.TAG_DELEGATE).setIndicator(getIndicatorView(R.drawable.bg_nav_delegate, R.string.nav_delegate)), DelegateFragment.class, null);
         tabhost.addTab(tabhost.newTabSpec(MainTabTag.TAG_ME).setIndicator(getIndicatorView(R.drawable.bg_nav_me, R.string.nav_me)), MeFragment.class, null);
         tabhost.setCurrentTab(mCurIndex);
