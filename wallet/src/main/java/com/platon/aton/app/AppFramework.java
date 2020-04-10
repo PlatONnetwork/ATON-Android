@@ -308,6 +308,14 @@ public class AppFramework {
                         .addField("totalReward", String.class)
                         .addField("unDelegation", String.class);
 
+                oldVersion++;
+
+            } else {
+                //增加一个字段
+                schema.get("TransactionEntity")
+                        .addField("remark", String.class);
+
+                oldVersion++;
             }
 
         }

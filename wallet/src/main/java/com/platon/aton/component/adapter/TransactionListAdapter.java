@@ -74,6 +74,9 @@ public class TransactionListAdapter extends RecyclerView.Adapter<BaseViewHolder>
         this.mItemClickListener = itemClickListener;
     }
 
+    public List<Transaction> getTransactionList() {
+        return mTransactionList;
+    }
 
     @NonNull
     @Override
@@ -96,7 +99,7 @@ public class TransactionListAdapter extends RecyclerView.Adapter<BaseViewHolder>
                 @Override
                 public void onItemClick(Object o) {
                     if (mItemClickListener != null) {
-                        mItemClickListener.onCommonTransactionItemClick(mTransactionList.get(holder.getAdapterPosition()), position);
+                        mItemClickListener.onCommonTransactionItemClick(holder.getAdapterPosition());
                     }
                 }
             });
@@ -162,10 +165,9 @@ public class TransactionListAdapter extends RecyclerView.Adapter<BaseViewHolder>
         /**
          * 正常交易被点击，进入交易详情页面
          *
-         * @param transaction
          * @param position
          */
-        void onCommonTransactionItemClick(Transaction transaction, int position);
+        void onCommonTransactionItemClick(int position);
 
         /**
          * 加载更多，进入交易记录页面

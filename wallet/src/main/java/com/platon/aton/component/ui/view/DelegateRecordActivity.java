@@ -119,7 +119,7 @@ public class DelegateRecordActivity extends BaseActivity {
         ArrayList<Class<? extends BaseFragment>> list = new ArrayList<>();
         list.add(AllDelegateRecordFragment.class);
         list.add(DelegateRecordFragment.class);
-        list.add(BaseFragment.class);
+        list.add(WithdrawDelegateRecordFragment.class);
         return list;
 
     }
