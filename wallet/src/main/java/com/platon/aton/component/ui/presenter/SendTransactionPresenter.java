@@ -607,9 +607,9 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                                 } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_NONCE_TOO_LOW  ||
                                            customThrowable.getErrCode() == CustomThrowable.CODE_TX_GAS_LOW){
                                               if(WalletManager.getInstance().getSelectedWallet().isObservedWallet()){
-                                                  showLongToast(string(R.string.msg_transaction_exception, customThrowable.getErrCode()));
-                                              }else{
                                                   showLongToast(R.string.msg_expired_qr_code);
+                                              }else{
+                                                  showLongToast(string(R.string.msg_transaction_exception, customThrowable.getErrCode()));
                                               }
                                 } else {
                                     //showLongToast(string(R.string.msg_server_exception, customThrowable.getErrCode()));

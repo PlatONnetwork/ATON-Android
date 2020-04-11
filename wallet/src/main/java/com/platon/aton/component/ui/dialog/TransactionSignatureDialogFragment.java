@@ -280,9 +280,9 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
                             } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_NONCE_TOO_LOW  ||
                                     customThrowable.getErrCode() == CustomThrowable.CODE_TX_GAS_LOW){
                                 if(WalletManager.getInstance().getSelectedWallet().isObservedWallet()){
-                                    ToastUtil.showLongToast(getActivity(), (((BaseActivity) getActivity()).string(R.string.msg_transaction_exception, customThrowable.getErrCode())));
-                                }else{
                                     ToastUtil.showLongToast(getActivity(), R.string.msg_expired_qr_code);
+                                }else{
+                                    ToastUtil.showLongToast(getActivity(), (((BaseActivity) getActivity()).string(R.string.msg_transaction_exception, customThrowable.getErrCode())));
                                 }
                             } else {
                                 //showLongToast(string(R.string.msg_server_exception, customThrowable.getErrCode()));
