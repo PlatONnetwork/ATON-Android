@@ -542,7 +542,7 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
                     @Override
                     public void accept(Object o) {
                         if (NetConnectivity.getConnectivityManager().isConnected()) {
-                            ScanQRCodeActivity.startActivityForResult(currentActivity(), MainActivity.REQ_ASSETS_TAB_QR_CODE);
+                            SendTransactionActivity.actionStart(getContext());
                         } else {
                             new RxPermissions(currentActivity())
                                     .requestEach(Manifest.permission.CAMERA)
@@ -550,7 +550,7 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
                                         @Override
                                         public void accept(Permission permission) {
                                             if (permission.granted) {
-                                                ScanQRCodeActivity.actionStart(getContext());
+                                                ScanQRCodeActivity.startActivityForResult(currentActivity(), MainActivity.REQ_ASSETS_TAB_QR_CODE);
                                             } else if (permission.shouldShowRequestPermissionRationale) {
                                                 // Denied permission without ask never again
                                             } else {
