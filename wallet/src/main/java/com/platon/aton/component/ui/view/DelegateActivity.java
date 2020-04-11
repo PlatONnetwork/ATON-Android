@@ -391,12 +391,13 @@ public class DelegateActivity extends BaseActivity<DelegateContract.View, Delega
 
     //显示钱包信息
     @Override
-    public void showSelectedWalletInfo(Wallet individualWalletEntity) {
+    public void showSelectedWalletInfo(Wallet wallet) {
         stakingAmountType = StakingAmountType.FREE_AMOUNT_TYPE;
         //显示钱包基本信息
-        walletName.setText(individualWalletEntity.getName());
-        walletAddress.setText(AddressFormatUtil.formatAddress(individualWalletEntity.getPrefixAddress()));//钱包地址
-        walletIcon.setImageResource(RUtils.drawable(individualWalletEntity.getAvatar()));
+        walletName.setText(wallet.getName());
+        //钱包地址
+        walletAddress.setText(AddressFormatUtil.formatAddress(wallet.getPrefixAddress()));
+        walletIcon.setImageResource(RUtils.drawable(wallet.getAvatar()));
     }
 
     private void checkIsClick(EstimateGasResult estimateGasResult) {
