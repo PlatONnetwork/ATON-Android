@@ -542,7 +542,7 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
                     @Override
                     public void accept(Object o) {
                         if (NetConnectivity.getConnectivityManager().isConnected()) {
-                            SendTransactionActivity.actionStart(getContext());
+                            ScanQRCodeActivity.startActivityForResult(currentActivity(), MainActivity.REQ_ASSETS_TAB_QR_CODE);
                         } else {
                             new RxPermissions(currentActivity())
                                     .requestEach(Manifest.permission.CAMERA)
