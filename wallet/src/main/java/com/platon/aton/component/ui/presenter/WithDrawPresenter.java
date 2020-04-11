@@ -251,14 +251,14 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
             GasProvider gasProvider = mWithDrawBalance.getGasProvider();
 
             if (mWallet.isObservedWallet()) {
-                showTransactionAuthorizationDialogFragment(gasProvider, mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), getView().getInputAmount(), mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS,mDelegationValue.getNonce());
+                showTransactionAuthorizationDialogFragment(gasProvider, mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), getView().getInputAmount(), mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, mDelegationValue.getNonce());
             } else {
                 InputWalletPasswordDialogFragment
                         .newInstance(mWallet)
                         .setOnWalletPasswordCorrectListener(new InputWalletPasswordDialogFragment.OnWalletPasswordCorrectListener() {
                             @Override
                             public void onWalletPasswordCorrect(Credentials credentials) {
-                                withdraw(credentials, gasProvider, mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), mWithDrawBalance.getStakingBlockNum(), getView().getInputAmount(),mDelegationValue.getNonce());
+                                withdraw(credentials, gasProvider, mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), mWithDrawBalance.getStakingBlockNum(), getView().getInputAmount(), mDelegationValue.getNonce());
                             }
                         })
                         .show(currentActivity().getSupportFragmentManager(), "inputWalletPasssword");
@@ -277,9 +277,9 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
      * @param withdrawAmount
      */
     @SuppressLint("CheckResult")
-    public void withdraw(Credentials credentials, GasProvider gasProvider, String nodeId, String nodeName, String blockNum, String withdrawAmount,String nonce) {
+    public void withdraw(Credentials credentials, GasProvider gasProvider, String nodeId, String nodeName, String blockNum, String withdrawAmount, String nonce) {
         DelegateManager.getInstance()
-                .withdrawDelegate(credentials, ContractAddress.DELEGATE_CONTRACT_ADDRESS, nodeId, nodeName, getFeeAmount(gasProvider), blockNum, withdrawAmount, String.valueOf(TransactionType.UNDELEGATE.getTxTypeValue()), gasProvider.toSdkGasProvider(),nonce)
+                .withdrawDelegate(credentials, ContractAddress.DELEGATE_CONTRACT_ADDRESS, nodeId, nodeName, getFeeAmount(gasProvider), blockNum, withdrawAmount, String.valueOf(TransactionType.UNDELEGATE.getTxTypeValue()), gasProvider.toSdkGasProvider(), nonce)
                 .toObservable()
                 .compose(RxUtils.getSchedulerTransformer())
                 .compose(RxUtils.getLoadingTransformer(currentActivity()))
@@ -309,6 +309,8 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
                                     showLongToast(string(R.string.msg_server_exception, customThrowable.getErrCode()));
                                 }
                             }
+                            //重新刷新
+                            getBalanceType();
                         }
                     }
                 });

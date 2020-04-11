@@ -87,45 +87,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                 .setOnItemClickListener(new DelegateSelectWalletDialogFragment.OnItemClickListener() {
                     @Override
                     public void onItemClick(Wallet wallet) {
-
-                        estimateGas(wallet.getPrefixAddress(), mDelegateDetail.getNodeId())
-                                .compose(RxUtils.bindToLifecycle(getView()))
-                                .compose(RxUtils.getSingleSchedulerTransformer())
-                                .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
-                                .subscribe(new ApiSingleObserver<EstimateGasResult>() {
-                                    @Override
-                                    public void onApiSuccess(EstimateGasResult estimateGasResult) {
-                                        if (isViewAttached()) {
-
-                                            mEstimateGasResult = estimateGasResult;
-
-                                            WalletManager.getInstance().updateAccountBalance(new AccountBalance(wallet.getPrefixAddress(), estimateGasResult.getFree(), estimateGasResult.getLock()));
-
-                                            mWallet = WalletManager.getInstance().getWalletByAddress(wallet.getPrefixAddress());
-
-                                            getView().showSelectedWalletInfo(mWallet);
-                                            getView().clearInputDelegateAmount();
-
-                                            getView().showFeeAmount(estimateGasResult.getFeeAmount());
-
-                                            getView().showIsCanDelegate(estimateGasResult);
-
-                                            getView().showDelegateResult(estimateGasResult.getMinDelegation());
-
-
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onApiFailure(ApiResponse response) {
-                                        super.onApiFailure(response);
-                                        if (isViewAttached()) {
-                                            getView().showIsCanDelegate(EstimateGasResult.getNullInstance());
-
-                                            getView().showDelegateException(response.getErrorCode());
-                                        }
-                                    }
-                                });
+                        getEstimateGas(wallet.getPrefixAddress(), mDelegateDetail.getNodeId());
                     }
                 })
                 .show(currentActivity().getSupportFragmentManager(), "showSelectWalletDialog");
@@ -143,31 +105,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                 getView().showSelectedWalletInfo(mWallet);
             }
             if (mDelegateDetail != null && mWallet != null) {
-                estimateGas(mWallet.getPrefixAddress(), mDelegateDetail.getNodeId())
-                        .compose(RxUtils.bindToLifecycle(getView()))
-                        .compose(RxUtils.getSingleSchedulerTransformer())
-                        .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
-                        .subscribe(new ApiSingleObserver<EstimateGasResult>() {
-                            @Override
-                            public void onApiSuccess(EstimateGasResult estimateGasResult) {
-                                if (isViewAttached()) {
-                                    mEstimateGasResult = estimateGasResult;
-                                    WalletManager.getInstance().updateAccountBalance(new AccountBalance(mWallet.getPrefixAddress(), estimateGasResult.getFree(), estimateGasResult.getLock()));
-                                    mWallet = WalletManager.getInstance().getWalletByAddress(mWallet.getPrefixAddress());
-                                    getView().showIsCanDelegate(estimateGasResult);
-                                    getView().showSelectedWalletInfo(mWallet);
-                                    getView().showFeeAmount(estimateGasResult.getFeeAmount());
-                                }
-                            }
-
-                            @Override
-                            public void onApiFailure(ApiResponse response) {
-                                super.onApiFailure(response);
-                                if (isViewAttached()) {
-                                    getView().showIsCanDelegate(EstimateGasResult.getNullInstance());
-                                }
-                            }
-                        });
+                getEstimateGas(mWallet.getPrefixAddress(), mDelegateDetail.getNodeId());
             }
         }
     }
@@ -385,11 +323,55 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
                                         showLongToast(errMsg);
                                     }
                                 }
+                                getEstimateGas(credentials.getAddress(), nodeId);
                             }
                         }
                     }
                 });
 
+    }
+
+    private void getEstimateGas(String prefixAddress, String nodeId) {
+
+        estimateGas(prefixAddress, nodeId)
+                .compose(RxUtils.bindToLifecycle(getView()))
+                .compose(RxUtils.getSingleSchedulerTransformer())
+                .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
+                .subscribe(new ApiSingleObserver<EstimateGasResult>() {
+                    @Override
+                    public void onApiSuccess(EstimateGasResult estimateGasResult) {
+                        if (isViewAttached()) {
+
+                            mEstimateGasResult = estimateGasResult;
+
+                            WalletManager.getInstance().updateAccountBalance(new AccountBalance(prefixAddress, estimateGasResult.getFree(), estimateGasResult.getLock()));
+
+                            mWallet = WalletManager.getInstance().getWalletByAddress(prefixAddress);
+
+                            getView().showSelectedWalletInfo(mWallet);
+
+                            getView().clearInputDelegateAmount();
+
+                            getView().showFeeAmount(estimateGasResult.getFeeAmount());
+
+                            getView().showIsCanDelegate(estimateGasResult);
+
+                            getView().showDelegateResult(estimateGasResult.getMinDelegation());
+
+
+                        }
+                    }
+
+                    @Override
+                    public void onApiFailure(ApiResponse response) {
+                        super.onApiFailure(response);
+                        if (isViewAttached()) {
+                            getView().showIsCanDelegate(EstimateGasResult.getNullInstance());
+
+                            getView().showDelegateException(response.getErrorCode());
+                        }
+                    }
+                });
     }
 
     private void showInputPasswordDialogFragment(String inputAmount, String nodeAddress, String nodeName, StakingAmountType stakingAmountType, GasProvider gasProvider, String nonce) {
