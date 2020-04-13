@@ -16,7 +16,9 @@ import com.gyf.immersionbar.ImmersionBar;
 import com.platon.framework.BuildConfig;
 import com.platon.framework.R;
 import com.platon.framework.app.BaseContextImpl;
+import com.platon.framework.app.CustomContextWrapper;
 import com.platon.framework.app.IContext;
+import com.platon.framework.utils.LanguageUtil;
 import com.platon.framework.utils.LogUtils;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 import com.umeng.analytics.MobclickAgent;
@@ -82,6 +84,12 @@ public abstract class BaseActivity<V extends BaseViewImp, P extends BasePresente
                 setStatusBarColor(getStatusBarColor());
             }
         }
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        Context context = CustomContextWrapper.wrap(newBase, LanguageUtil.getLocale(newBase));
+        super.attachBaseContext(context);
     }
 
     protected int getStatusBarColor() {

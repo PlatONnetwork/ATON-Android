@@ -1,13 +1,11 @@
-package com.platon.aton.utils;
+package com.platon.framework.utils;
 
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.text.TextUtils;
 
-import com.platon.aton.component.ui.view.MainActivity;
 import com.platon.framework.app.Constants;
-import com.platon.framework.utils.PreferenceTool;
 
 import java.util.Locale;
 
@@ -40,14 +38,6 @@ public class LanguageUtil {
         } else {
             return new Locale(language, "");
         }
-
-    }
-
-    public static void switchLanguage(Context context, Locale locale) {
-
-        PreferenceTool.putString(Constants.Preference.KEY_LANGUAGE, locale.getLanguage());
-
-        MainActivity.restart(context);
 
     }
 

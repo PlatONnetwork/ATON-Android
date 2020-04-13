@@ -16,7 +16,6 @@ import com.platon.aton.R;
 import com.platon.aton.app.CustomObserver;
 import com.platon.aton.component.ui.dialog.ReminderThresholdAmountDialogFragment;
 import com.platon.aton.component.widget.togglebutton.ToggleButton;
-import com.platon.aton.utils.LanguageUtil;
 import com.platon.aton.utils.RxUtils;
 import com.platon.aton.utils.StringUtil;
 import com.platon.biometric.BiometricPromptCompat;
@@ -24,6 +23,7 @@ import com.platon.framework.app.Constants;
 import com.platon.framework.base.BaseActivity;
 import com.platon.framework.base.BasePresenter;
 import com.platon.framework.base.BaseViewImp;
+import com.platon.framework.utils.LanguageUtil;
 import com.platon.framework.utils.PreferenceTool;
 
 import java.util.Locale;
