@@ -11,7 +11,6 @@ import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.text.method.HideReturnsTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -36,7 +35,6 @@ import com.platon.aton.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.platon.aton.component.ui.dialog.TransactionSignatureDialogFragment;
 import com.platon.aton.component.ui.presenter.AssetsPresenter;
 import com.platon.aton.component.ui.presenter.TransactionsPresenter;
-import com.platon.aton.component.widget.AmountTransformationMethod;
 import com.platon.aton.component.widget.EmptyRecyclerView;
 import com.platon.aton.component.widget.RoundedTextView;
 import com.platon.aton.component.widget.WrapContentLinearLayoutManager;
@@ -181,8 +179,8 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
         EventPublisher.getInstance().register(this);
         //初始化指引页
         initGuide();
-        //展示我的钱包信息
-        showAssetsInfo(PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, true));
+//        //展示我的钱包信息
+//        showAssetsInfo();
         //展示钱包列表信息
         showAssetsWalletList();
         //展示选中的钱包信息
@@ -403,7 +401,7 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
                     public void accept(Object o) {
                         boolean showAssetsTag = PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, true);
                         PreferenceTool.putBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, !showAssetsTag);
-                        showAssetsInfo(!showAssetsTag);
+                        showAssetsInfo();
                     }
                 });
 
@@ -541,7 +539,7 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
-                        if (NetConnectivity.getConnectivityManager().isConnected()) {
+                        if (NetConnectivity.getConnectivityManager().isConnected() || WalletManager.getInstance().getSelectedWallet().isObservedWallet()) {
                             SendTransactionActivity.actionStart(getContext());
                         } else {
                             new RxPermissions(currentActivity())
@@ -608,11 +606,13 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
 
     }
 
-    private void showAssetsInfo(boolean visible) {
-        tvTotalAssetsAmount.setCompoundDrawablesWithIntrinsicBounds(0, 0, visible ? R.drawable.icon_open_eyes : R.drawable.icon_close_eyes, 0);
-        tvTotalAssetsAmount.setTransformationMethod(visible ? HideReturnsTransformationMethod.getInstance() : new AmountTransformationMethod(tvTotalAssetsAmount.getText().toString()));
-        tvWalletAmount.setTransformationMethod(visible ? HideReturnsTransformationMethod.getInstance() : new AmountTransformationMethod(tvWalletAmount.getText().toString()));
-        tvRestrictedBalanceAmount.setTransformationMethod(visible ? HideReturnsTransformationMethod.getInstance() : new AmountTransformationMethod(tvRestrictedBalanceAmount.getText().toString()));
+    private void showAssetsInfo() {
+
+        Wallet selectedWallet = WalletManager.getInstance().getSelectedWallet();
+        String totalBalance = WalletManager.getInstance().getTotal().blockingFirst().toPlainString();
+        showFreeBalance(selectedWallet.getFreeBalance());
+        showLockBalance(selectedWallet.getLockBalance());
+        showTotalBalance(totalBalance);
     }
 
     private void showAssetsWalletList() {
@@ -673,8 +673,7 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
     @Override
     public void showTotalBalance(String totalBalance) {
         boolean visible = PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, true);
-        tvTotalAssetsAmount.setText(StringUtil.formatBalance(AmountUtil.convertVonToLatWithFractionDigits(totalBalance, 8)));
-        tvTotalAssetsAmount.setTransformationMethod(visible ? HideReturnsTransformationMethod.getInstance() : new AmountTransformationMethod(tvTotalAssetsAmount.getText().toString()));
+        tvTotalAssetsAmount.setText(visible ? StringUtil.formatBalance(AmountUtil.convertVonToLatWithFractionDigits(totalBalance, 8)) : "***");
     }
 
     /**
@@ -684,8 +683,9 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
      */
     @Override
     public void showFreeBalance(String balance) {//当前钱包的资产
-        tvWalletAmount.setText(StringUtil.formatBalance(AmountUtil.convertVonToLatWithFractionDigits(balance, 8)));
-        tvWalletAmount.setTransformationMethod(PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, true) ? HideReturnsTransformationMethod.getInstance() : new AmountTransformationMethod(tvWalletAmount.getText().toString()));
+        boolean visible = PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, true);
+        tvWalletAmount.setText(visible ? StringUtil.formatBalance(AmountUtil.convertVonToLatWithFractionDigits(balance, 8)) : "***");
+        tvWalletAmountUnit.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     /**
@@ -695,9 +695,9 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
      */
     @Override
     public void showLockBalance(String balance) { //当前选中钱包的锁仓金额
+        boolean visible = PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, true);
         tvRestrictedBalanceAmount.setVisibility(BigDecimalUtil.isBiggerThanZero(balance) ? View.VISIBLE : View.GONE);
-        tvRestrictedBalanceAmount.setText(string(R.string.restricted_amount_with_unit, StringUtil.formatBalance(AmountUtil.convertVonToLatWithFractionDigits(balance, 8))));
-        tvRestrictedBalanceAmount.setTransformationMethod(PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, true) ? HideReturnsTransformationMethod.getInstance() : new AmountTransformationMethod(tvRestrictedBalanceAmount.getText().toString()));
+        tvRestrictedBalanceAmount.setText(visible ? string(R.string.restricted_amount_with_unit, StringUtil.formatBalance(AmountUtil.convertVonToLatWithFractionDigits(balance, 8))) : "***");
     }
 
     @Override
