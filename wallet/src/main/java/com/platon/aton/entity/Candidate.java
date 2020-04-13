@@ -5,7 +5,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import com.platon.aton.utils.LanguageUtil;
+import com.platon.framework.utils.LanguageUtil;
+
 import java.util.Locale;
 
 /**
