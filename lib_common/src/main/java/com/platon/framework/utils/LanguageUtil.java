@@ -34,7 +34,12 @@ public class LanguageUtil {
             } else {
                 locale = configuration.locale;
             }
-            return locale;
+
+            if (TextUtils.equals(locale.getLanguage(), Locale.CHINESE.getLanguage()) || TextUtils.equals(locale.getLanguage(), Locale.ENGLISH.getLanguage())) {
+                return locale;
+            } else {
+                return new Locale(Locale.ENGLISH.getLanguage(), "");
+            }
         } else {
             return new Locale(language, "");
         }

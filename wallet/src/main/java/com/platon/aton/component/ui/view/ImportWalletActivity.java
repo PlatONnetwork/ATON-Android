@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.platon.aton.R;
+import com.platon.aton.app.CustomObserver;
 import com.platon.aton.component.ui.dialog.BaseDialogFragment;
 import com.platon.aton.component.ui.dialog.CommonGuideDialogFragment;
 import com.platon.aton.component.widget.CommonTitleBar;
@@ -34,11 +35,10 @@ import com.platon.framework.base.BaseViewImp;
 import com.platon.framework.utils.AndroidUtil;
 import com.platon.framework.utils.PreferenceTool;
 import com.platon.framework.utils.ToastUtil;
+import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.util.ArrayList;
-
-import io.reactivex.functions.Consumer;
 
 public class ImportWalletActivity extends BaseActivity {
 
@@ -126,7 +126,20 @@ public class ImportWalletActivity extends BaseActivity {
         commonTitleBar.setRightDrawableClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                scanQRCode();
+                new RxPermissions(currentActivity())
+                        .requestEach(Manifest.permission.CAMERA)
+                        .subscribe(new CustomObserver<Permission>() {
+                            @Override
+                            public void accept(Permission permission) {
+                                if (permission.granted) {
+                                    ScanQRCodeActivity.startActivityForResult(currentActivity(), REQ_QR_CODE);
+                                } else if (permission.shouldShowRequestPermissionRationale) {
+                                    // Denied permission without ask never again
+                                } else {
+                                    showLongToast("使用该功能需要拍照和SD卡存储权限，请前往系统设置开启权限");
+                                }
+                            }
+                        });
             }
         });
         int indicatorThickness = AndroidUtil.dip2px(getContext(), 2.0f);
@@ -134,7 +147,6 @@ public class ImportWalletActivity extends BaseActivity {
         stbBar.setIndicatorThickness(indicatorThickness);
         stbBar.setIndicatorCornerRadius(indicatorThickness / 2);
         ArrayList<Class<? extends BaseFragment>> fragments = getFragments();
-
 
         stbBar.setCustomTabView(new SmartTabLayout.TabProvider() {
             @Override
@@ -216,19 +228,6 @@ public class ImportWalletActivity extends BaseActivity {
             }
             showLongToast(string(R.string.unrecognized));
         }
-    }
-
-    private void scanQRCode() {
-        new RxPermissions(currentActivity())
-                .request(Manifest.permission.CAMERA)
-                .subscribe(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(Boolean success) throws Exception {
-                        if (success) {
-                            ScanQRCodeActivity.startActivityForResult(currentActivity(), REQ_QR_CODE);
-                        }
-                    }
-                });
     }
 
     private View getTableView(int position, ViewGroup container) {

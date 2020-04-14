@@ -732,6 +732,9 @@ public class WalletManager {
      * @return
      */
     public Observable<BigDecimal> getTotal() {
+        if (mWalletList == null || mWalletList.isEmpty()) {
+            return Observable.just(BigDecimal.ZERO);
+        }
         return Flowable.fromIterable(mWalletList)
                 .map(new Function<Wallet, AccountBalance>() {
                     @Override
