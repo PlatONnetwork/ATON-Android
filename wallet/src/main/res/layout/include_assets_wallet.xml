@@ -16,7 +16,6 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginRight="16dp"
-        android:src="@drawable/avatar_1"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

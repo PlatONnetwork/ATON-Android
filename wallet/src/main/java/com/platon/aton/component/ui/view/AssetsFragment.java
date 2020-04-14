@@ -35,6 +35,7 @@ import com.platon.aton.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.platon.aton.component.ui.dialog.TransactionSignatureDialogFragment;
 import com.platon.aton.component.ui.presenter.AssetsPresenter;
 import com.platon.aton.component.ui.presenter.TransactionsPresenter;
+import com.platon.aton.component.widget.CircleImageView;
 import com.platon.aton.component.widget.EmptyRecyclerView;
 import com.platon.aton.component.widget.RoundedTextView;
 import com.platon.aton.component.widget.WrapContentLinearLayoutManager;
@@ -61,6 +62,7 @@ import com.platon.framework.base.BaseLazyFragment;
 import com.platon.framework.network.NetConnectivity;
 import com.platon.framework.utils.LogUtils;
 import com.platon.framework.utils.PreferenceTool;
+import com.platon.framework.utils.RUtils;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -132,6 +134,8 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
     ConstraintLayout layoutAssetsWallet;
     @BindView(R.id.layout_assets_transactions)
     LinearLayout layoutAssetsTransactions;
+    @BindView(R.id.civ_wallet_avatar)
+    CircleImageView civWalletAvatar;
 
     Unbinder unbinder;
 
@@ -588,6 +592,7 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
         tvRestrictedBalanceAmount.setText(string(R.string.restricted_amount_with_unit, StringUtil.formatBalance(AmountUtil.convertVonToLatWithFractionDigits(selectedWallet.getLockBalance(), 8))));
         tvObservedWalletTag.setVisibility(selectedWallet.isObservedWallet() || !NetConnectivity.getConnectivityManager().isConnected() ? View.VISIBLE : View.GONE);
         tvObservedWalletTag.setText(selectedWallet.isObservedWallet() ? string(R.string.msg_observed_wallet) : string(R.string.msg_cold_wallet));
+        civWalletAvatar.setImageResource(RUtils.drawable(selectedWallet.getAvatar()));
 
         if (selectedWallet.isObservedWallet()) {
             rtvSendTransaction.setRoundedBackgroundColor(ContextCompat.getColor(getActivity(), R.color.color_ffffff));
