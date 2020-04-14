@@ -227,7 +227,7 @@ public class NumberParserUtils {
 
     public static String getPrettyBalance(String balance) {
 
-        String bigDecimalStr = null;
+        String bigDecimalStr = "";
         try {//当number==NaN，会throw "Infinity or NaN",所以要catch
             String value = String.format("%.8f", parseDouble(balance));
             BigDecimal bigDecimal = new BigDecimal(value);
@@ -258,7 +258,7 @@ public class NumberParserUtils {
 
     public static String getPrettyNumber(double value, int maxDigit) {
 
-        String bigDecimalStr = null;
+        String bigDecimalStr = "";
         try {//当number==NaN，会throw "Infinity or NaN",所以要catch
             // TODO: 2018/11/6 判断是否为0
             BigDecimal bigDecimal = new BigDecimal(String.valueOf(value));
@@ -282,7 +282,7 @@ public class NumberParserUtils {
 
     public static String getPrettyNumber(double value, int maxDigit, int roundingMode) {
 
-        String bigDecimalStr = null;
+        String bigDecimalStr = "";
         try {//当number==NaN，会throw "Infinity or NaN",所以要catch
             // TODO: 2018/11/6 判断是否为0
             BigDecimal bigDecimal = new BigDecimal(String.valueOf(value));
@@ -310,7 +310,7 @@ public class NumberParserUtils {
             return "0";
         }
 
-        String bigDecimalStr = null;
+        String bigDecimalStr = "";
         try {//当number==NaN，会throw "Infinity or NaN",所以要catch
             // TODO: 2018/11/6 判断是否为0
             BigDecimal bigDecimal = new BigDecimal(value);

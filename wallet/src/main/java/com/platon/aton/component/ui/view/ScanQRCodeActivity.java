@@ -6,7 +6,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -400,18 +399,22 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
             mediaPlayer = new MediaPlayer();
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mediaPlayer.setOnCompletionListener(beepListener);
+            AssetFileDescriptor file = null;
             try {
-                AssetFileDescriptor file = getResources().openRawResourceFd(R.raw.beep);
+                 file = getResources().openRawResourceFd(R.raw.beep);
                 mediaPlayer.setDataSource(file.getFileDescriptor(), file.getStartOffset(), file.getLength());
-                file.close();
                 mediaPlayer.setVolume(BEEP_VOLUME, BEEP_VOLUME);
                 mediaPlayer.prepare();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-            } catch (Resources.NotFoundException e) {
-                e.printStackTrace();
-            } finally {
-                mediaPlayer = null;
+            }  finally {
+                try {
+                  mediaPlayer = null;
+                  if(file != null)
+                     file.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

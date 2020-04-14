@@ -69,15 +69,9 @@ public class CommonVerticalItemDecoration extends RecyclerView.ItemDecoration {
             final View child = parent.getChildAt(i);
             parent.getDecoratedBoundsWithMargins(child, mBounds);
             final int bottom = mBounds.bottom + Math.round(child.getTranslationY());
-            if (i == 0) {
-                final int top = bottom - mDivider.getIntrinsicHeight();
-                mDivider.setBounds(left + mPadding, top, right - mPadding, bottom);
-                mDivider.draw(canvas);
-            } else {
-                final int top = bottom - mDivider.getIntrinsicHeight();
-                mDivider.setBounds(left + mPadding, top, right - mPadding, bottom);
-                mDivider.draw(canvas);
-            }
+            final int top = bottom - mDivider.getIntrinsicHeight();
+            mDivider.setBounds(left + mPadding, top, right - mPadding, bottom);
+            mDivider.draw(canvas);
         }
         canvas.restore();
     }
