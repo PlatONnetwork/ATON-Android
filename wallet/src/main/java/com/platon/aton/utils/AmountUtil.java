@@ -69,7 +69,7 @@ public class AmountUtil {
             //是否有小数位
             BigDecimal resultBigDecimal = bigDecimal.setScale(0, BigDecimal.ROUND_DOWN);
             //有小数位
-            if (bigDecimal.compareTo(resultBigDecimal) == 1) {
+            if (bigDecimal.compareTo(resultBigDecimal) > 0) {
                 resultBigDecimal = resultBigDecimal.add(BigDecimal.ONE);
             }
             return resultBigDecimal.multiply(new BigDecimal(10).pow(18 - maxDigit)).stripTrailingZeros().toPlainString();

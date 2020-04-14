@@ -53,7 +53,7 @@ public class CustomProgressBar extends ProgressBar {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected  void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         drawIconAndText(canvas);
     }

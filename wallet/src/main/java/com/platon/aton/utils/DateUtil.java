@@ -13,24 +13,25 @@ public class DateUtil {
     public static final String DATETIME_FORMAT_PATTERN2 = "yyyy/MMdd HH:mm";
     public static final String DATETIME_FORMAT_PATTERN_WITH_SECOND = "yyyy-MM-dd HH:mm:ss";
 
-    private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
 
     private DateUtil() {
 
     }
 
     public static String format(long time, String pattern) {
-        Date date = new Date(time);
-        if (date == null) {
-            return null;
-        } else {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
+        if(time > 0){
+            Date date = new Date(time);
             simpleDateFormat.applyLocalizedPattern(pattern);
             simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT+8"));
             return simpleDateFormat.format(date);
+        }else{
+            return null;
         }
     }
 
     public static long parse(String timeText, String pattern) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
         simpleDateFormat.applyPattern(pattern);
         simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT+8"));
         try {
