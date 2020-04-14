@@ -183,8 +183,6 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
         EventPublisher.getInstance().register(this);
         //初始化指引页
         initGuide();
-//        //展示我的钱包信息
-//        showAssetsInfo();
         //展示钱包列表信息
         showAssetsWalletList();
         //展示选中的钱包信息
@@ -587,7 +585,9 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
     private void showSelectedWalletInfo(Wallet selectedWallet) {
 
         tvWalletName.setText(selectedWallet.getName());
-        tvWalletAmount.setText(StringUtil.formatBalance(AmountUtil.convertVonToLatWithFractionDigits(selectedWallet.getFreeBalance(), 8)));
+        boolean visible = PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, true);
+        tvWalletAmount.setText(visible ? StringUtil.formatBalance(AmountUtil.convertVonToLatWithFractionDigits(selectedWallet.getFreeBalance(), 8)) : "***");
+        tvWalletAmountUnit.setVisibility(visible ? View.VISIBLE : View.GONE);
         tvRestrictedBalanceAmount.setVisibility(BigDecimalUtil.isBiggerThanZero(selectedWallet.getLockBalance()) ? View.VISIBLE : View.GONE);
         tvRestrictedBalanceAmount.setText(string(R.string.restricted_amount_with_unit, StringUtil.formatBalance(AmountUtil.convertVonToLatWithFractionDigits(selectedWallet.getLockBalance(), 8))));
         tvObservedWalletTag.setVisibility(selectedWallet.isObservedWallet() || !NetConnectivity.getConnectivityManager().isConnected() ? View.VISIBLE : View.GONE);
