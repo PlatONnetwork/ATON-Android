@@ -1,7 +1,5 @@
 package com.platon.framework.utils;
 
-import android.content.Context;
-import android.content.res.Resources;
 import android.os.LocaleList;
 import android.text.TextUtils;
 
@@ -31,8 +29,8 @@ public class LanguageUtil {
                 locale = Locale.getDefault();
             }
 
-            if (TextUtils.equals(locale.getLanguage(), Locale.CHINESE.getLanguage()) || TextUtils.equals(locale.getLanguage(), Locale.ENGLISH.getLanguage())) {
-                return locale;
+            if (TextUtils.equals(locale.getLanguage(), Locale.CHINESE.getLanguage())) {
+                return new Locale(Locale.CHINESE.getLanguage(), "");
             } else {
                 return new Locale(Locale.ENGLISH.getLanguage(), "");
             }
