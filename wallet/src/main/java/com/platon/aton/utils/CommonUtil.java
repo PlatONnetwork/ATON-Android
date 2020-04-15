@@ -25,11 +25,6 @@ import android.widget.TextView;
 import com.platon.aton.R;
 import com.platon.framework.utils.ToastUtil;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
@@ -279,7 +274,7 @@ public class CommonUtil {
         context.startActivity(intent);
     }
 
-    public static <T> List<T> deepCopyList(List<T> src) {
+    /*public static <T> List<T> deepCopyList(List<T> src) {
         List<T> dest = null;
         try {
             ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
@@ -294,7 +289,7 @@ public class CommonUtil {
             e.printStackTrace();
         }
         return dest;
-    }
+    }*/
 
     public static void copyTextToClipboard(Context context, String text) {
         ClipboardManager cm = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
