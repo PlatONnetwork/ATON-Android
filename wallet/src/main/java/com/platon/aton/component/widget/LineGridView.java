@@ -84,15 +84,15 @@ public class LineGridView extends GridView {
             if ((i + 1) % column == 0) {
                 //不是最后一行
                 if (rowIndex != row) {
-                    canvas.drawLine(cellView.getLeft() + mLinePaddingHorizontal, cellView.getBottom(), cellView.getRight() - mLinePaddingHorizontal, cellView.getBottom(), localPaint);
+                    canvas.drawLine((float) cellView.getLeft() + mLinePaddingHorizontal, cellView.getBottom(), (float) cellView.getRight() - mLinePaddingHorizontal, cellView.getBottom(), localPaint);
                 }
             } else if ((i + 1) > (childCount - (childCount % column))) {
                 //画竖直方向的分割线
-                canvas.drawLine(cellView.getRight(), cellView.getTop() + mLinePaddingVertical, cellView.getRight(), cellView.getBottom() - mLinePaddingVertical, localPaint);
+                canvas.drawLine(cellView.getRight(), (float)cellView.getTop() + mLinePaddingVertical, cellView.getRight(), (float)cellView.getBottom() - mLinePaddingVertical, localPaint);
             } else {
-                canvas.drawLine(cellView.getRight(), cellView.getTop() + mLinePaddingVertical, cellView.getRight(), cellView.getBottom() - mLinePaddingVertical, localPaint);
+                canvas.drawLine(cellView.getRight(), (float)cellView.getTop() + mLinePaddingVertical, cellView.getRight(), (float)cellView.getBottom() - mLinePaddingVertical, localPaint);
                 if (rowIndex != row) {
-                    canvas.drawLine(cellView.getLeft() + mLinePaddingHorizontal, cellView.getBottom(), cellView.getRight() - mLinePaddingHorizontal, cellView.getBottom(), localPaint);
+                    canvas.drawLine((float)cellView.getLeft() + mLinePaddingHorizontal, cellView.getBottom(), (float)cellView.getRight() - mLinePaddingHorizontal, cellView.getBottom(), localPaint);
                 }
             }
         }

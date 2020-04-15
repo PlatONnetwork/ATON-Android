@@ -62,7 +62,7 @@ abstract class AndroidSpringLooperFactory {
             return;
           }
           long currentTime = SystemClock.uptimeMillis();
-          mSpringSystem.loop(currentTime - mLastTime);
+          mSpringSystem.loop((double)(currentTime - mLastTime));
           mHandler.post(mLooperRunnable);
         }
       };
@@ -114,7 +114,7 @@ abstract class AndroidSpringLooperFactory {
             return;
           }
           long currentTime = SystemClock.uptimeMillis();
-          mSpringSystem.loop(currentTime - mLastTime);
+          mSpringSystem.loop((double)(currentTime - mLastTime));
           mLastTime = currentTime;
           mChoreographer.postFrameCallback(mFrameCallback);
         }

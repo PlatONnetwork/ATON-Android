@@ -9,7 +9,6 @@ import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.platon.aton.R;
@@ -67,7 +66,7 @@ public class ExportPrivateKeyActivity extends BaseActivity {
         int indicatorThickness = AndroidUtil.dip2px(getContext(), 2.0f);
         SmartTabLayout stbBar = getContentView().findViewById(R.id.stb_bar);
         stbBar.setIndicatorThickness(indicatorThickness);
-        stbBar.setIndicatorCornerRadius(indicatorThickness / 2);
+        stbBar.setIndicatorCornerRadius((float) indicatorThickness / 2);
         ArrayList<Class<? extends BaseFragment>> fragments = getFragments();
         stbBar.setCustomTabView(new SmartTabLayout.TabProvider() {
             @Override

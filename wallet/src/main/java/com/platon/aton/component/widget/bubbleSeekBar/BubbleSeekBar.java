@@ -414,8 +414,8 @@ public class BubbleSeekBar extends View {
         height += mTextSpace * 2 + mSelectionTextMargin;
         setMeasuredDimension(resolveSize(dp2px(180), widthMeasureSpec), height);
 
-        mLeft = getPaddingLeft() + mThumbRadiusOnDragging;
-        mRight = getMeasuredWidth() - getPaddingRight() - mThumbRadiusOnDragging;
+        mLeft = (float)getPaddingLeft() + mThumbRadiusOnDragging;
+        mRight = (float)getMeasuredWidth() - getPaddingRight() - mThumbRadiusOnDragging;
 
         if (isShowSectionText) {
             mPaint.setTextSize(mSectionTextSize);
@@ -500,7 +500,7 @@ public class BubbleSeekBar extends View {
             mBubbleCenterRawSolidX = mPoint[0] + mLeft - mBubbleView.getMeasuredWidth() / 2f;
         }
         mBubbleCenterRawX = calculateCenterRawXofBubbleView();
-        mBubbleCenterRawSolidY = mPoint[1] - mBubbleView.getMeasuredHeight();
+        mBubbleCenterRawSolidY = (float) mPoint[1] - mBubbleView.getMeasuredHeight();
         mBubbleCenterRawSolidY -= dp2px(24);
 //        if (BubbleUtils.isMIUI()) {
 //            mBubbleCenterRawSolidY += dp2px(4);
@@ -558,7 +558,7 @@ public class BubbleSeekBar extends View {
     public void sweepGradientInit() {
         //渐变颜色.colors和pos的个数一定要相等
         float[] pos = {0f, 0.25f, 0.5f, 1f};
-        linearGradient = new LinearGradient(0, 0, mLySpace / 2, mLySpace / 2, colors, pos, Shader.TileMode.REPEAT);
+        linearGradient = new LinearGradient(0, 0, (float) mLySpace / 2, (float)mLySpace / 2, colors, pos, Shader.TileMode.REPEAT);
         Matrix matrix = new Matrix();
         linearGradient.setLocalMatrix(matrix);
     }
@@ -601,8 +601,8 @@ public class BubbleSeekBar extends View {
         super.onDraw(canvas);
 
         float xLeft = getPaddingLeft();
-        float xRight = getMeasuredWidth() - getPaddingRight();
-        float yTop = getPaddingTop() + mThumbRadiusOnDragging;
+        float xRight = (float) getMeasuredWidth() - getPaddingRight();
+        float yTop = (float) getPaddingTop() + mThumbRadiusOnDragging;
 
         // draw sectionText SIDES or BOTTOM_SIDES
         if (isShowSectionText) {
@@ -1545,7 +1545,7 @@ public class BubbleSeekBar extends View {
             setMeasuredDimension(3 * mBubbleRadius, 3 * mBubbleRadius);
 
             mBubbleRectF.set(getMeasuredWidth() / 2f - mBubbleRadius, 0,
-                    getMeasuredWidth() / 2f + mBubbleRadius, 2 * mBubbleRadius);
+                    getMeasuredWidth() / 2f + mBubbleRadius, 2f * mBubbleRadius);
         }
 
         @Override
