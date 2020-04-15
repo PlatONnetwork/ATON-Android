@@ -31,6 +31,8 @@ import com.platon.framework.base.BaseActivity;
 import com.platon.framework.utils.AndroidUtil;
 import com.umeng.socialize.UMShareAPI;
 
+import java.util.HashMap;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;

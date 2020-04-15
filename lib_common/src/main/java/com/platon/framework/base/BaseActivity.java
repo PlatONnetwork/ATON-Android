@@ -88,7 +88,7 @@ public abstract class BaseActivity<V extends BaseViewImp, P extends BasePresente
 
     @Override
     protected void attachBaseContext(Context newBase) {
-        Context context = CustomContextWrapper.wrap(newBase, LanguageUtil.getLocale(newBase));
+        Context context = CustomContextWrapper.wrap(newBase, LanguageUtil.getLocale());
         super.attachBaseContext(context);
     }
 

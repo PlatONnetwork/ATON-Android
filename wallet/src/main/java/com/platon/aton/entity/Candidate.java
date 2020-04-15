@@ -260,7 +260,7 @@ public class Candidate implements Parcelable {
         if (countryEntity == null) {
             return null;
         }
-        if (Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(context).getLanguage())) {
+        if (Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale().getLanguage())) {
             return countryEntity.getZhName();
         } else {
             return countryEntity.getEnName();
