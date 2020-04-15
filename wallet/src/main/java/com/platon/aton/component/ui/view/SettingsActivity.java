@@ -89,7 +89,7 @@ public class SettingsActivity extends BaseActivity {
 
     private void iniViews() {
 
-        Locale locale = LanguageUtil.getLocale(this);
+        Locale locale = LanguageUtil.getLocale();
 
         if (Locale.CHINESE.getLanguage().equals(locale.getLanguage())) {
             tvLanguage.setText(chinese);

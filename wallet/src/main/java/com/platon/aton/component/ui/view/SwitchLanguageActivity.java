@@ -78,7 +78,7 @@ public class SwitchLanguageActivity extends BaseActivity {
             }
         });
 
-        locale = LanguageUtil.getLocale(this);
+        locale = LanguageUtil.getLocale();
 
         updateSelectedLanguageStatus(locale);
     }
