@@ -381,7 +381,7 @@ public class CustomTabStrip extends LinearLayout {
 //            float padding = (Math.abs(left - right) - indicatorWidth) / 2f;
             float padding = (Math.abs(left - right)) / 4f;
 //            indicatorRectF.set(left, top, right - padding - padding - padding, bottom);
-            indicatorRectF.set(left, top, left + DensityUtil.dp2px(getContext(), 20), bottom);
+            indicatorRectF.set(left, top, left + (float)DensityUtil.dp2px(getContext(), 20), bottom);
 //        indicatorRectF.set(left + padding - (padding / 8 - 16), top, right - padding - (padding / 8 - 16), bottom);
         }
 
@@ -409,7 +409,7 @@ public class CustomTabStrip extends LinearLayout {
         }
         // Thin underline along the entire bottom edge
         borderPaint.setColor(bottomBorderColor);
-        canvas.drawRect(left, height - bottomBorderThickness, right, height, borderPaint);
+        canvas.drawRect(left, (float) height - bottomBorderThickness, right, height, borderPaint);
     }
 
     private static class SimpleTabColorizer implements CustomTabLayout.TabColorizer {

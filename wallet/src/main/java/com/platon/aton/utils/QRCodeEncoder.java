@@ -110,8 +110,8 @@ public class QRCodeEncoder {
         try {
             Canvas canvas = new Canvas(bitmap);
             canvas.drawBitmap(src, 0, 0, null);
-            canvas.scale(scaleFactor, scaleFactor, srcWidth / 2, srcHeight / 2);
-            canvas.drawBitmap(logo, (srcWidth - logoWidth) / 2, (srcHeight - logoHeight) / 2, null);
+            canvas.scale(scaleFactor, scaleFactor, (float) srcWidth / 2, (float) srcHeight / 2);
+            canvas.drawBitmap(logo, (float) (srcWidth - logoWidth) / 2, (float) (srcHeight - logoHeight) / 2, null);
             canvas.save();
             canvas.restore();
         } catch (Exception e) {
@@ -195,7 +195,7 @@ public class QRCodeEncoder {
         canvas.drawColor(Color.WHITE);
         canvas.setBitmap(bitmap);
         canvas.drawBitmap(barcodeBitmap, 0, 0, null);
-        canvas.drawText(content, barcodeBitmap.getWidth() / 2, baseLine, paint);
+        canvas.drawText(content, (float) barcodeBitmap.getWidth() / 2, baseLine, paint);
         canvas.save();
         canvas.restore();
         return bitmap;
