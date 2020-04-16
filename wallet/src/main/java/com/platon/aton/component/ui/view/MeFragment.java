@@ -4,6 +4,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.gyf.immersionbar.ImmersionBar;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.platon.aton.R;
 import com.platon.aton.app.CustomObserver;
@@ -39,6 +40,7 @@ public class MeFragment extends BaseLazyFragment {
     LinearLayout layoutAbout;
     @BindView(R.id.layout_support_feedback)
     LinearLayout layoutSupportFeedback;
+
     Unbinder unbinder;
 
     @Override
@@ -141,5 +143,4 @@ public class MeFragment extends BaseLazyFragment {
             unbinder.unbind();
         }
     }
-
 }

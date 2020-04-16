@@ -9,7 +9,6 @@
         android:id="@+id/layout_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
         app:srlEnableLoadMore="false">
 
         <com.scwang.smartrefresh.layout.header.ClassicsHeader
@@ -31,6 +30,7 @@
                 <android.support.design.widget.AppBarLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/color_00000000"
                     app:elevation="0dp">
 
                     <LinearLayout

@@ -9,6 +9,8 @@ public interface IContext {
 
     Context getContext();
 
+    Context getApplicationContext();
+
     BaseActivity currentActivity();
 
     String string(int resId, Object... formatArgs);

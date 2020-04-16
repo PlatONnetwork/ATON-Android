@@ -3,20 +3,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipToPadding="true"
     android:divider="@drawable/divider_tab_bar"
-    android:fitsSystemWindows="true"
     android:orientation="vertical"
     android:showDividers="middle"
     tools:context=".component.ui.view.MainActivity">
 
     <FrameLayout
-        android:id="@+id/realTabContent"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:focusable="true"
-        android:focusableInTouchMode="true" />
+        android:layout_weight="1">
+
+        <View
+            android:id="@+id/view_status_bar"
+            android:layout_width="match_parent"
+            android:layout_height="118dp"
+            android:background="@drawable/bg_assets_top" />
+
+        <FrameLayout
+            android:id="@+id/realTabContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusableInTouchMode="true"
+            android:paddingTop="20dp" />
+
+    </FrameLayout>
+
 
     <com.platon.aton.component.widget.FragmentTabHost
         android:id="@android:id/tabhost"

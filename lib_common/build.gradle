@@ -127,4 +127,7 @@ dependencies {
     api files('libs/umeng-share-core-6.9.6.jar')
     api files('libs/umeng-share-facebook-6.9.6.jar')
     api files('libs/umeng-share-sina-full-6.9.6.jar')
+    implementation files('libs/umeng-share-twitter-6.9.6.jar')
+    implementation files('libs/umeng-sharetool-6.9.6.jar')
+    implementation files('libs/weiboSDKCore.jar')
 }

@@ -88,8 +88,6 @@ public class SelectWalletDialogFragment extends BaseDialogFragment {
         setFullWidthEnable(true);
         setGravity(Gravity.BOTTOM);
         setAnimation(R.style.Animation_slide_in_bottom);
-        setHorizontalMargin(DensityUtil.dp2px(getContext(), 14));
-        setyOffset(DensityUtil.dp2px(getContext(), 4));
         unbinder = ButterKnife.bind(this, contentView);
         initViews();
         return baseDialog;
