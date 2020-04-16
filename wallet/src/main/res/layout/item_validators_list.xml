@@ -82,12 +82,13 @@
         android:gravity="right"
         android:lines="1"
         android:textStyle="bold"
+        app:autoSizeMinTextSize="2sp"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toTopOf="@+id/tv_yield_msg"
         app:layout_constraintRight_toRightOf="@+id/tv_yield_msg"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
-        tools:text="--" />
+        tools:text="111112222939399393939393.9999999999" />
 
     <TextView
         android:id="@+id/tv_yield_msg"
