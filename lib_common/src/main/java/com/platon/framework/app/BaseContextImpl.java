@@ -28,22 +28,22 @@ public abstract class BaseContextImpl implements IContext {
 
     @Override
     public void showShortToast(String text) {
-        ToastUtil.showShortToast(getContext(), text);
+        ToastUtil.showShortToast(getApplicationContext(), text);
     }
 
     @Override
     public void showLongToast(String text) {
-        ToastUtil.showLongToast(getContext(), text);
+        ToastUtil.showLongToast(getApplicationContext(), text);
     }
 
     @Override
     public void showShortToast(int resId) {
-        ToastUtil.showShortToast(getContext(), resId);
+        ToastUtil.showShortToast(getApplicationContext(), resId);
     }
 
     @Override
     public void showLongToast(int resId) {
-        ToastUtil.showLongToast(getContext(), resId);
+        ToastUtil.showLongToast(getApplicationContext(), resId);
     }
 
     @Override

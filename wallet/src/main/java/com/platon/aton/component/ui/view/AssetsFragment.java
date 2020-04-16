@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.gyf.immersionbar.ImmersionBar;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.platon.aton.R;
 import com.platon.aton.app.CustomObserver;
@@ -723,4 +724,9 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
         }
 
     }
+
+//    @Override
+//    public void initImmersionBar() {
+//        ImmersionBar.setStatusBarView(this, getStatusBarView());
+//    }
 }

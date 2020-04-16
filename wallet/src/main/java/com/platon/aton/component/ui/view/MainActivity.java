@@ -8,6 +8,7 @@ import android.os.Process;
 import android.support.annotation.IntDef;
 import android.support.annotation.StringDef;
 import android.support.v4.app.FragmentManager;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,7 +20,6 @@ import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
 
-import com.gyf.immersionbar.ImmersionBar;
 import com.platon.aton.R;
 import com.platon.aton.component.ui.contract.MainContract;
 import com.platon.aton.component.ui.presenter.MainPresenter;
@@ -30,8 +30,6 @@ import com.platon.framework.base.ActivityManager;
 import com.platon.framework.base.BaseActivity;
 import com.platon.framework.utils.AndroidUtil;
 import com.umeng.socialize.UMShareAPI;
-
-import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -92,6 +90,8 @@ public class MainActivity extends BaseActivity<MainContract.View, MainPresenter>
     FrameLayout realTabContent;
     @BindView(android.R.id.tabhost)
     FragmentTabHost tabhost;
+    @BindView(R.id.view_status_bar)
+    View viewStatusBar;
 
     private Unbinder unbinder;
     private int mCurIndex = MainTab.TAB_ASSETS;
@@ -156,21 +156,10 @@ public class MainActivity extends BaseActivity<MainContract.View, MainPresenter>
         tabhost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
             public void onTabChanged(String tabId) {
-                switch (tabId) {
-                    case MainTabTag.TAG_ASSETS:
-                        ImmersionBar.with(MainActivity.this)
-                                .statusBarView(getStatusBarView())
-                                .init();
-                        break;
-                    case MainTabTag.TAG_DELEGATE:
-                    case MainTabTag.TAG_ME:
-                        ImmersionBar.with(MainActivity.this).keyboardEnable(false).statusBarDarkFont(true, 0.2f).fitsSystemWindows(true).init();
-                        break;
-                    default:
-                        break;
-                }
+                viewStatusBar.setVisibility(TextUtils.equals(tabId, MainTabTag.TAG_ASSETS) ? View.VISIBLE : View.GONE);
             }
         });
+
     }
 
     private static final long DOUBLE_TIME = 500;
@@ -293,5 +282,10 @@ public class MainActivity extends BaseActivity<MainContract.View, MainPresenter>
     public void exitApp() {
         ActivityManager.getInstance().finishAll();
         Process.killProcess(Process.myPid());
+    }
+
+    @Override
+    protected boolean immersiveBarViewEnabled() {
+        return true;
     }
 }

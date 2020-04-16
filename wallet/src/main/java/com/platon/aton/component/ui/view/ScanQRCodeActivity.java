@@ -61,7 +61,8 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
     /**
      * When the beep has finished playing, rewind to queue up another one.
      */
-    private final MediaPlayer.OnCompletionListener beepListener = new MediaPlayer.OnCompletionListener() {
+    private final static MediaPlayer.OnCompletionListener beepListener = new MediaPlayer.OnCompletionListener() {
+        @Override
         public void onCompletion(MediaPlayer mediaPlayer) {
             mediaPlayer.seekTo(0);
         }
@@ -308,8 +309,11 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
 
     @Override
     protected void onDestroy() {
-        inactivityTimer.shutdown();
         super.onDestroy();
+        inactivityTimer.shutdown();
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+        }
     }
 
     private void initCamera(SurfaceHolder surfaceHolder) {
@@ -401,17 +405,17 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
             mediaPlayer.setOnCompletionListener(beepListener);
             AssetFileDescriptor file = null;
             try {
-                 file = getResources().openRawResourceFd(R.raw.beep);
+                file = getResources().openRawResourceFd(R.raw.beep);
                 mediaPlayer.setDataSource(file.getFileDescriptor(), file.getStartOffset(), file.getLength());
                 mediaPlayer.setVolume(BEEP_VOLUME, BEEP_VOLUME);
                 mediaPlayer.prepare();
             } catch (Exception e) {
                 e.printStackTrace();
-            }  finally {
+            } finally {
                 try {
-                  mediaPlayer = null;
-                  if(file != null)
-                     file.close();
+                    if (file != null) {
+                        file.close();
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

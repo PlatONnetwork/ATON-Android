@@ -49,7 +49,8 @@ public abstract class BaseActivity<V extends BaseViewImp, P extends BasePresente
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(getLayoutId());
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT); // 禁止所有的activity横屏
+        // 禁止所有的activity横屏
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         ActivityManager.getInstance().addManagedActivity(this);
 
         if (presenter == null) {
@@ -238,6 +239,11 @@ public abstract class BaseActivity<V extends BaseViewImp, P extends BasePresente
         @Override
         public Context getContext() {
             return BaseActivity.this;
+        }
+
+        @Override
+        public Context getApplicationContext() {
+            return getApplication().getApplicationContext();
         }
 
         @Override

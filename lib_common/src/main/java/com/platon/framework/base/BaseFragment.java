@@ -196,6 +196,11 @@ public abstract class BaseFragment<V extends BaseViewImp, P extends BasePresente
     }
 
     @Override
+    public Context getApplicationContext() {
+        return mContextImpl.getApplicationContext();
+    }
+
+    @Override
     public String string(int resId, Object... formatArgs) {
         return mContextImpl.string(resId, formatArgs);
     }
@@ -255,6 +260,11 @@ public abstract class BaseFragment<V extends BaseViewImp, P extends BasePresente
         @Override
         public Context getContext() {
             return getActivity();
+        }
+
+        @Override
+        public Context getApplicationContext() {
+            return getApplicationContext();
         }
 
         @Override

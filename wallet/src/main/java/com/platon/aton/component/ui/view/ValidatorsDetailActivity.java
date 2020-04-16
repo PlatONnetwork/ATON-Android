@@ -249,13 +249,13 @@ public class ValidatorsDetailActivity extends BaseActivity<ValidatorsDetailContr
             Drawable delegatedRatePATrend = nodeDetail.isShowDelegatedRatePATrend() ? nodeDetail.isDelegatedRatePATrendRose() ? ContextCompat.getDrawable(this, R.drawable.icon_rose) : ContextCompat.getDrawable(this, R.drawable.icon_fell) : null;
             tvDelegateYieldAmount.setCompoundDrawablesWithIntrinsicBounds(null, null, delegatedRatePATrend, null);
             tvDelegateRewardRatioAmount.setText(String.format("%s%%", NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(nodeDetail.getDelegatedRewardPer(), "100"))));
-            tvTotalRewardAmount.setText(string(R.string.amount_with_unit, AmountUtil.convertVonToLat(nodeDetail.getCumulativeReward())));
+            tvTotalRewardAmount.setText(string(R.string.amount_with_unit, StringUtil.formatBalance(AmountUtil.convertVonToLatWithFractionDigits(nodeDetail.getCumulativeReward(), 8))));
             tvTotalStakedAmount.setText(AmountUtil.formatAmountText(nodeDetail.getDeposit()));
             tvTotalDelegatedAmount.setText(AmountUtil.formatAmountText(nodeDetail.getDelegateSum()));
 
             tvDelegatorsCount.setText(getCommonFormatText(nodeDetail.getDelegate()));
             tvSlashCount.setText(StringUtil.formatBalanceWithoutFractionDigits(String.valueOf(nodeDetail.getPunishNumber())));
-            tvBlocksNumber.setText(nodeDetail.getBlockOutNumber() == 0 ? "--" : StringUtil.formatBalance(String.valueOf(nodeDetail.getBlockOutNumber())));
+            tvBlocksNumber.setText(nodeDetail.getBlockOutNumber() == 0 ? "--" : StringUtil.formatBalanceWithoutFractionDigits(String.valueOf(nodeDetail.getBlockOutNumber())));
             tvBlocksRateNumber.setText(String.format("%s%%", NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(nodeDetail.getBlockRate(), "100"))));
 
             tvDetailIntroduction.setText(getCommonFormatText(nodeDetail.getIntro()));
