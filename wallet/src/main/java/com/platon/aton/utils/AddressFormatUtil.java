@@ -1,5 +1,7 @@
 package com.platon.aton.utils;
 
+import com.platon.framework.utils.LogUtils;
+
 /**
  * @author matrixelement
  */
@@ -20,7 +22,7 @@ public class AddressFormatUtil {
             try {
                 text = address.replaceAll(regex, "$1...$3");
             } catch (Exception e) {
-                e.printStackTrace();
+                LogUtils.e(e.getMessage(),e.fillInStackTrace());
             }
         }
         return text;
@@ -37,7 +39,7 @@ public class AddressFormatUtil {
             try {
                 text = address.replaceAll(regex, "$1...$3");
             } catch (Exception e) {
-                e.printStackTrace();
+                LogUtils.e(e.getMessage(),e.fillInStackTrace());
             }
         }
         return text;
@@ -54,7 +56,7 @@ public class AddressFormatUtil {
             try {
                 text = address.replaceAll(regex, "$1...$3");
             } catch (Exception e) {
-                e.printStackTrace();
+                LogUtils.e(e.getMessage(),e.fillInStackTrace());
             }
         }
         return text;

@@ -2,6 +2,8 @@ package com.platon.aton.utils;
 
 import android.text.TextUtils;
 
+import com.facebook.stetho.common.LogUtil;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -54,7 +56,7 @@ public class NumberParserUtils {
         try {
             resultValue = Long.parseLong(value);
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtil.e(e.getMessage(),e.fillInStackTrace());
             return resultValue;
         }
         return resultValue;
@@ -86,7 +88,7 @@ public class NumberParserUtils {
         try {
             resultValue = Double.parseDouble(value);
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtil.e(e.getMessage(),e.fillInStackTrace());
             resultValue = defaultValue;
         }
         return resultValue;
@@ -118,7 +120,7 @@ public class NumberParserUtils {
         try {
             resultValue = Float.parseFloat(value);
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtil.e(e.getMessage(),e.fillInStackTrace());
             resultValue = defaultValue;
         }
         return resultValue;
@@ -150,7 +152,7 @@ public class NumberParserUtils {
         try {
             resultValue = Integer.parseInt(value);
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtil.e(e.getMessage(),e.fillInStackTrace());
             resultValue = defaultValue;
         }
         return resultValue;
@@ -235,7 +237,7 @@ public class NumberParserUtils {
                 bigDecimalStr = bigDecimal.stripTrailingZeros().toPlainString();
             }
         } catch (NumberFormatException e) {
-            e.printStackTrace();
+            LogUtil.e(e.getMessage(),e.fillInStackTrace());
         }
         if (TextUtils.isEmpty(bigDecimalStr)) {
             return "0.00";
@@ -267,7 +269,7 @@ public class NumberParserUtils {
                 bigDecimalStr = bigDecimal.stripTrailingZeros().toPlainString();
             }
         } catch (NumberFormatException e) {
-            e.printStackTrace();
+            LogUtil.e(e.getMessage(),e.fillInStackTrace());
         }
         if (TextUtils.isEmpty(bigDecimalStr)) {
             return "0";
@@ -291,7 +293,7 @@ public class NumberParserUtils {
                 bigDecimalStr = bigDecimal.stripTrailingZeros().toPlainString();
             }
         } catch (NumberFormatException e) {
-            e.printStackTrace();
+            LogUtil.e(e.getMessage(),e.fillInStackTrace());
         }
         if (TextUtils.isEmpty(bigDecimalStr)) {
             return "0";
@@ -319,7 +321,7 @@ public class NumberParserUtils {
                 bigDecimalStr = bigDecimal.stripTrailingZeros().toPlainString();
             }
         } catch (NumberFormatException e) {
-            e.printStackTrace();
+            LogUtil.e(e.getMessage(),e.fillInStackTrace());
         }
 
         if (TextUtils.isEmpty(bigDecimalStr)) {
@@ -356,7 +358,7 @@ public class NumberParserUtils {
             bigDecimal = bigDecimal.setScale(0, BigDecimal.ROUND_DOWN);
             return bigDecimal.multiply(new BigDecimal(10).pow(18 - maxDigit)).stripTrailingZeros().toPlainString();
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtil.e(e.getMessage(),e.fillInStackTrace());
         }
         return BigDecimal.ZERO.toPlainString();
     }

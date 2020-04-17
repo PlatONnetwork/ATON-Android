@@ -22,6 +22,7 @@ import com.platon.aton.utils.SignCodeUtils;
 import com.platon.framework.app.Constants;
 import com.platon.framework.network.ApiRequestBody;
 import com.platon.framework.network.ApiResponse;
+import com.platon.framework.utils.LogUtils;
 import com.platon.framework.utils.MapUtils;
 
 import org.web3j.crypto.Credentials;
@@ -259,7 +260,7 @@ public class TransactionManager {
             try {
                 remarkByte = remark.getBytes(UTF_8);
             } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+                LogUtils.e(e.getMessage(),e.fillInStackTrace());
             }
         }
         byte[] message = new byte[signedDataByte.length + remarkByte.length];
@@ -283,7 +284,7 @@ public class TransactionManager {
         try {
             message = data.getBytes(UTF_8);
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
             return null;
         }
         byte[] messageHash = Hash.sha3(message);
@@ -327,12 +328,12 @@ public class TransactionManager {
             String hash = Web3jManager.getInstance().getWeb3j().platonSendRawTransaction(hexValue).send().getTransactionHash();
             rpcTransactionResult = new RPCTransactionResult(RPCErrorCode.SUCCESS, hash);
         } catch (SocketTimeoutException e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
             rpcTransactionResult = new RPCTransactionResult(RPCErrorCode.SOCKET_TIMEOUT, Hash.sha3(hexValue));
         } catch (ClientConnectionException e) {
             rpcTransactionResult = new RPCTransactionResult(RPCErrorCode.CONNECT_TIMEOUT);
         } catch (IOException e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
         return rpcTransactionResult;
     }
@@ -344,7 +345,7 @@ public class TransactionManager {
             PlatonSendTransaction transaction = Web3jManager.getInstance().getWeb3j().platonSendRawTransaction(signedMessage).send();
             return transaction.getTransactionHash();
         } catch (IOException e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
 
         return null;
@@ -354,7 +355,7 @@ public class TransactionManager {
         try {
             return Web3jManager.getInstance().getWeb3j().platonSendRawTransaction(signedMessage).send();
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
         return null;
     }
@@ -369,7 +370,7 @@ public class TransactionManager {
 
             return Numeric.toHexString(signedMessage);
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
 
         return null;

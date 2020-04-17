@@ -1,5 +1,7 @@
 package com.platon.aton.utils;
 
+import com.platon.framework.utils.LogUtils;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -36,7 +38,7 @@ public class GZipUtil {
             byte[] by111 = out.toByteArray();
             return out.toString("ISO-8859-1");
         } catch (IOException e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
         return null;
     }
@@ -70,7 +72,7 @@ public class GZipUtil {
             // 使用指定的 charsetName，通过解码字节将缓冲区内容转换为字符串
             return out.toString("utf-8");
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
 
         return null;

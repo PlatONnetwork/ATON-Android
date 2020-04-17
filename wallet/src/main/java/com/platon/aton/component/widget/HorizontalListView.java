@@ -26,9 +26,6 @@ package com.platon.aton.component.widget;
  * THE SOFTWARE.
  *
  */
-import java.util.LinkedList;
-import java.util.Queue;
-
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.graphics.Rect;
@@ -41,9 +38,11 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.Scroller;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class HorizontalListView extends AdapterView<ListAdapter> {
 
-    public boolean mAlwaysOverrideTouch = true;
     protected ListAdapter mAdapter;
     private int mLeftViewIndex = -1;
     private int mRightViewIndex = 0;

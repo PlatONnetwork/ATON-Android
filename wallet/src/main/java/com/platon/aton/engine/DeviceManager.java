@@ -11,6 +11,7 @@ import com.platon.aton.BuildConfig;
 import com.platon.aton.utils.MD5Utils;
 import com.platon.aton.utils.SystemUtil;
 import com.platon.framework.app.Constants;
+import com.platon.framework.utils.LogUtils;
 import com.platon.framework.utils.PreferenceTool;
 
 import java.io.UnsupportedEncodingException;
@@ -127,8 +128,8 @@ public class DeviceManager {
             pInfo = pManager.getPackageInfo(context.getPackageName(),
                     PackageManager.GET_CONFIGURATIONS);
             return pInfo;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exp) {
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
         }
 
         return pInfo;

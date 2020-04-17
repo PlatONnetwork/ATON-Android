@@ -19,15 +19,15 @@ public class LoopService extends Service {
     /**
      * 轮询时间
      */
-    public static int MLOOP_INTERVAL_SECS = 3500;
+    public static final int MLOOP_INTERVAL_SECS = 3500;
     /**
      * 当前服务是否正在执行
      */
-    public static boolean isServiceRuning = false;
+    private static  boolean isServiceRuning = false;
     /**
      * 定时任务工具类
      */
-    public static Timer timer = new Timer();
+    private static  Timer timer = new Timer();
 
     private static Context context;
 

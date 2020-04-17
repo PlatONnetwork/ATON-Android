@@ -2,6 +2,7 @@ package com.platon.aton.utils;
 
 import android.graphics.Bitmap;
 
+import com.facebook.stetho.common.LogUtil;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.DecodeHintType;
@@ -147,12 +148,12 @@ public class QRCodeDecoder {
             source = new RGBLuminanceSource(width, height, pixels);
             return new MultiFormatReader().decode(new BinaryBitmap(new HybridBinarizer(source)), ALL_HINT_MAP);
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtil.e(e.getMessage(),e.fillInStackTrace());
             if (source != null) {
                 try {
                     return new MultiFormatReader().decode(new BinaryBitmap(new GlobalHistogramBinarizer(source)), ALL_HINT_MAP);
-                } catch (Throwable e2) {
-                    e2.printStackTrace();
+                } catch (Throwable exp) {
+                    LogUtil.e(exp.getMessage(),exp.fillInStackTrace());
                 }
             }
             return null;

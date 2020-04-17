@@ -264,7 +264,6 @@ public class Spring {
    * realTimeDelta.
    * The math is inlined inside the loop since it made a huge performance impact when there are
    * several springs being advanced.
-   * @param time clock time
    * @param realDeltaTime clock drift
    */
   void advance(double realDeltaTime) {
@@ -292,8 +291,8 @@ public class Spring {
 
     mTimeAccumulator += adjustedDeltaTime;
 
-    double tension = mSpringConfig.tension;
-    double friction = mSpringConfig.friction;
+    double tension = mSpringConfig.getTension();
+    double friction = mSpringConfig.getFriction();
 
     double position = mCurrentState.position;
     double velocity = mCurrentState.velocity;

@@ -554,8 +554,7 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
         try {
             contractAmount = Numeric.decodeQuantity(decodeAmount(hex)).toString(10);
         } catch (Exception e) {
-            e.printStackTrace();
-            LogUtils.d(e.getMessage());
+            LogUtils.d(e.getMessage(),e.fillInStackTrace());
         }
         return contractAmount;
     }

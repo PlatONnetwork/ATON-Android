@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
+import com.facebook.stetho.common.LogUtil;
+
 public class ShareUtil {
     public static final String QQ       = "com.tencent.mobileqq";
     public static final String MM       = "com.tencent.mm";
@@ -16,7 +18,7 @@ public class ShareUtil {
             Intent intent = context.getPackageManager().getLaunchIntentForPackage(name);
             context.startActivity(intent);
         } catch (Exception exp) {
-            exp.printStackTrace();
+            LogUtil.e(exp.getMessage(),exp.fillInStackTrace());
         }
     }
 
@@ -27,7 +29,7 @@ public class ShareUtil {
             intent.setData(Uri.parse(url));
             context.startActivity(intent);
         }catch (Exception exp){
-            exp.printStackTrace();
+           LogUtil.e(exp.getMessage(),exp.fillInStackTrace());
         }
     }
 }

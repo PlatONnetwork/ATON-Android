@@ -22,6 +22,7 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 
 import com.platon.aton.R;
+import com.platon.framework.utils.LogUtils;
 
 
 public class CircleImageView extends ImageView {
@@ -327,7 +328,7 @@ public class CircleImageView extends ImageView {
             drawable.draw(canvas);
             return bitmap;
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
             return null;
         }
     }

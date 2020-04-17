@@ -2,6 +2,7 @@ package com.platon.aton.db.sqlite;
 
 import com.platon.aton.db.entity.TransactionRecordEntity;
 import com.platon.framework.app.Constants;
+import com.platon.framework.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,7 @@ public class TransactionRecordDao {
                 list = realm.copyFromRealm(results);
             }
         } catch (Exception exp) {
-            exp.printStackTrace();
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
             if (realm != null) {
                 realm.cancelTransaction();
             }
@@ -75,7 +76,7 @@ public class TransactionRecordDao {
             });
             return true;
         } catch (Exception exp) {
-            exp.printStackTrace();
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
             return false;
         } finally {
             if (realm != null) {
@@ -93,7 +94,7 @@ public class TransactionRecordDao {
                     .findAll();
             return realm.copyFromRealm(results).contains(transactionRecordEntity);
         } catch (Exception exp) {
-            exp.printStackTrace();
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
             if (realm != null) {
                 realm.cancelTransaction();
             }

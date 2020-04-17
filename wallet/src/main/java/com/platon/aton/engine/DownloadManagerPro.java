@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 
+import com.platon.framework.utils.LogUtils;
+
 import java.lang.reflect.Method;
 
 /**
@@ -139,7 +141,7 @@ public class DownloadManagerPro {
              * accept all exception, include ClassNotFoundException, NoSuchMethodException, InvocationTargetException,
              * NullPointException
              */
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
         return -1;
     }
@@ -164,7 +166,7 @@ public class DownloadManagerPro {
              * accept all exception, include ClassNotFoundException, NoSuchMethodException, InvocationTargetException,
              * NullPointException
              */
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
         return -1;
     }
@@ -190,7 +192,7 @@ public class DownloadManagerPro {
             pauseDownload = DownloadManager.class.getMethod(METHOD_NAME_PAUSE_DOWNLOAD, long[].class);
         } catch (Exception e) {
             // accept all exception
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
     }
 
@@ -204,7 +206,7 @@ public class DownloadManagerPro {
             resumeDownload = DownloadManager.class.getMethod(METHOD_NAME_RESUME_DOWNLOAD, long[].class);
         } catch (Exception e) {
             // accept all exception
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
     }
 
@@ -309,7 +311,7 @@ public class DownloadManagerPro {
                         setNotiClass = Request.class.getMethod(METHOD_NAME_SET_NOTI_CLASS, CharSequence.class);
                     } catch (Exception e) {
                         // accept all exception
-                        e.printStackTrace();
+                        LogUtils.e(e.getMessage(),e.fillInStackTrace());
                     }
                 }
             }
@@ -322,7 +324,7 @@ public class DownloadManagerPro {
                      * accept all exception, include ClassNotFoundException, NoSuchMethodException,
                      * InvocationTargetException, NullPointException
                      */
-                    e.printStackTrace();
+                    LogUtils.e(e.getMessage(),e.fillInStackTrace());
                 }
             }
         }
@@ -341,7 +343,7 @@ public class DownloadManagerPro {
                         setNotiExtras = Request.class.getMethod(METHOD_NAME_SET_NOTI_EXTRAS, CharSequence.class);
                     } catch (Exception e) {
                         // accept all exception
-                        e.printStackTrace();
+                        LogUtils.e(e.getMessage(),e.fillInStackTrace());
                     }
                 }
             }
@@ -354,7 +356,7 @@ public class DownloadManagerPro {
                      * accept all exception, include ClassNotFoundException, NoSuchMethodException,
                      * InvocationTargetException, NullPointException
                      */
-                    e.printStackTrace();
+                    LogUtils.e(e.getMessage(),e.fillInStackTrace());
                 }
             }
         }

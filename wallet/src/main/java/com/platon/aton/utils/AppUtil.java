@@ -107,7 +107,7 @@ public class AppUtil {
             for (ShareAppInfo appInfo : ShareAppInfo.values()) {
                 for (int i = 0; i < packageInfos.size(); i++) {
                     String packName = packageInfos.get(i).packageName;
-                    if (appInfo.packageName.equals(packName)) {
+                    if (appInfo.getPackageName().equals(packName)) {
                         shareAppInfoList.add(appInfo);
                     }
                 }

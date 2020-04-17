@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.platon.framework.utils.LogUtils;
+
 public class Address implements Parcelable {
 
     private String uuid;
@@ -125,7 +127,7 @@ public class Address implements Parcelable {
             }
             return "0x" + address;
         } catch (Exception exp) {
-            exp.printStackTrace();
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
             return null;
         }
     }

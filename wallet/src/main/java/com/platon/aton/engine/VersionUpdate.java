@@ -126,7 +126,10 @@ public class VersionUpdate {
         //如果已经存在该版本app，则删除之前的。
         File file = new File(apkFilePath);
         if (file.exists()) {
-            file.delete();
+            if(!file.delete()){
+               LogUtils.d("delete  file fail");
+            }
+
         }
     }
 
