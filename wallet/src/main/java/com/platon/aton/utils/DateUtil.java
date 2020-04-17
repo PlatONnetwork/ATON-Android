@@ -1,5 +1,7 @@
 package com.platon.aton.utils;
 
+import com.platon.framework.utils.LogUtils;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -37,7 +39,7 @@ public class DateUtil {
         try {
             return simpleDateFormat.parse(timeText).getTime();
         } catch (ParseException e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
         return 0L;
     }

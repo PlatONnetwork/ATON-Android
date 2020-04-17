@@ -2,6 +2,7 @@ package com.platon.aton.utils;
 
 import android.text.TextUtils;
 
+import com.facebook.stetho.common.LogUtil;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -98,8 +99,8 @@ public class JZWalletUtil {
     public static WalletFile toWalletFile(String json) {
         try {
             return loadWalletFileByJson(json);
-        } catch (Exception exp) {
-            exp.printStackTrace();
+        } catch (Exception e) {
+            LogUtil.e(e.getMessage(),e.fillInStackTrace());
             return null;
         }
     }
@@ -117,10 +118,10 @@ public class JZWalletUtil {
         try {
             WalletFile walletFile = loadWalletFileByJson(json);
             credentials = Credentials.create(Wallet.decrypt(password, walletFile));
-        } catch (CipherException ex) {
-            ex.printStackTrace();
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        } catch (CipherException e) {
+            LogUtil.e(e.getMessage(),e.fillInStackTrace());
+        } catch (IOException e) {
+            LogUtil.e(e.getMessage(),e.fillInStackTrace());
         }
         return credentials;
     }
@@ -184,8 +185,8 @@ public class JZWalletUtil {
                 return false;
             }
             return true;
-        } catch (Exception exp) {
-            exp.printStackTrace();
+        } catch (Exception e) {
+            LogUtil.e(e.getMessage(),e.fillInStackTrace());
             return false;
         }
     }
@@ -194,8 +195,8 @@ public class JZWalletUtil {
         try {
             MnemonicCode.INSTANCE.check(Arrays.asList(mnemonic.split(" ")));
             return true;
-        } catch (Exception exp) {
-            exp.printStackTrace();
+        } catch (Exception e) {
+            LogUtil.e(e.getMessage(),e.fillInStackTrace());
             return false;
         }
     }
@@ -203,8 +204,8 @@ public class JZWalletUtil {
     public static ECKeyPair decrypt(String keystore, String password) {
         try {
             return Wallet.decrypt(password, loadWalletFileByJson(keystore));
-        } catch (Exception exp) {
-            exp.printStackTrace();
+        } catch (Exception e) {
+            LogUtil.e(e.getMessage(),e.fillInStackTrace());
             return null;
         }
     }
@@ -219,7 +220,7 @@ public class JZWalletUtil {
             cipher.init(mode, secretKeySpec, ivParameterSpec);
             return cipher.doFinal(text);
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtil.e(e.getMessage(),e.fillInStackTrace());
             return null;
         }
     }

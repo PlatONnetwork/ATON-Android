@@ -2,6 +2,8 @@ package com.platon.aton.utils;
 
 import android.text.TextUtils;
 
+import com.platon.framework.utils.LogUtils;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -34,7 +36,7 @@ public class BigDecimalUtil {
             BigDecimal b2 = new BigDecimal(Double.toString(v2));
             result = b1.add(b2).doubleValue();
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
 
         return result;
@@ -56,7 +58,7 @@ public class BigDecimalUtil {
             BigDecimal b2 = toBigDecimal(v2);
             result = b1.add(b2);
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
 
         return result;
@@ -71,7 +73,7 @@ public class BigDecimalUtil {
             BigDecimal b3 = b1.add(b2);
             result = b3.setScale(scale, roundingMode).doubleValue();
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
 
         return result;
@@ -91,7 +93,7 @@ public class BigDecimalUtil {
             BigDecimal b2 = new BigDecimal(Double.toString(v2));
             result = b1.subtract(b2).doubleValue();
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
         return result;
     }
@@ -110,7 +112,7 @@ public class BigDecimalUtil {
             BigDecimal b2 = toBigDecimal(v2);
             result = b1.subtract(b2);
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
         return result;
     }
@@ -129,7 +131,7 @@ public class BigDecimalUtil {
             BigDecimal b2 = new BigDecimal(Double.toString(v2));
             result = b1.multiply(b2).doubleValue();
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
         return result;
     }
@@ -151,7 +153,7 @@ public class BigDecimalUtil {
             BigDecimal b2 = toBigDecimal(v2);
             result = b1.multiply(b2);
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
         return result;
     }
@@ -186,7 +188,7 @@ public class BigDecimalUtil {
             BigDecimal b2 = new BigDecimal(Double.toString(v2));
             result = b1.divide(b2, scale, BigDecimal.ROUND_FLOOR).doubleValue();
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
 
         return result;
@@ -207,7 +209,7 @@ public class BigDecimalUtil {
             BigDecimal b2 = toBigDecimal(v2);
             result = b1.divide(b2, scale, BigDecimal.ROUND_FLOOR).toPlainString();
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
         return result;
     }
@@ -227,7 +229,7 @@ public class BigDecimalUtil {
             BigDecimal b2 = toBigDecimal(v2);
             result = b1.divide(b2, scale, roundingMode).toPlainString();
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
         return result;
     }
@@ -246,7 +248,7 @@ public class BigDecimalUtil {
             BigDecimal one = new BigDecimal("1");
             result = b.divide(one, scale, BigDecimal.ROUND_FLOOR).doubleValue();
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
         return result;
     }
@@ -263,7 +265,7 @@ public class BigDecimalUtil {
             BigDecimal b = BigDecimal.valueOf(v);
             result = b.floatValue();
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
 
         return result;
@@ -281,7 +283,7 @@ public class BigDecimalUtil {
             BigDecimal b = new BigDecimal(v);
             result = b.setScale(2, RoundingMode.HALF_UP).floatValue();
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
 
         return result;
@@ -299,7 +301,7 @@ public class BigDecimalUtil {
             BigDecimal b = BigDecimal.valueOf(v);
             result = b.intValue();
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
         return result;
     }
@@ -316,7 +318,7 @@ public class BigDecimalUtil {
             BigDecimal b = BigDecimal.valueOf(v);
             result = b.longValue();
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
         return result;
     }
@@ -335,7 +337,7 @@ public class BigDecimalUtil {
             BigDecimal b2 = BigDecimal.valueOf(v2);
             result = b1.max(b2).doubleValue();
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
         return result;
     }
@@ -354,7 +356,7 @@ public class BigDecimalUtil {
             BigDecimal b2 = BigDecimal.valueOf(v2);
             result = b1.min(b2).doubleValue();
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
         return result;
     }
@@ -373,7 +375,7 @@ public class BigDecimalUtil {
             BigDecimal b2 = BigDecimal.valueOf(v2);
             result = b1.compareTo(b2);
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
         return result;
     }
@@ -382,7 +384,7 @@ public class BigDecimalUtil {
         try {
             return BigDecimal.valueOf(value).toPlainString();
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
         return "";
     }
@@ -394,7 +396,7 @@ public class BigDecimalUtil {
         try {
             return new BigDecimal(val1).compareTo(new BigDecimal(val2)) > 0;
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
         return false;
     }
@@ -406,7 +408,7 @@ public class BigDecimalUtil {
         try {
             return new BigDecimal(val1).compareTo(new BigDecimal(val2)) >= 0;
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
         return false;
     }
@@ -418,7 +420,7 @@ public class BigDecimalUtil {
         try {
             return new BigDecimal(val1).compareTo(BigDecimal.ZERO) > 0;
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
         return false;
     }
@@ -435,7 +437,7 @@ public class BigDecimalUtil {
         try {
             return new BigDecimal(value);
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
         return BigDecimal.ZERO;
     }

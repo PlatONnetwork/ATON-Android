@@ -743,7 +743,7 @@
     <string name="msg_delegate_reward_ratio">Reward Ratio</string>
     <string name="msg_delegate_balance">Avaliable Balance</string>
 
-    <string name="msg_network_tips">You are on the %1$s Network. Never transfer other network LATs to this address.</string>
+    <string name="msg_network_tips">You are on the %1$s Network. Never transfer asset from different network to this address.</string>
 
     <string name="msg_avaliable_balance">Balance：%1$s LAT</string>
     <string name="msg_balance_with_unit">Balance：%1$s LAT</string>

@@ -6,6 +6,8 @@ import android.os.Environment;
 import android.text.TextUtils;
 import android.util.TypedValue;
 
+import com.platon.framework.utils.LogUtils;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -29,13 +31,13 @@ class BubbleUtils {
                 fis = new FileInputStream(new File(Environment.getRootDirectory(), "build.prop"));
                 sProperties.load(fis);
             } catch (IOException e) {
-                e.printStackTrace();
+                LogUtils.e(e.getMessage(),e.fillInStackTrace());
             } finally {
                 if (fis != null) {
                     try {
                         fis.close();
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        LogUtils.e(e.getMessage(),e.fillInStackTrace());
                     }
                 }
             }

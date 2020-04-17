@@ -1,6 +1,7 @@
 package com.platon.aton.db.sqlite;
 
 import com.platon.aton.db.entity.NodeEntity;
+import com.platon.framework.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -148,8 +149,8 @@ public class NodeDao {
             if (results != null) {
                 list = realm.copyFromRealm(results);
             }
-        } catch (Exception exp) {
-            exp.printStackTrace();
+        } catch (Exception e) {
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         } finally {
             if (realm != null) {
                 realm.close();
@@ -170,8 +171,8 @@ public class NodeDao {
             if (results != null) {
                 nodeInfoEntityList = realm.copyFromRealm(results);
             }
-        } catch (Exception exp) {
-            exp.printStackTrace();
+        } catch (Exception e) {
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         } finally {
             if (realm != null) {
                 realm.close();
@@ -192,8 +193,8 @@ public class NodeDao {
             if (nodeInfoEntityList != null) {
                 infoEntityList = realm.copyFromRealm(nodeInfoEntityList);
             }
-        } catch (Exception exp) {
-            exp.printStackTrace();
+        } catch (Exception e) {
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         } finally {
             if (realm != null) {
                 realm.close();

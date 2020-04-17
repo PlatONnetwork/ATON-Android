@@ -14,8 +14,8 @@ package com.platon.aton.component.widget.togglebutton;
  * Data structure for storing spring configuration.
  */
 public class SpringConfig {
-  public double friction;
-  public double tension;
+  private double friction;
+  private double tension;
 
   public static SpringConfig defaultConfig = SpringConfig.fromOrigamiTensionAndFriction(40, 7);
 
@@ -40,5 +40,21 @@ public class SpringConfig {
         OrigamiValueConverter.tensionFromOrigamiValue(qcTension),
         OrigamiValueConverter.frictionFromOrigamiValue(qcFriction)
     );
+  }
+
+  public double getFriction() {
+    return friction;
+  }
+
+  public void setFriction(double friction) {
+    this.friction = friction;
+  }
+
+  public double getTension() {
+    return tension;
+  }
+
+  public void setTension(double tension) {
+    this.tension = tension;
   }
 }

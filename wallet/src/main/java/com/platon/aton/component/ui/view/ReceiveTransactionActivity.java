@@ -8,6 +8,7 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.AbsoluteSizeSpan;
 import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.ImageView;
@@ -28,10 +29,14 @@ import com.platon.aton.event.Event;
 import com.platon.aton.event.EventPublisher;
 import com.platon.aton.utils.RxUtils;
 import com.platon.framework.base.BaseActivity;
+import com.platon.framework.utils.DensityUtil;
+import com.platon.framework.utils.LanguageUtil;
 import com.platon.framework.utils.RUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -124,8 +129,17 @@ public class ReceiveTransactionActivity extends BaseActivity<ReceiveTransationCo
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(text);
         int startIndex = 4;
         int endIndex = startIndex + nodeNameStr.length();
-        spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD), startIndex, endIndex, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-        spannableStringBuilder.setSpan(new CustomImageSpan(getContext(), R.drawable.icon_no_delegate_tips), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        int startIndexEN = 17;
+        int endIndexEN = startIndexEN + nodeNameStr.length();
+        Locale locale = LanguageUtil.getLocale();
+        if(Locale.CHINESE.getLanguage().equals(locale.getLanguage())){
+            spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD), startIndex, endIndex, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            spannableStringBuilder.setSpan(new AbsoluteSizeSpan(DensityUtil.sp2px(this,4.6f),true), startIndex, endIndex, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        }else{
+            spannableStringBuilder.setSpan(new StyleSpan(Typeface.BOLD), startIndexEN, endIndexEN, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            spannableStringBuilder.setSpan(new AbsoluteSizeSpan(DensityUtil.sp2px(this,4.8f),true), startIndexEN, endIndexEN, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        }
+       spannableStringBuilder.setSpan(new CustomImageSpan(getContext(), R.drawable.icon_no_delegate_tips), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         return spannableStringBuilder;
     }
 

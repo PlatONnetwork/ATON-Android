@@ -11,6 +11,7 @@ import com.platon.aton.utils.BigDecimalUtil;
 import com.platon.aton.utils.BigIntegerUtil;
 import com.platon.aton.utils.NumberParserUtils;
 import com.platon.aton.utils.SignCodeUtils;
+import com.platon.framework.utils.LogUtils;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
@@ -151,7 +152,7 @@ public class TransactionAuthorizationData implements Parcelable {
             try {
                 remarkByte = remark.getBytes(UTF_8);
             } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+                LogUtils.e(e.getMessage(),e.fillInStackTrace());
             }
         }
         byte[] message = new byte[signedDataByte.length + remarkByte.length];

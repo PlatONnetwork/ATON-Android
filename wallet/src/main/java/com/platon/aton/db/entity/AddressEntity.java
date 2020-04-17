@@ -2,6 +2,8 @@ package com.platon.aton.db.entity;
 
 import android.text.TextUtils;
 
+import com.platon.framework.utils.LogUtils;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -83,8 +85,8 @@ public class AddressEntity extends RealmObject {
                 return address;
             }
             return "0x" + address;
-        } catch (Exception exp) {
-            exp.printStackTrace();
+        } catch (Exception e) {
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
             return null;
         }
     }
