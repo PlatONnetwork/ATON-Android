@@ -38,6 +38,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 
 /**
  * @author matrixelement
@@ -145,6 +146,12 @@ public class SelectWalletDialogFragment extends BaseDialogFragment {
                         return walletInfoEntity.buildWallet();
                     }
                 })
+                .filter(new Predicate<Wallet>() {
+                    @Override
+                    public boolean test(Wallet wallet) throws Exception {
+                        return !wallet.isObservedWallet();
+                    }
+                })
                 .map(new Function<Wallet, Wallet>() {
                     @Override
                     public Wallet apply(Wallet walletEntity) throws Exception {
@@ -167,7 +174,7 @@ public class SelectWalletDialogFragment extends BaseDialogFragment {
                             List<Wallet> newWalletEntityList = new ArrayList<>();
                             if (needAmount) {
                                 for (Wallet walletEntity : objects) {
-                                    if (BigDecimalUtil.isBiggerThanZero(walletEntity.getFreeBalance())||BigDecimalUtil.isBiggerThanZero(walletEntity.getLockBalance())) {
+                                    if (BigDecimalUtil.isBiggerThanZero(walletEntity.getFreeBalance()) || BigDecimalUtil.isBiggerThanZero(walletEntity.getLockBalance())) {
                                         newWalletEntityList.add(walletEntity);
                                     }
                                 }

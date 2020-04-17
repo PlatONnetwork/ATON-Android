@@ -10,7 +10,6 @@
     android:paddingTop="16dp"
     android:paddingBottom="16dp">
 
-
     <com.platon.aton.component.widget.CircleImageView
         android:id="@+id/civ_wallet_avatar"
         android:layout_width="40dp"
@@ -63,13 +62,14 @@
         android:id="@+id/tv_restricted_balance_amount"
         style="@style/Text.fff.14"
         android:layout_width="0dp"
-        android:layout_marginTop="6dp"
         android:layout_marginRight="10dp"
         android:ellipsize="end"
         android:gravity="left"
+        android:includeFontPadding="false"
         android:lines="1"
         app:autoSizeTextType="uniform"
         app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toTopOf="@+id/rtv_receive_transaction"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/tv_observed_wallet_tag"
         app:layout_constraintTop_toBottomOf="@id/layout_wallet_amount"
@@ -81,11 +81,11 @@
         style="@style/Text.fff.14"
         android:layout_width="wrap_content"
         android:layout_height="24dp"
-        android:layout_marginTop="4dp"
         android:background="@drawable/shape_assets_observed_wallet"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:text="@string/msg_observed_wallet"
+        app:layout_constraintBottom_toTopOf="@+id/rtv_receive_transaction"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layout_wallet_amount" />
 

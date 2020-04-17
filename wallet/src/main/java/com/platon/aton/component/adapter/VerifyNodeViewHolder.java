@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.platon.framework.utils.MapUtils;
 import com.platon.aton.R;
 import com.platon.aton.component.adapter.base.BaseViewHolder;
 import com.platon.aton.component.widget.CircleImageView;
@@ -22,6 +21,7 @@ import com.platon.aton.utils.DensityUtil;
 import com.platon.aton.utils.GlideUtils;
 import com.platon.aton.utils.NumberParserUtils;
 import com.platon.aton.utils.StringUtil;
+import com.platon.framework.utils.MapUtils;
 
 import java.util.HashMap;
 
