@@ -18,17 +18,17 @@ import com.platon.framework.base.BaseActivity;
 import com.platon.framework.base.BasePresenter;
 import com.platon.framework.base.BaseViewImp;
 
-public class UnlockFigerprintActivity extends BaseActivity implements View.OnClickListener{
+public class UnlockFigerprintActivity extends BaseActivity implements View.OnClickListener {
 
     private final static String TAG = UnlockFigerprintActivity.class.getSimpleName();
     private static final int REQUEST_CODE_PASSWORD = 101;
     public static final int TYPE_MAIN_ACTIVITY = 1;
 
-    public static void actionStart(Context context){
+    public static void actionStart(Context context) {
         context.startActivity(new Intent(context, UnlockFigerprintActivity.class));
     }
 
-    public static void actionStartMainActivity(Context context){
+    public static void actionStartMainActivity(Context context) {
         Intent intent = new Intent(context, UnlockFigerprintActivity.class);
         intent.putExtra(Constants.Extra.EXTRA_TYPE, TYPE_MAIN_ACTIVITY);
         context.startActivity(intent);
@@ -60,7 +60,7 @@ public class UnlockFigerprintActivity extends BaseActivity implements View.OnCli
         if (BiometricPromptCompat.supportBiometricPromptCompat(this)) {
             findViewById(R.id.tv_error).setVisibility(View.GONE);
             startAuth();
-        }else {
+        } else {
             findViewById(R.id.tv_error).setVisibility(View.VISIBLE);
         }
     }
@@ -68,7 +68,7 @@ public class UnlockFigerprintActivity extends BaseActivity implements View.OnCli
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_CODE_PASSWORD){
+            if (requestCode == REQUEST_CODE_PASSWORD) {
                 actionStart();
             }
 
@@ -87,32 +87,30 @@ public class UnlockFigerprintActivity extends BaseActivity implements View.OnCli
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.tv_unlock:
                 UnlockWithPasswordActivity.actionStart(this, REQUEST_CODE_PASSWORD);
                 break;
             case R.id.tv_evoke:
-                if (BiometricPromptCompat.supportBiometricPromptCompat(this)) {
-                    startAuth();
-                }
-                break;
             case R.id.iv_fingerprint:
                 if (BiometricPromptCompat.supportBiometricPromptCompat(this)) {
                     startAuth();
                 }
                 break;
+            default:
+                break;
         }
     }
 
-    private void initView(){
+    private void initView() {
         findViewById(R.id.tv_evoke).setOnClickListener(this);
         findViewById(R.id.iv_fingerprint).setOnClickListener(this);
         findViewById(R.id.tv_unlock).setOnClickListener(this);
     }
 
-    private void actionStart(){
+    private void actionStart() {
         if (getIntent().hasExtra(Constants.Extra.EXTRA_TYPE) &&
-                getIntent().getIntExtra(Constants.Extra.EXTRA_TYPE, 0) == TYPE_MAIN_ACTIVITY){
+                getIntent().getIntExtra(Constants.Extra.EXTRA_TYPE, 0) == TYPE_MAIN_ACTIVITY) {
             MainActivity.actionStart(UnlockFigerprintActivity.this);
             UnlockFigerprintActivity.this.finish();
         }
@@ -138,7 +136,7 @@ public class UnlockFigerprintActivity extends BaseActivity implements View.OnCli
         mBiometricPromptCompat.authenticate(mCancellationSignal, mCallback);
     }
 
-    private BiometricPromptCompat.IAuthenticationCallback mCallback = new BiometricPromptCompat.IAuthenticationCallback(){
+    private BiometricPromptCompat.IAuthenticationCallback mCallback = new BiometricPromptCompat.IAuthenticationCallback() {
         @Override
         public void onAuthenticationError(int errorCode, @Nullable CharSequence errString) {
 

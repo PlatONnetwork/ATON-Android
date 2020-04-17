@@ -264,7 +264,7 @@ public abstract class BaseFragment<V extends BaseViewImp, P extends BasePresente
 
         @Override
         public Context getApplicationContext() {
-            return getApplicationContext();
+            return getActivity().getApplicationContext();
         }
 
         @Override
