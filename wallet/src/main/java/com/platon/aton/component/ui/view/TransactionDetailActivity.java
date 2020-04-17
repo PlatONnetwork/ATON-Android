@@ -97,7 +97,7 @@ public class TransactionDetailActivity extends BaseActivity<TransactionDetailCon
 
     @Override
     public int getLayoutId() {
-        return R.layout.activity_transation_detail;
+        return R.layout.activity_transaction_detail;
     }
 
 
