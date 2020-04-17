@@ -121,23 +121,23 @@ public class ShadowDrawable extends StateListDrawable {
     public void setBounds(int left, int top, int right, int bottom) {
         super.setBounds(left, top, right, bottom);
         if (mShadowsMode == SHADOW_ALL) {
-            mRect = new RectF(left + mShadowRadius - mOffsetX, top + mShadowRadius - mOffsetY, right - mShadowRadius - mOffsetX,
-                    bottom - mShadowRadius - mOffsetY);
+            mRect = new RectF((float)(left + mShadowRadius - mOffsetX),(float)(top + mShadowRadius - mOffsetY),(float)(right - mShadowRadius - mOffsetX),
+                    (float)( bottom - mShadowRadius - mOffsetY));
         } else if (mShadowsMode == SHADOW_TOP) {
-            mRect = new RectF(left - mOffsetX, top + mShadowRadius - mOffsetY, right - mOffsetX,
-                    bottom - mOffsetY);
+            mRect = new RectF((float)(left - mOffsetX),(float)(top + mShadowRadius - mOffsetY),(float)(right - mOffsetX),
+                    (float)(bottom - mOffsetY));
         } else if (mShadowsMode == SHADOW_LEFT) {
-            mRect = new RectF(left + mShadowRadius - mOffsetX, top - mOffsetY, right - mOffsetX,
-                    bottom - mOffsetY);
+            mRect = new RectF((float)(left + mShadowRadius - mOffsetX),(float)(top - mOffsetY),(float)(right - mOffsetX),
+                    (float)(bottom - mOffsetY));
         } else if (mShadowsMode == SHADOW_RIGHT) {
-            mRect = new RectF(left - mOffsetX, top - mOffsetY, right - mShadowRadius - mOffsetX,
-                    bottom - mOffsetY);
+            mRect = new RectF((float)(left - mOffsetX),(float)(top - mOffsetY),(float)(right - mShadowRadius - mOffsetX),
+                    (float)(bottom - mOffsetY));
         } else if (mShadowsMode == SHADOW_BOTTOM) {
-            mRect = new RectF(left - mOffsetX, top - mOffsetY, right - mOffsetX,
-                    bottom - mShadowRadius - mOffsetY);
+            mRect = new RectF((float)(left - mOffsetX),(float)(top - mOffsetY),(float)(right - mOffsetX),
+                    (float)(bottom - mShadowRadius - mOffsetY));
         } else if (mShadowsMode == (SHADOW_BOTTOM | SHADOW_LEFT | SHADOW_RIGHT)) {
-            mRect = new RectF(left + mShadowRadius - mOffsetX, top - mOffsetY, right - mShadowRadius - mOffsetX,
-                    bottom - mShadowRadius - mOffsetY);
+            mRect = new RectF((float)(left + mShadowRadius - mOffsetX),(float)(top - mOffsetY),(float)(right - mShadowRadius - mOffsetX),
+                    (float)(bottom - mShadowRadius - mOffsetY));
         }
     }
 

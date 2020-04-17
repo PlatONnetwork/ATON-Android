@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.platon.aton.db.entity.WalletEntity;
+import com.platon.framework.utils.LogUtils;
 
 public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneable {
 
@@ -336,7 +337,7 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneab
             }
             return "0x" + address;
         } catch (Exception exp) {
-            exp.printStackTrace();
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
             return "";
         }
     }
@@ -405,8 +406,8 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneab
         Wallet wallet = null;
         try {
             wallet = (Wallet) super.clone();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exp) {
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
             wallet = NullWallet.getInstance();
         }
         return wallet;

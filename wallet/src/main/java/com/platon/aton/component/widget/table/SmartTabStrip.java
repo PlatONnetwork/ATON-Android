@@ -427,7 +427,7 @@ class SmartTabStrip extends LinearLayout {
     }
     // Thin underline along the entire bottom edge
     borderPaint.setColor(bottomBorderColor);
-    canvas.drawRect(left, height - bottomBorderThickness, right, height, borderPaint);
+    canvas.drawRect(left, (float) height - bottomBorderThickness, right, height, borderPaint);
   }
 
   private static class SimpleTabColorizer implements SmartTabLayout.TabColorizer {

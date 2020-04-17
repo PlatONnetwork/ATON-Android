@@ -42,6 +42,7 @@ import com.platon.framework.app.Constants;
 import com.platon.framework.base.BaseActivity;
 import com.platon.framework.base.BasePresenter;
 import com.platon.framework.base.BaseViewImp;
+import com.platon.framework.utils.LogUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.io.File;
@@ -202,7 +203,8 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
             lightTv.setText(getResources().getString(isFlashOn ? R.string.msg_turn_light_on : R.string.msg_turn_light_off));
             isFlashOn = !isFlashOn;
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            LogUtils.d(e.getMessage());
         }
     }
 
@@ -410,14 +412,14 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
                 mediaPlayer.setVolume(BEEP_VOLUME, BEEP_VOLUME);
                 mediaPlayer.prepare();
             } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
+                LogUtils.e(e.getMessage(),e.fillInStackTrace());
+            }  finally {
                 try {
                     if (file != null) {
                         file.close();
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    LogUtils.e(e.getMessage(),e.fillInStackTrace());
                 }
             }
         }

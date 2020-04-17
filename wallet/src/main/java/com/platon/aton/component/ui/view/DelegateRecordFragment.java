@@ -44,7 +44,7 @@ public class DelegateRecordFragment extends BaseLazyFragment<DelegateRecordContr
     LinearLayout ll_no_data;
     private DelegateRecordAdapter mAdapter;
     //加载更多需要传入的值
-    public long beginSequence = 0;
+    private long beginSequence = 0;
     private List<Transaction> list = new ArrayList<>();
     private boolean isLoadMore = false;
 

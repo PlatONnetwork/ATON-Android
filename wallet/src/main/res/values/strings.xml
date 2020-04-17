@@ -755,7 +755,7 @@
     <string name="msg_total_delegate_reward">累计委托奖励</string>
     <string name="msg_delegate_balance">可委托余额</string>
 
-    <string name="msg_network_tips">当前%1$s网络，切勿将其他网络LAT转入到当前地址。</string>
+    <string name="msg_network_tips">当前%1$s网络，切勿将其他网络资产转入到当前地址。</string>
 
     <string name="msg_avaliable_balance">可用余额：%1$s LAT</string>
     <string name="msg_balance_with_unit">余额：%1$s LAT</string>

@@ -69,7 +69,7 @@ public class DelegateRecordActivity extends BaseActivity {
         SmartTabLayout stbBar = getContentView().findViewById(R.id.stb_bar);
         int indicatorThickness = AndroidUtil.dip2px(getContext(), 2.0f);
         stbBar.setIndicatorThickness(indicatorThickness);//设置指示器的厚度
-        stbBar.setIndicatorCornerRadius(indicatorThickness / 2);//指示器圆角半径
+        stbBar.setIndicatorCornerRadius((float) indicatorThickness / 2);//指示器圆角半径
         ArrayList<Class<? extends BaseFragment>> fragments = getFragments();
         stbBar.setCustomTabView(new SmartTabLayout.TabProvider() {
             @Override

@@ -1,5 +1,7 @@
 package com.platon.aton.utils;
 
+import com.platon.framework.utils.LogUtils;
+
 import java.math.BigInteger;
 
 public class BigIntegerUtil {
@@ -13,7 +15,7 @@ public class BigIntegerUtil {
         try {
             return new BigInteger(value);
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
         return BigInteger.ZERO;
     }

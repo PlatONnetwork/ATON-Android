@@ -25,9 +25,21 @@ public class LogUtils {
         }
     }
 
+    public static void v(String mess,Throwable throwable) {
+        if (LOG && LOGV) {
+            Log.v(getTag(), buildMessage(mess),throwable);
+        }
+    }
+
     public static void d(String mess) {
         if (LOG && LOGD) {
             Log.d(getTag(), buildMessage(mess));
+        }
+    }
+
+    public static void d(String mess,Throwable throwable) {
+        if (LOG && LOGD) {
+            Log.d(getTag(), buildMessage(mess),throwable);
         }
     }
 
@@ -37,28 +49,48 @@ public class LogUtils {
         }
     }
 
+    public static void i(String mess,Throwable throwable) {
+        if (LOG && LOGI) {
+            Log.i(getTag(), buildMessage(mess),throwable);
+        }
+    }
+
     public static void w(String mess) {
         if (LOG && LOGW) {
             Log.w(getTag(), buildMessage(mess));
         }
     }
 
-    public static void e(String mess) {
-        if (LOG && LOGE) {
-            log(getTag(), buildMessage(mess));
+    public static void w(String mess,Throwable throwable) {
+        if (LOG && LOGW) {
+            Log.w(getTag(), buildMessage(mess),throwable);
         }
     }
 
-    public static void log(String tag, String msg){
+    public static void e(String mess) {
+        if (LOG && LOGE) {
+            log(getTag(), buildMessage(mess),null);
+        }
+    }
+
+    public static void e(String mess,Throwable throwable) {
+        if (LOG && LOGE) {
+            log(getTag(), buildMessage(mess),throwable);
+        }
+    }
+
+
+
+    public static void log(String tag, String msg,Throwable throwable){
         if(msg.length() > 4000) {
             for(int i=0;i<msg.length();i+=4000){
                 if(i+4000<msg.length())
-                    Log.e(tag,msg.substring(i, i+4000));
+                    Log.e(tag,msg.substring(i, i+4000),throwable);
                 else
-                    Log.e(tag,msg.substring(i, msg.length()));
+                    Log.e(tag,msg.substring(i, msg.length()),throwable);
             }
         } else
-            Log.e(tag,msg);
+            Log.e(tag,msg,throwable);
     }
 
     private static String getTag() {

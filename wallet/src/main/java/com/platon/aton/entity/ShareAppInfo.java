@@ -10,6 +10,7 @@ import android.os.Parcelable;
 
 import com.platon.aton.R;
 import com.platon.aton.utils.AppUtil;
+import com.platon.framework.utils.LogUtils;
 import com.platon.framework.utils.ToastUtil;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareAPI;
@@ -126,7 +127,11 @@ public enum ShareAppInfo implements Parcelable {
         }
     };
 
-    public String packageName;
+    private String packageName;
+
+    public String getPackageName() {
+        return packageName;
+    }
 
     ShareAppInfo(String packageName) {
         this.packageName = packageName;
@@ -143,9 +148,8 @@ public enum ShareAppInfo implements Parcelable {
             Intent intent = context.getPackageManager().getLaunchIntentForPackage(packageName);
             context.startActivity(intent);
             return true;
-        } catch (ActivityNotFoundException e) {
-            e.printStackTrace();
-        }
+        } catch (ActivityNotFoundException exp) {
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());        }
         return false;
     }
 

@@ -2,6 +2,7 @@ package com.platon.aton.db.sqlite;
 
 import com.platon.aton.db.entity.WalletEntity;
 import com.platon.aton.engine.NodeManager;
+import com.platon.framework.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +37,7 @@ public class WalletDao {
                 list = realm.copyFromRealm(results);
             }
         } catch (Exception exp) {
-            exp.printStackTrace();
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
         } finally {
             if (realm != null) {
                 realm.close();
@@ -58,7 +59,7 @@ public class WalletDao {
                 walletName = walletEntity.getName();
             }
         } catch (Exception exp) {
-            exp.printStackTrace();
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
         } finally {
             if (realm != null) {
                 realm.close();
@@ -80,7 +81,7 @@ public class WalletDao {
                 walletAvatar = walletEntity.getAvatar();
             }
         } catch (Exception exp) {
-            exp.printStackTrace();
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
         } finally {
             if (realm != null) {
                 realm.close();

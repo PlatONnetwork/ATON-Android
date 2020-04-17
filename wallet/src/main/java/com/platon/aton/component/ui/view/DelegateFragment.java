@@ -71,7 +71,7 @@ public class DelegateFragment extends BaseNestingLazyFragment {
         stbBar.setIndicatorThickness(indicatorThickness + 4);
         indicatorThickness = indicatorThickness + 4;
 
-        stbBar.setIndicatorCornerRadius(indicatorThickness / 2);
+        stbBar.setIndicatorCornerRadius((float) indicatorThickness / 2);
         ArrayList<Class<? extends BaseFragment>> fragments = getFragments();
         stbBar.setCustomTabView(new CustomTabLayout.TabProvider() {
             @Override

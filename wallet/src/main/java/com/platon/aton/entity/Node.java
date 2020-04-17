@@ -1,6 +1,7 @@
 package com.platon.aton.entity;
 
 import com.platon.aton.db.entity.NodeEntity;
+import com.platon.framework.utils.LogUtils;
 
 /**
  * @author matrixelement
@@ -128,8 +129,8 @@ public class Node implements Cloneable, Nullable {
         Node nodeEntity = null;
         try {
             nodeEntity = (Node) super.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
+        } catch (CloneNotSupportedException exp) {
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
         }
         return nodeEntity;
     }

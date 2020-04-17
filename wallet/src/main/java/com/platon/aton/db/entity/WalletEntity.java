@@ -164,7 +164,7 @@ public class WalletEntity extends RealmObject {
         private String uuid;
         private String keyJson;
         private String name;
-        public String address;
+        private String address;
         private String keystorePath;
         private long createTime;
         private long updateTime;

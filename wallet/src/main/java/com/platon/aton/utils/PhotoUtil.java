@@ -24,6 +24,8 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 
+import com.facebook.stetho.common.LogUtil;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -108,7 +110,7 @@ public class PhotoUtil {
             Bitmap bitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), uri);
             return bitmap;
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtil.e(e.getMessage(),e.fillInStackTrace());
             return null;
         }
     }
@@ -240,13 +242,13 @@ public class PhotoUtil {
             fops.write(bytes);
             fops.flush();
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtil.e(e.getMessage(),e.fillInStackTrace());
         } finally {
             if (fops != null) {
                 try {
                     fops.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    LogUtil.e(e.getMessage(),e.fillInStackTrace());
                 }
             }
         }
@@ -262,14 +264,14 @@ public class PhotoUtil {
             is = context.getContentResolver().openInputStream(uri);
             bitmap = BitmapFactory.decodeStream(is, null, options);
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtil.e(e.getMessage(),e.fillInStackTrace());
         }
         try {
             if (is != null) {
                 is.close();
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception e) {
+            LogUtil.e(e.getMessage(),e.fillInStackTrace());
         }
 
         return bitmap;
@@ -353,7 +355,7 @@ public class PhotoUtil {
         try {
             MediaStore.Images.Media.insertImage(context.getContentResolver(), file.getAbsolutePath(), fileName, null);
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtil.e(e.getMessage(),e.fillInStackTrace());
             return false;
         }
         // 最后通知图库更新
@@ -381,7 +383,7 @@ public class PhotoUtil {
             fos.close();
             return file;
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtil.e(e.getMessage(),e.fillInStackTrace());
             return null;
         }
     }
@@ -421,7 +423,7 @@ public class PhotoUtil {
         try {
             bitmap = resolveUriForBitmap(context, uri, options);
         } catch (Throwable e) {
-            e.printStackTrace();
+            LogUtil.e(e.getMessage(),e.fillInStackTrace());
         }
         return bitmap;
     }

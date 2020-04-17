@@ -21,6 +21,7 @@ import com.platon.aton.utils.QRCodeEncoder;
 import com.platon.aton.utils.RxUtils;
 import com.platon.framework.base.BaseActivity;
 import com.platon.framework.base.BasePresenter;
+import com.platon.framework.utils.ToastUtil;
 import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 
@@ -99,7 +100,8 @@ public class ReceiveTransactionPresenter extends BasePresenter<ReceiveTransation
                     Bitmap shareBitmap = screenShot(shareView);
                     boolean saved = PhotoUtil.saveImageToAlbum(activity, dir, getImageName(), shareBitmap);
                     if (saved) {
-                        showLongToast(R.string.save_image_tips);
+                        ToastUtil.showLongToast(activity, activity.getResources().getString(R.string.save_image_tips));
+                       // showLongToast(R.string.save_image_tips);
                         List<ShareAppInfo> shareAppInfoList = Arrays.asList(ShareAppInfo.values());
                         if (!shareAppInfoList.isEmpty()) {
                             ShareDialogFragment.newInstance(new ArrayList<>(shareAppInfoList))

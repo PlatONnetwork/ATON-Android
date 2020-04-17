@@ -56,7 +56,7 @@ class WalletServiceImpl implements WalletService {
                     .avatar(getWalletAvatar())
                     .build();
         } catch (Exception exp) {
-            exp.printStackTrace();
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
         }
         return null;
     }
@@ -78,7 +78,7 @@ class WalletServiceImpl implements WalletService {
             ECKeyPair ecKeyPair = ECKeyPair.create(child.getPrivKeyBytes());
             return generateWallet(ecKeyPair, name, password);
         } catch (Exception exp) {
-            exp.printStackTrace();
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
         }
         return null;
     }
@@ -94,6 +94,7 @@ class WalletServiceImpl implements WalletService {
             }
             return generateWallet(ecKeyPair, name, password);
         } catch (Exception exp) {
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
             return null;
         }
     }
@@ -110,7 +111,7 @@ class WalletServiceImpl implements WalletService {
             }
             return generateWallet(ecKeyPair, name, password);
         } catch (Exception exp) {
-            exp.printStackTrace();
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
             return null;
         }
     }
@@ -129,7 +130,7 @@ class WalletServiceImpl implements WalletService {
             }
             return wallet.getKey();
         } catch (Exception exp) {
-            exp.printStackTrace();
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
             return "";
         }
     }
@@ -143,7 +144,7 @@ class WalletServiceImpl implements WalletService {
             }
             return Numeric.toHexStringNoPrefix(ecKeyPair.getPrivateKey());
         } catch (Exception exp) {
-            exp.printStackTrace();
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
         }
         return "";
     }
@@ -165,7 +166,7 @@ class WalletServiceImpl implements WalletService {
             ECKeyPair ecKeyPair = ECKeyPair.create(child.getPrivKeyBytes());
             return Numeric.toHexStringNoPrefix(ecKeyPair.getPrivateKey());
         } catch (Exception exp) {
-            exp.printStackTrace();
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
         }
         return null;
     }

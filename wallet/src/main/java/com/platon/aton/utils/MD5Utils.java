@@ -1,5 +1,7 @@
 package com.platon.aton.utils;
 
+import com.facebook.stetho.common.LogUtil;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -38,7 +40,7 @@ public class MD5Utils {
                          // 16位的加密
                          //return buf.toString().substring(8, 24);
                      } catch (NoSuchAlgorithmException e) {
-                         e.printStackTrace();
+                         LogUtil.e(e.getMessage(),e.fillInStackTrace());
                          return null;
                      }
     }
@@ -48,7 +50,7 @@ public class MD5Utils {
             try {
                 md5 = MessageDigest.getInstance("md5");
             } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
+                LogUtil.e(e.getMessage(),e.fillInStackTrace());
                 return null;
             }
         }

@@ -16,6 +16,7 @@ import com.platon.framework.app.Constants;
 import com.platon.framework.network.ApiErrorCode;
 import com.platon.framework.network.ApiRequestBody;
 import com.platon.framework.network.ApiResponse;
+import com.platon.framework.utils.LogUtils;
 import com.platon.framework.utils.PreferenceTool;
 
 import org.greenrobot.eventbus.EventBus;
@@ -594,7 +595,7 @@ public class WalletManager {
         try {
             return JZWalletUtil.decrypt(walletEntity.getKey(), password) != null;
         } catch (Exception exp) {
-            exp.printStackTrace();
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
             return false;
         }
     }

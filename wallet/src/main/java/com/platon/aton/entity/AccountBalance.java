@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.platon.aton.utils.BigDecimalUtil;
 import com.platon.aton.utils.NumberParserUtils;
+import com.platon.framework.utils.LogUtils;
 
 public class AccountBalance implements Parcelable {
     /**
@@ -98,7 +99,7 @@ public class AccountBalance implements Parcelable {
             }
             return "0x" + addr;
         } catch (Exception exp) {
-            exp.printStackTrace();
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
             return "";
         }
     }
