@@ -3,7 +3,12 @@ package com.platon.aton.component.ui.view;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.view.KeyEvent;
@@ -11,6 +16,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowInsets;
 
+import com.platon.aton.BuildConfig;
 import com.platon.aton.R;
 import com.platon.aton.engine.NodeManager;
 import com.platon.aton.engine.WalletManager;
@@ -19,6 +25,7 @@ import com.platon.framework.app.Constants;
 import com.platon.framework.base.BaseActivity;
 import com.platon.framework.base.BasePresenter;
 import com.platon.framework.base.BaseViewImp;
+import com.platon.framework.utils.LogUtils;
 import com.platon.framework.utils.PreferenceTool;
 
 public class SplashActivity extends BaseActivity {
@@ -47,6 +54,7 @@ public class SplashActivity extends BaseActivity {
         return null;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public void init() {
         //适配刘海屏

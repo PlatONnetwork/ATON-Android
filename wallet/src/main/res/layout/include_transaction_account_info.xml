@@ -13,6 +13,7 @@
         android:textStyle="bold"
         android:visibility="gone"
         android:lines="1"
+        app:autoSizeMaxTextSize="24sp"
         app:autoSizeTextType="uniform"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

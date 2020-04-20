@@ -33,6 +33,7 @@
             android:drawableRight="@drawable/icon_open_eyes"
             android:drawablePadding="10dp"
             android:ellipsize="end"
+            app:autoSizeMaxTextSize="18sp"
             android:gravity="left|center_vertical"
             android:includeFontPadding="false"
             android:lines="1"
