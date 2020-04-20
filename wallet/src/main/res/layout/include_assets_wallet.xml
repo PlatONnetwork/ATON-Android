@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_assets_wallet"
     android:layout_width="match_parent"
-    android:layout_height="190dp"
+    android:layout_height="186dp"
     android:background="@drawable/bg_assets_wallet"
     android:paddingLeft="16dp"
     android:paddingTop="16dp"
@@ -67,8 +67,8 @@
         android:gravity="left"
         android:orientation="vertical"
         app:layout_constrainedWidth="true"
-        app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="7dp"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/tv_observed_wallet_tag"
         app:layout_constraintTop_toBottomOf="@id/layout_wallet_amount">
 
