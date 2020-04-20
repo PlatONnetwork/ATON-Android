@@ -44,7 +44,6 @@
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/tv_wallet_amount"
             style="@style/Text.fff.30"
-            android:ellipsize="end"
             android:layout_height="42dp"
             android:lines="1"
             app:autoSizeMaxTextSize="30sp"
@@ -62,12 +61,12 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
         android:layout_marginRight="10dp"
         android:ellipsize="end"
         android:gravity="left"
         android:orientation="vertical"
         app:layout_constrainedWidth="true"
-        android:layout_marginTop="7dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/tv_observed_wallet_tag"
         app:layout_constraintTop_toBottomOf="@id/layout_wallet_amount">
@@ -94,10 +93,14 @@
     <TextView
         android:id="@+id/tv_observed_wallet_tag"
         style="@style/Text.fff.14"
-        android:layout_width="95dp"
+        android:layout_width="wrap_content"
         android:layout_height="24dp"
         android:layout_marginTop="4dp"
         android:background="@drawable/shape_assets_observed_wallet"
+        android:maxWidth="127dp"
+        android:minWidth="95dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:text="@string/msg_observed_wallet"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layout_wallet_amount" />
