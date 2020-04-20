@@ -103,6 +103,7 @@
             android:gravity="left"
             android:lines="1"
             android:textStyle="bold"
+            app:autoSizeMaxTextSize="14sp"
             app:autoSizeTextType="uniform"
             app:layout_constrainedWidth="true"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -128,6 +129,7 @@
             android:gravity="left"
             android:lines="1"
             android:textStyle="bold"
+            app:autoSizeMaxTextSize="14sp"
             app:autoSizeTextType="uniform"
             app:layout_constrainedWidth="true"
             app:layout_constraintLeft_toLeftOf="@id/tv_undelegated"
@@ -162,6 +164,7 @@
                 android:id="@+id/tv_unclaimed_reward_amount"
                 style="@style/Text.000.14"
                 android:lines="1"
+                app:autoSizeMaxTextSize="14sp"
                 android:textStyle="bold"
                 app:autoSizeTextType="uniform"
                 tools:text="1,555.0331," />

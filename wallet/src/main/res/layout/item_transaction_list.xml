@@ -43,6 +43,7 @@
         android:gravity="right"
         android:lines="1"
         android:textStyle="bold"
+        app:autoSizeMaxTextSize="16sp"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/tv_transaction_time"

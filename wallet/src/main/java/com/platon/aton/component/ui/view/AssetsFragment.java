@@ -10,6 +10,7 @@ import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextPaint;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -102,7 +103,9 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
     @BindView(R.id.tv_wallet_amount)
     TextView tvWalletAmount;
     @BindView(R.id.tv_restricted_balance_amount)
-    AppCompatTextView tvRestrictedBalanceAmount;
+    TextView tvRestrictedBalanceAmount;
+    @BindView(R.id.tv_restricted_balance_text)
+    TextView tvRestrictedBalanceText;
     @BindView(R.id.tv_observed_wallet_tag)
     TextView tvObservedWalletTag;
     @BindView(R.id.rtv_receive_transaction)
@@ -526,6 +529,17 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
                                 null, null, string(R.string.msg_restricted_plan), string(R.string.restricted_amount_tips)).show(getChildFragmentManager(), "restrictedTips");
                     }
                 });
+        RxView.clicks(tvRestrictedBalanceText)
+                .compose(RxUtils.getClickTransformer())
+                .compose(bindToLifecycle())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        //弹出tips
+                        DelegateTipsDialog.createWithTitleAndContentDialog(null, null,
+                                null, null, string(R.string.msg_restricted_plan), string(R.string.restricted_amount_tips)).show(getChildFragmentManager(), "restrictedTips");
+                    }
+                });
 
         RxView.clicks(ivManageWallet)
                 .compose(RxUtils.getClickTransformer())
@@ -580,7 +594,7 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
      * @return
      */
     private int getWalletAmountMaxWidth() {
-        return CommonUtil.getScreenWidth(getActivity()) - DensityUtil.dp2px(getActivity(), 32) - tvWalletAmountUnit.getWidth();
+        return (int) (CommonUtil.getScreenWidth(getActivity()) - DensityUtil.dp2px(getActivity(), 34) - getTextViewLength(tvWalletAmountUnit,"LAT"));
     }
 
     private void showSelectedWalletInfo(Wallet selectedWallet) {
@@ -589,9 +603,8 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
         boolean visible = PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, true);
         tvWalletAmount.setText(visible ? StringUtil.formatBalance(AmountUtil.convertVonToLatWithFractionDigits(selectedWallet.getFreeBalance(), 8)) : "***");
         tvWalletAmountUnit.setVisibility(visible ? View.VISIBLE : View.GONE);
-        tvRestrictedBalanceAmount.setVisibility(BigDecimalUtil.isBiggerThanZero(selectedWallet.getLockBalance()) ? View.VISIBLE : View.GONE);
-        tvRestrictedBalanceAmount.setText(string(R.string.restricted_amount_with_unit, StringUtil.formatBalance(AmountUtil.convertVonToLatWithFractionDigits(selectedWallet.getLockBalance(), 8))));
-        tvObservedWalletTag.setVisibility(selectedWallet.isObservedWallet() || !NetConnectivity.getConnectivityManager().isConnected() ? View.VISIBLE : View.GONE);
+        showLockBalance(selectedWallet.getLockBalance());
+        tvObservedWalletTag.setVisibility(selectedWallet.isObservedWallet() || !NetConnectivity.getConnectivityManager().isConnected() ? View.VISIBLE : View.INVISIBLE);
         tvObservedWalletTag.setText(selectedWallet.isObservedWallet() ? string(R.string.msg_observed_wallet) : string(R.string.msg_cold_wallet));
         civWalletAvatar.setImageResource(RUtils.drawable(selectedWallet.getAvatar()));
 
@@ -702,8 +715,17 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
     @Override
     public void showLockBalance(String balance) { //当前选中钱包的锁仓金额
         boolean visible = PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, true);
+        String restrictedAmountText = visible ? string(R.string.restricted_amount_with_unit, StringUtil.formatBalance(AmountUtil.convertVonToLatWithFractionDigits(balance, 8))) : "***";
+        int restrictedBalanceMaxLength = DensityUtil.getScreenWidth(getContext()) - DensityUtil.dp2px(getContext(), 121);
+        float restrictedBalanceActualLength = getTextViewLength(tvRestrictedBalanceText, restrictedAmountText);
         tvRestrictedBalanceAmount.setVisibility(BigDecimalUtil.isBiggerThanZero(balance) ? View.VISIBLE : View.GONE);
-        tvRestrictedBalanceAmount.setText(visible ? string(R.string.restricted_amount_with_unit, StringUtil.formatBalance(AmountUtil.convertVonToLatWithFractionDigits(balance, 8))) : "***");
+        if (restrictedBalanceActualLength > restrictedBalanceMaxLength) {
+            tvRestrictedBalanceText.setText(string(R.string.restricted_balance_amount));
+            tvRestrictedBalanceAmount.setText(StringUtil.formatBalance(AmountUtil.convertVonToLatWithFractionDigits(balance, 8)));
+        } else {
+            tvRestrictedBalanceText.setText(restrictedAmountText);
+        }
+        tvRestrictedBalanceAmount.setVisibility(restrictedBalanceActualLength > restrictedBalanceMaxLength ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -725,8 +747,10 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
 
     }
 
-//    @Override
-//    public void initImmersionBar() {
-//        ImmersionBar.setStatusBarView(this, getStatusBarView());
-//    }
+    public static float getTextViewLength(TextView textView, String text) {
+        TextPaint paint = textView.getPaint();
+        // 得到使用该paint写上text的时候,像素为多少  
+        return paint.measureText(text);
+    }
+
 }

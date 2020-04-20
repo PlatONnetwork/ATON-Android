@@ -7,11 +7,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.jakewharton.rxbinding2.view.RxView;
 import com.platon.aton.R;
+import com.platon.aton.app.CustomObserver;
 import com.platon.aton.component.adapter.base.BaseViewHolder;
 import com.platon.aton.component.ui.view.TransactionRecordsActivity;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.Transaction;
+import com.platon.aton.utils.RxUtils;
+import com.platon.framework.base.ActivityManager;
+import com.platon.framework.base.BaseActivity;
 
 import java.util.List;
 
@@ -151,12 +156,16 @@ public class TransactionListAdapter extends RecyclerView.Adapter<BaseViewHolder>
         public TransactionFooterViewHolder(int viewId, ViewGroup parent) {
             super(viewId, parent);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    TransactionRecordsActivity.actionStart(mContext, WalletManager.getInstance().getSelectedWallet());
-                }
-            });
+            RxView
+                    .clicks(itemView)
+                    .compose(RxUtils.getClickTransformer())
+                    .subscribe(new CustomObserver<Object>() {
+
+                        @Override
+                        public void accept(Object o) {
+                            TransactionRecordsActivity.actionStart(mContext, WalletManager.getInstance().getSelectedWallet());
+                        }
+                    });
         }
     }
 

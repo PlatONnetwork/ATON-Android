@@ -111,6 +111,7 @@
         android:id="@+id/tv_balance_amount"
         style="@style/Text.000.13"
         android:layout_width="0dp"
+        app:autoSizeMaxTextSize="13sp"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="40dp"
         android:layout_marginRight="20dp"

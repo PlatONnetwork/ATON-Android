@@ -476,7 +476,8 @@
 
     <!--ATON0.7.0-->
     <string name="guide_tips">已有钱包？使用钱包文件、助记词、私钥导入</string>
-    <string name="restricted_amount_with_unit">(&#160;&#160;锁仓:&#160;%1$s&#160;LAT)</string>
+    <string name="restricted_amount_with_unit">锁仓:%1$sLAT</string>
+    <string name="restricted_balance_amount">锁仓:</string>
     <string name="restricted_amount_tips">锁仓的LAT支持委托</string>
 
     <string name="msg_hundred">百</string>
@@ -799,7 +800,7 @@
     <string name="msg_transaction_repeatedly_exception">请勿重复提交</string>
     <string name="msg_transaction_exception">交易异常，请重试（%1$d）</string>
     <string name="msg_expired_qr_code">二维码已失效</string>
-                <!-- 余额不足分场景：普通转账、委托转账、赎回、领取-->
+    <!-- 余额不足分场景：普通转账、委托转账、赎回、领取-->
     <string name="insufficient_balance_unable_to_delegate">余额不足，无法委托</string>
     <string name="msg_balance_not_enougth">余额不足</string>
 

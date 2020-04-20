@@ -82,6 +82,7 @@
         android:gravity="right"
         android:lines="1"
         android:textStyle="bold"
+        app:autoSizeMaxTextSize="17sp"
         app:autoSizeMinTextSize="2sp"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toTopOf="@+id/tv_yield_msg"

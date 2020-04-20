@@ -127,6 +127,7 @@
                         android:layout_marginTop="8dp"
                         android:gravity="center_vertical|left"
                         android:lines="1"
+                        app:autoSizeMaxTextSize="13sp"
                         app:autoSizeTextType="uniform"
                         tools:text="@string/msg_balance_with_unit" />
 
