@@ -12,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextPaint;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,7 +20,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.gyf.immersionbar.ImmersionBar;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.platon.aton.R;
 import com.platon.aton.app.CustomObserver;
@@ -37,6 +37,7 @@ import com.platon.aton.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.platon.aton.component.ui.dialog.TransactionSignatureDialogFragment;
 import com.platon.aton.component.ui.presenter.AssetsPresenter;
 import com.platon.aton.component.ui.presenter.TransactionsPresenter;
+import com.platon.aton.component.widget.AutofitTextView;
 import com.platon.aton.component.widget.CircleImageView;
 import com.platon.aton.component.widget.EmptyRecyclerView;
 import com.platon.aton.component.widget.RoundedTextView;
@@ -100,8 +101,6 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
     RecyclerView rvAssetsWalletList;
     @BindView(R.id.tv_wallet_name)
     TextView tvWalletName;
-    @BindView(R.id.tv_wallet_amount)
-    TextView tvWalletAmount;
     @BindView(R.id.tv_restricted_balance_amount)
     TextView tvRestrictedBalanceAmount;
     @BindView(R.id.tv_restricted_balance_text)
@@ -140,11 +139,15 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
     LinearLayout layoutAssetsTransactions;
     @BindView(R.id.civ_wallet_avatar)
     CircleImageView civWalletAvatar;
+    @BindView(R.id.layout_wallet_amount)
+    LinearLayout layoutWalletAmount;
 
     Unbinder unbinder;
 
+    AppCompatTextView tvWalletAmount;
     private AssetsWalletListAdapter mWalletListAdapter;
     private TransactionListAdapter mTransactionListAdapter;
+    private int observedWalletTagWidth = 0;
 
     @Override
     public int getLayoutId() {
@@ -199,7 +202,7 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
         tvWalletAmountUnit.post(new Runnable() {
             @Override
             public void run() {
-                tvWalletAmount.setMaxWidth(getWalletAmountMaxWidth());
+                observedWalletTagWidth = tvObservedWalletTag.getWidth();
             }
         });
 
@@ -594,10 +597,17 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
      * @return
      */
     private int getWalletAmountMaxWidth() {
-        return (int) (CommonUtil.getScreenWidth(getActivity()) - DensityUtil.dp2px(getActivity(), 34) - getTextViewLength(tvWalletAmountUnit,"LAT"));
+        return (int) (CommonUtil.getScreenWidth(getActivity()) - DensityUtil.dp2px(getActivity(), 34) - getTextViewLength(tvWalletAmountUnit, "LAT"));
     }
 
     private void showSelectedWalletInfo(Wallet selectedWallet) {
+
+        if (layoutWalletAmount.getChildCount() == 2) {
+            layoutWalletAmount.removeViewAt(0);
+            tvWalletAmount = (AppCompatTextView) getLayoutInflater().inflate(R.layout.view_wallet_amount_text, null);
+            layoutWalletAmount.addView(tvWalletAmount, 0);
+            tvWalletAmount.setMaxWidth(getWalletAmountMaxWidth());
+        }
 
         tvWalletName.setText(selectedWallet.getName());
         boolean visible = PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, true);
@@ -703,6 +713,12 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
     @Override
     public void showFreeBalance(String balance) {//当前钱包的资产
         boolean visible = PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, true);
+        if (layoutWalletAmount.getChildCount() == 2) {
+            layoutWalletAmount.removeViewAt(0);
+            tvWalletAmount = (AppCompatTextView) getLayoutInflater().inflate(R.layout.view_wallet_amount_text, null);
+            layoutWalletAmount.addView(tvWalletAmount, 0);
+            tvWalletAmount.setMaxWidth(getWalletAmountMaxWidth());
+        }
         tvWalletAmount.setText(visible ? StringUtil.formatBalance(AmountUtil.convertVonToLatWithFractionDigits(balance, 8)) : "***");
         tvWalletAmountUnit.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
@@ -716,7 +732,7 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
     public void showLockBalance(String balance) { //当前选中钱包的锁仓金额
         boolean visible = PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, true);
         String restrictedAmountText = visible ? string(R.string.restricted_amount_with_unit, StringUtil.formatBalance(AmountUtil.convertVonToLatWithFractionDigits(balance, 8))) : "***";
-        int restrictedBalanceMaxLength = DensityUtil.getScreenWidth(getContext()) - DensityUtil.dp2px(getContext(), 121);
+        int restrictedBalanceMaxLength = DensityUtil.getScreenWidth(getContext()) - DensityUtil.dp2px(getContext(), 26) - observedWalletTagWidth;
         float restrictedBalanceActualLength = getTextViewLength(tvRestrictedBalanceText, restrictedAmountText);
         tvRestrictedBalanceAmount.setVisibility(BigDecimalUtil.isBiggerThanZero(balance) ? View.VISIBLE : View.GONE);
         if (restrictedBalanceActualLength > restrictedBalanceMaxLength) {
