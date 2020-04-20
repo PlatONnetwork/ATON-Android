@@ -95,8 +95,7 @@ public class AssetsPresenter extends BasePresenter<AssetsContract.View> implemen
                             Wallet wallet = WalletManager.getInstance().getSelectedWallet();
                             if (wallet != null) {
                                 getView().showFreeBalance(wallet.getFreeBalance());
-//                                getView().showLockBalance(wallet.getLockBalance());
-                                getView().showLockBalance("1234567890939339938383282923939393939393929392");
+                                getView().showLockBalance(wallet.getLockBalance());
                             }
                             getView().finishRefresh();
                         }
