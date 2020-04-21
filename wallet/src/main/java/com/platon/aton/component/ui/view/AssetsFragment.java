@@ -12,7 +12,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextPaint;
 import android.text.TextUtils;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -37,7 +36,6 @@ import com.platon.aton.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.platon.aton.component.ui.dialog.TransactionSignatureDialogFragment;
 import com.platon.aton.component.ui.presenter.AssetsPresenter;
 import com.platon.aton.component.ui.presenter.TransactionsPresenter;
-import com.platon.aton.component.widget.AutofitTextView;
 import com.platon.aton.component.widget.CircleImageView;
 import com.platon.aton.component.widget.EmptyRecyclerView;
 import com.platon.aton.component.widget.RoundedTextView;
@@ -731,16 +729,17 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
     @Override
     public void showLockBalance(String balance) { //当前选中钱包的锁仓金额
         boolean visible = PreferenceTool.getBoolean(Constants.Preference.KEY_SHOW_ASSETS_FLAG, true);
-        String restrictedAmountText = visible ? string(R.string.restricted_amount_with_unit, StringUtil.formatBalance(AmountUtil.convertVonToLatWithFractionDigits(balance, 8))) : "***";
+        String restrictedAmountText = visible ? string(R.string.restricted_amount_without_unit, StringUtil.formatBalance(AmountUtil.convertVonToLatWithFractionDigits(balance, 8))) : "***";
         int restrictedBalanceMaxLength = DensityUtil.getScreenWidth(getContext()) - DensityUtil.dp2px(getContext(), 26) - observedWalletTagWidth;
         float restrictedBalanceActualLength = getTextViewLength(tvRestrictedBalanceText, restrictedAmountText);
-        tvRestrictedBalanceAmount.setVisibility(BigDecimalUtil.isBiggerThanZero(balance) ? View.VISIBLE : View.GONE);
         if (restrictedBalanceActualLength > restrictedBalanceMaxLength) {
             tvRestrictedBalanceText.setText(string(R.string.restricted_balance_amount));
             tvRestrictedBalanceAmount.setText(StringUtil.formatBalance(AmountUtil.convertVonToLatWithFractionDigits(balance, 8)));
         } else {
             tvRestrictedBalanceText.setText(restrictedAmountText);
         }
+        tvRestrictedBalanceText.setVisibility(BigDecimalUtil.isBiggerThanZero(balance) ? View.VISIBLE : View.GONE);
+        tvRestrictedBalanceAmount.setVisibility(BigDecimalUtil.isBiggerThanZero(balance) ? View.VISIBLE : View.GONE);
         tvRestrictedBalanceAmount.setVisibility(restrictedBalanceActualLength > restrictedBalanceMaxLength ? View.VISIBLE : View.GONE);
     }
 

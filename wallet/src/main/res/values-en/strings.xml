@@ -469,7 +469,7 @@
     <string name="claim_rewards">ClaimRewards</string>
     <!--Aton0.7.0 -->
     <string name="guide_tips">Have a wallet? Import using keystore, mnemonic phrase, private key.</string>
-    <string name="restricted_amount_with_unit">Restricted Balance：%1$sLAT</string>
+    <string name="restricted_amount_without_unit">Restricted Balance：%1$sLAT</string>
     <string name="restricted_balance_amount">Restricted Balance：</string>
     <string name="restricted_amount_tips">Non tradable LAT，but can be delegated</string>
 
