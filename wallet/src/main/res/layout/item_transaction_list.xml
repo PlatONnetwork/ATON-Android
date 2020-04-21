@@ -37,19 +37,19 @@
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tv_transaction_amount"
         style="@style/Text.000.16"
-        android:layout_width="0dp"
+        android:layout_width="160dp"
         android:layout_marginLeft="12dp"
-        android:autoSizeTextType="uniform"
+        android:ellipsize="end"
         android:gravity="right"
         android:lines="1"
         android:textStyle="bold"
         app:autoSizeMaxTextSize="16sp"
+        app:autoSizeMinTextSize="2sp"
+        app:autoSizeTextType="uniform"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/tv_transaction_time"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="-10.0010.0010.0010.0010.0010.0010.0010.0010.0010.0010.0010.0010.0010.0010.0010.0010.0010.00" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_transaction_status"
@@ -70,10 +70,10 @@
     <TextView
         android:id="@+id/tv_transaction_time"
         style="@style/Text.61646e.12"
+        android:layout_marginTop="4dp"
         android:ellipsize="middle"
         android:gravity="center_vertical|left"
         android:singleLine="true"
-        android:layout_marginTop="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="@id/tv_transaction_status"
         app:layout_constraintTop_toBottomOf="@id/tv_transaction_status"
