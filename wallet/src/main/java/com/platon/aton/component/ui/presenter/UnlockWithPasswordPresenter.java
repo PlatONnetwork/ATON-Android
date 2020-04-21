@@ -14,6 +14,11 @@ import com.platon.framework.base.BaseActivity;
 import com.platon.framework.base.BasePresenter;
 import com.platon.framework.utils.PreferenceTool;
 
+import java.util.List;
+
+import io.reactivex.Flowable;
+import io.reactivex.functions.Predicate;
+
 /**
  * @author matrixelement
  */
@@ -34,8 +39,19 @@ public class UnlockWithPasswordPresenter extends BasePresenter<UnlockWithPasswor
 
     @Override
     public void init() {
-        mWallet = WalletManager.getInstance().getWalletList().get(0);
-        setSelectWallet(mWallet);
+
+        List<Wallet> walletList = WalletManager.getInstance().getWalletList();
+
+        if (walletList == null || walletList.isEmpty()) {
+            return;
+        }
+
+        mWallet = getFirstWalletExceptObserverWallet(walletList);
+
+        if (!mWallet.isNull()) {
+            setSelectWallet(mWallet);
+        }
+
     }
 
 
@@ -53,6 +69,20 @@ public class UnlockWithPasswordPresenter extends BasePresenter<UnlockWithPasswor
                 }
             }
         }.start();
+    }
+
+    private Wallet getFirstWalletExceptObserverWallet(List<Wallet> walletList) {
+        return Flowable.fromIterable(walletList)
+                .filter(new Predicate<Wallet>() {
+                    @Override
+                    public boolean test(Wallet wallet) throws Exception {
+                        return !wallet.isObservedWallet();
+                    }
+                })
+                .firstElement()
+                .defaultIfEmpty(Wallet.getNullInstance())
+                .onErrorReturnItem(Wallet.getNullInstance())
+                .blockingGet();
     }
 
     private static final int MSG_PASSWORD_FAILED = -1;
