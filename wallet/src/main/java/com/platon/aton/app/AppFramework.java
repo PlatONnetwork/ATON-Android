@@ -310,6 +310,31 @@ public class AppFramework {
 
                 oldVersion++;
 
+            }else if(oldVersion == 112){
+
+                schema.get("NodeEntity")
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.getDynamicRealm().where("NodeEntity").findAll().deleteAllFromRealm();
+                            }
+                        });
+
+                //链id 101--->102
+                schema.get("WalletEntity")
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.getDynamicRealm()
+                                        .where("WalletEntity")
+                                        .equalTo("chainId", "101")
+                                        .findAll()
+                                        .setString("chainId", BuildConfig.ID_TEST_CHAIN);
+                            }
+                        });
+
+                oldVersion++;
+
             } else {
                 //增加一个字段
                 schema.get("TransactionEntity")
