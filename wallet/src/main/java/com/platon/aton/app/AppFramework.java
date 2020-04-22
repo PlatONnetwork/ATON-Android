@@ -329,7 +329,7 @@ public class AppFramework {
                                         .where("WalletEntity")
                                         .equalTo("chainId", "101")
                                         .findAll()
-                                        .setString("chainId", BuildConfig.ID_TEST_CHAIN);
+                                        .setString("chainId", BuildConfig.ID_MAIN_CHAIN);
                             }
                         });
 
