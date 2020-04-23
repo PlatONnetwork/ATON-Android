@@ -53,20 +53,24 @@ public class AppFramework {
     public void initAppFramework(Context context) {
 
         mContext = context;
+        try{
+            EventPublisher.getInstance().register(this);
+            //注册网络状态变化
+            NetConnectivity.getConnectivityManager().registerNetworkStateChange(new NetStateBroadcastReceiver());
+            //初始化realm
+            initRealm(context);
+            //初始化节点配置
+            NodeManager.getInstance().init();
+            //初始化DeviceManager
+            DeviceManager.getInstance().init(context, WalleChannelReader.getChannel(context));
+            //初始化RUtils
+            RUtils.init(context);
+            //初始化Directroy
+            DirectroyController.getInstance().init(context);
+        }catch (Exception e){
+           e.printStackTrace();
+        }
 
-        EventPublisher.getInstance().register(this);
-        //注册网络状态变化
-        NetConnectivity.getConnectivityManager().registerNetworkStateChange(new NetStateBroadcastReceiver());
-        //初始化realm
-        initRealm(context);
-        //初始化节点配置
-        NodeManager.getInstance().init();
-        //初始化DeviceManager
-        DeviceManager.getInstance().init(context, WalleChannelReader.getChannel(context));
-        //初始化RUtils
-        RUtils.init(context);
-        //初始化Directroy
-        DirectroyController.getInstance().init(context);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -93,12 +97,15 @@ public class AppFramework {
     }
 
     static class ATONRealmMigration implements RealmMigration {
-
         @Override
         public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
 
-            RealmSchema schema = realm.getSchema();
+            //只有测试网络钱包迁移
+            if(!BuildConfig.RELEASE_TYPE.equals("server.typeX")) {//测试网络(贝莱世界)
+               return;
+            }
 
+            RealmSchema schema = realm.getSchema();
             if (oldVersion == 106) {
                 //0.6.2.0-->0.7.5.0
                 schema.get("NodeEntity")
@@ -310,6 +317,13 @@ public class AppFramework {
 
                 oldVersion++;
 
+            }else if(oldVersion == 111){
+
+                //增加一个字段
+                schema.get("TransactionEntity")
+                        .addField("remark", String.class);
+
+                oldVersion++;
             }else if(oldVersion == 112){
 
                 schema.get("NodeEntity")
@@ -332,14 +346,6 @@ public class AppFramework {
                                         .setString("chainId", BuildConfig.ID_MAIN_CHAIN);
                             }
                         });
-
-                oldVersion++;
-
-            } else {
-                //增加一个字段
-                schema.get("TransactionEntity")
-                        .addField("remark", String.class);
-
                 oldVersion++;
             }
 

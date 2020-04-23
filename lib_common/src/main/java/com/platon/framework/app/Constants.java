@@ -184,6 +184,7 @@ public class Constants {
         //数据库名称
         String PORTAL = "portal";
         //2020/4/10 0.11.1
+       // int VERSION = 112;
         int VERSION = 113;
     }
 
