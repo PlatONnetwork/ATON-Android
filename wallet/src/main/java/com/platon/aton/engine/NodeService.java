@@ -3,6 +3,7 @@ package com.platon.aton.engine;
 import com.platon.aton.db.entity.NodeEntity;
 import com.platon.aton.db.sqlite.NodeDao;
 import com.platon.aton.entity.Node;
+import com.platon.framework.utils.LogUtils;
 
 import org.reactivestreams.Publisher;
 
@@ -67,6 +68,7 @@ public class NodeService implements INodeService {
                 .map(new Function<List<NodeEntity>, Boolean>() {
                     @Override
                     public Boolean apply(List<NodeEntity> nodeInfoEntityList) throws Exception {
+                        LogUtils.d("------------insert node Realm success" + nodeInfoEntityList.toString());
                         return NodeDao.insertNodeList(nodeInfoEntityList);
                     }
                 }).subscribeOn(Schedulers.io());
