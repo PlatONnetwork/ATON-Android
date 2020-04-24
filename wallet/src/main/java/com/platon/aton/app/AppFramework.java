@@ -15,6 +15,7 @@ import com.platon.aton.event.EventPublisher;
 import com.platon.framework.app.Constants;
 import com.platon.framework.network.NetConnectivity;
 import com.platon.framework.network.NetState;
+import com.platon.framework.utils.LogUtils;
 import com.platon.framework.utils.RUtils;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -101,6 +102,7 @@ public class AppFramework {
         public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
 
             //只有测试网络钱包迁移
+            LogUtils.d("------------BuildConfig.RELEASE_TYPE:" + BuildConfig.RELEASE_TYPE);
             if(!BuildConfig.RELEASE_TYPE.equals("server.typeX")) {//测试网络(贝莱世界)
                return;
             }
@@ -319,18 +321,12 @@ public class AppFramework {
 
             }else if(oldVersion == 111){
 
-                //增加一个字段
-                schema.get("TransactionEntity")
-                        .addField("remark", String.class);
-
-                oldVersion++;
-            }else if(oldVersion == 112){
-
                 schema.get("NodeEntity")
                         .transform(new RealmObjectSchema.Function() {
                             @Override
                             public void apply(DynamicRealmObject obj) {
                                 obj.getDynamicRealm().where("NodeEntity").findAll().deleteAllFromRealm();
+                                LogUtils.d("------------clear NodeEntity Realm success");
                             }
                         });
 
@@ -344,8 +340,16 @@ public class AppFramework {
                                         .equalTo("chainId", "101")
                                         .findAll()
                                         .setString("chainId", BuildConfig.ID_MAIN_CHAIN);
+
+                                LogUtils.d("------------update chainId Realm success");
                             }
                         });
+                oldVersion++;
+            }else{
+                //增加一个字段
+                schema.get("TransactionEntity")
+                        .addField("remark", String.class);
+
                 oldVersion++;
             }
 

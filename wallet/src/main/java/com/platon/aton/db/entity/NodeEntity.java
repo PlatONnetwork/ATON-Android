@@ -118,4 +118,16 @@ public class NodeEntity extends RealmObject {
     public void setChainId(String chainId) {
         this.chainId = chainId;
     }
+
+    @Override
+    public String toString() {
+        return "NodeEntity{" +
+                "id=" + id +
+                ", nodeAddress='" + nodeAddress + '\'' +
+                ", isDefaultNode=" + isDefaultNode +
+                ", isMainNetworkNode=" + isMainNetworkNode +
+                ", isChecked=" + isChecked +
+                ", chainId='" + chainId + '\'' +
+                '}';
+    }
 }
