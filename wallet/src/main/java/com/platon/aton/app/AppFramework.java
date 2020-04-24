@@ -54,7 +54,7 @@ public class AppFramework {
     public void initAppFramework(Context context) {
 
         mContext = context;
-        try{
+        try {
             EventPublisher.getInstance().register(this);
             //注册网络状态变化
             NetConnectivity.getConnectivityManager().registerNetworkStateChange(new NetStateBroadcastReceiver());
@@ -68,8 +68,8 @@ public class AppFramework {
             RUtils.init(context);
             //初始化Directroy
             DirectroyController.getInstance().init(context);
-        }catch (Exception e){
-           e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
@@ -103,8 +103,8 @@ public class AppFramework {
 
             //只有测试网络钱包迁移
             LogUtils.d("------------BuildConfig.RELEASE_TYPE:" + BuildConfig.RELEASE_TYPE);
-            if(!BuildConfig.RELEASE_TYPE.equals("server.typeX")) {//测试网络(贝莱世界)
-               return;
+            if (!BuildConfig.RELEASE_TYPE.equals("server.typeX")) {//测试网络(贝莱世界)
+                return;
             }
 
             RealmSchema schema = realm.getSchema();
@@ -229,7 +229,8 @@ public class AppFramework {
                         .addField("nodeId", String.class)
                         .addField("nodeName", String.class)
                         .addField("totalReward", String.class)
-                        .addField("unDelegation", String.class);
+                        .addField("unDelegation", String.class)
+                        .addField("remark", String.class);
 
                 oldVersion++;
 
@@ -273,7 +274,8 @@ public class AppFramework {
                         .addField("nodeId", String.class)
                         .addField("nodeName", String.class)
                         .addField("totalReward", String.class)
-                        .addField("unDelegation", String.class);
+                        .addField("unDelegation", String.class)
+                        .addField("remark", String.class);
 
                 oldVersion++;
             } else if (oldVersion == 109) {
@@ -305,7 +307,8 @@ public class AppFramework {
                         .addField("nodeId", String.class)
                         .addField("nodeName", String.class)
                         .addField("totalReward", String.class)
-                        .addField("unDelegation", String.class);
+                        .addField("unDelegation", String.class)
+                        .addField("remark", String.class);
 
                 oldVersion++;
             } else if (oldVersion == 110) {
@@ -315,11 +318,15 @@ public class AppFramework {
                         .addField("nodeId", String.class)
                         .addField("nodeName", String.class)
                         .addField("totalReward", String.class)
-                        .addField("unDelegation", String.class);
+                        .addField("unDelegation", String.class)
+                        .addField("remark", String.class);
 
                 oldVersion++;
 
-            }else if(oldVersion == 111){
+            } else if (oldVersion == 111) {
+
+                schema.get("TransactionEntity")
+                        .addField("remark", String.class);
 
                 schema.get("NodeEntity")
                         .transform(new RealmObjectSchema.Function() {
@@ -344,12 +351,6 @@ public class AppFramework {
                                 LogUtils.d("------------update chainId Realm success");
                             }
                         });
-                oldVersion++;
-            }else{
-                //增加一个字段
-                schema.get("TransactionEntity")
-                        .addField("remark", String.class);
-
                 oldVersion++;
             }
 
