@@ -229,7 +229,8 @@ public class AppFramework {
                         .addField("nodeId", String.class)
                         .addField("nodeName", String.class)
                         .addField("totalReward", String.class)
-                        .addField("unDelegation", String.class);
+                        .addField("unDelegation", String.class)
+                        .addField("remark", String.class);
 
                 oldVersion++;
 
@@ -273,7 +274,8 @@ public class AppFramework {
                         .addField("nodeId", String.class)
                         .addField("nodeName", String.class)
                         .addField("totalReward", String.class)
-                        .addField("unDelegation", String.class);
+                        .addField("unDelegation", String.class)
+                        .addField("remark", String.class);
 
                 oldVersion++;
             } else if (oldVersion == 109) {
@@ -305,7 +307,8 @@ public class AppFramework {
                         .addField("nodeId", String.class)
                         .addField("nodeName", String.class)
                         .addField("totalReward", String.class)
-                        .addField("unDelegation", String.class);
+                        .addField("unDelegation", String.class)
+                        .addField("remark", String.class);
 
                 oldVersion++;
             } else if (oldVersion == 110) {
@@ -315,7 +318,8 @@ public class AppFramework {
                         .addField("nodeId", String.class)
                         .addField("nodeName", String.class)
                         .addField("totalReward", String.class)
-                        .addField("unDelegation", String.class);
+                        .addField("unDelegation", String.class)
+                        .addField("remark", String.class);
 
                 oldVersion++;
 
@@ -344,12 +348,6 @@ public class AppFramework {
                                 LogUtils.d("------------update chainId Realm success");
                             }
                         });
-                oldVersion++;
-            }else{
-                //增加一个字段
-                schema.get("TransactionEntity")
-                        .addField("remark", String.class);
-
                 oldVersion++;
             }
 
