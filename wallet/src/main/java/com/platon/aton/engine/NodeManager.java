@@ -179,7 +179,7 @@ public class NodeManager {
                     .isChecked(true)
                     .chainId(BuildConfig.ID_MAIN_CHAIN)
                     .build());
-        } else if (BuildConfig.RELEASE_TYPE.equals("server.typeOC")) {//内部测试网络
+        } else if (BuildConfig.RELEASE_TYPE.equals("server.typeOC")) {//公网测试网络
             nodeInfoEntityList.add(new Node.Builder()
                     .id(UUID.randomUUID().hashCode())
                     .nodeAddress(BuildConfig.URL_TEST_OUTER_SERVER)
