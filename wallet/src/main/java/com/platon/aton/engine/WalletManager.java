@@ -197,8 +197,9 @@ public class WalletManager {
             return;
         }
 
-        Wallet wallet = mWalletList.get(position);
-        wallet.setAccountBalance(accountBalance);
+        mWalletList.get(position).setAccountBalance(accountBalance);
+        /*  Wallet wallet = mWalletList.get(position);
+            wallet.setAccountBalance(accountBalance);*/
     }
 
     public void update() {

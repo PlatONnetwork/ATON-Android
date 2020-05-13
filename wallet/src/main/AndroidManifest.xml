@@ -33,7 +33,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
-        tools:replace="android:roundIcon">
+        tools:replace="android:roundIcon"
+        android:largeHeap="true">
 
         <activity
             android:name="com.platon.aton.component.ui.view.SplashActivity"
@@ -266,6 +267,8 @@
         <meta-data
             android:name="notch.config"
             android:value="portrait|landscape" />
+
+
     </application>
 
 </manifest>
