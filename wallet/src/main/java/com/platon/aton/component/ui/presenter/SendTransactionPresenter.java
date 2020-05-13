@@ -130,6 +130,8 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     //刷新时间
     private Wallet walletEntity;
     private String toAddress;
+    //钱包余额
+    private String balance = "";
 
     @Override
     public void init() {
@@ -171,7 +173,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                     public void onApiSuccess(List<AccountBalance> accountBalances) {
                         if (isViewAttached() && accountBalances != null && !accountBalances.isEmpty()) {
                             //String balance = accountBalances.get(0).getShowFreeBalace();
-                            String balance = accountBalances.get(0).getFree();
+                            balance = accountBalances.get(0).getFree();
                             String balanceNew = AmountUtil.getPrettyBalance(balance, 8);
                             getView().updateWalletBalance(balanceNew);
                         }
@@ -814,10 +816,12 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
         gasPrice = minGasPrice.add(BigDecimalUtil.mul(getDGasPrice().toString(10), String.valueOf(progress)).toBigInteger());
     }
 
+
     private boolean isBalanceEnough(String transferAmount) {
         double usedAmount = BigDecimalUtil.add(transferAmount, feeAmount).doubleValue();
-        if (walletEntity != null) {
-            return BigDecimalUtil.isNotSmaller(walletEntity.getFreeBalance(), BigDecimalUtil.mul(String.valueOf(usedAmount), DEFAULT_EXCHANGE_RATE.toString(10)).toPlainString());
+        if (!"".equals(balance) && balance != null) {
+           // walletEntity.getFreeBalance()
+            return BigDecimalUtil.isNotSmaller(balance, BigDecimalUtil.mul(String.valueOf(usedAmount), DEFAULT_EXCHANGE_RATE.toString(10)).toPlainString());
         }
         return false;
     }

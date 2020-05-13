@@ -19,6 +19,7 @@ import com.platon.aton.component.widget.CustomUnderlineEditText;
 import com.platon.aton.component.widget.ShadowButton;
 import com.platon.aton.component.widget.ShadowDrawable;
 import com.platon.aton.entity.Wallet;
+import com.platon.aton.utils.CommonUtil;
 import com.platon.aton.utils.DensityUtil;
 import com.platon.aton.utils.JZWalletUtil;
 import com.platon.aton.utils.RxUtils;
@@ -148,6 +149,8 @@ public class InputWalletPasswordDialogFragment extends BaseDialogFragment {
                         Single.fromCallable(new Callable<Credentials>() {
                             @Override
                             public Credentials call() throws Exception {
+
+                                CommonUtil.getMaxMemoryInfo(context);
                                 return JZWalletUtil.getCredentials(getPassword(), wallet.getKey());
                             }
                         })
@@ -157,6 +160,9 @@ public class InputWalletPasswordDialogFragment extends BaseDialogFragment {
                                 .subscribe(new Consumer<Credentials>() {
                                     @Override
                                     public void accept(Credentials credentials) throws Exception {
+
+                                        CommonUtil.getMaxMemoryInfo(context);
+
                                         if (credentials != null) {
                                             if (mListener != null) {
                                                 dismiss();
