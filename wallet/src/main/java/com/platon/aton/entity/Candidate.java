@@ -5,7 +5,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import com.platon.aton.utils.LanguageUtil;
+import com.platon.framework.utils.LanguageUtil;
+
 import java.util.Locale;
 
 /**
@@ -259,7 +260,7 @@ public class Candidate implements Parcelable {
         if (countryEntity == null) {
             return null;
         }
-        if (Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale(context).getLanguage())) {
+        if (Locale.CHINESE.getLanguage().equals(LanguageUtil.getLocale().getLanguage())) {
             return countryEntity.getZhName();
         } else {
             return countryEntity.getEnName();

@@ -5,11 +5,12 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
+import com.platon.aton.app.CustomObserver;
 import com.platon.aton.component.widget.ShadowButton;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.ClaimRewardInfo;
@@ -18,6 +19,7 @@ import com.platon.aton.utils.BigDecimalUtil;
 import com.platon.aton.utils.CommonTextUtils;
 import com.platon.aton.utils.DensityUtil;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.app.Constants;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,6 +41,8 @@ public class ClaimRewardsDialogFragment extends BaseDialogFragment {
     TextView tvBalanceAmount;
     @BindView(R.id.sbtn_confirm)
     ShadowButton sbtnConfirm;
+    @BindView(R.id.iv_close)
+    ImageView ivClose;
 
     private Unbinder unbinder;
     private OnConfirmBtnClickListener mConfirmBtnClickListener;
@@ -62,8 +66,6 @@ public class ClaimRewardsDialogFragment extends BaseDialogFragment {
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_fragment_claim_rewards, null, false);
         baseDialog.setContentView(contentView);
         setFullWidthEnable(true);
-        setHorizontalMargin(DensityUtil.dp2px(getContext(), 14f));
-        setyOffset(DensityUtil.dp2px(getContext(), 4f));
         setAnimation(R.style.Animation_slide_in_bottom);
         unbinder = ButterKnife.bind(this, contentView);
         initViews();
@@ -97,6 +99,16 @@ public class ClaimRewardsDialogFragment extends BaseDialogFragment {
                     }
                 })
         ;
+
+        RxView.clicks(ivClose)
+                .compose(RxUtils.getClickTransformer())
+                .compose(bindToLifecycle())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        dismiss();
+                    }
+                });
 
     }
 

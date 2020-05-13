@@ -16,7 +16,6 @@ android {
         versionCode Integer.parseInt(version_code)
         buildConfigField("int", "INNER_VERSION_NAME", "${inner_version_name}")
         buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
-        buildConfigField("String", "UM_APPKEY", "${UM_APPKEY}")
         buildConfigField("String", "URL_PLATON_NETWORK", "${URL_PLATON_NETWORK}")
         buildConfigField("String", "URL_MAIN_SERVER", "${URL_MAIN_SERVER}")
         buildConfigField("String", "URL_TEST_MAIN_SERVER", "${URL_TEST_MAIN_SERVER}")
@@ -27,11 +26,7 @@ android {
         buildConfigField("String", "ID_MAIN_CHAIN", "${ID_MAIN_CHAIN}")
         buildConfigField("String", "ID_TEST_CHAIN", "${ID_TEST_CHAIN}")
         buildConfigField("String", "ID_DEVELOP_CHAIN", "${ID_DEVELOP_CHAIN}")
-        buildConfigField("String", "SINA_APPKEY", "${SINA_APPKEY}")
-        buildConfigField("String", "SINA_APP_SECRET", "${SINA_APP_SECRET}")
-        buildConfigField("String", "SINA_APP_REDIRECT_URL", "${SINA_APP_REDIRECT_URL}")
-        buildConfigField "String", "CHANNEL", '"PlatONNetwork"'
-        buildConfigField("int","QRCODE_VERSION_CODE","${qrcode_version_code}")
+        buildConfigField("int", "QRCODE_VERSION_CODE", "${qrcode_version_code}")
         renderscriptTargetApi 19
         renderscriptSupportModeEnabled true
         resConfigs "zh", "en"
@@ -93,14 +88,14 @@ android {
     buildTypes {
         debug {
             debuggable true
-            signingConfig signingConfigs.releaseC
+            signingConfig signingConfigs.debug
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
             multiDexEnabled true
             testCoverageEnabled true  //打开覆盖率统计开关
 
             ndk {
-                abiFilters 'armeabi-v7a','x86'
+                abiFilters 'armeabi-v7a', 'x86'
             }
         }
 
@@ -189,7 +184,7 @@ android {
                 buildConfigField "String", "CHANNEL", '"PlatONNetwork"'
 
                 ndk {
-                    abiFilters 'armeabi-v7a', 'arm64-v8a','armeabi'
+                    abiFilters 'armeabi-v7a', 'arm64-v8a', 'armeabi'
                 }
             }
 
@@ -197,7 +192,7 @@ android {
                 buildConfigField "String", "CHANNEL", '"GooglePlay"'
 
                 ndk {
-                    abiFilters 'armeabi-v7a', 'arm64-v8a','armeabi'
+                    abiFilters 'armeabi-v7a', 'arm64-v8a', 'armeabi'
                 }
             }
 
@@ -252,52 +247,9 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':zxing')
     implementation project(':biometric')
-    implementation project(':framework')
-    implementation rootProject.ext.dependencies["support-gridlayout"]
-    implementation rootProject.ext.dependencies["support-design"]
-    implementation rootProject.ext.dependencies["support-annotations"]
-    implementation rootProject.ext.dependencies["support-recyclerview-v7"]
-    implementation rootProject.ext.dependencies["support-zxing"]
-    implementation rootProject.ext.dependencies["support-constraint-layout"]
-    implementation rootProject.ext.dependencies["support-multidex"]
-    implementation rootProject.ext.dependencies["web3j-core"]
-    implementation rootProject.ext.dependencies["web3j-crypto"]
-    implementation rootProject.ext.dependencies["bitcoinj-core"]
-    implementation rootProject.ext.dependencies["eventbus"]
-    implementation rootProject.ext.dependencies["rxlifecycle"]
-    implementation rootProject.ext.dependencies["rxlifecycle-android"]
-    implementation(rootProject.ext.dependencies["rxbinding"]) {
-        exclude group: 'com.android.support'
-    }
-    api(rootProject.ext.dependencies["rxbinding-appcompat-v7"]) {
-        exclude group: 'com.android.support'
-    }
-    api(rootProject.ext.dependencies["rxbinding-recyclerview-v7"]) {
-        exclude group: 'com.android.support'
-    }
-    implementation rootProject.ext.dependencies["rxpermissions"]
+    implementation project(':lib_common')
     implementation rootProject.ext.dependencies["butterknife"]
     annotationProcessor rootProject.ext.dependencies["butterknife-compiler"]
-    implementation rootProject.ext.dependencies["support-zxing"]
-    implementation rootProject.ext.dependencies["flexbox"]
-    implementation rootProject.ext.dependencies["tinypinyin"]
-    implementation rootProject.ext.dependencies["immersionbar"]
-    implementation rootProject.ext.dependencies["smarttablayout"]
-    implementation rootProject.ext.dependencies["umeng_common"]
-    implementation rootProject.ext.dependencies["umeng_analytics"]
-    implementation rootProject.ext.dependencies["SmartRefreshLayout"]
-    implementation rootProject.ext.dependencies["SmartRefreshHeader"]
-    //引入glide
-    implementation rootProject.ext.dependencies["glide"]
-    annotationProcessor rootProject.ext.dependencies["glide"]
-    implementation rootProject.ext.dependencies["webview-agentweb"]
-    implementation rootProject.ext.dependencies["rxandroid1"]
-    //单元测试用到的库
-    //junit
-    implementation rootProject.ext.dependencies["junit"]
-    implementation rootProject.ext.dependencies["twitter-core"]
-    implementation rootProject.ext.dependencies["twitter-composer"]
-    implementation rootProject.ext.dependencies["walle"]
     //mockito
     testImplementation 'org.mockito:mockito-core:2.19.0'
     //powermock
@@ -310,8 +262,6 @@ dependencies {
     testImplementation 'org.robolectric:shadows-multidex:3.8'
     //    testImplementation 'org.robolectric:robolectric:3.8-SNAPSHOT'
     testImplementation 'org.robolectric:shadows-support-v4:3.0'
-    //    testImplementation group: 'org.robolectric',name:'android-all',version:'8.1.0-robolectric-4611349'
-    //    testImplementation 'com.squareup.okhttp3:mockwebserver:3.9.1'
 }
 
 

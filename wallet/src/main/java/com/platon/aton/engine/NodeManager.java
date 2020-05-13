@@ -3,10 +3,11 @@ package com.platon.aton.engine;
 import android.text.TextUtils;
 
 import com.platon.aton.BuildConfig;
-import com.platon.aton.config.AppSettings;
 import com.platon.aton.entity.Node;
 import com.platon.aton.event.EventPublisher;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.app.Constants;
+import com.platon.framework.utils.PreferenceTool;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +46,7 @@ public class NodeManager {
     }
 
     public String getCurNodeAddress() {
-        return curNode == null || TextUtils.isEmpty(curNode.getNodeAddress()) ? AppSettings.getInstance().getCurrentNodeAddress() : curNode.getNodeAddress();
+        return curNode == null || TextUtils.isEmpty(curNode.getNodeAddress()) ? PreferenceTool.getString(Constants.Preference.KEY_CURRENT_NODE_ADDRESS) : curNode.getNodeAddress();
     }
 
     public void setCurNode(Node curNode) {
@@ -125,7 +126,7 @@ public class NodeManager {
 
     public void switchNode(Node nodeEntity) {
         setCurNode(nodeEntity);
-        AppSettings.getInstance().setCurrentNodeAddress(nodeEntity.getNodeAddress());
+        PreferenceTool.putString(Constants.Preference.KEY_CURRENT_NODE_ADDRESS, nodeEntity.getNodeAddress());
         Web3jManager.getInstance().init(nodeEntity.getRPCUrl());
     }
 
@@ -154,7 +155,7 @@ public class NodeManager {
 
         List<Node> nodeInfoEntityList = new ArrayList<>();
 
-        if (BuildConfig.RELEASE_TYPE.equals("server.typeC")) {
+        if (BuildConfig.RELEASE_TYPE.equals("server.typeC")) {//内部测试网络 + 开发网络
             nodeInfoEntityList.add(new Node.Builder()
                     .id(UUID.randomUUID().hashCode())
                     .nodeAddress(BuildConfig.URL_TEST_OUTER_SERVER)
@@ -170,7 +171,7 @@ public class NodeManager {
                     .isChecked(false)
                     .chainId(BuildConfig.ID_DEVELOP_CHAIN)
                     .build());
-        } else if (BuildConfig.RELEASE_TYPE.equals("server.typeX")) {
+        } else if (BuildConfig.RELEASE_TYPE.equals("server.typeX")) {//测试网络(贝莱世界)
             nodeInfoEntityList.add(new Node.Builder()
                     .id(UUID.randomUUID().hashCode())
                     .nodeAddress(BuildConfig.URL_MAIN_SERVER)
@@ -178,7 +179,7 @@ public class NodeManager {
                     .isChecked(true)
                     .chainId(BuildConfig.ID_MAIN_CHAIN)
                     .build());
-        } else if (BuildConfig.RELEASE_TYPE.equals("server.typeOC")) {
+        } else if (BuildConfig.RELEASE_TYPE.equals("server.typeOC")) {//公网测试网络
             nodeInfoEntityList.add(new Node.Builder()
                     .id(UUID.randomUUID().hashCode())
                     .nodeAddress(BuildConfig.URL_TEST_OUTER_SERVER)
@@ -186,7 +187,7 @@ public class NodeManager {
                     .isChecked(true)
                     .chainId(BuildConfig.ID_TEST_CHAIN)
                     .build());
-        } else if (BuildConfig.RELEASE_TYPE.equals("server.typeTX")) {
+        } else if (BuildConfig.RELEASE_TYPE.equals("server.typeTX")) {//平行网
             nodeInfoEntityList.add(new Node.Builder()
                     .id(UUID.randomUUID().hashCode())
                     .nodeAddress(BuildConfig.URL_TEST_MAIN_SERVER)

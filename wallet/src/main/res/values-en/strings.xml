@@ -116,12 +116,12 @@
     <string name="me_transactions">Transactions</string>
     <string name="sendATP">Send</string>
     <string name="actionSendATP">NEXT</string>
-    <string name="action_send_transation">Send</string>
-    <string name="action_receive_transation">Receive</string>
+    <string name="msg_send_transaction">Send</string>
+    <string name="action_receive_transaction">Receive</string>
     <string name="vote">Vote</string>
     <string name="voting">Voting</string>
     <string name="wallet_address">Wallet Address</string>
-    <string name="amount">Amount</string>
+    <string name="amount">Send Amount</string>
     <string name="delegate_amount">Amount</string>
     <string name="withdraw_amount">Amount</string>
     <string name="submissionAmount">Amount</string>
@@ -168,7 +168,7 @@
     <string name="exportPrivateKey">Export Private Key</string>
     <string name="exportKeystore">Export Keystore</string>
     <string name="backupMnemonics">Mnemonics backup</string>
-    <string name="backup">Backup</string>
+    <string name="msg_backup_wallet">Backup</string>
     <string name="changeWalletName">Rename</string>
     <string name="formatError">Format Error</string>
     <string name="validWalletNameTips">Please enter 1-20 characters</string>
@@ -268,7 +268,7 @@
     <string name="no_transaction_record">No transaction yet</string>
     <string name="figerprintUnlockTips">Fingerprint Verification can not be activated, Please Login with Password</string>
     <string name="openFigerprintError">Fingerprint was disallowed,please check system settings and try again</string>
-    <string name="total_assets">Total LAT</string>
+    <string name="msg_total_assets">Total LAT</string>
     <string name="transfer_succeed">Transfer succeed</string>
     <string name="transfer_failed">Transfer failed</string>
     <string name="input_again">Input again</string>
@@ -307,8 +307,8 @@
     <string name="none">None</string>
     <string name="noWalletTips">Create Classic Wallet first</string>
     <string name="insufficientBalanceTips">Insufficient wallet balance, can\'t create</string>
-    <string name="inputWalletAddress">Input wallet address</string>
-    <string name="inputSendAmount">Input Amount</string>
+    <string name="inputWalletAddress">Enter receive address</string>
+    <string name="inputSendAmount">0.00</string>
     <string name="inputMome">Memo(Non - compulsory)</string>
     <string name="duplicateAddress">Duplicate address exists</string>
     <string name="saveAndShareImage">Save image and Share</string>
@@ -469,7 +469,8 @@
     <string name="claim_rewards">ClaimRewards</string>
     <!--Aton0.7.0 -->
     <string name="guide_tips">Have a wallet? Import using keystore, mnemonic phrase, private key.</string>
-    <string name="restricted_amount_with_unit">(&#160;&#160;Restricted:&#160;%1$s&#160;LAT)</string>
+    <string name="restricted_amount_without_unit">Restricted Balance：%1$sLAT</string>
+    <string name="restricted_balance_amount">Restricted Balance：</string>
     <string name="restricted_amount_tips">Non tradable LAT，but can be delegated</string>
 
     <string name="msg_hundred">hundred</string>
@@ -566,9 +567,7 @@
 
     <string name="available_balance">Balance</string>
     <string name="locked_balance">Restricted balance</string>
-    <string name="delegate_amount_tips">The Amount cannot be less than %1$s LAT</string>
-    <string name="insufficient_balance_unable_to_delegate">Insufficient balance, unable to delegate</string>
-    <string name="the_validator_has_exited_and_cannot_be_delegated">The Validator has Exited and cannot be delegated</string>
+
     <string name="delegate_failed">Delegated Failed</string>
     <string name="claim_reward_failed">Claim Reward Failed</string>
     <string name="delegate_success">Delegated Success</string>
@@ -637,14 +636,14 @@
     <string name="observed_invalid_address">Invalid  Address</string>
     <string name="observed_wallet_delete_title">Delete Wallet</string>
     <string name="observed_wallet_delete_tips">Are you sure want to delete observed wallet?</string>
-    <string name="wallet_send_offline_signature">Offline Signature</string>
+    <string name="msg_offline_signature">Offline Signature</string>
     <string name="withdraw_less_than_fee">Insufficient balance payment fee</string>
 
     <string name="delegate_risk_tips">Validators would be punished for double signing or low block rate. It would indirectly affect your reward. Please select qualified validators.</string>
-    <string name="recipient_wallet_address">Recipient</string>
+    <string name="recipient_wallet_address">Send to</string>
     <string name="delegate_less_than_fee">Insufficient balance payment fee</string>
     <string name="claim_reward_less_than_fee">Insufficient balance payment fee</string>
-    <string name="cold_wallet">Cold</string>
+    <string name="msg_cold_wallet">Cold</string>
     <string name="observed_wallet">Observed</string>
 
     <string name="title_transaction_authorization">Transaction Authorization</string>
@@ -745,7 +744,7 @@
     <string name="msg_delegate_reward_ratio">Reward Ratio</string>
     <string name="msg_delegate_balance">Avaliable Balance</string>
 
-    <string name="msg_network_tips">You are on the %1$s Network. Never transfer other network LATs to this address.</string>
+    <string name="msg_network_tips">You are on the %1$s Network. Never transfer asset from different network to this address.</string>
 
     <string name="msg_avaliable_balance">Balance：%1$s LAT</string>
     <string name="msg_balance_with_unit">Balance：%1$s LAT</string>
@@ -773,10 +772,43 @@
     <string name="msg_gas_limit_error">Gas Limit cannot be less than 21000</string>
     <string name="msg_transaction_memo">Memo：%1$s</string>
     <string name="hint_input_transaction_note">Memo(optional-less than 30 characters)</string>
+    <string name="msg_my_wallet">My Wallet</string>
+    <string name="msg_security_reminders">Security Reminders</string>
+    <string name="msg_assets_transaction">Transaction</string>
+    <string name="msg_observed_wallet">Observed Wallet</string>
+    <string name="msg_device_offline_prompt">Device offline prompt</string>
+    <string name="msg_got_it">Got it</string>
+    <string name="msg_device_offline_tips">Can cooperate with online devices to perform cold wallet offline signing to ensure the security of private keys!</string>
+    <string name="msg_security_reminders_tips">For your wallet security, be sure to complete the mnemonic backup !</string>
 
+    <!-- exception tip -->
     <string name="msg_server_exception">Server took a break, please try again(%1$d)</string>
     <string name="msg_transaction_repeatedly_exception">Do not submit repeatedly!</string>
     <string name="msg_transaction_exception">Transaction abnormal，please try again（%1$d）</string>
     <string name="msg_expired_qr_code">Expired QR code</string>
+
+    <string name="insufficient_balance_unable_to_delegate">Insufficient balance, unable to delegate</string>
+    <string name="msg_balance_not_enougth">Insufficient balance</string>
+
+    <string name="msg_transaction_over_block_gas_limit">Gaslimt exceeds the maximum block limit</string>
+    <string name="the_validator_has_exited_and_cannot_be_delegated">The Validator has Exited and cannot be delegated</string>
+    <string name="msg_transaction_node_associated_wallet">Node participates in wallet address, cannot participate in delegation</string>
+    <string name="msg_transaction_node_as_inside_candidate">@string/validators_details_tips</string>
+    <string name="delegate_amount_tips">The Amount cannot be less than %1$s LAT</string>
+
+
+    <!-- common -->
+    <string name="common_name">common...</string>
+    <string name="network_connection_failed">Network connection failed!</string>
+    <!-- wallet -->
+    <string name="wallet_receive">Receive</string>
+    <string name="wallet_receive_refresh_network">Please click to refresh or check the network!</string>
+
+    <!-- delegate -->
+    <string name="delegate_name">delegate...</string>
+
+    <!-- my -->
+
+
 </resources>
 

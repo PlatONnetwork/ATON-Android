@@ -4,13 +4,13 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.platon.aton.R;
-import com.platon.aton.component.ui.base.BaseActivity;
-import com.platon.aton.component.ui.base.BasePresenter;
 import com.platon.aton.component.ui.contract.AddNewAddressContract;
 import com.platon.aton.db.entity.AddressEntity;
 import com.platon.aton.db.sqlite.AddressDao;
 import com.platon.aton.entity.Address;
 import com.platon.aton.utils.JZWalletUtil;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.base.BasePresenter;
 
 import java.util.Random;
 import java.util.UUID;
@@ -28,9 +28,10 @@ public class AddNewAddressPresenter extends BasePresenter<AddNewAddressContract.
 
     private Address addressEntity;
 
-    public AddNewAddressPresenter(AddNewAddressContract.View view) {
-        super(view);
-        addressEntity = view.getAddressFromIntent();
+
+    @Override
+    public void getIntentData() {
+        addressEntity = getView().getAddressFromIntent();
     }
 
     @Override
@@ -69,9 +70,9 @@ public class AddNewAddressPresenter extends BasePresenter<AddNewAddressContract.
                 public Boolean call() throws Exception {
                     if (addressEntity == null) {
                         AddressEntity entity = AddressDao.getEntityWithAddress(addressInfoEntity.getAddress());
-                        if (entity != null){
+                        if (entity != null) {
                             return AddressDao.updateNameWithAddress(addressInfoEntity.getAddress(), addressInfoEntity.getName());
-                        }else {
+                        } else {
                             return AddressDao.insertAddressInfo(addressInfoEntity);
                         }
                     } else {
@@ -144,7 +145,7 @@ public class AddNewAddressPresenter extends BasePresenter<AddNewAddressContract.
             showLongToast(string(R.string.scan_qr_code_failed_tips1));
             return;
         }
-        if (isViewAttached()){
+        if (isViewAttached()) {
             getView().showAddress(text);
         }
     }

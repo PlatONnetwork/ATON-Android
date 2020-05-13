@@ -33,13 +33,16 @@ import com.google.zxing.view.ViewfinderView;
 import com.gyf.immersionbar.ImmersionBar;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.app.CustomObserver;
-import com.platon.aton.component.ui.base.BaseActivity;
 import com.platon.aton.component.widget.CommonTitleBar;
 import com.platon.aton.utils.PhotoUtil;
 import com.platon.aton.utils.QRCodeDecoder;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.base.BasePresenter;
+import com.platon.framework.base.BaseViewImp;
+import com.platon.framework.utils.LogUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.io.File;
@@ -59,7 +62,8 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
     /**
      * When the beep has finished playing, rewind to queue up another one.
      */
-    private final MediaPlayer.OnCompletionListener beepListener = new MediaPlayer.OnCompletionListener() {
+    private final static MediaPlayer.OnCompletionListener beepListener = new MediaPlayer.OnCompletionListener() {
+        @Override
         public void onCompletion(MediaPlayer mediaPlayer) {
             mediaPlayer.seekTo(0);
         }
@@ -82,18 +86,6 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
     private CommonTitleBar mCtb;
     private ImageView lightIv;
     private TextView lightTv;
-
-    /**
-     * Called when the activity is first created.
-     */
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scan_qrcode);
-        initView();
-    }
-
 
     private void initView() {
 
@@ -180,6 +172,26 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
         ImmersionBar.with(this).keyboardEnable(false).statusBarDarkFont(false).fitsSystemWindows(false).init();
     }
 
+    @Override
+    public int getLayoutId() {
+        return R.layout.activity_scan_qrcode;
+    }
+
+    @Override
+    public BasePresenter createPresenter() {
+        return null;
+    }
+
+    @Override
+    public BaseViewImp createView() {
+        return null;
+    }
+
+    @Override
+    public void init() {
+        initView();
+    }
+
     private void switchLight() {
         try {
             boolean isSuccess = CameraManager.get().setFlashLight(!isFlashOn);
@@ -191,7 +203,8 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
             lightTv.setText(getResources().getString(isFlashOn ? R.string.msg_turn_light_on : R.string.msg_turn_light_off));
             isFlashOn = !isFlashOn;
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            LogUtils.d(e.getMessage());
         }
     }
 
@@ -199,7 +212,7 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
 
         new RxPermissions(currentActivity())
                 .request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .compose(RxUtils.bindToLifecycle(this))
+                .compose(bindToLifecycle())
                 .subscribe(new CustomObserver<Boolean>() {
                     @Override
                     public void accept(Boolean success) {
@@ -298,8 +311,11 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
 
     @Override
     protected void onDestroy() {
-        inactivityTimer.shutdown();
         super.onDestroy();
+        inactivityTimer.shutdown();
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+        }
     }
 
     private void initCamera(SurfaceHolder surfaceHolder) {
@@ -389,14 +405,22 @@ public class ScanQRCodeActivity extends BaseActivity implements ICaptureProvider
             mediaPlayer = new MediaPlayer();
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mediaPlayer.setOnCompletionListener(beepListener);
+            AssetFileDescriptor file = null;
             try {
-                AssetFileDescriptor file = getResources().openRawResourceFd(R.raw.beep);
+                file = getResources().openRawResourceFd(R.raw.beep);
                 mediaPlayer.setDataSource(file.getFileDescriptor(), file.getStartOffset(), file.getLength());
-                file.close();
                 mediaPlayer.setVolume(BEEP_VOLUME, BEEP_VOLUME);
                 mediaPlayer.prepare();
-            } catch (IOException e) {
-                mediaPlayer = null;
+            } catch (Exception e) {
+                LogUtils.e(e.getMessage(),e.fillInStackTrace());
+            }  finally {
+                try {
+                    if (file != null) {
+                        file.close();
+                    }
+                } catch (IOException e) {
+                    LogUtils.e(e.getMessage(),e.fillInStackTrace());
+                }
             }
         }
     }

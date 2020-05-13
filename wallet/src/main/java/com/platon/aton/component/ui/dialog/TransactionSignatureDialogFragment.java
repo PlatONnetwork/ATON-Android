@@ -16,11 +16,9 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.app.CustomObserver;
 import com.platon.aton.app.CustomThrowable;
 import com.platon.aton.app.LoadingTransformer;
-import com.platon.aton.component.ui.base.BaseActivity;
 import com.platon.aton.component.ui.view.ScanQRCodeActivity;
 import com.platon.aton.component.widget.ShadowButton;
 import com.platon.aton.db.sqlite.AddressDao;
@@ -41,11 +39,13 @@ import com.platon.aton.entity.Wallet;
 import com.platon.aton.event.EventPublisher;
 import com.platon.aton.utils.AddressFormatUtil;
 import com.platon.aton.utils.BigIntegerUtil;
-import com.platon.aton.utils.DensityUtil;
 import com.platon.aton.utils.GZipUtil;
 import com.platon.aton.utils.JSONUtil;
 import com.platon.aton.utils.RxUtils;
-import com.platon.aton.utils.ToastUtil;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.utils.LogUtils;
+import com.platon.framework.utils.ToastUtil;
 import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
@@ -97,6 +97,8 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
     TextView tvTransactionSignature;
     @BindView(R.id.sbtn_send_transaction)
     ShadowButton sbtnSendTransaction;
+    @BindView(R.id.iv_close)
+    ImageView ivClose;
 
     private Unbinder unbinder;
     private TransactionSignatureData transactionSignatureData;
@@ -128,8 +130,6 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_fragment_transaction_signature, null, false);
         baseDialog.setContentView(contentView);
         setFullWidthEnable(true);
-        setHorizontalMargin(DensityUtil.dp2px(getContext(), 14f));
-        setyOffset(DensityUtil.dp2px(getContext(), 16f));
         setAnimation(R.style.Animation_slide_in_bottom);
         unbinder = ButterKnife.bind(this, contentView);
         initViews();
@@ -194,6 +194,16 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
                             sbtnSendTransaction.setEnabled(false);
                             sendTransaction(transactionSignatureData, transactionAuthorizationData);
                         }
+                    }
+                });
+
+        RxView.clicks(ivClose)
+                .compose(RxUtils.getClickTransformer())
+                .compose(bindToLifecycle())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        dismiss();
                     }
                 });
     }
@@ -268,13 +278,16 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
                             CustomThrowable customThrowable = (CustomThrowable) throwable;
                             if (customThrowable.getErrCode() == RPCErrorCode.CONNECT_TIMEOUT) {
                                 ToastUtil.showLongToast(getActivity(), R.string.msg_connect_timeout);
-                            } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_KNOWN_TX) {
-                                ToastUtil.showLongToast(getActivity(), R.string.msg_transaction_repeatedly_exception);
-                            } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_NONCE_TOO_LOW ||
-                                    customThrowable.getErrCode() == CustomThrowable.CODE_TX_GAS_LOW) {
-                                ToastUtil.showLongToast(getActivity(), R.string.msg_expired_qr_code);
+                            } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_NONCE_TOO_LOW  ||
+                                    customThrowable.getErrCode() == CustomThrowable.CODE_TX_GAS_LOW){
+                                if(WalletManager.getInstance().getSelectedWallet().isObservedWallet()){
+                                    ToastUtil.showLongToast(getActivity(), R.string.msg_expired_qr_code);
+                                }else{
+                                    ToastUtil.showLongToast(getActivity(), (((BaseActivity) getActivity()).string(R.string.msg_transaction_exception, customThrowable.getErrCode())));
+                                }
                             } else {
-                                ToastUtil.showLongToast(getActivity(), getString(R.string.msg_server_exception, customThrowable.getErrCode()));
+                                //showLongToast(string(R.string.msg_server_exception, customThrowable.getErrCode()));
+                                ToastUtil.showLongToast(getActivity(), customThrowable.getDetailMsgRes());
                             }
                         } else {
                             if (transactionSignatureData.getFunctionType() == FunctionType.TRANSFER) {
@@ -541,7 +554,7 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
         try {
             contractAmount = Numeric.decodeQuantity(decodeAmount(hex)).toString(10);
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.d(e.getMessage(),e.fillInStackTrace());
         }
         return contractAmount;
     }

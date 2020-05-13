@@ -62,6 +62,7 @@
                 android:layout_below="@id/tv_wallet_title"
                 android:layout_marginTop="8dp"
                 android:lines="1"
+                app:autoSizeMaxTextSize="14sp"
                 android:textColor="@color/color_b6bbd0"
                 android:textSize="14sp"
                 app:autoSizeTextType="uniform"

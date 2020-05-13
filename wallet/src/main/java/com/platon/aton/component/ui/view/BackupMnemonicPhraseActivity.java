@@ -3,33 +3,66 @@ package com.platon.aton.component.ui.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.IntDef;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
-import com.platon.aton.component.ui.base.BaseActivity;
 import com.platon.aton.component.ui.dialog.CommonTipsDialogFragment;
 import com.platon.aton.component.ui.dialog.OnDialogViewClickListener;
 import com.platon.aton.component.widget.CommonTitleBar;
 import com.platon.aton.component.widget.ShadowContainer;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.utils.JZWalletUtil;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.base.BasePresenter;
+import com.platon.framework.base.BaseViewImp;
 
+/**
+ * @author ziv
+ */
 public class BackupMnemonicPhraseActivity extends BaseActivity {
+
+    @IntDef({
+            BackupMnemonicExport.BACKUP_WALLET_ACTIVITY,
+            BackupMnemonicExport.MAIN_ACTIVITY
+    })
+    public @interface BackupMnemonicExport {
+
+        /**
+         * 备份钱包入口
+         */
+        int BACKUP_WALLET_ACTIVITY = 0;
+        /**
+         * 首页
+         */
+        int MAIN_ACTIVITY = 1;
+    }
 
     private CommonTitleBar mCtb;
     private ShadowContainer mShadowContainer;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_backup_mnemonic_phrase);
+    public int getLayoutId() {
+        return R.layout.activity_backup_mnemonic_phrase;
+    }
+
+    @Override
+    public BasePresenter createPresenter() {
+        return null;
+    }
+
+    @Override
+    public BaseViewImp createView() {
+        return null;
+    }
+
+    @Override
+    public void init() {
         showTipsDialog();
         initView();
         Wallet walletEntity = getIntent().getParcelableExtra(Constants.Extra.EXTRA_WALLET);
@@ -138,15 +171,11 @@ public class BackupMnemonicPhraseActivity extends BaseActivity {
         }).show(getSupportFragmentManager(), "showTips");
     }
 
-    public static void actionStart(Context context, String password, Wallet walletEntity) {
-        actionStart(context, password, walletEntity, 0);
-    }
-
-    public static void actionStart(Context context, String password, Wallet walletEntity, int type) {
+    public static void actionStart(Context context, String password, Wallet walletEntity, @BackupMnemonicExport int entrance) {
         Intent intent = new Intent(context, BackupMnemonicPhraseActivity.class);
         intent.putExtra(Constants.Extra.EXTRA_PASSWORD, password);
         intent.putExtra(Constants.Extra.EXTRA_WALLET, walletEntity);
-        intent.putExtra(Constants.Extra.EXTRA_TYPE, type);
+        intent.putExtra(Constants.Extra.EXTRA_TYPE, entrance);
         context.startActivity(intent);
     }
 }

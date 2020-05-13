@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/layout_commonTitleBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_status_bar"
+        android:paddingTop="20dp"
+        android:orientation="vertical">
+
+        <com.platon.aton.component.widget.CommonTitleBar
+            android:id="@+id/commonTitleBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:ctb_left_drawable="@drawable/icon_back_black"
+            app:ctb_right_drawable="@drawable/icon_scan_s"
+            app:ctb_title="@string/sent" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_below="@+id/layout_commonTitleBar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingTop="16dp">
+
+            <RelativeLayout
+                android:layout_alignParentTop="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp">
+
+                <TextView
+                    android:id="@+id/tv_wallet_address_info"
+                    style="@style/Text.61646e.16"
+                    android:text="@string/recipient_wallet_address" />
+
+                <TextView
+                    android:id="@+id/tv_save_address"
+                    style="@style/Text.105cfe.13"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:visibility="invisible"
+                    android:text="@string/save_to_address_book" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp">
+
+                <FrameLayout
+                    android:id="@+id/fl_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/et_wallet_address"
+                        style="@style/Text.000.14"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:background="@drawable/bg_edittext_underline"
+                        android:digits="0123456789abcdefxABCDEFX"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical|left"
+                        android:hint="@string/inputWalletAddress"
+                        android:imeOptions="actionNext"
+                        android:maxLength="42"
+                        android:lines="2"
+                        android:paddingRight="48dp"
+                        android:textColorHint="@color/color_b6bbd0" />
+
+
+                    <ImageView
+                        android:id="@+id/iv_address_book"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right|center_vertical"
+                        android:src="@drawable/icon_address_book_s" />
+
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/tv_to_address_error"
+                    style="@style/Text.f5302c.12"
+                    android:layout_below="@id/fl_address"
+                    android:layout_marginTop="5dp"
+                    android:visibility="gone"
+                    tools:text="地址不能为空"
+                    tools:visibility="visible" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp">
+
+                <TextView
+                    android:id="@+id/tv_transation_amount"
+                    style="@style/Text.61646e.16"
+                    android:text="@string/amount" />
+
+                <TextView
+                    android:id="@+id/tv_wallet_balance"
+                    style="@style/Text.b6bbd0.11"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="5dp"
+                    android:gravity="right"
+                    tools:text="Balance:0.00LAT" />
+
+                <LinearLayout
+                    android:id="@+id/layout_amount_magnitudes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_transation_amount"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="15dp"
+                        android:layout_below="@id/tv_transation_amount"
+                        android:layout_marginLeft="6dp"
+                        android:background="@drawable/bg_amount_magnitudes"
+                        tools:visibility="visible" />
+
+                    <TextView
+                        android:id="@+id/tv_amount_magnitudes"
+                        style="@style/Text.b6bbd0.12"
+                        android:layout_marginLeft="3dp"
+                        tools:text="百"
+                        tools:visibility="visible" />
+
+                </LinearLayout>
+
+                <FrameLayout
+                    android:id="@+id/layout_transation_amount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/layout_amount_magnitudes"
+                    android:gravity="center_vertical">
+
+                    <EditText
+                        android:id="@+id/et_wallet_amount"
+                        style="@style/Text.000.14"
+                        android:textStyle="bold"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:background="@drawable/bg_edittext_underline"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical|left"
+                        android:hint="@string/inputSendAmount"
+                        android:imeOptions="actionNext"
+                        android:inputType="numberDecimal"
+                        android:paddingRight="40dp"
+                        android:singleLine="true"
+                        android:textColorHint="@color/color_b6bbd0" />
+
+                    <TextView
+                        android:id="@+id/tv_all_amount"
+                        style="@style/Text.105cfe.14"
+                        android:layout_gravity="right|center_vertical"
+                        android:text="@string/action_send_all" />
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/tv_amount_error"
+                    style="@style/Text.ff4747.12"
+                    android:layout_below="@id/layout_transation_amount"
+                    android:layout_marginTop="5dp"
+                    tools:text="金额不能为空" />
+
+            </RelativeLayout>
+
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="16dp">
+
+                <EditText
+                    android:id="@+id/et_transaction_note"
+                    style="@style/Text.000.14"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_edittext_underline"
+                    android:gravity="left|center_vertical"
+                    android:hint="@string/hint_input_transaction_note"
+                    android:imeOptions="actionNext"
+                    android:includeFontPadding="false"
+                    android:paddingRight="32dp"
+                    android:singleLine="true"
+                    android:textColorHint="@color/color_b6bbd0"
+                    tools:text="是生生世世是生生世世是生生世世是生生世世是生生世世是生生世世是生生世世是生生世世是生生世世是生生世世" />
+
+                <ImageView
+                    android:id="@+id/iv_clear"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="right|center_vertical"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/icon_clear"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
+            </FrameLayout>
+
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="@dimen/layout_space_03"
+                    app:cardElevation="@dimen/layout_space_01"
+                    android:layout_margin="@dimen/layout_space_10">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginTop="17dp">
+
+                            <TextView
+                                android:id="@+id/tv_fee_amount_title"
+                                style="@style/Text.61646e.14"
+                                android:layout_marginLeft="16dp"
+                                android:text="@string/transaction_fee" />
+
+                            <ImageView
+                                android:id="@+id/iv_advanced_function"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="right"
+                                android:layout_alignTop="@id/tv_fee_amount_title"
+                                android:layout_alignBottom="@id/tv_fee_amount_title"
+                                android:paddingRight="@dimen/layout_space_10"
+                                android:paddingLeft="@dimen/layout_space_10"
+                                android:paddingTop="@dimen/layout_space_02"
+                                android:paddingBottom="@dimen/layout_space_02"
+                                android:layout_toRightOf="@id/tv_fee_amount_title"
+                                android:src="@drawable/icon_up" />
+
+                            <TextView
+                                android:id="@+id/tv_fee_amount"
+                                style="@style/Text.000.16"
+                                android:layout_alignParentRight="true"
+                                android:layout_marginLeft="16dp"
+                                android:layout_marginRight="16dp"
+                                android:layout_marginBottom="@dimen/layout_space_15"
+                                android:layout_toRightOf="@id/tv_fee_amount_title"
+                                android:gravity="right"
+                                android:textStyle="bold"
+                                tools:text="0.0000000228" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/layout_advanced_function"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:paddingLeft="16dp"
+                            android:paddingRight="16dp"
+                            android:visibility="gone">
+
+                            <com.platon.aton.component.widget.bubbleSeekBar.BubbleSeekBar
+                                android:id="@+id/bubbleSeekBar"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="14dp"
+                                app:bsb_auto_adjust_section_mark="false"
+                                app:bsb_colors="#ff28ADFF_#ff2092FF_#ff1877FE_#ff105CFE"
+                                app:bsb_hide_bubble="true"
+                                app:bsb_max="3"
+                                app:bsb_second_track_color="@color/color_105cfe"
+                                app:bsb_second_track_size="2dp"
+                                app:bsb_section_count="3"
+                                app:bsb_section_text_color="@color/color_b6bbd0"
+                                app:bsb_section_text_position="below_section_mark"
+                                app:bsb_section_text_size="10sp"
+                                app:bsb_selection_text_margin="7dp"
+                                app:bsb_show_section_mark="true"
+                                app:bsb_show_section_text="false"
+                                app:bsb_show_thumb_text="false"
+                                app:bsb_thumb_radius_on_dragging="7dp"
+                                app:bsb_thumb_text_size="12sp"
+                                app:bsb_touch_to_seek="true"
+                                app:bsb_track_color="@color/color_d5d8df"
+                                app:bsb_track_size="2dp" />
+
+                            <TextView
+                                style="@style/Text.61646e.14"
+                                android:layout_marginTop="15dp"
+                                android:layout_width="match_parent"
+                                android:background="@drawable/shape_advanced_function"
+                                android:gravity="left"
+                                android:lineHeight="20dp"
+                                android:padding="14dp"
+                                android:text="@string/msg_advanced_function" />
+
+                            <TextView
+                                style="@style/Text.61646e.16"
+                                android:layout_marginTop="16dp"
+                                android:text="@string/msg_gas_limit" />
+
+                            <EditText
+                                android:id="@+id/et_gas_limit"
+                                style="@style/Text.000.14"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:background="@drawable/bg_edittext_underline"
+                                android:ellipsize="end"
+                                android:gravity="center_vertical|left"
+                                android:imeOptions="actionNext"
+                                android:inputType="number"
+                                android:singleLine="true"
+                                android:text="21000" />
+
+                            <TextView
+                                android:id="@+id/tv_gas_limit_error"
+                                style="@style/Text.ff4747.12"
+                                android:layout_marginTop="@dimen/layout_space_05"
+                                android:paddingBottom="@dimen/layout_space_07"
+                                android:text="@string/msg_gas_limit_error" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
+
+                <View
+                    android:id="@+id/layout_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"/>
+            </FrameLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/layout_network_no"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_above="@+id/sbtn_send_transation"
+                android:padding="@dimen/layout_space_10"
+                android:visibility="visible"
+                android:background="@color/color_ffe6d1">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="80dp"
+                    android:gravity="center_vertical">
+
+                    <LinearLayout
+                        android:id="@+id/layout_network_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="17dp"
+                            android:layout_height="17dp"
+                            android:layout_marginRight="10dp"
+                            android:src="@drawable/icon_no_delegate_tips"/>
+
+                        <TextView
+                            android:id="@+id/tv_network_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="17dp"
+                            style="@style/Text.000.14"
+                            android:textStyle="bold"
+                            android:text="@string/network_connection_failed"/>
+
+                    </LinearLayout>
+
+                    <TextView
+                       android:layout_below="@+id/layout_network_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        style="@style/Text.61646e.13"
+                        android:text="@string/wallet_receive_refresh_network"/>
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="80dp"
+                    android:layout_alignParentRight="true">
+
+                    <com.platon.aton.component.widget.RoundedTextView
+                        android:id="@+id/tv_refresh_network"
+                        style="@style/Text.fff.14"
+                        android:layout_width="82dp"
+                        android:layout_height="34dp"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/action_refresh"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:rtv_background_color="@color/color_105cfe"
+                        app:rtv_border_color="@color/color_78a2fa" />
+
+
+
+                 <!--   <TextView
+                        android:id="@+id/tv_refresh_network"
+                        android:layout_width="60dp"
+                        android:layout_height="30dp"
+                        style="@style/Text.fff.12"
+                        android:padding="5dp"
+                        android:background="@drawable/bg_send_transaction_btn_bule_refresh"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center"
+                        android:text="@string/action_refresh"/>-->
+                </LinearLayout>
+            </RelativeLayout>
+
+            <com.platon.aton.component.widget.ShadowButton
+                    android:id="@+id/sbtn_send_transation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    app:enabled="false"
+                    app:text="@string/actionSendATP"
+                    app:textAppearance="@style/MainButtonStyle"
+                    app:textBackground="@drawable/bg_main_button" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</RelativeLayout>
+

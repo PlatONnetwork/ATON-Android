@@ -6,17 +6,15 @@ import android.os.Message;
 import android.text.TextUtils;
 
 import com.platon.aton.R;
-import com.platon.aton.component.ui.base.BasePresenter;
 import com.platon.aton.component.ui.contract.ImportPrivateKeyContract;
 import com.platon.aton.component.ui.view.MainActivity;
 import com.platon.aton.engine.WalletManager;
+import com.platon.aton.event.EventPublisher;
 import com.platon.aton.utils.CommonUtil;
+import com.platon.framework.base.BasePresenter;
 
 public class ImportPrivateKeyPresenter extends BasePresenter<ImportPrivateKeyContract.View> implements ImportPrivateKeyContract.Presenter {
 
-    public ImportPrivateKeyPresenter(ImportPrivateKeyContract.View view) {
-        super(view);
-    }
 
     @Override
     public void init() {
@@ -95,6 +93,7 @@ public class ImportPrivateKeyPresenter extends BasePresenter<ImportPrivateKeyCon
             super.handleMessage(msg);
             switch (msg.what) {
                 case MSG_OK:
+                    EventPublisher.getInstance().sendWalletNumberChangeEvent();
                     dismissLoadingDialogImmediately();
                     MainActivity.actionStart(currentActivity());
                     currentActivity().finish();

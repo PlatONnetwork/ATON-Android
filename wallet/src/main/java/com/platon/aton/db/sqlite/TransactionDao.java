@@ -2,6 +2,7 @@ package com.platon.aton.db.sqlite;
 
 import com.platon.aton.db.entity.TransactionEntity;
 import com.platon.aton.engine.NodeManager;
+import com.platon.framework.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,8 +100,8 @@ public class TransactionDao {
                     .sort("createTime", Sort.DESCENDING)
                     .findAll();
             list.addAll(realm.copyFromRealm(results));
-        } catch (Exception exp) {
-            exp.printStackTrace();
+        } catch (Exception e) {
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         } finally {
             if (realm != null) {
                 realm.close();
@@ -127,8 +128,8 @@ public class TransactionDao {
             if (results != null) {
                 list = realm.copyFromRealm(results);
             }
-        } catch (Exception exp) {
-            exp.printStackTrace();
+        } catch (Exception e) {
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         } finally {
             if (realm != null) {
                 realm.close();
@@ -151,8 +152,8 @@ public class TransactionDao {
             if (realmObject != null) {
                 transactionEntity = (TransactionEntity) realm.copyFromRealm(realmObject);
             }
-        } catch (Exception exp) {
-            exp.printStackTrace();
+        } catch (Exception e) {
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         } finally {
             if (realm != null) {
                 realm.close();

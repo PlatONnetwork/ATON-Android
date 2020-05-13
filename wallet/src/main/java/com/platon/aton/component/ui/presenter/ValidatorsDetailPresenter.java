@@ -1,10 +1,10 @@
 package com.platon.aton.component.ui.presenter;
 
+import com.platon.framework.base.BasePresenter;
 import com.platon.framework.network.ApiRequestBody;
 import com.platon.framework.network.ApiResponse;
 import com.platon.framework.network.ApiSingleObserver;
 import com.platon.aton.app.LoadingTransformer;
-import com.platon.aton.component.ui.base.BasePresenter;
 import com.platon.aton.component.ui.contract.ValidatorsDetailContract;
 import com.platon.aton.engine.ServerUtils;
 import com.platon.aton.entity.DelegateItemInfo;
@@ -14,11 +14,6 @@ import com.platon.aton.utils.RxUtils;
 public class ValidatorsDetailPresenter extends BasePresenter<ValidatorsDetailContract.View> implements ValidatorsDetailContract.Presenter {
 
     private VerifyNodeDetail mVerifyNodeDetail;
-
-    public ValidatorsDetailPresenter(ValidatorsDetailContract.View view) {
-        super(view);
-    }
-
 
     @Override
     public void loadValidatorsDetailData() {

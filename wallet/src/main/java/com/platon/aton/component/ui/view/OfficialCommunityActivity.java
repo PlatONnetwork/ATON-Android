@@ -8,11 +8,13 @@ import android.support.v7.widget.RecyclerView;
 
 import com.platon.aton.R;
 import com.platon.aton.component.adapter.OfficialCommunityAdapter;
-import com.platon.aton.component.ui.base.BaseActivity;
 import com.platon.aton.component.widget.CommonVerticalItemDecoration;
 import com.platon.aton.entity.OfficialCommunity;
 import com.platon.aton.entity.OfficialCommunityItem;
 import com.platon.aton.entity.OfficialCommunityType;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.base.BasePresenter;
+import com.platon.framework.base.BaseViewImp;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,9 +33,22 @@ public class OfficialCommunityActivity extends BaseActivity {
     Unbinder unbinder;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_official_community);
+    public int getLayoutId() {
+        return R.layout.activity_official_community;
+    }
+
+    @Override
+    public BasePresenter createPresenter() {
+        return null;
+    }
+
+    @Override
+    public BaseViewImp createView() {
+        return null;
+    }
+
+    @Override
+    public void init() {
         unbinder = ButterKnife.bind(this);
         initViews();
     }

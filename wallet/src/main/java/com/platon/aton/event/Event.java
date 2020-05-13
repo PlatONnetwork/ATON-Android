@@ -1,9 +1,9 @@
 package com.platon.aton.event;
 
-import com.platon.framework.network.NetState;
 import com.platon.aton.entity.Node;
 import com.platon.aton.entity.Transaction;
 import com.platon.aton.entity.Wallet;
+import com.platon.framework.network.NetState;
 
 public class Event {
 
@@ -143,15 +143,38 @@ public class Event {
         public SumAccountBalanceChanged() {
         }
     }
-    public static class  MyDelegateGuide{
-        public MyDelegateGuide(){
+
+    public static class MyDelegateGuide {
+        public MyDelegateGuide() {
 
         }
     }
 
-    public static  class  ValidatorsGuide{
-        public ValidatorsGuide(){
+    public static class ValidatorsGuide {
+        public ValidatorsGuide() {
 
         }
+    }
+
+    public static class WalletNumberChangeEvent {
+
+        public WalletNumberChangeEvent() {
+        }
+    }
+
+    public static class WalletSelectedChangedEvent {
+        public WalletSelectedChangedEvent() {
+        }
+    }
+
+    public static class BackedUpWalletSuccessedEvent {
+
+        public String uuid;
+
+        public BackedUpWalletSuccessedEvent(String uuid) {
+            this.uuid = uuid;
+        }
+
+
     }
 }

@@ -17,8 +17,8 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.platon.aton.R;
-import com.platon.aton.component.ui.base.BaseActivity;
 import com.platon.aton.utils.DensityUtil;
+import com.platon.framework.base.BaseActivity;
 
 import java.util.concurrent.TimeUnit;
 
@@ -82,7 +82,7 @@ public class CommonTitleBar extends LinearLayout {
 
         mLeftDrawable = ta.getDrawable(R.styleable.CommonTitleBar_ctb_left_drawable);
         mRightDrawable = ta.getDrawable(R.styleable.CommonTitleBar_ctb_right_drawable);
-        mBackground = ta.getDrawable(5);
+        mBackground = ta.getDrawable(R.styleable.CommonTitleBar_ctb_background);
 
         ta.recycle();
 
@@ -314,8 +314,8 @@ public class CommonTitleBar extends LinearLayout {
         }
     }
 
-    public void setLeftTitleClickListener(OnClickListener listener){
-        if(tvTitle.getVisibility() == VISIBLE){
+    public void setLeftTitleClickListener(OnClickListener listener) {
+        if (tvTitle.getVisibility() == VISIBLE) {
             RxView.clicks(tvTitle)
                     .throttleFirst(500, TimeUnit.MILLISECONDS)
                     .subscribe(new Consumer<Object>() {
@@ -328,6 +328,7 @@ public class CommonTitleBar extends LinearLayout {
                     });
         }
     }
+
     public void setRightDrawableClickListener(OnClickListener listener) {
         if (ivRight.getVisibility() == VISIBLE) {
             RxView.clicks(ivRight)
@@ -358,7 +359,7 @@ public class CommonTitleBar extends LinearLayout {
         }
     }
 
-    public void setRightTextVisibility(int visibility){
+    public void setRightTextVisibility(int visibility) {
         tvRight.setVisibility(visibility);
     }
 

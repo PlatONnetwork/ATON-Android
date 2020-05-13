@@ -5,20 +5,17 @@ import android.os.Message;
 import android.text.TextUtils;
 
 import com.platon.aton.R;
-import com.platon.aton.component.ui.base.BasePresenter;
 import com.platon.aton.component.ui.contract.ImportObservedContract;
 import com.platon.aton.component.ui.view.MainActivity;
-import com.platon.aton.config.AppSettings;
 import com.platon.aton.engine.NodeManager;
 import com.platon.aton.engine.WalletManager;
+import com.platon.aton.event.EventPublisher;
 import com.platon.aton.utils.CommonUtil;
+import com.platon.framework.base.BasePresenter;
+import com.platon.framework.utils.PreferenceTool;
 
 
 public class ImportObservedPresenter extends BasePresenter<ImportObservedContract.View> implements ImportObservedContract.Presenter {
-
-    public ImportObservedPresenter(ImportObservedContract.View view) {
-        super(view);
-    }
 
     @Override
     public void parseQRCode(String QRCode) {
@@ -71,8 +68,9 @@ public class ImportObservedPresenter extends BasePresenter<ImportObservedContrac
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_OK:
+                    EventPublisher.getInstance().sendWalletNumberChangeEvent();
                     dismissLoadingDialogImmediately();
-                    AppSettings.getInstance().setWalletNameSequence(AppSettings.getInstance().getWalletNameSequence(NodeManager.getInstance().getChainId()) + 1);//钱包名称序号自增长
+                    PreferenceTool.putInt(NodeManager.getInstance().getChainId(), PreferenceTool.getInt(NodeManager.getInstance().getChainId(), 1) + 1);
                     MainActivity.actionStart(currentActivity());
                     currentActivity().finish();
                     break;

@@ -156,13 +156,10 @@ public class GlideUtils {
         }
 
         private Bitmap roundCrop(BitmapPool pool, Bitmap source) {
-            if (source == null) return null;
+            if (source == null)
+                 return null;
 
             Bitmap result = pool.get(source.getWidth(), source.getHeight(), Bitmap.Config.ARGB_8888);
-            if (result == null) {
-                result = Bitmap.createBitmap(source.getWidth(), source.getHeight(), Bitmap.Config.ARGB_8888);
-            }
-
             Canvas canvas = new Canvas(result);
             Paint paint = new Paint();
             paint.setShader(new BitmapShader(source, BitmapShader.TileMode.CLAMP, BitmapShader.TileMode.CLAMP));

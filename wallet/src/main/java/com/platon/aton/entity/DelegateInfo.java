@@ -3,6 +3,8 @@ package com.platon.aton.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.platon.framework.utils.LogUtils;
+
 public class DelegateInfo implements Parcelable, Cloneable {
     /**
      * 钱包名称
@@ -158,8 +160,8 @@ public class DelegateInfo implements Parcelable, Cloneable {
         DelegateInfo delegateInfo = null;
         try {
             delegateInfo = (DelegateInfo) super.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
+        } catch (CloneNotSupportedException exp) {
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
         }
         return delegateInfo;
     }

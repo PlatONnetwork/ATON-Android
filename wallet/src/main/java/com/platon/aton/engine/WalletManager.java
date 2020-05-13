@@ -3,7 +3,6 @@ package com.platon.aton.engine;
 import android.text.TextUtils;
 
 import com.platon.aton.app.CustomThrowable;
-import com.platon.aton.config.AppSettings;
 import com.platon.aton.db.entity.WalletEntity;
 import com.platon.aton.db.sqlite.WalletDao;
 import com.platon.aton.entity.AccountBalance;
@@ -13,9 +12,12 @@ import com.platon.aton.event.EventPublisher;
 import com.platon.aton.utils.AmountUtil;
 import com.platon.aton.utils.BigDecimalUtil;
 import com.platon.aton.utils.JZWalletUtil;
+import com.platon.framework.app.Constants;
 import com.platon.framework.network.ApiErrorCode;
 import com.platon.framework.network.ApiRequestBody;
 import com.platon.framework.network.ApiResponse;
+import com.platon.framework.utils.LogUtils;
+import com.platon.framework.utils.PreferenceTool;
 
 import org.greenrobot.eventbus.EventBus;
 import org.reactivestreams.Publisher;
@@ -61,10 +63,10 @@ public class WalletManager {
     private List<Wallet> mWalletList = new ArrayList<>();
     public static final int CODE_ERROR_INVALIA_ADDRESS = -5;
 
-    //记录上次的余额
+    /**
+     * 记录上次的余额
+     */
     private BigDecimal mSumAccountBalance = BigDecimal.ZERO;
-    //当前选中的钱包
-    private Wallet mSelectedWallet;
 
     private WalletManager() {
 
@@ -72,6 +74,10 @@ public class WalletManager {
 
     private static class InstanceHolder {
         private static volatile WalletManager INSTANCE = new WalletManager();
+    }
+
+    public static WalletManager getInstance() {
+        return WalletManager.InstanceHolder.INSTANCE;
     }
 
     public BigDecimal getSumAccountBalance() {
@@ -83,40 +89,100 @@ public class WalletManager {
     }
 
     public Wallet getSelectedWallet() {
-        return mSelectedWallet;
+        if (mWalletList.size() == 0) {
+            return getWalletListFromDB().toFlowable().flatMap(new Function<List<Wallet>, Publisher<Wallet>>() {
+                @Override
+                public Publisher<Wallet> apply(List<Wallet> walletList) throws Exception {
+                    return Flowable.fromIterable(walletList);
+                }
+            })
+                    .filter(new Predicate<Wallet>() {
+                        @Override
+                        public boolean test(Wallet wallet) throws Exception {
+                            return wallet.isSelected();
+                        }
+                    })
+                    .firstElement()
+                    .defaultIfEmpty(Wallet.getNullInstance())
+                    .onErrorReturnItem(Wallet.getNullInstance())
+                    .blockingGet();
+        }
+        return getSelectedWalletFromWalletList();
     }
 
-    public void setSelectedWallet(Wallet mSelectedWallet) {
-        this.mSelectedWallet = mSelectedWallet;
-        EventPublisher.getInstance().sendUpdateSelectedWalletEvent(mSelectedWallet);
+    private Wallet getSelectedWalletFromWalletList() {
+
+        return Flowable.fromIterable(mWalletList)
+                .filter(new Predicate<Wallet>() {
+                    @Override
+                    public boolean test(Wallet wallet) throws Exception {
+                        return wallet.isSelected();
+                    }
+                })
+                .firstElement()
+                .defaultIfEmpty(mWalletList.get(0))
+                .onErrorReturnItem(mWalletList.get(0))
+                .blockingGet();
     }
 
+    public void setWalletList(List<Wallet> walletList) {
+        this.mWalletList = walletList;
+    }
+
+    /**
+     * 获取选中钱包的地址
+     *
+     * @return
+     */
     public String getSelectedWalletAddress() {
-        return mSelectedWallet == null ? null : mSelectedWallet.getPrefixAddress();
-    }
 
-    public static WalletManager getInstance() {
-        return WalletManager.InstanceHolder.INSTANCE;
+        Wallet selectedWallet = getSelectedWallet();
+
+        return selectedWallet == null ? null : selectedWallet.getPrefixAddress();
+
     }
 
     public void init() {
-        if (!mWalletList.isEmpty()) {
-            mWalletList.clear();
-        }
-
-        List<WalletEntity> walletInfoList = WalletDao.getWalletInfoList();
-        for (WalletEntity walletInfoEntity : walletInfoList) {
-            try {
-                mWalletList.add(walletInfoEntity.buildWalletEntity());
-            } catch (Exception exp) {
-                exp.printStackTrace();
-            }
-        }
+        mWalletList.clear();
+        mWalletList = getWalletListFromDB().blockingGet();
     }
 
-    public void addWallet(Wallet walletEntity) {
-        if (!mWalletList.contains(walletEntity)) {
-            mWalletList.add(walletEntity);
+    public Single<List<Wallet>> getWalletListFromDB() {
+        return Flowable
+                .fromCallable(new Callable<List<WalletEntity>>() {
+                    @Override
+                    public List<WalletEntity> call() throws Exception {
+                        return WalletDao.getWalletInfoList();
+                    }
+                })
+                .flatMap(new Function<List<WalletEntity>, Publisher<Wallet>>() {
+                    @Override
+                    public Publisher<Wallet> apply(List<WalletEntity> walletEntities) throws Exception {
+                        return Flowable.range(0, walletEntities.size()).map(new Function<Integer, Wallet>() {
+                            @Override
+                            public Wallet apply(Integer integer) throws Exception {
+                                if (integer == 0) {
+                                    Wallet wallet = walletEntities.get(0).buildWallet();
+                                    wallet.setSelected(true);
+                                    return wallet;
+                                } else {
+                                    return walletEntities.get(integer).buildWallet();
+                                }
+                            }
+                        });
+                    }
+                })
+                .toList();
+    }
+
+    public void addWallet(Wallet wallet) {
+        if (!mWalletList.contains(wallet)) {
+            Wallet cloneWallet = wallet.clone();
+            if (!isExistSelectedWallet()) {
+                cloneWallet.setSelected(true);
+                EventPublisher.getInstance().sendWalletSelectedChangedEvent();
+            }
+            mWalletList.add(cloneWallet);
         }
     }
 
@@ -133,6 +199,10 @@ public class WalletManager {
 
         Wallet wallet = mWalletList.get(position);
         wallet.setAccountBalance(accountBalance);
+    }
+
+    public void update() {
+
     }
 
     /**
@@ -241,30 +311,10 @@ public class WalletManager {
     }
 
     public List<Wallet> getWalletList() {
-        if (mWalletList == null || mWalletList.isEmpty()) {
-            return mWalletList = Flowable
-                    .fromCallable(new Callable<List<WalletEntity>>() {
-                        @Override
-                        public List<WalletEntity> call() throws Exception {
-                            return WalletDao.getWalletInfoList();
-                        }
-                    })
-                    .flatMap(new Function<List<WalletEntity>, Publisher<WalletEntity>>() {
-                        @Override
-                        public Publisher<WalletEntity> apply(List<WalletEntity> walletEntities) throws Exception {
-                            return Flowable.fromIterable(walletEntities);
-                        }
-                    })
-                    .map(new Function<WalletEntity, Wallet>() {
-                        @Override
-                        public Wallet apply(WalletEntity walletEntity) throws Exception {
-                            return walletEntity.buildWalletEntity();
-                        }
-                    })
-                    .toList()
-                    .toFlowable()
-                    .blockingFirst();
+        if (mWalletList.isEmpty()) {
+            return mWalletList = getWalletListFromDB().blockingGet();
         }
+        Collections.sort(mWalletList);
         return mWalletList;
     }
 
@@ -274,6 +324,30 @@ public class WalletManager {
 
     public String exportPrivateKey(String mnemonic) {
         return WalletServiceImpl.getInstance().exportPrivateKey(mnemonic);
+    }
+
+    private boolean isExistSelectedWallet() {
+        if (mWalletList.isEmpty()) {
+            return false;
+        }
+
+        return Flowable.fromIterable(mWalletList)
+                .map(new Function<Wallet, Boolean>() {
+                    @Override
+                    public Boolean apply(Wallet wallet) throws Exception {
+                        return wallet.isSelected();
+                    }
+                })
+                .filter(new Predicate<Boolean>() {
+                    @Override
+                    public boolean test(Boolean aBoolean) throws Exception {
+                        return aBoolean;
+                    }
+                })
+                .firstElement()
+                .defaultIfEmpty(false)
+                .onErrorReturnItem(false)
+                .blockingGet();
     }
 
     private Single<String> createMnemonic() {
@@ -324,9 +398,9 @@ public class WalletManager {
             entity.setBackedUp(true);
             entity.setMnemonic("");
             entity.setChainId(NodeManager.getInstance().getChainId());
-            mWalletList.add(entity);
+            addWallet(entity);
             WalletDao.insertWalletInfo(entity.buildWalletInfoEntity());
-            AppSettings.getInstance().setOperateMenuFlag(false);
+            PreferenceTool.putBoolean(Constants.Preference.KEY_OPERATE_MENU_FLAG, false);
             return CODE_OK;
         } catch (Exception exp) {
             return CODE_ERROR_UNKNOW;
@@ -350,11 +424,10 @@ public class WalletManager {
         mWallet.setBackedUp(true);
         mWallet.setChainId(NodeManager.getInstance().getChainId());
         mWallet.setCreateTime(System.currentTimeMillis());
-        mWallet.setUpdateTime(System.currentTimeMillis());
-        mWallet.setName(String.format("%s%d", "Wallet", AppSettings.getInstance().getWalletNameSequence(NodeManager.getInstance().getChainId())));
-        mWalletList.add(mWallet);
+        mWallet.setName(String.format("%s%d", "Wallet", PreferenceTool.getInt(NodeManager.getInstance().getChainId(), 1)));
+        addWallet(mWallet);
         WalletDao.insertWalletInfo(mWallet.buildWalletInfoEntity());
-        AppSettings.getInstance().setOperateMenuFlag(false);
+        PreferenceTool.putBoolean(Constants.Preference.KEY_OPERATE_MENU_FLAG, false);
         return CODE_OK;
     }
 
@@ -381,9 +454,9 @@ public class WalletManager {
             entity.setBackedUp(true);
             entity.setMnemonic("");
             entity.setChainId(NodeManager.getInstance().getChainId());
-            mWalletList.add(entity);
+            addWallet(entity);
             WalletDao.insertWalletInfo(entity.buildWalletInfoEntity());
-            AppSettings.getInstance().setOperateMenuFlag(false);
+            PreferenceTool.putBoolean(Constants.Preference.KEY_OPERATE_MENU_FLAG, false);
             return CODE_OK;
         } catch (Exception exp) {
             return CODE_ERROR_UNKNOW;
@@ -429,14 +502,26 @@ public class WalletManager {
             entity.setBackedUp(true);
             entity.setMnemonic(JZWalletUtil.encryptMnemonic(entity.getKey(), mnemonic, password));
             entity.setChainId(NodeManager.getInstance().getChainId());
-            mWalletList.add(entity);
+            addWallet(entity);
             WalletDao.insertWalletInfo(entity.buildWalletInfoEntity());
-            AppSettings.getInstance().setOperateMenuFlag(false);
+            PreferenceTool.putBoolean(Constants.Preference.KEY_OPERATE_MENU_FLAG, false);
             return CODE_OK;
         } catch (Exception exp) {
             return CODE_ERROR_UNKNOW;
         }
     }
+
+
+    public boolean updateWalletName(Wallet wallet, String newName) {
+        for (Wallet walletEntity : mWalletList) {
+            if (wallet.getUuid().equals(walletEntity.getUuid())) {
+                walletEntity.setName(newName);
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     public boolean updateBackedUpWithUuid(String uuid, boolean backedUp) {
         if (TextUtils.isEmpty(uuid)) {
@@ -451,28 +536,32 @@ public class WalletManager {
         return WalletDao.updateBackedUpWithUuid(uuid, backedUp);
     }
 
-    public boolean updateWalletName(Wallet wallet, String newName) {
-        for (Wallet walletEntity : mWalletList) {
-            if (wallet.getUuid().equals(walletEntity.getUuid())) {
-                walletEntity.setName(newName);
-                return true;
-            }
-        }
-        return false;
-    }
+    public void updateWalletBackedUpPromptWithUUID(String uuid, boolean backedUpPrompt) {
 
-    public void updateWalletBalance(String address, double balance) {
-        int position = -1;
-        for (int i = 0; i < mWalletList.size(); i++) {
-            Wallet walletEntity = mWalletList.get(i);
-            if (address.equalsIgnoreCase(walletEntity.getPrefixAddress())) {
-                position = i;
-                break;
-            }
+        if (TextUtils.isEmpty(uuid)) {
+            return;
         }
-        if (position != -1) {
-//            mWalletList.get(position).setBalance(balance);
+
+        if (mWalletList.isEmpty()) {
+            return;
         }
+
+
+        Flowable.range(0, mWalletList.size())
+                .filter(new Predicate<Integer>() {
+                    @Override
+                    public boolean test(Integer integer) throws Exception {
+                        return TextUtils.equals(mWalletList.get(integer).getUuid(), uuid);
+                    }
+                })
+                .firstElement()
+                .doOnSuccess(new Consumer<Integer>() {
+                    @Override
+                    public void accept(Integer integer) throws Exception {
+                        mWalletList.get(integer).setBackedUpPrompt(backedUpPrompt);
+                    }
+                })
+                .subscribe();
     }
 
     public Wallet getWalletByAddress(String address) {
@@ -495,6 +584,10 @@ public class WalletManager {
                 break;
             }
         }
+        if (!isExistSelectedWallet() && !mWalletList.isEmpty()) {
+            mWalletList.get(0).setSelected(true);
+            EventPublisher.getInstance().sendWalletSelectedChangedEvent();
+        }
         return WalletDao.deleteWalletInfo(wallet.getUuid());
     }
 
@@ -502,7 +595,7 @@ public class WalletManager {
         try {
             return JZWalletUtil.decrypt(walletEntity.getKey(), password) != null;
         } catch (Exception exp) {
-            exp.printStackTrace();
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
             return false;
         }
     }
@@ -619,7 +712,7 @@ public class WalletManager {
 
     }
 
-    private int getPositionByAddress(String address) {
+    public int getPositionByAddress(String address) {
         return Flowable
                 .range(0, mWalletList.size())
                 .filter(new Predicate<Integer>() {
@@ -640,6 +733,9 @@ public class WalletManager {
      * @return
      */
     public Observable<BigDecimal> getTotal() {
+        if (mWalletList == null || mWalletList.isEmpty()) {
+            return Observable.just(BigDecimal.ZERO);
+        }
         return Flowable.fromIterable(mWalletList)
                 .map(new Function<Wallet, AccountBalance>() {
                     @Override

@@ -1,10 +1,9 @@
 package com.platon.aton.event;
 
-import com.platon.framework.network.NetState;
-import com.platon.aton.component.ui.view.AssetsFragment;
 import com.platon.aton.entity.Node;
 import com.platon.aton.entity.Transaction;
 import com.platon.aton.entity.Wallet;
+import com.platon.framework.network.NetState;
 
 public class EventPublisher {
 
@@ -39,7 +38,7 @@ public class EventPublisher {
         BusProvider.post(new Event.UpdateTransactionEvent(transaction));
     }
 
-    public void sendDeleteTransactionEvent(Transaction transaction){
+    public void sendDeleteTransactionEvent(Transaction transaction) {
         BusProvider.post(new Event.DeleteTransactionEvent(transaction));
     }
 
@@ -49,10 +48,6 @@ public class EventPublisher {
 
     public void sendUpdateWalletListEvent() {
         BusProvider.post(new Event.UpdateWalletListEvent());
-    }
-
-    public void sendUpdateAssetsTabEvent(@AssetsFragment.MainTab int tabIndex) {
-        BusProvider.post(new Event.UpdateAssetsTabEvent(tabIndex));
     }
 
     public void sendNodeChangedEvent(Node nodeEntity) {
@@ -87,11 +82,23 @@ public class EventPublisher {
         BusProvider.post(new Event.UpdateRefreshPageEvent());
     }
 
-    public void sendShowMyDelegateGuide(){
+    public void sendShowMyDelegateGuide() {
         BusProvider.post(new Event.MyDelegateGuide());
     }
 
-    public void sendShowValidatorsGuide(){
+    public void sendShowValidatorsGuide() {
         BusProvider.post(new Event.ValidatorsGuide());
+    }
+
+    public void sendWalletNumberChangeEvent() {
+        BusProvider.post(new Event.WalletNumberChangeEvent());
+    }
+
+    public void sendWalletSelectedChangedEvent() {
+        BusProvider.post(new Event.WalletSelectedChangedEvent());
+    }
+
+    public void sendBackedUpWalletSuccessedEvent(String uuid) {
+        BusProvider.post(new Event.BackedUpWalletSuccessedEvent(uuid));
     }
 }

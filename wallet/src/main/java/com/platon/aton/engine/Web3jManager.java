@@ -1,9 +1,10 @@
 package com.platon.aton.engine;
 
 
-import com.platon.aton.app.Constants;
 import com.platon.aton.entity.RPCErrorCode;
 import com.platon.aton.entity.RPCNonceResult;
+import com.platon.framework.app.Constants;
+import com.platon.framework.utils.LogUtils;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
@@ -74,7 +75,7 @@ public class Web3jManager {
             PlatonSendTransaction ethSendTransaction = getTransactionManager(credentials).sendTransaction(gasPrice, gasLimit, to, data, value);
             transactionHash = ethSendTransaction.getTransactionHash();
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
 
         return transactionHash;
@@ -87,7 +88,7 @@ public class Web3jManager {
                 return Convert.fromVon(new BigDecimal(ethGetBalance.getBalance()), Convert.Unit.LAT).doubleValue();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
         return 0;
     }
@@ -97,8 +98,8 @@ public class Web3jManager {
             PlatonTransaction ethTransaction = Web3jManager.getInstance().getWeb3j().platonGetTransactionByHash(transactionHash).send();
             Transaction transaction = ethTransaction.getTransaction();
             return transaction;
-        } catch (Exception exp) {
-            exp.printStackTrace();
+        } catch (Exception e) {
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
         return null;
     }
@@ -107,7 +108,7 @@ public class Web3jManager {
         try {
             return Web3jManager.getInstance().getWeb3j().platonEstimateGas(org.web3j.protocol.core.methods.request.Transaction.createEthCallTransaction(from, to, data)).send().getAmountUsed();
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
             return BigInteger.ZERO;
         }
     }
@@ -125,12 +126,12 @@ public class Web3jManager {
             }
             rpcNonceResult = new RPCNonceResult(RPCErrorCode.SUCCESS, ethGetTransactionCount.getTransactionCount());
         } catch (SocketTimeoutException e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
             rpcNonceResult = new RPCNonceResult(RPCErrorCode.SOCKET_TIMEOUT, NONE_NONCE);
         } catch (ClientConnectionException e) {
             rpcNonceResult = new RPCNonceResult(RPCErrorCode.CONNECT_TIMEOUT, NONE_NONCE);
         } catch (IOException e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
         return rpcNonceResult;
     }
@@ -140,7 +141,7 @@ public class Web3jManager {
             PlatonBlock ethBlock = Web3jManager.getInstance().getWeb3j().platonGetBlockByNumber(DefaultBlockParameterName.LATEST, false).send();
             return ethBlock.getBlock().getNumber().longValue();
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
         return 0;
     }
@@ -150,7 +151,7 @@ public class Web3jManager {
             PlatonGetCode code = Web3jManager.getInstance().getWeb3j().platonGetCode(address, DefaultBlockParameterName.LATEST).send();
             return code.getCode();
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
             return "0x";
         }
     }
@@ -170,7 +171,7 @@ public class Web3jManager {
                             PlatonGasPrice platonGasPrice = Web3jManager.getInstance().getWeb3j().platonGasPrice().send();
                             gasPrice = platonGasPrice.getGasPrice();
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            LogUtils.e(e.getMessage(),e.fillInStackTrace());
                         }
                         return gasPrice;
                     }
@@ -198,7 +199,7 @@ public class Web3jManager {
                             PlatonGasPrice platonGasPrice = Web3jManager.getInstance().getWeb3j().platonGasPrice().send();
                             gasPrice = platonGasPrice.getGasPrice();
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            LogUtils.e(e.getMessage(),e.fillInStackTrace());
                         }
                         return gasPrice;
                     }
@@ -221,7 +222,7 @@ public class Web3jManager {
                 transactionReceipt = ethGetTransactionReceipt.getTransactionReceipt();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
 
         if (transactionReceipt == null) {

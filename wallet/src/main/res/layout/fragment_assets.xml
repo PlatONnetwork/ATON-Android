@@ -1,141 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.scwang.smartrefresh.layout.SmartRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout_refresh"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    app:srlEnableAutoLoadMore="false">
+    android:layout_height="match_parent">
 
-    <com.scwang.smartrefresh.layout.header.ClassicsHeader
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/layout_refresh"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:srlTextUpdate="yyyy-MM-dd HH:mm" />
+        android:layout_height="match_parent"
+        app:srlEnableLoadMore="false">
 
-    <android.support.design.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/app_bar_layout"
+        <com.scwang.smartrefresh.layout.header.ClassicsHeader
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/color_f9fbff"
-            app:elevation="0dp">
+            app:srlTextUpdate="yyyy-MM-dd HH:mm" />
 
-            <include
-                android:id="@+id/ll_assets_title"
-                layout="@layout/include_assets_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed|snap" />
-
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/rl_wallet_detail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="8dp"
-                android:paddingTop="15dp"
-                app:layout_collapseMode="parallax">
-
-                <ImageView
-                    android:id="@+id/iv_wallet_avatar"
-                    android:layout_width="58dp"
-                    android:layout_height="58dp"
-                    android:layout_marginRight="9dp"
-                    android:src="@drawable/avatar_14"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/tv_wallet_name"
-                    style="@style/Text.000.16"
-                    android:layout_width="0dp"
-                    android:ellipsize="end"
-                    android:gravity="left"
-                    android:textStyle="bold"
-                    android:lines="1"
-                    app:layout_constrainedWidth="true"
-                    app:layout_constraintLeft_toRightOf="@id/iv_wallet_avatar"
-                    app:layout_constraintRight_toLeftOf="@+id/tv_backup"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="LWTLWTLWTLWTLWTLWTLWTLWTLWTLWTLWTLWTLWTLWTLWTLWTLWTLWTLWTLWT" />
-
-                <TextView
-                    android:id="@+id/tv_wallet_amount"
-                    style="@style/Text.000.13"
-                    android:layout_marginTop="8dp"
-                    android:ellipsize="end"
-                    android:singleLine="true"
-                    android:textStyle="bold"
-                    app:layout_constraintLeft_toRightOf="@id/iv_wallet_avatar"
-                    app:layout_constraintTop_toBottomOf="@id/tv_wallet_name"
-                    tools:text="236.45639292992" />
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/tv_restricted_amount"
-                    style="@style/Text.898c9e.12"
-                    android:layout_width="0dp"
-                    android:layout_marginLeft="2dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_toRightOf="@id/tv_wallet_amount"
-                    android:gravity="left|center_vertical"
-                    android:includeFontPadding="false"
-                    android:lines="1"
-                    app:autoSizeMaxTextSize="12sp"
-                    app:autoSizeMinTextSize="2sp"
-                    app:autoSizeTextType="uniform"
-                    app:layout_constrainedWidth="true"
-                    app:layout_constraintBaseline_toBaselineOf="@id/tv_wallet_amount"
-                    app:layout_constraintLeft_toRightOf="@id/tv_wallet_amount"
-                    app:layout_constraintRight_toRightOf="parent"
-                    tools:text="13456781345678134567813456781345678134567813456781345678134567813456781345678" />
-
-                <TextView
-                    android:id="@+id/tv_backup"
-                    style="@style/Text.105cfe.13"
-                    android:layout_marginRight="16dp"
-                    android:drawableLeft="@drawable/icon_backup"
-                    android:drawablePadding="5dp"
-                    android:text="@string/backup"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="16dp"
-                    android:background="@color/color_ebeef4"
-                    app:layout_constraintLeft_toRightOf="@id/iv_wallet_avatar"
-                    app:layout_constraintTop_toBottomOf="@id/tv_wallet_amount" />
-
-            </android.support.constraint.ConstraintLayout>
-
-            <include layout="@layout/layout_app_tab_assets" />
-
-            <View
-                android:id="@+id/v_tab_line"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/color_ebeef4"
-                android:visibility="gone" />
-        </android.support.design.widget.AppBarLayout>
-
-
-        <FrameLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            android:orientation="vertical">
 
-            <com.platon.aton.component.widget.ViewPagerSlide
-                android:id="@+id/vp_content"
+            <include layout="@layout/include_assets_top" />
+
+            <android.support.design.widget.CoordinatorLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent">
 
-            <include layout="@layout/layout_wallet_list_empty" />
-        </FrameLayout>
+                <android.support.design.widget.AppBarLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/color_00000000"
+                    app:elevation="0dp">
 
-    </android.support.design.widget.CoordinatorLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="186dp"
+                        android:orientation="vertical"
+                        app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-</com.scwang.smartrefresh.layout.SmartRefreshLayout>
+                        <include layout="@layout/include_assets_total_amount" />
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/rv_assets_wallet_list"
+                            android:layout_width="match_parent"
+                            android:layout_height="72dp"
+                            android:background="@color/color_f9fbff"
+                            android:clipChildren="false"
+                            android:clipToPadding="false"
+                            android:paddingLeft="16dp"
+                            android:paddingTop="14dp"
+                            android:paddingRight="16dp"
+                            android:paddingBottom="14dp"
+                            tools:listitem="@layout/item_assets_wallet_list"
+                            tools:orientation="horizontal" />
+
+                        <include layout="@layout/include_no_wallet" />
+
+                        <include layout="@layout/include_assets_wallet" />
+
+                    </LinearLayout>
+
+
+                </android.support.design.widget.AppBarLayout>
+
+
+                <android.support.v4.widget.NestedScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fillViewport="true"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                    <include layout="@layout/include_assets_transactions" />
+
+                </android.support.v4.widget.NestedScrollView>
+
+            </android.support.design.widget.CoordinatorLayout>
+
+        </LinearLayout>
+
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
+    <include layout="@layout/include_security_reminders" />
+
+    <include layout="@layout/include_device_offline_prompt" />
+</FrameLayout>
+

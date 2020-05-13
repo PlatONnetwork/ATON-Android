@@ -1,8 +1,6 @@
 package com.platon.aton.component.ui.presenter;
 
-import com.platon.framework.network.SchedulersTransformer;
 import com.platon.aton.app.LoadingTransformer;
-import com.platon.aton.component.ui.base.BasePresenter;
 import com.platon.aton.component.ui.contract.ManageWalletContract;
 import com.platon.aton.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.platon.aton.component.ui.dialog.ObservedWalletDialogFragment;
@@ -14,6 +12,8 @@ import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.event.EventPublisher;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.base.BasePresenter;
+import com.platon.framework.network.SchedulersTransformer;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.Keys;
@@ -31,9 +31,9 @@ public class ManageWalletPresenter extends BasePresenter<ManageWalletContract.Vi
 
     private Wallet mWalletEntity;
 
-    public ManageWalletPresenter(ManageWalletContract.View view) {
-        super(view);
-        mWalletEntity = getView().getWalletEntityFromIntent();
+    @Override
+    public void init(Wallet wallet) {
+        this.mWalletEntity = wallet;
     }
 
     @Override
@@ -83,13 +83,13 @@ public class ManageWalletPresenter extends BasePresenter<ManageWalletContract.Vi
                     }
                 })
                 .compose(RxUtils.getSingleSchedulerTransformer())
-                .compose(RxUtils.bindToLifecycle(currentActivity()))
+                .compose(bindToLifecycle())
                 .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
                 .subscribe(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean isSuccess) throws Exception {
                         if (isSuccess && isViewAttached()) {
-                            EventPublisher.getInstance().sendUpdateWalletListEvent();
+                            EventPublisher.getInstance().sendWalletNumberChangeEvent();
                             currentActivity().finish();
                         }
                     }
@@ -132,7 +132,7 @@ public class ManageWalletPresenter extends BasePresenter<ManageWalletContract.Vi
                     public void accept(Boolean isSuccess) throws Exception {
                         if (isSuccess && isViewAttached()) {
                             getView().showWalletName(name);
-                            EventPublisher.getInstance().sendUpdateWalletListEvent();
+                            EventPublisher.getInstance().sendWalletNumberChangeEvent();
                         }
                     }
                 });
@@ -143,7 +143,7 @@ public class ManageWalletPresenter extends BasePresenter<ManageWalletContract.Vi
         InputWalletPasswordDialogFragment.newInstance(mWalletEntity).setOnWalletCorrectListener(new InputWalletPasswordDialogFragment.OnWalletCorrectListener() {
             @Override
             public void onCorrect(Credentials credentials, String password) {
-                BackupMnemonicPhraseActivity.actionStart(getContext(), password, mWalletEntity, 1);
+                BackupMnemonicPhraseActivity.actionStart(getContext(), password, mWalletEntity, BackupMnemonicPhraseActivity.BackupMnemonicExport.MAIN_ACTIVITY);
             }
         }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
     }

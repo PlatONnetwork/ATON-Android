@@ -164,7 +164,7 @@ public class WalletEntity extends RealmObject {
         private String uuid;
         private String keyJson;
         private String name;
-        public String address;
+        private String address;
         private String keystorePath;
         private long createTime;
         private long updateTime;
@@ -236,7 +236,7 @@ public class WalletEntity extends RealmObject {
         }
     }
 
-    public Wallet buildWalletEntity() {
+    public Wallet buildWallet() {
         return new Wallet.Builder()
                 .uuid(uuid)
                 .key(keyJson)
@@ -249,6 +249,7 @@ public class WalletEntity extends RealmObject {
                 .mnemonic(mnemonic)
                 .chainId(chainId)
                 .backedUp(backedUp)
+                .backedUpPrompt(true)
                 .build();
     }
 

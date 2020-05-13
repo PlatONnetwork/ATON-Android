@@ -2,6 +2,7 @@ package com.platon.aton.component.adapter;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +14,14 @@ import com.platon.aton.R;
 import com.platon.aton.component.adapter.base.BaseViewHolder;
 import com.platon.aton.component.ui.view.TransactionRecordsActivity;
 import com.platon.aton.component.widget.PendingAnimationLayout;
+import com.platon.aton.component.widget.ShadowDrawable;
 import com.platon.aton.entity.Transaction;
 import com.platon.aton.entity.TransactionStatus;
 import com.platon.aton.entity.TransactionType;
 import com.platon.aton.entity.TransferType;
 import com.platon.aton.utils.AmountUtil;
 import com.platon.aton.utils.BigDecimalUtil;
+import com.platon.aton.utils.DensityUtil;
 
 import java.util.List;
 
@@ -30,6 +33,7 @@ public class TransactionViewHolder extends BaseViewHolder<Transaction> {
     private TextView mTransactionAmountTv;
     private TextView mTransactionStatusTv;
     private TextView mTransactionTimeTv;
+    private ConstraintLayout mItemParentLayout;
 
     private List<String> mQueryAddressList;
 
@@ -44,6 +48,7 @@ public class TransactionViewHolder extends BaseViewHolder<Transaction> {
         mTransactionAmountTv = itemView.findViewById(R.id.tv_transaction_amount);
         mTransactionStatusTv = itemView.findViewById(R.id.tv_transaction_status);
         mTransactionTimeTv = itemView.findViewById(R.id.tv_transaction_time);
+        mItemParentLayout = itemView.findViewById(R.id.layout_item_parent);
     }
 
     public void setQueryAddressList(List<String> queryAddressList) {
@@ -77,6 +82,14 @@ public class TransactionViewHolder extends BaseViewHolder<Transaction> {
         if (transaction == null) {
             return;
         }
+
+        ShadowDrawable.setShadowDrawable(mItemParentLayout,
+                ContextCompat.getColor(mContext, R.color.color_ffffff),
+                DensityUtil.dp2px(mContext, 4),
+                ContextCompat.getColor(mContext, R.color.color_cc9ca7c2),
+                DensityUtil.dp2px(mContext, 6),
+                0,
+                DensityUtil.dp2px(mContext, 0));
 
         TransactionStatus transactionStatus = transaction.getTxReceiptStatus();
         TransactionType transactionType = transaction.getTxType();

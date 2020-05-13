@@ -6,14 +6,12 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.platon.aton.R;
-import com.platon.aton.component.ui.base.BaseActivity;
-import com.platon.aton.component.ui.base.BasePresenter;
 import com.platon.aton.component.ui.contract.ReceiveTransationContract;
 import com.platon.aton.component.ui.dialog.BaseDialogFragment;
 import com.platon.aton.component.ui.dialog.ShareDialogFragment;
-import com.platon.aton.config.JZAppConfigure;
-import com.platon.aton.config.JZDirType;
 import com.platon.aton.engine.WalletManager;
+import com.platon.aton.engine.directory.DirType;
+import com.platon.aton.engine.directory.DirectroyController;
 import com.platon.aton.entity.ShareAppInfo;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.utils.CommonUtil;
@@ -21,6 +19,9 @@ import com.platon.aton.utils.DensityUtil;
 import com.platon.aton.utils.PhotoUtil;
 import com.platon.aton.utils.QRCodeEncoder;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.base.BasePresenter;
+import com.platon.framework.utils.ToastUtil;
 import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 
@@ -40,10 +41,6 @@ public class ReceiveTransactionPresenter extends BasePresenter<ReceiveTransation
 
     private Wallet walletEntity;
     private Bitmap mQRCodeBitmap;
-
-    public ReceiveTransactionPresenter(ReceiveTransationContract.View view) {
-        super(view);
-    }
 
     @Override
     public void loadData() {
@@ -95,14 +92,16 @@ public class ReceiveTransactionPresenter extends BasePresenter<ReceiveTransation
         }
         View shareView = getView().shareView(walletEntity.getName(), text, mQRCodeBitmap);
         final BaseActivity activity = currentActivity();
-        JZAppConfigure.getInstance().getDir(activity, JZDirType.plat, new JZAppConfigure.DirCallback() {
+
+        DirectroyController.getInstance().getDir(activity, DirType.image, new DirectroyController.DirCallback() {
             @Override
             public void callback(File dir) {
                 if (dir != null) {
                     Bitmap shareBitmap = screenShot(shareView);
                     boolean saved = PhotoUtil.saveImageToAlbum(activity, dir, getImageName(), shareBitmap);
                     if (saved) {
-                        showLongToast(R.string.save_image_tips);
+                        ToastUtil.showLongToast(activity, activity.getResources().getString(R.string.save_image_tips));
+                       // showLongToast(R.string.save_image_tips);
                         List<ShareAppInfo> shareAppInfoList = Arrays.asList(ShareAppInfo.values());
                         if (!shareAppInfoList.isEmpty()) {
                             ShareDialogFragment.newInstance(new ArrayList<>(shareAppInfoList))
@@ -144,6 +143,8 @@ public class ReceiveTransactionPresenter extends BasePresenter<ReceiveTransation
                 }
             }
         });
+
+
     }
 
     @Override

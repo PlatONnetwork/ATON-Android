@@ -262,7 +262,7 @@ public class ToggleButton extends View {
         spotMaxX = endX - borderWidth;
         spotSize = height - 4 * borderWidth;
         spotX = toggleOn ? spotMaxX : spotMinX;
-        offLineWidth = (float) SpringUtil.mapValueFromRangeToRange(1 - (toggleOn ? 1 : 0), 0, 1, 10, spotSize);
+        offLineWidth = (float) SpringUtil.mapValueFromRangeToRange((double)(1 - (toggleOn ? 1 : 0)), 0, 1, 10, spotSize);
     }
 
 

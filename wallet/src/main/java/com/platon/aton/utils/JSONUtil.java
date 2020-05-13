@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.facebook.stetho.common.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +56,7 @@ public class JSONUtil {
         try {
             t = JSON.parseObject(text, clazz);
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtil.e(e.getMessage(),e.fillInStackTrace());
         }
         return t;
     }
@@ -73,7 +74,7 @@ public class JSONUtil {
         try {
             list = JSON.parseArray(text, clazz);
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtil.e(e.getMessage(),e.fillInStackTrace());
         }
         return list;
     }
@@ -95,7 +96,7 @@ public class JSONUtil {
                 list.addAll(parseArray(array.getJSONArray(i).toJSONString(), clazz));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtil.e(e.getMessage(),e.fillInStackTrace());
         }
         return list;
     }
@@ -111,7 +112,7 @@ public class JSONUtil {
         try {
             json = JSON.toJSONString(object, serializeConfig, serializerFeature);
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtil.e(e.getMessage(),e.fillInStackTrace());
         }
         return json;
     }
@@ -133,8 +134,8 @@ public class JSONUtil {
         for (Map.Entry<String, String> entry : params.entrySet()) {
             try {
                 jsonObject.put(entry.getKey(), entry.getValue());
-            } catch (Exception exp) {
-                exp.printStackTrace();
+            } catch (Exception e) {
+                LogUtil.e(e.getMessage(),e.fillInStackTrace());
             }
         }
 

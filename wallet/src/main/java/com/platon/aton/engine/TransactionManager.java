@@ -2,10 +2,6 @@ package com.platon.aton.engine;
 
 import android.text.TextUtils;
 
-import com.platon.framework.network.ApiRequestBody;
-import com.platon.framework.network.ApiResponse;
-import com.platon.framework.util.MapUtils;
-import com.platon.aton.app.Constants;
 import com.platon.aton.app.CustomThrowable;
 import com.platon.aton.db.sqlite.TransactionDao;
 import com.platon.aton.entity.RPCErrorCode;
@@ -19,9 +15,15 @@ import com.platon.aton.entity.TransactionType;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.event.EventPublisher;
 import com.platon.aton.utils.BigDecimalUtil;
+import com.platon.aton.utils.BigIntegerUtil;
 import com.platon.aton.utils.JSONUtil;
 import com.platon.aton.utils.NumberParserUtils;
 import com.platon.aton.utils.SignCodeUtils;
+import com.platon.framework.app.Constants;
+import com.platon.framework.network.ApiRequestBody;
+import com.platon.framework.network.ApiResponse;
+import com.platon.framework.utils.LogUtils;
+import com.platon.framework.utils.MapUtils;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
@@ -141,9 +143,9 @@ public class TransactionManager {
         }
     }
 
-    public Single<RPCTransactionResult> sendContractTransaction(PlatOnContract platOnContract, Credentials credentials, PlatOnFunction platOnFunction) throws IOException {
+    public Single<RPCTransactionResult> sendContractTransaction(PlatOnContract platOnContract, Credentials credentials, PlatOnFunction platOnFunction, String nonce) throws IOException {
 
-        return signedTransaction(platOnContract, credentials, platOnFunction.getGasProvider().getGasPrice(), platOnFunction.getGasProvider().getGasLimit(), platOnContract.getContractAddress(), platOnFunction.getEncodeData(), BigInteger.ZERO)
+        return signedTransaction(platOnContract, credentials, platOnFunction.getGasProvider().getGasPrice(), platOnFunction.getGasProvider().getGasLimit(), platOnContract.getContractAddress(), platOnFunction.getEncodeData(), BigInteger.ZERO, nonce)
                 .flatMap(new Function<String, SingleSource<RPCTransactionResult>>() {
                     @Override
                     public SingleSource<RPCTransactionResult> apply(String signedMessage) throws Exception {
@@ -174,10 +176,12 @@ public class TransactionManager {
                             @Override
                             public void subscribe(SingleEmitter<RPCTransactionResult> emitter) {
 
-                                if (apiResponseResponse != null && apiResponseResponse.isSuccessful() && apiResponseResponse.body().getErrorCode() == ErrorCode.SUCCESS) {
-                                    emitter.onSuccess(new RPCTransactionResult(RPCErrorCode.SUCCESS, apiResponseResponse.body().getData()));
-                                } else {
-                                    emitter.onSuccess(new RPCTransactionResult(apiResponseResponse.body().getErrorCode()));
+                                if (apiResponseResponse != null) {
+                                    if (apiResponseResponse.isSuccessful() && apiResponseResponse.body().getErrorCode() == ErrorCode.SUCCESS) {
+                                        emitter.onSuccess(new RPCTransactionResult(RPCErrorCode.SUCCESS, apiResponseResponse.body().getData()));
+                                    } else {
+                                        emitter.onSuccess(new RPCTransactionResult(apiResponseResponse.body().getErrorCode()));
+                                    }
                                 }
                             }
                         });
@@ -225,12 +229,12 @@ public class TransactionManager {
 
     }
 
-    private Single<String> getSignedMessage(ECKeyPair ecKeyPair, String from, String toAddress, BigDecimal amount, BigInteger gasPrice, BigInteger gasLimit) {
+    private Single<String> getSignedMessageSingle(ECKeyPair ecKeyPair, String from, String toAddress, BigDecimal amount, BigInteger gasPrice, BigInteger gasLimit, BigInteger nonce) {
 
-        return getNonce(from)
-                .map(new Function<BigInteger, String>() {
+        return Single
+                .fromCallable(new Callable<String>() {
                     @Override
-                    public String apply(BigInteger nonce) throws Exception {
+                    public String call() throws Exception {
                         return getSignedMessage(ecKeyPair, from, toAddress, amount, gasPrice, gasLimit, nonce);
                     }
                 });
@@ -256,7 +260,7 @@ public class TransactionManager {
             try {
                 remarkByte = remark.getBytes(UTF_8);
             } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+                LogUtils.e(e.getMessage(),e.fillInStackTrace());
             }
         }
         byte[] message = new byte[signedDataByte.length + remarkByte.length];
@@ -280,7 +284,7 @@ public class TransactionManager {
         try {
             message = data.getBytes(UTF_8);
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
             return null;
         }
         byte[] messageHash = Hash.sha3(message);
@@ -295,23 +299,20 @@ public class TransactionManager {
     }
 
     private Single<String> signedTransaction(PlatOnContract platOnContract, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit, String to,
-                                             String data, BigInteger value) throws IOException {
+                                             String data, BigInteger value, String nonce) throws IOException {
 
-        return getNonce(credentials.getAddress())
-                .map(new Function<BigInteger, String>() {
-
-                    @Override
-                    public String apply(BigInteger nonce) throws Exception {
-                        return ((RawTransactionManager) platOnContract.getTransactionManager()).signedTransaction(RawTransaction.createTransaction(
-                                nonce,
-                                gasPrice,
-                                gasLimit,
-                                to,
-                                value,
-                                data));
-                    }
-                });
-
+        return Single.fromCallable(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                return ((RawTransactionManager) platOnContract.getTransactionManager()).signedTransaction(RawTransaction.createTransaction(
+                        BigIntegerUtil.toBigInteger(nonce),
+                        gasPrice,
+                        gasLimit,
+                        to,
+                        value,
+                        data));
+            }
+        });
     }
 
 
@@ -327,12 +328,12 @@ public class TransactionManager {
             String hash = Web3jManager.getInstance().getWeb3j().platonSendRawTransaction(hexValue).send().getTransactionHash();
             rpcTransactionResult = new RPCTransactionResult(RPCErrorCode.SUCCESS, hash);
         } catch (SocketTimeoutException e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
             rpcTransactionResult = new RPCTransactionResult(RPCErrorCode.SOCKET_TIMEOUT, Hash.sha3(hexValue));
         } catch (ClientConnectionException e) {
             rpcTransactionResult = new RPCTransactionResult(RPCErrorCode.CONNECT_TIMEOUT);
         } catch (IOException e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
         return rpcTransactionResult;
     }
@@ -344,7 +345,7 @@ public class TransactionManager {
             PlatonSendTransaction transaction = Web3jManager.getInstance().getWeb3j().platonSendRawTransaction(signedMessage).send();
             return transaction.getTransactionHash();
         } catch (IOException e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
 
         return null;
@@ -354,7 +355,7 @@ public class TransactionManager {
         try {
             return Web3jManager.getInstance().getWeb3j().platonSendRawTransaction(signedMessage).send();
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
         return null;
     }
@@ -369,15 +370,15 @@ public class TransactionManager {
 
             return Numeric.toHexString(signedMessage);
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
 
         return null;
     }
 
-    public Single<Transaction> sendTransferTransaction(ECKeyPair ecKeyPair, String fromAddress, String toAddress, String walletName, BigDecimal transferAmount, BigDecimal feeAmount, BigInteger gasPrice, BigInteger gasLimit, String remark) {
+    public Single<Transaction> sendTransferTransaction(ECKeyPair ecKeyPair, String fromAddress, String toAddress, String walletName, BigDecimal transferAmount, BigDecimal feeAmount, BigInteger gasPrice, BigInteger gasLimit, BigInteger nonce, String remark) {
 
-        return getSignedMessage(ecKeyPair, fromAddress, toAddress, transferAmount, gasPrice, gasLimit)
+        return getSignedMessageSingle(ecKeyPair, fromAddress, toAddress, transferAmount, gasPrice, gasLimit, nonce)
                 .flatMap(new Function<String, SingleSource<Transaction>>() {
                     @Override
                     public SingleSource<Transaction> apply(String signedMessage) throws Exception {

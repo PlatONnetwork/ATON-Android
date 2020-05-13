@@ -9,7 +9,6 @@ import android.widget.ImageView;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.app.CustomObserver;
 import com.platon.aton.component.widget.ShadowButton;
 import com.platon.aton.entity.TransactionAuthorizationData;
@@ -17,6 +16,7 @@ import com.platon.aton.utils.DensityUtil;
 import com.platon.aton.utils.GZipUtil;
 import com.platon.aton.utils.QRCodeEncoder;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.app.Constants;
 
 import java.util.concurrent.Callable;
 
@@ -31,6 +31,8 @@ public class TransactionAuthorizationDialogFragment extends BaseDialogFragment {
     ImageView ivTransactionData;
     @BindView(R.id.sbtn_next)
     ShadowButton sbtnNext;
+    @BindView(R.id.iv_close)
+    ImageView ivClose;
 
     private Unbinder unbinder;
     private OnNextBtnClickListener nextBtnClickListener;
@@ -43,7 +45,7 @@ public class TransactionAuthorizationDialogFragment extends BaseDialogFragment {
         return dialogFragment;
     }
 
-    public TransactionAuthorizationDialogFragment setOnNextBtnClickListener(OnNextBtnClickListener nextBtnClickListener){
+    public TransactionAuthorizationDialogFragment setOnNextBtnClickListener(OnNextBtnClickListener nextBtnClickListener) {
         this.nextBtnClickListener = nextBtnClickListener;
         return this;
     }
@@ -53,8 +55,6 @@ public class TransactionAuthorizationDialogFragment extends BaseDialogFragment {
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_fragment_transaction_authorization, null, false);
         baseDialog.setContentView(contentView);
         setFullWidthEnable(true);
-        setHorizontalMargin(DensityUtil.dp2px(getContext(), 14f));
-        setyOffset(DensityUtil.dp2px(getContext(), 16f));
         setAnimation(R.style.Animation_slide_in_bottom);
         unbinder = ButterKnife.bind(this, contentView);
         initViews();
@@ -73,7 +73,7 @@ public class TransactionAuthorizationDialogFragment extends BaseDialogFragment {
                     @Override
                     public void accept(Object o) {
                         dismiss();
-                        if (nextBtnClickListener != null){
+                        if (nextBtnClickListener != null) {
                             nextBtnClickListener.onNextBtnClick();
                         }
                     }
@@ -97,6 +97,17 @@ public class TransactionAuthorizationDialogFragment extends BaseDialogFragment {
                     }
                 });
 
+        RxView.clicks(ivClose)
+                .compose(RxUtils.getClickTransformer())
+                .compose(bindToLifecycle())
+                .subscribe(new CustomObserver<Object>() {
+
+                    @Override
+                    public void accept(Object o) {
+                        dismiss();
+                    }
+                });
+
     }
 
     @Override
@@ -107,7 +118,7 @@ public class TransactionAuthorizationDialogFragment extends BaseDialogFragment {
         }
     }
 
-    public interface OnNextBtnClickListener{
+    public interface OnNextBtnClickListener {
         void onNextBtnClick();
     }
 }

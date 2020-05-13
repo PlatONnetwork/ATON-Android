@@ -13,6 +13,7 @@ import com.platon.aton.utils.BigDecimalUtil;
 import com.platon.aton.utils.DateUtil;
 import com.platon.aton.utils.JSONUtil;
 import com.platon.aton.utils.NumberParserUtils;
+import com.platon.framework.utils.LogUtils;
 
 import org.web3j.abi.datatypes.generated.Uint32;
 
@@ -801,8 +802,8 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
         Transaction transaction = null;
         try {
             transaction = (Transaction) super.clone();
-        } catch (CloneNotSupportedException exception) {
-            exception.printStackTrace();
+        } catch (CloneNotSupportedException exp) {
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
         }
         return transaction;
     }
@@ -820,6 +821,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable, Cloneab
                 .setNodeName(nodeName)
                 .setTotalReward(totalReward)
                 .setUnDelegation(unDelegation)
+                .setRemark(remark)
                 .build();
     }
 

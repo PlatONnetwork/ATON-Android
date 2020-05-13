@@ -15,10 +15,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
-import com.platon.framework.util.AndroidUtil;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
-import com.platon.aton.component.ui.base.MVPBaseActivity;
 import com.platon.aton.component.ui.contract.VerificationMnemonicContract;
 import com.platon.aton.component.ui.dialog.CommonTipsDialogFragment;
 import com.platon.aton.component.ui.dialog.OnDialogViewClickListener;
@@ -26,6 +23,9 @@ import com.platon.aton.component.ui.presenter.VerificationMnemonicPresenter;
 import com.platon.aton.component.widget.CommonTitleBar;
 import com.platon.aton.component.widget.ShadowButton;
 import com.platon.aton.entity.Wallet;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.utils.AndroidUtil;
 
 import java.util.ArrayList;
 
@@ -33,7 +33,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMnemonicPresenter> implements VerificationMnemonicContract.View, View.OnClickListener {
+public class VerificationMnemonicActivity extends BaseActivity<VerificationMnemonicContract.View, VerificationMnemonicPresenter> implements VerificationMnemonicContract.View, View.OnClickListener {
 
     Unbinder unbinder;
 
@@ -80,8 +80,20 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
     }
 
     @Override
-    protected VerificationMnemonicPresenter createPresenter() {
-        return new VerificationMnemonicPresenter(this);
+    public VerificationMnemonicPresenter createPresenter() {
+        return new VerificationMnemonicPresenter();
+    }
+
+    @Override
+    public VerificationMnemonicContract.View createView() {
+        return this;
+    }
+
+    @Override
+    public void init() {
+        unbinder = ButterKnife.bind(this);
+        initView();
+        getPresenter().init();
     }
 
     @Override
@@ -106,13 +118,8 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_verification_mnemonic);
-        unbinder = ButterKnife.bind(this);
-        initView();
-
-        mPresenter.init();
+    public int getLayoutId() {
+        return R.layout.activity_verification_mnemonic;
     }
 
     @Override
@@ -203,7 +210,7 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mPresenter.checkBottomListItem(position);
+                getPresenter().checkBottomListItem(position);
             }
         });
         int paddingLeftAndRight = AndroidUtil.dip2px(this, 12f);
@@ -223,73 +230,73 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
         mTvMnemonic1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.checkTopListItem(0);
+                getPresenter().checkTopListItem(0);
             }
         });
         mTvMnemonic2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.checkTopListItem(1);
+                getPresenter().checkTopListItem(1);
             }
         });
         mTvMnemonic3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.checkTopListItem(2);
+                getPresenter().checkTopListItem(2);
             }
         });
         mTvMnemonic4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.checkTopListItem(3);
+                getPresenter().checkTopListItem(3);
             }
         });
         mTvMnemonic5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.checkTopListItem(4);
+                getPresenter().checkTopListItem(4);
             }
         });
         mTvMnemonic6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.checkTopListItem(5);
+                getPresenter().checkTopListItem(5);
             }
         });
         mTvMnemonic7.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.checkTopListItem(6);
+                getPresenter().checkTopListItem(6);
             }
         });
         mTvMnemonic8.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.checkTopListItem(7);
+                getPresenter().checkTopListItem(7);
             }
         });
         mTvMnemonic9.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.checkTopListItem(8);
+                getPresenter().checkTopListItem(8);
             }
         });
         mTvMnemonic10.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.checkTopListItem(9);
+                getPresenter().checkTopListItem(9);
             }
         });
         mTvMnemonic11.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.checkTopListItem(10);
+                getPresenter().checkTopListItem(10);
             }
         });
         mTvMnemonic12.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.checkTopListItem(11);
+                getPresenter().checkTopListItem(11);
             }
         });
     }
@@ -342,10 +349,10 @@ public class VerificationMnemonicActivity extends MVPBaseActivity<VerificationMn
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.sbtn_submit:
-                mPresenter.submit();
+                getPresenter().submit();
                 break;
             case R.id.btn_empty:
-                mPresenter.emptyChecked();
+                getPresenter().emptyChecked();
                 break;
             default:
                 break;

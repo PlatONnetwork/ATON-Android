@@ -14,7 +14,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.widget.ProgressBar;
 
-import com.platon.framework.util.AndroidUtil;
+import com.platon.framework.utils.AndroidUtil;
 import com.platon.aton.R;
 
 public class CustomProgressBar extends ProgressBar {
@@ -53,7 +53,7 @@ public class CustomProgressBar extends ProgressBar {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected  void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         drawIconAndText(canvas);
     }
@@ -89,9 +89,9 @@ public class CustomProgressBar extends ProgressBar {
         int iconWidth = defaultIcon.getWidth();
         int iconHeight = defaultIcon.getHeight();
         float iconX = AndroidUtil.dip2px(mContext, ICON_TEXT_SPACING_DP);
-        float iconY = (height / 2) - iconHeight / 2;
+        float iconY =  ((float)height / 2) - ((float)iconHeight / 2);
         float textX = iconWidth + 2 * iconX;
-        float textY = (height / 2) - textRect.centerY();
+        float textY = ((float)height / 2) - textRect.centerY();
         float maxWidth = width - textX - iconX;
         String newText = text;
         if(text != null && text.length() > 0) {

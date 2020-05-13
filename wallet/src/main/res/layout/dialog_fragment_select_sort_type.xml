@@ -4,19 +4,35 @@
     android:id="@+id/layout_content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_common_dialog_fragment"
+    android:background="@drawable/bg_select_sort_type_dialog_fragment"
     android:divider="@drawable/bg_select_wallet_list_divider"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:paddingLeft="26dp"
-    android:paddingRight="26dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
     android:showDividers="middle">
 
-    <TextView
-        style="@style/Text.000000.16"
-        android:layout_height="48dp"
-        android:text="@string/msg_sort"
-        android:textStyle="bold" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="62dp">
+
+        <TextView
+            style="@style/Text.000000.16"
+            android:layout_centerInParent="true"
+            android:text="@string/msg_sort"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/iv_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="10dp"
+            android:src="@drawable/icon_shut_down" />
+
+
+    </RelativeLayout>
 
     <ListView
         android:id="@+id/list_sort_type"

@@ -6,32 +6,29 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 
-import com.platon.framework.network.ApiRequestBody;
-import com.platon.framework.network.ApiResponse;
-import com.platon.framework.network.ApiSingleObserver;
 import com.platon.aton.BuildConfig;
 import com.platon.aton.R;
 import com.platon.aton.app.CustomObserver;
-import com.platon.aton.component.ui.base.BasePresenter;
 import com.platon.aton.component.ui.contract.MainContract;
 import com.platon.aton.component.ui.dialog.CommonTipsDialogFragment;
 import com.platon.aton.component.ui.dialog.OnDialogViewClickListener;
 import com.platon.aton.component.ui.view.MainActivity;
-import com.platon.aton.config.AppSettings;
 import com.platon.aton.engine.DeviceManager;
 import com.platon.aton.engine.ServerUtils;
 import com.platon.aton.engine.VersionUpdate;
 import com.platon.aton.entity.VersionInfo;
 import com.platon.aton.utils.DateUtil;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BasePresenter;
+import com.platon.framework.network.ApiRequestBody;
+import com.platon.framework.network.ApiResponse;
+import com.platon.framework.network.ApiSingleObserver;
+import com.platon.framework.utils.PreferenceTool;
 import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 public class MainPresenter extends BasePresenter<MainContract.View> implements MainContract.Presenter {
-
-    public MainPresenter(MainContract.View view) {
-        super(view);
-    }
 
     @Override
     public void checkVersion() {
@@ -51,7 +48,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
                             if (shouldUpdate(versionInfo)) {
                                 //如果不是强制更新，则保存上次弹框时间
                                 if (!versionInfo.isForce()) {
-                                    AppSettings.getInstance().setUpdateVersionTime(System.currentTimeMillis());
+                                    PreferenceTool.putLong(Constants.Preference.KEY_UPDATE_VERSION_TIME, System.currentTimeMillis());
                                 }
                                 showUpdateVersionDialog(versionInfo);
                             }
@@ -66,7 +63,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
     }
 
     private boolean shouldUpdate(VersionInfo versionInfo) {
-        long lastUpdateTime = AppSettings.getInstance().getUpdateVersionTime();
+        long lastUpdateTime = PreferenceTool.getLong(Constants.Preference.KEY_UPDATE_VERSION_TIME, 0L);
         boolean shouldShowUpdateDialog = !(lastUpdateTime != 0 && DateUtil.isToday(lastUpdateTime));
         return (versionInfo.isNeed() && versionInfo.isForce()) || (versionInfo.isNeed() && shouldShowUpdateDialog);
     }

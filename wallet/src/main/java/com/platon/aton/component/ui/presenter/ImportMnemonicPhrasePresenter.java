@@ -6,21 +6,18 @@ import android.os.Message;
 import android.text.TextUtils;
 
 import com.platon.aton.R;
-import com.platon.aton.component.ui.base.BasePresenter;
 import com.platon.aton.component.ui.contract.ImportMnemonicPhraseContract;
 import com.platon.aton.component.ui.view.MainActivity;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.engine.NodeManager;
 import com.platon.aton.entity.Wallet;
+import com.platon.aton.event.EventPublisher;
+import com.platon.framework.base.BasePresenter;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class ImportMnemonicPhrasePresenter extends BasePresenter<ImportMnemonicPhraseContract.View> implements ImportMnemonicPhraseContract.Presenter {
-
-    public ImportMnemonicPhrasePresenter(ImportMnemonicPhraseContract.View view) {
-        super(view);
-    }
 
     @Override
     public void init() {
@@ -107,6 +104,7 @@ public class ImportMnemonicPhrasePresenter extends BasePresenter<ImportMnemonicP
             super.handleMessage(msg);
             switch (msg.what) {
                 case MSG_OK:
+                    EventPublisher.getInstance().sendWalletNumberChangeEvent();
                     dismissLoadingDialogImmediately();
                     MainActivity.actionStart(currentActivity());
                     currentActivity().finish();

@@ -4,16 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,12 +19,12 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
-import com.platon.aton.component.ui.base.MVPBaseFragment;
 import com.platon.aton.component.ui.contract.ImportMnemonicPhraseContract;
 import com.platon.aton.component.ui.presenter.ImportMnemonicPhrasePresenter;
 import com.platon.aton.component.widget.ShadowButton;
 import com.platon.aton.utils.CheckStrength;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseLazyFragment;
 
 import java.util.List;
 
@@ -39,7 +36,7 @@ import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 
-public class ImportMnemonicPhraseFragment extends MVPBaseFragment<ImportMnemonicPhrasePresenter> implements ImportMnemonicPhraseContract.View {
+public class ImportMnemonicPhraseFragment extends BaseLazyFragment<ImportMnemonicPhraseContract.View, ImportMnemonicPhrasePresenter> implements ImportMnemonicPhraseContract.View {
     Unbinder unbinder;
     @BindView(R.id.et_mnemonic1)
     EditText mEtMnemonicPhrase1;
@@ -102,22 +99,26 @@ public class ImportMnemonicPhraseFragment extends MVPBaseFragment<ImportMnemonic
     private boolean mShowRepeatPassword;
 
     @Override
-    protected ImportMnemonicPhrasePresenter createPresenter() {
-        return new ImportMnemonicPhrasePresenter(this);
+    public int getLayoutId() {
+        return R.layout.fragment_import_mnemonic_phrase;
     }
 
     @Override
-    protected void onFragmentPageStart() {
+    public ImportMnemonicPhrasePresenter createPresenter() {
+        return new ImportMnemonicPhrasePresenter();
     }
 
     @Override
-    protected View onCreateFragmentPage(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_import_mnemonic_phrase, container, false);
-        unbinder = ButterKnife.bind(this, view);
+    public ImportMnemonicPhraseContract.View createView() {
+        return this;
+    }
+
+    @Override
+    public void init(View rootView) {
+        unbinder = ButterKnife.bind(this, rootView);
         addListeners();
         addTextWatcher();
         initDatas();
-        return view;
     }
 
     private void addListeners() {
@@ -178,7 +179,7 @@ public class ImportMnemonicPhraseFragment extends MVPBaseFragment<ImportMnemonic
                 builder.append(mnemonic10).append(" ");
                 builder.append(mnemonic11).append(" ");
                 builder.append(mnemonic12);
-                mPresenter.importMnemonic(builder.toString(),
+                getPresenter().importMnemonic(builder.toString(),
                         mEtWalletName.getText().toString(),
                         mEtPassword.getText().toString(),
                         mEtRepeatPassword.getText().toString());
@@ -227,7 +228,7 @@ public class ImportMnemonicPhraseFragment extends MVPBaseFragment<ImportMnemonic
                         showNameError(string(R.string.validWalletNameEmptyTips), true);
                     } else if (name.length() > 20) {
                         showNameError(string(R.string.validWalletNameTips), true);
-                    } else if (mPresenter.isExists(name)) {
+                    } else if (getPresenter().isExists(name)) {
                         showNameError(string(R.string.wallet_name_exists), true);
                     } else {
                         showNameError("", false);
@@ -323,7 +324,7 @@ public class ImportMnemonicPhraseFragment extends MVPBaseFragment<ImportMnemonic
         showMnemonicPhraseError("", false);
         showNameError("", false);
         showPasswordError("", false);
-        mPresenter.init();
+        getPresenter().init();
     }
 
     @Override
@@ -335,7 +336,7 @@ public class ImportMnemonicPhraseFragment extends MVPBaseFragment<ImportMnemonic
         if (requestCode == ImportWalletActivity.REQ_QR_CODE) {
             Bundle bundle = data.getExtras();
             String scanResult = bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA, "");
-            mPresenter.parseQRCode(scanResult);
+            getPresenter().parseQRCode(scanResult);
         }
     }
 

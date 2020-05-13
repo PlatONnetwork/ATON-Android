@@ -5,59 +5,67 @@
     android:id="@+id/layout_content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_send_transaction_dialog_fragment"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
-    android:paddingLeft="26dp"
-    android:paddingTop="24dp"
-    android:paddingRight="26dp"
-    android:paddingBottom="28dp">
+    android:background="@drawable/bg_send_transaction_dialog_fragment">
 
-    <TextView
-        android:id="@+id/tv_title"
-        style="@style/Text.000000.16"
-        android:text="@string/send_transaction"
-        android:textStyle="bold"
+    <RelativeLayout
+        android:id="@+id/layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="62dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <TextView
+            android:id="@+id/tv_title"
+            style="@style/Text.000000.16"
+            android:layout_centerInParent="true"
+            android:text="@string/send_transaction"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/iv_close"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:src="@drawable/icon_shut_down" />
+
+    </RelativeLayout>
+
 
     <View
         android:id="@+id/view_divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:background="@drawable/bg_send_transaction_divider"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_title" />
+        app:layout_constraintTop_toBottomOf="@id/layout_title" />
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tv_amount"
-        style="@style/Text.105cfe.24"
-        android:layout_marginTop="16dp"
+        style="@style/Text.105cfe.30"
+        android:layout_width="0dp"
+        android:layout_marginTop="30dp"
+        android:lines="1"
         android:textStyle="bold"
+        app:autoSizeMaxTextSize="30sp"
+        app:layout_constrainedWidth="true"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/tv_amount_unit"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/view_divider"
         tools:text="10.345" />
-
-    <TextView
-        android:id="@+id/tv_amount_unit"
-        style="@style/Text.105cfe.16"
-        android:layout_marginLeft="6dp"
-        android:text="LAT"
-        app:layout_constraintBaseline_toBaselineOf="@id/tv_amount"
-        app:layout_constraintLeft_toRightOf="@id/tv_amount"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/view_divider" />
 
     <LinearLayout
         android:id="@+id/table_transaction_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="30dp"
         android:divider="@drawable/divider_transaction_info_item"
         android:orientation="vertical"
         android:showDividers="middle"
@@ -71,29 +79,13 @@
         android:id="@+id/sbtn_confirm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:paddingLeft="2dp"
-        android:paddingTop="4dp"
-        android:paddingRight="2dp"
-        android:paddingBottom="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="42dp"
+        android:layout_marginRight="42dp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintTop_toBottomOf="@id/table_transaction_info"
         app:text="@string/next"
         app:textAppearance="@style/MainButtonStyle"
         app:textBackground="@drawable/bg_main_button" />
-
-    <TextView
-        android:id="@+id/tv_cancel"
-        style="@style/Text.316def.14"
-        android:layout_width="80dp"
-        android:layout_height="40dp"
-        android:gravity="top|center_horizontal"
-        android:paddingTop="8dp"
-        android:text="@string/cancel"
-        android:textStyle="bold"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sbtn_confirm" />
 
 </android.support.constraint.ConstraintLayout>

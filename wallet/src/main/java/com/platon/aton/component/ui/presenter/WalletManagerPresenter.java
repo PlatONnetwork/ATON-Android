@@ -1,14 +1,16 @@
 package com.platon.aton.component.ui.presenter;
 
-import com.platon.aton.component.ui.base.BasePresenter;
 import com.platon.aton.component.ui.contract.WalletManagerContract;
 import com.platon.aton.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.platon.aton.component.ui.view.BackupMnemonicPhraseActivity;
 import com.platon.aton.component.ui.view.ManageWalletActivity;
-import com.platon.aton.config.AppSettings;
 import com.platon.aton.db.sqlite.WalletDao;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.Wallet;
+import com.platon.aton.event.EventPublisher;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BasePresenter;
+import com.platon.framework.utils.PreferenceTool;
 
 import org.web3j.crypto.Credentials;
 
@@ -28,10 +30,6 @@ public class WalletManagerPresenter extends BasePresenter<WalletManagerContract.
 
     private ArrayList<Wallet> mWalletList = new ArrayList<>();
 
-    public WalletManagerPresenter(WalletManagerContract.View view) {
-        super(view);
-    }
-
     @Override
     public void fetchWalletList() {
         if (isViewAttached()) {
@@ -43,8 +41,8 @@ public class WalletManagerPresenter extends BasePresenter<WalletManagerContract.
                 mWalletList.addAll(walletList);
             }
             if (mWalletList.isEmpty()) {
-                AppSettings.getInstance().setOperateMenuFlag(true);
-                AppSettings.getInstance().setFaceTouchIdFlag(false);
+                PreferenceTool.putBoolean(Constants.Preference.KEY_OPERATE_MENU_FLAG,true);
+                PreferenceTool.putBoolean(Constants.Preference.KEY_FACE_TOUCH_ID_FLAG, false);
                 getView().showEmpty();
                 return;
             }
@@ -64,16 +62,16 @@ public class WalletManagerPresenter extends BasePresenter<WalletManagerContract.
                     for (int i = 0; i < mWalletList.size(); i++) {
                         Wallet walletEntity = mWalletList.get(i);
                         updateTime += 10;
-                        walletEntity.setUpdateTime(updateTime);
+                        walletEntity.setUpdateTime(System.currentTimeMillis());
                         WalletDao.updateUpdateTimeWithUuid(walletEntity.getUuid(), updateTime);
                     }
-                    return null;
+                    return true;
                 }
             }).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Boolean>() {
                 @Override
                 public void accept(Boolean aVoid) throws Exception {
-
+                    EventPublisher.getInstance().sendWalletListOrderChangedEvent();
                 }
             });
         }
@@ -85,7 +83,7 @@ public class WalletManagerPresenter extends BasePresenter<WalletManagerContract.
         InputWalletPasswordDialogFragment.newInstance(walletEntity).setOnWalletCorrectListener(new InputWalletPasswordDialogFragment.OnWalletCorrectListener() {
             @Override
             public void onCorrect(Credentials credentials, String password) {
-                BackupMnemonicPhraseActivity.actionStart(getContext(), password, walletEntity, 1);
+                BackupMnemonicPhraseActivity.actionStart(getContext(), password, walletEntity, BackupMnemonicPhraseActivity.BackupMnemonicExport.MAIN_ACTIVITY);
             }
         }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
     }

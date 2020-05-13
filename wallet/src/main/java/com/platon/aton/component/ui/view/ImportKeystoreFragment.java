@@ -4,14 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -20,9 +17,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.app.CustomObserver;
-import com.platon.aton.component.ui.base.MVPBaseFragment;
 import com.platon.aton.component.ui.contract.ImportKeystoreContract;
 import com.platon.aton.component.ui.presenter.ImportKeystorePresenter;
 import com.platon.aton.component.widget.ShadowButton;
@@ -30,6 +25,8 @@ import com.platon.aton.utils.CommonUtil;
 import com.platon.aton.utils.GZipUtil;
 import com.platon.aton.utils.RxUtils;
 import com.platon.aton.utils.SoftHideKeyboardUtils;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseLazyFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,7 +34,7 @@ import butterknife.Unbinder;
 import io.reactivex.Observable;
 import io.reactivex.functions.Function3;
 
-public class ImportKeystoreFragment extends MVPBaseFragment<ImportKeystorePresenter> implements ImportKeystoreContract.View {
+public class ImportKeystoreFragment extends BaseLazyFragment<ImportKeystoreContract.View, ImportKeystorePresenter> implements ImportKeystoreContract.View {
     Unbinder unbinder;
     @BindView(R.id.et_keystore)
     EditText mEtKeystore;
@@ -61,28 +58,31 @@ public class ImportKeystoreFragment extends MVPBaseFragment<ImportKeystorePresen
     private boolean mShowPassword;
 
     @Override
-    protected ImportKeystorePresenter createPresenter() {
-        return new ImportKeystorePresenter(this);
+    public int getLayoutId() {
+        return R.layout.fragment_import_keystore;
     }
 
     @Override
-    protected void onFragmentPageStart() {
-        mPresenter.checkPaste();
+    public ImportKeystorePresenter createPresenter() {
+        return new ImportKeystorePresenter();
     }
 
     @Override
-    protected View onCreateFragmentPage(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_import_keystore, container, false);
-        unbinder = ButterKnife.bind(this, view);
+    public ImportKeystoreContract.View createView() {
+        return this;
+    }
+
+    @Override
+    public void init(View rootView) {
+        unbinder = ButterKnife.bind(this, rootView);
         addListeners();
         initDatas();
-        return view;
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        addListeners();
+    public void onFragmentFirst() {
+        super.onFragmentFirst();
+        getPresenter().checkPaste();
     }
 
     private void initDatas() {
@@ -91,7 +91,7 @@ public class ImportKeystoreFragment extends MVPBaseFragment<ImportKeystorePresen
         showKeystoreError("", false);
         showNameError("", false);
         showPasswordError("", false);
-        mPresenter.init();
+        getPresenter().init();
         SoftHideKeyboardUtils.assistActivity(getActivity());
     }
 
@@ -114,7 +114,7 @@ public class ImportKeystoreFragment extends MVPBaseFragment<ImportKeystorePresen
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object unit) {
-                        mPresenter.importKeystore(mEtKeystore.getText().toString(),
+                        getPresenter().importKeystore(mEtKeystore.getText().toString(),
                                 mEtWalletName.getText().toString(),
                                 mEtPassword.getText().toString());
                     }
@@ -179,7 +179,7 @@ public class ImportKeystoreFragment extends MVPBaseFragment<ImportKeystorePresen
                         showNameError(string(R.string.validWalletNameEmptyTips), true);
                     } else if (walletName.length() > 12) {
                         showNameError(string(R.string.validWalletNameTips), true);
-                    } else if (mPresenter.isExists(walletName)) {
+                    } else if (getPresenter().isExists(walletName)) {
                         showNameError(string(R.string.wallet_name_exists), true);
                     } else {
                         showNameError("", false);
@@ -234,9 +234,9 @@ public class ImportKeystoreFragment extends MVPBaseFragment<ImportKeystorePresen
         }
         if (requestCode == ImportWalletActivity.REQ_QR_CODE) {
             Bundle bundle = data.getExtras();
-            String scanResult = bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA,"");
+            String scanResult = bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA, "");
             String unzip = GZipUtil.unCompress(scanResult);
-            mPresenter.parseQRCode(TextUtils.isEmpty(unzip) ? scanResult : unzip);
+            getPresenter().parseQRCode(TextUtils.isEmpty(unzip) ? scanResult : unzip);
         }
     }
 

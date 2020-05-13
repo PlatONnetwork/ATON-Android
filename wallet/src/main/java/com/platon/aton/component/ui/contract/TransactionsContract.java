@@ -1,8 +1,8 @@
 package com.platon.aton.component.ui.contract;
 
-import com.platon.aton.component.ui.base.IPresenter;
-import com.platon.aton.component.ui.base.IView;
 import com.platon.aton.entity.Transaction;
+import com.platon.framework.base.BaseViewImp;
+import com.platon.framework.base.IPresenter;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class TransactionsContract {
 
-    public interface View extends IView {
+    public interface View extends BaseViewImp {
 
         void notifyDataSetChanged(List<Transaction> oldTransactionList, List<Transaction> newTransactionList, String queryAddress, boolean loadLatestData);
     }

@@ -2,6 +2,8 @@ package com.platon.aton.utils;
 
 import android.text.TextUtils;
 
+import com.platon.framework.utils.LogUtils;
+
 import java.math.BigDecimal;
 
 /**
@@ -38,8 +40,8 @@ public class AmountUtil {
             BigDecimal bigDecimal = new BigDecimal(value).divide(new BigDecimal(10).pow(18 - maxDigit));
             bigDecimal = bigDecimal.setScale(0, BigDecimal.ROUND_DOWN);
             return bigDecimal.multiply(new BigDecimal(10).pow(18 - maxDigit)).stripTrailingZeros().toPlainString();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exp) {
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
         }
         return BigDecimal.ZERO.toPlainString();
     }
@@ -69,12 +71,12 @@ public class AmountUtil {
             //是否有小数位
             BigDecimal resultBigDecimal = bigDecimal.setScale(0, BigDecimal.ROUND_DOWN);
             //有小数位
-            if (bigDecimal.compareTo(resultBigDecimal) == 1) {
+            if (bigDecimal.compareTo(resultBigDecimal) > 0) {
                 resultBigDecimal = resultBigDecimal.add(BigDecimal.ONE);
             }
             return resultBigDecimal.multiply(new BigDecimal(10).pow(18 - maxDigit)).stripTrailingZeros().toPlainString();
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
         return BigDecimal.ZERO.toPlainString();
     }
@@ -90,7 +92,7 @@ public class AmountUtil {
     }
 
     public static String convertVonToLatWithFractionDigits(String value, int fractionDigits) {
-        return NumberParserUtils.parseStringWithFractionDigits(BigDecimalUtil.div(value, VALUE_1E18), fractionDigits);
+        return NumberParserUtils.parseStringWithFractionDigits(BigDecimalUtil.div(value, VALUE_1E18, fractionDigits), fractionDigits);
     }
 
     /**

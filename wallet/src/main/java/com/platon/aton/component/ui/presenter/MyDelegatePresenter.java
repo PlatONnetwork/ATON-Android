@@ -1,14 +1,10 @@
 package com.platon.aton.component.ui.presenter;
 
-import com.platon.framework.network.ApiRequestBody;
-import com.platon.framework.network.ApiResponse;
-import com.platon.framework.network.ApiSingleObserver;
 import com.platon.aton.BuildConfig;
 import com.platon.aton.R;
 import com.platon.aton.app.CustomObserver;
 import com.platon.aton.app.CustomThrowable;
 import com.platon.aton.app.LoadingTransformer;
-import com.platon.aton.component.ui.base.BasePresenter;
 import com.platon.aton.component.ui.contract.MyDelegateContract;
 import com.platon.aton.component.ui.dialog.ClaimRewardsDialogFragment;
 import com.platon.aton.component.ui.dialog.InputWalletPasswordDialogFragment;
@@ -24,7 +20,7 @@ import com.platon.aton.engine.TransactionManager;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.ClaimRewardInfo;
 import com.platon.aton.entity.DelegateInfo;
-import com.platon.aton.entity.GasProvider;
+import com.platon.aton.entity.EstimateGasResult;
 import com.platon.aton.entity.RPCErrorCode;
 import com.platon.aton.entity.Transaction;
 import com.platon.aton.entity.TransactionAuthorizationBaseData;
@@ -34,6 +30,10 @@ import com.platon.aton.entity.TransactionType;
 import com.platon.aton.utils.AmountUtil;
 import com.platon.aton.utils.BigDecimalUtil;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.base.BasePresenter;
+import com.platon.framework.network.ApiRequestBody;
+import com.platon.framework.network.ApiResponse;
+import com.platon.framework.network.ApiSingleObserver;
 import com.trello.rxlifecycle2.android.FragmentEvent;
 
 import org.reactivestreams.Publisher;
@@ -42,7 +42,6 @@ import org.web3j.crypto.Credentials;
 import org.web3j.platon.ContractAddress;
 import org.web3j.platon.FunctionType;
 
-import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 
@@ -56,10 +55,6 @@ import retrofit2.Response;
 public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> implements MyDelegateContract.Presenter {
 
     private Disposable mDisposable;
-
-    public MyDelegatePresenter(MyDelegateContract.View view) {
-        super(view);
-    }
 
     @Override
     public void loadMyDelegateData() {
@@ -134,18 +129,19 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
 
     @Override
     public void withdrawDelegateReward(DelegateInfo delegateInfo, int position) {
-        ServerUtils.getCommonApi().getGasProvider(ApiRequestBody.newBuilder()
+
+        ServerUtils.getCommonApi().estimateGas(ApiRequestBody.newBuilder()
                 .put("from", delegateInfo.getWalletAddress())
                 .put("txType", FunctionType.WITHDRAW_DELEGATE_REWARD_FUNC_TYPE)
                 .build())
-                .compose(RxUtils.bindToLifecycle(currentActivity()))
+                .compose(bindToLifecycle())
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
-                .subscribe(new ApiSingleObserver<GasProvider>() {
+                .subscribe(new ApiSingleObserver<EstimateGasResult>() {
                     @Override
-                    public void onApiSuccess(GasProvider gasProvider) {
+                    public void onApiSuccess(EstimateGasResult estimateGasResult) {
                         if (isViewAttached()) {
-                            showClaimRewardsDialogFragment(delegateInfo, gasProvider.toSdkGasProvider(), position);
+                            showClaimRewardsDialogFragment(delegateInfo, estimateGasResult.getGasProvider().toSdkGasProvider(), position, estimateGasResult.getNonce());
                         }
                     }
 
@@ -159,7 +155,7 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                 });
     }
 
-    public void showClaimRewardsDialogFragment(DelegateInfo delegateInfo, org.web3j.tx.gas.GasProvider gasProvider, int position) {
+    public void showClaimRewardsDialogFragment(DelegateInfo delegateInfo, org.web3j.tx.gas.GasProvider gasProvider, int position, String nonce) {
         ClaimRewardInfo claimRewardInfo = new ClaimRewardInfo.Builder()
                 .setFeeAmount(BigDecimalUtil.mul(gasProvider.getGasPrice().toString(10), gasProvider.getGasLimit().toString(10)).toPlainString())
                 .setClaimRewardAmount(delegateInfo.getWithdrawReward())
@@ -177,8 +173,8 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                         @Override
                         public void onWalletPasswordCorrect(Credentials credentials) {
                             DelegateManager.getInstance()
-                                    .withdrawDelegateReward(credentials, claimRewardInfo.getFeeAmount(), AmountUtil.convertVonToLat(delegateInfo.getWithdrawReward()), gasProvider)
-                                    .compose(RxUtils.bindToLifecycle(currentActivity()))
+                                    .withdrawDelegateReward(credentials, claimRewardInfo.getFeeAmount(), AmountUtil.convertVonToLat(delegateInfo.getWithdrawReward()), gasProvider, nonce)
+                                    .compose(bindToLifecycle())
                                     .compose(RxUtils.getSchedulerTransformer())
                                     .compose(RxUtils.getLoadingTransformer(currentActivity()))
                                     .subscribe(new CustomObserver<Transaction>() {
@@ -200,9 +196,9 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                                                     showLongToast(R.string.msg_transaction_repeatedly_exception);
                                                 } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_NONCE_TOO_LOW ||
                                                         customThrowable.getErrCode() == CustomThrowable.CODE_TX_GAS_LOW) {
-                                                    showLongToast(string(R.string.msg_transaction_exception,customThrowable.getErrCode()));
+                                                    showLongToast(string(R.string.msg_transaction_exception, customThrowable.getErrCode()));
                                                 } else {
-                                                    showLongToast(string(R.string.msg_server_exception,customThrowable.getErrCode()));
+                                                    showLongToast(string(R.string.msg_server_exception, customThrowable.getErrCode()));
                                                 }
                                             }
                                         }
@@ -226,62 +222,55 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
 
     private void showTransactionAuthorizationDialogFragment(String amount, String from, org.web3j.tx.gas.GasProvider gasProvider, int position) {
 
-        TransactionManager.getInstance().getNonce(from)
-                .toObservable()
-                .compose(RxUtils.getSchedulerTransformer())
+        ServerUtils.getCommonApi().estimateGas(ApiRequestBody.newBuilder()
+                .put("from", from)
+                .put("txType", FunctionType.WITHDRAW_DELEGATE_REWARD_FUNC_TYPE)
+                .build())
                 .compose(bindToLifecycle())
-                .compose(RxUtils.getLoadingTransformer(currentActivity()))
-                .subscribe(new CustomObserver<BigInteger>() {
+                .compose(RxUtils.getSingleSchedulerTransformer())
+                .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
+                .subscribe(new ApiSingleObserver<EstimateGasResult>() {
                     @Override
-                    public void accept(BigInteger nonce) {
+                    public void onApiSuccess(EstimateGasResult estimateGasResult) {
                         if (isViewAttached()) {
-                            TransactionAuthorizationData transactionAuthorizationData = new TransactionAuthorizationData(Arrays.asList(new TransactionAuthorizationBaseData.Builder(FunctionType.WITHDRAW_DELEGATE_REWARD_FUNC_TYPE)
-                                    .setAmount(amount)
-                                    .setChainId(NodeManager.getInstance().getChainId())
-                                    .setNonce(nonce.toString(10))
-                                    .setFrom(from)
-                                    .setTo(ContractAddress.REWARD_CONTRACT_ADDRESS)
-                                    .setGasLimit(gasProvider.getGasLimit().toString(10))
-                                    .setGasPrice(gasProvider.getGasPrice().toString(10))
-                                    .setRemark("")
-                                    .build()), System.currentTimeMillis() / 1000, BuildConfig.QRCODE_VERSION_CODE);
-                            TransactionAuthorizationDialogFragment.newInstance(transactionAuthorizationData)
-                                    .setOnNextBtnClickListener(new TransactionAuthorizationDialogFragment.OnNextBtnClickListener() {
-                                        @Override
-                                        public void onNextBtnClick() {
-                                            TransactionSignatureDialogFragment.newInstance(transactionAuthorizationData)
-                                                    .setOnSendTransactionSucceedListener(new TransactionSignatureDialogFragment.OnSendTransactionSucceedListener() {
-                                                        @Override
-                                                        public void onSendTransactionSucceed(Transaction transaction) {
-                                                            if (isViewAttached()) {
-                                                                getView().notifyItemChanged(true, position);
+                            if (isViewAttached()) {
+                                TransactionAuthorizationData transactionAuthorizationData = new TransactionAuthorizationData(Arrays.asList(new TransactionAuthorizationBaseData.Builder(FunctionType.WITHDRAW_DELEGATE_REWARD_FUNC_TYPE)
+                                        .setAmount(amount)
+                                        .setChainId(NodeManager.getInstance().getChainId())
+                                        .setNonce(estimateGasResult.getNonce())
+                                        .setFrom(from)
+                                        .setTo(ContractAddress.REWARD_CONTRACT_ADDRESS)
+                                        .setGasLimit(gasProvider.getGasLimit().toString(10))
+                                        .setGasPrice(gasProvider.getGasPrice().toString(10))
+                                        .setRemark("")
+                                        .build()), System.currentTimeMillis() / 1000, BuildConfig.QRCODE_VERSION_CODE);
+                                TransactionAuthorizationDialogFragment.newInstance(transactionAuthorizationData)
+                                        .setOnNextBtnClickListener(new TransactionAuthorizationDialogFragment.OnNextBtnClickListener() {
+                                            @Override
+                                            public void onNextBtnClick() {
+                                                TransactionSignatureDialogFragment.newInstance(transactionAuthorizationData)
+                                                        .setOnSendTransactionSucceedListener(new TransactionSignatureDialogFragment.OnSendTransactionSucceedListener() {
+                                                            @Override
+                                                            public void onSendTransactionSucceed(Transaction transaction) {
+                                                                if (isViewAttached()) {
+                                                                    getView().notifyItemChanged(true, position);
+                                                                }
                                                             }
-                                                        }
-                                                    })
-                                                    .show(currentActivity().getSupportFragmentManager(), TransactionSignatureDialogFragment.TAG);
-                                        }
-                                    })
-                                    .show(currentActivity().getSupportFragmentManager(), "showTransactionAuthorizationDialog");
+                                                        })
+                                                        .show(currentActivity().getSupportFragmentManager(), TransactionSignatureDialogFragment.TAG);
+                                            }
+                                        })
+                                        .show(currentActivity().getSupportFragmentManager(), "showTransactionAuthorizationDialog");
+                            }
                         }
                     }
 
                     @Override
-                    public void accept(Throwable throwable) {
-                        super.accept(throwable);
+                    public void onApiFailure(ApiResponse response) {
+                        super.onApiFailure(response);
+                        super.onApiFailure(response);
                         if (isViewAttached()) {
-                            if (throwable instanceof CustomThrowable) {
-                                CustomThrowable customThrowable = (CustomThrowable) throwable;
-                                if (customThrowable.getErrCode() == RPCErrorCode.CONNECT_TIMEOUT) {
-                                    showLongToast(R.string.msg_connect_timeout);
-                                } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_KNOWN_TX) {
-                                    showLongToast(R.string.msg_transaction_repeatedly_exception);
-                                } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_NONCE_TOO_LOW ||
-                                        customThrowable.getErrCode() == CustomThrowable.CODE_TX_GAS_LOW) {
-                                    showLongToast(R.string.msg_expired_qr_code);
-                                } else {
-                                    showLongToast(string(R.string.msg_server_exception,customThrowable.getErrCode()));
-                                }
-                            }
+                            showLongToast(R.string.msg_connect_timeout);
                         }
                     }
                 });

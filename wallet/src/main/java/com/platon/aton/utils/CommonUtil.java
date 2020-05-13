@@ -23,12 +23,9 @@ import android.widget.AbsListView;
 import android.widget.TextView;
 
 import com.platon.aton.R;
+import com.platon.framework.utils.LogUtils;
+import com.platon.framework.utils.ToastUtil;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
@@ -174,7 +171,7 @@ public class CommonUtil {
         try {
             color = Color.parseColor(colorStr);
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
             color = Color.parseColor(defaultColor);
         }
         return color;
@@ -278,7 +275,7 @@ public class CommonUtil {
         context.startActivity(intent);
     }
 
-    public static <T> List<T> deepCopyList(List<T> src) {
+    /*public static <T> List<T> deepCopyList(List<T> src) {
         List<T> dest = null;
         try {
             ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
@@ -293,7 +290,7 @@ public class CommonUtil {
             e.printStackTrace();
         }
         return dest;
-    }
+    }*/
 
     public static void copyTextToClipboard(Context context, String text) {
         ClipboardManager cm = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
@@ -322,7 +319,7 @@ public class CommonUtil {
             try {
                 conn.connect();
             } catch (Exception e) {
-                e.printStackTrace();
+                LogUtils.e(e.getMessage(),e.fillInStackTrace());
                 return false;
             }
 
@@ -332,7 +329,7 @@ public class CommonUtil {
             }
             return false;
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
             return false;
         } finally {
             if (conn != null) {
@@ -346,8 +343,8 @@ public class CommonUtil {
         try {
             Process process = runtime.exec("ping -c 3 " + ip);
             return process.waitFor() == 0;
-        } catch (Exception exp) {
-            exp.printStackTrace();
+        } catch (Exception e) {
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
         return false;
     }

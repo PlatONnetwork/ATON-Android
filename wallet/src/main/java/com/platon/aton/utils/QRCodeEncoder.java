@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.text.TextUtils;
 
+import com.facebook.stetho.common.LogUtil;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -17,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class QRCodeEncoder {
-    public static final Map<EncodeHintType, Object> HINTS = new EnumMap<>(EncodeHintType.class);
+    protected static final Map<EncodeHintType, Object> HINTS = new EnumMap<>(EncodeHintType.class);
 
     static {
         HINTS.put(EncodeHintType.CHARACTER_SET, "ISO-8859-1");
@@ -87,7 +88,7 @@ public class QRCodeEncoder {
             bitmap.setPixels(pixels, 0, size, 0, 0, size, size);
             return addLogoToQRCode(bitmap, logo);
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtil.e(e.getMessage(),e.fillInStackTrace());
             return null;
         }
     }
@@ -110,12 +111,12 @@ public class QRCodeEncoder {
         try {
             Canvas canvas = new Canvas(bitmap);
             canvas.drawBitmap(src, 0, 0, null);
-            canvas.scale(scaleFactor, scaleFactor, srcWidth / 2, srcHeight / 2);
-            canvas.drawBitmap(logo, (srcWidth - logoWidth) / 2, (srcHeight - logoHeight) / 2, null);
+            canvas.scale(scaleFactor, scaleFactor, (float) srcWidth / 2, (float) srcHeight / 2);
+            canvas.drawBitmap(logo, (float) (srcWidth - logoWidth) / 2, (float) (srcHeight - logoHeight) / 2, null);
             canvas.save();
             canvas.restore();
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtil.e(e.getMessage(),e.fillInStackTrace());
             bitmap = null;
         }
         return bitmap;
@@ -158,7 +159,7 @@ public class QRCodeEncoder {
             }
             return bitmap;
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtil.e(e.getMessage(),e.fillInStackTrace());
         }
 
         return null;
@@ -195,7 +196,7 @@ public class QRCodeEncoder {
         canvas.drawColor(Color.WHITE);
         canvas.setBitmap(bitmap);
         canvas.drawBitmap(barcodeBitmap, 0, 0, null);
-        canvas.drawText(content, barcodeBitmap.getWidth() / 2, baseLine, paint);
+        canvas.drawText(content, (float) barcodeBitmap.getWidth() / 2, baseLine, paint);
         canvas.save();
         canvas.restore();
         return bitmap;

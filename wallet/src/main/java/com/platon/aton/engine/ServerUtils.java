@@ -1,9 +1,10 @@
 package com.platon.aton.engine;
 
 import com.facebook.stetho.okhttp3.StethoInterceptor;
-import com.platon.framework.network.ApiFastjsonConverterFactory;
 import com.platon.aton.BuildConfig;
-import com.platon.aton.app.Constants;
+import com.platon.framework.app.Constants;
+import com.platon.framework.network.ApiFastjsonConverterFactory;
+import com.platon.framework.utils.LogUtils;
 
 import java.security.cert.CertificateException;
 import java.util.concurrent.TimeUnit;
@@ -40,7 +41,7 @@ public class ServerUtils {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
         return mBaseApi;
     }
@@ -90,13 +91,13 @@ public class ServerUtils {
             @Override
             public void checkClientTrusted(
                     java.security.cert.X509Certificate[] chain,
-                    String authType) throws CertificateException {
+                    String authType) {
             }
 
             @Override
             public void checkServerTrusted(
                     java.security.cert.X509Certificate[] chain,
-                    String authType) throws CertificateException {
+                    String authType) {
             }
 
             @Override
@@ -112,7 +113,7 @@ public class ServerUtils {
             return sslContext
                     .getSocketFactory();
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
         }
         return null;
     }

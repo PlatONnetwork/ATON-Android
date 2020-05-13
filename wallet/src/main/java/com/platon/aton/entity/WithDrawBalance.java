@@ -6,12 +6,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.platon.aton.utils.BigDecimalUtil;
-import com.platon.aton.utils.BigIntegerUtil;
 import com.platon.aton.utils.NumberParserUtils;
-
-import org.web3j.tx.gas.GasProvider;
-
-import java.math.BigInteger;
 
 public class WithDrawBalance implements Parcelable {
 
@@ -140,7 +135,7 @@ public class WithDrawBalance implements Parcelable {
             return true;
         }
 
-        if (obj.getClass() == getClass()) {
+        if (obj instanceof WithDrawBalance) {
             WithDrawBalance withDrawBalance = (WithDrawBalance) obj;
             return TextUtils.equals(withDrawBalance.delegated, delegated)
                     && TextUtils.equals(withDrawBalance.released, released)
@@ -151,18 +146,9 @@ public class WithDrawBalance implements Parcelable {
         return super.equals(obj);
     }
 
-    public org.web3j.tx.gas.GasProvider getGasProvider() {
-        
-        return new GasProvider() {
-            @Override
-            public BigInteger getGasPrice() {
-                return BigIntegerUtil.toBigInteger(gasPrice);
-            }
+    public GasProvider getGasProvider() {
 
-            @Override
-            public BigInteger getGasLimit() {
-                return BigIntegerUtil.toBigInteger(gasLimit);
-            }
-        };
+        return new GasProvider(gasLimit, gasPrice);
+
     }
 }

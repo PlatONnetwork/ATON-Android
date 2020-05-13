@@ -1,6 +1,6 @@
 package com.platon.aton.engine;
 
-import com.platon.framework.util.LogUtils;
+import com.platon.framework.utils.LogUtils;
 import com.platon.aton.entity.AppConfig;
 import com.platon.aton.utils.JSONUtil;
 import com.platon.aton.utils.RxUtils;

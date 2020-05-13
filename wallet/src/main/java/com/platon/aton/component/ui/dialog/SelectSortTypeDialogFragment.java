@@ -6,16 +6,18 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
 
+import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
+import com.platon.aton.app.CustomObserver;
 import com.platon.aton.component.adapter.CommonAdapter;
 import com.platon.aton.component.adapter.base.ViewHolder;
 import com.platon.aton.component.ui.OnItemClickListener;
 import com.platon.aton.component.ui.SortType;
-import com.platon.aton.utils.DensityUtil;
+import com.platon.framework.app.Constants;
 
 import java.util.Arrays;
 import java.util.List;
@@ -24,13 +26,14 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import io.reactivex.functions.Consumer;
 
 public class SelectSortTypeDialogFragment extends BaseDialogFragment {
 
 
     @BindView(R.id.list_sort_type)
     ListView listSortType;
+    @BindView(R.id.iv_close)
+    ImageView ivClose;
 
     private Unbinder unbinder;
     private OnItemClickListener mItemClickListener;
@@ -56,8 +59,6 @@ public class SelectSortTypeDialogFragment extends BaseDialogFragment {
         setFullWidthEnable(true);
         setGravity(Gravity.BOTTOM);
         setAnimation(R.style.Animation_slide_in_bottom);
-        setHorizontalMargin(DensityUtil.dp2px(getContext(), 14));
-        setyOffset(DensityUtil.dp2px(getContext(), 4));
         unbinder = ButterKnife.bind(this, contentView);
         initViews();
         return baseDialog;
@@ -77,9 +78,9 @@ public class SelectSortTypeDialogFragment extends BaseDialogFragment {
         RxAdapterView.itemClicks(listSortType)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
                 .compose(bindToLifecycle())
-                .subscribe(new Consumer<Integer>() {
+                .subscribe(new CustomObserver<Integer>() {
                     @Override
-                    public void accept(Integer position) throws Exception {
+                    public void accept(Integer position) {
                         sortTypeAdapter.notifyDataSetChanged();
                         dismiss();
                         if (mItemClickListener != null) {
@@ -87,6 +88,17 @@ public class SelectSortTypeDialogFragment extends BaseDialogFragment {
                         }
                     }
                 });
+
+        RxView.clicks(ivClose)
+                .throttleFirst(500, TimeUnit.MILLISECONDS)
+                .compose(bindToLifecycle())
+                .subscribe(new CustomObserver<Object>() {
+                    @Override
+                    public void accept(Object o) {
+                        dismiss();
+                    }
+                })
+        ;
 
     }
 

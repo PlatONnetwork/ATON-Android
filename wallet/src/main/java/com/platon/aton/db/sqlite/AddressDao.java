@@ -1,6 +1,7 @@
 package com.platon.aton.db.sqlite;
 
 import com.platon.aton.db.entity.AddressEntity;
+import com.platon.framework.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ public class AddressDao {
                 list = realm.copyFromRealm(results);
             }
         } catch (Exception exp) {
-            exp.printStackTrace();
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
             if (realm != null) {
                 realm.cancelTransaction();
             }
@@ -50,7 +51,7 @@ public class AddressDao {
                 addressName = realm.copyFromRealm(addressInfoEntity).getName();
             }
         } catch (Exception exp) {
-            exp.printStackTrace();
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
             if (realm != null) {
                 realm.cancelTransaction();
             }
@@ -155,8 +156,8 @@ public class AddressDao {
             if (entity != null) {
                 return realm.copyFromRealm(entity);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exp) {
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
         } finally {
             if (realm != null) {
                 realm.close();

@@ -8,6 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.jakewharton.rxbinding2.view.RxView;
+import com.platon.aton.app.CustomObserver;
+import com.platon.aton.utils.RxUtils;
+import com.platon.framework.base.ActivityManager;
+import com.platon.framework.base.BaseActivity;
+
 /**
  * @author ziv
  * date On 2019/6/8
@@ -33,14 +39,18 @@ public class BaseViewHolder<T> extends RecyclerView.ViewHolder {
 
     public void refreshData(final T data, final int position) {
 
-        itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mItemClickListener != null) {
-                    mItemClickListener.onItemClick(data);
-                }
-            }
-        });
+        RxView
+                .clicks(itemView)
+                .compose(RxUtils.getClickTransformer())
+                .subscribe(new CustomObserver<Object>() {
+
+                    @Override
+                    public void accept(Object o) {
+                        if (mItemClickListener != null) {
+                            mItemClickListener.onItemClick(data);
+                        }
+                    }
+                });
     }
 
 

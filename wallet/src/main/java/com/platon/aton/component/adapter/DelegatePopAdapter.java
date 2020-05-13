@@ -1,7 +1,6 @@
 package com.platon.aton.component.adapter;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +13,8 @@ import com.platon.aton.entity.DelegateType;
 import com.platon.aton.utils.BigDecimalUtil;
 import com.platon.aton.utils.NumberParserUtils;
 import com.platon.aton.utils.StringUtil;
+
+import org.web3j.platon.StakingAmountType;
 
 import java.util.List;
 
@@ -69,8 +70,7 @@ public class DelegatePopAdapter extends BaseAdapter {
             holder.iv_drop_down.setVisibility(View.INVISIBLE);
         }
 
-        holder.tv_delegate_type.setText(TextUtils.equals(item.getType(), "0") ? mContext.getString(R.string.available_balance): mContext.getString(R.string.locked_balance));
-//        holder.tv_delegate_amount.setText(mContext.getString(R.string.amount_with_unit,StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(item.getAmount(), "1E18"))), false)));
+        holder.tv_delegate_type.setText(item.getStakingAmountType() == StakingAmountType.FREE_AMOUNT_TYPE ? mContext.getString(R.string.available_balance) : mContext.getString(R.string.locked_balance));
         holder.tv_delegate_amount.setText(StringUtil.formatBalance(NumberParserUtils.parseDouble(NumberParserUtils.getPrettyBalance(BigDecimalUtil.div(item.getAmount(), "1E18"))), false));
         return view;
     }

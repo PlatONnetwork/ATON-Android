@@ -1,8 +1,10 @@
 package com.platon.aton.component.ui.dialog;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -14,7 +16,8 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
-import com.platon.framework.app.activity.WeakHandler;
+import com.platon.aton.component.ui.DetachableDialogDismissListener;
+import com.platon.framework.app.WeakHandler;
 import com.platon.aton.R;
 import com.platon.aton.utils.CommonUtil;
 import com.trello.rxlifecycle2.LifecycleProvider;
@@ -305,6 +308,43 @@ public abstract class BaseDialogFragment extends DialogFragment implements Lifec
 
             dialog.getWindow().setAttributes(layoutParams);
         }
+    }
+
+    private Dialog mDialog;
+    private static final String SAVED_DIALOG_STATE_TAG = "android:savedDialogState";
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        mDialog = getDialog();
+        boolean isShow = this.getShowsDialog();
+        this.setShowsDialog(false);
+        super.onActivityCreated(savedInstanceState);
+        this.setShowsDialog(isShow);
+
+        View view = getView();
+        if (view != null) {
+            if (view.getParent() != null) {
+                throw new IllegalStateException(
+                        "DialogFragment can not be attached to a container view");
+            }
+            mDialog.setContentView(view);
+        }
+        final Activity activity = getActivity();
+        if (activity != null) {
+            mDialog.setOwnerActivity(activity);
+        }
+
+        DetachableDialogDismissListener dismissListener = DetachableDialogDismissListener.wrap(this);
+        mDialog.setOnDismissListener(dismissListener);
+
+        if (savedInstanceState != null) {
+            Bundle dialogState = savedInstanceState.getBundle(SAVED_DIALOG_STATE_TAG);
+            if (dialogState != null) {
+                mDialog.onRestoreInstanceState(dialogState);
+            }
+        }
+
+        dismissListener.clearOnDetach(mDialog);
     }
 
     @Override

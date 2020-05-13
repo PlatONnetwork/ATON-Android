@@ -4,13 +4,13 @@ package com.platon.aton.component.ui.presenter;
 import android.text.TextUtils;
 
 import com.platon.aton.app.LoadingTransformer;
-import com.platon.aton.component.ui.base.BasePresenter;
 import com.platon.aton.component.ui.contract.DelegateDetailContract;
 import com.platon.aton.engine.ServerUtils;
 import com.platon.aton.entity.DelegateInfo;
 import com.platon.aton.entity.DelegateItemInfo;
 import com.platon.aton.entity.DelegateNodeDetail;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.base.BasePresenter;
 import com.platon.framework.network.ApiErrorCode;
 import com.platon.framework.network.ApiRequestBody;
 import com.platon.framework.network.ApiResponse;
@@ -28,19 +28,12 @@ public class DelegateDetailPresenter extends BasePresenter<DelegateDetailContrac
 
     private DelegateNodeDetail mDelegateNodeDetail;
 
-    public DelegateDetailPresenter(DelegateDetailContract.View view) {
-        super(view);
-
-    }
-
     @Override
     public void loadDelegateDetailData() {
-        if (isViewAttached()) {
-            DelegateInfo delegateInfo = getView().getDelegateInfoFromIntent();
-            if (delegateInfo != null) {
-                getView().showWalletInfo(delegateInfo);
-                getDelegateDetailData(delegateInfo);
-            }
+        DelegateInfo delegateInfo = getView().getDelegateInfoFromIntent();
+        if (delegateInfo != null) {
+            getView().showWalletInfo(delegateInfo);
+            getDelegateDetailData(delegateInfo);
         }
     }
 

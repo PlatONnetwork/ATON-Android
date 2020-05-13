@@ -32,6 +32,7 @@
         android:layout_marginRight="16dp"
         android:lines="1"
         android:textStyle="bold"
+        app:autoSizeMaxTextSize="30sp"
         app:autoSizeTextType="uniform"
         app:layout_constrainedWidth="true"
         app:layout_constraintHorizontal_chainStyle="packed"

@@ -9,18 +9,19 @@ import android.widget.ImageView;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.app.CustomObserver;
 import com.platon.aton.component.widget.ShadowButton;
 import com.platon.aton.utils.DensityUtil;
 import com.platon.aton.utils.GZipUtil;
 import com.platon.aton.utils.QRCodeEncoder;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.app.Constants;
 
 import java.util.concurrent.Callable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.reactivex.Observable;
 
@@ -30,6 +31,8 @@ public class AuthorizationSignatureDialogFragment extends BaseDialogFragment {
     ImageView ivSignedData;
     @BindView(R.id.sbtn_finish)
     ShadowButton sbtnFinish;
+    @BindView(R.id.iv_cancel)
+    ImageView ivCancel;
 
     private Unbinder unbinder;
 
@@ -46,8 +49,8 @@ public class AuthorizationSignatureDialogFragment extends BaseDialogFragment {
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_fragment_authorization_signature, null, false);
         baseDialog.setContentView(contentView);
         setFullWidthEnable(true);
-        setHorizontalMargin(DensityUtil.dp2px(getContext(), 14f));
-        setyOffset(DensityUtil.dp2px(getContext(), 16f));
+        //setHorizontalMargin(DensityUtil.dp2px(getContext(), 14f));
+        //setyOffset(DensityUtil.dp2px(getContext(), 16f));
         setAnimation(R.style.Animation_slide_in_bottom);
         unbinder = ButterKnife.bind(this, contentView);
         initViews();
@@ -88,6 +91,17 @@ public class AuthorizationSignatureDialogFragment extends BaseDialogFragment {
                     }
                 });
 
+    }
+
+    @OnClick({R.id.iv_cancel})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.iv_cancel:
+                dismiss();
+                break;
+            default:
+                break;
+        }
     }
 
     @Override

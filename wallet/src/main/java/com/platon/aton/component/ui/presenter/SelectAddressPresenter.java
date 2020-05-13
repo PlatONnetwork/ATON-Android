@@ -1,13 +1,13 @@
 package com.platon.aton.component.ui.presenter;
 
-import com.platon.aton.app.Constants;
-import com.platon.aton.component.ui.base.BaseActivity;
-import com.platon.aton.component.ui.base.BasePresenter;
 import com.platon.aton.component.ui.contract.SelectAddressContract;
 import com.platon.aton.db.entity.AddressEntity;
 import com.platon.aton.db.sqlite.AddressDao;
 import com.platon.aton.entity.Address;
 import com.platon.aton.utils.CommonUtil;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.base.BasePresenter;
 
 import java.util.List;
 
@@ -22,10 +22,6 @@ import io.reactivex.schedulers.Schedulers;
  * @author matrixelement
  */
 public class SelectAddressPresenter extends BasePresenter<SelectAddressContract.View> implements SelectAddressContract.Presenter {
-
-    public SelectAddressPresenter(SelectAddressContract.View view) {
-        super(view);
-    }
 
     private List<Address> addressEntityList;
 

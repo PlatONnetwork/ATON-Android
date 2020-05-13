@@ -2,7 +2,7 @@ package com.platon.aton.component.adapter;
 
 import android.content.Context;
 
-import com.platon.framework.util.RUtils;
+import com.platon.framework.utils.RUtils;
 import com.platon.aton.R;
 import com.platon.aton.component.adapter.base.ViewHolder;
 import com.platon.aton.entity.Address;

@@ -1,15 +1,15 @@
 package com.platon.aton.component.ui.presenter;
 
-import com.platon.framework.network.ApiRequestBody;
-import com.platon.framework.network.ApiResponse;
-import com.platon.framework.network.ApiSingleObserver;
-import com.platon.aton.app.Constants;
-import com.platon.aton.component.ui.base.BasePresenter;
 import com.platon.aton.component.ui.contract.DelegateRecordContract;
 import com.platon.aton.engine.ServerUtils;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.Transaction;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BasePresenter;
+import com.platon.framework.network.ApiRequestBody;
+import com.platon.framework.network.ApiResponse;
+import com.platon.framework.network.ApiSingleObserver;
 
 import java.util.List;
 
@@ -17,9 +17,6 @@ import io.reactivex.Flowable;
 import io.reactivex.functions.Function;
 
 public class DelegateRecordPresenter extends BasePresenter<DelegateRecordContract.View> implements DelegateRecordContract.Presenter {
-    public DelegateRecordPresenter(DelegateRecordContract.View view) {
-        super(view);
-    }
 
     @Override
     public void loadDelegateRecordData(long beginSequence, String direction, String type) {
@@ -28,32 +25,34 @@ public class DelegateRecordPresenter extends BasePresenter<DelegateRecordContrac
     }
 
     private void getDelegateRecordData(long beginSequence, int listSize, String direction, String type, String[] walletAddress) {
-        ServerUtils.getCommonApi().getDelegateRecordList(ApiRequestBody.newBuilder()
-                .put("beginSequence", beginSequence)
-                .put("listSize", listSize)
-                .put("direction", direction)
-                .put("type", type)
-                .put("walletAddrs", walletAddress)
-                .build())
-                .compose(RxUtils.bindToLifecycle(getView()))
-                .compose(RxUtils.getSingleSchedulerTransformer())
-                .subscribe(new ApiSingleObserver<List<Transaction>>() {
-                    @Override
-                    public void onApiSuccess(List<Transaction> recordList) {
-                        if (isViewAttached()) {
-                            if (recordList != null && recordList.size() > 0) {
-                                getView().showDelegateRecordData(getWalletNameAndIconByaddress(recordList));
-                            } else {
-                                getView().showDelegateRecordData(recordList);
+        if (isViewAttached()) {
+            ServerUtils.getCommonApi().getDelegateRecordList(ApiRequestBody.newBuilder()
+                    .put("beginSequence", beginSequence)
+                    .put("listSize", listSize)
+                    .put("direction", direction)
+                    .put("type", type)
+                    .put("walletAddrs", walletAddress)
+                    .build())
+                    .compose(RxUtils.bindToLifecycle(getView()))
+                    .compose(RxUtils.getSingleSchedulerTransformer())
+                    .subscribe(new ApiSingleObserver<List<Transaction>>() {
+                        @Override
+                        public void onApiSuccess(List<Transaction> recordList) {
+                            if (isViewAttached()) {
+                                if (recordList != null && recordList.size() > 0) {
+                                    getView().showDelegateRecordData(getWalletNameAndIconByaddress(recordList));
+                                } else {
+                                    getView().showDelegateRecordData(recordList);
+                                }
                             }
                         }
-                    }
 
-                    @Override
-                    public void onApiFailure(ApiResponse response) {
-                        getView().showDelegateRecordFailed();
-                    }
-                });
+                        @Override
+                        public void onApiFailure(ApiResponse response) {
+                            getView().showDelegateRecordFailed();
+                        }
+                    });
+        }
 
     }
 

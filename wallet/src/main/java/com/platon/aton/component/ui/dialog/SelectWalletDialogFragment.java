@@ -11,7 +11,6 @@ import android.widget.ListView;
 
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
 import com.platon.aton.component.adapter.SelectWalletListAdapter;
 import com.platon.aton.component.widget.ShadowDrawable;
 import com.platon.aton.db.entity.WalletEntity;
@@ -22,6 +21,7 @@ import com.platon.aton.entity.Wallet;
 import com.platon.aton.utils.BigDecimalUtil;
 import com.platon.aton.utils.DensityUtil;
 import com.platon.aton.utils.RxUtils;
+import com.platon.framework.app.Constants;
 
 import org.reactivestreams.Publisher;
 
@@ -38,6 +38,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 
 /**
  * @author matrixelement
@@ -88,8 +89,6 @@ public class SelectWalletDialogFragment extends BaseDialogFragment {
         setFullWidthEnable(true);
         setGravity(Gravity.BOTTOM);
         setAnimation(R.style.Animation_slide_in_bottom);
-        setHorizontalMargin(DensityUtil.dp2px(getContext(), 14));
-        setyOffset(DensityUtil.dp2px(getContext(), 4));
         unbinder = ButterKnife.bind(this, contentView);
         initViews();
         return baseDialog;
@@ -144,7 +143,13 @@ public class SelectWalletDialogFragment extends BaseDialogFragment {
                 .map(new Function<WalletEntity, Wallet>() {
                     @Override
                     public Wallet apply(WalletEntity walletInfoEntity) throws Exception {
-                        return walletInfoEntity.buildWalletEntity();
+                        return walletInfoEntity.buildWallet();
+                    }
+                })
+                .filter(new Predicate<Wallet>() {
+                    @Override
+                    public boolean test(Wallet wallet) throws Exception {
+                        return !wallet.isObservedWallet();
                     }
                 })
                 .map(new Function<Wallet, Wallet>() {
@@ -169,7 +174,7 @@ public class SelectWalletDialogFragment extends BaseDialogFragment {
                             List<Wallet> newWalletEntityList = new ArrayList<>();
                             if (needAmount) {
                                 for (Wallet walletEntity : objects) {
-                                    if (BigDecimalUtil.isBiggerThanZero(walletEntity.getFreeBalance())||BigDecimalUtil.isBiggerThanZero(walletEntity.getLockBalance())) {
+                                    if (BigDecimalUtil.isBiggerThanZero(walletEntity.getFreeBalance()) || BigDecimalUtil.isBiggerThanZero(walletEntity.getLockBalance())) {
                                         newWalletEntityList.add(walletEntity);
                                     }
                                 }

@@ -4,18 +4,19 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.platon.framework.network.NetConnectivity;
-import com.platon.framework.network.NetState;
-import com.platon.framework.util.RUtils;
+import com.meituan.android.walle.WalleChannelReader;
 import com.platon.aton.BuildConfig;
-import com.platon.aton.config.AppSettings;
-import com.platon.aton.config.JZAppConfigure;
 import com.platon.aton.engine.DeviceManager;
 import com.platon.aton.engine.NodeManager;
 import com.platon.aton.engine.WalletManager;
+import com.platon.aton.engine.directory.DirectroyController;
 import com.platon.aton.event.Event;
 import com.platon.aton.event.EventPublisher;
-import com.meituan.android.walle.WalleChannelReader;
+import com.platon.framework.app.Constants;
+import com.platon.framework.network.NetConnectivity;
+import com.platon.framework.network.NetState;
+import com.platon.framework.utils.LogUtils;
+import com.platon.framework.utils.RUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -53,22 +54,24 @@ public class AppFramework {
     public void initAppFramework(Context context) {
 
         mContext = context;
+        try {
+            EventPublisher.getInstance().register(this);
+            //注册网络状态变化
+            NetConnectivity.getConnectivityManager().registerNetworkStateChange(new NetStateBroadcastReceiver());
+            //初始化realm
+            initRealm(context);
+            //初始化节点配置
+            NodeManager.getInstance().init();
+            //初始化DeviceManager
+            DeviceManager.getInstance().init(context, WalleChannelReader.getChannel(context));
+            //初始化RUtils
+            RUtils.init(context);
+            //初始化Directroy
+            DirectroyController.getInstance().init(context);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        JZAppConfigure.getInstance().init(context);
-
-        EventPublisher.getInstance().register(this);
-        //注册网络状态变化
-        NetConnectivity.getConnectivityManager().registerNetworkStateChange(new NetStateBroadcastReceiver());
-        //初始化realm
-        initRealm(context);
-        //初始化偏好设置
-        AppSettings.getInstance().init(context);
-        //初始化节点配置
-        NodeManager.getInstance().init();
-        //初始化DeviceManager
-        DeviceManager.getInstance().init(context, WalleChannelReader.getChannel(context));
-        //初始化RUtils
-        RUtils.init(context);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -95,12 +98,16 @@ public class AppFramework {
     }
 
     static class ATONRealmMigration implements RealmMigration {
-
         @Override
         public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
 
-            RealmSchema schema = realm.getSchema();
+            //只有测试网络钱包迁移
+            LogUtils.d("------------BuildConfig.RELEASE_TYPE:" + BuildConfig.RELEASE_TYPE);
+            if (!BuildConfig.RELEASE_TYPE.equals("server.typeX")) {//测试网络(贝莱世界)
+                return;
+            }
 
+            RealmSchema schema = realm.getSchema();
             if (oldVersion == 106) {
                 //0.6.2.0-->0.7.5.0
                 schema.get("NodeEntity")
@@ -222,7 +229,8 @@ public class AppFramework {
                         .addField("nodeId", String.class)
                         .addField("nodeName", String.class)
                         .addField("totalReward", String.class)
-                        .addField("unDelegation", String.class);
+                        .addField("unDelegation", String.class)
+                        .addField("remark", String.class);
 
                 oldVersion++;
 
@@ -266,7 +274,8 @@ public class AppFramework {
                         .addField("nodeId", String.class)
                         .addField("nodeName", String.class)
                         .addField("totalReward", String.class)
-                        .addField("unDelegation", String.class);
+                        .addField("unDelegation", String.class)
+                        .addField("remark", String.class);
 
                 oldVersion++;
             } else if (oldVersion == 109) {
@@ -298,7 +307,8 @@ public class AppFramework {
                         .addField("nodeId", String.class)
                         .addField("nodeName", String.class)
                         .addField("totalReward", String.class)
-                        .addField("unDelegation", String.class);
+                        .addField("unDelegation", String.class)
+                        .addField("remark", String.class);
 
                 oldVersion++;
             } else if (oldVersion == 110) {
@@ -308,8 +318,40 @@ public class AppFramework {
                         .addField("nodeId", String.class)
                         .addField("nodeName", String.class)
                         .addField("totalReward", String.class)
-                        .addField("unDelegation", String.class);
+                        .addField("unDelegation", String.class)
+                        .addField("remark", String.class);
 
+                oldVersion++;
+
+            } else if (oldVersion == 111) {
+
+                schema.get("TransactionEntity")
+                        .addField("remark", String.class);
+
+                schema.get("NodeEntity")
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.getDynamicRealm().where("NodeEntity").findAll().deleteAllFromRealm();
+                                LogUtils.d("------------clear NodeEntity Realm success");
+                            }
+                        });
+
+                //链id 101--->102
+                schema.get("WalletEntity")
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.getDynamicRealm()
+                                        .where("WalletEntity")
+                                        .equalTo("chainId", "101")
+                                        .findAll()
+                                        .setString("chainId", BuildConfig.ID_MAIN_CHAIN);
+
+                                LogUtils.d("------------update chainId Realm success");
+                            }
+                        });
+                oldVersion++;
             }
 
         }

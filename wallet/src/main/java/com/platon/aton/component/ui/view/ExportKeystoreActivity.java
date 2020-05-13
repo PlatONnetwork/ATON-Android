@@ -9,14 +9,9 @@ import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.platon.framework.util.AndroidUtil;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
-import com.platon.aton.component.ui.base.BaseActivity;
-import com.platon.aton.component.ui.base.BaseFragment;
 import com.platon.aton.component.ui.dialog.CommonTipsDialogFragment;
 import com.platon.aton.component.ui.dialog.OnDialogViewClickListener;
 import com.platon.aton.component.widget.ViewPagerSlide;
@@ -24,6 +19,12 @@ import com.platon.aton.component.widget.table.PagerItem;
 import com.platon.aton.component.widget.table.PagerItemAdapter;
 import com.platon.aton.component.widget.table.PagerItems;
 import com.platon.aton.component.widget.table.SmartTabLayout;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.base.BaseFragment;
+import com.platon.framework.base.BasePresenter;
+import com.platon.framework.base.BaseViewImp;
+import com.platon.framework.utils.AndroidUtil;
 
 import java.util.ArrayList;
 
@@ -37,10 +38,22 @@ public class ExportKeystoreActivity extends BaseActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_export_keystore);
+    public int getLayoutId() {
+        return R.layout.activity_export_keystore;
+    }
+
+    @Override
+    public BasePresenter createPresenter() {
+        return null;
+    }
+
+    @Override
+    public BaseViewImp createView() {
+        return null;
+    }
+
+    @Override
+    public void init() {
         showTipsDialog();
         initView();
     }
@@ -52,9 +65,9 @@ public class ExportKeystoreActivity extends BaseActivity {
 
     private void initView() {
         int indicatorThickness = AndroidUtil.dip2px(getContext(), 2.0f);
-        SmartTabLayout stbBar = mRootView.findViewById(R.id.stb_bar);
+        SmartTabLayout stbBar = getContentView().findViewById(R.id.stb_bar);
         stbBar.setIndicatorThickness(indicatorThickness);
-        stbBar.setIndicatorCornerRadius(indicatorThickness / 2);
+        stbBar.setIndicatorCornerRadius((float) indicatorThickness / 2);
         ArrayList<Class<? extends BaseFragment>> fragments = getFragments();
         stbBar.setCustomTabView(new SmartTabLayout.TabProvider() {
             @Override
@@ -67,7 +80,7 @@ public class ExportKeystoreActivity extends BaseActivity {
         for (int i = 0; i < tabNum; i++) {
             pages.add(PagerItem.of(getTitles().get(i), fragments.get(i)));
         }
-        ViewPagerSlide vpContent = mRootView.findViewById(R.id.vp_content);
+        ViewPagerSlide vpContent = getContentView().findViewById(R.id.vp_content);
         vpContent.setSlide(true);
         vpContent.setOffscreenPageLimit(fragments.size());
         vpContent.setAdapter(new PagerItemAdapter(getSupportFragmentManager(), pages));

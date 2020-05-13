@@ -3,11 +3,16 @@ package com.platon.aton.component.ui.view;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Process;
+import android.support.annotation.IntDef;
+import android.support.annotation.RequiresApi;
+import android.support.annotation.StringDef;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,15 +24,17 @@ import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
 
-import com.platon.framework.app.activity.ActivityManager;
-import com.platon.framework.util.AndroidUtil;
+import com.platon.aton.BuildConfig;
 import com.platon.aton.R;
-import com.platon.aton.app.Constants;
-import com.platon.aton.component.ui.base.MVPBaseActivity;
 import com.platon.aton.component.ui.contract.MainContract;
 import com.platon.aton.component.ui.presenter.MainPresenter;
 import com.platon.aton.component.widget.FragmentTabHost;
 import com.platon.aton.event.EventPublisher;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.ActivityManager;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.utils.AndroidUtil;
+import com.platon.framework.utils.LogUtils;
 import com.umeng.socialize.UMShareAPI;
 
 import butterknife.BindView;
@@ -37,18 +44,50 @@ import butterknife.Unbinder;
 /**
  * @author matrixelement
  */
-public class MainActivity extends MVPBaseActivity<MainPresenter> implements MainContract.View {
+public class MainActivity extends BaseActivity<MainContract.View, MainPresenter> implements MainContract.View {
 
-    private final static String TAG = MainActivity.class.getSimpleName();
-    private final static String TAG_PROPERTY = "property";
-    //    private final static String TAG_VOTE = "vote";
-    private final static String TAG_DELEGATE = "delegate";
-    private final static String TAG_ME = "me";
-    private final static String TAG_ASSET = "asset";
-    public final static int TAB_PROPERTY = 0;
-    //    public final static int TAB_VOTE = 1;
-    public final static int TAB_DELEGATE = 1;
-    public final static int TAB_ME = 2;
+
+    @IntDef({
+            MainTab.TAB_ASSETS,
+            MainTab.TAB_DELEGATE,
+            MainTab.TAB_ME
+    })
+    public @interface MainTab {
+        /**
+         * 钱包页签
+         */
+        int TAB_ASSETS = 0;
+        /**
+         * 委托页签
+         */
+        int TAB_DELEGATE = 1;
+        /**
+         * 我的页签
+         */
+        int TAB_ME = 2;
+    }
+
+    @StringDef({
+            MainTabTag.TAG_ASSETS,
+            MainTabTag.TAG_DELEGATE,
+            MainTabTag.TAG_ME
+    })
+    private @interface MainTabTag {
+
+        /**
+         * 钱包页签tag
+         */
+        String TAG_ASSETS = "tag_assets";
+        /**
+         * 委托页签tag
+         */
+        String TAG_DELEGATE = "tag_delegate";
+        /**
+         * 我的页签tag
+         */
+        String TAG_ME = "tag_me";
+    }
+
     public static final int REQ_ASSETS_TAB_QR_CODE = 0x101;
     public static final int REQ_ASSETS_ADDRESS_QR_CODE = 0x102;
     public static final int REQ_ASSETS_SELECT_ADDRESS_BOOK = 0x103;
@@ -57,25 +96,35 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
     FrameLayout realTabContent;
     @BindView(android.R.id.tabhost)
     FragmentTabHost tabhost;
+    @BindView(R.id.view_status_bar)
+    View viewStatusBar;
 
     private Unbinder unbinder;
-    private int mCurIndex = TAB_PROPERTY;
+    private int mCurIndex = MainTab.TAB_ASSETS;
     private FragmentManager fragmentManager;
 
     @Override
-    protected MainPresenter createPresenter() {
-        return new MainPresenter(this);
+    public MainPresenter createPresenter() {
+        return new MainPresenter();
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public MainContract.View createView() {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-        setContentView(R.layout.activity_main);
+        return this;
+    }
+
+    @Override
+    public void init() {
         unbinder = ButterKnife.bind(this);
         EventPublisher.getInstance().register(this);
         initViews();
-        mPresenter.checkVersion();
+        getPresenter().checkVersion();
+    }
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.activity_main;
     }
 
     @Override
@@ -95,7 +144,7 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
                 || requestCode == MainActivity.REQ_ASSETS_ADDRESS_QR_CODE
                 || requestCode == MainActivity.REQ_ASSETS_SELECT_ADDRESS_BOOK
                 || requestCode == Constants.RequestCode.REQUEST_CODE_TRANSACTION_SIGNATURE) {
-            fragmentManager.findFragmentByTag(TAG_PROPERTY).onActivityResult(requestCode, resultCode, data);
+            fragmentManager.findFragmentByTag(MainTabTag.TAG_ASSETS).onActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -105,21 +154,18 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
         TabWidget tabWidget = findViewById(android.R.id.tabs);
         tabWidget.setDividerDrawable(null);
 
-        tabhost.addTab(tabhost.newTabSpec(TAG_PROPERTY).setIndicator(getIndicatorView(R.drawable.bg_nav_property, R.string.nav_property)), AssetsFragment.class, new Bundle());
-        tabhost.addTab(tabhost.newTabSpec(TAG_DELEGATE).setIndicator(getIndicatorView(R.drawable.bg_nav_delegate, R.string.nav_delegate)), DelegateFragment.class, null);
-        tabhost.addTab(tabhost.newTabSpec(TAG_ME).setIndicator(getIndicatorView(R.drawable.bg_nav_me, R.string.nav_me)), MeFragment.class, null);
+        tabhost.addTab(tabhost.newTabSpec(MainTabTag.TAG_ASSETS).setIndicator(getIndicatorView(R.drawable.bg_nav_property, R.string.nav_property)), AssetsFragment.class, new Bundle());
+        tabhost.addTab(tabhost.newTabSpec(MainTabTag.TAG_DELEGATE).setIndicator(getIndicatorView(R.drawable.bg_nav_delegate, R.string.nav_delegate)), DelegateFragment.class, null);
+        tabhost.addTab(tabhost.newTabSpec(MainTabTag.TAG_ME).setIndicator(getIndicatorView(R.drawable.bg_nav_me, R.string.nav_me)), MeFragment.class, null);
         tabhost.setCurrentTab(mCurIndex);
+
         tabhost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
             public void onTabChanged(String tabId) {
-                mCurIndex = getCurIndexByTabId(tabId);
-                Log.d("==================", "ontahchanged" + tabId);
-                if (TextUtils.equals(tabId, "delegate")) {
-                    //发送一个eventbus
-                    EventPublisher.getInstance().sendTabChangeUpdateValidatorsEvent();
-                }
+                viewStatusBar.setVisibility(TextUtils.equals(tabId, MainTabTag.TAG_ASSETS) ? View.VISIBLE : View.GONE);
             }
         });
+
     }
 
     private static final long DOUBLE_TIME = 500;
@@ -148,13 +194,19 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
 
     }
 
-    private int getCurIndexByTabId(String tabId) {
-        if (TAG_PROPERTY.equals(tabId)) {
-            return TAB_PROPERTY;
-        } else if (TAG_DELEGATE.equals(tabId)) {
-            return TAB_DELEGATE;
+    /**
+     * 根据tab tag获取tab index
+     *
+     * @param tabId
+     * @return
+     */
+    private int getIndexByTabId(String tabId) {
+        if (MainTabTag.TAG_ASSETS.equals(tabId)) {
+            return MainTab.TAB_ASSETS;
+        } else if (MainTabTag.TAG_DELEGATE.equals(tabId)) {
+            return MainTab.TAB_DELEGATE;
         }
-        return TAB_ME;
+        return MainTab.TAB_ME;
     }
 
     @Override
@@ -162,17 +214,9 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
         super.onNewIntent(intent);
         setIntent(intent);
         if (intent.hasExtra(Constants.Extra.EXTRA_WALLET_INDEX)) {
-            mCurIndex = intent.getIntExtra(Constants.Extra.EXTRA_WALLET_INDEX, TAB_PROPERTY);
+            mCurIndex = intent.getIntExtra(Constants.Extra.EXTRA_WALLET_INDEX, MainTab.TAB_ASSETS);
         }
         tabhost.setCurrentTab(mCurIndex);
-        int subIndex = -1;
-        if (intent.hasExtra(Constants.Extra.EXTRA_WALLET_SUB_INDEX)) {
-            subIndex = intent.getIntExtra(Constants.Extra.EXTRA_WALLET_SUB_INDEX, AssetsFragment.MainTab.TRANSACTION_LIST);
-        }
-        if (mCurIndex == TAB_PROPERTY && subIndex == AssetsFragment.MainTab.TRANSACTION_LIST) {
-            AssetsFragment fragment = (AssetsFragment) fragmentManager.findFragmentByTag(TAG_PROPERTY);
-            fragment.showCurrentItem(subIndex);
-        }
     }
 
     @Override
@@ -234,10 +278,9 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
         context.startActivity(intent);
     }
 
-    public static void actionStart(Context context, int index, int subIndex) {
+    public static void actionStart(Context context, int index) {
         Intent intent = new Intent(context, MainActivity.class);
         intent.putExtra(Constants.Extra.EXTRA_WALLET_INDEX, index);
-        intent.putExtra(Constants.Extra.EXTRA_WALLET_SUB_INDEX, subIndex);
         context.startActivity(intent);
     }
 
@@ -245,5 +288,10 @@ public class MainActivity extends MVPBaseActivity<MainPresenter> implements Main
     public void exitApp() {
         ActivityManager.getInstance().finishAll();
         Process.killProcess(Process.myPid());
+    }
+
+    @Override
+    protected boolean immersiveBarViewEnabled() {
+        return true;
     }
 }

@@ -2,15 +2,18 @@ package com.platon.aton.component.ui.view;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 
 import com.platon.aton.R;
-import com.platon.aton.component.ui.base.BaseActivity;
 import com.platon.aton.component.widget.CommonTitleBar;
-import com.platon.aton.utils.LanguageUtil;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.base.BasePresenter;
+import com.platon.framework.base.BaseViewImp;
+import com.platon.framework.utils.LanguageUtil;
+import com.platon.framework.utils.PreferenceTool;
 
 import java.util.Locale;
 
@@ -40,9 +43,22 @@ public class SwitchLanguageActivity extends BaseActivity {
     private Locale locale;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_switch_language);
+    public int getLayoutId() {
+        return R.layout.activity_switch_language;
+    }
+
+    @Override
+    public BasePresenter createPresenter() {
+        return null;
+    }
+
+    @Override
+    public BaseViewImp createView() {
+        return null;
+    }
+
+    @Override
+    public void init() {
         unbinder = ButterKnife.bind(this);
         initViews();
     }
@@ -62,13 +78,14 @@ public class SwitchLanguageActivity extends BaseActivity {
             }
         });
 
-        locale = LanguageUtil.getLocale(this);
+        locale = LanguageUtil.getLocale();
 
         updateSelectedLanguageStatus(locale);
     }
 
     private void switchLanguage(Locale locale) {
-        LanguageUtil.switchLanguage(this, locale);
+        PreferenceTool.putString(Constants.Preference.KEY_LANGUAGE, locale.getLanguage());
+        MainActivity.restart(SwitchLanguageActivity.this);
     }
 
     private void updateSelectedLanguageStatus(Locale locale) {

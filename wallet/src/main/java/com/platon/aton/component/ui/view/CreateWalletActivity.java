@@ -3,7 +3,6 @@ package com.platon.aton.component.ui.view;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -17,19 +16,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.platon.aton.R;
-import com.platon.aton.component.ui.base.MVPBaseActivity;
 import com.platon.aton.component.ui.contract.CreateWalletContract;
 import com.platon.aton.component.ui.presenter.CreateWalletPresenter;
 import com.platon.aton.component.widget.ShadowButton;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.utils.CheckStrength;
 import com.platon.aton.utils.SoftHideKeyboardUtils;
+import com.platon.framework.base.BaseActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class CreateWalletActivity extends MVPBaseActivity<CreateWalletPresenter> implements CreateWalletContract.View, View.OnClickListener, TextWatcher, View.OnFocusChangeListener {
+public class CreateWalletActivity extends BaseActivity<CreateWalletContract.View, CreateWalletPresenter> implements CreateWalletContract.View, View.OnClickListener, TextWatcher, View.OnFocusChangeListener {
 
     Unbinder unbinder;
     @BindView(R.id.et_name)
@@ -71,18 +70,26 @@ public class CreateWalletActivity extends MVPBaseActivity<CreateWalletPresenter>
     }
 
     @Override
-    protected CreateWalletPresenter createPresenter() {
-        return new CreateWalletPresenter(this);
+    public CreateWalletPresenter createPresenter() {
+        return new CreateWalletPresenter();
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_wallet);
+    public CreateWalletContract.View createView() {
+        return this;
+    }
+
+    @Override
+    public void init() {
         unbinder = ButterKnife.bind(this);
         initView();
         showPassword();
         showRepeatPassword();
+    }
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.activity_create_wallet;
     }
 
     @Override
@@ -161,7 +168,7 @@ public class CreateWalletActivity extends MVPBaseActivity<CreateWalletPresenter>
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.sbtn_create:
-                mPresenter.createWallet(mEtName.getText().toString().trim(),
+                getPresenter().createWallet(mEtName.getText().toString().trim(),
                         mEtPassword.getText().toString().trim(),
                         mEtRepeatPassword.getText().toString().trim());
                 break;

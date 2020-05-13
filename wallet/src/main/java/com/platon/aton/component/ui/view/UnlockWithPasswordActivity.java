@@ -2,7 +2,6 @@ package com.platon.aton.component.ui.view;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -11,15 +10,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.platon.framework.util.RUtils;
 import com.platon.aton.R;
-import com.platon.aton.component.ui.base.MVPBaseActivity;
 import com.platon.aton.component.ui.contract.UnlockWithPasswordContract;
 import com.platon.aton.component.ui.dialog.SelectWalletDialogFragment;
 import com.platon.aton.component.ui.presenter.UnlockWithPasswordPresenter;
 import com.platon.aton.component.widget.CommonTitleBar;
 import com.platon.aton.component.widget.ShadowButton;
 import com.platon.aton.entity.Wallet;
+import com.platon.framework.base.BaseActivity;
+import com.platon.framework.utils.RUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,7 +28,7 @@ import butterknife.Unbinder;
 /**
  * @author matrixelement
  */
-public class UnlockWithPasswordActivity extends MVPBaseActivity<UnlockWithPasswordPresenter> implements UnlockWithPasswordContract.View {
+public class UnlockWithPasswordActivity extends BaseActivity<UnlockWithPasswordContract.View, UnlockWithPasswordPresenter> implements UnlockWithPasswordContract.View {
 
     @BindView(R.id.commonTitleBar)
     CommonTitleBar commonTitleBar;
@@ -47,18 +46,26 @@ public class UnlockWithPasswordActivity extends MVPBaseActivity<UnlockWithPasswo
     private Unbinder unbinder;
 
     @Override
-    protected UnlockWithPasswordPresenter createPresenter() {
-        return new UnlockWithPasswordPresenter(this);
+    public UnlockWithPasswordPresenter createPresenter() {
+        return new UnlockWithPasswordPresenter();
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_unlock_password);
+    public UnlockWithPasswordContract.View createView() {
+        return this;
+    }
+
+    @Override
+    public void init() {
         unbinder = ButterKnife.bind(this);
         initViews();
         enableUnlock(false);
-        mPresenter.init();
+        getPresenter().init();
+    }
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.activity_unlock_password;
     }
 
     @Override
@@ -103,15 +110,15 @@ public class UnlockWithPasswordActivity extends MVPBaseActivity<UnlockWithPasswo
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.layout_change_wallet:
-                SelectWalletDialogFragment.newInstance(mPresenter.getSelectedWallet().getUuid()).setOnItemClickListener(new SelectWalletDialogFragment.OnItemClickListener() {
+                SelectWalletDialogFragment.newInstance(getPresenter().getSelectedWallet().getUuid()).setOnItemClickListener(new SelectWalletDialogFragment.OnItemClickListener() {
                     @Override
                     public void onItemClick(Wallet walletEntity) {
-                        mPresenter.setSelectWallet(walletEntity);
+                        getPresenter().setSelectWallet(walletEntity);
                     }
                 }).show(currentActivity().getSupportFragmentManager(), SelectWalletDialogFragment.SELECT_UNLOCK_WALLET);
                 break;
             case R.id.btn_unlock:
-                mPresenter.unlock(etWalletPassword.getText().toString());
+                getPresenter().unlock(etWalletPassword.getText().toString());
                 break;
             default:
                 break;

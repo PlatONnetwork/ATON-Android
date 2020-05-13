@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="200dp"
+    android:layout_height="44dp"
+    android:background="@drawable/shape_item_wallet_list_footer"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+
+    <TextView
+        style="@style/Text.105cfe.14"
+        android:drawableLeft="@drawable/icon_assets_import"
+        android:drawablePadding="8dp"
+        android:text="@string/action_import_wallet"
+        android:textStyle="bold" />
+
+</LinearLayout>

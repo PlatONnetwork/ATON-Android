@@ -9,10 +9,8 @@ import android.view.View;
 
 import com.platon.aton.BuildConfig;
 import com.platon.aton.R;
-import com.platon.aton.app.CustomObserver;
 import com.platon.aton.app.CustomThrowable;
 import com.platon.aton.app.LoadingTransformer;
-import com.platon.aton.component.ui.base.BasePresenter;
 import com.platon.aton.component.ui.contract.SendTransationContract;
 import com.platon.aton.component.ui.dialog.CommonTipsDialogFragment;
 import com.platon.aton.component.ui.dialog.InputWalletPasswordDialogFragment;
@@ -20,9 +18,7 @@ import com.platon.aton.component.ui.dialog.OnDialogViewClickListener;
 import com.platon.aton.component.ui.dialog.SendTransactionDialogFragment;
 import com.platon.aton.component.ui.dialog.TransactionAuthorizationDialogFragment;
 import com.platon.aton.component.ui.dialog.TransactionSignatureDialogFragment;
-import com.platon.aton.component.ui.view.AssetsFragment;
 import com.platon.aton.component.ui.view.MainActivity;
-import com.platon.aton.config.AppSettings;
 import com.platon.aton.db.entity.AddressEntity;
 import com.platon.aton.db.entity.TransactionRecordEntity;
 import com.platon.aton.db.sqlite.AddressDao;
@@ -34,12 +30,15 @@ import com.platon.aton.engine.TransactionManager;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.engine.Web3jManager;
 import com.platon.aton.entity.AccountBalance;
+import com.platon.aton.entity.EstimateGasResult;
+import com.platon.aton.entity.GasProvider;
 import com.platon.aton.entity.RPCErrorCode;
 import com.platon.aton.entity.Transaction;
 import com.platon.aton.entity.TransactionAuthorizationBaseData;
 import com.platon.aton.entity.TransactionAuthorizationData;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.utils.AddressFormatUtil;
+import com.platon.aton.utils.AmountUtil;
 import com.platon.aton.utils.BigDecimalUtil;
 import com.platon.aton.utils.BigIntegerUtil;
 import com.platon.aton.utils.DateUtil;
@@ -47,10 +46,13 @@ import com.platon.aton.utils.JZWalletUtil;
 import com.platon.aton.utils.NumberParserUtils;
 import com.platon.aton.utils.RxUtils;
 import com.platon.aton.utils.StringUtil;
+import com.platon.framework.app.Constants;
+import com.platon.framework.base.BasePresenter;
 import com.platon.framework.network.ApiRequestBody;
 import com.platon.framework.network.ApiResponse;
 import com.platon.framework.network.ApiSingleObserver;
 import com.platon.framework.network.NetConnectivity;
+import com.platon.framework.utils.PreferenceTool;
 import com.trello.rxlifecycle2.android.FragmentEvent;
 
 import org.web3j.crypto.Credentials;
@@ -59,6 +61,7 @@ import org.web3j.crypto.WalletUtils;
 import org.web3j.platon.FunctionType;
 import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.utils.Convert;
+import org.web3j.utils.Numeric;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -118,15 +121,15 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
      * 当前滑动百分比
      */
     private float progress = DEFAULT_PERCENT;
+    /**
+     * 当前nonce
+     */
+    private BigInteger nonce;
 
     private String feeAmount;
     //刷新时间
     private Wallet walletEntity;
     private String toAddress;
-
-    public SendTransactionPresenter(SendTransationContract.View view) {
-        super(view);
-    }
 
     @Override
     public void init() {
@@ -149,8 +152,8 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
         }
 
         getAccountBalance(walletEntity);
-
-        getGasPrice();
+        getEstimateGas(walletEntity);
+        //getGasPrice();
     }
 
     private void getAccountBalance(Wallet wallet) {
@@ -167,7 +170,10 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                     @Override
                     public void onApiSuccess(List<AccountBalance> accountBalances) {
                         if (isViewAttached() && accountBalances != null && !accountBalances.isEmpty()) {
-                            getView().updateWalletBalance(accountBalances.get(0).getShowFreeBalace());
+                            //String balance = accountBalances.get(0).getShowFreeBalace();
+                            String balance = accountBalances.get(0).getFree();
+                            String balanceNew = AmountUtil.getPrettyBalance(balance, 8);
+                            getView().updateWalletBalance(balanceNew);
                         }
                     }
 
@@ -177,6 +183,42 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                     }
                 });
     }
+
+    public void getEstimateGas(Wallet mWallet) {
+
+        ServerUtils.getCommonApi().estimateGas(ApiRequestBody.newBuilder()
+                .put("from", mWallet.getPrefixAddress())
+                .put("txType", FunctionType.TRANSFER)
+                .build())
+                .compose(RxUtils.bindToLifecycle(getView()))
+                .compose(RxUtils.getSingleSchedulerTransformer())
+                .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
+                .subscribe(new ApiSingleObserver<EstimateGasResult>() {
+                    @Override
+                    public void onApiSuccess(EstimateGasResult gasProvider) {
+                        if (isViewAttached()) {
+                            GasProvider mGasProvider = gasProvider.getGasProvider();
+                            gasLimit = BigIntegerUtil.toBigInteger(gasProvider.getGasLimit());
+                            nonce = BigIntegerUtil.toBigInteger(gasProvider.getNonce());
+                            initGasPrice(BigIntegerUtil.toBigInteger(mGasProvider.getGasPrice()));
+                            setDefaultProgress();
+                            setDefaultFeeAmount();
+                            setDefaultGasLimit();
+
+                           // getView().showFeeAmount(BigIntegerUtil.mul(mGasProvider.getGasLimit(), mGasProvider.getGasPrice()));
+                        }
+                    }
+
+                    @Override
+                    public void onApiFailure(ApiResponse response) {
+                        super.onApiFailure(response);
+                        if (isViewAttached()) {
+                            showLongToast(R.string.msg_connect_timeout);
+                        }
+                    }
+                });
+    }
+
 
     private Disposable getGasPrice() {
         return Web3jManager
@@ -238,6 +280,26 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
         return TextUtils.isEmpty(errMsg);
     }
 
+    public static final int ADDRESS_STANDARD_SIZE = 42;
+
+    public boolean checkToAddressNotSelf(String toAddress,String address){
+
+        if(toAddress.contains("0x") && toAddress.length() == ADDRESS_STANDARD_SIZE){
+            if (toAddress.equalsIgnoreCase(address)) {
+                showLongToast(R.string.can_not_send_to_itself);
+                return false;
+            }
+        }else{
+            String cleanToAddress = Numeric.cleanHexPrefix(toAddress);
+            String cleanAddress = Numeric.cleanHexPrefix(address);
+            if (cleanToAddress.equalsIgnoreCase(cleanAddress)) {
+                showLongToast(R.string.can_not_send_to_itself);
+                return false;
+            }
+        }
+        return true;
+    }
+
     @Override
     public boolean checkTransferAmount(String transferAmount) {
 
@@ -276,8 +338,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                 return;
             }
             String address = walletEntity.getPrefixAddress();
-            if (toAddress.equalsIgnoreCase(address)) {
-                showLongToast(R.string.can_not_send_to_itself);
+            if(!checkToAddressNotSelf(toAddress,address)){
                 return;
             }
 
@@ -290,9 +351,9 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                 return;
             }
 
-            if (BigDecimalUtil.isNotSmaller(transferAmount, AppSettings.getInstance().getReminderThresholdAmount())) {
+            if (BigDecimalUtil.isNotSmaller(transferAmount, PreferenceTool.getString(Constants.Preference.KEY_REMINDER_THRESHOLD_AMOUNT, "1000"))) {
                 CommonTipsDialogFragment.createDialogWithTwoButton(ContextCompat.getDrawable(currentActivity(), R.drawable.icon_dialog_tips),
-                        string(R.string.msg_large_transaction_reminder, StringUtil.formatBalanceWithoutMinFraction(AppSettings.getInstance().getReminderThresholdAmount())),
+                        string(R.string.msg_large_transaction_reminder, StringUtil.formatBalanceWithoutMinFraction(PreferenceTool.getString(Constants.Preference.KEY_REMINDER_THRESHOLD_AMOUNT, "1000"))),
                         string(R.string.confirm), new OnDialogViewClickListener() {
                             @Override
                             public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
@@ -339,11 +400,11 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     @Override
     public void updateAssetsTab(int tabIndex) {
         if (isViewAttached()) {
-            if (tabIndex != AssetsFragment.MainTab.SEND_TRANSACTION) {
-                getView().resetView(feeAmount);
-            } else {
-                getGasPrice();
-            }
+//            if (tabIndex != AssetsFragment.MainTab.SEND_TRANSACTION) {
+//                getView().resetView(feeAmount);
+//            } else {
+//                getGasPrice();
+//            }
         }
     }
 
@@ -378,7 +439,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
 
         TransactionRecordEntity transactionRecordEntity = new TransactionRecordEntity(System.currentTimeMillis(), walletEntity.getPrefixAddress(), toAddress, transferAmount, NodeManager.getInstance().getChainId());
 
-        if (AppSettings.getInstance().getResendReminder()) {
+        if (PreferenceTool.getBoolean(Constants.Preference.KEY_RESEND_REMINDER, true)) {
             Single
                     .fromCallable(new Callable<Boolean>() {
                         @Override
@@ -407,7 +468,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     private void showResendTransactionReminderDialogFragment(TransactionRecordEntity transactionRecordEntity, String remark) {
 
         CommonTipsDialogFragment.createDialogWithTwoButton(ContextCompat.getDrawable(currentActivity(), R.drawable.icon_dialog_tips),
-                string(R.string.msg_resend_transaction_reminder, StringUtil.formatBalanceWithoutMinFraction(AppSettings.getInstance().getReminderThresholdAmount())),
+                string(R.string.msg_resend_transaction_reminder, StringUtil.formatBalanceWithoutMinFraction(PreferenceTool.getString(Constants.Preference.KEY_REMINDER_THRESHOLD_AMOUNT, "1000"))),
                 string(R.string.confirm), new OnDialogViewClickListener() {
                     @Override
                     public void onDialogViewClick(DialogFragment fragment, View view, Bundle extra) {
@@ -440,7 +501,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                                         @Override
                                         public void onConfirmBtnClick() {
                                             if (WalletManager.getInstance().getSelectedWallet().isObservedWallet()) {
-                                                showTransactionAuthorizationDialogFragment(transactionRecordEntity, gasLimit.toString(10), gasPrice.toString(10), remark);
+                                                showTransactionAuthorizationDialogFragment(transactionRecordEntity, gasLimit.toString(10), gasPrice.toString(10),nonce, remark);
                                             } else {
                                                 showInputWalletPasswordDialogFragment(transactionRecordEntity, feeAmount, remark);
                                             }
@@ -462,6 +523,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
         return BigDecimalUtil.convertsToFloat(progress);
     }
 
+
     /**
      * gasPrice为当前的gasPrice，默认为推荐值(链上获取值的二分之一)
      * 如果推荐值的二分之一小于最小值，则推荐值为最小值，否则为推荐值
@@ -472,7 +534,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
 
         BigInteger recommendedMinGasPrice = recommendedGasPrice.divide(BigInteger.valueOf(2));
         //推荐的最小值是否大于默认的最小值
-        boolean isRecommendedMinGasPriceBiggerThanDefaultMinGasPrice = recommendedMinGasPrice.compareTo(DEFAULT_MIN_GASPRICE) == 1;
+        boolean isRecommendedMinGasPriceBiggerThanDefaultMinGasPrice = recommendedMinGasPrice.compareTo(DEFAULT_MIN_GASPRICE) > 0;
         //如果推荐的最小值大于默认的最小值，则最小值取推荐的最小值，否则为默认的最小值
         minGasPrice = isRecommendedMinGasPriceBiggerThanDefaultMinGasPrice ? recommendedMinGasPrice : DEFAULT_MIN_GASPRICE;
         //如果推荐的最小值大于默认的最小值，则推荐值取推荐值，否则取默认的最小值
@@ -522,7 +584,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
 
         TransactionManager
                 .getInstance()
-                .sendTransferTransaction(ecKeyPair, transactionRecordEntity.getFrom(), transactionRecordEntity.getTo(), walletEntity.getName(), Convert.toVon(transactionRecordEntity.getValue(), Convert.Unit.LAT), Convert.toVon(feeAmount, Convert.Unit.LAT), gasPrice, gasLimit, remark)
+                .sendTransferTransaction(ecKeyPair, transactionRecordEntity.getFrom(), transactionRecordEntity.getTo(), walletEntity.getName(), Convert.toVon(transactionRecordEntity.getValue(), Convert.Unit.LAT), Convert.toVon(feeAmount, Convert.Unit.LAT), gasPrice, gasLimit,nonce, remark)
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
                 .compose(bindToLifecycle())
@@ -542,14 +604,19 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                                 CustomThrowable customThrowable = (CustomThrowable) throwable;
                                 if (customThrowable.getErrCode() == RPCErrorCode.CONNECT_TIMEOUT) {
                                     showLongToast(R.string.msg_connect_timeout);
-                                } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_KNOWN_TX) {
-                                    showLongToast(R.string.msg_transaction_repeatedly_exception);
-                                } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_NONCE_TOO_LOW ||
-                                        customThrowable.getErrCode() == CustomThrowable.CODE_TX_GAS_LOW) {
-                                    showLongToast(string(R.string.msg_transaction_exception, customThrowable.getErrCode()));
+                                } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_NONCE_TOO_LOW  ||
+                                           customThrowable.getErrCode() == CustomThrowable.CODE_TX_GAS_LOW){
+                                              if(WalletManager.getInstance().getSelectedWallet().isObservedWallet()){
+                                                  showLongToast(R.string.msg_expired_qr_code);
+                                              }else{
+                                                  showLongToast(string(R.string.msg_transaction_exception, customThrowable.getErrCode()));
+                                              }
                                 } else {
-                                    showLongToast(string(R.string.msg_server_exception, customThrowable.getErrCode()));
+                                    //showLongToast(string(R.string.msg_server_exception, customThrowable.getErrCode()));
+                                    showLongToast(customThrowable.getDetailMsgRes());
                                 }
+                                // refresh estimate gas
+                                getEstimateGas(WalletManager.getInstance().getSelectedWallet());
                             }
                         }
                     }
@@ -569,7 +636,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                     public void accept(Long aLong) throws Exception {
                         if (isViewAttached()) {
                             getView().resetView(feeAmount);
-                            MainActivity.actionStart(getContext(), MainActivity.TAB_PROPERTY, AssetsFragment.MainTab.TRANSACTION_LIST);
+                            MainActivity.actionStart(getContext(), MainActivity.MainTab.TAB_ASSETS);
                         }
                     }
                 });
@@ -600,9 +667,41 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
         }).show(currentActivity().getSupportFragmentManager(), "inputPassword");
     }
 
-    private void showTransactionAuthorizationDialogFragment(TransactionRecordEntity transactionRecordEntity, String gasLimit, String gasPrice, String remark) {
+    private void showTransactionAuthorizationDialogFragment(TransactionRecordEntity transactionRecordEntity, String gasLimit, String gasPrice,BigInteger nonce, String remark) {
 
-        TransactionManager.getInstance().getNonce(transactionRecordEntity.getFrom())
+        if (isViewAttached()) {
+            TransactionAuthorizationData transactionAuthorizationData = new TransactionAuthorizationData(Arrays.asList(new TransactionAuthorizationBaseData.Builder(FunctionType.TRANSFER)
+                    .setAmount(BigDecimalUtil.mul(transactionRecordEntity.getValue(), "1E18").toPlainString())
+                    .setChainId(NodeManager.getInstance().getChainId())
+                    .setNonce(nonce.toString(10))
+                    .setFrom(transactionRecordEntity.getFrom())
+                    .setTo(transactionRecordEntity.getTo())
+                    .setGasLimit(gasLimit)
+                    .setGasPrice(gasPrice)
+                    .setRemark(remark)
+                    .build()), transactionRecordEntity.getTimeStamp() / 1000, BuildConfig.QRCODE_VERSION_CODE);
+            TransactionAuthorizationDialogFragment.newInstance(transactionAuthorizationData)
+                    .setOnNextBtnClickListener(new TransactionAuthorizationDialogFragment.OnNextBtnClickListener() {
+                        @Override
+                        public void onNextBtnClick() {
+                            TransactionSignatureDialogFragment.newInstance(transactionAuthorizationData)
+                                    .setOnSendTransactionSucceedListener(new TransactionSignatureDialogFragment.OnSendTransactionSucceedListener() {
+                                        @Override
+                                        public void onSendTransactionSucceed(Transaction transaction) {
+                                            if (isViewAttached()) {
+                                                insertAndDeleteTransactionRecord(transactionRecordEntity);
+                                                backToTransactionListWithDelay();
+                                            }
+                                        }
+                                    })
+                                    .show(currentActivity().getSupportFragmentManager(), TransactionSignatureDialogFragment.TAG);
+                        }
+                    })
+                    .show(currentActivity().getSupportFragmentManager(), "showTransactionAuthorizationDialog");
+        }
+
+
+       /* TransactionManager.getInstance().getNonce(transactionRecordEntity.getFrom())
                 .toObservable()
                 .compose(RxUtils.getSchedulerTransformer())
                 .compose(bindToLifecycle())
@@ -655,11 +754,11 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                             }
                         }
                     }
-                });
+                });*/
     }
 
     private void insertAndDeleteTransactionRecord(TransactionRecordEntity transactionRecordEntity) {
-        if (AppSettings.getInstance().getResendReminder()) {
+        if (PreferenceTool.getBoolean(Constants.Preference.KEY_RESEND_REMINDER, true)) {
             Single
                     .fromCallable(new Callable<Boolean>() {
 
@@ -705,7 +804,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     }
 
     private void setDefaultGasLimit() {
-        this.gasLimit = DEFAULT_GAS_LIMIT;
+        //this.gasLimit = DEFAULT_GAS_LIMIT;
         if (isViewAttached()) {
             getView().setGasLimit(gasLimit.toString(10));
         }
@@ -736,8 +835,10 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
         return Single.fromCallable(new Callable<String>() {
             @Override
             public String call() throws Exception {
-                String walletName = WalletManager.getInstance().getWalletNameByWalletAddress(address);
-                return TextUtils.isEmpty(walletName) ? walletName : String.format("%s(%s)", walletName, AddressFormatUtil.formatTransactionAddress(address));
+
+                return  address;
+               /* String walletName = WalletManager.getInstance().getWalletNameByWalletAddress(address);
+                return TextUtils.isEmpty(walletName) ? walletName : String.format("%s(%s)", walletName, AddressFormatUtil.formatTransactionAddress(address));*/
             }
         }).filter(new Predicate<String>() {
             @Override
