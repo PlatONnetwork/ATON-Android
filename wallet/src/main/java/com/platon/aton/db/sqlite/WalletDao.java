@@ -1,7 +1,6 @@
 package com.platon.aton.db.sqlite;
 
 import com.platon.aton.db.entity.WalletEntity;
-import com.platon.aton.engine.NodeManager;
 import com.platon.framework.utils.LogUtils;
 
 import java.util.ArrayList;
@@ -30,7 +29,7 @@ public class WalletDao {
         try {
             realm = Realm.getDefaultInstance();
             RealmResults<WalletEntity> results = realm.where(WalletEntity.class)
-                    .equalTo("chainId", NodeManager.getInstance().getChainId())
+                    //.equalTo("chainId", NodeManager.getInstance().getChainId())
                     .sort("updateTime", Sort.ASCENDING)
                     .findAll();
             if (results != null) {
@@ -52,7 +51,7 @@ public class WalletDao {
         try {
             realm = Realm.getDefaultInstance();
             WalletEntity walletEntity = realm.where(WalletEntity.class)
-                    .equalTo("chainId", NodeManager.getInstance().getChainId())
+                    //.equalTo("chainId", NodeManager.getInstance().getChainId())
                     .equalTo("address", prefixAddress, Case.INSENSITIVE)
                     .findFirst();
             if (walletEntity != null) {
@@ -74,7 +73,7 @@ public class WalletDao {
         try {
             realm = Realm.getDefaultInstance();
             WalletEntity walletEntity = realm.where(WalletEntity.class)
-                    .equalTo("chainId", NodeManager.getInstance().getChainId())
+                    //.equalTo("chainId", NodeManager.getInstance().getChainId())
                     .equalTo("address", prefixAddress, Case.INSENSITIVE)
                     .findFirst();
             if (walletEntity != null) {
@@ -119,7 +118,7 @@ public class WalletDao {
                     .beginGroup()
                     .equalTo("uuid", uuid)
                     .and()
-                    .equalTo("chainId", NodeManager.getInstance().getChainId())
+                    //.equalTo("chainId", NodeManager.getInstance().getChainId())
                     .endGroup()
                     .findFirst()
                     .setName(name);
@@ -146,7 +145,7 @@ public class WalletDao {
                     .beginGroup()
                     .equalTo("uuid", uuid)
                     .and()
-                    .equalTo("chainId", NodeManager.getInstance().getChainId())
+                    //.equalTo("chainId", NodeManager.getInstance().getChainId())
                     .endGroup()
                     .findFirst()
                     .setBackedUp(backedUp);
@@ -173,7 +172,7 @@ public class WalletDao {
                     .beginGroup()
                     .equalTo("uuid", uuid)
                     .and()
-                    .equalTo("chainId", NodeManager.getInstance().getChainId())
+                    //.equalTo("chainId", NodeManager.getInstance().getChainId())
                     .endGroup()
                     .findFirst()
                     .setMnemonic(mnemonic);
@@ -200,7 +199,7 @@ public class WalletDao {
                     .beginGroup()
                     .equalTo("uuid", uuid)
                     .and()
-                    .equalTo("chainId", NodeManager.getInstance().getChainId())
+                    //.equalTo("chainId", NodeManager.getInstance().getChainId())
                     .endGroup()
                     .findFirst()
                     .setUpdateTime(updateTime);
@@ -227,7 +226,7 @@ public class WalletDao {
                     .beginGroup()
                     .equalTo("uuid", uuid)
                     .and()
-                    .equalTo("chainId", NodeManager.getInstance().getChainId())
+                   // .equalTo("chainId", NodeManager.getInstance().getChainId())
                     .endGroup()
                     .findAll()
                     .deleteFirstFromRealm();
