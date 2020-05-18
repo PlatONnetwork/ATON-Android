@@ -68,6 +68,9 @@ public class AppFramework {
             RUtils.init(context);
             //初始化Directroy
             DirectroyController.getInstance().init(context);
+            //初始化Wallet网络环境
+            WalletManager.getInstance().initWalletNet();
+
         } catch (Exception e) {
             e.printStackTrace();
         }

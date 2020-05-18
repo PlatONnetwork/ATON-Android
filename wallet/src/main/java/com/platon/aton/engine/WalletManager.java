@@ -2,6 +2,7 @@ package com.platon.aton.engine;
 
 import android.text.TextUtils;
 
+import com.platon.aton.BuildConfig;
 import com.platon.aton.app.CustomThrowable;
 import com.platon.aton.db.entity.WalletEntity;
 import com.platon.aton.db.sqlite.WalletDao;
@@ -21,6 +22,7 @@ import com.platon.framework.utils.PreferenceTool;
 
 import org.greenrobot.eventbus.EventBus;
 import org.reactivestreams.Publisher;
+import org.web3j.crypto.WalletFile;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -78,6 +80,29 @@ public class WalletManager {
 
     public static WalletManager getInstance() {
         return WalletManager.InstanceHolder.INSTANCE;
+    }
+
+    /**
+     * 初始化钱包环境
+     */
+    public void initWalletNet(){
+        String chainId = NodeManager.getInstance().getChainId();
+        if(chainId.equals(BuildConfig.ID_MAIN_CHAIN)){
+            WalletApplication.init(WalletApplication.MAINNET, AddressManager.ADDRESS_TYPE_BECH32, AddressBehavior.CHANNLE_PLATON);
+        }else{
+            WalletApplication.init(WalletApplication.TESTNET, AddressManager.ADDRESS_TYPE_BECH32, AddressBehavior.CHANNLE_PLATON);
+        }
+    }
+
+    public String getWalletAddressByNet(WalletFile walletFile){
+        if(walletFile == null)
+             return "";
+        return "";
+      /*  if(NodeManager.getInstance().getChainId().equals(BuildConfig.ID_MAIN_CHAIN)){
+            return walletFile.getAddress().getMainnet();
+        }else{
+            return walletFile.getAddress().getTestnet();
+        }*/
     }
 
     public BigDecimal getSumAccountBalance() {

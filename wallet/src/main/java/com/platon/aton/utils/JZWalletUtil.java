@@ -6,6 +6,7 @@ import com.facebook.stetho.common.LogUtil;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.platon.aton.engine.WalletManager;
 
 import org.bitcoinj.crypto.MnemonicCode;
 import org.web3j.crypto.CipherException;
@@ -155,7 +156,7 @@ public class JZWalletUtil {
             if (walletFile == null) {
                 return false;
             }
-            if (TextUtils.isEmpty(walletFile.getAddress())) {
+            if (TextUtils.isEmpty(WalletManager.getInstance().getWalletAddressByNet(walletFile))) {
                 return false;
             }
             if (TextUtils.isEmpty(walletFile.getId())) {

@@ -45,11 +45,13 @@ class WalletServiceImpl implements WalletService {
             if (walletFile == null) {
                 return null;
             }
+
+
             return new Wallet.Builder()
                     .uuid(walletFile.getId())
                     .key(JZWalletUtil.writeWalletFileAsString(walletFile))
                     .name(name)
-                    .address(walletFile.getAddress())
+                    .address(WalletManager.getInstance().getWalletAddressByNet(walletFile))
                     .keystorePath(filename)
                     .createTime(time)
                     .updateTime(time)
