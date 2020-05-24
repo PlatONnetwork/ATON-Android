@@ -1,6 +1,7 @@
 package com.platon.aton.db.entity;
 
 
+import com.platon.aton.entity.Bech32Address;
 import com.platon.aton.entity.Wallet;
 
 import io.realm.RealmObject;
@@ -25,6 +26,11 @@ public class WalletEntity extends RealmObject {
      * 钱包地址
      */
     private String address;
+    /**
+     * betch32处理钱包地址
+     */
+    private String mainNetAddress;
+    private String testNetAddress;
     /**
      * 文件名称
      */
@@ -63,6 +69,8 @@ public class WalletEntity extends RealmObject {
         setKeyJson(builder.keyJson);
         setName(builder.name);
         setAddress(builder.address);
+        setMainNetAddress(builder.mainNetAddress);
+        setTestNetAddress(builder.testNetAddress);
         setKeystorePath(builder.keystorePath);
         setCreateTime(builder.createTime);
         setUpdateTime(builder.updateTime);
@@ -110,6 +118,22 @@ public class WalletEntity extends RealmObject {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getMainNetAddress() {
+        return mainNetAddress;
+    }
+
+    public void setMainNetAddress(String mainNetAddress) {
+        this.mainNetAddress = mainNetAddress;
+    }
+
+    public String getTestNetAddress() {
+        return testNetAddress;
+    }
+
+    public void setTestNetAddress(String testNetAddress) {
+        this.testNetAddress = testNetAddress;
     }
 
     public String getKeystorePath() {
@@ -165,6 +189,8 @@ public class WalletEntity extends RealmObject {
         private String keyJson;
         private String name;
         private String address;
+        private String mainNetAddress;
+        private String testNetAddress;
         private String keystorePath;
         private long createTime;
         private long updateTime;
@@ -193,6 +219,16 @@ public class WalletEntity extends RealmObject {
 
         public Builder address(String val) {
             address = val;
+            return this;
+        }
+
+        public Builder mainNetAddress(String val) {
+            mainNetAddress = val;
+            return this;
+        }
+
+        public Builder testNetAddress(String val) {
+            testNetAddress = val;
             return this;
         }
 
@@ -237,11 +273,14 @@ public class WalletEntity extends RealmObject {
     }
 
     public Wallet buildWallet() {
+
+        Bech32Address bech32Address = new Bech32Address(mainNetAddress,testNetAddress);
         return new Wallet.Builder()
                 .uuid(uuid)
                 .key(keyJson)
                 .name(name)
                 .address(address)
+                .betch32Address(bech32Address)
                 .keystorePath(keystorePath)
                 .createTime(createTime)
                 .updateTime(updateTime)
@@ -260,6 +299,8 @@ public class WalletEntity extends RealmObject {
                 ", keyJson='" + keyJson + '\'' +
                 ", name='" + name + '\'' +
                 ", address='" + address + '\'' +
+                ", mainNetAddress='" + mainNetAddress + '\'' +
+                ", testNetAddress='" + testNetAddress + '\'' +
                 ", keystorePath='" + keystorePath + '\'' +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +

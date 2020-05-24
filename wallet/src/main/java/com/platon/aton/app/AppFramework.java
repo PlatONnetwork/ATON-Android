@@ -60,6 +60,8 @@ public class AppFramework {
             NetConnectivity.getConnectivityManager().registerNetworkStateChange(new NetStateBroadcastReceiver());
             //初始化realm
             initRealm(context);
+            //初始化Wallet网络环境
+            WalletManager.getInstance().initWalletNet();
             //初始化节点配置
             NodeManager.getInstance().init();
             //初始化DeviceManager
@@ -68,8 +70,6 @@ public class AppFramework {
             RUtils.init(context);
             //初始化Directroy
             DirectroyController.getInstance().init(context);
-            //初始化Wallet网络环境
-            WalletManager.getInstance().initWalletNet();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -80,7 +80,7 @@ public class AppFramework {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNodeChangedEvent(Event.NodeChangedEvent event) {
         //初始化普通钱包
-        WalletManager.getInstance().init();
+        //WalletManager.getInstance().init();
     }
 
     private void initRealm(Context context) {
@@ -167,7 +167,7 @@ public class AppFramework {
                                         .where("WalletEntity")
                                         .equalTo("chainId", "103")
                                         .findAll()
-                                        .setString("chainId", BuildConfig.ID_MAIN_CHAIN);
+                                        .setString("chainId", BuildConfig.ID_TEST_NET);
                             }
                         });
 
@@ -203,7 +203,7 @@ public class AppFramework {
                                         .where("WalletEntity")
                                         .equalTo("chainId", "97")
                                         .findAll()
-                                        .setString("chainId", BuildConfig.ID_MAIN_CHAIN);
+                                        .setString("chainId", BuildConfig.ID_TEST_NET);
                             }
                         });
 
@@ -268,7 +268,7 @@ public class AppFramework {
                                         .where("WalletEntity")
                                         .equalTo("chainId", "96")
                                         .findAll()
-                                        .setString("chainId", BuildConfig.ID_MAIN_CHAIN);
+                                        .setString("chainId", BuildConfig.ID_TEST_NET);
                             }
                         });
 
@@ -301,7 +301,7 @@ public class AppFramework {
                                         .where("WalletEntity")
                                         .equalTo("chainId", "95")
                                         .findAll()
-                                        .setString("chainId", BuildConfig.ID_MAIN_CHAIN);
+                                        .setString("chainId", BuildConfig.ID_TEST_NET);
                             }
                         });
 
@@ -349,12 +349,114 @@ public class AppFramework {
                                         .where("WalletEntity")
                                         .equalTo("chainId", "101")
                                         .findAll()
-                                        .setString("chainId", BuildConfig.ID_MAIN_CHAIN);
+                                        .setString("chainId", BuildConfig.ID_TEST_NET);
 
                                 LogUtils.d("------------update chainId Realm success");
                             }
                         });
                 oldVersion++;
+            }else if (oldVersion == 112) {
+                //此版本主要转换钱包地址
+                schema.get("NodeEntity")
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.getDynamicRealm().where("NodeEntity").findAll().deleteAllFromRealm();
+                            }
+                        });
+
+                schema.get("WalletEntity")
+                        .addField("mainNetAddress", String.class)
+                        .addField("testNetAddress", String.class)
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.getDynamicRealm()
+                                        .where("WalletEntity")
+                                        .equalTo("chainId", "101")
+                                        .findAll()
+                                        .setString("chainId", BuildConfig.ID_TEST_NET);
+
+
+                              /*  obj.getDynamicRealm()
+                                        .where("WalletEntity")
+                                        .findAll()
+                                        .setString("mainNetAddress", "");
+
+                                obj.getDynamicRealm()
+                                        .where("WalletEntity")
+                                        .findAll()
+                                        .setString("testNetAddress", "");*/
+
+/*
+                                RealmResults<DynamicRealmObject>  realmObjectRealmResults =  obj.getDynamicRealm()
+                                        .where("WalletEntity")
+                                        .findAll();
+                                String str = realmObjectRealmResults.asJSON();
+                                System.out.println("---str:" + str);
+                                List<WalletEntity> walletEntities = JSON.parseArray(str,WalletEntity.class);
+                                for (int i = 0; i < walletEntities.size(); i++) {
+                                    WalletEntity walletEntity = walletEntities.get(i);
+                                    String walletAddress = walletEntity.getAddress();
+                                    AddressBech32 addressBech32 = AddressManager.getInstance().executeEncodeAddress(walletAddress);
+                                    walletEntities.get(i).setMainNetAddress(addressBech32.getMainnet());
+                                    walletEntities.get(i).setTestNetAddress(addressBech32.getTestnet());
+                                }
+                                System.out.println("---walletEntities:" + walletEntities.size());
+                                System.out.println("---walletEntities:" + walletEntities.toString());
+
+                                Realm realmUpdate = obj.getDynamicRealm()
+                                        .where("WalletEntity")
+                                        .getRealm();
+                                realmUpdate.beginTransaction();
+                                realmUpdate.insertOrUpdate(walletEntities);
+                                realmUpdate.commitTransaction();*/
+
+                             /*   try {
+                                    List<WalletEntity> walletEntities = new ArrayList<>();
+                                    Realm realm = obj.getRealm();
+                                    realm = Realm.getDefaultInstance();
+                                    RealmResults<WalletEntity> results = realm.where(WalletEntity.class)
+                                            //.equalTo("chainId", NodeManager.getInstance().getChainId())
+                                            .sort("updateTime", Sort.ASCENDING)
+                                            .findAll();
+                                    if (results != null) {
+                                        walletEntities = realm.copyFromRealm(results);
+                                    }
+
+                                    for (int i = 0; i < walletEntities.size(); i++) {
+                                        WalletEntity walletEntity = walletEntities.get(i);
+                                        String walletAddress = walletEntity.getAddress();
+                                        AddressBech32 addressBech32 = AddressManager.getInstance().executeEncodeAddress(walletAddress);
+                                        walletEntities.get(i).setMainNetAddress(addressBech32.getMainnet());
+                                        walletEntities.get(i).setTestNetAddress(addressBech32.getTestnet());
+                                    }
+
+                                    realm = Realm.getDefaultInstance();
+                                    realm.beginTransaction();
+                                    realm.insertOrUpdate(walletEntities);
+                                    realm.commitTransaction();
+
+
+                                } catch (Exception exp) {
+                                    LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
+                                } finally {
+                                   *//* if (realm != null) {
+                                        realm.close();
+                                    }*//*
+                                }*/
+
+
+
+                            }
+                        });
+
+
+
+                oldVersion++;
+
+
+
             }
 
         }

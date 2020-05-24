@@ -12,6 +12,7 @@ import com.platon.aton.component.ui.dialog.TransactionAuthorizationDialogFragmen
 import com.platon.aton.component.ui.dialog.TransactionSignatureDialogFragment;
 import com.platon.aton.db.entity.TransactionEntity;
 import com.platon.aton.db.sqlite.TransactionDao;
+import com.platon.aton.engine.ContractAddressManager;
 import com.platon.aton.engine.DelegateManager;
 import com.platon.aton.engine.NodeManager;
 import com.platon.aton.engine.Optional;
@@ -39,7 +40,6 @@ import com.trello.rxlifecycle2.android.FragmentEvent;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 import org.web3j.crypto.Credentials;
-import org.web3j.platon.ContractAddress;
 import org.web3j.platon.FunctionType;
 
 import java.util.Arrays;
@@ -234,12 +234,13 @@ public class MyDelegatePresenter extends BasePresenter<MyDelegateContract.View> 
                     public void onApiSuccess(EstimateGasResult estimateGasResult) {
                         if (isViewAttached()) {
                             if (isViewAttached()) {
+                                String toAddress = ContractAddressManager.getInstance().getPlanContractAddress(ContractAddressManager.REWARD_CONTRACT_ADDRESS);
                                 TransactionAuthorizationData transactionAuthorizationData = new TransactionAuthorizationData(Arrays.asList(new TransactionAuthorizationBaseData.Builder(FunctionType.WITHDRAW_DELEGATE_REWARD_FUNC_TYPE)
                                         .setAmount(amount)
                                         .setChainId(NodeManager.getInstance().getChainId())
                                         .setNonce(estimateGasResult.getNonce())
                                         .setFrom(from)
-                                        .setTo(ContractAddress.REWARD_CONTRACT_ADDRESS)
+                                        .setTo(toAddress)
                                         .setGasLimit(gasProvider.getGasLimit().toString(10))
                                         .setGasPrice(gasProvider.getGasPrice().toString(10))
                                         .setRemark("")

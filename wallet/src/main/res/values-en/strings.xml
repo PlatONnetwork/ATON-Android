@@ -308,7 +308,7 @@
     <string name="noWalletTips">Create Classic Wallet first</string>
     <string name="insufficientBalanceTips">Insufficient wallet balance, can\'t create</string>
     <string name="inputWalletAddress">Enter receive address</string>
-    <string name="inputSendAmount">0.00</string>
+    <string name="inputSendAmount">0.00000000</string>
     <string name="inputMome">Memo(Non - compulsory)</string>
     <string name="duplicateAddress">Duplicate address exists</string>
     <string name="saveAndShareImage">Save image and Share</string>
@@ -430,7 +430,9 @@
     <string name="hint_wallet_password">Input the wallet\'s password</string>
     <string name="vote_success">Vote Success!</string>
     <string name="vote_failed">Vote Failed!</string>
-    <string name="receive_address_error">Address format is incorrect</string>
+    <string name="receive_address_error">Invalid address</string>
+    <string name="receive_address_match_mainnet_error">Mainnet address,do not use in testnet</string>
+    <string name="receive_address_match_testnet_error">Testnet address,do not use in mainnet</string>
     <string name="txn_init_failed_title">Transaction initiation failed</string>
     <string name="txn_init_failed_content">The associated Classic Wallet has been removed.</string>
     <string name="query_no_result">Query no result！</string>

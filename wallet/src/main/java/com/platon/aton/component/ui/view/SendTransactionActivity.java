@@ -38,6 +38,7 @@ import com.platon.aton.component.widget.ShadowButton;
 import com.platon.aton.component.widget.bubbleSeekBar.BubbleSeekBar;
 import com.platon.aton.db.sqlite.WalletDao;
 import com.platon.aton.entity.Address;
+import com.platon.aton.entity.AddressMatchingResultType;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.event.Event;
 import com.platon.aton.event.EventPublisher;
@@ -306,8 +307,18 @@ public class SendTransactionActivity extends BaseActivity<SendTransationContract
                     String address = data.getStringExtra(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
                     String unzip = GZipUtil.unCompress(address);
                     String newStr = TextUtils.isEmpty(unzip) ? address : unzip;
+
                     if (JZWalletUtil.isValidAddress(newStr)) {
-                        setToAddress(newStr);
+                        int result = JZWalletUtil.isValidAddressMatchingNet(newStr);
+                        if(result == AddressMatchingResultType.ADDRESS_MAINNET_MATCHING){
+                            setToAddress(newStr);
+                        }else if(result == AddressMatchingResultType.ADDRESS_MAINNET_MISMATCHING){
+                            ToastUtil.showLongToast(getContext(), string(R.string.receive_address_match_mainnet_error));
+                        }else if(result == AddressMatchingResultType.ADDRESS_TESTNET_MATCHING){
+                            setToAddress(newStr);
+                        }else if(result == AddressMatchingResultType.ADDRESS_TESTNET_MISMATCHING){
+                            ToastUtil.showLongToast(getContext(), string(R.string.receive_address_match_testnet_error));
+                        }
                     } else {
                         ToastUtil.showLongToast(getContext(), string(R.string.unrecognized));
                     }

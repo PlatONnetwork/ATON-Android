@@ -12,6 +12,7 @@ import com.platon.aton.component.ui.dialog.DelegateSelectWalletDialogFragment;
 import com.platon.aton.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.platon.aton.component.ui.dialog.TransactionAuthorizationDialogFragment;
 import com.platon.aton.component.ui.dialog.TransactionSignatureDialogFragment;
+import com.platon.aton.engine.ContractAddressManager;
 import com.platon.aton.engine.DelegateManager;
 import com.platon.aton.engine.NodeManager;
 import com.platon.aton.engine.ServerUtils;
@@ -37,7 +38,6 @@ import com.platon.framework.network.ApiResponse;
 import com.platon.framework.network.ApiSingleObserver;
 
 import org.web3j.crypto.Credentials;
-import org.web3j.platon.ContractAddress;
 import org.web3j.platon.FunctionType;
 import org.web3j.platon.StakingAmountType;
 import org.web3j.utils.Convert;
@@ -248,7 +248,8 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
         if (mWallet != null && mDelegateDetail != null && mEstimateGasResult != null) {
             if (mWallet.isObservedWallet()) {
-                showTransactionAuthorizationDialogFragment(mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), stakingAmountType, mEstimateGasResult.getGasProvider(), getView().getDelegateAmount(), mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, mEstimateGasResult.getNonce());
+                String toAddress = ContractAddressManager.getInstance().getPlanContractAddress(ContractAddressManager.DELEGATE_CONTRACT_ADDRESS);
+                showTransactionAuthorizationDialogFragment(mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), stakingAmountType, mEstimateGasResult.getGasProvider(), getView().getDelegateAmount(), mWallet.getPrefixAddress(), toAddress, mEstimateGasResult.getNonce());
             } else {
                 showInputPasswordDialogFragment(getView().getDelegateAmount(), mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), stakingAmountType, mEstimateGasResult.getGasProvider(), mEstimateGasResult.getNonce());
             }
@@ -289,7 +290,8 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     @SuppressLint("CheckResult")
     private void delegate(Credentials credentials, String inputAmount, String nodeId, String nodeName, StakingAmountType stakingAmountType, GasProvider gasProvider, String nonce) {
         //这里调用新的方法，传入GasProvider
-        DelegateManager.getInstance().delegate(credentials, ContractAddress.DELEGATE_CONTRACT_ADDRESS, inputAmount, nodeId, nodeName, String.valueOf(TransactionType.DELEGATE.getTxTypeValue()), stakingAmountType, gasProvider.toSdkGasProvider(), nonce)
+        String toAddress = ContractAddressManager.getInstance().getPlanContractAddress(ContractAddressManager.DELEGATE_CONTRACT_ADDRESS);
+        DelegateManager.getInstance().delegate(credentials, toAddress, inputAmount, nodeId, nodeName, String.valueOf(TransactionType.DELEGATE.getTxTypeValue()), stakingAmountType, gasProvider.toSdkGasProvider(), nonce)
                 .toObservable()
                 .compose(RxUtils.getSchedulerTransformer())
                 .compose(RxUtils.getLoadingTransformer(currentActivity()))

@@ -17,7 +17,6 @@ import org.web3j.abi.datatypes.generated.Uint16;
 import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.abi.datatypes.generated.Uint64;
 import org.web3j.crypto.Credentials;
-import org.web3j.platon.ContractAddress;
 import org.web3j.platon.FunctionType;
 import org.web3j.platon.PlatOnFunction;
 import org.web3j.platon.StakingAmountType;
@@ -206,7 +205,8 @@ public class DelegateManager {
                 .flatMap(new Function<RPCTransactionResult, SingleSource<Transaction>>() {
                     @Override
                     public SingleSource<Transaction> apply(RPCTransactionResult transactionResult) throws Exception {
-                        return insertTransaction(credentials, transactionResult.getHash(), ContractAddress.REWARD_CONTRACT_ADDRESS, amount, "", "", feeAmount, String.valueOf(TransactionType.CLAIM_REWARDS.getTxTypeValue()));
+                        String toAddress = ContractAddressManager.getInstance().getPlanContractAddress(ContractAddressManager.REWARD_CONTRACT_ADDRESS);
+                        return insertTransaction(credentials, transactionResult.getHash(), toAddress, amount, "", "", feeAmount, String.valueOf(TransactionType.CLAIM_REWARDS.getTxTypeValue()));
                     }
                 })
                 .toObservable();

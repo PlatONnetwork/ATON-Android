@@ -64,7 +64,7 @@ public class AddressBookActivity extends BaseActivity<AddressBookContract.View, 
     @Override
     public void init() {
         unbinder = ButterKnife.bind(this);
-        initViews();
+        initViews();initViews();
         getPresenter().fetchAddressList();
     }
 

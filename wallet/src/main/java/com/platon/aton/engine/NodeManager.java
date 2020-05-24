@@ -111,13 +111,13 @@ public class NodeManager {
 
         if (getCurNode() == null || TextUtils.isEmpty(getCurNode().getChainId())) {
             if (BuildConfig.RELEASE_TYPE.equals("server.typeC")) {
-                return BuildConfig.ID_TEST_CHAIN;
+                return BuildConfig.ID_INNERTEST_NET;
             } else if (BuildConfig.RELEASE_TYPE.equals("server.typeOC")) {
-                return BuildConfig.ID_TEST_CHAIN;
+                return BuildConfig.ID_INNERTEST_NET;
             } else if (BuildConfig.RELEASE_TYPE.equals("server.typeTX")) {
-                return BuildConfig.ID_TEST_MAIN_CHAIN;
+                return BuildConfig.ID_UAT_NET;
             } else {
-                return BuildConfig.ID_MAIN_CHAIN;
+                return BuildConfig.ID_TEST_NET;
             }
         } else {
             return getCurNode().getChainId();
@@ -158,42 +158,42 @@ public class NodeManager {
         if (BuildConfig.RELEASE_TYPE.equals("server.typeC")) {//公网测试环境 + 开发环境
             nodeInfoEntityList.add(new Node.Builder()
                     .id(UUID.randomUUID().hashCode())
-                    .nodeAddress(BuildConfig.URL_TEST_OUTER_SERVER)
+                    .nodeAddress(BuildConfig.URL_OUTER_INNERTEST_NET)
                     .isDefaultNode(true)
                     .isChecked(true)
-                    .chainId(BuildConfig.ID_TEST_CHAIN)
+                    .chainId(BuildConfig.ID_INNERTEST_NET)
                     .build());
 
             nodeInfoEntityList.add(new Node.Builder()
                     .id(UUID.randomUUID().hashCode())
-                    .nodeAddress(BuildConfig.URL_DEVELOP_SERVER)
+                    .nodeAddress(BuildConfig.URL_DEVELOP_NET)
                     .isDefaultNode(false)
                     .isChecked(false)
-                    .chainId(BuildConfig.ID_DEVELOP_CHAIN)
+                    .chainId(BuildConfig.ID_DEVELOP_NET)
                     .build());
         } else if (BuildConfig.RELEASE_TYPE.equals("server.typeX")) {//测试网络(贝莱世界)
             nodeInfoEntityList.add(new Node.Builder()
                     .id(UUID.randomUUID().hashCode())
-                    .nodeAddress(BuildConfig.URL_MAIN_SERVER)
+                    .nodeAddress(BuildConfig.URL_TEST_NET)
                     .isDefaultNode(true)
                     .isChecked(true)
-                    .chainId(BuildConfig.ID_MAIN_CHAIN)
+                    .chainId(BuildConfig.ID_TEST_NET)
                     .build());
         } else if (BuildConfig.RELEASE_TYPE.equals("server.typeOC")) {//公网测试环境
             nodeInfoEntityList.add(new Node.Builder()
                     .id(UUID.randomUUID().hashCode())
-                    .nodeAddress(BuildConfig.URL_TEST_OUTER_SERVER)
+                    .nodeAddress(BuildConfig.URL_OUTER_INNERTEST_NET)
                     .isDefaultNode(true)
                     .isChecked(true)
-                    .chainId(BuildConfig.ID_TEST_CHAIN)
+                    .chainId(BuildConfig.ID_INNERTEST_NET)
                     .build());
         } else if (BuildConfig.RELEASE_TYPE.equals("server.typeTX")) {//平行网
             nodeInfoEntityList.add(new Node.Builder()
                     .id(UUID.randomUUID().hashCode())
-                    .nodeAddress(BuildConfig.URL_TEST_MAIN_SERVER)
+                    .nodeAddress(BuildConfig.URL_UAT_NET)
                     .isDefaultNode(true)
                     .isChecked(true)
-                    .chainId(BuildConfig.ID_TEST_MAIN_CHAIN)
+                    .chainId(BuildConfig.ID_UAT_NET)
                     .build());
         }
         return nodeInfoEntityList;

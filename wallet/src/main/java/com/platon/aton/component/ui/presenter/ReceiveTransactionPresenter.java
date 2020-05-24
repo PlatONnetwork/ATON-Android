@@ -2,7 +2,6 @@ package com.platon.aton.component.ui.presenter;
 
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 import android.view.View;
 
 import com.platon.aton.R;
@@ -54,9 +53,6 @@ public class ReceiveTransactionPresenter extends BasePresenter<ReceiveTransation
                 @Override
                 public Bitmap call() throws Exception {
                     String text = walletEntity.getPrefixAddress();
-                    if (!TextUtils.isEmpty(text) && !text.toLowerCase().startsWith("0x")) {
-                        text = "0x" + text;
-                    }
                     return QRCodeEncoder.syncEncodeQRCode(text, DensityUtil.dp2px(getContext(), 250f));
                 }
             }).compose(RxUtils.getFlowableSchedulerTransformer())
@@ -87,9 +83,6 @@ public class ReceiveTransactionPresenter extends BasePresenter<ReceiveTransation
             return;
         }
         String text = walletEntity.getPrefixAddress();
-        if (!TextUtils.isEmpty(text) && !text.toLowerCase().startsWith("0x")) {
-            text = "0x" + text;
-        }
         View shareView = getView().shareView(walletEntity.getName(), text, mQRCodeBitmap);
         final BaseActivity activity = currentActivity();
 
@@ -153,9 +146,6 @@ public class ReceiveTransactionPresenter extends BasePresenter<ReceiveTransation
             return;
         }
         String text = walletEntity.getPrefixAddress();
-        if (!TextUtils.isEmpty(text) && !text.toLowerCase().startsWith("0x")) {
-            text = "0x" + text;
-        }
         CommonUtil.copyTextToClipboard(getContext(), text);
     }
 
