@@ -53,6 +53,7 @@ import com.platon.framework.network.ApiRequestBody;
 import com.platon.framework.network.ApiResponse;
 import com.platon.framework.network.ApiSingleObserver;
 import com.platon.framework.network.NetConnectivity;
+import com.platon.framework.utils.LogUtils;
 import com.platon.framework.utils.PreferenceTool;
 import com.trello.rxlifecycle2.android.FragmentEvent;
 
@@ -61,7 +62,6 @@ import org.web3j.crypto.ECKeyPair;
 import org.web3j.platon.FunctionType;
 import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.utils.Convert;
-import org.web3j.utils.Numeric;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -294,22 +294,12 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
         return TextUtils.isEmpty(errMsg);
     }
 
-    public static final int ADDRESS_STANDARD_SIZE = 42;
 
     public boolean checkToAddressNotSelf(String toAddress,String address){
 
-        if(toAddress.contains("0x") && toAddress.length() == ADDRESS_STANDARD_SIZE){
-            if (toAddress.equalsIgnoreCase(address)) {
-                showLongToast(R.string.can_not_send_to_itself);
-                return false;
-            }
-        }else{
-            String cleanToAddress = Numeric.cleanHexPrefix(toAddress);
-            String cleanAddress = Numeric.cleanHexPrefix(address);
-            if (cleanToAddress.equalsIgnoreCase(cleanAddress)) {
-                showLongToast(R.string.can_not_send_to_itself);
-                return false;
-            }
+        if (toAddress.equalsIgnoreCase(address)) {
+            showLongToast(R.string.can_not_send_to_itself);
+            return false;
         }
         return true;
     }
@@ -651,7 +641,8 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                     });
 
         }catch (Exception e){
-           e.printStackTrace();
+            showLongToast(R.string.failed);
+            LogUtils.e("tag",e.fillInStackTrace());
         }
 
     }
@@ -873,9 +864,8 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
             @Override
             public String call() throws Exception {
 
-                return  address;
-               /* String walletName = WalletManager.getInstance().getWalletNameByWalletAddress(address);
-                return TextUtils.isEmpty(walletName) ? walletName : String.format("%s(%s)", walletName, AddressFormatUtil.formatTransactionAddress(address));*/
+                String walletName = WalletManager.getInstance().getWalletNameByWalletAddress(address);
+                return TextUtils.isEmpty(walletName) ? walletName : String.format("%s(%s)", walletName, AddressFormatUtil.formatTransactionAddress(address));
             }
         }).filter(new Predicate<String>() {
             @Override
