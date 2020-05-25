@@ -17,15 +17,15 @@ android {
         buildConfigField("int", "INNER_VERSION_NAME", "${inner_version_name}")
         buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
         buildConfigField("String", "URL_PLATON_NETWORK", "${URL_PLATON_NETWORK}")
-        buildConfigField("String", "URL_MAIN_SERVER", "${URL_MAIN_SERVER}")
-        buildConfigField("String", "URL_TEST_MAIN_SERVER", "${URL_TEST_MAIN_SERVER}")
-        buildConfigField("String", "URL_TEST_SERVER", "${URL_TEST_SERVER}")
-        buildConfigField("String", "URL_TEST_OUTER_SERVER", "${URL_TEST_OUTER_SERVER}")
-        buildConfigField("String", "URL_DEVELOP_SERVER", "${URL_DEVELOP_SERVER}")
-        buildConfigField("String", "ID_TEST_MAIN_CHAIN", "${ID_TEST_MAIN_CHAIN}")
-        buildConfigField("String", "ID_MAIN_CHAIN", "${ID_MAIN_CHAIN}")
-        buildConfigField("String", "ID_TEST_CHAIN", "${ID_TEST_CHAIN}")
-        buildConfigField("String", "ID_DEVELOP_CHAIN", "${ID_DEVELOP_CHAIN}")
+        buildConfigField("String", "URL_TEST_NET", "${URL_TEST_NET}")
+        buildConfigField("String", "URL_UAT_NET", "${URL_UAT_NET}")
+        buildConfigField("String", "URL_INNERTEST_NET", "${URL_INNERTEST_NET}")
+        buildConfigField("String", "URL_OUTER_INNERTEST_NET", "${URL_OUTER_INNERTEST_NET}")
+        buildConfigField("String", "URL_DEVELOP_NET", "${URL_DEVELOP_NET}")
+        buildConfigField("String", "ID_UAT_NET", "${ID_UAT_NET}")
+        buildConfigField("String", "ID_TEST_NET", "${ID_TEST_NET}")
+        buildConfigField("String", "ID_INNERTEST_NET", "${ID_INNERTEST_NET}")
+        buildConfigField("String", "ID_DEVELOP_NET", "${ID_DEVELOP_NET}")
         buildConfigField("int", "QRCODE_VERSION_CODE", "${qrcode_version_code}")
         renderscriptTargetApi 19
         renderscriptSupportModeEnabled true
@@ -135,8 +135,8 @@ android {
         releaseX {
             debuggable false
             signingConfig signingConfigs.releaseX
-            shrinkResources true
-            minifyEnabled true
+            shrinkResources false
+            minifyEnabled false
             zipAlignEnabled true
             multiDexEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'

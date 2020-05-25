@@ -185,8 +185,10 @@ public class Constants {
         String PORTAL = "portal";
         //分支版本0.10.1.0
         // int VERSION = 111;
-        //分支版本0.11.1.0
-        int VERSION = 112;
+        //分支版本0.11.1.0(版本号：0.12.0)
+        //int VERSION = 112;
+        //分支版本0.13.0(版本号：0.13.0)
+        int VERSION = 113;
     }
 
     public interface DelegateRecordType {

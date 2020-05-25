@@ -10,7 +10,6 @@ import com.platon.framework.entity.DeviceManager;
 import com.platon.framework.network.ApiResponse;
 import com.platon.framework.network.NetConnectivity;
 import com.platon.framework.utils.AndroidUtil;
-import com.platon.framework.utils.LogUtils;
 import com.platon.framework.utils.PreferenceTool;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.DefaultRefreshFooterCreator;
@@ -60,12 +59,9 @@ public class BaseAppDelegage {
             return;
         }
         //Log日志
-        LogUtils.setLogEnable(BuildConfig.DEBUG);
+        //LogUtils.setLogEnable(BuildConfig.DEBUG);
         //Preference参数
         PreferenceTool.init(mApplication);
-        //数据库香相关的初始化
-        //网络状态变化监听
-        NetConnectivity.getConnectivityManager().init(mApplication);
         //初始化异常组件
         CustomerException.getExceptionControl().init(mApplication);
         // 初始化网络组件

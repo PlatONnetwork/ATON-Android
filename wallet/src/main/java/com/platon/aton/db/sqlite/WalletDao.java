@@ -1,8 +1,10 @@
 package com.platon.aton.db.sqlite;
 
 import com.platon.aton.db.entity.WalletEntity;
-import com.platon.aton.engine.NodeManager;
 import com.platon.framework.utils.LogUtils;
+
+import org.web3j.crypto.bech32.AddressBech32;
+import org.web3j.crypto.bech32.AddressManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +32,7 @@ public class WalletDao {
         try {
             realm = Realm.getDefaultInstance();
             RealmResults<WalletEntity> results = realm.where(WalletEntity.class)
-                    .equalTo("chainId", NodeManager.getInstance().getChainId())
+                    //.equalTo("chainId", NodeManager.getInstance().getChainId())
                     .sort("updateTime", Sort.ASCENDING)
                     .findAll();
             if (results != null) {
@@ -52,7 +54,7 @@ public class WalletDao {
         try {
             realm = Realm.getDefaultInstance();
             WalletEntity walletEntity = realm.where(WalletEntity.class)
-                    .equalTo("chainId", NodeManager.getInstance().getChainId())
+                    //.equalTo("chainId", NodeManager.getInstance().getChainId())
                     .equalTo("address", prefixAddress, Case.INSENSITIVE)
                     .findFirst();
             if (walletEntity != null) {
@@ -74,7 +76,7 @@ public class WalletDao {
         try {
             realm = Realm.getDefaultInstance();
             WalletEntity walletEntity = realm.where(WalletEntity.class)
-                    .equalTo("chainId", NodeManager.getInstance().getChainId())
+                    //.equalTo("chainId", NodeManager.getInstance().getChainId())
                     .equalTo("address", prefixAddress, Case.INSENSITIVE)
                     .findFirst();
             if (walletEntity != null) {
@@ -89,6 +91,8 @@ public class WalletDao {
         }
         return walletAvatar;
     }
+
+
 
     public static boolean insertWalletInfo(WalletEntity entity) {
         Realm realm = null;
@@ -119,7 +123,7 @@ public class WalletDao {
                     .beginGroup()
                     .equalTo("uuid", uuid)
                     .and()
-                    .equalTo("chainId", NodeManager.getInstance().getChainId())
+                    //.equalTo("chainId", NodeManager.getInstance().getChainId())
                     .endGroup()
                     .findFirst()
                     .setName(name);
@@ -146,7 +150,7 @@ public class WalletDao {
                     .beginGroup()
                     .equalTo("uuid", uuid)
                     .and()
-                    .equalTo("chainId", NodeManager.getInstance().getChainId())
+                    //.equalTo("chainId", NodeManager.getInstance().getChainId())
                     .endGroup()
                     .findFirst()
                     .setBackedUp(backedUp);
@@ -173,7 +177,7 @@ public class WalletDao {
                     .beginGroup()
                     .equalTo("uuid", uuid)
                     .and()
-                    .equalTo("chainId", NodeManager.getInstance().getChainId())
+                    //.equalTo("chainId", NodeManager.getInstance().getChainId())
                     .endGroup()
                     .findFirst()
                     .setMnemonic(mnemonic);
@@ -200,7 +204,7 @@ public class WalletDao {
                     .beginGroup()
                     .equalTo("uuid", uuid)
                     .and()
-                    .equalTo("chainId", NodeManager.getInstance().getChainId())
+                    //.equalTo("chainId", NodeManager.getInstance().getChainId())
                     .endGroup()
                     .findFirst()
                     .setUpdateTime(updateTime);
@@ -218,6 +222,66 @@ public class WalletDao {
         return false;
     }
 
+
+    public static boolean updateBetch32AddressWithWallet() {
+
+        List<WalletEntity> walletEntities = getWalletInfoList();
+        LogUtils.e("---walletEntities:" + walletEntities.size());
+        LogUtils.e("---walletEntities:" + walletEntities.toString());
+        for (int i = 0; i < walletEntities.size(); i++) {
+            WalletEntity walletEntity = walletEntities.get(i);
+            String walletAddress = walletEntity.getAddress();
+            String mainNetAddress = walletEntity.getMainNetAddress();
+            String testNetAddress = walletEntity.getTestNetAddress();
+            LogUtils.e("---walletEntities  walletAddress:" + walletAddress);
+            LogUtils.e("---walletEntities  mainNetAddress:" + mainNetAddress);
+            LogUtils.e("---walletEntities  testNetAddress:" + testNetAddress);
+            if((mainNetAddress != null && !mainNetAddress.equals("")) && (testNetAddress != null && !testNetAddress.equals(""))){
+               continue;
+            }
+            AddressBech32 addressBech32 = AddressManager.getInstance().executeEncodeAddress(walletAddress);
+            LogUtils.e("---walletEntities  addressBech32.getMainnet:" + addressBech32.getMainnet());
+            LogUtils.e("---walletEntities  addressBech32.getTestnet:" + addressBech32.getTestnet());
+            walletEntities.get(i).setMainNetAddress(addressBech32.getMainnet());
+            walletEntities.get(i).setTestNetAddress(addressBech32.getTestnet());
+            LogUtils.e("---walletEntities  end");
+        }
+
+        if(walletEntities == null && walletEntities.size() == 0){
+            return false;
+        }
+
+           Realm realm = null;
+           try {
+               realm = Realm.getDefaultInstance();
+               LogUtils.e("---walletEntities  insertOrUpdate");
+               realm.beginTransaction();
+               realm.insertOrUpdate(walletEntities);
+               realm.commitTransaction();
+               LogUtils.e("---walletEntities  commitTransaction");
+
+
+               List<WalletEntity> walletEntitiesNew = getWalletInfoList();
+               LogUtils.e("---walletEntitiesNew:" + walletEntitiesNew.size());
+               LogUtils.e("---walletEntitiesNew:" + walletEntitiesNew.toString());
+
+
+            return true;
+        } catch (Exception e) {
+            if (realm != null) {
+                realm.cancelTransaction();
+            }
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+
+
+
+        return false;
+    }
+
     public static boolean deleteWalletInfo(String uuid) {
         Realm realm = null;
         try {
@@ -227,7 +291,7 @@ public class WalletDao {
                     .beginGroup()
                     .equalTo("uuid", uuid)
                     .and()
-                    .equalTo("chainId", NodeManager.getInstance().getChainId())
+                   // .equalTo("chainId", NodeManager.getInstance().getChainId())
                     .endGroup()
                     .findAll()
                     .deleteFirstFromRealm();

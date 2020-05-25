@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.platon.aton.db.entity.WalletEntity;
+import com.platon.aton.engine.WalletManager;
 import com.platon.framework.utils.LogUtils;
 
 public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneable {
@@ -21,6 +22,10 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneab
      * 普通钱包即钱包地址，共享钱包即合约地址
      */
     protected String address;
+    /**
+     * Betch32处理后钱包地址
+     */
+    protected  Bech32Address bech32Address;
     /**
      * 创建时间
      */
@@ -72,6 +77,7 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneab
         uuid = in.readString();
         name = in.readString();
         address = in.readString();
+        bech32Address = in.readParcelable(Bech32Address.class.getClassLoader());
         createTime = in.readLong();
         updateTime = in.readLong();
         avatar = in.readString();
@@ -89,6 +95,7 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneab
         this.uuid = builder.uuid;
         this.name = builder.name;
         this.address = builder.address;
+        this.bech32Address = builder.bech32Address;
         this.createTime = builder.createTime;
         this.updateTime = builder.updateTime;
         this.avatar = builder.avatar;
@@ -107,6 +114,7 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneab
         dest.writeString(uuid);
         dest.writeString(name);
         dest.writeString(address);
+        dest.writeParcelable(bech32Address, flags);
         dest.writeLong(createTime);
         dest.writeLong(updateTime);
         dest.writeString(avatar);
@@ -184,6 +192,14 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneab
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public Bech32Address getBech32Address() {
+        return bech32Address;
+    }
+
+    public void setBech32Address(Bech32Address bech32Address) {
+        this.bech32Address = bech32Address;
     }
 
     public long getCreateTime() {
@@ -329,7 +345,36 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneab
      */
     public String getPrefixAddress() {
         try {
-            if (TextUtils.isEmpty(address)) {
+             if(getBech32Address() == null){
+                 return "";
+             }
+            if(WalletManager.getInstance().isMainNetWalletAddress()){
+                return getBech32Address().getMainnet();
+            }else{
+                return getBech32Address().getTestnet();
+            }
+
+
+          /*  if (TextUtils.isEmpty(address)) {
+                return "";
+            }
+            if (address.toLowerCase().startsWith("0x")) {
+                return address;
+            }
+            return "0x" + address;*/
+        } catch (Exception exp) {
+            LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
+            return "";
+        }
+    }
+
+    /**
+     * 获取原始0x钱包地址
+     * @return
+     */
+    public String getOriginalAddress(){
+        try {
+           if (TextUtils.isEmpty(address)) {
                 return "";
             }
             if (address.toLowerCase().startsWith("0x")) {
@@ -348,6 +393,7 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneab
                 "uuid='" + uuid + '\'' +
                 ", name='" + name + '\'' +
                 ", address='" + address + '\'' +
+                ", bech32Address=" + bech32Address +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 ", avatar='" + avatar + '\'' +
@@ -358,6 +404,7 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneab
                 ", backedUp=" + backedUp +
                 ", accountBalance=" + accountBalance +
                 ", selected=" + selected +
+                ", backedUpPrompt=" + backedUpPrompt +
                 '}';
     }
 
@@ -381,7 +428,9 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneab
                 .uuid(getUuid())
                 .keyJson(getKey())
                 .name(getName())
-                .address(getPrefixAddress())
+                .address(getOriginalAddress())
+                .mainNetAddress(getBech32Address().getMainnet())
+                .testNetAddress(getBech32Address().getTestnet())
                 .keystorePath(getKeystorePath())
                 .createTime(getCreateTime())
                 .updateTime(getUpdateTime())
@@ -426,6 +475,7 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneab
         private String uuid;
         private String name;
         private String address;
+        private Bech32Address bech32Address;
         private long createTime;
         private long updateTime;
         private String avatar;
@@ -450,6 +500,11 @@ public class Wallet implements Parcelable, Comparable<Wallet>, Nullable, Cloneab
 
         public Builder address(String address) {
             this.address = address;
+            return this;
+        }
+
+        public Builder betch32Address(Bech32Address bech32Address) {
+            this.bech32Address = bech32Address;
             return this;
         }
 

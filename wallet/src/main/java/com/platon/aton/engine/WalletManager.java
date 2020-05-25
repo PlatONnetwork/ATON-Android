@@ -2,10 +2,12 @@ package com.platon.aton.engine;
 
 import android.text.TextUtils;
 
+import com.platon.aton.BuildConfig;
 import com.platon.aton.app.CustomThrowable;
 import com.platon.aton.db.entity.WalletEntity;
 import com.platon.aton.db.sqlite.WalletDao;
 import com.platon.aton.entity.AccountBalance;
+import com.platon.aton.entity.Bech32Address;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.event.Event;
 import com.platon.aton.event.EventPublisher;
@@ -21,6 +23,11 @@ import com.platon.framework.utils.PreferenceTool;
 
 import org.greenrobot.eventbus.EventBus;
 import org.reactivestreams.Publisher;
+import org.web3j.crypto.WalletApplication;
+import org.web3j.crypto.bech32.AddressBech32;
+import org.web3j.crypto.bech32.AddressBehavior;
+import org.web3j.crypto.bech32.AddressManager;
+import org.web3j.crypto.bech32.Bech32;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -80,6 +87,29 @@ public class WalletManager {
         return WalletManager.InstanceHolder.INSTANCE;
     }
 
+    /**
+     * 初始化钱包环境
+     */
+    public void initWalletNet(){
+        String chainId = NodeManager.getInstance().getChainId();
+        if(chainId.equals(BuildConfig.ID_TEST_NET)){
+            WalletApplication.init(WalletApplication.MAINNET, AddressManager.ADDRESS_TYPE_BECH32, AddressBehavior.CHANNLE_PLATON);
+        }else{
+            WalletApplication.init(WalletApplication.TESTNET, AddressManager.ADDRESS_TYPE_BECH32, AddressBehavior.CHANNLE_PLATON);
+        }
+        perInit();
+    }
+
+    public boolean isMainNetWalletAddress(){
+        if(NodeManager.getInstance().getChainId().equals(BuildConfig.ID_TEST_NET)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+
+
     public BigDecimal getSumAccountBalance() {
         return mSumAccountBalance;
     }
@@ -137,9 +167,12 @@ public class WalletManager {
     public String getSelectedWalletAddress() {
 
         Wallet selectedWallet = getSelectedWallet();
-
         return selectedWallet == null ? null : selectedWallet.getPrefixAddress();
+    }
 
+
+    public void perInit(){
+        WalletDao.updateBetch32AddressWithWallet();
     }
 
     public void init() {
@@ -412,13 +445,20 @@ public class WalletManager {
         if (!JZWalletUtil.isValidAddress(walletAddress)) {
             return CODE_ERROR_INVALIA_ADDRESS;
         }
+
+        //转换地址
+        String originalAddress = Bech32.addressDecodeHex(walletAddress);
+        AddressBech32 addressBech32 = AddressManager.getInstance().executeEncodeAddress(originalAddress);
+        Bech32Address bech32Address = new Bech32Address(addressBech32.getMainnet(),addressBech32.getTestnet());
+
         Wallet mWallet = new Wallet();
-        mWallet.setAddress(walletAddress);
+        mWallet.setAddress(originalAddress);
+        mWallet.setBech32Address(bech32Address);
         mWallet.setUuid(UUID.randomUUID().toString());
         mWallet.setAvatar(WalletServiceImpl.getInstance().getWalletAvatar());
 
         for (Wallet param : mWalletList) {
-            if (param.getPrefixAddress().toLowerCase().equalsIgnoreCase(mWallet.getPrefixAddress().toLowerCase())) {
+            if (param.getOriginalAddress().toLowerCase().equalsIgnoreCase(mWallet.getOriginalAddress().toLowerCase())) {
                 return CODE_ERROR_WALLET_EXISTS;
             }
         }

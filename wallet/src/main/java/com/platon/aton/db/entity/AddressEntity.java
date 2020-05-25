@@ -92,11 +92,12 @@ public class AddressEntity extends RealmObject {
     }
 
     public void setAddress(String address) {
-        if (address.toLowerCase().startsWith("0x")) {
+       /* if (address.toLowerCase().startsWith("0x")) {
             this.address = address;
         } else {
             this.address = "0x" + address;
-        }
+        }*/
+        this.address = address;
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.platon.aton.engine;
 
 import com.platon.aton.App;
 import com.platon.aton.R;
+import com.platon.aton.entity.Bech32Address;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.utils.JZMnemonicUtil;
 import com.platon.aton.utils.JZWalletUtil;
@@ -45,11 +46,14 @@ class WalletServiceImpl implements WalletService {
             if (walletFile == null) {
                 return null;
             }
+            Bech32Address bech32Address = new Bech32Address(walletFile.getAddress().getMainnet(),
+                                                            walletFile.getAddress().getTestnet());
             return new Wallet.Builder()
                     .uuid(walletFile.getId())
                     .key(JZWalletUtil.writeWalletFileAsString(walletFile))
                     .name(name)
-                    .address(walletFile.getAddress())
+                    .address(walletFile.getOriginalAddress())
+                    .betch32Address(bech32Address)
                     .keystorePath(filename)
                     .createTime(time)
                     .updateTime(time)

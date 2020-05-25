@@ -144,13 +144,13 @@ public class ReceiveTransactionActivity extends BaseActivity<ReceiveTransationCo
     }
 
     private String getNodeName(Node node) {
-        if (BuildConfig.URL_MAIN_SERVER.equals(node.getNodeAddress())) {
+        if (BuildConfig.URL_TEST_NET.equals(node.getNodeAddress())) {
             return string(R.string.newbaleyworld);
-        } else if (BuildConfig.URL_TEST_MAIN_SERVER.equals(node.getNodeAddress())) {
+        } else if (BuildConfig.URL_UAT_NET.equals(node.getNodeAddress())) {
             return string(R.string.uat_net);
-        } else if (TextUtils.equals(BuildConfig.URL_TEST_SERVER, node.getNodeAddress()) || TextUtils.equals(BuildConfig.URL_TEST_OUTER_SERVER, node.getNodeAddress())) {
+        } else if (TextUtils.equals(BuildConfig.URL_INNERTEST_NET, node.getNodeAddress()) || TextUtils.equals(BuildConfig.URL_OUTER_INNERTEST_NET, node.getNodeAddress())) {
             return string(R.string.test_net);
-        } else if (TextUtils.equals(BuildConfig.URL_DEVELOP_SERVER, node.getNodeAddress())) {
+        } else if (TextUtils.equals(BuildConfig.URL_DEVELOP_NET, node.getNodeAddress())) {
             return string(R.string.develop_net);
         }
         return "";

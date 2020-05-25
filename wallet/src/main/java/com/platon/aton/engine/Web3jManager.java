@@ -81,6 +81,11 @@ public class Web3jManager {
         return transactionHash;
     }
 
+    /**
+     * 返回查询地址余额
+     * @param address
+     * @return
+     */
     public double getBalance(String address) {
         try {
             PlatonGetBalance ethGetBalance = Web3jManager.getInstance().getWeb3j().platonGetBalance(address, DefaultBlockParameterName.LATEST).send();
@@ -104,6 +109,13 @@ public class Web3jManager {
         return null;
     }
 
+    /**
+     * 估算合约方法gas用量
+     * @param from
+     * @param to
+     * @param data
+     * @return
+     */
     public BigInteger getEstimateGas(String from, String to, String data) {
         try {
             return Web3jManager.getInstance().getWeb3j().platonEstimateGas(org.web3j.protocol.core.methods.request.Transaction.createEthCallTransaction(from, to, data)).send().getAmountUsed();
@@ -136,6 +148,10 @@ public class Web3jManager {
         return rpcNonceResult;
     }
 
+    /**
+     * 根据区块高度查询区块信息
+     * @return
+     */
     public long getLatestBlockNumber() {
         try {
             PlatonBlock ethBlock = Web3jManager.getInstance().getWeb3j().platonGetBlockByNumber(DefaultBlockParameterName.LATEST, false).send();
@@ -146,6 +162,11 @@ public class Web3jManager {
         return 0;
     }
 
+    /**
+     * 返回给定地址的代码
+     * @param address
+     * @return
+     */
     public String getCode(String address) {
         try {
             PlatonGetCode code = Web3jManager.getInstance().getWeb3j().platonGetCode(address, DefaultBlockParameterName.LATEST).send();
@@ -213,6 +234,11 @@ public class Web3jManager {
     }
 
 
+    /**
+     * 根据交易hash查询交易回执
+     * @param transactionHash
+     * @return
+     */
     public TransactionReceipt getTransactionReceipt(String transactionHash) {
         TransactionReceipt transactionReceipt = null;
         try {

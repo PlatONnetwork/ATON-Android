@@ -30,6 +30,7 @@ import com.platon.aton.engine.TransactionManager;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.engine.Web3jManager;
 import com.platon.aton.entity.AccountBalance;
+import com.platon.aton.entity.AddressMatchingResultType;
 import com.platon.aton.entity.EstimateGasResult;
 import com.platon.aton.entity.GasProvider;
 import com.platon.aton.entity.RPCErrorCode;
@@ -57,7 +58,6 @@ import com.trello.rxlifecycle2.android.FragmentEvent;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
-import org.web3j.crypto.WalletUtils;
 import org.web3j.platon.FunctionType;
 import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.utils.Convert;
@@ -273,9 +273,21 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
         String errMsg = null;
         if (TextUtils.isEmpty(toAddress)) {
             errMsg = string(R.string.address_cannot_be_empty);
-        } else {
-            if (!WalletUtils.isValidAddress(toAddress)) {
-                errMsg = string(R.string.receive_address_error);
+        }else if(!JZWalletUtil.isValidAddress(toAddress)){
+            errMsg = string(R.string.receive_address_error);
+        }else {
+            int result = JZWalletUtil.isValidAddressMatchingNet(toAddress);
+            if(result == AddressMatchingResultType.ADDRESS_MAINNET_MATCHING){
+
+            }else if(result == AddressMatchingResultType.ADDRESS_MAINNET_MISMATCHING){
+
+               errMsg = string(R.string.receive_address_match_mainnet_error);
+            }else if(result == AddressMatchingResultType.ADDRESS_TESTNET_MATCHING){
+
+
+            }else if(result == AddressMatchingResultType.ADDRESS_TESTNET_MISMATCHING){
+
+               errMsg = string(R.string.receive_address_match_testnet_error);
             }
         }
         getView().showToAddressError(errMsg);
@@ -380,10 +392,22 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
             String transferAmount = getView().getTransferAmount();
             String toAddress = getView().getToAddress();
             String gasLimit = getView().getGasLimit();
-            boolean isToAddressFormatCorrect = !TextUtils.isEmpty(toAddress) && WalletUtils.isValidAddress(toAddress);
+
+            boolean isToAddressFormatCorrect = !TextUtils.isEmpty(toAddress) && JZWalletUtil.isValidAddress(toAddress);
             boolean isTransferAmountValid = !TextUtils.isEmpty(transferAmount) && NumberParserUtils.parseDouble(transferAmount) > 0 && isBalanceEnough(transferAmount);
             boolean isGasLimitValid = BigIntegerUtil.toBigInteger(gasLimit).compareTo(DEFAULT_GAS_LIMIT) >= 0;
-            getView().setSendTransactionButtonEnable(isToAddressFormatCorrect && isTransferAmountValid && isGasLimitValid);
+            boolean isToAddressMatchNet = false;
+            int result = JZWalletUtil.isValidAddressMatchingNet(toAddress);
+            if(result == AddressMatchingResultType.ADDRESS_MAINNET_MATCHING){
+                isToAddressMatchNet = true;
+            }else if(result == AddressMatchingResultType.ADDRESS_MAINNET_MISMATCHING){
+                isToAddressMatchNet = false;
+            }else if(result == AddressMatchingResultType.ADDRESS_TESTNET_MATCHING){
+                isToAddressMatchNet = true;
+            }else if(result == AddressMatchingResultType.ADDRESS_TESTNET_MISMATCHING){
+                isToAddressMatchNet = false;
+            }
+            getView().setSendTransactionButtonEnable(isToAddressFormatCorrect && isToAddressMatchNet && isTransferAmountValid && isGasLimitValid);
         }
 
     }
@@ -425,7 +449,8 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
 
     @Override
     public void checkAddressBook(String address) {
-        if (TextUtils.isEmpty(address)) {
+        //保存地址到地址簿
+     /*   if (TextUtils.isEmpty(address)) {
             getView().setSaveAddressButtonEnable(false);
             return;
         }
@@ -433,7 +458,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
             getView().setSaveAddressButtonEnable(!AddressDao.isExist(address));
         } else {
             getView().setSaveAddressButtonEnable(false);
-        }
+        }*/
     }
 
     @SuppressLint("CheckResult")
@@ -584,45 +609,51 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     @SuppressLint("CheckResult")
     private void sendTransaction(TransactionRecordEntity transactionRecordEntity, ECKeyPair ecKeyPair, String feeAmount, String remark) {
 
-        TransactionManager
-                .getInstance()
-                .sendTransferTransaction(ecKeyPair, transactionRecordEntity.getFrom(), transactionRecordEntity.getTo(), walletEntity.getName(), Convert.toVon(transactionRecordEntity.getValue(), Convert.Unit.LAT), Convert.toVon(feeAmount, Convert.Unit.LAT), gasPrice, gasLimit,nonce, remark)
-                .compose(RxUtils.getSingleSchedulerTransformer())
-                .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
-                .compose(bindToLifecycle())
-                .subscribe(new Consumer<Transaction>() {
-                    @Override
-                    public void accept(Transaction transaction) {
-                        if (isViewAttached()) {
-                            insertAndDeleteTransactionRecord(transactionRecordEntity);
-                            backToTransactionListWithDelay();
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) {
-                        if (isViewAttached()) {
-                            if (throwable instanceof CustomThrowable) {
-                                CustomThrowable customThrowable = (CustomThrowable) throwable;
-                                if (customThrowable.getErrCode() == RPCErrorCode.CONNECT_TIMEOUT) {
-                                    showLongToast(R.string.msg_connect_timeout);
-                                } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_NONCE_TOO_LOW  ||
-                                           customThrowable.getErrCode() == CustomThrowable.CODE_TX_GAS_LOW){
-                                              if(WalletManager.getInstance().getSelectedWallet().isObservedWallet()){
-                                                  showLongToast(R.string.msg_expired_qr_code);
-                                              }else{
-                                                  showLongToast(string(R.string.msg_transaction_exception, customThrowable.getErrCode()));
-                                              }
-                                } else {
-                                    //showLongToast(string(R.string.msg_server_exception, customThrowable.getErrCode()));
-                                    showLongToast(customThrowable.getDetailMsgRes());
-                                }
-                                // refresh estimate gas
-                                getEstimateGas(WalletManager.getInstance().getSelectedWallet());
+        try{
+            TransactionManager
+                    .getInstance()
+                    .sendTransferTransaction(ecKeyPair, transactionRecordEntity.getFrom(), transactionRecordEntity.getTo(), walletEntity.getName(), Convert.toVon(transactionRecordEntity.getValue(), Convert.Unit.LAT), Convert.toVon(feeAmount, Convert.Unit.LAT), gasPrice, gasLimit,nonce, remark)
+                    .compose(RxUtils.getSingleSchedulerTransformer())
+                    .compose(LoadingTransformer.bindToSingleLifecycle(currentActivity()))
+                    .compose(bindToLifecycle())
+                    .subscribe(new Consumer<Transaction>() {
+                        @Override
+                        public void accept(Transaction transaction) {
+                            if (isViewAttached()) {
+                                insertAndDeleteTransactionRecord(transactionRecordEntity);
+                                backToTransactionListWithDelay();
                             }
                         }
-                    }
-                });
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) {
+                            if (isViewAttached()) {
+                                if (throwable instanceof CustomThrowable) {
+                                    CustomThrowable customThrowable = (CustomThrowable) throwable;
+                                    if (customThrowable.getErrCode() == RPCErrorCode.CONNECT_TIMEOUT) {
+                                        showLongToast(R.string.msg_connect_timeout);
+                                    } else if (customThrowable.getErrCode() == CustomThrowable.CODE_TX_NONCE_TOO_LOW  ||
+                                            customThrowable.getErrCode() == CustomThrowable.CODE_TX_GAS_LOW){
+                                        if(WalletManager.getInstance().getSelectedWallet().isObservedWallet()){
+                                            showLongToast(R.string.msg_expired_qr_code);
+                                        }else{
+                                            showLongToast(string(R.string.msg_transaction_exception, customThrowable.getErrCode()));
+                                        }
+                                    } else {
+                                        //showLongToast(string(R.string.msg_server_exception, customThrowable.getErrCode()));
+                                        showLongToast(customThrowable.getDetailMsgRes());
+                                    }
+                                    // refresh estimate gas
+                                    getEstimateGas(WalletManager.getInstance().getSelectedWallet());
+                                }
+                            }
+                        }
+                    });
+
+        }catch (Exception e){
+           e.printStackTrace();
+        }
+
     }
 
     /**
@@ -682,10 +713,12 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
                     .setGasPrice(gasPrice)
                     .setRemark(remark)
                     .build()), transactionRecordEntity.getTimeStamp() / 1000, BuildConfig.QRCODE_VERSION_CODE);
+            //(观察钱包)冷钱包确认
             TransactionAuthorizationDialogFragment.newInstance(transactionAuthorizationData)
                     .setOnNextBtnClickListener(new TransactionAuthorizationDialogFragment.OnNextBtnClickListener() {
                         @Override
                         public void onNextBtnClick() {
+                           //(观察钱包)读取授权签名数据
                             TransactionSignatureDialogFragment.newInstance(transactionAuthorizationData)
                                     .setOnSendTransactionSucceedListener(new TransactionSignatureDialogFragment.OnSendTransactionSucceedListener() {
                                         @Override

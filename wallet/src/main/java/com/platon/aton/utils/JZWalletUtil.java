@@ -6,6 +6,8 @@ import com.facebook.stetho.common.LogUtil;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.platon.aton.engine.WalletManager;
+import com.platon.aton.entity.AddressMatchingResultType;
 
 import org.bitcoinj.crypto.MnemonicCode;
 import org.web3j.crypto.CipherException;
@@ -26,7 +28,6 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import static org.web3j.crypto.Keys.ADDRESS_LENGTH_IN_HEX;
 import static org.web3j.crypto.Keys.PRIVATE_KEY_LENGTH_IN_HEX;
 
 /**
@@ -137,7 +138,7 @@ public class JZWalletUtil {
     }
 
     public static boolean isValidAddress(String input) {
-        if (TextUtils.isEmpty(input)) {
+       /* if (TextUtils.isEmpty(input)) {
             return false;
         }
         String cleanInput = Numeric.cleanHexPrefix(input);
@@ -146,16 +147,61 @@ public class JZWalletUtil {
         } catch (NumberFormatException e) {
             return false;
         }
-        return cleanInput.length() == ADDRESS_LENGTH_IN_HEX;
+        return cleanInput.length() == ADDRESS_LENGTH_IN_HEX;*/
+
+
+        if (TextUtils.isEmpty(input)) {
+            return false;
+        }
+
+        if(input.length() > 5){
+            String prefix = input.subSequence(0,4).toString();
+            if(!(prefix.equalsIgnoreCase("lat1") || prefix.equalsIgnoreCase("lax1"))){
+                return false;
+            }
+        }
+
+        if(input.length() < 42){
+            return false;
+        }
+        String suffix = input.subSequence(36,input.length()).toString();
+        if((suffix.contains("1")||suffix.contains("b")||suffix.contains("i")||suffix.contains("o"))){
+           return false;
+        }
+        return true;
     }
 
-    public static boolean isValidKeystore(String keystore) {
+
+
+    public static int isValidAddressMatchingNet(String input) {
+        if(input.length() > 5){
+            String prefix = input.subSequence(0, 4).toString();
+            if (WalletManager.getInstance().isMainNetWalletAddress()) {
+                if (prefix.equalsIgnoreCase("lat1")) {//主网格式
+                    return AddressMatchingResultType.ADDRESS_MAINNET_MATCHING;
+                } else {
+                    return AddressMatchingResultType.ADDRESS_MAINNET_MISMATCHING;
+                }
+            } else if (!WalletManager.getInstance().isMainNetWalletAddress()) {
+                if (prefix.equalsIgnoreCase("lax1")) {//测试网格式
+                    return AddressMatchingResultType.ADDRESS_TESTNET_MATCHING;
+                } else {
+                    return AddressMatchingResultType.ADDRESS_TESTNET_MISMATCHING;
+                }
+            }
+        }
+        return 0;
+    }
+
+
+
+        public static boolean isValidKeystore(String keystore) {
         try {
             WalletFile walletFile = loadWalletFileByJson(keystore);
             if (walletFile == null) {
                 return false;
             }
-            if (TextUtils.isEmpty(walletFile.getAddress())) {
+            if (TextUtils.isEmpty(walletFile.getOriginalAddress())) {
                 return false;
             }
             if (TextUtils.isEmpty(walletFile.getId())) {

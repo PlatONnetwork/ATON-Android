@@ -91,6 +91,7 @@ public class NodeSettingsPresenter extends BasePresenter<NodeSettingsContract.Vi
                     public void accept(Boolean success) throws Exception {
                         if (isViewAttached() && success){
                             WalletManager.getInstance().init();
+                            EventPublisher.getInstance().sendWalletListOrderChangedEvent();
                         }
                     }
                 }, new Consumer<Throwable>() {

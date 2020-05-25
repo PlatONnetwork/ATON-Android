@@ -124,7 +124,7 @@ public class AddNewAddressPresenter extends BasePresenter<AddNewAddressContract.
         if (TextUtils.isEmpty(address)) {
             errMsg = string(R.string.address_cannot_be_empty);
         } else {
-            if (!JZWalletUtil.isValidAddress(address) || !address.startsWith("0x")) {
+            if (!JZWalletUtil.isValidAddress(address)) {
                 errMsg = string(R.string.address_format_error);
             }
         }

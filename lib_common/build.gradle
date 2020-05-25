@@ -130,4 +130,16 @@ dependencies {
     implementation files('libs/umeng-share-twitter-6.9.6.jar')
     implementation files('libs/umeng-sharetool-6.9.6.jar')
     implementation files('libs/weiboSDKCore.jar')
+
+
+    //----------暂放------------
+    //web3j-core、web3j-crypto
+   /* api files('libs/core-0.7.6.0-android.jar')
+    api files('libs/utils-0.7.6.0-android.jar')
+    api files('libs/crypto-0.7.6.0-android.jar')
+    api files('libs/rlp-0.7.6.0-android.jar')
+    api files('libs/abi-0.7.6.0-android.jar')
+   //
+    api 'com.fasterxml.jackson.core:jackson-databind:2.11.0'
+    api 'com.squareup.okhttp3:logging-interceptor:3.11.0'*/
 }

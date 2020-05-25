@@ -557,9 +557,10 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
+                        //发送交易
                         if (NetConnectivity.getConnectivityManager().isConnected() || WalletManager.getInstance().getSelectedWallet().isObservedWallet()) {
                             SendTransactionActivity.actionStart(getContext());
-                        } else {
+                        } else {//离线签名
                             new RxPermissions(currentActivity())
                                     .requestEach(Manifest.permission.CAMERA)
                                     .subscribe(new CustomObserver<Permission>() {
