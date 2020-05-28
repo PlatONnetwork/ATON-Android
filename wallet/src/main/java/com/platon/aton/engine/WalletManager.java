@@ -2,6 +2,8 @@ package com.platon.aton.engine;
 
 import android.text.TextUtils;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.platon.aton.BuildConfig;
 import com.platon.aton.app.CustomThrowable;
 import com.platon.aton.db.entity.WalletEntity;
@@ -171,6 +173,9 @@ public class WalletManager {
     }
 
 
+    /**
+     * 老地址转换Bech32
+     */
     public void perInit(){
         WalletDao.updateBetch32AddressWithWallet();
     }
@@ -410,16 +415,29 @@ public class WalletManager {
     }
 
     public int importKeystore(String store, String name, String password) {
-        if (!JZWalletUtil.isValidKeystore(store)) {
-            return CODE_ERROR_KEYSTORE;
-        }
-        if (TextUtils.isEmpty(name)) {
-            return CODE_ERROR_NAME;
-        }
-        if (TextUtils.isEmpty(password)) {
-            return CODE_ERROR_PASSWORD;
-        }
+
         try {
+            //兼容老keyStore，进行转换
+            JSONObject keystoreJSON = JSON.parseObject(store);
+            if(!keystoreJSON.containsKey("originalAddress")){
+                String originalAddress = (String) keystoreJSON.get("address");
+                AddressBech32 addressBech32 = AddressManager.getInstance().executeEncodeAddress(originalAddress);
+                keystoreJSON.put("originalAddress",originalAddress);
+                keystoreJSON.remove("address");
+                keystoreJSON.put("address",addressBech32);
+                store = keystoreJSON.toString();
+            }
+
+            if (!JZWalletUtil.isValidKeystore(store)) {
+                return CODE_ERROR_KEYSTORE;
+            }
+            if (TextUtils.isEmpty(name)) {
+                return CODE_ERROR_NAME;
+            }
+            if (TextUtils.isEmpty(password)) {
+                return CODE_ERROR_PASSWORD;
+            }
+
             Wallet entity = WalletServiceImpl.getInstance().importKeystore(store, name, password);
             if (entity == null) {
                 return CODE_ERROR_PASSWORD;
@@ -437,7 +455,8 @@ public class WalletManager {
             PreferenceTool.putBoolean(Constants.Preference.KEY_OPERATE_MENU_FLAG, false);
             return CODE_OK;
         } catch (Exception exp) {
-            return CODE_ERROR_UNKNOW;
+            LogUtils.d(exp.getMessage(),exp.fillInStackTrace());
+            return CODE_ERROR_KEYSTORE;
         }
     }
 
