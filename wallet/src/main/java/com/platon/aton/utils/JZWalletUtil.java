@@ -2,6 +2,8 @@ package com.platon.aton.utils;
 
 import android.text.TextUtils;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.facebook.stetho.common.LogUtil;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -15,6 +17,8 @@ import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Wallet;
 import org.web3j.crypto.WalletFile;
+import org.web3j.crypto.bech32.AddressBech32;
+import org.web3j.crypto.bech32.AddressManager;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
@@ -107,6 +111,7 @@ public class JZWalletUtil {
     }
 
     public static WalletFile loadWalletFileByJson(String json) throws IOException {
+
         return objectMapper.readValue(json, WalletFile.class);
     }
 
