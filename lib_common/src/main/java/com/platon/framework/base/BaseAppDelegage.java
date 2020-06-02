@@ -68,6 +68,8 @@ public class BaseAppDelegage {
         NetConnectivity.getConnectivityManager().init(mApplication);
         //初始化请求响应类
         ApiResponse.init(mApplication);
+        //友盟统计
+        initUMConfigure();
     }
 
     private void initUMConfigure() {

@@ -15,6 +15,7 @@ import org.bitcoinj.crypto.HDKeyDerivation;
 import org.bitcoinj.crypto.HDUtils;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.WalletFile;
+import org.web3j.crypto.bech32.Bech32;
 import org.web3j.utils.Numeric;
 
 import java.util.List;
@@ -52,7 +53,7 @@ class WalletServiceImpl implements WalletService {
                     .uuid(walletFile.getId())
                     .key(JZWalletUtil.writeWalletFileAsString(walletFile))
                     .name(name)
-                    .address(walletFile.getOriginalAddress())
+                    .address(Bech32.addressDecodeHex(walletFile.getAddress().getMainnet()))
                     .betch32Address(bech32Address)
                     .keystorePath(filename)
                     .createTime(time)

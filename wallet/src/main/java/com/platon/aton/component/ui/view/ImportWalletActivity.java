@@ -226,7 +226,7 @@ public class ImportWalletActivity extends BaseActivity {
                 ((PagerItemAdapter) mVpContent.getAdapter()).getPage(TabIndex.IMPORT_OBSERVED).onActivityResult(requestCode, resultCode, data);
                 return;
             }
-            showLongToast(string(R.string.unrecognized));
+            showLongToast(string(R.string.unrecognized_content));
         }
     }
 

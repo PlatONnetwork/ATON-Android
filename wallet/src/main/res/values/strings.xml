@@ -191,8 +191,7 @@
     <string name="open_flash_tips">轻点照亮</string>
     <string name="close_flash_tips">轻点关闭</string>
     <string name="scan_qr_code_open_lights_failed">暂时无法开启闪光灯</string>
-    <string name="scan_qr_code_failed_tips">无法识别二维码</string>
-    <string name="scan_qr_code_failed_tips1">无法识别二维码</string>
+    <string name="scan_qr_code_failed_tips">未发现二维码</string>
     <string name="photograph">拍照</string>
     <string name="photo_album">相册</string>
     <string name="select_from_albums">从相册选择</string>

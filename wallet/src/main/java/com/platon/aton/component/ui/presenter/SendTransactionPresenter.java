@@ -23,6 +23,7 @@ import com.platon.aton.db.entity.AddressEntity;
 import com.platon.aton.db.entity.TransactionRecordEntity;
 import com.platon.aton.db.sqlite.AddressDao;
 import com.platon.aton.db.sqlite.TransactionRecordDao;
+import com.platon.aton.db.sqlite.WalletDao;
 import com.platon.aton.engine.AppConfigManager;
 import com.platon.aton.engine.NodeManager;
 import com.platon.aton.engine.ServerUtils;
@@ -505,7 +506,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
         String fromWallet = String.format("%s(%s)", walletEntity.getName(), AddressFormatUtil.formatTransactionAddress(walletEntity.getPrefixAddress()));
         String fee = NumberParserUtils.getPrettyBalance(feeAmount);
 
-        getWalletNameFromAddress(transactionRecordEntity.getTo())
+        WalletManager.getInstance().getWalletNameFromAddress(transactionRecordEntity.getTo())
                 .compose(RxUtils.getSingleSchedulerTransformer())
                 .compose(bindToLifecycle())
                 .subscribe(new Consumer<String>() {
@@ -859,32 +860,5 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
         return map;
     }
 
-    private Single<String> getWalletNameFromAddress(String address) {
-        return Single.fromCallable(new Callable<String>() {
-            @Override
-            public String call() throws Exception {
-
-                String walletName = WalletManager.getInstance().getWalletNameByWalletAddress(address);
-                return TextUtils.isEmpty(walletName) ? walletName : String.format("%s(%s)", walletName, AddressFormatUtil.formatTransactionAddress(address));
-            }
-        }).filter(new Predicate<String>() {
-            @Override
-            public boolean test(String s) throws Exception {
-                return !TextUtils.isEmpty(s);
-            }
-        }).switchIfEmpty(new SingleSource<String>() {
-            @Override
-            public void subscribe(SingleObserver<? super String> observer) {
-                String addressName = AddressDao.getAddressNameByAddress(address);
-                observer.onSuccess(TextUtils.isEmpty(addressName) ? addressName : String.format("%s(%s)", addressName, AddressFormatUtil.formatTransactionAddress(address)));
-            }
-        }).filter(new Predicate<String>() {
-            @Override
-            public boolean test(String s) throws Exception {
-                return !TextUtils.isEmpty(s);
-            }
-        }).defaultIfEmpty(address)
-                .toSingle();
-    }
 
 }

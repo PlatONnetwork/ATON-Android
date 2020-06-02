@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.AddressMatchingResultType;
+import com.platon.framework.utils.LogUtils;
 
 import org.bitcoinj.crypto.MnemonicCode;
 import org.web3j.crypto.CipherException;
@@ -121,8 +122,10 @@ public class JZWalletUtil {
 
     public static Credentials getCredentials(String password, String json) throws IOException, CipherException {
         Credentials credentials = null;
+        LogUtils.e("-----JZWallet json:" + json);
         try {
             WalletFile walletFile = loadWalletFileByJson(json);
+            LogUtils.e("-----JZWallet walletFile:" + walletFile.toString());
             credentials = Credentials.create(Wallet.decrypt(password, walletFile));
         } catch (CipherException e) {
             LogUtil.e(e.getMessage(),e.fillInStackTrace());
@@ -206,7 +209,7 @@ public class JZWalletUtil {
             if (walletFile == null) {
                 return false;
             }
-            if (TextUtils.isEmpty(walletFile.getOriginalAddress())) {
+            if (TextUtils.isEmpty(walletFile.getAddress().getMainnet())) {
                 return false;
             }
             if (TextUtils.isEmpty(walletFile.getId())) {

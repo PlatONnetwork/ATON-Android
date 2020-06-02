@@ -320,7 +320,7 @@ public class SendTransactionActivity extends BaseActivity<SendTransationContract
                             ToastUtil.showLongToast(getContext(), string(R.string.receive_address_match_testnet_error));
                         }
                     } else {
-                        ToastUtil.showLongToast(getContext(), string(R.string.unrecognized));
+                        ToastUtil.showLongToast(getContext(), string(R.string.unrecognized_content));
                     }
                     break;
                 case Constants.RequestCode.REQUEST_CODE_TRANSACTION_SIGNATURE:
