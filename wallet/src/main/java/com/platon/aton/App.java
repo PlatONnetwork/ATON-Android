@@ -40,7 +40,6 @@ public class App extends BaseApplication {
         });
         context = this;
         AppFramework.getAppFramework().initAppFramework(context);
-        //初始化友盟
         registerActivityLifecycleCallbacks(mActivityLifecycleCallbacks);
     }
 

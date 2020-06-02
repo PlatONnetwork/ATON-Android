@@ -190,7 +190,7 @@
     <string name="open_flash_tips">Tap to turn light on</string>
     <string name="close_flash_tips">Tap to turn light off</string>
     <string name="scan_qr_code_open_lights_failed">No flash for the time being</string>
-    <string name="scan_qr_code_failed_tips">Unrecongnized QR Code</string>
+    <string name="scan_qr_code_failed_tips">QR code not found</string>
     <string name="scan_qr_code_failed_tips1">Unable to identify qr code</string>
     <string name="photograph">Photograph</string>
     <string name="photo_album">Album</string>

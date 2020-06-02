@@ -13,6 +13,7 @@ import com.platon.aton.entity.Bech32Address;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.event.Event;
 import com.platon.aton.event.EventPublisher;
+import com.platon.aton.utils.AddressFormatUtil;
 import com.platon.aton.utils.AmountUtil;
 import com.platon.aton.utils.BigDecimalUtil;
 import com.platon.aton.utils.JZWalletUtil;
@@ -45,6 +46,7 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
+import io.reactivex.SingleObserver;
 import io.reactivex.SingleOnSubscribe;
 import io.reactivex.SingleSource;
 import io.reactivex.functions.BiConsumer;
@@ -282,6 +284,11 @@ public class WalletManager {
                 }).blockingGet();
     }
 
+    /**
+     * 根据钱包地址获取钱包名称(从缓存中获取)
+     * @param walletAddress
+     * @return
+     */
     public String getWalletNameByWalletAddress(String walletAddress) {
         if (!mWalletList.isEmpty()) {
             for (Wallet walletEntity : mWalletList) {
@@ -292,6 +299,42 @@ public class WalletManager {
         }
         return "";
     }
+
+    /**
+     * 根据钱包地址获取钱包名称(先查缓存，再查DB)
+     * @param address
+     * @return
+     */
+    public Single<String> getWalletNameFromAddress(String address) {
+        return Single.fromCallable(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+
+                String walletName = WalletManager.getInstance().getWalletNameByWalletAddress(address);
+                return TextUtils.isEmpty(walletName) ? walletName : String.format("%s(%s)", walletName, AddressFormatUtil.formatTransactionAddress(address));
+            }
+        }).filter(new Predicate<String>() {
+            @Override
+            public boolean test(String s) throws Exception {
+                return !TextUtils.isEmpty(s);
+            }
+        }).switchIfEmpty(new SingleSource<String>() {
+            @Override
+            public void subscribe(SingleObserver<? super String> observer) {
+                String addressName = WalletDao.getWalletNameByAddress(address);
+                //String addressName = AddressDao.getAddressNameByAddress(address);
+                observer.onSuccess(TextUtils.isEmpty(addressName) ? addressName : String.format("%s(%s)", addressName, AddressFormatUtil.formatTransactionAddress(address)));
+            }
+        }).filter(new Predicate<String>() {
+            @Override
+            public boolean test(String s) throws Exception {
+                return !TextUtils.isEmpty(s);
+            }
+        }).defaultIfEmpty(address)
+                .toSingle();
+    }
+
+
 
     public boolean isObservedWallet(String walletAddress) {
 
@@ -419,15 +462,16 @@ public class WalletManager {
         try {
             //兼容老keyStore，进行转换
             JSONObject keystoreJSON = JSON.parseObject(store);
-            if(!keystoreJSON.containsKey("originalAddress")){
-                String originalAddress = (String) keystoreJSON.get("address");
-                AddressBech32 addressBech32 = AddressManager.getInstance().executeEncodeAddress(originalAddress);
-                keystoreJSON.put("originalAddress",originalAddress);
-                keystoreJSON.remove("address");
-                keystoreJSON.put("address",addressBech32);
-                store = keystoreJSON.toString();
+            if (keystoreJSON.containsKey("address")) {
+                Object addressObj = keystoreJSON.get("address");
+                if(addressObj instanceof String){
+                    String address = keystoreJSON.getString("address");
+                    AddressBech32 addressBech32 = AddressManager.getInstance().executeEncodeAddress(address);
+                    keystoreJSON.remove("address");
+                    keystoreJSON.put("address", addressBech32);
+                    store = keystoreJSON.toString();
+                }
             }
-
             if (!JZWalletUtil.isValidKeystore(store)) {
                 return CODE_ERROR_KEYSTORE;
             }

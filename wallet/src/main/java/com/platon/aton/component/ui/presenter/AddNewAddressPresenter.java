@@ -142,7 +142,7 @@ public class AddNewAddressPresenter extends BasePresenter<AddNewAddressContract.
     @Override
     public void validQRCode(String text) {
         if (!JZWalletUtil.isValidAddress(text)) {
-            showLongToast(string(R.string.scan_qr_code_failed_tips1));
+            showLongToast(string(R.string.unrecognized_content));
             return;
         }
         if (isViewAttached()) {

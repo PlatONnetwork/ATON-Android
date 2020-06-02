@@ -292,7 +292,7 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
                 @QrCodeType int qrCodeType = QrCodeParser.parseQrCode(TextUtils.isEmpty(unzip) ? result : unzip);
 
                 if (qrCodeType == QrCodeType.NONE) {
-                    showLongToast(currentActivity().string(R.string.unrecognized));
+                    showLongToast(currentActivity().string(R.string.unrecognized_content));
                     return;
                 }
 

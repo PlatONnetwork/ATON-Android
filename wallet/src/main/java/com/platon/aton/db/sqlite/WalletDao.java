@@ -1,6 +1,11 @@
 package com.platon.aton.db.sqlite;
 
+import android.text.TextUtils;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.platon.aton.db.entity.WalletEntity;
+import com.platon.aton.engine.WalletManager;
 import com.platon.framework.utils.LogUtils;
 
 import org.web3j.crypto.bech32.AddressBech32;
@@ -49,13 +54,21 @@ public class WalletDao {
     }
 
     public static String getWalletNameByAddress(String prefixAddress) {
+
+        String fieldName = "";
+        if(WalletManager.getInstance().isMainNetWalletAddress()){
+            fieldName = "mainNetAddress";
+        }else{
+            fieldName = "testNetAddress";
+        }
+
         String walletName = null;
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
             WalletEntity walletEntity = realm.where(WalletEntity.class)
                     //.equalTo("chainId", NodeManager.getInstance().getChainId())
-                    .equalTo("address", prefixAddress, Case.INSENSITIVE)
+                    .equalTo(fieldName, prefixAddress, Case.INSENSITIVE)
                     .findFirst();
             if (walletEntity != null) {
                 walletName = walletEntity.getName();
@@ -233,21 +246,37 @@ public class WalletDao {
             String walletAddress = walletEntity.getAddress();
             String mainNetAddress = walletEntity.getMainNetAddress();
             String testNetAddress = walletEntity.getTestNetAddress();
-            LogUtils.e("---walletEntities  walletAddress:" + walletAddress);
-            LogUtils.e("---walletEntities  mainNetAddress:" + mainNetAddress);
-            LogUtils.e("---walletEntities  testNetAddress:" + testNetAddress);
+            String keyJson = walletEntity.getKeyJson();
+            LogUtils.e("---walletEntities  walletAddress:" + "id:" + i + walletAddress);
+            LogUtils.e("---walletEntities  mainNetAddress:"+ "id:" + i + mainNetAddress);
+            LogUtils.e("---walletEntities  testNetAddress:"+ "id:" + i + testNetAddress);
+            LogUtils.e("---walletEntities  keyJson:"+ "id:" + i + keyJson);
             if((mainNetAddress != null && !mainNetAddress.equals("")) && (testNetAddress != null && !testNetAddress.equals(""))){
                continue;
             }
+            LogUtils.e("-------walletEntities  开始转换-------");
+            //1、转换address
             AddressBech32 addressBech32 = AddressManager.getInstance().executeEncodeAddress(walletAddress);
             LogUtils.e("---walletEntities  addressBech32.getMainnet:" + addressBech32.getMainnet());
             LogUtils.e("---walletEntities  addressBech32.getTestnet:" + addressBech32.getTestnet());
             walletEntities.get(i).setMainNetAddress(addressBech32.getMainnet());
             walletEntities.get(i).setTestNetAddress(addressBech32.getTestnet());
-            LogUtils.e("---walletEntities  end");
+            //2、keyStore进行转换
+            JSONObject keystoreJSON = JSON.parseObject(keyJson);
+            LogUtils.e("---walletEntities keystoreJSON:" + keystoreJSON.toJSONString());
+            if (keystoreJSON.containsKey("address")) {
+                Object addressObj = keystoreJSON.get("address");
+                if(addressObj instanceof String){
+                    keystoreJSON.remove("address");
+                    keystoreJSON.put("address", addressBech32);
+                    walletEntities.get(i).setKeyJson(keystoreJSON.toString());
+                }
+            }
+            //keyJson = WalletManager.getInstance().transformNewKeystore(keyJson);
+            LogUtils.e("-------walletEntities  结束转换-------");
         }
 
-        if(walletEntities == null && walletEntities.size() == 0){
+        if(walletEntities == null || walletEntities.size() == 0){
             return false;
         }
 
@@ -259,7 +288,6 @@ public class WalletDao {
                realm.insertOrUpdate(walletEntities);
                realm.commitTransaction();
                LogUtils.e("---walletEntities  commitTransaction");
-
 
                List<WalletEntity> walletEntitiesNew = getWalletInfoList();
                LogUtils.e("---walletEntitiesNew:" + walletEntitiesNew.size());
