@@ -106,9 +106,11 @@ public class AppFramework {
 
             //只有测试网络钱包迁移
             LogUtils.d("------------BuildConfig.RELEASE_TYPE:" + BuildConfig.RELEASE_TYPE);
-            if (!BuildConfig.RELEASE_TYPE.equals("server.typeX")) {//测试网络(贝莱世界)
+            LogUtils.d("------------oldVersion:" + oldVersion);
+            LogUtils.d("------------newVersion:" + newVersion);
+           /* if (!BuildConfig.RELEASE_TYPE.equals("server.typeX")) {//测试网络(贝莱世界)
                 return;
-            }
+            }*/
 
             RealmSchema schema = realm.getSchema();
             if (oldVersion == 106) {

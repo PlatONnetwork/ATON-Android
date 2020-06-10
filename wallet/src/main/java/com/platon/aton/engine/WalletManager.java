@@ -96,7 +96,7 @@ public class WalletManager {
      */
     public void initWalletNet(){
         String chainId = NodeManager.getInstance().getChainId();
-        if(chainId.equals(BuildConfig.ID_TEST_NET)){
+        if(chainId.equals(BuildConfig.ID_MAIN_NET)){
             WalletApplication.init(WalletApplication.MAINNET, AddressManager.ADDRESS_TYPE_BECH32, AddressBehavior.CHANNLE_PLATON);
         }else{
             WalletApplication.init(WalletApplication.TESTNET, AddressManager.ADDRESS_TYPE_BECH32, AddressBehavior.CHANNLE_PLATON);
@@ -105,7 +105,7 @@ public class WalletManager {
     }
 
     public boolean isMainNetWalletAddress(){
-        if(NodeManager.getInstance().getChainId().equals(BuildConfig.ID_TEST_NET)){
+        if(NodeManager.getInstance().getChainId().equals(BuildConfig.ID_MAIN_NET)){
             return true;
         }else{
             return false;
