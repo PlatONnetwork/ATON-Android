@@ -17,12 +17,14 @@ android {
         buildConfigField("int", "INNER_VERSION_NAME", "${inner_version_name}")
         buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
         buildConfigField("String", "URL_PLATON_NETWORK", "${URL_PLATON_NETWORK}")
+        buildConfigField("String", "URL_MAIN_NET", "${URL_MAIN_NET}")
         buildConfigField("String", "URL_TEST_NET", "${URL_TEST_NET}")
         buildConfigField("String", "URL_UAT_NET", "${URL_UAT_NET}")
         buildConfigField("String", "URL_INNERTEST_NET", "${URL_INNERTEST_NET}")
         buildConfigField("String", "URL_OUTER_INNERTEST_NET", "${URL_OUTER_INNERTEST_NET}")
         buildConfigField("String", "URL_DEVELOP_NET", "${URL_DEVELOP_NET}")
         buildConfigField("String", "ID_UAT_NET", "${ID_UAT_NET}")
+        buildConfigField("String", "ID_MAIN_NET", "${ID_MAIN_NET}")
         buildConfigField("String", "ID_TEST_NET", "${ID_TEST_NET}")
         buildConfigField("String", "ID_INNERTEST_NET", "${ID_INNERTEST_NET}")
         buildConfigField("String", "ID_DEVELOP_NET", "${ID_DEVELOP_NET}")
@@ -102,9 +104,9 @@ android {
         releaseC {
             debuggable false
             signingConfig signingConfigs.releaseC
-            shrinkResources true
-            minifyEnabled true
-            zipAlignEnabled true
+            shrinkResources false
+            minifyEnabled false
+            zipAlignEnabled false
             multiDexEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")

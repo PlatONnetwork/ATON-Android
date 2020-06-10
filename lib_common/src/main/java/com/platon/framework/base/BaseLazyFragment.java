@@ -175,14 +175,17 @@ public abstract class BaseLazyFragment<V extends BaseViewImp, P extends BasePres
     //Fragemnet首次可见的方法
     public void onFragmentFirst(){
         LogUtils.e(getClass().getSimpleName() + "首次可见");
+        LogUtils.e("----> onFragmentFirst");
     }
     //Fragemnet可见的方法
     public void onFragmentVisible() {//子Fragment调用次方法，执行可见操作
         LogUtils.e(getClass().getSimpleName() + "可见");
+        LogUtils.e("----> onFragmentVisible");
     }
     //Fragemnet不可见的方法
     public void onFragmentInVisible(){
         LogUtils.e(getClass().getSimpleName() + "不可见");
+        LogUtils.e("----> onFragmentInVisible");
     }
 
 }

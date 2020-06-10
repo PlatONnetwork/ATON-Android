@@ -169,6 +169,10 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
         getPresenter().fetchWalletBalance();
         //加载交易记录数据
         getPresenter().loadData();
+        //展示选中的钱包信息
+        showSelectedWalletInfo(WalletManager.getInstance().getSelectedWallet());
+
+
     }
 
     @Override

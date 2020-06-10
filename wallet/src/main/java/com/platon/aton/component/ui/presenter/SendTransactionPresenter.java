@@ -281,14 +281,11 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
             if(result == AddressMatchingResultType.ADDRESS_MAINNET_MATCHING){
 
             }else if(result == AddressMatchingResultType.ADDRESS_MAINNET_MISMATCHING){
-
-               errMsg = string(R.string.receive_address_match_mainnet_error);
+                errMsg = string(R.string.receive_address_match_testnet_error);
             }else if(result == AddressMatchingResultType.ADDRESS_TESTNET_MATCHING){
 
-
             }else if(result == AddressMatchingResultType.ADDRESS_TESTNET_MISMATCHING){
-
-               errMsg = string(R.string.receive_address_match_testnet_error);
+                errMsg = string(R.string.receive_address_match_mainnet_error);
             }
         }
         getView().showToAddressError(errMsg);
