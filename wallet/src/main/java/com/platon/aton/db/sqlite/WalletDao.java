@@ -238,6 +238,7 @@ public class WalletDao {
 
     public static boolean updateBetch32AddressWithWallet() {
 
+        boolean updateWalletFlag = false;//默认钱包未做转换标识
         List<WalletEntity> walletEntities = getWalletInfoList();
         LogUtils.e("---walletEntities:" + walletEntities.size());
         LogUtils.e("---walletEntities:" + walletEntities.toString());
@@ -247,10 +248,12 @@ public class WalletDao {
             String mainNetAddress = walletEntity.getMainNetAddress();
             String testNetAddress = walletEntity.getTestNetAddress();
             String keyJson = walletEntity.getKeyJson();
-            LogUtils.e("---walletEntities  walletAddress:" + "id:" + i + walletAddress);
-            LogUtils.e("---walletEntities  mainNetAddress:"+ "id:" + i + mainNetAddress);
-            LogUtils.e("---walletEntities  testNetAddress:"+ "id:" + i + testNetAddress);
-            LogUtils.e("---walletEntities  keyJson:"+ "id:" + i + keyJson);
+            LogUtils.e("---walletEntities  walletAddress:"  + walletAddress + ",id:" + i);
+            LogUtils.e("---walletEntities  mainNetAddress:" + mainNetAddress + ",id:" + i);
+            LogUtils.e("---walletEntities  testNetAddress:" + testNetAddress +",id:" + i);
+            LogUtils.e("---walletEntities  keyJson:" + keyJson + ",id:" + i);
+
+            //判断是否需要转换地址
             if((mainNetAddress != null && !mainNetAddress.equals("")) && (testNetAddress != null && !testNetAddress.equals(""))){
                continue;
             }
@@ -272,11 +275,13 @@ public class WalletDao {
                     walletEntities.get(i).setKeyJson(keystoreJSON.toString());
                 }
             }
-            //keyJson = WalletManager.getInstance().transformNewKeystore(keyJson);
+            //3、更新钱包转换标识
+            updateWalletFlag = true;
             LogUtils.e("-------walletEntities  结束转换-------");
         }
 
-        if(walletEntities == null || walletEntities.size() == 0){
+        if((walletEntities == null || walletEntities.size() == 0) || !updateWalletFlag){
+            LogUtils.e("---walletEntities 钱包为空/钱包未过转换，无需更新DB");
             return false;
         }
 
@@ -290,8 +295,8 @@ public class WalletDao {
                LogUtils.e("---walletEntities  commitTransaction");
 
                List<WalletEntity> walletEntitiesNew = getWalletInfoList();
-               LogUtils.e("---walletEntitiesNew:" + walletEntitiesNew.size());
-               LogUtils.e("---walletEntitiesNew:" + walletEntitiesNew.toString());
+               LogUtils.e("---walletEntitiesNew 转换结束查询结果:" + walletEntitiesNew.size());
+               LogUtils.e("---walletEntitiesNew 转换结束查询结果:" + walletEntitiesNew.toString());
 
 
             return true;
@@ -304,9 +309,6 @@ public class WalletDao {
                 realm.close();
             }
         }
-
-
-
         return false;
     }
 

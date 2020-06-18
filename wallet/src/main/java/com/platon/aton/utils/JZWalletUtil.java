@@ -20,6 +20,7 @@ import org.web3j.crypto.Wallet;
 import org.web3j.crypto.WalletFile;
 import org.web3j.crypto.bech32.AddressBech32;
 import org.web3j.crypto.bech32.AddressManager;
+import org.web3j.crypto.bech32.Bech32;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
@@ -175,6 +176,13 @@ public class JZWalletUtil {
         String suffix = input.subSequence(36,input.length()).toString();
         if((suffix.contains("1")||suffix.contains("b")||suffix.contains("i")||suffix.contains("o"))){
            return false;
+        }
+
+        try{
+            String walletAddress = Bech32.addressDecodeHex(input);
+        }catch(Exception e){
+            LogUtils.e("校验地址：" + e.getMessage(),e.fillInStackTrace());
+            return false;
         }
         return true;
     }
