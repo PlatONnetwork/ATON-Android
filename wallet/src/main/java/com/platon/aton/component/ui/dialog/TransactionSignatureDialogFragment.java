@@ -52,6 +52,7 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 import org.reactivestreams.Publisher;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionDecoder;
+import org.web3j.crypto.bech32.AddressManager;
 import org.web3j.platon.FunctionType;
 import org.web3j.protocol.core.methods.response.PlatonSendTransaction;
 import org.web3j.rlp.RlpDecoder;
@@ -511,7 +512,7 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
         return new Transaction.Builder()
                 .hash(hash)
                 .from(transactionSignatureData.getFrom())
-                .to(rawTransaction.getTo())
+                .to(transactionAuthorizationData.getBaseDataList().get(0).getTo())
                 .senderWalletName(getSenderName(transactionSignatureData.getFrom()))
                 .value(amount)
                 .chainId(transactionSignatureData.getChainId())

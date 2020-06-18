@@ -267,7 +267,11 @@ public class ValidatorsFragment extends BaseLazyFragment<ValidatorsContract.View
                 .subscribe(new CustomObserver<TextViewEditorActionEvent>() {
                     @Override
                     public void accept(TextViewEditorActionEvent textViewEditorActionEvent) {
-                        getPresenter().loadValidatorsData(getNodeStatusByTab(mTab), mSortType, searchEt.getText().toString().trim(), false, false);
+                        String searchEtStr = searchEt.getText().toString().trim();
+                        if(TextUtils.isEmpty(searchEtStr)){
+                            searchEtStr = " NULL";
+                        }
+                        getPresenter().loadValidatorsData(getNodeStatusByTab(mTab), mSortType, searchEtStr, false, false);
                     }
                 });
 

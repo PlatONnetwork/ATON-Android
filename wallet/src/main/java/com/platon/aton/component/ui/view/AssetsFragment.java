@@ -227,6 +227,10 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onWalletNumberChangeEvent(Event.WalletNumberChangeEvent event) {
         List<Wallet> walletList = WalletManager.getInstance().getWalletList();
+        //钱包为空，更新状态，让其可以创建钱包
+        if(walletList.size() == 0){
+            PreferenceTool.putBoolean(Constants.Preference.KEY_OPERATE_MENU_FLAG,true);
+        }
         mWalletListAdapter.notifyDataSetChanged(walletList);
         layoutNoWallet.setVisibility(walletList.isEmpty() ? View.VISIBLE : View.GONE);
         layoutAssetsWallet.setVisibility(walletList.isEmpty() ? View.GONE : View.VISIBLE);

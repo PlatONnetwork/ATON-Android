@@ -328,10 +328,13 @@ public class AppFramework {
 
                 oldVersion++;
 
-            } else if (oldVersion == 111) {
+            }else if (oldVersion == 112 || oldVersion == 111) {
 
-                schema.get("TransactionEntity")
-                        .addField("remark", String.class);
+                //112此版本主要转换钱包地址Bech32
+                if(oldVersion == 111){
+                    schema.get("TransactionEntity")
+                            .addField("remark", String.class);
+                }
 
                 schema.get("NodeEntity")
                         .transform(new RealmObjectSchema.Function() {
@@ -344,6 +347,8 @@ public class AppFramework {
 
                 //链id 101--->102
                 schema.get("WalletEntity")
+                        .addField("mainNetAddress", String.class)
+                        .addField("testNetAddress", String.class)
                         .transform(new RealmObjectSchema.Function() {
                             @Override
                             public void apply(DynamicRealmObject obj) {
@@ -356,30 +361,6 @@ public class AppFramework {
                                 LogUtils.d("------------update chainId Realm success");
                             }
                         });
-                oldVersion++;
-            }else if (oldVersion == 112) {
-                //此版本主要转换钱包地址Bech32
-                schema.get("NodeEntity")
-                        .transform(new RealmObjectSchema.Function() {
-                            @Override
-                            public void apply(DynamicRealmObject obj) {
-                                obj.getDynamicRealm().where("NodeEntity").findAll().deleteAllFromRealm();
-                            }
-                        });
-
-                schema.get("WalletEntity")
-                        .addField("mainNetAddress", String.class)
-                        .addField("testNetAddress", String.class)
-                        .transform(new RealmObjectSchema.Function() {
-                            @Override
-                            public void apply(DynamicRealmObject obj) {
-                                obj.getDynamicRealm()
-                                        .where("WalletEntity")
-                                        .equalTo("chainId", "101")
-                                        .findAll()
-                                        .setString("chainId", BuildConfig.ID_TEST_NET);
-                            }
-                        });
 
                 schema.get("AddressEntity")
                         .transform(new RealmObjectSchema.Function() {
@@ -388,6 +369,7 @@ public class AppFramework {
                                 obj.getDynamicRealm().where("AddressEntity")
                                         .findAll()
                                         .deleteAllFromRealm();
+                                LogUtils.d("------------clear AddressEntity Realm success");
                             }
                         });
 

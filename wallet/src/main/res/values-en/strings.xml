@@ -668,7 +668,7 @@
     <string name="finish">Finish</string>
     <string name="msg_invalid_signature">Invalid Signature</string>
     <string name="tips_not_delegate">The wallet associated with the validator is not allowed for delegation.</string>
-    <string name="tips_not_balance">Wallet balance is 0,unable to delegate</string>
+    <string name="tips_not_balance">Wallet balance not enough,unable to delegate</string>
     <string name="action_copy_link">Copy Link</string>
     <string name="action_open_browser">Open in browser</string>
 

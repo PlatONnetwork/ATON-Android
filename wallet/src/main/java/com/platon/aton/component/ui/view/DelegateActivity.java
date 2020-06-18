@@ -283,6 +283,11 @@ public class DelegateActivity extends BaseActivity<DelegateContract.View, Delega
                             return;
                         }
 
+                        if(BigDecimalUtil.sub(StringUtil.formatBalance((BigDecimalUtil.div(freeBalance, "1E18"))), et_amount.getText().toString().trim()).doubleValue() < 0){//可用余额不足委托数量
+                            ToastUtil.showLongToast(getContext(), R.string.tips_not_balance);
+                            return;
+                        }
+
                         long currentTime = System.currentTimeMillis();
 
                         if (!TransactionManager.getInstance().isAllowSendTransaction(getPresenter().getWalletAddress(), currentTime)) {
