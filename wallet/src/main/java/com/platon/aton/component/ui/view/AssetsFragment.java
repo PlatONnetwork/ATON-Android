@@ -147,6 +147,8 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
     private TransactionListAdapter mTransactionListAdapter;
     private int observedWalletTagWidth = 0;
 
+    private boolean showOfflinePrompt = true;//断网提示
+
     @Override
     public int getLayoutId() {
         return R.layout.fragment_assets;
@@ -241,6 +243,9 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNetWorkStateChangedEvent(Event.NetWorkStateChangedEvent netWorkStateChangedEvent) {
+        if(NetConnectivity.getConnectivityManager().isConnected()){
+            showOfflinePrompt = true;
+        }
         showSelectedWalletInfo(WalletManager.getInstance().getSelectedWallet());
     }
 
@@ -498,6 +503,7 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
                     @Override
                     public void accept(Object o) {
                         layoutDeviceOfflinePrompt.setVisibility(View.GONE);
+                        showOfflinePrompt = false;
                     }
                 });
 
@@ -508,6 +514,7 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
                     @Override
                     public void accept(Object o) {
                         layoutDeviceOfflinePrompt.setVisibility(View.GONE);
+                        showOfflinePrompt = false;
                     }
                 });
 
@@ -638,7 +645,7 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
         }
 
         layoutSecurityReminders.setVisibility(selectedWallet.showBackedUpPrompt() ? View.VISIBLE : View.GONE);
-        layoutDeviceOfflinePrompt.setVisibility(NetConnectivity.getConnectivityManager().isConnected() ? View.GONE : View.VISIBLE);
+        layoutDeviceOfflinePrompt.setVisibility((showOfflinePrompt && !NetConnectivity.getConnectivityManager().isConnected()) ? View.VISIBLE : View.GONE);
 
     }
 
