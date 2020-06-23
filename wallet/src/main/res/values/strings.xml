@@ -627,7 +627,7 @@
     <string name="msg_agree_agreement">我已阅读并同意上述条款</string>
 
     <!--委托不可操作提示-->
-    <string name="delegate_no_click">请先赎回"已待赎回委托"</string>
+    <string name="delegate_no_click">请先赎回“待赎回委托”</string>
 
     <!--委托和赎回手续费显示-->
     <string name="delegate_and_withdraw_fee">预估手续费:</string>
