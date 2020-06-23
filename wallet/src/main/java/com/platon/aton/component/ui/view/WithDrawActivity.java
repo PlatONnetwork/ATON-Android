@@ -404,14 +404,15 @@ public class WithDrawActivity extends BaseActivity<WithDrawContract.View, WithDr
     public void showWithdrawBalance(WithDrawBalance withDrawBalance) {
 
         delegateType.setText(withDrawBalance.isDelegated() ? getString(R.string.withdraw_type_delegated) : getString(R.string.withdraw_type_released));
-        withdrawAmount.setFocusableInTouchMode(withDrawBalance.isDelegated());
+        delegateAmount.setText(string(R.string.amount_with_unit, AmountUtil.formatAmountText(withDrawBalance.isDelegated() ? withDrawBalance.getDelegated() : withDrawBalance.getReleased())));
+
+       /* withdrawAmount.setFocusableInTouchMode(withDrawBalance.isDelegated());
         withdrawAmount.setFocusable(withDrawBalance.isDelegated());
         if (withDrawBalance.isDelegated()) {
             withdrawAmount.setText(AmountUtil.formatAmountText(withDrawBalance.getDelegated()));
         } else {
             withdrawAmount.setText(AmountUtil.formatAmountText(withDrawBalance.getReleased()));
-        }
-        delegateAmount.setText(string(R.string.amount_with_unit, AmountUtil.formatAmountText(withDrawBalance.isDelegated() ? withDrawBalance.getDelegated() : withDrawBalance.getReleased())));
+        }*/
 
     }
 
