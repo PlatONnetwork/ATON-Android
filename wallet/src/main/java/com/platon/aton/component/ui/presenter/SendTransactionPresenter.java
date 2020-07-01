@@ -137,6 +137,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
     @Override
     public void init() {
         if (isViewAttached()) {
+            toAddress = getView().getToAddressFromIntent();
             if (!TextUtils.isEmpty(toAddress)) {
                 getView().setToAddress(toAddress);
             }
@@ -271,7 +272,13 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
 
     @Override
     public boolean checkToAddress(String toAddress) {
-        String errMsg = null;
+
+        int errMsgCode = JZWalletUtil.checkToAddressErrMsg(toAddress);
+        if(errMsgCode > 0){
+            getView().showToAddressError(string(errMsgCode));
+        }
+        return errMsgCode == 0;
+     /*   String errMsg = null;
         if (TextUtils.isEmpty(toAddress)) {
             errMsg = string(R.string.address_cannot_be_empty);
         }else if(!JZWalletUtil.isValidAddress(toAddress)){
@@ -289,7 +296,7 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
             }
         }
         getView().showToAddressError(errMsg);
-        return TextUtils.isEmpty(errMsg);
+        return TextUtils.isEmpty(errMsg);*/
     }
 
 

@@ -158,7 +158,7 @@ public class SendTransactionActivity extends BaseActivity<SendTransationContract
         unbinder = ButterKnife.bind(this);
         EventPublisher.getInstance().register(this);
         initViews();
-        //getPresenter().init();
+        getPresenter().init();
         getPresenter().fetchDefaultWalletInfo();
         getPresenter().checkAddressBook(etWalletAddress.getText().toString());
     }
@@ -397,6 +397,11 @@ public class SendTransactionActivity extends BaseActivity<SendTransationContract
     public Wallet getWalletEntityFromIntent() {
        // return getArguments().getParcelable(Constants.Extra.EXTRA_WALLET);
         return null;
+    }
+
+    @Override
+    public String getToAddressFromIntent() {
+        return getIntent().getStringExtra(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
     }
 
     @Override
@@ -658,6 +663,12 @@ public class SendTransactionActivity extends BaseActivity<SendTransationContract
 
     public static void actionStart(Context context) {
         context.startActivity(new Intent(context, SendTransactionActivity.class));
+    }
+
+    public static void actionStartWithData(Context context,String toAddress){
+        Intent intent = new Intent(context, SendTransactionActivity.class);
+        intent.putExtra(Constants.Extra.EXTRA_SCAN_QRCODE_DATA,toAddress);
+        context.startActivity(intent);
     }
 
 

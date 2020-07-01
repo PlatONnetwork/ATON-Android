@@ -7,6 +7,9 @@ import com.platon.framework.base.IPresenter;
 public class ImportObservedContract {
 
     public interface View extends BaseViewImp {
+
+        String getDataFromIntent();
+
         void showQRCode(String QRCode);
 
         void enableImportObservedWallet(boolean isCan);
@@ -19,6 +22,8 @@ public class ImportObservedContract {
 
 
     public interface Presenter extends IPresenter<View> {
+
+        void init();
 
         void parseQRCode(String QRCode);
 

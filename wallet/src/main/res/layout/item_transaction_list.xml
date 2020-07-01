@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_item_parent"
@@ -38,6 +39,7 @@
         android:id="@+id/tv_transaction_amount"
         style="@style/Text.000.16"
         android:layout_width="160dp"
+        android:layout_height="25dp"
         android:layout_marginLeft="12dp"
         android:ellipsize="end"
         android:gravity="right"

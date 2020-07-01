@@ -51,8 +51,7 @@ public class MultiItemTypeAdapter<T> extends BaseAdapter {
         int layoutId = itemViewDelegate.getItemViewLayoutId();
         ViewHolder viewHolder = null;
         if (convertView == null) {
-            convertView = LayoutInflater.from(parent.getContext()).inflate(layoutId, parent,
-                    false);
+            convertView = LayoutInflater.from(parent.getContext()).inflate(layoutId, parent,false);
             viewHolder = new ViewHolder(parent.getContext(), convertView, parent, position);
             viewHolder.mLayoutId = layoutId;
             onViewHolderCreated(viewHolder, viewHolder.getConvertView());

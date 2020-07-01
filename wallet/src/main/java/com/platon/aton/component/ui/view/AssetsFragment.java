@@ -330,9 +330,9 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
                     //有钱包进入发送界面，如果是地址的话无钱包进入导入观察者钱包页面
                     if (WalletManager.getInstance().getWalletList().isEmpty()) {
                         //进入导入观察者钱包
-                        ImportWalletActivity.actionStart(getActivity(), ImportWalletActivity.TabIndex.IMPORT_OBSERVED, unzip);
+                        ImportWalletActivity.actionStart(getActivity(), ImportWalletActivity.TabIndex.IMPORT_OBSERVED, TextUtils.isEmpty(unzip) ? result : unzip);
                     } else {
-                        SendTransactionActivity.actionStart(getActivity());
+                        SendTransactionActivity.actionStartWithData(getActivity(),result);
                     }
                     return;
                 }
