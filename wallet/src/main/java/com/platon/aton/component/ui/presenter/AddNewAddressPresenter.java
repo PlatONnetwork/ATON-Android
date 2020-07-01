@@ -119,7 +119,16 @@ public class AddNewAddressPresenter extends BasePresenter<AddNewAddressContract.
     @Override
     public boolean checkAddress(String address) {
 
-        String errMsg = null;
+        int errMsgCode = JZWalletUtil.checkToAddressErrMsg(address);
+        if (errMsgCode == 0) {
+            getView().setAddressVisibility(View.GONE);
+        } else {
+            getView().showAddressError(string(errMsgCode));
+        }
+        return errMsgCode == 0;
+
+
+      /*  String errMsg = null;
 
         if (TextUtils.isEmpty(address)) {
             errMsg = string(R.string.address_cannot_be_empty);
@@ -135,7 +144,7 @@ public class AddNewAddressPresenter extends BasePresenter<AddNewAddressContract.
             getView().showAddressError(errMsg);
         }
 
-        return TextUtils.isEmpty(errMsg);
+        return TextUtils.isEmpty(errMsg);*/
 
     }
 

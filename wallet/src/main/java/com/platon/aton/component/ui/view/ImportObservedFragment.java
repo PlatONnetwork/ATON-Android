@@ -51,9 +51,20 @@ public class ImportObservedFragment extends BaseLazyFragment<ImportObservedContr
     }
 
     @Override
+    public String getDataFromIntent() {
+        Bundle bundle =getArguments();
+        if (bundle != null && !bundle.isEmpty()) {
+            return bundle.getString(Constants.Extra.EXTRA_SCAN_QRCODE_DATA,"");
+        }
+        return null;
+    }
+
+    @Override
     public void init(View rootView) {
         unbinder = ButterKnife.bind(this, rootView);
         addListener();
+        getPresenter().init();
+
     }
 
     @Override
@@ -118,6 +129,7 @@ public class ImportObservedFragment extends BaseLazyFragment<ImportObservedContr
             getPresenter().IsImportObservedWallet(TextUtils.isEmpty(unzip) ? scanResult : unzip);
         }
     }
+
 
     @Override
     public void showQRCode(String QRCode) {

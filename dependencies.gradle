@@ -7,7 +7,7 @@ def stethoVersion = "1.5.0"
 def butterKnifeVersion = "8.5.1"
 def htextviewVersion = "0.1.6"
 def multidexVersion = "1.0.3"
-def web3jVersion = "0.13.0.1-android"
+def web3jVersion = "0.13.0.2-android"
 def rxlifecycle = "2.2.1";
 
 project.ext {

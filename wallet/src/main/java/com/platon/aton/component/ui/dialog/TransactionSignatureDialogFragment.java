@@ -139,9 +139,9 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
 
     private void initViews() {
 
-        transactionSignatureData = getArguments().getParcelable(Constants.Extra.EXTRA_TRANSACTION_SIGNATURE_DATA);
+        transactionSignatureData = getArguments().getParcelable(Constants.Extra.EXTRA_TRANSACTION_SIGNATURE_DATA);//授权签名之后数据
 
-        TransactionAuthorizationData transactionAuthorizationData = getArguments().getParcelable(Constants.Extra.EXTRA_TRANSACTION_AUTHORIZATION_DATA);
+        TransactionAuthorizationData transactionAuthorizationData = getArguments().getParcelable(Constants.Extra.EXTRA_TRANSACTION_AUTHORIZATION_DATA);//授权签名之前的数据
 
         tvTransactionSignature.setMovementMethod(ScrollingMovementMethod.getInstance());
 
@@ -439,6 +439,7 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
         } else {
             transaction.setTxType(getTxTypeByFunctionType(transactionSignatureData.getFunctionType()));
         }
+        //发送交易结果，入库后进行轮询获取普通钱包的交易是否成功
         afterTransferSucceed(transaction);
     }
 
@@ -512,7 +513,9 @@ public class TransactionSignatureDialogFragment extends BaseDialogFragment {
         return new Transaction.Builder()
                 .hash(hash)
                 .from(transactionSignatureData.getFrom())
-                .to(transactionAuthorizationData.getBaseDataList().get(0).getTo())
+                //??
+                .to(rawTransaction.getTo())
+                //.to(transactionAuthorizationData.getBaseDataList().get(0).getTo())
                 .senderWalletName(getSenderName(transactionSignatureData.getFrom()))
                 .value(amount)
                 .chainId(transactionSignatureData.getChainId())

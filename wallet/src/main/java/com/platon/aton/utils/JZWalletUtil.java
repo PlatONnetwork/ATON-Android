@@ -8,6 +8,7 @@ import com.facebook.stetho.common.LogUtil;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.platon.aton.R;
 import com.platon.aton.engine.WalletManager;
 import com.platon.aton.entity.AddressMatchingResultType;
 import com.platon.framework.utils.LogUtils;
@@ -146,6 +147,11 @@ public class JZWalletUtil {
         return cleanPrivateKey.length() == PRIVATE_KEY_LENGTH_IN_HEX;
     }
 
+    /**
+     * 钱包格式校验
+     * @param input
+     * @return
+     */
     public static boolean isValidAddress(String input) {
        /* if (TextUtils.isEmpty(input)) {
             return false;
@@ -188,7 +194,34 @@ public class JZWalletUtil {
     }
 
 
+    public static int checkToAddressErrMsg(String  toAddress){
 
+        int errMsg = 0;
+        if (TextUtils.isEmpty(toAddress)) {
+            errMsg = R.string.address_cannot_be_empty;
+        }else if(!JZWalletUtil.isValidAddress(toAddress)){
+            errMsg = R.string.receive_address_error;
+        }else {
+            int result = JZWalletUtil.isValidAddressMatchingNet(toAddress);
+            if(result == AddressMatchingResultType.ADDRESS_MAINNET_MATCHING){
+
+            }else if(result == AddressMatchingResultType.ADDRESS_MAINNET_MISMATCHING){
+                errMsg = R.string.receive_address_match_testnet_error;
+            }else if(result == AddressMatchingResultType.ADDRESS_TESTNET_MATCHING){
+
+            }else if(result == AddressMatchingResultType.ADDRESS_TESTNET_MISMATCHING){
+                errMsg = R.string.receive_address_match_mainnet_error;
+            }
+        }
+        return errMsg;
+    }
+
+
+    /**
+     * 钱包格式与当前网络环境匹配
+     * @param input
+     * @return
+     */
     public static int isValidAddressMatchingNet(String input) {
         if(input.length() > 5){
             String prefix = input.subSequence(0, 4).toString();

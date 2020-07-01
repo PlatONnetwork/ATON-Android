@@ -25,6 +25,8 @@ public class SendTransationContract {
 
         Wallet getWalletEntityFromIntent();
 
+        String getToAddressFromIntent();
+
         void showToAddressError(String errMsg);
 
         void showAmountError(String errMsg);
@@ -53,6 +55,8 @@ public class SendTransationContract {
     }
 
     public interface Presenter extends IPresenter<View> {
+
+
 
         void init();
 

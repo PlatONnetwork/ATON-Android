@@ -84,13 +84,21 @@ public class WalletDao {
     }
 
     public static String getWalletAvatarByAddress(String prefixAddress) {
+
+        String fieldName = "";
+        if(WalletManager.getInstance().isMainNetWalletAddress()){
+            fieldName = "mainNetAddress";
+        }else{
+            fieldName = "testNetAddress";
+        }
+
         String walletAvatar = null;
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
             WalletEntity walletEntity = realm.where(WalletEntity.class)
                     //.equalTo("chainId", NodeManager.getInstance().getChainId())
-                    .equalTo("address", prefixAddress, Case.INSENSITIVE)
+                    .equalTo(fieldName, prefixAddress, Case.INSENSITIVE)
                     .findFirst();
             if (walletEntity != null) {
                 walletAvatar = walletEntity.getAvatar();

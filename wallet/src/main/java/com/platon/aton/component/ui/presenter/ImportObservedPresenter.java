@@ -17,6 +17,18 @@ import com.platon.framework.utils.PreferenceTool;
 
 public class ImportObservedPresenter extends BasePresenter<ImportObservedContract.View> implements ImportObservedContract.Presenter {
 
+
+    @Override
+    public void init() {
+        if(getView() != null){
+            String dataStr = getView().getDataFromIntent();
+            if(!TextUtils.isEmpty(dataStr)){
+                getView().showQRCode(dataStr);
+            }
+        }
+
+    }
+
     @Override
     public void parseQRCode(String QRCode) {
         getView().showQRCode(QRCode);

@@ -405,14 +405,16 @@ public class WithDrawActivity extends BaseActivity<WithDrawContract.View, WithDr
 
         delegateType.setText(withDrawBalance.isDelegated() ? getString(R.string.withdraw_type_delegated) : getString(R.string.withdraw_type_released));
         delegateAmount.setText(string(R.string.amount_with_unit, AmountUtil.formatAmountText(withDrawBalance.isDelegated() ? withDrawBalance.getDelegated() : withDrawBalance.getReleased())));
-
-       /* withdrawAmount.setFocusableInTouchMode(withDrawBalance.isDelegated());
+        //获取焦点
+        withdrawAmount.setFocusableInTouchMode(withDrawBalance.isDelegated());
         withdrawAmount.setFocusable(withDrawBalance.isDelegated());
-        if (withDrawBalance.isDelegated()) {
-            withdrawAmount.setText(AmountUtil.formatAmountText(withDrawBalance.getDelegated()));
-        } else {
+        //设置是否可编辑
+        withdrawAmount.setEnabled(withDrawBalance.isDelegated());
+        if (withDrawBalance.isDelegated()) {//已委托
+            withdrawAmount.setText("");
+        }else{//待赎回
             withdrawAmount.setText(AmountUtil.formatAmountText(withDrawBalance.getReleased()));
-        }*/
+        }
 
     }
 
