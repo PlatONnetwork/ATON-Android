@@ -278,25 +278,6 @@ public class SendTransactionPresenter extends BasePresenter<SendTransationContra
             getView().showToAddressError(string(errMsgCode));
         }
         return errMsgCode == 0;
-     /*   String errMsg = null;
-        if (TextUtils.isEmpty(toAddress)) {
-            errMsg = string(R.string.address_cannot_be_empty);
-        }else if(!JZWalletUtil.isValidAddress(toAddress)){
-            errMsg = string(R.string.receive_address_error);
-        }else {
-            int result = JZWalletUtil.isValidAddressMatchingNet(toAddress);
-            if(result == AddressMatchingResultType.ADDRESS_MAINNET_MATCHING){
-
-            }else if(result == AddressMatchingResultType.ADDRESS_MAINNET_MISMATCHING){
-                errMsg = string(R.string.receive_address_match_testnet_error);
-            }else if(result == AddressMatchingResultType.ADDRESS_TESTNET_MATCHING){
-
-            }else if(result == AddressMatchingResultType.ADDRESS_TESTNET_MISMATCHING){
-                errMsg = string(R.string.receive_address_match_mainnet_error);
-            }
-        }
-        getView().showToAddressError(errMsg);
-        return TextUtils.isEmpty(errMsg);*/
     }
 
 
