@@ -126,26 +126,6 @@ public class AddNewAddressPresenter extends BasePresenter<AddNewAddressContract.
             getView().showAddressError(string(errMsgCode));
         }
         return errMsgCode == 0;
-
-
-      /*  String errMsg = null;
-
-        if (TextUtils.isEmpty(address)) {
-            errMsg = string(R.string.address_cannot_be_empty);
-        } else {
-            if (!JZWalletUtil.isValidAddress(address)) {
-                errMsg = string(R.string.address_format_error);
-            }
-        }
-
-        if (TextUtils.isEmpty(errMsg)) {
-            getView().setAddressVisibility(View.GONE);
-        } else {
-            getView().showAddressError(errMsg);
-        }
-
-        return TextUtils.isEmpty(errMsg);*/
-
     }
 
     @Override

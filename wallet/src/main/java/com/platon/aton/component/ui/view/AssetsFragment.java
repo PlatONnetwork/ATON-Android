@@ -769,6 +769,16 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
 
         mTransactionListAdapter.setQueryAddressList(Arrays.asList(queryAddress));
         if (loadLatestData || newTransactionList == null || newTransactionList.isEmpty()) {
+
+            //过滤数据只取前20条数据显示
+            int transactionSize = newTransactionList.size();
+            int overIndex = transactionSize - 20;
+            if(overIndex > 0){
+                for (int i = 1; i <= overIndex ; i++) {
+                    newTransactionList.remove(transactionSize - i);
+                }
+            }
+
             mTransactionListAdapter.notifyDataSetChanged(newTransactionList);
         } else {
             TransactionDiffCallback transactionDiffCallback = new TransactionDiffCallback(oldTransactionList, newTransactionList);

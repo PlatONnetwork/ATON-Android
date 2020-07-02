@@ -195,7 +195,7 @@ public class WithDrawActivity extends BaseActivity<WithDrawContract.View, WithDr
                     public void accept(Object o) {
 
                         UMEventUtil.onEventCount(WithDrawActivity.this, Constants.UMEventID.WITHDRAW_DELEGATE);
-
+                        //???
                         getPresenter().checkWithDrawAmount(withdrawAmount.getText().toString().trim().replace(",", ""));
 
                         if (BigDecimalUtil.sub(freeAccount, withdrawFee).doubleValue() < 0) { //赎回时，自用金额必须大于手续费，才能赎回
@@ -295,6 +295,9 @@ public class WithDrawActivity extends BaseActivity<WithDrawContract.View, WithDr
             etWalletAmount.setText(amountMagnitudes);
             etWalletAmount.setVisibility(TextUtils.isEmpty(amountMagnitudes) ? View.GONE : View.VISIBLE);
             v_tips.setVisibility(TextUtils.isEmpty(amountMagnitudes) ? View.GONE : View.VISIBLE);
+
+             //校验赎回金额提示
+            getPresenter().checkWithDrawAmount(withdrawAmount.getText().toString().trim().replace(",", ""));
 
             if (count == 0) {
                 return;

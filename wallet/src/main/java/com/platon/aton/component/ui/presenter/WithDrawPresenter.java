@@ -114,7 +114,14 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
             String minDelegationAmount = AmountUtil.convertVonToLat(mDelegationValue.getMinDelegation());
             boolean isWithdrawAmountBiggerThanMinDelegation = BigDecimalUtil.isNotSmaller(withdrawAmount, minDelegationAmount);
 
-            getView().showTips(!isWithdrawAmountBiggerThanMinDelegation, NumberParserUtils.getPrettyNumber(minDelegationAmount));
+            if(TextUtils.isEmpty(withdrawAmount)){
+                getView().showTips(false, NumberParserUtils.getPrettyNumber(minDelegationAmount));
+            }else if(isWithdrawAmountBiggerThanMinDelegation){
+                getView().showTips(false, NumberParserUtils.getPrettyNumber(minDelegationAmount));
+            }else{
+                getView().showTips(true, NumberParserUtils.getPrettyNumber(minDelegationAmount));
+            }
+
 
             if (mWithDrawBalance != null && mWithDrawBalance.isDelegated()) {
                 String leftWithdrawAmount = BigDecimalUtil.sub(mWithDrawBalance.getDelegated(), Convert.toVon(BigDecimalUtil.toBigDecimal(withdrawAmount), Convert.Unit.LAT).toPlainString()).toPlainString();
