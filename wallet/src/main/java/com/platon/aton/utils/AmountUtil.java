@@ -112,7 +112,7 @@ public class AmountUtil {
      * @return
      */
     public static String formatAmountText(String amount) {
-        return TextUtils.isEmpty(amount) ? "— —" : StringUtil.formatBalance(BigDecimalUtil.div(amount, VALUE_1E18));
+        return (TextUtils.isEmpty(amount) || "0".equals(amount)) ? "--" : StringUtil.formatBalance(BigDecimalUtil.div(amount, VALUE_1E18));
     }
 
     /**
@@ -122,6 +122,6 @@ public class AmountUtil {
      * @return
      */
     public static String formatAmountText(String amount, int maxFractionDigits) {
-        return TextUtils.isEmpty(amount) ? "— —" : StringUtil.formatBalance(BigDecimalUtil.div(amount, VALUE_1E18, maxFractionDigits), maxFractionDigits);
+        return (TextUtils.isEmpty(amount) || "0".equals(amount)) ? "--" : StringUtil.formatBalance(BigDecimalUtil.div(amount, VALUE_1E18, maxFractionDigits), maxFractionDigits);
     }
 }
