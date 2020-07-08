@@ -355,6 +355,8 @@ public class AppFramework {
                                 obj.getDynamicRealm()
                                         .where("WalletEntity")
                                         .equalTo("chainId", "101")
+                                        .or()
+                                        .equalTo("chainId", "102")
                                         .findAll()
                                         .setString("chainId", BuildConfig.ID_TEST_NET);
 
