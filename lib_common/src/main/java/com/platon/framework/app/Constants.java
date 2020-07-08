@@ -183,7 +183,7 @@ public class Constants {
     public interface DBName {
         //数据库名称
         String PORTAL = "portal";
-        //分支版本0.10.1.0
+        //分支版本0.10.1.0(版本号：0.10.0)
         // int VERSION = 111;
         //分支版本0.11.1.0(版本号：0.12.0)
         //int VERSION = 112;
