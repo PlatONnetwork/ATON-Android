@@ -97,7 +97,7 @@ android {
             testCoverageEnabled true  //打开覆盖率统计开关
 
             ndk {
-                abiFilters 'armeabi-v7a', 'armeabi'
+                abiFilters 'armeabi-v7a', 'armeabi','arm64-v8a'
             }
         }
 
@@ -186,7 +186,7 @@ android {
                 buildConfigField "String", "CHANNEL", '"PlatONNetwork"'
 
                 ndk {
-                    abiFilters 'armeabi-v7a', 'armeabi'
+                    abiFilters 'armeabi-v7a', 'armeabi','arm64-v8a'
                 }
             }
 
@@ -194,7 +194,7 @@ android {
                 buildConfigField "String", "CHANNEL", '"GooglePlay"'
 
                 ndk {
-                    abiFilters 'armeabi-v7a', 'armeabi'
+                    abiFilters 'armeabi-v7a', 'armeabi','arm64-v8a'
                 }
             }
 
@@ -265,6 +265,10 @@ dependencies {
     testImplementation 'org.robolectric:shadows-multidex:3.8'
     //    testImplementation 'org.robolectric:robolectric:3.8-SNAPSHOT'
     testImplementation 'org.robolectric:shadows-support-v4:3.0'
-    //mockito
+
+    //mockito 单元测试
+    //required if you want to use Mockito for unit tests
     testImplementation 'org.mockito:mockito-core:2.19.0'
+    // required if you want to use Mockito for Android tests
+    androidTestImplementation 'org.mockito:mockito-android:2.19.0'
 }
