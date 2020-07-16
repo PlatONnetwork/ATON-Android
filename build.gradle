@@ -28,6 +28,7 @@ allprojects {
 //        maven { url "https://sdk.platon.network/nexus/content/groups/public/" }
         maven { url 'https://dl.bintray.com/umsdk/release' }
         maven { url 'https://jitpack.io' }
+
     }
 }
 

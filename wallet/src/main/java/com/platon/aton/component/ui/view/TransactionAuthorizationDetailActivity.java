@@ -121,7 +121,7 @@ public class TransactionAuthorizationDetailActivity extends BaseActivity {
                 ds.setFakeBoldText(false);
             }
         });
-        tvSender.setText(getFormatName(transactionAuthorizationDetail.getSender(), null));
+        setTvSenderFormatName(transactionAuthorizationDetail.getSender(), null,tvSender);
         tvRecipient.setText(getReceiverName(transactionAuthorizationDetail));
         tvFee.setText(string(R.string.amount_with_unit, NumberParserUtils.getPrettyBalance(AmountUtil.convertVonToLat(transactionAuthorizationDetail.getFee()))));
 
@@ -213,19 +213,28 @@ public class TransactionAuthorizationDetailActivity extends BaseActivity {
         return R.string.msg_sender;
     }
 
-    private String getFormatName(String prefixAddress, String nodeName) {
+
+    private void setTvSenderFormatName(String prefixAddress, String nodeName,TextView tvSenderView) {
+
         if (!TextUtils.isEmpty(nodeName)) {
-            return String.format("%s(%s)", nodeName, AddressFormatUtil.formatTransactionAddress(prefixAddress));
+            tvSenderView.setText(String.format("%s(%s)", nodeName, AddressFormatUtil.formatTransactionAddress(prefixAddress)));
+            return;
         }
-        String walletName = WalletDao.getWalletNameByAddress(prefixAddress);
-        if (!TextUtils.isEmpty(walletName)) {
-            return String.format("%s(%s)", walletName, AddressFormatUtil.formatTransactionAddress(prefixAddress));
-        }
-        String remark = AddressDao.getAddressNameByAddress(prefixAddress);
-        if (!TextUtils.isEmpty(remark)) {
-            return String.format("%s(%s)", remark, AddressFormatUtil.formatTransactionAddress(prefixAddress));
-        }
-        return AddressFormatUtil.formatTransactionAddress(prefixAddress);
+        WalletManager.getInstance().getWalletNameFromAddress(prefixAddress)
+                .compose(RxUtils.getSingleSchedulerTransformer())
+                .compose(bindToLifecycle())
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String walletName) throws Exception {
+                        String formatName = "";
+                        if (!TextUtils.isEmpty(walletName)) {
+                            formatName = walletName;
+                        }else{
+                            formatName = AddressFormatUtil.formatTransactionAddress(prefixAddress);
+                        }
+                        tvSenderView.setText(formatName);
+                    }
+                });
     }
 
     private String getTransferFormatName(String prefixAddress) {

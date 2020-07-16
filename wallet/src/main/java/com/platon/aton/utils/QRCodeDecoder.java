@@ -2,7 +2,6 @@ package com.platon.aton.utils;
 
 import android.graphics.Bitmap;
 
-import com.facebook.stetho.common.LogUtil;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.DecodeHintType;
@@ -11,6 +10,7 @@ import com.google.zxing.RGBLuminanceSource;
 import com.google.zxing.Result;
 import com.google.zxing.common.GlobalHistogramBinarizer;
 import com.google.zxing.common.HybridBinarizer;
+import com.platon.framework.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -136,7 +136,7 @@ public class QRCodeDecoder {
      * @return 返回二维码图片里的内容 或 null
      */
     public static Result syncDecodeQRCode(Bitmap bitmap) {
-        if (bitmap == null){
+        if (bitmap == null || bitmap.equals("")){
             return null;
         }
         RGBLuminanceSource source = null;
@@ -148,12 +148,12 @@ public class QRCodeDecoder {
             source = new RGBLuminanceSource(width, height, pixels);
             return new MultiFormatReader().decode(new BinaryBitmap(new HybridBinarizer(source)), ALL_HINT_MAP);
         } catch (Exception e) {
-            LogUtil.e(e.getMessage(),e.fillInStackTrace());
+            LogUtils.e(e.getMessage(),e.fillInStackTrace());
             if (source != null) {
                 try {
                     return new MultiFormatReader().decode(new BinaryBitmap(new GlobalHistogramBinarizer(source)), ALL_HINT_MAP);
                 } catch (Throwable exp) {
-                    LogUtil.e(exp.getMessage(),exp.fillInStackTrace());
+                    LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
                 }
             }
             return null;

@@ -229,27 +229,18 @@ public class TransactionManager {
 
     }
 
-    private Single<String> getSignedMessageSingle(ECKeyPair ecKeyPair, String from, String toAddress, BigDecimal amount, BigInteger gasPrice, BigInteger gasLimit, BigInteger nonce) {
+    private String getSignedMessageSingle(ECKeyPair ecKeyPair, String from, String toAddress, BigDecimal amount, BigInteger gasPrice, BigInteger gasLimit, BigInteger nonce) throws RuntimeException {
 
-        return Single
-                .fromCallable(new Callable<String>() {
-                    @Override
-                    public String call() throws Exception {
-                        return getSignedMessage(ecKeyPair, from, toAddress, amount, gasPrice, gasLimit, nonce);
-                    }
-                });
+           return  getSignedMessage(ecKeyPair, from, toAddress, amount, gasPrice, gasLimit, nonce);
     }
 
-    private String getSignedMessage(ECKeyPair ecKeyPair, String from, String toAddress, BigDecimal amount, BigInteger gasPrice, BigInteger gasLimit, BigInteger nonce) {
-
+    private String getSignedMessage(ECKeyPair ecKeyPair, String from, String toAddress, BigDecimal amount, BigInteger gasPrice, BigInteger gasLimit, BigInteger nonce) throws RuntimeException {
 
         Credentials credentials = Credentials.create(ecKeyPair);
 
-        RawTransaction rawTransaction = RawTransaction.createTransaction(nonce, gasPrice, gasLimit, toAddress, amount.toBigInteger(),
-                "");
+        RawTransaction rawTransaction = RawTransaction.createTransaction(nonce, gasPrice, gasLimit, toAddress, amount.toBigInteger(), "");
 
         byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, NumberParserUtils.parseLong(NodeManager.getInstance().getChainId()), credentials);
-
         return Numeric.toHexString(signedMessage);
     }
 
@@ -376,9 +367,19 @@ public class TransactionManager {
         return null;
     }
 
-    public Single<Transaction> sendTransferTransaction(ECKeyPair ecKeyPair, String fromAddress, String toAddress, String walletName, BigDecimal transferAmount, BigDecimal feeAmount, BigInteger gasPrice, BigInteger gasLimit, BigInteger nonce, String remark) {
+    String  signedStr = "";
 
-        return getSignedMessageSingle(ecKeyPair, fromAddress, toAddress, transferAmount, gasPrice, gasLimit, nonce)
+    public Single<Transaction> sendTransferTransaction(ECKeyPair ecKeyPair, String fromAddress, String toAddress, String walletName, BigDecimal transferAmount, BigDecimal feeAmount, BigInteger gasPrice, BigInteger gasLimit, BigInteger nonce, String remark) throws RuntimeException{
+
+        signedStr = getSignedMessageSingle(ecKeyPair, fromAddress, toAddress, transferAmount, gasPrice, gasLimit, nonce);
+       Single<String> single = Single.fromCallable(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                return signedStr;
+            }
+        });
+
+        return single
                 .flatMap(new Function<String, SingleSource<Transaction>>() {
                     @Override
                     public SingleSource<Transaction> apply(String signedMessage) throws Exception {

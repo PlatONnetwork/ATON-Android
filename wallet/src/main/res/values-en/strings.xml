@@ -190,8 +190,7 @@
     <string name="open_flash_tips">Tap to turn light on</string>
     <string name="close_flash_tips">Tap to turn light off</string>
     <string name="scan_qr_code_open_lights_failed">No flash for the time being</string>
-    <string name="scan_qr_code_failed_tips">Unrecongnized QR Code</string>
-    <string name="scan_qr_code_failed_tips1">Unable to identify qr code</string>
+    <string name="scan_qr_code_failed_tips">QR code not found</string>
     <string name="photograph">Photograph</string>
     <string name="photo_album">Album</string>
     <string name="select_from_albums">Select fromAddress album</string>
@@ -308,7 +307,7 @@
     <string name="noWalletTips">Create Classic Wallet first</string>
     <string name="insufficientBalanceTips">Insufficient wallet balance, can\'t create</string>
     <string name="inputWalletAddress">Enter receive address</string>
-    <string name="inputSendAmount">0.00</string>
+    <string name="inputSendAmount">0.00000000</string>
     <string name="inputMome">Memo(Non - compulsory)</string>
     <string name="duplicateAddress">Duplicate address exists</string>
     <string name="saveAndShareImage">Save image and Share</string>
@@ -430,7 +429,9 @@
     <string name="hint_wallet_password">Input the wallet\'s password</string>
     <string name="vote_success">Vote Success!</string>
     <string name="vote_failed">Vote Failed!</string>
-    <string name="receive_address_error">Address format is incorrect</string>
+    <string name="receive_address_error">Invalid address</string>
+    <string name="receive_address_match_mainnet_error">Mainnet address,do not use in testnet</string>
+    <string name="receive_address_match_testnet_error">Testnet address,do not use in mainnet</string>
     <string name="txn_init_failed_title">Transaction initiation failed</string>
     <string name="txn_init_failed_content">The associated Classic Wallet has been removed.</string>
     <string name="query_no_result">Query no result！</string>
@@ -614,7 +615,7 @@
     <string name="action_continue">Next</string>
     <string name="msg_agree_agreement">I have read and agree to the above agreement</string>
 
-    <string name="delegate_no_click">Please withdraw first "Invalid delegate"</string>
+    <string name="delegate_no_click">Please withdraw first “Invalid delegate”</string>
 
     <!--委托和赎回手续费显示-->
     <string name="delegate_and_withdraw_fee">Estimated fee:</string>
@@ -666,7 +667,7 @@
     <string name="finish">Finish</string>
     <string name="msg_invalid_signature">Invalid Signature</string>
     <string name="tips_not_delegate">The wallet associated with the validator is not allowed for delegation.</string>
-    <string name="tips_not_balance">Wallet balance is 0,unable to delegate</string>
+    <string name="tips_not_balance">Wallet balance not enough,unable to delegate</string>
     <string name="action_copy_link">Copy Link</string>
     <string name="action_open_browser">Open in browser</string>
 

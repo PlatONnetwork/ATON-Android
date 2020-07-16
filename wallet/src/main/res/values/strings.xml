@@ -191,8 +191,7 @@
     <string name="open_flash_tips">轻点照亮</string>
     <string name="close_flash_tips">轻点关闭</string>
     <string name="scan_qr_code_open_lights_failed">暂时无法开启闪光灯</string>
-    <string name="scan_qr_code_failed_tips">无法识别二维码</string>
-    <string name="scan_qr_code_failed_tips1">无法识别二维码</string>
+    <string name="scan_qr_code_failed_tips">未发现二维码</string>
     <string name="photograph">拍照</string>
     <string name="photo_album">相册</string>
     <string name="select_from_albums">从相册选择</string>
@@ -307,7 +306,7 @@
     <string name="noWalletTips">请先创建普通钱包</string>
     <string name="insufficientBalanceTips">钱包余额不足，无法创建</string>
     <string name="inputWalletAddress">输入接收地址</string>
-    <string name="inputSendAmount">0.00</string>
+    <string name="inputSendAmount">0.00000000</string>
     <string name="inputMome">备注（选填）</string>
     <string name="duplicateAddress">存在重复地址</string>
     <string name="saveAndShareImage">保存图片并分享</string>
@@ -429,7 +428,9 @@
     <string name="hint_wallet_password">请输入钱包密码</string>
     <string name="vote_success">投票成功!</string>
     <string name="vote_failed">投票失败!</string>
-    <string name="receive_address_error">接收地址不正确</string>
+    <string name="receive_address_error">无效的地址</string>
+    <string name="receive_address_match_mainnet_error">主网地址，不要在测试网下使用</string>
+    <string name="receive_address_match_testnet_error">测试地址，不要在主网下使用</string>
     <string name="txn_init_failed_title">提示</string>
     <string name="txn_init_failed_content">关联的普通钱包已被删除，该钱包无法发起交易</string>
     <string name="query_no_result">查询无结果！</string>
@@ -626,7 +627,7 @@
     <string name="msg_agree_agreement">我已阅读并同意上述条款</string>
 
     <!--委托不可操作提示-->
-    <string name="delegate_no_click">请先赎回"已待赎回委托"</string>
+    <string name="delegate_no_click">请先赎回“待赎回委托”</string>
 
     <!--委托和赎回手续费显示-->
     <string name="delegate_and_withdraw_fee">预估手续费:</string>
@@ -677,7 +678,7 @@
     <string name="finish">完成</string>
     <string name="msg_invalid_signature">无效签名</string>
     <string name="tips_not_delegate">节点关联的钱包地址，不可参与委托。</string>
-    <string name="tips_not_balance">可用余额为0,无法委托</string>
+    <string name="tips_not_balance">可用余额不足,无法委托</string>
     <string name="action_copy_link">复制链接</string>
     <string name="action_open_browser">在浏览器中打开</string>
 

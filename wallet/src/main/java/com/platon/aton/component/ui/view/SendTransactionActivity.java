@@ -38,6 +38,7 @@ import com.platon.aton.component.widget.ShadowButton;
 import com.platon.aton.component.widget.bubbleSeekBar.BubbleSeekBar;
 import com.platon.aton.db.sqlite.WalletDao;
 import com.platon.aton.entity.Address;
+import com.platon.aton.entity.AddressMatchingResultType;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.event.Event;
 import com.platon.aton.event.EventPublisher;
@@ -157,7 +158,7 @@ public class SendTransactionActivity extends BaseActivity<SendTransationContract
         unbinder = ButterKnife.bind(this);
         EventPublisher.getInstance().register(this);
         initViews();
-        //getPresenter().init();
+        getPresenter().init();
         getPresenter().fetchDefaultWalletInfo();
         getPresenter().checkAddressBook(etWalletAddress.getText().toString());
     }
@@ -306,10 +307,20 @@ public class SendTransactionActivity extends BaseActivity<SendTransationContract
                     String address = data.getStringExtra(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
                     String unzip = GZipUtil.unCompress(address);
                     String newStr = TextUtils.isEmpty(unzip) ? address : unzip;
+
                     if (JZWalletUtil.isValidAddress(newStr)) {
-                        setToAddress(newStr);
+                        int result = JZWalletUtil.isValidAddressMatchingNet(newStr);
+                        if(result == AddressMatchingResultType.ADDRESS_MAINNET_MATCHING){
+                            setToAddress(newStr);
+                        }else if(result == AddressMatchingResultType.ADDRESS_MAINNET_MISMATCHING){
+                            ToastUtil.showLongToast(getContext(), string(R.string.receive_address_match_mainnet_error));
+                        }else if(result == AddressMatchingResultType.ADDRESS_TESTNET_MATCHING){
+                            setToAddress(newStr);
+                        }else if(result == AddressMatchingResultType.ADDRESS_TESTNET_MISMATCHING){
+                            ToastUtil.showLongToast(getContext(), string(R.string.receive_address_match_testnet_error));
+                        }
                     } else {
-                        ToastUtil.showLongToast(getContext(), string(R.string.unrecognized));
+                        ToastUtil.showLongToast(getContext(), string(R.string.unrecognized_content));
                     }
                     break;
                 case Constants.RequestCode.REQUEST_CODE_TRANSACTION_SIGNATURE:
@@ -386,6 +397,11 @@ public class SendTransactionActivity extends BaseActivity<SendTransationContract
     public Wallet getWalletEntityFromIntent() {
        // return getArguments().getParcelable(Constants.Extra.EXTRA_WALLET);
         return null;
+    }
+
+    @Override
+    public String getToAddressFromIntent() {
+        return getIntent().getStringExtra(Constants.Extra.EXTRA_SCAN_QRCODE_DATA);
     }
 
     @Override
@@ -647,6 +663,12 @@ public class SendTransactionActivity extends BaseActivity<SendTransationContract
 
     public static void actionStart(Context context) {
         context.startActivity(new Intent(context, SendTransactionActivity.class));
+    }
+
+    public static void actionStartWithData(Context context,String toAddress){
+        Intent intent = new Intent(context, SendTransactionActivity.class);
+        intent.putExtra(Constants.Extra.EXTRA_SCAN_QRCODE_DATA,toAddress);
+        context.startActivity(intent);
     }
 
 

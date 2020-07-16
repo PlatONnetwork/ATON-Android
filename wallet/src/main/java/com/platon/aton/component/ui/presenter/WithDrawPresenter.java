@@ -14,6 +14,7 @@ import com.platon.aton.component.ui.dialog.InputWalletPasswordDialogFragment;
 import com.platon.aton.component.ui.dialog.SelectDelegationsDialogFragment;
 import com.platon.aton.component.ui.dialog.TransactionAuthorizationDialogFragment;
 import com.platon.aton.component.ui.dialog.TransactionSignatureDialogFragment;
+import com.platon.aton.engine.ContractAddressManager;
 import com.platon.aton.engine.DelegateManager;
 import com.platon.aton.engine.NodeManager;
 import com.platon.aton.engine.ServerUtils;
@@ -40,7 +41,6 @@ import com.platon.framework.network.ApiResponse;
 import com.platon.framework.network.ApiSingleObserver;
 
 import org.web3j.crypto.Credentials;
-import org.web3j.platon.ContractAddress;
 import org.web3j.platon.FunctionType;
 import org.web3j.utils.Convert;
 
@@ -114,7 +114,14 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
             String minDelegationAmount = AmountUtil.convertVonToLat(mDelegationValue.getMinDelegation());
             boolean isWithdrawAmountBiggerThanMinDelegation = BigDecimalUtil.isNotSmaller(withdrawAmount, minDelegationAmount);
 
-            getView().showTips(!isWithdrawAmountBiggerThanMinDelegation, NumberParserUtils.getPrettyNumber(minDelegationAmount));
+            if(TextUtils.isEmpty(withdrawAmount)){
+                getView().showTips(false, NumberParserUtils.getPrettyNumber(minDelegationAmount));
+            }else if(isWithdrawAmountBiggerThanMinDelegation){
+                getView().showTips(false, NumberParserUtils.getPrettyNumber(minDelegationAmount));
+            }else{
+                getView().showTips(true, NumberParserUtils.getPrettyNumber(minDelegationAmount));
+            }
+
 
             if (mWithDrawBalance != null && mWithDrawBalance.isDelegated()) {
                 String leftWithdrawAmount = BigDecimalUtil.sub(mWithDrawBalance.getDelegated(), Convert.toVon(BigDecimalUtil.toBigDecimal(withdrawAmount), Convert.Unit.LAT).toPlainString()).toPlainString();
@@ -251,7 +258,8 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
             GasProvider gasProvider = mWithDrawBalance.getGasProvider();
 
             if (mWallet.isObservedWallet()) {
-                showTransactionAuthorizationDialogFragment(gasProvider, mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), getView().getInputAmount(), mWallet.getPrefixAddress(), ContractAddress.DELEGATE_CONTRACT_ADDRESS, mDelegationValue.getNonce());
+                String toAddress = ContractAddressManager.getInstance().getPlanContractAddress(ContractAddressManager.DELEGATE_CONTRACT_ADDRESS);
+                showTransactionAuthorizationDialogFragment(gasProvider, mDelegateDetail.getNodeId(), mDelegateDetail.getNodeName(), getView().getInputAmount(), mWallet.getPrefixAddress(), toAddress, mDelegationValue.getNonce());
             } else {
                 InputWalletPasswordDialogFragment
                         .newInstance(mWallet)
@@ -278,8 +286,9 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
      */
     @SuppressLint("CheckResult")
     public void withdraw(Credentials credentials, GasProvider gasProvider, String nodeId, String nodeName, String blockNum, String withdrawAmount, String nonce) {
+        String toAddress = ContractAddressManager.getInstance().getPlanContractAddress(ContractAddressManager.DELEGATE_CONTRACT_ADDRESS);
         DelegateManager.getInstance()
-                .withdrawDelegate(credentials, ContractAddress.DELEGATE_CONTRACT_ADDRESS, nodeId, nodeName, getFeeAmount(gasProvider), blockNum, withdrawAmount, String.valueOf(TransactionType.UNDELEGATE.getTxTypeValue()), gasProvider.toSdkGasProvider(), nonce)
+                .withdrawDelegate(credentials, toAddress, nodeId, nodeName, getFeeAmount(gasProvider), blockNum, withdrawAmount, String.valueOf(TransactionType.UNDELEGATE.getTxTypeValue()), gasProvider.toSdkGasProvider(), nonce)
                 .toObservable()
                 .compose(RxUtils.getSchedulerTransformer())
                 .compose(RxUtils.getLoadingTransformer(currentActivity()))

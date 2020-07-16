@@ -94,10 +94,16 @@ public class AccountBalance implements Parcelable {
             if (TextUtils.isEmpty(addr)) {
                 return "";
             }
+
+            return getAddr();
+
+         /*   if (TextUtils.isEmpty(addr)) {
+                return "";
+            }
             if (addr.toLowerCase().startsWith("0x")) {
                 return addr;
             }
-            return "0x" + addr;
+            return "0x" + addr;*/
         } catch (Exception exp) {
             LogUtils.e(exp.getMessage(),exp.fillInStackTrace());
             return "";

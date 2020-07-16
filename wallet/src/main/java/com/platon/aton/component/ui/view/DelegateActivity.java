@@ -155,6 +155,10 @@ public class DelegateActivity extends BaseActivity<DelegateContract.View, Delega
      * 自由金额
      */
     private String freeBalance;
+    /**
+     * EstimateGasResult
+     */
+    private EstimateGasResult estimateResult;
 
     @Override
 
@@ -278,8 +282,20 @@ public class DelegateActivity extends BaseActivity<DelegateContract.View, Delega
                         UMEventUtil.onEventCount(DelegateActivity.this, Constants.UMEventID.DELEGATE);
 
                         //点击委托操作
-                        if (BigDecimalUtil.sub(freeBalance, feeAmount).doubleValue() < 0) { //可用余额大于手续费才能委托
+                         String balance;
+                         //当前选中的余额类型
+                         if(stakingAmountType == StakingAmountType.FREE_AMOUNT_TYPE){
+                             balance = freeBalance;
+                         }else{
+                             balance = estimateResult.getLock();
+                         }
+                        if (BigDecimalUtil.sub(balance, feeAmount).doubleValue() < 0) { //可用余额大于手续费才能委托
                             ToastUtil.showLongToast(getContext(), R.string.delegate_less_than_fee);
+                            return;
+                        }
+
+                        if(BigDecimalUtil.sub(BigDecimalUtil.div(balance, "1E18"), et_amount.getText().toString().trim()).doubleValue() < 0){//可用余额不足委托数量
+                            ToastUtil.showLongToast(getContext(), R.string.tips_not_balance);
                             return;
                         }
 
@@ -414,6 +430,7 @@ public class DelegateActivity extends BaseActivity<DelegateContract.View, Delega
             tv_lat_two.setVisibility(View.VISIBLE);
         }
         freeBalance = estimateGasResult.getFree();
+        estimateResult = estimateGasResult;
 
     }
 

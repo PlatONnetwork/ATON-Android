@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Environment;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -23,6 +25,7 @@ import com.platon.framework.utils.LogUtils;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 import com.umeng.analytics.MobclickAgent;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -319,6 +322,10 @@ public abstract class BaseActivity<V extends BaseViewImp, P extends BasePresente
     public void generateCoverageFile() {
 
         String filePath = getFilesDir().getAbsolutePath();
+        //String filePath2 = getRootPath(this);
+
+        LogUtils.e("--generateCoverageFile filePath:" + filePath);
+        //LogUtils.e("--generateCoverageFile filePath2:" + filePath2);
 
         OutputStream out = null;
 
@@ -343,4 +350,25 @@ public abstract class BaseActivity<V extends BaseViewImp, P extends BasePresente
             }
         }
     }
+
+    /**
+     * 获取存储的根路径，对于内部存储：
+     *
+     * @return
+     */
+    protected String getRootPath(Context mContext) {
+        String rootPath = "";
+        if (Environment.getExternalStorageState().equalsIgnoreCase(Environment.MEDIA_MOUNTED)) {
+            File file = mContext.getExternalFilesDir(null);
+            if (file != null) {
+                rootPath = mContext.getExternalFilesDir(null).getAbsolutePath();
+            }
+        }
+        if (TextUtils.isEmpty(rootPath)) {
+            File fileDir = mContext.getFilesDir();
+            rootPath = fileDir.getAbsolutePath() + File.separator;
+        }
+        return rootPath;
+    }
+
 }

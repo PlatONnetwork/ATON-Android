@@ -2,10 +2,16 @@ package com.platon.aton.utils;
 
 import android.text.TextUtils;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.facebook.stetho.common.LogUtil;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.platon.aton.R;
+import com.platon.aton.engine.WalletManager;
+import com.platon.aton.entity.AddressMatchingResultType;
+import com.platon.framework.utils.LogUtils;
 
 import org.bitcoinj.crypto.MnemonicCode;
 import org.web3j.crypto.CipherException;
@@ -13,6 +19,9 @@ import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Wallet;
 import org.web3j.crypto.WalletFile;
+import org.web3j.crypto.bech32.AddressBech32;
+import org.web3j.crypto.bech32.AddressManager;
+import org.web3j.crypto.bech32.Bech32;
 import org.web3j.utils.Numeric;
 
 import java.io.IOException;
@@ -26,7 +35,6 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import static org.web3j.crypto.Keys.ADDRESS_LENGTH_IN_HEX;
 import static org.web3j.crypto.Keys.PRIVATE_KEY_LENGTH_IN_HEX;
 
 /**
@@ -106,6 +114,7 @@ public class JZWalletUtil {
     }
 
     public static WalletFile loadWalletFileByJson(String json) throws IOException {
+
         return objectMapper.readValue(json, WalletFile.class);
     }
 
@@ -115,8 +124,10 @@ public class JZWalletUtil {
 
     public static Credentials getCredentials(String password, String json) throws IOException, CipherException {
         Credentials credentials = null;
+        LogUtils.e("-----JZWallet json:" + json);
         try {
             WalletFile walletFile = loadWalletFileByJson(json);
+            LogUtils.e("-----JZWallet walletFile:" + walletFile.toString());
             credentials = Credentials.create(Wallet.decrypt(password, walletFile));
         } catch (CipherException e) {
             LogUtil.e(e.getMessage(),e.fillInStackTrace());
@@ -136,8 +147,13 @@ public class JZWalletUtil {
         return cleanPrivateKey.length() == PRIVATE_KEY_LENGTH_IN_HEX;
     }
 
+    /**
+     * 钱包格式校验
+     * @param input
+     * @return
+     */
     public static boolean isValidAddress(String input) {
-        if (TextUtils.isEmpty(input)) {
+       /* if (TextUtils.isEmpty(input)) {
             return false;
         }
         String cleanInput = Numeric.cleanHexPrefix(input);
@@ -146,16 +162,95 @@ public class JZWalletUtil {
         } catch (NumberFormatException e) {
             return false;
         }
-        return cleanInput.length() == ADDRESS_LENGTH_IN_HEX;
+        return cleanInput.length() == ADDRESS_LENGTH_IN_HEX;*/
+
+
+        if (TextUtils.isEmpty(input)) {
+            return false;
+        }
+
+        if(input.length() > 5){
+            String prefix = input.subSequence(0,4).toString();
+            if(!(prefix.equalsIgnoreCase("lat1") || prefix.equalsIgnoreCase("lax1"))){
+                return false;
+            }
+        }
+
+        if(input.length() < 42){
+            return false;
+        }
+        String suffix = input.subSequence(36,input.length()).toString();
+        if((suffix.contains("1")||suffix.contains("b")||suffix.contains("i")||suffix.contains("o"))){
+           return false;
+        }
+
+        try{
+            String walletAddress = Bech32.addressDecodeHex(input);
+        }catch(Exception e){
+            LogUtils.e("校验地址：" + e.getMessage(),e.fillInStackTrace());
+            return false;
+        }
+        return true;
     }
 
-    public static boolean isValidKeystore(String keystore) {
+
+    public static int checkToAddressErrMsg(String  toAddress){
+
+        int errMsg = 0;
+        if (TextUtils.isEmpty(toAddress)) {
+            errMsg = R.string.address_cannot_be_empty;
+        }else if(!JZWalletUtil.isValidAddress(toAddress)){
+            errMsg = R.string.receive_address_error;
+        }else {
+            int result = JZWalletUtil.isValidAddressMatchingNet(toAddress);
+            if(result == AddressMatchingResultType.ADDRESS_MAINNET_MATCHING){
+
+            }else if(result == AddressMatchingResultType.ADDRESS_MAINNET_MISMATCHING){
+                errMsg = R.string.receive_address_match_testnet_error;
+            }else if(result == AddressMatchingResultType.ADDRESS_TESTNET_MATCHING){
+
+            }else if(result == AddressMatchingResultType.ADDRESS_TESTNET_MISMATCHING){
+                errMsg = R.string.receive_address_match_mainnet_error;
+            }
+        }
+        return errMsg;
+    }
+
+
+    /**
+     * 钱包格式与当前网络环境匹配
+     * @param input
+     * @return
+     */
+    public static int isValidAddressMatchingNet(String input) {
+        if(input.length() > 5){
+            String prefix = input.subSequence(0, 4).toString();
+            if (WalletManager.getInstance().isMainNetWalletAddress()) {
+                if (prefix.equalsIgnoreCase("lat1")) {//主网格式
+                    return AddressMatchingResultType.ADDRESS_MAINNET_MATCHING;
+                } else {
+                    return AddressMatchingResultType.ADDRESS_MAINNET_MISMATCHING;
+                }
+            } else if (!WalletManager.getInstance().isMainNetWalletAddress()) {
+                if (prefix.equalsIgnoreCase("lax1")) {//测试网格式
+                    return AddressMatchingResultType.ADDRESS_TESTNET_MATCHING;
+                } else {
+                    return AddressMatchingResultType.ADDRESS_TESTNET_MISMATCHING;
+                }
+            }
+        }
+        return 0;
+    }
+
+
+
+        public static boolean isValidKeystore(String keystore) {
         try {
             WalletFile walletFile = loadWalletFileByJson(keystore);
             if (walletFile == null) {
                 return false;
             }
-            if (TextUtils.isEmpty(walletFile.getAddress())) {
+            if (TextUtils.isEmpty(walletFile.getAddress().getMainnet())) {
                 return false;
             }
             if (TextUtils.isEmpty(walletFile.getId())) {

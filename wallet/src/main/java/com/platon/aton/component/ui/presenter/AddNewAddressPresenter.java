@@ -119,30 +119,19 @@ public class AddNewAddressPresenter extends BasePresenter<AddNewAddressContract.
     @Override
     public boolean checkAddress(String address) {
 
-        String errMsg = null;
-
-        if (TextUtils.isEmpty(address)) {
-            errMsg = string(R.string.address_cannot_be_empty);
-        } else {
-            if (!JZWalletUtil.isValidAddress(address) || !address.startsWith("0x")) {
-                errMsg = string(R.string.address_format_error);
-            }
-        }
-
-        if (TextUtils.isEmpty(errMsg)) {
+        int errMsgCode = JZWalletUtil.checkToAddressErrMsg(address);
+        if (errMsgCode == 0) {
             getView().setAddressVisibility(View.GONE);
         } else {
-            getView().showAddressError(errMsg);
+            getView().showAddressError(string(errMsgCode));
         }
-
-        return TextUtils.isEmpty(errMsg);
-
+        return errMsgCode == 0;
     }
 
     @Override
     public void validQRCode(String text) {
         if (!JZWalletUtil.isValidAddress(text)) {
-            showLongToast(string(R.string.scan_qr_code_failed_tips1));
+            showLongToast(string(R.string.unrecognized_content));
             return;
         }
         if (isViewAttached()) {

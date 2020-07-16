@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_item_parent"
@@ -36,15 +37,16 @@
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tv_transaction_amount"
-        style="@style/Text.000.16"
-        android:layout_width="160dp"
+        style="@style/Text.000.18"
+        android:layout_width="200dp"
+        android:layout_height="35dp"
         android:layout_marginLeft="12dp"
         android:ellipsize="end"
         android:gravity="right"
         android:lines="1"
         android:textStyle="bold"
-        app:autoSizeMaxTextSize="16sp"
-        app:autoSizeMinTextSize="2sp"
+        app:autoSizeMaxTextSize="18sp"
+        app:autoSizeMinTextSize="7sp"
         app:autoSizeTextType="uniform"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="parent"

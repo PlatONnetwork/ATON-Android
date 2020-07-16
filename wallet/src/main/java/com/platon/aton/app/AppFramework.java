@@ -60,6 +60,8 @@ public class AppFramework {
             NetConnectivity.getConnectivityManager().registerNetworkStateChange(new NetStateBroadcastReceiver());
             //初始化realm
             initRealm(context);
+            //初始化Wallet网络环境
+            WalletManager.getInstance().initWalletNet();
             //初始化节点配置
             NodeManager.getInstance().init();
             //初始化DeviceManager
@@ -68,6 +70,7 @@ public class AppFramework {
             RUtils.init(context);
             //初始化Directroy
             DirectroyController.getInstance().init(context);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -77,7 +80,7 @@ public class AppFramework {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNodeChangedEvent(Event.NodeChangedEvent event) {
         //初始化普通钱包
-        WalletManager.getInstance().init();
+        //WalletManager.getInstance().init();
     }
 
     private void initRealm(Context context) {
@@ -103,9 +106,11 @@ public class AppFramework {
 
             //只有测试网络钱包迁移
             LogUtils.d("------------BuildConfig.RELEASE_TYPE:" + BuildConfig.RELEASE_TYPE);
-            if (!BuildConfig.RELEASE_TYPE.equals("server.typeX")) {//测试网络(贝莱世界)
+            LogUtils.d("------------oldVersion:" + oldVersion);
+            LogUtils.d("------------newVersion:" + newVersion);
+           /* if (!BuildConfig.RELEASE_TYPE.equals("server.typeX")) {//测试网络(贝莱世界)
                 return;
-            }
+            }*/
 
             RealmSchema schema = realm.getSchema();
             if (oldVersion == 106) {
@@ -164,7 +169,7 @@ public class AppFramework {
                                         .where("WalletEntity")
                                         .equalTo("chainId", "103")
                                         .findAll()
-                                        .setString("chainId", BuildConfig.ID_MAIN_CHAIN);
+                                        .setString("chainId", BuildConfig.ID_TEST_NET);
                             }
                         });
 
@@ -200,7 +205,7 @@ public class AppFramework {
                                         .where("WalletEntity")
                                         .equalTo("chainId", "97")
                                         .findAll()
-                                        .setString("chainId", BuildConfig.ID_MAIN_CHAIN);
+                                        .setString("chainId", BuildConfig.ID_TEST_NET);
                             }
                         });
 
@@ -265,7 +270,7 @@ public class AppFramework {
                                         .where("WalletEntity")
                                         .equalTo("chainId", "96")
                                         .findAll()
-                                        .setString("chainId", BuildConfig.ID_MAIN_CHAIN);
+                                        .setString("chainId", BuildConfig.ID_TEST_NET);
                             }
                         });
 
@@ -298,7 +303,7 @@ public class AppFramework {
                                         .where("WalletEntity")
                                         .equalTo("chainId", "95")
                                         .findAll()
-                                        .setString("chainId", BuildConfig.ID_MAIN_CHAIN);
+                                        .setString("chainId", BuildConfig.ID_TEST_NET);
                             }
                         });
 
@@ -323,10 +328,13 @@ public class AppFramework {
 
                 oldVersion++;
 
-            } else if (oldVersion == 111) {
+            }else if (oldVersion == 112 || oldVersion == 111) {
 
-                schema.get("TransactionEntity")
-                        .addField("remark", String.class);
+                //112此版本主要转换钱包地址Bech32
+                if(oldVersion == 111){
+                    schema.get("TransactionEntity")
+                            .addField("remark", String.class);
+                }
 
                 schema.get("NodeEntity")
                         .transform(new RealmObjectSchema.Function() {
@@ -339,18 +347,34 @@ public class AppFramework {
 
                 //链id 101--->102
                 schema.get("WalletEntity")
+                        .addField("mainNetAddress", String.class)
+                        .addField("testNetAddress", String.class)
                         .transform(new RealmObjectSchema.Function() {
                             @Override
                             public void apply(DynamicRealmObject obj) {
                                 obj.getDynamicRealm()
                                         .where("WalletEntity")
                                         .equalTo("chainId", "101")
+                                        .or()
+                                        .equalTo("chainId", "102")
                                         .findAll()
-                                        .setString("chainId", BuildConfig.ID_MAIN_CHAIN);
+                                        .setString("chainId", BuildConfig.ID_TEST_NET);
 
                                 LogUtils.d("------------update chainId Realm success");
                             }
                         });
+
+                schema.get("AddressEntity")
+                        .transform(new RealmObjectSchema.Function() {
+                            @Override
+                            public void apply(DynamicRealmObject obj) {
+                                obj.getDynamicRealm().where("AddressEntity")
+                                        .findAll()
+                                        .deleteAllFromRealm();
+                                LogUtils.d("------------clear AddressEntity Realm success");
+                            }
+                        });
+
                 oldVersion++;
             }
 

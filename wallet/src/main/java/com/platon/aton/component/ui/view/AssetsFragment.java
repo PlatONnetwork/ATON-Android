@@ -147,6 +147,8 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
     private TransactionListAdapter mTransactionListAdapter;
     private int observedWalletTagWidth = 0;
 
+    private boolean showOfflinePrompt = true;//断网提示
+
     @Override
     public int getLayoutId() {
         return R.layout.fragment_assets;
@@ -169,6 +171,10 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
         getPresenter().fetchWalletBalance();
         //加载交易记录数据
         getPresenter().loadData();
+        //展示选中的钱包信息
+        showSelectedWalletInfo(WalletManager.getInstance().getSelectedWallet());
+
+
     }
 
     @Override
@@ -223,6 +229,10 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onWalletNumberChangeEvent(Event.WalletNumberChangeEvent event) {
         List<Wallet> walletList = WalletManager.getInstance().getWalletList();
+        //钱包为空，更新状态，让其可以创建钱包
+        if(walletList.size() == 0){
+            PreferenceTool.putBoolean(Constants.Preference.KEY_OPERATE_MENU_FLAG,true);
+        }
         mWalletListAdapter.notifyDataSetChanged(walletList);
         layoutNoWallet.setVisibility(walletList.isEmpty() ? View.VISIBLE : View.GONE);
         layoutAssetsWallet.setVisibility(walletList.isEmpty() ? View.GONE : View.VISIBLE);
@@ -233,6 +243,9 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNetWorkStateChangedEvent(Event.NetWorkStateChangedEvent netWorkStateChangedEvent) {
+        if(NetConnectivity.getConnectivityManager().isConnected()){
+            showOfflinePrompt = true;
+        }
         showSelectedWalletInfo(WalletManager.getInstance().getSelectedWallet());
     }
 
@@ -292,7 +305,7 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
                 @QrCodeType int qrCodeType = QrCodeParser.parseQrCode(TextUtils.isEmpty(unzip) ? result : unzip);
 
                 if (qrCodeType == QrCodeType.NONE) {
-                    showLongToast(currentActivity().string(R.string.unrecognized));
+                    showLongToast(currentActivity().string(R.string.unrecognized_content));
                     return;
                 }
 
@@ -317,9 +330,9 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
                     //有钱包进入发送界面，如果是地址的话无钱包进入导入观察者钱包页面
                     if (WalletManager.getInstance().getWalletList().isEmpty()) {
                         //进入导入观察者钱包
-                        ImportWalletActivity.actionStart(getActivity(), ImportWalletActivity.TabIndex.IMPORT_OBSERVED, unzip);
+                        ImportWalletActivity.actionStart(getActivity(), ImportWalletActivity.TabIndex.IMPORT_OBSERVED, TextUtils.isEmpty(unzip) ? result : unzip);
                     } else {
-                        SendTransactionActivity.actionStart(getActivity());
+                        SendTransactionActivity.actionStartWithData(getActivity(),result);
                     }
                     return;
                 }
@@ -490,6 +503,7 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
                     @Override
                     public void accept(Object o) {
                         layoutDeviceOfflinePrompt.setVisibility(View.GONE);
+                        showOfflinePrompt = false;
                     }
                 });
 
@@ -500,6 +514,7 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
                     @Override
                     public void accept(Object o) {
                         layoutDeviceOfflinePrompt.setVisibility(View.GONE);
+                        showOfflinePrompt = false;
                     }
                 });
 
@@ -557,9 +572,10 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
                 .subscribe(new CustomObserver<Object>() {
                     @Override
                     public void accept(Object o) {
+                        //发送交易
                         if (NetConnectivity.getConnectivityManager().isConnected() || WalletManager.getInstance().getSelectedWallet().isObservedWallet()) {
                             SendTransactionActivity.actionStart(getContext());
-                        } else {
+                        } else {//离线签名
                             new RxPermissions(currentActivity())
                                     .requestEach(Manifest.permission.CAMERA)
                                     .subscribe(new CustomObserver<Permission>() {
@@ -629,7 +645,7 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
         }
 
         layoutSecurityReminders.setVisibility(selectedWallet.showBackedUpPrompt() ? View.VISIBLE : View.GONE);
-        layoutDeviceOfflinePrompt.setVisibility(NetConnectivity.getConnectivityManager().isConnected() ? View.GONE : View.VISIBLE);
+        layoutDeviceOfflinePrompt.setVisibility((showOfflinePrompt && !NetConnectivity.getConnectivityManager().isConnected()) ? View.VISIBLE : View.GONE);
 
     }
 
@@ -753,6 +769,16 @@ public class AssetsFragment extends BaseLazyFragment<AssetsContract.View, Assets
 
         mTransactionListAdapter.setQueryAddressList(Arrays.asList(queryAddress));
         if (loadLatestData || newTransactionList == null || newTransactionList.isEmpty()) {
+
+            //过滤数据只取前20条数据显示
+            int transactionSize = newTransactionList.size();
+            int overIndex = transactionSize - 20;
+            if(overIndex > 0){
+                for (int i = 1; i <= overIndex ; i++) {
+                    newTransactionList.remove(transactionSize - i);
+                }
+            }
+
             mTransactionListAdapter.notifyDataSetChanged(newTransactionList);
         } else {
             TransactionDiffCallback transactionDiffCallback = new TransactionDiffCallback(oldTransactionList, newTransactionList);

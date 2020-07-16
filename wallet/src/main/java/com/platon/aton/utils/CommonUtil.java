@@ -17,6 +17,7 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
@@ -66,6 +67,21 @@ public class CommonUtil {
             }
         }
         return false;
+    }
+
+    public static void getMaxMemoryInfo(Context context){
+        Runtime rt = Runtime.getRuntime();
+        long maxMemory = rt.maxMemory();
+        Log.e("MaxMemory:", Long.toString(maxMemory/(1024*1024)));
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        Log.e("MemoryClass:", Long.toString(activityManager.getMemoryClass()));
+        Log.e("LargeMemoryClass:", Long.toString(activityManager.getLargeMemoryClass()));
+
+        ActivityManager.MemoryInfo info = new ActivityManager.MemoryInfo();
+        activityManager.getMemoryInfo(info);
+        LogUtils.e("系统剩余内存:"+(info.availMem >> 10)+"k");
+        LogUtils.e("系统是否处于低内存运行："+info.lowMemory);
+        LogUtils.e("当系统剩余内存低于"+info.threshold+"时就看成低内存运行");
     }
 
     public static void hideSoftKeyBoard(View v) {

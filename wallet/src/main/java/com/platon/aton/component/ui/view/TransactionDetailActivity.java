@@ -157,7 +157,7 @@ public class TransactionDetailActivity extends BaseActivity<TransactionDetailCon
         ivContractToTag.setVisibility(transactionType == TransactionType.TRANSFER ? View.GONE : View.VISIBLE);
 
         String senderName = getSenderName(transaction.getFrom());
-
+        //??
         tvFrom.setText(senderName);
         tvFrom.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this, getSenderAvatar(transaction.getFrom())), null, null, null);
 

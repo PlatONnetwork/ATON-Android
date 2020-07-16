@@ -6,7 +6,6 @@ import com.platon.framework.app.Constants;
 import com.platon.framework.network.ApiFastjsonConverterFactory;
 import com.platon.framework.utils.LogUtils;
 
-import java.security.cert.CertificateException;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLContext;
@@ -71,6 +70,7 @@ public class ServerUtils {
 
     private static HttpLoggingInterceptor getLogInterceptor() {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+        //loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         if (BuildConfig.DEBUG) {
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         } else {

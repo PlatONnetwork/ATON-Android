@@ -2,13 +2,18 @@ package com.platon.aton.engine;
 
 import android.text.TextUtils;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.platon.aton.BuildConfig;
 import com.platon.aton.app.CustomThrowable;
 import com.platon.aton.db.entity.WalletEntity;
 import com.platon.aton.db.sqlite.WalletDao;
 import com.platon.aton.entity.AccountBalance;
+import com.platon.aton.entity.Bech32Address;
 import com.platon.aton.entity.Wallet;
 import com.platon.aton.event.Event;
 import com.platon.aton.event.EventPublisher;
+import com.platon.aton.utils.AddressFormatUtil;
 import com.platon.aton.utils.AmountUtil;
 import com.platon.aton.utils.BigDecimalUtil;
 import com.platon.aton.utils.JZWalletUtil;
@@ -21,6 +26,11 @@ import com.platon.framework.utils.PreferenceTool;
 
 import org.greenrobot.eventbus.EventBus;
 import org.reactivestreams.Publisher;
+import org.web3j.crypto.WalletApplication;
+import org.web3j.crypto.bech32.AddressBech32;
+import org.web3j.crypto.bech32.AddressBehavior;
+import org.web3j.crypto.bech32.AddressManager;
+import org.web3j.crypto.bech32.Bech32;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -36,6 +46,7 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
+import io.reactivex.SingleObserver;
 import io.reactivex.SingleOnSubscribe;
 import io.reactivex.SingleSource;
 import io.reactivex.functions.BiConsumer;
@@ -79,6 +90,29 @@ public class WalletManager {
     public static WalletManager getInstance() {
         return WalletManager.InstanceHolder.INSTANCE;
     }
+
+    /**
+     * 初始化钱包环境
+     */
+    public void initWalletNet(){
+        String chainId = NodeManager.getInstance().getChainId();
+        if(chainId.equals(BuildConfig.ID_MAIN_NET)){
+            WalletApplication.init(WalletApplication.MAINNET, AddressManager.ADDRESS_TYPE_BECH32, AddressBehavior.CHANNLE_PLATON);
+        }else{
+            WalletApplication.init(WalletApplication.TESTNET, AddressManager.ADDRESS_TYPE_BECH32, AddressBehavior.CHANNLE_PLATON);
+        }
+        perInit();
+    }
+
+    public boolean isMainNetWalletAddress(){
+        if(NodeManager.getInstance().getChainId().equals(BuildConfig.ID_MAIN_NET)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+
 
     public BigDecimal getSumAccountBalance() {
         return mSumAccountBalance;
@@ -137,9 +171,15 @@ public class WalletManager {
     public String getSelectedWalletAddress() {
 
         Wallet selectedWallet = getSelectedWallet();
-
         return selectedWallet == null ? null : selectedWallet.getPrefixAddress();
+    }
 
+
+    /**
+     * 老地址转换Bech32
+     */
+    public void perInit(){
+        WalletDao.updateBetch32AddressWithWallet();
     }
 
     public void init() {
@@ -197,8 +237,9 @@ public class WalletManager {
             return;
         }
 
-        Wallet wallet = mWalletList.get(position);
-        wallet.setAccountBalance(accountBalance);
+        mWalletList.get(position).setAccountBalance(accountBalance);
+        /*  Wallet wallet = mWalletList.get(position);
+            wallet.setAccountBalance(accountBalance);*/
     }
 
     public void update() {
@@ -243,6 +284,11 @@ public class WalletManager {
                 }).blockingGet();
     }
 
+    /**
+     * 根据钱包地址获取钱包名称(从缓存中获取)
+     * @param walletAddress
+     * @return
+     */
     public String getWalletNameByWalletAddress(String walletAddress) {
         if (!mWalletList.isEmpty()) {
             for (Wallet walletEntity : mWalletList) {
@@ -253,6 +299,42 @@ public class WalletManager {
         }
         return "";
     }
+
+    /**
+     * 根据钱包地址获取钱包名称(先查缓存，再查DB)
+     * @param address
+     * @return
+     */
+    public Single<String> getWalletNameFromAddress(String address) {
+        return Single.fromCallable(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+
+                String walletName = WalletManager.getInstance().getWalletNameByWalletAddress(address);
+                return TextUtils.isEmpty(walletName) ? walletName : String.format("%s(%s)", walletName, AddressFormatUtil.formatTransactionAddress(address));
+            }
+        }).filter(new Predicate<String>() {
+            @Override
+            public boolean test(String s) throws Exception {
+                return !TextUtils.isEmpty(s);
+            }
+        }).switchIfEmpty(new SingleSource<String>() {
+            @Override
+            public void subscribe(SingleObserver<? super String> observer) {
+                String addressName = WalletDao.getWalletNameByAddress(address);
+                //String addressName = AddressDao.getAddressNameByAddress(address);
+                observer.onSuccess(TextUtils.isEmpty(addressName) ? addressName : String.format("%s(%s)", addressName, AddressFormatUtil.formatTransactionAddress(address)));
+            }
+        }).filter(new Predicate<String>() {
+            @Override
+            public boolean test(String s) throws Exception {
+                return !TextUtils.isEmpty(s);
+            }
+        }).defaultIfEmpty(address)
+                .toSingle();
+    }
+
+
 
     public boolean isObservedWallet(String walletAddress) {
 
@@ -376,16 +458,30 @@ public class WalletManager {
     }
 
     public int importKeystore(String store, String name, String password) {
-        if (!JZWalletUtil.isValidKeystore(store)) {
-            return CODE_ERROR_KEYSTORE;
-        }
-        if (TextUtils.isEmpty(name)) {
-            return CODE_ERROR_NAME;
-        }
-        if (TextUtils.isEmpty(password)) {
-            return CODE_ERROR_PASSWORD;
-        }
+
         try {
+            //兼容老keyStore，进行转换
+            JSONObject keystoreJSON = JSON.parseObject(store);
+            if (keystoreJSON.containsKey("address")) {
+                Object addressObj = keystoreJSON.get("address");
+                if(addressObj instanceof String){
+                    String address = keystoreJSON.getString("address");
+                    AddressBech32 addressBech32 = AddressManager.getInstance().executeEncodeAddress(address);
+                    keystoreJSON.remove("address");
+                    keystoreJSON.put("address", addressBech32);
+                    store = keystoreJSON.toString();
+                }
+            }
+            if (!JZWalletUtil.isValidKeystore(store)) {
+                return CODE_ERROR_KEYSTORE;
+            }
+            if (TextUtils.isEmpty(name)) {
+                return CODE_ERROR_NAME;
+            }
+            if (TextUtils.isEmpty(password)) {
+                return CODE_ERROR_PASSWORD;
+            }
+
             Wallet entity = WalletServiceImpl.getInstance().importKeystore(store, name, password);
             if (entity == null) {
                 return CODE_ERROR_PASSWORD;
@@ -403,7 +499,8 @@ public class WalletManager {
             PreferenceTool.putBoolean(Constants.Preference.KEY_OPERATE_MENU_FLAG, false);
             return CODE_OK;
         } catch (Exception exp) {
-            return CODE_ERROR_UNKNOW;
+            LogUtils.d(exp.getMessage(),exp.fillInStackTrace());
+            return CODE_ERROR_KEYSTORE;
         }
     }
 
@@ -411,13 +508,20 @@ public class WalletManager {
         if (!JZWalletUtil.isValidAddress(walletAddress)) {
             return CODE_ERROR_INVALIA_ADDRESS;
         }
+
+        //转换地址
+        String originalAddress = Bech32.addressDecodeHex(walletAddress);
+        AddressBech32 addressBech32 = AddressManager.getInstance().executeEncodeAddress(originalAddress);
+        Bech32Address bech32Address = new Bech32Address(addressBech32.getMainnet(),addressBech32.getTestnet());
+
         Wallet mWallet = new Wallet();
-        mWallet.setAddress(walletAddress);
+        mWallet.setAddress(originalAddress);
+        mWallet.setBech32Address(bech32Address);
         mWallet.setUuid(UUID.randomUUID().toString());
         mWallet.setAvatar(WalletServiceImpl.getInstance().getWalletAvatar());
 
         for (Wallet param : mWalletList) {
-            if (param.getPrefixAddress().toLowerCase().equalsIgnoreCase(mWallet.getPrefixAddress().toLowerCase())) {
+            if (param.getOriginalAddress().toLowerCase().equalsIgnoreCase(mWallet.getOriginalAddress().toLowerCase())) {
                 return CODE_ERROR_WALLET_EXISTS;
             }
         }

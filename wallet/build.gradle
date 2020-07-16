@@ -17,15 +17,17 @@ android {
         buildConfigField("int", "INNER_VERSION_NAME", "${inner_version_name}")
         buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
         buildConfigField("String", "URL_PLATON_NETWORK", "${URL_PLATON_NETWORK}")
-        buildConfigField("String", "URL_MAIN_SERVER", "${URL_MAIN_SERVER}")
-        buildConfigField("String", "URL_TEST_MAIN_SERVER", "${URL_TEST_MAIN_SERVER}")
-        buildConfigField("String", "URL_TEST_SERVER", "${URL_TEST_SERVER}")
-        buildConfigField("String", "URL_TEST_OUTER_SERVER", "${URL_TEST_OUTER_SERVER}")
-        buildConfigField("String", "URL_DEVELOP_SERVER", "${URL_DEVELOP_SERVER}")
-        buildConfigField("String", "ID_TEST_MAIN_CHAIN", "${ID_TEST_MAIN_CHAIN}")
-        buildConfigField("String", "ID_MAIN_CHAIN", "${ID_MAIN_CHAIN}")
-        buildConfigField("String", "ID_TEST_CHAIN", "${ID_TEST_CHAIN}")
-        buildConfigField("String", "ID_DEVELOP_CHAIN", "${ID_DEVELOP_CHAIN}")
+        buildConfigField("String", "URL_MAIN_NET", "${URL_MAIN_NET}")
+        buildConfigField("String", "URL_TEST_NET", "${URL_TEST_NET}")
+        buildConfigField("String", "URL_UAT_NET", "${URL_UAT_NET}")
+        buildConfigField("String", "URL_INNERTEST_NET", "${URL_INNERTEST_NET}")
+        buildConfigField("String", "URL_OUTER_INNERTEST_NET", "${URL_OUTER_INNERTEST_NET}")
+        buildConfigField("String", "URL_DEVELOP_NET", "${URL_DEVELOP_NET}")
+        buildConfigField("String", "ID_UAT_NET", "${ID_UAT_NET}")
+        buildConfigField("String", "ID_MAIN_NET", "${ID_MAIN_NET}")
+        buildConfigField("String", "ID_TEST_NET", "${ID_TEST_NET}")
+        buildConfigField("String", "ID_INNERTEST_NET", "${ID_INNERTEST_NET}")
+        buildConfigField("String", "ID_DEVELOP_NET", "${ID_DEVELOP_NET}")
         buildConfigField("int", "QRCODE_VERSION_CODE", "${qrcode_version_code}")
         renderscriptTargetApi 19
         renderscriptSupportModeEnabled true
@@ -95,16 +97,16 @@ android {
             testCoverageEnabled true  //打开覆盖率统计开关
 
             ndk {
-                abiFilters 'armeabi-v7a', 'x86'
+                abiFilters 'armeabi-v7a', 'armeabi','arm64-v8a'
             }
         }
 
         releaseC {
             debuggable false
             signingConfig signingConfigs.releaseC
-            shrinkResources true
-            minifyEnabled true
-            zipAlignEnabled true
+            shrinkResources false
+            minifyEnabled false
+            zipAlignEnabled false
             multiDexEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
@@ -135,8 +137,8 @@ android {
         releaseX {
             debuggable false
             signingConfig signingConfigs.releaseX
-            shrinkResources true
-            minifyEnabled true
+            shrinkResources false
+            minifyEnabled false
             zipAlignEnabled true
             multiDexEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -184,7 +186,7 @@ android {
                 buildConfigField "String", "CHANNEL", '"PlatONNetwork"'
 
                 ndk {
-                    abiFilters 'armeabi-v7a', 'arm64-v8a', 'armeabi'
+                    abiFilters 'armeabi-v7a', 'armeabi','arm64-v8a'
                 }
             }
 
@@ -192,7 +194,7 @@ android {
                 buildConfigField "String", "CHANNEL", '"GooglePlay"'
 
                 ndk {
-                    abiFilters 'armeabi-v7a', 'arm64-v8a', 'armeabi'
+                    abiFilters 'armeabi-v7a', 'armeabi','arm64-v8a'
                 }
             }
 
@@ -249,21 +251,24 @@ dependencies {
     implementation project(':biometric')
     implementation project(':lib_common')
     implementation rootProject.ext.dependencies["butterknife"]
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     annotationProcessor rootProject.ext.dependencies["butterknife-compiler"]
-    //mockito
-    testImplementation 'org.mockito:mockito-core:2.19.0'
     //powermock
     testImplementation 'org.powermock:powermock-module-junit4:1.7.4'
     testImplementation 'org.powermock:powermock-module-junit4-rule:1.7.4'
     testImplementation 'org.powermock:powermock-api-mockito2:1.7.4'
     testImplementation 'org.powermock:powermock-classloading-xstream:1.7.4'
-    //robolectric
+
+    //robolectric 单元测试
     testImplementation 'org.robolectric:robolectric:3.8'
     testImplementation 'org.robolectric:shadows-multidex:3.8'
     //    testImplementation 'org.robolectric:robolectric:3.8-SNAPSHOT'
     testImplementation 'org.robolectric:shadows-support-v4:3.0'
+
+    //mockito 单元测试
+    //required if you want to use Mockito for unit tests
+    testImplementation 'org.mockito:mockito-core:2.19.0'
+    // required if you want to use Mockito for Android tests
+    androidTestImplementation 'org.mockito:mockito-android:2.19.0'
 }
-
-
-
-
