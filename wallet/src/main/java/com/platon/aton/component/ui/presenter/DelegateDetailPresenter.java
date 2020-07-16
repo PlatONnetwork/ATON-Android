@@ -78,7 +78,7 @@ public class DelegateDetailPresenter extends BasePresenter<DelegateDetailContrac
                 });
     }
 
-    private List<DelegateItemInfo> buildDelegateItemInfoList(List<DelegateItemInfo> delegateInfoList, String walletAddress) {
+    public List<DelegateItemInfo> buildDelegateItemInfoList(List<DelegateItemInfo> delegateInfoList, String walletAddress) {
         if (delegateInfoList == null || delegateInfoList.isEmpty() || TextUtils.isEmpty(walletAddress)) {
             return delegateInfoList;
         }

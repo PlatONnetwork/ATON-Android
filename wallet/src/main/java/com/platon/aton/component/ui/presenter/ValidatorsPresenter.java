@@ -65,7 +65,7 @@ public class ValidatorsPresenter extends BasePresenter<ValidatorsContract.View> 
      * @param keywords          搜索关键字
      * @return
      */
-    private List<VerifyNode> getVerifyNodeList(List<VerifyNode> allVerifyNodeList, @NodeStatus String nodeStatus, SortType sortType, String keywords) {
+    public List<VerifyNode> getVerifyNodeList(List<VerifyNode> allVerifyNodeList, @NodeStatus String nodeStatus, SortType sortType, String keywords) {
 
         List<VerifyNode> verifyNodeList = new ArrayList<>();
 

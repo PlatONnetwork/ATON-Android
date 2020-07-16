@@ -106,7 +106,7 @@ public class MainPresenter extends BasePresenter<MainContract.View> implements M
                 }, !versionInfo.isForce()).show(currentActivity().getSupportFragmentManager(), "showTips");
     }
 
-    private void requestPermission(VersionInfo versionInfo) {
+    public void requestPermission(VersionInfo versionInfo) {
 
         new RxPermissions(currentActivity())
                 .requestEach(Manifest.permission.WRITE_EXTERNAL_STORAGE)

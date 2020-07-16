@@ -62,6 +62,39 @@ public class WithDrawPresenter extends BasePresenter<WithDrawContract.View> impl
     private List<WithDrawBalance> list = new ArrayList<>();
     private WithDrawBalance mWithDrawBalance = null;
 
+
+    public WithDrawBalance getmWithDrawBalance() {
+        return mWithDrawBalance;
+    }
+
+    public void setmWithDrawBalance(WithDrawBalance mWithDrawBalance) {
+        this.mWithDrawBalance = mWithDrawBalance;
+    }
+
+    public DelegateItemInfo getmDelegateDetail() {
+        return mDelegateDetail;
+    }
+
+    public void setmDelegateDetail(DelegateItemInfo mDelegateDetail) {
+        this.mDelegateDetail = mDelegateDetail;
+    }
+
+    public DelegationValue getmDelegationValue() {
+        return mDelegationValue;
+    }
+
+    public void setmDelegationValue(DelegationValue mDelegationValue) {
+        this.mDelegationValue = mDelegationValue;
+    }
+
+    public Wallet getmWallet() {
+        return mWallet;
+    }
+
+    public void setmWallet(Wallet mWallet) {
+        this.mWallet = mWallet;
+    }
+
     @Override
     public void init(DelegateItemInfo delegateItemInfo) {
         mDelegateDetail = delegateItemInfo;

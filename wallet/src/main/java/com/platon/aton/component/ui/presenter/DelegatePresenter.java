@@ -57,6 +57,15 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
     private Wallet mWallet;
     private DelegateItemInfo mDelegateDetail;
     private EstimateGasResult mEstimateGasResult;
+
+    public EstimateGasResult getmEstimateGasResult() {
+        return mEstimateGasResult;
+    }
+
+    public void setmEstimateGasResult(EstimateGasResult mEstimateGasResult) {
+        this.mEstimateGasResult = mEstimateGasResult;
+    }
+
     /**
      * 是否点击全部
      */
@@ -220,7 +229,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
      * @param stakingAmountType
      * @return
      */
-    private String checkDelegateParam(EstimateGasResult estimateGasResult, StakingAmountType stakingAmountType) {
+    public String checkDelegateParam(EstimateGasResult estimateGasResult, StakingAmountType stakingAmountType) {
 
         BigDecimal feeAmount = new BigDecimal(getView().getFeeAmount()).multiply(new BigDecimal(DEFAULT_EXCHANGE_RATE));
         BigDecimal delegateAmount = new BigDecimal(getView().getDelegateAmount()).multiply(new BigDecimal(DEFAULT_EXCHANGE_RATE));
@@ -333,7 +342,7 @@ public class DelegatePresenter extends BasePresenter<DelegateContract.View> impl
 
     }
 
-    private void getEstimateGas(String prefixAddress, String nodeId) {
+    public void getEstimateGas(String prefixAddress, String nodeId) {
 
         estimateGas(prefixAddress, nodeId)
                 .compose(RxUtils.bindToLifecycle(getView()))
