@@ -119,7 +119,7 @@ public class ClaimRecordPresenter extends BasePresenter<ClaimRecordContract.View
         }
     }
 
-    private long getBeginSequence(@Direction String direction) {
+    public long getBeginSequence(@Direction String direction) {
         if (Direction.DIRECTION_NEW.equals(direction)) {
             return -1;
         }
@@ -131,7 +131,7 @@ public class ClaimRecordPresenter extends BasePresenter<ClaimRecordContract.View
         return mOldClaimRewardRecordList.get(mOldClaimRewardRecordList.size() - 1).getSequence();
     }
 
-    private List<ClaimRewardRecord> getNewList(List<ClaimRewardRecord> oldClaimRewardRecordList, List<ClaimRewardRecord> newClaimRewardRecordList, boolean isLoadMore) {
+    public List<ClaimRewardRecord> getNewList(List<ClaimRewardRecord> oldClaimRewardRecordList, List<ClaimRewardRecord> newClaimRewardRecordList, boolean isLoadMore) {
         List<ClaimRewardRecord> oldList = oldClaimRewardRecordList == null ? new ArrayList<ClaimRewardRecord>() : oldClaimRewardRecordList;
         List<ClaimRewardRecord> curList = newClaimRewardRecordList;
         List<ClaimRewardRecord> newList = new ArrayList<>();

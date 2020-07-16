@@ -321,17 +321,17 @@ public abstract class BaseActivity<V extends BaseViewImp, P extends BasePresente
      */
     public void generateCoverageFile() {
 
-        String filePath = getFilesDir().getAbsolutePath();
-        //String filePath2 = getRootPath(this);
+//        String filePath = getFilesDir().getAbsolutePath();
+        String filePath2 = getRootPath(this);
 
-        LogUtils.e("--generateCoverageFile filePath:" + filePath);
-        //LogUtils.e("--generateCoverageFile filePath2:" + filePath2);
+        //LogUtils.e("--generateCoverageFile filePath:" + filePath);
+        LogUtils.e("--generateCoverageFile filePath2:" + filePath2);
 
         OutputStream out = null;
 
         try {
             //在SDcard根目录下生产检测报告，文件名自定义
-            out = new FileOutputStream(filePath + "/coverage.ec", false);
+            out = new FileOutputStream(filePath2 + "/coverage.ec", false);
             Object agent = Class.forName("org.jacoco.agent.rt.RT").getMethod("getAgent").invoke(null);
             // 这里之下就统计不到了
             out.write((byte[]) agent.getClass().getMethod("getExecutionData", boolean.class).invoke(agent, false));

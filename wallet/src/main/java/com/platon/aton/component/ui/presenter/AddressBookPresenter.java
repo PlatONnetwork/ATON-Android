@@ -28,6 +28,14 @@ public class AddressBookPresenter extends BasePresenter<AddressBookContract.View
 
     private List<Address> addressEntityList;
 
+    public List<Address> getAddressEntityList() {
+        return addressEntityList;
+    }
+
+    public void setAddressEntityList(List<Address> addressEntityList) {
+        this.addressEntityList = addressEntityList;
+    }
+
     @Override
     public void fetchAddressList() {
         Flowable.fromIterable(AddressDao.getAddressInfoList()).filter(new Predicate<AddressEntity>() {

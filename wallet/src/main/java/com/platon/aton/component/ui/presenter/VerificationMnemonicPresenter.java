@@ -19,6 +19,22 @@ public class VerificationMnemonicPresenter extends BasePresenter<VerificationMne
     private Wallet mWalletEntity;
     private String mMnemonic;
 
+    public VerificationMnemonicContract.DataEntity[] getmTopList() {
+        return mTopList;
+    }
+
+    public void setmTopList(VerificationMnemonicContract.DataEntity[] mTopList) {
+        this.mTopList = mTopList;
+    }
+
+    public ArrayList<VerificationMnemonicContract.DataEntity> getmAllList() {
+        return mAllList;
+    }
+
+    public void setmAllList(ArrayList<VerificationMnemonicContract.DataEntity> mAllList) {
+        this.mAllList = mAllList;
+    }
+
     @Override
     public void init() {
         mAllList.clear();
@@ -106,7 +122,7 @@ public class VerificationMnemonicPresenter extends BasePresenter<VerificationMne
         }
     }
 
-    private VerificationMnemonicContract.DataEntity generateDataEntity(String mnemonic) {
+    public VerificationMnemonicContract.DataEntity generateDataEntity(String mnemonic) {
         return new VerificationMnemonicContract.DataEntity.Builder()
                 .mnemonic(mnemonic)
                 .checked(false)

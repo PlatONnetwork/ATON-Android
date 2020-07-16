@@ -15,6 +15,14 @@ public class ValidatorsDetailPresenter extends BasePresenter<ValidatorsDetailCon
 
     private VerifyNodeDetail mVerifyNodeDetail;
 
+    public VerifyNodeDetail getmVerifyNodeDetail() {
+        return mVerifyNodeDetail;
+    }
+
+    public void setmVerifyNodeDetail(VerifyNodeDetail mVerifyNodeDetail) {
+        this.mVerifyNodeDetail = mVerifyNodeDetail;
+    }
+
     @Override
     public void loadValidatorsDetailData() {
         if (isViewAttached()) {

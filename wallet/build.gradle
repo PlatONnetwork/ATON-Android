@@ -45,6 +45,7 @@ android {
                 includeNoLocationClasses = true
             }
         }
+
     }
 
 
@@ -95,6 +96,7 @@ android {
             buildConfigField("String", "RELEASE_TYPE", "${releaseTypeC}")
             multiDexEnabled true
             testCoverageEnabled true  //打开覆盖率统计开关
+            minifyEnabled false //获取代码覆盖率需要设为false
 
             ndk {
                 abiFilters 'armeabi-v7a', 'armeabi','arm64-v8a'

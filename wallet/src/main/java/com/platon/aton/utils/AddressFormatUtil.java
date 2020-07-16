@@ -11,6 +11,7 @@ public class AddressFormatUtil {
 
     }
 
+
     public static String formatAddress(String address) {
 
         String text = "";
