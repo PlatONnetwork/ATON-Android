@@ -190,6 +190,7 @@ public class CreateWalletActivity extends BaseActivity<CreateWalletContract.View
         String repeatPassword = mEtRepeatPassword.getText().toString().trim();
         if (v == mEtName && !hasFocus) {
             if (TextUtils.isEmpty(name)) {
+
                 showNameError(string(R.string.validWalletNameEmptyTips), true);
             } else if (name.length() > 20) {
                 showNameError(string(R.string.validWalletNameTips), true);
